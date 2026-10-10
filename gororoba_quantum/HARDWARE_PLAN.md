@@ -26,12 +26,15 @@ hardware results.
    excluded 11 qubits and 16 edges on ibm_fez, 7 and 24 on ibm_kingston, and 31
    and 20 on ibm_marrakesh, every one by a policy threshold -- readout error,
    T1 or T2, sx or CZ error, or missing calibration -- and none by a faulty
-   flag, so the thresholds carry the detection. The eligibility gate skipped
-   ibm_marrakesh outright: it reported status_msg "maintenance".
+   flag, so the thresholds carry the detection. The eligibility gate then
+   skipped ibm_fez, at 27 pending jobs against --max-pending 25, and
+   ibm_marrakesh, which reported status_msg "maintenance".
 2. **Selection.** Eight transpiler seeds per group and backend; the best three
    compile their controls onto one layout, and the best geometric-mean layout
    score (ESP times the T2 dephasing factor) picks backend and layout.
-   ibm_kingston won every group.
+   ibm_kingston, the one eligible system at 18 pending jobs, carries every
+   group; earlier records of the same day with ibm_fez eligible also chose
+   kingston for every group.
 3. **Placement.** packing.py embeds the winning pattern everywhere it fits in
    admissible hardware, ranks the embeddings by the same layout score, and
    packs disjoint replicas one qubit apart down to a floor fraction of the
@@ -49,7 +52,7 @@ hardware results.
 - **Variance.** Each member's per-shot score splits into shot and layout
   variance with a chi-squared test across replicas; folded QPE adds an
   instance axis. The noise model predicts layout variance of 2e-5 to 4e-4 in
-  the primaries and none beyond shot noise in Shor factor yield (p 0.66).
+  the primaries, and 3.1e-5 in Shor factor yield, within shot noise (p 0.17).
 - **Crosstalk.** The primary runs alone on replica 0's qubits beside the
   packed run; the noise model puts their difference at zero, so a measured
   difference is crosstalk from packing.
