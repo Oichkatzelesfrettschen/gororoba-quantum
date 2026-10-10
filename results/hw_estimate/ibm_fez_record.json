@@ -1,6 +1,6 @@
 {
   "backend": "ibm_fez",
-  "calibration_last_update": "2026-10-10T08:36:41-07:00",
+  "calibration_last_update": "2026-10-10T10:07:12-07:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -13,9 +13,16 @@
   "qpu_executed": false,
   "summary": {
     "design_b": {
+      "readout_qubits": [
+        133,
+        133
+      ],
       "p0_dark": 0.080566,
       "p0_bright": 0.9021,
-      "ratio": 0.08930938920297084
+      "ratio": 0.08930938920297084,
+      "p0_dark_readout_corrected": 0.06775833606353934,
+      "p0_bright_readout_corrected": 0.902953983618764,
+      "ratio_readout_corrected": 0.07504074104860206
     },
     "design_d_fit": {
       "offset": 0.49123971605667516,
@@ -31,6 +38,7 @@
         ],
         "tvd_noisy_to_ideal": 0.06542999999999999,
         "tvd_noisy_to_flip_prediction": 0.37207,
+        "tvd_noisy_to_omit_prediction": 0.9677729999999998,
         "tvd_flip_noisy_to_flip_prediction": 0.04541015625,
         "tvd_omit_noisy_to_omit_prediction": 0.03295898437499989
       },
@@ -42,6 +50,7 @@
         ],
         "tvd_noisy_to_ideal": 0.1137705,
         "tvd_noisy_to_flip_prediction": 0.25732350000000004,
+        "tvd_noisy_to_omit_prediction": 0.9096674999999999,
         "tvd_flip_noisy_to_flip_prediction": 0.109130859375,
         "tvd_omit_noisy_to_omit_prediction": 0.080078125
       },
@@ -53,6 +62,7 @@
         ],
         "tvd_noisy_to_ideal": 0.19580200000000003,
         "tvd_noisy_to_flip_prediction": 0.25903275000000003,
+        "tvd_noisy_to_omit_prediction": 0.8786629999999999,
         "tvd_flip_noisy_to_flip_prediction": 0.237548828125,
         "tvd_omit_noisy_to_omit_prediction": 0.1564941406249999
       }
