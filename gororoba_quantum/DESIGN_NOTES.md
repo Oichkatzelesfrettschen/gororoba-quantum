@@ -12,10 +12,16 @@ doubling ladder (design C), the zero divisor into a phase-resolved fringe
 
 Run `$PYTHON cd_core.py` for the classical structure, `$PYTHON verify.py` for
 the ground-truth checks, `$PYTHON designs.py` for the circuit checks, and
-`$PYTHON hw_estimate.py --out ../results/hw_estimate` for the routed cost and
-noisy prediction on ibm_fez. `verify.py` and `designs.py` exit nonzero on the
-first failed check. predict.py computes every prediction from cd_sign and
-cd_multiply; no circuit builder imports it.
+`$PYTHON live_run.py --out ../results/live` to choose a backend and layout per
+experiment from live calibration, compile, and noise-simulate (add `--submit`
+to run on hardware). `verify.py` and `designs.py` exit nonzero on the first
+failed check. predict.py computes every prediction from cd_sign and
+cd_multiply; no circuit builder imports it. The "Measured" figures in the
+design sections come from results/hw_estimate/ibm_fez_record.json, a fixed
+ibm_fez compile at transpiler seed 20261010 under the 10:07 calibration of
+2026-10-10, written by the single-backend harness that live_run.py replaces;
+`live_run.py --backends ibm_fez --seeds 1` repeats that compile under whatever
+calibration is live.
 
 ## Verification against the kernel
 
@@ -183,9 +189,11 @@ Measured (same record): ibm_fez ISA circuits are 18, 51, and 96 CZ at dims 8,
 16, 32. Noisy TVD to the true prediction is 0.065, 0.114, 0.196 against 0.372,
 0.257, 0.259 to the flip prediction. Resampling the noisy distributions at 4096
 shots gives a shot-noise TVD of 0.006, 0.017, 0.026 (99th percentile 0.011,
-0.029, 0.037). Dims 8 and 16 separate by 0.31 and 0.14; dim 32 separates by
-0.063, under twice the 99th-percentile shot noise, a thin margin that more
-shots or a lower-error qubit patch widens.
+0.029, 0.037). The true circuit's histogram is closer to the true prediction
+than to the flip prediction by a TVD margin of 0.31 and 0.14 at dims 8 and 16;
+at dim 32 the margin is 0.063, a difference of two TVDs under twice the
+99th-percentile shot noise of either, which more shots or a lower-error qubit
+patch widens.
 
 ## Design D: phase-resolved annihilator fringe
 
@@ -261,13 +269,89 @@ Hamiltonian or objective with exact small-instance answers, uniform and permuted
 weight controls, and a classical exact-diagonalization comparison of p-adic
 versus uniform weights are the prerequisites before any circuit.
 
-## Running on hardware
+## Live calibration and backend selection
 
-Nothing here has touched the QPU; `hw_estimate.py` reads backend metadata and
-runs a local noise model on the archived ISA circuits
-(results/hw_estimate/ibm_fez_isa.qpy), the 21 objects a submission would run:
-design A, design B dark and bright, the 9-point design D sweep, and design C at
-three dimensions with its two controls. The 10-minute monthly budget is quantum
-execution time. 156/5 bounds the count of disjoint 5-qubit instances by qubits
-alone; a packed transpile with its routing and crosstalk is the measurement of
-how many fit per shot. Re-query usage() before any submission.
+`live_run.py` treats calibration as a property of the run. Each invocation
+refreshes every accessible backend (ibm_fez, ibm_kingston, ibm_marrakesh), reads
+status, queue depth, Target, and properties, and decides, compiles, simulates,
+and optionally submits within that process. The audit record under
+results/live/<UTC start>/ holds every input to the decision and is never read
+back to drive a submission.
+
+- Eligibility: operational, status_msg "active", and at most 25 pending jobs
+  (--max-pending); a long queue lets the calibration drift between compile and
+  execution.
+- Exclusion policy (QUALITY in live_run.py): readout error above 0.08, CZ error
+  above 0.03, sx error above 0.01, T1 or T2 below 20 us, missing calibration, or
+  a faulty flag. Degraded hardware arrives without faulty flags: in the run of
+  2026-10-10T16:59:44Z faulty_qubits() and faulty_gates() were empty on all
+  three backends while ibm_fez reported CZ error 1.0 on edge 27-28, ibm_marrakesh
+  T1 = 6.6 us on qubit 26 and readout error 0.145 on qubit 23, and the policy
+  excluded 10, 8, and 27 qubits and 16, 24, and 20 edges on fez, kingston, and
+  marrakesh.
+- Selection: per experiment group and eligible backend, 8 transpiler seeds for
+  the primary circuit; the top 3 by ESP compile their controls onto the same
+  initial layout; the highest geometric-mean ESP across the group wins, queue
+  depth breaking ties. A candidate touching excluded hardware is rejected.
+- Shared compile for the zero-divisor group: design B dark, bright, and the
+  design D sweep are bindings of one circuit with a phase parameter on the
+  input, so every member runs the same routing and reads out on the same
+  physical qubit, and the suppression ratio compares one set of qubits.
+- Freshness proof: the Target that ESP and the noise model read agrees with the
+  properties fetched with it on the error and duration of every CZ, sx, x, and
+  measurement of the plan and on T1 and T2 of every touched qubit, so ranking
+  and prediction describe one device state. One simulator is built per
+  snapshot. A qubit carrying a faulty single-qubit instruction is excluded like
+  a faulty qubit, and a backend without a native CZ is skipped as ineligible.
+- Staleness: last_update_date advances without value changes (ibm_fez moved
+  from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
+  --submit re-reads each chosen backend, fails the run if the backend left the
+  eligibility gate, compares the plan's own calibration values -- T1 and T2 of
+  its qubits and the error and duration of each CZ, sx, x, and measurement it
+  uses -- and recompiles and re-simulates a group whose values moved.
+- Readout: every group record carries summary (raw) and
+  summary_readout_corrected, which inverts each classical bit's readout channel
+  with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
+  A raw dark P(0) carries prob_meas0_prep1 as an additive floor even on a
+  shared readout qubit. The noise model applies the same asymmetric channel,
+  and in results/live/2026-10-10T183023.567277Z the correction moves the
+  zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369. A group whose shots
+  straddle a calibration update keeps only its raw summary at collection.
+- Archived definitions: the record stores a sha256 over every module of
+  gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
+  own distribution, readout, and replay code -- and the code commit; --collect
+  refuses to summarize a run under a different digest, naming the commit to
+  collect from.
+- Durable job ids: every submitted job's id is checkpointed to record.json
+  before the next job is sent, and the record and QPY archive are written to a
+  temporary file and moved into place, so an interrupted write never loses an
+  id for QPU time already spent. An instance without a usage limit passes the
+  budget check; usage_limit_reached still stops the run.
+- Execution-time replay: --collect reads each circuit's execution window from
+  the result's execution spans (result.metadata["execution"]
+  ["execution_spans"], the spans whose pub_idxs include it), fetches
+  target_history and properties at that window's start, flags a calibration
+  update inside the window, checks the two against each other (342 of 352 ibm_fez
+  CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
+  agree on all of them), and re-simulates under that Target with the shots and
+  simulator seed stored in the run's record.
+
+Run of 2026-10-10T16:59:44Z (ibm_kingston skipped at 27 pending jobs):
+
+| group | backend | layout | CZ (primary, controls) | noisy observable |
+|---|---|---|---|---|
+| design A (1,2) | ibm_marrakesh | 10, 9, 11 | 16 | P1 = 0.968 |
+| design B/D fringe | ibm_marrakesh | 89, 88, 78, 90, 87 | 42 each | ratio 0.067; offset 0.485, visibility 0.860, phase -0.002 |
+| design C dim 8 | ibm_fez | 145, 146, 144 | 18, 20, 16 | TVD 0.065 true vs 0.372 flip |
+| design C dim 16 | ibm_marrakesh | 11, 12, 10, 18 | 49, 54, 28 | TVD 0.114 true vs 0.254 flip |
+| design C dim 32 | ibm_marrakesh | 11, 9, 12, 18, 10 | 96, 125, 64 | TVD 0.181 true vs 0.243 flip |
+
+Submission runs one client-side Sampler job per chosen backend
+(qiskit_ibm_runtime.executor_sampler, the destination the
+migrate-qiskit-ibm-runtime skill sets for qiskit-ibm-runtime 0.50) with one
+shot count. usage() reports the active instance, and service.backend(name)
+selects the backend's instance, so each job's budget is checked against the
+instance that pays for it; the record stores that instance only as a hash. The
+10-minute monthly budget is quantum execution time. 156/5 bounds the count of
+disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
+and crosstalk is the measurement of how many fit per shot.

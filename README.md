@@ -20,12 +20,19 @@ observables.
   cd_multiply; no circuit builder imports it.
 - `gororoba_quantum/designs.py` -- the four designs, checked by statevector and
   operator equality over every instance.
-- `gororoba_quantum/hw_estimate.py` -- compiles each circuit once for a real
-  backend and counts and noise-simulates that same ISA circuit.
+- `gororoba_quantum/experiments.py` -- experiment groups: a primary circuit, its
+  controls, their ideals, and the summary of each design's observable.
+- `gororoba_quantum/live_run.py` -- live calibration across every accessible
+  backend: exclusion policy, ESP-ranked backend and layout selection, noise
+  simulation from the same Target, gated submission through the client-side
+  Sampler, and replay at the execution-time calibration.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
-  falsifier for each design.
-- `results/hw_estimate/` -- the archived ISA circuits (QPY) and the record of
-  calibration timestamp, versions, seeds, layout, and noisy outcomes.
+  falsifier for each design, and the live-calibration policy.
+- `results/live/<UTC start>/` -- one audit record per run: the chosen ISA
+  circuits (QPY) and the JSON of backend states, exclusions, selection trace,
+  and noisy outcomes.
+- `results/hw_estimate/` -- the fixed ibm_fez compile behind the design
+  sections' "Measured" figures.
 
 ## Designs
 
@@ -46,7 +53,9 @@ PYTHON=${PYTHON:-python3}
 cd gororoba_quantum
 $PYTHON verify.py        # ground-truth checks against the kernel; nonzero exit on failure
 $PYTHON designs.py       # statevector checks over every instance
-$PYTHON hw_estimate.py --out ../results/hw_estimate   # ISA cost and noise model (IBM Quantum account)
+$PYTHON live_run.py --out ../results/live   # live calibration, selection, noise model (IBM Quantum account)
+$PYTHON live_run.py --out ../results/live --submit             # the same, then submit (spends QPU time)
+$PYTHON live_run.py --collect ../results/live/<UTC start>      # measured vs execution-time calibration
 ```
 
 requirements.txt pins the tested numpy, qiskit, qiskit-aer, and
