@@ -38,6 +38,7 @@ import copy
 import hashlib
 import json
 import math
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -86,8 +87,11 @@ class Snapshot:
     excluded_qubits: dict[int, str] = field(default_factory=dict)
     excluded_edges: dict[tuple[int, int], str] = field(default_factory=dict)
     medians: dict[str, float] = field(default_factory=dict)
+    native_cz: bool = True
 
     def ineligible_reason(self, max_pending: int | None) -> str | None:
+        if not self.native_cz:
+            return "no native cz instruction; the exclusion policy and compiles assume CZ"
         if not self.operational or self.status_msg != "active":
             return f"status operational={self.operational} msg={self.status_msg!r}"
         if max_pending is not None and self.pending_jobs > max_pending:
@@ -127,11 +131,17 @@ def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
         calibration=props.last_update_date.isoformat(),
         fetched_at=_now(),
     )
+    if "cz" not in backend.target.operation_names:
+        snap.native_cz = False
+        return snap
     faulty_q = set(props.faulty_qubits())
     faulty_edges = {tuple(g.qubits) for g in props.faulty_gates() if g.gate == "cz"}
+    # A faulty single-qubit instruction (sx, x, measure) on an operational
+    # qubit still makes that qubit unusable for these circuits.
+    faulty_gate_q = {q: g.gate for g in props.faulty_gates() if g.gate != "cz" for q in g.qubits}
     t1s, t2s, ros, czs = [], [], [], []
     for q in range(backend.num_qubits):
-        reason = _qubit_reason(props, q, faulty_q)
+        reason = f"faulty {faulty_gate_q[q]}" if q in faulty_gate_q else _qubit_reason(props, q, faulty_q)
         if reason:
             snap.excluded_qubits[q] = reason
         else:
@@ -204,51 +214,50 @@ def _violations(isa: QuantumCircuit, snap: Snapshot) -> list[str]:
     return sorted(set(bad))
 
 
+CALIBRATED = ("cz", "sx", "x", "measure")
+
+
+def _property_values(name: str, qargs: tuple[int, ...], props: Any) -> dict[str, float]:
+    """Error and duration of one calibrated instruction, read from the properties."""
+    if name == "measure":
+        return {"error": props.readout_error(qargs[0]), "duration": props.readout_length(qargs[0])}
+    gate_qubits: Any = list(qargs) if len(qargs) > 1 else qargs[0]
+    return {"error": props.gate_error(name, gate_qubits), "duration": props.gate_length(name, gate_qubits)}
+
+
 def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
-    """Calibration values of exactly the qubits and CZ edges the circuits use."""
+    """Calibration values the plan depends on: T1, T2 of its qubits, error and duration of its instructions.
+
+    The layout score reads errors and durations, and the noise model reads both
+    plus T1 and T2, so a change to any of them moves the plan.
+    """
     out: dict[str, float] = {}
     for isa in isas:
         for name, qargs in _ops(isa):
             for q in qargs:
                 out[f"t1:{q}"] = props.t1(q)
                 out[f"t2:{q}"] = props.t2(q)
-                out[f"ro:{q}"] = props.readout_error(q)
-                out[f"sx:{q}"] = props.gate_error("sx", q)
-            if name == "cz":
-                out[f"cz:{qargs[0]}-{qargs[1]}"] = props.gate_error("cz", list(qargs))
+            if name in CALIBRATED:
+                for field_name, value in _property_values(name, qargs, props).items():
+                    out[f"{name}{qargs}:{field_name}"] = value
     return out
 
 
 def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, props: Any, label: str) -> None:
     """The Target that scores and noise read and the properties agree on every qubit and edge of isas.
 
-    Errors and durations of every CZ, sx, and measurement, and T1 and T2 of
+    Errors and durations of every CZ, sx, x, and measurement, and T1 and T2 of
     every touched qubit, must match, which proves both views come from one
     calibration fetch: the ESP ranking reads errors, and the noise model reads
     errors, durations, and T1/T2 from the Target.
     """
     for isa in isas:
         for name, qargs in _ops(isa):
-            if name == "cz":
-                inst = target["cz"][qargs]
-                pairs = [
-                    ("error", inst.error, props.gate_error("cz", list(qargs))),
-                    ("duration", inst.duration, props.gate_length("cz", list(qargs))),
-                ]
-            elif name == "sx":
-                inst = target["sx"][qargs]
-                pairs = [
-                    ("error", inst.error, props.gate_error("sx", qargs[0])),
-                    ("duration", inst.duration, props.gate_length("sx", qargs[0])),
-                ]
-            elif name == "measure":
-                inst = target["measure"][qargs]
-                pairs = [
-                    ("error", inst.error, props.readout_error(qargs[0])),
-                    ("duration", inst.duration, props.readout_length(qargs[0])),
-                ]
-            else:
-                pairs = []
+            pairs: list[tuple[str, Any, float]] = []
+            if name in CALIBRATED:
+                inst = target[name][qargs]
+                values = _property_values(name, qargs, props)
+                pairs += [("error", inst.error, values["error"]), ("duration", inst.duration, values["duration"])]
             for q in qargs:
                 qp = target.qubit_properties[q]
                 pairs += [("t1", qp.t1, props.t1(q)), ("t2", qp.t2, props.t2(q))]
@@ -344,7 +353,9 @@ def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
         half.append(inst.operation, _qargs(body, inst))
     out = QuantumCircuit(isa.num_qubits, isa.num_clbits, name=name)
     out.compose(half, inplace=True)
-    out.barrier()
+    # The barrier spans only the qubits the twin uses, so the untouched qubits
+    # of the full-width ISA stay idle from initialization.
+    out.barrier(_physical(isa))
     out.compose(half.inverse(), inplace=True)
     for inst in isa.data:
         if inst.operation.name == "measure":
@@ -451,6 +462,63 @@ def simulate(choice: Choice, noise: Any) -> dict[str, np.ndarray]:
     return out
 
 
+def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.ndarray:
+    """dist with each classical bit's readout channel inverted, unclipped.
+
+    A raw P(0) carries prob_meas0_prep1 of its readout qubit as an additive
+    floor, so even a perfect zero divisor reads a nonzero dark probability.
+    Each clbit's 2x2 channel [[1 - e10, e01], [e10, 1 - e01]] comes from the
+    physical qubit that last wrote it (e10 = prob_meas1_prep0, e01 =
+    prob_meas0_prep1), and their Kronecker product is inverted with clbit 0 as
+    the least significant index bit. Aer's noise model applies the symmetric
+    readout_error, so in simulation the corrected values keep an asymmetry
+    residual; on hardware the inversion matches the channel the properties
+    report.
+    """
+    writer: dict[int, int] = {}
+    for inst in isa.data:
+        if inst.operation.name == "measure":
+            writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
+    inverse = np.ones((1, 1))
+    for clbit in reversed(range(isa.num_clbits)):
+        q = writer[clbit]
+        e10 = props.qubit_property(q, "prob_meas1_prep0")[0]
+        e01 = props.qubit_property(q, "prob_meas0_prep1")[0]
+        inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
+    return np.asarray(inverse @ dist)
+
+
+def experiment_digest() -> str:
+    """sha256 over the source of every experiment-defining module loaded from this directory.
+
+    Group membership, circuits, ideals, and summaries all live in those modules,
+    so collection under a different digest would reinterpret a run's
+    measurements with other definitions.
+    """
+    here = Path(__file__).resolve().parent
+    files = [getattr(m, "__file__", None) for m in list(sys.modules.values())]
+    paths = sorted(
+        path
+        for path in {Path(f).resolve() for f in files if isinstance(f, str)}
+        if path.parent == here and path.suffix == ".py" and path.is_file()
+    )
+    digest = hashlib.sha256()
+    for path in paths:
+        if path.name in ("live_run.py", "verify.py"):
+            continue
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def _code_commit() -> dict[str, Any]:
+    """HEAD of the checkout and whether its gororoba_quantum sources differ from it."""
+    here = Path(__file__).resolve().parent
+    head = subprocess.run(["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True)
+    dirty = subprocess.run(["git", "-C", str(here), "status", "--porcelain", "--", "."], capture_output=True, text=True)
+    return {"head": head.stdout.strip() or None, "sources_modified": bool(dirty.stdout.strip())}
+
+
 def _physical(isa: QuantumCircuit) -> list[int]:
     return sorted({q for _, qargs in _ops(isa) for q in qargs})
 
@@ -483,6 +551,9 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
         "initial_layout": choice.layout,
         "joint_score": choice.joint_score,
         "summary": choice.group.summarize(noisy),
+        "summary_readout_corrected": choice.group.summarize(
+            {name: readout_corrected(noisy[name], isa, choice.snap.properties) for name, isa, _ in choice.entries}
+        ),
         "members": members,
     }
 
@@ -519,6 +590,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         | {"max_pending": args.max_pending, "seeds": args.seeds, "joint_candidates": JOINT_CANDIDATES},
         "shots": SHOTS,
         "seed_simulator": SEED_SIMULATOR,
+        "experiment_digest": experiment_digest(),
+        "code_commit": _code_commit(),
         "backends": {s.name: s.summary() for s in snaps},
         "skipped_backends": skipped,
         "selection_trace": trace,
@@ -588,9 +661,10 @@ def submit(
         if remaining < args.min_remaining_seconds:
             raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
         entries = [(entry_name, isa) for c in group_choices for entry_name, isa, _ in c.entries]
-        # IBM's Sampler rejects dynamical decoupling on dynamic circuits and
-        # twirls only terminal measurements, so circuits with mid-circuit
-        # measurement or feed-forward go in their own job without either.
+        # IBM's Sampler rejects dynamical decoupling on dynamic circuits, and
+        # the 0.50 client-side Sampler's twirling boxes circuits through
+        # samplomatic, which rejects if_else; circuits with mid-circuit
+        # measurement, reset, or feed-forward go in their own job with neither.
         static = [(n, isa) for n, isa in entries if not _is_dynamic(isa)]
         dynamic = [(n, isa) for n, isa in entries if _is_dynamic(isa)]
         for kind, batch in (("static", static), ("dynamic", dynamic)):
@@ -599,12 +673,16 @@ def submit(
             sampler = Sampler(mode=backend)
             sampler.options.default_shots = SHOTS
             sampler.options.environment.job_tags = ["gororoba-quantum", args.started, kind]
-            if args.twirl:
+            if args.twirl and kind == "static":
                 sampler.options.twirling.enable_gates = True
-                sampler.options.twirling.enable_measure = kind == "static"
+                sampler.options.twirling.enable_measure = True
             if args.dd and kind == "static":
                 sampler.options.dynamical_decoupling.enable = True
                 sampler.options.dynamical_decoupling.sequence_type = args.dd
+                # Idle qubits still in their initial state get no pulses: a 3- to
+                # 5-qubit experiment on a 156-qubit ISA would otherwise drive the
+                # unused qubits too.
+                sampler.options.dynamical_decoupling.skip_reset_qubits = True
             job = sampler.run([isa for _, isa in batch])
             record["submission"]["jobs"].append(
                 {
@@ -657,12 +735,27 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     with open(run_dir / "isa.qpy", "rb") as handle:
         isas = {c.name: c for c in qpy.load(handle)}
     groups = {g.name: g for g in experiment_groups()}
+    if record.get("experiment_digest") != experiment_digest():
+        commit = record.get("code_commit", {}).get("head")
+        raise LiveRunError(
+            f"experiment definitions differ from the run's (digest {record.get('experiment_digest')}); "
+            f"collect from commit {commit}, where groups, ideals, and summaries match the archived circuits"
+        )
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
     out = []
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         result = job.result()
-        ran_at = job.metrics()["timestamps"]["running"]
+        metrics = job.metrics()
+        # The API reference documents metrics()["timestamps"] but not its keys,
+        # so the execution timestamp is validated here instead of assumed.
+        timestamps = metrics.get("timestamps") or {}
+        ran_at = timestamps.get("running")
+        if not ran_at:
+            raise LiveRunError(
+                f"job {job_entry['job_id']}: metrics timestamps lack 'running' (keys {sorted(timestamps)}); "
+                "the execution-time calibration cannot be fetched"
+            )
         backend = service.backend(job_entry["backend"])
         when = datetime.fromisoformat(ran_at)
         props_then = backend.properties(datetime=when)
@@ -672,11 +765,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         )
         sim_then = noise_simulator(f"{backend.name}@{ran_at}", target_then)
         measured: dict[str, np.ndarray] = {}
+        corrected: dict[str, np.ndarray] = {}
         replayed: dict[str, np.ndarray] = {}
         for name, pub in zip(job_entry["members"], result, strict=True):
             isa = isas[name]
             register = isa.cregs[0].name
             measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
+            corrected[name] = readout_corrected(measured[name], isa, props_then)
             counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
         for gname, group in groups.items():
@@ -692,6 +787,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "backend": job_entry["backend"],
                 "ran_at": ran_at,
                 "calibration_at_run": props_then.last_update_date.isoformat(),
+                "job_usage": metrics.get("usage"),
                 "measured": {n: [round(float(p), 6) for p in measured[n]] for n in required if n in measured},
                 "tvd_measured_to_replayed": {n: tvd(measured[n], replayed[n]) for n in required if n in measured},
             }
@@ -699,6 +795,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 entry["summary_unavailable"] = f"missing {missing}"
             else:
                 entry["measured_summary"] = group.summarize(measured)
+                entry["measured_summary_readout_corrected"] = group.summarize(corrected)
                 entry["replayed_summary"] = group.summarize(replayed)
             out.append(entry)
     (run_dir / "collect.json").write_text(json.dumps(out, indent=2) + "\n")
