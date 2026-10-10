@@ -329,12 +329,25 @@ back to drive a submission.
   with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
   A raw dark P(0) carries prob_meas0_prep1 as an additive floor even on a
   shared readout qubit; on ibm_kingston the correction moves the zero-divisor
-  ratio from 0.043 to 0.036 in the noise model.
-- Archived definitions: the record stores a sha256 of every
-  experiment-defining module and the code commit, and --collect refuses to
-  summarize a run under a different digest, naming the commit to collect from.
-- Execution-time replay: --collect fetches target_history and properties at the
-  job's running timestamp, checks them against each other (342 of 352 ibm_fez
+  ratio from 0.043 to 0.036 in the noise model. A group with feed-forward
+  circuits records why the correction is skipped instead: a misread mid-circuit
+  bit also steers the conditional gate, which no per-bit channel inversion
+  models.
+- Archived definitions: the record stores a sha256 over every module of
+  gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
+  own distribution, readout, and replay code -- and the code commit; --collect
+  refuses to summarize a run under a different digest, naming the commit to
+  collect from.
+- Durable job ids: every submitted job's id is checkpointed to record.json
+  before the next job is sent, and the record and QPY archive are written to a
+  temporary file and moved into place, so an interrupted write never loses an
+  id for QPU time already spent. An instance without a usage limit passes the
+  budget check; usage_limit_reached still stops the run.
+- Execution-time replay: --collect reads each circuit's execution window from
+  the result's execution spans (result.metadata["execution"]
+  ["execution_spans"], the spans whose pub_idxs include it), fetches
+  target_history and properties at that window's start, flags a calibration
+  update inside the window, checks the two against each other (342 of 352 ibm_fez
   CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
   agree on all of them), and re-simulates under that Target with the shots and
   simulator seed stored in the run's record.
