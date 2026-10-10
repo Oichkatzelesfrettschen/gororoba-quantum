@@ -97,10 +97,6 @@ DEFAULT_REPLICA_FLOOR = 0.9
 # The unpacked copy of a group's primary member on replica 0's qubits; its
 # difference from packed replica 0 measures crosstalk from the other replicas.
 ISOLATED_SUFFIX = "_isolated"
-# Pooled ODR divides replica-averaged witness and twin <Z>; a twin whose
-# replicas disagree beyond shot noise at this level has layout-dependent
-# attenuation, and the pooled quotient is withheld.
-ODR_POOL_MIN_P = 0.01
 
 EXPERIMENT_SOURCE_MANIFEST = (
     "boolean_anf.py",
@@ -761,14 +757,33 @@ def corrected_summary(
     runs = [e for e in entries if not e.reference]
     if any(_is_dynamic(e.replicas[0]) for e in runs):
         return {"skipped": "feed-forward circuits: readout error steers the conditional branch"}
-    pooled = {}
+    corrected = {}
     for e in runs:
         own = props[e.name] if isinstance(props, dict) else props
-        corrected = [
+        corrected[e.name] = [
             readout_corrected(d, rep, own, symmetric) for d, rep in zip(dists[e.name], e.replicas, strict=True)
         ]
-        pooled[e.name] = np.mean(corrected, axis=0)
-    return group.summarize(pooled)
+    return _pooled_summaries(group, runs, corrected)[0]
+
+
+def _pooled_summaries(
+    group: Group, runs: list[Entry], dists: dict[str, list[np.ndarray]]
+) -> tuple[dict[str, float], list[dict[str, float]]]:
+    """The pooled summary and the per-replica summaries of runs' replica distributions.
+
+    The pooled summary reads the replica-averaged distributions, except its
+    mirror-rescaled values: each replica's witness divides by that replica's
+    own twin, and the pooled ODR value is the mean of those quotients, since a
+    quotient of averages would divide one replica's witness by another's
+    attenuation.
+    """
+    count = len(runs[0].replicas)
+    per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
+    pooled = group.summarize({e.name: np.mean(dists[e.name], axis=0) for e in runs})
+    for key in pooled:
+        if "odr" in key:
+            pooled[key] = float(np.mean([r[key] for r in per_replica]))
+    return pooled, per_replica
 
 
 def replica_statistics(
@@ -777,7 +792,8 @@ def replica_statistics(
     """Pooled, per-replica, interval, variance, crosstalk, and admission views of one group's replicas.
 
     The pooled summary averages each member's replica distributions, which
-    hold equal shots. summary_interval spans each summary value over the
+    hold equal shots, and its ODR values average the replicas' own quotients
+    (_pooled_summaries). summary_interval spans each summary value over the
     replicas. variance decomposes every entry's ideal-weighted score into shot
     and layout variance, and instance_variance adds the instance axis over the
     group's declared instances. crosstalk compares the primary's isolated
@@ -785,8 +801,7 @@ def replica_statistics(
     """
     runs = [e for e in entries if not e.reference]
     count = len(runs[0].replicas)
-    per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
-    pooled = group.summarize({e.name: np.mean(dists[e.name], axis=0) for e in runs})
+    pooled, per_replica = _pooled_summaries(group, runs, dists)
     out: dict[str, Any] = {"summary": pooled, "summary_per_replica": per_replica}
     if count >= 2:
         out["summary_interval"] = {
@@ -1206,16 +1221,17 @@ def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
 
 
 def _odr_withheld(
-    names: list[str], executed: dict[str, dict[str, Any]], shots: int, replicas: int, twin_p_values: list[float]
+    names: list[str], executed: dict[str, dict[str, Any]], shots: int, replicas: int
 ) -> tuple[str | None, str | None]:
     """Why the pooled and the per-replica mirror-rescaled values are not valid, or None for each that is.
 
     Rescaling divides a witness's <Z> by its twin's attenuation, a correction
     only when both ran under one calibration. A replica's own quotient needs
-    ODR_MIN_SHOTS shots. The pooled quotient divides replica-averaged <Z>
-    values, which needs ODR_MIN_SHOTS shots over all replicas together and
-    every twin's replicas agreeing within shot noise (chi-squared p at least
-    ODR_POOL_MIN_P), so the averaged attenuation describes each replica.
+    ODR_MIN_SHOTS shots. The pooled value averages the replicas' own
+    quotients, whose mean over R replicas carries the statistical error of one
+    quotient at R times the shots, so it needs ODR_MIN_SHOTS shots over all
+    replicas together; replicas whose attenuations differ still each divide
+    by their own.
     """
     if not any(name.endswith(MIRROR_SUFFIX) for name in names):
         return None, None
@@ -1224,12 +1240,11 @@ def _odr_withheld(
         reason = "witnesses and mirror twins did not all run under one calibration"
         return reason, reason
     per_replica = f"{shots} shots per replica; ODR needs at least {ODR_MIN_SHOTS}" if shots < ODR_MIN_SHOTS else None
-    if shots * replicas < ODR_MIN_SHOTS:
-        pooled: str | None = f"{shots} shots on each of {replicas} replicas; pooled ODR needs {ODR_MIN_SHOTS} in total"
-    elif any(p < ODR_POOL_MIN_P for p in twin_p_values):
-        pooled = f"mirror twin attenuation differs across replicas (chi-squared p < {ODR_POOL_MIN_P})"
-    else:
-        pooled = None
+    pooled = (
+        f"{shots} shots on each of {replicas} replicas; pooled ODR needs {ODR_MIN_SHOTS} in total"
+        if shots * replicas < ODR_MIN_SHOTS
+        else None
+    )
     return pooled, per_replica
 
 
@@ -1241,11 +1256,15 @@ def _without_odr(summary: dict[str, Any], withheld: str | None) -> dict[str, Any
 
 
 def _gate_odr(stats: dict[str, Any], pooled: str | None, per_replica: str | None) -> dict[str, Any]:
-    """stats with ODR values removed from the pooled and the per-replica views each gate withholds."""
+    """stats with ODR values removed from the pooled and the per-replica views each gate withholds.
+
+    summary_interval spans the replicas' quotients around their mean, the
+    pooled value, so it follows the pooled gate.
+    """
     stats["summary"] = _without_odr(stats["summary"], pooled)
     stats["summary_per_replica"] = [_without_odr(r, per_replica) for r in stats["summary_per_replica"]]
     if "summary_interval" in stats:
-        stats["summary_interval"] = _without_odr(stats["summary_interval"], per_replica)
+        stats["summary_interval"] = _without_odr(stats["summary_interval"], pooled)
     return stats
 
 
@@ -1373,11 +1392,10 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 out.append(out_entry)
                 continue
             stats = replica_statistics(group, entries, measured, shots)
-            twin_p = [float(stats["variance"][n].get("p_value", 1.0)) for n in required if n.endswith(MIRROR_SUFFIX)]
             # A failed ODR gate removes the mirror-rescaled values from every
             # view the entry publishes, measured, readout-corrected, and
             # replayed alike.
-            pooled_reason, replica_reason = _odr_withheld(required, executed, shots, len(entries[0].replicas), twin_p)
+            pooled_reason, replica_reason = _odr_withheld(required, executed, shots, len(entries[0].replicas))
             if pooled_reason or replica_reason:
                 out_entry["odr_withheld"] = {"pooled": pooled_reason, "per_replica": replica_reason}
             out_entry["measured_statistics"] = _gate_odr(stats, pooled_reason, replica_reason)

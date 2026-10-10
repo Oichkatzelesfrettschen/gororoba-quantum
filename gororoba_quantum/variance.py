@@ -105,23 +105,39 @@ def interval(values: Sequence[float], shots: int, bernoulli: bool) -> dict[str, 
     """Mean and CONFIDENCE interval of a per-replica quantity.
 
     Two or more replicas give a Student t interval over the replica values,
-    which carries shot and layout variance together. One replica of a
-    per-shot Bernoulli rate gives a Wilson interval over its shots, which
-    carries shot variance only; any other single-replica quantity has no
-    interval.
+    which carries shot and layout variance together. A per-shot Bernoulli rate
+    also gets a Wilson interval over the pooled shots, which carries shot
+    variance alone and keeps its width when the replicas happen to agree
+    exactly; the reported interval is the union of the two. Any other
+    single-replica quantity has no interval.
     """
     count = len(values)
     mean = float(np.mean(values))
+    bounds: list[tuple[float, float]] = []
+    methods = []
     if count >= 2:
         half = float(stats.t.ppf(0.5 + CONFIDENCE / 2, count - 1)) * float(np.std(values, ddof=1)) / math.sqrt(count)
-        return {"mean": mean, "lo": mean - half, "hi": mean + half, "method": f"student_t_over_{count}_replicas"}
+        bounds.append((mean - half, mean + half))
+        methods.append(f"student_t_over_{count}_replicas")
     if bernoulli:
-        z = float(stats.norm.ppf(0.5 + CONFIDENCE / 2))
-        denom = 1 + z * z / shots
-        center = (mean + z * z / (2 * shots)) / denom
-        half = z * math.sqrt(mean * (1 - mean) / shots + z * z / (4 * shots * shots)) / denom
-        return {"mean": mean, "lo": center - half, "hi": center + half, "method": f"wilson_over_{shots}_shots"}
-    return {"mean": mean, "method": "single_replica_no_interval"}
+        bounds.append(_wilson(mean, count * shots))
+        methods.append(f"wilson_over_{count * shots}_shots")
+    if not bounds:
+        return {"mean": mean, "method": "single_replica_no_interval"}
+    return {
+        "mean": mean,
+        "lo": min(lo for lo, _ in bounds),
+        "hi": max(hi for _, hi in bounds),
+        "method": "_union_".join(methods),
+    }
+
+
+def _wilson(rate: float, trials: int) -> tuple[float, float]:
+    z = float(stats.norm.ppf(0.5 + CONFIDENCE / 2))
+    denom = 1 + z * z / trials
+    center = (rate + z * z / (2 * trials)) / denom
+    half = z * math.sqrt(rate * (1 - rate) / trials + z * z / (4 * trials * trials)) / denom
+    return center - half, center + half
 
 
 def _verify() -> None:
@@ -152,6 +168,10 @@ def _verify() -> None:
     wilson = interval([0.5], 7, bernoulli=True)
     if not (float(wilson["lo"]) > 0 and float(wilson["hi"]) < 1):
         raise RuntimeError(f"Wilson interval leaves [0, 1]: {wilson}")
+    # Replicas that all read zero keep the shot uncertainty of their pooled shots.
+    agreed = interval([0.0, 0.0, 0.0], 64, bernoulli=True)
+    if not float(agreed["hi"]) > 0.01:
+        raise RuntimeError(f"identical replicas collapse the interval: {agreed}")
     print("variance: shot, layout, and instance components recover injected values; intervals bounded")
 
 

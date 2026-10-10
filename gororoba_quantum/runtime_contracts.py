@@ -112,6 +112,27 @@ def _verify_packed_replica_split() -> None:
             raise RuntimeError(f"replica {replica.prefix} reads {counts}")
 
 
+def _verify_packed_static_stays_static() -> None:
+    """Packing replicas of a static circuit keeps every measurement after every gate.
+
+    The static and dynamic Sampler jobs split on _is_dynamic, so a packed
+    static circuit that read as dynamic would lose twirling and dynamical
+    decoupling at submission.
+    """
+    backend = FakeFez()
+    graph = packing.coupling_graph(backend.target, backend.num_qubits)
+    bell = QuantumCircuit(2, 2)
+    bell.h(0)
+    bell.cx(0, 1)
+    bell.measure([0, 1], [0, 1])
+    isa = transpile(bell, backend=backend, optimization_level=1, initial_layout=[0, 1])
+    used, edges = packing.pattern([("cz", (0, 1))])
+    replicas = packing.place(used, edges, graph, lambda _: True, lambda m: 1.0 / (1 + min(m.values())), 1e-9, 4)
+    packed = packing.pack(isa, replicas, "bell")
+    if _is_dynamic(isa) or _is_dynamic(packed):
+        raise RuntimeError("packing a static circuit produced a dynamic one")
+
+
 def _verify_twirling_shot_contract() -> None:
     sampler = configure_sampler(FakeManilaV2(), "static", True, None, ["local-contract"], shots=4096)
     if sampler.options.twirling.num_randomizations != 32:
@@ -132,12 +153,14 @@ def _verify() -> None:
     _verify_result_register_order()
     _verify_twirling_shot_contract()
     _verify_packed_replica_split()
+    _verify_packed_static_stays_static()
     first_digest = experiment_digest()
     second_digest = experiment_digest()
     if len(first_digest) != 64 or first_digest != second_digest:
         raise RuntimeError("experiment source manifest digest is unstable")
     print(
         "runtime contracts: dynamic classification, nested operations, register order, packed replica split, "
+        "packed static classification, "
         "and digest pass"
     )
 

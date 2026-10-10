@@ -137,13 +137,28 @@ def relabel(isa: QuantumCircuit, mapping: dict[int, int], prefix: str, name: str
 
 
 def pack(isa: QuantumCircuit, replicas: Sequence[Replica], name: str) -> QuantumCircuit:
-    """One circuit running isa once per replica, each on its own qubits and registers."""
+    """One circuit running isa once per replica, each on its own qubits and registers.
+
+    Every replica's body precedes every replica's terminal measurements -- the
+    trailing run of measurements and barriers of isa's instruction list -- so
+    a packed static circuit keeps all its measurements after all its gates and
+    stays static; replicas share no qubit or clbit, so the reordering leaves
+    each replica's computation unchanged.
+    """
+    tail_start = len(isa.data)
+    while tail_start > 0 and isa.data[tail_start - 1].operation.name in ("measure", "barrier"):
+        tail_start -= 1
     out = QuantumCircuit(*isa.qregs, name=name)
-    for replica in replicas:
-        moved = relabel(isa, replica.mapping, replica.prefix)
-        for register in moved.cregs:
+    moved = [relabel(isa, replica.mapping, replica.prefix) for replica in replicas]
+    for circuit in moved:
+        for register in circuit.cregs:
             out.add_register(register)
-        out.compose(moved, qubits=range(isa.num_qubits), clbits=moved.clbits, inplace=True)
+    for part in (slice(0, tail_start), slice(tail_start, None)):
+        for circuit in moved:
+            piece = circuit.copy_empty_like()
+            for inst in circuit.data[part]:
+                piece.append(inst)
+            out.compose(piece, qubits=range(isa.num_qubits), clbits=circuit.clbits, inplace=True)
     return out
 
 
