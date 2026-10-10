@@ -661,28 +661,14 @@ def submit(
         if remaining < args.min_remaining_seconds:
             raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
         entries = [(entry_name, isa) for c in group_choices for entry_name, isa, _ in c.entries]
-        # IBM's Sampler rejects dynamical decoupling on dynamic circuits, and
-        # the 0.50 client-side Sampler's twirling boxes circuits through
-        # samplomatic, which rejects if_else; circuits with mid-circuit
-        # measurement, reset, or feed-forward go in their own job with neither.
+        # Circuits with mid-circuit measurement, reset, or feed-forward go in
+        # their own job, which configure_sampler keeps free of twirling and DD.
         static = [(n, isa) for n, isa in entries if not _is_dynamic(isa)]
         dynamic = [(n, isa) for n, isa in entries if _is_dynamic(isa)]
         for kind, batch in (("static", static), ("dynamic", dynamic)):
             if not batch:
                 continue
-            sampler = Sampler(mode=backend)
-            sampler.options.default_shots = SHOTS
-            sampler.options.environment.job_tags = ["gororoba-quantum", args.started, kind]
-            if args.twirl and kind == "static":
-                sampler.options.twirling.enable_gates = True
-                sampler.options.twirling.enable_measure = True
-            if args.dd and kind == "static":
-                sampler.options.dynamical_decoupling.enable = True
-                sampler.options.dynamical_decoupling.sequence_type = args.dd
-                # Idle qubits still in their initial state get no pulses: a 3- to
-                # 5-qubit experiment on a 156-qubit ISA would otherwise drive the
-                # unused qubits too.
-                sampler.options.dynamical_decoupling.skip_reset_qubits = True
+            sampler = configure_sampler(backend, kind, args.twirl, args.dd, ["gororoba-quantum", args.started, kind])
             job = sampler.run([isa for _, isa in batch])
             record["submission"]["jobs"].append(
                 {
@@ -696,6 +682,28 @@ def submit(
                 }
             )
             print(f"submitted {len(batch)} {kind} circuits to {name}: job {job.job_id()}")
+
+
+def configure_sampler(backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str]) -> Sampler:
+    """The client-side Sampler for one job: twirling and DD apply to static jobs only.
+
+    IBM's Sampler rejects dynamical decoupling on dynamic circuits, and the 0.50
+    client-side Sampler's twirling boxes circuits through samplomatic, which
+    rejects if_else. With DD on, idle qubits still in their initial state get no
+    pulses: a 3- to 5-qubit experiment on a 156-qubit ISA would otherwise drive
+    the unused qubits too.
+    """
+    sampler = Sampler(mode=backend)
+    sampler.options.default_shots = SHOTS
+    sampler.options.environment.job_tags = tags
+    if twirl and kind == "static":
+        sampler.options.twirling.enable_gates = True
+        sampler.options.twirling.enable_measure = True
+    if dd and kind == "static":
+        sampler.options.dynamical_decoupling.enable = True
+        sampler.options.dynamical_decoupling.sequence_type = dd
+        sampler.options.dynamical_decoupling.skip_reset_qubits = True
+    return sampler
 
 
 def _is_dynamic(isa: QuantumCircuit) -> bool:
