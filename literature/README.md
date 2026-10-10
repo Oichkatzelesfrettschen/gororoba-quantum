@@ -21,6 +21,20 @@ from the version of record. Each of those notes says so at the top.
 | 2509.18259 | Pokharel et al., Order from chaos with adaptive circuits on quantum hardware (ibm_fez) | medium | none | low |
 | 2505.15917 | Gidney, How to factor 2048 bit RSA integers with less than a million noisy qubits | none | none | high |
 
+Two notes survey the sister repository rather than a paper:
+
+- notes/open_gororoba_survey.md maps open_gororoba at fe668020: its Rocq
+  corpus graded proven, tested, or asserted; its dimension ladder from 16
+  through 4096; its butterfly, Walsh, and zero-divisor chunking structure; and
+  the candidate connections to factoring, with category errors named.
+- notes/open_gororoba_survey_deep_notes.md holds the evidence trail behind every
+  number: read-only commands, Rocq axiom scans, the GF(2) form of the sign
+  recursion and its circuit, closed forms for the defect and edge counts, and
+  replay scripts.
+
+gororoba_quantum/FACTORING_NOTES.md re-checks the sign recursion and the
+defect count independently.
+
 No paper contains Cayley-Dickson, octonion, sedenion, zero-divisor, or
 nonassociative content. Cayley-Dickson content enters through this repository
 alone; gororoba_quantum/FACTORING_NOTES.md carries the factoring analysis.

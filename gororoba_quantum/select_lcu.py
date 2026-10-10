@@ -14,6 +14,7 @@ Markov, quant-ph/0406176, Theorem 7).
 from __future__ import annotations
 
 from qiskit import QuantumCircuit
+from qiskit.circuit import ParameterExpression
 from qiskit.circuit.library import DiagonalGate
 
 from cd_core import cd_sign
@@ -38,7 +39,7 @@ def select_circuit(dim: int, i: int, j: int) -> QuantumCircuit:
     return qc
 
 
-def sparse_pair_prep(n: int, k: int, el: int, phase: float) -> QuantumCircuit:
+def sparse_pair_prep(n: int, k: int, el: int, phase: float | ParameterExpression) -> QuantumCircuit:
     """(|k> + e^{i phase}|el>)/sqrt2 on n qubits from |0^n>.
 
     H on a pivot bit of k ^ el, the phase on its |1> branch, CX from the pivot

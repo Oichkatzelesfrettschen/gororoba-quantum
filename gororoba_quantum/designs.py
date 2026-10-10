@@ -19,7 +19,7 @@ from itertools import combinations
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
-from qiskit.circuit import Gate
+from qiskit.circuit import Gate, ParameterExpression
 from qiskit.circuit.library import DiagonalGate
 from qiskit.quantum_info import Operator, Statevector
 
@@ -108,7 +108,7 @@ def design_a_associator(i: int, j: int) -> tuple[QuantumCircuit, int, int, int]:
     return qc, k0, k1, diff_bit
 
 
-def lcu_witness(a_pair: tuple[int, int], b_pair: tuple[int, int], phase: float) -> QuantumCircuit:
+def lcu_witness(a_pair: tuple[int, int], b_pair: tuple[int, int], phase: float | ParameterExpression) -> QuantumCircuit:
     """(L_{e_i} + L_{e_j})/2 on (|e_k> + e^{i phase}|e_l>)/sqrt2, 4 data qubits + ancilla 4.
 
     Sparse pair preparation loads b, H on the ancilla splits the two branches,
@@ -133,7 +133,9 @@ def design_b_zero_divisor(a_pair: tuple[int, int], b_pair: tuple[int, int], s: i
     return lcu_witness(a_pair, b_pair, 0.0 if s > 0 else math.pi)
 
 
-def design_d_phase_sweep(a_pair: tuple[int, int], b_pair: tuple[int, int], phase: float) -> QuantumCircuit:
+def design_d_phase_sweep(
+    a_pair: tuple[int, int], b_pair: tuple[int, int], phase: float | ParameterExpression
+) -> QuantumCircuit:
     """Design B's circuit on b = (e_k + e^{i phase} e_l)/sqrt2, one point of the fringe."""
     return lcu_witness(a_pair, b_pair, phase)
 

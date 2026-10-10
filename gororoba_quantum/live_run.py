@@ -18,20 +18,24 @@ chosen ISA circuits with noise from that same Target, after the Target's errors
 are checked against the properties fetched with it on every qubit and edge of
 the plan.
 
---submit sends each backend's chosen circuits as one client-side Sampler job
-(qiskit_ibm_runtime.executor_sampler) after re-reading the calibration values of
-the plan's qubits and edges and recompiling any group whose values moved;
+--submit re-reads each chosen backend just before submission: a backend that
+left the eligibility gate fails the run, and a group whose calibration values
+moved on its qubits and edges recompiles and re-simulates;
 last_update_date advances without value changes, so values, not timestamps,
-decide. --collect reads a finished run's jobs, fetches the Target and
-properties in force when they ran (target_history and properties with
-datetime=), checks them against each other, and re-simulates under that Target,
-so measurement is compared against the calibration of its own execution.
+decide. Each backend's chosen circuits then go out as one client-side Sampler
+job (qiskit_ibm_runtime.executor_sampler) after usage() for that backend's
+instance clears --min-remaining-seconds. --collect reads a finished run's jobs,
+fetches the Target and properties in force when they ran (target_history and
+properties with datetime=), checks them against each other, and re-simulates
+under that Target with the run's own shots and seed, so measurement is compared
+against the calibration of its own execution.
 """
 
 from __future__ import annotations
 
 import argparse
 import copy
+import hashlib
 import json
 import math
 import sys
@@ -46,8 +50,9 @@ from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.providers import BackendV2, Options
 from qiskit_aer import AerSimulator
 from qiskit_ibm_runtime import QiskitRuntimeService
+from qiskit_ibm_runtime.executor_sampler import Sampler
 
-from experiments import MIRROR_SUFFIX, Group, experiment_groups, tvd
+from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
 
 SHOTS = 4096
 OPT_LEVEL = 3
@@ -216,22 +221,39 @@ def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
 def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, props: Any, label: str) -> None:
     """The Target that scores and noise read and the properties agree on every qubit and edge of isas.
 
-    Agreement proves both views come from one calibration fetch, so the ESP
-    ranking and the noise simulation describe the same device state.
+    Errors and durations of every CZ, sx, and measurement, and T1 and T2 of
+    every touched qubit, must match, which proves both views come from one
+    calibration fetch: the ESP ranking reads errors, and the noise model reads
+    errors, durations, and T1/T2 from the Target.
     """
     for isa in isas:
         for name, qargs in _ops(isa):
             if name == "cz":
-                pairs = [(target["cz"][qargs].error, props.gate_error("cz", list(qargs)))]
+                inst = target["cz"][qargs]
+                pairs = [
+                    ("error", inst.error, props.gate_error("cz", list(qargs))),
+                    ("duration", inst.duration, props.gate_length("cz", list(qargs))),
+                ]
             elif name == "sx":
-                pairs = [(target["sx"][qargs].error, props.gate_error("sx", qargs[0]))]
+                inst = target["sx"][qargs]
+                pairs = [
+                    ("error", inst.error, props.gate_error("sx", qargs[0])),
+                    ("duration", inst.duration, props.gate_length("sx", qargs[0])),
+                ]
             elif name == "measure":
-                pairs = [(target["measure"][qargs].error, props.readout_error(qargs[0]))]
+                inst = target["measure"][qargs]
+                pairs = [
+                    ("error", inst.error, props.readout_error(qargs[0])),
+                    ("duration", inst.duration, props.readout_length(qargs[0])),
+                ]
             else:
-                continue
-            for t_err, p_err in pairs:
-                if t_err is None or abs(t_err - p_err) > 1e-12:
-                    raise LiveRunError(f"{label} {name}{qargs}: target error {t_err} vs properties {p_err}")
+                pairs = []
+            for q in qargs:
+                qp = target.qubit_properties[q]
+                pairs += [("t1", qp.t1, props.t1(q)), ("t2", qp.t2, props.t2(q))]
+            for field_name, t_val, p_val in pairs:
+                if t_val is None or not math.isclose(t_val, p_val, rel_tol=1e-9, abs_tol=1e-15):
+                    raise LiveRunError(f"{label} {name}{qargs} {field_name}: target {t_val} vs properties {p_val}")
 
 
 @dataclass
@@ -252,6 +274,10 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
     return transpile(
         qc, backend=snap.backend, optimization_level=OPT_LEVEL, seed_transpiler=seed, initial_layout=layout
     )
+
+
+def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
+    return isa.assign_parameters(member.binding) if member.binding else isa
 
 
 def coherence(isa: QuantumCircuit, target: Any) -> float:
@@ -321,8 +347,9 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
         trace: list[dict[str, Any]] = []
         log[group.name][snap.name] = trace
         primaries = []
+        primary = group.members[0]
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
-            isa = _compile(group.members[0].circuit, snap, seed)
+            isa = _compile(primary.circuit, snap, seed)
             bad = _violations(isa, snap)
             score = layout_score(isa, snap.backend.target)
             trace.append({"seed": seed, "primary_score": score, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
@@ -331,7 +358,12 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
         primaries.sort(key=lambda item: -item[0])
         for _, seed, isa in primaries[:JOINT_CANDIDATES]:
             layout = isa.layout.initial_index_layout(filter_ancillas=True)
-            isas = [isa] + [_compile(m.circuit, snap, seed, layout) for m in group.members[1:]]
+            # Members that share the primary's parametrized circuit reuse its ISA
+            # with their own parameter values: one routing, one readout qubit.
+            isas = [_bind(isa, primary)] + [
+                _bind(isa if m.circuit is primary.circuit else _compile(m.circuit, snap, seed, layout), m)
+                for m in group.members[1:]
+            ]
             if any(_violations(c, snap) for c in isas[1:]):
                 continue
             scores = [layout_score(c, snap.backend.target) for c in isas]
@@ -429,6 +461,10 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
 
 
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
+    known = {g.name for g in experiment_groups()}
+    unknown = sorted(set(args.groups or []) - known)
+    if unknown:
+        raise LiveRunError(f"unknown experiment groups {unknown}; known: {sorted(known)}")
     names = args.backends or [b.name for b in service.backends()]
     snaps, skipped = [], {}
     for name in names:
@@ -465,17 +501,17 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
 
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     """Noise-simulate each choice under its backend's live properties, after proving they match the Target."""
-    sims: dict[str, tuple[AerSimulator, str]] = {}
+    # One simulator per snapshot: a group recompiled on a fresh snapshot of a
+    # backend is simulated with that snapshot's Target, not an earlier one.
+    sims: dict[int, tuple[AerSimulator, str]] = {}
     record["groups"] = []
     for choice in choices:
         isas = [isa for _, isa, _ in choice.entries]
         check_target_matches_properties(isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name)
-        if choice.snap.name not in sims:
-            sims[choice.snap.name] = (
-                noise_simulator(choice.snap.name, choice.snap.backend.target),
-                choice.snap.calibration,
-            )
-        sim, cal = sims[choice.snap.name]
+        key = id(choice.snap)
+        if key not in sims:
+            sims[key] = (noise_simulator(choice.snap.name, choice.snap.backend.target), choice.snap.calibration)
+        sim, cal = sims[key]
         noisy = simulate(choice, sim)
         entry = _choice_record(choice, noisy, cal)
         record["groups"].append(entry)
@@ -490,34 +526,43 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
 def submit(
     service: QiskitRuntimeService, choices: list[Choice], args: argparse.Namespace, record: dict[str, Any]
 ) -> None:
-    """Re-read the plan's calibration, recompile groups whose values moved, check budget, submit."""
-    from qiskit_ibm_runtime.executor_sampler import Sampler
-
+    """Re-gate and re-read each chosen backend, recompile moved groups, check each instance's budget, submit."""
+    fresh_by_backend: dict[str, Snapshot] = {}
     moved = False
     for idx, choice in enumerate(choices):
+        name = choice.snap.name
+        if name not in fresh_by_backend:
+            fresh_by_backend[name] = take_snapshot(service, name)
+        fresh = fresh_by_backend[name]
+        reason = fresh.ineligible_reason(args.max_pending)
+        if reason:
+            raise LiveRunError(f"{name} left the eligibility gate before submission ({reason}); rerun to replan")
         isas = [isa for _, isa, _ in choice.entries]
         before = fingerprint(isas, choice.snap.properties)
-        fresh = take_snapshot(service, choice.snap.name)
         if fingerprint(isas, fresh.properties) != before or _any_violation(isas, fresh):
-            print(f"{choice.group.name}: calibration moved on {choice.snap.name}; recompiling")
+            print(f"{choice.group.name}: calibration moved on {name}; recompiling")
             choices[idx] = select(choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}))
             moved = True
     if moved:
         # The record's predictions must describe the circuits that run.
         evaluate(choices, record)
         record["reevaluated_before_submit"] = True
-    usage = service.usage()
-    remaining = float(usage["usage_remaining_seconds"])
-    if remaining < args.min_remaining_seconds:
-        raise LiveRunError(f"{remaining} s of QPU time remaining, below --min-remaining-seconds")
-    record["submission"] = {"usage_before": usage, "jobs": []}
+    record["submission"] = {"jobs": []}
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
         by_backend.setdefault(choice.snap.name, []).append(choice)
     for name, group_choices in by_backend.items():
+        # service.backend selects the backend's instance as the active one, and
+        # usage() reports the active instance, so each job's budget is checked
+        # against the instance that pays for it.
+        backend = service.backend(name)
+        usage = service.usage()
+        remaining = float(usage["usage_remaining_seconds"])
+        if remaining < args.min_remaining_seconds:
+            raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
         circuits = [isa for c in group_choices for _, isa, _ in c.entries]
         names = [entry_name for c in group_choices for entry_name, _, _ in c.entries]
-        sampler = Sampler(mode=group_choices[0].snap.backend)
+        sampler = Sampler(mode=backend)
         sampler.options.default_shots = SHOTS
         sampler.options.environment.job_tags = ["gororoba-quantum", args.started]
         if args.twirl:
@@ -533,10 +578,23 @@ def submit(
                 "job_id": job.job_id(),
                 "members": names,
                 "calibration": group_choices[0].snap.calibration,
+                "budget_before": _budget(service, usage),
                 "options": sampler.options.model_dump(mode="json"),
             }
         )
         print(f"submitted {len(circuits)} circuits to {name}: job {job.job_id()}")
+
+
+def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
+    """usage() seconds and window, with the instance identified only by a hash of its CRN."""
+    instance = str(service.active_instance() or "")
+    return {
+        "instance_sha256_12": hashlib.sha256(instance.encode()).hexdigest()[:12],
+        "usage_period": usage.get("usage_period"),
+        "usage_limit_seconds": usage.get("usage_limit_seconds"),
+        "usage_consumed_seconds": usage.get("usage_consumed_seconds"),
+        "usage_remaining_seconds": usage.get("usage_remaining_seconds"),
+    }
 
 
 def _any_violation(isas: list[QuantumCircuit], snap: Snapshot) -> bool:
@@ -549,6 +607,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     with open(run_dir / "isa.qpy", "rb") as handle:
         isas = {c.name: c for c in qpy.load(handle)}
     groups = {g.name: g for g in experiment_groups()}
+    shots, seed = int(record["shots"]), int(record["seed_simulator"])
     out = []
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
@@ -566,24 +625,32 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         replayed: dict[str, np.ndarray] = {}
         for name, pub in zip(job_entry["members"], result, strict=True):
             isa = isas[name]
-            measured[name] = _distribution(pub.data.c.get_counts(), isa.num_clbits)
-            counts = sim_then.run(isa, shots=SHOTS, seed_simulator=SEED_SIMULATOR).result().get_counts()
+            register = isa.cregs[0].name
+            measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
+            counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
         for gname, group in groups.items():
-            if all(m.name in measured for m in group.members):
-                out.append(
-                    {
-                        "group": gname,
-                        "backend": job_entry["backend"],
-                        "ran_at": ran_at,
-                        "calibration_at_run": props_then.last_update_date.isoformat(),
-                        "measured_summary": group.summarize(measured),
-                        "replayed_summary": group.summarize(replayed),
-                        "tvd_measured_to_replayed": {
-                            m.name: tvd(measured[m.name], replayed[m.name]) for m in group.members
-                        },
-                    }
-                )
+            present = [n for n in measured if n in {m.name for m in group.members}]
+            if not present:
+                continue
+            # A summary needs every member and every mirror twin; a job that
+            # lacks some still reports the distributions it has.
+            required = [m.name for m in group.members] + [m.name + MIRROR_SUFFIX for m in group.members if m.mirror]
+            missing = [n for n in required if n not in measured]
+            entry: dict[str, Any] = {
+                "group": gname,
+                "backend": job_entry["backend"],
+                "ran_at": ran_at,
+                "calibration_at_run": props_then.last_update_date.isoformat(),
+                "measured": {n: [round(float(p), 6) for p in measured[n]] for n in required if n in measured},
+                "tvd_measured_to_replayed": {n: tvd(measured[n], replayed[n]) for n in required if n in measured},
+            }
+            if missing:
+                entry["summary_unavailable"] = f"missing {missing}"
+            else:
+                entry["measured_summary"] = group.summarize(measured)
+                entry["replayed_summary"] = group.summarize(replayed)
+            out.append(entry)
     (run_dir / "collect.json").write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out, indent=2))
 
@@ -608,11 +675,15 @@ def main(argv: list[str] | None = None) -> int:
         if args.collect:
             collect(service, args.collect)
             return 0
-        args.started = _now()
+        now = datetime.now(UTC)
+        args.started = now.isoformat(timespec="microseconds")
+        # Microsecond names and exclusive creation keep concurrent runs from
+        # sharing a directory.
+        run_dir = args.out / now.strftime("%Y-%m-%dT%H%M%S.%fZ") if args.out else None
         choices, record = plan(service, args)
         evaluate(choices, record)
-        run_dir = args.out / args.started.replace(":", "") if args.out else None
         if run_dir:
+            run_dir.mkdir(parents=True, exist_ok=False)
             write_record(run_dir, choices, record)
         if args.submit and run_dir:
             try:
@@ -626,8 +697,7 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def write_record(run_dir: Path, choices: list[Choice], record: dict[str, Any]) -> None:
-    """The run's ISA circuits as QPY, named by member, and its JSON record."""
-    run_dir.mkdir(parents=True, exist_ok=True)
+    """The run's ISA circuits as QPY, named by member, and its JSON record, into an existing run_dir."""
     archived = []
     for choice in choices:
         for name, isa, _ in choice.entries:
