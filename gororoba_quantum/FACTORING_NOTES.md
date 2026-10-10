@@ -9,9 +9,13 @@ reasons:
   these devices run, before any error-correction overhead. It is the cost of
   one construction, not a proven lower bound, and its author sees no route to
   another order of magnitude in qubits.
-- Products of basis left multiplications form a 2-group of exponent 4, while
-  order finding needs an operator of order ord_N(a), which is on the scale of N
-  for an RSA modulus.
+- No product of basis left multiplications is a nontrivial modular multiplier,
+  at any dimension: every product is a signed XOR translation, and a
+  multiplier x -> a x mod N fixes 0, which a nontrivial translation never does.
+  The products also form a 2-group of exponent 4, while order finding needs
+  ord_N(a), which for a random base modulo an RSA semiprime is on the scale of
+  N; the at most 16 bases with ord_N(a) <= 4 are a fraction about 2^-2044 of
+  the units.
 
 Cayley-Dickson dimension 2048 = 2^11 is an 11-qubit index register; RSA-2048 is
 a 2048-bit modulus. The numbers coincide and the scales do not.
@@ -70,28 +74,31 @@ Per the Gidney note:
 
 `verify.check_left_mult_group` pins the following for dims 4 through 64.
 
-**Statement.**
-- G_n = <L_{e_m}> at dim 2^n has order 2^(n + 2^(n-1)) for n >= 3 (128 for the
-  octonions, 4096 for the sedenions, 2^38 at dim 64), and 8 (Q8) at n = 2.
-- Every element has order 1, 2, or 4.
+**Proved for every n.**
+- Every element of G_n = <L_{e_m}> is a signed XOR translation D P_a: each
+  L_{e_m} maps |x> to +/-|m XOR x>, and products keep that form.
+- Every element has order 1, 2, or 4: (D P_a)^2 = D D^(a) is diagonal and
+  squares to the identity. G_n is therefore a 2-group of exponent dividing 4.
 
-**Proof.**
-1. Every L_{e_m} maps |x> to +/-|m XOR x>. Products keep that form, so every
-   g in G_n is a signed XOR translation D P_a.
-2. The translation part maps G_n onto F_2^n with kernel H, the +/-1 diagonals
-   in G_n.
-3. Schreier's lemma with transversal {L_{e_a}} generates H by the diagonals
-   L_{e_{a^b}}^{-1} L_{e_a} L_{e_b}. These are the associator phases of design
-   C. H is abelian, so log2 |H| is the F_2 rank of their sign vectors: 1 at
-   n = 2 and 2^(n-1) from n = 3, each vector of algebraic degree at most n - 2.
-4. (D P_a)^2 = D D^(a) is diagonal and squares to the identity, so g^4 = 1.
-5. Enumeration of the whole group confirms the order and the exponent through
-   dim 16.
+**Computed for the listed dimensions, unproved beyond them.**
+- The translation part maps G_n onto F_2^n with kernel H, the +/-1 diagonals
+  in G_n. Schreier's lemma with transversal {L_{e_a}} generates H by the
+  diagonals L_{e_{a^b}}^{-1} L_{e_a} L_{e_b}, the associator phases of design
+  C, and H is abelian, so log2 |H| is the F_2 rank of their sign vectors.
+- That rank is 1 at n = 2 and 2^(n-1) for n = 3 through 6 (check_left_mult_group;
+  the survey's sympy computation extends it to n = 8), with every vector of
+  algebraic degree at most n - 2. So |G_n| = 2^(n + 2^(n-1)) at those
+  dimensions: 128 for the octonions, 4096 for the sedenions, 2^38 at dim 64, and
+  8 (Q8) at n = 2.
+- Enumeration of the whole group confirms the order and the exponent through
+  dim 16. Schreier's lemma names generators of H; the rank formula for every n
+  needs a proof this note does not have.
 
 **Consequence for order finding.**
 - Phase estimation on x -> a x mod N needs a unitary of order r = ord_N(a).
 - No element of G_n has order beyond 4, at any dimension, 2048 and 4096
-  included.
+  included. This rules out random bases, whose order is on the scale of N;
+  the obstruction that holds for every base is the next one.
 - A multiplier x -> a x mod N fixes 0, and a signed XOR translation D P_t sends
   |0> to +/-|t>. So the only translation among multipliers is t = 0, which is
   the identity, a = 1. No single element of G_n is a nontrivial multiplier.
@@ -99,8 +106,10 @@ Per the Gidney note:
 **Linear combinations.** "Folding zero-divisor chunks" means a linear
 combination of unitaries over G_n. A zero divisor's L_a = L_{e_i} + L_{e_j} is
 one such combination with two terms.
-- The real span of G_n is every matrix: H's diagonals have full real rank 2^n at
-  n = 3, 4, 5. So an LCU can represent a modular multiplier in principle.
+- The real span of G_n is every matrix at n = 3, 4, 5, where H's diagonals have
+  full real rank 2^n, so there an LCU can represent a modular multiplier in
+  principle. The span is smaller elsewhere: G_2 = Q8 spans 4 of the 16
+  dimensions of 4 x 4 matrices, and dimensions beyond 32 are unchecked.
 - The LCU normalization is provably at least T, the number of distinct
   displacements:
   1. The XOR translations are linearly independent blocks, so writing a
