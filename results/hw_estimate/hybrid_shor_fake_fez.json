@@ -1,0 +1,173 @@
+{
+  "schema_version": 1,
+  "qpu_executed": false,
+  "backend": "qiskit_ibm_runtime.fake_provider.FakeFez",
+  "backend_evidence": "static compiler target; not a live calibration",
+  "versions": {
+    "numpy": "2.5.3",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  },
+  "optimization_level": 3,
+  "seed_transpiler": 20261010,
+  "cases": [
+    {
+      "name": "N15_full_round_baseline",
+      "source_commit": "ed342fe635ba26919e1ad3ed5a5e1035799c8bcd",
+      "modulus": 15,
+      "base": 2,
+      "phase_bits": 8,
+      "strategy": "auto",
+      "identity": false,
+      "logical_qubits": 5,
+      "logical_depth": 64,
+      "logical_ops": {
+        "cswap": 5,
+        "h": 16,
+        "if_else": 28,
+        "measure": 8,
+        "reset": 7,
+        "x": 1
+      },
+      "isa_cz": 60,
+      "isa_depth": 251,
+      "isa_ops": {
+        "cz": 60,
+        "if_else": 28,
+        "measure": 8,
+        "reset": 7,
+        "rz": 96,
+        "sx": 111,
+        "x": 9
+      }
+    },
+    {
+      "name": "N15_pruned_primary",
+      "source_commit": "60b84eeab8b5e042c25e2d4ba25cdcde8e4cb2f5",
+      "modulus": 15,
+      "base": 2,
+      "phase_bits": 8,
+      "strategy": "auto",
+      "identity": false,
+      "logical_qubits": 5,
+      "logical_depth": 13,
+      "logical_ops": {
+        "cswap": 5,
+        "h": 4,
+        "if_else": 1,
+        "measure": 2,
+        "reset": 1,
+        "x": 1
+      },
+      "isa_cz": 60,
+      "isa_depth": 183,
+      "isa_ops": {
+        "cz": 60,
+        "if_else": 1,
+        "measure": 2,
+        "reset": 1,
+        "rz": 75,
+        "sx": 101,
+        "x": 9
+      }
+    },
+    {
+      "name": "N15_schedule_matched_identity_null",
+      "source_commit": "60b84eeab8b5e042c25e2d4ba25cdcde8e4cb2f5",
+      "modulus": 15,
+      "base": 2,
+      "phase_bits": 8,
+      "strategy": "auto",
+      "identity": true,
+      "logical_qubits": 5,
+      "logical_depth": 8,
+      "logical_ops": {
+        "h": 4,
+        "if_else": 1,
+        "measure": 2,
+        "reset": 1,
+        "x": 1
+      },
+      "isa_cz": 0,
+      "isa_depth": 10,
+      "isa_ops": {
+        "if_else": 1,
+        "measure": 2,
+        "reset": 1,
+        "rz": 4,
+        "sx": 2,
+        "x": 1
+      }
+    },
+    {
+      "name": "N21_cycle_transpositions",
+      "source_commit": "60b84eeab8b5e042c25e2d4ba25cdcde8e4cb2f5",
+      "modulus": 21,
+      "base": 2,
+      "phase_bits": 10,
+      "strategy": "cycle_transpositions",
+      "identity": false,
+      "logical_qubits": 6,
+      "logical_depth": 533,
+      "logical_ops": {
+        "h": 20,
+        "if_else": 45,
+        "mcx_o1": 93,
+        "mcx_o3": 50,
+        "mcx_o5": 77,
+        "mcx_o7": 74,
+        "mcx_o9": 60,
+        "mcx_o11": 84,
+        "mcx_o13": 1,
+        "mcx_o15": 10,
+        "measure": 10,
+        "reset": 9,
+        "x": 1
+      },
+      "isa_cz": 63818,
+      "isa_depth": 210473,
+      "isa_ops": {
+        "cz": 63818,
+        "if_else": 45,
+        "measure": 10,
+        "reset": 9,
+        "rz": 89976,
+        "sx": 137777,
+        "x": 2738
+      }
+    },
+    {
+      "name": "N21_anf_compute_swap_uncompute",
+      "source_commit": "60b84eeab8b5e042c25e2d4ba25cdcde8e4cb2f5",
+      "modulus": 21,
+      "base": 2,
+      "phase_bits": 10,
+      "strategy": "anf_compute_swap_uncompute",
+      "identity": false,
+      "logical_qubits": 11,
+      "logical_depth": 1000,
+      "logical_ops": {
+        "ccx": 140,
+        "cswap": 50,
+        "h": 20,
+        "if_else": 45,
+        "mcx": 726,
+        "measure": 10,
+        "reset": 9,
+        "x": 1
+      },
+      "isa_cz": 48895,
+      "isa_depth": 116968,
+      "isa_ops": {
+        "cz": 48895,
+        "if_else": 45,
+        "measure": 10,
+        "reset": 9,
+        "rz": 50757,
+        "sx": 98526,
+        "x": 1404
+      }
+    }
+  ]
+}

@@ -392,7 +392,10 @@ feed-forward go in a separate job per backend with dynamical decoupling and
 twirling off: IBM's Sampler rejects dynamical decoupling on dynamic circuits,
 and in runtime 0.50 the client-side Sampler's twirling boxes circuits through
 samplomatic, which rejects if_else (found by the migrate-qiskit-ibm-runtime
-skill's local verification). The
+skill's local verification). The static twirling path fixes 32 randomizations
+explicitly and requires at least 2048 shots divisible by 32. That contract
+keeps Runtime 0.50's minimum of 64 shots per randomization from rounding the
+recorded request upward. The
 10-minute monthly budget is quantum execution time. 156/5 bounds the count of
 disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
 and crosstalk is the measurement of how many fit per shot.

@@ -10,6 +10,7 @@ from __future__ import annotations
 
 import numpy as np
 
+from boolean_anf import anf_degree as anf_degree
 from cd_core import cd_multiply, cd_sign
 
 
@@ -57,17 +58,6 @@ def walsh_distribution(phase: list[int]) -> np.ndarray:
             amp[start + h : start + 2 * h] = lo - hi
         h *= 2
     return np.asarray((amp / dim) ** 2)
-
-
-def anf_degree(bits: list[int]) -> int:
-    """Algebraic degree of a Boolean function given as its truth table."""
-    coeff = list(bits)
-    n = len(bits).bit_length() - 1
-    for b in range(n):
-        for x in range(len(bits)):
-            if x >> b & 1:
-                coeff[x] ^= coeff[x ^ (1 << b)]
-    return max((bin(m).count("1") for m in range(len(bits)) if coeff[m]), default=0)
 
 
 def zero_divisor_p0(a_pair: tuple[int, int], b_pair: tuple[int, int], s: int) -> float:
