@@ -66,11 +66,13 @@ does not establish default-policy submission readiness.
    circuit limit. Job-batch partitioning leaves every circuit as a separate
    PUB and does not perform the future PUB fusion below.
 8. **Revalidate live configuration.** Before a ledger becomes immutable,
-   `--submit` repeats cross-system discovery and deterministic selection until
-   one pass stabilizes backend, layout, replica maps, packed circuits,
-   capabilities, exclusions, and used calibration values. The runner refreshes
-   again immediately before every batch and stops the affected and later
-   batches when the admitted execution surface moves.
+   `--submit` repeats cross-system discovery and deterministic selection. Any
+   change to the approved backend, layout, replica maps, packed circuits,
+   capabilities, exclusions, or used calibration values writes a revised
+   submit-free record and QPY archive, then stops for a new written case and
+   explicit user approval. An unchanged approved plan refreshes again
+   immediately before every batch and stops the affected and later batches when
+   the admitted execution surface moves.
 
 ## Statistics that decide a result
 

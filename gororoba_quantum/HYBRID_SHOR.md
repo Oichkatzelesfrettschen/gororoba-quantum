@@ -225,13 +225,16 @@ dynamic circuits, and direct Target support for `if_else`, `measure`, and
 circuits rather than from a backend-name table. A filtered copy of each fresh
 Target removes excluded instruction placements before layout and routing; the
 finished circuits then pass recursive support checks against the original
-Target. Pre-submission discovery reruns deterministic selection across every
-fresh eligible system until backend, layout, replica placement, packed
-circuits, capabilities, and used calibration values stabilize. The pass reacts
-to degradation and also admits recovered qubits, recovered couplers, and newly
-eligible or improved systems. The runner refreshes the selected system again
-immediately before the hybrid batch and stops that batch when its status,
-admitted hardware, Target properties, or timing constraints move.
+Target. A bounded-angle Target stops at routing admission because its parameter
+bounds cannot be reproduced through Qiskit's public Target API; the rejection
+does not suppress later viable systems. Pre-submission discovery reruns
+deterministic selection across every fresh eligible system. Any change to the
+approved backend, layout, replica placement, packed circuits, capabilities, or
+used calibration values produces a revised submit-free record and QPY archive,
+then stops for a new written case and explicit user approval. An unchanged
+approved plan refreshes the selected system again immediately before the hybrid
+batch and stops that batch when its status, admitted hardware, Target
+properties, or timing constraints move.
 
 Runtime 0.50 rounds automatic twirling upward when the requested shot count
 cannot supply its target of 32 randomizations with at least 64 shots each.
@@ -241,10 +244,12 @@ executed product. The default 4,096-shot run uses 32 by 128 shots.
 
 The integrated run record uses schema version 4, contract
 `live-target-packed-replicas-v1`, and explicit states: `planned`,
-`submission_started`, `partially_submitted`, and `submitted`. Each split job
-refreshes hardware state and `usage()` before submission. The record checkpoints
-unique recovery tags and an attempt marker before `Sampler.run()`, then
-checkpoints every acquired job identifier before the next job. Collection
+`approval_required`, `submission_started`, `partially_submitted`, and
+`submitted`. `approval_required` records the revised QPY digest and every
+selection reason before the process exits with zero Runtime jobs. Each split
+job refreshes hardware state and `usage()` before submission. The record
+checkpoints unique recovery tags and an attempt marker before `Sampler.run()`,
+then checkpoints every acquired job identifier before the next job. Collection
 recovers a response-lost id only from one exact recovery-tag match and stops on
 zero or multiple matches. Collection joins all classical registers in circuit
 order and atomically replaces `collect.json`; each atomic replacement fsyncs
@@ -255,10 +260,11 @@ The initial record stores `system_inventory`, eligible backend capability
 snapshots, logical `circuit_requirements`, final packed
 `execution_requirements`, and capability and routing decisions in
 `selection_trace`. Submission adds one `revalidation` entry per fresh admission
-pass and materializes `planned_jobs` before the first job. Each planned batch
-preserves a complete experiment group, respects the refreshed backend's
-client-reported `max_circuits` compatibility bound, and records ordered member
-names, the exact `isa.qpy` SHA-256,
+pass. A changed pass writes `renewed_approval` and stops; an unchanged pass
+materializes `planned_jobs` before the first job. Each planned batch preserves a
+complete experiment group, respects the refreshed backend's client-reported
+`max_circuits` compatibility bound, and records ordered member names, the exact
+`isa.qpy` SHA-256,
 effective options, calibration stamps, and recovery tags. Collection validates
 the planned and accepted job ledgers as a one-to-one mapping for a complete
 submission and as a subset for a partial submission. The same ledger names
@@ -276,13 +282,13 @@ classification, recursive physical operations, source-derived capability
 admission, fixed-parameter and nested Target support, routing and replica
 placement around excluded native CZ couplers, coherent Target/property
 snapshots, complete packed-circuit fingerprints, isolated backend-probe
-failures, stable cross-system reselection, whole-group job-batch partitioning,
-every-batch change detection, schema-4 JSON/QPY integrity, recovery-tag
-reconciliation, planned-to-accepted job mapping, packed static and dynamic
-classification, per-replica register order, rate keys, exact twirling shots,
-and source-digest stability. A local client-side Sampler contract runs a packed
-three-replica feed-forward circuit and recovers each replica's outcome from its
-own registers.
+failures, bounded-angle backend isolation, changed-plan approval enforcement,
+cross-system reselection, whole-group job-batch partitioning, every-batch change
+detection, schema-4 JSON/QPY integrity, recovery-tag reconciliation,
+planned-to-accepted job mapping, packed static and dynamic classification,
+per-replica register order, rate keys, exact twirling shots, and source-digest
+stability. A local client-side Sampler contract runs a packed three-replica
+feed-forward circuit and recovers each replica's outcome from its own registers.
 
 ## Retained schema-2 single-layout dry run
 

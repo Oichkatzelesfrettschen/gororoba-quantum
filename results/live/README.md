@@ -8,9 +8,11 @@ evidence; `isa.qpy` carries the exact circuits produced by that revision.
   live system inventory, circuit-derived capability admission,
   degraded-hardware-filtered routing, recursive Target validation, packed
   disjoint replicas, isolated crosstalk references, per-replica variance and
-  admission views, stable-pass pre-submission reselection, whole-group job-batch
-  partitioning, archive integrity, immediate batch revalidation, and recovery
-  identities. `--collect` accepts a submitted schema-4 record only when its
+  admission views, approval-gated pre-submission reselection, whole-group
+  job-batch partitioning, archive integrity, immediate batch revalidation, and
+  recovery identities. A changed approved plan enters `approval_required`,
+  records its revised QPY digest, and sends zero Runtime jobs. `--collect`
+  accepts a submitted schema-4 record only when its
   source digest and contract identifier match the checkout. The top-level
   `policy.replica_floor` records an explicit all-group override or `null`;
   `groups[].replica_floor` records the effective floor applied to each group.
@@ -19,7 +21,8 @@ evidence; `isa.qpy` carries the exact circuits produced by that revision.
   per-replica predictions, intervals, variance, crosstalk, and admission views.
   The last two records exercise the explicit global floor and the per-group
   floor respectively. All packed schema-3 records predate system inventory,
-  filtered-Target routing, stable-pass reselection, and the planned-job ledger.
+  filtered-Target routing, approval-gated reselection, and the planned-job
+  ledger.
 - **Schema 3 capability-admission record.** The retained
   `2026-10-10T220438.712726Z` record from source `0205a61` carries
   `system_inventory`, `circuit_requirements`, capability decisions, and

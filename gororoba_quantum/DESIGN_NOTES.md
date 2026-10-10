@@ -353,7 +353,11 @@ shapes.
   the Target. Ranking and prediction therefore describe one device state. One
   simulator is built per snapshot. A qubit carrying a faulty single-qubit
   instruction is excluded like a faulty qubit, and a backend without a native
-  CZ is skipped as ineligible.
+  CZ is skipped as ineligible. A bounded-angle Target is rejected at routing
+  admission because Qiskit exposes validation of its parameter bounds but no
+  public accessor that can reproduce those bounds in the filtered Target; the
+  rejection remains local to that system, so later viable systems still
+  compete.
 - Staleness: last_update_date advances without value changes (ibm_fez moved
   from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
   `--submit` rediscovers every requested system before any job leaves the host.
@@ -361,16 +365,18 @@ shapes.
   eligible system even while the prior choice remains valid. The comparison
   covers backend, layout, replica maps, entry identities, packed QPY identity,
   capabilities, exclusions, Target support, and used calibration values. It
-  therefore reacts to degradation and can adopt recovered hardware, a newly
+  therefore reacts to degradation and can identify recovered hardware, a newly
   eligible backend, or a better alternate system. The fingerprint includes
   every routed Target
   instruction's error and duration, qubit coherence, asymmetric readout fields,
-  and Target timing constraints. The runner recompiles, re-simulates, and
-  rearchives each replacement, records the inventory, reasons, and selection
-  trace under `revalidation`, and repeats for at most three passes. The runner
-  refreshes the selected system again immediately before every batch. Drift at
-  that boundary stops the affected and later batches; the retained ledger names
-  each unsent complete result group.
+  and Target timing constraints. Any replacement is recompiled, re-simulated,
+  and rearchived as a revised submit-free plan. The record enters
+  `approval_required`, carries the new QPY digest and selection reasons, and
+  exits before constructing a Runtime Sampler. A new written case and explicit
+  user approval govern a later invocation. An unchanged approved plan refreshes
+  the selected system again immediately before every batch. Drift at that
+  boundary stops the affected and later batches; the retained ledger names each
+  unsent complete result group.
 - Readout: every group record carries summary (raw) and
   summary_readout_corrected, which inverts each classical bit's readout channel
   with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.

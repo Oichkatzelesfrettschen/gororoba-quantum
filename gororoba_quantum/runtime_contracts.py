@@ -1,4 +1,4 @@
-"""Credential-free contracts for live capability, routing, batching, and Runtime helpers."""
+"""Credential-free contracts for live admission, approval, batching, and Runtime helpers."""
 
 from __future__ import annotations
 
@@ -58,6 +58,7 @@ from live_run import (
     group_requirements,
     reconcile_attempted_jobs,
     replica_floor,
+    routing_admission_violations,
     select,
     submission_batches,
     submission_gaps,
@@ -151,6 +152,20 @@ class _ProbeJob:
 
     def job_id(self) -> str:
         return self._job_id
+
+
+class _BoundedAngleTarget:
+    """Target surface that proves bounded-angle systems stop at admission."""
+
+    def has_angle_bounds(self) -> bool:
+        return True
+
+
+class _BoundedAngleBackend:
+    """Backend surface used only before routing begins."""
+
+    def __init__(self) -> None:
+        self.target = _BoundedAngleTarget()
 
 
 class _ProbeSamplerOptions:
@@ -477,6 +492,22 @@ def _verify_target_and_bad_qubit_status() -> None:
     if angle_violations != ["target lacks rz(0,)"]:
         raise RuntimeError(f"unsupported fixed-angle status is {angle_violations}")
 
+    group = next(group for group in experiment_groups() if group.name == "design_a")
+    bounded = _fake_snapshot(FakeFez())
+    bounded.name = "bounded-angle"
+    bounded.backend = _BoundedAngleBackend()
+    bounded_rejections = routing_admission_violations(group, bounded)
+    if bounded_rejections != ["bounded-angle Target cannot be filtered without widening its parameter bounds"]:
+        raise RuntimeError(f"bounded-angle routing admission reports {bounded_rejections}")
+    viable = _fake_snapshot(FakeFez())
+    viable.name = "viable"
+    trace: dict[str, Any] = {}
+    selected = select(group, [bounded, viable], 1, trace, SINGLE_REPLICA_POLICY)
+    if selected.snap is not viable:
+        raise RuntimeError("bounded-angle admission prevents a later viable system from competing")
+    if trace[group.name][bounded.name][1].get("rejected") != bounded_rejections:
+        raise RuntimeError("bounded-angle system lacks explicit selection-trace evidence")
+
     snapshot = _fake_snapshot(backend)
     bad_qubit = _physical(isa)[0]
     snapshot.excluded_qubits[bad_qubit] = "fixture degradation"
@@ -692,6 +723,81 @@ def _verify_schema_lifecycle() -> None:
     if len(single_choice.entries) != 2 or execution_requirements(single_choice)["isolated_references"] != 0:
         raise RuntimeError("single-replica policy creates the wrong execution entry count")
     live_run_module.evaluate(choices, record)
+
+    approval_choices = list(choices)
+    approval_record = copy.deepcopy(record)
+    revised_choice = copy.copy(choices[0])
+    revised_choice.layout = list(reversed(revised_choice.layout))
+    approval_checkpoints: list[dict[str, Any]] = []
+    sampler_constructions = 0
+
+    def approval_checkpoint() -> None:
+        approval_checkpoints.append(copy.deepcopy(approval_record))
+
+    def changed_select(
+        group: Group,
+        snaps: list[Snapshot],
+        seeds: int,
+        log: dict[str, Any],
+        policy: ReplicaPolicy,
+    ) -> Choice:
+        del snaps, seeds, policy
+        log[group.name] = {"fixture": [{"stage": "renewed_approval_contract"}]}
+        return revised_choice
+
+    def forbidden_configure_sampler(
+        backend: Any,
+        kind: str,
+        twirl: bool,
+        dd: str | None,
+        tags: list[str],
+        shots: int = 4096,
+    ) -> Any:
+        del backend, kind, twirl, dd, tags, shots
+        nonlocal sampler_constructions
+        sampler_constructions += 1
+        raise RuntimeError("Sampler construction reached after approved circuits changed")
+
+    original_select = live_run_module.select
+    original_configure_sampler = live_run_module.configure_sampler
+    with tempfile.TemporaryDirectory(prefix="gororoba-renewed-approval-") as directory:
+        run_dir = Path(directory)
+        live_run_module.select = changed_select
+        live_run_module.configure_sampler = forbidden_configure_sampler
+        try:
+            try:
+                live_run_module.submit(
+                    service,
+                    approval_choices,
+                    args,
+                    approval_record,
+                    lambda: write_archive(run_dir, approval_choices),
+                    approval_checkpoint,
+                )
+            except LiveRunError as error:
+                if "renewed written submission case and user approval" not in str(error):
+                    raise RuntimeError(f"changed approved plan reports {error}") from error
+            else:
+                raise RuntimeError("changed approved plan reaches submission")
+        finally:
+            live_run_module.select = original_select
+            live_run_module.configure_sampler = original_configure_sampler
+        if sampler_constructions:
+            raise RuntimeError("changed approved plan constructs a Runtime Sampler")
+        if approval_record["state"] != "approval_required" or "submission" in approval_record:
+            raise RuntimeError("changed approved plan fails to retain a submit-free lifecycle state")
+        if len(approval_checkpoints) != 1:
+            raise RuntimeError(f"changed approved plan writes {len(approval_checkpoints)} approval checkpoints")
+        renewed_approval = approval_record.get("renewed_approval", {})
+        archive_digest = hashlib.sha256((run_dir / "isa.qpy").read_bytes()).hexdigest()
+        if renewed_approval.get("qpy_archive_sha256") != archive_digest:
+            raise RuntimeError("renewed approval evidence lacks the revised QPY identity")
+        changed_groups = renewed_approval.get("changed_groups", {})
+        if (
+            choices[0].group.name not in changed_groups
+            or "initial layout changed" not in changed_groups[choices[0].group.name]["reasons"]
+        ):
+            raise RuntimeError(f"renewed approval evidence loses the selection change: {changed_groups}")
 
     checkpoints: list[dict[str, Any]] = []
     run_observations: list[list[str]] = []
@@ -1042,9 +1148,9 @@ def _verify() -> None:
     if len(first_digest) != 64 or first_digest != second_digest:
         raise RuntimeError("experiment source manifest digest is unstable")
     print(
-        "runtime contracts: discovery, capability admission, coherent snapshots, "
-        "Target routing, packed replicas, batch revalidation, schema lifecycle, "
-        "recovery, result order, rate keys, and digest pass"
+        "runtime contracts: discovery, capability admission, bounded-angle isolation, "
+        "coherent snapshots, Target routing, packed replicas, renewed approval, "
+        "batch revalidation, schema lifecycle, recovery, result order, rate keys, and digest pass"
     )
 
 

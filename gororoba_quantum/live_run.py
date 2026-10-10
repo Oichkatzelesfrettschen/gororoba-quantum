@@ -9,15 +9,16 @@ optional isolated crosstalk reference then receives final Target validation.
 
 An explicit `--replica-floor` governs every group; otherwise each group's
 declared floor applies, with 0.9 as the default. Before submission, the runner
-repeats discovery and deterministic selection across all viable systems until
-backend, layout, replica placement, execution circuits, capabilities, and used
-calibration values stabilize. It partitions whole result groups into static or
-dynamic client-side Sampler jobs under the backend's client-reported
-compatibility bound. Every batch receives another hardware refresh. The QPY
-digest, complete ledger, effective options, recovery tags, attempt marker, and
-returned job identifier reach durable storage in that order. Collection
-verifies the ledger and archive, recovers response-lost job identifiers, and
-replays each replica under its execution-time calibration.
+repeats discovery and deterministic selection across all viable systems. Any
+change to the approved backend, layout, replica placement, execution circuits,
+capabilities, or used calibration values rewrites the submit-free plan and
+stops for a renewed written case and user approval. An unchanged plan is
+partitioned into whole static or dynamic client-side Sampler jobs under the
+backend's client-reported compatibility bound. Every batch receives another
+hardware refresh. The QPY digest, complete ledger, effective options, recovery
+tags, attempt marker, and returned job identifier reach durable storage in that
+order. Collection verifies the ledger and archive, recovers response-lost job
+identifiers, and replays each replica under its execution-time calibration.
 """
 
 from __future__ import annotations
@@ -70,7 +71,6 @@ JOINT_CANDIDATES = 3
 DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
-MAX_REVALIDATION = 3
 RECORD_SCHEMA_VERSION = 4
 RECORD_SCHEMA_CONTRACT = "live-target-packed-replicas-v1"
 CONTROL_FLOW_OPERATIONS = frozenset({"if_else", "while_loop", "for_loop", "switch_case", "break_loop", "continue_loop"})
@@ -427,6 +427,8 @@ def _healthy_cz_width(snapshot: Snapshot) -> tuple[int, int]:
 
 def routing_admission_violations(group: Group, snapshot: Snapshot) -> list[str]:
     """Reject a snapshot whose admitted hardware cannot host a group's interaction graph."""
+    if snapshot.backend.target.has_angle_bounds():
+        return ["bounded-angle Target cannot be filtered without widening its parameter bounds"]
     healthy_qubits, healthy_cz_width = _healthy_cz_width(snapshot)
     requirements = group_requirements(group)
     violations = []
@@ -1886,60 +1888,67 @@ def submit(
     archive: Callable[[], str],
     checkpoint: Callable[[], None],
 ) -> None:
-    """Re-gate and re-read each chosen backend until nothing moved, then archive and submit.
+    """Re-gate the approved plan once, stop on change, then archive and submit.
 
-    Recompiling and re-simulating takes long enough for the calibration, the
-    status, or the queue to move again, so the gate repeats on fresh snapshots
-    until a pass changes nothing, at most MAX_REVALIDATION passes. The final
-    circuits reach isa.qpy before the first job is sent. The exact archive
-    digest and recovery tags are checkpointed before each attempt, and each
-    returned job id is checkpointed before the next batch.
+    A changed selection receives fresh predictions and QPY evidence, but the
+    process sends no Runtime job because the written case approved different
+    execution circuits or hardware. An unchanged selection reaches isa.qpy
+    before the first job is sent. The exact archive digest and recovery tags
+    are checkpointed before each attempt, and each returned job id is
+    checkpointed before the next batch.
     """
-    for attempt in range(MAX_REVALIDATION):
-        fresh_snapshots, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
-        if not fresh_snapshots:
-            raise LiveRunError("no eligible backend remains before submission")
-        moved = False
-        attempt_trace: dict[str, Any] = {}
-        reselected: dict[str, Any] = {}
-        for idx, choice in enumerate(choices):
-            name = choice.snap.name
-            fresh_choice = select(
-                choice.group,
-                fresh_snapshots,
-                args.seeds,
-                attempt_trace,
-                _policy(args),
-            )
-            reasons = choice_reselection_reasons(choice, fresh_choice)
-            choices[idx] = fresh_choice
-            if reasons:
-                print(f"{choice.group.name}: live configuration changed; reselecting across viable systems")
-                reselected[choice.group.name] = {
-                    "previous_backend": name,
-                    "selected_backend": fresh_choice.snap.name,
-                    "reasons": reasons,
-                }
-                moved = True
-        record.setdefault("revalidation", []).append(
-            {
-                "attempt": attempt + 1,
-                "system_inventory": inventory,
-                "skipped_backends": skipped,
-                "reselected_groups": reselected,
-                "selection_trace": attempt_trace,
-            }
+    fresh_snapshots, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
+    if not fresh_snapshots:
+        raise LiveRunError("no eligible backend remains before submission")
+    attempt_trace: dict[str, Any] = {}
+    reselected: dict[str, Any] = {}
+    for idx, choice in enumerate(choices):
+        previous_backend = choice.snap.name
+        fresh_choice = select(
+            choice.group,
+            fresh_snapshots,
+            args.seeds,
+            attempt_trace,
+            _policy(args),
         )
-        if not moved:
-            break
-        # The record's predictions must describe the circuits that run, and the
-        # archive moves with them, so an abort on a later pass still leaves
-        # record.json and isa.qpy describing the same circuits.
+        reasons = choice_reselection_reasons(choice, fresh_choice)
+        choices[idx] = fresh_choice
+        if reasons:
+            print(f"{choice.group.name}: live configuration changed; preparing a revised submit-free plan")
+            reselected[choice.group.name] = {
+                "previous_backend": previous_backend,
+                "selected_backend": fresh_choice.snap.name,
+                "reasons": reasons,
+            }
+    record.setdefault("revalidation", []).append(
+        {
+            "attempt": 1,
+            "system_inventory": inventory,
+            "skipped_backends": skipped,
+            "reselected_groups": reselected,
+            "selection_trace": attempt_trace,
+        }
+    )
+    if reselected:
+        record["system_inventory"] = inventory
+        record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
+        record["skipped_backends"] = skipped
+        record["selection_trace"] = attempt_trace
         evaluate(choices, record)
-        record["reevaluated_before_submit"] = attempt + 1
-        archive()
-    else:
-        raise LiveRunError(f"calibration kept moving through {MAX_REVALIDATION} revalidation passes; rerun later")
+        record["reevaluated_before_submit"] = 1
+        record["state"] = "approval_required"
+        qpy_archive_sha256 = archive()
+        record["renewed_approval"] = {
+            "required_at": _now(),
+            "reason": "live configuration changed after the written submission case was approved",
+            "changed_groups": reselected,
+            "qpy_archive_sha256": qpy_archive_sha256,
+        }
+        checkpoint()
+        raise LiveRunError(
+            "live configuration changed after approval; the revised record and isa.qpy require "
+            "a renewed written submission case and user approval; no Runtime job was submitted"
+        )
     qpy_archive_sha256 = archive()
     submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
     # The complete batch ledger reaches disk before the first job starts. A
