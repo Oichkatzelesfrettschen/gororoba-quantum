@@ -329,8 +329,11 @@ back to drive a submission.
   with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
   A raw dark P(0) carries prob_meas0_prep1 as an additive floor even on a
   shared readout qubit. The noise model applies the same asymmetric channel,
-  and in results/live/2026-10-10T183023.567277Z the correction moves the
-  zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369. A group whose shots
+  and in results/live/2026-10-10T183325.225102Z the correction moves the
+  zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369 and the fringe
+  visibility from 0.9065 to 0.9175. With --twirl, collection inverts the
+  symmetric mean channel, since measurement twirling averages the two flip
+  probabilities. A group whose shots
   straddle a calibration update keeps only its raw summary at collection.
 - Archived definitions: the record stores a sha256 over every module of
   gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
