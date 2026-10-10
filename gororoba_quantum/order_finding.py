@@ -1,20 +1,10 @@
-"""Semiclassical phase estimation of x -> 2x mod 15 with one recycled control qubit.
+"""Semiclassical order finding with a recycled control qubit.
 
-Order finding in Shor's algorithm reads the eigenphases s/r of a modular
-multiplier through a quantum Fourier transform; the semiclassical form measures
-one control qubit per phase bit, resets it, and feeds each outcome forward as a
-phase correction on the next round. For a = 2 and N = 15 the multiplier is the
-cyclic rotation of four bits (2x = 16 x_3 + (2x mod 16) and 16 = 1 mod 15), the
-exact permutation on every residue 1..14, and its order is r = 4. Preparing an
-eigenstate |u_s> = (1/2) sum_k exp(-2 pi i s k / 4) |2^k> makes the two-bit
-readout deterministic, s itself, which a decohered device cannot imitate; the
-|1> input of textbook Shor reads all four phases uniformly, as decoherence
-does. The identity multiplier is the null control and reads 0.
-
-The circuits test mid-circuit measurement, reset, and classical feed-forward,
-the machinery of the semiclassical QFT in large factoring estimates. They do
-not factor anything: multiplication by 2 mod 15 is a rotation, the known easy
-case (Smolin, Smith, and Vargo, Nature 499, 163 (2013)).
+``folded_qpe`` preserves the known-eigenstate dynamic-control benchmark for
+multiplication by two modulo 15. ``factor_order_finding`` implements the
+faithful Shor surface: the work register starts in |1>, the circuit consumes no
+known order, and each measured phase bit controls the remaining inverse-QFT
+feedback. Exact host code validates measured denominators and factors.
 """
 
 from __future__ import annotations
@@ -26,86 +16,203 @@ from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.quantum_info import Operator, Statevector
 from qiskit_aer import AerSimulator
 
+from factoring import MultiplierResource, OrderFindingPlan, decode_counts, make_order_finding_plan
+from modular_arithmetic import append_controlled_modular_multiply, multiplier_profile
+
 
 def controlled_rotate(qc: QuantumCircuit, ctrl: int, work: list[int], steps: int) -> None:
-    """Controlled cyclic left rotation of the work bits by steps, from Fredkin gates.
-
-    Rotation by 1 is SWAP(2,3), SWAP(1,2), SWAP(0,1); rotation by 2 is SWAP(0,2),
-    SWAP(1,3). Each SWAP becomes a controlled SWAP on ctrl.
-    """
+    """Append the original specialized four-bit controlled rotation."""
     pairs = {1: [(2, 3), (1, 2), (0, 1)], 2: [(0, 2), (1, 3)]}[steps]
-    for a, b in pairs:
-        qc.cswap(ctrl, work[a], work[b])
+    for first, second in pairs:
+        qc.cswap(ctrl, work[first], work[second])
 
 
-def eigenstate_prep(qc: QuantumCircuit, work: list[int], s: int) -> None:
-    """|u_s>: a W state over the one-hot patterns |2^k>, phase -2 pi s k / 4 on qubit k."""
+def eigenstate_prep(qc: QuantumCircuit, work: list[int], phase_label: int) -> None:
+    """Prepare the known |u_s> conformance state for multiplication by two modulo 15."""
     qc.x(work[0])
-    for k, remaining in ((0, 4), (1, 3), (2, 2)):
-        qc.cry(2 * math.acos(math.sqrt(1 / remaining)), work[k], work[k + 1])
-        qc.cx(work[k + 1], work[k])
-    for k in range(1, 4):
-        qc.p(-2 * math.pi * s * k / 4, work[k])
+    for work_index, remaining in ((0, 4), (1, 3), (2, 2)):
+        qc.cry(2 * math.acos(math.sqrt(1 / remaining)), work[work_index], work[work_index + 1])
+        qc.cx(work[work_index + 1], work[work_index])
+    for work_index in range(1, 4):
+        qc.p(-2 * math.pi * phase_label * work_index / 4, work[work_index])
 
 
-def folded_qpe(s: int, identity: bool = False) -> QuantumCircuit:
-    """Two-bit semiclassical phase estimation on |u_s>; the outcome integer is s.
-
-    Round one applies U^2 (rotation by 2), whose kickback exp(2 pi i 2 phi)
-    carries the low phase bit phi_2 into clbit 0. Round two reuses the reset
-    control, applies U, and removes the known 0.0phi_2 part with a phase -pi/2
-    conditioned on clbit 0, leaving the high bit phi_1 for clbit 1.
-    """
-    ctrl = QuantumRegister(1, "ctrl")
-    work_reg = QuantumRegister(4, "w")
-    bits = ClassicalRegister(2, "c")
-    qc = QuantumCircuit(ctrl, work_reg, bits, name=f"folded_qpe_s{s}" + ("_id" if identity else ""))
-    work = [1, 2, 3, 4]
-    eigenstate_prep(qc, work, s)
-    qc.h(0)
+def folded_qpe(phase_label: int, identity: bool = False) -> QuantumCircuit:
+    """Read a supplied two-bit eigenphase for the dynamic-control conformance test."""
+    if phase_label not in range(4):
+        raise ValueError(f"phase_label must lie in [0, 4), got {phase_label}")
+    control_register = QuantumRegister(1, "ctrl")
+    work_register = QuantumRegister(4, "w")
+    phase_register = ClassicalRegister(2, "c")
+    circuit = QuantumCircuit(
+        control_register,
+        work_register,
+        phase_register,
+        name=f"folded_qpe_s{phase_label}" + ("_id" if identity else ""),
+    )
+    work_qubits = [1, 2, 3, 4]
+    eigenstate_prep(circuit, work_qubits, phase_label)
+    circuit.h(0)
     if not identity:
-        controlled_rotate(qc, 0, work, 2)
-    qc.h(0)
-    qc.measure(0, bits[0])
-    qc.reset(0)
-    qc.h(0)
+        controlled_rotate(circuit, 0, work_qubits, 2)
+    circuit.h(0)
+    circuit.measure(0, phase_register[0])
+    circuit.reset(0)
+    circuit.h(0)
     if not identity:
-        controlled_rotate(qc, 0, work, 1)
-    with qc.if_test((bits[0], 1)):
-        qc.p(-math.pi / 2, 0)
-    qc.h(0)
-    qc.measure(0, bits[1])
-    return qc
+        controlled_rotate(circuit, 0, work_qubits, 1)
+    with circuit.if_test((phase_register[0], 1)):
+        circuit.p(-math.pi / 2, 0)
+    circuit.h(0)
+    circuit.measure(0, phase_register[1])
+    return circuit
+
+
+def order_finding_plan(
+    modulus: int, base: int, phase_bits: int | None = None, *, identity: bool = False
+) -> OrderFindingPlan:
+    """Extract every modular-power coefficient without constructing a circuit."""
+    if modulus < 3:
+        raise ValueError(f"modulus must be at least 3, got {modulus}")
+    normalized_base = base % modulus
+    if not identity and (normalized_base in (0, 1) or math.gcd(normalized_base, modulus) != 1):
+        raise ValueError(f"base {base} must be a nonidentity unit modulo {modulus}")
+    precision = 2 * modulus.bit_length() if phase_bits is None else phase_bits
+    if precision < 1:
+        raise ValueError(f"phase_bits must be positive, got {precision}")
+    resources: list[MultiplierResource] = []
+    for round_index in range(precision):
+        exponent = 1 << (precision - round_index - 1)
+        multiplier = 1 if identity else pow(normalized_base, exponent, modulus)
+        profile = multiplier_profile(modulus, multiplier)
+        resources.append(
+            MultiplierResource(
+                round_index=round_index,
+                exponent=exponent,
+                multiplier=multiplier,
+                strategy=profile.strategy,
+                scratch_qubits=profile.scratch_qubits,
+                forward_anf_terms=profile.forward_term_count,
+                inverse_anf_terms=profile.inverse_term_count,
+                maximum_anf_degree=profile.maximum_anf_degree,
+                degree_histogram=profile.degree_histogram,
+                controlled_swaps=profile.controlled_swap_count,
+            )
+        )
+    return make_order_finding_plan(modulus, normalized_base, precision, resources)
+
+
+def factor_order_finding(
+    modulus: int, base: int, phase_bits: int | None = None, *, identity: bool = False
+) -> QuantumCircuit:
+    """Build one coherent order-finding attempt from |1> with exact feedback."""
+    plan = order_finding_plan(modulus, base, phase_bits, identity=identity)
+    control_register = QuantumRegister(1, "ctrl")
+    work_register = QuantumRegister(plan.work_qubits, "w")
+    scratch_register = QuantumRegister(plan.scratch_qubits, "scratch") if plan.scratch_qubits else None
+    phase_register = ClassicalRegister(plan.phase_bits, "phase")
+    if scratch_register is None:
+        circuit = QuantumCircuit(control_register, work_register, phase_register)
+    else:
+        circuit = QuantumCircuit(control_register, work_register, scratch_register, phase_register)
+    circuit.name = f"shor_order_N{modulus}_a{base % modulus}" + ("_null" if identity else "")
+    control_qubit = 0
+    work_qubits = list(range(1, 1 + plan.work_qubits))
+    scratch_qubits = list(range(1 + plan.work_qubits, plan.quantum_qubits))
+    circuit.x(work_qubits[0])
+    for resource in plan.rounds:
+        circuit.h(control_qubit)
+        append_controlled_modular_multiply(
+            circuit,
+            control_qubit,
+            work_qubits,
+            scratch_qubits if resource.scratch_qubits else [],
+            modulus,
+            resource.multiplier,
+        )
+        for prior_round in range(resource.round_index):
+            feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))
+            with circuit.if_test((phase_register[prior_round], 1)):
+                circuit.p(feedback_angle, control_qubit)
+        circuit.h(control_qubit)
+        circuit.measure(control_qubit, phase_register[resource.round_index])
+        if resource.round_index + 1 < plan.phase_bits:
+            circuit.reset(control_qubit)
+    return circuit
+
+
+def _verify_folded_conformance(simulator: AerSimulator) -> None:
+    rotation = QuantumCircuit(5)
+    controlled_rotate(rotation, 0, [1, 2, 3, 4], 1)
+    matrix = Operator(rotation).data
+    for input_value in range(16):
+        packed_input = 1 + 2 * input_value
+        observed = int(np.argmax(np.abs(matrix[:, packed_input])))
+        expected_value = 2 * input_value % 15 if input_value < 15 else input_value
+        expected = 1 + 2 * expected_value
+        if observed != expected:
+            raise RuntimeError(
+                f"controlled rotation sends {input_value} to {(observed - 1) // 2}, expected {expected_value}"
+            )
+    for phase_label in range(4):
+        preparation = QuantumCircuit(4)
+        eigenstate_prep(preparation, [0, 1, 2, 3], phase_label)
+        controlled_unitary = QuantumCircuit(5)
+        controlled_rotate(controlled_unitary, 0, [1, 2, 3, 4], 1)
+        state = Statevector(preparation)
+        rotated = state.evolve(Operator(controlled_unitary).data[1::2, 1::2])
+        overlap = complex(np.vdot(state.data, rotated.data))
+        expected_overlap = np.exp(2j * math.pi * phase_label / 4)
+        if abs(overlap - expected_overlap) > 1e-12:
+            raise RuntimeError(f"|u_{phase_label}> eigenvalue {overlap}")
+        for identity in (False, True):
+            counts = simulator.run(folded_qpe(phase_label, identity), shots=512, seed_simulator=1).result().get_counts()
+            expected_measurement = 0 if identity else phase_label
+            if counts.get(format(expected_measurement, "02b"), 0) != 512:
+                raise RuntimeError(
+                    f"phase_label={phase_label} identity={identity}: counts {counts}, "
+                    f"expected all {expected_measurement}"
+                )
+
+
+def _verify_factor_path(simulator: AerSimulator) -> None:
+    plan = order_finding_plan(15, 2, 8)
+    coefficients = (
+        plan.quantum_qubits,
+        plan.active_rounds,
+        plan.unique_multipliers,
+        plan.controlled_swaps,
+        plan.conditional_phases,
+    )
+    if coefficients != (5, 2, (2, 4), 5, 28):
+        raise RuntimeError(f"unexpected N=15 resource plan {plan}")
+    circuit = factor_order_finding(15, 2, 8)
+    counts = simulator.run(circuit, shots=4096, seed_simulator=7).result().get_counts()
+    expected_support = {format(measurement, "08b") for measurement in (0, 64, 128, 192)}
+    if set(counts) != expected_support:
+        raise RuntimeError(f"N=15 phase support {sorted(counts)}, expected {sorted(expected_support)}")
+    decoded = decode_counts(counts, 8, 15, 2)
+    recovered_factors = {factor for recovery, _ in decoded for factor in recovery.factors}
+    if recovered_factors != {3, 5}:
+        raise RuntimeError(f"N=15 recovered factors {sorted(recovered_factors)}, expected [3, 5]")
+    null_counts = (
+        simulator.run(factor_order_finding(15, 2, 8, identity=True), shots=512, seed_simulator=7).result().get_counts()
+    )
+    if null_counts != {"00000000": 512}:
+        raise RuntimeError(f"N=15 identity null returned {null_counts}")
+    generic_plan = order_finding_plan(21, 2, 10)
+    if generic_plan.quantum_qubits != 11 or generic_plan.unique_multipliers != (2, 4, 16):
+        raise RuntimeError(f"unexpected N=21 resource plan {generic_plan}")
 
 
 def _verify() -> None:
-    """Multiplier, eigenstates, and readout checked exactly; raises on the first deviation."""
-    rot = QuantumCircuit(5)
-    controlled_rotate(rot, 0, [1, 2, 3, 4], 1)
-    mat = Operator(rot).data
-    for x in range(1, 15):
-        # control set: index 1 + 2x in the 5-qubit little-endian basis
-        out = int(np.argmax(np.abs(mat[:, 1 + 2 * x])))
-        if out != 1 + 2 * ((2 * x) % 15):
-            raise RuntimeError(f"controlled rotation sends {x} to {(out - 1) // 2}, not {(2 * x) % 15}")
-    for s in range(4):
-        prep = QuantumCircuit(4)
-        eigenstate_prep(prep, [0, 1, 2, 3], s)
-        u = QuantumCircuit(5)
-        controlled_rotate(u, 0, [1, 2, 3, 4], 1)
-        state = Statevector(prep)
-        rotated = state.evolve(Operator(u).data[1::2, 1::2])
-        overlap = complex(np.vdot(state.data, rotated.data))
-        if abs(overlap - np.exp(2j * math.pi * s / 4)) > 1e-12:
-            raise RuntimeError(f"|u_{s}> eigenvalue {overlap}")
-    sim = AerSimulator()
-    for s in range(4):
-        for identity in (False, True):
-            counts = sim.run(folded_qpe(s, identity), shots=2000, seed_simulator=1).result().get_counts()
-            want = 0 if identity else s
-            if counts.get(format(want, "02b"), 0) != 2000:
-                raise RuntimeError(f"s={s} identity={identity}: counts {counts}, expected all {want}")
-    print("order finding: x2 mod 15 exact on residues 1..14; |u_s> eigenvalues i^s; readout s, null 0")
+    simulator = AerSimulator()
+    _verify_folded_conformance(simulator)
+    _verify_factor_path(simulator)
+    print(
+        "order finding: folded eigenstate controls exact; N=15 |1> samples "
+        "{0,64,128,192}, validates order 4, and extracts factors 3 and 5"
+    )
 
 
 if __name__ == "__main__":

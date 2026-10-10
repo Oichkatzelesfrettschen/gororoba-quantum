@@ -25,7 +25,8 @@ from designs import (
     design_c_associator_spectrum,
     design_d_phase_sweep,
 )
-from order_finding import folded_qpe
+from factoring import distribution_success, ideal_phase_distribution, reference_multiplicative_order
+from order_finding import factor_order_finding, folded_qpe
 
 Summary = Callable[[dict[str, np.ndarray]], dict[str, float]]
 
@@ -229,10 +230,48 @@ def _folded_qpe_mod15() -> Group:
     return Group("folded_qpe_mod15", tuple(members), summarize)
 
 
+def _hybrid_shor_mod15() -> Group:
+    """Faithful |1> order finding and an identity null at eight-bit precision."""
+    modulus, base, phase_bits = 15, 2, 8
+    reference_order = reference_multiplicative_order(base, modulus)
+    ideal = np.asarray(ideal_phase_distribution(reference_order, phase_bits))
+    null_ideal = np.zeros(1 << phase_bits)
+    null_ideal[0] = 1.0
+    uniform_null = distribution_success(_uniform(phase_bits), phase_bits, modulus, base)
+    primary_name = "hybrid_shor_N15_a2"
+    null_name = "hybrid_shor_N15_a2_null"
+    members = (
+        Member(primary_name, factor_order_finding(modulus, base, phase_bits), ideal),
+        Member(null_name, factor_order_finding(modulus, base, phase_bits, identity=True), null_ideal),
+    )
+
+    def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
+        primary = distribution_success(dist[primary_name], phase_bits, modulus, base)
+        identity_null = distribution_success(dist[null_name], phase_bits, modulus, base)
+        return {
+            **primary,
+            "identity_null_factorable_probability": identity_null["factorable_probability"],
+            "identity_null_order_recovery_probability": identity_null["order_recovery_probability"],
+            "uniform_null_factorable_probability": uniform_null["factorable_probability"],
+            "uniform_null_order_recovery_probability": uniform_null["order_recovery_probability"],
+            "factorable_margin_over_identity_null": (
+                primary["factorable_probability"] - identity_null["factorable_probability"]
+            ),
+            "order_recovery_margin_over_identity_null": (
+                primary["order_recovery_probability"] - identity_null["order_recovery_probability"]
+            ),
+            "tvd_to_ideal": tvd(dist[primary_name], ideal),
+            "identity_null_p0": float(dist[null_name][0]),
+        }
+
+    return Group("hybrid_shor_mod15", members, summarize)
+
+
 def experiment_groups() -> list[Group]:
     return [
         _design_a(),
         _zero_divisor_fringe(),
         *(_associator_spectrum(dim, i, j) for dim, i, j in SPECTRUM_EXEMPLARS),
         _folded_qpe_mod15(),
+        _hybrid_shor_mod15(),
     ]
