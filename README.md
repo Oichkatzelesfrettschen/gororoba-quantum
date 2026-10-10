@@ -14,10 +14,17 @@ observables.
   kernel's hash-pinned multiplication tables, the zero-divisor corpus against
   the kernel CSV, norm multiplicativity, and the phase-degree rules along the
   ladder.
-- `gororoba_quantum/order_finding.py` -- semiclassical phase estimation of x -> 2x
-  mod 15 on its eigenstates: mid-circuit measurement, reset, and feed-forward.
+- `gororoba_quantum/boolean_anf.py` and `modular_arithmetic.py` -- exact Boolean
+  coefficient extraction and controlled modular-permutation synthesis through
+  Mersenne rotations, ANF networks, or scratch-free cycle transpositions.
+- `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
+  classical admission and decoding around faithful `|1>` semiclassical order
+  finding, plus a credential-free plan, simulation, and decode CLI.
 - `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
   cannot contribute to Shor's algorithm, against the RSA-2048 resource floor.
+- `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
+  derivations, bounded hardware frontier, evidence levels, falsifiers, and the
+  roadmap beyond `N = 15`.
 - `gororoba_quantum/select_lcu.py` -- the ancilla-selected left multiplication
   (one joint sign diagonal, X, CX) and sparse pair-state preparation.
 - `gororoba_quantum/predict.py` -- every algebraic prediction, from cd_sign and
@@ -30,6 +37,9 @@ observables.
   backend: exclusion policy, ESP-ranked backend and layout selection, noise
   simulation from the same Target, gated submission through the client-side
   Sampler, and replay at the execution-time calibration.
+- `gororoba_quantum/runtime_contracts.py` -- credential-free checks for dynamic
+  classification, nested physical operations, multi-register result order, and
+  source-manifest stability.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design, and the live-calibration policy.
 - `results/live/<UTC start>/` -- one audit record per run: the chosen ISA
@@ -53,15 +63,23 @@ observables.
 ## Setup
 
 ```sh
-PYTHON=${PYTHON:-python3}
+PYTHON="${PYTHON:-$(command -v python3)}"
 cd gororoba_quantum
-$PYTHON verify.py        # ground-truth checks against the kernel; nonzero exit on failure
-$PYTHON designs.py       # statevector checks over every instance
-$PYTHON order_finding.py # exact checks of the folded order-finding circuits
-$PYTHON live_run.py --out ../results/live   # live calibration, selection, noise model (IBM Quantum account)
-$PYTHON live_run.py --out ../results/live --submit             # the same, then submit (spends QPU time)
-$PYTHON live_run.py --collect ../results/live/<UTC start>      # measured vs execution-time calibration
+"$PYTHON" verify.py
+"$PYTHON" designs.py
+"$PYTHON" factoring.py
+"$PYTHON" modular_arithmetic.py
+"$PYTHON" order_finding.py
+"$PYTHON" runtime_contracts.py
+"$PYTHON" hybrid_shor.py plan 15
+"$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+"$PYTHON" live_run.py --out ../results/live
 ```
+
+The final command reads live calibration and performs local compilation and
+noise simulation. It omits `--submit` and sends zero quantum jobs. Every
+`live_run.py --submit` invocation requires the written case and immediate user
+approval specified in `AGENTS.md`.
 
 requirements.txt pins the tested numpy, qiskit, qiskit-aer, and
 qiskit-ibm-runtime versions. The modules run as scripts from gororoba_quantum/,

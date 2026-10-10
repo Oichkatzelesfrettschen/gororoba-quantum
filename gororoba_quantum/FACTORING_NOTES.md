@@ -25,6 +25,10 @@ at dim 8 already is Bernstein-Vazirani, and to certified non-Clifford benchmarks
 gate class that dominates factoring cost. The checks behind each claim are
 named inline; literature notes live under literature/notes/.
 
+`HYBRID_SHOR.md` carries the implemented host/QPU architecture, Boolean
+coefficient derivation, exact bounded synthesis, compiler evidence, admission
+falsifiers, and roadmap.
+
 ## Reference baseline
 
 Gidney 2025 (arXiv:2505.15917, note literature/notes/2505.15917.md) is the
@@ -170,23 +174,29 @@ one such combination with two terms.
 - `live_run.py` already compiles the dims 8 to 32 rungs onto the best calibrated
   patch of the three backends.
 
-**The folded QFT on dynamic circuits.**
+**Semiclassical order finding on dynamic circuits.**
 - Gidney's QFT is semiclassical: n - 1 adaptively phased gates driven by
   mid-circuit measurement.
-- The smallest honest test on Heron is order finding for a = 2 mod 15. Its
+- The smallest exact Heron surface is order finding for a = 2 mod 15. Its
   multiplier, a cyclic rotation of the four work bits, is the exact permutation
   on every input rather than a circuit compiled from the known answer (Smolin,
   Smith, and Vargo, Nature 499, 163 (2013)).
-- `order_finding.py` implements it with one recycled control qubit, controlled
-  rotations by 2 and by 1 built from five Fredkin gates, and one feed-forward
-  phase -pi/2 conditioned on the first outcome.
-- The input is an eigenstate |u_s> = (1/2) sum_k exp(-2 pi i s k/4) |2^k> of the
+- `folded_qpe()` preserves the compiler-conformance benchmark. Its input is the
+  known eigenstate |u_s> = (1/2) sum_k exp(-2 pi i s k/4) |2^k> of the
   multiplier, prepared as a phased W state. That makes the two-bit readout
-  deterministic, equal to s. The textbook |1> input instead reads the four
-  phases uniformly, which a decohered device also produces.
+  deterministic and equal to s.
 - The four eigenstates run identical-cost circuits with distinct outcomes, so
   each controls the others. The identity multiplier is the null and reads 0.
-- `$PYTHON order_finding.py` checks the multiplier on residues 1..14, the
+- `factor_order_finding()` supplies the faithful Shor surface. It starts the
+  work register in `|1>`, receives neither the order nor the factors, and uses
+  eight-bit precision. Exact repeated squaring yields six leading identity
+  rounds followed by multipliers four and two, so the circuit executes two
+  measurements, one reset, one conditioned phase, and five Fredkin gates.
+- The paired identity null follows the same two-round dynamic schedule and
+  removes the Fredkin gates. The primary's ideal factor yield is 0.5; the exact
+  uniform-decoder yield is 0.296875, so experiment summaries report the margin
+  over both controls.
+- `"$PYTHON" order_finding.py` checks the multiplier on the full register, the
   eigenvalues i^s, and the readout exactly. The generic controlled synthesis of
   the rotation costs 248 CZ on the FakeFez target; the Fredkin form costs 67.
 - The live dry run of 2026-10-10T17:23:16Z placed the group on ibm_kingston at
@@ -194,9 +204,9 @@ one such combination with two terms.
   s and the null at 0.957. The duration estimate (record field duration_s)
   excludes the classical feed-forward latency, which the Target does not report.
 - This tests the dynamic-circuit machinery the factoring QFT needs. It
-  demonstrates no factoring capability, since multiplication by 2 mod 15 is a
-  known easy case. Monz et al. (Science 351, 1068 (2016)) ran the
-  recycled-control form on trapped ions.
+  establishes a factoring pipeline for a classically easy Mersenne case and
+  makes no quantum-advantage claim. Monz et al. (Science 351, 1068 (2016)) ran
+  the recycled-control form on trapped ions.
 
 ## What open_gororoba supplies
 
