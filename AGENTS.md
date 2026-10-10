@@ -93,8 +93,9 @@ head.
 - *Outcome.* A review ends either in an issue comment "Codex Review: Didn't find
   any major issues" or in inline review comments with P1 or P2 badges.
 - *Status tool.* `scripts/codex_review_status.sh PR...` prints each PR's head,
-  review state, latest clean verdict, and every unresolved thread with its root
-  comment id.
+  review state, and latest clean verdict, then every unresolved thread with its
+  root comment id and full body. It follows every page of issue comments and
+  review threads.
 
 **One round, per PR:**
 1. Wait until the summary comment stops reading Running. Then read every
@@ -111,12 +112,17 @@ head.
    gates. A change to live_run.py or experiments.py also gets a live dry run,
    and a change to qiskit-ibm-runtime usage also gets `/migrate-qiskit-ibm-runtime`.
    Then push.
-4. Reply to each thread's root comment with the fixing commit and what changed:
-   `gh api repos/OWNER/REPO/pulls/PR/comments/ID/replies -f body=...`.
-5. Run `scripts/resolve_answered_threads.sh PR`. It resolves only threads that
-   carry a reply from someone other than the bot, and lists any unanswered
-   thread instead of resolving it. Never resolve a thread whose finding has not
-   been read and answered.
+4. Reply to each thread's root comment with
+   `gh api repos/OWNER/REPO/pulls/PR/comments/ID/replies -f body=...`. The reply
+   begins with one of three markers, then says what changed or why:
+   - `Fixed in <commit>`
+   - `Refuted:` followed by the refuting source line
+   - `Boundary:` followed by the documented limit and the follow-up issue
+5. Run `scripts/resolve_answered_threads.sh PR`. It resolves only threads
+   carrying a reply from the authenticated operator that begins with one of
+   those markers, and lists every other open thread as unanswered. A comment
+   such as "will fix" or a question resolves nothing. Never resolve a thread
+   whose finding has not been read and answered.
 6. Comment `@codex review` and start again at step 1. A PR leaves the loop when
    its latest review reports no major issues and no thread is open.
 
