@@ -21,7 +21,9 @@ the plan.
 The winning compile is then replicated (packing.py): every embedding of its
 qubit-and-edge pattern in the CZ coupling graph that avoids excluded hardware
 is scored, and disjoint placements, separated by one qubit, are taken best
-first while their layout score stays at least --replica-floor of the best,
+first while their layout score stays at least a floor fraction of the best
+(--replica-floor for every group when given, else the group's own floor,
+else 0.9),
 up to --max-replicas. Each member runs as one packed circuit carrying every
 replica on its own classical registers, so one shot yields one sample per
 replica; each replica is simulated, corrected, and replayed alone, and the
@@ -372,7 +374,7 @@ class Entry:
 
 @dataclass(frozen=True)
 class ReplicaPolicy:
-    floor: float = DEFAULT_REPLICA_FLOOR
+    floor: float | None = None
     max_replicas: int | None = None
     isolated_reference: bool = True
 
@@ -390,6 +392,7 @@ class Choice:
     joint_score: float
     entries: list[Entry] = field(default_factory=list)
     replicas: list[Replica] = field(default_factory=list)
+    replica_floor: float = DEFAULT_REPLICA_FLOOR
 
 
 def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | None = None) -> QuantumCircuit:
@@ -487,7 +490,14 @@ def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
     return min(candidates, key=mismatch)
 
 
-def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], policy: ReplicaPolicy) -> list[Replica]:
+def replica_floor(group: Group, policy: ReplicaPolicy) -> float:
+    """An explicit --replica-floor for every group, else the group's declared floor, else DEFAULT_REPLICA_FLOOR."""
+    if policy.floor is not None:
+        return policy.floor
+    return DEFAULT_REPLICA_FLOOR if group.replica_floor is None else group.replica_floor
+
+
+def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, policy: ReplicaPolicy) -> list[Replica]:
     """Disjoint placements of the group's compiled pattern on snap, best layout score first.
 
     The pattern is every qubit and CZ edge the group's circuits touch, mirror
@@ -515,7 +525,7 @@ def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], policy: ReplicaPo
     def score(mapping: dict[int, int]) -> float:
         return layout_score(packing.relabel(isas[0], mapping, ""), target)
 
-    replicas = packing.place(used, edges, graph, admissible, score, policy.floor, policy.max_replicas)
+    replicas = packing.place(used, edges, graph, admissible, score, floor, policy.max_replicas)
     if not replicas:
         raise LiveRunError(f"{snap.name}: no admissible placement of the compiled pattern")
     return replicas
@@ -554,7 +564,8 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
             zeros = np.zeros(2**member.circuit.num_clbits)
             zeros[0] = 1.0
             bases.append((name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
-    choice.replicas = place_replicas(choice.snap, [base[1] for base in bases], policy)
+    choice.replica_floor = replica_floor(choice.group, policy)
+    choice.replicas = place_replicas(choice.snap, [base[1] for base in bases], choice.replica_floor, policy)
     choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
     if policy.isolated_reference and len(choice.replicas) > 1:
         primary = choice.entries[0]
@@ -914,6 +925,7 @@ def _choice_record(
         "seed_transpiler": choice.seed,
         "initial_layout": choice.layout,
         "joint_score": choice.joint_score,
+        "replica_floor": choice.replica_floor,
         "replicas": [
             {
                 "index": r.index,
@@ -1492,8 +1504,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--replica-floor",
         type=_fraction,
-        default=DEFAULT_REPLICA_FLOOR,
-        help="place a disjoint replica only while its layout score is at least this fraction of the best",
+        help=(
+            "place a disjoint replica only while its layout score is at least this fraction of the best, for every "
+            f"group; default each group's declared floor, else {DEFAULT_REPLICA_FLOOR}"
+        ),
     )
     parser.add_argument(
         "--max-replicas", type=_positive_int, help="cap on disjoint replicas per group; default fills the device"

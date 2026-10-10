@@ -4,7 +4,7 @@ This plan joins the project's two hardware programs -- the Cayley-Dickson
 witnesses (DESIGN_NOTES.md) and hybrid Shor order finding (HYBRID_SHOR.md) --
 into one submission path under the 600 s rolling QPU budget. Every quantity
 it quotes comes from the dry-run record
-`results/live/2026-10-10T220435.034757Z` (code cdb37c4) unless it names
+`results/live/2026-10-10T222132.627032Z` (code 02a5b4b) unless it names
 another source; the record's predictions are noise-model values, not
 hardware results.
 
@@ -26,17 +26,24 @@ hardware results.
    excluded 11 qubits and 16 edges on ibm_fez, 7 and 24 on ibm_kingston, and 31
    and 20 on ibm_marrakesh, every one by a policy threshold -- readout error,
    T1 or T2, sx or CZ error, or missing calibration -- and none by a faulty
-   flag, so the thresholds carry the detection. The eligibility gate skipped
-   ibm_marrakesh outright: it reported status_msg "maintenance".
+   flag, so the thresholds carry the detection. The eligibility gate then
+   skipped ibm_fez, at 27 pending jobs against --max-pending 25, and
+   ibm_marrakesh, which reported status_msg "maintenance".
 2. **Selection.** Eight transpiler seeds per group and backend; the best three
    compile their controls onto one layout, and the best geometric-mean layout
    score (ESP times the T2 dephasing factor) picks backend and layout.
-   ibm_kingston won every group.
+   ibm_kingston, the one eligible system at 18 pending jobs, carries every
+   group; earlier records of the same day with ibm_fez eligible also chose
+   kingston for every group.
 3. **Placement.** packing.py embeds the winning pattern everywhere it fits in
    admissible hardware, ranks the embeddings by the same layout score, and
-   packs disjoint replicas one qubit apart down to 0.9 of the best score.
-   Design A fills 63 of kingston's 156 qubits per shot with 21 replicas,
-   design C dim 8 fills 54 with 18, and the five-qubit groups take 3 to 6.
+   packs disjoint replicas one qubit apart down to a floor fraction of the
+   best score: 0.9 by default, a group's declared floor where it has one
+   (hybrid Shor declares 0.8), and an explicit --replica-floor for every group
+   when given. Design A fills 63 of
+   kingston's 156 qubits per shot with 21 replicas, design C dim 8 fills 54
+   with 18, hybrid Shor 35 with 7, and the other five-qubit groups take 3 to
+   6.
 4. **Revalidation.** --submit re-reads every chosen backend and replans any
    group whose calibration values moved on its packed qubits.
 
@@ -45,7 +52,7 @@ hardware results.
 - **Variance.** Each member's per-shot score splits into shot and layout
   variance with a chi-squared test across replicas; folded QPE adds an
   instance axis. The noise model predicts layout variance of 2e-5 to 4e-4 in
-  the primaries and none beyond shot noise in Shor factor yield (p 0.66).
+  the primaries, and 3.1e-5 in Shor factor yield, within shot noise (p 0.17).
 - **Crosstalk.** The primary runs alone on replica 0's qubits beside the
   packed run; the noise model puts their difference at zero, so a measured
   difference is crosstalk from packing.
@@ -57,10 +64,10 @@ hardware results.
 - **Admission.** hybrid Shor is interpreted only through its admission rule:
   the primary factor-yield lower bound must exceed the exact uniform null
   (0.297) and the identity-null upper bound must stay below that lower bound.
-  The noise model gives [0.485, 0.510] against an identity-null upper bound of
-  0.020. Each bound is the union of the replicate t interval and a Wilson
-  interval over the pooled shots; with Shor's three replicas the t multiplier
-  is 4.30, so the replica count is a decision for the written case.
+  The noise model gives [0.483, 0.501] against an identity-null upper bound of
+  0.013. Each bound is the union of the replicate t interval and a Wilson
+  interval over the pooled shots; Shor's seven replicas put the t multiplier
+  at 2.45, where three gave 4.30.
 
 ## QPU cost
 
