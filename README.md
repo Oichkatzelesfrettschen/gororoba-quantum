@@ -10,14 +10,17 @@ observables.
 
 - `gororoba_quantum/cd_core.py` -- Cayley-Dickson sign table ported from
   cd_kernel, plus associator and zero-divisor enumeration.
-- `gororoba_quantum/verify.py` -- non-circular checks against the kernel's own
-  ground-truth CSV and norm multiplicativity.
-- `gororoba_quantum/designs.py` -- the two circuits with ideal statevector
-  outcomes.
-- `gororoba_quantum/hw_estimate.py` -- routed cost and noisy prediction on a
-  real backend.
+- `gororoba_quantum/verify.py` -- fail-closed checks: the sign tensor against the
+  kernel's hash-pinned multiplication tables, the zero-divisor corpus against
+  the kernel CSV, and norm multiplicativity.
+- `gororoba_quantum/designs.py` -- the two circuits, checked by statevector over
+  every instance.
+- `gororoba_quantum/hw_estimate.py` -- compiles each circuit once for a real
+  backend and counts and noise-simulates that same ISA circuit.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design.
+- `results/hw_estimate/` -- the archived ISA circuits (QPY) and the record of
+  calibration timestamp, versions, seeds, layout, and noisy outcomes.
 
 ## Designs
 
@@ -31,9 +34,10 @@ observables.
 
 ```sh
 PYTHON=${PYTHON:-python3}
-$PYTHON verify.py        # ground-truth checks against the kernel
-$PYTHON designs.py       # ideal statevector outcomes
-$PYTHON hw_estimate.py   # routed cost and noise model (needs an IBM Quantum account)
+cd gororoba_quantum
+$PYTHON verify.py        # ground-truth checks against the kernel; nonzero exit on failure
+$PYTHON designs.py       # statevector checks over every instance
+$PYTHON hw_estimate.py --out ../results/hw_estimate   # ISA cost and noise model (IBM Quantum account)
 ```
 
 Dependencies: qiskit, qiskit-aer, qiskit-ibm-runtime. The IBM Quantum credential

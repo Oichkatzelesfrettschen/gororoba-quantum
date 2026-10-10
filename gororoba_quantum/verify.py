@@ -1,97 +1,231 @@
-"""Non-circular checks of the cd_core port against open_gororoba ground truth.
+"""Fail-closed checks of the cd_core port against open_gororoba ground truth.
 
-The 42/168 triple split holds for any XOR-indexed sign convention, so it cannot
-confirm the kernel's signs. These checks do: the sedenion zero-divisor set is
-diffed against the kernel's own reggiani_standard_zero_divisor_pairs.csv, and
-octonion norm multiplicativity exercises the sign table directly. The associator
-operator W is shown to be a signed Z-string, which is the content of design A.
+Every check raises CheckFailed on a mismatch and the module exits nonzero; the
+checks use explicit raises because `python -O` strips assert.
+
+The kernel's multiplication_table_{8,16}D.csv fixes every product e_p e_q by
+index and sign, so a cell-for-cell diff pins cd_sign to the kernel's
+orientation. The zero-divisor corpus is a structural check: the rephasing
+e_p -> -e_p (p != 0) multiplies every imaginary-imaginary product sign by -1 and
+carries each zero divisor to a zero divisor, so the opposite orientation
+reproduces the corpus row for row. Norm multiplicativity is invariant under the
+same orthogonal basis change. Each kernel CSV is read only after its sha256
+matches every registry record that pins it.
+
+The 42/168 associative/anti-associative split of ordered octonion triples comes
+from the Cayley-Dickson signs; the all-positive XOR-indexed table is the group
+algebra of F_2^3, which is associative and splits 210/0.
 """
 from __future__ import annotations
 
 import csv
+import hashlib
 import os
 import random
+import sys
+import tomllib
+from collections import Counter
+from collections.abc import Callable
 from itertools import combinations
 from math import isclose
 from pathlib import Path
 
-from cd_core import cd_multiply, left_mult_matrix_check, sedenion_zero_divisors
+from cd_core import (
+    cd_multiply,
+    cd_sign,
+    classify_octonion_triples,
+    left_mult_matrix_check,
+    sedenion_zero_divisor_corpus,
+)
 
-# The kernel ground-truth CSV lives in the open_gororoba checkout. GOROROBA_ROOT
-# overrides its location; the default assumes a sibling checkout under ~/Github.
+# GOROROBA_ROOT locates the open_gororoba checkout; the default assumes a
+# sibling checkout under ~/Github.
 GOROROBA_ROOT = Path(os.environ.get("GOROROBA_ROOT", "~/Github/open_gororoba")).expanduser()
-REGGIANI = str(GOROROBA_ROOT / "data/csv/reggiani_standard_zero_divisor_pairs.csv")
+REGISTRY = GOROROBA_ROOT / "registry/data/project_csv"
+ZD_CSV = "data/csv/reggiani_standard_zero_divisor_pairs.csv"
+ZD_COLUMNS = ("u_low", "u_high", "u_sign", "v_low", "v_high", "v_sign")
+
+SignFn = Callable[[int, int, int], int]
+ZdRow = tuple[int, int, int, int, int, int]
+
+
+class CheckFailed(RuntimeError):
+    """A ground-truth check disagreed with the cd_core port."""
+
+
+def _require(cond: bool, message: str) -> None:
+    if not cond:
+        raise CheckFailed(message)
+
+
+def _pinned_csv(rel: str) -> Path:
+    """The kernel CSV at rel, once its bytes match every registry record of it."""
+    path = GOROROBA_ROOT / rel
+    _require(path.is_file(), f"{rel} missing under GOROROBA_ROOT={GOROROBA_ROOT}")
+    pins = []
+    for record in sorted(REGISTRY.rglob("*.toml")):
+        with open(record, "rb") as handle:
+            dataset = tomllib.load(handle).get("dataset", {})
+        if dataset.get("source_csv") == rel:
+            pins.append((record.name, dataset.get("source_sha256")))
+    _require(bool(pins), f"no registry record pins {rel}")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    stale = [name for name, pin in pins if pin != digest]
+    _require(not stale, f"{rel} sha256 {digest} disagrees with {stale}")
+    return path
+
+
+def _unit_label(index: int) -> str:
+    return "1" if index == 0 else f"e{index}"
+
+
+def check_sign_tensor_against_kernel() -> int:
+    """Diff every e_p e_q of the kernel's 8D and 16D tables against cd_sign."""
+    cells = 0
+    for dim in (8, 16):
+        path = _pinned_csv(f"data/csv/multiplication_table_{dim}D.csv")
+        with open(path, newline="") as handle:
+            rows = list(csv.reader(handle))
+        labels = [_unit_label(q) for q in range(dim)]
+        _require(rows[0][1:] == labels and len(rows) == dim + 1, f"{path.name}: unexpected header or shape")
+        for p, row in enumerate(rows[1:]):
+            _require(row[0] == labels[p] and len(row) == dim + 1, f"{path.name}: row {p} label or width")
+            for q, cell in enumerate(row[1:]):
+                want = ("-" if cd_sign(dim, p, q) < 0 else "") + labels[p ^ q]
+                _require(cell == want, f"dim {dim}: e{p} e{q} = {cell} in the kernel, {want} from cd_sign")
+                cells += 1
+    return cells
+
+
+def _corpus(sign: SignFn) -> set[ZdRow]:
+    """Integer-exact (e_i + t e_j)(e_k + s e_l) = 0 enumeration under a sign table."""
+    found = set()
+    pairs = list(combinations(range(1, 16), 2))
+    for i, j in pairs:
+        for k, el in pairs:
+            if len({i, j, k, el}) != 4:
+                continue
+            for t in (1, -1):
+                for s in (1, -1):
+                    out = [0] * 16
+                    for p, ap in ((i, 1), (j, t)):
+                        for q, bq in ((k, 1), (el, s)):
+                            out[p ^ q] += sign(16, p, q) * ap * bq
+                    if not any(out):
+                        found.add((i, j, t, k, el, s))
+    return found
+
+
+def check_zero_divisor_corpus_against_kernel() -> int:
+    """The full signed corpus equals the kernel CSV, row for row."""
+    rows: list[ZdRow] = []
+    with open(_pinned_csv(ZD_CSV), newline="") as handle:
+        for row in csv.DictReader(handle):
+            u_low, u_high, u_sign, v_low, v_high, v_sign = (int(row[c]) for c in ZD_COLUMNS)
+            rows.append((u_low, u_high, u_sign, v_low, v_high, v_sign))
+    kernel = set(rows)
+    _require(len(kernel) == len(rows), "kernel corpus carries duplicate rows")
+    mine = sedenion_zero_divisor_corpus()
+    _require(len(set(mine)) == len(mine), "cd_core corpus carries duplicate rows")
+    extra, missing = len(set(mine) - kernel), len(kernel - set(mine))
+    _require(not extra and not missing, f"corpus differs: {extra} extra, {missing} missing")
+    _require(_corpus(cd_sign) == kernel, "integer-exact corpus disagrees with the float enumeration")
+    return len(kernel)
+
+
+def check_rephasing_preserves_corpus() -> tuple[int, int]:
+    """e_p -> -e_p (p != 0) flips sign cells yet leaves the corpus unchanged.
+
+    The flipped table is why the corpus diff carries no orientation evidence.
+    Returns the count of flipped cells at dims 8 and 16.
+    """
+    def t(p: int) -> int:
+        return 1 if p == 0 else -1
+
+    def flipped(dim: int, p: int, q: int) -> int:
+        return t(p) * t(q) * t(p ^ q) * cd_sign(dim, p, q)
+
+    f8, f16 = (
+        sum(flipped(dim, p, q) != cd_sign(dim, p, q) for p in range(dim) for q in range(dim))
+        for dim in (8, 16)
+    )
+    _require((f8, f16) == (42, 210), f"rephasing flips {f8}/{f16} cells, expected 42/210")
+    _require(_corpus(flipped) == _corpus(cd_sign), "rephasing changed the zero-divisor corpus")
+    return f8, f16
 
 
 def norm_sq(v: list[float]) -> float:
     return sum(x * x for x in v)
 
 
-def check_zero_divisors_against_kernel() -> tuple[int, int, bool]:
-    """Diff sedenion_zero_divisors() against the kernel CSV (u_sign=+1 subset)."""
-    kernel = set()
-    with open(REGGIANI, newline="") as handle:
-        for row in csv.DictReader(handle):
-            if int(row["u_sign"]) != 1:
-                continue
-            a = (int(row["u_low"]), int(row["u_high"]))
-            b = (int(row["v_low"]), int(row["v_high"]))
-            kernel.add((a, b, int(row["v_sign"])))
-    mine = {(a, b, s) for a, b, s in sedenion_zero_divisors()}
-    return len(mine), len(kernel), mine == kernel
-
-
-def check_octonion_norm_multiplicative(trials: int = 2000) -> bool:
-    """|x y| = |x| |y| for octonions; this fails under a wrong sign table."""
+def check_octonion_norm_multiplicative(trials: int = 2000) -> int:
+    """|x y| = |x| |y| for octonions on random vectors."""
     rng = random.Random(20261010)
-    for _ in range(trials):
+    for n in range(trials):
         x = [rng.gauss(0, 1) for _ in range(8)]
         y = [rng.gauss(0, 1) for _ in range(8)]
-        lhs = norm_sq(cd_multiply(8, x, y))
-        rhs = norm_sq(x) * norm_sq(y)
-        if not isclose(lhs, rhs, rel_tol=1e-9, abs_tol=1e-9):
-            return False
-    return True
+        lhs, rhs = norm_sq(cd_multiply(8, x, y)), norm_sq(x) * norm_sq(y)
+        _require(isclose(lhs, rhs, rel_tol=1e-9, abs_tol=1e-9), f"octonion norm fails on trial {n}")
+    return trials
 
 
-def check_sedenion_norm_not_multiplicative(trials: int = 4000) -> bool:
-    """The sedenions carry zero divisors, so |x y| = |x| |y| must sometimes fail."""
+def check_sedenion_norm_not_multiplicative(trials: int = 4000) -> int:
+    """The sedenions carry zero divisors, so |x y| = |x| |y| fails on some trial."""
     rng = random.Random(20261011)
-    for _ in range(trials):
+    for n in range(trials):
         x = [rng.gauss(0, 1) for _ in range(16)]
         y = [rng.gauss(0, 1) for _ in range(16)]
-        if not isclose(norm_sq(cd_multiply(16, x, y)), norm_sq(x) * norm_sq(y),
-                       rel_tol=1e-9, abs_tol=1e-9):
-            return True
-    return False
+        if not isclose(norm_sq(cd_multiply(16, x, y)), norm_sq(x) * norm_sq(y), rel_tol=1e-9, abs_tol=1e-9):
+            return n
+    raise CheckFailed(f"sedenion norm multiplicative on all {trials} trials")
 
 
-def check_w_is_signed_z_string() -> list[tuple[int, int, tuple[float, ...]]]:
-    """W = L_{e_{i^j}}^{-1} L_{e_i} L_{e_j} is diagonal +/-1 for all 21 pairs.
+def check_octonion_triple_split() -> tuple[int, int]:
+    split = classify_octonion_triples()
+    _require(split == (42, 168), f"octonion triple split {split}, expected (42, 168)")
+    return split
 
-    Its diagonal is a character of F_2^3 (a signed Z-string), +1 exactly on the
-    subspace {0, i, j, i^j} of associating k. Returns (i, j, diagonal).
+
+def check_w_is_signed_z_string() -> dict[tuple[float, ...], int]:
+    """W = L_{e_i e_j}^{-1} L_{e_i} L_{e_j} is a signed Z-string for all 21 pairs.
+
+    Its diagonal is a character of F_2^3, +1 exactly on the subspace
+    {0, i, j, i^j} of associating k. The 21 pairs land on the 7 non-identity
+    characters, 3 pairs each, one character per Fano line. Returns the
+    character multiplicities.
     """
-    out = []
+    hits: Counter[tuple[float, ...]] = Counter()
     for i, j in combinations(range(1, 8), 2):
         w = left_mult_matrix_check(i, j)
         diag = tuple(round(w[q][q], 9) for q in range(8))
         off = max(abs(w[r][c]) for r in range(8) for c in range(8) if r != c)
-        assert off < 1e-9, f"W not diagonal for ({i},{j})"
-        assert all(abs(abs(d) - 1.0) < 1e-9 for d in diag)
+        _require(off < 1e-9, f"W not diagonal for ({i},{j})")
+        _require(all(abs(abs(d) - 1.0) < 1e-9 for d in diag), f"W not +/-1 for ({i},{j})")
         subspace = {0, i, j, i ^ j}
-        assert all((diag[q] > 0) == (q in subspace) for q in range(8))
-        out.append((i, j, diag))
-    return out
+        _require(all((diag[q] > 0) == (q in subspace) for q in range(8)), f"W sign pattern for ({i},{j})")
+        hits[diag] += 1
+    _require(len(hits) == 7 and set(hits.values()) == {3}, f"W characters {dict(hits)}")
+    return dict(hits)
+
+
+def main() -> int:
+    try:
+        cells = check_sign_tensor_against_kernel()
+        print(f"sign tensor vs kernel multiplication tables: {cells} cells match (dims 8, 16)")
+        rows = check_zero_divisor_corpus_against_kernel()
+        print(f"zero-divisor corpus vs kernel CSV: {rows} signed rows match")
+        f8, f16 = check_rephasing_preserves_corpus()
+        print(f"rephasing e_p -> -e_p flips {f8}/{f16} sign cells and preserves the corpus")
+        print(f"octonion norm multiplicative: {check_octonion_norm_multiplicative()} trials")
+        print(f"sedenion norm non-multiplicative at trial {check_sedenion_norm_not_multiplicative()}")
+        print(f"octonion triple split (assoc, anti): {check_octonion_triple_split()}")
+        hits = check_w_is_signed_z_string()
+        print(f"associator W: 21 pairs diagonal +/-1, {len(hits)} Z-strings x 3 pairs each")
+    except CheckFailed as exc:
+        print(f"FAIL: {exc}", file=sys.stderr)
+        return 1
+    return 0
 
 
 if __name__ == "__main__":
-    mine, kernel, match = check_zero_divisors_against_kernel()
-    print(f"zero divisors vs kernel CSV: mine={mine} kernel(u+)= {kernel} exact_match={match}")
-    print(f"octonion norm multiplicative: {check_octonion_norm_multiplicative()}")
-    print(f"sedenion norm sometimes non-multiplicative: {check_sedenion_norm_not_multiplicative()}")
-    ws = check_w_is_signed_z_string()
-    distinct = {w[2] for w in ws}
-    print(f"associator W: all 21 pairs diagonal +/-1; distinct Z-strings = {len(distinct)}")
-    print(f"  example ({ws[0][0]},{ws[0][1]}) diag = {ws[0][2]}")
-    print(f"  identity partner e0 always associates: {all(d[0] > 0 for *_ , d in ws)}")
+    sys.exit(main())
