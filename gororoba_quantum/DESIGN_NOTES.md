@@ -328,11 +328,15 @@ back to drive a submission.
   summary_readout_corrected, which inverts each classical bit's readout channel
   with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
   A raw dark P(0) carries prob_meas0_prep1 as an additive floor even on a
-  shared readout qubit; on ibm_kingston the correction moves the zero-divisor
-  ratio from 0.043 to 0.036 in the noise model. A group with feed-forward
-  circuits records why the correction is skipped instead: a misread mid-circuit
-  bit also steers the conditional gate, which no per-bit channel inversion
-  models.
+  shared readout qubit. The noise model applies the same asymmetric channel,
+  and in results/live/2026-10-10T183325.225102Z the correction moves the
+  zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369 and the fringe
+  visibility from 0.9065 to 0.9175. With --twirl, collection inverts the
+  symmetric mean channel, since measurement twirling averages the two flip
+  probabilities. A group with feed-forward circuits records why the correction
+  is skipped instead: a misread mid-circuit bit also steers the conditional
+  gate, which no per-bit channel inversion models. A group whose shots
+  straddle a calibration update keeps only its raw summary at collection.
 - Archived definitions: the record stores a sha256 over every module of
   gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
   own distribution, readout, and replay code -- and the code commit; --collect

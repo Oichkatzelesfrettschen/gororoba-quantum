@@ -552,9 +552,12 @@ Let G = F_2^n and A_n = R[G] with basis `e_p` and product
   superposed vectors `sum_r (sum_p psi_p phi_{p XOR r} s(p, p XOR r)) |r>` is a
   bilinear contraction, not a unitary; it needs a linear-combination-of-
   unitaries step with post-selection or a norm-dependent success probability.
-- Closure. Products of basis-unit left or right multiplications have index action
-  in the translation group F_2^n and generate a group of order
-  2^(n + 2^(n-1)) (n = 3..8), a 2-group of monomial matrices. The map
+- Closure. Products of basis-unit left multiplications have index action in
+  the translation group F_2^n and generate a group of order 2^(n + 2^(n-1))
+  (n = 3..8), a 2-group of monomial matrices; the right multiplications
+  generate the analogous group. Words mixing left and right multiplications
+  keep the F_2^n index action but generate a larger group: 32 at dim 4, 1024 at
+  dim 8, 524288 at dim 16 by closure. The map
   `p -> L_{e_p}` is not a representation for n >= 3 (cocycle defect), so the
   non-associativity of the algebra cannot be carried by gate composition:
   a circuit multiplies matrices, which is associative.
@@ -617,9 +620,14 @@ divides lambda(N) and is in general not a power of 2.
    index action is the identity, and the map is the identity only for a = 1.
    The argument does not depend on how residues are encoded as indices.
    Order gives a second obstruction: the generated group is a 2-group, while
-   ord_N(a) is in general not a power of 2. Linear combinations do not repair
-   this: column j of `L_a` has |supp(a)| non-zero entries at rows j XOR p, so a
-   permutation matrix needs |supp(a)| = 1.
+   ord_N(a) is in general not a power of 2. A single algebra element does not
+   repair this: column j of `L_a = sum_p a_p L_{e_p}` has |supp(a)| non-zero
+   entries at rows j XOR p, so a permutation matrix needs |supp(a)| = 1.
+   Linear combinations of products of basis multiplications are a different
+   matter: their real span is every matrix at n = 3, 4, 5
+   (gororoba_quantum/FACTORING_NOTES.md), so a linear combination of unitaries
+   can represent a multiplier there, at a normalization of at least the number
+   of distinct index displacements.
 2. Replacing the Z_Q quantum Fourier transform by the Walsh-Hadamard transform
    or by a "butterfly fold". Both have the same butterfly topology and
    different groups (F_2^m versus Z_{2^m}); the Walsh-Hadamard transform has
@@ -648,7 +656,12 @@ divides lambda(N) and is in general not a power of 2.
 
 An explicit embedding of Z_N (or of the exponent group) into algebra data in
 which multiplication mod N becomes a CD product, with a homomorphism property.
-The cocycle defect rules this out for the index-XOR structure at n >= 3. A
+The cocycle defect shows that the full index-basis map p -> L_{e_p} is no
+homomorphism at n >= 3. It does not rule out an embedding whose image lies in
+an associative subalgebra: every CD algebra contains a complex subalgebra, into
+which a cyclic group embeds by roots of unity. Such an embedding supplies no
+efficient modular arithmetic, and the XOR-translation argument of 9.4 item 1
+is what rules out basis multiplications as multipliers. A
 repository-independent route to a "maximally decomposed" Shor circuit is
 arithmetic circuit engineering (adders, windowed lookups, QFT over Z_Q); the
 CD material above supplies none of those components.
