@@ -309,6 +309,15 @@ back to drive a submission.
   eligibility gate, compares the plan's own calibration values -- T1 and T2 of
   its qubits and the error and duration of each CZ, sx, x, and measurement it
   uses -- and recompiles and re-simulates a group whose values moved.
+- Readout: every group record carries summary (raw) and
+  summary_readout_corrected, which inverts each classical bit's readout channel
+  with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
+  A raw dark P(0) carries prob_meas0_prep1 as an additive floor even on a
+  shared readout qubit; on ibm_kingston the correction moves the zero-divisor
+  ratio from 0.043 to 0.036 in the noise model.
+- Archived definitions: the record stores a sha256 of every
+  experiment-defining module and the code commit, and --collect refuses to
+  summarize a run under a different digest, naming the commit to collect from.
 - Execution-time replay: --collect fetches target_history and properties at the
   job's running timestamp, checks them against each other (342 of 352 ibm_fez
   CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs

@@ -38,6 +38,7 @@ import copy
 import hashlib
 import json
 import math
+import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -371,6 +372,63 @@ def simulate(choice: Choice, noise: Any) -> dict[str, np.ndarray]:
     return out
 
 
+def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.ndarray:
+    """dist with each classical bit's readout channel inverted, unclipped.
+
+    A raw P(0) carries prob_meas0_prep1 of its readout qubit as an additive
+    floor, so even a perfect zero divisor reads a nonzero dark probability.
+    Each clbit's 2x2 channel [[1 - e10, e01], [e10, 1 - e01]] comes from the
+    physical qubit that last wrote it (e10 = prob_meas1_prep0, e01 =
+    prob_meas0_prep1), and their Kronecker product is inverted with clbit 0 as
+    the least significant index bit. Aer's noise model applies the symmetric
+    readout_error, so in simulation the corrected values keep an asymmetry
+    residual; on hardware the inversion matches the channel the properties
+    report.
+    """
+    writer: dict[int, int] = {}
+    for inst in isa.data:
+        if inst.operation.name == "measure":
+            writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
+    inverse = np.ones((1, 1))
+    for clbit in reversed(range(isa.num_clbits)):
+        q = writer[clbit]
+        e10 = props.qubit_property(q, "prob_meas1_prep0")[0]
+        e01 = props.qubit_property(q, "prob_meas0_prep1")[0]
+        inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
+    return np.asarray(inverse @ dist)
+
+
+def experiment_digest() -> str:
+    """sha256 over the source of every experiment-defining module loaded from this directory.
+
+    Group membership, circuits, ideals, and summaries all live in those modules,
+    so collection under a different digest would reinterpret a run's
+    measurements with other definitions.
+    """
+    here = Path(__file__).resolve().parent
+    files = [getattr(m, "__file__", None) for m in list(sys.modules.values())]
+    paths = sorted(
+        path
+        for path in {Path(f).resolve() for f in files if isinstance(f, str)}
+        if path.parent == here and path.suffix == ".py" and path.is_file()
+    )
+    digest = hashlib.sha256()
+    for path in paths:
+        if path.name in ("live_run.py", "verify.py"):
+            continue
+        digest.update(path.name.encode())
+        digest.update(path.read_bytes())
+    return digest.hexdigest()
+
+
+def _code_commit() -> dict[str, Any]:
+    """HEAD of the checkout and whether its gororoba_quantum sources differ from it."""
+    here = Path(__file__).resolve().parent
+    head = subprocess.run(["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True)
+    dirty = subprocess.run(["git", "-C", str(here), "status", "--porcelain", "--", "."], capture_output=True, text=True)
+    return {"head": head.stdout.strip() or None, "sources_modified": bool(dirty.stdout.strip())}
+
+
 def _physical(isa: QuantumCircuit) -> list[int]:
     return sorted({q for _, qargs in _ops(isa) for q in qargs})
 
@@ -401,6 +459,12 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
         "initial_layout": choice.layout,
         "joint_esp": choice.joint_esp,
         "summary": choice.group.summarize(noisy),
+        "summary_readout_corrected": choice.group.summarize(
+            {
+                member.name: readout_corrected(noisy[member.name], isa, choice.snap.properties)
+                for member, isa in zip(choice.group.members, choice.isas, strict=True)
+            }
+        ),
         "members": members,
     }
 
@@ -437,6 +501,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         | {"max_pending": args.max_pending, "seeds": args.seeds, "joint_candidates": JOINT_CANDIDATES},
         "shots": SHOTS,
         "seed_simulator": SEED_SIMULATOR,
+        "experiment_digest": experiment_digest(),
+        "code_commit": _code_commit(),
         "backends": {s.name: s.summary() for s in snaps},
         "skipped_backends": skipped,
         "selection_trace": trace,
@@ -545,6 +611,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     with open(run_dir / "isa.qpy", "rb") as handle:
         isas = {c.name: c for c in qpy.load(handle)}
     groups = {g.name: g for g in experiment_groups()}
+    if record.get("experiment_digest") != experiment_digest():
+        commit = record.get("code_commit", {}).get("head")
+        raise LiveRunError(
+            f"experiment definitions differ from the run's (digest {record.get('experiment_digest')}); "
+            f"collect from commit {commit}, where groups, ideals, and summaries match the archived circuits"
+        )
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
     out = []
     for job_entry in record["submission"]["jobs"]:
@@ -560,11 +632,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         )
         sim_then = noise_simulator(f"{backend.name}@{ran_at}", target_then)
         measured: dict[str, np.ndarray] = {}
+        corrected: dict[str, np.ndarray] = {}
         replayed: dict[str, np.ndarray] = {}
         for name, pub in zip(job_entry["members"], result, strict=True):
             isa = isas[name]
             register = isa.cregs[0].name
             measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
+            corrected[name] = readout_corrected(measured[name], isa, props_then)
             counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
         for gname, group in groups.items():
@@ -576,6 +650,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                         "ran_at": ran_at,
                         "calibration_at_run": props_then.last_update_date.isoformat(),
                         "measured_summary": group.summarize(measured),
+                        "measured_summary_readout_corrected": group.summarize(corrected),
                         "replayed_summary": group.summarize(replayed),
                         "tvd_measured_to_replayed": {
                             m.name: tvd(measured[m.name], replayed[m.name]) for m in group.members
