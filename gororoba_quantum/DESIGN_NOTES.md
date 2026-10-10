@@ -451,7 +451,7 @@ beside the raw distributions and records the reason in comparisons_withheld. Eve
 interval over
 its replicas.
 
-The dry run of record 2026-10-10T215434.847324Z (code da50fd5) placed every
+The dry run of record 2026-10-10T220435.034757Z (code cdb37c4) placed every
 group on ibm_kingston, whose snapshot excluded 7 qubits and 24 edges:
 
 | group | replicas | qubits per shot | score best -> last | predicted layout variance (primary) |

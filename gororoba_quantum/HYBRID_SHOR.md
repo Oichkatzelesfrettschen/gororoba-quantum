@@ -269,7 +269,7 @@ archive contains the compiled circuits named by every JSON member.
 
 ## Replicated admission
 
-`results/live/2026-10-10T215434.847324Z/` (code `da50fd5`) replicates the
+`results/live/2026-10-10T220435.034757Z/` (code `cdb37c4`) replicates the
 same `ibm_kingston` compile on three disjoint five-qubit placements with
 layout scores 0.691, 0.628, and 0.627, above the 0.9 floor of the best. Each
 shot scores whether its phase string decodes to a verified factor, so the

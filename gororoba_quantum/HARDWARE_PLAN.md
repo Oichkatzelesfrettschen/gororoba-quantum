@@ -4,7 +4,7 @@ This plan joins the project's two hardware programs -- the Cayley-Dickson
 witnesses (DESIGN_NOTES.md) and hybrid Shor order finding (HYBRID_SHOR.md) --
 into one submission path under the 600 s rolling QPU budget. Every quantity
 it quotes comes from the dry-run record
-`results/live/2026-10-10T215434.847324Z` (code da50fd5) unless it names
+`results/live/2026-10-10T220435.034757Z` (code cdb37c4) unless it names
 another source; the record's predictions are noise-model values, not
 hardware results.
 
