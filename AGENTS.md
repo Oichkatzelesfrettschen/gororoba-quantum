@@ -1,0 +1,162 @@
+# gororoba-quantum agent guide
+
+This file carries the repository's own rules; the user-level agent guide
+supplies what it leaves unstated. CLAUDE.md loads it.
+
+## Layout and gates
+
+The modules run as scripts from gororoba_quantum/ and form no installable
+package; requirements.txt pins the tested runtime and pyproject.toml carries
+lint and type-check configuration only. Before any push, these exit 0:
+
+```sh
+PYTHON=${PYTHON:-python3}
+ruff check gororoba_quantum && ruff format --check gororoba_quantum
+cd gororoba_quantum
+mypy cd_core.py verify.py designs.py predict.py select_lcu.py experiments.py live_run.py order_finding.py
+$PYTHON verify.py         # needs the open_gororoba checkout at GOROROBA_ROOT
+$PYTHON designs.py
+$PYTHON order_finding.py
+```
+
+A change to live_run.py or experiments.py also gets a dry run,
+`$PYTHON live_run.py --out ../results/live`, whose audit record lands under
+results/live/.
+
+## QPU time and calibration
+
+- The plan allows 600 s of quantum time on a rolling 28-day window: usage()
+  reports a usage_period that ends at the moment of the call, so each second
+  spent returns 28 days later and no reset date exists.
+- Every `--submit` waits for the user's approval of a written case: what the
+  run measures, why noise simulation cannot answer it, and its expected
+  seconds. Calibration reads, transpilation, and noise simulation need no
+  approval.
+- Calibration is a property of the run. live_run.py fetches each backend's
+  Target and properties afresh in the process that decides, compiles,
+  simulates, and submits; no calibration value is cached or read back from a
+  file to drive a submission.
+
+## Qiskit skills
+
+The Qiskit agent skills come from https://github.com/Qiskit/skills, installed
+by copy into `~/.claude/skills/`:
+
+| skill | installed path | upstream commit |
+|---|---|---|
+| migrate-qiskit-ibm-runtime | `~/.claude/skills/migrate-qiskit-ibm-runtime/` | a5499c7c24f51633cbd0a5e7ea5902841e5b983e |
+
+Upstream also publishes them as a Claude Code plugin:
+`/plugin marketplace add Qiskit/skills`, then
+`/plugin install qiskit-ai-skills@qiskit`.
+
+**Monthly check.**
+1. Compare `git ls-remote https://github.com/Qiskit/skills HEAD` with the
+   pinned commit above.
+2. On a difference, clone the new commit into a scratch directory and read
+   every changed or added file in full before installing: skills are
+   instructions an agent executes, so they get the review any code gets.
+3. Copy the skill directories into `~/.claude/skills/`, update the table above
+   in a PR, and rerun the audit below. A new skill on the upstream roadmap
+   (mitigation evaluation, layout selection, circuit optimization) also gets a
+   written decision on whether it replaces anything in live_run.py.
+
+**When to invoke.** Run `/migrate-qiskit-ibm-runtime` with scope
+gororoba_quantum/ in these cases, and follow its phases, grounding, and report
+format:
+- any change that touches qiskit-ibm-runtime: primitives, options, jobs,
+  service, backends, sessions, or batches;
+- any change to the qiskit-ibm-runtime pin in requirements.txt;
+- after every monthly skill update.
+
+The skill sets the destination as the client-side
+`qiskit_ibm_runtime.executor_sampler.Sampler` from runtime 0.50.0. It forbids
+inventing an API path that its guides and the API reference do not enumerate,
+so such a path is validated at run time and named in the error when absent.
+
+**Rules the audit established.** The skill's local verification ran circuits
+through the client-side Sampler and established the job split live_run.py
+uses. In runtime 0.50, gate twirling sends circuits through samplomatic
+boxing, which rejects `if_else`, and IBM's Sampler rejects dynamical
+decoupling on dynamic circuits. So live_run.py sends circuits with
+mid-circuit measurement, reset, or feed-forward in their own job, with
+twirling and dynamical decoupling off.
+
+## Reviews and merges
+
+Codex, the chatgpt-codex-connector app, reviews every pull request. It reviews
+on open, and an issue comment `@codex review` requests a review of the current
+head.
+- *Progress.* The bot keeps one summary comment per PR, marked
+  `codex-pull-request-review-summary`, which reads Running while a review is in
+  progress.
+- *Outcome.* A review ends either in an issue comment "Codex Review: Didn't find
+  any major issues" or in inline review comments with P1 or P2 badges.
+- *Status tool.* `scripts/codex_review_status.sh PR...` prints each PR's head,
+  review state, and latest clean verdict, then every unresolved thread with its
+  root comment id and full body. It follows every page of issue comments and
+  review threads.
+
+**One round, per PR:**
+1. Wait until the summary comment stops reading Running. Then read every
+   unresolved thread in full from `codex_review_status.sh`. Threads can arrive
+   between rounds and attach to the newest commit, so the open-thread list,
+   not memory of the last round, is the work queue.
+2. Triage each thread against reachability.
+   - A defect a user reaches through a documented interface (the CLI, the
+     record files the program writes, the default flow) gets a fix.
+   - A claim the source refutes gets the refuting line in the reply.
+   - Malformed or adversarial input outside the documented domain gets a reply
+     naming the boundary and a follow-up issue.
+3. Fix every reachable thread on the PR's own branch in one commit, and run the
+   gates. A change to live_run.py or experiments.py also gets a live dry run,
+   and a change to qiskit-ibm-runtime usage also gets `/migrate-qiskit-ibm-runtime`.
+   Then push.
+4. Reply to each thread's root comment with
+   `gh api repos/OWNER/REPO/pulls/PR/comments/ID/replies -f body=...`. The reply
+   begins with one of three markers, then says what changed or why:
+   - `Fixed in <commit>`
+   - `Refuted:` followed by the refuting source line
+   - `Boundary:` followed by the documented limit and the follow-up issue
+5. Run `scripts/resolve_answered_threads.sh PR`. It resolves only threads
+   carrying a reply from the authenticated operator that begins with one of
+   those markers, and lists every other open thread as unanswered. A comment
+   such as "will fix" or a question resolves nothing. Never resolve a thread
+   whose finding has not been read and answered.
+6. Comment `@codex review` and start again at step 1. A PR leaves the loop when
+   its latest review reports no major issues and no thread is open.
+
+**Stacked PRs.**
+- Each branch builds on the one below it, so a fix lands on the lowest branch
+  that holds the code and then merges upward, branch by branch, with
+  `git merge --no-ff`.
+- Rebasing is out because the permission harness denies force-push.
+- When one file conflicts heavily, take the lower branch's reviewed version and
+  re-apply the upper branch's own changes on top. Then rerun the gates and a dry
+  run on every branch the merge touched.
+
+**Merging.** A PR merges when its latest review is clean, every thread is
+resolved, and GitHub reports mergeable_state clean. Bottom-up, for each PR:
+1. Merge it with a merge commit:
+   `gh api -X PUT repos/OWNER/REPO/pulls/PR/merge -f merge_method=merge`.
+2. Retarget the next PR to main: `gh api -X PATCH repos/OWNER/REPO/pulls/NEXT -f base=main`.
+   Deleting a base branch closes every PR that targets it, so the retarget
+   comes first.
+3. Delete the merged remote branch:
+   `gh api -X DELETE repos/OWNER/REPO/git/refs/heads/BRANCH`.
+4. Pull main in the primary checkout, then `git worktree remove` and
+   `git branch -d` the merged branch.
+
+**API use.** Everything goes through REST with `gh api`, except review
+threads, which only GraphQL exposes: both scripts list them through the
+reviewThreads connection, and resolution uses resolveReviewThread and
+unresolveReviewThread.
+
+## Records
+
+- results/ holds audit records: hw_estimate/ for the fixed ibm_fez compile and
+  live/ for live runs.
+- A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
+- Tokens, account identifiers, and local absolute paths stay out of every
+  commit. The IBM credential lives in the qiskit account store,
+  `~/.qiskit/qiskit-ibm.json`.
