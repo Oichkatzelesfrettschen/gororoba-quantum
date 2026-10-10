@@ -40,14 +40,16 @@ cycle and a 10 us reaction time, it needs:
 | two-qubit gate error | 1e-3 assumed | median CZ 1.9e-3 to 2.7e-3 (live_run.py, 2026-10-10) |
 | runtime | 12.07 h per shot, 4.96 days expected | -- |
 
-The circuits in this repository give the practical scale. The dim-32 associator
-spectrum (96 CZ on 5 qubits, joint ESP 0.77 on the best patch of three backends
-in the run of 2026-10-10T16:59:44Z) is already near the noise floor: its noisy
-histogram is closer to the true prediction than to the sign-flip prediction by
-a TVD margin of only 0.062 (0.181 against 0.243), and its TVD to the noisy
-sign-flip control histogram is 0.131. A computation of 7.1e8 Toffolis per shot
-is about seven orders of magnitude past that, before any error-correction
-overhead.
+The circuits in this repository give the practical scale, so far in
+simulation only: no job has run on hardware. The dim-32 associator spectrum is
+96 CZ on 5 qubits, at joint ESP 0.77 on the best patch of three backends in the
+dry run of 2026-10-10T16:59:44Z. Its noise-model histogram, simulated from that
+calibration, sits near the simulated noise floor: it is closer to the true
+prediction than to the sign-flip prediction by a TVD margin of only 0.062
+(0.181 against 0.243), and its TVD to the simulated sign-flip control histogram
+is 0.131. A submitted and collected run is what turns this into a hardware
+bound. A computation of 7.1e8 Toffolis per shot is about seven orders of
+magnitude past this circuit size, before any error-correction overhead.
 
 ## What decomposes and what does not
 
