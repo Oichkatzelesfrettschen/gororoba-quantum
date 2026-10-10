@@ -243,6 +243,86 @@ def check_left_mult_sign_degree(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) ->
             _require(degree == want, f"dim {dim} L_e{m} sign degree {degree}, expected {want}")
 
 
+def _schreier_sign_vector(dim: int, a: int, b: int) -> int:
+    """Bit x of the result is set where L_{e_{a^b}}^{-1} L_{e_a} L_{e_b} has sign -1 on |x>."""
+    vec = 0
+    for x in range(dim):
+        sign = cd_sign(dim, b, x) * cd_sign(dim, a, b ^ x) * cd_sign(dim, a ^ b, x)
+        if sign < 0:
+            vec |= 1 << x
+    return vec
+
+
+def _f2_basis(vectors: set[int]) -> list[int]:
+    basis: list[int] = []
+    for v in sorted(vectors):
+        for b in basis:
+            v = min(v, v ^ b)
+        if v:
+            basis.append(v)
+    return basis
+
+
+def _group_by_enumeration(dim: int) -> tuple[int, int]:
+    """|<L_{e_m}>| and its largest element order, by closing the generators.
+
+    An element is (mask, a): |x> -> (-1)^(bit x of mask) |x ^ a>.
+    """
+
+    def compose(g: tuple[int, int], h: tuple[int, int]) -> tuple[int, int]:
+        shifted = sum(1 << x for x in range(dim) if (g[0] >> (x ^ h[1])) & 1)
+        return h[0] ^ shifted, g[1] ^ h[1]
+
+    gens = [(sum(1 << x for x in range(dim) if cd_sign(dim, m, x) < 0), m) for m in range(dim)]
+    seen = {(0, 0)}
+    frontier = [(0, 0)]
+    while frontier:
+        fresh = []
+        for e in frontier:
+            for g in gens:
+                p = compose(g, e)
+                if p not in seen:
+                    seen.add(p)
+                    fresh.append(p)
+        frontier = fresh
+    max_order = 1
+    for e in seen:
+        k, p = 1, e
+        while p != (0, 0):
+            p, k = compose(e, p), k + 1
+        max_order = max(max_order, k)
+    return len(seen), max_order
+
+
+def check_left_mult_group(dims: tuple[int, ...] = (4, 8, 16, 32, 64)) -> dict[int, int]:
+    """G = <L_{e_m}> has order 2^(n + 2^(n-1)) at dim 2^n >= 8 and exponent 4.
+
+    Every element is a signed XOR translation D P_a, so the translation part maps
+    G onto F_2^n with kernel H, the +/-1 diagonals in G. Schreier's lemma with
+    transversal {L_{e_a}} generates H by the diagonals L_{e_{a^b}}^{-1} L_{e_a}
+    L_{e_b}; H is abelian, so log2 |H| is the F_2 rank of their sign vectors: 1 at
+    dim 4 (H = {+/-I}, G = Q8) and 2^(n-1) from dim 8 on, every vector of degree at
+    most n - 2. (D P_a)^2 is diagonal and squares to I, so no product of basis
+    left multiplications has order beyond 4. Enumeration confirms |G| and the
+    exponent through dim 16. Returns log2 |G| per dimension.
+    """
+    out = {}
+    for dim in dims:
+        n = dim.bit_length() - 1
+        basis = _f2_basis({_schreier_sign_vector(dim, a, b) for a in range(dim) for b in range(dim)})
+        want = 1 if n == 2 else 2 ** (n - 1)
+        _require(len(basis) == want, f"dim {dim}: sign subgroup rank {len(basis)}, expected {want}")
+        for v in basis:
+            degree = anf_degree([(v >> x) & 1 for x in range(dim)])
+            _require(degree <= max(n - 2, 0), f"dim {dim}: sign subgroup vector of degree {degree}")
+        out[dim] = n + len(basis)
+        if dim <= 16:
+            order, max_order = _group_by_enumeration(dim)
+            _require(order == 2 ** out[dim], f"dim {dim}: enumeration finds |G| = {order}, Schreier 2^{out[dim]}")
+            _require(max_order == 4, f"dim {dim}: largest element order {max_order}")
+    return out
+
+
 def main() -> int:
     try:
         cells = check_sign_tensor_against_kernel()
@@ -260,6 +340,8 @@ def main() -> int:
             print(f"associator phase degree census dim {dim}: {hist}")
         check_left_mult_sign_degree()
         print("L_e_m sign degree = log2(dim) - 1 for every m != 0, dims 8 through 128")
+        orders = check_left_mult_group()
+        print(f"<L_e_m> order log2 per dim: {orders}; exponent 4 (enumerated through dim 16)")
     except CheckFailed as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
