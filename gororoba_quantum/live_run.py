@@ -800,12 +800,15 @@ def replica_statistics(
     count = len(runs[0].replicas)
     pooled, per_replica = _pooled_summaries(group, runs, dists)
     out: dict[str, Any] = {"summary": pooled, "summary_per_replica": per_replica}
-    if count >= 2:
-        out["summary_interval"] = {
-            key: variance.interval([r[key] for r in per_replica], shots, bernoulli=key in group.rate_keys)
-            for key in pooled
-            if all(math.isfinite(r[key]) for r in per_replica)
-        }
+    # A declared rate has a Wilson interval from one replica's shots; any
+    # other value needs two replicas for a spread.
+    intervals = {
+        key: variance.interval([r[key] for r in per_replica], shots, bernoulli=key in group.rate_keys)
+        for key in pooled
+        if (count >= 2 or key in group.rate_keys) and all(math.isfinite(r[key]) for r in per_replica)
+    }
+    if intervals:
+        out["summary_interval"] = intervals
     scores = {e.name: [variance.score(d, e.ideal, e.weights) for d in dists[e.name]] for e in runs}
     out["variance"] = {
         name: variance.decompose([m for m, _ in pairs], [v for _, v in pairs], shots) for name, pairs in scores.items()
@@ -1266,13 +1269,13 @@ def _gate_odr(stats: dict[str, Any], pooled: str | None, per_replica: str | None
 
 
 def _comparisons_withheld(names: list[str], executed: dict[str, dict[str, Any]]) -> str | None:
-    """Why statistics that compare separate PUBs of a group are not valid, or None when they are.
+    """Why statistics that combine separate PUBs of a group are not valid, or None when they are.
 
-    crosstalk sets the isolated reference against packed replica 0, and
-    admission sets the primary against its identity null; each pair runs as
-    separate PUBs, so a calibration update between them would read as
-    crosstalk or move the verdict. Both need every PUB of the group under one
-    calibration with no update inside any PUB's shots.
+    Each member, twin, and isolated reference runs as its own PUB, and every
+    group summary combines them: a dark/bright ratio, a fringe fit, a margin
+    over a null, crosstalk, and admission. A calibration update between PUBs
+    would read as the experiment's signal, so these need every PUB of the
+    group under one calibration with no update inside any PUB's shots.
     """
     ran = [executed[n] for n in names if n in executed]
     if any(e["calibration_changed_during_shots"] for e in ran) or len({e["calibration"] for e in ran}) > 1:
@@ -1280,9 +1283,9 @@ def _comparisons_withheld(names: list[str], executed: dict[str, dict[str, Any]])
     return None
 
 
-def _without_comparisons(stats: dict[str, Any]) -> None:
-    stats.pop("crosstalk", None)
-    stats.pop("admission", None)
+def _single_pub_views(stats: dict[str, Any]) -> dict[str, Any]:
+    """The views of stats computed within one PUB each: every entry's replica variance."""
+    return {"variance": stats["variance"]}
 
 
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
@@ -1409,6 +1412,27 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 out.append(out_entry)
                 continue
             stats = replica_statistics(group, entries, measured, shots)
+            comparison_reason = _comparisons_withheld(required, executed)
+            if comparison_reason:
+                # Every summary combines members that ran as separate PUBs, so
+                # under split calibrations only each entry's own replica
+                # variance stands; the raw distributions above stay for
+                # reanalysis.
+                out_entry["comparisons_withheld"] = comparison_reason
+                out_entry["measured_statistics"] = _single_pub_views(stats)
+                if straddling:
+                    out_entry["calibration_dependent_summaries_unavailable"] = (
+                        f"calibration changed during the shots of {straddling}"
+                    )
+                else:
+                    out_entry["replayed_statistics"] = _single_pub_views(
+                        replica_statistics(group, entries, replayed, shots)
+                    )
+                    out_entry["tvd_measured_to_replayed"] = {
+                        n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
+                    }
+                out.append(out_entry)
+                continue
             # A failed ODR gate removes the mirror-rescaled values from every
             # view the entry publishes, measured, readout-corrected, and
             # replayed alike.
@@ -1416,27 +1440,16 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if pooled_reason or replica_reason:
                 out_entry["odr_withheld"] = {"pooled": pooled_reason, "per_replica": replica_reason}
             out_entry["measured_statistics"] = _gate_odr(stats, pooled_reason, replica_reason)
-            comparison_reason = _comparisons_withheld(required, executed)
-            if comparison_reason:
-                out_entry["comparisons_withheld"] = comparison_reason
-                _without_comparisons(out_entry["measured_statistics"])
-            if straddling:
-                out_entry["calibration_dependent_summaries_unavailable"] = (
-                    f"calibration changed during the shots of {straddling}"
-                )
-            else:
-                out_entry["measured_summary_readout_corrected"] = _without_odr(
-                    corrected_summary(group, entries, measured, props_by_name, symmetric=twirled_readout),
-                    pooled_reason,
-                )
-                out_entry["replayed_statistics"] = _gate_odr(
-                    replica_statistics(group, entries, replayed, shots), pooled_reason, replica_reason
-                )
-                if comparison_reason:
-                    _without_comparisons(out_entry["replayed_statistics"])
-                out_entry["tvd_measured_to_replayed"] = {
-                    n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
-                }
+            out_entry["measured_summary_readout_corrected"] = _without_odr(
+                corrected_summary(group, entries, measured, props_by_name, symmetric=twirled_readout),
+                pooled_reason,
+            )
+            out_entry["replayed_statistics"] = _gate_odr(
+                replica_statistics(group, entries, replayed, shots), pooled_reason, replica_reason
+            )
+            out_entry["tvd_measured_to_replayed"] = {
+                n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
+            }
             out.append(out_entry)
     text = json.dumps(out, indent=2) + "\n"
     _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")

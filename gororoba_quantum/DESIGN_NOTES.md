@@ -443,9 +443,11 @@ on each replica alone, so a ratio, fringe fit, or TVD and its interval share
 one estimand. A value the group declares a per-shot rate also gets a Wilson
 interval over the pooled shots, and its reported interval is the union of
 that and the replicate interval, so replicas that agree exactly keep their
-shot uncertainty. Crosstalk and admission compare separate PUBs, so collect
-withholds them unless every PUB of the group ran under one calibration with
-no update inside its shots. Every pooled summary value also gets a Student t
+shot uncertainty. Each member, twin, and isolated reference runs as its own
+PUB, and every group summary, crosstalk, and admission combines them, so
+when a group's PUBs did not all run under one calibration with no update
+inside their shots, collect publishes only each entry's own replica variance
+beside the raw distributions and records the reason in comparisons_withheld. Every pooled summary value also gets a Student t
 interval over
 its replicas.
 

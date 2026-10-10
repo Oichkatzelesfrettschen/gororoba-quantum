@@ -348,6 +348,7 @@ def _hybrid_shor_mod15() -> Group:
                 "order_recovery_probability",
                 "identity_null_factorable_probability",
                 "identity_null_order_recovery_probability",
+                "identity_null_p0",
             }
         ),
     )
