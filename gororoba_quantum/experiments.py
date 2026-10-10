@@ -31,9 +31,20 @@ Summary = Callable[[dict[str, np.ndarray]], dict[str, float]]
 
 @dataclass(frozen=True)
 class Member:
+    """One circuit of a group. mirror asks the compiler for a calibration twin.
+
+    The twin is cut from the member's compiled ISA circuit, so it runs on the
+    same physical qubits with the same two-qubit content (live_run.mirror_isa);
+    summaries find its distribution under the member's name plus MIRROR_SUFFIX.
+    """
+
     name: str
     circuit: QuantumCircuit
     ideal: np.ndarray
+    mirror: bool = False
+
+
+MIRROR_SUFFIX = "_mirror"
 
 
 @dataclass(frozen=True)
@@ -62,12 +73,39 @@ def _two_outcome(p1: float) -> np.ndarray:
     return np.array([1.0 - p1, p1])
 
 
-def _design_a() -> Group:
-    def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
-        return {"p1": float(dist["design_a_1_2"][1])}
+def z_expectation(dist: np.ndarray) -> float:
+    """<Z> of a one-bit distribution: P(0) - P(1)."""
+    return float(dist[0] - dist[1])
 
-    member = Member("design_a_1_2", design_a_associator(1, 2)[0], _two_outcome(1.0))
-    return Group("design_a", (member,), summarize)
+
+def odr_p1(dist: np.ndarray, mirror: np.ndarray) -> float:
+    """P(1) after dividing <Z> by the mirror circuit's attenuation.
+
+    The value is left unclipped: a result outside [0, 1] means the mirror
+    attenuates less than the witness does, which is itself the diagnostic.
+    """
+    att = z_expectation(mirror)
+    corrected = z_expectation(dist) / att if att > 0 else math.nan
+    return float((1.0 - corrected) / 2.0)
+
+
+def _uniform(clbits: int) -> np.ndarray:
+    return np.full(2**clbits, 1.0 / 2**clbits)
+
+
+def _design_a() -> Group:
+    qc = design_a_associator(1, 2)[0]
+
+    def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
+        got = dist["design_a_1_2"]
+        return {
+            "p1": float(got[1]),
+            "p1_odr": odr_p1(got, dist["design_a_1_2" + MIRROR_SUFFIX]),
+            "mirror_z": z_expectation(dist["design_a_1_2" + MIRROR_SUFFIX]),
+            "tvd_to_uniform": tvd(got, _uniform(1)),
+        }
+
+    return Group("design_a", (Member("design_a_1_2", qc, _two_outcome(1.0), mirror=True),), summarize)
 
 
 def _zero_divisor_fringe() -> Group:
@@ -75,9 +113,14 @@ def _zero_divisor_fringe() -> Group:
     tag = f"{i}_{j}_{k}_{el}"
     dark_p0 = predict.zero_divisor_p0((i, j), (k, el), s)
     bright_p0 = predict.zero_divisor_p0((i, j), (k, el), -s)
+    dark_qc = design_b_zero_divisor((i, j), (k, el), s)
+    bright_qc = design_b_zero_divisor((i, j), (k, el), -s)
+    dark_name, bright_name = f"design_b_dark_{tag}", f"design_b_bright_{tag}"
     members = [
-        Member(f"design_b_dark_{tag}", design_b_zero_divisor((i, j), (k, el), s), _two_outcome(1 - dark_p0)),
-        Member(f"design_b_bright_{tag}", design_b_zero_divisor((i, j), (k, el), -s), _two_outcome(1 - bright_p0)),
+        # Each witness gets its own mirror; the sweep points share the dark one,
+        # since they differ from it only by the preparation phase gate.
+        Member(dark_name, dark_qc, _two_outcome(1 - dark_p0), mirror=True),
+        Member(bright_name, bright_qc, _two_outcome(1 - bright_p0), mirror=True),
     ]
     sweep_names = []
     for n, phase in enumerate(SWEEP_PHASES):
@@ -87,9 +130,26 @@ def _zero_divisor_fringe() -> Group:
         members.append(Member(name, design_d_phase_sweep((i, j), (k, el), phase), _two_outcome(1 - want)))
 
     def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
-        dark, bright = float(dist[members[0].name][0]), float(dist[members[1].name][0])
+        dark, bright = float(dist[dark_name][0]), float(dist[bright_name][0])
+        dark_odr = 1.0 - odr_p1(dist[dark_name], dist[dark_name + MIRROR_SUFFIX])
+        bright_odr = 1.0 - odr_p1(dist[bright_name], dist[bright_name + MIRROR_SUFFIX])
         fit = fit_fringe(SWEEP_PHASES, [float(dist[name][0]) for name in sweep_names])
-        return {"p0_dark": dark, "p0_bright": bright, "ratio": dark / bright if bright else math.nan} | fit
+        odr_sweep = [1.0 - odr_p1(dist[name], dist[dark_name + MIRROR_SUFFIX]) for name in sweep_names]
+        fit_odr = {f"{k}_odr": v for k, v in fit_fringe(SWEEP_PHASES, odr_sweep).items()}
+        return (
+            {
+                "p0_dark": dark,
+                "p0_bright": bright,
+                "ratio": dark / bright if bright else math.nan,
+                "p0_dark_odr": dark_odr,
+                "p0_bright_odr": bright_odr,
+                "ratio_odr": dark_odr / bright_odr if bright_odr else math.nan,
+                "mirror_z_dark": z_expectation(dist[dark_name + MIRROR_SUFFIX]),
+                "mirror_z_bright": z_expectation(dist[bright_name + MIRROR_SUFFIX]),
+            }
+            | fit
+            | fit_odr
+        )
 
     return Group("zero_divisor_fringe", tuple(members), summarize)
 
@@ -117,6 +177,7 @@ def _associator_spectrum(dim: int, i: int, j: int) -> Group:
             "tvd_to_true": tvd(got, true),
             "tvd_to_flip_prediction": tvd(got, flipped),
             "tvd_to_omit_prediction": tvd(got, omitted),
+            "tvd_to_uniform": tvd(got, _uniform(n)),
             "flip_control_tvd_to_own": tvd(dist[f"{base}_flip"], flipped),
             "omit_control_tvd_to_own": tvd(dist[f"{base}_omit"], omitted),
         }
