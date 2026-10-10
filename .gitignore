@@ -1,0 +1,17 @@
+# Claude Code local session state
+.claude/
+
+# Python caches and build artifacts
+__pycache__/
+*.py[cod]
+.mypy_cache/
+.ruff_cache/
+.pytest_cache/
+*.egg-info/
+build/
+dist/
+
+# Credentials never belong in the tree; the qiskit store lives in ~/.qiskit
+qiskit-ibm.json
+*.key
+*apikey*
