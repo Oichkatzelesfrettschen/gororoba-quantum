@@ -931,7 +931,10 @@ def _odr_withheld_reason(names: list[str], executed: dict[str, dict[str, Any]], 
     return None
 
 
-def _without_odr(summary: dict[str, Any]) -> dict[str, Any]:
+def _without_odr(summary: dict[str, Any], withheld: str | None) -> dict[str, Any]:
+    """summary minus its mirror-rescaled and twin fields when withheld names a reason."""
+    if withheld is None:
+        return summary
     return {k: v for k, v in summary.items() if "odr" not in k and not k.startswith("mirror_z")}
 
 
@@ -1023,20 +1026,28 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if missing:
                 entry["summary_unavailable"] = f"missing {missing}"
             else:
-                entry["measured_summary"] = group.summarize(measured)
+                # A failed ODR gate removes the mirror-rescaled values from
+                # every summary the entry publishes, measured, readout-corrected,
+                # and replayed alike.
                 withheld = _odr_withheld_reason(required, executed, shots)
                 if withheld:
-                    entry["measured_summary"] = _without_odr(entry["measured_summary"])
                     entry["odr_withheld"] = withheld
+                entry["measured_summary"] = _without_odr(group.summarize(measured), withheld)
                 if straddling:
                     entry["calibration_dependent_summaries_unavailable"] = (
                         f"calibration changed during the shots of {straddling}"
                     )
                 else:
-                    entry["measured_summary_readout_corrected"] = corrected_summary(
-                        group, {n: (measured[n], isas[n]) for n in required}, props_by_name, symmetric=twirled_readout
+                    entry["measured_summary_readout_corrected"] = _without_odr(
+                        corrected_summary(
+                            group,
+                            {n: (measured[n], isas[n]) for n in required},
+                            props_by_name,
+                            symmetric=twirled_readout,
+                        ),
+                        withheld,
                     )
-                    entry["replayed_summary"] = group.summarize(replayed)
+                    entry["replayed_summary"] = _without_odr(group.summarize(replayed), withheld)
                     entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
             out.append(entry)
     (run_dir / "collect.json").write_text(json.dumps(out, indent=2) + "\n")
