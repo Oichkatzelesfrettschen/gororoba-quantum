@@ -1419,11 +1419,14 @@ def discover_snapshots(
     service: QiskitRuntimeService, pinned_names: list[str] | None, max_pending: int | None
 ) -> tuple[list[Snapshot], dict[str, Any], dict[str, Any]]:
     """Return eligible snapshots, skipped evidence, and the requested-system inventory."""
-    try:
-        discovered = service.backends()
-    except Exception as error:
-        raise LiveRunError(f"backend discovery failed ({type(error).__name__})") from error
-    names = list(dict.fromkeys(pinned_names or sorted(backend.name for backend in discovered)))
+    if pinned_names is not None:
+        names = list(dict.fromkeys(pinned_names))
+    else:
+        try:
+            discovered = service.backends()
+        except Exception as error:
+            raise LiveRunError(f"backend discovery failed ({type(error).__name__})") from error
+        names = sorted({backend.name for backend in discovered})
     snapshots: list[Snapshot] = []
     skipped: dict[str, Any] = {}
     inventory: dict[str, Any] = {}

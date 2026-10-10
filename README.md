@@ -42,8 +42,9 @@ observables.
 - `gororoba_quantum/live_run.py` -- live system discovery, circuit-derived
   capability admission, degraded-hardware-filtered routing, recursive Target
   validation, ESP-and-coherence-ranked selection, disjoint replica placement,
-  approval-gated cross-system reselection, local noise simulation, gated
-  client-side Sampler submission, and execution-time replay.
+  direct pinned-system probing, approval-gated cross-system reselection, local
+  noise simulation, gated client-side Sampler submission, and execution-time
+  replay.
 - `gororoba_quantum/runtime_contracts.py` -- credential-free checks for packed
   static and dynamic circuits, capability and routing admission, recursive
   Target support, coherent calibration snapshots, final execution-set job-batch

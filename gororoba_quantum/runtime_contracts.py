@@ -146,6 +146,13 @@ class _ProbeService:
         return self.recovery_jobs
 
 
+class _PinnedProbeService(_ProbeService):
+    """Service whose direct backend lookup works while enumeration fails."""
+
+    def backends(self) -> list[_ProbeBackend]:
+        raise RuntimeError("fixture global discovery failure")
+
+
 class _ProbeJob:
     def __init__(self, job_id: str):
         self._job_id = job_id
@@ -432,6 +439,15 @@ def _verify_discovered_capabilities() -> None:
     choice = select(hybrid, snapshots, 1, trace, SINGLE_REPLICA_POLICY)
     if choice.snap is not snapshots[0] or len(choice.entries) != 2:
         raise RuntimeError("discovered backend fails hybrid-Shor routing admission")
+
+    pinned_backend = _ProbeBackend("pinned", FakeFez(), max_circuits=2)
+    pinned_snapshots, pinned_skipped, pinned_inventory = discover_snapshots(
+        _PinnedProbeService([pinned_backend]), ["pinned"], None
+    )
+    if pinned_skipped or [snapshot.name for snapshot in pinned_snapshots] != ["pinned"]:
+        raise RuntimeError("global discovery failure suppresses a directly reachable pinned backend")
+    if pinned_inventory["pinned"]["eligibility"] != "eligible":
+        raise RuntimeError("directly reachable pinned backend loses eligible inventory state")
 
 
 def _fake_snapshot(backend: Any) -> Snapshot:
@@ -1148,9 +1164,10 @@ def _verify() -> None:
     if len(first_digest) != 64 or first_digest != second_digest:
         raise RuntimeError("experiment source manifest digest is unstable")
     print(
-        "runtime contracts: discovery, capability admission, bounded-angle isolation, "
-        "coherent snapshots, Target routing, packed replicas, renewed approval, "
-        "batch revalidation, schema lifecycle, recovery, result order, rate keys, and digest pass"
+        "runtime contracts: discovery, direct pinned lookup, capability admission, "
+        "bounded-angle isolation, coherent snapshots, Target routing, packed replicas, "
+        "renewed approval, batch revalidation, schema lifecycle, recovery, result order, "
+        "rate keys, and digest pass"
     )
 
 

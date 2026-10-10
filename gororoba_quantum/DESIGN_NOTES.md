@@ -361,6 +361,9 @@ shapes.
 - Staleness: last_update_date advances without value changes (ibm_fez moved
   from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
   `--submit` rediscovers every requested system before any job leaves the host.
+  An explicit `--backends` list probes those names directly and remains usable
+  when account-wide backend enumeration fails; the default all-system path
+  enumerates the accessible systems first.
   The pre-submission loop reruns deterministic selection across every fresh
   eligible system even while the prior choice remains valid. The comparison
   covers backend, layout, replica maps, entry identities, packed QPY identity,
