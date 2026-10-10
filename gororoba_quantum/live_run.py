@@ -247,9 +247,23 @@ def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
             if name == "measure":
                 # readout_corrected reads the asymmetric channel, which can move
                 # while the aggregate readout_error holds.
-                for field_name in ("prob_meas1_prep0", "prob_meas0_prep1"):
-                    out[f"{field_name}:{qargs[0]}"] = props.qubit_property(qargs[0], field_name)[0]
+                e10, e01 = readout_flips(props, qargs[0])
+                out[f"e10:{qargs[0]}"], out[f"e01:{qargs[0]}"] = e10, e01
     return out
+
+
+def readout_flips(props: Any, q: int) -> tuple[float, float]:
+    """(e10, e01) = (prob_meas1_prep0, prob_meas0_prep1) of qubit q, or readout_error for both.
+
+    The noise model, the readout correction, and the fingerprint all read the
+    channel here, so a backend that omits the asymmetric fields gets the same
+    symmetric fallback in each.
+    """
+    try:
+        return props.qubit_property(q, "prob_meas1_prep0")[0], props.qubit_property(q, "prob_meas0_prep1")[0]
+    except Exception:  # BackendPropertyError: asymmetric fields absent for this qubit
+        error = props.readout_error(q)
+        return error, error
 
 
 def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, props: Any, label: str) -> None:
@@ -378,19 +392,16 @@ def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
     prob_meas1_prep0, e01 = prob_meas0_prep1) from the properties instead, the
     same channel readout_corrected inverts, so a corrected prediction removes
     exactly the readout error the simulation applied. A qubit without the two
-    fields keeps the symmetric channel. Planning and --collect both use it.
+    fields gets the symmetric readout_error channel from readout_flips, as the
+    correction does. Planning and --collect both use it.
     """
     view = TargetView(name, target)
     noise = NoiseModel.from_backend(view, readout_error=False)
     for q in range(target.num_qubits):
         try:
-            e10 = props.qubit_property(q, "prob_meas1_prep0")[0]
-            e01 = props.qubit_property(q, "prob_meas0_prep1")[0]
-        except Exception:  # BackendPropertyError: field absent for this qubit
-            measure = target["measure"].get((q,))
-            if measure is None or measure.error is None:
-                continue
-            e10 = e01 = measure.error
+            e10, e01 = readout_flips(props, q)
+        except Exception:  # BackendPropertyError: no readout calibration at all
+            continue
         noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
     return AerSimulator.from_backend(view, noise_model=noise)
 
@@ -422,9 +433,7 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.n
             writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
     inverse = np.ones((1, 1))
     for clbit in reversed(range(isa.num_clbits)):
-        q = writer[clbit]
-        e10 = props.qubit_property(q, "prob_meas1_prep0")[0]
-        e01 = props.qubit_property(q, "prob_meas0_prep1")[0]
+        e10, e01 = readout_flips(props, writer[clbit])
         inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
     return np.asarray(inverse @ dist)
 
@@ -618,13 +627,19 @@ def submit(
                 moved = True
         if not moved:
             break
-        # The record's predictions must describe the circuits that run.
+        # The record's predictions must describe the circuits that run, and the
+        # archive moves with them, so an abort on a later pass still leaves
+        # record.json and isa.qpy describing the same circuits.
         evaluate(choices, record)
         record["reevaluated_before_submit"] = attempt + 1
+        archive()
     else:
         raise LiveRunError(f"calibration kept moving through {MAX_REVALIDATION} revalidation passes; rerun later")
     archive()
-    record["submission"] = {"jobs": []}
+    planned = sorted({choice.snap.name for choice in choices})
+    # complete turns true only after every planned job has an id on disk; a
+    # failure between jobs leaves it false for --collect to report.
+    record["submission"] = {"planned_backends": planned, "jobs": [], "complete": False}
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
         by_backend.setdefault(choice.snap.name, []).append(choice)
@@ -654,6 +669,8 @@ def submit(
         # disk before the next job is sent.
         checkpoint()
         print(f"submitted {len(circuits)} circuits to {name}: job {job.job_id()}")
+    record["submission"]["complete"] = True
+    checkpoint()
 
 
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
@@ -717,8 +734,17 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         )
     if "submission" not in record:
         raise LiveRunError(f"{run_dir} is a dry-run record with no submitted jobs to collect")
+    submission = record["submission"]
+    sent = {job["backend"] for job in submission["jobs"]}
+    unsent = [name for name in submission.get("planned_backends", []) if name not in sent]
+    if not submission.get("complete", False):
+        print(
+            f"incomplete submission: no job was sent to {unsent}; collecting the {len(sent)} that were", file=sys.stderr
+        )
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
-    out = []
+    out: list[dict[str, Any]] = [
+        {"submission_complete": bool(submission.get("complete", False)), "unsent_backends": unsent}
+    ]
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         result = job.result()
