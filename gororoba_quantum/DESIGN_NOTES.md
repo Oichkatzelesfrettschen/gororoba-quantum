@@ -438,6 +438,25 @@ object establishes zero QPU jobs. The record predates replica placement,
 isolated crosstalk references, variance decomposition, and statistical
 admission, so it does not qualify the integrated schema-4 execution path.
 
+The integrated schema-4 dry run at
+`results/live/2026-10-10T223619.798923Z/` uses source `b7e0268` with
+`sources_modified=false`. The default queue gate first rejects Fez at 194
+pending jobs and Kingston at 81; Marrakesh reports maintenance. The retained
+submit-free rerun uses `--max-pending 250`, records Fez and Kingston as eligible
+under that explicit bound, and records Marrakesh as ineligible. Kingston wins
+all seven groups. The archive contains 38 unique packed circuits, including
+seven isolated references, and its names exactly match both the member records
+and final execution requirements. Every group records its effective replica
+floor: 0.9 for six groups and 0.8 for hybrid Shor, which places nine replicas.
+All three discovered systems report `max_circuits=null`, so the live record
+establishes no finite service circuit limit; synthetic contracts establish
+job-batch partitioning under finite compatibility bounds. The lifecycle stays
+`planned` with `submission` absent. The record therefore qualifies the combined
+discovery, capability, routing, Target-validation, replica, variance, and
+archive path while recording zero QPU jobs. Stable pre-submission selection,
+immediate batch revalidation, and recovery remain credential-free contract
+evidence until an approved submission exercises them.
+
 Submission partitions each backend's complete result groups into static and
 dynamic sets. A deterministic first-fit-decreasing partitioner places whole
 groups into one or more client-side Sampler jobs under the refreshed backend's

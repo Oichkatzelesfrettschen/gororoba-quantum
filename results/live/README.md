@@ -32,6 +32,18 @@ evidence; `isa.qpy` carries the exact circuits produced by that revision.
 - **Legacy records.** Records without `schema_version` are historical dry-run
   plans. `--collect` rejects them.
 
+`2026-10-10T223619.798923Z` is the first combined schema-4 qualification. The
+default queue gate first rejects Fez at 194 pending jobs and Kingston at 81;
+Marrakesh reports maintenance. The retained rerun sets `--max-pending 250` for
+submit-free compilation and local simulation, selects Kingston for all seven
+groups, and archives 38 circuits. Its QPY circuit names equal the group-member
+and execution-requirement names. The record stays `planned` with `submission`
+absent, so it records zero QPU jobs and does not establish default-policy
+submission readiness. Record SHA-256 is
+`6c347e70e0ea22de682fc935d810612287bbb984d1a3ac551b367f550d5f0f7c`; QPY
+SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
+
 A dynamic member marks `duration_bound: lower_without_classical_latency`.
 Schema-4 top-level inventory fields describe initial planning;
 `revalidation[].system_inventory` describes each full pre-submission refresh;

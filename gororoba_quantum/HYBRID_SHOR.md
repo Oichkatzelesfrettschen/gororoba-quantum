@@ -367,6 +367,29 @@ shots. The noise model predicts layout variance in factor yield of 3.1e-5,
 within shot noise (chi-squared p = 0.17); a measured excess is hardware
 structure the model omits.
 
+## Combined schema-4 qualification
+
+`results/live/2026-10-10T223619.798923Z/` runs the integrated contract from
+source `b7e0268`. The submit-free run uses `--max-pending 250` after the default
+25-job gate rejects both active systems. Kingston calibration
+`2026-10-10T13:54:45-07:00` wins with seed `20261010`, layout
+`[79, 94, 74, 93, 73]`, 60 primary CZ gates, and zero identity-null CZ gates.
+The group's 0.8 floor places nine replicas and expands each packed dynamic
+circuit to 72 classical bits.
+
+| Schema-4 hybrid quantity | Mean | 95% interval over 9 replicas |
+|---|---:|---|
+| Primary factor yield | 0.4971 | [0.4901, 0.5040] |
+| Identity-null factor yield | 0.0040 | [0.0013, 0.0068] |
+| Exact uniform-null factor yield | 0.2969 | exact |
+
+The factor and order-recovery admission rules both pass in the local noise
+model. The complete QPY archive contains 38 uniquely named circuits, including
+the hybrid isolated reference, and matches the schema-4 member and execution
+requirements exactly. The record stays `planned` with `submission` absent, so
+it records zero QPU jobs. The 250-job dry-run bound leaves default-policy
+submission readiness unestablished.
+
 ## Deficiencies and falsifiers
 
 - **Truth-table scaling.** ANF extraction enumerates `2^n` inputs and the
