@@ -290,13 +290,28 @@ back to drive a submission.
   excluded 10, 8, and 27 qubits and 16, 24, and 20 edges on fez, kingston, and
   marrakesh.
 - Selection: per experiment group and eligible backend, 8 transpiler seeds for
-  the primary circuit; the top 3 by ESP compile their controls onto the same
-  initial layout; the highest geometric-mean ESP across the group wins, queue
-  depth breaking ties. A candidate touching excluded hardware is rejected.
+  the primary circuit; the top 3 by layout score compile their controls onto
+  the same initial layout; the highest geometric-mean score across the group
+  wins, queue depth breaking ties. The layout score is ESP times exp(-T sum_q
+  1/T2_q), T the circuit's estimated duration, so idle dephasing on the chosen
+  qubits counts beside gate and readout error. A candidate touching excluded
+  hardware is rejected.
 - Shared compile for the zero-divisor group: design B dark, bright, and the
   design D sweep are bindings of one circuit with a phase parameter on the
   input, so every member runs the same routing and reads out on the same
   physical qubit, and the suppression ratio compares one set of qubits.
+- Mirror calibration: each single-observable witness (design A, design B dark
+  and bright) gets a twin cut from its own compiled circuit -- the first half
+  of its CZ content, a barrier, and the inverse -- on the same physical qubits
+  with the same CZ count. The twin ideally returns all zeros, and the witness's
+  <Z> divided by the twin's <Z> is its rescaled value (ODR, literature note
+  2507.08088). Design D's sweep points share the dark twin. The rescaled values
+  stay unclipped; in the noise model they overshoot by 1 to 3 percent (design A
+  P1 1.010, fringe visibility 1.019), because a twin attenuates slightly less
+  than its witness.
+- Nulls: these designs read interference through a final Hadamard layer, so the
+  fully dephased and fully depolarized nulls coincide with the uniform
+  distribution; every summary reports the TVD to uniform.
 - Freshness proof: the Target that ESP and the noise model read agrees with the
   properties fetched with it on the error and duration of every CZ, sx, x, and
   measurement of the plan and on T1 and T2 of every touched qubit, so ranking
@@ -314,8 +329,11 @@ back to drive a submission.
   with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
   A raw dark P(0) carries prob_meas0_prep1 as an additive floor even on a
   shared readout qubit. The noise model applies the same asymmetric channel,
-  and in results/live/2026-10-10T183023.567277Z the correction moves the
-  zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369. A group whose shots
+  and in results/live/2026-10-10T183325.225102Z the correction moves the
+  zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369 and the fringe
+  visibility from 0.9065 to 0.9175. With --twirl, collection inverts the
+  symmetric mean channel, since measurement twirling averages the two flip
+  probabilities. A group whose shots
   straddle a calibration update keeps only its raw summary at collection.
 - Archived definitions: the record stores a sha256 over every module of
   gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
@@ -346,12 +364,22 @@ Run of 2026-10-10T16:59:44Z (ibm_kingston skipped at 27 pending jobs):
 | design C dim 16 | ibm_marrakesh | 11, 12, 10, 18 | 49, 54, 28 | TVD 0.114 true vs 0.254 flip |
 | design C dim 32 | ibm_marrakesh | 11, 9, 12, 18, 10 | 96, 125, 64 | TVD 0.181 true vs 0.243 flip |
 
+A later run of the same code (2026-10-10T17:18:27Z) found ibm_kingston's queue
+at 9 jobs and moved every group to it, on the best medians of the three (T1
+242 us, CZ error 1.93e-3): design B/D at 42 CZ reached ratio 0.043 and fringe
+visibility 0.905 in the noise model, against 0.067 and 0.860 on ibm_marrakesh
+earlier the same hour.
+
 Submission runs one client-side Sampler job per chosen backend
 (qiskit_ibm_runtime.executor_sampler, the destination the
 migrate-qiskit-ibm-runtime skill sets for qiskit-ibm-runtime 0.50) with one
 shot count. usage() reports the active instance, and service.backend(name)
 selects the backend's instance, so each job's budget is checked against the
-instance that pays for it; the record stores that instance only as a hash. The
+instance that pays for it; the record stores that instance only as a hash.
+--twirl enables gate and measurement twirling and --dd sets a
+dynamical-decoupling sequence (XX, XpXm, XY4); both act on hardware and are
+absent from the Aer noise model, so a hardware-versus-model gap with them on
+measures their effect. The
 10-minute monthly budget is quantum execution time. 156/5 bounds the count of
 disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
 and crosstalk is the measurement of how many fit per shot.

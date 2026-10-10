@@ -56,7 +56,7 @@ from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
-from experiments import Group, Member, experiment_groups, tvd
+from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
 
 SHOTS = 4096
 OPT_LEVEL = 3
@@ -291,13 +291,16 @@ def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, pro
 
 @dataclass
 class Choice:
+    """The winning compile of a group, with mirror twins appended as entries."""
+
     group: Group
     snap: Snapshot
     seed: int
     layout: list[int]
     isas: list[QuantumCircuit]
-    member_esp: list[float]
-    joint_esp: float
+    member_scores: list[float]
+    joint_score: float
+    entries: list[tuple[str, QuantumCircuit, np.ndarray]] = field(default_factory=list)
 
 
 def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | None = None) -> QuantumCircuit:
@@ -310,8 +313,69 @@ def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
     return isa.assign_parameters(member.binding) if member.binding else isa
 
 
+def coherence(isa: QuantumCircuit, target: Any) -> float:
+    """exp(-T sum_q 1/T2_q) over the qubits isa touches, T its estimated duration.
+
+    ESP counts gate and readout error; this factor charges idle dephasing on the
+    chosen qubits for the length of the circuit (literature/notes/2509.18259.md).
+    """
+    duration = isa.estimate_duration(target, unit="s")
+    rate = sum(1.0 / target.qubit_properties[q].t2 for q in _physical(isa))
+    return math.exp(-duration * rate)
+
+
+def layout_score(isa: QuantumCircuit, target: Any) -> float:
+    return esp(isa, target) * coherence(isa, target)
+
+
+def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
+    """First half of isa's CZ content, a barrier, its inverse, measured as isa measures.
+
+    The twin runs on isa's physical qubits with about isa's two-qubit count and
+    ideally returns all zeros, so its measured <Z> is the attenuation a witness's
+    <Z> is divided by (literature/notes/2507.08088.md, Sec. IV A 3). Translation
+    to the ISA runs at optimization level 0 on the trivial layout, so no gate
+    moves, and the barrier keeps the halves from cancelling.
+    """
+    body = isa.remove_final_measurements(inplace=False)
+    total = body.count_ops().get("cz", 0)
+    half = QuantumCircuit(isa.num_qubits)
+    seen = 0
+    for inst in body.data:
+        if inst.operation.name == "barrier":
+            continue
+        if inst.operation.name == "cz":
+            if seen >= total // 2:
+                break
+            seen += 1
+        half.append(inst.operation, _qargs(body, inst))
+    out = QuantumCircuit(isa.num_qubits, isa.num_clbits, name=name)
+    out.compose(half, inplace=True)
+    # The barrier spans only the qubits the twin uses, so the untouched qubits
+    # of the full-width ISA stay idle from initialization.
+    out.barrier(_physical(isa))
+    out.compose(half.inverse(), inplace=True)
+    for inst in isa.data:
+        if inst.operation.name == "measure":
+            out.measure(isa.find_bit(inst.qubits[0]).index, isa.find_bit(inst.clbits[0]).index)
+    return transpile(out, backend=backend, optimization_level=0, initial_layout=list(range(isa.num_qubits)))
+
+
+def attach_mirrors(choice: Choice) -> Choice:
+    """Entries: every member's ISA, then a mirror twin for each member that asks for one."""
+    choice.entries = [(m.name, isa, m.ideal) for m, isa in zip(choice.group.members, choice.isas, strict=True)]
+    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        if member.mirror:
+            name = member.name + MIRROR_SUFFIX
+            twin = mirror_isa(isa, choice.snap.backend, name)
+            zeros = np.zeros(2**member.circuit.num_clbits)
+            zeros[0] = 1.0
+            choice.entries.append((name, twin, zeros))
+    return choice
+
+
 def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any]) -> Choice:
-    """Best (backend, seed, layout) for the group by geometric-mean ESP over its members."""
+    """Best (backend, seed, layout) for the group by geometric-mean layout score over its members."""
     best: Choice | None = None
     log[group.name] = {}
     for snap in snaps:
@@ -322,10 +386,14 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
             isa = _compile(primary.circuit, snap, seed)
             bad = _violations(isa, snap)
-            score = esp(isa, snap.backend.target)
-            trace.append({"seed": seed, "primary_esp": score, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
-            if not bad:
-                primaries.append((score, seed, isa))
+            trace.append({"seed": seed, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
+            if bad:
+                continue
+            # Scoring follows rejection: coherence() divides by T2, which an
+            # excluded qubit may lack, so a rejected layout is never scored.
+            score = layout_score(isa, snap.backend.target)
+            trace[-1]["primary_score"] = score
+            primaries.append((score, seed, isa))
         primaries.sort(key=lambda item: -item[0])
         for _, seed, isa in primaries[:JOINT_CANDIDATES]:
             layout = isa.layout.initial_index_layout(filter_ancillas=True)
@@ -337,15 +405,15 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
             ]
             if any(_violations(c, snap) for c in isas[1:]):
                 continue
-            scores = [esp(c, snap.backend.target) for c in isas]
+            scores = [layout_score(c, snap.backend.target) for c in isas]
             joint = math.exp(sum(math.log(s) for s in scores) / len(scores))
-            trace.append({"seed": seed, "joint_esp": joint, "layout": layout})
-            better = best is None or (joint, -snap.pending_jobs) > (best.joint_esp, -best.snap.pending_jobs)
+            trace.append({"seed": seed, "joint_score": joint, "layout": layout})
+            better = best is None or (joint, -snap.pending_jobs) > (best.joint_score, -best.snap.pending_jobs)
             if better:
                 best = Choice(group, snap, seed, layout, isas, scores, joint)
     if best is None:
         raise LiveRunError(f"{group.name}: no eligible backend produced a layout clear of excluded hardware")
-    return best
+    return attach_mirrors(best)
 
 
 def _distribution(counts: dict[str, int], clbits: int) -> np.ndarray:
@@ -408,13 +476,13 @@ def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
 
 def simulate(choice: Choice, noise: Any) -> dict[str, np.ndarray]:
     out = {}
-    for member, isa in zip(choice.group.members, choice.isas, strict=True):
+    for name, isa, _ in choice.entries:
         counts = noise.run(isa, shots=SHOTS, seed_simulator=SEED_SIMULATOR).result().get_counts()
-        out[member.name] = _distribution(counts, member.circuit.num_clbits)
+        out[name] = _distribution(counts, isa.num_clbits)
     return out
 
 
-def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.ndarray:
+def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
     """dist with each classical bit's readout channel inverted, unclipped.
 
     A raw P(0) carries prob_meas0_prep1 of its readout qubit as an additive
@@ -426,6 +494,10 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.n
     readout_error by default; noise_simulator replaces it with the same
     asymmetric channel, so in simulation and on hardware the inversion matches
     the channel applied.
+
+    symmetric replaces both flip probabilities with their mean: measurement
+    twirling randomizes the measured bit and reverses it classically, so a
+    twirled job's effective channel is the symmetric average.
     """
     writer: dict[int, int] = {}
     for inst in isa.data:
@@ -434,6 +506,8 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.n
     inverse = np.ones((1, 1))
     for clbit in reversed(range(isa.num_clbits)):
         e10, e01 = readout_flips(props, writer[clbit])
+        if symmetric:
+            e10 = e01 = (e10 + e01) / 2.0
         inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
     return np.asarray(inverse @ dist)
 
@@ -477,18 +551,19 @@ def _physical(isa: QuantumCircuit) -> list[int]:
 def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibration: str) -> dict[str, Any]:
     target = choice.snap.backend.target
     members = []
-    for member, isa, score in zip(choice.group.members, choice.isas, choice.member_esp, strict=True):
+    for name, isa, ideal in choice.entries:
         members.append(
             {
-                "name": member.name,
+                "name": name,
                 "cz": isa.count_ops().get("cz", 0),
                 "depth": isa.depth(),
                 "duration_s": isa.estimate_duration(target, unit="s"),
                 "physical_qubits": _physical(isa),
-                "esp": score,
-                "ideal": [round(float(p), 12) for p in member.ideal],
-                "noisy": [round(float(p), 6) for p in noisy[member.name]],
-                "tvd_noisy_to_ideal": tvd(noisy[member.name], member.ideal),
+                "esp": esp(isa, target),
+                "coherence": coherence(isa, target),
+                "ideal": [round(float(p), 12) for p in ideal],
+                "noisy": [round(float(p), 6) for p in noisy[name]],
+                "tvd_noisy_to_ideal": tvd(noisy[name], ideal),
             }
         )
     return {
@@ -498,13 +573,10 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
         "noise_model_calibration": noise_calibration,
         "seed_transpiler": choice.seed,
         "initial_layout": choice.layout,
-        "joint_esp": choice.joint_esp,
+        "joint_score": choice.joint_score,
         "summary": choice.group.summarize(noisy),
         "summary_readout_corrected": choice.group.summarize(
-            {
-                member.name: readout_corrected(noisy[member.name], isa, choice.snap.properties)
-                for member, isa in zip(choice.group.members, choice.isas, strict=True)
-            }
+            {name: readout_corrected(noisy[name], isa, choice.snap.properties) for name, isa, _ in choice.entries}
         ),
         "members": members,
     }
@@ -558,9 +630,8 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     sims: dict[int, tuple[AerSimulator, str]] = {}
     record["groups"] = []
     for choice in choices:
-        check_target_matches_properties(
-            choice.isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name
-        )
+        isas = [isa for _, isa, _ in choice.entries]
+        check_target_matches_properties(isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name)
         key = id(choice.snap)
         if key not in sims:
             sims[key] = (
@@ -575,7 +646,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
         summary = {k: round(v, 4) for k, v in entry["summary"].items()}
         print(
             f"{choice.group.name}: {choice.snap.name} seed={choice.seed} layout={choice.layout} "
-            f"joint_esp={choice.joint_esp:.4f} cz={cz} summary={summary}"
+            f"joint_score={choice.joint_score:.4f} cz={cz} summary={summary}"
         )
 
 
@@ -620,8 +691,9 @@ def submit(
             reason = fresh.ineligible_reason(args.max_pending)
             if reason:
                 raise LiveRunError(f"{name} left the eligibility gate before submission ({reason}); rerun to replan")
-            before = fingerprint(choice.isas, choice.snap.properties)
-            if fingerprint(choice.isas, fresh.properties) != before or _any_violation(choice.isas, fresh):
+            isas = [isa for _, isa, _ in choice.entries]
+            before = fingerprint(isas, choice.snap.properties)
+            if fingerprint(isas, fresh.properties) != before or _any_violation(isas, fresh):
                 print(f"{choice.group.name}: calibration moved on {name}; recompiling")
                 choices[idx] = select(choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}))
                 moved = True
@@ -650,11 +722,21 @@ def submit(
         backend = service.backend(name)
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
-        circuits = [isa for c in group_choices for isa in c.isas]
-        names = [m.name for c in group_choices for m in c.group.members]
+        circuits = [isa for c in group_choices for _, isa, _ in c.entries]
+        names = [entry_name for c in group_choices for entry_name, _, _ in c.entries]
         sampler = Sampler(mode=backend)
         sampler.options.default_shots = SHOTS
         sampler.options.environment.job_tags = ["gororoba-quantum", args.started]
+        if args.twirl:
+            sampler.options.twirling.enable_gates = True
+            sampler.options.twirling.enable_measure = True
+        if args.dd:
+            sampler.options.dynamical_decoupling.enable = True
+            sampler.options.dynamical_decoupling.sequence_type = args.dd
+            # Idle qubits still in their initial state get no pulses: a 3- to
+            # 5-qubit experiment on a 156-qubit ISA would otherwise drive the
+            # unused qubits too.
+            sampler.options.dynamical_decoupling.skip_reset_qubits = True
         job = sampler.run(circuits)
         record["submission"]["jobs"].append(
             {
@@ -663,6 +745,7 @@ def submit(
                 "members": names,
                 "calibration": group_choices[0].snap.calibration,
                 "budget_before": _budget(service, usage),
+                "options": sampler.options.model_dump(mode="json"),
             }
         )
         # The job id is the only handle on QPU time already spent; it reaches
@@ -750,6 +833,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         result = job.result()
         members = job_entry["members"]
         windows = pub_windows(result, len(members))
+        twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
         backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
         # under the Target and properties in force when its shots began.
@@ -774,7 +858,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             props_then, sim_then = at[start]
             register = isa.cregs[0].name
             measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
-            corrected[name] = readout_corrected(measured[name], isa, props_then)
+            corrected[name] = readout_corrected(measured[name], isa, props_then, symmetric=twirled_readout)
             counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
             stop_calibration = backend.properties(datetime=stop).last_update_date
@@ -785,17 +869,27 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "calibration_changed_during_shots": stop_calibration != props_then.last_update_date,
             }
         for gname, group in groups.items():
-            if all(m.name in measured for m in group.members):
-                entry: dict[str, Any] = {
-                    "group": gname,
-                    "backend": job_entry["backend"],
-                    "executed": {m.name: executed[m.name] for m in group.members},
-                    "measured_summary": group.summarize(measured),
-                }
-                # A circuit whose shots straddle a calibration update has no
-                # single calibration to correct or replay against; its group
-                # keeps the raw measurement and states why the rest is absent.
-                straddling = [m.name for m in group.members if executed[m.name]["calibration_changed_during_shots"]]
+            present = [n for n in measured if n in {m.name for m in group.members}]
+            if not present:
+                continue
+            # A summary needs every member and every mirror twin; a job that
+            # lacks some still reports the distributions it has.
+            required = [m.name for m in group.members] + [m.name + MIRROR_SUFFIX for m in group.members if m.mirror]
+            missing = [n for n in required if n not in measured]
+            entry: dict[str, Any] = {
+                "group": gname,
+                "backend": job_entry["backend"],
+                "executed": {n: executed[n] for n in required if n in executed},
+                "measured": {n: [round(float(p), 6) for p in measured[n]] for n in required if n in measured},
+            }
+            # A circuit whose shots straddle a calibration update has no single
+            # calibration to correct or replay against; its group keeps the raw
+            # measurement and states why the rest is absent.
+            straddling = [n for n in required if n in executed and executed[n]["calibration_changed_during_shots"]]
+            if missing:
+                entry["summary_unavailable"] = f"missing {missing}"
+            else:
+                entry["measured_summary"] = group.summarize(measured)
                 if straddling:
                     entry["calibration_dependent_summaries_unavailable"] = (
                         f"calibration changed during the shots of {straddling}"
@@ -803,10 +897,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 else:
                     entry["measured_summary_readout_corrected"] = group.summarize(corrected)
                     entry["replayed_summary"] = group.summarize(replayed)
-                    entry["tvd_measured_to_replayed"] = {
-                        m.name: tvd(measured[m.name], replayed[m.name]) for m in group.members
-                    }
-                out.append(entry)
+                    entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
+            out.append(entry)
     (run_dir / "collect.json").write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out, indent=2))
 
@@ -820,6 +912,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, help="directory under which the run's audit record is written")
     parser.add_argument("--submit", action="store_true", help="submit the chosen circuits (spends QPU time)")
     parser.add_argument("--min-remaining-seconds", type=float, default=DEFAULT_MIN_REMAINING_S)
+    parser.add_argument("--twirl", action="store_true", help="Pauli-twirl gates and measurements on submission")
+    parser.add_argument("--dd", choices=("XX", "XpXm", "XY4"), help="dynamical decoupling sequence on submission")
     parser.add_argument("--collect", type=Path, help="run directory whose submitted jobs to collect")
     args = parser.parse_args(argv)
     if args.submit and not args.out:
@@ -872,9 +966,9 @@ def write_archive(run_dir: Path, choices: list[Choice]) -> None:
     """The run's ISA circuits as QPY, named by member."""
     archived = []
     for choice in choices:
-        for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        for name, isa, _ in choice.entries:
             named = copy.copy(isa)
-            named.name = member.name
+            named.name = name
             archived.append(named)
     _replace_atomically(run_dir / "isa.qpy", lambda handle: qpy.dump(archived, handle), "wb")
 
