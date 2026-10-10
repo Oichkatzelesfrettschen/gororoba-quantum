@@ -301,14 +301,20 @@ back to drive a submission.
   input, so every member runs the same routing and reads out on the same
   physical qubit, and the suppression ratio compares one set of qubits.
 - Mirror calibration: each single-observable witness (design A, design B dark
-  and bright) gets a twin cut from its own compiled circuit -- the first half
-  of its CZ content, a barrier, and the inverse -- on the same physical qubits
-  with the same CZ count. The twin ideally returns all zeros, and the witness's
-  <Z> divided by the twin's <Z> is its rescaled value (ODR, literature note
-  2507.08088). Design D's sweep points share the dark twin. The rescaled values
-  stay unclipped; in the noise model they overshoot by 1 to 3 percent (design A
-  P1 1.010, fringe visibility 1.019), because a twin attenuates slightly less
-  than its witness.
+  and bright) gets a twin cut from its own compiled circuit -- a prefix of its
+  dependency layers, a barrier, and the inverse -- on the same physical qubits,
+  placed directly after the witness in the job. The cut is the layer within six
+  of the depth midpoint whose twin best matches the witness in both scheduled
+  depth and CZ count, so the match is approximate: in the dry run of record
+  2026-10-10T193949.352436Z the design B witnesses carry 42 CZs and their twins
+  40, and on FakeFez the twins sit within 9 percent of witness depth. The twin
+  ideally returns all zeros, and the witness's <Z> divided by the twin's <Z> is
+  its rescaled value (ODR, literature note 2507.08088). Design D's sweep points
+  share the dark twin. The rescaled values stay unclipped; in that record's
+  noise model they overshoot by under 1 percent (design A P1 1.002, fringe
+  visibility 1.008). collect reports ODR values only from runs of at least
+  16384 shots (--shots) in which every witness and twin ran under one
+  calibration, and otherwise records the reason in odr_withheld.
 - Nulls: these designs read interference through a final Hadamard layer, so the
   fully dephased and fully depolarized nulls coincide with the uniform
   distribution; every summary reports the TVD to uniform.
