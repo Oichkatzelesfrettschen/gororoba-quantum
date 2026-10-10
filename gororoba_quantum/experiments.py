@@ -25,6 +25,7 @@ from designs import (
     design_c_associator_spectrum,
     design_d_phase_sweep,
 )
+from order_finding import folded_qpe
 
 Summary = Callable[[dict[str, np.ndarray]], dict[str, float]]
 
@@ -185,9 +186,37 @@ def _associator_spectrum(dim: int, i: int, j: int) -> Group:
     return Group(base, members, summarize)
 
 
+def _folded_qpe_mod15() -> Group:
+    """Eigenphases of x -> 2x mod 15 read by semiclassical phase estimation (order_finding.py).
+
+    The four eigenstates run identical-cost circuits with distinct deterministic
+    outcomes s, so each serves as the others' control; the identity multiplier
+    is the null and reads 0.
+    """
+
+    def one_hot(s: int) -> np.ndarray:
+        out = np.zeros(4)
+        out[s] = 1.0
+        return out
+
+    members = [Member(f"folded_qpe_s{s}", folded_qpe(s), one_hot(s)) for s in (1, 0, 2, 3)]
+    members.append(Member("folded_qpe_null", folded_qpe(1, identity=True), one_hot(0)))
+
+    def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
+        correct = {s: float(dist[f"folded_qpe_s{s}"][s]) for s in range(4)}
+        return {f"p_correct_s{s}": p for s, p in correct.items()} | {
+            "p_correct_mean": float(np.mean(list(correct.values()))),
+            "null_p0": float(dist["folded_qpe_null"][0]),
+            "tvd_to_uniform_mean": float(np.mean([tvd(dist[f"folded_qpe_s{s}"], _uniform(2)) for s in range(4)])),
+        }
+
+    return Group("folded_qpe_mod15", tuple(members), summarize)
+
+
 def experiment_groups() -> list[Group]:
     return [
         _design_a(),
         _zero_divisor_fringe(),
         *(_associator_spectrum(dim, i, j) for dim, i, j in SPECTRUM_EXEMPLARS),
+        _folded_qpe_mod15(),
     ]

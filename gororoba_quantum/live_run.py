@@ -43,6 +43,7 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit, qpy, transpile
+from qiskit.circuit import ControlFlowOp
 from qiskit.providers import BackendV2, Options
 from qiskit_aer import AerSimulator
 from qiskit_ibm_runtime import QiskitRuntimeService
@@ -254,13 +255,38 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
     )
 
 
+def _gate_time_view(isa: QuantumCircuit) -> QuantumCircuit:
+    """isa with each control-flow op replaced by its first block's gates.
+
+    estimate_duration rejects control flow; the view keeps every gate the true
+    branch can run and drops the classical feed-forward latency, which the
+    Target does not report, so its duration is a lower bound for dynamic
+    circuits.
+    """
+    out = isa.copy_empty_like()
+    for inst in isa.data:
+        if isinstance(inst.operation, ControlFlowOp):
+            body = inst.operation.blocks[0]
+            for sub in body.data:
+                if sub.clbits:
+                    raise LiveRunError(f"{isa.name}: classical operation inside a control-flow block")
+                out.append(sub.operation, [inst.qubits[body.find_bit(q).index] for q in sub.qubits])
+        else:
+            out.append(inst)
+    return out
+
+
+def duration_s(isa: QuantumCircuit, target: Any) -> float:
+    return float(_gate_time_view(isa).estimate_duration(target, unit="s"))
+
+
 def coherence(isa: QuantumCircuit, target: Any) -> float:
     """exp(-T sum_q 1/T2_q) over the qubits isa touches, T its estimated duration.
 
     ESP counts gate and readout error; this factor charges idle dephasing on the
     chosen qubits for the length of the circuit (literature/notes/2509.18259.md).
     """
-    duration = isa.estimate_duration(target, unit="s")
+    duration = duration_s(isa, target)
     rate = sum(1.0 / target.qubit_properties[q].t2 for q in _physical(isa))
     return math.exp(-duration * rate)
 
@@ -406,7 +432,8 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
                 "name": name,
                 "cz": isa.count_ops().get("cz", 0),
                 "depth": isa.depth(),
-                "duration_s": isa.estimate_duration(target, unit="s"),
+                "duration_s": duration_s(isa, target),
+                "feed_forward": any(isinstance(i.operation, ControlFlowOp) for i in isa.data),
                 "physical_qubits": _physical(isa),
                 "esp": esp(isa, target),
                 "coherence": coherence(isa, target),
