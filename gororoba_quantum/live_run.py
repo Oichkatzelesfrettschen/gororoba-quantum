@@ -38,8 +38,10 @@ import copy
 import hashlib
 import json
 import math
+import os
 import subprocess
 import sys
+from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from importlib.metadata import version
@@ -227,8 +229,9 @@ def _property_values(name: str, qargs: tuple[int, ...], props: Any) -> dict[str,
 def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
     """Calibration values the plan depends on: T1, T2 of its qubits, error and duration of its instructions.
 
-    The layout score reads errors and durations, and the noise model reads both
-    plus T1 and T2, so a change to any of them moves the plan.
+    The layout score reads errors and durations, the noise model reads both plus
+    T1 and T2, and the readout correction reads prob_meas1_prep0 and
+    prob_meas0_prep1, so a change to any of them moves the plan.
     """
     out: dict[str, float] = {}
     for isa in isas:
@@ -239,6 +242,11 @@ def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
             if name in CALIBRATED:
                 for field_name, value in _property_values(name, qargs, props).items():
                     out[f"{name}{qargs}:{field_name}"] = value
+            if name == "measure":
+                # readout_corrected reads the asymmetric channel, which can move
+                # while the aggregate readout_error holds.
+                for field_name in ("prob_meas1_prep0", "prob_meas0_prep1"):
+                    out[f"{field_name}:{qargs[0]}"] = props.qubit_property(qargs[0], field_name)[0]
     return out
 
 
@@ -399,11 +407,12 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.n
 
 
 def experiment_digest() -> str:
-    """sha256 over the source of every experiment-defining module loaded from this directory.
+    """sha256 over the source of every module loaded from this directory but verify.py.
 
-    Group membership, circuits, ideals, and summaries all live in those modules,
-    so collection under a different digest would reinterpret a run's
-    measurements with other definitions.
+    Group membership, circuits, ideals, and summaries live in the experiment
+    modules, and live_run.py itself holds the distribution, readout-correction,
+    and replay code that turns counts into summaries, so collection under a
+    different digest would reinterpret a run's measurements.
     """
     here = Path(__file__).resolve().parent
     files = [getattr(m, "__file__", None) for m in list(sys.modules.values())]
@@ -414,7 +423,7 @@ def experiment_digest() -> str:
     )
     digest = hashlib.sha256()
     for path in paths:
-        if path.name in ("live_run.py", "verify.py"):
+        if path.name == "verify.py":
             continue
         digest.update(path.name.encode())
         digest.update(path.read_bytes())
@@ -535,8 +544,25 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
         )
 
 
+def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
+    """Reject an exhausted or below-minimum finite quota; an instance with no limit passes.
+
+    usage() can omit usage_remaining_seconds or report None for an instance
+    without a configured limit; usage_limit_reached still marks exhaustion.
+    """
+    if usage.get("usage_limit_reached"):
+        raise LiveRunError(f"{name}: the instance reports its usage limit reached")
+    remaining = usage.get("usage_remaining_seconds")
+    if remaining is not None and float(remaining) < minimum:
+        raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
+
+
 def submit(
-    service: QiskitRuntimeService, choices: list[Choice], args: argparse.Namespace, record: dict[str, Any]
+    service: QiskitRuntimeService,
+    choices: list[Choice],
+    args: argparse.Namespace,
+    record: dict[str, Any],
+    checkpoint: Callable[[], None],
 ) -> None:
     """Re-gate and re-read each chosen backend, recompile moved groups, check each instance's budget, submit."""
     fresh_by_backend: dict[str, Snapshot] = {}
@@ -568,9 +594,7 @@ def submit(
         # against the instance that pays for it.
         backend = service.backend(name)
         usage = service.usage()
-        remaining = float(usage["usage_remaining_seconds"])
-        if remaining < args.min_remaining_seconds:
-            raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
+        check_budget(name, usage, args.min_remaining_seconds)
         circuits = [isa for c in group_choices for isa in c.isas]
         names = [m.name for c in group_choices for m in c.group.members]
         sampler = Sampler(mode=backend)
@@ -586,6 +610,9 @@ def submit(
                 "budget_before": _budget(service, usage),
             }
         )
+        # The job id is the only handle on QPU time already spent; it reaches
+        # disk before the next job is sent.
+        checkpoint()
         print(f"submitted {len(circuits)} circuits to {name}: job {job.job_id()}")
 
 
@@ -605,6 +632,37 @@ def _any_violation(isas: list[QuantumCircuit], snap: Snapshot) -> bool:
     return any(_violations(isa, snap) for isa in isas)
 
 
+def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
+    """Start and stop of the execution spans that hold each PUB's shots.
+
+    The Sampler result carries them at result.metadata["execution"]
+    ["execution_spans"] (IBM's Sampler input/output guide, "View execution
+    spans"); the job-level running timestamp can precede the shots by
+    server-side preparation, across a calibration update. Naive span times are
+    UTC.
+    """
+    execution = result.metadata.get("execution") or {}
+    spans = execution.get("execution_spans")
+    if spans is None or len(spans) == 0:
+        raise LiveRunError(f"result metadata carries no execution spans (keys {sorted(result.metadata)})")
+    windows = []
+    for idx in range(count):
+        # ExecutionSpans.filter_by_pub keeps every span and empties those
+        # without the PUB, so the PUB's own window comes from the spans whose
+        # pub_idxs include it.
+        own = [span for span in spans if idx in span.pub_idxs]
+        if not own:
+            raise LiveRunError(f"no execution span covers PUB {idx}")
+        start, stop = min(span.start for span in own), max(span.stop for span in own)
+        windows.append(
+            (
+                start if start.tzinfo else start.replace(tzinfo=UTC),
+                stop if stop.tzinfo else stop.replace(tzinfo=UTC),
+            )
+        )
+    return windows
+
+
 def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
@@ -622,33 +680,46 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         result = job.result()
-        ran_at = job.metrics()["timestamps"]["running"]
+        members = job_entry["members"]
+        windows = pub_windows(result, len(members))
         backend = service.backend(job_entry["backend"])
-        when = datetime.fromisoformat(ran_at)
-        props_then = backend.properties(datetime=when)
-        target_then = backend.target_history(datetime=when)
-        check_target_matches_properties(
-            [isas[n] for n in job_entry["members"]], target_then, props_then, f"{backend.name}@{ran_at}"
-        )
-        sim_then = noise_simulator(f"{backend.name}@{ran_at}", target_then)
+        # One calibration fetch per distinct execution start: a PUB is replayed
+        # under the Target and properties in force when its shots began.
+        at: dict[datetime, tuple[Any, Any]] = {}
+        for start, _ in windows:
+            if start not in at:
+                props_then = backend.properties(datetime=start)
+                target_then = backend.target_history(datetime=start)
+                at[start] = (props_then, noise_simulator(f"{backend.name}@{start.isoformat()}", target_then))
+                starting = [isas[n] for (st, _), n in zip(windows, members, strict=True) if st == start]
+                check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
         measured: dict[str, np.ndarray] = {}
         corrected: dict[str, np.ndarray] = {}
         replayed: dict[str, np.ndarray] = {}
-        for name, pub in zip(job_entry["members"], result, strict=True):
+        executed: dict[str, dict[str, Any]] = {}
+        for idx, (name, pub) in enumerate(zip(members, result, strict=True)):
             isa = isas[name]
+            start, stop = windows[idx]
+            props_then, sim_then = at[start]
             register = isa.cregs[0].name
             measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
             corrected[name] = readout_corrected(measured[name], isa, props_then)
             counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
+            stop_calibration = backend.properties(datetime=stop).last_update_date
+            executed[name] = {
+                "start": start.isoformat(),
+                "stop": stop.isoformat(),
+                "calibration": props_then.last_update_date.isoformat(),
+                "calibration_changed_during_shots": stop_calibration != props_then.last_update_date,
+            }
         for gname, group in groups.items():
             if all(m.name in measured for m in group.members):
                 out.append(
                     {
                         "group": gname,
                         "backend": job_entry["backend"],
-                        "ran_at": ran_at,
-                        "calibration_at_run": props_then.last_update_date.isoformat(),
+                        "executed": {m.name: executed[m.name] for m in group.members},
                         "measured_summary": group.summarize(measured),
                         "measured_summary_readout_corrected": group.summarize(corrected),
                         "replayed_summary": group.summarize(replayed),
@@ -691,7 +762,7 @@ def main(argv: list[str] | None = None) -> int:
             write_record(run_dir, choices, record)
         if args.submit and run_dir:
             try:
-                submit(service, choices, args, record)
+                submit(service, choices, args, record, lambda: write_record(run_dir, choices, record))
             finally:
                 write_record(run_dir, choices, record)
     except LiveRunError as exc:
@@ -701,16 +772,29 @@ def main(argv: list[str] | None = None) -> int:
 
 
 def write_record(run_dir: Path, choices: list[Choice], record: dict[str, Any]) -> None:
-    """The run's ISA circuits as QPY, named by member, and its JSON record, into an existing run_dir."""
+    """The run's ISA circuits as QPY, named by member, and its JSON record, into an existing run_dir.
+
+    Each file is written beside its target and moved over it with os.replace,
+    so an interrupted write leaves the previous complete file in place.
+    """
     archived = []
     for choice in choices:
         for member, isa in zip(choice.group.members, choice.isas, strict=True):
             named = copy.copy(isa)
             named.name = member.name
             archived.append(named)
-    with open(run_dir / "isa.qpy", "wb") as handle:
+    qpy_tmp = run_dir / "isa.qpy.tmp"
+    with open(qpy_tmp, "wb") as handle:
         qpy.dump(archived, handle)
-    (run_dir / "record.json").write_text(json.dumps(record, indent=2, default=str) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(qpy_tmp, run_dir / "isa.qpy")
+    json_tmp = run_dir / "record.json.tmp"
+    with open(json_tmp, "w") as handle:
+        handle.write(json.dumps(record, indent=2, default=str) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(json_tmp, run_dir / "record.json")
     print(f"audit record: {run_dir}")
 
 
