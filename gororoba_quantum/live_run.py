@@ -53,6 +53,7 @@ from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.circuit import ControlFlowOp
 from qiskit.providers import BackendV2, Options
 from qiskit_aer import AerSimulator
+from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
@@ -66,6 +67,7 @@ JOINT_CANDIDATES = 3
 DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
+MAX_REVALIDATION = 3
 
 # Exclusion policy: values outside these bounds mark degraded hardware that the
 # backend may report without a faulty flag. Missing T1 or T2 also excludes.
@@ -396,10 +398,14 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
             isa = _compile(primary.circuit, snap, seed)
             bad = _violations(isa, snap)
+            trace.append({"seed": seed, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
+            if bad:
+                continue
+            # Scoring follows rejection: coherence() divides by T2, which an
+            # excluded qubit may lack, so a rejected layout is never scored.
             score = layout_score(isa, snap.backend.target)
-            trace.append({"seed": seed, "primary_score": score, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
-            if not bad:
-                primaries.append((score, seed, isa))
+            trace[-1]["primary_score"] = score
+            primaries.append((score, seed, isa))
         primaries.sort(key=lambda item: -item[0])
         for _, seed, isa in primaries[:JOINT_CANDIDATES]:
             layout = isa.layout.initial_index_layout(filter_ancillas=True)
@@ -457,9 +463,30 @@ class TargetView(BackendV2):
         raise NotImplementedError("TargetView carries a Target for noise modeling only")
 
 
-def noise_simulator(name: str, target: Any) -> AerSimulator:
-    """AerSimulator with noise from exactly this Target; planning and --collect both use it."""
-    return AerSimulator.from_backend(TargetView(name, target))
+def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
+    """AerSimulator with gate and coherence noise from this Target and readout from props.
+
+    The Target's measure entries carry only the aggregate readout_error, from
+    which Aer builds a symmetric channel. The noise model takes each qubit's
+    asymmetric channel [[1 - e10, e10], [e01, 1 - e01]] (e10 =
+    prob_meas1_prep0, e01 = prob_meas0_prep1) from the properties instead, the
+    same channel readout_corrected inverts, so a corrected prediction removes
+    exactly the readout error the simulation applied. A qubit without the two
+    fields keeps the symmetric channel. Planning and --collect both use it.
+    """
+    view = TargetView(name, target)
+    noise = NoiseModel.from_backend(view, readout_error=False)
+    for q in range(target.num_qubits):
+        try:
+            e10 = props.qubit_property(q, "prob_meas1_prep0")[0]
+            e01 = props.qubit_property(q, "prob_meas0_prep1")[0]
+        except Exception:  # BackendPropertyError: field absent for this qubit
+            measure = target["measure"].get((q,))
+            if measure is None or measure.error is None:
+                continue
+            e10 = e01 = measure.error
+        noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
+    return AerSimulator.from_backend(view, noise_model=noise)
 
 
 def simulate(choice: Choice, noise: Any) -> dict[str, np.ndarray]:
@@ -470,7 +497,7 @@ def simulate(choice: Choice, noise: Any) -> dict[str, np.ndarray]:
     return out
 
 
-def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.ndarray:
+def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
     """dist with each classical bit's readout channel inverted, unclipped.
 
     A raw P(0) carries prob_meas0_prep1 of its readout qubit as an additive
@@ -479,9 +506,13 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.n
     physical qubit that last wrote it (e10 = prob_meas1_prep0, e01 =
     prob_meas0_prep1), and their Kronecker product is inverted with clbit 0 as
     the least significant index bit. Aer's noise model applies the symmetric
-    readout_error, so in simulation the corrected values keep an asymmetry
-    residual; on hardware the inversion matches the channel the properties
-    report.
+    readout_error by default; noise_simulator replaces it with the same
+    asymmetric channel, so in simulation and on hardware the inversion matches
+    the channel applied.
+
+    symmetric replaces both flip probabilities with their mean: measurement
+    twirling randomizes the measured bit and reverses it classically, so a
+    twirled job's effective channel is the symmetric average.
     """
     writer: dict[int, int] = {}
     for inst in isa.data:
@@ -492,11 +523,15 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any) -> np.n
         q = writer[clbit]
         e10 = props.qubit_property(q, "prob_meas1_prep0")[0]
         e01 = props.qubit_property(q, "prob_meas0_prep1")[0]
+        if symmetric:
+            e10 = e01 = (e10 + e01) / 2.0
         inverse = np.kron(inverse, np.linalg.inv(np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])))
     return np.asarray(inverse @ dist)
 
 
-def corrected_summary(group: Group, dists: dict[str, tuple[np.ndarray, QuantumCircuit]], props: Any) -> Any:
+def corrected_summary(
+    group: Group, dists: dict[str, tuple[np.ndarray, QuantumCircuit]], props: Any, symmetric: bool = False
+) -> Any:
     """The group summary on readout-inverted distributions, or why it is skipped.
 
     readout_corrected assumes each classical bit passes through its own
@@ -511,7 +546,7 @@ def corrected_summary(group: Group, dists: dict[str, tuple[np.ndarray, QuantumCi
         return {"skipped": "feed-forward circuits: readout error steers the conditional branch"}
     return group.summarize(
         {
-            name: readout_corrected(dist, isa, props[name] if isinstance(props, dict) else props)
+            name: readout_corrected(dist, isa, props[name] if isinstance(props, dict) else props, symmetric)
             for name, (dist, isa) in dists.items()
         }
     )
@@ -642,7 +677,10 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
         check_target_matches_properties(isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name)
         key = id(choice.snap)
         if key not in sims:
-            sims[key] = (noise_simulator(choice.snap.name, choice.snap.backend.target), choice.snap.calibration)
+            sims[key] = (
+                noise_simulator(choice.snap.name, choice.snap.backend.target, choice.snap.properties),
+                choice.snap.calibration,
+            )
         sim, cal = sims[key]
         noisy = simulate(choice, sim)
         entry = _choice_record(choice, noisy, cal)
@@ -673,29 +711,43 @@ def submit(
     choices: list[Choice],
     args: argparse.Namespace,
     record: dict[str, Any],
+    archive: Callable[[], None],
     checkpoint: Callable[[], None],
 ) -> None:
-    """Re-gate and re-read each chosen backend, recompile moved groups, check each instance's budget, submit."""
-    fresh_by_backend: dict[str, Snapshot] = {}
-    moved = False
-    for idx, choice in enumerate(choices):
-        name = choice.snap.name
-        if name not in fresh_by_backend:
-            fresh_by_backend[name] = take_snapshot(service, name)
-        fresh = fresh_by_backend[name]
-        reason = fresh.ineligible_reason(args.max_pending)
-        if reason:
-            raise LiveRunError(f"{name} left the eligibility gate before submission ({reason}); rerun to replan")
-        isas = [isa for _, isa, _ in choice.entries]
-        before = fingerprint(isas, choice.snap.properties)
-        if fingerprint(isas, fresh.properties) != before or _any_violation(isas, fresh):
-            print(f"{choice.group.name}: calibration moved on {name}; recompiling")
-            choices[idx] = select(choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}))
-            moved = True
-    if moved:
+    """Re-gate and re-read each chosen backend until nothing moved, then archive and submit.
+
+    Recompiling and re-simulating takes long enough for the calibration, the
+    status, or the queue to move again, so the gate repeats on fresh snapshots
+    until a pass changes nothing, at most MAX_REVALIDATION passes. The final
+    circuits reach isa.qpy before the first job is sent, and each job id is
+    then checkpointed by a JSON-only atomic write, so no QPY rewrite stands
+    between QPU time spent and its job id reaching disk.
+    """
+    for attempt in range(MAX_REVALIDATION):
+        fresh_by_backend: dict[str, Snapshot] = {}
+        moved = False
+        for idx, choice in enumerate(choices):
+            name = choice.snap.name
+            if name not in fresh_by_backend:
+                fresh_by_backend[name] = take_snapshot(service, name)
+            fresh = fresh_by_backend[name]
+            reason = fresh.ineligible_reason(args.max_pending)
+            if reason:
+                raise LiveRunError(f"{name} left the eligibility gate before submission ({reason}); rerun to replan")
+            isas = [isa for _, isa, _ in choice.entries]
+            before = fingerprint(isas, choice.snap.properties)
+            if fingerprint(isas, fresh.properties) != before or _any_violation(isas, fresh):
+                print(f"{choice.group.name}: calibration moved on {name}; recompiling")
+                choices[idx] = select(choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}))
+                moved = True
+        if not moved:
+            break
         # The record's predictions must describe the circuits that run.
         evaluate(choices, record)
-        record["reevaluated_before_submit"] = True
+        record["reevaluated_before_submit"] = attempt + 1
+    else:
+        raise LiveRunError(f"calibration kept moving through {MAX_REVALIDATION} revalidation passes; rerun later")
+    archive()
     record["submission"] = {"jobs": []}
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
@@ -830,6 +882,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             f"experiment definitions differ from the run's (digest {record.get('experiment_digest')}); "
             f"collect from commit {commit}, where groups, ideals, and summaries match the archived circuits"
         )
+    if "submission" not in record:
+        raise LiveRunError(f"{run_dir} is a dry-run record with no submitted jobs to collect")
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
     out = []
     for job_entry in record["submission"]["jobs"]:
@@ -838,6 +892,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         metrics = job.metrics()
         members = job_entry["members"]
         windows = pub_windows(result, len(members))
+        twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
         backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
         # under the Target and properties in force when its shots began.
@@ -846,7 +901,10 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if start not in at:
                 props_then = backend.properties(datetime=start)
                 target_then = backend.target_history(datetime=start)
-                at[start] = (props_then, noise_simulator(f"{backend.name}@{start.isoformat()}", target_then))
+                at[start] = (
+                    props_then,
+                    noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
+                )
                 starting = [isas[n] for (st, _), n in zip(windows, members, strict=True) if st == start]
                 check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
         measured: dict[str, np.ndarray] = {}
@@ -883,16 +941,25 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "executed": {n: executed[n] for n in required if n in executed},
                 "job_usage": metrics.get("usage"),
                 "measured": {n: [round(float(p), 6) for p in measured[n]] for n in required if n in measured},
-                "tvd_measured_to_replayed": {n: tvd(measured[n], replayed[n]) for n in required if n in measured},
             }
+            # A circuit whose shots straddle a calibration update has no single
+            # calibration to correct or replay against; its group keeps the raw
+            # measurement and states why the rest is absent.
+            straddling = [n for n in required if n in executed and executed[n]["calibration_changed_during_shots"]]
             if missing:
                 entry["summary_unavailable"] = f"missing {missing}"
             else:
                 entry["measured_summary"] = group.summarize(measured)
-                entry["measured_summary_readout_corrected"] = corrected_summary(
-                    group, {n: (measured[n], isas[n]) for n in required}, props_by_name
-                )
-                entry["replayed_summary"] = group.summarize(replayed)
+                if straddling:
+                    entry["calibration_dependent_summaries_unavailable"] = (
+                        f"calibration changed during the shots of {straddling}"
+                    )
+                else:
+                    entry["measured_summary_readout_corrected"] = corrected_summary(
+                        group, {n: (measured[n], isas[n]) for n in required}, props_by_name, symmetric=twirled_readout
+                    )
+                    entry["replayed_summary"] = group.summarize(replayed)
+                    entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
             out.append(entry)
     (run_dir / "collect.json").write_text(json.dumps(out, indent=2) + "\n")
     print(json.dumps(out, indent=2))
@@ -927,42 +994,51 @@ def main(argv: list[str] | None = None) -> int:
         evaluate(choices, record)
         if run_dir:
             run_dir.mkdir(parents=True, exist_ok=False)
-            write_record(run_dir, choices, record)
+            write_archive(run_dir, choices)
+            write_json(run_dir, record)
         if args.submit and run_dir:
             try:
-                submit(service, choices, args, record, lambda: write_record(run_dir, choices, record))
+                submit(
+                    service,
+                    choices,
+                    args,
+                    record,
+                    lambda: write_archive(run_dir, choices),
+                    lambda: write_json(run_dir, record),
+                )
             finally:
-                write_record(run_dir, choices, record)
+                write_json(run_dir, record)
     except LiveRunError as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
     return 0
 
 
-def write_record(run_dir: Path, choices: list[Choice], record: dict[str, Any]) -> None:
-    """The run's ISA circuits as QPY, named by member, and its JSON record, into an existing run_dir.
+def _replace_atomically(target: Path, write: Callable[[Any], None], mode: str) -> None:
+    """Write beside target, fsync, and os.replace over it: an interruption leaves the old file whole."""
+    tmp = target.with_name(target.name + ".tmp")
+    with open(tmp, mode) as handle:
+        write(handle)
+        handle.flush()
+        os.fsync(handle.fileno())
+    os.replace(tmp, target)
 
-    Each file is written beside its target and moved over it with os.replace,
-    so an interrupted write leaves the previous complete file in place.
-    """
+
+def write_archive(run_dir: Path, choices: list[Choice]) -> None:
+    """The run's ISA circuits as QPY, named by member."""
     archived = []
     for choice in choices:
         for name, isa, _ in choice.entries:
             named = copy.copy(isa)
             named.name = name
             archived.append(named)
-    qpy_tmp = run_dir / "isa.qpy.tmp"
-    with open(qpy_tmp, "wb") as handle:
-        qpy.dump(archived, handle)
-        handle.flush()
-        os.fsync(handle.fileno())
-    os.replace(qpy_tmp, run_dir / "isa.qpy")
-    json_tmp = run_dir / "record.json.tmp"
-    with open(json_tmp, "w") as handle:
-        handle.write(json.dumps(record, indent=2, default=str) + "\n")
-        handle.flush()
-        os.fsync(handle.fileno())
-    os.replace(json_tmp, run_dir / "record.json")
+    _replace_atomically(run_dir / "isa.qpy", lambda handle: qpy.dump(archived, handle), "wb")
+
+
+def write_json(run_dir: Path, record: dict[str, Any]) -> None:
+    """The run's JSON record."""
+    text = json.dumps(record, indent=2, default=str) + "\n"
+    _replace_atomically(run_dir / "record.json", lambda handle: handle.write(text), "w")
     print(f"audit record: {run_dir}")
 
 
