@@ -1,34 +1,26 @@
-"""Live-calibrated backend selection, compilation, noise simulation, and submission.
+"""Live system discovery, target-adaptive compilation, simulation, and submission.
 
-Every run fetches each accessible backend's status and calibration afresh
-(IBMBackend.refresh and properties(refresh=True)) and compiles, scores,
-simulates, and optionally submits inside that one process; no calibration value
-is cached across runs or read back from a file to drive a submission. A backend
-is eligible when it reports operational and status_msg "active" and its queue is
-at most --max-pending jobs. Qubits and CZ edges outside the QUALITY policy, or
-listed faulty, are excluded; a candidate layout touching one is rejected.
+Each plan discovers every system accessible to the active account unless
+--backends pins a requested set. The runner refreshes each requested backend,
+records status and submission-relevant capabilities, derives each experiment
+group's requirements, excludes degraded hardware, and removes excluded qubits
+and couplers from the Target used for layout and routing. Every routed
+instruction is then validated against the unfiltered fresh Target.
 
-For each experiment group (experiments.py) and each eligible backend, the
-primary circuit is transpiled under --seeds seeds; the best candidates by
-estimated success probability (ESP, the product of 1 - error over every gate and
-measurement, from the backend Target) compile their controls onto the same
-initial layout, and the candidate with the highest geometric-mean ESP across
-the group wins. ESP ranks layouts; the prediction is the noise simulation of the
-chosen ISA circuits with noise from that same Target, after the Target's errors
-are checked against the properties fetched with it on every qubit and edge of
-the plan.
+For each group and eligible backend, seeded compiles rank valid layouts by
+estimated success probability times an idle-dephasing coherence factor. The
+best layouts compile every control onto the same initial layout. Local noise
+simulation uses the properties and Target from that same fresh snapshot after
+their used calibration values agree.
 
---submit re-reads each chosen backend just before submission: a backend that
-left the eligibility gate fails the run, and a group whose calibration values
-moved on its qubits and edges recompiles and re-simulates;
-last_update_date advances without value changes, so values, not timestamps,
-decide. Each backend's chosen circuits then go out as one client-side Sampler
-job (qiskit_ibm_runtime.executor_sampler) after usage() for that backend's
-instance clears --min-remaining-seconds. --collect reads a finished run's jobs,
-fetches the Target and properties in force when they ran (target_history and
-properties with datetime=), checks them against each other, and re-simulates
-under that Target with the run's own shots and seed, so measurement is compared
-against the calibration of its own execution.
+--submit rediscovers the requested systems and reselects affected groups across
+all fresh eligible systems until one pass changes nothing. Submission partitions
+groups by backend and static or dynamic behavior, then packs complete groups
+into client-side Sampler jobs that respect max_circuits. Every batch receives an
+immediate hardware refresh. The complete batch ledger, QPY archive digest, and
+recovery tags reach disk before the first job. --collect reconciles response-lost
+job ids, fetches the Target and properties in force when each submitted circuit
+ran, and re-simulates under that execution-time calibration.
 """
 
 from __future__ import annotations
@@ -36,6 +28,7 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
+import io
 import json
 import math
 import os
@@ -52,7 +45,9 @@ import numpy as np
 from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.circuit import ControlFlowOp
 from qiskit.converters import circuit_to_dag
+from qiskit.exceptions import QiskitError
 from qiskit.providers import BackendV2, Options
+from qiskit.transpiler import Target
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
@@ -76,7 +71,9 @@ DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
 MAX_REVALIDATION = 3
-RECORD_SCHEMA_VERSION = 2
+RECORD_SCHEMA_VERSION = 3
+CONTROL_FLOW_OPERATIONS = frozenset({"if_else", "while_loop", "for_loop", "switch_case", "break_loop", "continue_loop"})
+DIRECT_TARGET_OPERATIONS = CONTROL_FLOW_OPERATIONS | {"delay", "measure", "reset", "store"}
 
 EXPERIMENT_SOURCE_MANIFEST = (
     "boolean_anf.py",
@@ -100,6 +97,52 @@ class LiveRunError(RuntimeError):
     """A live check failed: stale or mismatched calibration, policy, or budget."""
 
 
+@dataclass(frozen=True)
+class BackendCapabilities:
+    """Submission-relevant capabilities read from one freshly refreshed backend."""
+
+    num_qubits: int
+    max_circuits: int | None
+    dynamic_circuits: bool
+    operation_names: tuple[str, ...]
+    control_flow: tuple[str, ...]
+
+    @property
+    def native_cz(self) -> bool:
+        return "cz" in self.operation_names
+
+    def summary(self) -> dict[str, Any]:
+        return {
+            "num_qubits": self.num_qubits,
+            "max_circuits": self.max_circuits,
+            "dynamic_circuits": self.dynamic_circuits,
+            "operation_names": list(self.operation_names),
+            "control_flow": list(self.control_flow),
+        }
+
+
+@dataclass(frozen=True)
+class CircuitRequirements:
+    """Hardware capabilities needed by every source circuit in one experiment group."""
+
+    qubits: int
+    classical_bits: int
+    static_circuits: int
+    dynamic_circuits: int
+    target_operations: tuple[str, ...]
+    control_flow: tuple[str, ...]
+
+    def summary(self) -> dict[str, Any]:
+        return {
+            "qubits": self.qubits,
+            "classical_bits": self.classical_bits,
+            "static_circuits": self.static_circuits,
+            "dynamic_circuits": self.dynamic_circuits,
+            "target_operations": list(self.target_operations),
+            "control_flow": list(self.control_flow),
+        }
+
+
 @dataclass
 class Snapshot:
     backend: Any
@@ -110,13 +153,14 @@ class Snapshot:
     pending_jobs: int
     calibration: str
     fetched_at: str
+    capabilities: BackendCapabilities
     excluded_qubits: dict[int, str] = field(default_factory=dict)
     excluded_edges: dict[tuple[int, int], str] = field(default_factory=dict)
-    medians: dict[str, float] = field(default_factory=dict)
-    native_cz: bool = True
+    medians: dict[str, float | None] = field(default_factory=dict)
+    admission_target: Target | None = field(default=None, repr=False)
 
     def ineligible_reason(self, max_pending: int | None) -> str | None:
-        if not self.native_cz:
+        if not self.capabilities.native_cz:
             return "no native cz instruction; the exclusion policy and compiles assume CZ"
         if not self.operational or self.status_msg != "active":
             return f"status operational={self.operational} msg={self.status_msg!r}"
@@ -131,6 +175,7 @@ class Snapshot:
             "pending_jobs": self.pending_jobs,
             "calibration": self.calibration,
             "fetched_at": self.fetched_at,
+            "capabilities": self.capabilities.summary(),
             "medians": self.medians,
             "excluded_qubits": {str(q): r for q, r in sorted(self.excluded_qubits.items())},
             "excluded_edges": {f"{a}-{b}": r for (a, b), r in sorted(self.excluded_edges.items())},
@@ -141,12 +186,51 @@ def _now() -> str:
     return datetime.now(UTC).isoformat(timespec="seconds")
 
 
+def _backend_capabilities(backend: Any) -> BackendCapabilities:
+    operation_names = tuple(sorted(str(name) for name in backend.target.operation_names))
+    supported_features = getattr(backend.configuration(), "supported_features", [])
+    return BackendCapabilities(
+        num_qubits=int(backend.num_qubits),
+        max_circuits=int(backend.max_circuits) if backend.max_circuits is not None else None,
+        dynamic_circuits="dynamic_circuits" in supported_features,
+        operation_names=operation_names,
+        control_flow=tuple(sorted(CONTROL_FLOW_OPERATIONS.intersection(operation_names))),
+    )
+
+
 def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
     """Fresh status, Target, and properties for one backend, with the exclusion policy applied."""
-    backend = service.backend(name)
-    backend.refresh()
-    props = backend.properties(refresh=True)
-    status = backend.status()
+    try:
+        backend = service.backend(name)
+    except Exception as error:
+        raise LiveRunError(f"{name}: backend lookup failed ({type(error).__name__})") from error
+    try:
+        backend.refresh()
+    except Exception as error:
+        raise LiveRunError(f"{name}: backend refresh failed ({type(error).__name__})") from error
+    try:
+        # IBMBackend.refresh() refreshes properties and rebuilds the Target from
+        # that same property object. A second refresh here can replace only the
+        # cached properties and create a cross-calibration snapshot.
+        props = backend.properties()
+    except Exception as error:
+        raise LiveRunError(f"{name}: backend properties failed ({type(error).__name__})") from error
+    if props is None:
+        raise LiveRunError(f"{name}: backend properties are unavailable")
+    try:
+        status = backend.status()
+    except Exception as error:
+        raise LiveRunError(f"{name}: backend status failed ({type(error).__name__})") from error
+    try:
+        capabilities = _backend_capabilities(backend)
+    except Exception as error:
+        raise LiveRunError(f"{name}: backend capability read failed ({type(error).__name__})") from error
+    try:
+        check_snapshot_matches_properties(backend.target, props, name)
+    except LiveRunError:
+        raise
+    except Exception as error:
+        raise LiveRunError(f"{name}: target/property coherence check failed ({type(error).__name__})") from error
     snap = Snapshot(
         backend=backend,
         properties=props,
@@ -156,9 +240,9 @@ def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
         pending_jobs=int(status.pending_jobs),
         calibration=props.last_update_date.isoformat(),
         fetched_at=_now(),
+        capabilities=capabilities,
     )
     if "cz" not in backend.target.operation_names:
-        snap.native_cz = False
         return snap
     faulty_q = set(props.faulty_qubits())
     faulty_edges = {tuple(g.qubits) for g in props.faulty_gates() if g.gate == "cz"}
@@ -184,10 +268,10 @@ def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
         else:
             czs.append(err)
     snap.medians = {
-        "t1_us": float(np.median(t1s)),
-        "t2_us": float(np.median(t2s)),
-        "readout_error": float(np.median(ros)),
-        "cz_error": float(np.median(czs)),
+        "t1_us": float(np.median(t1s)) if t1s else None,
+        "t2_us": float(np.median(t2s)) if t2s else None,
+        "readout_error": float(np.median(ros)) if ros else None,
+        "cz_error": float(np.median(czs)) if czs else None,
     }
     return snap
 
@@ -237,6 +321,164 @@ def _ops(isa: QuantumCircuit) -> list[tuple[str, tuple[int, ...]]]:
     return operations
 
 
+def _source_operation_names(circuit: QuantumCircuit) -> set[str]:
+    """Operation names in a logical circuit and every nested control-flow block."""
+    names: set[str] = set()
+
+    def walk(current: QuantumCircuit) -> None:
+        for instruction in current.data:
+            names.add(instruction.operation.name)
+            if isinstance(instruction.operation, ControlFlowOp):
+                for block in instruction.operation.blocks:
+                    walk(block)
+
+    walk(circuit)
+    return names
+
+
+def group_requirements(group: Group) -> CircuitRequirements:
+    """Derive the backend-facing requirements from circuits built for this run."""
+    qubits = max(member.circuit.num_qubits for member in group.members)
+    classical_bits = max(member.circuit.num_clbits for member in group.members)
+    operation_names: set[str] = set()
+    static_circuits = 0
+    dynamic_circuits = 0
+    for member in group.members:
+        operation_names.update(_source_operation_names(member.circuit))
+        circuit_count = 1 + int(member.mirror)
+        if _is_dynamic(member.circuit):
+            dynamic_circuits += circuit_count
+        else:
+            static_circuits += circuit_count
+    direct = tuple(sorted(operation_names.intersection(DIRECT_TARGET_OPERATIONS)))
+    control_flow = tuple(sorted(operation_names.intersection(CONTROL_FLOW_OPERATIONS)))
+    return CircuitRequirements(qubits, classical_bits, static_circuits, dynamic_circuits, direct, control_flow)
+
+
+def _interaction_width(circuit: QuantumCircuit) -> int:
+    """Largest connected logical component induced by multi-qubit operations."""
+    neighbors: list[set[int]] = [set() for _ in range(circuit.num_qubits)]
+
+    def walk(current: QuantumCircuit, parent_qubits: tuple[int, ...]) -> None:
+        for instruction in current.data:
+            local_indices = tuple(current.find_bit(qubit).index for qubit in instruction.qubits)
+            mapped = tuple(parent_qubits[index] for index in local_indices)
+            if isinstance(instruction.operation, ControlFlowOp):
+                for block in instruction.operation.blocks:
+                    walk(block, mapped)
+            elif len(mapped) > 1:
+                root = mapped[0]
+                for other in mapped[1:]:
+                    neighbors[root].add(other)
+                    neighbors[other].add(root)
+
+    walk(circuit, tuple(range(circuit.num_qubits)))
+    largest = 0
+    unseen = set(range(circuit.num_qubits))
+    while unseen:
+        pending = [unseen.pop()]
+        size = 0
+        while pending:
+            qubit = pending.pop()
+            size += 1
+            adjacent = neighbors[qubit].intersection(unseen)
+            unseen.difference_update(adjacent)
+            pending.extend(adjacent)
+        largest = max(largest, size)
+    return largest
+
+
+def _healthy_cz_width(snapshot: Snapshot) -> tuple[int, int]:
+    """Count admitted qubits and the largest connected admitted CZ component."""
+    healthy = set(range(snapshot.capabilities.num_qubits)) - set(snapshot.excluded_qubits)
+    neighbors: dict[int, set[int]] = {qubit: set() for qubit in healthy}
+    if "cz" in snapshot.backend.target.operation_names:
+        for qargs in snapshot.backend.target["cz"]:
+            if any(qubit not in healthy for qubit in qargs):
+                continue
+            if qargs in snapshot.excluded_edges or tuple(reversed(qargs)) in snapshot.excluded_edges:
+                continue
+            first, second = qargs
+            neighbors[first].add(second)
+            neighbors[second].add(first)
+    largest = 0
+    unseen = set(healthy)
+    while unseen:
+        pending = [unseen.pop()]
+        size = 0
+        while pending:
+            qubit = pending.pop()
+            size += 1
+            adjacent = neighbors[qubit].intersection(unseen)
+            unseen.difference_update(adjacent)
+            pending.extend(adjacent)
+        largest = max(largest, size)
+    return len(healthy), largest
+
+
+def routing_admission_violations(group: Group, snapshot: Snapshot) -> list[str]:
+    """Reject a snapshot whose admitted hardware cannot host a group's interaction graph."""
+    healthy_qubits, healthy_cz_width = _healthy_cz_width(snapshot)
+    requirements = group_requirements(group)
+    violations = []
+    if requirements.qubits > healthy_qubits:
+        violations.append(f"needs {requirements.qubits} qubits; quality policy admits {healthy_qubits}")
+    interaction_width = max(_interaction_width(member.circuit) for member in group.members)
+    if interaction_width > healthy_cz_width:
+        violations.append(
+            f"needs a connected {interaction_width}-qubit interaction region; "
+            f"quality policy admits at most {healthy_cz_width}"
+        )
+    return violations
+
+
+def capability_violations(requirements: CircuitRequirements, capabilities: BackendCapabilities) -> list[str]:
+    """Return explicit reasons a backend cannot host one source-circuit group."""
+    violations = []
+    if requirements.static_circuits and requirements.dynamic_circuits:
+        violations.append("one result group mixes static and dynamic circuits")
+    if requirements.qubits > capabilities.num_qubits:
+        violations.append(f"needs {requirements.qubits} qubits; backend has {capabilities.num_qubits}")
+    missing = sorted(set(requirements.target_operations) - set(capabilities.operation_names))
+    if missing:
+        violations.append(f"missing target operations {missing}")
+    if requirements.dynamic_circuits and not capabilities.dynamic_circuits:
+        violations.append("service dynamic-circuit filter rejects backend")
+    largest_batch = max(requirements.static_circuits, requirements.dynamic_circuits)
+    if capabilities.max_circuits is not None and largest_batch > capabilities.max_circuits:
+        violations.append(
+            f"group needs {largest_batch} circuits in one result-complete batch; backend limit is "
+            f"{capabilities.max_circuits}"
+        )
+    return violations
+
+
+def target_violations(isa: QuantumCircuit, target: Any) -> list[str]:
+    """Return ISA instructions that the refreshed Target does not support on their physical qubits."""
+    violations: list[str] = []
+
+    def walk(circuit: QuantumCircuit, physical_qubits: tuple[int, ...]) -> None:
+        for instruction in circuit.data:
+            operation = instruction.operation
+            local_indices = tuple(circuit.find_bit(qubit).index for qubit in instruction.qubits)
+            mapped = tuple(physical_qubits[index] for index in local_indices)
+            if operation.name != "barrier" and not target.instruction_supported(
+                operation_name=operation.name, qargs=mapped, parameters=operation.params
+            ):
+                violations.append(f"target lacks {operation.name}{mapped}")
+            if isinstance(operation, ControlFlowOp):
+                for block in operation.blocks:
+                    if block.num_qubits != len(mapped):
+                        violations.append(
+                            f"{operation.name}{mapped} block has {block.num_qubits} qubits, expected {len(mapped)}"
+                        )
+                    else:
+                        walk(block, mapped)
+
+    walk(isa, tuple(range(isa.num_qubits)))
+    return sorted(set(violations))
+
+
 def esp(isa: QuantumCircuit, target: Any) -> float:
     """Product of (1 - error) over every gate and measurement of isa, from target."""
     log_p = 0.0
@@ -256,6 +498,11 @@ def _violations(isa: QuantumCircuit, snap: Snapshot) -> list[str]:
     return sorted(set(bad))
 
 
+def compiled_violations(isa: QuantumCircuit, snap: Snapshot) -> list[str]:
+    """Threshold, fault, and exact Target violations for one transpiled circuit."""
+    return sorted(set(_violations(isa, snap) + target_violations(isa, snap.backend.target)))
+
+
 CALIBRATED = ("cz", "sx", "x", "measure")
 
 
@@ -267,28 +514,94 @@ def _property_values(name: str, qargs: tuple[int, ...], props: Any) -> dict[str,
     return {"error": props.gate_error(name, gate_qubits), "duration": props.gate_length(name, gate_qubits)}
 
 
-def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
-    """Calibration values the plan depends on: T1, T2 of its qubits, error and duration of its instructions.
+def fingerprint(isas: list[QuantumCircuit], target: Any, props: Any) -> dict[str, Any]:
+    """Calibration values the plan depends on for every routed instruction.
 
-    The layout score reads errors and durations, the noise model reads both plus
-    T1 and T2, and the readout correction reads prob_meas1_prep0 and
-    prob_meas0_prep1, so a change to any of them moves the plan.
+    The layout score and noise model read Target instruction properties and
+    qubit coherence. The readout correction reads asymmetric fields from
+    BackendProperties. A change to any consumed value moves the plan, including
+    reset and identity properties that BackendProperties may not expose.
     """
-    out: dict[str, float] = {}
+    concurrent_measurements = target.concurrent_measurements
+    out: dict[str, Any] = {
+        "target:dt": target.dt,
+        "target:granularity": target.granularity,
+        "target:min_length": target.min_length,
+        "target:pulse_alignment": target.pulse_alignment,
+        "target:acquire_alignment": target.acquire_alignment,
+        "target:concurrent_measurements": (
+            tuple(tuple(group) for group in concurrent_measurements) if concurrent_measurements is not None else None
+        ),
+    }
     for isa in isas:
         for name, qargs in _ops(isa):
             for q in qargs:
-                out[f"t1:{q}"] = props.t1(q)
-                out[f"t2:{q}"] = props.t2(q)
-            if name in CALIBRATED:
-                for field_name, value in _property_values(name, qargs, props).items():
-                    out[f"{name}{qargs}:{field_name}"] = value
+                qubit_properties = target.qubit_properties[q]
+                out[f"target:t1:{q}"] = qubit_properties.t1
+                out[f"target:t2:{q}"] = qubit_properties.t2
+            instruction_properties = target[name].get(qargs) if name in target.operation_names else None
+            out[f"target:{name}{qargs}:error"] = (
+                instruction_properties.error if instruction_properties is not None else None
+            )
+            out[f"target:{name}{qargs}:duration"] = (
+                instruction_properties.duration if instruction_properties is not None else None
+            )
             if name == "measure":
                 # readout_corrected reads the asymmetric channel, which can move
                 # while the aggregate readout_error holds.
                 e10, e01 = readout_flips(props, qargs[0])
                 out[f"e10:{qargs[0]}"], out[f"e01:{qargs[0]}"] = e10, e01
     return out
+
+
+def _same_optional_float(first: Any, second: Any) -> bool:
+    if first is None or second is None:
+        return first is second
+    return math.isclose(float(first), float(second), rel_tol=1e-9, abs_tol=1e-15)
+
+
+def check_snapshot_matches_properties(target: Any, props: Any, label: str) -> None:
+    """Prove that a refreshed Target and its cached properties describe one calibration."""
+    for qubit, target_qubit in enumerate(target.qubit_properties):
+        available = {parameter.name for parameter in props.qubits[qubit]}
+        for field_name, target_value, property_value in (
+            ("t1", target_qubit.t1, props.t1(qubit) if "T1" in available else None),
+            ("t2", target_qubit.t2, props.t2(qubit) if "T2" in available else None),
+        ):
+            if not _same_optional_float(target_value, property_value):
+                raise LiveRunError(
+                    f"{label} qubit {qubit} {field_name}: target {target_value} vs properties {property_value}"
+                )
+
+    property_gates = {
+        (gate.gate, tuple(gate.qubits)): {parameter.name: parameter.value for parameter in gate.parameters}
+        for gate in props.gates
+    }
+    for operation_name in target.operation_names:
+        for qargs, instruction_properties in target[operation_name].items():
+            if qargs is None or instruction_properties is None:
+                continue
+            if operation_name == "measure":
+                available = {parameter.name for parameter in props.qubits[qargs[0]]}
+                values = {
+                    "error": props.readout_error(qargs[0]) if "readout_error" in available else None,
+                    "duration": props.readout_length(qargs[0]) if "readout_length" in available else None,
+                }
+            else:
+                gate_values = property_gates.get((operation_name, qargs), {})
+                gate_qubits: Any = list(qargs) if len(qargs) > 1 else qargs[0]
+                values = {}
+                if "gate_error" in gate_values:
+                    values["error"] = props.gate_error(operation_name, gate_qubits)
+                if "gate_length" in gate_values:
+                    values["duration"] = props.gate_length(operation_name, gate_qubits)
+            for field_name, property_value in values.items():
+                target_value = getattr(instruction_properties, field_name)
+                if not _same_optional_float(target_value, property_value):
+                    raise LiveRunError(
+                        f"{label} {operation_name}{qargs} {field_name}: "
+                        f"target {target_value} vs properties {property_value}"
+                    )
 
 
 def readout_flips(props: Any, q: int) -> tuple[float, float]:
@@ -342,9 +655,63 @@ class Choice:
     entries: list[tuple[str, QuantumCircuit, np.ndarray]] = field(default_factory=list)
 
 
+def build_admission_target(snapshot: Snapshot) -> Target:
+    """Copy the fresh Target while removing every excluded qubit and coupler.
+
+    The transpiler sees the same instruction properties used for scoring, but
+    its layout and routing passes cannot place work on hardware rejected by the
+    live quality policy. Global control-flow instructions remain global.
+    """
+    source = snapshot.backend.target
+    if source.has_angle_bounds():
+        raise LiveRunError(f"{snapshot.name}: bounded-angle Target cannot be filtered without widening its bounds")
+    concurrent_measurements = source.concurrent_measurements
+    if concurrent_measurements is not None:
+        concurrent_measurements = [
+            [qubit for qubit in group if qubit not in snapshot.excluded_qubits] for group in concurrent_measurements
+        ]
+        concurrent_measurements = [group for group in concurrent_measurements if group]
+    admitted = Target(
+        description=source.description,
+        num_qubits=source.num_qubits,
+        dt=source.dt,
+        granularity=source.granularity,
+        min_length=source.min_length,
+        pulse_alignment=source.pulse_alignment,
+        acquire_alignment=source.acquire_alignment,
+        qubit_properties=source.qubit_properties,
+        concurrent_measurements=concurrent_measurements,
+    )
+    for operation_name in source.operation_names:
+        operation = source.operation_from_name(operation_name)
+        properties = source[operation_name]
+        if None in properties:
+            admitted.add_instruction(operation, name=operation_name)
+            continue
+        allowed = {
+            qargs: instruction_properties
+            for qargs, instruction_properties in properties.items()
+            if not any(qubit in snapshot.excluded_qubits for qubit in qargs)
+            and not (
+                operation_name == "cz"
+                and (qargs in snapshot.excluded_edges or tuple(reversed(qargs)) in snapshot.excluded_edges)
+            )
+        }
+        if allowed:
+            admitted.add_instruction(operation, allowed, name=operation_name)
+    return admitted
+
+
 def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | None = None) -> QuantumCircuit:
+    if snap.admission_target is None:
+        snap.admission_target = build_admission_target(snap)
     return transpile(
-        qc, backend=snap.backend, optimization_level=OPT_LEVEL, seed_transpiler=seed, initial_layout=layout
+        qc,
+        backend=snap.backend,
+        target=snap.admission_target,
+        optimization_level=OPT_LEVEL,
+        seed_transpiler=seed,
+        initial_layout=layout,
     )
 
 
@@ -455,18 +822,55 @@ def attach_mirrors(choice: Choice) -> Choice:
     return choice
 
 
+def _trace_failure_summary(trace_by_backend: dict[str, list[dict[str, Any]]]) -> dict[str, list[str]]:
+    """Compact selection failures for a terminal CLI diagnostic."""
+    summary: dict[str, list[str]] = {}
+    for backend_name, entries in trace_by_backend.items():
+        reasons: set[str] = set()
+        for entry in entries:
+            stage = str(entry.get("stage", "routing"))
+            reasons.update(f"{stage}: {reason}" for reason in entry.get("rejected", []))
+            for field_name in ("compile_error", "member_compile_error", "mirror_compile_error"):
+                if field_name in entry:
+                    reasons.add(f"{field_name}: {entry[field_name]}")
+            for field_name in ("member_rejections", "mirror_rejections"):
+                for member_name, rejected in entry.get(field_name, {}).items():
+                    reasons.update(f"{member_name}: {reason}" for reason in rejected)
+        summary[backend_name] = sorted(reasons) or ["no candidate reached final validation"]
+    return summary
+
+
 def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any]) -> Choice:
     """Best (backend, seed, layout) for the group by geometric-mean layout score over its members."""
-    best: Choice | None = None
+    requirements = group_requirements(group)
+    candidates: list[Choice] = []
     log[group.name] = {}
     for snap in snaps:
         trace: list[dict[str, Any]] = []
         log[group.name][snap.name] = trace
+        capability_rejections = capability_violations(requirements, snap.capabilities)
+        trace.append(
+            {
+                "stage": "capability_admission",
+                "requirements": requirements.summary(),
+                "rejected": capability_rejections,
+            }
+        )
+        if capability_rejections:
+            continue
+        routing_rejections = routing_admission_violations(group, snap)
+        trace.append({"stage": "routing_admission", "rejected": routing_rejections})
+        if routing_rejections:
+            continue
         primaries = []
         primary = group.members[0]
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
-            isa = _compile(primary.circuit, snap, seed)
-            bad = _violations(isa, snap)
+            try:
+                isa = _compile(primary.circuit, snap, seed)
+            except (QiskitError, ValueError) as error:
+                trace.append({"seed": seed, "compile_error": type(error).__name__})
+                continue
+            bad = compiled_violations(isa, snap)
             trace.append({"seed": seed, "cz": isa.count_ops().get("cz", 0), "rejected": bad})
             if bad:
                 continue
@@ -480,21 +884,56 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
             layout = isa.layout.initial_index_layout(filter_ancillas=True)
             # Members that share the primary's parametrized circuit reuse its ISA
             # with their own parameter values: one routing, one readout qubit.
-            isas = [_bind(isa, primary)] + [
-                _bind(isa if m.circuit is primary.circuit else _compile(m.circuit, snap, seed, layout), m)
-                for m in group.members[1:]
-            ]
-            if any(_violations(c, snap) for c in isas[1:]):
+            try:
+                isas = [_bind(isa, primary)] + [
+                    _bind(
+                        isa if member.circuit is primary.circuit else _compile(member.circuit, snap, seed, layout),
+                        member,
+                    )
+                    for member in group.members[1:]
+                ]
+            except (QiskitError, ValueError) as error:
+                trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
+                continue
+            member_rejections = {
+                member.name: rejected
+                for member, member_isa in zip(group.members, isas, strict=True)
+                if (rejected := compiled_violations(member_isa, snap))
+            }
+            if member_rejections:
+                trace.append({"seed": seed, "layout": layout, "member_rejections": member_rejections})
                 continue
             scores = [layout_score(c, snap.backend.target) for c in isas]
             joint = math.exp(sum(math.log(s) for s in scores) / len(scores))
             trace.append({"seed": seed, "joint_score": joint, "layout": layout})
-            better = best is None or (joint, -snap.pending_jobs) > (best.joint_score, -best.snap.pending_jobs)
-            if better:
-                best = Choice(group, snap, seed, layout, isas, scores, joint)
-    if best is None:
-        raise LiveRunError(f"{group.name}: no eligible backend produced a layout clear of excluded hardware")
-    return attach_mirrors(best)
+            candidates.append(Choice(group, snap, seed, layout, isas, scores, joint))
+    candidates.sort(key=lambda choice: (choice.joint_score, -choice.snap.pending_jobs), reverse=True)
+    for candidate in candidates:
+        trace = log[group.name][candidate.snap.name]
+        try:
+            attach_mirrors(candidate)
+        except (QiskitError, ValueError) as error:
+            trace.append(
+                {
+                    "seed": candidate.seed,
+                    "layout": candidate.layout,
+                    "mirror_compile_error": type(error).__name__,
+                }
+            )
+            continue
+        mirror_rejections = {
+            name: rejected
+            for name, isa, _ in candidate.entries
+            if (rejected := compiled_violations(isa, candidate.snap))
+        }
+        if mirror_rejections:
+            trace.append({"seed": candidate.seed, "layout": candidate.layout, "mirror_rejections": mirror_rejections})
+            continue
+        return candidate
+    failure_summary = _trace_failure_summary(log[group.name])
+    raise LiveRunError(
+        f"{group.name}: no valid routed candidate; failures={json.dumps(failure_summary, sort_keys=True)}"
+    )
 
 
 def _distribution(counts: dict[str, int], clbits: int) -> np.ndarray:
@@ -707,29 +1146,63 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
     }
 
 
+def discover_snapshots(
+    service: QiskitRuntimeService, pinned_names: list[str] | None, max_pending: int | None
+) -> tuple[list[Snapshot], dict[str, Any], dict[str, Any]]:
+    """Return eligible snapshots, skipped evidence, and the requested-system inventory."""
+    try:
+        discovered = service.backends()
+    except Exception as error:
+        raise LiveRunError(f"backend discovery failed ({type(error).__name__})") from error
+    names = list(dict.fromkeys(pinned_names or sorted(backend.name for backend in discovered)))
+    snapshots: list[Snapshot] = []
+    skipped: dict[str, Any] = {}
+    inventory: dict[str, Any] = {}
+    for name in names:
+        try:
+            snapshot = take_snapshot(service, name)
+        except Exception as error:
+            reason = (
+                str(error) if isinstance(error, LiveRunError) else f"snapshot refresh failed ({type(error).__name__})"
+            )
+            skipped[name] = {"reason": reason}
+            inventory[name] = {"eligibility": "probe_failed", "reason": reason}
+            print(f"{name}: skipped: {reason}")
+            continue
+        ineligible = snapshot.ineligible_reason(max_pending)
+        state = snapshot.summary()
+        inventory[name] = (
+            {"eligibility": "ineligible", "reason": ineligible} | state
+            if ineligible
+            else {"eligibility": "eligible"} | state
+        )
+        rounded_medians = {
+            key: round(value, 5) if value is not None else None for key, value in snapshot.medians.items()
+        }
+        print(
+            f"{snapshot.name}: {snapshot.status_msg} pending={snapshot.pending_jobs} "
+            f"calibration={snapshot.calibration} capabilities={snapshot.capabilities.summary()} "
+            f"medians={rounded_medians} "
+            f"excluded qubits={len(snapshot.excluded_qubits)} edges={len(snapshot.excluded_edges)}"
+            + (f" -> skipped: {ineligible}" if ineligible else "")
+        )
+        if ineligible:
+            skipped[name] = {"reason": ineligible} | state
+        else:
+            snapshots.append(snapshot)
+    return snapshots, skipped, inventory
+
+
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
-    known = {g.name for g in experiment_groups()}
+    available_groups = experiment_groups()
+    known = {group.name for group in available_groups}
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
         raise LiveRunError(f"unknown experiment groups {unknown}; known: {sorted(known)}")
-    names = args.backends or [b.name for b in service.backends()]
-    snaps, skipped = [], {}
-    for name in names:
-        snap = take_snapshot(service, name)
-        reason = snap.ineligible_reason(args.max_pending)
-        print(
-            f"{snap.name}: {snap.status_msg} pending={snap.pending_jobs} calibration={snap.calibration} "
-            f"medians={ {k: round(v, 5) for k, v in snap.medians.items()} } "
-            f"excluded qubits={len(snap.excluded_qubits)} edges={len(snap.excluded_edges)}"
-            + (f" -> skipped: {reason}" if reason else "")
-        )
-        if reason:
-            skipped[snap.name] = {"reason": reason} | snap.summary()
-        else:
-            snaps.append(snap)
+    snaps, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
     if not snaps:
         raise LiveRunError("no eligible backend")
-    groups = [g for g in experiment_groups() if not args.groups or g.name in args.groups]
+    groups = [group for group in available_groups if not args.groups or group.name in args.groups]
     trace: dict[str, Any] = {}
     choices = [select(group, snaps, args.seeds, trace) for group in groups]
     record = {
@@ -743,8 +1216,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "seed_simulator": SEED_SIMULATOR,
         "experiment_digest": experiment_digest(),
         "code_commit": _code_commit(),
+        "system_inventory": inventory,
         "backends": {s.name: s.summary() for s in snaps},
         "skipped_backends": skipped,
+        "circuit_requirements": {group.name: group_requirements(group).summary() for group in groups},
         "selection_trace": trace,
     }
     return choices, record
@@ -790,12 +1265,295 @@ def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
         raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
 
 
+def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
+    """Reasons an existing compile needs rebuilding against a fresh snapshot."""
+    reasons = capability_violations(group_requirements(choice.group), fresh.capabilities)
+    if choice.snap.capabilities != fresh.capabilities:
+        reasons.append("backend capabilities changed")
+    isas = [isa for _, isa, _ in choice.entries]
+    for name, isa, _ in choice.entries:
+        reasons.extend(f"{name}: {reason}" for reason in compiled_violations(isa, fresh))
+    try:
+        if fingerprint(isas, fresh.backend.target, fresh.properties) != fingerprint(
+            isas, choice.snap.backend.target, choice.snap.properties
+        ):
+            reasons.append("calibration values changed on compiled instructions")
+    except Exception as error:
+        reasons.append(f"calibration fingerprint failed ({type(error).__name__})")
+    return sorted(set(reasons))
+
+
+def submission_batches(
+    choices: list[Choice], kind: str, max_circuits: int | None
+) -> list[list[tuple[str, QuantumCircuit, Choice]]]:
+    """Pack whole result-complete groups into deterministic first-fit-decreasing jobs."""
+    groups: list[tuple[int, list[tuple[str, QuantumCircuit, Choice]]]] = []
+    for group_index, choice in enumerate(choices):
+        classified = [
+            (name, isa, choice, "dynamic" if _is_dynamic(isa) else "static") for name, isa, _ in choice.entries
+        ]
+        choice_kinds = {entry_kind for _, _, _, entry_kind in classified}
+        if len(choice_kinds) != 1:
+            raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
+        if kind not in choice_kinds:
+            continue
+        entries = [(name, isa, owner) for name, isa, owner, _ in classified]
+        if max_circuits is not None and len(entries) > max_circuits:
+            raise LiveRunError(
+                f"{choice.group.name}: {len(entries)} circuits exceed backend per-job limit {max_circuits}"
+            )
+        groups.append((group_index, entries))
+    if not groups:
+        return []
+    if max_circuits is None:
+        return [[entry for _, entries in groups for entry in entries]]
+    batches: list[list[tuple[str, QuantumCircuit, Choice]]] = []
+    for _, entries in sorted(groups, key=lambda item: (-len(item[1]), item[0])):
+        for batch in batches:
+            if len(batch) + len(entries) <= max_circuits:
+                batch.extend(entries)
+                break
+        else:
+            batches.append(list(entries))
+    return batches
+
+
+def _submission_key(entry: dict[str, Any]) -> tuple[str, str, int, int]:
+    return (
+        str(entry["backend"]),
+        str(entry["kind"]),
+        int(entry["batch_index"]),
+        int(entry["batch_count"]),
+    )
+
+
+def _recovery_tags(
+    started: str,
+    backend: str,
+    kind: str,
+    batch_index: int,
+    batch_count: int,
+    members: list[str],
+    qpy_archive_sha256: str,
+) -> list[str]:
+    """Tags that identify exactly one planned Runtime job after response loss."""
+    run_digest = hashlib.sha256(started.encode()).hexdigest()[:20]
+    batch_identity = json.dumps(
+        {
+            "started": started,
+            "backend": backend,
+            "kind": kind,
+            "batch_index": batch_index,
+            "batch_count": batch_count,
+            "members": members,
+            "qpy_archive_sha256": qpy_archive_sha256,
+        },
+        sort_keys=True,
+        separators=(",", ":"),
+    )
+    batch_digest = hashlib.sha256(batch_identity.encode()).hexdigest()[:24]
+    return ["gororoba-quantum", f"gororoba-run-{run_digest}", f"gororoba-batch-{batch_digest}"]
+
+
+def build_submission_plan(
+    choices: list[Choice], args: argparse.Namespace, qpy_archive_sha256: str
+) -> tuple[dict[str, Any], list[tuple[int, str, str, list[tuple[str, QuantumCircuit, Choice]]]]]:
+    """Materialize the complete immutable batch identity before any job call."""
+    planned_backends = sorted({choice.snap.name for choice in choices})
+    by_backend: dict[str, list[Choice]] = {}
+    for choice in choices:
+        by_backend.setdefault(choice.snap.name, []).append(choice)
+    runtime_batches: list[tuple[int, str, str, list[tuple[str, QuantumCircuit, Choice]]]] = []
+    planned_jobs: list[dict[str, Any]] = []
+    for name, group_choices in by_backend.items():
+        backend = group_choices[0].snap.backend
+        if any(choice.snap.backend is not backend for choice in group_choices):
+            raise LiveRunError(f"{name}: final groups do not share one refreshed backend snapshot")
+        for kind in ("static", "dynamic"):
+            max_circuits = group_choices[0].snap.capabilities.max_circuits
+            batches = submission_batches(group_choices, kind, max_circuits)
+            for batch_index, batch in enumerate(batches, start=1):
+                members = [member_name for member_name, _, _ in batch]
+                batch_count = len(batches)
+                recovery_tags = _recovery_tags(
+                    args.started,
+                    name,
+                    kind,
+                    batch_index,
+                    batch_count,
+                    members,
+                    qpy_archive_sha256,
+                )
+                sampler = configure_sampler(
+                    backend,
+                    kind,
+                    args.twirl,
+                    args.dd,
+                    recovery_tags,
+                    args.shots,
+                )
+                plan_index = len(planned_jobs)
+                planned_jobs.append(
+                    {
+                        "backend": name,
+                        "kind": kind,
+                        "batch_index": batch_index,
+                        "batch_count": batch_count,
+                        "members": members,
+                        "qpy_archive_sha256": qpy_archive_sha256,
+                        "calibrations": sorted({choice.snap.calibration for _, _, choice in batch}),
+                        "recovery_tags": recovery_tags,
+                        "options": sampler.options.model_dump(mode="json"),
+                        "state": "planned",
+                    }
+                )
+                runtime_batches.append((plan_index, name, kind, batch))
+    return {
+        "planned_backends": planned_backends,
+        "qpy_archive_sha256": qpy_archive_sha256,
+        "planned_jobs": planned_jobs,
+        "jobs": [],
+        "complete": False,
+    }, runtime_batches
+
+
+def _job_record(plan_entry: dict[str, Any], job_id: str, recovered: bool = False) -> dict[str, Any]:
+    record = {
+        "backend": plan_entry["backend"],
+        "kind": plan_entry["kind"],
+        "batch_index": plan_entry["batch_index"],
+        "batch_count": plan_entry["batch_count"],
+        "job_id": job_id,
+        "members": plan_entry["members"],
+        "qpy_archive_sha256": plan_entry["qpy_archive_sha256"],
+        "calibrations": plan_entry["calibrations"],
+        "recovery_tags": plan_entry["recovery_tags"],
+        "budget_before": plan_entry["budget_before"],
+        "options": plan_entry["options"],
+    }
+    if recovered:
+        record["job_id_recovered"] = True
+    return record
+
+
+def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], list[str], list[str]]:
+    """Validate the planned/submitted ledger and return batches without a job id."""
+    planned_jobs = submission.get("planned_jobs")
+    if planned_jobs is None:
+        sent_backends = {job["backend"] for job in submission["jobs"]}
+        backends = [name for name in submission.get("planned_backends", []) if name not in sent_backends]
+        return [], backends, []
+
+    archive_digest = submission.get("qpy_archive_sha256")
+    if not isinstance(archive_digest, str) or len(archive_digest) != 64:
+        raise LiveRunError("submission plan has no valid QPY archive SHA-256")
+    planned_by_key: dict[tuple[str, str, int, int], dict[str, Any]] = {}
+    for planned_job in planned_jobs:
+        key = _submission_key(planned_job)
+        if key in planned_by_key:
+            raise LiveRunError(f"duplicate planned job identity {key}")
+        if planned_job.get("qpy_archive_sha256") != archive_digest:
+            raise LiveRunError(f"planned job {key} differs from the submission QPY archive digest")
+        planned_by_key[key] = planned_job
+
+    submitted_by_key: dict[tuple[str, str, int, int], dict[str, Any]] = {}
+    submitted_job_ids: set[str] = set()
+    for submitted_job in submission["jobs"]:
+        key = _submission_key(submitted_job)
+        if key in submitted_by_key:
+            raise LiveRunError(f"duplicate submitted job identity {key}")
+        if key not in planned_by_key:
+            raise LiveRunError(f"submitted job {key} has no planned ledger entry")
+        job_id = submitted_job.get("job_id")
+        if not job_id:
+            raise LiveRunError(f"submitted job {key} has no job id")
+        if job_id in submitted_job_ids:
+            raise LiveRunError(f"submitted job id {job_id!r} appears more than once")
+        submitted_job_ids.add(job_id)
+        planned_job = planned_by_key[key]
+        for field_name in ("members", "qpy_archive_sha256", "calibrations", "recovery_tags", "options"):
+            if submitted_job.get(field_name) != planned_job.get(field_name):
+                raise LiveRunError(f"submitted job {key} differs from its plan in {field_name}")
+        submitted_by_key[key] = submitted_job
+
+    missing = [
+        {
+            "backend": entry["backend"],
+            "kind": entry["kind"],
+            "batch_index": entry["batch_index"],
+            "batch_count": entry["batch_count"],
+            "members": entry["members"],
+            "attempt_state": entry.get("state", "planned"),
+        }
+        for key, entry in planned_by_key.items()
+        if key not in submitted_by_key
+    ]
+    if submission.get("complete", False) and missing:
+        raise LiveRunError("submission is marked complete but planned jobs lack recorded job ids")
+    return (
+        missing,
+        sorted({entry["backend"] for entry in missing}),
+        [member for entry in missing for member in entry["members"]],
+    )
+
+
+def reconcile_attempted_jobs(service: QiskitRuntimeService, submission: dict[str, Any]) -> bool:
+    """Recover a response-lost job id from its unique pre-recorded Runtime tags."""
+    planned_jobs = submission.get("planned_jobs")
+    if planned_jobs is None:
+        return False
+    submitted_keys = {_submission_key(job) for job in submission["jobs"]}
+    changed = False
+    for plan_entry in planned_jobs:
+        key = _submission_key(plan_entry)
+        if key in submitted_keys or plan_entry.get("state") != "attempted":
+            continue
+        instance_hash = plan_entry.get("budget_before", {}).get("instance_sha256_12")
+        try:
+            instances = service.instances()
+        except Exception as error:
+            raise LiveRunError(f"planned job {key} instance discovery failed ({type(error).__name__})") from error
+        matching_instances = [
+            instance["crn"]
+            for instance in instances
+            if hashlib.sha256(str(instance["crn"]).encode()).hexdigest()[:12] == instance_hash
+        ]
+        if len(matching_instances) != 1:
+            raise LiveRunError(
+                f"planned job {key} maps to {len(matching_instances)} accessible instances; "
+                "submission identity remains unresolved"
+            )
+        try:
+            matches = service.jobs(
+                limit=2,
+                backend_name=plan_entry["backend"],
+                instance=matching_instances[0],
+                job_tags=plan_entry["recovery_tags"],
+            )
+        except Exception as error:
+            raise LiveRunError(f"planned job {key} recovery query failed ({type(error).__name__})") from error
+        plan_entry["recovery"] = {"checked_at": _now(), "match_count": len(matches)}
+        changed = True
+        if len(matches) != 1:
+            raise LiveRunError(
+                f"planned job {key} has {len(matches)} recovery-tag matches; submission identity remains unresolved"
+            )
+        recovered_id = matches[0].job_id()
+        submission["jobs"].append(_job_record(plan_entry, recovered_id, recovered=True))
+        plan_entry["state"] = "recovered"
+        submitted_keys.add(key)
+    missing, _, _ = submission_gaps(submission)
+    if not missing:
+        submission["complete"] = True
+    return changed
+
+
 def submit(
     service: QiskitRuntimeService,
     choices: list[Choice],
     args: argparse.Namespace,
     record: dict[str, Any],
-    archive: Callable[[], None],
+    archive: Callable[[], str],
     checkpoint: Callable[[], None],
 ) -> None:
     """Re-gate and re-read each chosen backend until nothing moved, then archive and submit.
@@ -803,27 +1561,41 @@ def submit(
     Recompiling and re-simulating takes long enough for the calibration, the
     status, or the queue to move again, so the gate repeats on fresh snapshots
     until a pass changes nothing, at most MAX_REVALIDATION passes. The final
-    circuits reach isa.qpy before the first job is sent, and each job id is
-    then checkpointed by a JSON-only atomic write, so no QPY rewrite stands
-    between QPU time spent and its job id reaching disk.
+    circuits reach isa.qpy before the first job is sent. The exact archive
+    digest and recovery tags are checkpointed before each attempt, and each
+    returned job id is checkpointed before the next batch.
     """
     for attempt in range(MAX_REVALIDATION):
-        fresh_by_backend: dict[str, Snapshot] = {}
+        fresh_snapshots, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
+        if not fresh_snapshots:
+            raise LiveRunError("no eligible backend remains before submission")
+        fresh_by_backend = {snapshot.name: snapshot for snapshot in fresh_snapshots}
         moved = False
+        attempt_trace: dict[str, Any] = {}
+        reselected: dict[str, Any] = {}
         for idx, choice in enumerate(choices):
             name = choice.snap.name
-            if name not in fresh_by_backend:
-                fresh_by_backend[name] = take_snapshot(service, name)
-            fresh = fresh_by_backend[name]
-            reason = fresh.ineligible_reason(args.max_pending)
-            if reason:
-                raise LiveRunError(f"{name} left the eligibility gate before submission ({reason}); rerun to replan")
-            isas = [isa for _, isa, _ in choice.entries]
-            before = fingerprint(isas, choice.snap.properties)
-            if fingerprint(isas, fresh.properties) != before or _any_violation(isas, fresh):
-                print(f"{choice.group.name}: calibration moved on {name}; recompiling")
-                choices[idx] = select(choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}))
-                moved = True
+            reasons = (
+                choice_change_reasons(choice, fresh_by_backend[name])
+                if name in fresh_by_backend
+                else ["chosen backend is unavailable or ineligible"]
+            )
+            if not reasons:
+                choice.snap = fresh_by_backend[name]
+                continue
+            print(f"{choice.group.name}: live configuration moved on {name}; reselecting across viable systems")
+            choices[idx] = select(choice.group, fresh_snapshots, args.seeds, attempt_trace)
+            reselected[choice.group.name] = {"previous_backend": name, "reasons": reasons}
+            moved = True
+        record.setdefault("revalidation", []).append(
+            {
+                "attempt": attempt + 1,
+                "system_inventory": inventory,
+                "skipped_backends": skipped,
+                "reselected_groups": reselected,
+                "selection_trace": attempt_trace,
+            }
+        )
         if not moved:
             break
         # The record's predictions must describe the circuits that run, and the
@@ -834,50 +1606,71 @@ def submit(
         archive()
     else:
         raise LiveRunError(f"calibration kept moving through {MAX_REVALIDATION} revalidation passes; rerun later")
-    archive()
-    planned = sorted({choice.snap.name for choice in choices})
-    # complete turns true only after every planned job has an id on disk; a
-    # failure between jobs leaves it false for --collect to report.
-    record["submission"] = {"planned_backends": planned, "jobs": [], "complete": False}
+    qpy_archive_sha256 = archive()
+    submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
+    # The complete batch ledger reaches disk before the first job starts. A
+    # partial submission can therefore name every unsent circuit, including a
+    # later batch on a backend that already accepted an earlier one.
+    record["submission"] = submission
     record["state"] = "submission_started"
-    by_backend: dict[str, list[Choice]] = {}
-    for choice in choices:
-        by_backend.setdefault(choice.snap.name, []).append(choice)
-    for name, group_choices in by_backend.items():
-        # service.backend selects the backend's instance as the active one, and
-        # usage() reports the active instance, so each job's budget is checked
-        # against the instance that pays for it.
-        backend = service.backend(name)
-        entries = [(entry_name, isa) for c in group_choices for entry_name, isa, _ in c.entries]
-        # Circuits with mid-circuit measurement, reset, or feed-forward go in
-        # their own job, which configure_sampler keeps free of twirling and DD.
-        static = [(n, isa) for n, isa in entries if not _is_dynamic(isa)]
-        dynamic = [(n, isa) for n, isa in entries if _is_dynamic(isa)]
-        for kind, batch in (("static", static), ("dynamic", dynamic)):
-            if not batch:
+    checkpoint()
+    for plan_index, name, kind, batch in runtime_batches:
+        plan_entry = record["submission"]["planned_jobs"][plan_index]
+        batch_index = int(plan_entry["batch_index"])
+        batch_count = int(plan_entry["batch_count"])
+        batch_tag = f"{kind}-{batch_index}-of-{batch_count}"
+        fresh = take_snapshot(service, name)
+        ineligible = fresh.ineligible_reason(args.max_pending)
+        if ineligible:
+            raise LiveRunError(f"{name}: {batch_tag} left the eligibility gate ({ineligible})")
+        owner_reasons: dict[str, list[str]] = {}
+        seen_owners: set[int] = set()
+        for _, _, owner in batch:
+            if id(owner) in seen_owners:
                 continue
-            usage = service.usage()
-            check_budget(name, usage, args.min_remaining_seconds)
-            sampler = configure_sampler(
-                backend, kind, args.twirl, args.dd, ["gororoba-quantum", args.started, kind], args.shots
+            seen_owners.add(id(owner))
+            reasons = choice_change_reasons(owner, fresh)
+            if reasons:
+                owner_reasons[owner.group.name] = reasons
+        if owner_reasons:
+            raise LiveRunError(
+                f"{name}: {batch_tag} hardware moved after batch planning; "
+                f"no circuit in this batch was submitted ({owner_reasons})"
             )
-            job = sampler.run([isa for _, isa in batch])
-            record["submission"]["jobs"].append(
-                {
-                    "backend": name,
-                    "kind": kind,
-                    "job_id": job.job_id(),
-                    "members": [n for n, _ in batch],
-                    "calibration": group_choices[0].snap.calibration,
-                    "budget_before": _budget(service, usage),
-                    "options": sampler.options.model_dump(mode="json"),
-                }
-            )
-            # The job id is the only handle on QPU time already spent; it reaches
-            # disk before the next job is sent.
-            record["state"] = "partially_submitted"
-            checkpoint()
-            print(f"submitted {len(batch)} {kind} circuits to {name}: job {job.job_id()}")
+        usage = service.usage()
+        check_budget(name, usage, args.min_remaining_seconds)
+        sampler = configure_sampler(
+            fresh.backend,
+            kind,
+            args.twirl,
+            args.dd,
+            plan_entry["recovery_tags"],
+            args.shots,
+        )
+        effective_options = sampler.options.model_dump(mode="json")
+        if effective_options != plan_entry["options"]:
+            raise LiveRunError(f"{name}: {batch_tag} effective Sampler options moved after planning")
+        plan_entry["pre_submit_revalidation"] = {
+            "fetched_at": fresh.fetched_at,
+            "calibration": fresh.calibration,
+            "capabilities": fresh.capabilities.summary(),
+            "excluded_qubits": len(fresh.excluded_qubits),
+            "excluded_edges": len(fresh.excluded_edges),
+        }
+        plan_entry["budget_before"] = _budget(service, usage)
+        plan_entry["state"] = "attempted"
+        # The recovery identity and attempt marker reach disk before the remote
+        # call, so collection can resolve a response-lost accepted job exactly.
+        checkpoint()
+        job = sampler.run([isa for _, isa, _ in batch])
+        job_id = job.job_id()
+        record["submission"]["jobs"].append(_job_record(plan_entry, job_id))
+        plan_entry["state"] = "accepted"
+        # The job id is the only handle on QPU time already spent; it reaches
+        # disk before the next job is sent.
+        record["state"] = "partially_submitted"
+        checkpoint()
+        print(f"submitted {len(batch)} {batch_tag} circuits to {name}: job {job_id}")
     record["submission"]["complete"] = True
     record["state"] = "submitted"
     checkpoint()
@@ -946,10 +1739,6 @@ def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, A
     }
 
 
-def _any_violation(isas: list[QuantumCircuit], snap: Snapshot) -> bool:
-    return any(_violations(isa, snap) for isa in isas)
-
-
 def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
     """Start and stop of the execution spans that hold each PUB's shots.
 
@@ -1008,8 +1797,7 @@ def _without_odr(summary: dict[str, Any], withheld: str | None) -> dict[str, Any
 def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
-    with open(run_dir / "isa.qpy", "rb") as handle:
-        isas = {c.name: c for c in qpy.load(handle)}
+    qpy_bytes = (run_dir / "isa.qpy").read_bytes()
     groups = {g.name: g for g in experiment_groups()}
     if record.get("experiment_digest") != experiment_digest():
         commit = record.get("code_commit", {}).get("head")
@@ -1020,15 +1808,41 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     if "submission" not in record:
         raise LiveRunError(f"{run_dir} is a dry-run record with no submitted jobs to collect")
     submission = record["submission"]
-    sent = {job["backend"] for job in submission["jobs"]}
-    unsent = [name for name in submission.get("planned_backends", []) if name not in sent]
+    planned_jobs = submission.get("planned_jobs")
+    if planned_jobs is not None:
+        actual_archive_sha256 = hashlib.sha256(qpy_bytes).hexdigest()
+        if actual_archive_sha256 != submission.get("qpy_archive_sha256"):
+            raise LiveRunError("isa.qpy differs from the archive digest checkpointed before submission")
+    isas = {c.name: c for c in qpy.load(io.BytesIO(qpy_bytes))}
+    if planned_jobs is not None:
+        for planned_job in planned_jobs:
+            for member_name in planned_job["members"]:
+                if member_name not in isas:
+                    raise LiveRunError(f"planned circuit {member_name!r} is absent from isa.qpy")
+        try:
+            reconciled = reconcile_attempted_jobs(service, submission)
+        finally:
+            # Recovery evidence and recovered ids retain their own atomic
+            # checkpoint even when a zero-match or ambiguous query stops.
+            write_json(run_dir, record)
+        if reconciled and submission.get("complete", False):
+            record["state"] = "submitted"
+            write_json(run_dir, record)
+    jobs_without_id, backends_without_id, members_without_id = submission_gaps(submission)
     if not submission.get("complete", False):
-        print(
-            f"incomplete submission: no job was sent to {unsent}; collecting the {len(sent)} that were", file=sys.stderr
-        )
+        if planned_jobs is None:
+            detail = f"backends without a recorded job id: {backends_without_id}"
+        else:
+            detail = f"{len(jobs_without_id)} jobs and {len(members_without_id)} circuits lack recorded job ids"
+        print(f"incomplete submission: {detail}; collecting {len(submission['jobs'])} recorded jobs", file=sys.stderr)
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
     out: list[dict[str, Any]] = [
-        {"submission_complete": bool(submission.get("complete", False)), "unsent_backends": unsent}
+        {
+            "submission_complete": bool(submission.get("complete", False)),
+            "backends_without_recorded_job_id": backends_without_id,
+            "members_without_recorded_job_id": members_without_id,
+            "jobs_without_recorded_id": jobs_without_id,
+        }
     ]
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
@@ -1147,8 +1961,16 @@ def main(argv: list[str] | None = None) -> int:
             f"and a multiple of {TWIRLING_RANDOMIZATIONS}"
         ),
     )
-    parser.add_argument("--twirl", action="store_true", help="Pauli-twirl gates and measurements on submission")
-    parser.add_argument("--dd", choices=("XX", "XpXm", "XY4"), help="dynamical decoupling sequence on submission")
+    parser.add_argument(
+        "--twirl",
+        action="store_true",
+        help="Pauli-twirl gates and measurements on static submission batches; dynamic batches remain disabled",
+    )
+    parser.add_argument(
+        "--dd",
+        choices=("XX", "XpXm", "XY4"),
+        help="apply dynamical decoupling to static submission batches; dynamic batches remain disabled",
+    )
     parser.add_argument("--collect", type=Path, help="run directory whose submitted jobs to collect")
     args = parser.parse_args(argv)
     if args.submit and not args.out:
@@ -1195,17 +2017,26 @@ def _replace_atomically(target: Path, write: Callable[[Any], None], mode: str) -
         handle.flush()
         os.fsync(handle.fileno())
     os.replace(tmp, target)
+    directory_fd = os.open(target.parent, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
 
 
-def write_archive(run_dir: Path, choices: list[Choice]) -> None:
-    """The run's ISA circuits as QPY, named by member."""
+def write_archive(run_dir: Path, choices: list[Choice]) -> str:
+    """Write the run's named ISA circuits and return the exact QPY-file digest."""
     archived = []
     for choice in choices:
         for name, isa, _ in choice.entries:
             named = copy.copy(isa)
             named.name = name
             archived.append(named)
-    _replace_atomically(run_dir / "isa.qpy", lambda handle: qpy.dump(archived, handle), "wb")
+    buffer = io.BytesIO()
+    qpy.dump(archived, buffer)
+    qpy_bytes = buffer.getvalue()
+    _replace_atomically(run_dir / "isa.qpy", lambda handle: handle.write(qpy_bytes), "wb")
+    return hashlib.sha256(qpy_bytes).hexdigest()
 
 
 def write_json(run_dir: Path, record: dict[str, Any]) -> None:

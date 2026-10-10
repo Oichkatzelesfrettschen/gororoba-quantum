@@ -24,9 +24,12 @@ The project keeps four evidence levels separate.
 2. **Compiler evidence.** FakeFez compilation measures width, CZ count, depth,
    and control-flow structure against the pinned Qiskit stack. The fake backend
    supplies a static target snapshot rather than a prediction of live noise.
-3. **Live dry-run evidence.** `live_run.py` reads fresh backend Targets and
-   properties, excludes degraded qubits and edges, selects layouts, and runs
-   local noise simulation. The dry run spends zero QPU time.
+3. **Live dry-run evidence.** `live_run.py` discovers the requested systems,
+   refreshes their status, Targets, properties, and submission capabilities,
+   derives the hybrid group's requirements from circuits built in the current
+   process, removes degraded hardware from routing, validates each compiled
+   operation, selects a valid layout, and runs local noise simulation. The dry
+   run spends zero QPU time.
 4. **QPU evidence.** A submitted and collected run measures the circuit on a
    calibrated device and replays its execution-time calibration. This level
    remains absent until the user approves a written submission case.
@@ -216,28 +219,58 @@ enter separate client-side Sampler jobs. Runtime 0.50 rejects dynamical
 decoupling on dynamic circuits, and its gate-twirling path rejects `if_else`, so
 the dynamic job keeps both features disabled.
 
+The live hybrid group requires five logical qubits, eight classical bits, two
+dynamic circuits, and direct Target support for `if_else`, `measure`, and
+`reset`. The runner derives these values from the primary and identity-null
+circuits rather than from a backend-name table. A filtered copy of each fresh
+Target removes excluded instruction placements before layout and routing; the
+finished circuits then pass recursive support checks against the original
+Target. Pre-submission discovery reselects the group across fresh eligible
+systems when status, capabilities, Target support, exclusions, or used
+calibration values invalidate the plan. The runner refreshes the selected
+system again immediately before the hybrid batch and stops that batch when its
+status, admitted hardware, Target properties, or timing constraints move.
+
 Runtime 0.50 rounds automatic twirling upward when the requested shot count
 cannot supply its target of 32 randomizations with at least 64 shots each.
 Static twirled jobs therefore require at least 2,048 shots divisible by 32 and
 set both twirling counts explicitly. The recorded shot count then equals the
 executed product. The default 4,096-shot run uses 32 by 128 shots.
 
-The run record uses schema version 2 and explicit states: `planned`,
+The run record uses schema version 3 and explicit states: `planned`,
 `submission_started`, `partially_submitted`, and `submitted`. Each split job
-refreshes `usage()` before submission. Every acquired job identifier reaches an
-atomic checkpoint before the next job. Collection joins all classical
-registers in circuit order and atomically replaces `collect.json`. A declared
-source manifest makes the experiment digest independent of Python import order.
+refreshes hardware state and `usage()` before submission. The record checkpoints
+unique recovery tags and an attempt marker before `Sampler.run()`, then
+checkpoints every acquired job identifier before the next job. Collection
+recovers a response-lost id only from one exact recovery-tag match and stops on
+zero or multiple matches. Collection joins all classical registers in circuit
+order and atomically replaces `collect.json`; each atomic replacement fsyncs
+the file and directory. A declared source manifest makes the experiment digest
+independent of Python import order.
+
+The initial record stores `system_inventory`, eligible backend capability
+snapshots, `circuit_requirements`, and capability and routing decisions in
+`selection_trace`. Submission adds one `revalidation` entry per fresh admission
+pass and materializes `planned_jobs` before the first job. Each planned batch
+preserves a complete experiment group, respects the refreshed backend's
+`max_circuits`, and records ordered member names, the exact `isa.qpy` SHA-256,
+effective options, calibration stamps, and recovery tags. Collection validates
+the planned and accepted job ledgers as a one-to-one mapping for a complete
+submission and as a subset for a partial submission. The same ledger names
+every batch and circuit without a recorded job id.
 
 `runtime_contracts.py` checks terminal versus mid-circuit measurement
-classification, recursively discovers physical operations inside control-flow
-blocks, verifies global bit order for multiple classical registers, verifies
-the pruned primary and null operation counts, enforces exact twirling shots,
-and proves digest stability.
+classification, recursive physical operations, source-derived capability
+admission, fixed-parameter and nested Target support, routing around excluded
+native CZ couplers, coherent Target/property snapshots, complete Target
+fingerprints, isolated backend-probe failures, viable-system selection,
+every-batch change detection, complete-group finite-limit packing, schema-3
+JSON/QPY integrity, recovery-tag reconciliation, planned-to-accepted job
+mapping, global bit order, exact twirling shots, and source-digest stability.
 
 ## Retained live-calibration dry run
 
-`results/live/2026-10-10T200646.447516Z/` records the complete submit-free
+`results/live/2026-10-10T200646.447516Z/` records the historical submit-free
 planning path from source commit `2cc7379`. The process reads the
 `ibm_kingston` calibration stamped `2026-10-10T12:54:29-07:00`, selects
 transpiler seed `20261014` and initial layout `[93, 95, 92, 94, 79]`, compiles
@@ -257,6 +290,8 @@ the identity null. Its total-variation distance from the ideal distribution is
 `0.023438`. The record stays in lifecycle state `planned`, carries no
 `submission` object, and therefore records zero QPU jobs. The paired `isa.qpy`
 archive contains the compiled circuits named by every JSON member.
+The record predates schema 3, so it does not establish system inventory,
+capability admission, filtered-Target routing, or cross-system revalidation.
 
 ## Deficiencies and falsifiers
 

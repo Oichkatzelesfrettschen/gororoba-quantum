@@ -33,18 +33,23 @@ observables.
   operator equality over every instance.
 - `gororoba_quantum/experiments.py` -- experiment groups: a primary circuit, its
   controls, their ideals, and the summary of each design's observable.
-- `gororoba_quantum/live_run.py` -- live calibration across every accessible
-  backend: exclusion policy, ESP-ranked backend and layout selection, noise
-  simulation from the same Target, gated submission through the client-side
-  Sampler, and replay at the execution-time calibration.
+- `gororoba_quantum/live_run.py` -- live system discovery, source-derived
+  capability admission, bad-hardware-filtered routing, exact Target validation,
+  ESP-and-coherence-ranked selection, degradation-triggered reselection, local
+  noise simulation, gated client-side Sampler submission, and replay at the
+  execution-time calibration.
 - `gororoba_quantum/runtime_contracts.py` -- credential-free checks for dynamic
-  classification, nested physical operations, multi-register result order, and
-  source-manifest stability.
+  classification, capability and routing admission, recursive Target support,
+  degraded-hardware handling, discovery failure isolation, finite-limit batch
+  packing, coherent calibration snapshots, every-batch revalidation, submission
+  recovery, archive integrity, result order, twirling shots, and source-manifest
+  stability.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design, and the live-calibration policy.
-- `results/live/<UTC start>/` -- one audit record per run: the chosen ISA
-  circuits (QPY) and the JSON of backend states, exclusions, selection trace,
-  and noisy outcomes.
+- `results/live/<UTC start>/` -- one audit record per run. Schema 3 planning
+  records add the requested-system inventory, capability summaries, circuit
+  requirements, rejection traces, chosen ISA circuits (QPY), and noisy outcomes.
+  Schema 3 submission records add revalidation, recovery, and job-batch evidence.
 - `results/hw_estimate/` -- the fixed ibm_fez compile behind the design
   sections' "Measured" figures.
 
