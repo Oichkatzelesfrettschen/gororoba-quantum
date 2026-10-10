@@ -17,17 +17,24 @@ from qiskit.circuit.controlflow import IfElseOp
 from qiskit.circuit.library import RZGate
 from qiskit.primitives import StatevectorSampler
 from qiskit.transpiler import Target
+from qiskit_ibm_runtime.executor_sampler import Sampler
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
 
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
-from experiments import Group, experiment_groups
+import packing
+from experiments import MIRROR_SUFFIX, Group, experiment_groups
 from live_run import (
+    RECORD_SCHEMA_CONTRACT,
+    RECORD_SCHEMA_VERSION,
     BackendCapabilities,
     Choice,
     CircuitRequirements,
+    Entry,
     LiveRunError,
+    ReplicaPolicy,
     Snapshot,
+    _archived_entries,
     _compile,
     _distribution,
     _is_dynamic,
@@ -35,15 +42,18 @@ from live_run import (
     _ops,
     _physical,
     _pub_counts,
+    _recovery_tags,
     build_admission_target,
     build_submission_plan,
     capability_violations,
     check_snapshot_matches_properties,
     choice_change_reasons,
+    choice_reselection_reasons,
     collect,
     compiled_violations,
     configure_sampler,
     discover_snapshots,
+    execution_requirements,
     experiment_digest,
     group_requirements,
     reconcile_attempted_jobs,
@@ -55,6 +65,9 @@ from live_run import (
     write_json,
 )
 from order_finding import factor_order_finding
+
+SINGLE_REPLICA_POLICY = ReplicaPolicy(max_replicas=1, isolated_reference=False)
+PACKED_REPLICA_POLICY = ReplicaPolicy(floor=0.8, max_replicas=2, isolated_reference=True)
 
 
 class _ProbeBackend:
@@ -214,12 +227,90 @@ def _verify_result_register_order() -> None:
     circuit.measure(qubits[0], low[0])
     circuit.measure(qubits[1], high[0])
     pub = StatevectorSampler(seed=1).run([circuit], shots=8).result()[0]
-    counts = _pub_counts(pub, circuit)
+    counts = _pub_counts(pub, [register.name for register in circuit.cregs], circuit.name)
     if counts != {"01": 8}:
         raise RuntimeError(f"multi-register counts decode as {counts}")
     distribution = _distribution(counts, circuit.num_clbits)
     if distribution[1] != 1.0:
         raise RuntimeError(f"multi-register distribution places probability at {distribution.argmax()}")
+
+
+def _verify_packed_replica_split() -> None:
+    """Packed replicas of a dynamic circuit split back into each replica's own counts.
+
+    Replicas 0 and 2 start with their first qubit flipped and replica 1 does
+    not, so the feed-forward circuit reads 11, 00, 11; a split that mixed
+    registers or replicas would read another replica's outcome. The packed
+    circuit runs through the client-side Sampler in local mode on FakeFez.
+    """
+    backend = FakeFez()
+    graph = packing.coupling_graph(backend.target, backend.num_qubits)
+    phase = ClassicalRegister(2, "phase")
+    template = QuantumCircuit(QuantumRegister(2, "q"), phase)
+    template.measure(0, phase[0])
+    with template.if_test((phase[0], 1)):
+        template.x(1)
+    template.measure(1, phase[1])
+    isa = transpile(template, backend=backend, optimization_level=0, initial_layout=[0, 1])
+    used, edges = packing.pattern([("cz", (0, 1))])
+    replicas = packing.place(used, edges, graph, lambda _: True, lambda m: 1.0 / (1 + min(m.values())), 1e-9, 3)
+    if len(replicas) != 3 or len({q for r in replicas for q in r.qubits}) != 6:
+        raise RuntimeError(f"placement returned overlapping or missing replicas: {replicas}")
+    packed = packing.pack(isa, replicas, "packed")
+    flips = QuantumCircuit(packed.num_qubits)
+    flips.x([replicas[0].mapping[0], replicas[2].mapping[0]])
+    packed = packed.compose(flips, front=True)
+    if [r.name for r in packed.cregs] != [f"r{k}_phase" for k in range(3)]:
+        raise RuntimeError(f"packed registers are {[r.name for r in packed.cregs]}")
+    pub = Sampler(mode=backend).run([packed], shots=64).result()[0]
+    for replica in replicas:
+        single = packing.split(packed, replica.prefix, replica.qubits)
+        if single.num_clbits != 2 or not _is_dynamic(single):
+            raise RuntimeError(f"replica {replica.prefix} splits to {single.num_clbits} clbits")
+        counts = _pub_counts(pub, packing.registers(packed, replica.prefix), replica.prefix)
+        top = max(counts, key=lambda key: counts[key])
+        if top != ("00" if replica.index == 1 else "11") or counts[top] < 48:
+            raise RuntimeError(f"replica {replica.prefix} reads {counts}")
+
+
+def _verify_packed_static_stays_static() -> None:
+    """Packing replicas of a static circuit keeps every measurement after every gate.
+
+    The static and dynamic Sampler jobs split on _is_dynamic, so a packed
+    static circuit that read as dynamic would lose twirling and dynamical
+    decoupling at submission.
+    """
+    backend = FakeFez()
+    graph = packing.coupling_graph(backend.target, backend.num_qubits)
+    bell = QuantumCircuit(2, 2)
+    bell.h(0)
+    bell.cx(0, 1)
+    bell.measure([0, 1], [0, 1])
+    isa = transpile(bell, backend=backend, optimization_level=1, initial_layout=[0, 1])
+    used, edges = packing.pattern([("cz", (0, 1))])
+    replicas = packing.place(used, edges, graph, lambda _: True, lambda m: 1.0 / (1 + min(m.values())), 1e-9, 4)
+    packed = packing.pack(isa, replicas, "bell")
+    if _is_dynamic(isa) or _is_dynamic(packed):
+        raise RuntimeError("packing a static circuit produced a dynamic one")
+
+
+def _verify_rate_keys() -> None:
+    """Every declared per-shot rate names a value its group's summary produces.
+
+    A misspelled rate key would silently drop the pooled-shot Wilson bound
+    from that value's interval.
+    """
+    for group in experiment_groups():
+        ideals: dict[str, np.ndarray] = {}
+        for member in group.members:
+            ideals[member.name] = member.ideal
+            if member.mirror:
+                zeros = np.zeros(len(member.ideal))
+                zeros[0] = 1.0
+                ideals[member.name + MIRROR_SUFFIX] = zeros
+        unknown = set(group.rate_keys) - set(group.summarize(ideals))
+        if unknown:
+            raise RuntimeError(f"{group.name}: rate keys {sorted(unknown)} are not summary values")
 
 
 def _verify_twirling_shot_contract() -> None:
@@ -265,8 +356,8 @@ def _verify_capability_admission() -> None:
         raise RuntimeError(f"missing dynamic operations are absent from rejection evidence: {hybrid_rejections}")
 
     one_circuit = BackendCapabilities(156, 1, False, ("cz", "measure"), ())
-    if not any("backend limit" in reason for reason in capability_violations(static, one_circuit)):
-        raise RuntimeError("backend circuit limit fails to reject a witness-plus-mirror group")
+    if not any("compatibility bound" in reason for reason in capability_violations(static, one_circuit)):
+        raise RuntimeError("backend compatibility bound fails to reject a witness-plus-mirror group")
 
     exact_limit = BackendCapabilities(156, static.static_circuits, False, ("cz", "measure"), ())
     if capability_violations(static, exact_limit):
@@ -307,7 +398,7 @@ def _verify_discovered_capabilities() -> None:
     if violations:
         raise RuntimeError(f"discovered backend rejects hybrid Shor: {violations}")
     trace: dict[str, Any] = {}
-    choice = select(hybrid, snapshots, 1, trace)
+    choice = select(hybrid, snapshots, 1, trace, SINGLE_REPLICA_POLICY)
     if choice.snap is not snapshots[0] or len(choice.entries) != 2:
         raise RuntimeError("discovered backend fails hybrid-Shor routing admission")
 
@@ -404,9 +495,9 @@ def _verify_snapshot_and_fingerprint_coherence() -> None:
     check_snapshot_matches_properties(backend.target, backend.properties(), backend.name)
     snapshot = _fake_snapshot(backend)
     hybrid = next(group for group in experiment_groups() if group.name == "hybrid_shor_mod15")
-    choice = select(hybrid, [snapshot], 1, {})
+    choice = select(hybrid, [snapshot], 1, {}, PACKED_REPLICA_POLICY)
     fresh = _fake_snapshot(FakeFez())
-    reset_qargs = next(qargs for operation, qargs in _ops(choice.entries[0][1]) if operation == "reset")
+    reset_qargs = next(qargs for operation, qargs in _ops(choice.entries[0].packed) if operation == "reset")
     reset_properties = fresh.backend.target["reset"][reset_qargs]
     if reset_properties is None or reset_properties.duration is None:
         raise RuntimeError(f"FakeFez reset{reset_qargs} lacks a duration fixture")
@@ -422,12 +513,25 @@ def _verify_snapshot_and_fingerprint_coherence() -> None:
         raise RuntimeError(f"Target timing-constraint drift is absent from revalidation reasons: {reasons}")
 
 
-def _source_entries(group: Group) -> list[tuple[str, QuantumCircuit, Any]]:
-    entries = []
+def _synthetic_entry(name: str, circuit: QuantumCircuit, ideal: np.ndarray) -> Entry:
+    physical_qubits = _physical(circuit) or list(range(circuit.num_qubits))
+    return Entry(
+        name=name,
+        base=circuit,
+        ideal=ideal,
+        packed=circuit,
+        replicas=[circuit],
+        prefixes=["r0_"],
+        replica_qubits=[physical_qubits],
+    )
+
+
+def _source_entries(group: Group) -> list[Entry]:
+    entries: list[Entry] = []
     for member in group.members:
-        entries.append((member.name, member.circuit, member.ideal))
+        entries.append(_synthetic_entry(member.name, member.circuit, member.ideal))
         if member.mirror:
-            entries.append((member.name + "_mirror", member.circuit, member.ideal))
+            entries.append(_synthetic_entry(member.name + MIRROR_SUFFIX, member.circuit, member.ideal))
     return entries
 
 
@@ -445,8 +549,8 @@ def _verify_submission_batching() -> None:
     if [len(batch) for batch in limited] != [3, 2]:
         raise RuntimeError(f"group-preserving circuit-limit batches are {[len(batch) for batch in limited]}")
     expected_names = [
-        [name for name, _, _ in static_choices[1].entries],
-        [name for name, _, _ in static_choices[0].entries],
+        [entry.name for entry in static_choices[1].entries],
+        [entry.name for entry in static_choices[0].entries],
     ]
     actual_names = [[name for name, _, _ in batch] for batch in limited]
     if actual_names != expected_names:
@@ -464,7 +568,7 @@ def _verify_submission_batching() -> None:
 
     hybrid_choice = choice("hybrid_shor_mod15")
     dynamic = submission_batches([hybrid_choice], "dynamic", 2)
-    if [[name for name, _, _ in batch] for batch in dynamic] != [[name for name, _, _ in hybrid_choice.entries]]:
+    if [[name for name, _, _ in batch] for batch in dynamic] != [[entry.name for entry in hybrid_choice.entries]]:
         raise RuntimeError("exact-limit dynamic batch changes member order")
     try:
         submission_batches([hybrid_choice], "dynamic", 1)
@@ -479,7 +583,14 @@ def _verify_submission_batching() -> None:
 
     def synthetic(names: list[str]) -> Choice:
         return Choice(
-            groups["design_a"], snapshot, 7, [], [], [], 1.0, [(name, static_circuit, ideal) for name in names]
+            groups["design_a"],
+            snapshot,
+            7,
+            [],
+            [],
+            [],
+            1.0,
+            [_synthetic_entry(name, static_circuit, ideal) for name in names],
         )
 
     packed = submission_batches(
@@ -495,7 +606,7 @@ def _verify_submission_batching() -> None:
     dynamic_circuit.reset(0)
     dynamic_circuit.measure(0, 0)
     mixed_choice = synthetic(["static"])
-    mixed_choice.entries.append(("dynamic", dynamic_circuit, ideal))
+    mixed_choice.entries.append(_synthetic_entry("dynamic", dynamic_circuit, ideal))
     try:
         submission_batches([mixed_choice], "static", 4)
     except LiveRunError:
@@ -515,21 +626,56 @@ def _fixture_args(**overrides: Any) -> argparse.Namespace:
         "twirl": False,
         "dd": None,
         "min_remaining_seconds": 0.0,
+        "replica_floor": PACKED_REPLICA_POLICY.floor,
+        "max_replicas": PACKED_REPLICA_POLICY.max_replicas,
+        "isolated_reference": PACKED_REPLICA_POLICY.isolated_reference,
     }
     values.update(overrides)
     return argparse.Namespace(**values)
 
 
 def _verify_schema_lifecycle() -> None:
-    backend = _ProbeBackend("viable", FakeFez(), max_circuits=2)
+    backend = _ProbeBackend("viable", FakeFez(), max_circuits=3)
     service = _ProbeService([backend])
     args = _fixture_args(groups=["hybrid_shor_mod15"])
     choices, record = live_run_module.plan(service, args)
-    if record["schema_version"] != 3 or record["state"] != "planned":
-        raise RuntimeError("live planning fails to create a schema-3 planned record")
-    for field_name in ("system_inventory", "backends", "circuit_requirements", "selection_trace"):
+    if (
+        record["schema_version"] != RECORD_SCHEMA_VERSION
+        or record["schema_contract"] != RECORD_SCHEMA_CONTRACT
+        or record["state"] != "planned"
+    ):
+        raise RuntimeError("live planning fails to create a schema-4 combined planned record")
+    for field_name in (
+        "system_inventory",
+        "backends",
+        "circuit_requirements",
+        "execution_requirements",
+        "selection_trace",
+    ):
         if field_name not in record:
-            raise RuntimeError(f"schema-3 planning record lacks {field_name}")
+            raise RuntimeError(f"schema-4 planning record lacks {field_name}")
+    requirements = execution_requirements(choices[0])
+    if requirements["entries"] != 3 or requirements["isolated_references"] != 1:
+        raise RuntimeError(f"schema-4 execution requirements are {requirements}")
+    exact_batches = submission_batches(choices, "dynamic", 3)
+    if len(exact_batches) != 1 or len(exact_batches[0]) != 3:
+        raise RuntimeError("exact compatibility bound fails to retain the packed group")
+    try:
+        submission_batches(choices, "dynamic", 2)
+    except LiveRunError:
+        pass
+    else:
+        raise RuntimeError("isolated reference fails to count against the compatibility bound")
+    single_choice = select(
+        choices[0].group,
+        [choices[0].snap],
+        1,
+        {},
+        SINGLE_REPLICA_POLICY,
+    )
+    if len(single_choice.entries) != 2 or execution_requirements(single_choice)["isolated_references"] != 0:
+        raise RuntimeError("single-replica policy creates the wrong execution entry count")
+    live_run_module.evaluate(choices, record)
 
     checkpoints: list[dict[str, Any]] = []
     run_observations: list[list[str]] = []
@@ -561,7 +707,7 @@ def _verify_schema_lifecycle() -> None:
         del backend, twirl, dd
         return _ProbeSampler(kind, tags, shots, before_run)
 
-    with tempfile.TemporaryDirectory(prefix="gororoba-schema3-") as directory:
+    with tempfile.TemporaryDirectory(prefix="gororoba-schema4-") as directory:
         run_dir = Path(directory)
         live_run_module.configure_sampler = fake_configure_sampler
         try:
@@ -585,20 +731,44 @@ def _verify_schema_lifecycle() -> None:
         missing, _, _ = submission_gaps(record["submission"])
         if missing:
             raise RuntimeError(f"complete mocked submission reports missing jobs: {missing}")
+        planned_job = record["submission"]["planned_jobs"][0]
+        alternate_tags = _recovery_tags(
+            args.started,
+            planned_job["backend"],
+            planned_job["kind"],
+            planned_job["batch_index"],
+            planned_job["batch_count"],
+            planned_job["members"],
+            "1" * 64,
+        )
+        if alternate_tags == planned_job["recovery_tags"]:
+            raise RuntimeError("packed QPY digest fails to change the recovery identity")
 
         write_json(run_dir, record)
         round_trip_record = json.loads((run_dir / "record.json").read_text())
         qpy_bytes = (run_dir / "isa.qpy").read_bytes()
         with open(run_dir / "isa.qpy", "rb") as handle:
             round_trip_circuits = {circuit.name: circuit for circuit in qpy.load(handle)}
-        if round_trip_record["schema_version"] != 3:
-            raise RuntimeError("schema-3 JSON round trip changes the record version")
+        if (
+            round_trip_record["schema_version"] != RECORD_SCHEMA_VERSION
+            or round_trip_record["schema_contract"] != RECORD_SCHEMA_CONTRACT
+        ):
+            raise RuntimeError("schema-4 JSON round trip changes the record contract")
         if hashlib.sha256(qpy_bytes).hexdigest() != round_trip_record["submission"]["qpy_archive_sha256"]:
-            raise RuntimeError("schema-3 QPY archive digest changes after its checkpoint")
+            raise RuntimeError("schema-4 QPY archive digest changes after its checkpoint")
         for planned_job in round_trip_record["submission"]["planned_jobs"]:
             for member in planned_job["members"]:
                 if member not in round_trip_circuits:
-                    raise RuntimeError(f"schema-3 QPY round trip loses {member}")
+                    raise RuntimeError(f"schema-4 QPY round trip loses {member}")
+        rebuilt = _archived_entries(round_trip_record, round_trip_circuits)
+        archived_entries = rebuilt["hybrid_shor_mod15"]
+        if [entry.name for entry in archived_entries] != [entry.name for entry in choices[0].entries]:
+            raise RuntimeError("schema-4 archive reconstruction changes packed entry identity")
+        if any(
+            len(entry.prefixes) != len(entry.replicas) or len(entry.replica_qubits) != len(entry.replicas)
+            for entry in archived_entries
+        ):
+            raise RuntimeError("schema-4 archive reconstruction changes replica metadata")
 
         incomplete_record = copy.deepcopy(round_trip_record)
         incomplete_record["state"] = "submission_started"
@@ -687,13 +857,37 @@ def _verify_schema_lifecycle() -> None:
         raise RuntimeError("complete ledger accepts a missing submitted-job record")
 
 
+def _verify_schema_discrimination() -> None:
+    """Both incompatible historical schema-3 shapes fail before collection."""
+    historical_records = (
+        {"schema_version": 3, "system_inventory": {}, "code_commit": {"head": "capability-history"}},
+        {"schema_version": 3, "groups": [{"replicas": []}], "code_commit": {"head": "replica-history"}},
+    )
+    with tempfile.TemporaryDirectory(prefix="gororoba-schema3-history-") as directory:
+        run_dir = Path(directory)
+        buffer = tempfile.SpooledTemporaryFile()
+        qpy.dump([], buffer)
+        buffer.seek(0)
+        (run_dir / "isa.qpy").write_bytes(buffer.read())
+        buffer.close()
+        for historical_record in historical_records:
+            (run_dir / "record.json").write_text(json.dumps(historical_record))
+            try:
+                collect(_ProbeService([]), run_dir)
+            except LiveRunError as error:
+                if "schema 3" not in str(error):
+                    raise RuntimeError(f"historical schema-3 rejection reports {error}") from error
+            else:
+                raise RuntimeError("schema-4 collection accepts a historical schema-3 record")
+
+
 def _verify_every_batch_revalidates() -> None:
     backend = _ProbeBackend("viable", FakeFez(), max_circuits=3)
     service = _ProbeService([backend])
     snapshots, _, _ = discover_snapshots(service, None, None)
     groups = {group.name: group for group in experiment_groups()}
-    choices = [select(groups[name], snapshots, 1, {}) for name in ("design_a", "design_c_8_1_4")]
-    args = _fixture_args()
+    choices = [select(groups[name], snapshots, 1, {}, SINGLE_REPLICA_POLICY) for name in ("design_a", "design_c_8_1_4")]
+    args = _fixture_args(max_replicas=1, isolated_reference=False)
     record: dict[str, Any] = {"shots": args.shots}
     checkpoints: list[dict[str, Any]] = []
     run_count = 0
@@ -746,7 +940,7 @@ def _verify_live_reselection() -> None:
     viable.name = "viable"
     group = next(group for group in experiment_groups() if group.name == "design_a")
     trace: dict[str, Any] = {}
-    choice = select(group, [degraded, viable], 1, trace)
+    choice = select(group, [degraded, viable], 1, trace, PACKED_REPLICA_POLICY)
     if choice.snap.name != "viable":
         raise RuntimeError(f"selector chose {choice.snap.name} instead of the viable system")
     if not any(entry.get("rejected") for entry in trace[group.name]["degraded"]):
@@ -754,11 +948,31 @@ def _verify_live_reselection() -> None:
 
     fresh = _fake_snapshot(backend)
     fresh.name = "viable"
-    used_qubit = _physical(choice.entries[0][1])[0]
+    if len(choice.replicas) < 2:
+        raise RuntimeError("packed reselection fixture produces fewer than two replicas")
+    used_qubit = choice.replicas[1].qubits[0]
     fresh.excluded_qubits[used_qubit] = "new fixture degradation"
     reasons = choice_change_reasons(choice, fresh)
     if not any(f"qubit {used_qubit}" in reason for reason in reasons):
         raise RuntimeError(f"pre-submit gate misses newly degraded qubit {used_qubit}: {reasons}")
+
+    restricted = _fake_snapshot(FakeFez())
+    restricted.name = "viable"
+    restricted.excluded_qubits[choice.replicas[0].qubits[0]] = "temporary fixture degradation"
+    restricted_choice = select(group, [restricted], 1, {}, PACKED_REPLICA_POLICY)
+    recovered = _fake_snapshot(FakeFez())
+    recovered.name = "viable"
+    recovered_choice = select(group, [recovered], 1, {}, PACKED_REPLICA_POLICY)
+    recovery_reasons = choice_reselection_reasons(restricted_choice, recovered_choice)
+    if not any("replica placements changed" in reason for reason in recovery_reasons):
+        raise RuntimeError(f"recovered hardware fails to trigger fresh placement: {recovery_reasons}")
+
+    alternate = _fake_snapshot(FakeFez())
+    alternate.name = "alternate"
+    alternate_choice = select(group, [alternate], 1, {}, PACKED_REPLICA_POLICY)
+    alternate_reasons = choice_reselection_reasons(recovered_choice, alternate_choice)
+    if not any("backend changed" in reason for reason in alternate_reasons):
+        raise RuntimeError(f"newly eligible alternate system leaves no reselection reason: {alternate_reasons}")
 
 
 def _verify_discovery_failure_isolation() -> None:
@@ -783,7 +997,7 @@ def _verify_discovery_failure_isolation() -> None:
         if inventory["viable"]["eligibility"] != "eligible":
             raise RuntimeError(f"{failure_stage} probe changes viable inventory state")
         trace: dict[str, Any] = {}
-        selected = select(group, snapshots, 1, trace)
+        selected = select(group, snapshots, 1, trace, SINGLE_REPLICA_POLICY)
         if selected.snap.name != "viable":
             raise RuntimeError(f"{failure_stage} failure prevents viable selection")
 
@@ -799,16 +1013,21 @@ def _verify() -> None:
     _verify_snapshot_and_fingerprint_coherence()
     _verify_submission_batching()
     _verify_schema_lifecycle()
+    _verify_schema_discrimination()
     _verify_every_batch_revalidates()
     _verify_live_reselection()
     _verify_discovery_failure_isolation()
+    _verify_packed_replica_split()
+    _verify_packed_static_stays_static()
+    _verify_rate_keys()
     first_digest = experiment_digest()
     second_digest = experiment_digest()
     if len(first_digest) != 64 or first_digest != second_digest:
         raise RuntimeError("experiment source manifest digest is unstable")
     print(
         "runtime contracts: discovery, capability admission, coherent snapshots, "
-        "Target routing, batch revalidation, schema lifecycle, recovery, result order, and digest pass"
+        "Target routing, packed replicas, batch revalidation, schema lifecycle, "
+        "recovery, result order, rate keys, and digest pass"
     )
 
 

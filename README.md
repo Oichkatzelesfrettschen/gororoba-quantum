@@ -25,6 +25,12 @@ observables.
 - `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
   derivations, bounded hardware frontier, evidence levels, falsifiers, and the
   roadmap beyond `N = 15`.
+- `gororoba_quantum/HARDWARE_PLAN.md` -- the joint submission plan for every
+  experiment group: claims and falsifiers, calibration-to-circuit pipeline,
+  deciding statistics, QPU cost, and the path to the first submission.
+- `gororoba_quantum/packing.py` and `variance.py` -- disjoint replica placement
+  and packing of compiled circuits, and the shot, layout, and instance
+  variance decomposition with replicate intervals.
 - `gororoba_quantum/select_lcu.py` -- the ancilla-selected left multiplication
   (one joint sign diagonal, X, CX) and sparse pair-state preparation.
 - `gororoba_quantum/predict.py` -- every algebraic prediction, from cd_sign and
@@ -33,23 +39,23 @@ observables.
   operator equality over every instance.
 - `gororoba_quantum/experiments.py` -- experiment groups: a primary circuit, its
   controls, their ideals, and the summary of each design's observable.
-- `gororoba_quantum/live_run.py` -- live system discovery, source-derived
-  capability admission, bad-hardware-filtered routing, exact Target validation,
-  ESP-and-coherence-ranked selection, degradation-triggered reselection, local
-  noise simulation, gated client-side Sampler submission, and replay at the
-  execution-time calibration.
-- `gororoba_quantum/runtime_contracts.py` -- credential-free checks for dynamic
-  classification, capability and routing admission, recursive Target support,
-  degraded-hardware handling, discovery failure isolation, finite-limit batch
-  packing, coherent calibration snapshots, every-batch revalidation, submission
-  recovery, archive integrity, result order, twirling shots, and source-manifest
+- `gororoba_quantum/live_run.py` -- live system discovery, circuit-derived
+  capability admission, degraded-hardware-filtered routing, recursive Target
+  validation, ESP-and-coherence-ranked selection, disjoint replica placement,
+  stable-pass cross-system reselection, local noise simulation, gated
+  client-side Sampler submission, and execution-time replay.
+- `gororoba_quantum/runtime_contracts.py` -- credential-free checks for packed
+  static and dynamic circuits, capability and routing admission, recursive
+  Target support, coherent calibration snapshots, final execution-set job-batch
+  partitioning, every-batch revalidation, submission recovery, archive
+  integrity, per-replica result order, twirling shots, and source-manifest
   stability.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design, and the live-calibration policy.
-- `results/live/<UTC start>/` -- one audit record per run. Schema 3 planning
-  records add the requested-system inventory, capability summaries, circuit
-  requirements, rejection traces, chosen ISA circuits (QPY), and noisy outcomes.
-  Schema 3 submission records add revalidation, recovery, and job-batch evidence.
+- `results/live/<UTC start>/` -- retained JSON and QPY evidence. Schema 4
+  combines live capability admission and submission recovery with packed
+  replicas, variance, crosstalk, and statistical admission. Earlier schemas
+  remain historical evidence under `results/live/README.md`.
 - `results/hw_estimate/` -- the fixed ibm_fez compile behind the design
   sections' "Measured" figures.
 

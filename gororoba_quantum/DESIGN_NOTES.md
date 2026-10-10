@@ -277,21 +277,26 @@ names. The runner refreshes every requested backend, reads its status, queue
 depth, configuration, Target, and properties, and records every successful,
 ineligible, or failed probe. The audit record under `results/live/<UTC start>/`
 stores the requested-system inventory, capability summaries, exclusion reasons,
-circuit requirements, selection trace, selected ISA circuits, and simulated
-outcomes. The process never reads a retained calibration record to drive a
-submission.
+logical circuit requirements, final packed execution requirements, selection
+trace, selected ISA circuits, and simulated outcomes. The process never reads a
+retained calibration record to drive a submission.
+Combined records use schema 4 and contract `live-target-packed-replicas-v1`;
+both historical schema-3 families remain retained evidence with incompatible
+shapes.
 
 - Eligibility: operational, status_msg "active", and at most 25 pending jobs
   (--max-pending); a long queue lets the calibration drift between compile and
   execution.
-- Capability admission: each group derives its maximum quantum and classical
-  width, static and dynamic circuit counts including mirrors, direct Target
-  operations, and control-flow operations from the circuits built by the current
-  process. Admission checks quantum width, dynamic-circuit support from the
-  freshly refreshed backend configuration, required direct operations, one
-  static-or-dynamic execution kind per complete result group, and the per-job
-  circuit limit. Classical width remains recorded evidence because BackendV2
-  exposes no separate classical-bit capacity.
+- Capability admission: each group derives logical width, direct operations,
+  control flow, and static or dynamic kind from circuits built by the current
+  process. After routing and replica placement, the runner derives the exact
+  execution entry count, maximum classical width, packed layouts, and isolated
+  reference requirements from the circuits written to `isa.qpy`. Job-batch
+  partitioning uses that final execution set and treats `max_circuits` as the
+  client-reported compatibility bound. The IBMBackend API warns that the value
+  no longer accurately represents a service circuit limit. Classical width
+  remains recorded evidence because BackendV2 exposes no separate classical-bit
+  capacity.
 - Exclusion policy (QUALITY in live_run.py): readout error above 0.08, CZ error
   above 0.03, sx error above 0.01, T1 or T2 below 20 us, missing calibration, or
   a faulty flag. Degraded hardware arrives without faulty flags: in the run of
@@ -310,8 +315,10 @@ submission.
   an excluded qubit or CZ edge. The transpiler therefore routes inside the
   admitted hardware graph. Recursive `Target.instruction_supported()` checks,
   including fixed instruction parameters and control-flow blocks, validate each
-  finished primary, control, and mirror against the original fresh Target. A
-  compile failure or final validation failure advances to the next candidate.
+  finished primary and control against the original fresh Target. Replica
+  placement uses the filtered CZ graph, then the same recursive validation
+  covers every packed member, mirror, and isolated reference. A compile,
+  placement, or final validation failure advances to the next candidate.
 - Shared compile for the zero-divisor group: design B dark, bright, and the
   design D sweep are bindings of one circuit with a phase parameter on the
   input, so every member runs the same routing and reads out on the same
@@ -328,9 +335,14 @@ submission.
   its rescaled value (ODR, literature note 2507.08088). Design D's sweep points
   share the dark twin. The rescaled values stay unclipped; in that record's
   noise model they overshoot by under 1 percent (design A P1 1.002, fringe
-  visibility 1.008). collect reports ODR values only from runs of at least
-  16384 shots (--shots) in which every witness and twin ran under one
-  calibration, and otherwise records the reason in odr_withheld.
+  visibility 1.008). collect reports a replica's own ODR values only from
+  runs of at least 16384 shots per replica (--shots). The pooled value is the
+  mean over replicas of each replica's witness divided by its own twin, so
+  replicas whose attenuations differ each divide by their own; its error over
+  R replicas is that of one quotient at R times the shots, and it is reported
+  when the replicas hold 16384 shots together. Either requires every witness
+  and twin under one calibration, and a withheld view records its reason in
+  odr_withheld.
 - Nulls: these designs read interference through a final Hadamard layer, so the
   fully dephased and fully depolarized nulls coincide with the uniform
   distribution; every summary reports the TVD to uniform.
@@ -345,10 +357,13 @@ submission.
 - Staleness: last_update_date advances without value changes (ibm_fez moved
   from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
   `--submit` rediscovers every requested system before any job leaves the host.
-  An unavailable or ineligible selected system, capability change, newly
-  excluded qubit or edge, unsupported routed instruction, or changed
-  used-instruction calibration fingerprint triggers group reselection across
-  every fresh eligible system. The fingerprint includes every routed Target
+  The pre-submission loop reruns deterministic selection across every fresh
+  eligible system even while the prior choice remains valid. The comparison
+  covers backend, layout, replica maps, entry identities, packed QPY identity,
+  capabilities, exclusions, Target support, and used calibration values. It
+  therefore reacts to degradation and can adopt recovered hardware, a newly
+  eligible backend, or a better alternate system. The fingerprint includes
+  every routed Target
   instruction's error and duration, qubit coherence, asymmetric readout fields,
   and Target timing constraints. The runner recompiles, re-simulates, and
   rearchives each replacement, records the inventory, reasons, and selection
@@ -410,20 +425,25 @@ at 9 jobs and moved every group to it, on the best medians of the three (T1
 visibility 0.905 in the noise model, against 0.067 and 0.860 on ibm_marrakesh
 earlier the same hour.
 
-The schema-3 dry run at `results/live/2026-10-10T220438.712726Z/` discovers all
-three accessible systems from source commit `0205a61`. Fez and Kingston pass
+The divergent pre-integration schema-3 dry run at
+`results/live/2026-10-10T220438.712726Z/` discovers all three accessible systems
+from source commit `0205a61`. Fez and Kingston pass
 eligibility; Marrakesh reports maintenance and remains recorded as ineligible.
 Kingston wins all seven groups at 13 pending jobs. The record preserves each
 system's capability summary, each group's circuit-derived requirements, every
-capability and routing decision, and 31 named ISA circuits. Its lifecycle state
-is `planned`, `code_commit.sources_modified` is false, and the absent
-`submission` object establishes zero QPU jobs.
+capability and routing decision, and 31 unreplicated base and mirror ISA
+circuits. Its lifecycle state is `planned`, `code_commit.sources_modified` is
+false for the `gororoba_quantum/` source scope, and the absent `submission`
+object establishes zero QPU jobs. The record predates replica placement,
+isolated crosstalk references, variance decomposition, and statistical
+admission, so it does not qualify the integrated schema-4 execution path.
 
 Submission partitions each backend's complete result groups into static and
-dynamic sets. A deterministic first-fit-decreasing packer places whole groups
-into one or more client-side Sampler jobs without exceeding the refreshed
-backend's `max_circuits`; witnesses, controls, and mirrors from one result stay
-in one job. The complete planned-job ledger, ordered member names, exact QPY
+dynamic sets. A deterministic first-fit-decreasing partitioner places whole
+groups into one or more client-side Sampler jobs under the refreshed backend's
+client-reported `max_circuits` compatibility bound; witnesses, controls,
+mirrors, and isolated references from one result stay in one job. The complete
+planned-job ledger, ordered member names, exact QPY
 archive SHA-256, calibration stamps, effective options, and recovery tags reach
 the record before the first job. Each accepted job adds its batch index and
 count, job id, and budget snapshot. `usage()` runs before every batch against
@@ -446,6 +466,72 @@ skill's local verification). The static twirling path fixes 32 randomizations
 explicitly and requires at least 2048 shots divisible by 32. That contract
 keeps Runtime 0.50's minimum of 64 shots per randomization from rounding the
 recorded request upward. The
-10-minute monthly budget is quantum execution time. 156/5 bounds the count of
-disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
-and crosstalk is the measurement of how many fit per shot.
+10-minute monthly budget is quantum execution time, so the samples each shot
+yields set what a second of it buys; packed replicas, below, multiply them.
+
+## Packed replicas and variance decomposition
+
+Every group runs on several disjoint copies of its compiled layout at once
+(packing.py). The chosen compile's pattern -- the physical qubits its circuits
+touch, mirror twins included, and the CZ edges between them -- is embedded in
+the backend's CZ coupling graph by subgraph isomorphism (rustworkx
+vf2_mapping). An embedding is admissible when every moved operation exists in
+the live Target and avoids the excluded qubits and edges of that run's
+snapshot; admissible embeddings rank by the layout score of the moved primary
+circuit, and placement takes them best first, one qubit apart so no CZ coupler
+joins two replicas, until a candidate scores below --replica-floor (0.9) of
+the best or --max-replicas is reached. A replica is the identical gate
+sequence on other qubits, so replica-to-replica differences are hardware
+differences. Each member and twin runs as one packed circuit, every
+replica's gates ahead of every replica's terminal measurements so a static
+circuit stays static and keeps twirling and DD at submission, whose replicas
+write separate classical registers (r0_, r1_, ...); one shot yields one sample
+per replica, and joining one replica's registers recovers its distribution.
+Simulation, readout correction, and replay run on each replica alone, since
+the Aer model carries no crosstalk and a packed width of 21 replicas is beyond
+dense simulation. The primary member also runs alone on replica 0's qubits;
+its difference from packed replica 0 is the crosstalk the other replicas
+induce, which the noise model sets to zero.
+
+variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
+member's own outcome weights (hybrid Shor scores whether an outcome decodes to
+a verified factor, since every outcome of its pruned circuit lies in the
+ideal's support). Per member, the between-replica variance of the mean score
+minus the shot variance is the layout variance, a chi-squared test asks
+whether the replicas agree within shot noise, and a replica more than three
+shot standard deviations from the median is flagged
+(literature/notes/2507.08088.md, action item 3). Folded QPE's four
+eigenstates are equal-cost instances, so a two-way decomposition separates
+instance, layout, and interaction variance (literature/notes/2509.18259.md,
+action item 4). Every pooled summary value is the mean of that value computed
+on each replica alone, so a ratio, fringe fit, or TVD and its interval share
+one estimand. Every pooled value gets a Student t interval over its replicas. A
+value the group declares a per-shot rate also gets a Wilson interval over the
+pooled shots, and its reported interval is the union of that and the replicate
+interval, so replicas that agree exactly keep their shot uncertainty. Each
+member, twin, and isolated reference runs as its own
+PUB, and every group summary, crosstalk, and admission combines them, so
+when a group's PUBs did not all run under one calibration with no update
+inside their shots, collect publishes only each entry's own replica variance
+beside the raw distributions and records the reason in
+`comparisons_withheld`.
+
+The dry run of record 2026-10-10T220435.034757Z (code cdb37c4) placed every
+group on ibm_kingston, whose snapshot excluded 7 qubits and 24 edges:
+
+| group | replicas | qubits per shot | score best -> last | predicted layout variance (primary) |
+|---|---:|---:|---|---:|
+| design A (1,2) | 21 | 63 | 0.932 -> 0.851 | 2.3e-5 |
+| zero-divisor fringe | 6 | 30 | 0.803 -> 0.732 | 1.6e-4 (dark) |
+| design C dim 8 | 18 | 54 | 0.900 -> 0.846 | 2.5e-4 |
+| design C dim 16 | 8 | 32 | 0.755 -> 0.681 | 2.1e-4 |
+| design C dim 32 | 4 | 20 | 0.593 -> 0.541 | 3.7e-4 |
+| folded QPE mod 15 | 3 | 15 | 0.670 -> 0.604 | 2.7e-4 (s1) |
+| hybrid Shor N = 15 | 3 | 15 | 0.691 -> 0.627 | below shot noise (p 0.66) |
+
+The predicted layout variances come from the per-qubit calibration the noise
+model reads; a measured layout variance above them, or a crosstalk difference
+beyond shot noise, is hardware structure the model omits. In that record the
+folded-QPE decomposition predicts instance variance 9.5e-5 against layout
+variance 3.3e-4, so the patch a circuit runs on moves its success rate more
+than which eigenstate it reads.

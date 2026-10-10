@@ -225,11 +225,13 @@ dynamic circuits, and direct Target support for `if_else`, `measure`, and
 circuits rather than from a backend-name table. A filtered copy of each fresh
 Target removes excluded instruction placements before layout and routing; the
 finished circuits then pass recursive support checks against the original
-Target. Pre-submission discovery reselects the group across fresh eligible
-systems when status, capabilities, Target support, exclusions, or used
-calibration values invalidate the plan. The runner refreshes the selected
-system again immediately before the hybrid batch and stops that batch when its
-status, admitted hardware, Target properties, or timing constraints move.
+Target. Pre-submission discovery reruns deterministic selection across every
+fresh eligible system until backend, layout, replica placement, packed
+circuits, capabilities, and used calibration values stabilize. The pass reacts
+to degradation and also admits recovered qubits, recovered couplers, and newly
+eligible or improved systems. The runner refreshes the selected system again
+immediately before the hybrid batch and stops that batch when its status,
+admitted hardware, Target properties, or timing constraints move.
 
 Runtime 0.50 rounds automatic twirling upward when the requested shot count
 cannot supply its target of 32 randomizations with at least 64 shots each.
@@ -237,7 +239,8 @@ Static twirled jobs therefore require at least 2,048 shots divisible by 32 and
 set both twirling counts explicitly. The recorded shot count then equals the
 executed product. The default 4,096-shot run uses 32 by 128 shots.
 
-The run record uses schema version 3 and explicit states: `planned`,
+The integrated run record uses schema version 4, contract
+`live-target-packed-replicas-v1`, and explicit states: `planned`,
 `submission_started`, `partially_submitted`, and `submitted`. Each split job
 refreshes hardware state and `usage()` before submission. The record checkpoints
 unique recovery tags and an attempt marker before `Sampler.run()`, then
@@ -249,26 +252,39 @@ the file and directory. A declared source manifest makes the experiment digest
 independent of Python import order.
 
 The initial record stores `system_inventory`, eligible backend capability
-snapshots, `circuit_requirements`, and capability and routing decisions in
+snapshots, logical `circuit_requirements`, final packed
+`execution_requirements`, and capability and routing decisions in
 `selection_trace`. Submission adds one `revalidation` entry per fresh admission
 pass and materializes `planned_jobs` before the first job. Each planned batch
 preserves a complete experiment group, respects the refreshed backend's
-`max_circuits`, and records ordered member names, the exact `isa.qpy` SHA-256,
+client-reported `max_circuits` compatibility bound, and records ordered member
+names, the exact `isa.qpy` SHA-256,
 effective options, calibration stamps, and recovery tags. Collection validates
 the planned and accepted job ledgers as a one-to-one mapping for a complete
 submission and as a subset for a partial submission. The same ledger names
 every batch and circuit without a recorded job id.
 
+Each circuit runs as packed disjoint replicas (`packing.py`, and the
+DESIGN_NOTES.md section on packed replicas): every replica of the primary and
+of the identity null executes the same measurement, reset, and feedback
+schedule on its own five qubits and its own `r<k>_phase` register, so one shot
+returns one phase string per replica. Collection joins each replica's
+register alone and decodes it alone.
+
 `runtime_contracts.py` checks terminal versus mid-circuit measurement
 classification, recursive physical operations, source-derived capability
-admission, fixed-parameter and nested Target support, routing around excluded
-native CZ couplers, coherent Target/property snapshots, complete Target
-fingerprints, isolated backend-probe failures, viable-system selection,
-every-batch change detection, complete-group finite-limit packing, schema-3
-JSON/QPY integrity, recovery-tag reconciliation, planned-to-accepted job
-mapping, global bit order, exact twirling shots, and source-digest stability.
+admission, fixed-parameter and nested Target support, routing and replica
+placement around excluded native CZ couplers, coherent Target/property
+snapshots, complete packed-circuit fingerprints, isolated backend-probe
+failures, stable cross-system reselection, whole-group job-batch partitioning,
+every-batch change detection, schema-4 JSON/QPY integrity, recovery-tag
+reconciliation, planned-to-accepted job mapping, packed static and dynamic
+classification, per-replica register order, rate keys, exact twirling shots,
+and source-digest stability. A local client-side Sampler contract runs a packed
+three-replica feed-forward circuit and recovers each replica's outcome from its
+own registers.
 
-## Retained live-calibration dry run
+## Retained schema-2 single-layout dry run
 
 `results/live/2026-10-10T200646.447516Z/` records the historical submit-free
 planning path from source commit `2cc7379`. The process reads the
@@ -293,9 +309,12 @@ archive contains the compiled circuits named by every JSON member.
 The record predates schema 3, so it does not establish system inventory,
 capability admission, filtered-Target routing, or cross-system revalidation.
 
-`results/live/2026-10-10T220438.712726Z/` supplies the schema-3 qualification
-record from source commit `0205a61`. The record reports
-`code_commit.sources_modified=false`, lifecycle state `planned`, and no
+## Pre-integration capability-admission record
+
+`results/live/2026-10-10T220438.712726Z/` supplies the divergent pre-integration
+schema-3 capability record from source commit `0205a61`. The record reports
+`code_commit.sources_modified=false` for the `gororoba_quantum/` source scope,
+lifecycle state `planned`, and no
 `submission` object. Fez and Kingston pass live eligibility; Marrakesh reports
 maintenance and remains in `system_inventory` as ineligible. The capability
 snapshot records 156 qubits, dynamic-circuit support, and native `cz`,
@@ -308,10 +327,43 @@ and layout `[79, 94, 74, 93, 73]`. The primary uses 60 CZ gates at depth 183;
 the identity null uses zero CZ gates at depth 10. Their local noise-model factor
 yields are `0.491943` and `0.001465`, with primary margin `0.195068` over the
 uniform null and TVD `0.019775` from the ideal distribution. The paired QPY
-archive contains all 31 circuits named by the seven group records. The record
+archive contains all 31 circuits named by the seven group records. Those 31
+circuits omit the seven `_isolated` crosstalk references in PR #11's 38-circuit
+packed archive. The record
 establishes discovery, capability admission, degraded-hardware routing, and
-local simulation while recording zero QPU jobs; submission revalidation and
-execution-time evidence remain unmeasured.
+local simulation while recording zero QPU jobs. It does not establish replica
+placement, variance decomposition, crosstalk measurement, statistical
+admission, submission revalidation, or execution-time behavior.
+
+## Replicated admission
+
+`results/live/2026-10-10T220435.034757Z/` is the packed-replica schema-3 record
+from code `cdb37c4`. It replicates the
+same `ibm_kingston` compile on three disjoint five-qubit placements with
+layout scores 0.691, 0.628, and 0.627, above the 0.9 floor of the best. Each
+shot scores whether its phase string decodes to a verified factor, so the
+variance decomposition and the intervals act on factor yield itself.
+
+| Replicated noise-model quantity | Mean | 95% interval over 3 replicas |
+|---|---:|---|
+| Primary factor yield | 0.4975 | [0.4850, 0.5099] |
+| Identity-null factor yield | 0.0050 | [-0.0094, 0.0195] |
+| Exact uniform-null factor yield | 0.2969 | exact |
+
+The group's admission rule (`experiments.py`, roadmap item 5) admits a
+yield when the primary lower bound exceeds the exact uniform-null yield and
+the identity-null upper bound stays below that lower bound; the noise model
+admits both factor and order-recovery yield. Each interval is the union of a
+Student t interval over the replicas, which carries layout and shot variance,
+and a Wilson interval over the pooled shots, which keeps shot uncertainty when
+the replicas agree exactly, as an identity null reading zero everywhere would.
+With three replicas the t multiplier is 4.30, so a replica count is the
+admission rule's main lever once hardware layout variance is real. The
+primary and the identity null run as separate PUBs, so collect withholds the
+verdict unless both ran under one calibration with no update inside their
+shots. The noise model predicts no layout variance in factor yield beyond shot
+noise (chi-squared p = 0.66); a measured excess is hardware structure the
+model omits.
 
 ## Deficiencies and falsifiers
 
@@ -323,6 +375,14 @@ execution-time evidence remain unmeasured.
   by orders of magnitude. A proposed synthesis earns admission only when fresh
   Target compilation and noise simulation produce a positive factor-yield
   margin over the uniform null.
+- **Concurrent feed-forward.** Packed replicas run three or more independent
+  `if_else` branches in one shot. Aer and the local Sampler execute them
+  concurrently; the hardware's handling of simultaneous feed-forward,
+  including whether it serializes their latency, is unmeasured until a
+  packed dynamic job returns. The isolated reference on replica 0's qubits
+  measures any cost packing adds, and a factor yield on packed replica 0 more
+  than three standard deviations below the isolated copy falsifies parallel
+  feed-forward at no cost.
 - **Dynamic duration.** Backend Targets omit classical feed-forward latency.
   Any duration claim for the hybrid circuit remains a lower bound until a QPU
   execution span measures the complete schedule.
@@ -355,10 +415,11 @@ execution-time evidence remain unmeasured.
    conditional-reduction blocks for widths beyond the truth-table guard. Cross-
    check every new block against the exhaustive permutation oracle at widths
    where both implementations fit.
-5. **Statistical admission.** Add confidence intervals for measured factor and
-   order-recovery yields. Require the primary lower bound to exceed the exact
-   uniform-null yield and require the identity-null upper bound to remain below
-   the primary before interpreting a QPU result.
+5. **Statistical admission.** Implemented as the `hybrid_shor_mod15` admission
+   rule over replicated factor and order-recovery yields: the primary lower
+   bound must exceed the exact uniform-null yield and the identity-null upper
+   bound must stay below the primary lower bound. A QPU result is interpreted
+   only through this verdict.
 6. **Dynamic latency evidence.** Record execution spans and compare them with
    scheduled gate duration. Attribute the residual to service and classical
    control only after repeated jobs show a stable separation.
