@@ -147,9 +147,10 @@ resolved, and GitHub reports mergeable_state clean. Bottom-up, for each PR:
 4. Pull main in the primary checkout, then `git worktree remove` and
    `git branch -d` the merged branch.
 
-**API use.** Everything goes through REST with `gh api`, except thread
-resolution, which only GraphQL offers (resolveReviewThread,
-unresolveReviewThread).
+**API use.** Everything goes through REST with `gh api`, except review
+threads, which only GraphQL exposes: both scripts list them through the
+reviewThreads connection, and resolution uses resolveReviewThread and
+unresolveReviewThread.
 
 ## Records
 
