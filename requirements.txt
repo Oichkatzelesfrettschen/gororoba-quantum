@@ -4,3 +4,6 @@ numpy==2.5.3
 qiskit==2.5.2
 qiskit-aer==0.17.2
 qiskit-ibm-runtime==0.50.0
+# Replica placement (rustworkx.vf2_mapping) and replicate statistics (scipy.stats).
+rustworkx==0.18.1
+scipy==1.18.1

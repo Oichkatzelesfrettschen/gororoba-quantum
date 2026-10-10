@@ -25,6 +25,12 @@ observables.
 - `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
   derivations, bounded hardware frontier, evidence levels, falsifiers, and the
   roadmap beyond `N = 15`.
+- `gororoba_quantum/HARDWARE_PLAN.md` -- the joint submission plan for every
+  experiment group: claims and falsifiers, calibration-to-circuit pipeline,
+  deciding statistics, QPU cost, and the path to the first submission.
+- `gororoba_quantum/packing.py` and `variance.py` -- disjoint replica placement
+  and packing of compiled circuits, and the shot, layout, and instance
+  variance decomposition with replicate intervals.
 - `gororoba_quantum/select_lcu.py` -- the ancilla-selected left multiplication
   (one joint sign diagonal, X, CX) and sparse pair-state preparation.
 - `gororoba_quantum/predict.py` -- every algebraic prediction, from cd_sign and

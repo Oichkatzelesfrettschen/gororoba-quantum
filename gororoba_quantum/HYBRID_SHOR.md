@@ -222,18 +222,27 @@ Static twirled jobs therefore require at least 2,048 shots divisible by 32 and
 set both twirling counts explicitly. The recorded shot count then equals the
 executed product. The default 4,096-shot run uses 32 by 128 shots.
 
-The run record uses schema version 2 and explicit states: `planned`,
+The run record uses schema version 3 and explicit states: `planned`,
 `submission_started`, `partially_submitted`, and `submitted`. Each split job
 refreshes `usage()` before submission. Every acquired job identifier reaches an
 atomic checkpoint before the next job. Collection joins all classical
 registers in circuit order and atomically replaces `collect.json`. A declared
 source manifest makes the experiment digest independent of Python import order.
 
+Each circuit runs as packed disjoint replicas (`packing.py`, and the
+DESIGN_NOTES.md section on packed replicas): every replica of the primary and
+of the identity null executes the same measurement, reset, and feedback
+schedule on its own five qubits and its own `r<k>_phase` register, so one shot
+returns one phase string per replica. Collection joins each replica's
+register alone and decodes it alone.
+
 `runtime_contracts.py` checks terminal versus mid-circuit measurement
 classification, recursively discovers physical operations inside control-flow
 blocks, verifies global bit order for multiple classical registers, verifies
 the pruned primary and null operation counts, enforces exact twirling shots,
-and proves digest stability.
+runs a packed three-replica feed-forward circuit through the local
+client-side Sampler and recovers each replica's own outcome from its
+registers, and proves digest stability.
 
 ## Retained live-calibration dry run
 
@@ -258,6 +267,35 @@ the identity null. Its total-variation distance from the ideal distribution is
 `submission` object, and therefore records zero QPU jobs. The paired `isa.qpy`
 archive contains the compiled circuits named by every JSON member.
 
+## Replicated admission
+
+`results/live/2026-10-10T220435.034757Z/` (code `cdb37c4`) replicates the
+same `ibm_kingston` compile on three disjoint five-qubit placements with
+layout scores 0.691, 0.628, and 0.627, above the 0.9 floor of the best. Each
+shot scores whether its phase string decodes to a verified factor, so the
+variance decomposition and the intervals act on factor yield itself.
+
+| Replicated noise-model quantity | Mean | 95% interval over 3 replicas |
+|---|---:|---|
+| Primary factor yield | 0.4975 | [0.4850, 0.5099] |
+| Identity-null factor yield | 0.0050 | [-0.0094, 0.0195] |
+| Exact uniform-null factor yield | 0.2969 | exact |
+
+The group's admission rule (`experiments.py`, roadmap item 5) admits a
+yield when the primary lower bound exceeds the exact uniform-null yield and
+the identity-null upper bound stays below that lower bound; the noise model
+admits both factor and order-recovery yield. Each interval is the union of a
+Student t interval over the replicas, which carries layout and shot variance,
+and a Wilson interval over the pooled shots, which keeps shot uncertainty when
+the replicas agree exactly, as an identity null reading zero everywhere would.
+With three replicas the t multiplier is 4.30, so a replica count is the
+admission rule's main lever once hardware layout variance is real. The
+primary and the identity null run as separate PUBs, so collect withholds the
+verdict unless both ran under one calibration with no update inside their
+shots. The noise model predicts no layout variance in factor yield beyond shot
+noise (chi-squared p = 0.66); a measured excess is hardware structure the
+model omits.
+
 ## Deficiencies and falsifiers
 
 - **Truth-table scaling.** ANF extraction enumerates `2^n` inputs and the
@@ -268,6 +306,14 @@ archive contains the compiled circuits named by every JSON member.
   by orders of magnitude. A proposed synthesis earns admission only when fresh
   Target compilation and noise simulation produce a positive factor-yield
   margin over the uniform null.
+- **Concurrent feed-forward.** Packed replicas run three or more independent
+  `if_else` branches in one shot. Aer and the local Sampler execute them
+  concurrently; the hardware's handling of simultaneous feed-forward,
+  including whether it serializes their latency, is unmeasured until a
+  packed dynamic job returns. The isolated reference on replica 0's qubits
+  measures any cost packing adds, and a factor yield on packed replica 0 more
+  than three standard deviations below the isolated copy falsifies parallel
+  feed-forward at no cost.
 - **Dynamic duration.** Backend Targets omit classical feed-forward latency.
   Any duration claim for the hybrid circuit remains a lower bound until a QPU
   execution span measures the complete schedule.
@@ -300,10 +346,11 @@ archive contains the compiled circuits named by every JSON member.
    conditional-reduction blocks for widths beyond the truth-table guard. Cross-
    check every new block against the exhaustive permutation oracle at widths
    where both implementations fit.
-5. **Statistical admission.** Add confidence intervals for measured factor and
-   order-recovery yields. Require the primary lower bound to exceed the exact
-   uniform-null yield and require the identity-null upper bound to remain below
-   the primary before interpreting a QPU result.
+5. **Statistical admission.** Implemented as the `hybrid_shor_mod15` admission
+   rule over replicated factor and order-recovery yields: the primary lower
+   bound must exceed the exact uniform-null yield and the identity-null upper
+   bound must stay below the primary lower bound. A QPU result is interpreted
+   only through this verdict.
 6. **Dynamic latency evidence.** Record execution spans and compare them with
    scheduled gate duration. Attribute the residual to service and classical
    control only after repeated jobs show a stable separation.
