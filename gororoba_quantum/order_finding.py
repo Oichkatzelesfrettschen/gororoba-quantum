@@ -56,9 +56,9 @@ def folded_qpe(s: int, identity: bool = False) -> QuantumCircuit:
     control, applies U, and removes the known 0.0phi_2 part with a phase -pi/2
     conditioned on clbit 0, leaving the high bit phi_1 for clbit 1.
     """
-    ctrl = QuantumRegister(1, "c")
+    ctrl = QuantumRegister(1, "ctrl")
     work_reg = QuantumRegister(4, "w")
-    bits = ClassicalRegister(2, "c0")
+    bits = ClassicalRegister(2, "c")
     qc = QuantumCircuit(ctrl, work_reg, bits, name=f"folded_qpe_s{s}" + ("_id" if identity else ""))
     work = [1, 2, 3, 4]
     eigenstate_prep(qc, work, s)

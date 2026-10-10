@@ -18,9 +18,10 @@ to run on hardware). `verify.py` and `designs.py` exit nonzero on the first
 failed check. predict.py computes every prediction from cd_sign and
 cd_multiply; no circuit builder imports it. The "Measured" figures in the
 design sections come from results/hw_estimate/ibm_fez_record.json, a fixed
-ibm_fez compile at transpiler seed 20261010 under the 08:36 calibration of
-2026-10-10; `live_run.py --backends ibm_fez --seeds 1` repeats that compile
-under whatever calibration is live.
+ibm_fez compile at transpiler seed 20261010 under the 10:07 calibration of
+2026-10-10, written by the single-backend harness that live_run.py replaces;
+`live_run.py --backends ibm_fez --seeds 1` repeats that compile under whatever
+calibration is live.
 
 ## Verification against the kernel
 
@@ -94,7 +95,7 @@ value at or below 0.5 + 3 sigma means the phase did not survive, so either the
 associator sign is miscompiled or readout is worse than reported.
 
 Measured (results/hw_estimate/ibm_fez_record.json, calibration
-2026-10-10T08:36:41-07:00): the (1,2) ISA circuit on ibm_fez is depth 55 with
+2026-10-10T10:07:12-07:00): the (1,2) ISA circuit on ibm_fez is depth 55 with
 16 CZ on physical qubits 131-133, and the same circuit under the backend noise
 model gives P1 = 0.9685.
 
@@ -140,11 +141,13 @@ erased it.
 Measured (same record): the structural circuit is 27 CZ all-to-all; the ibm_fez
 ISA circuit is depth 130 with 46 CZ on physical qubits 119, 131-134, and the
 bright control compiled from the same initial layout is also 46 CZ. The noise
-model gives P_zd = 0.0806 and P_control = 0.9021, ratio 0.089. The dense
-compile it replaces (Householder preparation plus two controlled dense
-unitaries), transpiled onto the same initial layout under the same calibration
-and seeds, is 249 CZ with P_zd = 0.314, P_control = 0.677, ratio 0.464, so the
-comparison holds layout quality fixed. Readout
+model gives P_zd = 0.0806 and P_control = 0.9021, ratio 0.089; both circuits
+measure on qubit 133, and correcting each term with that qubit's
+prob_meas1_prep0 and prob_meas0_prep1 gives ratio 0.075 (record field
+design_b). The dense compile it replaces (Householder preparation plus two
+controlled dense unitaries), transpiled onto the same initial layout under the
+08:36 calibration with the same seeds, is 249 CZ with P_zd = 0.314, P_control =
+0.677, ratio 0.464, so the comparison holds layout quality fixed. Readout
 mitigation such as TREX corrects measurement bias in expectation values and
 leaves gate error in place, so the CZ count is the lever it was.
 
@@ -186,9 +189,11 @@ Measured (same record): ibm_fez ISA circuits are 18, 51, and 96 CZ at dims 8,
 16, 32. Noisy TVD to the true prediction is 0.065, 0.114, 0.196 against 0.372,
 0.257, 0.259 to the flip prediction. Resampling the noisy distributions at 4096
 shots gives a shot-noise TVD of 0.006, 0.017, 0.026 (99th percentile 0.011,
-0.029, 0.037). Dims 8 and 16 separate by 0.31 and 0.14; dim 32 separates by
-0.063, under twice the 99th-percentile shot noise, a thin margin that more
-shots or a lower-error qubit patch widens.
+0.029, 0.037). The true circuit's histogram is closer to the true prediction
+than to the flip prediction by a TVD margin of 0.31 and 0.14 at dims 8 and 16;
+at dim 32 the margin is 0.063, a difference of two TVDs under twice the
+99th-percentile shot noise of either, which more shots or a lower-error qubit
+patch widens.
 
 ## Design D: phase-resolved annihilator fringe
 
@@ -291,6 +296,10 @@ back to drive a submission.
   1/T2_q), T the circuit's estimated duration, so idle dephasing on the chosen
   qubits counts beside gate and readout error. A candidate touching excluded
   hardware is rejected.
+- Shared compile for the zero-divisor group: design B dark, bright, and the
+  design D sweep are bindings of one circuit with a phase parameter on the
+  input, so every member runs the same routing and reads out on the same
+  physical qubit, and the suppression ratio compares one set of qubits.
 - Mirror calibration: each single-observable witness (design A, design B dark
   and bright) gets a twin cut from its own compiled circuit -- the first half
   of its CZ content, a barrier, and the inverse -- on the same physical qubits
@@ -303,19 +312,22 @@ back to drive a submission.
 - Nulls: these designs read interference through a final Hadamard layer, so the
   fully dephased and fully depolarized nulls coincide with the uniform
   distribution; every summary reports the TVD to uniform.
-- Freshness proof: the Target errors that ESP reads equal the properties fetched
-  with them on every CZ, sx, and measurement of the plan, and the noise model is
-  built from that same Target, so ranking and prediction describe one device
-  state.
+- Freshness proof: the Target that ESP and the noise model read agrees with the
+  properties fetched with it on the error and duration of every CZ, sx, and
+  measurement of the plan and on T1 and T2 of every touched qubit, so ranking
+  and prediction describe one device state. One simulator is built per
+  snapshot.
 - Staleness: last_update_date advances without value changes (ibm_fez moved
   from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
-  --submit compares the plan's own calibration values -- T1, T2, readout, sx,
-  and CZ error on its qubits and edges -- and recompiles a group whose values
-  moved.
+  --submit re-reads each chosen backend, fails the run if the backend left the
+  eligibility gate, compares the plan's own calibration values -- T1, T2,
+  readout, sx, and CZ error on its qubits and edges -- and recompiles and
+  re-simulates a group whose values moved.
 - Execution-time replay: --collect fetches target_history and properties at the
   job's running timestamp, checks them against each other (342 of 352 ibm_fez
   CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
-  agree on all of them), and re-simulates under that Target.
+  agree on all of them), and re-simulates under that Target with the shots and
+  simulator seed stored in the run's record.
 
 Run of 2026-10-10T16:59:44Z (ibm_kingston skipped at 27 pending jobs):
 
@@ -336,11 +348,16 @@ earlier the same hour.
 Submission runs one client-side Sampler job per chosen backend
 (qiskit_ibm_runtime.executor_sampler, the destination the
 migrate-qiskit-ibm-runtime skill sets for qiskit-ibm-runtime 0.50) with one
-shot count, after a usage() check against --min-remaining-seconds. --twirl
-enables gate and measurement twirling and --dd sets a dynamical-decoupling
-sequence (XX, XpXm, XY4); both act on hardware and are absent from the Aer
-noise model, so a hardware-versus-model gap with them on measures their
-effect. The
+shot count. usage() reports the active instance, and service.backend(name)
+selects the backend's instance, so each job's budget is checked against the
+instance that pays for it; the record stores that instance only as a hash.
+--twirl enables gate and measurement twirling and --dd sets a
+dynamical-decoupling sequence (XX, XpXm, XY4); both act on hardware and are
+absent from the Aer noise model, so a hardware-versus-model gap with them on
+measures their effect. Circuits with mid-circuit measurement, reset, or
+feed-forward go in a separate job per backend with dynamical decoupling off and
+measurement twirling off, since IBM's Sampler rejects dynamical decoupling on
+dynamic circuits and twirls only terminal measurements. The
 10-minute monthly budget is quantum execution time. 156/5 bounds the count of
 disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
 and crosstalk is the measurement of how many fit per shot.

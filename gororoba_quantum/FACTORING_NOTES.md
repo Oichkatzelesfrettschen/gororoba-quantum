@@ -4,23 +4,29 @@ Cayley-Dickson structure does not carry Shor's algorithm for RSA-2048 on these
 devices, and no folding of zero-divisor chunks changes that. Two independent
 reasons:
 
-- The resource floor is 5,755 times the hardware's physical qubit count and
-  about seven orders of magnitude above the gate volume these devices run, before
-  any error-correction overhead.
+- The reference construction (Gidney 2025) needs 5,755 times the hardware's
+  physical qubit count and about seven orders of magnitude more gate volume than
+  these devices run, before any error-correction overhead. It is the cost of
+  one construction, not a proven lower bound, and its author sees no route to
+  another order of magnitude in qubits.
 - Products of basis left multiplications form a 2-group of exponent 4, while
   order finding needs an operator of order ord_N(a), which is on the scale of N
   for an RSA modulus.
+
+Cayley-Dickson dimension 2048 = 2^11 is an 11-qubit index register; RSA-2048 is
+a 2048-bit modulus. The numbers coincide and the scales do not.
 
 The algebra connects to the hidden-subgroup family over F_2^n, where design C
 at dim 8 already is Bernstein-Vazirani, and to certified non-Clifford benchmarks of the
 gate class that dominates factoring cost. The checks behind each claim are
 named inline; literature notes live under literature/notes/.
 
-## Resource floor
+## Reference baseline
 
 Gidney 2025 (arXiv:2505.15917, note literature/notes/2505.15917.md) is the
-reference construction. At n = 2048 with 0.1% uniform gate error, a 1 us
-surface-code cycle and a 10 us reaction time, it needs:
+reference construction. It proves no lower bound; its costs are those of one
+construction. At n = 2048 with 0.1% uniform gate error, a 1 us surface-code
+cycle and a 10 us reaction time, it needs:
 
 | quantity | RSA-2048 (Gidney 2025, Table 5, Sec. 3.2) | one Heron r2 backend |
 |---|---|---|
@@ -31,10 +37,13 @@ surface-code cycle and a 10 us reaction time, it needs:
 | runtime | 12.07 h per shot, 4.96 days expected | -- |
 
 The circuits in this repository give the practical scale. The dim-32 associator
-spectrum (96 CZ on 5 qubits, joint ESP 0.77 on the best patch of three
-backends) is already near the noise floor: its noisy histogram separates from
-the sign-flip control by 0.062 TVD (design C). A computation of 7.1e8 Toffolis per shot is about seven orders of magnitude
-past that, before any error-correction overhead.
+spectrum (96 CZ on 5 qubits, joint ESP 0.77 on the best patch of three backends
+in the run of 2026-10-10T16:59:44Z) is already near the noise floor: its noisy
+histogram is closer to the true prediction than to the sign-flip prediction by
+a TVD margin of only 0.062 (0.181 against 0.243), and its TVD to the noisy
+sign-flip control histogram is 0.131. A computation of 7.1e8 Toffolis per shot
+is about seven orders of magnitude past that, before any error-correction
+overhead.
 
 ## What decomposes and what does not
 
@@ -92,18 +101,20 @@ combination of unitaries over G_n. A zero divisor's L_a = L_{e_i} + L_{e_j} is
 one such combination with two terms.
 - The real span of G_n is every matrix: H's diagonals have full real rank 2^n at
   n = 3, 4, 5. So an LCU can represent a modular multiplier in principle.
-- The cost is exponential, and provably so:
+- The LCU normalization is provably at least T, the number of distinct
+  displacements:
   1. The XOR translations are linearly independent blocks, so writing a
      permutation pi as a combination of G_n elements fixes its translation-t
      part D_t = [x : pi(x) XOR x = t], a 0/1 diagonal.
   2. |sum c_g D_g(x)| <= sum |c_g| bounds the LCU normalization below by
      lambda >= T, the number of distinct displacements pi(x) XOR x.
   3. The post-selection success is ||pi b||^2 / lambda^2 <= 1/T^2.
-- For small multipliers T is a large fraction of 2^n: 8 of 16 for 2x mod 15, 7
-  for 7x mod 15, 16 of 32 for 2x mod 21, 30 of 64 for 2x mod 35. If that
-  fraction persists, the route costs 2^(n-1) amplitude-amplification rounds at
-  n bits, which is exponential. The persistence is an inference from these four
-  moduli and has no proof here.
+- Exponential cost needs more than that bound: it needs T = 2^Omega(n) for the
+  multiplier family. For small multipliers T is a large fraction of 2^n -- 8 of
+  16 for 2x mod 15, 7 for 7x mod 15, 16 of 32 for 2x mod 21, 30 of 64 for 2x
+  mod 35 -- and if that fraction persists the route costs about 2^(n-1)
+  amplitude-amplification rounds at n bits. The persistence is an inference
+  from these four moduli; nothing here proves it.
 
 ## What the algebra does connect to
 
@@ -114,9 +125,10 @@ one such combination with two terms.
   dim 8, and for pair (1,4) it returns n = 2. It is Bernstein-Vazirani: one
   oracle query recovers the hidden string, where design A reads one bit of the
   same character.
-- Shor's algorithm is the abelian hidden-subgroup algorithm over Z_N, and
-  Simon's and Bernstein-Vazirani's are its F_2^n relatives. Cayley-Dickson
-  signs live natively in the F_2^n family.
+- Shor's order finding hides the period r of x -> a^x mod N in the exponent
+  domain, the integers, approximated by a power-of-two cyclic register; r need
+  not divide N. Simon's and Bernstein-Vazirani's problems hide subgroups of
+  F_2^n instead. Cayley-Dickson signs live natively in the F_2^n family.
 
 **Hidden quadratic and cubic forms.**
 - Design C's Walsh spectrum of omega_ij reads out the phase function. At degree
@@ -174,3 +186,46 @@ one such combination with two terms.
   demonstrates no factoring capability, since multiplication by 2 mod 15 is a
   known easy case. Monz et al. (Science 351, 1068 (2016)) ran the
   recycled-control form on trapped ions.
+
+## What open_gororoba supplies
+
+A survey of open_gororoba at fe668020 (literature/notes/open_gororoba_survey.md,
+with derivations and replay scripts in open_gororoba_survey_deep_notes.md)
+separates proven, tested, and asserted content.
+
+**Re-checked here:**
+- *The sign recursion as a circuit.* Over GF(2), cd_basis_mul_sign_iter
+  unrolls to f_{n+1}(a, b, p', q') = f_n(swap_b(p', q')) + a(1 + b) + a[q' = 0],
+  with a and b the top bits of p and q. It agrees with cd_sign on every (p, q)
+  through dim 256.
+  - The survey turns it into a circuit for the multiplexed product
+    sum_p |p><p| (x) L_{e_p}: n(n-1) controlled swaps, 3n - 2 multi-controlled
+    Z gates, and n CNOTs. It simulated that circuit at gate level through n = 6.
+  - That is polynomial in n, where the DiagonalGate compile of one L_{e_m}
+    grows as about 2^n.
+  - At the 3 to 6 qubits these devices run, the controlled swaps cost more than
+    the diagonal, so the crossover lies beyond this hardware.
+  - The multiplexed product is still a family of signed XOR translations, so
+    the modular-multiplier obstruction above applies to it unchanged.
+- *Defect count.* The ordered basis triples with nonzero associator number
+  v(N) = N^3/2 - 14N + 24: 168, 1848, 15960, and 130200 at N = 8, 16, 32, 64,
+  checked here by brute force.
+  - The survey matches the repository's zero-divisor edge totals at dims 16 to
+    256 (84 to 523,404) to E(D) = v(D/2)/2.
+  - Its predictions for dims 512 to 4096 (4,192,524 up to 2,147,469,324)
+    assume the identity continues; nothing proves that.
+
+**From the survey, not re-run here:**
+- *Rocq.* 313 .v files, with no Admitted and no admit. CDSignHalfStep.v holds
+  the only dimension-generic sign lemmas.
+- *Fast factorization.* The only Rocq-proven one is Cariow 2013 at dim 16:
+  Walsh-Hadamard diagonalization plus a 106-term sparse correction, 122
+  multiplications. The dim-32 and dim-64 counts are unachieved targets.
+- *"512/1024/2048" files.* The Rocq files with those numbers in their names, in
+  curated/, model thread capacity and carry no Cayley-Dickson content.
+- *Quantum content.* The repository's quantum material is an MPS simulator, a
+  Grover search, and hardware profiles. It has no QFT, no modular arithmetic,
+  and no Shor; its box-kite QEC, p-adic CD crypto, and sedenion braid compiler
+  modules are stubs or analogies.
+- *The group order.* The survey's independent sympy computation gives
+  2^(n + 2^(n-1)) for n = 3 through 8, matching check_left_mult_group.
