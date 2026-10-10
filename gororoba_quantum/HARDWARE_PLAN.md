@@ -4,7 +4,7 @@ This plan joins the project's two hardware programs -- the Cayley-Dickson
 witnesses (DESIGN_NOTES.md) and hybrid Shor order finding (HYBRID_SHOR.md) --
 into one submission path under the 600 s rolling QPU budget. Every quantity
 it quotes comes from the dry-run record
-`results/live/2026-10-10T220435.034757Z` (code cdb37c4) unless it names
+`results/live/2026-10-10T221412.255180Z` (code 78a3bb7) unless it names
 another source; the record's predictions are noise-model values, not
 hardware results.
 
@@ -34,9 +34,11 @@ hardware results.
    ibm_kingston won every group.
 3. **Placement.** packing.py embeds the winning pattern everywhere it fits in
    admissible hardware, ranks the embeddings by the same layout score, and
-   packs disjoint replicas one qubit apart down to 0.9 of the best score.
-   Design A fills 63 of kingston's 156 qubits per shot with 21 replicas,
-   design C dim 8 fills 54 with 18, and the five-qubit groups take 3 to 6.
+   packs disjoint replicas one qubit apart down to 0.9 of the best score, or
+   a group's own lower floor; hybrid Shor declares 0.8. Design A fills 63 of
+   kingston's 156 qubits per shot with 21 replicas, design C dim 8 fills 54
+   with 18, hybrid Shor 35 with 7, and the other five-qubit groups take 3 to
+   6.
 4. **Revalidation.** --submit re-reads every chosen backend and replans any
    group whose calibration values moved on its packed qubits.
 
@@ -57,10 +59,10 @@ hardware results.
 - **Admission.** hybrid Shor is interpreted only through its admission rule:
   the primary factor-yield lower bound must exceed the exact uniform null
   (0.297) and the identity-null upper bound must stay below that lower bound.
-  The noise model gives [0.485, 0.510] against an identity-null upper bound of
-  0.020. Each bound is the union of the replicate t interval and a Wilson
-  interval over the pooled shots; with Shor's three replicas the t multiplier
-  is 4.30, so the replica count is a decision for the written case.
+  The noise model gives [0.483, 0.501] against an identity-null upper bound of
+  0.013. Each bound is the union of the replicate t interval and a Wilson
+  interval over the pooled shots; Shor's seven replicas put the t multiplier
+  at 2.45, where three gave 4.30.
 
 ## QPU cost
 

@@ -269,16 +269,17 @@ archive contains the compiled circuits named by every JSON member.
 
 ## Replicated admission
 
-`results/live/2026-10-10T220435.034757Z/` (code `cdb37c4`) replicates the
-same `ibm_kingston` compile on three disjoint five-qubit placements with
-layout scores 0.691, 0.628, and 0.627, above the 0.9 floor of the best. Each
+`results/live/2026-10-10T221412.255180Z/` (code `78a3bb7`) replicates the
+same `ibm_kingston` compile on seven disjoint five-qubit placements with
+layout scores from 0.691 to 0.569, above the group's 0.8 floor of the best
+(`Group.replica_floor`; the other groups keep the run's 0.9). Each
 shot scores whether its phase string decodes to a verified factor, so the
 variance decomposition and the intervals act on factor yield itself.
 
-| Replicated noise-model quantity | Mean | 95% interval over 3 replicas |
+| Replicated noise-model quantity | Mean | 95% interval over 7 replicas |
 |---|---:|---|
-| Primary factor yield | 0.4975 | [0.4850, 0.5099] |
-| Identity-null factor yield | 0.0050 | [-0.0094, 0.0195] |
+| Primary factor yield | 0.4919 | [0.4830, 0.5008] |
+| Identity-null factor yield | 0.0078 | [0.0022, 0.0134] |
 | Exact uniform-null factor yield | 0.2969 | exact |
 
 The group's admission rule (`experiments.py`, roadmap item 5) admits a
@@ -288,12 +289,12 @@ admits both factor and order-recovery yield. Each interval is the union of a
 Student t interval over the replicas, which carries layout and shot variance,
 and a Wilson interval over the pooled shots, which keeps shot uncertainty when
 the replicas agree exactly, as an identity null reading zero everywhere would.
-With three replicas the t multiplier is 4.30, so a replica count is the
+Seven replicas put the t multiplier at 2.45 against 4.30 at three, the
 admission rule's main lever once hardware layout variance is real. The
 primary and the identity null run as separate PUBs, so collect withholds the
 verdict unless both ran under one calibration with no update inside their
-shots. The noise model predicts no layout variance in factor yield beyond shot
-noise (chi-squared p = 0.66); a measured excess is hardware structure the
+shots. The noise model predicts layout variance in factor yield of 3.1e-5,
+within shot noise (chi-squared p = 0.17); a measured excess is hardware structure the
 model omits.
 
 ## Deficiencies and falsifiers
