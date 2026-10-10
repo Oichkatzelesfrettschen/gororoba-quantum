@@ -2,11 +2,16 @@
 
 This plan joins the project's two hardware programs -- the Cayley-Dickson
 witnesses (DESIGN_NOTES.md) and hybrid Shor order finding (HYBRID_SHOR.md) --
-into one submission path under the 600 s rolling QPU budget. Every quantity
-it quotes comes from the dry-run record
-`results/live/2026-10-10T222132.627032Z` (code 02a5b4b) unless it names
-another source; the record's predictions are noise-model values, not
-hardware results.
+into one submission path under the 600 s rolling QPU budget. The packed-replica
+statistics and QPU-cost quantities come from
+`results/live/2026-10-10T222132.627032Z` at source `02a5b4b`. Live discovery,
+capability admission, filtered routing, and single-layout evidence come from
+`results/live/2026-10-10T220438.712726Z` at source `0205a61`. The combined path
+qualification comes from `results/live/2026-10-10T232219.919322Z` at source
+`584a78d`. All three records are submit-free noise-model runs. The schema-4 run
+uses `--max-pending 250` after the default gate rejects both active systems, so
+it qualifies the combined execution path under that explicit dry-run bound and
+does not establish default-policy submission readiness.
 
 ## What each group claims and what refutes it
 
@@ -20,32 +25,54 @@ hardware results.
 
 ## From calibration to circuits
 
-1. **Detector.** live_run.py reads each backend's status, Target, and
-   properties in the deciding process and excludes every qubit and CZ edge
-   outside the QUALITY policy or flagged faulty. The record's snapshot
-   excluded 11 qubits and 16 edges on ibm_fez, 7 and 24 on ibm_kingston, and 31
-   and 20 on ibm_marrakesh, every one by a policy threshold -- readout error,
-   T1 or T2, sx or CZ error, or missing calibration -- and none by a faulty
-   flag, so the thresholds carry the detection. The eligibility gate then
-   skipped ibm_fez, at 27 pending jobs against --max-pending 25, and
-   ibm_marrakesh, which reported status_msg "maintenance".
-2. **Selection.** Eight transpiler seeds per group and backend; the best three
-   compile their controls onto one layout, and the best geometric-mean layout
-   score (ESP times the T2 dephasing factor) picks backend and layout.
-   ibm_kingston, the one eligible system at 18 pending jobs, carries every
-   group; earlier records of the same day with ibm_fez eligible also chose
-   kingston for every group.
-3. **Placement.** packing.py embeds the winning pattern everywhere it fits in
-   admissible hardware, ranks the embeddings by the same layout score, and
-   packs disjoint replicas one qubit apart down to a floor fraction of the
-   best score: 0.9 by default, a group's declared floor where it has one
-   (hybrid Shor declares 0.8), and an explicit --replica-floor for every group
-   when given. Design A fills 63 of
-   kingston's 156 qubits per shot with 21 replicas, design C dim 8 fills 54
-   with 18, hybrid Shor 35 with 7, and the other five-qubit groups take 3 to
-   6.
-4. **Revalidation.** --submit re-reads every chosen backend and replans any
-   group whose calibration values moved on its packed qubits.
+1. **Discover systems.** `live_run.py` discovers every accessible system unless
+   `--backends` names a bounded set. A failed probe remains an inventory entry
+   and does not discard successful probes.
+2. **Refresh one coherent snapshot.** The runner refreshes each backend once,
+   then reads status, configuration, capabilities, the rebuilt Target, and the
+   properties cached by that refresh. It excludes every qubit and CZ edge
+   outside `QUALITY` or flagged faulty. Record `220438` excludes 11 qubits and
+   16 directed edges on ibm_fez, 7 and 24 on ibm_kingston, and 31 and 20 on
+   ibm_marrakesh. Policy thresholds identify every exclusion; faulty flags
+   identify none. The eligibility gate records ibm_marrakesh as ineligible
+   because its status message is `maintenance`.
+3. **Admit and route logical circuits.** The runner derives width, operations,
+   control flow, and static or dynamic kind from the circuits built in the
+   current process. A copy of the fresh Target removes degraded placements
+   before layout and routing. Eight transpiler seeds per group and backend
+   compete; the best three compile the controls onto one layout, and the best
+   geometric-mean layout score selects the backend and layout. Record `220438`
+   selects ibm_kingston for every group.
+4. **Validate routed instructions.** Recursive support checks validate fixed
+   parameters and nested control-flow instructions in every routed primary,
+   control, and mirror against the original fresh Target. A failure advances to
+   the next candidate or backend.
+5. **Place replicas and references.** `packing.py` embeds the winning pattern
+   in the admitted CZ graph, ranks embeddings by the same layout score, and
+   places disjoint replicas one qubit apart. An explicit `--replica-floor`
+   governs every group; otherwise a group's declared floor applies, with 0.9
+   as the default. Hybrid Shor declares 0.8. Each multi-replica group adds an
+   isolated primary on replica 0's qubits as its crosstalk reference. Record
+   `222132` places 21 replicas for design A, 18 for design C dim 8, seven for
+   hybrid Shor, and three to six for the other five-qubit groups.
+6. **Derive execution requirements.** The runner re-derives entry count,
+   classical width, static or dynamic kind, packed layouts, and reference
+   requirements from the exact circuits written to `isa.qpy`. These values
+   describe the execution set after mirrors, replicas, and references exist.
+7. **Partition complete groups into job batches.** The partitioner keeps every
+   member, mirror, and isolated reference from a group together. It uses
+   `IBMBackend.max_circuits` only as a client-reported compatibility bound;
+   IBM documents that the value no longer accurately represents the service
+   circuit limit. Job-batch partitioning leaves every circuit as a separate
+   PUB and does not perform the future PUB fusion below.
+8. **Revalidate live configuration.** Before a ledger becomes immutable,
+   `--submit` repeats cross-system discovery and deterministic selection. Any
+   change to the approved backend, layout, replica maps, packed circuits,
+   capabilities, exclusions, or used calibration values writes a revised
+   submit-free record and QPY archive, then stops for a new written case and
+   explicit user approval. An unchanged approved plan refreshes again
+   immediately before every batch and stops the affected and later batches when
+   the admitted execution surface moves.
 
 ## Statistics that decide a result
 
@@ -86,24 +113,43 @@ literature/notes/2507.08088.md, which puts the full program between 32 s and
 
 ## Path to the first submission
 
-1. **PUB fusion.** Groups on one backend and job kind share PUBs: entry i of
+1. **Default-policy refresh.** Repeat the schema-4 dry run without a queue
+   override when at least one system passes `--max-pending 25`. Use that record
+   as the written case's current execution evidence; retain `232219` as the
+   combined-path qualification under its explicit 250-job dry-run bound.
+2. **PUB fusion.** Groups on one backend and job kind share PUBs: entry i of
    every group packs into one circuit on disjoint placements, so the static
    job needs as many PUBs as its largest group (14, the fringe) instead of 29,
    and the dynamic job 6 instead of 9. Placement then allocates one pool of
    admissible qubits across groups, and the per-group decoding is unchanged.
-2. **Written case.** The case states the job split, the fused PUB count, the
+3. **Written case.** The case states the job split, the fused PUB count, the
    fresh dry run's predictions, and the seconds bound from the table above,
    and waits for approval (AGENTS.md).
-3. **Dynamic job first.** It is the smaller job and carries the questions only
+4. **Dynamic job first.** It is the smaller job and carries the questions only
    hardware answers: hybrid Shor admission, concurrent feed-forward across
    packed replicas (the crosstalk reference), feed-forward latency from the
    execution spans, and the project's own shot rate, measured by the job's
    usage seconds. That rate replaces the literature bounds before the static
    job is costed.
-4. **Static job.** Submitted with --twirl and a DD sequence only when the
+5. **Static job.** Submitted with --twirl and a DD sequence only when the
    case argues that the hardware-versus-model gap with them on is the
    question; otherwise both stay off so the first static measurement compares
    directly with the noise model.
+
+## Runtime source authority
+
+- [IBMBackend API](https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/ibm-backend)
+  defines status, cached versus refreshed properties, Target history,
+  `refresh()`, and the `max_circuits` compatibility warning.
+- [IBMBackend 0.50 source](https://github.com/Qiskit/qiskit-ibm-runtime/blob/stable/0.50/qiskit_ibm_runtime/ibm_backend.py)
+  grounds the refresh and cached-property behavior used by the coherent
+  snapshot.
+- [Dynamic circuits and control flow](https://quantum.cloud.ibm.com/docs/en/guides/classical-feedforward-and-control-flow)
+  grounds the feed-forward circuit surface.
+- [Client-side Sampler migration](https://quantum.cloud.ibm.com/docs/en/guides/migrate-to-client-side-primitives)
+  grounds the Executor-backed Runtime 0.50 submission path.
+- [Qiskit Target API](https://quantum.cloud.ibm.com/docs/en/api/qiskit/qiskit.transpiler.Target)
+  grounds recursive instruction-support validation.
 
 ## Risks
 

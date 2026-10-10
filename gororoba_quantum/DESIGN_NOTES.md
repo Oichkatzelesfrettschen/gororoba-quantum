@@ -272,15 +272,31 @@ versus uniform weights are the prerequisites before any circuit.
 ## Live calibration and backend selection
 
 `live_run.py` treats calibration as a property of the run. Each invocation
-refreshes every accessible backend (ibm_fez, ibm_kingston, ibm_marrakesh), reads
-status, queue depth, Target, and properties, and decides, compiles, simulates,
-and optionally submits within that process. The audit record under
-results/live/<UTC start>/ holds every input to the decision and is never read
-back to drive a submission.
+queries the active account for accessible systems unless `--backends` pins
+names. The runner refreshes every requested backend, reads its status, queue
+depth, configuration, Target, and properties, and records every successful,
+ineligible, or failed probe. The audit record under `results/live/<UTC start>/`
+stores the requested-system inventory, capability summaries, exclusion reasons,
+logical circuit requirements, final packed execution requirements, selection
+trace, selected ISA circuits, and simulated outcomes. The process never reads a
+retained calibration record to drive a submission.
+Combined records use schema 4 and contract `live-target-packed-replicas-v1`;
+both historical schema-3 families remain retained evidence with incompatible
+shapes.
 
 - Eligibility: operational, status_msg "active", and at most 25 pending jobs
   (--max-pending); a long queue lets the calibration drift between compile and
   execution.
+- Capability admission: each group derives logical width, direct operations,
+  control flow, and static or dynamic kind from circuits built by the current
+  process. After routing and replica placement, the runner derives the exact
+  execution entry count, maximum classical width, packed layouts, and isolated
+  reference requirements from the circuits written to `isa.qpy`. Job-batch
+  partitioning uses that final execution set and treats `max_circuits` as the
+  client-reported compatibility bound. The IBMBackend API warns that the value
+  no longer accurately represents a service circuit limit. Classical width
+  remains recorded evidence because BackendV2 exposes no separate classical-bit
+  capacity.
 - Exclusion policy (QUALITY in live_run.py): readout error above 0.08, CZ error
   above 0.03, sx error above 0.01, T1 or T2 below 20 us, missing calibration, or
   a faulty flag. Degraded hardware arrives without faulty flags: in the run of
@@ -294,8 +310,15 @@ back to drive a submission.
   the same initial layout; the highest geometric-mean score across the group
   wins, queue depth breaking ties. The layout score is ESP times exp(-T sum_q
   1/T2_q), T the circuit's estimated duration, so idle dephasing on the chosen
-  qubits counts beside gate and readout error. A candidate touching excluded
-  hardware is rejected.
+  qubits counts beside gate and readout error. Before compilation, the runner
+  copies the fresh Target and removes every instruction placement that touches
+  an excluded qubit or CZ edge. The transpiler therefore routes inside the
+  admitted hardware graph. Recursive `Target.instruction_supported()` checks,
+  including fixed instruction parameters and control-flow blocks, validate each
+  finished primary and control against the original fresh Target. Replica
+  placement uses the filtered CZ graph, then the same recursive validation
+  covers every packed member, mirror, and isolated reference. A compile,
+  placement, or final validation failure advances to the next candidate.
 - Shared compile for the zero-divisor group: design B dark, bright, and the
   design D sweep are bindings of one circuit with a phase parameter on the
   input, so every member runs the same routing and reads out on the same
@@ -324,17 +347,39 @@ back to drive a submission.
   fully dephased and fully depolarized nulls coincide with the uniform
   distribution; every summary reports the TVD to uniform.
 - Freshness proof: the Target that ESP and the noise model read agrees with the
-  properties fetched with it on the error and duration of every CZ, sx, x, and
-  measurement of the plan and on T1 and T2 of every touched qubit, so ranking
-  and prediction describe one device state. One simulator is built per
-  snapshot. A qubit carrying a faulty single-qubit instruction is excluded like
-  a faulty qubit, and a backend without a native CZ is skipped as ineligible.
+  properties cached by the same `backend.refresh()` on every exposed gate error
+  and duration and on every qubit's T1 and T2. The runner avoids a second
+  property refresh that could cross a calibration boundary without rebuilding
+  the Target. Ranking and prediction therefore describe one device state. One
+  simulator is built per snapshot. A qubit carrying a faulty single-qubit
+  instruction is excluded like a faulty qubit, and a backend without a native
+  CZ is skipped as ineligible. A bounded-angle Target is rejected at routing
+  admission because Qiskit exposes validation of its parameter bounds but no
+  public accessor that can reproduce those bounds in the filtered Target; the
+  rejection remains local to that system, so later viable systems still
+  compete.
 - Staleness: last_update_date advances without value changes (ibm_fez moved
   from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
-  --submit re-reads each chosen backend, fails the run if the backend left the
-  eligibility gate, compares the plan's own calibration values -- T1 and T2 of
-  its qubits and the error and duration of each CZ, sx, x, and measurement it
-  uses -- and recompiles and re-simulates a group whose values moved.
+  `--submit` rediscovers every requested system before any job leaves the host.
+  An explicit `--backends` list probes those names directly and remains usable
+  when account-wide backend enumeration fails; the default all-system path
+  enumerates the accessible systems first.
+  The pre-submission loop reruns deterministic selection across every fresh
+  eligible system even while the prior choice remains valid. The comparison
+  covers backend, layout, replica maps, entry identities, packed QPY identity,
+  capabilities, exclusions, Target support, and used calibration values. It
+  therefore reacts to degradation and can identify recovered hardware, a newly
+  eligible backend, or a better alternate system. The fingerprint includes
+  every routed Target
+  instruction's error and duration, qubit coherence, asymmetric readout fields,
+  and Target timing constraints. Any replacement is recompiled, re-simulated,
+  and rearchived as a revised submit-free plan. The record enters
+  `approval_required`, carries the new QPY digest and selection reasons, and
+  exits before constructing a Runtime Sampler. A new written case and explicit
+  user approval govern a later invocation. An unchanged approved plan refreshes
+  the selected system again immediately before every batch. Drift at that
+  boundary stops the affected and later batches; the retained ledger names each
+  unsent complete result group.
 - Readout: every group record carries summary (raw) and
   summary_readout_corrected, which inverts each classical bit's readout channel
   with the prob_meas1_prep0 and prob_meas0_prep1 of the qubit that wrote it.
@@ -353,11 +398,17 @@ back to drive a submission.
   own distribution, readout, and replay code -- and the code commit; --collect
   refuses to summarize a run under a different digest, naming the commit to
   collect from.
-- Durable job ids: every submitted job's id is checkpointed to record.json
-  before the next job is sent, and the record and QPY archive are written to a
-  temporary file and moved into place, so an interrupted write never loses an
-  id for QPU time already spent. An instance without a usage limit passes the
-  budget check; usage_limit_reached still stops the run.
+- Durable job identities: the complete batch ledger, exact QPY archive SHA-256,
+  effective options, and unique recovery tags reach `record.json` before a job
+  call. An attempt marker and budget snapshot receive another checkpoint
+  immediately before `Sampler.run()`, and every returned job id receives a
+  checkpoint before the next batch. Collection queries `service.jobs()` with
+  the exact recovery tags and the live instance whose CRN matches the retained
+  12-hex hash when a response-lost attempt lacks an id. One job and one instance
+  restore the id; zero or multiple matches stop collection with the ambiguity
+  retained. Atomic replacement fsyncs the file and containing directory. An
+  instance without a usage limit passes the budget check;
+  `usage_limit_reached` stops the run.
 - Execution-time replay: --collect reads each circuit's execution window from
   the result's execution spans (result.metadata["execution"]
   ["execution_spans"], the spans whose pub_idxs include it), fetches
@@ -383,12 +434,54 @@ at 9 jobs and moved every group to it, on the best medians of the three (T1
 visibility 0.905 in the noise model, against 0.067 and 0.860 on ibm_marrakesh
 earlier the same hour.
 
-Submission runs one client-side Sampler job per chosen backend
-(qiskit_ibm_runtime.executor_sampler, the destination the
-migrate-qiskit-ibm-runtime skill sets for qiskit-ibm-runtime 0.50) with one
-shot count. usage() reports the active instance, and service.backend(name)
-selects the backend's instance, so each job's budget is checked against the
-instance that pays for it; the record stores that instance only as a hash.
+The divergent pre-integration schema-3 dry run at
+`results/live/2026-10-10T220438.712726Z/` discovers all three accessible systems
+from source commit `0205a61`. Fez and Kingston pass
+eligibility; Marrakesh reports maintenance and remains recorded as ineligible.
+Kingston wins all seven groups at 13 pending jobs. The record preserves each
+system's capability summary, each group's circuit-derived requirements, every
+capability and routing decision, and 31 unreplicated base and mirror ISA
+circuits. Its lifecycle state is `planned`, `code_commit.sources_modified` is
+false for the `gororoba_quantum/` source scope, and the absent `submission`
+object establishes zero QPU jobs. The record predates replica placement,
+isolated crosstalk references, variance decomposition, and statistical
+admission, so it does not qualify the integrated schema-4 execution path.
+
+The post-review schema-4 dry run at
+`results/live/2026-10-10T232219.919322Z/` uses source `584a78d` with
+`sources_modified=false`. The default queue gate first rejects Fez at 147
+pending jobs and Kingston at 95; Marrakesh reports maintenance. The retained
+submit-free rerun uses `--max-pending 250`, records Fez and Kingston as eligible
+under that explicit bound, and records Marrakesh as ineligible. Kingston wins
+all seven groups. The archive contains 38 unique packed circuits, including
+seven isolated references, and its names exactly match both the member records
+and final execution requirements. Every group records its effective replica
+floor: 0.9 for six groups and 0.8 for hybrid Shor, which places nine replicas.
+All three discovered systems report `max_circuits=null`, so the live record
+establishes no finite service circuit limit; synthetic contracts establish
+job-batch partitioning under finite compatibility bounds. The lifecycle stays
+`planned` with `submission` absent. The record therefore qualifies the combined
+discovery, capability, routing, Target-validation, replica, variance, and
+archive path while recording zero QPU jobs. Approval-gated pre-submission
+selection, immediate batch revalidation, and recovery remain credential-free
+contract evidence until an approved submission exercises them.
+
+Submission partitions each backend's complete result groups into static and
+dynamic sets. A deterministic first-fit-decreasing partitioner places whole
+groups into one or more client-side Sampler jobs under the refreshed backend's
+client-reported `max_circuits` compatibility bound; witnesses, controls,
+mirrors, and isolated references from one result stay in one job. The complete
+planned-job ledger, ordered member names, exact QPY
+archive SHA-256, calibration stamps, effective options, and recovery tags reach
+the record before the first job. Each accepted job adds its batch index and
+count, job id, and budget snapshot. `usage()` runs before every batch against
+the instance selected for that backend. A fresh batch snapshot must preserve
+status, capabilities, admitted qubits and CZ edges, routed instruction support,
+calibration fingerprints, and sampler options. Sampler then receives that exact
+refreshed backend object. The record stores the instance only as a hash. The
+client-side Sampler comes from
+`qiskit_ibm_runtime.executor_sampler`, the destination the
+migrate-qiskit-ibm-runtime skill sets for qiskit-ibm-runtime 0.50.
 --twirl enables gate and measurement twirling and --dd sets a
 dynamical-decoupling sequence (XX, XpXm, XY4); both act on hardware and are
 absent from the Aer noise model, so a hardware-versus-model gap with them on
@@ -442,16 +535,16 @@ eigenstates are equal-cost instances, so a two-way decomposition separates
 instance, layout, and interaction variance (literature/notes/2509.18259.md,
 action item 4). Every pooled summary value is the mean of that value computed
 on each replica alone, so a ratio, fringe fit, or TVD and its interval share
-one estimand. A value the group declares a per-shot rate also gets a Wilson
-interval over the pooled shots, and its reported interval is the union of
-that and the replicate interval, so replicas that agree exactly keep their
-shot uncertainty. Each member, twin, and isolated reference runs as its own
+one estimand. Every pooled value gets a Student t interval over its replicas. A
+value the group declares a per-shot rate also gets a Wilson interval over the
+pooled shots, and its reported interval is the union of that and the replicate
+interval, so replicas that agree exactly keep their shot uncertainty. Each
+member, twin, and isolated reference runs as its own
 PUB, and every group summary, crosstalk, and admission combines them, so
 when a group's PUBs did not all run under one calibration with no update
 inside their shots, collect publishes only each entry's own replica variance
-beside the raw distributions and records the reason in comparisons_withheld. Every pooled summary value also gets a Student t
-interval over
-its replicas.
+beside the raw distributions and records the reason in
+`comparisons_withheld`.
 
 The dry run of record 2026-10-10T222132.627032Z (code 02a5b4b) placed every
 group on ibm_kingston, whose snapshot excluded 7 qubits and 24 edges:

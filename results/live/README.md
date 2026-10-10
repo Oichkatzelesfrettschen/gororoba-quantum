@@ -1,30 +1,97 @@
 # Live-run audit records
 
-Each directory is one run of `gororoba_quantum/live_run.py`, named by its UTC
-start time. `record.json` holds the backend states, exclusions, selection
-trace, noise-model predictions, and, after `--submit`, the job ids; `isa.qpy`
-holds the compiled circuits.
+Each directory records one `gororoba_quantum/live_run.py` invocation under its
+UTC start time. `record.json` carries the schema-specific plan and lifecycle
+evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
-- **Schema 3 records.** Schema 2 with every group run as packed disjoint
-  replicas. Each group lists its `replicas` (placement, register prefix,
-  layout score), each member its `replica_prefixes`, `replica_qubits`, and
-  per-replica predictions, and the group carries pooled, per-replica,
-  interval, variance, crosstalk, and admission views. `isa.qpy` holds the
-  packed circuits that run. `--collect` accepts only schema 3.
-- **Schema 2 records.** A record carries `schema_version: 2`, an explicit
-  lifecycle `state`, `experiment_digest`, and `code_commit`. A dynamic member
-  marks `duration_bound: lower_without_classical_latency`. Job-id and
-  collection writes use atomic replacement. `--collect` names the commit to
-  collect it from, whose digest and schema match.
-- **Legacy records.** A record without `schema_version` was written by an
-  earlier revision of live_run.py. Every such record here is a dry-run plan
-  with no submitted jobs. It shows what that revision selected and simulated,
-  which the design notes cite, and `--collect` rejects it.
+- **Schema 4 records.** The `live-target-packed-replicas-v1` contract combines
+  live system inventory, circuit-derived capability admission,
+  degraded-hardware-filtered routing, recursive Target validation, packed
+  disjoint replicas, isolated crosstalk references, per-replica variance and
+  admission views, approval-gated pre-submission reselection, whole-group
+  job-batch partitioning, archive integrity, immediate batch revalidation, and
+  recovery identities. A changed approved plan enters `approval_required`,
+  records its revised QPY digest, and sends zero Runtime jobs. `--collect`
+  accepts a submitted schema-4 record only when its
+  source digest and contract identifier match the checkout. The top-level
+  `policy.replica_floor` records an explicit all-group override or `null`;
+  `groups[].replica_floor` records the effective floor applied to each group.
+- **Schema 3 packed-replica records.** Records from source commits `9384f01`,
+  `b447626`, `da50fd5`, `cdb37c4`, `78a3bb7`, and `02a5b4b` carry `replicas`,
+  per-replica predictions, intervals, variance, crosstalk, and admission views.
+  The last two records exercise the explicit global floor and the per-group
+  floor respectively. All packed schema-3 records predate system inventory,
+  filtered-Target routing, approval-gated reselection, and the planned-job
+  ledger.
+- **Schema 3 capability-admission record.** The retained
+  `2026-10-10T220438.712726Z` record from source `0205a61` carries
+  `system_inventory`, `circuit_requirements`, capability decisions, and
+  filtered-Target routing for 31 unreplicated base and mirror circuits. The
+  record lacks replica placement, isolated references, variance views, and
+  submission evidence.
+- **Schema 2 records.** These records carry the earlier lifecycle, source
+  digest, and commit contract. They predate system inventory and the
+  planned-job ledger.
+- **Legacy records.** Records without `schema_version` are historical dry-run
+  plans. `--collect` rejects them.
 
-The schema field decides which kind a record is:
+`2026-10-10T223619.798923Z` is the first combined schema-4 qualification. The
+default queue gate first rejects Fez at 194 pending jobs and Kingston at 81;
+Marrakesh reports maintenance. The retained rerun sets `--max-pending 250` for
+submit-free compilation and local simulation, selects Kingston for all seven
+groups, and archives 38 circuits. Its QPY circuit names equal the group-member
+and execution-requirement names. The record stays `planned` with `submission`
+absent, so it records zero QPU jobs and does not establish default-policy
+submission readiness. Record SHA-256 is
+`6c347e70e0ea22de682fc935d810612287bbb984d1a3ac551b367f550d5f0f7c`; QPY
+SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
+
+`2026-10-10T230646.694665Z` requalifies schema 4 after the first review fixes at
+source `2563b3a`, with `code_commit.sources_modified=false` and an experiment
+digest that matches that source tree. The default gate records Fez at 141
+pending jobs, Kingston at 92, and Marrakesh in maintenance. The retained
+`--max-pending 250` rerun again selects Kingston for all seven groups, archives
+the same 38 uniquely named circuits, applies the hybrid group's 0.8 floor to
+nine replicas, and admits the hybrid factor and order-recovery yields in the
+local noise model. Its state remains `planned`, `submission` remains absent,
+and the explicit bound leaves default-policy submission readiness
+unestablished. Record SHA-256 is
+`8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b`; QPY
+SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
+
+`2026-10-10T232219.919322Z` requalifies the final direct-pinned-discovery source
+at `584a78d`, again with clean source provenance and the matching experiment
+digest. The default gate records Fez at 147 pending jobs, Kingston at 95, and
+Marrakesh in maintenance. The retained 250-job-bound run has the same Kingston
+selection, 38-circuit archive, nine hybrid replicas, and locally admitted
+hybrid intervals. Its state remains `planned`, `submission` remains absent, and
+the run records zero QPU jobs. Record SHA-256 is
+`0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744`; QPY
+SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
+
+A dynamic member marks `duration_bound: lower_without_classical_latency`.
+Schema-4 top-level inventory fields describe initial planning;
+`revalidation[].system_inventory` describes each full pre-submission refresh;
+`submission.planned_jobs[].pre_submit_revalidation` describes each immediate
+batch refresh. Record, QPY, and collection writes use atomic replacement with
+file and containing-directory fsync.
+
+The two historical schema-3 contracts require shape-aware classification:
 
 ```sh
-for r in results/live/*/record.json; do
-    jq -r --arg r "$r" 'if .schema_version >= 2 then "schema\(.schema_version) " + .state + " " + .code_commit.head[0:7] else "legacy" end + "  " + $r' "$r"
+for record_path in results/live/*/record.json; do
+    jq -r --arg path "$record_path" '
+      if .schema_version == 4 then "schema4-combined"
+      elif .schema_version == 3 and has("system_inventory")
+        then "schema3-capability"
+      elif .schema_version == 3 then "schema3-replicas"
+      elif .schema_version == 2 then "schema2"
+      else "legacy"
+      end + " " + (.state // "planned") + " " +
+      (.code_commit.head[0:7] // "-") + "  " + $path
+    ' "$record_path"
 done
 ```

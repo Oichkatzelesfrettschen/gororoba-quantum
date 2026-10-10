@@ -39,18 +39,24 @@ observables.
   operator equality over every instance.
 - `gororoba_quantum/experiments.py` -- experiment groups: a primary circuit, its
   controls, their ideals, and the summary of each design's observable.
-- `gororoba_quantum/live_run.py` -- live calibration across every accessible
-  backend: exclusion policy, ESP-ranked backend and layout selection, noise
-  simulation from the same Target, gated submission through the client-side
-  Sampler, and replay at the execution-time calibration.
-- `gororoba_quantum/runtime_contracts.py` -- credential-free checks for dynamic
-  classification, nested physical operations, multi-register result order, and
-  source-manifest stability.
+- `gororoba_quantum/live_run.py` -- live system discovery, circuit-derived
+  capability admission, degraded-hardware-filtered routing, recursive Target
+  validation, ESP-and-coherence-ranked selection, disjoint replica placement,
+  direct pinned-system probing, approval-gated cross-system reselection, local
+  noise simulation, gated client-side Sampler submission, and execution-time
+  replay.
+- `gororoba_quantum/runtime_contracts.py` -- credential-free checks for packed
+  static and dynamic circuits, capability and routing admission, recursive
+  Target support, coherent calibration snapshots, final execution-set job-batch
+  partitioning, bounded-angle system isolation, renewed-approval enforcement,
+  every-batch revalidation, submission recovery, archive integrity,
+  per-replica result order, twirling shots, and source-manifest stability.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design, and the live-calibration policy.
-- `results/live/<UTC start>/` -- one audit record per run: the chosen ISA
-  circuits (QPY) and the JSON of backend states, exclusions, selection trace,
-  and noisy outcomes.
+- `results/live/<UTC start>/` -- retained JSON and QPY evidence. Schema 4
+  combines live capability admission and submission recovery with packed
+  replicas, variance, crosstalk, and statistical admission. Earlier schemas
+  remain historical evidence under `results/live/README.md`.
 - `results/hw_estimate/` -- the fixed ibm_fez compile behind the design
   sections' "Measured" figures.
 

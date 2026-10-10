@@ -24,9 +24,12 @@ The project keeps four evidence levels separate.
 2. **Compiler evidence.** FakeFez compilation measures width, CZ count, depth,
    and control-flow structure against the pinned Qiskit stack. The fake backend
    supplies a static target snapshot rather than a prediction of live noise.
-3. **Live dry-run evidence.** `live_run.py` reads fresh backend Targets and
-   properties, excludes degraded qubits and edges, selects layouts, and runs
-   local noise simulation. The dry run spends zero QPU time.
+3. **Live dry-run evidence.** `live_run.py` discovers the requested systems,
+   refreshes their status, Targets, properties, and submission capabilities,
+   derives the hybrid group's requirements from circuits built in the current
+   process, removes degraded hardware from routing, validates each compiled
+   operation, selects a valid layout, and runs local noise simulation. The dry
+   run spends zero QPU time.
 4. **QPU evidence.** A submitted and collected run measures the circuit on a
    calibrated device and replays its execution-time calibration. This level
    remains absent until the user approves a written submission case.
@@ -216,18 +219,56 @@ enter separate client-side Sampler jobs. Runtime 0.50 rejects dynamical
 decoupling on dynamic circuits, and its gate-twirling path rejects `if_else`, so
 the dynamic job keeps both features disabled.
 
+The live hybrid group requires five logical qubits, eight classical bits, two
+dynamic circuits, and direct Target support for `if_else`, `measure`, and
+`reset`. The runner derives these values from the primary and identity-null
+circuits rather than from a backend-name table. A filtered copy of each fresh
+Target removes excluded instruction placements before layout and routing; the
+finished circuits then pass recursive support checks against the original
+Target. A bounded-angle Target stops at routing admission because its parameter
+bounds cannot be reproduced through Qiskit's public Target API; the rejection
+does not suppress later viable systems. Pre-submission discovery reruns
+deterministic selection across every fresh eligible system. Any change to the
+approved backend, layout, replica placement, packed circuits, capabilities, or
+used calibration values produces a revised submit-free record and QPY archive,
+then stops for a new written case and explicit user approval. An unchanged
+approved plan refreshes the selected system again immediately before the hybrid
+batch and stops that batch when its status, admitted hardware, Target
+properties, or timing constraints move.
+
 Runtime 0.50 rounds automatic twirling upward when the requested shot count
 cannot supply its target of 32 randomizations with at least 64 shots each.
 Static twirled jobs therefore require at least 2,048 shots divisible by 32 and
 set both twirling counts explicitly. The recorded shot count then equals the
 executed product. The default 4,096-shot run uses 32 by 128 shots.
 
-The run record uses schema version 3 and explicit states: `planned`,
-`submission_started`, `partially_submitted`, and `submitted`. Each split job
-refreshes `usage()` before submission. Every acquired job identifier reaches an
-atomic checkpoint before the next job. Collection joins all classical
-registers in circuit order and atomically replaces `collect.json`. A declared
-source manifest makes the experiment digest independent of Python import order.
+The integrated run record uses schema version 4, contract
+`live-target-packed-replicas-v1`, and explicit states: `planned`,
+`approval_required`, `submission_started`, `partially_submitted`, and
+`submitted`. `approval_required` records the revised QPY digest and every
+selection reason before the process exits with zero Runtime jobs. Each split
+job refreshes hardware state and `usage()` before submission. The record
+checkpoints unique recovery tags and an attempt marker before `Sampler.run()`,
+then checkpoints every acquired job identifier before the next job. Collection
+recovers a response-lost id only from one exact recovery-tag match and stops on
+zero or multiple matches. Collection joins all classical registers in circuit
+order and atomically replaces `collect.json`; each atomic replacement fsyncs
+the file and directory. A declared source manifest makes the experiment digest
+independent of Python import order.
+
+The initial record stores `system_inventory`, eligible backend capability
+snapshots, logical `circuit_requirements`, final packed
+`execution_requirements`, and capability and routing decisions in
+`selection_trace`. Submission adds one `revalidation` entry per fresh admission
+pass. A changed pass writes `renewed_approval` and stops; an unchanged pass
+materializes `planned_jobs` before the first job. Each planned batch preserves a
+complete experiment group, respects the refreshed backend's client-reported
+`max_circuits` compatibility bound, and records ordered member names, the exact
+`isa.qpy` SHA-256,
+effective options, calibration stamps, and recovery tags. Collection validates
+the planned and accepted job ledgers as a one-to-one mapping for a complete
+submission and as a subset for a partial submission. The same ledger names
+every batch and circuit without a recorded job id.
 
 Each circuit runs as packed disjoint replicas (`packing.py`, and the
 DESIGN_NOTES.md section on packed replicas): every replica of the primary and
@@ -237,16 +278,21 @@ returns one phase string per replica. Collection joins each replica's
 register alone and decodes it alone.
 
 `runtime_contracts.py` checks terminal versus mid-circuit measurement
-classification, recursively discovers physical operations inside control-flow
-blocks, verifies global bit order for multiple classical registers, verifies
-the pruned primary and null operation counts, enforces exact twirling shots,
-runs a packed three-replica feed-forward circuit through the local
-client-side Sampler and recovers each replica's own outcome from its
-registers, and proves digest stability.
+classification, recursive physical operations, source-derived capability
+admission, fixed-parameter and nested Target support, routing and replica
+placement around excluded native CZ couplers, coherent Target/property
+snapshots, complete packed-circuit fingerprints, isolated backend-probe
+failures, bounded-angle backend isolation, changed-plan approval enforcement,
+cross-system reselection, whole-group job-batch partitioning, every-batch change
+detection, schema-4 JSON/QPY integrity, recovery-tag reconciliation,
+planned-to-accepted job mapping, packed static and dynamic classification,
+per-replica register order, rate keys, exact twirling shots, and source-digest
+stability. A local client-side Sampler contract runs a packed three-replica
+feed-forward circuit and recovers each replica's outcome from its own registers.
 
-## Retained live-calibration dry run
+## Retained schema-2 single-layout dry run
 
-`results/live/2026-10-10T200646.447516Z/` records the complete submit-free
+`results/live/2026-10-10T200646.447516Z/` records the historical submit-free
 planning path from source commit `2cc7379`. The process reads the
 `ibm_kingston` calibration stamped `2026-10-10T12:54:29-07:00`, selects
 transpiler seed `20261014` and initial layout `[93, 95, 92, 94, 79]`, compiles
@@ -266,11 +312,40 @@ the identity null. Its total-variation distance from the ideal distribution is
 `0.023438`. The record stays in lifecycle state `planned`, carries no
 `submission` object, and therefore records zero QPU jobs. The paired `isa.qpy`
 archive contains the compiled circuits named by every JSON member.
+The record predates schema 3, so it does not establish system inventory,
+capability admission, filtered-Target routing, or cross-system revalidation.
+
+## Pre-integration capability-admission record
+
+`results/live/2026-10-10T220438.712726Z/` supplies the divergent pre-integration
+schema-3 capability record from source commit `0205a61`. The record reports
+`code_commit.sources_modified=false` for the `gororoba_quantum/` source scope,
+lifecycle state `planned`, and no
+`submission` object. Fez and Kingston pass live eligibility; Marrakesh reports
+maintenance and remains in `system_inventory` as ineligible. The capability
+snapshot records 156 qubits, dynamic-circuit support, and native `cz`,
+`if_else`, `measure`, and `reset` on each system. The derived hybrid requirement
+records five qubits, eight classical bits, two dynamic circuits, and direct
+support for `if_else`, `measure`, and `reset`.
+
+Kingston calibration `2026-10-10T13:54:45-07:00` wins with seed `20261010`
+and layout `[79, 94, 74, 93, 73]`. The primary uses 60 CZ gates at depth 183;
+the identity null uses zero CZ gates at depth 10. Their local noise-model factor
+yields are `0.491943` and `0.001465`, with primary margin `0.195068` over the
+uniform null and TVD `0.019775` from the ideal distribution. The paired QPY
+archive contains all 31 circuits named by the seven group records. Those 31
+circuits omit the seven `_isolated` crosstalk references in PR #11's 38-circuit
+packed archive. The record
+establishes discovery, capability admission, degraded-hardware routing, and
+local simulation while recording zero QPU jobs. It does not establish replica
+placement, variance decomposition, crosstalk measurement, statistical
+admission, submission revalidation, or execution-time behavior.
 
 ## Replicated admission
 
-`results/live/2026-10-10T222132.627032Z/` (code `02a5b4b`) replicates the
-same `ibm_kingston` compile on seven disjoint five-qubit placements with
+`results/live/2026-10-10T222132.627032Z/` is the packed-replica schema-3 record
+from code `02a5b4b`. The record replicates the same `ibm_kingston` compile on
+seven disjoint five-qubit placements with
 layout scores from 0.691 to 0.569, above the group's 0.8 floor of the best
 (`Group.replica_floor`; the other groups keep the default 0.9, and an explicit
 `--replica-floor` governs every group). Each
@@ -295,8 +370,34 @@ admission rule's main lever once hardware layout variance is real. The
 primary and the identity null run as separate PUBs, so collect withholds the
 verdict unless both ran under one calibration with no update inside their
 shots. The noise model predicts layout variance in factor yield of 3.1e-5,
-within shot noise (chi-squared p = 0.17); a measured excess is hardware structure the
-model omits.
+within shot noise (chi-squared p = 0.17); a measured excess is hardware
+structure the model omits.
+
+## Combined schema-4 qualification
+
+`results/live/2026-10-10T232219.919322Z/` runs the post-review integrated
+contract from source `584a78d`. The submit-free run uses `--max-pending 250`
+after the default 25-job gate rejects both active systems. Kingston calibration
+`2026-10-10T15:34:50-07:00` wins with seed `20261010`, layout
+`[79, 94, 74, 93, 73]`, 60 primary CZ gates, and zero identity-null CZ gates.
+The group's 0.8 floor places nine replicas and expands each packed dynamic
+circuit to 72 classical bits.
+
+| Schema-4 hybrid quantity | Mean | 95% interval over 9 replicas |
+|---|---:|---|
+| Primary factor yield | 0.4971 | [0.4901, 0.5040] |
+| Identity-null factor yield | 0.0040 | [0.0013, 0.0068] |
+| Exact uniform-null factor yield | 0.2969 | exact |
+
+The factor and order-recovery admission rules both pass in the local noise
+model. The complete QPY archive contains 38 uniquely named circuits, including
+the hybrid isolated reference, and matches the schema-4 member and execution
+requirements exactly. The record stays `planned` with `submission` absent, so
+it records zero QPU jobs. The 250-job dry-run bound leaves default-policy
+submission readiness unestablished. Its record SHA-256 is
+`0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744`, and
+its QPY SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
 ## Deficiencies and falsifiers
 
