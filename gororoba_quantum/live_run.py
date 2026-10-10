@@ -1043,6 +1043,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     print(json.dumps(out, indent=2))
 
 
+def _positive_int(text: str) -> int:
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError(f"needs a positive shot count, got {value}")
+    return value
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--backends", type=lambda s: s.split(","), help="comma-separated pin; default all accessible")
@@ -1053,7 +1060,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--submit", action="store_true", help="submit the chosen circuits (spends QPU time)")
     parser.add_argument("--min-remaining-seconds", type=float, default=DEFAULT_MIN_REMAINING_S)
     parser.add_argument(
-        "--shots", type=int, default=SHOTS, help=f"shots per circuit; ODR values need at least {ODR_MIN_SHOTS}"
+        "--shots",
+        type=_positive_int,
+        default=SHOTS,
+        help=f"shots per circuit; ODR values need at least {ODR_MIN_SHOTS}",
     )
     parser.add_argument("--twirl", action="store_true", help="Pauli-twirl gates and measurements on submission")
     parser.add_argument("--dd", choices=("XX", "XpXm", "XY4"), help="dynamical decoupling sequence on submission")
