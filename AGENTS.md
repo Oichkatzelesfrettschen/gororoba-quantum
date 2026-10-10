@@ -84,15 +84,66 @@ twirling and dynamical decoupling off.
 
 ## Reviews and merges
 
-- Every PR gets a Codex review: the bot reviews on open, and the comment
-  `@codex review` requests another.
-- Each reachable thread is fixed in one push per PR, answered with the fixing
-  commit, and resolved; then a re-review is requested, and the cycle repeats
-  until a review comes back clean.
-- Stacked PRs merge bottom-up. Retarget the next PR's base to main before
-  deleting a merged branch, so GitHub does not close it.
-- GitHub is polled over REST (`gh api`); GraphQL is reserved for resolving
-  review threads.
+Codex, the chatgpt-codex-connector app, reviews every pull request. It reviews
+on open, and an issue comment `@codex review` requests a review of the current
+head.
+- *Progress.* The bot keeps one summary comment per PR, marked
+  `codex-pull-request-review-summary`, which reads Running while a review is in
+  progress.
+- *Outcome.* A review ends either in an issue comment "Codex Review: Didn't find
+  any major issues" or in inline review comments with P1 or P2 badges.
+- *Status tool.* `scripts/codex_review_status.sh PR...` prints each PR's head,
+  review state, latest clean verdict, and every unresolved thread with its root
+  comment id.
+
+**One round, per PR:**
+1. Wait until the summary comment stops reading Running. Then read every
+   unresolved thread in full from `codex_review_status.sh`. Threads can arrive
+   between rounds and attach to the newest commit, so the open-thread list,
+   not memory of the last round, is the work queue.
+2. Triage each thread against reachability.
+   - A defect a user reaches through a documented interface (the CLI, the
+     record files the program writes, the default flow) gets a fix.
+   - A claim the source refutes gets the refuting line in the reply.
+   - Malformed or adversarial input outside the documented domain gets a reply
+     naming the boundary and a follow-up issue.
+3. Fix every reachable thread on the PR's own branch in one commit, and run the
+   gates. A change to live_run.py or experiments.py also gets a live dry run,
+   and a change to qiskit-ibm-runtime usage also gets `/migrate-qiskit-ibm-runtime`.
+   Then push.
+4. Reply to each thread's root comment with the fixing commit and what changed:
+   `gh api repos/OWNER/REPO/pulls/PR/comments/ID/replies -f body=...`.
+5. Run `scripts/resolve_answered_threads.sh PR`. It resolves only threads that
+   carry a reply from someone other than the bot, and lists any unanswered
+   thread instead of resolving it. Never resolve a thread whose finding has not
+   been read and answered.
+6. Comment `@codex review` and start again at step 1. A PR leaves the loop when
+   its latest review reports no major issues and no thread is open.
+
+**Stacked PRs.**
+- Each branch builds on the one below it, so a fix lands on the lowest branch
+  that holds the code and then merges upward, branch by branch, with
+  `git merge --no-ff`.
+- Rebasing is out because the permission harness denies force-push.
+- When one file conflicts heavily, take the lower branch's reviewed version and
+  re-apply the upper branch's own changes on top. Then rerun the gates and a dry
+  run on every branch the merge touched.
+
+**Merging.** A PR merges when its latest review is clean, every thread is
+resolved, and GitHub reports mergeable_state clean. Bottom-up, for each PR:
+1. Merge it with a merge commit:
+   `gh api -X PUT repos/OWNER/REPO/pulls/PR/merge -f merge_method=merge`.
+2. Retarget the next PR to main: `gh api -X PATCH repos/OWNER/REPO/pulls/NEXT -f base=main`.
+   Deleting a base branch closes every PR that targets it, so the retarget
+   comes first.
+3. Delete the merged remote branch:
+   `gh api -X DELETE repos/OWNER/REPO/git/refs/heads/BRANCH`.
+4. Pull main in the primary checkout, then `git worktree remove` and
+   `git branch -d` the merged branch.
+
+**API use.** Everything goes through REST with `gh api`, except thread
+resolution, which only GraphQL offers (resolveReviewThread,
+unresolveReviewThread).
 
 ## Records
 
