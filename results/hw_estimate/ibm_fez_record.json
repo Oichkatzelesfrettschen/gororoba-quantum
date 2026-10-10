@@ -1,6 +1,6 @@
 {
   "backend": "ibm_fez",
-  "calibration_last_update": "2026-10-10T08:36:41-07:00",
+  "calibration_last_update": "2026-10-10T10:07:12-07:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -11,6 +11,18 @@
   "seed_simulator": 20261011,
   "shots": 4096,
   "qpu_executed": false,
+  "design_b": {
+    "readout_qubits": [
+      45,
+      25
+    ],
+    "p0_dark": 0.2724609375,
+    "p0_bright": 0.71435546875,
+    "ratio": 0.3814080656185919,
+    "p0_dark_readout_corrected": 0.25133147349733703,
+    "p0_bright_readout_corrected": 0.7152383304519635,
+    "ratio_readout_corrected": 0.3513954199553583
+  },
   "cases": [
     {
       "name": "design_a_1_2",

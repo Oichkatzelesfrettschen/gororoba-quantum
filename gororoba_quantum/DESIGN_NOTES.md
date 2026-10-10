@@ -97,7 +97,10 @@ Measured (results/hw_estimate/ibm_fez_record.json): the all-to-all synthesis is
 141 CZ at optimization_level 3. The ibm_fez ISA circuit is depth 821 with 224 CZ
 on physical qubits 25, 37, 44, 45, 46; the bright control, compiled from the same
 initial layout, is 222 CZ. The noise model gives P_zd = 0.2725 and P_control =
-0.7144, ratio 0.381. The suppression is present and shallow. Readout mitigation
+0.7144, ratio 0.381. Routing ends the two circuits on different readout qubits
+(45 and 25), so each term is also corrected with its own qubit's
+prob_meas1_prep0 and prob_meas0_prep1, giving ratio 0.351; both figures are in
+the record's design_b field. The suppression is present and shallow. Readout mitigation
 such as TREX corrects measurement bias in expectation values and leaves the gate
 and decoherence error of 224 CZ in place, so the CZ count is the lever. The
 compile that exploits the structure -- one joint sign diagonal for the

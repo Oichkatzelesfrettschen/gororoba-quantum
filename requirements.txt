@@ -1,0 +1,6 @@
+# Tested versions. qiskit-ibm-runtime 0.50.0 is the first release with the
+# client-side executor_sampler that submission uses.
+numpy==2.5.3
+qiskit==2.5.2
+qiskit-aer==0.17.2
+qiskit-ibm-runtime==0.50.0

@@ -40,7 +40,10 @@ $PYTHON designs.py       # statevector checks over every instance
 $PYTHON hw_estimate.py --out ../results/hw_estimate   # ISA cost and noise model (IBM Quantum account)
 ```
 
-Dependencies: qiskit, qiskit-aer, qiskit-ibm-runtime. The IBM Quantum credential
+requirements.txt pins the tested numpy, qiskit, qiskit-aer, and
+qiskit-ibm-runtime versions. The modules run as scripts from gororoba_quantum/,
+which puts their sibling imports on sys.path; they form no installable package,
+and pyproject.toml carries only lint and type-check configuration. The IBM Quantum credential
 is read from the qiskit account store (`~/.qiskit/qiskit-ibm.json`), not from
 this repository. The kernel ground-truth CSV is located through `GOROROBA_ROOT`
 (default `~/Github/open_gororoba`); `verify.py` needs that checkout, the circuit

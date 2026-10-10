@@ -49,6 +49,19 @@ def _physical(isa: QuantumCircuit, names: set[str] | None = None) -> list[int]:
     return sorted(touched)
 
 
+def readout_corrected_p0(p0_measured: float, props: Any, qubit: int) -> float:
+    """P(0) before readout error, inverting P0_meas = P0 (1 - e10) + (1 - P0) e01.
+
+    e10 = prob_meas1_prep0 and e01 = prob_meas0_prep1 belong to the physical
+    qubit that measured the ancilla. Routing can end the dark and bright
+    circuits on different qubits, so each term of the suppression ratio is
+    corrected with the calibration of its own readout qubit.
+    """
+    e10 = props.qubit_property(qubit, "prob_meas1_prep0")[0]
+    e01 = props.qubit_property(qubit, "prob_meas0_prep1")[0]
+    return float((p0_measured - e01) / (1.0 - e10 - e01))
+
+
 def run_case(
     name: str,
     qc: QuantumCircuit,
@@ -118,7 +131,23 @@ def main(argv: list[str] | None = None) -> int:
             f"noisy P1={case['noisy_p1']:.4f}"
         )
     p_dark, p_bright = 1.0 - dark["noisy_p1"], 1.0 - bright["noisy_p1"]
-    print(f"design B P(anc=0): dark={p_dark:.4f} bright={p_bright:.4f} ratio={p_dark / p_bright:.4f}")
+    props = backend.properties()
+    q_dark, q_bright = dark["measured_physical_qubits"][0], bright["measured_physical_qubits"][0]
+    c_dark = readout_corrected_p0(p_dark, props, q_dark)
+    c_bright = readout_corrected_p0(p_bright, props, q_bright)
+    design_b = {
+        "readout_qubits": [q_dark, q_bright],
+        "p0_dark": p_dark,
+        "p0_bright": p_bright,
+        "ratio": p_dark / p_bright,
+        "p0_dark_readout_corrected": c_dark,
+        "p0_bright_readout_corrected": c_bright,
+        "ratio_readout_corrected": c_dark / c_bright,
+    }
+    print(
+        f"design B P(anc=0): dark={p_dark:.4f} bright={p_bright:.4f} ratio={p_dark / p_bright:.4f}; "
+        f"readout qubits {q_dark}/{q_bright}, corrected ratio={c_dark / c_bright:.4f}"
+    )
 
     if args.out:
         args.out.mkdir(parents=True, exist_ok=True)
@@ -133,6 +162,7 @@ def main(argv: list[str] | None = None) -> int:
             "seed_simulator": SEED_SIMULATOR,
             "shots": SHOTS,
             "qpu_executed": False,
+            "design_b": design_b,
             "cases": [{key: val for key, val in case.items() if key != "isa"} for case in cases],
         }
         (args.out / f"{backend.name}_record.json").write_text(json.dumps(record, indent=2) + "\n")
