@@ -449,7 +449,7 @@ no update inside its shots. Every pooled summary value also gets a Student t
 interval over
 its replicas.
 
-The dry run of record 2026-10-10T214318.070235Z (code b447626) placed every
+The dry run of record 2026-10-10T215434.847324Z (code da50fd5) placed every
 group on ibm_kingston, whose snapshot excluded 7 qubits and 24 edges:
 
 | group | replicas | qubits per shot | score best -> last | predicted layout variance (primary) |
