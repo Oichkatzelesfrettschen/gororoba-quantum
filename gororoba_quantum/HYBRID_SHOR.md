@@ -235,6 +235,29 @@ blocks, verifies global bit order for multiple classical registers, verifies
 the pruned primary and null operation counts, enforces exact twirling shots,
 and proves digest stability.
 
+## Retained live-calibration dry run
+
+`results/live/2026-10-10T200646.447516Z/` records the complete submit-free
+planning path from source commit `2cc7379`. The process reads the
+`ibm_kingston` calibration stamped `2026-10-10T12:54:29-07:00`, selects
+transpiler seed `20261014` and initial layout `[93, 95, 92, 94, 79]`, compiles
+the primary and schedule-matched identity null, and simulates both circuits
+locally with the noise model derived from the same calibration.
+
+| Hybrid-Shor dry-run quantity | Primary | Identity null |
+|---|---:|---:|
+| CZ gates | 58 | 0 |
+| ISA depth | 184 | 10 |
+| Noise-model factor yield | 0.493652 | 0.001465 |
+| Noise-model order-recovery yield | 0.493652 | 0.001465 |
+
+The exact uniform-null factor yield is `0.296875`, so the primary noise-model
+factor yield has margin `0.196777` over the uniform null and `0.492188` over
+the identity null. Its total-variation distance from the ideal distribution is
+`0.023438`. The record stays in lifecycle state `planned`, carries no
+`submission` object, and therefore records zero QPU jobs. The paired `isa.qpy`
+archive contains the compiled circuits named by every JSON member.
+
 ## Deficiencies and falsifiers
 
 - **Truth-table scaling.** ANF extraction enumerates `2^n` inputs and the
