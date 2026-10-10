@@ -47,6 +47,20 @@ submission readiness. Record SHA-256 is
 SHA-256 is
 `34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
+`2026-10-10T230646.694665Z` requalifies schema 4 after the review fixes at
+source `2563b3a`, with `code_commit.sources_modified=false` and an experiment
+digest that matches that source tree. The default gate records Fez at 141
+pending jobs, Kingston at 92, and Marrakesh in maintenance. The retained
+`--max-pending 250` rerun again selects Kingston for all seven groups, archives
+the same 38 uniquely named circuits, applies the hybrid group's 0.8 floor to
+nine replicas, and admits the hybrid factor and order-recovery yields in the
+local noise model. Its state remains `planned`, `submission` remains absent,
+and the explicit bound leaves default-policy submission readiness
+unestablished. Record SHA-256 is
+`8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b`; QPY
+SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
+
 A dynamic member marks `duration_bound: lower_without_classical_latency`.
 Schema-4 top-level inventory fields describe initial planning;
 `revalidation[].system_inventory` describes each full pre-submission refresh;

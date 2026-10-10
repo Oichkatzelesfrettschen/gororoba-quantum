@@ -7,8 +7,8 @@ statistics and QPU-cost quantities come from
 `results/live/2026-10-10T222132.627032Z` at source `02a5b4b`. Live discovery,
 capability admission, filtered routing, and single-layout evidence come from
 `results/live/2026-10-10T220438.712726Z` at source `0205a61`. The combined path
-qualification comes from `results/live/2026-10-10T223619.798923Z` at source
-`b7e0268`. All three records are submit-free noise-model runs. The schema-4 run
+qualification comes from `results/live/2026-10-10T230646.694665Z` at source
+`2563b3a`. All three records are submit-free noise-model runs. The schema-4 run
 uses `--max-pending 250` after the default gate rejects both active systems, so
 it qualifies the combined execution path under that explicit dry-run bound and
 does not establish default-policy submission readiness.
@@ -115,7 +115,7 @@ literature/notes/2507.08088.md, which puts the full program between 32 s and
 
 1. **Default-policy refresh.** Repeat the schema-4 dry run without a queue
    override when at least one system passes `--max-pending 25`. Use that record
-   as the written case's current execution evidence; retain `223619` as the
+   as the written case's current execution evidence; retain `230646` as the
    combined-path qualification under its explicit 250-job dry-run bound.
 2. **PUB fusion.** Groups on one backend and job kind share PUBs: entry i of
    every group packs into one circuit on disjoint placements, so the static

@@ -375,10 +375,10 @@ structure the model omits.
 
 ## Combined schema-4 qualification
 
-`results/live/2026-10-10T223619.798923Z/` runs the integrated contract from
-source `b7e0268`. The submit-free run uses `--max-pending 250` after the default
-25-job gate rejects both active systems. Kingston calibration
-`2026-10-10T13:54:45-07:00` wins with seed `20261010`, layout
+`results/live/2026-10-10T230646.694665Z/` runs the post-review integrated
+contract from source `2563b3a`. The submit-free run uses `--max-pending 250`
+after the default 25-job gate rejects both active systems. Kingston calibration
+`2026-10-10T15:34:50-07:00` wins with seed `20261010`, layout
 `[79, 94, 74, 93, 73]`, 60 primary CZ gates, and zero identity-null CZ gates.
 The group's 0.8 floor places nine replicas and expands each packed dynamic
 circuit to 72 classical bits.
@@ -394,7 +394,10 @@ model. The complete QPY archive contains 38 uniquely named circuits, including
 the hybrid isolated reference, and matches the schema-4 member and execution
 requirements exactly. The record stays `planned` with `submission` absent, so
 it records zero QPU jobs. The 250-job dry-run bound leaves default-policy
-submission readiness unestablished.
+submission readiness unestablished. Its record SHA-256 is
+`8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b`, and
+its QPY SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
 ## Deficiencies and falsifiers
 
