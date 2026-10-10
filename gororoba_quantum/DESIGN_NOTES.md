@@ -410,6 +410,15 @@ at 9 jobs and moved every group to it, on the best medians of the three (T1
 visibility 0.905 in the noise model, against 0.067 and 0.860 on ibm_marrakesh
 earlier the same hour.
 
+The schema-3 dry run at `results/live/2026-10-10T220438.712726Z/` discovers all
+three accessible systems from source commit `0205a61`. Fez and Kingston pass
+eligibility; Marrakesh reports maintenance and remains recorded as ineligible.
+Kingston wins all seven groups at 13 pending jobs. The record preserves each
+system's capability summary, each group's circuit-derived requirements, every
+capability and routing decision, and 31 named ISA circuits. Its lifecycle state
+is `planned`, `code_commit.sources_modified` is false, and the absent
+`submission` object establishes zero QPU jobs.
+
 Submission partitions each backend's complete result groups into static and
 dynamic sets. A deterministic first-fit-decreasing packer places whole groups
 into one or more client-side Sampler jobs without exceeding the refreshed

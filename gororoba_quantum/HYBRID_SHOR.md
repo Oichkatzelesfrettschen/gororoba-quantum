@@ -293,6 +293,26 @@ archive contains the compiled circuits named by every JSON member.
 The record predates schema 3, so it does not establish system inventory,
 capability admission, filtered-Target routing, or cross-system revalidation.
 
+`results/live/2026-10-10T220438.712726Z/` supplies the schema-3 qualification
+record from source commit `0205a61`. The record reports
+`code_commit.sources_modified=false`, lifecycle state `planned`, and no
+`submission` object. Fez and Kingston pass live eligibility; Marrakesh reports
+maintenance and remains in `system_inventory` as ineligible. The capability
+snapshot records 156 qubits, dynamic-circuit support, and native `cz`,
+`if_else`, `measure`, and `reset` on each system. The derived hybrid requirement
+records five qubits, eight classical bits, two dynamic circuits, and direct
+support for `if_else`, `measure`, and `reset`.
+
+Kingston calibration `2026-10-10T13:54:45-07:00` wins with seed `20261010`
+and layout `[79, 94, 74, 93, 73]`. The primary uses 60 CZ gates at depth 183;
+the identity null uses zero CZ gates at depth 10. Their local noise-model factor
+yields are `0.491943` and `0.001465`, with primary margin `0.195068` over the
+uniform null and TVD `0.019775` from the ideal distribution. The paired QPY
+archive contains all 31 circuits named by the seven group records. The record
+establishes discovery, capability admission, degraded-hardware routing, and
+local simulation while recording zero QPU jobs; submission revalidation and
+execution-time evidence remain unmeasured.
+
 ## Deficiencies and falsifiers
 
 - **Truth-table scaling.** ANF extraction enumerates `2^n` inputs and the
