@@ -85,8 +85,11 @@ class Snapshot:
     excluded_qubits: dict[int, str] = field(default_factory=dict)
     excluded_edges: dict[tuple[int, int], str] = field(default_factory=dict)
     medians: dict[str, float] = field(default_factory=dict)
+    native_cz: bool = True
 
     def ineligible_reason(self, max_pending: int | None) -> str | None:
+        if not self.native_cz:
+            return "no native cz instruction; the exclusion policy and compiles assume CZ"
         if not self.operational or self.status_msg != "active":
             return f"status operational={self.operational} msg={self.status_msg!r}"
         if max_pending is not None and self.pending_jobs > max_pending:
@@ -126,11 +129,17 @@ def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
         calibration=props.last_update_date.isoformat(),
         fetched_at=_now(),
     )
+    if "cz" not in backend.target.operation_names:
+        snap.native_cz = False
+        return snap
     faulty_q = set(props.faulty_qubits())
     faulty_edges = {tuple(g.qubits) for g in props.faulty_gates() if g.gate == "cz"}
+    # A faulty single-qubit instruction (sx, x, measure) on an operational
+    # qubit still makes that qubit unusable for these circuits.
+    faulty_gate_q = {q: g.gate for g in props.faulty_gates() if g.gate != "cz" for q in g.qubits}
     t1s, t2s, ros, czs = [], [], [], []
     for q in range(backend.num_qubits):
-        reason = _qubit_reason(props, q, faulty_q)
+        reason = f"faulty {faulty_gate_q[q]}" if q in faulty_gate_q else _qubit_reason(props, q, faulty_q)
         if reason:
             snap.excluded_qubits[q] = reason
         else:
@@ -203,51 +212,50 @@ def _violations(isa: QuantumCircuit, snap: Snapshot) -> list[str]:
     return sorted(set(bad))
 
 
+CALIBRATED = ("cz", "sx", "x", "measure")
+
+
+def _property_values(name: str, qargs: tuple[int, ...], props: Any) -> dict[str, float]:
+    """Error and duration of one calibrated instruction, read from the properties."""
+    if name == "measure":
+        return {"error": props.readout_error(qargs[0]), "duration": props.readout_length(qargs[0])}
+    gate_qubits: Any = list(qargs) if len(qargs) > 1 else qargs[0]
+    return {"error": props.gate_error(name, gate_qubits), "duration": props.gate_length(name, gate_qubits)}
+
+
 def fingerprint(isas: list[QuantumCircuit], props: Any) -> dict[str, float]:
-    """Calibration values of exactly the qubits and CZ edges the circuits use."""
+    """Calibration values the plan depends on: T1, T2 of its qubits, error and duration of its instructions.
+
+    The layout score reads errors and durations, and the noise model reads both
+    plus T1 and T2, so a change to any of them moves the plan.
+    """
     out: dict[str, float] = {}
     for isa in isas:
         for name, qargs in _ops(isa):
             for q in qargs:
                 out[f"t1:{q}"] = props.t1(q)
                 out[f"t2:{q}"] = props.t2(q)
-                out[f"ro:{q}"] = props.readout_error(q)
-                out[f"sx:{q}"] = props.gate_error("sx", q)
-            if name == "cz":
-                out[f"cz:{qargs[0]}-{qargs[1]}"] = props.gate_error("cz", list(qargs))
+            if name in CALIBRATED:
+                for field_name, value in _property_values(name, qargs, props).items():
+                    out[f"{name}{qargs}:{field_name}"] = value
     return out
 
 
 def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, props: Any, label: str) -> None:
     """The Target that scores and noise read and the properties agree on every qubit and edge of isas.
 
-    Errors and durations of every CZ, sx, and measurement, and T1 and T2 of
+    Errors and durations of every CZ, sx, x, and measurement, and T1 and T2 of
     every touched qubit, must match, which proves both views come from one
     calibration fetch: the ESP ranking reads errors, and the noise model reads
     errors, durations, and T1/T2 from the Target.
     """
     for isa in isas:
         for name, qargs in _ops(isa):
-            if name == "cz":
-                inst = target["cz"][qargs]
-                pairs = [
-                    ("error", inst.error, props.gate_error("cz", list(qargs))),
-                    ("duration", inst.duration, props.gate_length("cz", list(qargs))),
-                ]
-            elif name == "sx":
-                inst = target["sx"][qargs]
-                pairs = [
-                    ("error", inst.error, props.gate_error("sx", qargs[0])),
-                    ("duration", inst.duration, props.gate_length("sx", qargs[0])),
-                ]
-            elif name == "measure":
-                inst = target["measure"][qargs]
-                pairs = [
-                    ("error", inst.error, props.readout_error(qargs[0])),
-                    ("duration", inst.duration, props.readout_length(qargs[0])),
-                ]
-            else:
-                pairs = []
+            pairs: list[tuple[str, Any, float]] = []
+            if name in CALIBRATED:
+                inst = target[name][qargs]
+                values = _property_values(name, qargs, props)
+                pairs += [("error", inst.error, values["error"]), ("duration", inst.duration, values["duration"])]
             for q in qargs:
                 qp = target.qubit_properties[q]
                 pairs += [("t1", qp.t1, props.t1(q)), ("t2", qp.t2, props.t2(q))]

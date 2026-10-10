@@ -298,16 +298,17 @@ back to drive a submission.
   input, so every member runs the same routing and reads out on the same
   physical qubit, and the suppression ratio compares one set of qubits.
 - Freshness proof: the Target that ESP and the noise model read agrees with the
-  properties fetched with it on the error and duration of every CZ, sx, and
+  properties fetched with it on the error and duration of every CZ, sx, x, and
   measurement of the plan and on T1 and T2 of every touched qubit, so ranking
   and prediction describe one device state. One simulator is built per
-  snapshot.
+  snapshot. A qubit carrying a faulty single-qubit instruction is excluded like
+  a faulty qubit, and a backend without a native CZ is skipped as ineligible.
 - Staleness: last_update_date advances without value changes (ibm_fez moved
   from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
   --submit re-reads each chosen backend, fails the run if the backend left the
-  eligibility gate, compares the plan's own calibration values -- T1, T2,
-  readout, sx, and CZ error on its qubits and edges -- and recompiles and
-  re-simulates a group whose values moved.
+  eligibility gate, compares the plan's own calibration values -- T1 and T2 of
+  its qubits and the error and duration of each CZ, sx, x, and measurement it
+  uses -- and recompiles and re-simulates a group whose values moved.
 - Execution-time replay: --collect fetches target_history and properties at the
   job's running timestamp, checks them against each other (342 of 352 ibm_fez
   CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
