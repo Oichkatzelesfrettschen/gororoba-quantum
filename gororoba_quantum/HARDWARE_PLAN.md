@@ -4,7 +4,7 @@ This plan joins the project's two hardware programs -- the Cayley-Dickson
 witnesses (DESIGN_NOTES.md) and hybrid Shor order finding (HYBRID_SHOR.md) --
 into one submission path under the 600 s rolling QPU budget. The packed-replica
 statistics and QPU-cost quantities come from
-`results/live/2026-10-10T220435.034757Z` at source `cdb37c4`. Live discovery,
+`results/live/2026-10-10T222132.627032Z` at source `02a5b4b`. Live discovery,
 capability admission, filtered routing, and single-layout evidence come from
 `results/live/2026-10-10T220438.712726Z` at source `0205a61`. Both records are
 submit-free noise-model runs. The records exercise divergent pre-integration
@@ -47,10 +47,12 @@ a written submission case uses either record as current execution evidence.
    the next candidate or backend.
 5. **Place replicas and references.** `packing.py` embeds the winning pattern
    in the admitted CZ graph, ranks embeddings by the same layout score, and
-   places disjoint replicas one qubit apart. Each multi-replica group adds an
+   places disjoint replicas one qubit apart. An explicit `--replica-floor`
+   governs every group; otherwise a group's declared floor applies, with 0.9
+   as the default. Hybrid Shor declares 0.8. Each multi-replica group adds an
    isolated primary on replica 0's qubits as its crosstalk reference. Record
-   `220435` places 21 replicas for design A, 18 for design C dim 8, and 3 to 6
-   for the five-qubit groups.
+   `222132` places 21 replicas for design A, 18 for design C dim 8, seven for
+   hybrid Shor, and three to six for the other five-qubit groups.
 6. **Derive execution requirements.** The runner re-derives entry count,
    classical width, static or dynamic kind, packed layouts, and reference
    requirements from the exact circuits written to `isa.qpy`. These values
@@ -73,7 +75,7 @@ a written submission case uses either record as current execution evidence.
 - **Variance.** Each member's per-shot score splits into shot and layout
   variance with a chi-squared test across replicas; folded QPE adds an
   instance axis. The noise model predicts layout variance of 2e-5 to 4e-4 in
-  the primaries and none beyond shot noise in Shor factor yield (p 0.66).
+  the primaries, and 3.1e-5 in Shor factor yield, within shot noise (p 0.17).
 - **Crosstalk.** The primary runs alone on replica 0's qubits beside the
   packed run; the noise model puts their difference at zero, so a measured
   difference is crosstalk from packing.
@@ -85,10 +87,10 @@ a written submission case uses either record as current execution evidence.
 - **Admission.** hybrid Shor is interpreted only through its admission rule:
   the primary factor-yield lower bound must exceed the exact uniform null
   (0.297) and the identity-null upper bound must stay below that lower bound.
-  The noise model gives [0.485, 0.510] against an identity-null upper bound of
-  0.020. Each bound is the union of the replicate t interval and a Wilson
-  interval over the pooled shots; with Shor's three replicas the t multiplier
-  is 4.30, so the replica count is a decision for the written case.
+  The noise model gives [0.483, 0.501] against an identity-null upper bound of
+  0.013. Each bound is the union of the replicate t interval and a Wilson
+  interval over the pooled shots; Shor's seven replicas put the t multiplier
+  at 2.45, where three gave 4.30.
 
 ## QPU cost
 
@@ -110,8 +112,8 @@ literature/notes/2507.08088.md, which puts the full program between 32 s and
 1. **Combined schema-4 qualification.** A submit-free live dry run records the
    complete system inventory, logical requirements, admitted routing graph,
    packed execution set, isolated references, variance views, archive identity,
-   and batch plan under `live-target-packed-replicas-v1`. Its `planned` state
-   and absent `submission` object establish zero QPU jobs.
+   and job-batch inputs under `live-target-packed-replicas-v1`. Its `planned`
+   state and absent `submission` object establish zero QPU jobs.
 2. **PUB fusion.** Groups on one backend and job kind share PUBs: entry i of
    every group packs into one circuit on disjoint placements, so the static
    job needs as many PUBs as its largest group (14, the fringe) instead of 29,

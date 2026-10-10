@@ -7,15 +7,17 @@ fresh Target. Seeded candidates rank by gate, readout, duration, and coherence
 calibration. The winner is placed as disjoint replicas; each packed member and
 optional isolated crosstalk reference then receives final Target validation.
 
-Before submission, the runner repeats discovery and deterministic selection
-across all viable systems until backend, layout, replica placement, execution
-circuits, capabilities, and used calibration values stabilize. It partitions
-whole result groups into static or dynamic client-side Sampler jobs under the
-backend's client-reported compatibility bound. Every batch receives another
-hardware refresh. The QPY digest, complete ledger, effective options, recovery
-tags, attempt marker, and returned job identifier reach durable storage in that
-order. Collection verifies the ledger and archive, recovers response-lost job
-identifiers, and replays each replica under its execution-time calibration.
+An explicit `--replica-floor` governs every group; otherwise each group's
+declared floor applies, with 0.9 as the default. Before submission, the runner
+repeats discovery and deterministic selection across all viable systems until
+backend, layout, replica placement, execution circuits, capabilities, and used
+calibration values stabilize. It partitions whole result groups into static or
+dynamic client-side Sampler jobs under the backend's client-reported
+compatibility bound. Every batch receives another hardware refresh. The QPY
+digest, complete ledger, effective options, recovery tags, attempt marker, and
+returned job identifier reach durable storage in that order. Collection
+verifies the ledger and archive, recovers response-lost job identifiers, and
+replays each replica under its execution-time calibration.
 """
 
 from __future__ import annotations
@@ -671,7 +673,7 @@ class Entry:
 
 @dataclass(frozen=True)
 class ReplicaPolicy:
-    floor: float = DEFAULT_REPLICA_FLOOR
+    floor: float | None = None
     max_replicas: int | None = None
     isolated_reference: bool = True
 
@@ -689,6 +691,7 @@ class Choice:
     joint_score: float
     entries: list[Entry] = field(default_factory=list)
     replicas: list[Replica] = field(default_factory=list)
+    replica_floor: float = DEFAULT_REPLICA_FLOOR
 
 
 def build_admission_target(snapshot: Snapshot) -> Target:
@@ -840,7 +843,14 @@ def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
     return min(candidates, key=mismatch)
 
 
-def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], policy: ReplicaPolicy) -> list[Replica]:
+def replica_floor(group: Group, policy: ReplicaPolicy) -> float:
+    """An explicit --replica-floor for every group, else the group's declared floor, else DEFAULT_REPLICA_FLOOR."""
+    if policy.floor is not None:
+        return policy.floor
+    return DEFAULT_REPLICA_FLOOR if group.replica_floor is None else group.replica_floor
+
+
+def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, policy: ReplicaPolicy) -> list[Replica]:
     """Disjoint placements of the group's compiled pattern on snap, best layout score first.
 
     The pattern is every qubit and CZ edge the group's circuits touch, mirror
@@ -863,7 +873,7 @@ def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], policy: ReplicaPo
     def score(mapping: dict[int, int]) -> float:
         return layout_score(packing.relabel(isas[0], mapping, ""), target)
 
-    replicas = packing.place(used, edges, graph, admissible, score, policy.floor, policy.max_replicas)
+    replicas = packing.place(used, edges, graph, admissible, score, floor, policy.max_replicas)
     if not replicas:
         raise LiveRunError(f"{snap.name}: no admissible placement of the compiled pattern")
     return replicas
@@ -902,7 +912,8 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
             zeros = np.zeros(2**member.circuit.num_clbits)
             zeros[0] = 1.0
             bases.append((name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
-    choice.replicas = place_replicas(choice.snap, [base[1] for base in bases], policy)
+    choice.replica_floor = replica_floor(choice.group, policy)
+    choice.replicas = place_replicas(choice.snap, [base[1] for base in bases], choice.replica_floor, policy)
     choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
     if policy.isolated_reference and len(choice.replicas) > 1:
         primary = choice.entries[0]
@@ -1384,6 +1395,7 @@ def _choice_record(
         "seed_transpiler": choice.seed,
         "initial_layout": choice.layout,
         "joint_score": choice.joint_score,
+        "replica_floor": choice.replica_floor,
         "replicas": [
             {
                 "index": r.index,
@@ -2404,8 +2416,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--replica-floor",
         type=_fraction,
-        default=DEFAULT_REPLICA_FLOOR,
-        help="place a disjoint replica only while its layout score is at least this fraction of the best",
+        help=(
+            "place a disjoint replica only while its layout score is at least this fraction of the best, for every "
+            f"group; default each group's declared floor, else {DEFAULT_REPLICA_FLOOR}"
+        ),
     )
     parser.add_argument(
         "--max-replicas", type=_positive_int, help="cap on disjoint replicas per group; default fills the device"

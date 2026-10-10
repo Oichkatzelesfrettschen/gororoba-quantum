@@ -479,8 +479,10 @@ vf2_mapping). An embedding is admissible when every moved operation exists in
 the live Target and avoids the excluded qubits and edges of that run's
 snapshot; admissible embeddings rank by the layout score of the moved primary
 circuit, and placement takes them best first, one qubit apart so no CZ coupler
-joins two replicas, until a candidate scores below --replica-floor (0.9) of
-the best or --max-replicas is reached. A replica is the identical gate
+joins two replicas, until a candidate scores below the floor fraction of
+the best or --max-replicas is reached. An explicit --replica-floor sets the
+floor for every group; otherwise a group's declared floor applies (hybrid
+Shor declares 0.8) and the rest use 0.9. A replica is the identical gate
 sequence on other qubits, so replica-to-replica differences are hardware
 differences. Each member and twin runs as one packed circuit, every
 replica's gates ahead of every replica's terminal measurements so a static
@@ -516,18 +518,18 @@ inside their shots, collect publishes only each entry's own replica variance
 beside the raw distributions and records the reason in
 `comparisons_withheld`.
 
-The dry run of record 2026-10-10T220435.034757Z (code cdb37c4) placed every
+The dry run of record 2026-10-10T222132.627032Z (code 02a5b4b) placed every
 group on ibm_kingston, whose snapshot excluded 7 qubits and 24 edges:
 
 | group | replicas | qubits per shot | score best -> last | predicted layout variance (primary) |
 |---|---:|---:|---|---:|
 | design A (1,2) | 21 | 63 | 0.932 -> 0.851 | 2.3e-5 |
-| zero-divisor fringe | 6 | 30 | 0.803 -> 0.732 | 1.6e-4 (dark) |
-| design C dim 8 | 18 | 54 | 0.900 -> 0.846 | 2.5e-4 |
+| zero-divisor fringe | 6 | 30 | 0.803 -> 0.731 | 1.6e-4 (dark) |
+| design C dim 8 | 18 | 54 | 0.899 -> 0.846 | 2.5e-4 |
 | design C dim 16 | 8 | 32 | 0.755 -> 0.681 | 2.1e-4 |
 | design C dim 32 | 4 | 20 | 0.593 -> 0.541 | 3.7e-4 |
 | folded QPE mod 15 | 3 | 15 | 0.670 -> 0.604 | 2.7e-4 (s1) |
-| hybrid Shor N = 15 | 3 | 15 | 0.691 -> 0.627 | below shot noise (p 0.66) |
+| hybrid Shor N = 15 (floor 0.8) | 7 | 35 | 0.691 -> 0.569 | 3.1e-5, within shot noise (p 0.17) |
 
 The predicted layout variances come from the per-qubit calibration the noise
 model reads; a measured layout variance above them, or a crosstalk difference

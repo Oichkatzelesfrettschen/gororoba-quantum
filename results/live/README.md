@@ -11,12 +11,15 @@ evidence; `isa.qpy` carries the exact circuits produced by that revision.
   admission views, stable-pass pre-submission reselection, whole-group job-batch
   partitioning, archive integrity, immediate batch revalidation, and recovery
   identities. `--collect` accepts a submitted schema-4 record only when its
-  source digest and contract identifier match the checkout.
+  source digest and contract identifier match the checkout. The top-level
+  `policy.replica_floor` records an explicit all-group override or `null`;
+  `groups[].replica_floor` records the effective floor applied to each group.
 - **Schema 3 packed-replica records.** Records from source commits `9384f01`,
-  `b447626`, `da50fd5`, and `cdb37c4` carry `replicas`, per-replica
-  predictions, intervals, variance, crosstalk, and admission views. They
-  predate system inventory, filtered-Target routing, stable-pass reselection,
-  and the planned-job ledger.
+  `b447626`, `da50fd5`, `cdb37c4`, `78a3bb7`, and `02a5b4b` carry `replicas`,
+  per-replica predictions, intervals, variance, crosstalk, and admission views.
+  The last two records exercise the explicit global floor and the per-group
+  floor respectively. All packed schema-3 records predate system inventory,
+  filtered-Target routing, stable-pass reselection, and the planned-job ledger.
 - **Schema 3 capability-admission record.** The retained
   `2026-10-10T220438.712726Z` record from source `0205a61` carries
   `system_inventory`, `circuit_requirements`, capability decisions, and

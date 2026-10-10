@@ -69,7 +69,9 @@ class Group:
     decomposition. admission turns per-replica summaries and the shots per
     replica into an admission verdict for the group's claim. rate_keys names
     summary values that are per-shot rates over one member's shots, whose
-    replicate intervals carry a pooled-shot Wilson bound.
+    replicate intervals carry a pooled-shot Wilson bound. replica_floor, when
+    set, replaces the default replica floor for this group; an explicit
+    --replica-floor still governs every group (live_run.replica_floor).
     """
 
     name: str
@@ -78,6 +80,7 @@ class Group:
     instances: tuple[str, ...] = ()
     admission: Admission | None = None
     rate_keys: frozenset[str] = frozenset()
+    replica_floor: float | None = None
 
 
 def tvd(p: np.ndarray, q: np.ndarray) -> float:
@@ -342,6 +345,11 @@ def _hybrid_shor_mod15() -> Group:
         members,
         summarize,
         admission=admit,
+        # The admission interval's t multiplier falls from 4.30 at three
+        # replicas to 2.45 at seven; a 0.8 floor reaches seven placements on a
+        # kingston-class device, and the layout-variance decomposition prices
+        # the weaker ones.
+        replica_floor=0.8,
         rate_keys=frozenset(
             {
                 "factorable_probability",

@@ -57,6 +57,7 @@ from live_run import (
     experiment_digest,
     group_requirements,
     reconcile_attempted_jobs,
+    replica_floor,
     select,
     submission_batches,
     submission_gaps,
@@ -311,6 +312,21 @@ def _verify_rate_keys() -> None:
         unknown = set(group.rate_keys) - set(group.summarize(ideals))
         if unknown:
             raise RuntimeError(f"{group.name}: rate keys {sorted(unknown)} are not summary values")
+
+
+def _verify_replica_floor_resolution() -> None:
+    """Group floors apply by default, while an explicit CLI policy governs every group."""
+    groups = experiment_groups()
+    hybrid = next(group for group in groups if group.name == "hybrid_shor_mod15")
+    ordinary = next(group for group in groups if group.replica_floor is None)
+    default_policy = ReplicaPolicy()
+    if replica_floor(hybrid, default_policy) != 0.8:
+        raise RuntimeError("hybrid Shor fails to use its declared replica floor")
+    if replica_floor(ordinary, default_policy) != 0.9:
+        raise RuntimeError("a group without a declared replica floor fails to use the default")
+    explicit_policy = ReplicaPolicy(floor=0.75)
+    if replica_floor(hybrid, explicit_policy) != 0.75 or replica_floor(ordinary, explicit_policy) != 0.75:
+        raise RuntimeError("an explicit replica floor fails to govern every group")
 
 
 def _verify_twirling_shot_contract() -> None:
@@ -1020,6 +1036,7 @@ def _verify() -> None:
     _verify_packed_replica_split()
     _verify_packed_static_stays_static()
     _verify_rate_keys()
+    _verify_replica_floor_resolution()
     first_digest = experiment_digest()
     second_digest = experiment_digest()
     if len(first_digest) != 64 or first_digest != second_digest:
