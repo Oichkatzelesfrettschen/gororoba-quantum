@@ -1,0 +1,2868 @@
+{
+  "started": "2026-10-10T19:47:00.095769+00:00",
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  },
+  "policy": {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 25,
+    "seeds": 8,
+    "joint_candidates": 3
+  },
+  "shots": 4096,
+  "seed_simulator": 20261011,
+  "experiment_digest": "150f88cbee3b13a96487cb8922723c9c7b163c3a7abd040cf8a457468a0d8514",
+  "code_commit": {
+    "head": "5c7c8002f149957c9fbeb68f6b1c539bc0017d4d",
+    "sources_modified": false
+  },
+  "backends": {
+    "ibm_fez": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-10T12:28:32-07:00",
+      "fetched_at": "2026-10-10T19:47:02+00:00",
+      "medians": {
+        "t1_us": 137.76064253538982,
+        "t2_us": 97.83042965093227,
+        "readout_error": 0.01025390625,
+        "cz_error": 0.0027316297220564556
+      },
+      "excluded_qubits": {
+        "11": "T1=74.6us T2=15.9us",
+        "43": "readout error 0.085",
+        "46": "T1=171.5us T2=15.8us",
+        "53": "T1=87.5us T2=16.5us",
+        "65": "readout error 0.121",
+        "66": "T1=75.1us T2=18.3us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.120",
+        "102": "readout error 0.099",
+        "149": "T1=71.3us T2=4.6us",
+        "150": "T1=131.4us T2=5.6us"
+      },
+      "excluded_edges": {
+        "27-28": "cz error 1.0",
+        "28-27": "cz error 1.0",
+        "31-32": "cz error 0.035671795427890646",
+        "32-31": "cz error 0.035671795427890646",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "63-64": "cz error 0.04541826325219672",
+        "64-63": "cz error 0.04541826325219672",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.06006861016976878",
+        "103-102": "cz error 0.06006861016976878",
+        "148-149": "cz error 0.06439104692101763",
+        "149-148": "cz error 0.06439104692101763"
+      }
+    },
+    "ibm_kingston": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 8,
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "fetched_at": "2026-10-10T19:47:03+00:00",
+      "medians": {
+        "t1_us": 242.03597759762638,
+        "t2_us": 137.35923084043276,
+        "readout_error": 0.00909423828125,
+        "cz_error": 0.0019327694667603673
+      },
+      "excluded_qubits": {
+        "25": "T1=316.2us T2=15.9us",
+        "112": "sx error 0.0180",
+        "113": "T1=115.1us T2=6.0us",
+        "115": "T1=341.3us T2=14.3us",
+        "121": "T1=10.7us T2=25.6us",
+        "122": "readout error 0.290",
+        "131": "sx error 1.0000",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "84-85": "cz error 0.040122987763221624",
+        "85-84": "cz error 0.040122987763221624",
+        "85-86": "cz error 0.04880229593700147",
+        "86-85": "cz error 0.04880229593700147",
+        "86-87": "cz error 0.056717244804306705",
+        "87-86": "cz error 0.056717244804306705",
+        "111-112": "cz error 0.08489726295988193",
+        "112-111": "cz error 0.08489726295988193",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.04722178212491415",
+        "119-133": "cz error 0.04050413315892898",
+        "120-121": "cz error 0.09013317471115856",
+        "121-116": "cz error 0.04722178212491415",
+        "121-120": "cz error 0.09013317471115856",
+        "121-122": "cz error 0.05076778568401755",
+        "122-121": "cz error 0.05076778568401755",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.04050413315892898",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    },
+    "ibm_marrakesh": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-10T12:26:54-07:00",
+      "fetched_at": "2026-10-10T19:47:04+00:00",
+      "medians": {
+        "t1_us": 180.12481465289096,
+        "t2_us": 92.75032535683962,
+        "readout_error": 0.0142822265625,
+        "cz_error": 0.0027096970174465967
+      },
+      "excluded_qubits": {
+        "17": "T1=217.4us T2=11.0us",
+        "23": "readout error 0.145",
+        "25": "readout error 0.108",
+        "26": "T1=6.6us T2=5.2us",
+        "30": "readout error 0.085",
+        "37": "T1=9.3us T2=4.0us",
+        "38": "T1=88.7us T2=19.0us",
+        "39": "readout error 0.261",
+        "46": "T1=186.8us T2=19.7us",
+        "51": "readout error 0.089",
+        "62": "T1=99.9us T2=15.4us",
+        "70": "T1=197.1us T2=17.6us",
+        "74": "T1=118.0us T2=19.1us",
+        "80": "T1=152.2us T2=19.8us",
+        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
+        "83": "readout error 0.144",
+        "86": "T1=191.6us T2=18.5us",
+        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
+        "102": "T1=74.2us T2=8.5us",
+        "108": "readout error 0.175",
+        "110": "T1=283.8us T2=6.0us",
+        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
+        "117": "T1=188.8us T2=17.3us",
+        "119": "readout error 0.140",
+        "122": "T1=151.3us T2=14.0us",
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
+        "131": "readout error 0.114"
+      },
+      "excluded_edges": {
+        "40-41": "cz error 0.1359345764299916",
+        "41-40": "cz error 0.1359345764299916",
+        "81-82": "cz error 0.07469783469660052",
+        "82-81": "cz error 0.07469783469660052",
+        "82-83": "cz error 1.0",
+        "83-82": "cz error 1.0",
+        "95-99": "cz error 1.0",
+        "99-95": "cz error 1.0",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "113-114": "cz error 1.0",
+        "113-119": "cz error 1.0",
+        "114-113": "cz error 1.0",
+        "119-113": "cz error 1.0",
+        "119-133": "cz error 0.07929387213449124",
+        "129-130": "cz error 1.0",
+        "130-129": "cz error 1.0",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.07929387213449124"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "selection_trace": {
+    "design_a": {
+      "ibm_fez": [
+        {
+          "seed": 20261010,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261011,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261012,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261013,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261014,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261015,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261016,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261017,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8634163769089861
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.8634163769089861,
+          "layout": [
+            132,
+            131,
+            133
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.8634163769089861,
+          "layout": [
+            132,
+            131,
+            133
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.8634163769089861,
+          "layout": [
+            132,
+            131,
+            133
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "seed": 20261010,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261011,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261012,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261013,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261014,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261015,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261016,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261017,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8986869220774526
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.8986869220774526,
+          "layout": [
+            152,
+            153,
+            151
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.8986869220774526,
+          "layout": [
+            152,
+            153,
+            151
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.8986869220774526,
+          "layout": [
+            152,
+            153,
+            151
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "seed": 20261010,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261011,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261012,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261013,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261014,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261015,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261016,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261017,
+          "cz": 16,
+          "rejected": [],
+          "primary_score": 0.8758206587900401
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.8758206587900401,
+          "layout": [
+            10,
+            9,
+            11
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.8758206587900401,
+          "layout": [
+            10,
+            9,
+            11
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.8758206587900401,
+          "layout": [
+            10,
+            9,
+            11
+          ]
+        }
+      ]
+    },
+    "zero_divisor_fringe": {
+      "ibm_fez": [
+        {
+          "seed": 20261010,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.5619036421208159
+        },
+        {
+          "seed": 20261011,
+          "cz": 42,
+          "rejected": [],
+          "primary_score": 0.6856011173871855
+        },
+        {
+          "seed": 20261012,
+          "cz": 42,
+          "rejected": [],
+          "primary_score": 0.6856011173871855
+        },
+        {
+          "seed": 20261013,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.5658929781846233
+        },
+        {
+          "seed": 20261014,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.5658929781846233
+        },
+        {
+          "seed": 20261015,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.5658929781846233
+        },
+        {
+          "seed": 20261016,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.5619036421208159
+        },
+        {
+          "seed": 20261017,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.5658929781846233
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.6856011173871855,
+          "layout": [
+            23,
+            24,
+            22,
+            16,
+            25
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.6856011173871855,
+          "layout": [
+            23,
+            24,
+            22,
+            16,
+            25
+          ]
+        },
+        {
+          "seed": 20261013,
+          "joint_score": 0.5658929781846233,
+          "layout": [
+            132,
+            133,
+            134,
+            131,
+            119
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "seed": 20261010,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.7615518903107391
+        },
+        {
+          "seed": 20261011,
+          "cz": 42,
+          "rejected": [],
+          "primary_score": 0.7676253506487061
+        },
+        {
+          "seed": 20261012,
+          "cz": 42,
+          "rejected": [],
+          "primary_score": 0.7676253506487061
+        },
+        {
+          "seed": 20261013,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.7497511332078292
+        },
+        {
+          "seed": 20261014,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.7497511332078292
+        },
+        {
+          "seed": 20261015,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.7497511332078292
+        },
+        {
+          "seed": 20261016,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.7615518903107391
+        },
+        {
+          "seed": 20261017,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.7497511332078292
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.7676253506487061,
+          "layout": [
+            93,
+            94,
+            79,
+            92,
+            95
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.7676253506487061,
+          "layout": [
+            93,
+            94,
+            79,
+            92,
+            95
+          ]
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.7615518903107391,
+          "layout": [
+            93,
+            79,
+            94,
+            95,
+            92
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "seed": 20261010,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.6291421328656344
+        },
+        {
+          "seed": 20261011,
+          "cz": 42,
+          "rejected": [],
+          "primary_score": 0.6835771472404751
+        },
+        {
+          "seed": 20261012,
+          "cz": 42,
+          "rejected": [],
+          "primary_score": 0.6835771472404751
+        },
+        {
+          "seed": 20261013,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.6326044422251762
+        },
+        {
+          "seed": 20261014,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.6326044422251762
+        },
+        {
+          "seed": 20261015,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.6326044422251762
+        },
+        {
+          "seed": 20261016,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.6291421328656344
+        },
+        {
+          "seed": 20261017,
+          "cz": 46,
+          "rejected": [],
+          "primary_score": 0.6326044422251762
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.6835771472404751,
+          "layout": [
+            89,
+            88,
+            78,
+            90,
+            87
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.6835771472404751,
+          "layout": [
+            89,
+            88,
+            78,
+            90,
+            87
+          ]
+        },
+        {
+          "seed": 20261013,
+          "joint_score": 0.6326044422251762,
+          "layout": [
+            10,
+            11,
+            12,
+            9,
+            18
+          ]
+        }
+      ]
+    },
+    "design_c_8_1_4": {
+      "ibm_fez": [
+        {
+          "seed": 20261010,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261011,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261012,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261013,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261014,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261015,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261016,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261017,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7281252345397177
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.7258609671198342,
+          "layout": [
+            9,
+            10,
+            8
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.7258609671198342,
+          "layout": [
+            9,
+            10,
+            8
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.7258609671198342,
+          "layout": [
+            9,
+            10,
+            8
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "seed": 20261010,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261011,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261012,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261013,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261014,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261015,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261016,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261017,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.8640550373179047
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.8623765520150792,
+          "layout": [
+            93,
+            94,
+            79
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.8623765520150792,
+          "layout": [
+            93,
+            94,
+            79
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.8623765520150792,
+          "layout": [
+            93,
+            94,
+            79
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "seed": 20261010,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261011,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261012,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261013,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261014,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261015,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261016,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261017,
+          "cz": 18,
+          "rejected": [],
+          "primary_score": 0.7953498575503826
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.793369263484512,
+          "layout": [
+            11,
+            12,
+            18
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.793369263484512,
+          "layout": [
+            11,
+            12,
+            18
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.793369263484512,
+          "layout": [
+            11,
+            12,
+            18
+          ]
+        }
+      ]
+    },
+    "design_c_16_1_8": {
+      "ibm_fez": [
+        {
+          "seed": 20261010,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.6585603225915815
+        },
+        {
+          "seed": 20261011,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.66578704588352
+        },
+        {
+          "seed": 20261012,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.6660731316576225
+        },
+        {
+          "seed": 20261013,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.6585603225915815
+        },
+        {
+          "seed": 20261014,
+          "cz": 45,
+          "rejected": [],
+          "primary_score": 0.6779892712308516
+        },
+        {
+          "seed": 20261015,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.6585603225915815
+        },
+        {
+          "seed": 20261016,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.6660731316576225
+        },
+        {
+          "seed": 20261017,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.66578704588352
+        },
+        {
+          "seed": 20261014,
+          "joint_score": 0.6804981145715491,
+          "layout": [
+            23,
+            22,
+            24,
+            16
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.6859790946932932,
+          "layout": [
+            23,
+            22,
+            24,
+            16
+          ]
+        },
+        {
+          "seed": 20261016,
+          "joint_score": 0.6773332732262609,
+          "layout": [
+            23,
+            22,
+            24,
+            16
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "seed": 20261010,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.7138825937590638
+        },
+        {
+          "seed": 20261011,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.7188649147746576
+        },
+        {
+          "seed": 20261012,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.7201515420940907
+        },
+        {
+          "seed": 20261013,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.7138825937590638
+        },
+        {
+          "seed": 20261014,
+          "cz": 45,
+          "rejected": [],
+          "primary_score": 0.7298152397582915
+        },
+        {
+          "seed": 20261015,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.7138825937590638
+        },
+        {
+          "seed": 20261016,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.7201515420940907
+        },
+        {
+          "seed": 20261017,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.7188649147746576
+        },
+        {
+          "seed": 20261014,
+          "joint_score": 0.7299258844686793,
+          "layout": [
+            151,
+            152,
+            138,
+            150
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.735817076366865,
+          "layout": [
+            151,
+            152,
+            150,
+            138
+          ]
+        },
+        {
+          "seed": 20261016,
+          "joint_score": 0.7288490188910208,
+          "layout": [
+            151,
+            152,
+            150,
+            138
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "seed": 20261010,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.589255821807092
+        },
+        {
+          "seed": 20261011,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.5959836674293021
+        },
+        {
+          "seed": 20261012,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.5968173981338554
+        },
+        {
+          "seed": 20261013,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.589255821807092
+        },
+        {
+          "seed": 20261014,
+          "cz": 45,
+          "rejected": [],
+          "primary_score": 0.6095315150523501
+        },
+        {
+          "seed": 20261015,
+          "cz": 51,
+          "rejected": [],
+          "primary_score": 0.589255821807092
+        },
+        {
+          "seed": 20261016,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.5968173981338554
+        },
+        {
+          "seed": 20261017,
+          "cz": 49,
+          "rejected": [],
+          "primary_score": 0.5959836674293021
+        },
+        {
+          "seed": 20261014,
+          "joint_score": 0.6114420693735755,
+          "layout": [
+            11,
+            12,
+            10,
+            18
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.6171634788790393,
+          "layout": [
+            11,
+            12,
+            10,
+            18
+          ]
+        },
+        {
+          "seed": 20261016,
+          "joint_score": 0.6075751574027829,
+          "layout": [
+            11,
+            12,
+            10,
+            18
+          ]
+        }
+      ]
+    },
+    "design_c_32_1_16": {
+      "ibm_fez": [
+        {
+          "seed": 20261010,
+          "cz": 96,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261011,
+          "cz": 96,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261012,
+          "cz": 98,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261013,
+          "cz": 103,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261014,
+          "cz": 98,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261015,
+          "cz": 96,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261016,
+          "cz": 96,
+          "rejected": [
+            "qubit 46"
+          ]
+        },
+        {
+          "seed": 20261017,
+          "cz": 103,
+          "rejected": [
+            "qubit 46"
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "seed": 20261010,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.5453617082830926
+        },
+        {
+          "seed": 20261011,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.5453617082830926
+        },
+        {
+          "seed": 20261012,
+          "cz": 98,
+          "rejected": [],
+          "primary_score": 0.5406677523666695
+        },
+        {
+          "seed": 20261013,
+          "cz": 103,
+          "rejected": [],
+          "primary_score": 0.5405530625395354
+        },
+        {
+          "seed": 20261014,
+          "cz": 98,
+          "rejected": [],
+          "primary_score": 0.5406677523666695
+        },
+        {
+          "seed": 20261015,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.5453617082830926
+        },
+        {
+          "seed": 20261016,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.5453617082830926
+        },
+        {
+          "seed": 20261017,
+          "cz": 103,
+          "rejected": [],
+          "primary_score": 0.5405530625395354
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.5409599192479432,
+          "layout": [
+            151,
+            153,
+            150,
+            138,
+            152
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.5394034218875322,
+          "layout": [
+            151,
+            153,
+            150,
+            138,
+            152
+          ]
+        },
+        {
+          "seed": 20261015,
+          "joint_score": 0.544272774295638,
+          "layout": [
+            151,
+            153,
+            150,
+            138,
+            152
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "seed": 20261010,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.41698525863636277
+        },
+        {
+          "seed": 20261011,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.41698525863636277
+        },
+        {
+          "seed": 20261012,
+          "cz": 98,
+          "rejected": [],
+          "primary_score": 0.41128851746637984
+        },
+        {
+          "seed": 20261013,
+          "cz": 103,
+          "rejected": [],
+          "primary_score": 0.4138804871328528
+        },
+        {
+          "seed": 20261014,
+          "cz": 98,
+          "rejected": [],
+          "primary_score": 0.41128851746637984
+        },
+        {
+          "seed": 20261015,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.41698525863636277
+        },
+        {
+          "seed": 20261016,
+          "cz": 96,
+          "rejected": [],
+          "primary_score": 0.41698525863636277
+        },
+        {
+          "seed": 20261017,
+          "cz": 103,
+          "rejected": [],
+          "primary_score": 0.4138804871328528
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.41296647886646926,
+          "layout": [
+            11,
+            9,
+            12,
+            18,
+            10
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.41296647886646926,
+          "layout": [
+            11,
+            9,
+            12,
+            18,
+            10
+          ]
+        },
+        {
+          "seed": 20261015,
+          "joint_score": 0.41843646272370116,
+          "layout": [
+            11,
+            9,
+            12,
+            18,
+            10
+          ]
+        }
+      ]
+    },
+    "folded_qpe_mod15": {
+      "ibm_fez": [
+        {
+          "seed": 20261010,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261011,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261012,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261013,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261014,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261015,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261016,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.29764183988535725
+        },
+        {
+          "seed": 20261017,
+          "cz": 70,
+          "rejected": [],
+          "primary_score": 0.4920106958339676
+        },
+        {
+          "seed": 20261017,
+          "joint_score": 0.5373068313676713,
+          "layout": [
+            25,
+            23,
+            22,
+            24,
+            16
+          ]
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.34263884189589766,
+          "layout": [
+            109,
+            110,
+            111,
+            112,
+            98
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.3420780135888887,
+          "layout": [
+            109,
+            110,
+            111,
+            112,
+            98
+          ]
+        }
+      ],
+      "ibm_kingston": [
+        {
+          "seed": 20261010,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261011,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261012,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261013,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261014,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261015,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261016,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.5825241795903596
+        },
+        {
+          "seed": 20261017,
+          "cz": 70,
+          "rejected": [],
+          "primary_score": 0.5755504712080661
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.6150101855250852,
+          "layout": [
+            73,
+            79,
+            93,
+            94,
+            92
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.6145576333424386,
+          "layout": [
+            73,
+            79,
+            93,
+            94,
+            92
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.6145576333424386,
+          "layout": [
+            73,
+            79,
+            93,
+            94,
+            92
+          ]
+        }
+      ],
+      "ibm_marrakesh": [
+        {
+          "seed": 20261010,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261011,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261012,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261013,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261014,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261015,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261016,
+          "cz": 67,
+          "rejected": [],
+          "primary_score": 0.41104473887671356
+        },
+        {
+          "seed": 20261017,
+          "cz": 70,
+          "rejected": [],
+          "primary_score": 0.40347923662742347
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.44933444071705536,
+          "layout": [
+            9,
+            10,
+            11,
+            12,
+            18
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.44883506704108095,
+          "layout": [
+            9,
+            10,
+            11,
+            12,
+            18
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.44883506704108095,
+          "layout": [
+            9,
+            10,
+            11,
+            12,
+            18
+          ]
+        }
+      ]
+    }
+  },
+  "groups": [
+    {
+      "group": "design_a",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "noise_model_calibration": "2026-10-10T12:19:27-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        152,
+        153,
+        151
+      ],
+      "joint_score": 0.8986869220774526,
+      "summary": {
+        "p1": 0.978271484375,
+        "p1_odr": 1.0017930327868854,
+        "mirror_z": 0.953125,
+        "tvd_to_uniform": 0.478271484375
+      },
+      "summary_readout_corrected": {
+        "p1": 0.9883634563010646,
+        "p1_odr": 1.0087696672685067,
+        "mirror_z": 0.959891062144095,
+        "tvd_to_uniform": 0.4883634563010646
+      },
+      "members": [
+        {
+          "name": "design_a_1_2",
+          "cz": 16,
+          "depth": 58,
+          "duration_s": 3.876000000000001e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            151,
+            152,
+            153
+          ],
+          "esp": 0.9725375584909053,
+          "coherence": 0.9240639749399012,
+          "ideal": [
+            0.0,
+            1.0
+          ],
+          "noisy": [
+            0.021729,
+            0.978271
+          ],
+          "tvd_noisy_to_ideal": 0.021728515625
+        },
+        {
+          "name": "design_a_1_2_mirror",
+          "cz": 16,
+          "depth": 53,
+          "duration_s": 3.7800000000000002e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            151,
+            152,
+            153
+          ],
+          "esp": 0.973103360442723,
+          "coherence": 0.9258732237747351,
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.976562,
+            0.023438
+          ],
+          "tvd_noisy_to_ideal": 0.0234375
+        }
+      ]
+    },
+    {
+      "group": "zero_divisor_fringe",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "noise_model_calibration": "2026-10-10T12:19:27-07:00",
+      "seed_transpiler": 20261011,
+      "initial_layout": [
+        93,
+        94,
+        79,
+        92,
+        95
+      ],
+      "joint_score": 0.7676253506487061,
+      "summary": {
+        "p0_dark": 0.041259765625,
+        "p0_bright": 0.947265625,
+        "ratio": 0.04355670103092783,
+        "p0_dark_odr": -0.010043431053202934,
+        "p0_bright_odr": 0.99728555917481,
+        "ratio_odr": -0.010070767555797389,
+        "mirror_z_dark": 0.8994140625,
+        "mirror_z_bright": 0.8994140625,
+        "tvd_to_uniform_dark": 0.458740234375,
+        "tvd_to_uniform_bright": 0.447265625,
+        "offset": 0.4907076527015738,
+        "visibility": 0.90652081118469,
+        "phase": -0.0012840366257995805,
+        "offset_odr": 0.4896684433945836,
+        "visibility_odr": 1.0079015316537705,
+        "phase_odr": -0.0012840366257995518
+      },
+      "summary_readout_corrected": {
+        "p0_dark": 0.03508771929824561,
+        "p0_bright": 0.9520632567333828,
+        "ratio": 0.03685439916947832,
+        "p0_dark_odr": -0.011416145691764079,
+        "p0_bright_odr": 0.9972818700733895,
+        "ratio_odr": -0.011447260834014731,
+        "mirror_z_dark": 0.9090684457622931,
+        "mirror_z_bright": 0.9090684457622931,
+        "tvd_to_uniform_dark": 0.4649122807017544,
+        "tvd_to_uniform_bright": 0.45206325673338277,
+        "offset": 0.4899774018941553,
+        "visibility": 0.9174967241444255,
+        "phase": -0.0012840366257995356,
+        "offset_odr": 0.4889748696563324,
+        "visibility_odr": 1.0092713353119034,
+        "phase_odr": -0.0012840366257995306
+      },
+      "members": [
+        {
+          "name": "design_b_dark_1_10_4_15",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.0,
+            1.0
+          ],
+          "noisy": [
+            0.04126,
+            0.95874
+          ],
+          "tvd_noisy_to_ideal": 0.041259765625
+        },
+        {
+          "name": "design_b_dark_1_10_4_15_mirror",
+          "cz": 40,
+          "depth": 155,
+          "duration_s": 6.555999999999998e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9358963353352925,
+          "coherence": 0.8243907436941587,
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.949707,
+            0.050293
+          ],
+          "tvd_noisy_to_ideal": 0.05029296875
+        },
+        {
+          "name": "design_b_bright_1_10_4_15",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.947266,
+            0.052734
+          ],
+          "tvd_noisy_to_ideal": 0.052734375
+        },
+        {
+          "name": "design_b_bright_1_10_4_15_mirror",
+          "cz": 40,
+          "depth": 155,
+          "duration_s": 6.555999999999998e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9358963353352925,
+          "coherence": 0.8243907436941587,
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.949707,
+            0.050293
+          ],
+          "tvd_noisy_to_ideal": 0.05029296875
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_0of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.947266,
+            0.052734
+          ],
+          "tvd_noisy_to_ideal": 0.05273437499999978
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_1of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.853553390593,
+            0.146446609407
+          ],
+          "noisy": [
+            0.808594,
+            0.191406
+          ],
+          "tvd_noisy_to_ideal": 0.04495964059327373
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_2of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.5,
+            0.5
+          ],
+          "noisy": [
+            0.487305,
+            0.512695
+          ],
+          "tvd_noisy_to_ideal": 0.012695312499999889
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_3of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.146446609407,
+            0.853553390593
+          ],
+          "noisy": [
+            0.169678,
+            0.830322
+          ],
+          "tvd_noisy_to_ideal": 0.02323112496827373
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_4of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.0,
+            1.0
+          ],
+          "noisy": [
+            0.04126,
+            0.95874
+          ],
+          "tvd_noisy_to_ideal": 0.041259765625
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_5of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.146446609407,
+            0.853553390593
+          ],
+          "noisy": [
+            0.170166,
+            0.829834
+          ],
+          "tvd_noisy_to_ideal": 0.023719406218273842
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_6of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.5,
+            0.5
+          ],
+          "noisy": [
+            0.48877,
+            0.51123
+          ],
+          "tvd_noisy_to_ideal": 0.011230468749999778
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_7of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            0.853553390593,
+            0.146446609407
+          ],
+          "noisy": [
+            0.809326,
+            0.190674
+          ],
+          "tvd_noisy_to_ideal": 0.04422721871827351
+        },
+        {
+          "name": "design_d_1_10_4_15_phase_8of8",
+          "cz": 42,
+          "depth": 143,
+          "duration_s": 6.6319999999999985e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            92,
+            93,
+            94,
+            95
+          ],
+          "esp": 0.9332294241617493,
+          "coherence": 0.8225473080622238,
+          "ideal": [
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.947266,
+            0.052734
+          ],
+          "tvd_noisy_to_ideal": 0.05273437499999978
+        }
+      ]
+    },
+    {
+      "group": "design_c_8_1_4",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "noise_model_calibration": "2026-10-10T12:19:27-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        93,
+        94,
+        79
+      ],
+      "joint_score": 0.8623765520150792,
+      "summary": {
+        "qubits": 3.0,
+        "tvd_to_true": 0.054443359375,
+        "tvd_to_flip_prediction": 0.383056640625,
+        "tvd_to_omit_prediction": 0.9670410156249999,
+        "tvd_to_uniform": 0.820556640625,
+        "flip_control_tvd_to_own": 0.03759765625,
+        "omit_control_tvd_to_own": 0.03881835937499989
+      },
+      "summary_readout_corrected": {
+        "qubits": 3.0,
+        "tvd_to_true": 0.03495590239539537,
+        "tvd_to_flip_prediction": 0.40254409760460463,
+        "tvd_to_omit_prediction": 0.9803611486494659,
+        "tvd_to_uniform": 0.8400440976046046,
+        "flip_control_tvd_to_own": 0.03287701277448907,
+        "omit_control_tvd_to_own": 0.026671732716076854
+      },
+      "members": [
+        {
+          "name": "design_c_8_1_4",
+          "cz": 18,
+          "depth": 58,
+          "duration_s": 4.044000000000001e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            93,
+            94
+          ],
+          "esp": 0.9509290150479439,
+          "coherence": 0.9086430465835988,
+          "ideal": [
+            0.0,
+            0.0,
+            1.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "noisy": [
+            0.011719,
+            0.004883,
+            0.945557,
+            0.016357,
+            0.001465,
+            0.004883,
+            0.010254,
+            0.004883
+          ],
+          "tvd_noisy_to_ideal": 0.054443359375
+        },
+        {
+          "name": "design_c_8_1_4_flip",
+          "cz": 20,
+          "depth": 76,
+          "duration_s": 4.436e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            93,
+            94
+          ],
+          "esp": 0.9473766995824592,
+          "coherence": 0.9002439587243983,
+          "ideal": [
+            0.0625,
+            0.0625,
+            0.5625,
+            0.0625,
+            0.0625,
+            0.0625,
+            0.0625,
+            0.0625
+          ],
+          "noisy": [
+            0.061768,
+            0.064941,
+            0.529785,
+            0.075928,
+            0.05835,
+            0.068848,
+            0.068604,
+            0.071777
+          ],
+          "tvd_noisy_to_ideal": 0.03759765625
+        },
+        {
+          "name": "design_c_8_1_4_omit",
+          "cz": 16,
+          "depth": 53,
+          "duration_s": 3.844000000000001e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            79,
+            93,
+            94
+          ],
+          "esp": 0.9532690436205614,
+          "coherence": 0.9129584390041618,
+          "ideal": [
+            0.0,
+            0.25,
+            0.0,
+            0.25,
+            0.25,
+            0.0,
+            0.25,
+            0.0
+          ],
+          "noisy": [
+            0.009277,
+            0.247559,
+            0.009277,
+            0.254639,
+            0.226318,
+            0.005371,
+            0.237305,
+            0.010254
+          ],
+          "tvd_noisy_to_ideal": 0.03881835937499989
+        }
+      ]
+    },
+    {
+      "group": "design_c_16_1_8",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "noise_model_calibration": "2026-10-10T12:19:27-07:00",
+      "seed_transpiler": 20261012,
+      "initial_layout": [
+        151,
+        152,
+        150,
+        138
+      ],
+      "joint_score": 0.735817076366865,
+      "summary": {
+        "qubits": 4.0,
+        "tvd_to_true": 0.079833984375,
+        "tvd_to_flip_prediction": 0.280029296875,
+        "tvd_to_omit_prediction": 0.93603515625,
+        "tvd_to_uniform": 0.670166015625,
+        "flip_control_tvd_to_own": 0.07470703125,
+        "omit_control_tvd_to_own": 0.05126953125
+      },
+      "summary_readout_corrected": {
+        "qubits": 4.0,
+        "tvd_to_true": 0.06749924592016814,
+        "tvd_to_flip_prediction": 0.2920354622837714,
+        "tvd_to_omit_prediction": 0.9483335207182505,
+        "tvd_to_uniform": 0.6825007540798318,
+        "flip_control_tvd_to_own": 0.06714183314782396,
+        "omit_control_tvd_to_own": 0.02982975604543461
+      },
+      "members": [
+        {
+          "name": "design_c_16_1_8",
+          "cz": 49,
+          "depth": 184,
+          "duration_s": 7.915999999999995e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            138,
+            150,
+            151,
+            152
+          ],
+          "esp": 0.8956647920963274,
+          "coherence": 0.804041365083199,
+          "ideal": [
+            0.25,
+            0.0,
+            0.25,
+            0.0,
+            0.25,
+            0.0,
+            0.25,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "noisy": [
+            0.218262,
+            0.007324,
+            0.229248,
+            0.007812,
+            0.236084,
+            0.008301,
+            0.236572,
+            0.009277,
+            0.006836,
+            0.003662,
+            0.007568,
+            0.003174,
+            0.006348,
+            0.003174,
+            0.010498,
+            0.005859
+          ],
+          "tvd_noisy_to_ideal": 0.079833984375
+        },
+        {
+          "name": "design_c_16_1_8_flip",
+          "cz": 54,
+          "depth": 210,
+          "duration_s": 8.627999999999994e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            138,
+            150,
+            151,
+            152
+          ],
+          "esp": 0.88583352330097,
+          "coherence": 0.7884219605150419,
+          "ideal": [
+            0.390625,
+            0.015625,
+            0.140625,
+            0.015625,
+            0.140625,
+            0.015625,
+            0.140625,
+            0.015625,
+            0.015625,
+            0.015625,
+            0.015625,
+            0.015625,
+            0.015625,
+            0.015625,
+            0.015625,
+            0.015625
+          ],
+          "noisy": [
+            0.336914,
+            0.026611,
+            0.13208,
+            0.021484,
+            0.135742,
+            0.022461,
+            0.133545,
+            0.017578,
+            0.024902,
+            0.021973,
+            0.020996,
+            0.015137,
+            0.021973,
+            0.021484,
+            0.022461,
+            0.024658
+          ],
+          "tvd_noisy_to_ideal": 0.07470703125
+        },
+        {
+          "name": "design_c_16_1_8_omit",
+          "cz": 28,
+          "depth": 120,
+          "duration_s": 5.631999999999999e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            138,
+            150,
+            151,
+            152
+          ],
+          "esp": 0.9250527362647281,
+          "coherence": 0.8562653619344305,
+          "ideal": [
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.5625,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0
+          ],
+          "noisy": [
+            0.002686,
+            0.064453,
+            0.00293,
+            0.065674,
+            0.004395,
+            0.063721,
+            0.009277,
+            0.530518,
+            0.055176,
+            0.003418,
+            0.056396,
+            0.005615,
+            0.059082,
+            0.003662,
+            0.060059,
+            0.012939
+          ],
+          "tvd_noisy_to_ideal": 0.05126953125
+        }
+      ]
+    },
+    {
+      "group": "design_c_32_1_16",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "noise_model_calibration": "2026-10-10T12:19:27-07:00",
+      "seed_transpiler": 20261015,
+      "initial_layout": [
+        151,
+        153,
+        150,
+        138,
+        152
+      ],
+      "joint_score": 0.544272774295638,
+      "summary": {
+        "qubits": 5.0,
+        "tvd_to_true": 0.152587890625,
+        "tvd_to_flip_prediction": 0.230224609375,
+        "tvd_to_omit_prediction": 0.9001464843749999,
+        "tvd_to_uniform": 0.60791015625,
+        "flip_control_tvd_to_own": 0.177734375,
+        "omit_control_tvd_to_own": 0.1201171874999999
+      },
+      "summary_readout_corrected": {
+        "qubits": 5.0,
+        "tvd_to_true": 0.11413817164948026,
+        "tvd_to_flip_prediction": 0.21498034413376998,
+        "tvd_to_omit_prediction": 0.9284142904764445,
+        "tvd_to_uniform": 0.6513957467341717,
+        "flip_control_tvd_to_own": 0.1456768588876851,
+        "omit_control_tvd_to_own": 0.07557962471177321
+      },
+      "members": [
+        {
+          "name": "design_c_32_1_16",
+          "cz": 96,
+          "depth": 320,
+          "duration_s": 1.1916000000000008e-05,
+          "feed_forward": false,
+          "physical_qubits": [
+            138,
+            150,
+            151,
+            152,
+            153
+          ],
+          "esp": 0.8068483140710313,
+          "coherence": 0.6759160287903649,
+          "ideal": [
+            0.5625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0625,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "noisy": [
+            0.437988,
+            0.028564,
+            0.063232,
+            0.00415,
+            0.068359,
+            0.005615,
+            0.055664,
+            0.007812,
+            0.066406,
+            0.006592,
+            0.050781,
+            0.004639,
+            0.059082,
+            0.003906,
+            0.056396,
+            0.005371,
+            0.016846,
+            0.007812,
+            0.004883,
+            0.003418,
+            0.003906,
+            0.003662,
+            0.004883,
+            0.00293,
+            0.005371,
+            0.000977,
+            0.004639,
+            0.003418,
+            0.003906,
+            0.003662,
+            0.00293,
+            0.002197
+          ],
+          "tvd_noisy_to_ideal": 0.152587890625
+        },
+        {
+          "name": "design_c_32_1_16_flip",
+          "cz": 127,
+          "depth": 425,
+          "duration_s": 1.531600000000003e-05,
+          "feed_forward": false,
+          "physical_qubits": [
+            138,
+            150,
+            151,
+            152,
+            153
+          ],
+          "esp": 0.766626768802311,
+          "coherence": 0.6044438071580228,
+          "ideal": [
+            0.66015625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.03515625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625,
+            0.00390625
+          ],
+          "noisy": [
+            0.489746,
+            0.035645,
+            0.051514,
+            0.007812,
+            0.049805,
+            0.00708,
+            0.030518,
+            0.01001,
+            0.043213,
+            0.012451,
+            0.03833,
+            0.007568,
+            0.032959,
+            0.006592,
+            0.034668,
+            0.009766,
+            0.019287,
+            0.010986,
+            0.008789,
+            0.006104,
+            0.006104,
+            0.004883,
+            0.008057,
+            0.006836,
+            0.008789,
+            0.007324,
+            0.008301,
+            0.008301,
+            0.006104,
+            0.005615,
+            0.008545,
+            0.008301
+          ],
+          "tvd_noisy_to_ideal": 0.177734375
+        },
+        {
+          "name": "design_c_32_1_16_omit",
+          "cz": 64,
+          "depth": 216,
+          "duration_s": 8.683999999999995e-06,
+          "feed_forward": false,
+          "physical_qubits": [
+            138,
+            150,
+            151,
+            152,
+            153
+          ],
+          "esp": 0.8487777942577989,
+          "coherence": 0.7516770125399375,
+          "ideal": [
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.765625,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0,
+            0.015625,
+            0.0
+          ],
+          "noisy": [
+            0.001953,
+            0.013184,
+            0.000977,
+            0.013428,
+            0.001221,
+            0.015625,
+            0.00293,
+            0.042236,
+            0.000732,
+            0.019043,
+            0.002441,
+            0.02417,
+            0.002197,
+            0.025879,
+            0.013428,
+            0.656738,
+            0.013672,
+            0.002686,
+            0.015625,
+            0.000732,
+            0.012695,
+            0.001465,
+            0.01416,
+            0.005371,
+            0.019531,
+            0.003174,
+            0.015625,
+            0.002197,
+            0.015381,
+            0.002686,
+            0.021484,
+            0.017334
+          ],
+          "tvd_noisy_to_ideal": 0.1201171874999999
+        }
+      ]
+    },
+    {
+      "group": "folded_qpe_mod15",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-10T12:19:27-07:00",
+      "noise_model_calibration": "2026-10-10T12:19:27-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        73,
+        79,
+        93,
+        94,
+        92
+      ],
+      "joint_score": 0.6150101855250852,
+      "summary": {
+        "p_correct_s0": 0.92724609375,
+        "p_correct_s1": 0.906494140625,
+        "p_correct_s2": 0.9140625,
+        "p_correct_s3": 0.902099609375,
+        "p_correct_mean": 0.9124755859375,
+        "null_p0": 0.95947265625,
+        "tvd_to_uniform_mean": 0.6624755859375
+      },
+      "summary_readout_corrected": {
+        "skipped": "feed-forward circuits: readout error steers the conditional branch"
+      },
+      "members": [
+        {
+          "name": "folded_qpe_s1",
+          "cz": 67,
+          "depth": 208,
+          "duration_s": 1.3180000000000028e-05,
+          "feed_forward": true,
+          "physical_qubits": [
+            73,
+            79,
+            92,
+            93,
+            94
+          ],
+          "esp": 0.8922505211677015,
+          "coherence": 0.6528706520989213,
+          "ideal": [
+            0.0,
+            1.0,
+            0.0,
+            0.0
+          ],
+          "noisy": [
+            0.020996,
+            0.906494,
+            0.021973,
+            0.050537
+          ],
+          "tvd_noisy_to_ideal": 0.093505859375
+        },
+        {
+          "name": "folded_qpe_s0",
+          "cz": 67,
+          "depth": 208,
+          "duration_s": 1.3180000000000028e-05,
+          "feed_forward": true,
+          "physical_qubits": [
+            73,
+            79,
+            92,
+            93,
+            94
+          ],
+          "esp": 0.8922505211677015,
+          "coherence": 0.6528706520989213,
+          "ideal": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "noisy": [
+            0.927246,
+            0.013916,
+            0.045166,
+            0.013672
+          ],
+          "tvd_noisy_to_ideal": 0.07275390625
+        },
+        {
+          "name": "folded_qpe_s2",
+          "cz": 67,
+          "depth": 208,
+          "duration_s": 1.3180000000000028e-05,
+          "feed_forward": true,
+          "physical_qubits": [
+            73,
+            79,
+            92,
+            93,
+            94
+          ],
+          "esp": 0.8926057691085766,
+          "coherence": 0.6528706520989213,
+          "ideal": [
+            0.0,
+            0.0,
+            1.0,
+            0.0
+          ],
+          "noisy": [
+            0.057373,
+            0.012207,
+            0.914062,
+            0.016357
+          ],
+          "tvd_noisy_to_ideal": 0.0859375
+        },
+        {
+          "name": "folded_qpe_s3",
+          "cz": 67,
+          "depth": 208,
+          "duration_s": 1.3180000000000028e-05,
+          "feed_forward": true,
+          "physical_qubits": [
+            73,
+            79,
+            92,
+            93,
+            94
+          ],
+          "esp": 0.8922505211677015,
+          "coherence": 0.6528706520989213,
+          "ideal": [
+            0.0,
+            0.0,
+            0.0,
+            1.0
+          ],
+          "noisy": [
+            0.020752,
+            0.054932,
+            0.022217,
+            0.9021
+          ],
+          "tvd_noisy_to_ideal": 0.097900390625
+        },
+        {
+          "name": "folded_qpe_null",
+          "cz": 6,
+          "depth": 25,
+          "duration_s": 6.635999999999999e-06,
+          "feed_forward": true,
+          "physical_qubits": [
+            73,
+            79,
+            92,
+            93,
+            94
+          ],
+          "esp": 0.9467068960366218,
+          "coherence": 0.8068026105003451,
+          "ideal": [
+            1.0,
+            0.0,
+            0.0,
+            0.0
+          ],
+          "noisy": [
+            0.959473,
+            0.009521,
+            0.02002,
+            0.010986
+          ],
+          "tvd_noisy_to_ideal": 0.04052734375
+        }
+      ]
+    }
+  ]
+}

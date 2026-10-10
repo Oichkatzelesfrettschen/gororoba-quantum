@@ -51,6 +51,7 @@ from typing import Any
 import numpy as np
 from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.circuit import ControlFlowOp
+from qiskit.converters import circuit_to_dag
 from qiskit.providers import BackendV2, Options
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError
@@ -60,6 +61,11 @@ from qiskit_ibm_runtime.executor_sampler import Sampler
 from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
 
 SHOTS = 4096
+# Mirror rescaling divides two noisy <Z> estimates; at 4096 shots their
+# attenuation difference is only about two standard deviations, so ODR values
+# are reported only from runs of at least this many shots
+# (literature/notes/2507.08088.md, action item 2).
+ODR_MIN_SHOTS = 16384
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
 SEED_SIMULATOR = 20261011
@@ -385,42 +391,59 @@ def layout_score(isa: QuantumCircuit, target: Any) -> float:
 
 
 def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
-    """First half of isa's CZ content, a barrier, its inverse, measured as isa measures.
+    """A prefix of isa's dependency layers, a barrier, its inverse, measured as isa measures.
 
-    The twin runs on isa's physical qubits with about isa's two-qubit count and
-    ideally returns all zeros, so its measured <Z> is the attenuation a witness's
-    <Z> is divided by (literature/notes/2507.08088.md, Sec. IV A 3). Translation
-    to the ISA runs at optimization level 0 on the trivial layout, so no gate
-    moves, and the barrier keeps the halves from cancelling.
+    The cut is the layer near the depth midpoint whose twin best matches the
+    witness in both scheduled depth and CZ count, the idle and two-qubit
+    exposures whose attenuation the twin measures. The twin runs on isa's
+    physical qubits and ideally returns all zeros, so its measured <Z> is the
+    attenuation a witness's <Z> is divided by (literature/notes/2507.08088.md,
+    Sec. IV A 3). The forward half keeps isa's gates unchanged on the trivial
+    layout, and the barrier keeps the halves from cancelling.
     """
-    body = isa.remove_final_measurements(inplace=False)
-    total = body.count_ops().get("cz", 0)
-    half = QuantumCircuit(isa.num_qubits)
-    seen = 0
-    for inst in body.data:
-        if inst.operation.name == "barrier":
-            continue
-        if inst.operation.name == "cz":
-            if seen >= total // 2:
-                break
-            seen += 1
-        half.append(inst.operation, _qargs(body, inst))
-    out = QuantumCircuit(isa.num_qubits, isa.num_clbits, name=name)
-    out.compose(half, inplace=True)
-    # The barrier spans only the qubits the twin uses, so the untouched qubits
-    # of the full-width ISA stay idle from initialization.
-    out.barrier(_physical(isa))
-    out.compose(half.inverse(), inplace=True)
-    for inst in isa.data:
-        if inst.operation.name == "measure":
-            out.measure(isa.find_bit(inst.qubits[0]).index, isa.find_bit(inst.clbits[0]).index)
-    return transpile(out, backend=backend, optimization_level=0, initial_layout=list(range(isa.num_qubits)))
+    dag = circuit_to_dag(isa.remove_final_measurements(inplace=False))
+    layers = [[node for node in layer["graph"].op_nodes() if node.op.name != "barrier"] for layer in dag.layers()]
+    total_cz = sum(node.op.name == "cz" for layer in layers for node in layer)
+    trivial = list(range(isa.num_qubits))
+
+    def build(cut: int) -> QuantumCircuit:
+        half = QuantumCircuit(isa.num_qubits)
+        for layer in layers[:cut]:
+            for node in layer:
+                half.append(node.op, [dag.find_bit(q).index for q in node.qargs])
+        # The inverse half is translated with single-qubit merging, so sx
+        # inverses do not each expand into a longer chain than the forward half.
+        undo = transpile(half.inverse(), backend=backend, optimization_level=1, initial_layout=trivial)
+        out = QuantumCircuit(isa.num_qubits, isa.num_clbits, name=name)
+        out.compose(half, inplace=True)
+        # The barrier spans only the qubits the twin uses, so the untouched
+        # qubits of the full-width ISA stay idle from initialization.
+        out.barrier(_physical(isa))
+        out.compose(undo, inplace=True)
+        for inst in isa.data:
+            if inst.operation.name == "measure":
+                out.measure(isa.find_bit(inst.qubits[0]).index, isa.find_bit(inst.clbits[0]).index)
+        return transpile(out, backend=backend, optimization_level=0, initial_layout=trivial)
+
+    def mismatch(twin: QuantumCircuit) -> float:
+        depth_err = abs(twin.depth() - isa.depth()) / max(isa.depth(), 1)
+        cz_err = abs(twin.count_ops().get("cz", 0) - total_cz) / max(total_cz, 1)
+        return max(depth_err, cz_err)
+
+    mid = len(layers) // 2
+    candidates = [build(cut) for cut in range(max(mid - 6, 1), min(mid + 7, len(layers)))]
+    return min(candidates, key=mismatch)
 
 
 def attach_mirrors(choice: Choice) -> Choice:
-    """Entries: every member's ISA, then a mirror twin for each member that asks for one."""
-    choice.entries = [(m.name, isa, m.ideal) for m, isa in zip(choice.group.members, choice.isas, strict=True)]
+    """Entries: every member's ISA, each followed directly by its mirror twin if it asks for one.
+
+    A twin placed next to its witness runs next to it in the job, which keeps
+    the pair inside one calibration whenever the job allows.
+    """
+    choice.entries = []
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
+        choice.entries.append((member.name, isa, member.ideal))
         if member.mirror:
             name = member.name + MIRROR_SUFFIX
             twin = mirror_isa(isa, choice.snap.backend, name)
@@ -541,10 +564,10 @@ def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
     return AerSimulator.from_backend(view, noise_model=noise)
 
 
-def simulate(choice: Choice, noise: Any) -> dict[str, np.ndarray]:
+def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, np.ndarray]:
     out = {}
     for name, isa, _ in choice.entries:
-        counts = noise.run(isa, shots=SHOTS, seed_simulator=SEED_SIMULATOR).result().get_counts()
+        counts = noise.run(isa, shots=shots, seed_simulator=SEED_SIMULATOR).result().get_counts()
         out[name] = _distribution(counts, isa.num_clbits)
     return out
 
@@ -714,7 +737,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "versions": {pkg: version(pkg) for pkg in ("qiskit", "qiskit-aer", "qiskit-ibm-runtime")},
         "policy": QUALITY
         | {"max_pending": args.max_pending, "seeds": args.seeds, "joint_candidates": JOINT_CANDIDATES},
-        "shots": SHOTS,
+        "shots": args.shots,
         "seed_simulator": SEED_SIMULATOR,
         "experiment_digest": experiment_digest(),
         "code_commit": _code_commit(),
@@ -741,7 +764,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
                 choice.snap.calibration,
             )
         sim, cal = sims[key]
-        noisy = simulate(choice, sim)
+        noisy = simulate(choice, sim, int(record["shots"]))
         entry = _choice_record(choice, noisy, cal)
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
@@ -833,7 +856,9 @@ def submit(
                 continue
             usage = service.usage()
             check_budget(name, usage, args.min_remaining_seconds)
-            sampler = configure_sampler(backend, kind, args.twirl, args.dd, ["gororoba-quantum", args.started, kind])
+            sampler = configure_sampler(
+                backend, kind, args.twirl, args.dd, ["gororoba-quantum", args.started, kind], args.shots
+            )
             job = sampler.run([isa for _, isa in batch])
             record["submission"]["jobs"].append(
                 {
@@ -856,7 +881,9 @@ def submit(
     checkpoint()
 
 
-def configure_sampler(backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str]) -> Sampler:
+def configure_sampler(
+    backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], shots: int = SHOTS
+) -> Sampler:
     """The client-side Sampler for one job: twirling and DD apply to static jobs only.
 
     IBM's Sampler rejects dynamical decoupling on dynamic circuits, and the 0.50
@@ -866,7 +893,7 @@ def configure_sampler(backend: Any, kind: str, twirl: bool, dd: str | None, tags
     the unused qubits too.
     """
     sampler = Sampler(mode=backend)
-    sampler.options.default_shots = SHOTS
+    sampler.options.default_shots = shots
     sampler.options.environment.job_tags = tags
     if twirl and kind == "static":
         sampler.options.twirling.enable_gates = True
@@ -937,6 +964,30 @@ def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
             )
         )
     return windows
+
+
+def _odr_withheld_reason(names: list[str], executed: dict[str, dict[str, Any]], shots: int) -> str | None:
+    """Why a group's mirror-rescaled values are not valid, or None when they are.
+
+    Rescaling divides a witness's <Z> by its twin's attenuation, which is a
+    correction only when both ran under one calibration and enough shots make
+    the quotient significant.
+    """
+    if not any(name.endswith(MIRROR_SUFFIX) for name in names):
+        return None
+    if shots < ODR_MIN_SHOTS:
+        return f"{shots} shots per circuit; ODR needs at least {ODR_MIN_SHOTS}"
+    ran = [executed[n] for n in names if n in executed]
+    if any(e["calibration_changed_during_shots"] for e in ran) or len({e["calibration"] for e in ran}) > 1:
+        return "witnesses and mirror twins did not all run under one calibration"
+    return None
+
+
+def _without_odr(summary: dict[str, Any], withheld: str | None) -> dict[str, Any]:
+    """summary minus its mirror-rescaled and twin fields when withheld names a reason."""
+    if withheld is None:
+        return summary
+    return {k: v for k, v in summary.items() if "odr" not in k and not k.startswith("mirror_z")}
 
 
 def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
@@ -1026,21 +1077,40 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if missing:
                 entry["summary_unavailable"] = f"missing {missing}"
             else:
-                entry["measured_summary"] = group.summarize(measured)
+                # A failed ODR gate removes the mirror-rescaled values from
+                # every summary the entry publishes, measured, readout-corrected,
+                # and replayed alike.
+                withheld = _odr_withheld_reason(required, executed, shots)
+                if withheld:
+                    entry["odr_withheld"] = withheld
+                entry["measured_summary"] = _without_odr(group.summarize(measured), withheld)
                 if straddling:
                     entry["calibration_dependent_summaries_unavailable"] = (
                         f"calibration changed during the shots of {straddling}"
                     )
                 else:
-                    entry["measured_summary_readout_corrected"] = corrected_summary(
-                        group, {n: (measured[n], isas[n]) for n in required}, props_by_name, symmetric=twirled_readout
+                    entry["measured_summary_readout_corrected"] = _without_odr(
+                        corrected_summary(
+                            group,
+                            {n: (measured[n], isas[n]) for n in required},
+                            props_by_name,
+                            symmetric=twirled_readout,
+                        ),
+                        withheld,
                     )
-                    entry["replayed_summary"] = group.summarize(replayed)
+                    entry["replayed_summary"] = _without_odr(group.summarize(replayed), withheld)
                     entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
             out.append(entry)
     text = json.dumps(out, indent=2) + "\n"
     _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
     print(json.dumps(out, indent=2))
+
+
+def _positive_int(text: str) -> int:
+    value = int(text)
+    if value < 1:
+        raise argparse.ArgumentTypeError(f"needs a positive shot count, got {value}")
+    return value
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -1052,6 +1122,12 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--out", type=Path, help="directory under which the run's audit record is written")
     parser.add_argument("--submit", action="store_true", help="submit the chosen circuits (spends QPU time)")
     parser.add_argument("--min-remaining-seconds", type=float, default=DEFAULT_MIN_REMAINING_S)
+    parser.add_argument(
+        "--shots",
+        type=_positive_int,
+        default=SHOTS,
+        help=f"shots per circuit; ODR values need at least {ODR_MIN_SHOTS}",
+    )
     parser.add_argument("--twirl", action="store_true", help="Pauli-twirl gates and measurements on submission")
     parser.add_argument("--dd", choices=("XX", "XpXm", "XY4"), help="dynamical decoupling sequence on submission")
     parser.add_argument("--collect", type=Path, help="run directory whose submitted jobs to collect")
