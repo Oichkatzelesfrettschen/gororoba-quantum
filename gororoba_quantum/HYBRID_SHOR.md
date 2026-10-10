@@ -216,6 +216,12 @@ enter separate client-side Sampler jobs. Runtime 0.50 rejects dynamical
 decoupling on dynamic circuits, and its gate-twirling path rejects `if_else`, so
 the dynamic job keeps both features disabled.
 
+Runtime 0.50 rounds automatic twirling upward when the requested shot count
+cannot supply its target of 32 randomizations with at least 64 shots each.
+Static twirled jobs therefore require at least 2,048 shots divisible by 32 and
+set both twirling counts explicitly. The recorded shot count then equals the
+executed product. The default 4,096-shot run uses 32 by 128 shots.
+
 The run record uses schema version 2 and explicit states: `planned`,
 `submission_started`, `partially_submitted`, and `submitted`. Each split job
 refreshes `usage()` before submission. Every acquired job identifier reaches an
@@ -226,7 +232,8 @@ source manifest makes the experiment digest independent of Python import order.
 `runtime_contracts.py` checks terminal versus mid-circuit measurement
 classification, recursively discovers physical operations inside control-flow
 blocks, verifies global bit order for multiple classical registers, verifies
-the pruned primary and null operation counts, and proves digest stability.
+the pruned primary and null operation counts, enforces exact twirling shots,
+and proves digest stability.
 
 ## Deficiencies and falsifiers
 

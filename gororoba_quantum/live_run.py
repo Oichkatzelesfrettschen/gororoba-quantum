@@ -66,6 +66,8 @@ SHOTS = 4096
 # are reported only from runs of at least this many shots
 # (literature/notes/2507.08088.md, action item 2).
 ODR_MIN_SHOTS = 16384
+TWIRLING_RANDOMIZATIONS = 32
+TWIRLING_MIN_SHOTS_PER_RANDOMIZATION = 64
 OPT_LEVEL = 3
 SEED_TRANSPILER = 20261010
 SEED_SIMULATOR = 20261011
@@ -892,12 +894,25 @@ def configure_sampler(
     pulses: a 3- to 5-qubit experiment on a 156-qubit ISA would otherwise drive
     the unused qubits too.
     """
+    if kind not in ("static", "dynamic"):
+        raise LiveRunError(f"unknown Sampler job kind {kind!r}")
+    if shots < 1:
+        raise LiveRunError(f"Sampler shots must be positive, got {shots}")
+    if twirl and kind == "static":
+        shots_per_randomization, remainder = divmod(shots, TWIRLING_RANDOMIZATIONS)
+        if remainder or shots_per_randomization < TWIRLING_MIN_SHOTS_PER_RANDOMIZATION:
+            minimum = TWIRLING_RANDOMIZATIONS * TWIRLING_MIN_SHOTS_PER_RANDOMIZATION
+            raise LiveRunError(
+                f"twirled static jobs need at least {minimum} shots divisible by {TWIRLING_RANDOMIZATIONS}; got {shots}"
+            )
     sampler = Sampler(mode=backend)
     sampler.options.default_shots = shots
     sampler.options.environment.job_tags = tags
     if twirl and kind == "static":
         sampler.options.twirling.enable_gates = True
         sampler.options.twirling.enable_measure = True
+        sampler.options.twirling.num_randomizations = TWIRLING_RANDOMIZATIONS
+        sampler.options.twirling.shots_per_randomization = shots_per_randomization
     if dd and kind == "static":
         sampler.options.dynamical_decoupling.enable = True
         sampler.options.dynamical_decoupling.sequence_type = dd
@@ -1126,7 +1141,11 @@ def main(argv: list[str] | None = None) -> int:
         "--shots",
         type=_positive_int,
         default=SHOTS,
-        help=f"shots per circuit; ODR values need at least {ODR_MIN_SHOTS}",
+        help=(
+            f"shots per circuit; ODR needs at least {ODR_MIN_SHOTS}; "
+            f"--twirl submission needs at least {TWIRLING_RANDOMIZATIONS * TWIRLING_MIN_SHOTS_PER_RANDOMIZATION} "
+            f"and a multiple of {TWIRLING_RANDOMIZATIONS}"
+        ),
     )
     parser.add_argument("--twirl", action="store_true", help="Pauli-twirl gates and measurements on submission")
     parser.add_argument("--dd", choices=("XX", "XpXm", "XY4"), help="dynamical decoupling sequence on submission")

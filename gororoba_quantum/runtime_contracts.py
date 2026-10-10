@@ -4,9 +4,10 @@ from __future__ import annotations
 
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 from qiskit.primitives import StatevectorSampler
+from qiskit_ibm_runtime.fake_provider import FakeManilaV2
 
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
-from live_run import _distribution, _is_dynamic, _ops, _pub_counts, experiment_digest
+from live_run import LiveRunError, _distribution, _is_dynamic, _ops, _pub_counts, configure_sampler, experiment_digest
 from order_finding import factor_order_finding
 
 
@@ -63,10 +64,25 @@ def _verify_result_register_order() -> None:
         raise RuntimeError(f"multi-register distribution places probability at {distribution.argmax()}")
 
 
+def _verify_twirling_shot_contract() -> None:
+    sampler = configure_sampler(FakeManilaV2(), "static", True, None, ["local-contract"], shots=4096)
+    if sampler.options.twirling.num_randomizations != 32:
+        raise RuntimeError(f"twirling uses {sampler.options.twirling.num_randomizations} randomizations")
+    if sampler.options.twirling.shots_per_randomization != 128:
+        raise RuntimeError(f"twirling uses {sampler.options.twirling.shots_per_randomization} shots per randomization")
+    try:
+        configure_sampler(FakeManilaV2(), "static", True, None, ["local-contract"], shots=16)
+    except LiveRunError:
+        pass
+    else:
+        raise RuntimeError("twirling accepted a shot count that Runtime 0.50 rounds upward")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_nested_operations()
     _verify_result_register_order()
+    _verify_twirling_shot_contract()
     first_digest = experiment_digest()
     second_digest = experiment_digest()
     if len(first_digest) != 64 or first_digest != second_digest:
