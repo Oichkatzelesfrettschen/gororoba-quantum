@@ -70,8 +70,8 @@ class Group:
     replica into an admission verdict for the group's claim. rate_keys names
     summary values that are per-shot rates over one member's shots, whose
     replicate intervals carry a pooled-shot Wilson bound. replica_floor, when
-    set, loosens the run's --replica-floor for this group
-    (live_run.replica_floor).
+    set, replaces the default replica floor for this group; an explicit
+    --replica-floor still governs every group (live_run.replica_floor).
     """
 
     name: str

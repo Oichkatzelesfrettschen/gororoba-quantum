@@ -34,8 +34,10 @@ hardware results.
    ibm_kingston won every group.
 3. **Placement.** packing.py embeds the winning pattern everywhere it fits in
    admissible hardware, ranks the embeddings by the same layout score, and
-   packs disjoint replicas one qubit apart down to 0.9 of the best score, or
-   a group's own lower floor; hybrid Shor declares 0.8. Design A fills 63 of
+   packs disjoint replicas one qubit apart down to a floor fraction of the
+   best score: 0.9 by default, a group's declared floor where it has one
+   (hybrid Shor declares 0.8), and an explicit --replica-floor for every group
+   when given. Design A fills 63 of
    kingston's 156 qubits per shot with 21 replicas, design C dim 8 fills 54
    with 18, hybrid Shor 35 with 7, and the other five-qubit groups take 3 to
    6.

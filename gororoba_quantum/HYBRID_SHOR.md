@@ -272,7 +272,8 @@ archive contains the compiled circuits named by every JSON member.
 `results/live/2026-10-10T221412.255180Z/` (code `78a3bb7`) replicates the
 same `ibm_kingston` compile on seven disjoint five-qubit placements with
 layout scores from 0.691 to 0.569, above the group's 0.8 floor of the best
-(`Group.replica_floor`; the other groups keep the run's 0.9). Each
+(`Group.replica_floor`; the other groups keep the default 0.9, and an explicit
+`--replica-floor` governs every group). Each
 shot scores whether its phase string decodes to a verified factor, so the
 variance decomposition and the intervals act on factor yield itself.
 

@@ -414,8 +414,10 @@ vf2_mapping). An embedding is admissible when every moved operation exists in
 the live Target and avoids the excluded qubits and edges of that run's
 snapshot; admissible embeddings rank by the layout score of the moved primary
 circuit, and placement takes them best first, one qubit apart so no CZ coupler
-joins two replicas, until a candidate scores below --replica-floor (0.9) of
-the best or --max-replicas is reached. A replica is the identical gate
+joins two replicas, until a candidate scores below the floor fraction of
+the best or --max-replicas is reached. An explicit --replica-floor sets the
+floor for every group; otherwise a group's declared floor applies (hybrid
+Shor declares 0.8) and the rest use 0.9. A replica is the identical gate
 sequence on other qubits, so replica-to-replica differences are hardware
 differences. Each member and twin runs as one packed circuit, every
 replica's gates ahead of every replica's terminal measurements so a static
