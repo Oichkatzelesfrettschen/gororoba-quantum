@@ -17,6 +17,8 @@ repo=${slug#*/}
 
 for pr in "$@"; do
     head=$(gh api "repos/$slug/pulls/$pr" --jq '.head.sha[0:7]')
+    # Comments count as the reviewer's only under the app's exact login, so a
+    # user whose name merely contains codex cannot forge a state or verdict.
     # --paginate walks every page of issue comments, so the newest summary and
     # verdict are found however many comments the PR carries. The bot keeps
     # one summary comment per PR and edits it; it reads Running while a review
@@ -25,11 +27,11 @@ for pr in "$@"; do
     # so a failed request stops the script under set -e instead of being masked
     # by a pipeline that ends in tail.
     states=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
-        .[] | select(.user.login | test("codex"; "i"))
+        .[] | select(.user.login == "chatgpt-codex-connector[bot]")
             | select(.body | test("codex-pull-request-review-summary"))
             | if (.body | test("Running")) then "running" else "done" end')
     verdicts=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
-        .[] | select(.user.login | test("codex"; "i"))
+        .[] | select(.user.login == "chatgpt-codex-connector[bot]")
             | select(.body | test("codex-pull-request-review-summary") | not)
             | (.created_at + " " + (.body | split("\n")[0]))')
     state=$(printf '%s\n' "$states" | tail -n 1)
