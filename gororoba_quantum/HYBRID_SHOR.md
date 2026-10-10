@@ -289,7 +289,10 @@ Student t interval over the replicas, which carries layout and shot variance,
 and a Wilson interval over the pooled shots, which keeps shot uncertainty when
 the replicas agree exactly, as an identity null reading zero everywhere would.
 With three replicas the t multiplier is 4.30, so a replica count is the
-admission rule's main lever once hardware layout variance is real. The noise model predicts no layout variance in factor yield beyond shot
+admission rule's main lever once hardware layout variance is real. The
+primary and the identity null run as separate PUBs, so collect withholds the
+verdict unless both ran under one calibration with no update inside their
+shots. The noise model predicts no layout variance in factor yield beyond shot
 noise (chi-squared p = 0.66); a measured excess is hardware structure the
 model omits.
 

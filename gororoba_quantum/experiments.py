@@ -67,7 +67,9 @@ class Group:
     instances names members that are equal-cost instances of one experiment
     with comparable ideal-weighted scores, the instance axis of the variance
     decomposition. admission turns per-replica summaries and the shots per
-    replica into an admission verdict for the group's claim.
+    replica into an admission verdict for the group's claim. rate_keys names
+    summary values that are per-shot rates over one member's shots, whose
+    replicate intervals carry a pooled-shot Wilson bound.
     """
 
     name: str
@@ -75,6 +77,7 @@ class Group:
     summarize: Summary
     instances: tuple[str, ...] = ()
     admission: Admission | None = None
+    rate_keys: frozenset[str] = frozenset()
 
 
 def tvd(p: np.ndarray, q: np.ndarray) -> float:
@@ -128,7 +131,12 @@ def _design_a() -> Group:
             "tvd_to_uniform": tvd(got, _uniform(1)),
         }
 
-    return Group("design_a", (Member("design_a_1_2", qc, _two_outcome(1.0), mirror=True),), summarize)
+    return Group(
+        "design_a",
+        (Member("design_a_1_2", qc, _two_outcome(1.0), mirror=True),),
+        summarize,
+        rate_keys=frozenset({"p1"}),
+    )
 
 
 def _zero_divisor_fringe() -> Group:
@@ -185,7 +193,7 @@ def _zero_divisor_fringe() -> Group:
             | fit_odr
         )
 
-    return Group("zero_divisor_fringe", tuple(members), summarize)
+    return Group("zero_divisor_fringe", tuple(members), summarize, rate_keys=frozenset({"p0_dark", "p0_bright"}))
 
 
 def _associator_spectrum(dim: int, i: int, j: int) -> Group:
@@ -243,7 +251,15 @@ def _folded_qpe_mod15() -> Group:
             "tvd_to_uniform_mean": float(np.mean([tvd(dist[f"folded_qpe_s{s}"], _uniform(2)) for s in range(4)])),
         }
 
-    return Group("folded_qpe_mod15", tuple(members), summarize, instances=tuple(f"folded_qpe_s{s}" for s in range(4)))
+    return Group(
+        "folded_qpe_mod15",
+        tuple(members),
+        summarize,
+        instances=tuple(f"folded_qpe_s{s}" for s in range(4)),
+        # p_correct_mean averages four members' rates; its Wilson bound over one
+        # member's shots is the wider, conservative one.
+        rate_keys=frozenset({*(f"p_correct_s{s}" for s in range(4)), "p_correct_mean", "null_p0"}),
+    )
 
 
 def _hybrid_shor_mod15() -> Group:
@@ -321,7 +337,20 @@ def _hybrid_shor_mod15() -> Group:
             }
         return verdict
 
-    return Group("hybrid_shor_mod15", members, summarize, admission=admit)
+    return Group(
+        "hybrid_shor_mod15",
+        members,
+        summarize,
+        admission=admit,
+        rate_keys=frozenset(
+            {
+                "factorable_probability",
+                "order_recovery_probability",
+                "identity_null_factorable_probability",
+                "identity_null_order_recovery_probability",
+            }
+        ),
+    )
 
 
 def experiment_groups() -> list[Group]:

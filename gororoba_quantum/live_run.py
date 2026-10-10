@@ -771,18 +771,15 @@ def _pooled_summaries(
 ) -> tuple[dict[str, float], list[dict[str, float]]]:
     """The pooled summary and the per-replica summaries of runs' replica distributions.
 
-    The pooled summary reads the replica-averaged distributions, except its
-    mirror-rescaled values: each replica's witness divides by that replica's
-    own twin, and the pooled ODR value is the mean of those quotients, since a
-    quotient of averages would divide one replica's witness by another's
-    attenuation.
+    Every pooled value is the mean over replicas of that value computed on
+    each replica alone, the estimand summary_interval spans. For a ratio, a
+    fringe fit, or a TVD this differs from the statistic of averaged
+    distributions, and for a mirror-rescaled value it divides each replica's
+    witness by that replica's own twin.
     """
     count = len(runs[0].replicas)
     per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
-    pooled = group.summarize({e.name: np.mean(dists[e.name], axis=0) for e in runs})
-    for key in pooled:
-        if "odr" in key:
-            pooled[key] = float(np.mean([r[key] for r in per_replica]))
+    pooled = {key: float(np.mean([r[key] for r in per_replica])) for key in per_replica[0]}
     return pooled, per_replica
 
 
@@ -791,10 +788,10 @@ def replica_statistics(
 ) -> dict[str, Any]:
     """Pooled, per-replica, interval, variance, crosstalk, and admission views of one group's replicas.
 
-    The pooled summary averages each member's replica distributions, which
-    hold equal shots, and its ODR values average the replicas' own quotients
-    (_pooled_summaries). summary_interval spans each summary value over the
-    replicas. variance decomposes every entry's ideal-weighted score into shot
+    The pooled summary averages each summary value over the replicas
+    (_pooled_summaries), and summary_interval spans it; a value the group
+    declares a per-shot rate (Group.rate_keys) also carries its pooled-shot
+    Wilson bound. variance decomposes every entry's ideal-weighted score into shot
     and layout variance, and instance_variance adds the instance axis over the
     group's declared instances. crosstalk compares the primary's isolated
     reference with packed replica 0 on the same qubits.
@@ -805,7 +802,7 @@ def replica_statistics(
     out: dict[str, Any] = {"summary": pooled, "summary_per_replica": per_replica}
     if count >= 2:
         out["summary_interval"] = {
-            key: variance.interval([r[key] for r in per_replica], shots, bernoulli=False)
+            key: variance.interval([r[key] for r in per_replica], shots, bernoulli=key in group.rate_keys)
             for key in pooled
             if all(math.isfinite(r[key]) for r in per_replica)
         }
@@ -1268,6 +1265,26 @@ def _gate_odr(stats: dict[str, Any], pooled: str | None, per_replica: str | None
     return stats
 
 
+def _comparisons_withheld(names: list[str], executed: dict[str, dict[str, Any]]) -> str | None:
+    """Why statistics that compare separate PUBs of a group are not valid, or None when they are.
+
+    crosstalk sets the isolated reference against packed replica 0, and
+    admission sets the primary against its identity null; each pair runs as
+    separate PUBs, so a calibration update between them would read as
+    crosstalk or move the verdict. Both need every PUB of the group under one
+    calibration with no update inside any PUB's shots.
+    """
+    ran = [executed[n] for n in names if n in executed]
+    if any(e["calibration_changed_during_shots"] for e in ran) or len({e["calibration"] for e in ran}) > 1:
+        return "the group's PUBs did not all run under one calibration"
+    return None
+
+
+def _without_comparisons(stats: dict[str, Any]) -> None:
+    stats.pop("crosstalk", None)
+    stats.pop("admission", None)
+
+
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
     """Each group's entries rebuilt from the archived packed circuits and the record's replica layout."""
     weights = {m.name: m.weights for g in experiment_groups() for m in g.members}
@@ -1399,6 +1416,10 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if pooled_reason or replica_reason:
                 out_entry["odr_withheld"] = {"pooled": pooled_reason, "per_replica": replica_reason}
             out_entry["measured_statistics"] = _gate_odr(stats, pooled_reason, replica_reason)
+            comparison_reason = _comparisons_withheld(required, executed)
+            if comparison_reason:
+                out_entry["comparisons_withheld"] = comparison_reason
+                _without_comparisons(out_entry["measured_statistics"])
             if straddling:
                 out_entry["calibration_dependent_summaries_unavailable"] = (
                     f"calibration changed during the shots of {straddling}"
@@ -1411,6 +1432,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 out_entry["replayed_statistics"] = _gate_odr(
                     replica_statistics(group, entries, replayed, shots), pooled_reason, replica_reason
                 )
+                if comparison_reason:
+                    _without_comparisons(out_entry["replayed_statistics"])
                 out_entry["tvd_measured_to_replayed"] = {
                     n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
                 }

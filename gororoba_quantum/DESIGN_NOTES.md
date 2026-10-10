@@ -438,10 +438,15 @@ shot standard deviations from the median is flagged
 (literature/notes/2507.08088.md, action item 3). Folded QPE's four
 eigenstates are equal-cost instances, so a two-way decomposition separates
 instance, layout, and interaction variance (literature/notes/2509.18259.md,
-action item 4). A per-shot rate also gets a Wilson interval over the pooled
-shots, and its reported interval is the union of that and the replicate
-interval, so replicas that agree exactly keep their shot uncertainty. Every
-pooled summary value also gets a Student t interval over
+action item 4). Every pooled summary value is the mean of that value computed
+on each replica alone, so a ratio, fringe fit, or TVD and its interval share
+one estimand. A value the group declares a per-shot rate also gets a Wilson
+interval over the pooled shots, and its reported interval is the union of
+that and the replicate interval, so replicas that agree exactly keep their
+shot uncertainty. Crosstalk and admission compare separate PUBs, so collect
+withholds them unless every PUB of the group ran under one calibration with
+no update inside its shots. Every pooled summary value also gets a Student t
+interval over
 its replicas.
 
 The dry run of record 2026-10-10T214318.070235Z (code b447626) placed every

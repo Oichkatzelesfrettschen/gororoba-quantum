@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
 from qiskit.primitives import StatevectorSampler
 from qiskit_ibm_runtime.executor_sampler import Sampler
@@ -9,6 +10,7 @@ from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
 
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import packing
+from experiments import MIRROR_SUFFIX, experiment_groups
 from live_run import (
     LiveRunError,
     _distribution,
@@ -133,6 +135,25 @@ def _verify_packed_static_stays_static() -> None:
         raise RuntimeError("packing a static circuit produced a dynamic one")
 
 
+def _verify_rate_keys() -> None:
+    """Every declared per-shot rate names a value its group's summary produces.
+
+    A misspelled rate key would silently drop the pooled-shot Wilson bound
+    from that value's interval.
+    """
+    for group in experiment_groups():
+        ideals: dict[str, np.ndarray] = {}
+        for member in group.members:
+            ideals[member.name] = member.ideal
+            if member.mirror:
+                zeros = np.zeros(len(member.ideal))
+                zeros[0] = 1.0
+                ideals[member.name + MIRROR_SUFFIX] = zeros
+        unknown = set(group.rate_keys) - set(group.summarize(ideals))
+        if unknown:
+            raise RuntimeError(f"{group.name}: rate keys {sorted(unknown)} are not summary values")
+
+
 def _verify_twirling_shot_contract() -> None:
     sampler = configure_sampler(FakeManilaV2(), "static", True, None, ["local-contract"], shots=4096)
     if sampler.options.twirling.num_randomizations != 32:
@@ -154,13 +175,14 @@ def _verify() -> None:
     _verify_twirling_shot_contract()
     _verify_packed_replica_split()
     _verify_packed_static_stays_static()
+    _verify_rate_keys()
     first_digest = experiment_digest()
     second_digest = experiment_digest()
     if len(first_digest) != 64 or first_digest != second_digest:
         raise RuntimeError("experiment source manifest digest is unstable")
     print(
         "runtime contracts: dynamic classification, nested operations, register order, packed replica split, "
-        "packed static classification, "
+        "packed static classification, rate keys, "
         "and digest pass"
     )
 
