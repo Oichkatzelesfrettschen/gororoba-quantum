@@ -4,7 +4,7 @@ This plan joins the project's two hardware programs -- the Cayley-Dickson
 witnesses (DESIGN_NOTES.md) and hybrid Shor order finding (HYBRID_SHOR.md) --
 into one submission path under the 600 s rolling QPU budget. Every quantity
 it quotes comes from the dry-run record
-`results/live/2026-10-10T213145.298421Z` (code 9384f01) unless it names
+`results/live/2026-10-10T214318.070235Z` (code b447626) unless it names
 another source; the record's predictions are noise-model values, not
 hardware results.
 
@@ -26,7 +26,8 @@ hardware results.
    excluded 11 qubits and 16 edges on ibm_fez, 7 and 24 on ibm_kingston, and 31
    and 20 on ibm_marrakesh, every one by a policy threshold -- readout error,
    T1 or T2, sx or CZ error, or missing calibration -- and none by a faulty
-   flag, so the thresholds carry the detection.
+   flag, so the thresholds carry the detection. The eligibility gate skipped
+   ibm_marrakesh outright: it reported status_msg "maintenance".
 2. **Selection.** Eight transpiler seeds per group and backend; the best three
    compile their controls onto one layout, and the best geometric-mean layout
    score (ESP times the T2 dephasing factor) picks backend and layout.
@@ -48,14 +49,18 @@ hardware results.
 - **Crosstalk.** The primary runs alone on replica 0's qubits beside the
   packed run; the noise model puts their difference at zero, so a measured
   difference is crosstalk from packing.
-- **ODR.** Pooled mirror rescaling needs 16384 shots over all replicas, so
-  packing meets it at the default 4096 shots for every mirrored group:
-  design A pools 86,016 shots over 21 replicas and the fringe 24,576 over 6.
+- **ODR.** The pooled value averages each replica's witness over its own twin
+  and needs 16384 shots over all replicas, so packing meets it at the default
+  4096 shots for every mirrored group: design A pools 86,016 shots over 21
+  replicas (P1_ODR 0.989 in the noise model) and the fringe 24,576 over 6
+  (ratio_ODR 0.0064, visibility_ODR 0.988).
 - **Admission.** hybrid Shor is interpreted only through its admission rule:
   the primary factor-yield lower bound must exceed the exact uniform null
   (0.297) and the identity-null upper bound must stay below that lower bound.
   The noise model gives [0.485, 0.510] against an identity-null upper bound of
-  0.020.
+  0.020. Each bound is the union of the replicate t interval and a Wilson
+  interval over the pooled shots; with Shor's three replicas the t multiplier
+  is 4.30, so the replica count is a decision for the written case.
 
 ## QPU cost
 

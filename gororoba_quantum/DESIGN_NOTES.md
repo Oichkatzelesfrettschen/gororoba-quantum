@@ -313,11 +313,13 @@ back to drive a submission.
   share the dark twin. The rescaled values stay unclipped; in that record's
   noise model they overshoot by under 1 percent (design A P1 1.002, fringe
   visibility 1.008). collect reports a replica's own ODR values only from
-  runs of at least 16384 shots per replica (--shots), and the pooled values,
-  which divide replica-averaged <Z>, only when the replicas hold 16384 shots
-  together and every twin's replicas agree within shot noise (chi-squared p
-  at least 0.01); either requires every witness and twin under one
-  calibration, and a withheld view records its reason in odr_withheld.
+  runs of at least 16384 shots per replica (--shots). The pooled value is the
+  mean over replicas of each replica's witness divided by its own twin, so
+  replicas whose attenuations differ each divide by their own; its error over
+  R replicas is that of one quotient at R times the shots, and it is reported
+  when the replicas hold 16384 shots together. Either requires every witness
+  and twin under one calibration, and a withheld view records its reason in
+  odr_withheld.
 - Nulls: these designs read interference through a final Hadamard layer, so the
   fully dephased and fully depolarized nulls coincide with the uniform
   distribution; every summary reports the TVD to uniform.
@@ -415,7 +417,9 @@ circuit, and placement takes them best first, one qubit apart so no CZ coupler
 joins two replicas, until a candidate scores below --replica-floor (0.9) of
 the best or --max-replicas is reached. A replica is the identical gate
 sequence on other qubits, so replica-to-replica differences are hardware
-differences. Each member and twin runs as one packed circuit whose replicas
+differences. Each member and twin runs as one packed circuit, every
+replica's gates ahead of every replica's terminal measurements so a static
+circuit stays static and keeps twirling and DD at submission, whose replicas
 write separate classical registers (r0_, r1_, ...); one shot yields one sample
 per replica, and joining one replica's registers recovers its distribution.
 Simulation, readout correction, and replay run on each replica alone, since
@@ -434,10 +438,13 @@ shot standard deviations from the median is flagged
 (literature/notes/2507.08088.md, action item 3). Folded QPE's four
 eigenstates are equal-cost instances, so a two-way decomposition separates
 instance, layout, and interaction variance (literature/notes/2509.18259.md,
-action item 4). Every pooled summary value also gets a Student t interval over
+action item 4). A per-shot rate also gets a Wilson interval over the pooled
+shots, and its reported interval is the union of that and the replicate
+interval, so replicas that agree exactly keep their shot uncertainty. Every
+pooled summary value also gets a Student t interval over
 its replicas.
 
-The dry run of record 2026-10-10T213145.298421Z (code 9384f01) placed every
+The dry run of record 2026-10-10T214318.070235Z (code b447626) placed every
 group on ibm_kingston, whose snapshot excluded 7 qubits and 24 edges:
 
 | group | replicas | qubits per shot | score best -> last | predicted layout variance (primary) |

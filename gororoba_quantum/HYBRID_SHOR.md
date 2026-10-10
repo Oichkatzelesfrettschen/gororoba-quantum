@@ -269,7 +269,7 @@ archive contains the compiled circuits named by every JSON member.
 
 ## Replicated admission
 
-`results/live/2026-10-10T213145.298421Z/` (code `9384f01`) replicates the
+`results/live/2026-10-10T214318.070235Z/` (code `b447626`) replicates the
 same `ibm_kingston` compile on three disjoint five-qubit placements with
 layout scores 0.691, 0.628, and 0.627, above the 0.9 floor of the best. Each
 shot scores whether its phase string decodes to a verified factor, so the
@@ -284,10 +284,12 @@ variance decomposition and the intervals act on factor yield itself.
 The group's admission rule (`experiments.py`, roadmap item 5) admits a
 yield when the primary lower bound exceeds the exact uniform-null yield and
 the identity-null upper bound stays below that lower bound; the noise model
-admits both factor and order-recovery yield. With one replica the interval is
-a Wilson interval over the shots and carries shot variance only; with two or
-more it is a Student t interval over the replicas and carries layout variance
-too. The noise model predicts no layout variance in factor yield beyond shot
+admits both factor and order-recovery yield. Each interval is the union of a
+Student t interval over the replicas, which carries layout and shot variance,
+and a Wilson interval over the pooled shots, which keeps shot uncertainty when
+the replicas agree exactly, as an identity null reading zero everywhere would.
+With three replicas the t multiplier is 4.30, so a replica count is the
+admission rule's main lever once hardware layout variance is real. The noise model predicts no layout variance in factor yield beyond shot
 noise (chi-squared p = 0.66); a measured excess is hardware structure the
 model omits.
 
