@@ -2,12 +2,22 @@
 
 from __future__ import annotations
 
-from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
 from qiskit.primitives import StatevectorSampler
-from qiskit_ibm_runtime.fake_provider import FakeManilaV2
+from qiskit_ibm_runtime.executor_sampler import Sampler
+from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
 
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
-from live_run import LiveRunError, _distribution, _is_dynamic, _ops, _pub_counts, configure_sampler, experiment_digest
+import packing
+from live_run import (
+    LiveRunError,
+    _distribution,
+    _is_dynamic,
+    _ops,
+    _pub_counts,
+    configure_sampler,
+    experiment_digest,
+)
 from order_finding import factor_order_finding
 
 
@@ -56,12 +66,50 @@ def _verify_result_register_order() -> None:
     circuit.measure(qubits[0], low[0])
     circuit.measure(qubits[1], high[0])
     pub = StatevectorSampler(seed=1).run([circuit], shots=8).result()[0]
-    counts = _pub_counts(pub, circuit)
+    counts = _pub_counts(pub, [register.name for register in circuit.cregs], circuit.name)
     if counts != {"01": 8}:
         raise RuntimeError(f"multi-register counts decode as {counts}")
     distribution = _distribution(counts, circuit.num_clbits)
     if distribution[1] != 1.0:
         raise RuntimeError(f"multi-register distribution places probability at {distribution.argmax()}")
+
+
+def _verify_packed_replica_split() -> None:
+    """Packed replicas of a dynamic circuit split back into each replica's own counts.
+
+    Replicas 0 and 2 start with their first qubit flipped and replica 1 does
+    not, so the feed-forward circuit reads 11, 00, 11; a split that mixed
+    registers or replicas would read another replica's outcome. The packed
+    circuit runs through the client-side Sampler in local mode on FakeFez.
+    """
+    backend = FakeFez()
+    graph = packing.coupling_graph(backend.target, backend.num_qubits)
+    phase = ClassicalRegister(2, "phase")
+    template = QuantumCircuit(QuantumRegister(2, "q"), phase)
+    template.measure(0, phase[0])
+    with template.if_test((phase[0], 1)):
+        template.x(1)
+    template.measure(1, phase[1])
+    isa = transpile(template, backend=backend, optimization_level=0, initial_layout=[0, 1])
+    used, edges = packing.pattern([("cz", (0, 1))])
+    replicas = packing.place(used, edges, graph, lambda _: True, lambda m: 1.0 / (1 + min(m.values())), 1e-9, 3)
+    if len(replicas) != 3 or len({q for r in replicas for q in r.qubits}) != 6:
+        raise RuntimeError(f"placement returned overlapping or missing replicas: {replicas}")
+    packed = packing.pack(isa, replicas, "packed")
+    flips = QuantumCircuit(packed.num_qubits)
+    flips.x([replicas[0].mapping[0], replicas[2].mapping[0]])
+    packed = packed.compose(flips, front=True)
+    if [r.name for r in packed.cregs] != [f"r{k}_phase" for k in range(3)]:
+        raise RuntimeError(f"packed registers are {[r.name for r in packed.cregs]}")
+    pub = Sampler(mode=backend).run([packed], shots=64).result()[0]
+    for replica in replicas:
+        single = packing.split(packed, replica.prefix, replica.qubits)
+        if single.num_clbits != 2 or not _is_dynamic(single):
+            raise RuntimeError(f"replica {replica.prefix} splits to {single.num_clbits} clbits")
+        counts = _pub_counts(pub, packing.registers(packed, replica.prefix), replica.prefix)
+        top = max(counts, key=lambda key: counts[key])
+        if top != ("00" if replica.index == 1 else "11") or counts[top] < 48:
+            raise RuntimeError(f"replica {replica.prefix} reads {counts}")
 
 
 def _verify_twirling_shot_contract() -> None:
@@ -83,11 +131,15 @@ def _verify() -> None:
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()
+    _verify_packed_replica_split()
     first_digest = experiment_digest()
     second_digest = experiment_digest()
     if len(first_digest) != 64 or first_digest != second_digest:
         raise RuntimeError("experiment source manifest digest is unstable")
-    print("runtime contracts: dynamic classification, nested operations, register order, and digest pass")
+    print(
+        "runtime contracts: dynamic classification, nested operations, register order, packed replica split, "
+        "and digest pass"
+    )
 
 
 if __name__ == "__main__":

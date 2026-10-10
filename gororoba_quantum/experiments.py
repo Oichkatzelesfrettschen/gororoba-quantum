@@ -11,12 +11,14 @@ from __future__ import annotations
 import math
 from collections.abc import Callable
 from dataclasses import dataclass
+from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit
 from qiskit.circuit import Parameter
 
 import predict
+import variance
 from cd_core import sedenion_zero_divisors
 from designs import (
     SPECTRUM_EXEMPLARS,
@@ -29,6 +31,7 @@ from factoring import distribution_success, ideal_phase_distribution, reference_
 from order_finding import factor_order_finding, folded_qpe
 
 Summary = Callable[[dict[str, np.ndarray]], dict[str, float]]
+Admission = Callable[[list[dict[str, float]], int], dict[str, Any]]
 
 
 @dataclass(frozen=True)
@@ -41,7 +44,9 @@ class Member:
     (live_run.select). mirror asks the compiler for a calibration twin cut from
     the member's compiled ISA circuit, on the same physical qubits with the same
     two-qubit content (live_run.mirror_isa); summaries find its distribution
-    under the member's name plus MIRROR_SUFFIX.
+    under the member's name plus MIRROR_SUFFIX. weights scores each outcome in
+    [0, 1] for the variance decomposition (variance.score); without it the
+    score follows the ideal.
     """
 
     name: str
@@ -49,6 +54,7 @@ class Member:
     ideal: np.ndarray
     binding: dict[Parameter, float] | None = None
     mirror: bool = False
+    weights: np.ndarray | None = None
 
 
 MIRROR_SUFFIX = "_mirror"
@@ -56,9 +62,19 @@ MIRROR_SUFFIX = "_mirror"
 
 @dataclass(frozen=True)
 class Group:
+    """Members that share one layout, their summary, and their replicated statistics.
+
+    instances names members that are equal-cost instances of one experiment
+    with comparable ideal-weighted scores, the instance axis of the variance
+    decomposition. admission turns per-replica summaries and the shots per
+    replica into an admission verdict for the group's claim.
+    """
+
     name: str
     members: tuple[Member, ...]
     summarize: Summary
+    instances: tuple[str, ...] = ()
+    admission: Admission | None = None
 
 
 def tvd(p: np.ndarray, q: np.ndarray) -> float:
@@ -227,7 +243,7 @@ def _folded_qpe_mod15() -> Group:
             "tvd_to_uniform_mean": float(np.mean([tvd(dist[f"folded_qpe_s{s}"], _uniform(2)) for s in range(4)])),
         }
 
-    return Group("folded_qpe_mod15", tuple(members), summarize)
+    return Group("folded_qpe_mod15", tuple(members), summarize, instances=tuple(f"folded_qpe_s{s}" for s in range(4)))
 
 
 def _hybrid_shor_mod15() -> Group:
@@ -240,9 +256,23 @@ def _hybrid_shor_mod15() -> Group:
     uniform_null = distribution_success(_uniform(phase_bits), phase_bits, modulus, base)
     primary_name = "hybrid_shor_N15_a2"
     null_name = "hybrid_shor_N15_a2_null"
+    # Every outcome of the pruned circuit lies in the ideal's support, so the
+    # ideal-weighted score is constant; each shot instead scores whether its
+    # outcome decodes to a verified factor.
+    factor_shot = np.array(
+        [
+            distribution_success(np.eye(1 << phase_bits)[y], phase_bits, modulus, base)["factorable_probability"]
+            for y in range(1 << phase_bits)
+        ]
+    )
     members = (
-        Member(primary_name, factor_order_finding(modulus, base, phase_bits), ideal),
-        Member(null_name, factor_order_finding(modulus, base, phase_bits, identity=True), null_ideal),
+        Member(primary_name, factor_order_finding(modulus, base, phase_bits), ideal, weights=factor_shot),
+        Member(
+            null_name,
+            factor_order_finding(modulus, base, phase_bits, identity=True),
+            null_ideal,
+            weights=factor_shot,
+        ),
     )
 
     def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
@@ -270,7 +300,28 @@ def _hybrid_shor_mod15() -> Group:
             "identity_null_p0": float(dist[null_name][0]),
         }
 
-    return Group("hybrid_shor_mod15", members, summarize)
+    def admit(per_replica: list[dict[str, float]], shots: int) -> dict[str, Any]:
+        """HYBRID_SHOR.md roadmap item 5 on the replicated yields.
+
+        A yield is admitted when its interval lower bound exceeds the exact
+        uniform-null yield and the identity null's upper bound stays below
+        that lower bound.
+        """
+        verdict: dict[str, Any] = {}
+        for quantity in ("factorable_probability", "order_recovery_probability"):
+            primary = variance.interval([r[quantity] for r in per_replica], shots, bernoulli=True)
+            null = variance.interval([r[f"identity_null_{quantity}"] for r in per_replica], shots, bernoulli=True)
+            uniform = per_replica[0][f"uniform_null_{quantity}"]
+            admitted = "lo" in primary and "hi" in null and primary["lo"] > uniform and null["hi"] < primary["lo"]
+            verdict[quantity] = {
+                "primary": primary,
+                "identity_null": null,
+                "uniform_null": uniform,
+                "admitted": admitted,
+            }
+        return verdict
+
+    return Group("hybrid_shor_mod15", members, summarize, admission=admit)
 
 
 def experiment_groups() -> list[Group]:

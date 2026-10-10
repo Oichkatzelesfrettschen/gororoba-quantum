@@ -18,6 +18,17 @@ chosen ISA circuits with noise from that same Target, after the Target's errors
 are checked against the properties fetched with it on every qubit and edge of
 the plan.
 
+The winning compile is then replicated (packing.py): every embedding of its
+qubit-and-edge pattern in the CZ coupling graph that avoids excluded hardware
+is scored, and disjoint placements, separated by one qubit, are taken best
+first while their layout score stays at least --replica-floor of the best,
+up to --max-replicas. Each member runs as one packed circuit carrying every
+replica on its own classical registers, so one shot yields one sample per
+replica; each replica is simulated, corrected, and replayed alone, and the
+replicas separate shot, layout, and instance variance (variance.py). The
+primary member also runs alone on replica 0's qubits as the crosstalk
+reference.
+
 --submit re-reads each chosen backend just before submission: a backend that
 left the eligibility gate fails the run, and a group whose calibration values
 moved on its qubits and edges recompiles and re-simulates;
@@ -58,7 +69,10 @@ from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
+import packing
+import variance
 from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
+from packing import Replica
 
 SHOTS = 4096
 # Mirror rescaling divides two noisy <Z> estimates; at 4096 shots their
@@ -76,7 +90,17 @@ DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
 MAX_REVALIDATION = 3
-RECORD_SCHEMA_VERSION = 2
+RECORD_SCHEMA_VERSION = 3
+# A replica is placed only while its layout score stays at least this fraction
+# of the best placement's, so packing fills the device with near-best hardware.
+DEFAULT_REPLICA_FLOOR = 0.9
+# The unpacked copy of a group's primary member on replica 0's qubits; its
+# difference from packed replica 0 measures crosstalk from the other replicas.
+ISOLATED_SUFFIX = "_isolated"
+# Pooled ODR divides replica-averaged witness and twin <Z>; a twin whose
+# replicas disagree beyond shot noise at this level has layout-dependent
+# attenuation, and the pooled quotient is withheld.
+ODR_POOL_MIN_P = 0.01
 
 EXPERIMENT_SOURCE_MANIFEST = (
     "boolean_anf.py",
@@ -87,8 +111,10 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "live_run.py",
     "modular_arithmetic.py",
     "order_finding.py",
+    "packing.py",
     "predict.py",
     "select_lcu.py",
+    "variance.py",
 )
 
 # Exclusion policy: values outside these bounds mark degraded hardware that the
@@ -329,8 +355,35 @@ def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, pro
 
 
 @dataclass
+class Entry:
+    """One PUB: the single-copy compiled base, its ideal, the packed circuit that runs, and its replicas.
+
+    replicas holds the single-replica circuits split from packed, in replica
+    order, each carrying only its own registers; simulation, readout
+    correction, and replay run on them, never on the packed width.
+    """
+
+    name: str
+    base: QuantumCircuit
+    ideal: np.ndarray
+    packed: QuantumCircuit
+    replicas: list[QuantumCircuit]
+    prefixes: list[str]
+    replica_qubits: list[list[int]]
+    reference: bool = False
+    weights: np.ndarray | None = None
+
+
+@dataclass(frozen=True)
+class ReplicaPolicy:
+    floor: float = DEFAULT_REPLICA_FLOOR
+    max_replicas: int | None = None
+    isolated_reference: bool = True
+
+
+@dataclass
 class Choice:
-    """The winning compile of a group, with mirror twins appended as entries."""
+    """The winning compile of a group, its replica placements, and its PUB entries."""
 
     group: Group
     snap: Snapshot
@@ -339,7 +392,8 @@ class Choice:
     isas: list[QuantumCircuit]
     member_scores: list[float]
     joint_score: float
-    entries: list[tuple[str, QuantumCircuit, np.ndarray]] = field(default_factory=list)
+    entries: list[Entry] = field(default_factory=list)
+    replicas: list[Replica] = field(default_factory=list)
 
 
 def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | None = None) -> QuantumCircuit:
@@ -437,25 +491,95 @@ def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
     return min(candidates, key=mismatch)
 
 
-def attach_mirrors(choice: Choice) -> Choice:
-    """Entries: every member's ISA, each followed directly by its mirror twin if it asks for one.
+def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], policy: ReplicaPolicy) -> list[Replica]:
+    """Disjoint placements of the group's compiled pattern on snap, best layout score first.
 
-    A twin placed next to its witness runs next to it in the job, which keeps
-    the pair inside one calibration whenever the job allows.
+    The pattern is every qubit and CZ edge the group's circuits touch, mirror
+    twins included, so one mapping moves every member consistently. A
+    placement is admissible when every moved operation exists in the Target
+    and avoids excluded qubits and edges; the score is the layout score of the
+    moved primary circuit, so ranking reads the same calibration as selection.
     """
-    choice.entries = []
+    target = snap.backend.target
+    base_ops = {op for isa in isas for op in _ops(isa)}
+    used, edges = packing.pattern(base_ops)
+    graph = packing.coupling_graph(target, snap.backend.num_qubits)
+
+    def admissible(mapping: dict[int, int]) -> bool:
+        for name, qargs in base_ops:
+            moved = tuple(mapping[q] for q in qargs)
+            if any(q in snap.excluded_qubits for q in moved):
+                return False
+            if name == "cz" and (moved in snap.excluded_edges or moved[::-1] in snap.excluded_edges):
+                return False
+            if name not in target.operation_names or moved not in target[name]:
+                return False
+        return True
+
+    def score(mapping: dict[int, int]) -> float:
+        return layout_score(packing.relabel(isas[0], mapping, ""), target)
+
+    replicas = packing.place(used, edges, graph, admissible, score, policy.floor, policy.max_replicas)
+    if not replicas:
+        raise LiveRunError(f"{snap.name}: no admissible placement of the compiled pattern")
+    return replicas
+
+
+def _entry(
+    name: str, base: QuantumCircuit, ideal: np.ndarray, replicas: list[Replica], weights: np.ndarray | None = None
+) -> Entry:
+    packed = packing.pack(base, replicas, name)
+    return Entry(
+        weights=weights,
+        name=name,
+        base=base,
+        ideal=ideal,
+        packed=packed,
+        replicas=[packing.split(packed, r.prefix, r.qubits, name) for r in replicas],
+        prefixes=[r.prefix for r in replicas],
+        replica_qubits=[r.qubits for r in replicas],
+    )
+
+
+def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
+    """Entries: each member packed over the replicas, followed directly by its packed mirror twin.
+
+    A twin is cut from the member's single-copy ISA and packed with the same
+    placements, so replica k of a witness and of its twin occupy the same
+    qubits; adjacent in the job, the pair stays inside one calibration
+    whenever the job allows. With more than one replica, the primary member
+    also runs alone on replica 0's qubits as the crosstalk reference.
+    """
+    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] = []
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
-        choice.entries.append((member.name, isa, member.ideal))
+        bases.append((member.name, isa, member.ideal, member.weights))
         if member.mirror:
             name = member.name + MIRROR_SUFFIX
-            twin = mirror_isa(isa, choice.snap.backend, name)
             zeros = np.zeros(2**member.circuit.num_clbits)
             zeros[0] = 1.0
-            choice.entries.append((name, twin, zeros))
+            bases.append((name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
+    choice.replicas = place_replicas(choice.snap, [base[1] for base in bases], policy)
+    choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
+    if policy.isolated_reference and len(choice.replicas) > 1:
+        primary = choice.entries[0]
+        alone = primary.replicas[0].copy(name=primary.name + ISOLATED_SUFFIX)
+        choice.entries.append(
+            Entry(
+                name=alone.name,
+                base=primary.base,
+                ideal=primary.ideal,
+                packed=alone,
+                replicas=[alone],
+                prefixes=primary.prefixes[:1],
+                replica_qubits=primary.replica_qubits[:1],
+                reference=True,
+                weights=primary.weights,
+            )
+        )
     return choice
 
 
-def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any]) -> Choice:
+def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any], policy: ReplicaPolicy) -> Choice:
     """Best (backend, seed, layout) for the group by geometric-mean layout score over its members."""
     best: Choice | None = None
     log[group.name] = {}
@@ -494,7 +618,7 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any])
                 best = Choice(group, snap, seed, layout, isas, scores, joint)
     if best is None:
         raise LiveRunError(f"{group.name}: no eligible backend produced a layout clear of excluded hardware")
-    return attach_mirrors(best)
+    return build_entries(best, policy)
 
 
 def _distribution(counts: dict[str, int], clbits: int) -> np.ndarray:
@@ -504,14 +628,17 @@ def _distribution(counts: dict[str, int], clbits: int) -> np.ndarray:
     return np.asarray(dist / dist.sum())
 
 
-def _pub_counts(pub: Any, isa: QuantumCircuit) -> dict[str, int]:
-    """Join every classical register in circuit order into global clbit order."""
-    register_names = [register.name for register in isa.cregs]
+def _pub_counts(pub: Any, register_names: list[str], label: str) -> dict[str, int]:
+    """Join the named classical registers, in the given order, into one bit string per shot.
+
+    Passing one replica's registers in circuit order yields that replica's
+    counts in its own clbit order.
+    """
     if not register_names:
-        raise LiveRunError(f"{isa.name}: result decoder needs at least one classical register")
+        raise LiveRunError(f"{label}: result decoder needs at least one classical register")
     joined = pub.join_data(register_names)
     if not hasattr(joined, "get_counts"):
-        raise LiveRunError(f"{isa.name}: joined result data does not provide bit counts")
+        raise LiveRunError(f"{label}: joined result data does not provide bit counts")
     return dict(joined.get_counts())
 
 
@@ -566,12 +693,25 @@ def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
     return AerSimulator.from_backend(view, noise_model=noise)
 
 
-def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, np.ndarray]:
-    out = {}
-    for name, isa, _ in choice.entries:
-        counts = noise.run(isa, shots=shots, seed_simulator=SEED_SIMULATOR).result().get_counts()
-        out[name] = _distribution(counts, isa.num_clbits)
-    return out
+def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[np.ndarray]]:
+    """Noisy distribution of every entry's every replica, each simulated as its own single-replica circuit.
+
+    The noise model carries no crosstalk between replicas, so a replica alone
+    and a replica inside the packed circuit simulate identically.
+    """
+    return {entry.name: run_replicas(noise, entry, shots, SEED_SIMULATOR) for entry in choice.entries}
+
+
+def run_replicas(noise: Any, entry: Entry, shots: int, seed: int) -> list[np.ndarray]:
+    """Noisy distributions of entry's replicas from one batched run, in replica order.
+
+    Aer derives each experiment's seed from seed_simulator and the
+    experiment's position in the batch, so planning and --collect, which both
+    batch an entry's replicas in replica order under the record's seed,
+    replay identical noise draws.
+    """
+    result = noise.run(entry.replicas, shots=shots, seed_simulator=seed, max_parallel_experiments=0).result()
+    return [_distribution(result.get_counts(k), rep.num_clbits) for k, rep in enumerate(entry.replicas)]
 
 
 def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
@@ -605,26 +745,78 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetr
 
 
 def corrected_summary(
-    group: Group, dists: dict[str, tuple[np.ndarray, QuantumCircuit]], props: Any, symmetric: bool = False
+    group: Group, entries: list[Entry], dists: dict[str, list[np.ndarray]], props: Any, symmetric: bool = False
 ) -> Any:
-    """The group summary on readout-inverted distributions, or why it is skipped.
+    """The pooled group summary on readout-inverted replica distributions, or why it is skipped.
 
     readout_corrected assumes each classical bit passes through its own
     output-only channel. In a feed-forward circuit a misread mid-circuit bit
     also steers the conditional gate, so the second bit's distribution depends
     on the first readout error and the separable inversion is biased; such
-    groups report the reason instead of a corrected summary. props is one
-    properties object, or a per-circuit mapping when circuits ran under
-    different calibrations.
+    groups report the reason instead of a corrected summary. Each replica is
+    inverted with the channels of its own readout qubits before the replicas
+    are averaged. props is one properties object, or a per-circuit mapping
+    when circuits ran under different calibrations.
     """
-    if any(_is_dynamic(isa) for _, isa in dists.values()):
+    runs = [e for e in entries if not e.reference]
+    if any(_is_dynamic(e.replicas[0]) for e in runs):
         return {"skipped": "feed-forward circuits: readout error steers the conditional branch"}
-    return group.summarize(
-        {
-            name: readout_corrected(dist, isa, props[name] if isinstance(props, dict) else props, symmetric)
-            for name, (dist, isa) in dists.items()
+    pooled = {}
+    for e in runs:
+        own = props[e.name] if isinstance(props, dict) else props
+        corrected = [
+            readout_corrected(d, rep, own, symmetric) for d, rep in zip(dists[e.name], e.replicas, strict=True)
+        ]
+        pooled[e.name] = np.mean(corrected, axis=0)
+    return group.summarize(pooled)
+
+
+def replica_statistics(
+    group: Group, entries: list[Entry], dists: dict[str, list[np.ndarray]], shots: int
+) -> dict[str, Any]:
+    """Pooled, per-replica, interval, variance, crosstalk, and admission views of one group's replicas.
+
+    The pooled summary averages each member's replica distributions, which
+    hold equal shots. summary_interval spans each summary value over the
+    replicas. variance decomposes every entry's ideal-weighted score into shot
+    and layout variance, and instance_variance adds the instance axis over the
+    group's declared instances. crosstalk compares the primary's isolated
+    reference with packed replica 0 on the same qubits.
+    """
+    runs = [e for e in entries if not e.reference]
+    count = len(runs[0].replicas)
+    per_replica = [group.summarize({e.name: dists[e.name][k] for e in runs}) for k in range(count)]
+    pooled = group.summarize({e.name: np.mean(dists[e.name], axis=0) for e in runs})
+    out: dict[str, Any] = {"summary": pooled, "summary_per_replica": per_replica}
+    if count >= 2:
+        out["summary_interval"] = {
+            key: variance.interval([r[key] for r in per_replica], shots, bernoulli=False)
+            for key in pooled
+            if all(math.isfinite(r[key]) for r in per_replica)
         }
-    )
+    scores = {e.name: [variance.score(d, e.ideal, e.weights) for d in dists[e.name]] for e in runs}
+    out["variance"] = {
+        name: variance.decompose([m for m, _ in pairs], [v for _, v in pairs], shots) for name, pairs in scores.items()
+    }
+    if group.instances and count >= 2:
+        table = np.array([[m for m, _ in scores[n]] for n in group.instances])
+        spread = np.array([[v for _, v in scores[n]] for n in group.instances])
+        out["instance_variance"] = variance.instance_layout(table, spread, shots)
+    for e in entries:
+        if e.reference:
+            iso, iso_var = variance.score(dists[e.name][0], e.ideal, e.weights)
+            packed, packed_var = scores[runs[0].name][0]
+            sd = math.sqrt((iso_var + packed_var) / shots)
+            out["crosstalk"] = {
+                "isolated_score": iso,
+                "packed_replica0_score": packed,
+                "difference": packed - iso,
+                "z": (packed - iso) / sd if sd > 0 else None,
+                "tvd": tvd(dists[e.name][0], dists[runs[0].name][0]),
+            }
+    if group.admission is not None:
+        out["admission"] = group.admission(per_replica, shots)
+    return out
 
 
 def experiment_digest() -> str:
@@ -667,26 +859,36 @@ def _physical(isa: QuantumCircuit) -> list[int]:
     return sorted({q for _, qargs in _ops(isa) for q in qargs})
 
 
-def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibration: str) -> dict[str, Any]:
+def _choice_record(
+    choice: Choice, noisy: dict[str, list[np.ndarray]], noise_calibration: str, shots: int
+) -> dict[str, Any]:
     target = choice.snap.backend.target
     members = []
-    for name, isa, ideal in choice.entries:
-        dynamic = _is_dynamic(isa)
+    for entry in choice.entries:
+        dynamic = _is_dynamic(entry.base)
         members.append(
             {
-                "name": name,
-                "cz": isa.count_ops().get("cz", 0),
-                "depth": isa.depth(),
-                "duration_s": duration_s(isa, target),
+                "name": entry.name,
+                "reference": entry.reference,
+                "cz": entry.base.count_ops().get("cz", 0),
+                "depth": entry.base.depth(),
                 "duration_bound": "lower_without_classical_latency" if dynamic else "scheduled",
                 "dynamic": dynamic,
-                "feed_forward": any(isinstance(i.operation, ControlFlowOp) for i in isa.data),
-                "physical_qubits": _physical(isa),
-                "esp": esp(isa, target),
-                "coherence": coherence(isa, target),
-                "ideal": [round(float(p), 12) for p in ideal],
-                "noisy": [round(float(p), 6) for p in noisy[name]],
-                "tvd_noisy_to_ideal": tvd(noisy[name], ideal),
+                "feed_forward": any(isinstance(i.operation, ControlFlowOp) for i in entry.base.data),
+                "replica_prefixes": entry.prefixes,
+                "replica_qubits": entry.replica_qubits,
+                "ideal": [round(float(p), 12) for p in entry.ideal],
+                "replicas": [
+                    {
+                        "physical_qubits": _physical(rep),
+                        "duration_s": duration_s(rep, target),
+                        "esp": esp(rep, target),
+                        "coherence": coherence(rep, target),
+                        "noisy": [round(float(p), 6) for p in dist],
+                        "tvd_noisy_to_ideal": tvd(dist, entry.ideal),
+                    }
+                    for rep, dist in zip(entry.replicas, noisy[entry.name], strict=True)
+                ],
             }
         )
     return {
@@ -697,12 +899,19 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
         "seed_transpiler": choice.seed,
         "initial_layout": choice.layout,
         "joint_score": choice.joint_score,
-        "summary": choice.group.summarize(noisy),
-        "summary_readout_corrected": corrected_summary(
-            choice.group,
-            {name: (noisy[name], isa) for name, isa, _ in choice.entries},
-            choice.snap.properties,
-        ),
+        "replicas": [
+            {
+                "index": r.index,
+                "prefix": r.prefix,
+                "score": r.score,
+                "physical_qubits": r.qubits,
+                "initial_layout": [r.mapping.get(q) for q in choice.layout],
+                "mapping": {str(k): v for k, v in sorted(r.mapping.items())},
+            }
+            for r in choice.replicas
+        ],
+        **replica_statistics(choice.group, choice.entries, noisy, shots),
+        "summary_readout_corrected": corrected_summary(choice.group, choice.entries, noisy, choice.snap.properties),
         "members": members,
     }
 
@@ -731,14 +940,21 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         raise LiveRunError("no eligible backend")
     groups = [g for g in experiment_groups() if not args.groups or g.name in args.groups]
     trace: dict[str, Any] = {}
-    choices = [select(group, snaps, args.seeds, trace) for group in groups]
+    choices = [select(group, snaps, args.seeds, trace, _policy(args)) for group in groups]
     record = {
         "schema_version": RECORD_SCHEMA_VERSION,
         "state": "planned",
         "started": args.started,
         "versions": {pkg: version(pkg) for pkg in ("qiskit", "qiskit-aer", "qiskit-ibm-runtime")},
         "policy": QUALITY
-        | {"max_pending": args.max_pending, "seeds": args.seeds, "joint_candidates": JOINT_CANDIDATES},
+        | {
+            "max_pending": args.max_pending,
+            "seeds": args.seeds,
+            "joint_candidates": JOINT_CANDIDATES,
+            "replica_floor": args.replica_floor,
+            "max_replicas": args.max_replicas,
+            "isolated_reference": args.isolated_reference,
+        },
         "shots": args.shots,
         "seed_simulator": SEED_SIMULATOR,
         "experiment_digest": experiment_digest(),
@@ -750,6 +966,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     return choices, record
 
 
+def _policy(args: argparse.Namespace) -> ReplicaPolicy:
+    return ReplicaPolicy(args.replica_floor, args.max_replicas, args.isolated_reference)
+
+
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     """Noise-simulate each choice under its backend's live properties, after proving they match the Target."""
     # One simulator per snapshot: a group recompiled on a fresh snapshot of a
@@ -757,7 +977,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     sims: dict[int, tuple[AerSimulator, str]] = {}
     record["groups"] = []
     for choice in choices:
-        isas = [isa for _, isa, _ in choice.entries]
+        isas = [entry.packed for entry in choice.entries]
         check_target_matches_properties(isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name)
         key = id(choice.snap)
         if key not in sims:
@@ -767,13 +987,15 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             )
         sim, cal = sims[key]
         noisy = simulate(choice, sim, int(record["shots"]))
-        entry = _choice_record(choice, noisy, cal)
+        entry = _choice_record(choice, noisy, cal, int(record["shots"]))
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
         summary = {k: round(v, 4) for k, v in entry["summary"].items()}
+        scores = [round(r.score, 4) for r in choice.replicas]
         print(
             f"{choice.group.name}: {choice.snap.name} seed={choice.seed} layout={choice.layout} "
-            f"joint_score={choice.joint_score:.4f} cz={cz} summary={summary}"
+            f"joint_score={choice.joint_score:.4f} replicas={len(choice.replicas)} scores={scores} "
+            f"cz={cz} summary={summary}"
         )
 
 
@@ -818,11 +1040,13 @@ def submit(
             reason = fresh.ineligible_reason(args.max_pending)
             if reason:
                 raise LiveRunError(f"{name} left the eligibility gate before submission ({reason}); rerun to replan")
-            isas = [isa for _, isa, _ in choice.entries]
+            isas = [entry.packed for entry in choice.entries]
             before = fingerprint(isas, choice.snap.properties)
             if fingerprint(isas, fresh.properties) != before or _any_violation(isas, fresh):
                 print(f"{choice.group.name}: calibration moved on {name}; recompiling")
-                choices[idx] = select(choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}))
+                choices[idx] = select(
+                    choice.group, [fresh], args.seeds, record.setdefault("reselection_trace", {}), _policy(args)
+                )
                 moved = True
         if not moved:
             break
@@ -848,7 +1072,7 @@ def submit(
         # usage() reports the active instance, so each job's budget is checked
         # against the instance that pays for it.
         backend = service.backend(name)
-        entries = [(entry_name, isa) for c in group_choices for entry_name, isa, _ in c.entries]
+        entries = [(entry.name, entry.packed) for c in group_choices for entry in c.entries]
         # Circuits with mid-circuit measurement, reset, or feed-forward go in
         # their own job, which configure_sampler keeps free of twirling and DD.
         static = [(n, isa) for n, isa in entries if not _is_dynamic(isa)]
@@ -981,21 +1205,32 @@ def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
     return windows
 
 
-def _odr_withheld_reason(names: list[str], executed: dict[str, dict[str, Any]], shots: int) -> str | None:
-    """Why a group's mirror-rescaled values are not valid, or None when they are.
+def _odr_withheld(
+    names: list[str], executed: dict[str, dict[str, Any]], shots: int, replicas: int, twin_p_values: list[float]
+) -> tuple[str | None, str | None]:
+    """Why the pooled and the per-replica mirror-rescaled values are not valid, or None for each that is.
 
-    Rescaling divides a witness's <Z> by its twin's attenuation, which is a
-    correction only when both ran under one calibration and enough shots make
-    the quotient significant.
+    Rescaling divides a witness's <Z> by its twin's attenuation, a correction
+    only when both ran under one calibration. A replica's own quotient needs
+    ODR_MIN_SHOTS shots. The pooled quotient divides replica-averaged <Z>
+    values, which needs ODR_MIN_SHOTS shots over all replicas together and
+    every twin's replicas agreeing within shot noise (chi-squared p at least
+    ODR_POOL_MIN_P), so the averaged attenuation describes each replica.
     """
     if not any(name.endswith(MIRROR_SUFFIX) for name in names):
-        return None
-    if shots < ODR_MIN_SHOTS:
-        return f"{shots} shots per circuit; ODR needs at least {ODR_MIN_SHOTS}"
+        return None, None
     ran = [executed[n] for n in names if n in executed]
     if any(e["calibration_changed_during_shots"] for e in ran) or len({e["calibration"] for e in ran}) > 1:
-        return "witnesses and mirror twins did not all run under one calibration"
-    return None
+        reason = "witnesses and mirror twins did not all run under one calibration"
+        return reason, reason
+    per_replica = f"{shots} shots per replica; ODR needs at least {ODR_MIN_SHOTS}" if shots < ODR_MIN_SHOTS else None
+    if shots * replicas < ODR_MIN_SHOTS:
+        pooled: str | None = f"{shots} shots on each of {replicas} replicas; pooled ODR needs {ODR_MIN_SHOTS} in total"
+    elif any(p < ODR_POOL_MIN_P for p in twin_p_values):
+        pooled = f"mirror twin attenuation differs across replicas (chi-squared p < {ODR_POOL_MIN_P})"
+    else:
+        pooled = None
+    return pooled, per_replica
 
 
 def _without_odr(summary: dict[str, Any], withheld: str | None) -> dict[str, Any]:
@@ -1005,17 +1240,55 @@ def _without_odr(summary: dict[str, Any], withheld: str | None) -> dict[str, Any
     return {k: v for k, v in summary.items() if "odr" not in k and not k.startswith("mirror_z")}
 
 
+def _gate_odr(stats: dict[str, Any], pooled: str | None, per_replica: str | None) -> dict[str, Any]:
+    """stats with ODR values removed from the pooled and the per-replica views each gate withholds."""
+    stats["summary"] = _without_odr(stats["summary"], pooled)
+    stats["summary_per_replica"] = [_without_odr(r, per_replica) for r in stats["summary_per_replica"]]
+    if "summary_interval" in stats:
+        stats["summary_interval"] = _without_odr(stats["summary_interval"], per_replica)
+    return stats
+
+
+def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
+    """Each group's entries rebuilt from the archived packed circuits and the record's replica layout."""
+    weights = {m.name: m.weights for g in experiment_groups() for m in g.members}
+    out: dict[str, list[Entry]] = {}
+    for group in record["groups"]:
+        entries = out.setdefault(group["group"], [])
+        for member in group["members"]:
+            packed = isas[member["name"]]
+            replicas = [
+                packing.split(packed, prefix, qubits, member["name"])
+                for prefix, qubits in zip(member["replica_prefixes"], member["replica_qubits"], strict=True)
+            ]
+            entries.append(
+                Entry(
+                    name=member["name"],
+                    base=replicas[0],
+                    ideal=np.asarray(member["ideal"]),
+                    packed=packed,
+                    replicas=replicas,
+                    prefixes=member["replica_prefixes"],
+                    replica_qubits=member["replica_qubits"],
+                    reference=member["reference"],
+                    weights=weights.get(member["name"].removesuffix(ISOLATED_SUFFIX)),
+                )
+            )
+    return out
+
+
 def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
-    """Measured distributions against the noise model of the calibration in force at execution."""
+    """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
     with open(run_dir / "isa.qpy", "rb") as handle:
         isas = {c.name: c for c in qpy.load(handle)}
     groups = {g.name: g for g in experiment_groups()}
-    if record.get("experiment_digest") != experiment_digest():
+    if record.get("experiment_digest") != experiment_digest() or record.get("schema_version") != RECORD_SCHEMA_VERSION:
         commit = record.get("code_commit", {}).get("head")
         raise LiveRunError(
-            f"experiment definitions differ from the run's (digest {record.get('experiment_digest')}); "
-            f"collect from commit {commit}, where groups, ideals, and summaries match the archived circuits"
+            f"experiment definitions or record schema differ from the run's (digest "
+            f"{record.get('experiment_digest')}, schema {record.get('schema_version')}); collect from commit "
+            f"{commit}, where groups, ideals, summaries, and replica decoding match the archived circuits"
         )
     if "submission" not in record:
         raise LiveRunError(f"{run_dir} is a dry-run record with no submitted jobs to collect")
@@ -1027,6 +1300,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             f"incomplete submission: no job was sent to {unsent}; collecting the {len(sent)} that were", file=sys.stderr
         )
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
+    by_group = _archived_entries(record, isas)
+    by_name = {e.name: e for entries in by_group.values() for e in entries}
     out: list[dict[str, Any]] = [
         {"submission_complete": bool(submission.get("complete", False)), "unsent_backends": unsent}
     ]
@@ -1051,18 +1326,20 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 )
                 starting = [isas[n] for (st, _), n in zip(windows, members, strict=True) if st == start]
                 check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
-        measured: dict[str, np.ndarray] = {}
+        measured: dict[str, list[np.ndarray]] = {}
         props_by_name: dict[str, Any] = {}
-        replayed: dict[str, np.ndarray] = {}
+        replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
         for idx, (name, pub) in enumerate(zip(members, result, strict=True)):
-            isa = isas[name]
+            entry = by_name[name]
             start, stop = windows[idx]
             props_then, sim_then = at[start]
-            measured[name] = _distribution(_pub_counts(pub, isa), isa.num_clbits)
+            measured[name] = [
+                _distribution(_pub_counts(pub, packing.registers(entry.packed, prefix), name), rep.num_clbits)
+                for prefix, rep in zip(entry.prefixes, entry.replicas, strict=True)
+            ]
             props_by_name[name] = props_then
-            counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
-            replayed[name] = _distribution(counts, isa.num_clbits)
+            replayed[name] = run_replicas(sim_then, entry, shots, seed)
             stop_calibration = backend.properties(datetime=stop).last_update_date
             executed[name] = {
                 "start": start.isoformat(),
@@ -1070,52 +1347,56 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "calibration": props_then.last_update_date.isoformat(),
                 "calibration_changed_during_shots": stop_calibration != props_then.last_update_date,
             }
-        for gname, group in groups.items():
-            present = [n for n in measured if n in {m.name for m in group.members}]
-            if not present:
+        for gname, entries in by_group.items():
+            required = [e.name for e in entries]
+            if not any(n in measured for n in required):
                 continue
-            # A summary needs every member and every mirror twin; a job that
-            # lacks some still reports the distributions it has.
-            required = [m.name for m in group.members] + [m.name + MIRROR_SUFFIX for m in group.members if m.mirror]
+            group = groups[gname]
+            # A summary needs every entry of the group; a job that lacks some
+            # still reports the distributions it has.
             missing = [n for n in required if n not in measured]
-            entry: dict[str, Any] = {
+            out_entry: dict[str, Any] = {
                 "group": gname,
                 "backend": job_entry["backend"],
                 "executed": {n: executed[n] for n in required if n in executed},
                 "job_usage": metrics.get("usage"),
-                "measured": {n: [round(float(p), 6) for p in measured[n]] for n in required if n in measured},
+                "measured": {
+                    n: [[round(float(p), 6) for p in dist] for dist in measured[n]] for n in required if n in measured
+                },
             }
             # A circuit whose shots straddle a calibration update has no single
             # calibration to correct or replay against; its group keeps the raw
             # measurement and states why the rest is absent.
             straddling = [n for n in required if n in executed and executed[n]["calibration_changed_during_shots"]]
             if missing:
-                entry["summary_unavailable"] = f"missing {missing}"
+                out_entry["summary_unavailable"] = f"missing {missing}"
+                out.append(out_entry)
+                continue
+            stats = replica_statistics(group, entries, measured, shots)
+            twin_p = [float(stats["variance"][n].get("p_value", 1.0)) for n in required if n.endswith(MIRROR_SUFFIX)]
+            # A failed ODR gate removes the mirror-rescaled values from every
+            # view the entry publishes, measured, readout-corrected, and
+            # replayed alike.
+            pooled_reason, replica_reason = _odr_withheld(required, executed, shots, len(entries[0].replicas), twin_p)
+            if pooled_reason or replica_reason:
+                out_entry["odr_withheld"] = {"pooled": pooled_reason, "per_replica": replica_reason}
+            out_entry["measured_statistics"] = _gate_odr(stats, pooled_reason, replica_reason)
+            if straddling:
+                out_entry["calibration_dependent_summaries_unavailable"] = (
+                    f"calibration changed during the shots of {straddling}"
+                )
             else:
-                # A failed ODR gate removes the mirror-rescaled values from
-                # every summary the entry publishes, measured, readout-corrected,
-                # and replayed alike.
-                withheld = _odr_withheld_reason(required, executed, shots)
-                if withheld:
-                    entry["odr_withheld"] = withheld
-                entry["measured_summary"] = _without_odr(group.summarize(measured), withheld)
-                if straddling:
-                    entry["calibration_dependent_summaries_unavailable"] = (
-                        f"calibration changed during the shots of {straddling}"
-                    )
-                else:
-                    entry["measured_summary_readout_corrected"] = _without_odr(
-                        corrected_summary(
-                            group,
-                            {n: (measured[n], isas[n]) for n in required},
-                            props_by_name,
-                            symmetric=twirled_readout,
-                        ),
-                        withheld,
-                    )
-                    entry["replayed_summary"] = _without_odr(group.summarize(replayed), withheld)
-                    entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
-            out.append(entry)
+                out_entry["measured_summary_readout_corrected"] = _without_odr(
+                    corrected_summary(group, entries, measured, props_by_name, symmetric=twirled_readout),
+                    pooled_reason,
+                )
+                out_entry["replayed_statistics"] = _gate_odr(
+                    replica_statistics(group, entries, replayed, shots), pooled_reason, replica_reason
+                )
+                out_entry["tvd_measured_to_replayed"] = {
+                    n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
+                }
+            out.append(out_entry)
     text = json.dumps(out, indent=2) + "\n"
     _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
     print(json.dumps(out, indent=2))
@@ -1124,7 +1405,14 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
 def _positive_int(text: str) -> int:
     value = int(text)
     if value < 1:
-        raise argparse.ArgumentTypeError(f"needs a positive shot count, got {value}")
+        raise argparse.ArgumentTypeError(f"needs a positive count, got {value}")
+    return value
+
+
+def _fraction(text: str) -> float:
+    value = float(text)
+    if not 0.0 < value <= 1.0:
+        raise argparse.ArgumentTypeError(f"needs a fraction in (0, 1], got {value}")
     return value
 
 
@@ -1146,6 +1434,21 @@ def main(argv: list[str] | None = None) -> int:
             f"--twirl submission needs at least {TWIRLING_RANDOMIZATIONS * TWIRLING_MIN_SHOTS_PER_RANDOMIZATION} "
             f"and a multiple of {TWIRLING_RANDOMIZATIONS}"
         ),
+    )
+    parser.add_argument(
+        "--replica-floor",
+        type=_fraction,
+        default=DEFAULT_REPLICA_FLOOR,
+        help="place a disjoint replica only while its layout score is at least this fraction of the best",
+    )
+    parser.add_argument(
+        "--max-replicas", type=_positive_int, help="cap on disjoint replicas per group; default fills the device"
+    )
+    parser.add_argument(
+        "--isolated-reference",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="run each replicated group's primary alone on replica 0 as the crosstalk reference",
     )
     parser.add_argument("--twirl", action="store_true", help="Pauli-twirl gates and measurements on submission")
     parser.add_argument("--dd", choices=("XX", "XpXm", "XY4"), help="dynamical decoupling sequence on submission")
@@ -1198,12 +1501,12 @@ def _replace_atomically(target: Path, write: Callable[[Any], None], mode: str) -
 
 
 def write_archive(run_dir: Path, choices: list[Choice]) -> None:
-    """The run's ISA circuits as QPY, named by member."""
+    """The packed circuits that run, as QPY, named by entry."""
     archived = []
     for choice in choices:
-        for name, isa, _ in choice.entries:
-            named = copy.copy(isa)
-            named.name = name
+        for entry in choice.entries:
+            named = copy.copy(entry.packed)
+            named.name = entry.name
             archived.append(named)
     _replace_atomically(run_dir / "isa.qpy", lambda handle: qpy.dump(archived, handle), "wb")
 
