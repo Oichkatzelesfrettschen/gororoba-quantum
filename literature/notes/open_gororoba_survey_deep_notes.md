@@ -370,8 +370,9 @@ n = 1..10 (`fold.py`).
 Meaning: "doubling" is a conditional swap of the two index registers, a
 diagonal correction, and one multi-controlled phase testing q' = 0. The
 q' = 0 test is the identity-element exception in CD conjugation
-(`conj(e_0) = e_0`, `conj(e_k) = -e_k`), and it is the sole source of the
-top-degree monomials.
+(`conj(e_0) = e_0`, `conj(e_k) = -e_k`), and it is one source of top-degree
+monomials. The conditional swap's b(f + f^T) term is another: the cubic
+monomials of f_3 are a q0 q1 from a z(q') and p1 q0 b and p0 q1 b from the swap.
 
 ### 8.2 Circuit consequence
 
@@ -642,7 +643,7 @@ def wht_rows(M):
 ### 9.2 checks.py
 
 ```python
-"""Independent checks on the CD sign function. Run: PYTHON=${PYTHON:-python3}; $PYTHON -I checks.py"""
+"""Independent checks on the CD sign function. Run from the directory holding cdlib.py: PYTHON=${PYTHON:-python3}; $PYTHON checks.py"""
 import numpy as np
 from cdlib import sign, signtab, anf, anf_rows, popcount_table, wht_rows
 
