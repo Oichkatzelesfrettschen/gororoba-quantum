@@ -4,7 +4,8 @@
 # shellcheck disable=SC2016
 # Report, per pull request, the head commit, the state of the Codex review, the
 # latest Codex verdict, and every unresolved review thread: its root comment
-# id, path, and full body, which is what triage reads.
+# id, path, and every comment in it with its author, so a rejection posted after
+# an answer is read with the finding.
 # Usage: scripts/codex_review_status.sh PR [PR...]
 set -eu
 
@@ -20,14 +21,19 @@ for pr in "$@"; do
     # verdict are found however many comments the PR carries. The bot keeps
     # one summary comment per PR and edits it; it reads Running while a review
     # is in progress.
-    state=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
+    # Each request's output lands in a variable before the last match is taken,
+    # so a failed request stops the script under set -e instead of being masked
+    # by a pipeline that ends in tail.
+    states=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
         .[] | select(.user.login | test("codex"; "i"))
             | select(.body | test("codex-pull-request-review-summary"))
-            | if (.body | test("Running")) then "running" else "done" end' | tail -n 1)
-    verdict=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
+            | if (.body | test("Running")) then "running" else "done" end')
+    verdicts=$(gh api --paginate "repos/$slug/issues/$pr/comments" --jq '
         .[] | select(.user.login | test("codex"; "i"))
             | select(.body | test("codex-pull-request-review-summary") | not)
-            | (.created_at + " " + (.body | split("\n")[0]))' | tail -n 1)
+            | (.created_at + " " + (.body | split("\n")[0]))')
+    state=$(printf '%s\n' "$states" | tail -n 1)
+    verdict=$(printf '%s\n' "$verdicts" | tail -n 1)
     echo "PR $pr head=$head review=${state:-none} latest-verdict: ${verdict:-no clean-review comment}"
     # GraphQL pagination: gh api --paginate follows pageInfo.endCursor.
     gh api graphql --paginate -F owner="$owner" -F repo="$repo" -F pr="$pr" -f query='
@@ -36,13 +42,21 @@ for pr in "$@"; do
             pullRequest(number: $pr) {
               reviewThreads(first: 100, after: $endCursor) {
                 pageInfo { hasNextPage endCursor }
-                nodes { isResolved comments(first: 1) { nodes { databaseId path line body } } }
+                nodes {
+                  isResolved
+                  root: comments(first: 1) { nodes { databaseId path line } }
+                  comments(last: 100) { nodes { author { login } body } }
+                }
               }
             }
           }
         }' --jq '.data.repository.pullRequest.reviewThreads.nodes[]
-                 | select(.isResolved | not) | .comments.nodes[0]
-                 | "--- open \(.databaseId) \(.path):\(.line // "?")\n\(.body
-                     | gsub("<sub><sub>!\\[(?<b>P[0-9]) Badge\\]\\([^)]*\\)</sub></sub>"; "[\(.b)]")
-                     | gsub("\n\nUseful\\? React with[^\n]*"; ""))\n"'
+                 | select(.isResolved | not)
+                 | .root.nodes[0] as $root
+                 | "--- open \($root.databaseId) \($root.path):\($root.line // "?")\n"
+                   + ([.comments.nodes[]
+                       | "[\(.author.login)] " + (.body
+                         | gsub("<sub><sub>!\\[(?<b>P[0-9]) Badge\\]\\([^)]*\\)</sub></sub>"; "[\(.b)]")
+                         | gsub("\n\nUseful\\? React with[^\n]*"; ""))]
+                      | join("\n\n")) + "\n"'
 done
