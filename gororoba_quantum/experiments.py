@@ -14,6 +14,7 @@ from dataclasses import dataclass
 
 import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.circuit import Parameter
 
 import predict
 from cd_core import sedenion_zero_divisors
@@ -21,7 +22,6 @@ from designs import (
     SPECTRUM_EXEMPLARS,
     SWEEP_PHASES,
     design_a_associator,
-    design_b_zero_divisor,
     design_c_associator_spectrum,
     design_d_phase_sweep,
 )
@@ -31,9 +31,17 @@ Summary = Callable[[dict[str, np.ndarray]], dict[str, float]]
 
 @dataclass(frozen=True)
 class Member:
+    """One circuit of a group; binding assigns the parameters of a shared circuit.
+
+    Members whose circuit is the same parametrized object as the group's
+    primary compile once and differ only by bound angles, so they share routing
+    and readout qubits (live_run.select).
+    """
+
     name: str
     circuit: QuantumCircuit
     ideal: np.ndarray
+    binding: dict[Parameter, float] | None = None
 
 
 @dataclass(frozen=True)
@@ -71,20 +79,31 @@ def _design_a() -> Group:
 
 
 def _zero_divisor_fringe() -> Group:
+    """Design B dark and bright and the design D sweep as bindings of one circuit.
+
+    b = (e_k + e^{i phi} e_l)/sqrt2 covers all of them: phi = pi for s = -1 is
+    the zero divisor, phi = 0 its sign-flipped control, and the sweep phases
+    the fringe. One parametrized circuit gives every member the same compiled
+    routing and readout qubit, so the suppression ratio and the fringe compare
+    one set of physical qubits.
+    """
     (i, j), (k, el), s = sedenion_zero_divisors()[0]
     tag = f"{i}_{j}_{k}_{el}"
+    phi = Parameter("phi")
+    template = design_d_phase_sweep((i, j), (k, el), phi)
+    dark_phase, bright_phase = (0.0, math.pi) if s > 0 else (math.pi, 0.0)
     dark_p0 = predict.zero_divisor_p0((i, j), (k, el), s)
     bright_p0 = predict.zero_divisor_p0((i, j), (k, el), -s)
     members = [
-        Member(f"design_b_dark_{tag}", design_b_zero_divisor((i, j), (k, el), s), _two_outcome(1 - dark_p0)),
-        Member(f"design_b_bright_{tag}", design_b_zero_divisor((i, j), (k, el), -s), _two_outcome(1 - bright_p0)),
+        Member(f"design_b_dark_{tag}", template, _two_outcome(1 - dark_p0), {phi: dark_phase}),
+        Member(f"design_b_bright_{tag}", template, _two_outcome(1 - bright_p0), {phi: bright_phase}),
     ]
     sweep_names = []
     for n, phase in enumerate(SWEEP_PHASES):
         want = predict.phase_sweep_p0((i, j), (k, el), phase)
         name = f"design_d_{tag}_phase_{n}of8"
         sweep_names.append(name)
-        members.append(Member(name, design_d_phase_sweep((i, j), (k, el), phase), _two_outcome(1 - want)))
+        members.append(Member(name, template, _two_outcome(1 - want), {phi: phase}))
 
     def summarize(dist: dict[str, np.ndarray]) -> dict[str, float]:
         dark, bright = float(dist[members[0].name][0]), float(dist[members[1].name][0])
