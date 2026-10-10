@@ -7,6 +7,7 @@ design B turns a sedenion zero divisor into perfect destructive interference
 through a one-ancilla linear combination of unitaries. Each circuit's ideal
 outcome is predicted from cd_core and checked here by statevector.
 """
+
 from __future__ import annotations
 
 from itertools import combinations
@@ -165,8 +166,9 @@ def _verify() -> None:
     print("  all 21 pairs read bit 1 with probability 1")
     qc, k0, k1, diff = design_a_associator(1, 2)
     tqc = transpile(qc, basis_gates=["cz", "rz", "sx", "x"], optimization_level=3)
-    print(f"  (1,2) k0={k0} k1={k1} diff_qubit={diff}; all-to-all depth={tqc.depth()} "
-          f"cz={tqc.count_ops().get('cz', 0)}")
+    print(
+        f"  (1,2) k0={k0} k1={k1} diff_qubit={diff}; all-to-all depth={tqc.depth()} cz={tqc.count_ops().get('cz', 0)}"
+    )
 
     print("== Design B: sedenion zero-divisor LCU witness ==")
     worst = 0.0

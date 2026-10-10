@@ -9,6 +9,7 @@ job. --out archives the ISA circuits as QPY beside a JSON record of versions,
 seeds, calibration timestamp, layout, and results, so the counted and simulated
 circuit is the one a later submission runs.
 """
+
 from __future__ import annotations
 
 import argparse
@@ -111,9 +112,11 @@ def main(argv: list[str] | None = None) -> int:
     )
     cases = [run_case("design_a_1_2", design_a_associator(1, 2)[0], 1.0, backend, sim), dark, bright]
     for case in cases:
-        print(f"{case['name']}: depth={case['depth']} cz={case['cz']} qubits={case['physical_qubits']} "
-              f"measured={case['measured_physical_qubits']} ideal P1={case['ideal_p1']:.0f} "
-              f"noisy P1={case['noisy_p1']:.4f}")
+        print(
+            f"{case['name']}: depth={case['depth']} cz={case['cz']} qubits={case['physical_qubits']} "
+            f"measured={case['measured_physical_qubits']} ideal P1={case['ideal_p1']:.0f} "
+            f"noisy P1={case['noisy_p1']:.4f}"
+        )
     p_dark, p_bright = 1.0 - dark["noisy_p1"], 1.0 - bright["noisy_p1"]
     print(f"design B P(anc=0): dark={p_dark:.4f} bright={p_bright:.4f} ratio={p_dark / p_bright:.4f}")
 

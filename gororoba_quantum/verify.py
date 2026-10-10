@@ -16,6 +16,7 @@ The 42/168 associative/anti-associative split of ordered octonion triples comes
 from the Cayley-Dickson signs; the all-positive XOR-indexed table is the group
 algebra of F_2^3, which is associative and splits 210/0.
 """
+
 from __future__ import annotations
 
 import csv
@@ -139,16 +140,14 @@ def check_rephasing_preserves_corpus() -> tuple[int, int]:
     The flipped table is why the corpus diff carries no orientation evidence.
     Returns the count of flipped cells at dims 8 and 16.
     """
+
     def t(p: int) -> int:
         return 1 if p == 0 else -1
 
     def flipped(dim: int, p: int, q: int) -> int:
         return t(p) * t(q) * t(p ^ q) * cd_sign(dim, p, q)
 
-    f8, f16 = (
-        sum(flipped(dim, p, q) != cd_sign(dim, p, q) for p in range(dim) for q in range(dim))
-        for dim in (8, 16)
-    )
+    f8, f16 = (sum(flipped(dim, p, q) != cd_sign(dim, p, q) for p in range(dim) for q in range(dim)) for dim in (8, 16))
     _require((f8, f16) == (42, 210), f"rephasing flips {f8}/{f16} cells, expected 42/210")
     _require(_corpus(flipped) == _corpus(cd_sign), "rephasing changed the zero-divisor corpus")
     return f8, f16

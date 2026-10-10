@@ -1,0 +1,20 @@
+[project]
+name = "gororoba-quantum"
+version = "0.1.0"
+description = "Quantum circuits compiled from the open_gororoba Cayley-Dickson algebra kernel"
+requires-python = ">=3.11"
+dependencies = ["numpy", "qiskit>=2.0", "qiskit-aer", "qiskit-ibm-runtime"]
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["gororoba_quantum"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "gororoba_quantum"
+ignore_missing_imports = true
+warn_unused_ignores = true

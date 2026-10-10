@@ -6,6 +6,7 @@ doubling (a,b)(c,d) = (ac - conj(d) b, d a + b conj(c)). The classification of
 associative basis triples and of sedenion zero divisors follows from this sign
 table alone, so every circuit prediction downstream rests on the functions here.
 """
+
 from __future__ import annotations
 
 from itertools import combinations, permutations
@@ -88,7 +89,7 @@ def left_mult_matrix_check(i: int, j: int) -> list[list[float]]:
 def associator(dim: int, x: list[float], y: list[float], z: list[float]) -> list[float]:
     left = cd_multiply(dim, cd_multiply(dim, x, y), z)
     right = cd_multiply(dim, x, cd_multiply(dim, y, z))
-    return [lv - rv for lv, rv in zip(left, right)]
+    return [lv - rv for lv, rv in zip(left, right, strict=True)]
 
 
 def triple_sign(dim: int, i: int, j: int, k: int) -> tuple[int, int]:
@@ -168,4 +169,6 @@ if __name__ == "__main__":
     zds = sedenion_zero_divisors()
     print(f"sedenion (e_i+e_j)(e_k+-e_l)=0 zero-divisor pairs: {len(zds)}")
     for entry in zds[:5]:
-        print(f"  (e_{entry[0][0]}+e_{entry[0][1]}) * (e_{entry[1][0]}{'+' if entry[2] > 0 else '-'}e_{entry[1][1]}) = 0")
+        print(
+            f"  (e_{entry[0][0]}+e_{entry[0][1]}) * (e_{entry[1][0]}{'+' if entry[2] > 0 else '-'}e_{entry[1][1]}) = 0"
+        )
