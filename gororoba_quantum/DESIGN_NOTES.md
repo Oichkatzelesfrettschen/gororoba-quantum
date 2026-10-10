@@ -137,7 +137,9 @@ ISA circuit is depth 130 with 46 CZ on physical qubits 119, 131-134, and the
 bright control compiled from the same initial layout is also 46 CZ. The noise
 model gives P_zd = 0.0806 and P_control = 0.9021, ratio 0.089. The dense
 compile it replaces (Householder preparation plus two controlled dense
-unitaries) was 224 CZ at ratio 0.381 under the same calibration. Readout
+unitaries), transpiled onto the same initial layout under the same calibration
+and seeds, is 249 CZ with P_zd = 0.314, P_control = 0.677, ratio 0.464, so the
+comparison holds layout quality fixed. Readout
 mitigation such as TREX corrects measurement bias in expectation values and
 leaves gate error in place, so the CZ count is the lever it was.
 
