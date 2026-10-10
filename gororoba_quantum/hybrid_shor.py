@@ -41,7 +41,13 @@ def _can_run_evidence(result: PrecheckResult) -> bool:
     )
 
 
-def _plan_payload(modulus: int, base: int, phase_bits: int | None, evidence_mode: bool) -> dict[str, Any]:
+def _plan_payload(
+    modulus: int,
+    base: int,
+    phase_bits: int | None,
+    evidence_mode: bool,
+    multiplier_strategy: str,
+) -> dict[str, Any]:
     precheck = classical_precheck(modulus, base)
     payload: dict[str, Any] = {
         "mode": "evidence" if evidence_mode else "production",
@@ -52,7 +58,7 @@ def _plan_payload(modulus: int, base: int, phase_bits: int | None, evidence_mode
         return payload
     if precheck.status != "proceed" and not _can_run_evidence(precheck):
         raise ValueError(f"evidence mode cannot build an order finder: {precheck.reason}")
-    plan = order_finding_plan(modulus, precheck.base, phase_bits)
+    plan = order_finding_plan(modulus, precheck.base, phase_bits, multiplier_strategy=multiplier_strategy)
     payload.update({"state": "circuit_planned", "plan": asdict(plan)})
     return payload
 
@@ -84,7 +90,7 @@ def _decoded_payload(counts: Mapping[str | int, int], phase_bits: int, modulus: 
 
 
 def _simulate_payload(args: argparse.Namespace) -> dict[str, Any]:
-    payload = _plan_payload(args.modulus, args.base, args.phase_bits, args.evidence)
+    payload = _plan_payload(args.modulus, args.base, args.phase_bits, args.evidence, args.multiplier_strategy)
     if payload["state"] != "circuit_planned":
         return payload
     if args.shots < 1:
@@ -92,7 +98,12 @@ def _simulate_payload(args: argparse.Namespace) -> dict[str, Any]:
     plan = payload["plan"]
     phase_bits = int(plan["phase_bits"])
     normalized_base = int(plan["base"])
-    circuit = factor_order_finding(args.modulus, normalized_base, phase_bits)
+    circuit = factor_order_finding(
+        args.modulus,
+        normalized_base,
+        phase_bits,
+        multiplier_strategy=args.multiplier_strategy,
+    )
     counts = AerSimulator().run(circuit, shots=args.shots, seed_simulator=args.seed).result().get_counts()
     reference_order = reference_multiplicative_order(normalized_base, args.modulus)
     ideal = ideal_phase_distribution(reference_order, phase_bits)
@@ -133,6 +144,11 @@ def _parser() -> argparse.ArgumentParser:
         command.add_argument("--base", type=int, default=2)
         command.add_argument("--phase-bits", type=int)
         command.add_argument(
+            "--multiplier-strategy",
+            choices=("auto", "cycle_transpositions", "anf_compute_swap_uncompute"),
+            default="auto",
+        )
+        command.add_argument(
             "--evidence",
             action="store_true",
             help="build a coprime order-finding control even when preprocessing already finds a factor",
@@ -157,7 +173,13 @@ def main(argv: Sequence[str] | None = None) -> int:
     args = parser.parse_args(argv)
     try:
         if args.command == "plan":
-            payload = _plan_payload(args.modulus, args.base, args.phase_bits, args.evidence)
+            payload = _plan_payload(
+                args.modulus,
+                args.base,
+                args.phase_bits,
+                args.evidence,
+                args.multiplier_strategy,
+            )
         elif args.command == "simulate":
             payload = _simulate_payload(args)
         else:

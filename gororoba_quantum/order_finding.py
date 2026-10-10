@@ -69,22 +69,34 @@ def folded_qpe(phase_label: int, identity: bool = False) -> QuantumCircuit:
 
 
 def order_finding_plan(
-    modulus: int, base: int, phase_bits: int | None = None, *, identity: bool = False
+    modulus: int,
+    base: int,
+    phase_bits: int | None = None,
+    *,
+    identity: bool = False,
+    multiplier_strategy: str = "auto",
 ) -> OrderFindingPlan:
     """Extract every modular-power coefficient without constructing a circuit."""
     if modulus < 3:
         raise ValueError(f"modulus must be at least 3, got {modulus}")
     normalized_base = base % modulus
-    if not identity and (normalized_base in (0, 1) or math.gcd(normalized_base, modulus) != 1):
+    if normalized_base in (0, 1) or math.gcd(normalized_base, modulus) != 1:
         raise ValueError(f"base {base} must be a nonidentity unit modulo {modulus}")
     precision = 2 * modulus.bit_length() if phase_bits is None else phase_bits
     if precision < 1:
         raise ValueError(f"phase_bits must be positive, got {precision}")
     resources: list[MultiplierResource] = []
+    scheduled_multipliers = tuple(
+        pow(normalized_base, 1 << (precision - round_index - 1), modulus) for round_index in range(precision)
+    )
+    leading_identity_rounds = next(
+        (index for index, multiplier in enumerate(scheduled_multipliers) if multiplier != 1),
+        precision,
+    )
     for round_index in range(precision):
         exponent = 1 << (precision - round_index - 1)
-        multiplier = 1 if identity else pow(normalized_base, exponent, modulus)
-        profile = multiplier_profile(modulus, multiplier)
+        multiplier = 1 if identity else scheduled_multipliers[round_index]
+        profile = multiplier_profile(modulus, multiplier, multiplier_strategy)
         resources.append(
             MultiplierResource(
                 round_index=round_index,
@@ -97,16 +109,35 @@ def order_finding_plan(
                 maximum_anf_degree=profile.maximum_anf_degree,
                 degree_histogram=profile.degree_histogram,
                 controlled_swaps=profile.controlled_swap_count,
+                basis_edge_gates=profile.basis_edge_gate_count,
+                maximum_control_count=profile.maximum_control_count,
             )
         )
-    return make_order_finding_plan(modulus, normalized_base, precision, resources)
+    return make_order_finding_plan(
+        modulus,
+        normalized_base,
+        precision,
+        resources,
+        leading_identity_rounds=leading_identity_rounds,
+    )
 
 
 def factor_order_finding(
-    modulus: int, base: int, phase_bits: int | None = None, *, identity: bool = False
+    modulus: int,
+    base: int,
+    phase_bits: int | None = None,
+    *,
+    identity: bool = False,
+    multiplier_strategy: str = "auto",
 ) -> QuantumCircuit:
-    """Build one coherent order-finding attempt from |1> with exact feedback."""
-    plan = order_finding_plan(modulus, base, phase_bits, identity=identity)
+    """Build one coherent order-finding attempt or a schedule-matched identity null."""
+    plan = order_finding_plan(
+        modulus,
+        base,
+        phase_bits,
+        identity=identity,
+        multiplier_strategy=multiplier_strategy,
+    )
     control_register = QuantumRegister(1, "ctrl")
     work_register = QuantumRegister(plan.work_qubits, "w")
     scratch_register = QuantumRegister(plan.scratch_qubits, "scratch") if plan.scratch_qubits else None
@@ -120,7 +151,7 @@ def factor_order_finding(
     work_qubits = list(range(1, 1 + plan.work_qubits))
     scratch_qubits = list(range(1 + plan.work_qubits, plan.quantum_qubits))
     circuit.x(work_qubits[0])
-    for resource in plan.rounds:
+    for resource in plan.rounds[plan.leading_identity_rounds :]:
         circuit.h(control_qubit)
         append_controlled_modular_multiply(
             circuit,
@@ -129,8 +160,9 @@ def factor_order_finding(
             scratch_qubits if resource.scratch_qubits else [],
             modulus,
             resource.multiplier,
+            multiplier_strategy,
         )
-        for prior_round in range(resource.round_index):
+        for prior_round in range(plan.leading_identity_rounds, resource.round_index):
             feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))
             with circuit.if_test((phase_register[prior_round], 1)):
                 circuit.p(feedback_angle, control_qubit)
@@ -183,8 +215,9 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
         plan.unique_multipliers,
         plan.controlled_swaps,
         plan.conditional_phases,
+        plan.leading_identity_rounds,
     )
-    if coefficients != (5, 2, (2, 4), 5, 28):
+    if coefficients != (5, 2, (2, 4), 5, 1, 6):
         raise RuntimeError(f"unexpected N=15 resource plan {plan}")
     circuit = factor_order_finding(15, 2, 8)
     counts = simulator.run(circuit, shots=4096, seed_simulator=7).result().get_counts()
@@ -200,6 +233,16 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     )
     if null_counts != {"00000000": 512}:
         raise RuntimeError(f"N=15 identity null returned {null_counts}")
+    null_plan = order_finding_plan(15, 2, 8, identity=True)
+    null_schedule = (
+        null_plan.leading_identity_rounds,
+        null_plan.executed_rounds,
+        null_plan.measurements,
+        null_plan.resets,
+        null_plan.conditional_phases,
+    )
+    if null_schedule != (6, 2, 2, 1, 1):
+        raise RuntimeError(f"N=15 identity null schedule is {null_schedule}")
     generic_plan = order_finding_plan(21, 2, 10)
     if generic_plan.quantum_qubits != 11 or generic_plan.unique_multipliers != (2, 4, 16):
         raise RuntimeError(f"unexpected N=21 resource plan {generic_plan}")

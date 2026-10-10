@@ -68,6 +68,20 @@ DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
 MAX_REVALIDATION = 3
+RECORD_SCHEMA_VERSION = 2
+
+EXPERIMENT_SOURCE_MANIFEST = (
+    "boolean_anf.py",
+    "cd_core.py",
+    "designs.py",
+    "experiments.py",
+    "factoring.py",
+    "live_run.py",
+    "modular_arithmetic.py",
+    "order_finding.py",
+    "predict.py",
+    "select_lcu.py",
+)
 
 # Exclusion policy: values outside these bounds mark degraded hardware that the
 # backend may report without a faulty flag. Missing T1 or T2 also excludes.
@@ -189,14 +203,30 @@ def _qubit_reason(props: Any, q: int, faulty: set[int]) -> str | None:
     return None
 
 
-def _qargs(isa: QuantumCircuit, inst: Any) -> tuple[int, ...]:
-    return tuple(isa.find_bit(q).index for q in inst.qubits)
+def _qargs(circuit: QuantumCircuit, instruction: Any) -> tuple[int, ...]:
+    return tuple(circuit.find_bit(qubit).index for qubit in instruction.qubits)
 
 
 def _ops(isa: QuantumCircuit) -> list[tuple[str, tuple[int, ...]]]:
-    return [
-        (inst.operation.name, _qargs(isa, inst)) for inst in isa.data if inst.operation.name not in ("barrier", "delay")
-    ]
+    """Return every possible physical operation, including nested control-flow blocks."""
+    operations: list[tuple[str, tuple[int, ...]]] = []
+
+    def walk(circuit: QuantumCircuit, physical_qubits: tuple[int, ...]) -> None:
+        for instruction in circuit.data:
+            local_indices = tuple(circuit.find_bit(qubit).index for qubit in instruction.qubits)
+            mapped = tuple(physical_qubits[index] for index in local_indices)
+            if isinstance(instruction.operation, ControlFlowOp):
+                for block in instruction.operation.blocks:
+                    if block.num_qubits != len(mapped):
+                        raise LiveRunError(
+                            f"{isa.name}: control-flow block has {block.num_qubits} qubits, expected {len(mapped)}"
+                        )
+                    walk(block, mapped)
+            elif instruction.operation.name not in ("barrier", "delay"):
+                operations.append((instruction.operation.name, mapped))
+
+    walk(isa, tuple(range(isa.num_qubits)))
+    return operations
 
 
 def esp(isa: QuantumCircuit, target: Any) -> float:
@@ -449,6 +479,17 @@ def _distribution(counts: dict[str, int], clbits: int) -> np.ndarray:
     return np.asarray(dist / dist.sum())
 
 
+def _pub_counts(pub: Any, isa: QuantumCircuit) -> dict[str, int]:
+    """Join every classical register in circuit order into global clbit order."""
+    register_names = [register.name for register in isa.cregs]
+    if not register_names:
+        raise LiveRunError(f"{isa.name}: result decoder needs at least one classical register")
+    joined = pub.join_data(register_names)
+    if not hasattr(joined, "get_counts"):
+        raise LiveRunError(f"{isa.name}: joined result data does not provide bit counts")
+    return dict(joined.get_counts())
+
+
 class TargetView(BackendV2):
     """A BackendV2 whose only content is a Target, for building Aer noise from it.
 
@@ -562,7 +603,7 @@ def corrected_summary(
 
 
 def experiment_digest() -> str:
-    """sha256 over the source of every module loaded from this directory but verify.py.
+    """Return sha256 over the declared source closure that defines a run.
 
     Group membership, circuits, ideals, and summaries live in the experiment
     modules, and live_run.py itself holds the distribution, readout-correction,
@@ -570,17 +611,12 @@ def experiment_digest() -> str:
     different digest would reinterpret a run's measurements.
     """
     here = Path(__file__).resolve().parent
-    files = [getattr(m, "__file__", None) for m in list(sys.modules.values())]
-    paths = sorted(
-        path
-        for path in {Path(f).resolve() for f in files if isinstance(f, str)}
-        if path.parent == here and path.suffix == ".py" and path.is_file()
-    )
     digest = hashlib.sha256()
-    for path in paths:
-        if path.name == "verify.py":
-            continue
-        digest.update(path.name.encode())
+    for relative_path in EXPERIMENT_SOURCE_MANIFEST:
+        path = here / relative_path
+        if not path.is_file():
+            raise LiveRunError(f"experiment source manifest entry is missing: {path}")
+        digest.update(relative_path.encode())
         digest.update(path.read_bytes())
     return digest.hexdigest()
 
@@ -588,8 +624,17 @@ def experiment_digest() -> str:
 def _code_commit() -> dict[str, Any]:
     """HEAD of the checkout and whether its gororoba_quantum sources differ from it."""
     here = Path(__file__).resolve().parent
-    head = subprocess.run(["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True)
-    dirty = subprocess.run(["git", "-C", str(here), "status", "--porcelain", "--", "."], capture_output=True, text=True)
+    try:
+        head = subprocess.run(["git", "-C", str(here), "rev-parse", "HEAD"], capture_output=True, text=True, check=True)
+        dirty = subprocess.run(
+            ["git", "-C", str(here), "status", "--porcelain", "--", "."],
+            capture_output=True,
+            text=True,
+            check=True,
+        )
+    except subprocess.CalledProcessError as error:
+        detail = error.stderr.strip() or error.stdout.strip() or f"exit {error.returncode}"
+        raise LiveRunError(f"cannot establish Git provenance: {detail}") from error
     return {"head": head.stdout.strip() or None, "sources_modified": bool(dirty.stdout.strip())}
 
 
@@ -601,12 +646,15 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
     target = choice.snap.backend.target
     members = []
     for name, isa, ideal in choice.entries:
+        dynamic = _is_dynamic(isa)
         members.append(
             {
                 "name": name,
                 "cz": isa.count_ops().get("cz", 0),
                 "depth": isa.depth(),
                 "duration_s": duration_s(isa, target),
+                "duration_bound": "lower_without_classical_latency" if dynamic else "scheduled",
+                "dynamic": dynamic,
                 "feed_forward": any(isinstance(i.operation, ControlFlowOp) for i in isa.data),
                 "physical_qubits": _physical(isa),
                 "esp": esp(isa, target),
@@ -660,6 +708,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     trace: dict[str, Any] = {}
     choices = [select(group, snaps, args.seeds, trace) for group in groups]
     record = {
+        "schema_version": RECORD_SCHEMA_VERSION,
+        "state": "planned",
         "started": args.started,
         "versions": {pkg: version(pkg) for pkg in ("qiskit", "qiskit-aer", "qiskit-ibm-runtime")},
         "policy": QUALITY
@@ -764,6 +814,7 @@ def submit(
     # complete turns true only after every planned job has an id on disk; a
     # failure between jobs leaves it false for --collect to report.
     record["submission"] = {"planned_backends": planned, "jobs": [], "complete": False}
+    record["state"] = "submission_started"
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
         by_backend.setdefault(choice.snap.name, []).append(choice)
@@ -772,8 +823,6 @@ def submit(
         # usage() reports the active instance, so each job's budget is checked
         # against the instance that pays for it.
         backend = service.backend(name)
-        usage = service.usage()
-        check_budget(name, usage, args.min_remaining_seconds)
         entries = [(entry_name, isa) for c in group_choices for entry_name, isa, _ in c.entries]
         # Circuits with mid-circuit measurement, reset, or feed-forward go in
         # their own job, which configure_sampler keeps free of twirling and DD.
@@ -782,6 +831,8 @@ def submit(
         for kind, batch in (("static", static), ("dynamic", dynamic)):
             if not batch:
                 continue
+            usage = service.usage()
+            check_budget(name, usage, args.min_remaining_seconds)
             sampler = configure_sampler(backend, kind, args.twirl, args.dd, ["gororoba-quantum", args.started, kind])
             job = sampler.run([isa for _, isa in batch])
             record["submission"]["jobs"].append(
@@ -797,9 +848,11 @@ def submit(
             )
             # The job id is the only handle on QPU time already spent; it reaches
             # disk before the next job is sent.
+            record["state"] = "partially_submitted"
             checkpoint()
             print(f"submitted {len(batch)} {kind} circuits to {name}: job {job.job_id()}")
     record["submission"]["complete"] = True
+    record["state"] = "submitted"
     checkpoint()
 
 
@@ -826,17 +879,16 @@ def configure_sampler(backend: Any, kind: str, twirl: bool, dd: str | None, tags
 
 
 def _is_dynamic(isa: QuantumCircuit) -> bool:
-    """Control flow, reset, or a measurement followed by another operation on its qubit."""
-    measured: set[int] = set()
+    """Control flow, reset, or any measurement followed by later quantum work."""
+    measurement_seen = False
     for inst in isa.data:
         name = inst.operation.name
-        qubits = [isa.find_bit(q).index for q in inst.qubits]
         if isinstance(inst.operation, ControlFlowOp) or name == "reset":
             return True
-        if name not in ("measure", "barrier") and measured.intersection(qubits):
+        if measurement_seen and name not in ("measure", "barrier", "delay"):
             return True
         if name == "measure":
-            measured.update(qubits)
+            measurement_seen = True
     return False
 
 
@@ -941,8 +993,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             isa = isas[name]
             start, stop = windows[idx]
             props_then, sim_then = at[start]
-            register = isa.cregs[0].name
-            measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
+            measured[name] = _distribution(_pub_counts(pub, isa), isa.num_clbits)
             props_by_name[name] = props_then
             counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
@@ -987,7 +1038,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     entry["replayed_summary"] = group.summarize(replayed)
                     entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
             out.append(entry)
-    (run_dir / "collect.json").write_text(json.dumps(out, indent=2) + "\n")
+    text = json.dumps(out, indent=2) + "\n"
+    _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
     print(json.dumps(out, indent=2))
 
 

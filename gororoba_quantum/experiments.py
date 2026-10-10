@@ -260,6 +260,12 @@ def _hybrid_shor_mod15() -> Group:
             "order_recovery_margin_over_identity_null": (
                 primary["order_recovery_probability"] - identity_null["order_recovery_probability"]
             ),
+            "factorable_margin_over_uniform_null": (
+                primary["factorable_probability"] - uniform_null["factorable_probability"]
+            ),
+            "order_recovery_margin_over_uniform_null": (
+                primary["order_recovery_probability"] - uniform_null["order_recovery_probability"]
+            ),
             "tvd_to_ideal": tvd(dist[primary_name], ideal),
             "identity_null_p0": float(dist[null_name][0]),
         }

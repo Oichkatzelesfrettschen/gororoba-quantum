@@ -51,6 +51,8 @@ class MultiplierResource:
     maximum_anf_degree: int
     degree_histogram: tuple[tuple[int, int], ...]
     controlled_swaps: int
+    basis_edge_gates: int
+    maximum_control_count: int
 
 
 @dataclass(frozen=True)
@@ -62,12 +64,16 @@ class OrderFindingPlan:
     quantum_qubits: int
     scratch_qubits: int
     active_rounds: int
+    leading_identity_rounds: int
+    executed_rounds: int
     unique_multipliers: tuple[int, ...]
     forward_anf_terms: int
     inverse_anf_terms: int
     maximum_anf_degree: int
     degree_histogram: tuple[tuple[int, int], ...]
     controlled_swaps: int
+    basis_edge_gates: int
+    maximum_control_count: int
     measurements: int
     resets: int
     conditional_phases: int
@@ -355,7 +361,12 @@ def shots_for_success(per_shot_probability: float, failure_probability: float = 
 
 
 def make_order_finding_plan(
-    modulus: int, base: int, phase_bits: int, rounds: Sequence[MultiplierResource]
+    modulus: int,
+    base: int,
+    phase_bits: int,
+    rounds: Sequence[MultiplierResource],
+    *,
+    leading_identity_rounds: int | None = None,
 ) -> OrderFindingPlan:
     """Aggregate independently extracted multiplier coefficients into one plan."""
     work_qubits = modulus.bit_length()
@@ -369,6 +380,17 @@ def make_order_finding_plan(
         for degree, count in resource.degree_histogram:
             histogram[degree] = histogram.get(degree, 0) + count
     active = tuple(resource for resource in rounds if resource.strategy != "identity")
+    if leading_identity_rounds is None:
+        leading_identity_rounds = 0
+        for resource in rounds:
+            if resource.strategy != "identity":
+                break
+            leading_identity_rounds += 1
+    if not 0 <= leading_identity_rounds <= phase_bits:
+        raise ValueError(f"leading_identity_rounds must lie in [0, {phase_bits}], got {leading_identity_rounds}")
+    if any(resource.strategy != "identity" for resource in rounds[:leading_identity_rounds]):
+        raise ValueError("every omitted leading round must use the identity multiplier")
+    executed_rounds = phase_bits - leading_identity_rounds
     return OrderFindingPlan(
         modulus=modulus,
         base=base % modulus,
@@ -377,15 +399,19 @@ def make_order_finding_plan(
         quantum_qubits=1 + work_qubits + scratch_qubits,
         scratch_qubits=scratch_qubits,
         active_rounds=len(active),
+        leading_identity_rounds=leading_identity_rounds,
+        executed_rounds=executed_rounds,
         unique_multipliers=tuple(sorted({resource.multiplier for resource in active})),
         forward_anf_terms=sum(resource.forward_anf_terms for resource in rounds),
         inverse_anf_terms=sum(resource.inverse_anf_terms for resource in rounds),
         maximum_anf_degree=max((resource.maximum_anf_degree for resource in rounds), default=0),
         degree_histogram=tuple(sorted(histogram.items())),
         controlled_swaps=sum(resource.controlled_swaps for resource in rounds),
-        measurements=phase_bits,
-        resets=phase_bits - 1,
-        conditional_phases=phase_bits * (phase_bits - 1) // 2,
+        basis_edge_gates=sum(resource.basis_edge_gates for resource in rounds),
+        maximum_control_count=max((resource.maximum_control_count for resource in rounds), default=0),
+        measurements=executed_rounds,
+        resets=max(0, executed_rounds - 1),
+        conditional_phases=executed_rounds * (executed_rounds - 1) // 2,
         rounds=tuple(rounds),
     )
 
