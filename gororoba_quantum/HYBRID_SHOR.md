@@ -269,7 +269,7 @@ archive contains the compiled circuits named by every JSON member.
 
 ## Replicated admission
 
-`results/live/2026-10-10T221412.255180Z/` (code `78a3bb7`) replicates the
+`results/live/2026-10-10T222132.627032Z/` (code `02a5b4b`) replicates the
 same `ibm_kingston` compile on seven disjoint five-qubit placements with
 layout scores from 0.691 to 0.569, above the group's 0.8 floor of the best
 (`Group.replica_floor`; the other groups keep the default 0.9, and an explicit
