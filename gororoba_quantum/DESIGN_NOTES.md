@@ -448,9 +448,9 @@ isolated crosstalk references, variance decomposition, and statistical
 admission, so it does not qualify the integrated schema-4 execution path.
 
 The post-review schema-4 dry run at
-`results/live/2026-10-10T230646.694665Z/` uses source `2563b3a` with
-`sources_modified=false`. The default queue gate first rejects Fez at 141
-pending jobs and Kingston at 92; Marrakesh reports maintenance. The retained
+`results/live/2026-10-10T232219.919322Z/` uses source `584a78d` with
+`sources_modified=false`. The default queue gate first rejects Fez at 147
+pending jobs and Kingston at 95; Marrakesh reports maintenance. The retained
 submit-free rerun uses `--max-pending 250`, records Fez and Kingston as eligible
 under that explicit bound, and records Marrakesh as ineligible. Kingston wins
 all seven groups. The archive contains 38 unique packed circuits, including

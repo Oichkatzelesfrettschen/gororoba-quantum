@@ -375,8 +375,8 @@ structure the model omits.
 
 ## Combined schema-4 qualification
 
-`results/live/2026-10-10T230646.694665Z/` runs the post-review integrated
-contract from source `2563b3a`. The submit-free run uses `--max-pending 250`
+`results/live/2026-10-10T232219.919322Z/` runs the post-review integrated
+contract from source `584a78d`. The submit-free run uses `--max-pending 250`
 after the default 25-job gate rejects both active systems. Kingston calibration
 `2026-10-10T15:34:50-07:00` wins with seed `20261010`, layout
 `[79, 94, 74, 93, 73]`, 60 primary CZ gates, and zero identity-null CZ gates.
@@ -395,7 +395,7 @@ the hybrid isolated reference, and matches the schema-4 member and execution
 requirements exactly. The record stays `planned` with `submission` absent, so
 it records zero QPU jobs. The 250-job dry-run bound leaves default-policy
 submission readiness unestablished. Its record SHA-256 is
-`8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b`, and
+`0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744`, and
 its QPY SHA-256 is
 `34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 

@@ -47,7 +47,7 @@ submission readiness. Record SHA-256 is
 SHA-256 is
 `34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
-`2026-10-10T230646.694665Z` requalifies schema 4 after the review fixes at
+`2026-10-10T230646.694665Z` requalifies schema 4 after the first review fixes at
 source `2563b3a`, with `code_commit.sources_modified=false` and an experiment
 digest that matches that source tree. The default gate records Fez at 141
 pending jobs, Kingston at 92, and Marrakesh in maintenance. The retained
@@ -58,6 +58,17 @@ local noise model. Its state remains `planned`, `submission` remains absent,
 and the explicit bound leaves default-policy submission readiness
 unestablished. Record SHA-256 is
 `8452d0751b1aa505c2abf02f19c3d17184b6f8585c39cec5c27f6c58a4a2b09b`; QPY
+SHA-256 is
+`34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
+
+`2026-10-10T232219.919322Z` requalifies the final direct-pinned-discovery source
+at `584a78d`, again with clean source provenance and the matching experiment
+digest. The default gate records Fez at 147 pending jobs, Kingston at 95, and
+Marrakesh in maintenance. The retained 250-job-bound run has the same Kingston
+selection, 38-circuit archive, nine hybrid replicas, and locally admitted
+hybrid intervals. Its state remains `planned`, `submission` remains absent, and
+the run records zero QPU jobs. Record SHA-256 is
+`0c5b57a2db2d4e246908c5a05ccf1eadc0aa87629e2ac3950586f38ef7c55744`; QPY
 SHA-256 is
 `34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
