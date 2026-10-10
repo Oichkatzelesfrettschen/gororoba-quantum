@@ -66,6 +66,19 @@ def _tvd(p: np.ndarray, q: np.ndarray) -> float:
     return 0.5 * float(np.sum(np.abs(p - q)))
 
 
+def readout_corrected_p0(p0_measured: float, props: Any, qubit: int) -> float:
+    """P(0) before readout error, inverting P0_meas = P0 (1 - e10) + (1 - P0) e01.
+
+    e10 = prob_meas1_prep0 and e01 = prob_meas0_prep1 belong to the physical
+    qubit that measured the ancilla. Routing can end the dark and bright
+    circuits on different qubits, so each term of the suppression ratio is
+    corrected with the calibration of its own readout qubit.
+    """
+    e10 = props.qubit_property(qubit, "prob_meas1_prep0")[0]
+    e01 = props.qubit_property(qubit, "prob_meas0_prep1")[0]
+    return float((p0_measured - e01) / (1.0 - e10 - e01))
+
+
 def run_case(
     name: str,
     qc: QuantumCircuit,
@@ -151,10 +164,18 @@ def main(argv: list[str] | None = None) -> int:
         np.array([bright_p0, 1 - bright_p0]),
         layout,
     )
+    props = backend.properties()
+    q_dark, q_bright = dark["measured_physical_qubits"][0], bright["measured_physical_qubits"][0]
+    c_dark = readout_corrected_p0(dark["noisy"][0], props, q_dark)
+    c_bright = readout_corrected_p0(bright["noisy"][0], props, q_bright)
     summary["design_b"] = {
+        "readout_qubits": [q_dark, q_bright],
         "p0_dark": dark["noisy"][0],
         "p0_bright": bright["noisy"][0],
         "ratio": dark["noisy"][0] / bright["noisy"][0],
+        "p0_dark_readout_corrected": c_dark,
+        "p0_bright_readout_corrected": c_bright,
+        "ratio_readout_corrected": c_dark / c_bright,
     }
 
     sweep = []
@@ -197,6 +218,7 @@ def main(argv: list[str] | None = None) -> int:
                 "pair": [ci, cj],
                 "tvd_noisy_to_ideal": _tvd(noisy, ideal),
                 "tvd_noisy_to_flip_prediction": _tvd(noisy, flipped),
+                "tvd_noisy_to_omit_prediction": _tvd(noisy, omitted),
                 "tvd_flip_noisy_to_flip_prediction": flip["tvd_to_ideal"],
                 "tvd_omit_noisy_to_omit_prediction": omit["tvd_to_ideal"],
             }

@@ -89,7 +89,7 @@ value at or below 0.5 + 3 sigma means the phase did not survive, so either the
 associator sign is miscompiled or readout is worse than reported.
 
 Measured (results/hw_estimate/ibm_fez_record.json, calibration
-2026-10-10T08:36:41-07:00): the (1,2) ISA circuit on ibm_fez is depth 55 with
+2026-10-10T10:07:12-07:00): the (1,2) ISA circuit on ibm_fez is depth 55 with
 16 CZ on physical qubits 131-133, and the same circuit under the backend noise
 model gives P1 = 0.9685.
 
@@ -135,11 +135,13 @@ erased it.
 Measured (same record): the structural circuit is 27 CZ all-to-all; the ibm_fez
 ISA circuit is depth 130 with 46 CZ on physical qubits 119, 131-134, and the
 bright control compiled from the same initial layout is also 46 CZ. The noise
-model gives P_zd = 0.0806 and P_control = 0.9021, ratio 0.089. The dense
-compile it replaces (Householder preparation plus two controlled dense
-unitaries), transpiled onto the same initial layout under the same calibration
-and seeds, is 249 CZ with P_zd = 0.314, P_control = 0.677, ratio 0.464, so the
-comparison holds layout quality fixed. Readout
+model gives P_zd = 0.0806 and P_control = 0.9021, ratio 0.089; both circuits
+measure on qubit 133, and correcting each term with that qubit's
+prob_meas1_prep0 and prob_meas0_prep1 gives ratio 0.075 (record field
+design_b). The dense compile it replaces (Householder preparation plus two
+controlled dense unitaries), transpiled onto the same initial layout under the
+08:36 calibration with the same seeds, is 249 CZ with P_zd = 0.314, P_control =
+0.677, ratio 0.464, so the comparison holds layout quality fixed. Readout
 mitigation such as TREX corrects measurement bias in expectation values and
 leaves gate error in place, so the CZ count is the lever it was.
 
