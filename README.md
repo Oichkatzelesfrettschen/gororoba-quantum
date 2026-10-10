@@ -12,9 +12,14 @@ observables.
   cd_kernel, plus associator and zero-divisor enumeration.
 - `gororoba_quantum/verify.py` -- fail-closed checks: the sign tensor against the
   kernel's hash-pinned multiplication tables, the zero-divisor corpus against
-  the kernel CSV, and norm multiplicativity.
-- `gororoba_quantum/designs.py` -- the two circuits, checked by statevector over
-  every instance.
+  the kernel CSV, norm multiplicativity, and the phase-degree rules along the
+  ladder.
+- `gororoba_quantum/select_lcu.py` -- the ancilla-selected left multiplication
+  (one joint sign diagonal, X, CX) and sparse pair-state preparation.
+- `gororoba_quantum/predict.py` -- every algebraic prediction, from cd_sign and
+  cd_multiply; no circuit builder imports it.
+- `gororoba_quantum/designs.py` -- the four designs, checked by statevector and
+  operator equality over every instance.
 - `gororoba_quantum/hw_estimate.py` -- compiles each circuit once for a real
   backend and counts and noise-simulates that same ISA circuit.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
@@ -28,7 +33,11 @@ observables.
   deterministic measurement bit (3 qubits, ancilla-free).
 - Design B turns a sedenion zero divisor into perfect destructive interference
   through a one-ancilla linear combination of unitaries (4 data qubits + 1
-  ancilla).
+  ancilla), compiled to 46 CZ on ibm_fez.
+- Design C measures the Walsh spectrum of the associator phase at dims 8, 16,
+  and 32, with sign-flip and omitted-block controls.
+- Design D sweeps the relative phase of design B's input and fits offset,
+  visibility, and phase of the (1 - s cos phi)/2 fringe.
 
 ## Setup
 

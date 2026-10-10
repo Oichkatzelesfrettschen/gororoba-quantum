@@ -38,6 +38,7 @@ from cd_core import (
     left_mult_matrix_check,
     sedenion_zero_divisor_corpus,
 )
+from predict import anf_degree, associator_phase
 
 # GOROROBA_ROOT locates the open_gororoba checkout; the default assumes a
 # sibling checkout under ~/Github.
@@ -207,6 +208,41 @@ def check_w_is_signed_z_string() -> dict[tuple[float, ...], int]:
     return dict(hits)
 
 
+def check_associator_degree_rule(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) -> dict[int, dict[int, int]]:
+    """deg omega_ij = max(1, bitlen(max(i,j)) - 2) for every pair, dims 8 through 128.
+
+    omega_ij is the diagonal of W = L_{e_i e_j}^dagger L_{e_i} L_{e_j}. The
+    degree depends only on the doubling level where the pair first appears:
+    octonion pairs carry linear phases (Z-strings), sedenion pairs quadratic
+    phases (CZ), and each further doubling raises the degree by one, so W
+    leaves the Clifford group from dim 32 on. Quaternion pairs have degree 0 at
+    dim 4 and degree 1 from dim 8. Returns the degree census per dimension.
+    """
+    census: dict[int, dict[int, int]] = {}
+    for dim in dims:
+        hist: Counter[int] = Counter()
+        for i, j in combinations(range(1, dim), 2):
+            degree = anf_degree([0 if w > 0 else 1 for w in associator_phase(dim, i, j)])
+            _require(degree == max(1, max(i, j).bit_length() - 2), f"dim {dim} ({i},{j}) degree {degree}")
+            hist[degree] += 1
+        census[dim] = dict(sorted(hist.items()))
+    return census
+
+
+def check_left_mult_sign_degree(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) -> None:
+    """f_m(x) = [cd_sign(dim,m,x) = -1] has degree log2(dim) - 1 for every m != 0.
+
+    L_{e_m} is that sign diagonal followed by X gates, so octonion left
+    multiplications are Clifford (degree 2: Z and CZ) and sedenion ones carry a
+    degree-3 sign (CCZ) that leaves the Clifford group.
+    """
+    for dim in dims:
+        want = dim.bit_length() - 2
+        for m in range(1, dim):
+            degree = anf_degree([0 if cd_sign(dim, m, x) > 0 else 1 for x in range(dim)])
+            _require(degree == want, f"dim {dim} L_e{m} sign degree {degree}, expected {want}")
+
+
 def main() -> int:
     try:
         cells = check_sign_tensor_against_kernel()
@@ -220,6 +256,10 @@ def main() -> int:
         print(f"octonion triple split (assoc, anti): {check_octonion_triple_split()}")
         hits = check_w_is_signed_z_string()
         print(f"associator W: 21 pairs diagonal +/-1, {len(hits)} Z-strings x 3 pairs each")
+        for dim, hist in check_associator_degree_rule().items():
+            print(f"associator phase degree census dim {dim}: {hist}")
+        check_left_mult_sign_degree()
+        print("L_e_m sign degree = log2(dim) - 1 for every m != 0, dims 8 through 128")
     except CheckFailed as exc:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
