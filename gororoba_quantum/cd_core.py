@@ -6,6 +6,7 @@ doubling (a,b)(c,d) = (ac - conj(d) b, d a + b conj(c)). The classification of
 associative basis triples and of sedenion zero divisors follows from this sign
 table alone, so every circuit prediction downstream rests on the functions here.
 """
+
 from __future__ import annotations
 
 from itertools import combinations, permutations
@@ -73,10 +74,11 @@ def _matmul(a: list[list[float]], b: list[list[float]]) -> list[list[float]]:
 
 
 def left_mult_matrix_check(i: int, j: int) -> list[list[float]]:
-    """W = L_{e_{i^j}}^{-1} L_{e_i} L_{e_j} on the octonions, pure-Python.
+    """W = L_{e_i e_j}^{-1} L_{e_i} L_{e_j} on the octonions, pure-Python.
 
+    e_i e_j = cd_sign(8,i,j) e_{i^j}, so L_{e_i e_j} = cd_sign(8,i,j) L_{e_{i^j}}.
     L_{e_m} is a signed permutation, hence orthogonal, so its inverse is its
-    transpose; L_{e_{i^j}} carries the scalar cd_sign(8,i,j).
+    transpose.
     """
     li, lj, lij = _lmat(8, i), _lmat(8, j), _lmat(8, i ^ j)
     s = cd_sign(8, i, j)
@@ -87,7 +89,7 @@ def left_mult_matrix_check(i: int, j: int) -> list[list[float]]:
 def associator(dim: int, x: list[float], y: list[float], z: list[float]) -> list[float]:
     left = cd_multiply(dim, cd_multiply(dim, x, y), z)
     right = cd_multiply(dim, x, cd_multiply(dim, y, z))
-    return [lv - rv for lv, rv in zip(left, right)]
+    return [lv - rv for lv, rv in zip(left, right, strict=True)]
 
 
 def triple_sign(dim: int, i: int, j: int, k: int) -> tuple[int, int]:
@@ -123,30 +125,40 @@ def fano_completion(i: int, j: int) -> int | None:
     return None
 
 
-def sedenion_zero_divisors() -> list[tuple[tuple[int, int], tuple[int, int], int]]:
-    """Zero-divisor pairs (e_i + e_j)(e_k + s e_l) = 0 in the sedenions.
+def sedenion_zero_divisor_corpus() -> list[tuple[int, int, int, int, int, int]]:
+    """Signed zero-divisor pairs (e_i + t e_j)(e_k + s e_l) = 0 in the sedenions.
 
-    Returns (i, j), (k, l), s with s in {+1, -1}; i<j, k<l, and the index sets
-    disjoint, matching cd_kernel find_zero_divisors on dim 16 for this family.
+    Returns (i, j, t, k, l, s) with t, s in {+1, -1}, i<j, k<l, and the index
+    sets disjoint: the row layout (u_low, u_high, u_sign, v_low, v_high, v_sign)
+    of the kernel's reggiani_standard_zero_divisor_pairs.csv.
     """
     dim = 16
     found = []
     pairs = list(combinations(range(1, dim), 2))
     for i, j in pairs:
-        a = [0.0] * dim
-        a[i] = 1.0
-        a[j] = 1.0
-        for k, el in pairs:
-            if len({i, j, k, el}) != 4:
-                continue
-            for s in (1, -1):
-                b = [0.0] * dim
-                b[k] = 1.0
-                b[el] = float(s)
-                prod = cd_multiply(dim, a, b)
-                if all(abs(v) < 1e-12 for v in prod):
-                    found.append(((i, j), (k, el), s))
+        for t in (1, -1):
+            a = [0.0] * dim
+            a[i] = 1.0
+            a[j] = float(t)
+            for k, el in pairs:
+                if len({i, j, k, el}) != 4:
+                    continue
+                for s in (1, -1):
+                    b = [0.0] * dim
+                    b[k] = 1.0
+                    b[el] = float(s)
+                    prod = cd_multiply(dim, a, b)
+                    if all(abs(v) < 1e-12 for v in prod):
+                        found.append((i, j, t, k, el, s))
     return found
+
+
+def sedenion_zero_divisors() -> list[tuple[tuple[int, int], tuple[int, int], int]]:
+    """The t = +1 half of the corpus: (e_i + e_j)(e_k + s e_l) = 0.
+
+    Returns (i, j), (k, l), s, the operand shape design B's LCU consumes.
+    """
+    return [((i, j), (k, el), s) for i, j, t, k, el, s in sedenion_zero_divisor_corpus() if t == 1]
 
 
 if __name__ == "__main__":
@@ -157,4 +169,6 @@ if __name__ == "__main__":
     zds = sedenion_zero_divisors()
     print(f"sedenion (e_i+e_j)(e_k+-e_l)=0 zero-divisor pairs: {len(zds)}")
     for entry in zds[:5]:
-        print(f"  (e_{entry[0][0]}+e_{entry[0][1]}) * (e_{entry[1][0]}{'+' if entry[2] > 0 else '-'}e_{entry[1][1]}) = 0")
+        print(
+            f"  (e_{entry[0][0]}+e_{entry[0][1]}) * (e_{entry[1][0]}{'+' if entry[2] > 0 else '-'}e_{entry[1][1]}) = 0"
+        )

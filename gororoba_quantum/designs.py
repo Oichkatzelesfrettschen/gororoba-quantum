@@ -7,14 +7,17 @@ design B turns a sedenion zero divisor into perfect destructive interference
 through a one-ancilla linear combination of unitaries. Each circuit's ideal
 outcome is predicted from cd_core and checked here by statevector.
 """
+
 from __future__ import annotations
+
+from itertools import combinations
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
 from qiskit.circuit.library import DiagonalGate, UnitaryGate
 from qiskit.quantum_info import Statevector
 
-from cd_core import cd_sign, fano_completion, sedenion_zero_divisors
+from cd_core import cd_multiply, cd_sign, fano_completion, sedenion_zero_divisors
 
 
 def left_mult_matrix(dim: int, m: int) -> np.ndarray:
@@ -46,15 +49,19 @@ def left_mult_gate(dim: int, m: int):
 def design_a_associator(i: int, j: int) -> tuple[QuantumCircuit, int, int, int]:
     """Octonion associator phase witness on 3 qubits, device-composed.
 
-    The net operator L_{e_j} then L_{e_i} then L_{e_{i^j}} equals W up to a global
-    phase; W is diagonal +/-1 with the associator sign of (e_i, e_j, e_k). The
-    three L gates are appended separately with barriers so the hardware performs
-    the cancellation. A superposition of a line-completing k0 (associative) and a
+    W = L_{e_i e_j}^{-1} L_{e_i} L_{e_j}, with L_{e_i e_j} = cd_sign(8,i,j)
+    L_{e_{i^j}}, is diagonal +/-1 with the associator sign of (e_i, e_j, e_k).
+    L_{e_m}^2 = -I on the octonions, so L_{e_{i^j}} = -cd_sign(8,i,j)
+    L_{e_i e_j}^{-1} and the net operator L_{e_j}, L_{e_i}, L_{e_{i^j}} is W times
+    a global sign, unobservable in this uncontrolled circuit. The three L gates
+    are appended separately with barriers so the hardware performs the
+    cancellation. A superposition of a line-completing k0 (associative) and a
     one-bit-away k1 (anti) picks up a relative sign, and a Hadamard on the
-    differing qubit makes one measured bit deterministic.
+    differing qubit reads it as bit 1 for every pair.
     """
     k0 = fano_completion(i, j)
-    assert k0 is not None
+    if k0 is None:
+        raise ValueError(f"({i},{j}) is not a pair of distinct octonion imaginary units")
     diff_bit = None
     k1 = None
     for b in range(3):
@@ -66,13 +73,16 @@ def design_a_associator(i: int, j: int) -> tuple[QuantumCircuit, int, int, int]:
         if lo != ro:
             k1, diff_bit = cand, b
             break
-    assert k1 is not None and diff_bit is not None
+    if k1 is None or diff_bit is None:
+        raise ValueError(f"no anti-associative neighbor of k0={k0} for ({i},{j})")
 
     qc = QuantumCircuit(3, 1)
+    # H on |0> and then the X load of k0 give (|k0> + |k1>)/sqrt2 whatever bit
+    # diff_bit of k0 is, because X swaps two equal-amplitude branches.
+    qc.h(diff_bit)
     for b in range(3):
         if (k0 >> b) & 1:
             qc.x(b)
-    qc.h(diff_bit)  # (|k0> + |k1>)/sqrt2, since k1 = k0 ^ (1<<diff_bit)
     for m in (j, i, i ^ j):
         qc.append(left_mult_gate(8, m), [0, 1, 2])
         qc.barrier()
@@ -131,30 +141,58 @@ def _state_prep_unitary(target: np.ndarray) -> np.ndarray:
     return np.eye(dim) - 2.0 * np.outer(v, v)
 
 
+def lcu_p0_prediction(a_pair: tuple[int, int], b_pair: tuple[int, int], s: int) -> float:
+    """P(ancilla = 0) = |a b|^2 / 8 from cd_multiply, a = e_i + e_j, b = e_k + s e_l.
+
+    The post-selected data state is (L_{e_i} + L_{e_j})/2 applied to b/sqrt2,
+    whose squared norm is |a b|^2 / 8.
+    """
+    a = [0.0] * 16
+    b = [0.0] * 16
+    a[a_pair[0]] = a[a_pair[1]] = 1.0
+    b[b_pair[0]] = 1.0
+    b[b_pair[1]] = float(s)
+    return sum(v * v for v in cd_multiply(16, a, b)) / 8.0
+
+
 def _verify() -> None:
+    """Statevector checks over every instance; raises on the first deviation."""
     print("== Design A: octonion associator phase witness ==")
+    for i, j in combinations(range(1, 8), 2):
+        qc, k0, k1, diff = design_a_associator(i, j)
+        probs = Statevector(qc.remove_final_measurements(inplace=False)).probabilities([diff])
+        if abs(probs[1] - 1.0) > 1e-9:
+            raise RuntimeError(f"design A ({i},{j}) k0={k0} k1={k1} reads P1={probs[1]:.6f}, expected 1")
+    print("  all 21 pairs read bit 1 with probability 1")
     qc, k0, k1, diff = design_a_associator(1, 2)
-    probs = Statevector(qc.remove_final_measurements(inplace=False)).probabilities([diff])
-    det = int(np.argmax(probs))
-    print(f"  (i,j)=(1,2) k0={k0}(assoc) k1={k1}(anti) diff_qubit={diff}")
-    print(f"  readout P0={probs[0]:.3f} P1={probs[1]:.3f} -> deterministic bit {det}")
     tqc = transpile(qc, basis_gates=["cz", "rz", "sx", "x"], optimization_level=3)
-    print(f"  transpiled depth={tqc.depth()} 2q(cz)={tqc.count_ops().get('cz', 0)}")
+    print(
+        f"  (1,2) k0={k0} k1={k1} diff_qubit={diff}; all-to-all depth={tqc.depth()} cz={tqc.count_ops().get('cz', 0)}"
+    )
 
     print("== Design B: sedenion zero-divisor LCU witness ==")
+    worst = 0.0
     zds = sedenion_zero_divisors()
+    for (i, j), (k, el), s in zds:
+        # The bright control keeps a and flips s, so b leaves the annihilator.
+        for sign, ideal in ((s, 0.0), (-s, None)):
+            qc = design_b_zero_divisor((i, j), (k, el), sign)
+            p0 = Statevector(qc.remove_final_measurements(inplace=False)).probabilities([4])[0]
+            want = lcu_p0_prediction((i, j), (k, el), sign)
+            if ideal is not None and abs(want - ideal) > 1e-12:
+                raise RuntimeError(f"({i},{j})({k},{el},{s}) is not annihilating: |ab|^2/8 = {want}")
+            worst = max(worst, abs(p0 - want))
+            if abs(p0 - want) > 1e-9:
+                raise RuntimeError(f"design B ({i},{j})({k},{el},{sign}) P0={p0:.9f}, cd_multiply gives {want:.9f}")
+    print(f"  {len(zds)} dark and {len(zds)} bright circuits match |ab|^2/8 within {worst:.1e}")
     (i, j), (k, el), s = zds[0]
     qc_zd = design_b_zero_divisor((i, j), (k, el), s)
-    p_zd = Statevector(qc_zd.remove_final_measurements(inplace=False)).probabilities([4])
-    # Control: same a, but a non-annihilating b (flip sign s -> breaks the pair).
-    qc_ct = design_b_zero_divisor((i, j), (k, el), -s)
-    p_ct = Statevector(qc_ct.remove_final_measurements(inplace=False)).probabilities([4])
-    sym = "+" if s > 0 else "-"
-    ctrl_sym = "-" if s > 0 else "+"
-    print(f"  zero-divisor (e{i}+e{j})*(e{k}{sym}e{el})=0  P(anc=0)={p_zd[0]:.6f}")
-    print(f"  control      (e{i}+e{j})*(e{k}{ctrl_sym}e{el})    P(anc=0)={p_ct[0]:.6f}")
+    bright = lcu_p0_prediction((i, j), (k, el), -s)
+    sym, ctrl_sym = ("+", "-") if s > 0 else ("-", "+")
+    print(f"  zero-divisor (e{i}+e{j})*(e{k}{sym}e{el})=0  P(anc=0)=0")
+    print(f"  control      (e{i}+e{j})*(e{k}{ctrl_sym}e{el})    P(anc=0)={bright:.6f}")
     tqc = transpile(qc_zd, basis_gates=["cz", "rz", "sx", "x"], optimization_level=3)
-    print(f"  transpiled depth={tqc.depth()} 2q(cz)={tqc.count_ops().get('cz', 0)}")
+    print(f"  all-to-all depth={tqc.depth()} cz={tqc.count_ops().get('cz', 0)}")
 
 
 if __name__ == "__main__":

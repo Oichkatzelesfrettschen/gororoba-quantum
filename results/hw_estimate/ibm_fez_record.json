@@ -1,0 +1,130 @@
+{
+  "backend": "ibm_fez",
+  "calibration_last_update": "2026-10-10T10:07:12-07:00",
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  },
+  "optimization_level": 3,
+  "seed_transpiler": 20261010,
+  "seed_simulator": 20261011,
+  "shots": 4096,
+  "qpu_executed": false,
+  "design_b": {
+    "readout_qubits": [
+      45,
+      25
+    ],
+    "p0_dark": 0.2724609375,
+    "p0_bright": 0.71435546875,
+    "ratio": 0.3814080656185919,
+    "p0_dark_readout_corrected": 0.25133147349733703,
+    "p0_bright_readout_corrected": 0.7152383304519635,
+    "ratio_readout_corrected": 0.3513954199553583
+  },
+  "cases": [
+    {
+      "name": "design_a_1_2",
+      "depth": 55,
+      "cz": 16,
+      "ops": {
+        "rz": 28,
+        "sx": 25,
+        "cz": 16,
+        "x": 9,
+        "barrier": 3,
+        "measure": 1
+      },
+      "initial_virtual_to_physical": [
+        132,
+        131,
+        133
+      ],
+      "physical_qubits": [
+        131,
+        132,
+        133
+      ],
+      "measured_physical_qubits": [
+        132
+      ],
+      "ideal_p1": 1.0,
+      "noisy_p1": 0.968505859375,
+      "counts": {
+        "0": 129,
+        "1": 3967
+      }
+    },
+    {
+      "name": "design_b_dark_1_10_4_15",
+      "depth": 821,
+      "cz": 224,
+      "ops": {
+        "sx": 595,
+        "rz": 508,
+        "cz": 224,
+        "x": 13,
+        "measure": 1
+      },
+      "initial_virtual_to_physical": [
+        44,
+        45,
+        37,
+        46,
+        25
+      ],
+      "physical_qubits": [
+        25,
+        37,
+        44,
+        45,
+        46
+      ],
+      "measured_physical_qubits": [
+        45
+      ],
+      "ideal_p1": 1.0,
+      "noisy_p1": 0.7275390625,
+      "counts": {
+        "0": 1116,
+        "1": 2980
+      }
+    },
+    {
+      "name": "design_b_bright_1_10_4_15",
+      "depth": 808,
+      "cz": 222,
+      "ops": {
+        "sx": 584,
+        "rz": 497,
+        "cz": 222,
+        "x": 13,
+        "measure": 1
+      },
+      "initial_virtual_to_physical": [
+        44,
+        45,
+        37,
+        46,
+        25
+      ],
+      "physical_qubits": [
+        25,
+        37,
+        44,
+        45,
+        46
+      ],
+      "measured_physical_qubits": [
+        25
+      ],
+      "ideal_p1": 0.0,
+      "noisy_p1": 0.28564453125,
+      "counts": {
+        "0": 2926,
+        "1": 1170
+      }
+    }
+  ]
+}

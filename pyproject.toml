@@ -1,0 +1,16 @@
+# Tool configuration only. The modules run as scripts from gororoba_quantum/ and
+# form no installable package; requirements.txt pins the tested runtime.
+
+[tool.ruff]
+line-length = 120
+target-version = "py311"
+src = ["gororoba_quantum"]
+
+[tool.ruff.lint]
+select = ["E", "W", "F", "I", "B", "UP"]
+
+[tool.mypy]
+python_version = "3.11"
+mypy_path = "gororoba_quantum"
+ignore_missing_imports = true
+warn_unused_ignores = true
