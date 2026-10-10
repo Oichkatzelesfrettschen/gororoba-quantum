@@ -177,9 +177,22 @@ one such combination with two terms.
   multiplier, a cyclic rotation of the four work bits, is the exact permutation
   on every input rather than a circuit compiled from the known answer (Smolin,
   Smith, and Vargo, Nature 499, 163 (2013)).
-- It uses one recycled control qubit, two controlled rotations (x2 and x4) and
-  one feed-forward phase, with r = 4 and ideal phases {0, 1/4, 1/2, 3/4}
-  uniformly. a = 1 is the null control.
+- `order_finding.py` implements it with one recycled control qubit, controlled
+  rotations by 2 and by 1 built from five Fredkin gates, and one feed-forward
+  phase -pi/2 conditioned on the first outcome.
+- The input is an eigenstate |u_s> = (1/2) sum_k exp(-2 pi i s k/4) |2^k> of the
+  multiplier, prepared as a phased W state. That makes the two-bit readout
+  deterministic, equal to s. The textbook |1> input instead reads the four
+  phases uniformly, which a decohered device also produces.
+- The four eigenstates run identical-cost circuits with distinct outcomes, so
+  each controls the others. The identity multiplier is the null and reads 0.
+- `$PYTHON order_finding.py` checks the multiplier on residues 1..14, the
+  eigenvalues i^s, and the readout exactly. The generic controlled synthesis of
+  the rotation costs 248 CZ on the FakeFez target; the Fredkin form costs 67.
+- The live dry run of 2026-10-10T17:23:16Z placed the group on ibm_kingston at
+  67 CZ. The noise model reads the correct phase with probability 0.91 for each
+  s and the null at 0.957. The duration estimate (record field duration_s)
+  excludes the classical feed-forward latency, which the Target does not report.
 - This tests the dynamic-circuit machinery the factoring QFT needs. It
   demonstrates no factoring capability, since multiplication by 2 mod 15 is a
   known easy case. Monz et al. (Science 351, 1068 (2016)) ran the

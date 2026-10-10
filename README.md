@@ -14,6 +14,10 @@ observables.
   kernel's hash-pinned multiplication tables, the zero-divisor corpus against
   the kernel CSV, norm multiplicativity, and the phase-degree rules along the
   ladder.
+- `gororoba_quantum/order_finding.py` -- semiclassical phase estimation of x -> 2x
+  mod 15 on its eigenstates: mid-circuit measurement, reset, and feed-forward.
+- `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
+  cannot contribute to Shor's algorithm, against the RSA-2048 resource floor.
 - `gororoba_quantum/select_lcu.py` -- the ancilla-selected left multiplication
   (one joint sign diagonal, X, CX) and sparse pair-state preparation.
 - `gororoba_quantum/predict.py` -- every algebraic prediction, from cd_sign and
@@ -53,6 +57,7 @@ PYTHON=${PYTHON:-python3}
 cd gororoba_quantum
 $PYTHON verify.py        # ground-truth checks against the kernel; nonzero exit on failure
 $PYTHON designs.py       # statevector checks over every instance
+$PYTHON order_finding.py # exact checks of the folded order-finding circuits
 $PYTHON live_run.py --out ../results/live   # live calibration, selection, noise model (IBM Quantum account)
 $PYTHON live_run.py --out ../results/live --submit             # the same, then submit (spends QPU time)
 $PYTHON live_run.py --collect ../results/live/<UTC start>      # measured vs execution-time calibration

@@ -333,7 +333,9 @@ back to drive a submission.
   zero-divisor ratio on ibm_kingston from 0.0436 to 0.0369 and the fringe
   visibility from 0.9065 to 0.9175. With --twirl, collection inverts the
   symmetric mean channel, since measurement twirling averages the two flip
-  probabilities. A group whose shots
+  probabilities. A group with feed-forward circuits records why the correction
+  is skipped instead: a misread mid-circuit bit also steers the conditional
+  gate, which no per-bit channel inversion models. A group whose shots
   straddle a calibration update keeps only its raw summary at collection.
 - Archived definitions: the record stores a sha256 over every module of
   gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
@@ -379,7 +381,12 @@ instance that pays for it; the record stores that instance only as a hash.
 --twirl enables gate and measurement twirling and --dd sets a
 dynamical-decoupling sequence (XX, XpXm, XY4); both act on hardware and are
 absent from the Aer noise model, so a hardware-versus-model gap with them on
-measures their effect. The
+measures their effect. Circuits with mid-circuit measurement, reset, or
+feed-forward go in a separate job per backend with dynamical decoupling and
+twirling off: IBM's Sampler rejects dynamical decoupling on dynamic circuits,
+and in runtime 0.50 the client-side Sampler's twirling boxes circuits through
+samplomatic, which rejects if_else (found by the migrate-qiskit-ibm-runtime
+skill's local verification). The
 10-minute monthly budget is quantum execution time. 156/5 bounds the count of
 disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
 and crosstalk is the measurement of how many fit per shot.

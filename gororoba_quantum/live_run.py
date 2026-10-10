@@ -50,6 +50,7 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit, qpy, transpile
+from qiskit.circuit import ControlFlowOp
 from qiskit.providers import BackendV2, Options
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError
@@ -313,13 +314,38 @@ def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
     return isa.assign_parameters(member.binding) if member.binding else isa
 
 
+def _gate_time_view(isa: QuantumCircuit) -> QuantumCircuit:
+    """isa with each control-flow op replaced by its first block's gates.
+
+    estimate_duration rejects control flow; the view keeps every gate the true
+    branch can run and drops the classical feed-forward latency, which the
+    Target does not report, so its duration is a lower bound for dynamic
+    circuits.
+    """
+    out = isa.copy_empty_like()
+    for inst in isa.data:
+        if isinstance(inst.operation, ControlFlowOp):
+            body = inst.operation.blocks[0]
+            for sub in body.data:
+                if sub.clbits:
+                    raise LiveRunError(f"{isa.name}: classical operation inside a control-flow block")
+                out.append(sub.operation, [inst.qubits[body.find_bit(q).index] for q in sub.qubits])
+        else:
+            out.append(inst)
+    return out
+
+
+def duration_s(isa: QuantumCircuit, target: Any) -> float:
+    return float(_gate_time_view(isa).estimate_duration(target, unit="s"))
+
+
 def coherence(isa: QuantumCircuit, target: Any) -> float:
     """exp(-T sum_q 1/T2_q) over the qubits isa touches, T its estimated duration.
 
     ESP counts gate and readout error; this factor charges idle dephasing on the
     chosen qubits for the length of the circuit (literature/notes/2509.18259.md).
     """
-    duration = isa.estimate_duration(target, unit="s")
+    duration = duration_s(isa, target)
     rate = sum(1.0 / target.qubit_properties[q].t2 for q in _physical(isa))
     return math.exp(-duration * rate)
 
@@ -512,6 +538,29 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetr
     return np.asarray(inverse @ dist)
 
 
+def corrected_summary(
+    group: Group, dists: dict[str, tuple[np.ndarray, QuantumCircuit]], props: Any, symmetric: bool = False
+) -> Any:
+    """The group summary on readout-inverted distributions, or why it is skipped.
+
+    readout_corrected assumes each classical bit passes through its own
+    output-only channel. In a feed-forward circuit a misread mid-circuit bit
+    also steers the conditional gate, so the second bit's distribution depends
+    on the first readout error and the separable inversion is biased; such
+    groups report the reason instead of a corrected summary. props is one
+    properties object, or a per-circuit mapping when circuits ran under
+    different calibrations.
+    """
+    if any(_is_dynamic(isa) for _, isa in dists.values()):
+        return {"skipped": "feed-forward circuits: readout error steers the conditional branch"}
+    return group.summarize(
+        {
+            name: readout_corrected(dist, isa, props[name] if isinstance(props, dict) else props, symmetric)
+            for name, (dist, isa) in dists.items()
+        }
+    )
+
+
 def experiment_digest() -> str:
     """sha256 over the source of every module loaded from this directory but verify.py.
 
@@ -557,7 +606,8 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
                 "name": name,
                 "cz": isa.count_ops().get("cz", 0),
                 "depth": isa.depth(),
-                "duration_s": isa.estimate_duration(target, unit="s"),
+                "duration_s": duration_s(isa, target),
+                "feed_forward": any(isinstance(i.operation, ControlFlowOp) for i in isa.data),
                 "physical_qubits": _physical(isa),
                 "esp": esp(isa, target),
                 "coherence": coherence(isa, target),
@@ -575,8 +625,10 @@ def _choice_record(choice: Choice, noisy: dict[str, np.ndarray], noise_calibrati
         "initial_layout": choice.layout,
         "joint_score": choice.joint_score,
         "summary": choice.group.summarize(noisy),
-        "summary_readout_corrected": choice.group.summarize(
-            {name: readout_corrected(noisy[name], isa, choice.snap.properties) for name, isa, _ in choice.entries}
+        "summary_readout_corrected": corrected_summary(
+            choice.group,
+            {name: (noisy[name], isa) for name, isa, _ in choice.entries},
+            choice.snap.properties,
         ),
         "members": members,
     }
@@ -722,38 +774,70 @@ def submit(
         backend = service.backend(name)
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
-        circuits = [isa for c in group_choices for _, isa, _ in c.entries]
-        names = [entry_name for c in group_choices for entry_name, _, _ in c.entries]
-        sampler = Sampler(mode=backend)
-        sampler.options.default_shots = SHOTS
-        sampler.options.environment.job_tags = ["gororoba-quantum", args.started]
-        if args.twirl:
-            sampler.options.twirling.enable_gates = True
-            sampler.options.twirling.enable_measure = True
-        if args.dd:
-            sampler.options.dynamical_decoupling.enable = True
-            sampler.options.dynamical_decoupling.sequence_type = args.dd
-            # Idle qubits still in their initial state get no pulses: a 3- to
-            # 5-qubit experiment on a 156-qubit ISA would otherwise drive the
-            # unused qubits too.
-            sampler.options.dynamical_decoupling.skip_reset_qubits = True
-        job = sampler.run(circuits)
-        record["submission"]["jobs"].append(
-            {
-                "backend": name,
-                "job_id": job.job_id(),
-                "members": names,
-                "calibration": group_choices[0].snap.calibration,
-                "budget_before": _budget(service, usage),
-                "options": sampler.options.model_dump(mode="json"),
-            }
-        )
-        # The job id is the only handle on QPU time already spent; it reaches
-        # disk before the next job is sent.
-        checkpoint()
-        print(f"submitted {len(circuits)} circuits to {name}: job {job.job_id()}")
+        entries = [(entry_name, isa) for c in group_choices for entry_name, isa, _ in c.entries]
+        # Circuits with mid-circuit measurement, reset, or feed-forward go in
+        # their own job, which configure_sampler keeps free of twirling and DD.
+        static = [(n, isa) for n, isa in entries if not _is_dynamic(isa)]
+        dynamic = [(n, isa) for n, isa in entries if _is_dynamic(isa)]
+        for kind, batch in (("static", static), ("dynamic", dynamic)):
+            if not batch:
+                continue
+            sampler = configure_sampler(backend, kind, args.twirl, args.dd, ["gororoba-quantum", args.started, kind])
+            job = sampler.run([isa for _, isa in batch])
+            record["submission"]["jobs"].append(
+                {
+                    "backend": name,
+                    "kind": kind,
+                    "job_id": job.job_id(),
+                    "members": [n for n, _ in batch],
+                    "calibration": group_choices[0].snap.calibration,
+                    "budget_before": _budget(service, usage),
+                    "options": sampler.options.model_dump(mode="json"),
+                }
+            )
+            # The job id is the only handle on QPU time already spent; it reaches
+            # disk before the next job is sent.
+            checkpoint()
+            print(f"submitted {len(batch)} {kind} circuits to {name}: job {job.job_id()}")
     record["submission"]["complete"] = True
     checkpoint()
+
+
+def configure_sampler(backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str]) -> Sampler:
+    """The client-side Sampler for one job: twirling and DD apply to static jobs only.
+
+    IBM's Sampler rejects dynamical decoupling on dynamic circuits, and the 0.50
+    client-side Sampler's twirling boxes circuits through samplomatic, which
+    rejects if_else. With DD on, idle qubits still in their initial state get no
+    pulses: a 3- to 5-qubit experiment on a 156-qubit ISA would otherwise drive
+    the unused qubits too.
+    """
+    sampler = Sampler(mode=backend)
+    sampler.options.default_shots = SHOTS
+    sampler.options.environment.job_tags = tags
+    if twirl and kind == "static":
+        sampler.options.twirling.enable_gates = True
+        sampler.options.twirling.enable_measure = True
+    if dd and kind == "static":
+        sampler.options.dynamical_decoupling.enable = True
+        sampler.options.dynamical_decoupling.sequence_type = dd
+        sampler.options.dynamical_decoupling.skip_reset_qubits = True
+    return sampler
+
+
+def _is_dynamic(isa: QuantumCircuit) -> bool:
+    """Control flow, reset, or a measurement followed by another operation on its qubit."""
+    measured: set[int] = set()
+    for inst in isa.data:
+        name = inst.operation.name
+        qubits = [isa.find_bit(q).index for q in inst.qubits]
+        if isinstance(inst.operation, ControlFlowOp) or name == "reset":
+            return True
+        if name not in ("measure", "barrier") and measured.intersection(qubits):
+            return True
+        if name == "measure":
+            measured.update(qubits)
+    return False
 
 
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
@@ -831,6 +915,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         result = job.result()
+        metrics = job.metrics()
         members = job_entry["members"]
         windows = pub_windows(result, len(members))
         twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
@@ -849,7 +934,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 starting = [isas[n] for (st, _), n in zip(windows, members, strict=True) if st == start]
                 check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
         measured: dict[str, np.ndarray] = {}
-        corrected: dict[str, np.ndarray] = {}
+        props_by_name: dict[str, Any] = {}
         replayed: dict[str, np.ndarray] = {}
         executed: dict[str, dict[str, Any]] = {}
         for idx, (name, pub) in enumerate(zip(members, result, strict=True)):
@@ -858,7 +943,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             props_then, sim_then = at[start]
             register = isa.cregs[0].name
             measured[name] = _distribution(getattr(pub.data, register).get_counts(), isa.num_clbits)
-            corrected[name] = readout_corrected(measured[name], isa, props_then, symmetric=twirled_readout)
+            props_by_name[name] = props_then
             counts = sim_then.run(isa, shots=shots, seed_simulator=seed).result().get_counts()
             replayed[name] = _distribution(counts, isa.num_clbits)
             stop_calibration = backend.properties(datetime=stop).last_update_date
@@ -880,6 +965,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "group": gname,
                 "backend": job_entry["backend"],
                 "executed": {n: executed[n] for n in required if n in executed},
+                "job_usage": metrics.get("usage"),
                 "measured": {n: [round(float(p), 6) for p in measured[n]] for n in required if n in measured},
             }
             # A circuit whose shots straddle a calibration update has no single
@@ -895,7 +981,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                         f"calibration changed during the shots of {straddling}"
                     )
                 else:
-                    entry["measured_summary_readout_corrected"] = group.summarize(corrected)
+                    entry["measured_summary_readout_corrected"] = corrected_summary(
+                        group, {n: (measured[n], isas[n]) for n in required}, props_by_name, symmetric=twirled_readout
+                    )
                     entry["replayed_summary"] = group.summarize(replayed)
                     entry["tvd_measured_to_replayed"] = {n: tvd(measured[n], replayed[n]) for n in required}
             out.append(entry)
