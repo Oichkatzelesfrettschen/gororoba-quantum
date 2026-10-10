@@ -12,10 +12,15 @@ doubling ladder (design C), the zero divisor into a phase-resolved fringe
 
 Run `$PYTHON cd_core.py` for the classical structure, `$PYTHON verify.py` for
 the ground-truth checks, `$PYTHON designs.py` for the circuit checks, and
-`$PYTHON hw_estimate.py --out ../results/hw_estimate` for the routed cost and
-noisy prediction on ibm_fez. `verify.py` and `designs.py` exit nonzero on the
-first failed check. predict.py computes every prediction from cd_sign and
-cd_multiply; no circuit builder imports it.
+`$PYTHON live_run.py --out ../results/live` to choose a backend and layout per
+experiment from live calibration, compile, and noise-simulate (add `--submit`
+to run on hardware). `verify.py` and `designs.py` exit nonzero on the first
+failed check. predict.py computes every prediction from cd_sign and
+cd_multiply; no circuit builder imports it. The "Measured" figures in the
+design sections come from results/hw_estimate/ibm_fez_record.json, a fixed
+ibm_fez compile at transpiler seed 20261010 under the 08:36 calibration of
+2026-10-10; `live_run.py --backends ibm_fez --seeds 1` repeats that compile
+under whatever calibration is live.
 
 ## Verification against the kernel
 
@@ -259,13 +264,58 @@ Hamiltonian or objective with exact small-instance answers, uniform and permuted
 weight controls, and a classical exact-diagonalization comparison of p-adic
 versus uniform weights are the prerequisites before any circuit.
 
-## Running on hardware
+## Live calibration and backend selection
 
-Nothing here has touched the QPU; `hw_estimate.py` reads backend metadata and
-runs a local noise model on the archived ISA circuits
-(results/hw_estimate/ibm_fez_isa.qpy), the 21 objects a submission would run:
-design A, design B dark and bright, the 9-point design D sweep, and design C at
-three dimensions with its two controls. The 10-minute monthly budget is quantum
-execution time. 156/5 bounds the count of disjoint 5-qubit instances by qubits
-alone; a packed transpile with its routing and crosstalk is the measurement of
-how many fit per shot. Re-query usage() before any submission.
+`live_run.py` treats calibration as a property of the run. Each invocation
+refreshes every accessible backend (ibm_fez, ibm_kingston, ibm_marrakesh), reads
+status, queue depth, Target, and properties, and decides, compiles, simulates,
+and optionally submits within that process. The audit record under
+results/live/<UTC start>/ holds every input to the decision and is never read
+back to drive a submission.
+
+- Eligibility: operational, status_msg "active", and at most 25 pending jobs
+  (--max-pending); a long queue lets the calibration drift between compile and
+  execution.
+- Exclusion policy (QUALITY in live_run.py): readout error above 0.08, CZ error
+  above 0.03, sx error above 0.01, T1 or T2 below 20 us, missing calibration, or
+  a faulty flag. Degraded hardware arrives without faulty flags: in the run of
+  2026-10-10T16:59:44Z faulty_qubits() and faulty_gates() were empty on all
+  three backends while ibm_fez reported CZ error 1.0 on edge 27-28, ibm_marrakesh
+  T1 = 6.6 us on qubit 26 and readout error 0.145 on qubit 23, and the policy
+  excluded 10, 8, and 27 qubits and 16, 24, and 20 edges on fez, kingston, and
+  marrakesh.
+- Selection: per experiment group and eligible backend, 8 transpiler seeds for
+  the primary circuit; the top 3 by ESP compile their controls onto the same
+  initial layout; the highest geometric-mean ESP across the group wins, queue
+  depth breaking ties. A candidate touching excluded hardware is rejected.
+- Freshness proof: the Target errors that ESP reads equal the properties fetched
+  with them on every CZ, sx, and measurement of the plan, and the noise model is
+  built from that same Target, so ranking and prediction describe one device
+  state.
+- Staleness: last_update_date advances without value changes (ibm_fez moved
+  from 08:27 to 09:38 with all 352 CZ errors and 156 T1 values unchanged), so
+  --submit compares the plan's own calibration values -- T1, T2, readout, sx,
+  and CZ error on its qubits and edges -- and recompiles a group whose values
+  moved.
+- Execution-time replay: --collect fetches target_history and properties at the
+  job's running timestamp, checks them against each other (342 of 352 ibm_fez
+  CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
+  agree on all of them), and re-simulates under that Target.
+
+Run of 2026-10-10T16:59:44Z (ibm_kingston skipped at 27 pending jobs):
+
+| group | backend | layout | CZ (primary, controls) | noisy observable |
+|---|---|---|---|---|
+| design A (1,2) | ibm_marrakesh | 10, 9, 11 | 16 | P1 = 0.968 |
+| design B/D fringe | ibm_marrakesh | 89, 88, 78, 90, 87 | 42 each | ratio 0.067; offset 0.485, visibility 0.860, phase -0.002 |
+| design C dim 8 | ibm_fez | 145, 146, 144 | 18, 20, 16 | TVD 0.065 true vs 0.372 flip |
+| design C dim 16 | ibm_marrakesh | 11, 12, 10, 18 | 49, 54, 28 | TVD 0.114 true vs 0.254 flip |
+| design C dim 32 | ibm_marrakesh | 11, 9, 12, 18, 10 | 96, 125, 64 | TVD 0.181 true vs 0.243 flip |
+
+Submission runs one client-side Sampler job per chosen backend
+(qiskit_ibm_runtime.executor_sampler, the destination the
+migrate-qiskit-ibm-runtime skill sets for qiskit-ibm-runtime 0.50) with one
+shot count, after a usage() check against --min-remaining-seconds. The
+10-minute monthly budget is quantum execution time. 156/5 bounds the count of
+disjoint 5-qubit instances by qubits alone; a packed transpile with its routing
+and crosstalk is the measurement of how many fit per shot.
