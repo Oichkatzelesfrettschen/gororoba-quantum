@@ -151,6 +151,21 @@ EQUIVALENCE_MIN_SHOTS = 64
 EQUIVALENCE_NOMINAL_FALSE_DETECTION = 0.05
 
 
+def hoeffding_interval(packed: float, reference: float, shots: int, confidence: float) -> tuple[float, float]:
+    """Interval on packed - reference for two independent arms of shots bounded [0, 1] scores each.
+
+    Hoeffding's inequality bounds the deviation of a mean of n independent
+    [0, 1] variables, so the difference of two such means lies within
+    sqrt((1/2) (1/n_P + 1/n_R) log(2 / alpha)) of its expectation with
+    probability at least 1 - alpha. The bound uses no variance estimate and
+    holds for every weight distribution on [0, 1], at the price of width.
+    """
+    alpha = 1 - confidence
+    radius = math.sqrt(0.5 * (2.0 / shots) * math.log(2 / alpha))
+    difference = packed - reference
+    return max(difference - radius, -1.0), min(difference + radius, 1.0)
+
+
 def difference_interval(
     packed: float,
     packed_variance: float,
@@ -162,19 +177,20 @@ def difference_interval(
 ) -> tuple[float, float]:
     """Interval on packed - reference, two scores each measured over shots shots.
 
-    Both scores are means of per-shot weights in [0, 1]. The interval is
-    Newcombe's hybrid score interval built from the two continuity-corrected
-    Wilson intervals (Newcombe 1998, method 11), whose false-detection
-    probability stays below nominal at every enumerated size (see
-    EQUIVALENCE_MIN_SHOTS). For a Bernoulli score (every weight 0 or 1) it is
-    a proportion interval. For any other [0, 1]-bounded score the
-    Bhatia-Davis inequality bounds the per-shot variance by mean (1 - mean),
-    so the same interval is conservative: it never shrinks to zero width when
-    the observed shots happen to share one score, as a plug-in normal
-    interval does, and it stays inside [-1, 1]. The plug-in variances are
-    retained by the caller for the z diagnostic only.
+    Both scores are means of per-shot weights in [0, 1]. For a Bernoulli
+    score (every weight 0 or 1) the interval is Newcombe's hybrid score
+    interval built from the two continuity-corrected Wilson intervals
+    (Newcombe 1998, method 11), whose false-detection probability stays below
+    nominal at every enumerated size (see EQUIVALENCE_MIN_SHOTS). For any
+    other [0, 1]-bounded score the interval is the Hoeffding interval, the
+    distribution-free bound for bounded means; a score interval would need a
+    coverage argument the Bhatia-Davis variance bound alone does not supply.
+    The plug-in variances are retained by the caller for the z diagnostic
+    only.
     """
-    del packed_variance, reference_variance, bernoulli
+    del packed_variance, reference_variance
+    if not bernoulli:
+        return hoeffding_interval(packed, reference, shots, confidence)
     difference = packed - reference
     packed_low, packed_high = _wilson_continuity_corrected(packed, shots, confidence)
     reference_low, reference_high = _wilson_continuity_corrected(reference, shots, confidence)
@@ -202,7 +218,11 @@ def equivalence(
     improvement; otherwise the difference is not resolved. A difference can
     be both resolved and inside the margin, so the three flags are reported
     beside the verdict, and a reader of the verdict alone sees equivalence
-    first, then the resolved sign.
+    first, then the resolved sign. The Hoeffding 90 percent interval and its
+    own within-margin flag are reported beside the verdict as a
+    distribution-free sensitivity view: a Bernoulli verdict that the wider
+    Hoeffding interval does not support depends on the score interval's
+    coverage argument.
     """
     interval_95 = difference_interval(packed, packed_variance, reference, reference_variance, shots, bernoulli, 0.95)
     interval_90 = difference_interval(packed, packed_variance, reference, reference_variance, shots, bernoulli, 0.90)
@@ -220,8 +240,9 @@ def equivalence(
         verdict = "packed_improvement_detected"
     else:
         verdict = "difference_not_resolved"
+    hoeffding_90 = hoeffding_interval(packed, reference, shots, 0.90)
     return {
-        "method": "newcombe_wilson" if bernoulli else "newcombe_wilson_bhatia_davis",
+        "method": "newcombe_wilson" if bernoulli else "hoeffding",
         "margin": margin,
         "difference_interval_95": list(interval_95),
         "difference_interval_90": list(interval_90),
@@ -229,6 +250,8 @@ def equivalence(
         "below_zero_95": below,
         "above_zero_95": above,
         "verdict": verdict,
+        "hoeffding_interval_90": list(hoeffding_90),
+        "hoeffding_within_margin": bool(-margin <= hoeffding_90[0] and hoeffding_90[1] <= margin),
     }
 
 
@@ -317,14 +340,26 @@ def _verify_equivalence() -> None:
     if small["verdict"] != "equivalent_within_0.03" or not small["below_zero_95"]:
         raise RuntimeError(f"a resolved 0.01 drop inside the margin reads {small}")
     bounded = equivalence(0.50, 0.25, 0.50, 0.25, shots, False)
-    if (
-        bounded["method"] != "newcombe_wilson_bhatia_davis"
-        or bounded["difference_interval_95"] != same["difference_interval_95"]
-    ):
-        raise RuntimeError(f"the bounded-score interval differs from the Bernoulli one at equal means: {bounded}")
+    radius_95 = math.sqrt(0.5 * (2.0 / shots) * math.log(2 / 0.05))
+    if bounded["method"] != "hoeffding" or abs(bounded["difference_interval_95"][1] - radius_95) > 1e-12:
+        raise RuntimeError(f"the bounded-score interval is not the Hoeffding interval: {bounded}")
+    if bounded["verdict"] != "equivalent_within_0.03" or not bounded["hoeffding_within_margin"]:
+        raise RuntimeError(f"equal bounded scores at 4096 shots per arm read {bounded}")
+    shifted = equivalence(0.51, 0.25, 0.50, 0.25, shots, False)
+    if shifted["verdict"] != "difference_not_resolved" or shifted["hoeffding_within_margin"]:
+        raise RuntimeError(f"a 0.01 bounded-score shift at 4096 shots reads {shifted}")
+    # The pilot's matched endpoints: Hoeffding at 90 percent spans 0.027044
+    # each side, so a -0.0037 difference crosses -0.03 and a +0.0020 one stays
+    # inside; the Bernoulli verdict and the sensitivity flag are reported apart.
+    qpe = equivalence(0.6619, 0.0, 0.6655, 0.0, shots, True)
+    shor = equivalence(0.5125, 0.0, 0.5105, 0.0, shots, True)
+    if abs(qpe["hoeffding_interval_90"][0] + 0.030644) > 1e-5 or qpe["hoeffding_within_margin"]:
+        raise RuntimeError(f"the folded-QPE sensitivity view reads {qpe}")
+    if not shor["hoeffding_within_margin"] or shor["verdict"] != "equivalent_within_0.03":
+        raise RuntimeError(f"the hybrid-Shor sensitivity view reads {shor}")
     one_shot = equivalence(0.6, 0.0, 0.6, 0.0, 1, False)
     low_90, high_90 = one_shot["difference_interval_90"]
-    if one_shot["verdict"] != "insufficient_shots" or high_90 - low_90 < 0.5 or one_shot["below_zero_95"]:
+    if one_shot["verdict"] != "insufficient_shots" or high_90 - low_90 < 1.0 or one_shot["below_zero_95"]:
         raise RuntimeError(f"one shot with zero plug-in variance issues a verdict: {one_shot}")
     two_shots = equivalence(0.0, 0.0, 1.0, 0.0, 2, True)
     if two_shots["verdict"] != "insufficient_shots" or two_shots["below_zero_95"]:

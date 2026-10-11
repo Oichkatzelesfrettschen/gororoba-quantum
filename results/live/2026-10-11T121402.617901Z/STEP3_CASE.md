@@ -123,4 +123,8 @@ experiment digest, layouts, replica qubits, fused PUB manifests, and
 exclusions, under a calibration that had advanced from 03:48:01 to
 07:57:41 (-07:00). Under the gate as now written, that calibration change
 would have stopped the run and asked for a renewed case; every later
-`--submit` carries the gate.
+`--submit` carries the gate. The run's lossless result and its second
+analysis are in the record's `raw/`, `adjudication.json`, and
+`ADJUDICATION.md`: the question this case named as answerable only on
+hardware, the model-hardware gap, is answered with a gap in both
+semiclassical rounds that idle dephasing explains only a quarter of.

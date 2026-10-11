@@ -1,0 +1,952 @@
+{
+ "max_dim": 128,
+ "levels": {
+  "8": {
+   "degree": 1,
+   "pairs_first_appearing": 21,
+   "class_count": 1,
+   "classes": [
+    {
+     "pairs": 21,
+     "walsh_magnitudes": [
+      [
+       0,
+       7
+      ],
+      [
+       8,
+       1
+      ]
+     ],
+     "collision_probability": "1",
+     "exemplar": [
+      1,
+      2
+     ]
+    }
+   ]
+  },
+  "16": {
+   "degree": 2,
+   "pairs_first_appearing": 84,
+   "class_count": 1,
+   "classes": [
+    {
+     "pairs": 84,
+     "walsh_magnitudes": [
+      [
+       0,
+       12
+      ],
+      [
+       8,
+       4
+      ]
+     ],
+     "collision_probability": "1/4",
+     "exemplar": [
+      1,
+      8
+     ]
+    }
+   ]
+  },
+  "32": {
+   "degree": 3,
+   "pairs_first_appearing": 360,
+   "class_count": 2,
+   "classes": [
+    {
+     "pairs": 234,
+     "walsh_magnitudes": [
+      [
+       0,
+       24
+      ],
+      [
+       8,
+       7
+      ],
+      [
+       24,
+       1
+      ]
+     ],
+     "collision_probability": "11/32",
+     "exemplar": [
+      1,
+      16
+     ]
+    },
+    {
+     "pairs": 126,
+     "walsh_magnitudes": [
+      [
+       0,
+       22
+      ],
+      [
+       8,
+       8
+      ],
+      [
+       16,
+       2
+      ]
+     ],
+     "collision_probability": "5/32",
+     "exemplar": [
+      9,
+      18
+     ]
+    }
+   ]
+  },
+  "64": {
+   "degree": 4,
+   "pairs_first_appearing": 1488,
+   "class_count": 6,
+   "classes": [
+    {
+     "pairs": 354,
+     "walsh_magnitudes": [
+      [
+       0,
+       48
+      ],
+      [
+       8,
+       15
+      ],
+      [
+       56,
+       1
+      ]
+     ],
+     "collision_probability": "151/256",
+     "exemplar": [
+      1,
+      32
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       46
+      ],
+      [
+       8,
+       14
+      ],
+      [
+       24,
+       2
+      ],
+      [
+       32,
+       2
+      ]
+     ],
+     "collision_probability": "43/256",
+     "exemplar": [
+      9,
+      34
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       44
+      ],
+      [
+       8,
+       14
+      ],
+      [
+       16,
+       4
+      ],
+      [
+       24,
+       1
+      ],
+      [
+       40,
+       1
+      ]
+     ],
+     "collision_probability": "49/256",
+     "exemplar": [
+      25,
+      34
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       48
+      ],
+      [
+       8,
+       12
+      ],
+      [
+       24,
+       3
+      ],
+      [
+       40,
+       1
+      ]
+     ],
+     "collision_probability": "55/256",
+     "exemplar": [
+      1,
+      40
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       44
+      ],
+      [
+       8,
+       16
+      ],
+      [
+       16,
+       3
+      ],
+      [
+       48,
+       1
+      ]
+     ],
+     "collision_probability": "85/256",
+     "exemplar": [
+      17,
+      34
+     ]
+    },
+    {
+     "pairs": 126,
+     "walsh_magnitudes": [
+      [
+       0,
+       42
+      ],
+      [
+       8,
+       16
+      ],
+      [
+       16,
+       4
+      ],
+      [
+       32,
+       2
+      ]
+     ],
+     "collision_probability": "37/256",
+     "exemplar": [
+      17,
+      42
+     ]
+    }
+   ]
+  },
+  "128": {
+   "degree": 5,
+   "pairs_first_appearing": 6048,
+   "class_count": 22,
+   "classes": [
+    {
+     "pairs": 594,
+     "walsh_magnitudes": [
+      [
+       0,
+       96
+      ],
+      [
+       8,
+       31
+      ],
+      [
+       120,
+       1
+      ]
+     ],
+     "collision_probability": "1583/2048",
+     "exemplar": [
+      1,
+      64
+     ]
+    },
+    {
+     "pairs": 504,
+     "walsh_magnitudes": [
+      [
+       0,
+       92
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       24,
+       4
+      ],
+      [
+       32,
+       3
+      ],
+      [
+       96,
+       1
+      ]
+     ],
+     "collision_probability": "683/2048",
+     "exemplar": [
+      17,
+      66
+     ]
+    },
+    {
+     "pairs": 396,
+     "walsh_magnitudes": [
+      [
+       0,
+       96
+      ],
+      [
+       8,
+       24
+      ],
+      [
+       24,
+       7
+      ],
+      [
+       104,
+       1
+      ]
+     ],
+     "collision_probability": "911/2048",
+     "exemplar": [
+      1,
+      80
+     ]
+    },
+    {
+     "pairs": 396,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       32
+      ],
+      [
+       16,
+       7
+      ],
+      [
+       112,
+       1
+      ]
+     ],
+     "collision_probability": "1205/2048",
+     "exemplar": [
+      33,
+      66
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       90
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       24,
+       4
+      ],
+      [
+       32,
+       4
+      ],
+      [
+       64,
+       2
+      ]
+     ],
+     "collision_probability": "299/2048",
+     "exemplar": [
+      17,
+      74
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       86
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       16,
+       8
+      ],
+      [
+       24,
+       2
+      ],
+      [
+       40,
+       2
+      ],
+      [
+       64,
+       2
+      ]
+     ],
+     "collision_probability": "305/2048",
+     "exemplar": [
+      57,
+      74
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       94
+      ],
+      [
+       8,
+       24
+      ],
+      [
+       24,
+       6
+      ],
+      [
+       40,
+       2
+      ],
+      [
+       64,
+       2
+      ]
+     ],
+     "collision_probability": "311/2048",
+     "exemplar": [
+      9,
+      82
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       84
+      ],
+      [
+       8,
+       30
+      ],
+      [
+       16,
+       8
+      ],
+      [
+       32,
+       4
+      ],
+      [
+       56,
+       1
+      ],
+      [
+       72,
+       1
+      ]
+     ],
+     "collision_probability": "317/2048",
+     "exemplar": [
+      41,
+      82
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       92
+      ],
+      [
+       8,
+       26
+      ],
+      [
+       24,
+       4
+      ],
+      [
+       32,
+       4
+      ],
+      [
+       56,
+       1
+      ],
+      [
+       72,
+       1
+      ]
+     ],
+     "collision_probability": "323/2048",
+     "exemplar": [
+      25,
+      74
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       26
+      ],
+      [
+       16,
+       8
+      ],
+      [
+       24,
+       2
+      ],
+      [
+       40,
+       2
+      ],
+      [
+       56,
+       1
+      ],
+      [
+       72,
+       1
+      ]
+     ],
+     "collision_probability": "329/2048",
+     "exemplar": [
+      49,
+      74
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       30
+      ],
+      [
+       16,
+       6
+      ],
+      [
+       48,
+       2
+      ],
+      [
+       56,
+       1
+      ],
+      [
+       72,
+       1
+      ]
+     ],
+     "collision_probability": "365/2048",
+     "exemplar": [
+      41,
+      66
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       16,
+       6
+      ],
+      [
+       24,
+       2
+      ],
+      [
+       40,
+       2
+      ],
+      [
+       48,
+       1
+      ],
+      [
+       80,
+       1
+      ]
+     ],
+     "collision_probability": "401/2048",
+     "exemplar": [
+      57,
+      66
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       94
+      ],
+      [
+       8,
+       30
+      ],
+      [
+       56,
+       2
+      ],
+      [
+       64,
+       2
+      ]
+     ],
+     "collision_probability": "407/2048",
+     "exemplar": [
+      9,
+      66
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       96
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       56,
+       3
+      ],
+      [
+       72,
+       1
+      ]
+     ],
+     "collision_probability": "431/2048",
+     "exemplar": [
+      1,
+      72
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       92
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       24,
+       2
+      ],
+      [
+       32,
+       4
+      ],
+      [
+       40,
+       1
+      ],
+      [
+       88,
+       1
+      ]
+     ],
+     "collision_probability": "515/2048",
+     "exemplar": [
+      25,
+      66
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       16,
+       8
+      ],
+      [
+       40,
+       3
+      ],
+      [
+       88,
+       1
+      ]
+     ],
+     "collision_probability": "521/2048",
+     "exemplar": [
+      49,
+      72
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       96
+      ],
+      [
+       8,
+       24
+      ],
+      [
+       24,
+       4
+      ],
+      [
+       40,
+       3
+      ],
+      [
+       88,
+       1
+      ]
+     ],
+     "collision_probability": "527/2048",
+     "exemplar": [
+      1,
+      88
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       84
+      ],
+      [
+       8,
+       32
+      ],
+      [
+       16,
+       8
+      ],
+      [
+       32,
+       3
+      ],
+      [
+       96,
+       1
+      ]
+     ],
+     "collision_probability": "677/2048",
+     "exemplar": [
+      33,
+      82
+     ]
+    },
+    {
+     "pairs": 252,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       28
+      ],
+      [
+       16,
+       8
+      ],
+      [
+       24,
+       3
+      ],
+      [
+       104,
+       1
+      ]
+     ],
+     "collision_probability": "905/2048",
+     "exemplar": [
+      49,
+      66
+     ]
+    },
+    {
+     "pairs": 126,
+     "walsh_magnitudes": [
+      [
+       0,
+       86
+      ],
+      [
+       8,
+       32
+      ],
+      [
+       16,
+       6
+      ],
+      [
+       48,
+       2
+      ],
+      [
+       64,
+       2
+      ]
+     ],
+     "collision_probability": "341/2048",
+     "exemplar": [
+      33,
+      74
+     ]
+    },
+    {
+     "pairs": 126,
+     "walsh_magnitudes": [
+      [
+       0,
+       84
+      ],
+      [
+       8,
+       32
+      ],
+      [
+       16,
+       6
+      ],
+      [
+       32,
+       4
+      ],
+      [
+       48,
+       1
+      ],
+      [
+       80,
+       1
+      ]
+     ],
+     "collision_probability": "389/2048",
+     "exemplar": [
+      33,
+      90
+     ]
+    },
+    {
+     "pairs": 126,
+     "walsh_magnitudes": [
+      [
+       0,
+       88
+      ],
+      [
+       8,
+       32
+      ],
+      [
+       16,
+       4
+      ],
+      [
+       48,
+       3
+      ],
+      [
+       80,
+       1
+      ]
+     ],
+     "collision_probability": "437/2048",
+     "exemplar": [
+      33,
+      72
+     ]
+    }
+   ]
+  }
+ }
+}

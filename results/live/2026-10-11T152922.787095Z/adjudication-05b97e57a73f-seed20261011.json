@@ -1,0 +1,2500 @@
+{
+ "analysis_digest": "05b97e57a73f46aa55bbe4e2d7250e8833c656dee582fd340f8d92cd835f98a6",
+ "analysis_versions": {
+  "numpy": "2.5.3",
+  "qiskit": "2.5.2",
+  "qiskit-aer": "0.17.2",
+  "qiskit-ibm-runtime": "0.50.0"
+ },
+ "experiment_digest": "0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2",
+ "jobs": {
+  "db5qmqclf4us73c4e1ug": {
+   "backend": "ibm_kingston",
+   "calibrations": {
+    "2026-10-11T15:31:50.399650+00:00": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "dt_seconds": 4e-09
+    }
+   },
+   "coherence_us": {
+    "2026-10-11T15:31:50.399650+00:00": {
+     "0": {
+      "t1": 370.08877936144955,
+      "t2": 395.8779625000099
+     },
+     "1": {
+      "t1": 270.9814452277573,
+      "t2": 285.3689171476461
+     },
+     "104": {
+      "t1": 289.5925082689224,
+      "t2": 396.6875804916762
+     },
+     "105": {
+      "t1": 224.2890160286148,
+      "t2": 209.56335432081573
+     },
+     "106": {
+      "t1": 105.0191544961744,
+      "t2": 126.31262051656772
+     },
+     "107": {
+      "t1": 321.7679100961909,
+      "t2": 278.60750776764934
+     },
+     "108": {
+      "t1": 190.9202461210351,
+      "t2": 139.32848940609372
+     },
+     "109": {
+      "t1": 241.75497171052277,
+      "t2": 217.85273142409872
+     },
+     "117": {
+      "t1": 334.50736449593904,
+      "t2": 208.02164370345253
+     },
+     "118": {
+      "t1": 220.52546489183948,
+      "t2": 149.1253054801682
+     },
+     "125": {
+      "t1": 323.04638984225573,
+      "t2": 406.3629004696777
+     },
+     "129": {
+      "t1": 214.94169661672225,
+      "t2": 116.83331595949896
+     },
+     "138": {
+      "t1": 340.6036681735947,
+      "t2": 153.81193625408
+     },
+     "150": {
+      "t1": 339.0970348303345,
+      "t2": 436.4208464307651
+     },
+     "151": {
+      "t1": 333.013097016764,
+      "t2": 257.9653358736937
+     },
+     "152": {
+      "t1": 345.3001786787659,
+      "t2": 136.08428731048335
+     },
+     "153": {
+      "t1": 395.9612025976346,
+      "t2": 259.56872606185726
+     },
+     "16": {
+      "t1": 281.3620142014213,
+      "t2": 183.98941803486196
+     },
+     "19": {
+      "t1": 252.25923338969082,
+      "t2": 233.54384981724579
+     },
+     "2": {
+      "t1": 213.96541489560187,
+      "t2": 112.47660936246466
+     },
+     "3": {
+      "t1": 212.56604162552924,
+      "t2": 245.556019330265
+     },
+     "32": {
+      "t1": 291.89192719975097,
+      "t2": 507.80627107141345
+     },
+     "33": {
+      "t1": 278.8144658033194,
+      "t2": 265.47560054103843
+     },
+     "34": {
+      "t1": 260.9937380475663,
+      "t2": 274.9631226644653
+     },
+     "35": {
+      "t1": 130.46795139342987,
+      "t2": 131.7601690192655
+     },
+     "47": {
+      "t1": 295.0702312614991,
+      "t2": 321.17037876825844
+     },
+     "51": {
+      "t1": 222.4718227140815,
+      "t2": 212.80520917405204
+     },
+     "57": {
+      "t1": 314.1859316460183,
+      "t2": 383.348110128214
+     },
+     "58": {
+      "t1": 246.7229984392147,
+      "t2": 148.1842395479508
+     },
+     "65": {
+      "t1": 300.2888998817294,
+      "t2": 211.8902862679588
+     },
+     "66": {
+      "t1": 121.73225572768465,
+      "t2": 162.741338303903
+     },
+     "67": {
+      "t1": 199.37026823634764,
+      "t2": 217.02259334172928
+     },
+     "71": {
+      "t1": 244.54582930095276,
+      "t2": 177.83833174717702
+     },
+     "72": {
+      "t1": 320.5927834232203,
+      "t2": 147.36691241266735
+     },
+     "73": {
+      "t1": 218.62679921948887,
+      "t2": 178.52112101861331
+     },
+     "79": {
+      "t1": 290.7581128789301,
+      "t2": 87.1706625012421
+     },
+     "80": {
+      "t1": 213.90817294332163,
+      "t2": 267.6893390788147
+     },
+     "81": {
+      "t1": 211.68087613329507,
+      "t2": 224.45109707514112
+     },
+     "82": {
+      "t1": 123.79646405047548,
+      "t2": 190.02461414085275
+     },
+     "83": {
+      "t1": 297.4706879799962,
+      "t2": 209.41464434193873
+     },
+     "92": {
+      "t1": 332.93758939060905,
+      "t2": 318.3674289992348
+     },
+     "93": {
+      "t1": 384.5115131565156,
+      "t2": 133.97190649062932
+     },
+     "94": {
+      "t1": 294.62102792365283,
+      "t2": 259.98550581065086
+     },
+     "95": {
+      "t1": 237.52935826376867,
+      "t2": 314.58182456696096
+     },
+     "96": {
+      "t1": 309.81673647882917,
+      "t2": 135.92713738232797
+     }
+    }
+   },
+   "execution_start": "2026-10-11T15:31:50.399650+00:00",
+   "metrics": {
+    "caller": "qiskit",
+    "circuits_execution_time_ns": 6706743808,
+    "qiskit_version": "qiskit_ibm_runtime-0.50.0,qiskit-2.5.2*,qiskit_aer-0.17.2*",
+    "timestamps": {
+     "created": "2026-10-11T15:29:45.434405Z",
+     "finished": "2026-10-11T15:31:59.555571Z",
+     "running": "2026-10-11T15:31:08.001019Z"
+    },
+    "usage": {
+     "details": [
+      {
+       "metric": {
+        "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+        "value": 9
+       },
+       "unit": "resource_units",
+       "value": 0.1403
+      }
+     ],
+     "qpu_charge_time_seconds": 9,
+     "status": "complete",
+     "unit": "resource_units",
+     "value": 0.1403
+    }
+   },
+   "packed_minus_reference_schedule": {
+    "packed_pub": "ibm_kingston_dynamic_pub_01",
+    "per_qubit": {
+     "0": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "1": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "104": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "105": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "106": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "117": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "125": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "16": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "2": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     },
+     "3": {
+      "final_offset_dt": 187,
+      "identical_sequence": true,
+      "offset_steps_dt": [
+       23,
+       187
+      ]
+     }
+    },
+    "reference_pub": "ibm_kingston_dynamic_pub_02"
+   },
+   "pubs": {
+    "ibm_kingston_dynamic_pub_01": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
+     ],
+     "components": [
+      {
+       "inserted_delay_dt": 11654,
+       "member": "folded_qpe_s1",
+       "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        125
+       ],
+       "register": "g0_r0_c",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.62890625,
+        0.673828125,
+        0.66015625,
+        0.6875,
+        0.65625,
+        0.65234375,
+        0.66796875,
+        0.66796875
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.0869140625,
+          0.661865234375,
+          0.055908203125,
+          0.1953125
+         ],
+         "p_bit0_correct": 0.857177734375,
+         "p_bit1_correct_given_bit0_correct": 0.7721446881230418,
+         "p_bit1_correct_given_bit0_wrong": 0.6085470085470085,
+         "p_correct": 0.661865234375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.028076171875,
+          0.88623046875,
+          0.022216796875,
+          0.0634765625
+         ],
+         "p_bit0_correct": 0.94970703125,
+         "p_bit1_correct_given_bit0_correct": 0.9331619537275064,
+         "p_bit1_correct_given_bit0_wrong": 0.558252427184466,
+         "p_correct": 0.88623046875
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.028076171875,
+          0.834228515625,
+          0.02685546875,
+          0.11083984375
+         ],
+         "p_bit0_correct": 0.945068359375,
+         "p_bit1_correct_given_bit0_correct": 0.8827176440196332,
+         "p_bit1_correct_given_bit0_wrong": 0.5111111111111111,
+         "p_correct": 0.834228515625
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11639,
+       "member": "folded_qpe_s1",
+       "physical_qubits": [
+        138,
+        150,
+        151,
+        152,
+        153
+       ],
+       "register": "g0_r1_c",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.7265625,
+        0.732421875,
+        0.7421875,
+        0.7578125,
+        0.708984375,
+        0.74609375,
+        0.708984375,
+        0.703125
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.056396484375,
+          0.728271484375,
+          0.045654296875,
+          0.169677734375
+         ],
+         "p_bit0_correct": 0.89794921875,
+         "p_bit1_correct_given_bit0_correct": 0.8110386079390973,
+         "p_bit1_correct_given_bit0_wrong": 0.5526315789473685,
+         "p_correct": 0.728271484375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.0234375,
+          0.8984375,
+          0.0185546875,
+          0.0595703125
+         ],
+         "p_bit0_correct": 0.9580078125,
+         "p_bit1_correct_given_bit0_correct": 0.9378185524974516,
+         "p_bit1_correct_given_bit0_wrong": 0.5581395348837209,
+         "p_correct": 0.8984375
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.030029296875,
+          0.839111328125,
+          0.024169921875,
+          0.106689453125
+         ],
+         "p_bit0_correct": 0.94580078125,
+         "p_bit1_correct_given_bit0_correct": 0.8871966959215282,
+         "p_bit1_correct_given_bit0_wrong": 0.5540540540540541,
+         "p_correct": 0.839111328125
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11654,
+       "member": "folded_qpe_s1",
+       "physical_qubits": [
+        79,
+        92,
+        93,
+        94,
+        95
+       ],
+       "register": "g0_r2_c",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.6953125,
+        0.71484375,
+        0.681640625,
+        0.669921875,
+        0.6875,
+        0.72265625,
+        0.646484375,
+        0.693359375
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.05615234375,
+          0.68896484375,
+          0.04541015625,
+          0.20947265625
+         ],
+         "p_bit0_correct": 0.8984375,
+         "p_bit1_correct_given_bit0_correct": 0.7668478260869566,
+         "p_bit1_correct_given_bit0_wrong": 0.5528846153846154,
+         "p_correct": 0.68896484375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.02490234375,
+          0.898193359375,
+          0.0244140625,
+          0.052490234375
+         ],
+         "p_bit0_correct": 0.95068359375,
+         "p_bit1_correct_given_bit0_correct": 0.9447868515665125,
+         "p_bit1_correct_given_bit0_wrong": 0.504950495049505,
+         "p_correct": 0.898193359375
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.030029296875,
+          0.834716796875,
+          0.025390625,
+          0.10986328125
+         ],
+         "p_bit0_correct": 0.944580078125,
+         "p_bit1_correct_given_bit0_correct": 0.8836908761953993,
+         "p_bit1_correct_given_bit0_wrong": 0.5418502202643172,
+         "p_correct": 0.834716796875
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11187,
+       "member": "hybrid_shor_N15_a2",
+       "physical_qubits": [
+        0,
+        1,
+        2,
+        3,
+        16
+       ],
+       "register": "g1_r0_phase",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.552734375,
+        0.498046875,
+        0.533203125,
+        0.515625,
+        0.50390625,
+        0.494140625,
+        0.484375,
+        0.517578125
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.512451171875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.191650390625,
+          0.190185546875,
+          0.2958984375,
+          0.322265625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.494873046875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.26171875,
+          0.258544921875,
+          0.243408203125,
+          0.236328125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.493408203125,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.26416015625,
+          0.255615234375,
+          0.242431640625,
+          0.23779296875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11187,
+       "member": "hybrid_shor_N15_a2",
+       "physical_qubits": [
+        80,
+        81,
+        82,
+        83,
+        96
+       ],
+       "register": "g1_r1_phase",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.478515625,
+        0.525390625,
+        0.564453125,
+        0.55078125,
+        0.4921875,
+        0.537109375,
+        0.52734375,
+        0.498046875
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.521728515625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.3056640625,
+          0.24609375,
+          0.172607421875,
+          0.275634765625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.4921875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.25927734375,
+          0.25390625,
+          0.24853515625,
+          0.23828125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.494873046875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.261962890625,
+          0.25244140625,
+          0.2431640625,
+          0.242431640625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11187,
+       "member": "hybrid_shor_N15_a2",
+       "physical_qubits": [
+        47,
+        57,
+        65,
+        66,
+        67
+       ],
+       "register": "g1_r2_phase",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.51953125,
+        0.505859375,
+        0.4765625,
+        0.5625,
+        0.515625,
+        0.482421875,
+        0.533203125,
+        0.525390625
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.51513671875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.24462890625,
+          0.264404296875,
+          0.240234375,
+          0.250732421875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.49609375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.256591796875,
+          0.25537109375,
+          0.247314453125,
+          0.24072265625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.495849609375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.260986328125,
+          0.252685546875,
+          0.2431640625,
+          0.2431640625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 10907,
+       "member": "hybrid_shor_N15_a2",
+       "physical_qubits": [
+        19,
+        32,
+        33,
+        34,
+        35
+       ],
+       "register": "g1_r3_phase",
+       "replica": 3,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.458984375,
+        0.529296875,
+        0.453125,
+        0.533203125,
+        0.505859375,
+        0.52734375,
+        0.478515625,
+        0.470703125
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.49462890625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.272216796875,
+          0.24169921875,
+          0.233154296875,
+          0.2529296875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.495361328125,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.262451171875,
+          0.2529296875,
+          0.2421875,
+          0.242431640625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.495361328125,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.262451171875,
+          0.253173828125,
+          0.2421875,
+          0.2421875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11187,
+       "member": "hybrid_shor_N15_a2",
+       "physical_qubits": [
+        51,
+        58,
+        71,
+        72,
+        73
+       ],
+       "register": "g1_r4_phase",
+       "replica": 4,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.46484375,
+        0.47265625,
+        0.44921875,
+        0.48046875,
+        0.47265625,
+        0.44140625,
+        0.501953125,
+        0.47265625
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.469482421875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.272705078125,
+          0.2392578125,
+          0.2578125,
+          0.230224609375
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.478759765625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.2734375,
+          0.24658203125,
+          0.247802734375,
+          0.232177734375
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.47900390625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.2744140625,
+          0.244384765625,
+          0.24658203125,
+          0.234619140625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 11187,
+       "member": "hybrid_shor_N15_a2",
+       "physical_qubits": [
+        107,
+        108,
+        109,
+        118,
+        129
+       ],
+       "register": "g1_r5_phase",
+       "replica": 5,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.4453125,
+        0.46875,
+        0.4921875,
+        0.439453125,
+        0.466796875,
+        0.458984375,
+        0.494140625,
+        0.486328125
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.468994140625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.281494140625,
+          0.236572265625,
+          0.24951171875,
+          0.232421875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.490966796875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.261474609375,
+          0.25341796875,
+          0.24755859375,
+          0.237548828125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.49755859375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.259521484375,
+          0.254150390625,
+          0.242919921875,
+          0.243408203125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      }
+     ],
+     "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
+     "schedule": {
+      "broadcast_dt": [
+       577
+      ],
+      "circuit_duration_dt": 6069,
+      "circuit_end_dt": 6069,
+      "first_capture_to_last_reset_dt": 1463,
+      "receive_dt": [
+       7
+      ],
+      "round_trip_dt": [
+       584
+      ]
+     },
+     "shotwise_correlation": {
+      "folded_qpe_s1/r0 ~ folded_qpe_s1/r1": 0.04368479947310626,
+      "folded_qpe_s1/r0 ~ folded_qpe_s1/r2": -0.010907113429645834,
+      "folded_qpe_s1/r0 ~ hybrid_shor_N15_a2/r0": -0.012652981274011934,
+      "folded_qpe_s1/r0 ~ hybrid_shor_N15_a2/r1": 0.013011108854428606,
+      "folded_qpe_s1/r0 ~ hybrid_shor_N15_a2/r2": -0.015009759945209367,
+      "folded_qpe_s1/r0 ~ hybrid_shor_N15_a2/r3": -0.0009692029808533807,
+      "folded_qpe_s1/r0 ~ hybrid_shor_N15_a2/r4": 0.025058827396623184,
+      "folded_qpe_s1/r0 ~ hybrid_shor_N15_a2/r5": 0.017122044267590217,
+      "folded_qpe_s1/r1 ~ folded_qpe_s1/r2": -0.04171042700739522,
+      "folded_qpe_s1/r1 ~ hybrid_shor_N15_a2/r0": 0.016862793194036017,
+      "folded_qpe_s1/r1 ~ hybrid_shor_N15_a2/r1": -0.003643359386018909,
+      "folded_qpe_s1/r1 ~ hybrid_shor_N15_a2/r2": -0.001815029174070538,
+      "folded_qpe_s1/r1 ~ hybrid_shor_N15_a2/r3": -0.003817805839736557,
+      "folded_qpe_s1/r1 ~ hybrid_shor_N15_a2/r4": 0.007185236708085923,
+      "folded_qpe_s1/r1 ~ hybrid_shor_N15_a2/r5": -0.018706154722274562,
+      "folded_qpe_s1/r2 ~ hybrid_shor_N15_a2/r0": 0.007241063819452923,
+      "folded_qpe_s1/r2 ~ hybrid_shor_N15_a2/r1": -0.004558762035447702,
+      "folded_qpe_s1/r2 ~ hybrid_shor_N15_a2/r2": 0.011907919024052567,
+      "folded_qpe_s1/r2 ~ hybrid_shor_N15_a2/r3": 0.03181143312267879,
+      "folded_qpe_s1/r2 ~ hybrid_shor_N15_a2/r4": 0.024432979292938816,
+      "folded_qpe_s1/r2 ~ hybrid_shor_N15_a2/r5": 0.031174813671005632,
+      "hybrid_shor_N15_a2/r0 ~ hybrid_shor_N15_a2/r1": 0.002827615373732097,
+      "hybrid_shor_N15_a2/r0 ~ hybrid_shor_N15_a2/r2": 0.044690613164981026,
+      "hybrid_shor_N15_a2/r0 ~ hybrid_shor_N15_a2/r3": -0.025620823751433913,
+      "hybrid_shor_N15_a2/r0 ~ hybrid_shor_N15_a2/r4": -0.0033702206361115434,
+      "hybrid_shor_N15_a2/r0 ~ hybrid_shor_N15_a2/r5": 0.006441440415363645,
+      "hybrid_shor_N15_a2/r1 ~ hybrid_shor_N15_a2/r2": -0.03016649947113263,
+      "hybrid_shor_N15_a2/r1 ~ hybrid_shor_N15_a2/r3": -0.007841817898424499,
+      "hybrid_shor_N15_a2/r1 ~ hybrid_shor_N15_a2/r4": 0.021266796999936943,
+      "hybrid_shor_N15_a2/r1 ~ hybrid_shor_N15_a2/r5": 0.032083719092764945,
+      "hybrid_shor_N15_a2/r2 ~ hybrid_shor_N15_a2/r3": -0.02312422957828442,
+      "hybrid_shor_N15_a2/r2 ~ hybrid_shor_N15_a2/r4": 0.01702399030068994,
+      "hybrid_shor_N15_a2/r2 ~ hybrid_shor_N15_a2/r5": 0.005307920331325652,
+      "hybrid_shor_N15_a2/r3 ~ hybrid_shor_N15_a2/r4": -0.009952122568318355,
+      "hybrid_shor_N15_a2/r3 ~ hybrid_shor_N15_a2/r5": 0.00667130086939961,
+      "hybrid_shor_N15_a2/r4 ~ hybrid_shor_N15_a2/r5": 0.009924548179354804
+     },
+     "shotwise_correlation_null_sd": 0.015625
+    },
+    "ibm_kingston_dynamic_pub_02": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
+     ],
+     "components": [
+      {
+       "inserted_delay_dt": 10834,
+       "member": "folded_qpe_s1_isolated",
+       "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        125
+       ],
+       "register": "g0_r0_c",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.68359375,
+        0.6875,
+        0.669921875,
+        0.654296875,
+        0.6640625,
+        0.646484375,
+        0.66015625,
+        0.658203125
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.080322265625,
+          0.66552734375,
+          0.065673828125,
+          0.1884765625
+         ],
+         "p_bit0_correct": 0.85400390625,
+         "p_bit1_correct_given_bit0_correct": 0.7793024585477416,
+         "p_bit1_correct_given_bit0_wrong": 0.5501672240802675,
+         "p_correct": 0.66552734375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.028076171875,
+          0.88720703125,
+          0.022216796875,
+          0.0625
+         ],
+         "p_bit0_correct": 0.94970703125,
+         "p_bit1_correct_given_bit0_correct": 0.9341902313624678,
+         "p_bit1_correct_given_bit0_wrong": 0.558252427184466,
+         "p_correct": 0.88720703125
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.0283203125,
+          0.8359375,
+          0.02685546875,
+          0.10888671875
+         ],
+         "p_bit0_correct": 0.94482421875,
+         "p_bit1_correct_given_bit0_correct": 0.8847545219638243,
+         "p_bit1_correct_given_bit0_wrong": 0.5132743362831859,
+         "p_correct": 0.8359375
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 10367,
+       "member": "hybrid_shor_N15_a2_isolated",
+       "physical_qubits": [
+        0,
+        1,
+        2,
+        3,
+        16
+       ],
+       "register": "g1_r0_phase",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.5,
+        0.46875,
+        0.517578125,
+        0.55859375,
+        0.509765625,
+        0.537109375,
+        0.5,
+        0.4921875
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.510498046875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.19970703125,
+          0.204345703125,
+          0.289794921875,
+          0.30615234375
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.49560546875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.26123046875,
+          0.25830078125,
+          0.2431640625,
+          0.2373046875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.493408203125,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.2646484375,
+          0.255859375,
+          0.241943359375,
+          0.237548828125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      }
+     ],
+     "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
+     "schedule": {
+      "broadcast_dt": [
+       533
+      ],
+      "circuit_duration_dt": 5882,
+      "circuit_end_dt": 5882,
+      "first_capture_to_last_reset_dt": 1299,
+      "receive_dt": [
+       7
+      ],
+      "round_trip_dt": [
+       540
+      ]
+     },
+     "shotwise_correlation": {
+      "folded_qpe_s1_isolated/r0 ~ hybrid_shor_N15_a2_isolated/r0": -0.02134235009489958
+     },
+     "shotwise_correlation_null_sd": 0.015625
+    },
+    "ibm_kingston_dynamic_pub_03": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
+     ],
+     "components": [
+      {
+       "inserted_delay_dt": 13426,
+       "member": "folded_qpe_s0",
+       "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        125
+       ],
+       "register": "g0_r0_c",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.69140625,
+        0.681640625,
+        0.701171875,
+        0.685546875,
+        0.7109375,
+        0.671875,
+        0.685546875,
+        0.67578125
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.68798828125,
+          0.037353515625,
+          0.203857421875,
+          0.07080078125
+         ],
+         "p_bit0_correct": 0.891845703125,
+         "p_bit1_correct_given_bit0_correct": 0.7714207500684369,
+         "p_bit1_correct_given_bit0_wrong": 0.345372460496614,
+         "p_correct": 0.68798828125
+        },
+        "replay_archived": {
+         "distribution": [
+          0.909912109375,
+          0.01611328125,
+          0.057373046875,
+          0.0166015625
+         ],
+         "p_bit0_correct": 0.96728515625,
+         "p_bit1_correct_given_bit0_correct": 0.9406865219586068,
+         "p_bit1_correct_given_bit0_wrong": 0.4925373134328358,
+         "p_correct": 0.909912109375
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.866455078125,
+          0.021240234375,
+          0.09326171875,
+          0.01904296875
+         ],
+         "p_bit0_correct": 0.959716796875,
+         "p_bit1_correct_given_bit0_correct": 0.9028237089799034,
+         "p_bit1_correct_given_bit0_wrong": 0.5272727272727272,
+         "p_correct": 0.866455078125
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 13411,
+       "member": "folded_qpe_s0",
+       "physical_qubits": [
+        138,
+        150,
+        151,
+        152,
+        153
+       ],
+       "register": "g0_r1_c",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.75390625,
+        0.7890625,
+        0.7890625,
+        0.802734375,
+        0.7890625,
+        0.796875,
+        0.8125,
+        0.77734375
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.788818359375,
+          0.037353515625,
+          0.13720703125,
+          0.03662109375
+         ],
+         "p_bit0_correct": 0.926025390625,
+         "p_bit1_correct_given_bit0_correct": 0.85183232269971,
+         "p_bit1_correct_given_bit0_wrong": 0.504950495049505,
+         "p_correct": 0.788818359375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.92041015625,
+          0.01416015625,
+          0.0537109375,
+          0.01171875
+         ],
+         "p_bit0_correct": 0.97412109375,
+         "p_bit1_correct_given_bit0_correct": 0.9448621553884712,
+         "p_bit1_correct_given_bit0_wrong": 0.5471698113207547,
+         "p_correct": 0.92041015625
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.879150390625,
+          0.015625,
+          0.090087890625,
+          0.01513671875
+         ],
+         "p_bit0_correct": 0.96923828125,
+         "p_bit1_correct_given_bit0_correct": 0.9070528967254408,
+         "p_bit1_correct_given_bit0_wrong": 0.5079365079365079,
+         "p_correct": 0.879150390625
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 13426,
+       "member": "folded_qpe_s0",
+       "physical_qubits": [
+        79,
+        92,
+        93,
+        94,
+        95
+       ],
+       "register": "g0_r2_c",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.703125,
+        0.75,
+        0.7265625,
+        0.71484375,
+        0.73046875,
+        0.7421875,
+        0.73046875,
+        0.73046875
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.728515625,
+          0.036376953125,
+          0.19482421875,
+          0.040283203125
+         ],
+         "p_bit0_correct": 0.92333984375,
+         "p_bit1_correct_given_bit0_correct": 0.7890005288207298,
+         "p_bit1_correct_given_bit0_wrong": 0.4745222929936306,
+         "p_correct": 0.728515625
+        },
+        "replay_archived": {
+         "distribution": [
+          0.920654296875,
+          0.016357421875,
+          0.048095703125,
+          0.014892578125
+         ],
+         "p_bit0_correct": 0.96875,
+         "p_bit1_correct_given_bit0_correct": 0.9503528225806451,
+         "p_bit1_correct_given_bit0_wrong": 0.5234375,
+         "p_correct": 0.920654296875
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.860107421875,
+          0.02099609375,
+          0.1005859375,
+          0.018310546875
+         ],
+         "p_bit0_correct": 0.960693359375,
+         "p_bit1_correct_given_bit0_correct": 0.8952986022871664,
+         "p_bit1_correct_given_bit0_wrong": 0.5341614906832298,
+         "p_correct": 0.860107421875
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 263,
+       "member": "hybrid_shor_N15_a2_null",
+       "physical_qubits": [
+        0,
+        1,
+        2,
+        3,
+        16
+       ],
+       "register": "g1_r0_phase",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.001953125,
+        0.0,
+        0.0078125,
+        0.00390625,
+        0.001953125,
+        0.0078125,
+        0.001953125,
+        0.00390625
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.003662109375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.990234375,
+          0.001708984375,
+          0.006103515625,
+          0.001953125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.00537109375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.98681640625,
+          0.002197265625,
+          0.0078125,
+          0.003173828125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.00537109375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.990234375,
+          0.0029296875,
+          0.00439453125,
+          0.00244140625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 265,
+       "member": "hybrid_shor_N15_a2_null",
+       "physical_qubits": [
+        80,
+        81,
+        82,
+        83,
+        96
+       ],
+       "register": "g1_r1_phase",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.00390625,
+        0.001953125,
+        0.009765625,
+        0.001953125,
+        0.001953125,
+        0.00390625,
+        0.00390625,
+        0.00390625
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.00390625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.986328125,
+          0.002685546875,
+          0.009765625,
+          0.001220703125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.005859375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.985107421875,
+          0.00244140625,
+          0.009033203125,
+          0.00341796875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.005859375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.98828125,
+          0.003173828125,
+          0.005859375,
+          0.002685546875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 263,
+       "member": "hybrid_shor_N15_a2_null",
+       "physical_qubits": [
+        47,
+        57,
+        65,
+        66,
+        67
+       ],
+       "register": "g1_r2_phase",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.001953125,
+        0.00390625,
+        0.001953125,
+        0.001953125,
+        0.001953125,
+        0.001953125,
+        0.00390625,
+        0.0
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.002197265625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.989501953125,
+          0.0009765625,
+          0.00830078125,
+          0.001220703125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.0029296875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.9921875,
+          0.001708984375,
+          0.0048828125,
+          0.001220703125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.0029296875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.994384765625,
+          0.001953125,
+          0.002685546875,
+          0.0009765625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 263,
+       "member": "hybrid_shor_N15_a2_null",
+       "physical_qubits": [
+        19,
+        32,
+        33,
+        34,
+        35
+       ],
+       "register": "g1_r3_phase",
+       "replica": 3,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.017578125,
+        0.01171875,
+        0.013671875,
+        0.0078125,
+        0.009765625,
+        0.009765625,
+        0.009765625,
+        0.01171875
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.011474609375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.972412109375,
+          0.0048828125,
+          0.01611328125,
+          0.006591796875
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.016357421875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.965576171875,
+          0.00830078125,
+          0.01806640625,
+          0.008056640625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.016357421875,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.96875,
+          0.00927734375,
+          0.014892578125,
+          0.007080078125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 263,
+       "member": "hybrid_shor_N15_a2_null",
+       "physical_qubits": [
+        51,
+        58,
+        71,
+        72,
+        73
+       ],
+       "register": "g1_r4_phase",
+       "replica": 4,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.001953125,
+        0.001953125,
+        0.0,
+        0.001953125,
+        0.0078125,
+        0.0,
+        0.0,
+        0.001953125
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.001953125,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.989013671875,
+          0.00048828125,
+          0.009033203125,
+          0.00146484375
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.003662109375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.98974609375,
+          0.001953125,
+          0.006591796875,
+          0.001708984375
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.003662109375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.991943359375,
+          0.002197265625,
+          0.00439453125,
+          0.00146484375
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 263,
+       "member": "hybrid_shor_N15_a2_null",
+       "physical_qubits": [
+        107,
+        108,
+        109,
+        118,
+        129
+       ],
+       "register": "g1_r5_phase",
+       "replica": 5,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.001953125,
+        0.0,
+        0.0,
+        0.001953125,
+        0.00390625,
+        0.001953125,
+        0.00390625,
+        0.0
+       ],
+       "views": {
+        "hardware": {
+         "factorable": 0.001708984375,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.98583984375,
+          0.00048828125,
+          0.012451171875,
+          0.001220703125
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_archived": {
+         "factorable": 0.000244140625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.99951171875,
+          0.000244140625,
+          0.000244140625,
+          0.0
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        },
+        "replay_schedule_aware": {
+         "factorable": 0.000244140625,
+         "p_low_bits_zero": 1.0,
+         "top_pair_distribution": [
+          0.9990234375,
+          0.0,
+          0.000732421875,
+          0.000244140625
+         ],
+         "varying_bits": [
+          6,
+          7
+         ]
+        }
+       }
+      }
+     ],
+     "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
+     "schedule": {
+      "broadcast_dt": [
+       540,
+       561
+      ],
+      "circuit_duration_dt": 6891,
+      "circuit_end_dt": 6891,
+      "first_capture_to_last_reset_dt": 3116,
+      "receive_dt": [
+       7,
+       7
+      ],
+      "round_trip_dt": [
+       547,
+       568
+      ]
+     },
+     "shotwise_correlation": {
+      "folded_qpe_s0/r0 ~ folded_qpe_s0/r1": -0.014059854488628771,
+      "folded_qpe_s0/r0 ~ folded_qpe_s0/r2": -0.0070583323213680126,
+      "folded_qpe_s0/r0 ~ hybrid_shor_N15_a2_null/r0": -0.020237188542681632,
+      "folded_qpe_s0/r0 ~ hybrid_shor_N15_a2_null/r1": -6.599696804419908e-05,
+      "folded_qpe_s0/r0 ~ hybrid_shor_N15_a2_null/r2": -0.0021595489431266504,
+      "folded_qpe_s0/r0 ~ hybrid_shor_N15_a2_null/r3": -0.0016596938857606639,
+      "folded_qpe_s0/r0 ~ hybrid_shor_N15_a2_null/r4": 0.005920894806382794,
+      "folded_qpe_s0/r0 ~ hybrid_shor_N15_a2_null/r5": 0.002348431241851709,
+      "folded_qpe_s0/r1 ~ folded_qpe_s0/r2": -0.0038117908539112588,
+      "folded_qpe_s0/r1 ~ hybrid_shor_N15_a2_null/r0": 0.021466369289706612,
+      "folded_qpe_s0/r1 ~ hybrid_shor_N15_a2_null/r1": -0.05390315318817474,
+      "folded_qpe_s0/r1 ~ hybrid_shor_N15_a2_null/r2": 0.011505580859118928,
+      "folded_qpe_s0/r1 ~ hybrid_shor_N15_a2_null/r3": -0.00041821585105390253,
+      "folded_qpe_s0/r1 ~ hybrid_shor_N15_a2_null/r4": -0.0042073645317865825,
+      "folded_qpe_s0/r1 ~ hybrid_shor_N15_a2_null/r5": -0.022037535193449122,
+      "folded_qpe_s0/r2 ~ hybrid_shor_N15_a2_null/r0": 0.0006567664829253312,
+      "folded_qpe_s0/r2 ~ hybrid_shor_N15_a2_null/r1": 0.020626681239725858,
+      "folded_qpe_s0/r2 ~ hybrid_shor_N15_a2_null/r2": 0.016922286704945663,
+      "folded_qpe_s0/r2 ~ hybrid_shor_N15_a2_null/r3": -0.011547255744442002,
+      "folded_qpe_s0/r2 ~ hybrid_shor_N15_a2_null/r4": 0.014570987891469413,
+      "folded_qpe_s0/r2 ~ hybrid_shor_N15_a2_null/r5": -0.027905452740148683,
+      "hybrid_shor_N15_a2_null/r0 ~ hybrid_shor_N15_a2_null/r1": -0.0037965772579664557,
+      "hybrid_shor_N15_a2_null/r0 ~ hybrid_shor_N15_a2_null/r2": -0.0028449934312952388,
+      "hybrid_shor_N15_a2_null/r0 ~ hybrid_shor_N15_a2_null/r3": -0.006531867594834866,
+      "hybrid_shor_N15_a2_null/r0 ~ hybrid_shor_N15_a2_null/r4": -0.0026819574420103177,
+      "hybrid_shor_N15_a2_null/r0 ~ hybrid_shor_N15_a2_null/r5": -0.002508434682604641,
+      "hybrid_shor_N15_a2_null/r1 ~ hybrid_shor_N15_a2_null/r2": -0.0029386566444975794,
+      "hybrid_shor_N15_a2_null/r1 ~ hybrid_shor_N15_a2_null/r3": -0.006746910519157523,
+      "hybrid_shor_N15_a2_null/r1 ~ hybrid_shor_N15_a2_null/r4": -0.0027702531649203884,
+      "hybrid_shor_N15_a2_null/r1 ~ hybrid_shor_N15_a2_null/r5": -0.002591017668525273,
+      "hybrid_shor_N15_a2_null/r2 ~ hybrid_shor_N15_a2_null/r3": -0.00505584762387298,
+      "hybrid_shor_N15_a2_null/r2 ~ hybrid_shor_N15_a2_null/r4": -0.002075909831858606,
+      "hybrid_shor_N15_a2_null/r2 ~ hybrid_shor_N15_a2_null/r5": -0.0019415983783437171,
+      "hybrid_shor_N15_a2_null/r3 ~ hybrid_shor_N15_a2_null/r4": -0.0047661158058783515,
+      "hybrid_shor_N15_a2_null/r3 ~ hybrid_shor_N15_a2_null/r5": -0.004457747912589522,
+      "hybrid_shor_N15_a2_null/r4 ~ hybrid_shor_N15_a2_null/r5": -0.0018303325986321797
+     },
+     "shotwise_correlation_null_sd": 0.015625
+    },
+    "ibm_kingston_dynamic_pub_04": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
+     ],
+     "components": [
+      {
+       "inserted_delay_dt": 9970,
+       "member": "folded_qpe_s2",
+       "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        125
+       ],
+       "register": "g0_r0_c",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.689453125,
+        0.69140625,
+        0.744140625,
+        0.71875,
+        0.712890625,
+        0.748046875,
+        0.67578125,
+        0.724609375
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.18359375,
+          0.057861328125,
+          0.713134765625,
+          0.04541015625
+         ],
+         "p_bit0_correct": 0.896728515625,
+         "p_bit1_correct_given_bit0_correct": 0.7952627280152464,
+         "p_bit1_correct_given_bit0_wrong": 0.4397163120567376,
+         "p_correct": 0.713134765625
+        },
+        "replay_archived": {
+         "distribution": [
+          0.08447265625,
+          0.0166015625,
+          0.880126953125,
+          0.018798828125
+         ],
+         "p_bit0_correct": 0.964599609375,
+         "p_bit1_correct_given_bit0_correct": 0.9124272336117438,
+         "p_bit1_correct_given_bit0_wrong": 0.5310344827586206,
+         "p_correct": 0.880126953125
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.130615234375,
+          0.02099609375,
+          0.828125,
+          0.020263671875
+         ],
+         "p_bit0_correct": 0.958740234375,
+         "p_bit1_correct_given_bit0_correct": 0.863763687293099,
+         "p_bit1_correct_given_bit0_wrong": 0.4911242603550296,
+         "p_correct": 0.828125
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 9955,
+       "member": "folded_qpe_s2",
+       "physical_qubits": [
+        138,
+        150,
+        151,
+        152,
+        153
+       ],
+       "register": "g0_r1_c",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.673828125,
+        0.68359375,
+        0.654296875,
+        0.6796875,
+        0.70703125,
+        0.716796875,
+        0.673828125,
+        0.65625
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.238525390625,
+          0.04248046875,
+          0.6806640625,
+          0.038330078125
+         ],
+         "p_bit0_correct": 0.919189453125,
+         "p_bit1_correct_given_bit0_correct": 0.7405046480743692,
+         "p_bit1_correct_given_bit0_wrong": 0.4743202416918429,
+         "p_correct": 0.6806640625
+        },
+        "replay_archived": {
+         "distribution": [
+          0.06689453125,
+          0.013671875,
+          0.906005859375,
+          0.013427734375
+         ],
+         "p_bit0_correct": 0.972900390625,
+         "p_bit1_correct_given_bit0_correct": 0.9312421580928482,
+         "p_bit1_correct_given_bit0_wrong": 0.4954954954954955,
+         "p_correct": 0.906005859375
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.10791015625,
+          0.01513671875,
+          0.859375,
+          0.017578125
+         ],
+         "p_bit0_correct": 0.96728515625,
+         "p_bit1_correct_given_bit0_correct": 0.8884401817264008,
+         "p_bit1_correct_given_bit0_wrong": 0.5373134328358209,
+         "p_correct": 0.859375
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 9970,
+       "member": "folded_qpe_s2",
+       "physical_qubits": [
+        79,
+        92,
+        93,
+        94,
+        95
+       ],
+       "register": "g0_r2_c",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.744140625,
+        0.779296875,
+        0.736328125,
+        0.779296875,
+        0.7421875,
+        0.728515625,
+        0.72265625,
+        0.748046875
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.180908203125,
+          0.037109375,
+          0.74755859375,
+          0.034423828125
+         ],
+         "p_bit0_correct": 0.928466796875,
+         "p_bit1_correct_given_bit0_correct": 0.8051538259268998,
+         "p_bit1_correct_given_bit0_wrong": 0.4812286689419795,
+         "p_correct": 0.74755859375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.066162109375,
+          0.0166015625,
+          0.895263671875,
+          0.02197265625
+         ],
+         "p_bit0_correct": 0.96142578125,
+         "p_bit1_correct_given_bit0_correct": 0.931183341797867,
+         "p_bit1_correct_given_bit0_wrong": 0.569620253164557,
+         "p_correct": 0.895263671875
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.126708984375,
+          0.017822265625,
+          0.83544921875,
+          0.02001953125
+         ],
+         "p_bit0_correct": 0.962158203125,
+         "p_bit1_correct_given_bit0_correct": 0.8683075361583354,
+         "p_bit1_correct_given_bit0_wrong": 0.5290322580645161,
+         "p_correct": 0.83544921875
+        }
+       }
+      }
+     ],
+     "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
+     "schedule": {
+      "broadcast_dt": [
+       540
+      ],
+      "circuit_duration_dt": 5729,
+      "circuit_end_dt": 5729,
+      "first_capture_to_last_reset_dt": 1123,
+      "receive_dt": [
+       7
+      ],
+      "round_trip_dt": [
+       547
+      ]
+     },
+     "shotwise_correlation": {
+      "folded_qpe_s2/r0 ~ folded_qpe_s2/r1": -0.008358834547857285,
+      "folded_qpe_s2/r0 ~ folded_qpe_s2/r2": -0.013194160896327453,
+      "folded_qpe_s2/r1 ~ folded_qpe_s2/r2": -0.012287517930428518
+     },
+     "shotwise_correlation_null_sd": 0.015625
+    },
+    "ibm_kingston_dynamic_pub_05": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
+     ],
+     "components": [
+      {
+       "inserted_delay_dt": 9954,
+       "member": "folded_qpe_s3",
+       "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        125
+       ],
+       "register": "g0_r0_c",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.677734375,
+        0.666015625,
+        0.697265625,
+        0.69140625,
+        0.66796875,
+        0.677734375,
+        0.693359375,
+        0.71484375
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.058349609375,
+          0.174072265625,
+          0.081787109375,
+          0.685791015625
+         ],
+         "p_bit0_correct": 0.85986328125,
+         "p_bit1_correct_given_bit0_correct": 0.7975582055650199,
+         "p_bit1_correct_given_bit0_wrong": 0.5836236933797909,
+         "p_correct": 0.685791015625
+        },
+        "replay_archived": {
+         "distribution": [
+          0.0283203125,
+          0.070556640625,
+          0.021728515625,
+          0.87939453125
+         ],
+         "p_bit0_correct": 0.949951171875,
+         "p_bit1_correct_given_bit0_correct": 0.9257260344384477,
+         "p_bit1_correct_given_bit0_wrong": 0.43414634146341463,
+         "p_correct": 0.87939453125
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.028564453125,
+          0.114501953125,
+          0.026611328125,
+          0.830322265625
+         ],
+         "p_bit0_correct": 0.94482421875,
+         "p_bit1_correct_given_bit0_correct": 0.8788113695090439,
+         "p_bit1_correct_given_bit0_wrong": 0.4823008849557522,
+         "p_correct": 0.830322265625
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 9939,
+       "member": "folded_qpe_s3",
+       "physical_qubits": [
+        138,
+        150,
+        151,
+        152,
+        153
+       ],
+       "register": "g0_r1_c",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.75,
+        0.72265625,
+        0.744140625,
+        0.685546875,
+        0.759765625,
+        0.72265625,
+        0.744140625,
+        0.7578125
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.054931640625,
+          0.15478515625,
+          0.054443359375,
+          0.73583984375
+         ],
+         "p_bit0_correct": 0.890625,
+         "p_bit1_correct_given_bit0_correct": 0.8262061403508771,
+         "p_bit1_correct_given_bit0_wrong": 0.49776785714285715,
+         "p_correct": 0.73583984375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.0244140625,
+          0.056396484375,
+          0.017822265625,
+          0.9013671875
+         ],
+         "p_bit0_correct": 0.957763671875,
+         "p_bit1_correct_given_bit0_correct": 0.9411164924802448,
+         "p_bit1_correct_given_bit0_wrong": 0.42196531791907516,
+         "p_correct": 0.9013671875
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.030517578125,
+          0.09423828125,
+          0.023681640625,
+          0.8515625
+         ],
+         "p_bit0_correct": 0.94580078125,
+         "p_bit1_correct_given_bit0_correct": 0.9003613835828601,
+         "p_bit1_correct_given_bit0_wrong": 0.4369369369369369,
+         "p_correct": 0.8515625
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 9954,
+       "member": "folded_qpe_s3",
+       "physical_qubits": [
+        79,
+        92,
+        93,
+        94,
+        95
+       ],
+       "register": "g0_r2_c",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.716796875,
+        0.779296875,
+        0.7265625,
+        0.740234375,
+        0.703125,
+        0.74609375,
+        0.75390625,
+        0.734375
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.056640625,
+          0.1611328125,
+          0.044677734375,
+          0.737548828125
+         ],
+         "p_bit0_correct": 0.898681640625,
+         "p_bit1_correct_given_bit0_correct": 0.8207008964955175,
+         "p_bit1_correct_given_bit0_wrong": 0.44096385542168676,
+         "p_correct": 0.737548828125
+        },
+        "replay_archived": {
+         "distribution": [
+          0.025390625,
+          0.057373046875,
+          0.0234375,
+          0.893798828125
+         ],
+         "p_bit0_correct": 0.951171875,
+         "p_bit1_correct_given_bit0_correct": 0.9396817248459959,
+         "p_bit1_correct_given_bit0_wrong": 0.48,
+         "p_correct": 0.893798828125
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.0302734375,
+          0.101806640625,
+          0.02490234375,
+          0.843017578125
+         ],
+         "p_bit0_correct": 0.94482421875,
+         "p_bit1_correct_given_bit0_correct": 0.8922480620155039,
+         "p_bit1_correct_given_bit0_wrong": 0.45132743362831856,
+         "p_correct": 0.843017578125
+        }
+       }
+      }
+     ],
+     "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
+     "schedule": {
+      "broadcast_dt": [
+       540
+      ],
+      "circuit_duration_dt": 5729,
+      "circuit_end_dt": 5729,
+      "first_capture_to_last_reset_dt": 1123,
+      "receive_dt": [
+       7
+      ],
+      "round_trip_dt": [
+       547
+      ]
+     },
+     "shotwise_correlation": {
+      "folded_qpe_s3/r0 ~ folded_qpe_s3/r1": 0.005995447039492311,
+      "folded_qpe_s3/r0 ~ folded_qpe_s3/r2": 0.021786671840978756,
+      "folded_qpe_s3/r1 ~ folded_qpe_s3/r2": 0.007586758165913532
+     },
+     "shotwise_correlation_null_sd": 0.015625
+    },
+    "ibm_kingston_dynamic_pub_06": {
+     "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
+     ],
+     "components": [
+      {
+       "inserted_delay_dt": 507,
+       "member": "folded_qpe_null",
+       "physical_qubits": [
+        104,
+        105,
+        106,
+        117,
+        125
+       ],
+       "register": "g0_r0_c",
+       "replica": 0,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.93359375,
+        0.943359375,
+        0.95703125,
+        0.94140625,
+        0.95703125,
+        0.943359375,
+        0.947265625,
+        0.962890625
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.9482421875,
+          0.0107421875,
+          0.03125,
+          0.009765625
+         ],
+         "p_bit0_correct": 0.9794921875,
+         "p_bit1_correct_given_bit0_correct": 0.9680957128614157,
+         "p_bit1_correct_given_bit0_wrong": 0.5238095238095238,
+         "p_correct": 0.9482421875
+        },
+        "replay_archived": {
+         "distribution": [
+          0.97705078125,
+          0.004150390625,
+          0.013916015625,
+          0.0048828125
+         ],
+         "p_bit0_correct": 0.990966796875,
+         "p_bit1_correct_given_bit0_correct": 0.9859571322985957,
+         "p_bit1_correct_given_bit0_wrong": 0.4594594594594595,
+         "p_correct": 0.97705078125
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.981201171875,
+          0.005126953125,
+          0.009765625,
+          0.00390625
+         ],
+         "p_bit0_correct": 0.990966796875,
+         "p_bit1_correct_given_bit0_correct": 0.9901453559990145,
+         "p_bit1_correct_given_bit0_wrong": 0.5675675675675675,
+         "p_correct": 0.981201171875
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 519,
+       "member": "folded_qpe_null",
+       "physical_qubits": [
+        138,
+        150,
+        151,
+        152,
+        153
+       ],
+       "register": "g0_r1_c",
+       "replica": 1,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.947265625,
+        0.9609375,
+        0.939453125,
+        0.955078125,
+        0.953125,
+        0.947265625,
+        0.947265625,
+        0.95703125
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.950927734375,
+          0.011474609375,
+          0.025634765625,
+          0.011962890625
+         ],
+         "p_bit0_correct": 0.9765625,
+         "p_bit1_correct_given_bit0_correct": 0.97375,
+         "p_bit1_correct_given_bit0_wrong": 0.4895833333333333,
+         "p_correct": 0.950927734375
+        },
+        "replay_archived": {
+         "distribution": [
+          0.9609375,
+          0.009521484375,
+          0.01953125,
+          0.010009765625
+         ],
+         "p_bit0_correct": 0.98046875,
+         "p_bit1_correct_given_bit0_correct": 0.9800796812749004,
+         "p_bit1_correct_given_bit0_wrong": 0.4875,
+         "p_correct": 0.9609375
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.963134765625,
+          0.01025390625,
+          0.017333984375,
+          0.00927734375
+         ],
+         "p_bit0_correct": 0.98046875,
+         "p_bit1_correct_given_bit0_correct": 0.9823207171314741,
+         "p_bit1_correct_given_bit0_wrong": 0.525,
+         "p_correct": 0.963134765625
+        }
+       }
+      },
+      {
+       "inserted_delay_dt": 507,
+       "member": "folded_qpe_null",
+       "physical_qubits": [
+        79,
+        92,
+        93,
+        94,
+        95
+       ],
+       "register": "g0_r2_c",
+       "replica": 2,
+       "schedule_aware_unavailable": false,
+       "schedule_mismatches": [],
+       "shot_blocks": [
+        0.990234375,
+        0.99609375,
+        0.98828125,
+        0.9921875,
+        0.994140625,
+        0.990234375,
+        0.990234375,
+        0.982421875
+       ],
+       "views": {
+        "hardware": {
+         "distribution": [
+          0.990478515625,
+          0.000732421875,
+          0.0078125,
+          0.0009765625
+         ],
+         "p_bit0_correct": 0.998291015625,
+         "p_bit1_correct_given_bit0_correct": 0.9921741257031059,
+         "p_bit1_correct_given_bit0_wrong": 0.42857142857142855,
+         "p_correct": 0.990478515625
+        },
+        "replay_archived": {
+         "distribution": [
+          0.99609375,
+          0.000732421875,
+          0.002685546875,
+          0.00048828125
+         ],
+         "p_bit0_correct": 0.998779296875,
+         "p_bit1_correct_given_bit0_correct": 0.9973111708628697,
+         "p_bit1_correct_given_bit0_wrong": 0.6,
+         "p_correct": 0.99609375
+        },
+        "replay_schedule_aware": {
+         "distribution": [
+          0.997314453125,
+          0.000732421875,
+          0.00146484375,
+          0.00048828125
+         ],
+         "p_bit0_correct": 0.998779296875,
+         "p_bit1_correct_given_bit0_correct": 0.9985333659252017,
+         "p_bit1_correct_given_bit0_wrong": 0.6,
+         "p_correct": 0.997314453125
+        }
+       }
+      }
+     ],
+     "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
+     "schedule": {
+      "broadcast_dt": [
+       540
+      ],
+      "circuit_duration_dt": 4063,
+      "circuit_end_dt": 4063,
+      "first_capture_to_last_reset_dt": 1115,
+      "receive_dt": [
+       7
+      ],
+      "round_trip_dt": [
+       547
+      ]
+     },
+     "shotwise_correlation": {
+      "folded_qpe_null/r0 ~ folded_qpe_null/r1": 0.018348577871811343,
+      "folded_qpe_null/r0 ~ folded_qpe_null/r2": -0.022906467472676873,
+      "folded_qpe_null/r1 ~ folded_qpe_null/r2": -0.010634896313343085
+     },
+     "shotwise_correlation_null_sd": 0.015625
+    }
+   },
+   "throughput": {
+    "circuits_execution_time_ns": 6706743808,
+    "default_rep_delay_seconds": 0.00025,
+    "execution_seconds_per_shot": 0.00027289810416666665,
+    "mean_scheduled_seconds_per_shot": 2.290866666666667e-05,
+    "qpu_charge_time_seconds": 9,
+    "submitted_pub_shots": 24576
+   }
+  }
+ },
+ "run": "2026-10-11T152922.787095Z",
+ "seed": 20261011
+}

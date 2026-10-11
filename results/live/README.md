@@ -104,6 +104,34 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `720fd82c6510cc4a712b8dad75e6fcf4facf43d22e2102467079daba5a2ce318`.
 
+`2026-10-11T203420.747793Z` requalifies the default plan after collection
+gained write-once raw preservation, the approval gate gained the record
+digest, one-attempt consumption, and the execution ceiling, the packing
+comparison gained the Hoeffding view, and joint placement gained the
+cross-group one-hop buffer: 23 PUBs (3 static on ibm_fez,
+14 static and 6 dynamic on ibm_kingston), 94,208 submitted PUB shots. Clean
+source commit `96ca09a` (sources_modified=false) carries experiment digest
+`297927aef46450b881786d936a77d1d2c44719325b419fe9c9ee95db631640e1`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`8c0c5c3b17f6ba529cf079ef047dcc933c74126b407d845337568efad5f9c10d`; QPY
+SHA-256 is
+`06c013fe366c4bfd83f6fdf047e5d794f52a30ddf0cb4e7baf667ece8ffa0743`.
+
+`2026-10-11T203535.690679Z` is the static job's submission-ready dry run:
+the five static groups (design A on ibm_fez; the zero-divisor fringe and
+design C 8, 16, and 32 on ibm_kingston), 17 static PUBs at 4096 shots
+(69,632 submitted PUB shots), twirling and DD off, isolated references on,
+made with `--max-execution-seconds 90` so its policy carries the ceiling the
+case names. Its `STATIC_CASE.md` is written and ranks after the ladder case
+(HARDWARE_PLAN.md, "Risks"); it is not approved and nothing was submitted.
+Clean source commit `96ca09a` (sources_modified=false) carries experiment
+digest
+`297927aef46450b881786d936a77d1d2c44719325b419fe9c9ee95db631640e1`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`505ffcd719f966d59b26c34581d3d4a805f6292c1658f22b162713f90198c08e`; QPY
+SHA-256 is
+`0c2ac43cf99b1e3a03fc7c7099be70689c9c81f68549645f4241cb2e0d4d2d80`.
+
 `2026-10-11T152922.787095Z` is the first hardware record: the owner-approved Step 3 dynamic
 job on ibm_kingston, job `db5qmqclf4us73c4e1ug`, submitted and collected from
 clean source commit `2a4f0fb` (sources_modified=false, experiment digest
@@ -130,6 +158,20 @@ feed-forward circuits. Record SHA-256 is
 SHA-256 is
 `69f085f5319a19578aff823ec30d98c0029b83de156d515f909bd53fe6413a24`; collect.json SHA-256 is
 `0207f35e24ce37804aea3824e6ab693fbdad2232630fe3109532c8254c7df508`.
+The record also keeps the lossless result under
+`raw/db5qmqclf4us73c4e1ug/` (preserved with `--preserve-raw` after the
+collection, every file's sha256 in its index.json), `adjudication-<digest>-seed<seed>.json`
+from `adjudicate.py` (per-bit folded-QPE structure, the schedule-aware replay
+that charges the scheduler table's idle time, drift, shot-wise correlation,
+the scheduled feed-forward round trip, and the packed-minus-reference
+schedule per qubit), and `ADJUDICATION.md`, which reads them: the folded-QPE
+gap to the model sits in both rounds (round-1 error 0.101 against 0.040,
+round-2 0.204 against 0.064), idle dephasing closes 0.051 of the 0.183 gap
+in p_correct, hybrid Shor's factor yield hides the same gap behind a coarse
+endpoint while two of its six layouts carry a coherent second-bit bias, the
+scheduled feed-forward round trip is 540 to 584 dt (2.2 to 2.3 us), and the
+187 dt packing cost decomposes into alignment, broadcast width, and reset
+stagger.
 
 `2026-10-11T121402.617901Z` is the Step 3 submission-ready dry run: the program's exact
 command on ibm_kingston (6 pending jobs under the default bound of 25) for
