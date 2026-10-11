@@ -252,7 +252,7 @@ def generic_statistics(values: np.ndarray, bits: int) -> dict[str, Any]:
 
 
 def pub_starts(result_metadata: dict[str, Any], count: int) -> list[list[datetime]]:
-    """Each PUB's distinct execution-chunk starts from the preserved result metadata, sorted; empty when no chunk names it.
+    """Each PUB's distinct execution-chunk starts from the result metadata, sorted; empty when no chunk names it.
 
     A PUB can span several chunks (live_run.pub_windows); a PUB with more than
     one start may have executed under more than one calibration, and its
