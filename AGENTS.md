@@ -34,6 +34,8 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" runtime_contracts.py
   "$PYTHON" variance.py
   "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 8
+  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional
+  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return
   "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
 )
 ```

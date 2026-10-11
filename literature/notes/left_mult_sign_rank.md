@@ -68,8 +68,9 @@ and v -> (-1)^v identifies it with an F_2-subspace V_n of functions on F_2^n:
 |H_n| = 2^(dim V_n).
 
 The set {L_{e_m}} serves both as the generating set of G_n and as a
-transversal of the left cosets g H_n: L_{e_m} is the one member with
-translation m, and L_{e_0} = I by Lemma 0. Schreier's lemma for left cosets
+transversal of the left cosets g H_n: the coset L_{e_m} H_n holds every
+element with translation m, L_{e_m} is the representative chosen from it,
+and L_{e_0} = I by Lemma 0. Schreier's lemma for left cosets
 gives H_n = < rep(s t)^(-1) s t > over generators s and transversal elements t;
 with s = L_{e_a} and t = L_{e_b}, rep(L_{e_a} L_{e_b}) = L_{e_{a^b}}. H_n is
 normal, so the right-coset form generates the same subgroup. The generator
@@ -223,7 +224,10 @@ exits 0; `--timing` adds per-level seconds on stderr. For each n from 2 to
 
 Falsifiers stated before the run: a rank other than 2^(n-1), a Schreier vector
 outside U_n, a U_n basis vector outside the span, or a span vector of degree
-above n - 2. None occurred.
+above n - 2. None occurred. `--mutate high-low-unconditional` and `--mutate
+high-high-no-early-return` each replace one branch of the sign recursion by a
+wrong one; the run then exits 0 only when a check catches the mutation, and
+both are caught at n = 2 (the gate runs them at `--max-n 5`).
 
 | n | dim | distinct s_{a,b} | rank | max degree | log2 \|G_n\| | seconds |
 | --- | --- | --- | --- | --- | --- | --- |
