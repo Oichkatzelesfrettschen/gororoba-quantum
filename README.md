@@ -35,6 +35,13 @@ observables.
   and published maximal-annihilator lift witnesses through dimension 256.
   `literature/notes/cayley_dickson_annihilator_sources.md` records primary
   theorems and the source-pinned Rust and Rocq work reused by the audit.
+- `gororoba_quantum/rank_polynomials.py` and `rank_charts.py` -- exact
+  spectral rank predicates and fixed-minor kernel charts for general coefficients.
+- `gororoba_quantum/rank_attachments.py`, `rank_path_topology.py`, and
+  `integral_homology.py` -- exact polynomial attachment certificates, a proved
+  restricted pair-space model, and integral homology with torsion certificates.
+  [RANK_STRATUM_TOPOLOGY.md](gororoba_quantum/RANK_STRATUM_TOPOLOGY.md) gives
+  the derivations, all-dimensional restricted construction, and global proof obligations.
 - `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
   compilation with pass-level synthesis, routing, layout, and topology capture.
 - `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and

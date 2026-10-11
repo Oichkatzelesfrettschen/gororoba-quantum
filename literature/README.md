@@ -73,6 +73,9 @@ octonion, sedenion, zero-divisor, or nonassociative content. The
 [Cayley-Dickson annihilator source ledger](notes/cayley_dickson_annihilator_sources.md)
 adds primary topology papers, theorem locators, constructive formulas, and the
 boundary between published results and local executable checks.
+The [rank-topology source ledger](notes/cayley_dickson_rank_topology_sources.md)
+adds the 2009 eigentheory, the 2026 trace/Newton determinant preprint,
+attachment homotopy arguments, and a scoped review of later follow-ups.
 [FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
 analysis.
 

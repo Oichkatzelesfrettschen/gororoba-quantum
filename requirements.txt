@@ -7,3 +7,5 @@ qiskit-ibm-runtime==0.50.0
 # Replica placement (rustworkx.vf2_mapping) and replicate statistics (scipy.stats).
 rustworkx==0.18.1
 scipy==1.18.1
+# Exact polynomial rank, kernel-chart, and attachment certificates.
+sympy==1.14.0

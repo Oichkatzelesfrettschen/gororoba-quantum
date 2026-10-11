@@ -25,6 +25,8 @@ lint and type-check configuration only. Before any push, these exit 0:
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
+    rank_polynomials.py rank_charts.py rank_attachments.py \
+    integral_homology.py rank_path_topology.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
@@ -32,6 +34,12 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" claim_boundaries.py >/dev/null
   "$PYTHON" sedenion_bundle.py >/dev/null
   "$PYTHON" annihilator_strata.py --max-dimension 256 >/dev/null
+  "$PYTHON" rank_polynomials.py >/dev/null
+  "$PYTHON" rank_charts.py >/dev/null
+  "$PYTHON" rank_attachments.py >/dev/null
+  "$PYTHON" integral_homology.py >/dev/null
+  "$PYTHON" rank_path_topology.py >/dev/null
+  "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
