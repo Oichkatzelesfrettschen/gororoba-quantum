@@ -222,7 +222,8 @@ def multiplier_profile(
         raise ValueError(f"unknown modular multiplier input domain {input_domain!r}")
     width = register_width(modulus)
     normalized = multiplier % modulus
-    modular_permutation(modulus, normalized)
+    if math.gcd(normalized, modulus) != 1:
+        raise ValueError(f"multiplier {multiplier} is not invertible modulo {modulus}")
     if normalized == 1:
         return MultiplierProfile(
             modulus=modulus,
@@ -265,7 +266,8 @@ def multiplier_profile(
         raise ValueError(
             f"generic ANF synthesis is bounded to {MAX_ANF_WIDTH} input qubits; modulus {modulus} needs {width}"
         )
-    forward = _output_coefficients(modular_permutation(modulus, normalized), width)
+    permutation = modular_permutation(modulus, normalized)
+    forward = _output_coefficients(permutation, width)
     inverse = _output_coefficients(modular_permutation(modulus, pow(normalized, -1, modulus)), width)
     all_coefficients = tuple(mask for output in forward + inverse for mask in output)
     histogram = Counter(mask.bit_count() for mask in all_coefficients)
@@ -277,7 +279,6 @@ def multiplier_profile(
     else:
         scratch_qubits = 0
     cycle_strategy = selected_strategy in ("cycle_transpositions", "cycle_transpositions_1_clean")
-    permutation = modular_permutation(modulus, normalized)
     return MultiplierProfile(
         modulus=modulus,
         multiplier=normalized,
@@ -697,6 +698,27 @@ def _verify() -> None:
         mersenne_power = _mersenne_power_of_two(3, multiplier)
         if mersenne_power is None or mersenne_power.negative:
             raise RuntimeError(f"positive Mersenne recognition lost priority for {multiplier} modulo 3")
+    large_mersenne_modulus = (1 << 31) - 1
+    large_signed_profile = multiplier_profile(
+        large_mersenne_modulus,
+        -(1 << 15),
+        input_domain=NONZERO_RESIDUES,
+    )
+    if (
+        large_signed_profile.strategy != "mersenne_signed_rotation"
+        or large_signed_profile.width != 31
+        or large_signed_profile.scratch_qubits != 0
+        or large_signed_profile.controlled_x_count != 31
+        or large_signed_profile.controlled_swap_count != 30
+    ):
+        raise RuntimeError(f"unexpected large signed Mersenne profile {large_signed_profile}")
+    try:
+        multiplier_profile(large_mersenne_modulus, 5)
+    except ValueError as error:
+        if "generic ANF synthesis is bounded" not in str(error):
+            raise
+    else:
+        raise RuntimeError("wide generic multiplier passed the bounded synthesis guard")
 
     cases = (
         (15, 2, "auto"),
