@@ -1335,6 +1335,20 @@ def _verify_fused_collection() -> None:
             or (run_dir / "collect.partial.json").exists()
         ):
             raise RuntimeError(f"a failed job collects as {job_record}")
+
+        # A job still running at collection start that then fails keeps the
+        # charge read after the failure.
+        class _FailingRunningJob(_ProbeResultJob):
+            def result(self) -> PrimitiveResult[SamplerPubResult]:
+                self._status, self._usage, self._charge = "ERROR", usage, 0.75
+                raise RuntimeError("job failed while collection waited")
+
+        late = _FailingRunningJob(result, status="RUNNING", usage={"status": "pending"}, charge=None)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: late}), run_dir)
+        late_usage = json.loads((run_dir / "collect.json").read_text())[0]["jobs"][job_id]["usage"]
+        if late_usage["usage_status"] != "final" or late_usage["qpu_charge_time_seconds"] != "0.75":
+            raise RuntimeError(f"a job that failed while collection waited keeps {late_usage}")
         # A DONE job whose result retrieval raises propagates the failure and
         # leaves the complete earlier collect.json in place.
         flaky = _ProbeResultJob(result, status="DONE", usage=usage, charge=12.5)

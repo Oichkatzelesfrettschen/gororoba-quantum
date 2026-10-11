@@ -3324,6 +3324,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if str(job.status()) not in ("ERROR", "CANCELLED"):
                 raise
             job_out["result_unavailable"] = f"{type(error).__name__}: {error}"
+            if job_out["usage"]["usage_status"] == "pending":
+                job_out["usage"] = job_usage_record(job, len(pub_manifests), shots)
             checkpoint(out)
             continue
         if job_out["usage"]["usage_status"] == "pending":
