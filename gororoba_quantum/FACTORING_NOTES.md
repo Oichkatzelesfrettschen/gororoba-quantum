@@ -111,25 +111,267 @@ Per the Gidney note:
 
 **Linear combinations.** "Folding zero-divisor chunks" means a linear
 combination of unitaries over G_n. A zero divisor's L_a = L_{e_i} + L_{e_j} is
-one such combination with two terms.
-- The real span of G_n is every matrix at n = 3, 4, 5, where H's diagonals have
-  full real rank 2^n, so there an LCU can represent a modular multiplier in
-  principle. The span is smaller elsewhere: G_2 = Q8 spans 4 of the 16
-  dimensions of 4 x 4 matrices, and dimensions beyond 32 are unchecked.
-- The LCU normalization is provably at least T, the number of distinct
-  displacements:
-  1. The XOR translations are linearly independent blocks, so writing a
-     permutation pi as a combination of G_n elements fixes its translation-t
-     part D_t = [x : pi(x) XOR x = t], a 0/1 diagonal.
-  2. |sum c_g D_g(x)| <= sum |c_g| bounds the LCU normalization below by
-     lambda >= T, the number of distinct displacements pi(x) XOR x.
-  3. The post-selection success is ||pi b||^2 / lambda^2 <= 1/T^2.
-- Exponential cost needs more than that bound: it needs T = 2^Omega(n) for the
-  multiplier family. For small multipliers T is a large fraction of 2^n -- 8 of
-  16 for 2x mod 15, 7 for 7x mod 15, 16 of 32 for 2x mod 21, 30 of 64 for 2x
-  mod 35 -- and if that fraction persists the route costs about 2^(n-1)
-  amplitude-amplification rounds at n bits. The persistence is an inference
-  from these four moduli; nothing here proves it.
+one such combination with two terms. The real span of G_n is every matrix at
+n = 3, 4, 5, where H's diagonals have full real rank 2^n, so an LCU can
+represent a modular multiplier there. G_2 = Q8 spans 4 of the 16 dimensions of
+4 x 4 matrices. Dimensions beyond 32 remain unchecked. A failed span test means
+that no nonzero exact representation exists; the coefficient bound below
+remains a necessary condition rather than an existence result.
+
+**Effective-normalization floor.** Let P_pi be a permutation, let beta be
+nonzero, and write an exact scaled representation over signed XOR translations
+as
+
+```text
+beta P_pi = sum_g c_g U_g,
+U_g |x> = sigma_g(x) |x XOR t_g>,  sigma_g(x) in {+1,-1}.
+```
+
+Define the displacement fiber S_t = {x : pi(x) XOR x = t}, let T count the
+nonempty fibers, and set lambda = sum_g |c_g|. Grouping coefficients by t gives
+
+```text
+sum_{g:t_g=t} c_g sigma_g(x) = beta  for x in S_t.
+```
+
+Choosing one x from each nonempty S_t and applying the triangle inequality
+forces `sum_{g:t_g=t} |c_g| >= |beta|`. The displacement classes partition the
+LCU terms, so
+
+```text
+lambda >= |beta| T.
+```
+
+Thus the scale-invariant effective normalization obeys
+`lambda/|beta| >= T`. For a normalized input |b>, the standard LCU good branch
+has probability `|beta|^2/lambda^2 <= 1/T^2`. The probability is
+input-independent because P_pi is unitary. Repeated raw post-selection needs
+order `(lambda/|beta|)^2` trials. Standard amplitude amplification needs order
+`lambda/|beta|` block-encoding calls and therefore at least order T calls. The
+bound supplies no matching upper bound: PREPARE, SELECT, coefficient lookup,
+and reflections can add cost, and lambda can exceed |beta| T.
+
+**Two-term zero divisors behave differently.** `select_circuit` implements the
+two translations L_{e_i} and L_{e_j}, with lambda = 2. On a normalized input
+|b>, the selected branch has probability `||(L_{e_i}+L_{e_j})b||^2/4`.
+An annihilator gives probability zero and its bright control gives probability
+one. The zero-divisor operator is singular, so the state-dependent bright/dark
+result does not transfer to the unitary modular-permutation case.
+
+**Base two has an exact exponential displacement bound.** Let N be an odd
+n-bit modulus and let pi implement `2x mod N` below N and identity on unused
+register states. For every `0 <= x <= (N-1)/2`, reduction does not occur and
+
+```text
+pi(x) XOR x = (x << 1) XOR x.
+```
+
+The GF(2) map `I + left_shift` is injective: the truncated shift L is nilpotent
+and `(I+L)^-1 = I + L + ... + L^(n-1)`. The `(N+1)/2` inputs therefore carry
+distinct displacements:
+
+```text
+T >= (N+1)/2 > 2^(n-2).
+```
+
+Every nonzero exact scaled signed-XOR LCU for the base-two family consequently
+has exponential effective normalization `lambda/|beta|` and raw success at
+most `4/(N+1)^2`. For the Mersenne modulus
+`N = 2^n-1`, multiplication by `2^k` is a cyclic rotation R^k. The kernel of
+`I+R^k` has dimension `gcd(n,k)`, which gives the exact count
+`T = 2^(n-gcd(n,k))`; doubling has `T = 2^(n-1)`. The direct circuit for the
+same multiplier uses only `n-gcd(n,k)` controlled swaps. The exponential LCU
+floor therefore measures a mismatch between arithmetic and the signed-XOR
+dictionary, not intrinsic circuit complexity.
+
+**The exponential law does not cover every base.** For `N = 2^n-1`, the
+multiplier `a = -1 mod N` has only the displacements 0 and `2^n-1`. Its order is
+two and Shor's factor extraction returns the trivial pair 1 and N. A stronger
+linear-displacement counterfamily sets `q = 2^m+1`, `N = 3q`, and `a = 2q+1`.
+The multiplier acts by the five shifts `0`, `+q`, `-q`, `+2q`, and `-2q`
+according to `x mod 3` and the reduction interval. Carry and borrow masks give
+
+```text
+T = 3m-2  for even m,
+T = 3m+1  for odd m.
+```
+
+For even m, a has order two and `gcd(a-1,N)=q`, `gcd(a+1,N)=3`, so the even-m
+subfamily supplies useful factor-yielding bases. For odd m, a has order three,
+so standard Shor post-processing rejects the odd order. The full counterfamily
+refutes a universal exponential displacement claim without weakening the
+base-two theorem. The detailed carry-mask derivation, source witnesses,
+exclusion argument, and overlap count live in
+`literature/notes/open_gororoba_survey_deep_notes.md`.
+
+**Executable evidence and call path.** `modular_permutation` defines the
+identity-padded arithmetic map. `modular_displacement_profile` validates the
+complete-register bijection and partitions it by `input XOR output`.
+`_verify_xor_displacement_profiles` checks all 127 odd base-two moduli through
+eight bits, 35 Mersenne rotations, seven Mersenne reflections, and every branch
+set, total, multiplicative order, and even-m extracted factor for 11 members of
+the linear-T family through m = 12. The verifier also rejects a mutated
+non-bijection. The circuit path remains separate:
+
+```text
+designs._verify
+  -> designs._check_design_b
+     -> designs.design_b_zero_divisor
+        -> designs.lcu_witness
+           -> select_lcu.sparse_pair_prep
+           -> select_lcu.select_circuit
+              -> select_lcu.joint_select_signs -> cd_core.cd_sign
+
+modular_arithmetic._verify
+  -> modular_arithmetic._verify_xor_displacement_profiles
+     -> modular_arithmetic.modular_displacement_profile
+        -> modular_arithmetic.modular_permutation
+        -> modular_arithmetic.xor_displacement_profile
+     -> modular_arithmetic.modular_permutation
+     -> modular_arithmetic.xor_displacement_profile
+
+verify.main
+  -> verify.check_left_mult_group
+     -> verify._schreier_sign_vector
+     -> verify._f2_basis
+     -> verify._group_by_enumeration
+
+order_finding.order_finding_plan
+  -> factoring.make_order_finding_plan
+  -> modular_arithmetic.multiplier_profile
+     -> modular_arithmetic.modular_permutation
+
+hybrid_shor.main
+  -> hybrid_shor._plan_payload
+     -> factoring.classical_precheck
+     -> order_finding.order_finding_plan
+  -> hybrid_shor._simulate_payload
+     -> hybrid_shor._plan_payload
+     -> order_finding.factor_order_finding
+        -> order_finding.order_finding_plan
+     -> hybrid_shor._decoded_payload -> factoring.decode_counts
+```
+
+The distinct circuit and arithmetic paths prevent a two-term zero-divisor
+circuit from serving as evidence for an arithmetic LCU. GNU cflow parses C,
+produces C-parser diagnostics on the Python modules, and supplies no usable
+call graph. Cscope supplies lexical text references only; Python definitions
+and reliable caller attribution remain absent. `scripts/python_call_graph.py`
+supplies a deterministic, conservative static direct-call map under the Python
+source version shared by Ruff and mypy in `pyproject.toml`. Compiler symbol
+tables and an explicit lexical binding inventory suppress module attribution
+for parameters, assignments, local imports, loop, with, exception,
+comprehension, nested-definition, and global-rebinding shadows. The mapper
+attributes calls inside every comprehension form across pre- and post-PEP 709
+interpreters, skips postponed and function-local annotations, records stable
+bare decorators as implicit calls, and invalidates exports assigned or deleted
+through direct repository-module aliases. Executable positive and negative
+fixtures enforce the boundaries and reject syntax newer than the configured
+Python target. The mapper explicitly excludes module-initializer calls,
+dynamic and class-method dispatch, nested function, lambda, and class bodies,
+function-local import flow, decorated exports, reflective mutation, and calls
+through values. cProfile caller and callee tables confirm the dynamic
+displacement-verifier path.
+
+The instrumented capture uses Python 3.14.7, GNU cflow 1.8, and cscope 15.9 and
+scans all 15 Python modules. The conservative AST map contains 255 top-level
+functions and 490 distinct repository-local edges. The five factoring and LCU
+roots reach 114 functions and 208 edges in union. Python 3.11.17, 3.13.15, and
+3.14.7 produce byte-identical maps with SHA-256
+`368cc5e562907f7590b9e16ec857ba466ea7e9ae5b0da3ed762beec2e6bb7505`.
+The corrected scope adds ten executable comprehension edges to the earlier map.
+Direct monkey-patching in `runtime_contracts.py` invalidates twelve otherwise
+stable edges to `live_run.select` and `live_run.configure_sampler`, so the net
+map loses two edges while the root union gains two functions and eight edges.
+GNU cflow exits zero but emits 1,784 C-parser diagnostics and zero graph lines.
+Cscope builds without diagnostics, but its four queries for
+`modular_displacement_profile` return six
+lexical rows, one false definition, one false callee, and five unreliable caller
+rows. cProfile records 214,075 calls: 174 calls to
+`modular_displacement_profile`, 186 to `modular_permutation`, and 189 to
+`xor_displacement_profile`. Its caller and callee tables show 174 profile calls
+through `modular_displacement_profile` plus 12 direct permutation calls and 15
+direct profile calls from `_verify_xor_displacement_profiles`. The verifier's
+cumulative time is host-specific; the versioned call counts and relationships
+define the replayable observation.
+
+The Bash capture keeps every generated index and profile in a temporary
+directory and removes the directory on exit:
+
+```bash
+(
+  set -eu
+  analysis_tmp="$(mktemp -d)"
+  trap 'find "$analysis_tmp" -type f -delete; rmdir "$analysis_tmp"' EXIT
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  mapfile -t analysis_files < <(rg --files gororoba_quantum -g '*.py' | sort)
+
+  "$PYTHON" --version
+  cflow --version
+  cscope --version
+
+  cflow --no-preprocess --main=_verify_xor_displacement_profiles \
+    "${analysis_files[@]}" >"$analysis_tmp/cflow.out" \
+    2>"$analysis_tmp/cflow.err"
+  wc -l "$analysis_tmp/cflow.out" "$analysis_tmp/cflow.err"
+
+  cscope -b -q -k -f "$analysis_tmp/cscope.out" "${analysis_files[@]}"
+  for query_kind in 0 1 2 3; do
+    cscope -d -L -f "$analysis_tmp/cscope.out" \
+      "-$query_kind" modular_displacement_profile
+  done
+
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py \
+    >"$analysis_tmp/python-call-graph.tsv"
+  sed -n '1,3p' "$analysis_tmp/python-call-graph.tsv"
+  rg '^root' "$analysis_tmp/python-call-graph.tsv"
+
+  for interpreter_name in python3.11 python3.13 python3.14; do
+    if call_graph_python="$(command -v "$interpreter_name")"; then
+      versioned_map="$analysis_tmp/python-call-graph-$interpreter_name.tsv"
+      PYTHONDONTWRITEBYTECODE=1 "$call_graph_python" \
+        scripts/python_call_graph.py >"$versioned_map"
+      "$call_graph_python" --version
+      sha256sum "$versioned_map"
+    fi
+  done
+
+  profile_path="$analysis_tmp/displacement.prof"
+  PYTHONDONTWRITEBYTECODE=1 PYTHONPATH="$PWD/gororoba_quantum" \
+    "$PYTHON" - "$profile_path" <<'PY'
+import cProfile
+import sys
+
+from modular_arithmetic import _verify_xor_displacement_profiles
+
+profiler = cProfile.Profile()
+profiler.runcall(_verify_xor_displacement_profiles)
+profiler.dump_stats(sys.argv[1])
+PY
+  "$PYTHON" - "$profile_path" <<'PY'
+import pstats
+import sys
+
+statistics = pstats.Stats(sys.argv[1]).strip_dirs().sort_stats("cumulative")
+selector = "_verify_xor_displacement_profiles|displacement_profile|modular_permutation"
+statistics.print_stats(selector)
+statistics.print_callers(selector)
+statistics.print_callees(selector)
+PY
+)
+```
+
+**Residual coefficient roadmap.** Four mechanism-specific questions remain:
+
+1. Extend the signed-diagonal span calculation beyond n = 5 or produce a
+   separating functional for the first missing modular permutation.
+2. Compute minimum unit-output-scale coefficient one-norms at n = 3, 4, 5 and
+   retain matching linear-program dual certificates; T is only a lower bound.
+3. Classify displacement growth for useful bases of balanced semiprimes rather
+   than infer RSA behavior from small-factor counterfamilies.
+4. Compare end-to-end PREPARE, SELECT, reflection, and direct-arithmetic gate
+   costs on the same multiplier; a normalization bound alone is not a compiler
+   resource estimate.
 
 ## What the algebra does connect to
 

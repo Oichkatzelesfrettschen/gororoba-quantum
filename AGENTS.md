@@ -10,18 +10,26 @@ package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only. Before any push, these exit 0:
 
 ```sh
-PYTHON="${PYTHON:-$(command -v python3)}"
-ruff check gororoba_quantum && ruff format --check gororoba_quantum
-cd gororoba_quantum
-mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py hybrid_shor.py modular_arithmetic.py packing.py predict.py select_lcu.py experiments.py live_run.py order_finding.py runtime_contracts.py variance.py
-"$PYTHON" verify.py         # needs the open_gororoba checkout at GOROROBA_ROOT
-"$PYTHON" designs.py
-"$PYTHON" factoring.py
-"$PYTHON" modular_arithmetic.py
-"$PYTHON" order_finding.py
-"$PYTHON" runtime_contracts.py
-"$PYTHON" variance.py
-"$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  ruff check gororoba_quantum scripts/python_call_graph.py
+  ruff format --check gororoba_quantum scripts/python_call_graph.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
+  cd gororoba_quantum
+  mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
+    hybrid_shor.py modular_arithmetic.py packing.py predict.py select_lcu.py \
+    experiments.py live_run.py order_finding.py runtime_contracts.py \
+    variance.py ../scripts/python_call_graph.py
+  "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
+  "$PYTHON" designs.py
+  "$PYTHON" factoring.py
+  "$PYTHON" modular_arithmetic.py
+  "$PYTHON" order_finding.py
+  "$PYTHON" runtime_contracts.py
+  "$PYTHON" variance.py
+  "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+)
 ```
 
 A change to live_run.py or experiments.py also gets a dry run,
@@ -95,12 +103,19 @@ head.
 - *Progress.* The bot keeps one summary comment per PR, marked
   `codex-pull-request-review-summary`, which reads Running while a review is in
   progress.
-- *Outcome.* A review ends either in an issue comment "Codex Review: Didn't find
-  any major issues" or in inline review comments with P1 or P2 badges.
+- *Outcome.* A review with findings publishes inline review comments with P1 or
+  P2 badges. A clean review either posts an issue comment beginning "Codex
+  Review: Didn't find any major issues" with a reviewed commit matching the PR
+  head, or adds an app-owned `+1` reaction after the completed summary update
+  for the current head. A prior reaction cannot qualify a later review round.
 - *Status tool.* `scripts/codex_review_status.sh PR...` prints each PR's head,
-  review state, and latest clean verdict, then every unresolved thread with its
-  root comment id and full body. It follows every page of issue comments and
-  review threads.
+  summary head, review state, and head-bound clean signal, then every unresolved
+  thread with its root comment id and full body. It accepts comments and
+  reactions only from the stable app and bot identities, requires the clean
+  comment to follow the current review request and the reaction to occur
+  strictly after the completed summary update. It paginates every issue,
+  reaction, thread, and thread-comment connection, then re-reads the head and
+  PR update marker, and summary to reject a changing snapshot.
 
 **One round, per PR:**
 1. Wait until the summary comment stops reading Running. Then read every
@@ -129,7 +144,8 @@ head.
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
 6. Comment `@codex review` and start again at step 1. A PR leaves the loop when
-   its latest review reports no major issues and no thread is open.
+   the current-head status reports `verdict=clean-comment...` or
+   `verdict=clean-reaction...` and no thread is open.
 
 **Stacked PRs.**
 - Each branch builds on the one below it, so a fix lands on the lowest branch

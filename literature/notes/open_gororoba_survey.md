@@ -630,8 +630,17 @@ divides lambda(N) and is in general not a power of 2.
    Linear combinations of products of basis multiplications are a different
    matter: their real span is every matrix at n = 3, 4, 5
    (gororoba_quantum/FACTORING_NOTES.md), so a linear combination of unitaries
-   can represent a multiplier there, at a normalization of at least the number
-   of distinct index displacements.
+   can represent a multiplier there. Any nonzero exact scaled representation
+   over signed XOR translations has effective normalization
+   `lambda/|beta| >= T`, where T counts the distinct index displacements.
+   Standard LCU post-selection is therefore at most `1/T^2`. Base two has
+   `T >= (N+1)/2` for every odd N and exactly `2^(n-1)` for `N = 2^n-1`; the
+   base-two bound proves an exponential dictionary mismatch for the base-two
+   family. The family `N=3(2^m+1)`, `a=2(2^m+1)+1` has only linear T, so no
+   universal exponential-displacement statement covers every base. Its even-`m`
+   subfamily has order two and yields the factors `2^m+1` and 3 through standard
+   Shor post-processing; its odd-`m` subfamily has order three and does not.
+   Section 8.12 of the deep notes gives both derivations.
 2. Replacing the Z_Q quantum Fourier transform by the Walsh-Hadamard transform
    or by a "butterfly fold". Both have the same butterfly topology and
    different groups (F_2^m versus Z_{2^m}); the Walsh-Hadamard transform has
