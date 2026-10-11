@@ -20,6 +20,16 @@ The directory contains compiler and local-simulation records. Every record sets
   The [source ledger](../../literature/notes/cayley_dickson_annihilator_sources.md)
   attributes the general theorems and distinguishes their domains from the
   finite implementation checks.
+- `rank_polynomials.json` and `rank_charts.json` retain exact rank-predicate,
+  incidence-equation, pivot-chart, and transition checks. `rank_attachments.json`
+  certifies a rank-changing polynomial path over every real parameter.
+  `integral_homology.json` validates integral Smith certificates, including torsion.
+  `rank_path_topology.json` and `rank_path_topology_embedded.json` record the
+  proved restricted incidence model in dimensions 32 and 64, with its integral
+  homology and cohomology ring. `rank_topology_verification.json` binds sources,
+  outputs, versions, and validation. The
+  [rank-topology derivation](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md)
+  states the exact model domain and the remaining full-space proof obligations.
 - `ibm_fez_record.json` and `ibm_fez_isa.qpy` retain the fixed calibrated
   compile used by the design documents.
 - `hybrid_shor_fake_fez.json` retains the original single-seed ANF-versus-cycle
