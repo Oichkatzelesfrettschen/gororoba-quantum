@@ -255,10 +255,14 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     observed_synthesis_counts = {
         operation: generic_operations.get(operation, 0) for operation in expected_synthesis_counts
     }
-    if observed_synthesis_counts != expected_synthesis_counts or generic_operations.get("mcx", 0):
+    opaque_mcx_operations = {
+        name: count for name, count in generic_operations.items() if name == "mcx" or name.startswith("mcx_o")
+    }
+    if observed_synthesis_counts != expected_synthesis_counts or opaque_mcx_operations:
         raise RuntimeError(
             f"N=21 one-clean source synthesis is {dict(generic_operations)}, "
-            f"expected {expected_synthesis_counts} and zero opaque MCX gates"
+            f"expected {expected_synthesis_counts} and zero opaque MCX gates; "
+            f"opaque operations are {opaque_mcx_operations}"
         )
 
 

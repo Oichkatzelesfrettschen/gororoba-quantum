@@ -1,9 +1,10 @@
 """Capture the N=21 modular-synthesis crossover on the static FakeFez target.
 
 The capture compares scratch-free, one-clean, two-clean, and ANF arithmetic
-under fixed transpiler seeds. The pass callback records every structural
-transition so synthesis cost and heavy-hex routing amplification remain
-separate evidence surfaces. The module submits no quantum work.
+under fixed transpiler seeds. The pass callback records every change in qubit
+count, recursive depth, or operation census so synthesis cost and heavy-hex
+routing amplification remain separate evidence surfaces. The module submits
+no quantum work.
 """
 
 from __future__ import annotations
@@ -25,6 +26,7 @@ from pathlib import Path
 from typing import Any, cast
 
 from qiskit import QuantumCircuit, QuantumRegister
+from qiskit.converters import circuit_to_dag
 from qiskit.transpiler.passes.synthesis import HLSConfig
 from qiskit.transpiler.preset_passmanagers import generate_preset_pass_manager
 from qiskit_ibm_runtime.fake_provider import FakeFez
@@ -39,6 +41,7 @@ BASE = 2
 PHASE_BITS = 10
 NAMED_PASSES = frozenset({"HighLevelSynthesis", "BasisTranslator", "SabreLayout"})
 SOURCE_PATHS = (
+    "gororoba_quantum/boolean_anf.py",
     "gororoba_quantum/compile_evidence.py",
     "gororoba_quantum/factoring.py",
     "gororoba_quantum/hybrid_shor.py",
@@ -102,11 +105,7 @@ def _canonical_operation_counts(operation_counts: dict[str, int]) -> dict[str, i
 
 
 def _circuit_snapshot(circuit: QuantumCircuit) -> dict[str, Any]:
-    return {
-        "qubits": circuit.num_qubits,
-        "depth": circuit.depth(),
-        "operations": _canonical_operation_counts(dict(circuit.count_ops())),
-    }
+    return _dag_snapshot(circuit_to_dag(circuit))
 
 
 def _dag_snapshot(dag: Any) -> dict[str, Any]:
@@ -157,7 +156,7 @@ def _build_source(candidate: Candidate) -> tuple[QuantumCircuit, dict[str, Any]]
 def _pass_capture(
     source_snapshot: dict[str, Any],
 ) -> tuple[list[dict[str, Any]], list[dict[str, Any]], Any]:
-    transitions: list[dict[str, Any]] = []
+    aggregate_resource_transitions: list[dict[str, Any]] = []
     named_snapshots: list[dict[str, Any]] = []
     previous_signature = _snapshot_signature(source_snapshot)
 
@@ -173,10 +172,10 @@ def _pass_capture(
             named_snapshots.append(entry)
         signature = _snapshot_signature(snapshot)
         if signature != previous_signature:
-            transitions.append(entry)
+            aggregate_resource_transitions.append(entry)
             previous_signature = signature
 
-    return transitions, named_snapshots, capture_callback
+    return aggregate_resource_transitions, named_snapshots, capture_callback
 
 
 def _stage_snapshots(
@@ -222,7 +221,7 @@ def _compile_candidate(candidate: Candidate, seed: int, backend: FakeFez) -> dic
         seed_transpiler=seed,
         hls_config=hls_config,
     )
-    transitions, named_snapshots, callback = _pass_capture(source_snapshot)
+    aggregate_resource_transitions, named_snapshots, callback = _pass_capture(source_snapshot)
     compiled = pass_manager.run(source, callback=callback)
     final_snapshot = _circuit_snapshot(compiled)
     if compiled.layout is None:
@@ -243,7 +242,7 @@ def _compile_candidate(candidate: Candidate, seed: int, backend: FakeFez) -> dic
         "depth": compiled.depth(),
         "final_operations": _canonical_operation_counts(dict(compiled.count_ops())),
         "stage_snapshots": _stage_snapshots(source_snapshot, named_snapshots, final_snapshot),
-        "pass_transitions": transitions,
+        "aggregate_resource_transitions": aggregate_resource_transitions,
     }
 
 
@@ -389,7 +388,7 @@ def capture(
     """Compile every requested candidate and return one self-describing record."""
     backend = FakeFez()
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "capture": "n21-heavy-hex-mcx-workspace",
         "qpu_executed": False,
         "replay_command": _replay_command(seeds, candidates, output_path),
