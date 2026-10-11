@@ -23,11 +23,15 @@ lint and type-check configuration only. Before any push, these exit 0:
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
-    affine_residual.py affine_residual_challenger.py adjudicate.py \
+    affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
+    sedenion_bundle.py annihilator_strata.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
+  "$PYTHON" claim_boundaries.py >/dev/null
+  "$PYTHON" sedenion_bundle.py >/dev/null
+  "$PYTHON" annihilator_strata.py --max-dimension 256 >/dev/null
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
