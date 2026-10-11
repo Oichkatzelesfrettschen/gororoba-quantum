@@ -321,7 +321,9 @@ stores the requested-system inventory, capability summaries, exclusion reasons,
 logical circuit requirements, joint placement, fused execution-PUB manifests,
 selection trace, exact fused ISA circuits, and simulated outcomes. The process
 never reads a retained calibration record to drive a submission. Current
-records use schema 5 and contract `live-target-cross-group-fused-pubs-v1`;
+records use schema 6 and contract
+`live-target-cross-group-fused-pubs-scheduler-usage-v1`, which adds per-PUB
+scheduler timing and per-job usage to the schema-5 fused-PUB surface;
 schema 4 and both historical schema-3 families remain retained evidence with
 incompatible shapes.
 
@@ -600,15 +602,25 @@ crosstalk to one group. The noise model carries no crosstalk, so its
 difference is shot noise; simulate_entries batches every replica of a choice
 in one Aer run, so each draws from its own position-derived seed, where a
 shared seed would reproduce packed replica 0 in the reference bit for bit.
-Every job requests the backend scheduler's per-PUB timing: pub_windows reads
-the executor chunk timing (result.metadata["executor"].chunk_timing) for each
-PUB's calibration window, and packing_schedule compares the packed and
-reference PUBs' scheduled durations, which lengthen with the
-feed_forward_streams count only when the control system serializes branches.
-Each PUB manifest also records target_duration_dt, the Target-derived
-critical path in dt, and collection records schedule_residual_dt, the
-scheduled duration minus it: classical feed-forward latency on a dynamic PUB,
-scheduler alignment on a static PUB.
+Every job requests the backend scheduler's per-PUB timing. pub_windows reads
+each PUB's execution window from the executor chunk timing
+(result.metadata["executor"].chunk_timing, the 0.50 decoder's path) or from
+the documented execution spans (result.metadata["execution"]
+["execution_spans"]), records which source answered, and classifies a PUB no
+span covers instead of raising: its counts stay, and only its
+calibration-bound replay and correction are withheld with the reason.
+Collection writes one timing record per PUB in the header, keyed by job:
+target_gate_lower_bound_dt (the Target's critical path), the scheduler's
+scheduled_circuit_duration_dt, their difference scheduler_residual_dt,
+timing_status, and the structure counts parallel_stream_count,
+sequential_stage_count, and feed_forward_operation_count. packing_schedule
+compares the packed and reference PUBs' scheduled durations, which lengthen
+with the stream count only when the control system serializes branches.
+The header also carries each job's usage record: job.usage(partial=False)
+supplies the final QPU charge once job.metrics()["usage"] leaves pending,
+and pub_shots_per_qpu_second divides the submitted PUB shots (PUB count times
+shots per PUB; replicas and fused components multiply nothing) by that
+charge. Group records reference their job by id instead of copying either.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
 member's own outcome weights (hybrid Shor scores whether an outcome decodes to

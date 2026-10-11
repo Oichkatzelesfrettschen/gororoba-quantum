@@ -624,8 +624,11 @@ its QPY SHA-256 is
 - **Concurrent feed-forward.** The dynamic job runs every packed replica of
   folded QPE and hybrid Shor in one PUB and their replica-0 copies together in
   the shared reference PUB, so neither PUB runs a single feed-forward stream;
-  each PUB manifest records its `feed_forward_streams`. Two measurements
-  separate the candidate mechanisms:
+  each PUB manifest records its `parallel_stream_count` (replica streams that
+  carry feed-forward), `sequential_stage_count` (the deepest chain of
+  feed-forward decisions along one stream, 1 for both groups), and
+  `feed_forward_operation_count` (every control-flow operation, nested blocks
+  included). Two measurements separate the candidate mechanisms:
   - *Schedule.* Every job requests the backend scheduler's per-PUB
     `circuit_duration`, which includes the classical latency the Target omits,
     and `packing_schedule` compares the packed PUB with the reference PUB of
@@ -647,14 +650,17 @@ its QPY SHA-256 is
   matched concurrent workloads.
 - **Dynamic duration.** Backend Targets omit classical feed-forward latency.
   A duration computed from the Target is a lower bound; the scheduler's
-  `circuit_duration` from the first dynamic job replaces it. Each PUB record
-  carries `schedule_residual_dt`, the scheduled duration minus the
-  Target-derived `target_duration_dt`: on a dynamic PUB it is the classical
-  feed-forward latency along the critical path of one shot, and on a static
-  PUB of the same submission it is the scheduler's alignment alone, the
-  control that the dynamic residual is read against. Chunk wall-clock
-  windows do not support this subtraction: a chunk spans every shot of one or
-  more PUBs plus repetition delay and service overhead.
+  `circuit_duration` from the first dynamic job replaces it. Each PUB's timing
+  record carries `scheduler_residual_dt`, the `scheduled_circuit_duration_dt`
+  minus the Target-derived `target_gate_lower_bound_dt`. The residual is a
+  scheduler residual: feed-forward, alignment, measurement, reset, and
+  controller time all contribute on a dynamic PUB, and a static PUB of the
+  same submission carries the scheduler's alignment alone, the control the
+  dynamic residual is read against. A residual below zero is retained with
+  `timing_status` `residual_below_target_bound` and no interpretation. Chunk
+  wall-clock windows do not support this subtraction: a chunk spans every
+  shot of one or more PUBs plus repetition delay and service overhead, so the
+  windows serve calibration lookup and drift detection only.
 - **Noise-model authority.** FakeFez and Aer validate construction and local
   option paths. They do not predict a drifting device. Only a submitted and
   collected run supplies hardware evidence.
@@ -712,7 +718,7 @@ its QPY SHA-256 is
    crosses the fresh decoder-margin gate. Preserve `N = 35` as a coefficient
    and scaling falsifier until then; a deeper compile without `N = 21` admission
    adds cost without resolving the active uncertainty.
-9. **Dynamic latency evidence.** Read `schedule_residual_dt` on dynamic PUBs
+9. **Dynamic latency evidence.** Read `scheduler_residual_dt` on dynamic PUBs
    against the static-PUB control, and the packed PUB's duration against the
    reference PUB's (`packing_schedule`). Attribute a residual to classical
    control only after repeated jobs show a stable separation. The submission

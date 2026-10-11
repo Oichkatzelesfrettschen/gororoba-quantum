@@ -4,6 +4,18 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+- **Schema 6 records.** The
+  `live-target-cross-group-fused-pubs-scheduler-usage-v1` contract keeps the
+  schema-5 fused-PUB surface and adds per-PUB scheduler timing and per-job
+  usage. Each PUB manifest records `target_gate_lower_bound_dt` and the
+  feed-forward structure counts; every job requests
+  `execution.scheduler_timing`. Collection writes one timing record per PUB
+  (`timing_status`, window, `scheduled_circuit_duration_dt`,
+  `scheduler_residual_dt`, reason) and one usage record per job (`usage_status`,
+  `qpu_charge_time_seconds` from `job.usage(partial=False)`,
+  `pub_shots_per_qpu_second`) in the collection header; group records reference
+  their job by id. A PUB without an execution window keeps its counts and
+  loses only its calibration-bound views.
 - **Schema 5 records.** The `live-target-cross-group-fused-pubs-v1` contract
   jointly allocates same-backend, same-kind replica pools and archives the
   exact fused Runtime PUBs. Ordered manifests map each PUB to namespaced
@@ -159,7 +171,8 @@ The two historical schema-3 contracts require shape-aware classification:
 ```sh
 for record_path in results/live/*/record.json; do
     jq -r --arg path "$record_path" '
-      if .schema_version == 5 then "schema5-fused-pubs"
+      if .schema_version == 6 then "schema6-scheduler-usage"
+      elif .schema_version == 5 then "schema5-fused-pubs"
       elif .schema_version == 4 then "schema4-combined"
       elif .schema_version == 3 and has("system_inventory")
         then "schema3-capability"

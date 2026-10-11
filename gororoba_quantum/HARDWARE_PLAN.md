@@ -118,7 +118,11 @@ execution path but does not establish default-policy submission readiness.
 ## QPU cost
 
 QPU time scales with PUBs times shots; replicas and cross-group components ride
-along inside a PUB at no extra shots. Fusion reduces the full program from 38
+along inside a PUB at no extra shots. The first job measures the rate directly:
+collection divides the submitted PUB shots (PUB count times shots per PUB) by
+the job's final QPU charge from job.usage(partial=False), in submitted PUB
+shots per QPU charge second, and that measured rate replaces the literature
+bounds below. Fusion reduces the full program from 38
 logical execution entries to 20 PUBs, 14 static and 6 dynamic, so 4096 shots
 per PUB produce 81,920 executions. The project has not measured its own
 shot rate; the literature bounds it between about 1,000 shots/s for many-twirl
