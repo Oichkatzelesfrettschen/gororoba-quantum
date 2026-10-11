@@ -72,6 +72,15 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T120803.085652Z` requalifies the packing equivalence statistic after the
+false-detection enumeration moved to the process pool. Clean source commit
+`02468f9` (sources_modified=false) carries experiment digest
+`0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`0f06c5ef86bfd24a2b773f9a0de96a36a505c0806728b666bc5bfb3b681b843c`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T114958.902835Z` requalifies the packing equivalence statistic on the merged
 scheduler-timing main. Clean source commit `6ed540f` (sources_modified=false)
 carries experiment digest
