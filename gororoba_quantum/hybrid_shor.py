@@ -145,7 +145,12 @@ def _parser() -> argparse.ArgumentParser:
         command.add_argument("--phase-bits", type=int)
         command.add_argument(
             "--multiplier-strategy",
-            choices=("auto", "cycle_transpositions", "anf_compute_swap_uncompute"),
+            choices=(
+                "auto",
+                "cycle_transpositions",
+                "cycle_transpositions_1_clean",
+                "anf_compute_swap_uncompute",
+            ),
             default="auto",
         )
         command.add_argument(
