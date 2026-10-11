@@ -147,7 +147,11 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
    historical schema-4 qualification under its explicit 250-job dry-run bound.
 2. **Written case.** The case states the job split, the fused PUB count, the
    fresh dry run's predictions, and the seconds bound from the table above,
-   and waits for approval (AGENTS.md).
+   and waits for approval (AGENTS.md). The `--submit` command names the dry
+   run with `--approved-record`, and the fresh plan must match it in digest,
+   shots, policy, groups, backends, seeds, layouts, replica qubits, fused PUB
+   manifests, calibration, and QPY bytes, or the run stops with an
+   approval_required record.
 3. **Dynamic job first.** It is the smaller job and carries the questions only
    hardware answers: hybrid Shor admission, concurrent feed-forward across
    packed replicas (the global packing comparison and the scheduled-duration

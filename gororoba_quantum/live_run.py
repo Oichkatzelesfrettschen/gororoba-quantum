@@ -2192,8 +2192,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "replica_floor": args.replica_floor,
             "max_replicas": args.max_replicas,
             "isolated_reference": args.isolated_reference,
+            # Twirling and DD change the submitted workload without changing
+            # the archived circuits, so the approved-record gate compares them.
+            "twirl": bool(getattr(args, "twirl", False)),
+            "dd": getattr(args, "dd", None),
+            "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
         },
         "shots": args.shots,
+        "instance_sha256_12": _instance_hash(service),
         "seed_simulator": SEED_SIMULATOR,
         "experiment_digest": experiment_digest(),
         "code_commit": _code_commit(),
@@ -2270,6 +2276,104 @@ def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
     remaining = usage.get("usage_remaining_seconds")
     if remaining is not None and float(remaining) < minimum:
         raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
+
+
+APPROVED_GROUP_FIELDS = ("backend", "seed_transpiler", "initial_layout", "replica_floor")
+APPROVED_RECORD_FIELDS = (
+    "experiment_digest",
+    "schema_version",
+    "schema_contract",
+    "shots",
+    "policy",
+    "versions",
+    "instance_sha256_12",
+)
+
+
+def approved_calibration_drift(record: dict[str, Any], backend_name: str, calibration: str) -> str | None:
+    """Why a batch's calibration departs from the one the approved-record gate accepted, or None.
+
+    A run that has sent no batch returns to approval_required; a run with a
+    batch already sent keeps its submission lifecycle and records that the
+    unsent batches need renewed approval.
+    """
+    approved = record.get("approved_record", {}).get("calibrations", {})
+    if backend_name not in approved or calibration == approved[backend_name]:
+        return None
+    reason = f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration})"
+    if record.get("submission", {}).get("jobs"):
+        record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+    else:
+        record["state"] = "approval_required"
+    return reason
+
+
+def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: list[ExecutionPub]) -> dict[str, Any]:
+    """A record-shaped view of the plan as it stands after the pre-submission refresh.
+
+    The top-level identity (digest, schema, shots, policy) comes from record;
+    the groups and fused PUB manifests come from the refreshed choices and
+    PUBs, so a calibration or layout that moved during the refresh is
+    compared, not the initial plan's copy.
+    """
+    return {
+        **{k: record.get(k) for k in APPROVED_RECORD_FIELDS},
+        "groups": [
+            {
+                "group": choice.group.name,
+                "backend": choice.snap.name,
+                "seed_transpiler": choice.seed,
+                "initial_layout": list(choice.layout),
+                "replica_floor": choice.replica_floor,
+                "calibration": choice.snap.calibration,
+                "replicas": [{"physical_qubits": list(replica.qubits)} for replica in choice.replicas],
+            }
+            for choice in choices
+        ],
+        "execution_pubs": [pub.manifest() for pub in pubs],
+    }
+
+
+def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_archive_sha256: str) -> list[str]:
+    """Every way the fresh plan in record differs from the approved submit-free record in approved_dir.
+
+    The approved record is the dry run the owner read before approving the
+    command, so the plan that reaches the service has to be that plan: the
+    same experiment digest and schema, shots, policy (replica, queue,
+    twirling, DD, and remaining-budget settings), dependency versions, IBM
+    Cloud instance, groups on the same backends with the same seeds, layouts,
+    replica qubits, and floors, the same fused PUB manifests, the same
+    calibration on every used backend, and a byte-identical QPY archive. The approved record is itself a dry
+    run: planned, with no submission.
+    """
+    approved = json.loads((approved_dir / "record.json").read_text())
+    approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+    mismatches: list[str] = []
+    if approved.get("state") != "planned" or "submission" in approved:
+        mismatches.append(f"approved record state is {approved.get('state')!r}, not a submit-free plan")
+    for field_name in APPROVED_RECORD_FIELDS:
+        if approved.get(field_name) != record.get(field_name):
+            mismatches.append(f"{field_name} differs")
+    approved_groups = {g["group"]: g for g in approved.get("groups", [])}
+    fresh_groups = {g["group"]: g for g in record.get("groups", [])}
+    if set(approved_groups) != set(fresh_groups):
+        mismatches.append(f"groups differ: approved {sorted(approved_groups)}, fresh {sorted(fresh_groups)}")
+    for name in sorted(set(approved_groups) & set(fresh_groups)):
+        old, new = approved_groups[name], fresh_groups[name]
+        for field_name in APPROVED_GROUP_FIELDS:
+            if old.get(field_name) != new.get(field_name):
+                mismatches.append(f"{name}: {field_name} {old.get(field_name)!r} -> {new.get(field_name)!r}")
+        old_qubits = [replica.get("physical_qubits") for replica in old.get("replicas", [])]
+        new_qubits = [replica.get("physical_qubits") for replica in new.get("replicas", [])]
+        if old_qubits != new_qubits:
+            mismatches.append(f"{name}: replica qubits {old_qubits} -> {new_qubits}")
+        if old.get("calibration") != new.get("calibration"):
+            mismatches.append(f"{name}: calibration {old.get('calibration')} -> {new.get('calibration')}")
+    if approved.get("execution_pubs") != record.get("execution_pubs"):
+        mismatches.append("fused PUB manifests differ")
+    if approved_qpy != qpy_archive_sha256:
+        mismatches.append(f"QPY archive {approved_qpy[:12]} -> {qpy_archive_sha256[:12]}")
+    return mismatches
 
 
 def _qpy_digest(circuits: list[QuantumCircuit]) -> str:
@@ -2684,6 +2788,34 @@ def submit(
             "a renewed written submission case and user approval; no Runtime job was submitted"
         )
     qpy_archive_sha256 = archive()
+    approved_dir = getattr(args, "approved_record", None)
+    if approved_dir is not None:
+        # The comparison reads the refreshed choices and PUBs, the plan that
+        # build_submission_plan sends, since record["groups"] still describes
+        # the initial snapshot when the refresh changed nothing routable.
+        fresh_view = refreshed_plan_view(record, choices, fresh_execution_pubs)
+        mismatches = approved_record_mismatches(Path(approved_dir), fresh_view, qpy_archive_sha256)
+        record["approved_record"] = {
+            "run": Path(approved_dir).name,
+            "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": hashlib.sha256((Path(approved_dir) / "isa.qpy").read_bytes()).hexdigest(),
+            "calibrations": {group["backend"]: group["calibration"] for group in fresh_view["groups"]},
+            "mismatches": mismatches,
+        }
+        if mismatches:
+            record["state"] = "approval_required"
+            record["renewed_approval"] = {
+                "required_at": _now(),
+                "reason": "the fresh plan differs from the approved record",
+                "mismatches": mismatches,
+                "qpy_archive_sha256": qpy_archive_sha256,
+            }
+            checkpoint()
+            raise LiveRunError(
+                "the fresh plan differs from the approved record "
+                f"{Path(approved_dir).name} ({'; '.join(mismatches)}); a renewed written case and approval are "
+                "required; no Runtime job was submitted"
+            )
     submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
     # The complete batch ledger reaches disk before the first job starts. A
     # partial submission can therefore name every unsent circuit, including a
@@ -2716,6 +2848,12 @@ def submit(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
                 f"no circuit in this batch was submitted ({owner_reasons})"
             )
+        # The approved-record check compared calibration timestamps at the
+        # refresh; a calibration that rolls between that check and this
+        # batch leaves the consumed values unchanged yet is unapproved.
+        drift = approved_calibration_drift(record, name, fresh.calibration)
+        if drift is not None:
+            raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         sampler = configure_sampler(
@@ -2834,6 +2972,11 @@ def _feed_forward_stages(circuit: QuantumCircuit) -> int:
         if isinstance(instruction.operation, ControlFlowOp):
             stages += 1 + max((_feed_forward_stages(block) for block in instruction.operation.blocks), default=0)
     return stages
+
+
+def _instance_hash(service: Any) -> str:
+    """The active IBM Cloud instance as the 12-hex sha256 of its CRN, the only form a record keeps."""
+    return hashlib.sha256(str(service.active_instance() or "").encode()).hexdigest()[:12]
 
 
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
@@ -3728,9 +3871,18 @@ def main(argv: list[str] | None = None) -> int:
         help="apply dynamical decoupling to static submission batches; dynamic batches remain disabled",
     )
     parser.add_argument("--collect", type=Path, help="run directory whose submitted jobs to collect")
+    parser.add_argument(
+        "--approved-record",
+        type=Path,
+        help="run directory of the approved dry run; --submit sends nothing unless the fresh plan matches it",
+    )
     args = parser.parse_args(argv)
     if args.submit and not args.out:
         parser.error("--submit needs --out so the job ids land in an audit record")
+    if args.submit and not args.approved_record:
+        parser.error("--submit needs --approved-record, the dry run the written case was approved on")
+    if args.approved_record and not args.submit:
+        parser.error("--approved-record applies only with --submit")
     service = QiskitRuntimeService()
     try:
         if args.collect:

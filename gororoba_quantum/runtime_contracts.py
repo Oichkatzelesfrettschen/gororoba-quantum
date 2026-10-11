@@ -1857,6 +1857,154 @@ def _fixture_args(**overrides: Any) -> argparse.Namespace:
     return argparse.Namespace(**values)
 
 
+def _verify_approved_record_gate() -> None:
+    """--submit sends nothing unless the fresh plan matches the approved dry run byte for byte."""
+    backend = _ProbeBackend("viable", FakeFez())
+    service = _ProbeService([backend])
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    choices, record = live_run_module.plan(service, args)
+    live_run_module.evaluate(choices, record)
+    original_configure_sampler = live_run_module.configure_sampler
+    constructions = 0
+    runs: list[int] = []
+
+    def counting_sampler(
+        backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], shots: int = 4096
+    ) -> Any:
+        # build_submission_plan constructs a Sampler to record its effective
+        # options before any batch runs, so runs, not constructions, count
+        # submissions.
+        nonlocal constructions
+        del backend, twirl, dd
+        constructions += 1
+        return _ProbeSampler(kind, tags, shots, lambda circuits: runs.append(len(circuits)))
+
+    with tempfile.TemporaryDirectory(prefix="gororoba-approved-record-") as directory:
+        approved_dir = Path(directory) / "approved"
+        approved_dir.mkdir()
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        fresh_record = copy.deepcopy(record)
+        fresh_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        if live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy):
+            raise RuntimeError("an identical fresh plan mismatches its own approved record")
+        drifted = copy.deepcopy(record)
+        drifted["groups"][0]["calibration"] = "2000-01-01T00:00:00+00:00"
+        drifted["groups"][0]["initial_layout"] = list(reversed(drifted["groups"][0]["initial_layout"]))
+        found = live_run_module.approved_record_mismatches(approved_dir, drifted, "0" * 64)
+        if not any("calibration" in m for m in found) or not any("initial_layout" in m for m in found):
+            raise RuntimeError(f"drifted plan mismatches read {found}")
+        if not any("QPY archive" in m for m in found):
+            raise RuntimeError("a changed QPY archive passes the approved-record gate")
+        # The refreshed view carries the refreshed snapshot's calibration and
+        # the refreshed PUB manifests, not the initial plan's copies.
+        pubs = execution_pubs(choices)
+        same_view = live_run_module.refreshed_plan_view(record, choices, pubs)
+        if live_run_module.approved_record_mismatches(approved_dir, same_view, fresh_qpy):
+            raise RuntimeError("the refreshed view of an unchanged plan mismatches the approved record")
+        moved = copy.copy(choices[0])
+        moved.snap = copy.copy(choices[0].snap)
+        moved.snap.calibration = "2000-01-01T00:00:00+00:00"
+        moved_view = live_run_module.refreshed_plan_view(record, [moved], pubs)
+        moved_found = live_run_module.approved_record_mismatches(approved_dir, moved_view, fresh_qpy)
+        if not any("calibration" in m for m in moved_found):
+            raise RuntimeError("a calibration that moved during the refresh passes the approved-record gate")
+        for label, mutate in (
+            ("twirl", lambda r: r["policy"].__setitem__("twirl", not r["policy"].get("twirl", False))),
+            ("min_remaining_seconds", lambda r: r["policy"].__setitem__("min_remaining_seconds", 999)),
+            ("versions", lambda r: r["versions"].__setitem__("qiskit-ibm-runtime", "0.0.0")),
+            ("instance_sha256_12", lambda r: r.__setitem__("instance_sha256_12", "000000000000")),
+        ):
+            changed = copy.deepcopy(record)
+            mutate(changed)
+            named = live_run_module.approved_record_mismatches(approved_dir, changed, fresh_qpy)
+            field = "policy" if label in ("twirl", "min_remaining_seconds") else label
+            if not any(field in m for m in named):
+                raise RuntimeError(f"a changed {label} passes the approved-record gate")
+        if "instance_sha256_12" not in record or len(record["instance_sha256_12"]) != 12:
+            raise RuntimeError("the plan records no instance hash")
+        submitted = json.loads((approved_dir / "record.json").read_text())
+        submitted["submission"] = {}
+        submitted["state"] = "submitted"
+        (approved_dir / "record.json").write_text(json.dumps(submitted))
+        rejected = live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy)
+        if not any("not a submit-free plan" in m for m in rejected):
+            raise RuntimeError("a submitted record passes as an approved dry run")
+        write_json(approved_dir, record)
+        # The submit path with a mismatching approved record stops before
+        # the Sampler and leaves an approval_required record.
+        run_dir = Path(directory) / "run"
+        run_dir.mkdir()
+        args.approved_record = approved_dir
+        gated_record = copy.deepcopy(record)
+        gated_record["shots"] = int(record["shots"]) + 1
+        live_run_module.configure_sampler = counting_sampler
+        try:
+            try:
+                live_run_module.submit(
+                    service, list(choices), args, gated_record, lambda: write_archive(run_dir, choices), lambda: None
+                )
+            except LiveRunError as error:
+                if "differs from the approved record" not in str(error):
+                    raise RuntimeError(f"the approved-record gate reports {error}") from error
+            else:
+                raise RuntimeError("a plan that differs from the approved record reaches submission")
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+            args.approved_record = None
+        mismatches = gated_record.get("renewed_approval", {}).get("mismatches", [])
+        if constructions or gated_record["state"] != "approval_required" or "shots differs" not in mismatches:
+            raise RuntimeError(f"the approved-record gate leaves {gated_record.get('state')} after {constructions}")
+        # A calibration that rolls between the approved-record check and the
+        # batch stops before the Sampler.
+        original_take_snapshot = live_run_module.take_snapshot
+        snapshot_calls = 0
+
+        def rolled_snapshot(service: Any, name: str) -> Snapshot:
+            # The refresh before the gate reads the first snapshot; the
+            # per-batch revalidation reads the next, which has rolled.
+            nonlocal snapshot_calls
+            snapshot_calls += 1
+            snapshot = original_take_snapshot(service, name)
+            if snapshot_calls > 1:
+                snapshot.calibration = "2099-01-01T00:00:00+00:00"
+            return snapshot
+
+        args.approved_record = approved_dir
+        rolled_record = copy.deepcopy(record)
+        live_run_module.configure_sampler = counting_sampler
+        live_run_module.take_snapshot = rolled_snapshot
+        try:
+            try:
+                live_run_module.submit(
+                    service, list(choices), args, rolled_record, lambda: write_archive(run_dir, choices), lambda: None
+                )
+            except LiveRunError as error:
+                if "calibration moved after the approved-record check" not in str(error):
+                    raise RuntimeError(f"a rolled batch calibration reports {error}") from error
+            else:
+                raise RuntimeError("a calibration that rolled before the batch reaches submission")
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+            live_run_module.take_snapshot = original_take_snapshot
+            args.approved_record = None
+        if runs or rolled_record["state"] != "approval_required":
+            raise RuntimeError("a rolled batch calibration runs a Sampler or leaves the state unchanged")
+        # With a batch already sent, the lifecycle stays with the submission.
+        partial = copy.deepcopy(record)
+        partial["submission"] = {"jobs": [{"job_id": "sent-earlier"}]}
+        partial["approved_record"] = {"calibrations": {backend.name: "approved"}}
+        partial["state"] = "submitted"
+        rolled = original_take_snapshot(service, backend.name)
+        rolled.calibration = "2099-01-01T00:00:00+00:00"
+        if partial["approved_record"]["calibrations"].get(backend.name) == rolled.calibration:
+            raise RuntimeError("fixture calibrations coincide")
+        if live_run_module.approved_calibration_drift(partial, backend.name, rolled.calibration) is None:
+            raise RuntimeError("a rolled calibration after a sent batch is not reported")
+        if partial["state"] != "submitted" or "renewed_approval_for_unsent_batches" not in partial:
+            raise RuntimeError("a rolled calibration after a sent batch resets the lifecycle or goes unrecorded")
+
+
 def _verify_schema_lifecycle() -> None:
     backend = _ProbeBackend("viable", FakeFez())
     service = _ProbeService([backend])
@@ -2380,6 +2528,7 @@ def _verify() -> None:
     _verify_job_usage_cases()
     _verify_packing_equivalence()
     _verify_usage_wait()
+    _verify_approved_record_gate()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()
