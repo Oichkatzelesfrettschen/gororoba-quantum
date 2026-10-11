@@ -638,24 +638,35 @@ its QPY SHA-256 is
   - *Fidelity.* `global_packing_crosstalk` compares packed replica 0's factor
     yield with the reference copy on the same qubits. The record keeps the z
     statistic (z below -3 is the degradation diagnostic; |z| at most 3 reads
-    "the run detected no difference at this resolution") and adds the
-    difference with its 95 percent interval, Newcombe-Wilson for the Bernoulli
-    factor indicator, and a two-one-sided equivalence test: a 90 percent
-    interval inside the preregistered margin of 0.03 reads
-    `equivalent_within_0.03`, a 95 percent interval below zero reads
-    `packed_degradation_detected`, and anything else reads
-    `difference_not_resolved`. One matched pair at 4096 shots and a yield
+    "the run detected no difference at this resolution"; zero per-shot
+    variance in both arms leaves z undefined and says so) and adds the
+    difference with its 95 percent interval and a two-one-sided equivalence
+    test. The interval is Newcombe's hybrid score interval from the two
+    Wilson intervals; for the Bernoulli factor indicator it is the standard
+    proportion interval, and for any other score, a mean of weights in [0, 1],
+    the Bhatia-Davis bound Var <= mean (1 - mean) makes it conservative, so
+    no observed-variance accident collapses it. A 90 percent interval inside
+    the preregistered margin of 0.03 reads `equivalent_within_0.03`, a 95
+    percent interval below zero reads `packed_degradation_detected`, one
+    above zero reads `packed_improvement_detected`, and anything else reads
+    `difference_not_resolved`; the three flags are reported beside the
+    verdict, so a loss the 95 percent interval resolves inside the margin
+    stays visible. One matched pair at 4096 shots and a yield
     near 0.5 gives the difference a standard deviation of 0.011, so the 90
     percent interval is about 0.036 wide and an observed difference within
     about 0.012 of zero can establish equivalence.
 
-  Collection joins the two into `packing_interpretation`: a longer packed
-  schedule is evidence consistent with serialized feed-forward; equal
-  schedules with a detected yield loss are evidence consistent with quantum,
-  measurement, or readout crosstalk; equal schedules with equivalent yields
-  resolve no packing cost at this resolution. Both PUBs carry both dynamic
-  groups, so the comparison is global and identifies neither one group nor
-  one physical mechanism.
+  Collection joins the two into `packing_interpretation`. The schedule side
+  compares scheduler residuals, each PUB's scheduled duration above its own
+  execution-time Target bound, because the packed and reference PUBs hold
+  different gate content and their raw durations differ by gate time alone.
+  A larger packed residual on a PUB that carries feed-forward is evidence
+  consistent with serialized feed-forward; equal residuals with a detected
+  yield loss are evidence consistent with quantum, measurement, or readout
+  crosstalk; equal residuals with equivalent yields resolve no packing cost;
+  a static group's residual difference is alignment alone. Both PUBs carry
+  every group of their kind, so the comparison is global and identifies
+  neither one group nor one physical mechanism.
   The identity null shares its PUB with folded QPE `s0` and the primary with
   `s1`; the two folded instances carry identical gate counts and
   measurement, reset, and branch schedules, so the null and the primary face

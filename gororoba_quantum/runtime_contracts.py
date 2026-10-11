@@ -870,21 +870,26 @@ def _verify_pub_fusion_contracts() -> None:
         name: {"pub": pub_of[name]["name"]} for name in (primary.name, reference.name)
     }
     timing: dict[str, dict[str, Any]] = {
-        pub_of[name]["name"]: {"scheduled_circuit_duration_dt": duration, "parallel_stream_count": streams}
-        for name, duration, streams in ((primary.name, 5200, 9), (reference.name, 4800, 2))
+        pub_of[name]["name"]: {
+            "scheduled_circuit_duration_dt": duration,
+            "scheduler_residual_dt": residual,
+            "parallel_stream_count": streams,
+        }
+        for name, duration, residual, streams in ((primary.name, 5200, 900, 9), (reference.name, 4800, 500, 2))
     }
     schedule = packing_schedule(hybrid.entries, executed, timing)
     if (
         schedule is None
         or schedule["scope"] != "global"
-        or schedule.get("difference_dt") != 400
+        or schedule.get("residual_difference_dt") != 400
         or schedule["packed_parallel_stream_count"] != 9
+        or not schedule["feed_forward"]
     ):
         raise RuntimeError(f"packing_schedule reports {schedule}")
-    timing[pub_of[reference.name]["name"]]["scheduled_circuit_duration_dt"] = None
+    timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = None
     schedule = packing_schedule(hybrid.entries, executed, timing)
-    if schedule is None or "difference_dt" in schedule or "unavailable" not in schedule:
-        raise RuntimeError(f"packing_schedule without reference timing reports {schedule}")
+    if schedule is None or "residual_difference_dt" in schedule or "unavailable" not in schedule:
+        raise RuntimeError(f"packing_schedule without reference residual reports {schedule}")
     if any(_is_dynamic(pub.circuit) for pub in static_pubs):
         raise RuntimeError("static cross-group fusion produced a dynamic PUB")
     if any(not _is_dynamic(pub.circuit) for pub in dynamic_pubs):
@@ -1426,11 +1431,24 @@ def _verify_packing_equivalence() -> None:
     weighted = _synthetic_entry("weighted", QuantumCircuit(1, 1), np.array([0.25, 0.75]))
     if live_run_module._bernoulli_score(weighted) or not live_run_module._bernoulli_score(primary):
         raise RuntimeError("Bernoulli score classification follows the per-shot weights")
+    degenerate = {"primary": [np.array([1.0, 0.0])], "primary_isolated": [np.array([0.0, 1.0])]}
+    extreme = replica_statistics(group, entries, degenerate, 256)["global_packing_crosstalk"]
+    if extreme["z"] is not None or "unavailable" not in extreme["resolution"] or not extreme["below_zero_95"]:
+        raise RuntimeError(f"zero-variance arms read {extreme}")
+    loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": False}
+    small_loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": True}
+    same = {"below_zero_95": False, "above_zero_95": False, "within_margin": True}
+    open_question = {"below_zero_95": False, "above_zero_95": False, "within_margin": False}
+    gain = {"below_zero_95": False, "above_zero_95": True, "within_margin": False}
     readings: list[tuple[dict[str, Any], dict[str, Any], str]] = [
-        ({"difference_dt": 400}, {"verdict": "packed_degradation_detected", "within_margin": False}, "serialized"),
-        ({"difference_dt": 0}, {"verdict": "packed_degradation_detected", "within_margin": False}, "readout crosstalk"),
-        ({"difference_dt": 0}, {"verdict": "equivalent_within_0.03", "within_margin": True}, "no packing cost"),
-        ({"unavailable": "x"}, {"verdict": "difference_not_resolved", "within_margin": False}, "stands alone"),
+        ({"residual_difference_dt": 400, "feed_forward": True}, loss, "serialized"),
+        ({"residual_difference_dt": 400, "feed_forward": False}, loss, "alignment alone"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, loss, "readout crosstalk"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, small_loss, "loss inside the equivalence margin"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, same, "no packing cost"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, gain, "yield gain"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, open_question, "unresolved"),
+        ({"unavailable": "x"}, open_question, "stands alone"),
     ]
     for schedule, crosstalk_view, fragment in readings:
         text = live_run_module.packing_interpretation(schedule, crosstalk_view)

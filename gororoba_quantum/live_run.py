@@ -1873,9 +1873,11 @@ def replica_statistics(
             # A detection diagnostic and an equivalence test are different
             # claims: |z| within 3 reads as no difference at this resolution,
             # and only the interval test can bound the cost.
-            if z is not None and z < -3:
+            if z is None:
+                resolution = "z diagnostic unavailable: zero per-shot variance in both arms; read the interval"
+            elif z < -3:
                 resolution = "packed replica 0 scores more than three sigma below the global replica-0 reference"
-            elif z is not None and z > 3:
+            elif z > 3:
                 resolution = "packed replica 0 scores more than three sigma above the global replica-0 reference"
             else:
                 resolution = "the run detected no difference at this resolution"
@@ -1905,38 +1907,50 @@ def _bernoulli_score(entry: Entry) -> bool:
 
 
 def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str, Any] | None) -> str | None:
-    """One reading of the scheduled-duration and fidelity comparisons together.
+    """One reading of the scheduler-residual and fidelity comparisons together.
 
-    A longer packed schedule is evidence consistent with serialized
-    feed-forward. Equal schedules with a detected yield loss are evidence
-    consistent with quantum, measurement, or readout crosstalk. Both PUBs
-    carry every dynamic group, so no reading names one group or one physical
-    mechanism.
+    A larger packed residual on a PUB that carries feed-forward is evidence
+    consistent with serialized feed-forward; without feed-forward the residual
+    difference is alignment alone. Equal residuals with a detected yield loss
+    are evidence consistent with quantum, measurement, or readout crosstalk. A
+    loss the 95 percent interval resolves is reported even when the 90
+    percent interval sits inside the margin. Both PUBs carry every group of
+    their kind, so no reading names one group or one physical mechanism.
     """
     if schedule is None or crosstalk is None:
         return None
-    verdict = crosstalk["verdict"]
-    if "difference_dt" not in schedule:
-        return f"scheduled durations unavailable; the fidelity comparison stands alone ({verdict})"
-    longer = schedule["difference_dt"] > 0
-    if longer and verdict == "packed_degradation_detected":
-        return (
-            "longer packed schedule with a detected packed yield loss: evidence consistent with serialized "
-            "feed-forward; no single group or mechanism identified"
-        )
+    loss = bool(crosstalk.get("below_zero_95"))
+    gain = bool(crosstalk.get("above_zero_95"))
+    within = bool(crosstalk.get("within_margin"))
+    if loss and within:
+        yield_reading = "a detected packed yield loss inside the equivalence margin"
+    elif loss:
+        yield_reading = "a detected packed yield loss"
+    elif gain:
+        yield_reading = "a detected packed yield gain"
+    elif within:
+        yield_reading = "yields equivalent within the margin"
+    else:
+        yield_reading = "an unresolved yield difference"
+    tail = "; no single group or mechanism identified"
+    if "residual_difference_dt" not in schedule:
+        return f"scheduler residuals unavailable; the fidelity comparison stands alone: {yield_reading}"
+    longer = schedule["residual_difference_dt"] > 0
+    if not schedule.get("feed_forward"):
+        return f"no feed-forward in the packed PUB, so the residual difference is alignment alone; {yield_reading}"
     if longer:
         return (
-            f"longer packed schedule with {verdict}: evidence consistent with serialized feed-forward; "
-            "no single group or mechanism identified"
+            f"larger packed scheduler residual with {yield_reading}: evidence consistent with serialized "
+            f"feed-forward{tail}"
         )
-    if verdict == "packed_degradation_detected":
+    if loss:
         return (
-            "equal or shorter packed schedule with a detected packed yield loss: evidence consistent with "
-            "quantum, measurement, or readout crosstalk; no single group or mechanism identified"
+            f"equal or smaller packed residual with {yield_reading}: evidence consistent with quantum, measurement, "
+            f"or readout crosstalk{tail}"
         )
-    if crosstalk["within_margin"]:
-        return "equal or shorter packed schedule with yields equivalent within the margin: no packing cost resolved"
-    return "equal or shorter packed schedule; the yield difference is not resolved at this resolution"
+    if within:
+        return f"equal or smaller packed residual with {yield_reading}: no packing cost resolved"
+    return f"equal or smaller packed residual with {yield_reading} at this resolution"
 
 
 def experiment_digest() -> str:
@@ -3023,22 +3037,26 @@ def packing_schedule(
         "scope": "global",
         "packed_pub": packed["pub"],
         "reference_pub": alone["pub"],
+        "feed_forward": bool(packed_timing["parallel_stream_count"]),
         "packed_parallel_stream_count": packed_timing["parallel_stream_count"],
         "reference_parallel_stream_count": alone_timing["parallel_stream_count"],
         "packed_scheduled_circuit_duration_dt": packed_timing["scheduled_circuit_duration_dt"],
         "reference_scheduled_circuit_duration_dt": alone_timing["scheduled_circuit_duration_dt"],
+        "packed_scheduler_residual_dt": packed_timing["scheduler_residual_dt"],
+        "reference_scheduler_residual_dt": alone_timing["scheduler_residual_dt"],
     }
+    # The two PUBs hold different gate content (every replica against one
+    # copy), so their raw durations differ by gate time alone; only the
+    # residuals, each above its own Target bound, compare scheduler time.
     missing = [
         name
         for name, pub in ((packed["pub"], packed_timing), (alone["pub"], alone_timing))
-        if pub["scheduled_circuit_duration_dt"] is None
+        if pub["scheduler_residual_dt"] is None
     ]
     if missing:
-        out["unavailable"] = f"scheduler timing absent for {missing}"
+        out["unavailable"] = f"scheduler residual absent for {missing}"
     else:
-        out["difference_dt"] = (
-            packed_timing["scheduled_circuit_duration_dt"] - alone_timing["scheduled_circuit_duration_dt"]
-        )
+        out["residual_difference_dt"] = packed_timing["scheduler_residual_dt"] - alone_timing["scheduler_residual_dt"]
     return out
 
 
