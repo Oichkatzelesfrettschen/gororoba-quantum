@@ -148,23 +148,24 @@ def difference_interval(
 ) -> tuple[float, float]:
     """Interval on packed - reference, two scores each measured over shots shots.
 
-    A Bernoulli score (every per-shot weight 0 or 1) takes Newcombe's hybrid
-    score interval, built from the two Wilson intervals (Newcombe 1998,
-    method 10), which stays inside [-1, 1] and keeps coverage at small counts
-    and extreme rates. Any other bounded score takes the normal interval from
-    the two per-shot variances.
+    Both scores are means of per-shot weights in [0, 1]. The interval is
+    Newcombe's hybrid score interval built from the two Wilson intervals
+    (Newcombe 1998, method 10). For a Bernoulli score (every weight 0 or 1) it
+    is the standard proportion interval. For any other [0, 1]-bounded score
+    the Bhatia-Davis inequality bounds the per-shot variance by mean (1 -
+    mean), so the same interval is conservative: it never shrinks to zero
+    width when the observed shots happen to share one score, as a plug-in
+    normal interval does, and it stays inside [-1, 1]. The plug-in variances
+    are retained by the caller for the z diagnostic only.
     """
+    del packed_variance, reference_variance, bernoulli
     difference = packed - reference
-    if bernoulli:
-        packed_low, packed_high = _wilson(packed, shots, confidence)
-        reference_low, reference_high = _wilson(reference, shots, confidence)
-        return (
-            difference - math.sqrt((packed - packed_low) ** 2 + (reference_high - reference) ** 2),
-            difference + math.sqrt((packed_high - packed) ** 2 + (reference - reference_low) ** 2),
-        )
-    z = float(stats.norm.ppf(0.5 + confidence / 2))
-    half = z * math.sqrt((packed_variance + reference_variance) / shots)
-    return difference - half, difference + half
+    packed_low, packed_high = _wilson(packed, shots, confidence)
+    reference_low, reference_high = _wilson(reference, shots, confidence)
+    return (
+        difference - math.sqrt((packed - packed_low) ** 2 + (reference_high - reference) ** 2),
+        difference + math.sqrt((packed_high - packed) ** 2 + (reference - reference_low) ** 2),
+    )
 
 
 def equivalence(
@@ -181,27 +182,33 @@ def equivalence(
     The 95 percent interval reports the difference. The 90 percent interval
     inside [-margin, margin] establishes equivalence within the margin (two
     one-sided tests at 5 percent each); a 95 percent interval below zero
-    detects packed degradation; otherwise the difference is not resolved. A
-    difference can be both resolved and inside the margin, so both flags are
-    reported and the verdict follows that precedence.
+    detects packed degradation and one above zero detects packed
+    improvement; otherwise the difference is not resolved. A difference can
+    be both resolved and inside the margin, so the three flags are reported
+    beside the verdict, and a reader of the verdict alone sees equivalence
+    first, then the resolved sign.
     """
     interval_95 = difference_interval(packed, packed_variance, reference, reference_variance, shots, bernoulli, 0.95)
     interval_90 = difference_interval(packed, packed_variance, reference, reference_variance, shots, bernoulli, 0.90)
     within = -margin <= interval_90[0] and interval_90[1] <= margin
     below = interval_95[1] < 0
+    above = interval_95[0] > 0
     if within:
         verdict = f"equivalent_within_{margin:g}"
     elif below:
         verdict = "packed_degradation_detected"
+    elif above:
+        verdict = "packed_improvement_detected"
     else:
         verdict = "difference_not_resolved"
     return {
-        "method": "newcombe_wilson" if bernoulli else "normal",
+        "method": "newcombe_wilson" if bernoulli else "newcombe_wilson_bhatia_davis",
         "margin": margin,
         "difference_interval_95": list(interval_95),
         "difference_interval_90": list(interval_90),
         "within_margin": within,
         "below_zero_95": below,
+        "above_zero_95": above,
         "verdict": verdict,
     }
 
@@ -231,9 +238,19 @@ def _verify_equivalence() -> None:
     small = equivalence(0.49, 0.25, 0.50, 0.25, 65536, True)
     if small["verdict"] != "equivalent_within_0.03" or not small["below_zero_95"]:
         raise RuntimeError(f"a resolved 0.01 drop inside the margin reads {small}")
-    normal = equivalence(0.50, 0.25, 0.50, 0.25, shots, False)
-    if normal["method"] != "normal" or abs(normal["difference_interval_95"][1] - high) > 1e-3:
-        raise RuntimeError(f"normal and Newcombe intervals disagree at p = 0.5: {normal} vs {same}")
+    bounded = equivalence(0.50, 0.25, 0.50, 0.25, shots, False)
+    if (
+        bounded["method"] != "newcombe_wilson_bhatia_davis"
+        or bounded["difference_interval_95"] != same["difference_interval_95"]
+    ):
+        raise RuntimeError(f"the bounded-score interval differs from the Bernoulli one at equal means: {bounded}")
+    one_shot = equivalence(0.6, 0.0, 0.6, 0.0, 1, False)
+    low_90, high_90 = one_shot["difference_interval_90"]
+    if one_shot["verdict"] != "difference_not_resolved" or high_90 - low_90 < 0.5:
+        raise RuntimeError(f"one shot with zero plug-in variance establishes equivalence: {one_shot}")
+    better = equivalence(0.60, 0.24, 0.50, 0.25, shots, True)
+    if better["verdict"] != "packed_improvement_detected" or not better["above_zero_95"] or better["within_margin"]:
+        raise RuntimeError(f"a 0.10 gain reads {better}")
     edge = equivalence(0.0, 0.0, 0.0, 0.0, shots, True)
     if edge["difference_interval_95"][0] < -1 or edge["difference_interval_95"][1] > 1:
         raise RuntimeError(f"Newcombe interval leaves [-1, 1] at p = 0: {edge}")
