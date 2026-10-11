@@ -873,6 +873,7 @@ def _verify_pub_fusion_contracts() -> None:
         pub_of[name]["name"]: {
             "scheduled_circuit_duration_dt": duration,
             "scheduler_residual_dt": residual,
+            "timing_status": "complete",
             "parallel_stream_count": streams,
         }
         for name, duration, residual, streams in ((primary.name, 5200, 900, 9), (reference.name, 4800, 500, 2))
@@ -890,6 +891,12 @@ def _verify_pub_fusion_contracts() -> None:
     schedule = packing_schedule(hybrid.entries, executed, timing)
     if schedule is None or "residual_difference_dt" in schedule or "unavailable" not in schedule:
         raise RuntimeError(f"packing_schedule without reference residual reports {schedule}")
+    timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = -50
+    timing[pub_of[reference.name]["name"]]["timing_status"] = "residual_below_target_bound"
+    schedule = packing_schedule(hybrid.entries, executed, timing)
+    withheld = str(schedule.get("unavailable")) if schedule else ""
+    if schedule is None or "residual_difference_dt" in schedule or "not complete" not in withheld:
+        raise RuntimeError(f"packing_schedule with an invalid residual reports {schedule}")
     if any(_is_dynamic(pub.circuit) for pub in static_pubs):
         raise RuntimeError("static cross-group fusion produced a dynamic PUB")
     if any(not _is_dynamic(pub.circuit) for pub in dynamic_pubs):
@@ -1454,6 +1461,7 @@ def _verify_packing_equivalence() -> None:
         (0.500, 0.495, 4096, "equivalent_within_0.03", "the run detected no difference"),
         (0.400, 0.500, 4096, "packed_degradation_detected", "more than three sigma below"),
         (0.480, 0.500, 64, "difference_not_resolved", "the run detected no difference"),
+        (0.000, 1.000, 8, "insufficient_shots", "unavailable"),
     ]
     for packed, alone, shots, verdict, resolution in cases:
         dists = {"primary": [np.array([1 - packed, packed])], "primary_isolated": [np.array([1 - alone, alone])]}

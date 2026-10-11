@@ -135,6 +135,13 @@ def interval(values: Sequence[float], shots: int, bernoulli: bool) -> dict[str, 
 # Preregistered absolute equivalence margin on a packed-minus-reference score
 # difference; the TOST reads a 90 percent interval against it.
 EQUIVALENCE_MARGIN = 0.03
+# Shots per arm below which no inferential verdict is issued: the hybrid score
+# interval's coverage approaches its nominal level only once each arm holds a
+# few dozen trials (Newcombe 1998 tabulates n >= 10 and reports the smallest
+# samples as the least reliable); at two shots per arm the opposite-endpoint
+# outcomes alone would exclude zero with probability 1/8 at a true difference
+# of zero.
+EQUIVALENCE_MIN_SHOTS = 32
 
 
 def difference_interval(
@@ -193,7 +200,10 @@ def equivalence(
     within = -margin <= interval_90[0] and interval_90[1] <= margin
     below = interval_95[1] < 0
     above = interval_95[0] > 0
-    if within:
+    if shots < EQUIVALENCE_MIN_SHOTS:
+        verdict = "insufficient_shots"
+        within = below = above = False
+    elif within:
         verdict = f"equivalent_within_{margin:g}"
     elif below:
         verdict = "packed_degradation_detected"
@@ -235,6 +245,9 @@ def _verify_equivalence() -> None:
     coarse = equivalence(0.49, 0.25, 0.50, 0.25, 64, True)
     if coarse["verdict"] != "difference_not_resolved" or coarse["within_margin"] or coarse["below_zero_95"]:
         raise RuntimeError(f"64 shots read {coarse}")
+    coarse = equivalence(0.49, 0.25, 0.50, 0.25, 64, True)
+    if coarse["verdict"] != "difference_not_resolved" or coarse["within_margin"] or coarse["below_zero_95"]:
+        raise RuntimeError(f"64 shots read {coarse}")
     small = equivalence(0.49, 0.25, 0.50, 0.25, 65536, True)
     if small["verdict"] != "equivalent_within_0.03" or not small["below_zero_95"]:
         raise RuntimeError(f"a resolved 0.01 drop inside the margin reads {small}")
@@ -246,8 +259,14 @@ def _verify_equivalence() -> None:
         raise RuntimeError(f"the bounded-score interval differs from the Bernoulli one at equal means: {bounded}")
     one_shot = equivalence(0.6, 0.0, 0.6, 0.0, 1, False)
     low_90, high_90 = one_shot["difference_interval_90"]
-    if one_shot["verdict"] != "difference_not_resolved" or high_90 - low_90 < 0.5:
-        raise RuntimeError(f"one shot with zero plug-in variance establishes equivalence: {one_shot}")
+    if one_shot["verdict"] != "insufficient_shots" or high_90 - low_90 < 0.5 or one_shot["below_zero_95"]:
+        raise RuntimeError(f"one shot with zero plug-in variance issues a verdict: {one_shot}")
+    two_shots = equivalence(0.0, 0.0, 1.0, 0.0, 2, True)
+    if two_shots["verdict"] != "insufficient_shots" or two_shots["below_zero_95"]:
+        raise RuntimeError(f"opposite endpoints at two shots per arm resolve a difference: {two_shots}")
+    floor = equivalence(0.0, 0.0, 1.0, 0.0, EQUIVALENCE_MIN_SHOTS, True)
+    if floor["verdict"] != "packed_degradation_detected":
+        raise RuntimeError(f"the shot floor withholds a verdict at the floor: {floor}")
     better = equivalence(0.60, 0.24, 0.50, 0.25, shots, True)
     if better["verdict"] != "packed_improvement_detected" or not better["above_zero_95"] or better["within_margin"]:
         raise RuntimeError(f"a 0.10 gain reads {better}")

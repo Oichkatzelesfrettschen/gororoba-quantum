@@ -3051,10 +3051,10 @@ def packing_schedule(
     missing = [
         name
         for name, pub in ((packed["pub"], packed_timing), (alone["pub"], alone_timing))
-        if pub["scheduler_residual_dt"] is None
+        if pub["scheduler_residual_dt"] is None or pub["timing_status"] != "complete"
     ]
     if missing:
-        out["unavailable"] = f"scheduler residual absent for {missing}"
+        out["unavailable"] = f"scheduler residual absent or not complete for {missing}"
     else:
         out["residual_difference_dt"] = packed_timing["scheduler_residual_dt"] - alone_timing["scheduler_residual_dt"]
     return out
