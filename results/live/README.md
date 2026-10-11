@@ -72,6 +72,18 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T091715.073826Z` qualifies the packing equivalence statistic. Clean source
+commit `d1a0920` (sources_modified=false) carries experiment digest
+`bbb43a7d1e9e09febbda2ca3812f58b6c5c3efd0a66294d4ba1ff6afd3b29ae7`.
+Every group's `global_packing_crosstalk` now carries the packed-minus-reference
+difference with its 95 percent interval and the two-one-sided verdict against
+the preregistered margin 0.03; the noise model reads
+design_a equivalent_within_0.03 [-0.0028, 0.0131] (newcombe_wilson); zero_divisor_fringe equivalent_within_0.03 [-0.0071, 0.0129] (newcombe_wilson); design_c_8_1_4 equivalent_within_0.03 [-0.0182, 0.0011] (newcombe_wilson); design_c_16_1_8 equivalent_within_0.03 [-0.0243, 0.0013] (newcombe_wilson); design_c_32_1_16 difference_not_resolved [-0.0363, 0.0032] (normal); folded_qpe_mod15 equivalent_within_0.03 [-0.0200, 0.0073] (newcombe_wilson); hybrid_shor_mod15 equivalent_within_0.03 [-0.0297, 0.0136] (newcombe_wilson).
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`79e35c6a8a6bef2e215bb4ea07e450370c74fc8622612cc0d14db3255ec8bd58`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
 `2026-10-11T090500.749224Z` is the first schema-6 record, contract
 `live-target-cross-group-fused-pubs-scheduler-usage-v1`, from clean source
 commit `51a55ae` (sources_modified=false) with experiment digest
