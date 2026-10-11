@@ -2,7 +2,7 @@
   "schema_version": 6,
   "schema_contract": "live-target-cross-group-fused-pubs-scheduler-usage-v1",
   "state": "planned",
-  "started": "2026-10-11T20:02:21.204585+00:00",
+  "started": "2026-10-11T20:34:20.747793+00:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -29,9 +29,9 @@
   "shots": 4096,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "84eb5555ee2b132b70984b156f05488fd1049ee6045266b139cd920adca4410e",
+  "experiment_digest": "297927aef46450b881786d936a77d1d2c44719325b419fe9c9ee95db631640e1",
   "code_commit": {
-    "head": "7bd675e8f0b0bd16a813e5468844414f2c191c33",
+    "head": "96ca09a80023f37e862ee03dfde56091150cc1e0",
     "sources_modified": false
   },
   "system_inventory": {
@@ -39,9 +39,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 2,
-      "calibration": "2026-10-11T12:18:18-07:00",
-      "fetched_at": "2026-10-11T20:02:24+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T12:57:40-07:00",
+      "fetched_at": "2026-10-11T20:34:23+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -111,8 +111,8 @@
       "operational": true,
       "status_msg": "active",
       "pending_jobs": 0,
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "fetched_at": "2026-10-11T20:02:25+00:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "fetched_at": "2026-10-11T20:34:24+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -185,7 +185,7 @@
       "status_msg": "active",
       "pending_jobs": 0,
       "calibration": "2026-10-11T12:45:56-07:00",
-      "fetched_at": "2026-10-11T20:02:26+00:00",
+      "fetched_at": "2026-10-11T20:34:25+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -283,9 +283,9 @@
     "ibm_fez": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 2,
-      "calibration": "2026-10-11T12:18:18-07:00",
-      "fetched_at": "2026-10-11T20:02:24+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T12:57:40-07:00",
+      "fetched_at": "2026-10-11T20:34:23+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -354,8 +354,8 @@
       "operational": true,
       "status_msg": "active",
       "pending_jobs": 0,
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "fetched_at": "2026-10-11T20:02:25+00:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "fetched_at": "2026-10-11T20:34:24+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -427,7 +427,7 @@
       "status_msg": "active",
       "pending_jobs": 0,
       "calibration": "2026-10-11T12:45:56-07:00",
-      "fetched_at": "2026-10-11T20:02:26+00:00",
+      "fetched_at": "2026-10-11T20:34:25+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -5300,8 +5300,8 @@
     {
       "group": "design_a",
       "backend": "ibm_fez",
-      "calibration": "2026-10-11T12:18:18-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:18-07:00",
+      "calibration": "2026-10-11T12:57:40-07:00",
+      "noise_model_calibration": "2026-10-11T12:57:40-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         2,
@@ -6451,8 +6451,8 @@
     {
       "group": "zero_divisor_fringe",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "noise_model_calibration": "2026-10-11T13:17:39-07:00",
       "seed_transpiler": 20261017,
       "initial_layout": [
         152,
@@ -8209,8 +8209,8 @@
     {
       "group": "design_c_8_1_4",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "noise_model_calibration": "2026-10-11T13:17:39-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         2,
@@ -9379,8 +9379,8 @@
     {
       "group": "design_c_16_1_8",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "noise_model_calibration": "2026-10-11T13:17:39-07:00",
       "seed_transpiler": 20261015,
       "initial_layout": [
         151,
@@ -10138,8 +10138,8 @@
     {
       "group": "design_c_32_1_16",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "noise_model_calibration": "2026-10-11T13:17:39-07:00",
       "seed_transpiler": 20261012,
       "initial_layout": [
         151,
@@ -10945,8 +10945,8 @@
     {
       "group": "folded_qpe_mod15",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "noise_model_calibration": "2026-10-11T13:17:39-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         153,
@@ -11795,8 +11795,8 @@
     {
       "group": "hybrid_shor_mod15",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T12:18:00-07:00",
-      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
+      "calibration": "2026-10-11T13:17:39-07:00",
+      "noise_model_calibration": "2026-10-11T13:17:39-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         59,
