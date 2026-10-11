@@ -60,6 +60,20 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T085437.294823Z` qualifies the process-pool branch. Clean source
+commit `1ea5de1` (sources_modified=false) carries experiment digest
+`7bbc903555609d683b13055e1d903ad8c18de0a28a0422bd7196759238d326eb`,
+including the new `parallel.py` dependency. The default-policy invocation
+`live_run.py --out ../results/live` plans on ibm_fez, ibm_kingston in 60 s wall
+at about 2.5 cores, against 172 s for the previous record on one core. Every
+replica now draws from its own batch-position seed, so the global packing
+differences read {'design_a': 0.0071, 'zero_divisor_fringe': 0.0029, 'design_c_8_1_4': -0.0085, 'design_c_16_1_8': -0.0115, 'design_c_32_1_16': -0.0166, 'folded_qpe_mod15': -0.0132, 'hybrid_shor_mod15': -0.0105} instead of the exact 0.0 of
+the shared-seed records. The record stays `planned` and sends zero QPU jobs.
+Record SHA-256 is
+`522e3bf7f765cda7a0139a326147a54b966a38188e104030de660e8653fb8e75`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T082455.919602Z` qualifies the dynamic-mitigation boundaries:
 ODR mirrors reject dynamic circuits, and terminal readout correction is
 withheld only for feed-forward circuits. Clean source commit `54aa215` carries
