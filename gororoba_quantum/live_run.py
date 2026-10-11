@@ -89,8 +89,14 @@ DEFAULT_REPLICA_FLOOR = 0.9
 # groups' copies share one reference PUB, so the comparison is between the
 # global packed and global replica-0 workloads.
 ISOLATED_SUFFIX = "_isolated"
+# Combinations of routed candidates the joint-placement search tries before
+# it stops: each attempt packs every group's entries, and a calibration that
+# rejects the best combinations would otherwise walk a frontier of hundreds
+# of thousands for hours.
+FUSION_MAX_ATTEMPTS = 256
 
 EXPERIMENT_SOURCE_MANIFEST = (
+    "affine_residual.py",
     "boolean_anf.py",
     "cd_core.py",
     "designs.py",
@@ -765,6 +771,7 @@ class _FusionPlacementPool:
     candidates: list[Replica]
     original_index: int
     pattern_width: int
+    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
 
@@ -1056,9 +1063,19 @@ def _entry_bases(choice: Choice) -> list[tuple[str, QuantumCircuit, np.ndarray, 
     return bases
 
 
-def _set_entries(choice: Choice, replicas: list[Replica], policy: ReplicaPolicy) -> Choice:
-    """Rebuild one group's logical entries on an already admitted replica set."""
-    bases = _entry_bases(choice)
+def _set_entries(
+    choice: Choice,
+    replicas: list[Replica],
+    policy: ReplicaPolicy,
+    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None,
+) -> Choice:
+    """Rebuild one group's logical entries on an already admitted replica set.
+
+    bases, the group's single-copy entry definitions with their mirror twins,
+    is computed once per routed candidate when the caller passes it, since the
+    twins come from the transpiler.
+    """
+    bases = _entry_bases(choice) if bases is None else bases
     choice.replica_floor = replica_floor(choice.group, policy)
     choice.replicas = replicas
     choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
@@ -1194,17 +1211,17 @@ def allocate_fusion_replicas(
             # candidate and floor.
             key = (id(choice.isas), floor)
             if cache is not None and key in cache:
-                graph, candidates, pattern_width = cache[key]
+                graph, candidates, pattern_width, bases = cache[key]
             else:
                 bases = _entry_bases(choice)
                 graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
                 if cache is not None:
-                    cache[key] = (graph, candidates, pattern_width)
+                    cache[key] = (graph, candidates, pattern_width, bases)
             if not candidates:
                 raise LiveRunError(
                     f"{backend_name} {kind}: {choice.group.name} has no floor-qualified fusion placement"
                 )
-            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width))
+            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width, bases))
 
         occupied: set[int] = set()
         required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
@@ -1249,7 +1266,7 @@ def allocate_fusion_replicas(
                 f"{backend_name} {kind}: joint placement left groups below {required_rounds} replicas: {missing}"
             )
         for pool in pools:
-            _set_entries(pool.choice, pool.selected, policy)
+            _set_entries(pool.choice, pool.selected, policy, pool.bases)
         cluster_records.append(
             {
                 "backend": backend_name,
@@ -1578,7 +1595,7 @@ def select_fusion_choices(
     attempted = 0
     placement_cache: dict[tuple[int, float], Any] = {}
     rejected_sample: list[dict[str, Any]] = []
-    while frontier:
+    while frontier and attempted < FUSION_MAX_ATTEMPTS:
         negative_score, _, indices = heapq.heappop(frontier)
         selected = [candidates[index] for candidates, index in zip(candidate_sets, indices, strict=True)]
         trial = [copy.copy(candidate) for candidate in selected]
@@ -1627,8 +1644,9 @@ def select_fusion_choices(
             queued.add(neighbor_indices)
             heapq.heappush(frontier, priority(neighbor_indices))
 
+    outcome = "search stopped at FUSION_MAX_ATTEMPTS" if frontier else "frontier exhausted"
     raise LiveRunError(
-        "no jointly placeable fused candidate combination; "
+        f"no jointly placeable fused candidate combination ({outcome}); "
         f"groups={group_names}, frontier={math.prod(len(candidates) for candidates in candidate_sets)}, "
         f"attempted={attempted}, rejected_sample={json.dumps(rejected_sample, sort_keys=True)}"
     )
@@ -3402,6 +3420,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if str(job.status()) not in ("ERROR", "CANCELLED"):
                 raise
             job_out["result_unavailable"] = f"{type(error).__name__}: {error}"
+            if job_out["usage"]["usage_status"] == "pending":
+                job_out["usage"] = job_usage_record(job, len(pub_manifests), shots)
             checkpoint(out)
             continue
         if job_out["usage"]["usage_status"] == "pending":

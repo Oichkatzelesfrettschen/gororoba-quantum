@@ -736,11 +736,17 @@ its QPY SHA-256 is
    the seed matrix; isolated multiplier wins alone do not qualify. The current
    four-way capture supplies the whole-circuit baseline and materially advances
    the previously uninstrumented per-multiplier item.
-5. **Affine-skeleton extraction.** Separate constant and degree-one ANF terms
-   into an optimized X/CNOT network and synthesize only the nonlinear residual.
-   The Cayley-Dickson sign compiler supplies the low-degree Boolean precedent.
-   Exhaustive permutation equality and workspace restoration remain mandatory;
-   the method survives only when complete routed `N = 21` cost falls.
+5. **Affine-skeleton extraction.** Measured and rejected
+   (`MODULAR_SYNTHESIS.md`, "Affine-residual challenger";
+   `results/hw_estimate/n21_affine_residual_challenger.json`). The valid form
+   factors f = A r with A the full-rank linear part and r = A^-1 f a
+   permutation synthesized by target flips, A promoted to Toffolis under the
+   phase control; eight of the eleven units modulo 21 have a rank-4 linear
+   part, including 11, the inverse of 2, so the method does not apply to them.
+   For 2, 4, and 16 the whole ten-round circuit routes worse than the
+   target-flip baseline on every seed (median routed CZ 6,130.5 against
+   5,422), so the default stays `target_flip_1_clean` and the challenger
+   compiles only when named.
 6. **Fresh decoder-margin admission.** Compile the one-clean primary and its
    schedule-matched identity null against a fresh live Target, then run the
    calibration-derived noise model without submission. Advance `N = 21` only
