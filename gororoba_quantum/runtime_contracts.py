@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import math
+import os
 import tempfile
 from contextlib import redirect_stdout
 from datetime import UTC, datetime, timedelta
@@ -41,6 +42,7 @@ from qiskit_ibm_runtime.results.quantum_program import (
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
 import packing
+import parallel
 from experiments import MIRROR_SUFFIX, Group, experiment_groups
 from live_run import (
     RECORD_SCHEMA_CONTRACT,
@@ -1040,6 +1042,37 @@ def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
     finally:
         live_run_module.noise_simulator = original_noise_simulator
         live_run_module.simulate_entries = original_simulate_entries
+
+
+def _verify_worker_quota() -> None:
+    """The default worker count honors a cgroup CPU quota below the affinity count."""
+    with tempfile.TemporaryDirectory(prefix="gororoba-cgroup-") as directory:
+        root = Path(directory)
+        v2, quota, period = root / "cpu.max", root / "cfs_quota_us", root / "cfs_period_us"
+        cases: list[tuple[str | None, str | None, str | None, float | None]] = [
+            ("150000 100000", None, None, 1.5),
+            ("max 100000", None, None, None),
+            ("garbage", None, None, None),
+            (None, "200000", "100000", 2.0),
+            (None, "-1", "100000", None),
+            (None, None, None, None),
+        ]
+        for v2_text, quota_text, period_text, expected in cases:
+            for path, text in ((v2, v2_text), (quota, quota_text), (period, period_text)):
+                if text is None:
+                    path.unlink(missing_ok=True)
+                else:
+                    path.write_text(text)
+            observed = parallel.cgroup_cpu_quota(v2, quota, period)
+            if observed != expected:
+                raise RuntimeError(f"cgroup quota {(v2_text, quota_text, period_text)} reads {observed}")
+    original = parallel.cgroup_cpu_quota
+    parallel.cgroup_cpu_quota = lambda *args: 1.5
+    try:
+        if os.environ.get("GOROROBA_WORKERS") is None and parallel.workers() != 2:
+            raise RuntimeError(f"a 1.5-CPU quota sizes {parallel.workers()} workers")
+    finally:
+        parallel.cgroup_cpu_quota = original
 
 
 def _verify_replay_seed_independence() -> None:
@@ -2086,6 +2119,7 @@ def _verify() -> None:
     _verify_target_and_bad_qubit_status()
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
+    _verify_worker_quota()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()

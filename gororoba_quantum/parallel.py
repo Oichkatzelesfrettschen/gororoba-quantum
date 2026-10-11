@@ -18,11 +18,13 @@ from __future__ import annotations
 
 import atexit
 import hashlib
+import math
 import multiprocessing
 import os
 import pickle
 from collections.abc import Callable, Sequence
 from concurrent.futures import ProcessPoolExecutor
+from pathlib import Path
 from typing import Any
 
 # Below this many fine-grained items the work does not repay the
@@ -40,19 +42,59 @@ _pool_size = 0
 _worker_cache: dict[str, Callable[[Any], Any]] = {}
 
 
+CGROUP_V2_CPU_MAX = Path("/sys/fs/cgroup/cpu.max")
+CGROUP_V1_CPU_QUOTA = Path("/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
+CGROUP_V1_CPU_PERIOD = Path("/sys/fs/cgroup/cpu/cpu.cfs_period_us")
+
+
 def workers() -> int:
-    """The worker count: GOROROBA_WORKERS when set, else the CPUs available to this process."""
+    """The worker count: GOROROBA_WORKERS when set, else the CPUs available to this process.
+
+    The affinity mask counts the CPUs the scheduler may use; a container's
+    CPU quota (cgroup v2 cpu.max, cgroup v1 cfs_quota_us / cfs_period_us)
+    can grant fewer, so the smaller of the two is the count, rounded up to a
+    whole worker.
+    """
     configured = os.environ.get("GOROROBA_WORKERS")
     if configured is not None:
         count = int(configured)
         if count < 1:
             raise ValueError(f"GOROROBA_WORKERS must be a positive integer, got {configured!r}")
         return count
-    # sched_getaffinity honors CPU pinning and container limits where the
-    # platform provides it (Linux); cpu_count covers macOS and Windows.
+    # sched_getaffinity honors CPU pinning where the platform provides it
+    # (Linux); cpu_count covers macOS and Windows.
     if hasattr(os, "sched_getaffinity"):
-        return len(os.sched_getaffinity(0)) or 1
-    return os.cpu_count() or 1
+        available = len(os.sched_getaffinity(0)) or 1
+    else:
+        available = os.cpu_count() or 1
+    quota = cgroup_cpu_quota()
+    return max(1, min(available, math.ceil(quota))) if quota is not None else available
+
+
+def cgroup_cpu_quota(
+    v2_max: Path = CGROUP_V2_CPU_MAX, v1_quota: Path = CGROUP_V1_CPU_QUOTA, v1_period: Path = CGROUP_V1_CPU_PERIOD
+) -> float | None:
+    """CPUs the enclosing cgroup grants, or None without a quota or outside a cgroup.
+
+    cgroup v2 cpu.max reads "QUOTA PERIOD" in microseconds, "max" for no
+    quota; cgroup v1 keeps the quota and period in two files, -1 for no quota.
+    A malformed or unreadable file counts as no quota.
+    """
+    try:
+        if v2_max.is_file():
+            quota_text, period_text = v2_max.read_text().split()
+            if quota_text == "max":
+                return None
+            quota, period = int(quota_text), int(period_text)
+        elif v1_quota.is_file() and v1_period.is_file():
+            quota, period = int(v1_quota.read_text()), int(v1_period.read_text())
+        else:
+            return None
+    except (OSError, ValueError):
+        return None
+    if quota <= 0 or period <= 0:
+        return None
+    return quota / period
 
 
 def _executor(count: int) -> ProcessPoolExecutor:
