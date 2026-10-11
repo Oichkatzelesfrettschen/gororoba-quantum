@@ -858,6 +858,10 @@ def layout_score(isa: QuantumCircuit, target: Any) -> float:
 def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
     """A prefix of isa's dependency layers, a barrier, its inverse, measured as isa measures.
 
+    ODR requires a unitary forward half. A reset, control-flow branch, or
+    mid-circuit measurement makes the circuit non-unitary, so dynamic circuits
+    use an explicit schedule-matched null instead of a mirror twin.
+
     The cut is the layer near the depth midpoint whose twin best matches the
     witness in both scheduled depth and CZ count, the idle and two-qubit
     exposures whose attenuation the twin measures. The twin runs on isa's
@@ -866,6 +870,11 @@ def mirror_isa(isa: QuantumCircuit, backend: Any, name: str) -> QuantumCircuit:
     Sec. IV A 3). The forward half keeps isa's gates unchanged on the trivial
     layout, and the barrier keeps the halves from cancelling.
     """
+    if _is_dynamic(isa):
+        raise LiveRunError(
+            f"{name}: ODR mirror requires a unitary static circuit; "
+            "control flow, reset, or mid-circuit measurement has no circuit inverse"
+        )
     dag = circuit_to_dag(isa.remove_final_measurements(inplace=False))
     layers = [[node for node in layer["graph"].op_nodes() if node.op.name != "barrier"] for layer in dag.layers()]
     total_cz = sum(node.op.name == "cz" for layer in layers for node in layer)
@@ -1691,16 +1700,17 @@ def corrected_summary(
 
     readout_corrected assumes each classical bit passes through its own
     output-only channel. In a feed-forward circuit a misread mid-circuit bit
-    also steers the conditional gate, so the second bit's distribution depends
-    on the first readout error and the separable inversion is biased; such
-    groups report the reason instead of a corrected summary. Each replica is
-    inverted with the channels of its own readout qubits before the replicas
-    are averaged. props is one properties object, or a per-circuit mapping
-    when circuits ran under different calibrations.
+    changes later quantum evolution, so terminal post-processing cannot recover
+    the branch that hardware executed. Such groups report the reason instead of
+    a corrected summary. A reset without classical feed-forward does not create
+    that dependency by itself. Each replica is inverted with the channels of
+    its own readout qubits before the replicas are averaged. props is one
+    properties object, or a per-circuit mapping when circuits ran under
+    different calibrations.
     """
     runs = [e for e in entries if not e.reference]
-    if any(_is_dynamic(e.replicas[0]) for e in runs):
-        return {"skipped": "feed-forward circuits: readout error steers the conditional branch"}
+    if any(_has_feed_forward(e.replicas[0]) for e in runs):
+        return {"skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"}
     corrected = {}
     for e in runs:
         own = props[e.name] if isinstance(props, dict) else props
@@ -1835,7 +1845,7 @@ def _choice_record(
                 "depth": entry.base.depth(),
                 "duration_bound": "lower_without_classical_latency" if dynamic else "scheduled",
                 "dynamic": dynamic,
-                "feed_forward": any(isinstance(i.operation, ControlFlowOp) for i in entry.base.data),
+                "feed_forward": _has_feed_forward(entry.base),
                 "replica_prefixes": entry.prefixes,
                 "replica_qubits": entry.replica_qubits,
                 "ideal": [round(float(p), 12) for p in entry.ideal],
@@ -2570,6 +2580,11 @@ def _is_dynamic(isa: QuantumCircuit) -> bool:
         if name == "measure":
             measurement_seen = True
     return False
+
+
+def _has_feed_forward(isa: QuantumCircuit) -> bool:
+    """Whether classical control flow can make a measurement affect later quantum evolution."""
+    return any(isinstance(instruction.operation, ControlFlowOp) for instruction in isa.data)
 
 
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:

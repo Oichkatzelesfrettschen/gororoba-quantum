@@ -387,7 +387,12 @@ incompatible shapes.
   R replicas is that of one quotient at R times the shots, and it is reported
   when the replicas hold 16384 shots together. Either requires every witness
   and twin under one calibration, and a withheld view records its reason in
-  odr_withheld.
+  odr_withheld. The mirror path accepts only unitary static circuits. A reset,
+  mid-circuit measurement, or feed-forward branch has no inverse circuit, so
+  folded QPE and hybrid Shor use their schedule-matched identity controls and
+  never receive ODR twins. Those controls preserve the measurement, reset, and
+  conditional-feedback schedule while removing the controlled multiplier; they
+  isolate the dynamic-control baseline, not the multiplier's gate noise.
 - Nulls: these designs read interference through a final Hadamard layer, so the
   fully dephased and fully depolarized nulls coincide with the uniform
   distribution; every summary reports the TVD to uniform.
@@ -435,8 +440,10 @@ incompatible shapes.
   visibility from 0.9065 to 0.9175. With --twirl, collection inverts the
   symmetric mean channel, since measurement twirling averages the two flip
   probabilities. A group with feed-forward circuits records why the correction
-  is skipped instead: a misread mid-circuit bit also steers the conditional
-  gate, which no per-bit channel inversion models. A group whose shots
+  is skipped instead: a misread mid-circuit bit changes the later quantum
+  evolution, and terminal post-processing cannot recover the branch that the
+  hardware executed. A reset without classical feed-forward does not create
+  that dependency by itself. A group whose shots
   straddle a calibration update keeps only its raw summary at collection.
 - Archived definitions: the record stores a sha256 over every module of
   gororoba_quantum/ but verify.py -- the experiment definitions and live_run.py's
