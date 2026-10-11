@@ -72,6 +72,16 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T114958.902835Z` requalifies the packing equivalence statistic on the merged
+scheduler-timing main. Clean source commit `6ed540f` (sources_modified=false)
+carries experiment digest
+`9cba470744c884f88ee3c8ce299d99fea2131850a002080bd3ba866e6adc9a4e`.
+At 4096 shots the noise model reads design_a single_group/equivalent_within_0.03; zero_divisor_fringe global/equivalent_within_0.03; design_c_8_1_4 global/equivalent_within_0.03; design_c_16_1_8 global/equivalent_within_0.03; design_c_32_1_16 global/difference_not_resolved; folded_qpe_mod15 single_group/equivalent_within_0.03; hybrid_shor_mod15 single_group/equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`9c4285d7a293ea52fb5364494aaae14f896d5e610efc8d9d782330bfe71dbdde`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T113111.266543Z` requalifies the packing equivalence statistic with the PUB scope
 carried into the fidelity comparison. Clean source commit `7f2e7f8`
 (sources_modified=false) carries experiment digest
