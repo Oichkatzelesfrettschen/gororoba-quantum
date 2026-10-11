@@ -1,0 +1,18 @@
+{
+ "jobs": {
+  "db5qmqclf4us73c4e1ug": {
+   "directory": "raw/db5qmqclf4us73c4e1ug",
+   "files": {
+    "job_metrics.json": "ad101c21d302c4d13593d5dedda0633cddcc8a1c22571382e61afce63ae05c91",
+    "pub_00.json": "0d64b7ef932133b5d1764d64ad7afb98110ad7e39d2e7892579f450a175b47ca",
+    "pub_01.json": "4069652ec925b71c4b8304d051ac702400bbcb3948ef8e05cdabc5c4a13d70b8",
+    "pub_02.json": "fe32e16c42bcd0a37806e6b25d857e34df16631b84ad82e9a75af48dd8e2b292",
+    "pub_03.json": "2cb45eafa2277b4f2362211a512e524b0e1627ec1cd9b00d37a5dbd77c71c612",
+    "pub_04.json": "13b8ad418704af7f0f195584c96767ccce0cb5f03e0137abf6417e27a11e65de",
+    "pub_05.json": "b0e12c4894dd41f3a61fbd2e28334d6e4f147a31617899413368fe94dc081893",
+    "result_metadata.json": "b8d6f7f17b0f4889732a0307706bbbb8ad386036c98c4c51848c9723a11faca8"
+   }
+  }
+ },
+ "preserved_at": "2026-10-11T17:26:20+00:00"
+}

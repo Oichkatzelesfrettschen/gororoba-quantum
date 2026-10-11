@@ -3970,7 +3970,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--max-execution-seconds",
         type=int,
-        help="Sampler max_execution_time: the service cancels a job past this system execution time",
+        help=(
+            "Sampler max_execution_time, the ceiling the written case names: the service cancels a job past "
+            "this QPU usage; a dry run carries it so the approved record's policy matches the submission"
+        ),
     )
     args = parser.parse_args(argv)
     if args.submit and not args.out:
@@ -3983,8 +3986,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--submit needs --approved-record-sha256, the record.json digest the written case names")
     if args.submit and args.max_execution_seconds is None:
         parser.error("--submit needs --max-execution-seconds, the execution ceiling the written case names")
-    if (args.approved_record_sha256 or args.max_execution_seconds is not None) and not args.submit:
-        parser.error("--approved-record-sha256 and --max-execution-seconds apply only with --submit")
+    if args.approved_record_sha256 and not args.submit:
+        parser.error("--approved-record-sha256 applies only with --submit")
     if args.max_execution_seconds is not None and args.max_execution_seconds <= 0:
         parser.error("--max-execution-seconds must be positive")
     service = QiskitRuntimeService()

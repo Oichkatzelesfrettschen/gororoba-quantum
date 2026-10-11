@@ -111,6 +111,20 @@ feed-forward circuits. Record SHA-256 is
 SHA-256 is
 `69f085f5319a19578aff823ec30d98c0029b83de156d515f909bd53fe6413a24`; collect.json SHA-256 is
 `0207f35e24ce37804aea3824e6ab693fbdad2232630fe3109532c8254c7df508`.
+The record also keeps the lossless result under
+`raw/db5qmqclf4us73c4e1ug/` (preserved with `--preserve-raw` after the
+collection, every file's sha256 in its index.json), `adjudication.json`
+from `adjudicate.py` (per-bit folded-QPE structure, the schedule-aware replay
+that charges the scheduler table's idle time, drift, shot-wise correlation,
+the scheduled feed-forward round trip, and the packed-minus-reference
+schedule per qubit), and `ADJUDICATION.md`, which reads them: the folded-QPE
+gap to the model sits in both rounds (round-1 error 0.101 against 0.040,
+round-2 0.204 against 0.064), idle dephasing closes 0.051 of the 0.183 gap
+in p_correct, hybrid Shor's factor yield hides the same gap behind a coarse
+endpoint while two of its six layouts carry a coherent second-bit bias, the
+scheduled feed-forward round trip is 540 to 584 dt (2.2 to 2.3 us), and the
+187 dt packing cost decomposes into alignment, broadcast width, and reset
+stagger.
 
 `2026-10-11T121402.617901Z` is the Step 3 submission-ready dry run: the program's exact
 command on ibm_kingston (6 pending jobs under the default bound of 25) for

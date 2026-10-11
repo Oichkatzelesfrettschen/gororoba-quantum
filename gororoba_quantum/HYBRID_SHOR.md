@@ -34,10 +34,24 @@ The project keeps four evidence levels separate.
    operation, selects a valid layout, and runs local noise simulation. The dry
    run spends zero QPU time.
 4. **QPU evidence.** A submitted and collected run measures the circuit on a
-   calibrated device and replays its execution-time calibration. This level
-   remains absent until the user approves a written submission case.
+   calibrated device and replays its execution-time calibration. The first
+   such run is record `results/live/2026-10-11T152922.787095Z` (ibm_kingston,
+   job `db5qmqclf4us73c4e1ug`, 9 QPU seconds), approved on the written case
+   in `results/live/2026-10-11T121402.617901Z/STEP3_CASE.md` and adjudicated
+   from its lossless raw result in the record's `ADJUDICATION.md`.
 
-The repository has submitted zero hybrid-Shor QPU jobs.
+The repository has submitted one hybrid-Shor QPU job. On hardware the
+`N = 15`, `a = 2` order-finding circuit reads a factor yield of 0.4971
+[0.4726, 0.5216] against the exact uniform null 0.2969 and an identity-null
+yield of 0.0042 [0.0003, 0.0080]: admitted. The raw registers show the
+pruned structure the plan predicts, two varying phase bits and six leading
+zeros in every shot. The factor-yield endpoint is coarse: it agrees with the
+execution-calibration replay (0.4955) while two of the six layouts carry a
+coherent bias on the feed-forward-conditioned bit that the Pauli model does
+not draw, and the folded-QPE conformance test on the same device reads 0.715
+against the model's 0.899. Hardware conformance of the semiclassical
+inverse QFT is therefore established at the level of the decoder's factor
+yield and not at the level of the per-bit distribution.
 
 ## Host and QPU boundary
 
@@ -765,20 +779,20 @@ its QPY SHA-256 is
    crosses the fresh decoder-margin gate. Preserve `N = 35` as a coefficient
    and scaling falsifier until then; a deeper compile without `N = 21` admission
    adds cost without resolving the active uncertainty.
-9. **Dynamic latency evidence.** Read `scheduler_residual_dt` on dynamic PUBs
-   as unattributed scheduler time, and the packed PUB's duration against the
-   reference PUB's (`packing_schedule`). Attribution to feed-forward needs a
-   matched ladder: dynamic/control pairs with identical layout, prepared
-   measurement result, mid-circuit measurement and reset, target gate, and
-   terminal measurement, the control replacing each conditional gate by the
-   unconditional matched gate, swept over sequential stages m in {0, 1, 2, 4}
-   and parallel streams p in {1, 2, 4, 8} (32 PUBs at 256 shots), fitted as
-   residual = alpha + beta_stage m + beta_parallel (p - 1) + beta_interaction
-   m (p - 1), repeated under three separately approved submissions. The
-   result stays scheduler-defined feedback timing unless an independent
-   physical timing observable supports more. Attribute a residual to classical
-   control only after repeated jobs show a stable separation. The submission
-   approval gate and rolling QPU budget continue to govern every measurement.
+9. **Dynamic latency evidence.** Measured from the backend scheduler tables
+   the job returns with `scheduler_timing` on: the classical round trip is a
+   broadcast of 533 dt on a two-stream PUB and 577 dt on a nine-stream PUB
+   plus a 7 dt receive (2.16 to 2.34 us at 4 ns per dt), the control qubit's
+   segment from first capture to the end of its reset spans 1,299 to 1,463
+   dt, and the work qubits idle 1,380 to 2,380 dt across it
+   (`adjudicate.py`, `feed_forward_segment`). The stream dependence of the
+   broadcast, 44 dt for seven more streams, is the measured parallel
+   feed-forward cost at the scheduler. The result is scheduler-defined
+   feedback timing; an independent physical timing observable would be
+   needed to claim more. The open question is the fidelity mechanism, not
+   the latency (HARDWARE_PLAN.md, "Risks", the four-rung ladder). The
+   submission approval gate and rolling QPU budget continue to govern every
+   measurement.
 10. **Signed-XOR coefficient certificates.** Solve the exact minimum-one-norm
     group-word LCU at `n = 3` through `n = 5` and retain primal reconstruction
     plus a matching linear-program dual bound. Extend the experiment only after
