@@ -25,6 +25,10 @@ observables.
 - `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
   classical admission and decoding around faithful `|1>` semiclassical order
   finding, plus a credential-free plan, simulation, and decode CLI.
+- `gororoba_quantum/claim_boundaries.py` and `CLAIM_BOUNDARIES.md` -- executable
+  finite witnesses and a sourced audit separating Walsh sampling, LCU arithmetic,
+  and annihilator fibers from claims about hidden polynomials, exceptional
+  Jordan mechanics, and global zero-divisor topology.
 - `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
   compilation with pass-level synthesis, routing, layout, and topology capture.
 - `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
@@ -93,6 +97,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
 cd gororoba_quantum
 "$PYTHON" verify.py
 "$PYTHON" designs.py
+"$PYTHON" claim_boundaries.py
 "$PYTHON" factoring.py
 "$PYTHON" target_flip.py
 "$PYTHON" target_flip_certificate.py --check

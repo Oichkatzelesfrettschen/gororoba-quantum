@@ -1,0 +1,27 @@
+{
+  "commands": [
+    "GOROROBA_WORKERS=1 \"$PYTHON\" -W error claim_boundaries.py",
+    "GOROROBA_WORKERS=4 \"$PYTHON\" -W error claim_boundaries.py"
+  ],
+  "output": "results/hw_estimate/cayley_dickson_claim_boundaries.json",
+  "output_sha256": "f05eca772495a71b51f97d678dd112e6c401df9121adc664127abfde016b5fdd",
+  "qpu_executed": false,
+  "schema": "cayley-dickson-claim-boundaries-verification-v1",
+  "scope": "Finite exact-arithmetic witnesses and local Statevector comparisons; floating diagnostics are runtime-specific.",
+  "serial_parallel_bytes_equal": true,
+  "source_sha256": {
+    "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+    "gororoba_quantum/cd_core.py": "3e28db5844f9a50c0e5e95ee24147e26601bc11bb7115aa7ac2b9d666471bfc1",
+    "gororoba_quantum/claim_boundaries.py": "f7d7e7a1f66b8e9148e200bf22d36ad4b8a859eba943ad97a25682b28a54f685",
+    "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+    "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354"
+  },
+  "versions": {
+    "numpy": "2.5.3",
+    "python": "3.14.7",
+    "qiskit": "2.5.2"
+  },
+  "working_directory": "gororoba_quantum"
+}

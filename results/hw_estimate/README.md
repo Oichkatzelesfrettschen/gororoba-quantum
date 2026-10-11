@@ -3,6 +3,12 @@
 The directory contains compiler and local-simulation records. Every record sets
 `qpu_executed` to `false`; none supplies live calibration or hardware evidence.
 
+- `cayley_dickson_claim_boundaries.json` records finite polynomial-query,
+  Walsh-spectrum, algebra-representation, and annihilator-fringe checks.
+  `cayley_dickson_claim_boundaries_verification.json` binds the source hashes,
+  runtime versions, and byte-identical serial/four-worker outputs. Reproduce
+  from `gororoba_quantum/` with `"$PYTHON" -W error claim_boundaries.py`;
+  `CLAIM_BOUNDARIES.md` states the mathematical limits of each witness.
 - `ibm_fez_record.json` and `ibm_fez_isa.qpy` retain the fixed calibrated
   compile used by the design documents.
 - `hybrid_shor_fake_fez.json` retains the original single-seed ANF-versus-cycle
