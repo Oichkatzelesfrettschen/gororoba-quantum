@@ -18,7 +18,10 @@ observables.
   coefficient extraction, bounded Reed-Muller interpolation, quadratic polar
   rank, and controlled modular-permutation synthesis through signed Mersenne
   rotations, ANF networks, scratch-free cycle transpositions, or explicit
-  one-clean-ancilla cycle transpositions.
+  one-clean-ancilla cycle transpositions, or bounded minimum-cost Boolean
+  target flips. `target_flip.py` factors whole-register permutations before
+  expanding their predicates; `proofs/TargetFlipN21.v` certifies the three
+  scheduled N=21 multiplier witnesses.
 - `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
   classical admission and decoding around faithful `|1>` semiclassical order
   finding, plus a credential-free plan, simulation, and decode CLI.
@@ -29,6 +32,8 @@ observables.
 - `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
   derivations, bounded hardware frontier, evidence levels, falsifiers, and the
   roadmap beyond `N = 15`.
+- `gororoba_quantum/MODULAR_SYNTHESIS.md` -- the N=21 impossibility
+  falsification, exact target-flip method, Rocq boundaries, and precision frontier.
 - `gororoba_quantum/HARDWARE_PLAN.md` -- the joint submission plan for every
   experiment group: claims and falsifiers, calibration-to-circuit pipeline,
   deciding statistics, QPU cost, and the path to the first submission.
@@ -87,6 +92,8 @@ cd gororoba_quantum
 "$PYTHON" verify.py
 "$PYTHON" designs.py
 "$PYTHON" factoring.py
+"$PYTHON" target_flip.py
+"$PYTHON" target_flip_certificate.py --check
 "$PYTHON" modular_arithmetic.py
 "$PYTHON" order_finding.py
 "$PYTHON" compile_evidence.py --seeds 20261010 \

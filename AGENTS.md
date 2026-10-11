@@ -20,10 +20,13 @@ lint and type-check configuration only. Before any push, these exit 0:
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     predict.py select_lcu.py experiments.py live_run.py order_finding.py \
-    runtime_contracts.py variance.py ../scripts/python_call_graph.py
+    runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
+    ../scripts/python_call_graph.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" factoring.py
+  "$PYTHON" target_flip.py
+  "$PYTHON" target_flip_certificate.py --check
   "$PYTHON" modular_arithmetic.py
   "$PYTHON" order_finding.py
   "$PYTHON" compile_evidence.py --seeds 20261010 \
@@ -37,6 +40,25 @@ lint and type-check configuration only. Before any push, these exit 0:
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under
 results/live/.
+
+The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
+when its generator, witnesses, or evaluator changes. Run the checks on a copy
+under temporary storage so the checkout retains source files only:
+
+```sh
+(
+  set -eu
+  proof_tmp="$(mktemp -d)"
+  cp proofs/TargetFlipN21.v "$proof_tmp/"
+  (cd "$proof_tmp"
+    rocq compile -q -w +all TargetFlipN21.v >compile.log 2>&1
+    if rg -n "Warning:" compile.log; then exit 1; fi
+    rocq check -silent -o TargetFlipN21)
+)
+```
+
+The certificate proves finite Boolean permutation action. Operator checks in
+modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 
 ## QPU time and calibration
 

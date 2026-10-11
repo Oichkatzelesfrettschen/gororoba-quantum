@@ -303,14 +303,23 @@ The coefficient and compile frontier uses `a = 2` and `m = 2*bit_length(N)`.
 | Modulus and strategy | qubits | arithmetic coefficient count | FakeFez CZ | FakeFez depth | admission |
 |---|---:|---:|---:|---:|---|
 | `N = 15`, Mersenne rotation | 5 | 5 controlled swaps | 60 | 183 | executable conformance case |
-| `N = 21`, one-clean cycle | 7 | 449 basis edges | 17,736 | 47,354 | best compile; noise admission pending |
+| `N = 21`, Boolean target flips | 7 | 170 controlled cubes | 5,492 | 13,355 | default; noise admission pending |
+| `N = 21`, one-clean cycle | 7 | 449 basis edges | 17,736 | 47,354 | retained synthesis control |
 | `N = 21`, two-clean cycle control | 8 | 449 basis edges | 21,970 | 50,079 | ancilla-count causal control |
 | `N = 21`, ANF | 11 | 866 ANF terms, 50 swaps | 48,895 | 116,968 | arity-distribution control |
 | `N = 21`, scratch-free cycle | 6 | 449 basis edges | 63,818 | 210,473 | no-auxiliary falsifier |
 | `N = 35`, ANF | 13 | 3,476 ANF terms, 72 swaps | unmeasured | unmeasured | conditional ceiling |
 | `N = 35`, cycle | 7 | 1,037 basis edges | unmeasured | unmeasured | conditional ceiling |
 
-The reference column uses seed 20261010. The one-clean circuit reduces CZ by
+The reference column uses seed 20261010. The Boolean target-flip circuit
+reduces CZ by 69.0 percent and depth by 71.8 percent against the one-clean
+cycle while preserving its seven-qubit, ten-round arithmetic contract.
+`MODULAR_SYNTHESIS.md` derives the switch graph, exact XOR-cube optimizer,
+finite Rocq certificate, eight-seed comparison, and smaller-precision
+frontier. The compiler default selects the measured N=21 multipliers 2, 4,
+and 16; wider generic arithmetic retains the cycle path.
+
+The one-clean cycle circuit reduces CZ by
 72.2 percent and depth by 77.5 percent against the scratch-free circuit. The
 one-clean circuit reduces CZ by 63.7 percent and depth by 59.5 percent against
 ANF while using seven rather than eleven logical qubits.

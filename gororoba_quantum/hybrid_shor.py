@@ -15,6 +15,7 @@ from dataclasses import asdict
 from pathlib import Path
 from typing import Any
 
+from qiskit import transpile
 from qiskit_aer import AerSimulator
 
 from factoring import (
@@ -104,7 +105,9 @@ def _simulate_payload(args: argparse.Namespace) -> dict[str, Any]:
         phase_bits,
         multiplier_strategy=args.multiplier_strategy,
     )
-    counts = AerSimulator().run(circuit, shots=args.shots, seed_simulator=args.seed).result().get_counts()
+    simulator = AerSimulator()
+    simulation_circuit = transpile(circuit, simulator, optimization_level=0)
+    counts = simulator.run(simulation_circuit, shots=args.shots, seed_simulator=args.seed).result().get_counts()
     reference_order = reference_multiplicative_order(normalized_base, args.modulus)
     ideal = ideal_phase_distribution(reference_order, phase_bits)
     payload.update(
@@ -150,6 +153,7 @@ def _parser() -> argparse.ArgumentParser:
                 "cycle_transpositions",
                 "cycle_transpositions_1_clean",
                 "anf_compute_swap_uncompute",
+                "target_flip_1_clean",
             ),
             default="auto",
         )
