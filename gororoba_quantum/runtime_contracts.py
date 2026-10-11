@@ -1522,6 +1522,42 @@ def _verify_feed_forward_structure() -> None:
             raise RuntimeError(f"{label} feed-forward structure reads {observed}, expected {expected[label]}")
 
 
+def _verify_usage_wait() -> None:
+    """Collection polls a finished job's usage until the service's calculation completes, within a bound."""
+    result = PrimitiveResult([], metadata={})
+    final = {"status": "completed", "qpu_charge_time_seconds": 3}
+
+    class _LateUsageJob(_ProbeResultJob):
+        def __init__(self, flips_after: int):
+            super().__init__(result, status="DONE", usage={"status": "pending"}, charge=None)
+            self.reads = 0
+            self.flips_after = flips_after
+
+        def metrics(self) -> dict[str, Any]:
+            self.reads += 1
+            if self.reads > self.flips_after:
+                self._usage, self._charge = final, 3
+            return super().metrics()
+
+    naps: list[float] = []
+    record = live_run_module.wait_for_usage(_LateUsageJob(2), 6, 4096, 120.0, 5.0, naps.append)
+    if record["usage_status"] != "final" or record["pub_shots_per_qpu_second"] != "8192.000" or naps != [5.0, 5.0]:
+        raise RuntimeError(f"usage that completes after two polls reads {record} with naps {naps}")
+    naps.clear()
+    stuck = live_run_module.wait_for_usage(_LateUsageJob(10**6), 6, 4096, 20.0, 5.0, naps.append)
+    if (
+        stuck["usage_status"] != "pending"
+        or "still pending 20 s" not in str(stuck["throughput_unavailable_reason"])
+        or len(naps) != 4
+    ):
+        raise RuntimeError(f"usage that stays pending reads {stuck} after {len(naps)} polls")
+    running = live_run_module.wait_for_usage(
+        _ProbeResultJob(result, status="RUNNING", usage={"status": "pending"}), 6, 4096, 20.0, 5.0, naps.append
+    )
+    if running["usage_status"] != "pending" or len(naps) != 4:
+        raise RuntimeError("a job that has not ended is polled for usage")
+
+
 def _verify_job_usage_cases() -> None:
     """Throughput derives only from a final job with final usage, over submitted PUB shots."""
     result = PrimitiveResult([], metadata={})
@@ -2269,6 +2305,7 @@ def _verify() -> None:
     _verify_scheduler_timing_cases()
     _verify_feed_forward_structure()
     _verify_job_usage_cases()
+    _verify_usage_wait()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()

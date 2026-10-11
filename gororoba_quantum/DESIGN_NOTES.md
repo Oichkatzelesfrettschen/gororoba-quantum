@@ -631,9 +631,11 @@ quotient; usage is read before the results and checkpointed to
 collect.partial.json at once, so a job that ended in ERROR or CANCELLED keeps
 its charge and its result_unavailable reason, a later failure keeps every
 earlier job's charge without replacing a complete collect.json, a retrieval
-or decoding failure on a DONE job propagates, and a job still running at
-collection start has its usage read again once result() returns; the final
-write replaces collect.json and removes the partial file. Group records reference their job by id instead of copying
+or decoding failure on a DONE job propagates, and a job whose usage still
+reads pending after it ended is polled every USAGE_POLL_SECONDS for up to
+USAGE_WAIT_SECONDS (the service computes usage after the job's terminal
+state), after which the pending record names the wait; the final write
+replaces collect.json and removes the partial file. Group records reference their job by id instead of copying
 either.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
