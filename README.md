@@ -16,9 +16,9 @@ observables.
   phase-degree and Walsh-spectrum rules along the ladder.
 - `gororoba_quantum/boolean_anf.py` and `modular_arithmetic.py` -- exact Boolean
   coefficient extraction, bounded Reed-Muller interpolation, quadratic polar
-  rank, and controlled modular-permutation synthesis through Mersenne rotations,
-  ANF networks, scratch-free cycle transpositions, or explicit one-clean-ancilla
-  cycle transpositions.
+  rank, and controlled modular-permutation synthesis through signed Mersenne
+  rotations, ANF networks, scratch-free cycle transpositions, or explicit
+  one-clean-ancilla cycle transpositions.
 - `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
   classical admission and decoding around faithful `|1>` semiclassical order
   finding, plus a credential-free plan, simulation, and decode CLI.

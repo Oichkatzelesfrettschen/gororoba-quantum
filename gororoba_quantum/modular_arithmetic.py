@@ -1,10 +1,11 @@
 """Reversible constant modular multiplication with explicit synthesis profiles.
 
-The fast path recognizes multiplication by powers of two modulo a Mersenne
-number as a cyclic permutation of qubit wires. Generic synthesis exposes an
-ANF compute/swap/uncompute network, a scratch-free Gray-path cycle network,
-and an explicit one-clean-ancilla Gray-path network. The default uses the
-one-clean network selected by the bounded FakeFez compiler race.
+The fast path recognizes multiplication by signed powers of two modulo a
+Mersenne number as a cyclic permutation of qubit wires followed, for a
+negative power, by bit inversion. Generic synthesis exposes an ANF
+compute/swap/uncompute network, a scratch-free Gray-path cycle network, and an
+explicit one-clean-ancilla Gray-path network. The default uses the one-clean
+network selected by the bounded FakeFez compiler race.
 """
 
 from __future__ import annotations
@@ -12,7 +13,7 @@ from __future__ import annotations
 import math
 from collections import Counter
 from dataclasses import dataclass
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Literal
 
 from boolean_anf import anf_coefficients, anf_degree_from_coefficients, evaluate_anf
 
@@ -20,6 +21,17 @@ if TYPE_CHECKING:
     from qiskit import QuantumCircuit
 
 MAX_ANF_WIDTH = 8
+InputDomain = Literal["full_register", "nonzero_residues"]
+FULL_REGISTER: InputDomain = "full_register"
+NONZERO_RESIDUES: InputDomain = "nonzero_residues"
+
+
+@dataclass(frozen=True)
+class MersennePowerOfTwo:
+    """Signed power-of-two representation for one Mersenne multiplier."""
+
+    shift: int
+    negative: bool
 
 
 @dataclass(frozen=True)
@@ -29,6 +41,7 @@ class MultiplierProfile:
     modulus: int
     multiplier: int
     width: int
+    input_domain: InputDomain
     strategy: str
     scratch_qubits: int
     forward_term_count: int
@@ -36,6 +49,7 @@ class MultiplierProfile:
     maximum_anf_degree: int
     degree_histogram: tuple[tuple[int, int], ...]
     controlled_swap_count: int
+    controlled_x_count: int
     basis_edge_gate_count: int
     maximum_control_count: int
 
@@ -118,14 +132,17 @@ def _output_coefficients(permutation: tuple[int, ...], width: int) -> tuple[tupl
     )
 
 
-def _power_of_two_shift(modulus: int, multiplier: int) -> int | None:
+def _mersenne_power_of_two(modulus: int, multiplier: int) -> MersennePowerOfTwo | None:
     width = register_width(modulus)
     if modulus != (1 << width) - 1:
         return None
     normalized = multiplier % modulus
     for shift in range(width):
         if (1 << shift) % modulus == normalized:
-            return shift
+            return MersennePowerOfTwo(shift, False)
+    for shift in range(width):
+        if -(1 << shift) % modulus == normalized:
+            return MersennePowerOfTwo(shift, True)
     return None
 
 
@@ -186,7 +203,13 @@ def basis_edge_gate_count(permutation: tuple[int, ...]) -> int:
     return sum(2 * (cycle[0] ^ value).bit_count() - 1 for cycle in _pivoted_cycles(permutation) for value in cycle[1:])
 
 
-def multiplier_profile(modulus: int, multiplier: int, strategy: str = "auto") -> MultiplierProfile:
+def multiplier_profile(
+    modulus: int,
+    multiplier: int,
+    strategy: str = "auto",
+    *,
+    input_domain: InputDomain = FULL_REGISTER,
+) -> MultiplierProfile:
     """Extract synthesis strategy and coefficient counts without building a circuit."""
     if strategy not in (
         "auto",
@@ -195,34 +218,56 @@ def multiplier_profile(modulus: int, multiplier: int, strategy: str = "auto") ->
         "anf_compute_swap_uncompute",
     ):
         raise ValueError(f"unknown modular multiplier strategy {strategy!r}")
+    if input_domain not in (FULL_REGISTER, NONZERO_RESIDUES):
+        raise ValueError(f"unknown modular multiplier input domain {input_domain!r}")
     width = register_width(modulus)
     normalized = multiplier % modulus
-    modular_permutation(modulus, normalized)
+    if math.gcd(normalized, modulus) != 1:
+        raise ValueError(f"multiplier {multiplier} is not invertible modulo {modulus}")
     if normalized == 1:
-        return MultiplierProfile(modulus, normalized, width, "identity", 0, 0, 0, 0, (), 0, 0, 0)
-
-    shift = _power_of_two_shift(modulus, normalized)
-    if shift is not None:
         return MultiplierProfile(
-            modulus,
-            normalized,
-            width,
-            "mersenne_rotation",
-            0,
-            0,
-            0,
-            0,
-            (),
-            len(rotation_swap_pairs(width, shift)),
-            0,
-            1,
+            modulus=modulus,
+            multiplier=normalized,
+            width=width,
+            input_domain=input_domain,
+            strategy="identity",
+            scratch_qubits=0,
+            forward_term_count=0,
+            inverse_term_count=0,
+            maximum_anf_degree=0,
+            degree_histogram=(),
+            controlled_swap_count=0,
+            controlled_x_count=0,
+            basis_edge_gate_count=0,
+            maximum_control_count=0,
+        )
+
+    mersenne_power = _mersenne_power_of_two(modulus, normalized)
+    if mersenne_power is not None:
+        endpoint_correction_edges = 2 * width - 1 if mersenne_power.negative and input_domain == FULL_REGISTER else 0
+        return MultiplierProfile(
+            modulus=modulus,
+            multiplier=normalized,
+            width=width,
+            input_domain=input_domain,
+            strategy="mersenne_signed_rotation" if mersenne_power.negative else "mersenne_rotation",
+            scratch_qubits=0,
+            forward_term_count=0,
+            inverse_term_count=0,
+            maximum_anf_degree=0,
+            degree_histogram=(),
+            controlled_swap_count=len(rotation_swap_pairs(width, mersenne_power.shift)),
+            controlled_x_count=width if mersenne_power.negative else 0,
+            basis_edge_gate_count=endpoint_correction_edges,
+            maximum_control_count=width if endpoint_correction_edges else 1,
         )
 
     if width > MAX_ANF_WIDTH:
         raise ValueError(
             f"generic ANF synthesis is bounded to {MAX_ANF_WIDTH} input qubits; modulus {modulus} needs {width}"
         )
-    forward = _output_coefficients(modular_permutation(modulus, normalized), width)
+    permutation = modular_permutation(modulus, normalized)
+    forward = _output_coefficients(permutation, width)
     inverse = _output_coefficients(modular_permutation(modulus, pow(normalized, -1, modulus)), width)
     all_coefficients = tuple(mask for output in forward + inverse for mask in output)
     histogram = Counter(mask.bit_count() for mask in all_coefficients)
@@ -234,20 +279,21 @@ def multiplier_profile(modulus: int, multiplier: int, strategy: str = "auto") ->
     else:
         scratch_qubits = 0
     cycle_strategy = selected_strategy in ("cycle_transpositions", "cycle_transpositions_1_clean")
-    permutation = modular_permutation(modulus, normalized)
     return MultiplierProfile(
-        modulus,
-        normalized,
-        width,
-        selected_strategy,
-        scratch_qubits,
-        sum(len(output) for output in forward),
-        sum(len(output) for output in inverse),
-        max((anf_degree_from_coefficients(output) for output in forward + inverse), default=0),
-        tuple(sorted(histogram.items())),
-        width if selected_strategy == "anf_compute_swap_uncompute" else 0,
-        basis_edge_gate_count(permutation) if cycle_strategy else 0,
-        width if cycle_strategy else max(histogram, default=0) + 1,
+        modulus=modulus,
+        multiplier=normalized,
+        width=width,
+        input_domain=input_domain,
+        strategy=selected_strategy,
+        scratch_qubits=scratch_qubits,
+        forward_term_count=sum(len(output) for output in forward),
+        inverse_term_count=sum(len(output) for output in inverse),
+        maximum_anf_degree=max((anf_degree_from_coefficients(output) for output in forward + inverse), default=0),
+        degree_histogram=tuple(sorted(histogram.items())),
+        controlled_swap_count=width if selected_strategy == "anf_compute_swap_uncompute" else 0,
+        controlled_x_count=0,
+        basis_edge_gate_count=basis_edge_gate_count(permutation) if cycle_strategy else 0,
+        maximum_control_count=width if cycle_strategy else max(histogram, default=0) + 1,
     )
 
 
@@ -363,21 +409,35 @@ def append_controlled_modular_multiply(
     modulus: int,
     multiplier: int,
     strategy: str = "auto",
+    *,
+    input_domain: InputDomain = FULL_REGISTER,
 ) -> MultiplierProfile:
-    """Append controlled in-place multiplication and restore every scratch qubit."""
-    profile = multiplier_profile(modulus, multiplier, strategy)
+    """Append controlled multiplication on the declared domain and restore scratch."""
+    profile = multiplier_profile(modulus, multiplier, strategy, input_domain=input_domain)
     if len(data_qubits) != profile.width:
         raise ValueError(f"data register has {len(data_qubits)} qubits, expected {profile.width}")
     if len(scratch_qubits) != profile.scratch_qubits:
         raise ValueError(f"{profile.strategy} needs {profile.scratch_qubits} scratch qubits, got {len(scratch_qubits)}")
     if profile.strategy == "identity":
         return profile
-    if profile.strategy == "mersenne_rotation":
-        shift = _power_of_two_shift(modulus, profile.multiplier)
-        if shift is None:
-            raise RuntimeError("Mersenne rotation profile lost its power-of-two shift")
-        for first, second in rotation_swap_pairs(profile.width, shift):
+    if profile.strategy in ("mersenne_rotation", "mersenne_signed_rotation"):
+        mersenne_power = _mersenne_power_of_two(modulus, profile.multiplier)
+        if mersenne_power is None:
+            raise RuntimeError("Mersenne rotation profile lost its signed power-of-two representation")
+        for first, second in rotation_swap_pairs(profile.width, mersenne_power.shift):
             circuit.cswap(phase_control, data_qubits[first], data_qubits[second])
+        if mersenne_power.negative:
+            for data_qubit in data_qubits:
+                circuit.cx(phase_control, data_qubit)
+            if input_domain == FULL_REGISTER:
+                _append_controlled_basis_transposition(
+                    circuit,
+                    phase_control,
+                    data_qubits,
+                    [],
+                    0,
+                    modulus,
+                )
         return profile
     if profile.strategy in ("cycle_transpositions", "cycle_transpositions_1_clean"):
         permutation = modular_permutation(modulus, profile.multiplier)
@@ -410,22 +470,41 @@ def _packed_output(coefficients: tuple[tuple[int, ...], ...], input_value: int) 
     return output
 
 
-def _verify_multiplier(modulus: int, multiplier: int, strategy: str = "auto") -> None:
+def _verify_multiplier(
+    modulus: int,
+    multiplier: int,
+    strategy: str = "auto",
+    *,
+    input_domain: InputDomain = FULL_REGISTER,
+) -> None:
     import numpy as np
     from qiskit import QuantumCircuit
     from qiskit.quantum_info import Operator, Statevector
 
-    profile = multiplier_profile(modulus, multiplier, strategy)
+    profile = multiplier_profile(modulus, multiplier, strategy, input_domain=input_domain)
     qubit_count = 1 + profile.width + profile.scratch_qubits
     control = qubit_count - 1
     data = list(range(profile.width))
     scratch = list(range(profile.width, control))
     circuit = QuantumCircuit(qubit_count)
-    append_controlled_modular_multiply(circuit, control, data, scratch, modulus, multiplier, strategy)
+    append_controlled_modular_multiply(
+        circuit,
+        control,
+        data,
+        scratch,
+        modulus,
+        multiplier,
+        strategy,
+        input_domain=input_domain,
+    )
     permutation = modular_permutation(modulus, multiplier)
     matrix = Operator(circuit).data if qubit_count <= 8 else None
     for control_value in (0, 1):
-        for input_value in range(1 << profile.width):
+        if control_value == 0 or input_domain == FULL_REGISTER:
+            input_values = range(1 << profile.width)
+        else:
+            input_values = range(1, modulus)
+        for input_value in input_values:
             packed_input = input_value | (control_value << control)
             if matrix is None:
                 state = Statevector.from_int(packed_input, 1 << qubit_count).evolve(circuit).data
@@ -590,6 +669,57 @@ def _verify_xor_displacement_profiles() -> None:
 
 def _verify() -> None:
     _verify_xor_displacement_profiles()
+    for width in range(3, 9):
+        modulus = (1 << width) - 1
+        for shift in range(width):
+            multiplier = -(1 << shift) % modulus
+            mersenne_power = _mersenne_power_of_two(modulus, multiplier)
+            if mersenne_power != MersennePowerOfTwo(shift, True):
+                raise RuntimeError(
+                    f"signed Mersenne classifier returned {mersenne_power} for {multiplier} modulo {modulus}"
+                )
+            for input_value in range(1, modulus):
+                rotated = ((input_value << shift) | (input_value >> ((width - shift) % width))) & modulus
+                transformed = modulus ^ rotated
+                expected = multiplier * input_value % modulus
+                if transformed != expected:
+                    raise RuntimeError(
+                        f"signed Mersenne transform maps {input_value} to {transformed}, expected {expected}"
+                    )
+            endpoint_outputs = []
+            for input_value in (0, modulus):
+                rotated = ((input_value << shift) | (input_value >> ((width - shift) % width))) & modulus
+                endpoint_outputs.append(modulus ^ rotated)
+            if endpoint_outputs != [modulus, 0]:
+                raise RuntimeError(
+                    f"raw signed Mersenne transform has endpoint outputs {endpoint_outputs}, expected [{modulus}, 0]"
+                )
+    for multiplier in (1, 2):
+        mersenne_power = _mersenne_power_of_two(3, multiplier)
+        if mersenne_power is None or mersenne_power.negative:
+            raise RuntimeError(f"positive Mersenne recognition lost priority for {multiplier} modulo 3")
+    large_mersenne_modulus = (1 << 31) - 1
+    large_signed_profile = multiplier_profile(
+        large_mersenne_modulus,
+        -(1 << 15),
+        input_domain=NONZERO_RESIDUES,
+    )
+    if (
+        large_signed_profile.strategy != "mersenne_signed_rotation"
+        or large_signed_profile.width != 31
+        or large_signed_profile.scratch_qubits != 0
+        or large_signed_profile.controlled_x_count != 31
+        or large_signed_profile.controlled_swap_count != 30
+    ):
+        raise RuntimeError(f"unexpected large signed Mersenne profile {large_signed_profile}")
+    try:
+        multiplier_profile(large_mersenne_modulus, 5)
+    except ValueError as error:
+        if "generic ANF synthesis is bounded" not in str(error):
+            raise
+    else:
+        raise RuntimeError("wide generic multiplier passed the bounded synthesis guard")
+
     cases = (
         (15, 2, "auto"),
         (15, 4, "auto"),
@@ -625,8 +755,31 @@ def _verify() -> None:
             f"modular multiply {multiplier} mod {modulus}: strategy={profile.strategy} "
             f"qubits={1 + profile.width + profile.scratch_qubits} "
             f"anf_terms={profile.controlled_anf_gate_count} cswap={profile.controlled_swap_count} "
-            f"basis_edges={profile.basis_edge_gate_count}"
+            f"cx={profile.controlled_x_count} basis_edges={profile.basis_edge_gate_count}"
         )
+
+    signed_swap_counts = {14: 0, 13: 3, 11: 2, 7: 3}
+    for input_domain in (FULL_REGISTER, NONZERO_RESIDUES):
+        for multiplier, expected_swaps in signed_swap_counts.items():
+            profile = multiplier_profile(15, multiplier, input_domain=input_domain)
+            expected_edges = 7 if input_domain == FULL_REGISTER else 0
+            expected_maximum_controls = 4 if input_domain == FULL_REGISTER else 1
+            if (
+                profile.strategy != "mersenne_signed_rotation"
+                or profile.scratch_qubits != 0
+                or profile.controlled_anf_gate_count != 0
+                or profile.controlled_swap_count != expected_swaps
+                or profile.controlled_x_count != 4
+                or profile.basis_edge_gate_count != expected_edges
+                or profile.maximum_control_count != expected_maximum_controls
+            ):
+                raise RuntimeError(f"unexpected signed Mersenne profile {profile}")
+            _verify_multiplier(15, multiplier, input_domain=input_domain)
+            print(
+                f"modular multiply {multiplier} mod 15: strategy={profile.strategy} "
+                f"domain={profile.input_domain} qubits=5 cswap={profile.controlled_swap_count} "
+                f"cx={profile.controlled_x_count} basis_edges={profile.basis_edge_gate_count}"
+            )
 
 
 if __name__ == "__main__":
