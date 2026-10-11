@@ -643,9 +643,15 @@ its QPY SHA-256 is
     0.011, so a three-sigma test detects a drop of 0.033 or more; a smaller
     cost reads as no difference.
 
-  A yield drop with equal schedules points to quantum crosstalk (spectator
-  mid-circuit measurement, ZZ during CZ, readout crosstalk); a lengthened
-  schedule identifies classical serialization whether or not the yield moves.
+  A larger packed scheduler residual is an unattributed global packing
+  scheduling cost: feed-forward, measurement, reset, pulse-channel, and
+  controller resources all scale with replica count, and only the matched
+  dynamic/control ladder separates them. A yield drop with equal residuals
+  is evidence consistent with quantum, measurement, or readout crosstalk
+  (spectator mid-circuit measurement, ZZ during CZ, readout crosstalk), again
+  attributed to no single mechanism. The comparison's scope is global only
+  when the packed PUB carries both dynamic groups; a record whose groups
+  landed on different backends compares each group with its own reference.
   The identity null shares its PUB with folded QPE `s0` and the primary with
   `s1`; the two folded instances carry identical gate counts and
   measurement, reset, and branch schedules, so the null and the primary face
