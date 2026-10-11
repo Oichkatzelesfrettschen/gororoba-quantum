@@ -72,6 +72,90 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T120803.085652Z` requalifies the packing equivalence statistic after the
+false-detection enumeration moved to the process pool. Clean source commit
+`02468f9` (sources_modified=false) carries experiment digest
+`0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`0f06c5ef86bfd24a2b773f9a0de96a36a505c0806728b666bc5bfb3b681b843c`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T114958.902835Z` requalifies the packing equivalence statistic on the merged
+scheduler-timing main. Clean source commit `6ed540f` (sources_modified=false)
+carries experiment digest
+`9cba470744c884f88ee3c8ce299d99fea2131850a002080bd3ba866e6adc9a4e`.
+At 4096 shots the noise model reads design_a single_group/equivalent_within_0.03; zero_divisor_fringe global/equivalent_within_0.03; design_c_8_1_4 global/equivalent_within_0.03; design_c_16_1_8 global/equivalent_within_0.03; design_c_32_1_16 global/difference_not_resolved; folded_qpe_mod15 single_group/equivalent_within_0.03; hybrid_shor_mod15 single_group/equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`9c4285d7a293ea52fb5364494aaae14f896d5e610efc8d9d782330bfe71dbdde`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T113111.266543Z` requalifies the packing equivalence statistic with the PUB scope
+carried into the fidelity comparison. Clean source commit `7f2e7f8`
+(sources_modified=false) carries experiment digest
+`72a8321ffd65a0cf101c1227677bafe410489de6d083688577f3e565ea732979`.
+At 4096 shots the noise model reads design_a single_group/equivalent_within_0.03; zero_divisor_fringe global/equivalent_within_0.03; design_c_8_1_4 global/equivalent_within_0.03; design_c_16_1_8 global/equivalent_within_0.03; design_c_32_1_16 global/difference_not_resolved; folded_qpe_mod15 single_group/equivalent_within_0.03; hybrid_shor_mod15 single_group/equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`2e08db3de61e25e1c272bafafe74034cb00291367a4da2d7ad9675f6bd728553`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T111555.975109Z` requalifies the packing equivalence statistic with the
+continuity-corrected hybrid interval, the 64-shot floor from exact
+enumeration, and the mechanism-neutral interpretation, on the bounded fusion
+search. Clean source commit `32f8b06` (sources_modified=false) carries
+experiment digest
+`0f776a7f3b1b93616fc6047911ca81fe9a5aa91d8b956edfabbd2d8b9868f36b`.
+At 4096 shots the noise model reads design_a equivalent_within_0.03; zero_divisor_fringe equivalent_within_0.03; design_c_8_1_4 equivalent_within_0.03; design_c_16_1_8 equivalent_within_0.03; design_c_32_1_16 difference_not_resolved; folded_qpe_mod15 equivalent_within_0.03; hybrid_shor_mod15 equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`6e75d92d50ecd7bf7201e45c751973b91eae7089ef574326f32c490cab903f65`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T101630.331262Z` requalifies the packing equivalence statistic with the 1024-shot
+floor from exact enumeration. Clean source commit `fbdb3bc`
+(sources_modified=false) carries experiment digest
+`1a65cf8d997a6c6ad8e2dbd14a3120cbc30ab4fe3f3efd7c3859952cdeaa4945`.
+At 4096 shots the noise model reads design_a equivalent_within_0.03; zero_divisor_fringe equivalent_within_0.03; design_c_8_1_4 equivalent_within_0.03; design_c_16_1_8 equivalent_within_0.03; design_c_32_1_16 difference_not_resolved; folded_qpe_mod15 equivalent_within_0.03; hybrid_shor_mod15 equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`277204b26629986b77622943ddb765500e6afc3c27972966e70fb872e0a48adf`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T100158.375275Z` requalifies the packing equivalence statistic with the shot
+floor and the residual-status gate. Clean source commit `adc8d97`
+(sources_modified=false) carries experiment digest
+`190590c17df61a37a5aef34151e7e7b9fdcbb46111df760b9545b61465ba6cb1`.
+The noise model reads design_a equivalent_within_0.03; zero_divisor_fringe equivalent_within_0.03; design_c_8_1_4 equivalent_within_0.03; design_c_16_1_8 equivalent_within_0.03; design_c_32_1_16 difference_not_resolved; folded_qpe_mod15 equivalent_within_0.03; hybrid_shor_mod15 equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`2d54cb68e1fd04465eb6753f8a40a250a197bdade6210ef6b5c9659b48418a92`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T094055.608273Z` requalifies the packing equivalence statistic with the
+bounded Newcombe interval for every score and the improvement verdict. Clean
+source commit `ddbbcb8` (sources_modified=false) carries experiment
+digest
+`22702d25e3eb68081e0f774c1c048d3809973b4f242b30ec0e3c049be9e3a488`.
+The noise model reads design_a equivalent_within_0.03 (newcombe_wilson); zero_divisor_fringe equivalent_within_0.03 (newcombe_wilson); design_c_8_1_4 equivalent_within_0.03 (newcombe_wilson); design_c_16_1_8 equivalent_within_0.03 (newcombe_wilson); design_c_32_1_16 difference_not_resolved (newcombe_wilson_bhatia_davis); folded_qpe_mod15 equivalent_within_0.03 (newcombe_wilson); hybrid_shor_mod15 equivalent_within_0.03 (newcombe_wilson).
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`3734874afce712274a239478ad6b17e6564befff66116f6f54647bbbe6e8e64d`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
+`2026-10-11T091715.073826Z` qualifies the packing equivalence statistic. Clean source
+commit `d1a0920` (sources_modified=false) carries experiment digest
+`bbb43a7d1e9e09febbda2ca3812f58b6c5c3efd0a66294d4ba1ff6afd3b29ae7`.
+Every group's `global_packing_crosstalk` now carries the packed-minus-reference
+difference with its 95 percent interval and the two-one-sided verdict against
+the preregistered margin 0.03; the noise model reads
+design_a equivalent_within_0.03 [-0.0028, 0.0131] (newcombe_wilson); zero_divisor_fringe equivalent_within_0.03 [-0.0071, 0.0129] (newcombe_wilson); design_c_8_1_4 equivalent_within_0.03 [-0.0182, 0.0011] (newcombe_wilson); design_c_16_1_8 equivalent_within_0.03 [-0.0243, 0.0013] (newcombe_wilson); design_c_32_1_16 difference_not_resolved [-0.0363, 0.0032] (normal); folded_qpe_mod15 equivalent_within_0.03 [-0.0200, 0.0073] (newcombe_wilson); hybrid_shor_mod15 equivalent_within_0.03 [-0.0297, 0.0136] (newcombe_wilson).
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`79e35c6a8a6bef2e215bb4ea07e450370c74fc8622612cc0d14db3255ec8bd58`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
 `2026-10-11T093445.248590Z` requalifies schema 6 after collection moved the residual bound
 to the execution-time Target and began reading usage before results. Clean
 source commit `878167f` (sources_modified=false) carries experiment

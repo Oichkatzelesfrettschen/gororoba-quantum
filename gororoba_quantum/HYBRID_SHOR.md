@@ -638,20 +638,48 @@ its QPY SHA-256 is
     comparison is exact and needs no shot statistics, and it measures a
     global packing scheduling cost rather than feed-forward alone.
   - *Fidelity.* `global_packing_crosstalk` compares packed replica 0's factor
-    yield with the reference copy on the same qubits. One matched pair at 4096
-    shots and a yield near 0.5 gives the difference a standard deviation of
-    0.011, so a three-sigma test detects a drop of 0.033 or more; a smaller
-    cost reads as no difference.
+    yield with the reference copy on the same qubits. The record keeps the z
+    statistic (z below -3 is the degradation diagnostic; |z| at most 3 reads
+    "the run detected no difference at this resolution"; zero per-shot
+    variance in both arms leaves z undefined and says so) and adds the
+    difference with its 95 percent interval and a two-one-sided equivalence
+    test. The interval is Newcombe's hybrid score interval from the two
+    Wilson intervals; for the Bernoulli factor indicator it is the standard
+    proportion interval, and for any other score, a mean of weights in [0, 1],
+    the Bhatia-Davis bound Var <= mean (1 - mean) makes it conservative, so
+    no observed-variance accident collapses it. A 90 percent interval inside
+    the preregistered margin of 0.03 reads `equivalent_within_0.03`, a 95
+    percent interval below zero reads `packed_degradation_detected`, one
+    above zero reads `packed_improvement_detected`, and anything else reads
+    `difference_not_resolved`; the three flags are reported beside the
+    verdict, so a loss the 95 percent interval resolves inside the margin
+    stays visible. The interval is Newcombe's
+    continuity-corrected hybrid score interval: exact enumeration of two
+    equal Bernoulli arms over true rates 0.005 to 0.995 puts its 95 percent
+    false-detection probability below nominal at every enumerated size
+    (0.0416 at 64 shots per arm, 0.0482 at 1024, 0.0488 at 4096), where the
+    uncorrected interval exceeds nominal at every size (0.0555 down to
+    0.0506); no verdict is issued below 64 shots per arm
+    (`insufficient_shots`). One matched pair at 4096 shots and a yield
+    near 0.5 gives the difference a standard deviation of 0.011, so the 90
+    percent interval is about 0.036 wide and an observed difference within
+    about 0.012 of zero can establish equivalence.
 
-  A larger packed scheduler residual is an unattributed global packing
-  scheduling cost: feed-forward, measurement, reset, pulse-channel, and
-  controller resources all scale with replica count, and only the matched
-  dynamic/control ladder separates them. A yield drop with equal residuals
-  is evidence consistent with quantum, measurement, or readout crosstalk
-  (spectator mid-circuit measurement, ZZ during CZ, readout crosstalk), again
-  attributed to no single mechanism. The comparison's scope is global only
-  when the packed PUB carries both dynamic groups; a record whose groups
-  landed on different backends compares each group with its own reference.
+  Collection joins the two into `packing_interpretation`. The schedule side
+  compares scheduler residuals, each PUB's scheduled duration above its own
+  execution-time Target bound, because the packed and reference PUBs hold
+  different gate content and their raw durations differ by gate time alone.
+  A larger packed residual is an unattributed global packing scheduling
+  cost: feed-forward, measurement, reset, pulse-channel, and controller
+  resources all scale with replica count, and only the matched
+  dynamic/control ladder separates them; equal residuals with a detected
+  yield loss are evidence consistent with quantum, measurement, or readout
+  crosstalk; equal residuals with equivalent yields resolve no packing cost;
+  a static group's residual difference excludes feed-forward. The scope is
+  global only when the packed PUB carries both dynamic groups (a record whose
+  groups landed on different backends compares each group with its own
+  reference), and the reading identifies neither one group nor one physical
+  mechanism.
   The identity null shares its PUB with folded QPE `s0` and the primary with
   `s1`; the two folded instances carry identical gate counts and
   measurement, reset, and branch schedules, so the null and the primary face

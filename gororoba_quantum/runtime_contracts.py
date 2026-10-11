@@ -89,6 +89,7 @@ from live_run import (
     pub_windows,
     reconcile_attempted_jobs,
     replica_floor,
+    replica_statistics,
     routing_admission_violations,
     scheduled_duration,
     select,
@@ -1492,6 +1493,78 @@ def _verify_scheduler_timing_cases() -> None:
         raise RuntimeError("the residual does not follow the execution-time Target bound")
 
 
+def _verify_packing_equivalence() -> None:
+    """The global packing comparison carries z, the difference interval, and the equivalence verdict."""
+    group = Group(
+        "probe", (), lambda distributions: {"p1": float(distributions["primary"][1])}, rate_keys=frozenset({"p1"})
+    )
+    ideal = np.array([0.0, 1.0])
+    primary = _synthetic_entry("primary", QuantumCircuit(1, 1), ideal)
+    reference = copy.copy(primary)
+    reference.name = "primary_isolated"
+    reference.reference = True
+    entries = [primary, reference]
+    cases: list[tuple[float, float, int, str, str]] = [
+        (0.500, 0.495, 4096, "equivalent_within_0.03", "the run detected no difference"),
+        (0.400, 0.500, 4096, "packed_degradation_detected", "more than three sigma below"),
+        (0.480, 0.500, 1024, "difference_not_resolved", "the run detected no difference"),
+        (0.000, 1.000, 8, "insufficient_shots", "unavailable"),
+        (0.480, 0.500, 63, "insufficient_shots", "the run detected no difference"),
+    ]
+    for packed, alone, shots, verdict, resolution in cases:
+        dists = {"primary": [np.array([1 - packed, packed])], "primary_isolated": [np.array([1 - alone, alone])]}
+        scope = {"scope": "global", "groups": ["folded_qpe_mod15", "hybrid_shor_mod15"]}
+        crosstalk = replica_statistics(group, entries, dists, shots, scope)["global_packing_crosstalk"]
+        if (
+            crosstalk["scope"] != "global"
+            or crosstalk["method"] != "newcombe_wilson"
+            or crosstalk["verdict"] != verdict
+            or resolution not in crosstalk["resolution"]
+            or abs(crosstalk["difference"] - (packed - alone)) > 1e-12
+        ):
+            raise RuntimeError(f"packing comparison at {packed} vs {alone} over {shots} shots reads {crosstalk}")
+    weighted = _synthetic_entry("weighted", QuantumCircuit(1, 1), np.array([0.25, 0.75]))
+    if live_run_module._bernoulli_score(weighted) or not live_run_module._bernoulli_score(primary):
+        raise RuntimeError("Bernoulli score classification follows the per-shot weights")
+    degenerate = {"primary": [np.array([1.0, 0.0])], "primary_isolated": [np.array([0.0, 1.0])]}
+    extreme = replica_statistics(group, entries, degenerate, 1024)["global_packing_crosstalk"]
+    if extreme["z"] is not None or "unavailable" not in extreme["resolution"] or not extreme["below_zero_95"]:
+        raise RuntimeError(f"zero-variance arms read {extreme}")
+    if extreme["scope"] != "unknown":
+        raise RuntimeError("a comparison without a PUB scope claims one")
+    scoped = replica_statistics(group, entries, degenerate, 1024, {"scope": "single_group", "groups": ["probe"]})
+    if scoped["global_packing_crosstalk"]["scope"] != "single_group":
+        raise RuntimeError("a single-group PUB scope is not propagated")
+    loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": False}
+    small_loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": True}
+    same = {"below_zero_95": False, "above_zero_95": False, "within_margin": True}
+    open_question = {"below_zero_95": False, "above_zero_95": False, "within_margin": False}
+    gain = {"below_zero_95": False, "above_zero_95": True, "within_margin": False}
+    few = {"verdict": "insufficient_shots", "below_zero_95": False, "above_zero_95": False, "within_margin": False}
+    readings: list[tuple[dict[str, Any], dict[str, Any], str]] = [
+        ({"residual_difference_dt": 0, "feed_forward": True}, few, "below the equivalence floor"),
+        (
+            {"residual_difference_dt": 400, "feed_forward": True, "groups": ["hybrid_shor_mod15"]},
+            loss,
+            "within hybrid_shor_mod15 alone",
+        ),
+        ({"residual_difference_dt": 400, "feed_forward": True}, loss, "unattributed global packing scheduling cost"),
+        ({"residual_difference_dt": 400, "feed_forward": False}, loss, "excludes feed-forward"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, loss, "readout crosstalk"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, small_loss, "loss inside the equivalence margin"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, same, "no packing cost"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, gain, "yield gain"),
+        ({"residual_difference_dt": 0, "feed_forward": True}, open_question, "unresolved"),
+        ({"unavailable": "x"}, open_question, "stands alone"),
+    ]
+    for schedule, crosstalk_view, fragment in readings:
+        text = live_run_module.packing_interpretation(schedule, crosstalk_view)
+        if text is None or fragment not in text:
+            raise RuntimeError(f"packing interpretation of {schedule}, {crosstalk_view} reads {text}")
+    if live_run_module.packing_interpretation(None, {"verdict": "x"}) is not None:
+        raise RuntimeError("an absent schedule produces an interpretation")
+
+
 def _verify_feed_forward_structure() -> None:
     """Operation count, stage depth, and feed-forward presence over static, reset, single, and nested shapes."""
     static = QuantumCircuit(1, 1)
@@ -2305,6 +2378,7 @@ def _verify() -> None:
     _verify_scheduler_timing_cases()
     _verify_feed_forward_structure()
     _verify_job_usage_cases()
+    _verify_packing_equivalence()
     _verify_usage_wait()
     _verify_nested_operations()
     _verify_result_register_order()
