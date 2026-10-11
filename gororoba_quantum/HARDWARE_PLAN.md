@@ -97,8 +97,9 @@ execution path but does not establish default-policy submission readiness.
 - **Global packing crosstalk.** One PUB runs all packed primaries and the shared
   reference PUB runs all groups on replica 0. The per-group score difference
   measures the global packed workload against the global replica-0 workload;
-  it does not attribute crosstalk to one group. The noise model puts the
-  difference at zero.
+  it does not attribute crosstalk to one group. The noise model carries no
+  crosstalk, so its difference is shot noise: each replica draws from the
+  seed of its position in one batched Aer run.
 - **ODR.** The pooled value averages each replica's witness over its own twin
   and needs 16384 shots over all replicas, so packing meets it at the default
   4096 shots for every mirrored group: design A pools 86,016 shots over 21

@@ -18,6 +18,7 @@ from collections import Counter
 from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
+import parallel
 from affine_residual import affine_residual_synthesis
 from boolean_anf import anf_coefficients, anf_degree_from_coefficients, evaluate_anf
 from target_flip import MAX_TARGET_FLIP_WIDTH, TargetCube, target_flip_network
@@ -755,6 +756,11 @@ def _verify_xor_displacement_profiles() -> None:
     )
 
 
+def _verify_multiplier_job(job: tuple[int, int, str, InputDomain]) -> None:
+    modulus, multiplier, strategy, input_domain = job
+    _verify_multiplier(modulus, multiplier, strategy, input_domain=input_domain)
+
+
 def _verify() -> None:
     _verify_xor_displacement_profiles()
     for width in range(3, 9):
@@ -837,6 +843,20 @@ def _verify() -> None:
         (21, 4, "anf_compute_swap_uncompute"),
         (21, 16, "anf_compute_swap_uncompute"),
     )
+    signed_swap_counts = {14: 0, 13: 3, 11: 2, 7: 3}
+    # Each operator check evolves every basis state through a full circuit
+    # and runs for seconds, so the checks run across processes before the
+    # profile rows that report them.
+    parallel.ordered_map(
+        _verify_multiplier_job,
+        [(modulus, multiplier, strategy, FULL_REGISTER) for modulus, multiplier, strategy in cases]
+        + [
+            (15, multiplier, "auto", input_domain)
+            for input_domain in (FULL_REGISTER, NONZERO_RESIDUES)
+            for multiplier in signed_swap_counts
+        ],
+        min_items=2,
+    )
     if multiplier_profile(21, 2).strategy != "target_flip_1_clean":
         raise RuntimeError("automatic N=21 synthesis must select the measured one-clean target-flip candidate")
     if multiplier_profile(35, 2).strategy != "cycle_transpositions_1_clean":
@@ -855,7 +875,6 @@ def _verify() -> None:
         reconstructed = tuple(_packed_output(coefficients, value) for value in range(1 << profile.width))
         if reconstructed != permutation:
             raise RuntimeError(f"ANF reconstruction fails for {multiplier} modulo {modulus}")
-        _verify_multiplier(modulus, multiplier, strategy)
         print(
             f"modular multiply {multiplier} mod {modulus}: strategy={profile.strategy} "
             f"qubits={1 + profile.width + profile.scratch_qubits} "
@@ -863,7 +882,6 @@ def _verify() -> None:
             f"cx={profile.controlled_x_count} basis_edges={profile.basis_edge_gate_count}"
         )
 
-    signed_swap_counts = {14: 0, 13: 3, 11: 2, 7: 3}
     for input_domain in (FULL_REGISTER, NONZERO_RESIDUES):
         for multiplier, expected_swaps in signed_swap_counts.items():
             profile = multiplier_profile(15, multiplier, input_domain=input_domain)
@@ -879,7 +897,6 @@ def _verify() -> None:
                 or profile.maximum_control_count != expected_maximum_controls
             ):
                 raise RuntimeError(f"unexpected signed Mersenne profile {profile}")
-            _verify_multiplier(15, multiplier, input_domain=input_domain)
             print(
                 f"modular multiply {multiplier} mod 15: strategy={profile.strategy} "
                 f"domain={profile.input_domain} qubits=5 cswap={profile.controlled_swap_count} "
