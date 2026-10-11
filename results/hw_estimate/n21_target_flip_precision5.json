@@ -1,0 +1,4090 @@
+{
+  "backend": {
+    "class": "qiskit_ibm_runtime.fake_provider.FakeFez",
+    "degree_histogram": [
+      {
+        "degree": 1,
+        "qubit_count": 8
+      },
+      {
+        "degree": 2,
+        "qubit_count": 100
+      },
+      {
+        "degree": 3,
+        "qubit_count": 48
+      }
+    ],
+    "evidence_surface": "static compiler target; not a live calibration or noise prediction",
+    "maximum_degree": 3,
+    "qubits": 156,
+    "target_operations": [
+      "cz",
+      "delay",
+      "for_loop",
+      "id",
+      "if_else",
+      "measure",
+      "reset",
+      "rz",
+      "switch_case",
+      "sx",
+      "x"
+    ],
+    "undirected_edge_count": 176,
+    "undirected_edges": [
+      [
+        0,
+        1
+      ],
+      [
+        1,
+        2
+      ],
+      [
+        2,
+        3
+      ],
+      [
+        3,
+        4
+      ],
+      [
+        3,
+        16
+      ],
+      [
+        4,
+        5
+      ],
+      [
+        5,
+        6
+      ],
+      [
+        6,
+        7
+      ],
+      [
+        7,
+        8
+      ],
+      [
+        7,
+        17
+      ],
+      [
+        8,
+        9
+      ],
+      [
+        9,
+        10
+      ],
+      [
+        10,
+        11
+      ],
+      [
+        11,
+        12
+      ],
+      [
+        11,
+        18
+      ],
+      [
+        12,
+        13
+      ],
+      [
+        13,
+        14
+      ],
+      [
+        14,
+        15
+      ],
+      [
+        15,
+        19
+      ],
+      [
+        16,
+        23
+      ],
+      [
+        17,
+        27
+      ],
+      [
+        18,
+        31
+      ],
+      [
+        19,
+        35
+      ],
+      [
+        20,
+        21
+      ],
+      [
+        21,
+        22
+      ],
+      [
+        21,
+        36
+      ],
+      [
+        22,
+        23
+      ],
+      [
+        23,
+        24
+      ],
+      [
+        24,
+        25
+      ],
+      [
+        25,
+        26
+      ],
+      [
+        25,
+        37
+      ],
+      [
+        26,
+        27
+      ],
+      [
+        27,
+        28
+      ],
+      [
+        28,
+        29
+      ],
+      [
+        29,
+        30
+      ],
+      [
+        29,
+        38
+      ],
+      [
+        30,
+        31
+      ],
+      [
+        31,
+        32
+      ],
+      [
+        32,
+        33
+      ],
+      [
+        33,
+        34
+      ],
+      [
+        33,
+        39
+      ],
+      [
+        34,
+        35
+      ],
+      [
+        36,
+        41
+      ],
+      [
+        37,
+        45
+      ],
+      [
+        38,
+        49
+      ],
+      [
+        39,
+        53
+      ],
+      [
+        40,
+        41
+      ],
+      [
+        41,
+        42
+      ],
+      [
+        42,
+        43
+      ],
+      [
+        43,
+        44
+      ],
+      [
+        43,
+        56
+      ],
+      [
+        44,
+        45
+      ],
+      [
+        45,
+        46
+      ],
+      [
+        46,
+        47
+      ],
+      [
+        47,
+        48
+      ],
+      [
+        47,
+        57
+      ],
+      [
+        48,
+        49
+      ],
+      [
+        49,
+        50
+      ],
+      [
+        50,
+        51
+      ],
+      [
+        51,
+        52
+      ],
+      [
+        51,
+        58
+      ],
+      [
+        52,
+        53
+      ],
+      [
+        53,
+        54
+      ],
+      [
+        54,
+        55
+      ],
+      [
+        55,
+        59
+      ],
+      [
+        56,
+        63
+      ],
+      [
+        57,
+        67
+      ],
+      [
+        58,
+        71
+      ],
+      [
+        59,
+        75
+      ],
+      [
+        60,
+        61
+      ],
+      [
+        61,
+        62
+      ],
+      [
+        61,
+        76
+      ],
+      [
+        62,
+        63
+      ],
+      [
+        63,
+        64
+      ],
+      [
+        64,
+        65
+      ],
+      [
+        65,
+        66
+      ],
+      [
+        65,
+        77
+      ],
+      [
+        66,
+        67
+      ],
+      [
+        67,
+        68
+      ],
+      [
+        68,
+        69
+      ],
+      [
+        69,
+        70
+      ],
+      [
+        69,
+        78
+      ],
+      [
+        70,
+        71
+      ],
+      [
+        71,
+        72
+      ],
+      [
+        72,
+        73
+      ],
+      [
+        73,
+        74
+      ],
+      [
+        73,
+        79
+      ],
+      [
+        74,
+        75
+      ],
+      [
+        76,
+        81
+      ],
+      [
+        77,
+        85
+      ],
+      [
+        78,
+        89
+      ],
+      [
+        79,
+        93
+      ],
+      [
+        80,
+        81
+      ],
+      [
+        81,
+        82
+      ],
+      [
+        82,
+        83
+      ],
+      [
+        83,
+        84
+      ],
+      [
+        83,
+        96
+      ],
+      [
+        84,
+        85
+      ],
+      [
+        85,
+        86
+      ],
+      [
+        86,
+        87
+      ],
+      [
+        87,
+        88
+      ],
+      [
+        87,
+        97
+      ],
+      [
+        88,
+        89
+      ],
+      [
+        89,
+        90
+      ],
+      [
+        90,
+        91
+      ],
+      [
+        91,
+        92
+      ],
+      [
+        91,
+        98
+      ],
+      [
+        92,
+        93
+      ],
+      [
+        93,
+        94
+      ],
+      [
+        94,
+        95
+      ],
+      [
+        95,
+        99
+      ],
+      [
+        96,
+        103
+      ],
+      [
+        97,
+        107
+      ],
+      [
+        98,
+        111
+      ],
+      [
+        99,
+        115
+      ],
+      [
+        100,
+        101
+      ],
+      [
+        101,
+        102
+      ],
+      [
+        101,
+        116
+      ],
+      [
+        102,
+        103
+      ],
+      [
+        103,
+        104
+      ],
+      [
+        104,
+        105
+      ],
+      [
+        105,
+        106
+      ],
+      [
+        105,
+        117
+      ],
+      [
+        106,
+        107
+      ],
+      [
+        107,
+        108
+      ],
+      [
+        108,
+        109
+      ],
+      [
+        109,
+        110
+      ],
+      [
+        109,
+        118
+      ],
+      [
+        110,
+        111
+      ],
+      [
+        111,
+        112
+      ],
+      [
+        112,
+        113
+      ],
+      [
+        113,
+        114
+      ],
+      [
+        113,
+        119
+      ],
+      [
+        114,
+        115
+      ],
+      [
+        116,
+        121
+      ],
+      [
+        117,
+        125
+      ],
+      [
+        118,
+        129
+      ],
+      [
+        119,
+        133
+      ],
+      [
+        120,
+        121
+      ],
+      [
+        121,
+        122
+      ],
+      [
+        122,
+        123
+      ],
+      [
+        123,
+        124
+      ],
+      [
+        123,
+        136
+      ],
+      [
+        124,
+        125
+      ],
+      [
+        125,
+        126
+      ],
+      [
+        126,
+        127
+      ],
+      [
+        127,
+        128
+      ],
+      [
+        127,
+        137
+      ],
+      [
+        128,
+        129
+      ],
+      [
+        129,
+        130
+      ],
+      [
+        130,
+        131
+      ],
+      [
+        131,
+        132
+      ],
+      [
+        131,
+        138
+      ],
+      [
+        132,
+        133
+      ],
+      [
+        133,
+        134
+      ],
+      [
+        134,
+        135
+      ],
+      [
+        135,
+        139
+      ],
+      [
+        136,
+        143
+      ],
+      [
+        137,
+        147
+      ],
+      [
+        138,
+        151
+      ],
+      [
+        139,
+        155
+      ],
+      [
+        140,
+        141
+      ],
+      [
+        141,
+        142
+      ],
+      [
+        142,
+        143
+      ],
+      [
+        143,
+        144
+      ],
+      [
+        144,
+        145
+      ],
+      [
+        145,
+        146
+      ],
+      [
+        146,
+        147
+      ],
+      [
+        147,
+        148
+      ],
+      [
+        148,
+        149
+      ],
+      [
+        149,
+        150
+      ],
+      [
+        150,
+        151
+      ],
+      [
+        151,
+        152
+      ],
+      [
+        152,
+        153
+      ],
+      [
+        153,
+        154
+      ],
+      [
+        154,
+        155
+      ]
+    ]
+  },
+  "candidates": [
+    {
+      "logical_coefficients": {
+        "arithmetic_workspace_qubits": 1,
+        "basis_edge_gates": 0,
+        "compiler_workspace_qubits": 0,
+        "control_arity_histogram": [
+          {
+            "controls": 2,
+            "gate_count": 10
+          },
+          {
+            "controls": 3,
+            "gate_count": 42
+          },
+          {
+            "controls": 4,
+            "gate_count": 10
+          },
+          {
+            "controls": 5,
+            "gate_count": 23
+          }
+        ],
+        "controlled_swaps": 0,
+        "controlled_target_flips": 85,
+        "controlled_x_gates": 0,
+        "degree_histogram": [
+          {
+            "degree": 1,
+            "term_count": 70
+          },
+          {
+            "degree": 2,
+            "term_count": 102
+          },
+          {
+            "degree": 3,
+            "term_count": 160
+          },
+          {
+            "degree": 4,
+            "term_count": 104
+          }
+        ],
+        "forward_anf_terms": 219,
+        "input_domain": "nonzero_residues",
+        "inverse_anf_terms": 217,
+        "maximum_control_count": 5,
+        "phase_bits": 5,
+        "unique_multipliers": [
+          2,
+          4,
+          16
+        ],
+        "work_qubits": 5
+      },
+      "mcx_hls_method": null,
+      "multiplier_strategy": "target_flip_1_clean",
+      "name": "target_flip_one_clean",
+      "runs": [
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7237,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 621,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7235,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 621,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 8771,
+              "operations": {
+                "cz": 3159,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 7022,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 7943,
+              "operations": {
+                "cz": 2793,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4503,
+                "sx": 5803,
+                "x": 370
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7301,
+              "operations": {
+                "cz": 2793,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4127,
+                "sx": 5502,
+                "x": 173
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6777,
+              "operations": {
+                "cz": 2781,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3114,
+                "sx": 5502,
+                "x": 173
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6748,
+              "operations": {
+                "cz": 2762,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3132,
+                "sx": 5477,
+                "x": 170
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6683,
+              "operations": {
+                "cz": 2762,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3095,
+                "sx": 5442,
+                "x": 171
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6647,
+              "operations": {
+                "cz": 2762,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3037,
+                "sx": 5442,
+                "x": 171
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6646,
+              "operations": {
+                "cz": 2762,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3036,
+                "sx": 5442,
+                "x": 171
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2762,
+          "depth": 6646,
+          "final_layout": [
+            142,
+            136,
+            144,
+            123,
+            141,
+            145,
+            143
+          ],
+          "final_operations": {
+            "cz": 2762,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 3026,
+            "sx": 5442,
+            "x": 171
+          },
+          "initial_layout": [
+            141,
+            123,
+            143,
+            144,
+            136,
+            145,
+            142
+          ],
+          "seed_transpiler": 20261010,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7237,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 621,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6646,
+              "operations": {
+                "cz": 2762,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3036,
+                "sx": 5442,
+                "x": 171
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 8771,
+              "operations": {
+                "cz": 3159,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 7022,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7249,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 639,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7247,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 639,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 9010,
+              "operations": {
+                "cz": 3213,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 7130,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 8181,
+              "operations": {
+                "cz": 2841,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4563,
+                "sx": 5891,
+                "x": 355
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7498,
+              "operations": {
+                "cz": 2841,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4142,
+                "sx": 5547,
+                "x": 169
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6979,
+              "operations": {
+                "cz": 2829,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3150,
+                "sx": 5547,
+                "x": 169
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6973,
+              "operations": {
+                "cz": 2808,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3205,
+                "sx": 5524,
+                "x": 164
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6881,
+              "operations": {
+                "cz": 2808,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3149,
+                "sx": 5471,
+                "x": 167
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6827,
+              "operations": {
+                "cz": 2806,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3065,
+                "sx": 5471,
+                "x": 167
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6833,
+              "operations": {
+                "cz": 2804,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3078,
+                "sx": 5469,
+                "x": 166
+              },
+              "pass_index": 44,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6826,
+              "operations": {
+                "cz": 2804,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3071,
+                "sx": 5469,
+                "x": 161
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6814,
+              "operations": {
+                "cz": 2804,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3054,
+                "sx": 5469,
+                "x": 161
+              },
+              "pass_index": 47,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2804,
+          "depth": 6814,
+          "final_layout": [
+            23,
+            25,
+            37,
+            26,
+            45,
+            44,
+            24
+          ],
+          "final_operations": {
+            "cz": 2804,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 3044,
+            "sx": 5469,
+            "x": 161
+          },
+          "initial_layout": [
+            24,
+            44,
+            37,
+            26,
+            45,
+            23,
+            25
+          ],
+          "seed_transpiler": 20261011,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7249,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 639,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6814,
+              "operations": {
+                "cz": 2804,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3054,
+                "sx": 5469,
+                "x": 161
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 9010,
+              "operations": {
+                "cz": 3213,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 7130,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7222,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 605,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7220,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 605,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 8724,
+              "operations": {
+                "cz": 3111,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6926,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 7957,
+              "operations": {
+                "cz": 2759,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4458,
+                "sx": 5734,
+                "x": 356
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7339,
+              "operations": {
+                "cz": 2759,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4116,
+                "sx": 5448,
+                "x": 168
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6844,
+              "operations": {
+                "cz": 2749,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3105,
+                "sx": 5448,
+                "x": 168
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6826,
+              "operations": {
+                "cz": 2734,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3129,
+                "sx": 5433,
+                "x": 165
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6767,
+              "operations": {
+                "cz": 2734,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3093,
+                "sx": 5398,
+                "x": 164
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6734,
+              "operations": {
+                "cz": 2732,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3050,
+                "sx": 5398,
+                "x": 164
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6741,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3059,
+                "sx": 5396,
+                "x": 164
+              },
+              "pass_index": 44,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6738,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3057,
+                "sx": 5396,
+                "x": 162
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6734,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3049,
+                "sx": 5396,
+                "x": 162
+              },
+              "pass_index": 47,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6738,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3056,
+                "sx": 5396,
+                "x": 162
+              },
+              "pass_index": 53,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6737,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3055,
+                "sx": 5396,
+                "x": 162
+              },
+              "pass_index": 55,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6734,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3051,
+                "sx": 5396,
+                "x": 162
+              },
+              "pass_index": 56,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6734,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3049,
+                "sx": 5396,
+                "x": 162
+              },
+              "pass_index": 88,
+              "pass_name": "MinimumPoint",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2730,
+          "depth": 6734,
+          "final_layout": [
+            142,
+            136,
+            123,
+            144,
+            145,
+            141,
+            143
+          ],
+          "final_operations": {
+            "cz": 2730,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 3039,
+            "sx": 5396,
+            "x": 162
+          },
+          "initial_layout": [
+            141,
+            145,
+            143,
+            136,
+            144,
+            123,
+            142
+          ],
+          "seed_transpiler": 20261012,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7222,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 605,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6734,
+              "operations": {
+                "cz": 2730,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3049,
+                "sx": 5396,
+                "x": 162
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 8724,
+              "operations": {
+                "cz": 3111,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6926,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7306,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 594,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7304,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 594,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 9053,
+              "operations": {
+                "cz": 3078,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6860,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 8164,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4333,
+                "sx": 5594,
+                "x": 371
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7588,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3982,
+                "sx": 5335,
+                "x": 194
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 7110,
+              "operations": {
+                "cz": 2756,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3067,
+                "sx": 5335,
+                "x": 194
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 7072,
+              "operations": {
+                "cz": 2731,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3104,
+                "sx": 5307,
+                "x": 191
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7000,
+              "operations": {
+                "cz": 2731,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3061,
+                "sx": 5271,
+                "x": 187
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6964,
+              "operations": {
+                "cz": 2731,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3004,
+                "sx": 5271,
+                "x": 187
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6936,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3004,
+                "sx": 5238,
+                "x": 187
+              },
+              "pass_index": 44,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6936,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2997,
+                "sx": 5231,
+                "x": 188
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6935,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2988,
+                "sx": 5231,
+                "x": 188
+              },
+              "pass_index": 47,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6938,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2992,
+                "sx": 5231,
+                "x": 188
+              },
+              "pass_index": 53,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6937,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2989,
+                "sx": 5231,
+                "x": 188
+              },
+              "pass_index": 55,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6935,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2986,
+                "sx": 5231,
+                "x": 188
+              },
+              "pass_index": 56,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2713,
+          "depth": 6935,
+          "final_layout": [
+            25,
+            45,
+            46,
+            44,
+            26,
+            24,
+            37
+          ],
+          "final_operations": {
+            "cz": 2713,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 2976,
+            "sx": 5231,
+            "x": 188
+          },
+          "initial_layout": [
+            37,
+            26,
+            24,
+            45,
+            44,
+            46,
+            25
+          ],
+          "seed_transpiler": 20261013,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7306,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 594,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6935,
+              "operations": {
+                "cz": 2713,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2986,
+                "sx": 5231,
+                "x": 188
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 9053,
+              "operations": {
+                "cz": 3078,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6860,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7250,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 617,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7248,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 617,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 8790,
+              "operations": {
+                "cz": 3147,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6998,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 8026,
+              "operations": {
+                "cz": 2775,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4514,
+                "sx": 5774,
+                "x": 355
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7389,
+              "operations": {
+                "cz": 2775,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4139,
+                "sx": 5470,
+                "x": 162
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6877,
+              "operations": {
+                "cz": 2767,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3124,
+                "sx": 5470,
+                "x": 162
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6825,
+              "operations": {
+                "cz": 2740,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3119,
+                "sx": 5429,
+                "x": 161
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6773,
+              "operations": {
+                "cz": 2740,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3092,
+                "sx": 5402,
+                "x": 160
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6748,
+              "operations": {
+                "cz": 2740,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3054,
+                "sx": 5402,
+                "x": 160
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6747,
+              "operations": {
+                "cz": 2740,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3053,
+                "sx": 5402,
+                "x": 160
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2740,
+          "depth": 6747,
+          "final_layout": [
+            145,
+            143,
+            142,
+            141,
+            136,
+            123,
+            144
+          ],
+          "final_operations": {
+            "cz": 2740,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 3043,
+            "sx": 5402,
+            "x": 160
+          },
+          "initial_layout": [
+            123,
+            141,
+            143,
+            144,
+            142,
+            145,
+            136
+          ],
+          "seed_transpiler": 20261014,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7250,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 617,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6747,
+              "operations": {
+                "cz": 2740,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3053,
+                "sx": 5402,
+                "x": 160
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 8790,
+              "operations": {
+                "cz": 3147,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6998,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7321,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 598,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7319,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 598,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 9064,
+              "operations": {
+                "cz": 3090,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6884,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 8169,
+              "operations": {
+                "cz": 2776,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4324,
+                "sx": 5621,
+                "x": 362
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7572,
+              "operations": {
+                "cz": 2776,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3973,
+                "sx": 5350,
+                "x": 186
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 7095,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3052,
+                "sx": 5350,
+                "x": 186
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 7066,
+              "operations": {
+                "cz": 2743,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3087,
+                "sx": 5324,
+                "x": 183
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6990,
+              "operations": {
+                "cz": 2743,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3041,
+                "sx": 5289,
+                "x": 177
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6953,
+              "operations": {
+                "cz": 2743,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2984,
+                "sx": 5289,
+                "x": 177
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6926,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2981,
+                "sx": 5256,
+                "x": 177
+              },
+              "pass_index": 44,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6926,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2975,
+                "sx": 5250,
+                "x": 178
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6924,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2968,
+                "sx": 5250,
+                "x": 178
+              },
+              "pass_index": 47,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6927,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2972,
+                "sx": 5250,
+                "x": 178
+              },
+              "pass_index": 53,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6926,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2969,
+                "sx": 5250,
+                "x": 178
+              },
+              "pass_index": 55,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6924,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2966,
+                "sx": 5250,
+                "x": 178
+              },
+              "pass_index": 56,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2725,
+          "depth": 6924,
+          "final_layout": [
+            25,
+            45,
+            44,
+            46,
+            26,
+            24,
+            37
+          ],
+          "final_operations": {
+            "cz": 2725,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 2956,
+            "sx": 5250,
+            "x": 178
+          },
+          "initial_layout": [
+            37,
+            24,
+            26,
+            45,
+            44,
+            46,
+            25
+          ],
+          "seed_transpiler": 20261015,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7321,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 598,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6924,
+              "operations": {
+                "cz": 2725,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 2966,
+                "sx": 5250,
+                "x": 178
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 9064,
+              "operations": {
+                "cz": 3090,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6884,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7219,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 611,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7217,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 611,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 8733,
+              "operations": {
+                "cz": 3129,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6962,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 7986,
+              "operations": {
+                "cz": 2771,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4445,
+                "sx": 5731,
+                "x": 366
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7381,
+              "operations": {
+                "cz": 2771,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4097,
+                "sx": 5452,
+                "x": 171
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6883,
+              "operations": {
+                "cz": 2763,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3107,
+                "sx": 5452,
+                "x": 171
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6863,
+              "operations": {
+                "cz": 2744,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3127,
+                "sx": 5434,
+                "x": 169
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6809,
+              "operations": {
+                "cz": 2744,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3097,
+                "sx": 5403,
+                "x": 168
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6776,
+              "operations": {
+                "cz": 2744,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3053,
+                "sx": 5403,
+                "x": 168
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6775,
+              "operations": {
+                "cz": 2744,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3052,
+                "sx": 5403,
+                "x": 168
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2744,
+          "depth": 6775,
+          "final_layout": [
+            145,
+            143,
+            142,
+            141,
+            136,
+            123,
+            144
+          ],
+          "final_operations": {
+            "cz": 2744,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 3042,
+            "sx": 5403,
+            "x": 168
+          },
+          "initial_layout": [
+            145,
+            141,
+            143,
+            136,
+            142,
+            123,
+            144
+          ],
+          "seed_transpiler": 20261016,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7219,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 611,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6775,
+              "operations": {
+                "cz": 2744,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3052,
+                "sx": 5403,
+                "x": 168
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 8733,
+              "operations": {
+                "cz": 3129,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 6962,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        },
+        {
+          "aggregate_resource_transitions": [
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 7,
+              "pass_name": "InverseCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6353,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 9,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 7
+            },
+            {
+              "depth": 6355,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 14,
+              "pass_name": "BarrierBeforeFinalMeasurements",
+              "qubits": 7
+            },
+            {
+              "depth": 7234,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 621,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            {
+              "depth": 7232,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 621,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 19,
+              "pass_name": "FilterOpNodes",
+              "qubits": 156
+            },
+            {
+              "depth": 8792,
+              "operations": {
+                "cz": 3159,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 7022,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            {
+              "depth": 8030,
+              "operations": {
+                "cz": 2801,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4456,
+                "sx": 5789,
+                "x": 366
+              },
+              "pass_index": 26,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 7391,
+              "operations": {
+                "cz": 2801,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 4088,
+                "sx": 5499,
+                "x": 173
+              },
+              "pass_index": 28,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6874,
+              "operations": {
+                "cz": 2791,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3090,
+                "sx": 5499,
+                "x": 173
+              },
+              "pass_index": 29,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6825,
+              "operations": {
+                "cz": 2768,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3091,
+                "sx": 5463,
+                "x": 172
+              },
+              "pass_index": 35,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6771,
+              "operations": {
+                "cz": 2768,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3058,
+                "sx": 5434,
+                "x": 171
+              },
+              "pass_index": 37,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6745,
+              "operations": {
+                "cz": 2768,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3024,
+                "sx": 5434,
+                "x": 171
+              },
+              "pass_index": 38,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6749,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3032,
+                "sx": 5435,
+                "x": 170
+              },
+              "pass_index": 44,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6747,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3030,
+                "sx": 5435,
+                "x": 169
+              },
+              "pass_index": 46,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6743,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3024,
+                "sx": 5435,
+                "x": 169
+              },
+              "pass_index": 47,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6747,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3031,
+                "sx": 5435,
+                "x": 169
+              },
+              "pass_index": 53,
+              "pass_name": "TwoQubitPeepholeOptimization",
+              "qubits": 156
+            },
+            {
+              "depth": 6746,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3030,
+                "sx": 5435,
+                "x": 169
+              },
+              "pass_index": 55,
+              "pass_name": "Optimize1qGatesDecomposition",
+              "qubits": 156
+            },
+            {
+              "depth": 6743,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3026,
+                "sx": 5435,
+                "x": 169
+              },
+              "pass_index": 56,
+              "pass_name": "CommutativeCancellation",
+              "qubits": 156
+            },
+            {
+              "depth": 6743,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3024,
+                "sx": 5435,
+                "x": 169
+              },
+              "pass_index": 88,
+              "pass_name": "MinimumPoint",
+              "qubits": 156
+            }
+          ],
+          "cz_count": 2766,
+          "depth": 6743,
+          "final_layout": [
+            123,
+            143,
+            144,
+            145,
+            142,
+            141,
+            136
+          ],
+          "final_operations": {
+            "cz": 2766,
+            "if_else": 10,
+            "measure": 5,
+            "reset": 4,
+            "rz": 3014,
+            "sx": 5435,
+            "x": 169
+          },
+          "initial_layout": [
+            123,
+            141,
+            143,
+            144,
+            142,
+            145,
+            136
+          ],
+          "seed_transpiler": 20261017,
+          "stage_snapshots": {
+            "after_high_level_synthesis": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "pass_index": 2,
+              "pass_name": "HighLevelSynthesis",
+              "qubits": 7
+            },
+            "after_layout_routing": {
+              "depth": 7234,
+              "operations": {
+                "barrier": 1,
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 3458,
+                "swap": 621,
+                "sx": 3286,
+                "x": 219
+              },
+              "pass_index": 15,
+              "pass_name": "SabreLayout",
+              "qubits": 156
+            },
+            "final": {
+              "depth": 6743,
+              "operations": {
+                "cz": 2766,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3024,
+                "sx": 5435,
+                "x": 169
+              },
+              "qubits": 156
+            },
+            "post_routing_basis_translation": {
+              "depth": 8792,
+              "operations": {
+                "cz": 3159,
+                "if_else": 10,
+                "measure": 5,
+                "reset": 4,
+                "rz": 3488,
+                "sx": 7022,
+                "x": 219
+              },
+              "pass_index": 22,
+              "pass_name": "BasisTranslator",
+              "qubits": 156
+            },
+            "pre_routing_basis_translation": {
+              "depth": 9955,
+              "operations": {
+                "cz": 1296,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "reset": 4,
+                "rz": 8215,
+                "sx": 3286,
+                "x": 355
+              },
+              "pass_index": 3,
+              "pass_name": "BasisTranslator",
+              "qubits": 7
+            },
+            "source": {
+              "depth": 521,
+              "operations": {
+                "ccx": 85,
+                "h": 10,
+                "if_else": 10,
+                "measure": 5,
+                "p": 10,
+                "rccx": 262,
+                "reset": 4,
+                "x": 355
+              },
+              "qubits": 7
+            }
+          }
+        }
+      ],
+      "source": {
+        "depth": 521,
+        "operations": {
+          "ccx": 85,
+          "h": 10,
+          "if_else": 10,
+          "measure": 5,
+          "p": 10,
+          "rccx": 262,
+          "reset": 4,
+          "x": 355
+        },
+        "qubits": 7
+      },
+      "summary": {
+        "cz_count": {
+          "maximum": 2804,
+          "mean": 2748.0,
+          "minimum": 2713
+        },
+        "depth": {
+          "maximum": 6935,
+          "mean": 6789.75,
+          "minimum": 6646
+        }
+      },
+      "workspace_contract": "one clean workspace restored after each exact Boolean target flip"
+    }
+  ],
+  "capture": "n21-heavy-hex-mcx-workspace",
+  "compiler": {
+    "optimization_level": 3,
+    "seeds": [
+      20261010,
+      20261011,
+      20261012,
+      20261013,
+      20261014,
+      20261015,
+      20261016,
+      20261017
+    ],
+    "versions": {
+      "numpy": "2.5.3",
+      "python": "3.14.7",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0",
+      "rustworkx": "0.18.1",
+      "scipy": "1.18.1"
+    }
+  },
+  "problem": {
+    "base": 2,
+    "modulus": 21,
+    "phase_bits": 5
+  },
+  "qpu_executed": false,
+  "replay_command": "\"$PYTHON\" gororoba_quantum/compile_evidence.py --seeds 20261010 20261011 20261012 20261013 20261014 20261015 20261016 20261017 --phase-bits 5 --candidate target_flip_one_clean --out results/hw_estimate/n21_target_flip_precision5.json",
+  "schema_version": 3,
+  "source": {
+    "commit": "8ebb89122e30b475dd2331ab084f082ac9b8adee",
+    "files_sha256": {
+      "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+      "gororoba_quantum/compile_evidence.py": "de7e6aea2aced537e52a286327dce476dfbeb4b83a556edaa67f182192055f55",
+      "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+      "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+      "gororoba_quantum/modular_arithmetic.py": "2b074144bac6fdb985eb0d11c3478d92d1df979935b7dded18625737cc523084",
+      "gororoba_quantum/order_finding.py": "f97a0bc1add0b381a0589fc7a44d0fe11ab322aeefd0ba48d273a209ba0d5e2d",
+      "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+      "gororoba_quantum/target_flip_certificate.py": "2e0bcc8d268df555e93d660af7d1280f1072d032e822e17e5e40235815a284b7",
+      "proofs/TargetFlipN21.v": "f5523a81984261edc00b24ed50c0ead34ca60b378ed9498f4d536ca4a254148e",
+      "pyproject.toml": "27efcf6f3107026e03131d48c6fb55e6a6d336f339c22b4b37a3008fda2316fd",
+      "requirements.txt": "3c5d78c24e22b4557df12db0669fc43fcd60e96ac0f33e241edfcbe65a7f9b0b",
+      "scripts/python_call_graph.py": "574b5a49ae0a0cb09b29698bfc630843912c731009108c03772ec13722a1d57a"
+    },
+    "source_files_match_commit": true
+  }
+}

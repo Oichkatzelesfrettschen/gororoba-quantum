@@ -1,0 +1,72 @@
+{
+  "compiler": {
+    "ocaml": "5.4.0",
+    "rocq": "9.1.1",
+    "warning_profile": "default diagnostic severity; original @default flag is an unknown category",
+    "warnings_as_errors": false
+  },
+  "evidence_surface": "fresh selected-source compilation and theorem assumption audit; no quantum execution",
+  "fresh_source_checks": {
+    "higher_cd_closure": {
+      "assumptions_read_exit_status": 0,
+      "compile_exit_status": 0
+    },
+    "sign_cariow_count_closure": {
+      "compile_exit_status": 0,
+      "kernel_check_exit_status": 0
+    }
+  },
+  "higher_cd_assumption_output": "Axioms:\nClassicalDedekindReals.sig_forall_dec :\n  forall P : nat -> Prop,\n  (forall n : nat, {P n} + {~ P n}) ->\n  {n : nat | ~ P n} + {forall n : nat, P n}\nFunctionalExtensionality.functional_extensionality_dep :\n  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),\n  (forall x : A, f x = g x) -> f = g\n\nAxioms:\nClassicalDedekindReals.sig_forall_dec :\n  forall P : nat -> Prop,\n  (forall n : nat, {P n} + {~ P n}) ->\n  {n : nat | ~ P n} + {forall n : nat, P n}\nFunctionalExtensionality.functional_extensionality_dep :\n  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),\n  (forall x : A, f x = g x) -> f = g",
+  "log_normalization": "Trailing line whitespace and terminal blank lines removed; diagnostic text retained.",
+  "logs_sha256": {
+    "results/hw_estimate/n21_cross_project_proof/rocq911_strict_dependency_failure.txt": "5a6b0a5c3d0c3bd506370f5c530e25f100d77b7d4e58233523ed4860c33da6c9",
+    "results/hw_estimate/n21_cross_project_proof/rocq92_strict_dependency_failure.txt": "9fe690c7b8d5a31efa64e517e774767a5a280cac66d96c3b0fd346791928ebe5"
+  },
+  "open_gororoba_commit": "127816214c3f96cc1777bd4bd9ba1b286ccc5917",
+  "qpu_executed": false,
+  "replay": "Set ROCQ_BIN to the intended Rocq executable and PROOF_SOURCE_ROOT to the open_gororoba proofs directory. Set PROOF_SOURCE_SHA256 to results/hw_estimate/open_gororoba_proof_sources.sha256, then run sh scripts/open_gororoba_proof_audit.sh. The strict warning gate currently fails on the recorded installed Stdlib dependency; the original default-severity compilation and kernel/assumption evidence remains separately recorded.",
+  "scope": {
+    "C1471_4096_65536": "first-slot scalar homogeneity; standard classical-real axioms",
+    "C1636": "real dimension-16 Cariow multiplication schedule; standard classical-real axioms",
+    "C958_edge_formula": "arithmetic formula about defined counts; standard classical-real axioms",
+    "C958_graph_components": "hard-coded count/size conjunction uses its named project axiom",
+    "CDSignHalfStep": "four dimension-generic one-step sign recurrences; closed under global context",
+    "modular_target_flips": "separate finite Boolean certificate and Qiskit Operator evidence"
+  },
+  "source_files_sha256": {
+    "crates/cd_kernel/src/cayley_dickson/signs.rs": "9addcc2ca88d5c76995578e54fda496f1aeb526be15a0b61e2b43a8e7e36825b",
+    "proofs/theories/CDLinearLemmas.v": "e8c43d7094d00f21512e7f1b34baa41fcff7159ae4c2697e5d5d9c03719f0a9c",
+    "proofs/theories/CDSignHalfStep.v": "88bdb0c2993fd5de792d25334a41a2601428d8347355ad16ef7c36e9b65aec95",
+    "proofs/theories/CayleyDicksonAlgebra.v": "4efa7709088041ceafce81f4e6fcf4d7e78ed9242c7ff2c9fb2e03cdb8d7f0c0",
+    "proofs/theories/HigherCD.v": "9653a0aad7b3d90fb61da01c6e4bfbc6f2e3458d1e591e98a0b16d5a162ad767",
+    "proofs/theories/M3IsAssociator.v": "5b45c948a3608dcb89b9673dbd17d69fce47d3d1a25ff060e20205869aa87812",
+    "proofs/theories/OctonionNorm.v": "3c65bb9f5c84a2775d9a6bebd202e8433f34f174c4d4808e79b582dfec17b51e",
+    "proofs/theories/Pathion.v": "5a84bb59313a686113664163e4d0023d1f4c6f12da42b3f24b0fe20e7ed9a51f",
+    "proofs/theories/Prelude.v": "ea2b955ee77feb89fadeb9a533260b8da4318b0111a1f079130e6db48886dafb",
+    "proofs/theories/Sedenion.v": "f7fa97304850eaa6004d3917fe37be555b40568fc65389887bbe489fbc922681",
+    "proofs/theories/SedenionAssociator.v": "3b1555f83dccb552efd1e4f894f16fd32db2ef04a683b64cedcf5160aaacb4ec",
+    "proofs/verified/C1455_AssociatorTrilinear.v": "d9a411e2be90200236b3e07c23cb59b3c68fde49e75e8275a0011e6a2b155510",
+    "proofs/verified/C1470_PathionTrilinearity.v": "9fccf3e3a9b68d631388a5c02f470c7a37f161b0c307bf249ae957940827cf42",
+    "proofs/verified/C1471_HigherCDTrilinearity.v": "00c5922b0b5da069cd2aca13ec1c66bbc2e0b74c2eb56c88eb8a238a66382f99",
+    "proofs/verified/C1474_FuelAdequacy.v": "122a6d4cafcf1bfa9ad0270a82e4e62eb08510b85e1d0c460841c66f19ab5eb9",
+    "proofs/verified/C1636_Cariow2013SedenionSchedule.v": "fe6fa707fc6d1278d799ee621b11f11acd7fa77d0bb15fc38eb6ee88f56c6a26",
+    "proofs/verified/C958_ZDGraphTopology.v": "9ddc4131269209a2ceb1d78986f385117ac7b279d0cd9765f8b29ef553dc09ed"
+  },
+  "strict_warning_gate": {
+    "diagnostic": "deprecated-transitive-library-file-since-9.0",
+    "evidence_directory": "results/hw_estimate/n21_cross_project_proof",
+    "flags": [
+      "compile",
+      "-q",
+      "-w",
+      "+all"
+    ],
+    "library": "Stdlib.ZArith.ZArith_base",
+    "next_action": "Repair the deprecated import in the installed Stdlib dependency closure, rebuild that toolchain, then rerun the strict source audit with unchanged source hashes.",
+    "rocq_9_1_1_exit_status": 1,
+    "rocq_9_2_exit_status": 1,
+    "source": "proofs/theories/Prelude.v:7",
+    "state": "blocked_by_installed_stdlib_dependency"
+  },
+  "theorem_assumption_output": "Closed under the global context\n\nClosed under the global context\n\nClosed under the global context\n\nClosed under the global context\n\nAxioms:\nClassicalDedekindReals.sig_forall_dec :\n  forall P : nat -> Prop,\n  (forall n : nat, {P n} + {~ P n}) ->\n  {n : nat | ~ P n} + {forall n : nat, P n}\nFunctionalExtensionality.functional_extensionality_dep :\n  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),\n  (forall x : A, f x = g x) -> f = g\n\nAxioms:\nClassicalDedekindReals.sig_forall_dec :\n  forall P : nat -> Prop,\n  (forall n : nat, {P n} + {~ P n}) ->\n  {n : nat | ~ P n} + {forall n : nat, P n}\nFunctionalExtensionality.functional_extensionality_dep :\n  forall (A : Type) (B : A -> Type) (f g : forall x : A, B x),\n  (forall x : A, f x = g x) -> f = g\n\nClosed under the global context\n\nAxioms:\nzd_graph_three_components :\n  forall d : nat,\n  valid_cd_dim d ->\n  zd_component_count = 3 /\\ zd_giant_size d = d - 2 /\\ zd_singleton_count = 2\n\nClosed under the global context"
+}
