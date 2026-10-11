@@ -82,6 +82,15 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
+`2026-10-11T100526.684788Z` requalifies schema 6 after packing_schedule moved to scheduler
+residuals gated on a complete timing status. Clean source commit `9756ec3`
+(sources_modified=false) carries experiment digest
+`20bd45a5149145e8164bb382dd061b03c66e54dd21d3a4ff275f74d1a31fa00a`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`d7400b165b2089d5081167bf60d56e6638c9fd8e11786f8f00e6ce3ffaab4f92`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T095108.705673Z` requalifies schema 6 after collection began checkpointing
 each job's usage and refreshing it once a running job's result returns.
 Clean source commit `abb481e` (sources_modified=false) carries
