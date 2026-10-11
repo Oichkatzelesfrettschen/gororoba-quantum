@@ -63,6 +63,32 @@ and stated as conjectures beyond:
   factors carries a cubic sign, so the composition cancels the cubic terms; W
   leaves the Clifford group from dim 32 on.
 
+Within one degree the Walsh spectrum is a finer invariant than the degree.
+`scripts/associator_walsh_classes.py` groups every pair first appearing at
+a doubling level by the multiset of |W(y)| and the collision probability
+K = sum_y P(y)^2 (results/hw_estimate/associator_walsh_classes.json):
+
+| dim | degree | pairs | spectral classes | class sizes | K |
+|---:|---:|---:|---:|---|---|
+| 8 | 1 | 21 | 1 | 21 | 1 |
+| 16 | 2 | 84 | 1 | 84 | 1/4 |
+| 32 | 3 | 360 | 2 | 234, 126 | 11/32, 5/32 |
+| 64 | 4 | 1,488 | 6 | 354, 252 (x4), 126 | 37/256 to 151/256 |
+| 128 | 5 | 6,048 | 22 | 594, 504, 396, 252, 126 | 299/2048 to 1583/2048 |
+
+At dim 32 the pair (1, 16) has |W| in {0 (x24), 8 (x7), 24 (x1)} and
+K = 11/32 while (9, 18) has {0 (x22), 8 (x8), 16 (x2)} and K = 5/32, so two
+cubic phase oracles of identical gate cost have output distributions a
+collision-rate estimator separates by 3/16. Every class size is a multiple
+of 126 or of 21 up to the factors 2 and 3, which is the shape a symmetry
+argument would explain; the closed form of the classes, their
+multiplicities, and their relation to the published twist formulas
+(literature/notes/1602.02843.md) are open, so the census is finite evidence
+and the classification is a candidate result, not a theorem. The two cubic
+classes are the content of a five-qubit hardware comparison (does the
+compiled circuit preserve the predicted spectral distinction on one
+layout), which needs its own written case.
+
 `verify.check_pathion_separator_sign_bridge` establishes an exact cross-level
 identity behind the cubic rung. C881's 15 labels index the top-level dim-32
 pathion cross-assessor components in PG(3,2); they are distinct from the seven
@@ -288,8 +314,18 @@ linear combination of unitaries of Childs and Wiebe (arXiv:1202.5822), and
 DiagonalGate synthesizes the SELECT sign by Theorem 7 of Shende, Bullock, and
 Markov (quant-ph/0406176). The contribution here is the convention-pinned
 algebra-to-circuit compile with exact operator checks, the degree results along
-the ladder, and falsifiable observables with controls; no literature search
-establishes priority for the degree results.
+the ladder, and falsifiable observables with controls. Each claim carries one
+of four labels against the literature notes: known theorem reproduced, new
+proof or formalization, new implementation or measurement, or candidate new
+result. The sign-kernel order and rank are known in loop coordinates
+(literature/notes/1207.4230.md); the sedenion zero-divisor spectrum
+{0, 1/2, 1} is a rescaling of a known eigentheory result
+(literature/notes/0905.2987.md); the degree formula, its census, and the
+Walsh classes above are candidate results pending the comparison with the
+published twist formulas (literature/notes/1602.02843.md); the Fano Z-string
+has close prior conceptual overlap
+(literature/notes/levratti-2026-fano-css.md); the Fano-Hamming-Steane
+incidence below is standard.
 
 ## Reference: Fano plane and the Steane code
 
