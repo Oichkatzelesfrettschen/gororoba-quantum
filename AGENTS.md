@@ -84,8 +84,12 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
   spent returns 28 days later and no reset date exists.
 - Every `--submit` waits for the user's approval of a written case: what the
   run measures, why noise simulation cannot answer it, and its expected
-  seconds. Calibration reads, transpilation, and noise simulation need no
-  approval.
+  seconds. The case is written against a submit-free dry run, and the
+  `--submit` command names that run with `--approved-record`; the fresh plan
+  must match it in experiment digest, shots, policy, groups, backends, seeds,
+  layouts, replica qubits, fused PUB manifests, calibration, and QPY bytes,
+  or the run writes an `approval_required` record and sends nothing.
+  Calibration reads, transpilation, and noise simulation need no approval.
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a

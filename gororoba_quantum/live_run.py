@@ -2272,6 +2272,50 @@ def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
         raise LiveRunError(f"{name}: {remaining} s of QPU time remaining, below --min-remaining-seconds")
 
 
+APPROVED_GROUP_FIELDS = ("backend", "seed_transpiler", "initial_layout", "replica_floor")
+
+
+def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_archive_sha256: str) -> list[str]:
+    """Every way the fresh plan in record differs from the approved submit-free record in approved_dir.
+
+    The approved record is the dry run the owner read before approving the
+    command, so the plan that reaches the service has to be that plan: the
+    same experiment digest and schema, shots, policy, groups on the same
+    backends with the same seeds, layouts, replica qubits, and floors, the
+    same fused PUB manifests, the same calibration on every used backend,
+    and a byte-identical QPY archive. The approved record is itself a dry
+    run: planned, with no submission.
+    """
+    approved = json.loads((approved_dir / "record.json").read_text())
+    approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+    mismatches: list[str] = []
+    if approved.get("state") != "planned" or "submission" in approved:
+        mismatches.append(f"approved record state is {approved.get('state')!r}, not a submit-free plan")
+    for field_name in ("experiment_digest", "schema_version", "schema_contract", "shots", "policy"):
+        if approved.get(field_name) != record.get(field_name):
+            mismatches.append(f"{field_name} differs")
+    approved_groups = {g["group"]: g for g in approved.get("groups", [])}
+    fresh_groups = {g["group"]: g for g in record.get("groups", [])}
+    if set(approved_groups) != set(fresh_groups):
+        mismatches.append(f"groups differ: approved {sorted(approved_groups)}, fresh {sorted(fresh_groups)}")
+    for name in sorted(set(approved_groups) & set(fresh_groups)):
+        old, new = approved_groups[name], fresh_groups[name]
+        for field_name in APPROVED_GROUP_FIELDS:
+            if old.get(field_name) != new.get(field_name):
+                mismatches.append(f"{name}: {field_name} {old.get(field_name)!r} -> {new.get(field_name)!r}")
+        old_qubits = [replica.get("physical_qubits") for replica in old.get("replicas", [])]
+        new_qubits = [replica.get("physical_qubits") for replica in new.get("replicas", [])]
+        if old_qubits != new_qubits:
+            mismatches.append(f"{name}: replica qubits {old_qubits} -> {new_qubits}")
+        if old.get("calibration") != new.get("calibration"):
+            mismatches.append(f"{name}: calibration {old.get('calibration')} -> {new.get('calibration')}")
+    if approved.get("execution_pubs") != record.get("execution_pubs"):
+        mismatches.append("fused PUB manifests differ")
+    if approved_qpy != qpy_archive_sha256:
+        mismatches.append(f"QPY archive {approved_qpy[:12]} -> {qpy_archive_sha256[:12]}")
+    return mismatches
+
+
 def _qpy_digest(circuits: list[QuantumCircuit]) -> str:
     """Stable in-process identity for an ordered execution-circuit set."""
     buffer = io.BytesIO()
@@ -2684,6 +2728,29 @@ def submit(
             "a renewed written submission case and user approval; no Runtime job was submitted"
         )
     qpy_archive_sha256 = archive()
+    approved_dir = getattr(args, "approved_record", None)
+    if approved_dir is not None:
+        mismatches = approved_record_mismatches(Path(approved_dir), record, qpy_archive_sha256)
+        record["approved_record"] = {
+            "run": Path(approved_dir).name,
+            "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
+            "qpy_archive_sha256": hashlib.sha256((Path(approved_dir) / "isa.qpy").read_bytes()).hexdigest(),
+            "mismatches": mismatches,
+        }
+        if mismatches:
+            record["state"] = "approval_required"
+            record["renewed_approval"] = {
+                "required_at": _now(),
+                "reason": "the fresh plan differs from the approved record",
+                "mismatches": mismatches,
+                "qpy_archive_sha256": qpy_archive_sha256,
+            }
+            checkpoint()
+            raise LiveRunError(
+                "the fresh plan differs from the approved record "
+                f"{Path(approved_dir).name} ({'; '.join(mismatches)}); a renewed written case and approval are "
+                "required; no Runtime job was submitted"
+            )
     submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
     # The complete batch ledger reaches disk before the first job starts. A
     # partial submission can therefore name every unsent circuit, including a
@@ -3728,9 +3795,18 @@ def main(argv: list[str] | None = None) -> int:
         help="apply dynamical decoupling to static submission batches; dynamic batches remain disabled",
     )
     parser.add_argument("--collect", type=Path, help="run directory whose submitted jobs to collect")
+    parser.add_argument(
+        "--approved-record",
+        type=Path,
+        help="run directory of the approved dry run; --submit sends nothing unless the fresh plan matches it",
+    )
     args = parser.parse_args(argv)
     if args.submit and not args.out:
         parser.error("--submit needs --out so the job ids land in an audit record")
+    if args.submit and not args.approved_record:
+        parser.error("--submit needs --approved-record, the dry run the written case was approved on")
+    if args.approved_record and not args.submit:
+        parser.error("--approved-record applies only with --submit")
     service = QiskitRuntimeService()
     try:
         if args.collect:

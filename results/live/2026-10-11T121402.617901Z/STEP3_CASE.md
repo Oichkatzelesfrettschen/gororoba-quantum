@@ -15,10 +15,65 @@
   - noise-model packing comparison: scope global, verdict equivalent_within_0.03, 95% interval [-0.020131142358006608, 0.007431616779095278]
 - hybrid_shor_mod15: backend ibm_kingston, seed 20261010, layout [59, 54, 74, 55, 75], replicas 6, joint score 0.7225
   - noise-model packing comparison: scope global, verdict equivalent_within_0.03, 95% interval [-0.029867520601405344, 0.01376500005896722]
-- Hybrid Shor admission (noise model): {"factorable_probability": {"admitted": true, "identity_null": {"hi": 0.01055750046058344, "lo": 0.0002660672477498944, "mean": 0.005411783854166667, "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"}, "primary": {"hi": 0.5043658473202968, "lo": 0.4851361058047032, "mean": 0.4947509765625, "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"}, "uniform_null": 0.296875}, "order_recovery_probability": {"admitted": true, "identity_null": {"hi": 0.01055750046058344, "lo": 0.0002660672477498944, "mean": 0.005411783854166667, "method": "student_t_over_6_replicas_unio
+- Hybrid Shor admission (noise model), complete:
+
+```json
+{
+  "factorable_probability": {
+    "admitted": true,
+    "identity_null": {
+      "hi": 0.01055750046058344,
+      "lo": 0.0002660672477498944,
+      "mean": 0.005411783854166667,
+      "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
+    },
+    "primary": {
+      "hi": 0.5043658473202968,
+      "lo": 0.4851361058047032,
+      "mean": 0.4947509765625,
+      "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
+    },
+    "uniform_null": 0.296875
+  },
+  "order_recovery_probability": {
+    "admitted": true,
+    "identity_null": {
+      "hi": 0.01055750046058344,
+      "lo": 0.0002660672477498944,
+      "mean": 0.005411783854166667,
+      "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
+    },
+    "primary": {
+      "hi": 0.5043658473202968,
+      "lo": 0.4851361058047032,
+      "mean": 0.4947509765625,
+      "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
+    },
+    "uniform_null": 0.296875
+  }
+}
+```
+
 - Requested scheduler fields: execution.scheduler_timing=True on the job; per PUB scheduled_circuit_duration_dt, scheduler_residual_dt against the execution-time Target, parallel/sequential stream counts; per job qpu_charge_time_seconds and pub_shots_per_qpu_second.
 - Expected QPU seconds: 24576 PUB shots at the literature bounds of 1,000 to 4,900 shots/s give 5.0 to 24.6 s plus job overhead; the measured rate replaces this for the dynamic workload only.
-- Questions only hardware answers: hybrid-Shor admission on hardware; the packed-versus-reference residual (global packing scheduling cost) and fidelity equivalence; scheduler residuals of the dynamic PUBs; the project's own throughput.
+- Why the noise simulation cannot answer the questions this run asks:
+  - Hybrid-Shor admission: the simulated admission above comes from a
+    Target-derived Aer noise model whose channels are independent per qubit
+    and per gate; it carries no crosstalk, no mid-circuit measurement
+    back-action on neighbors, no classical feed-forward latency, and no drift,
+    and it is built from the same calibration snapshot it is judged against.
+    Whether the factor yield's lower bound clears the uniform null on the
+    device is a property of the device.
+  - Packing equivalence: the simulation sets every cross-replica interaction
+    to zero by construction, so its packed-versus-reference verdict is the
+    statistic's null behavior, never evidence about packing cost; only shots
+    from co-scheduled replicas on hardware test it.
+  - Scheduler residuals: the Target omits classical feed-forward, alignment,
+    measurement, and reset scheduling, so the residual is undefined in
+    simulation; only the backend scheduler's circuit_duration on a submitted
+    job supplies it.
+  - Throughput: QPU charge per submitted PUB shot is a service quantity that
+    exists only for an executed job.
 - Failure and recollection: a failed or cancelled job is retained with its charge and no throughput; a pending usage is polled for 120 s and otherwise left pending with a reason; any resubmission needs a new case.
 
 ## Exact command
@@ -27,6 +82,7 @@ Run from a clean checkout at the source commit above, in gororoba_quantum/,
 after the owner approves this case:
 
 ```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" live_run.py \
   --backends ibm_kingston \
   --groups folded_qpe_mod15,hybrid_shor_mod15 \

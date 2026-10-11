@@ -1857,6 +1857,75 @@ def _fixture_args(**overrides: Any) -> argparse.Namespace:
     return argparse.Namespace(**values)
 
 
+def _verify_approved_record_gate() -> None:
+    """--submit sends nothing unless the fresh plan matches the approved dry run byte for byte."""
+    backend = _ProbeBackend("viable", FakeFez())
+    service = _ProbeService([backend])
+    args = _fixture_args(groups=["hybrid_shor_mod15"])
+    choices, record = live_run_module.plan(service, args)
+    live_run_module.evaluate(choices, record)
+    original_configure_sampler = live_run_module.configure_sampler
+    constructions = 0
+
+    def counting_sampler(
+        backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], shots: int = 4096
+    ) -> Any:
+        nonlocal constructions
+        del backend, twirl, dd
+        constructions += 1
+        return _ProbeSampler(kind, tags, shots, lambda unused_circuits: None)
+
+    with tempfile.TemporaryDirectory(prefix="gororoba-approved-record-") as directory:
+        approved_dir = Path(directory) / "approved"
+        approved_dir.mkdir()
+        write_archive(approved_dir, choices)
+        write_json(approved_dir, record)
+        fresh_record = copy.deepcopy(record)
+        fresh_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
+        if live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy):
+            raise RuntimeError("an identical fresh plan mismatches its own approved record")
+        drifted = copy.deepcopy(record)
+        drifted["groups"][0]["calibration"] = "2000-01-01T00:00:00+00:00"
+        drifted["groups"][0]["initial_layout"] = list(reversed(drifted["groups"][0]["initial_layout"]))
+        found = live_run_module.approved_record_mismatches(approved_dir, drifted, "0" * 64)
+        if not any("calibration" in m for m in found) or not any("initial_layout" in m for m in found):
+            raise RuntimeError(f"drifted plan mismatches read {found}")
+        if not any("QPY archive" in m for m in found):
+            raise RuntimeError("a changed QPY archive passes the approved-record gate")
+        submitted = json.loads((approved_dir / "record.json").read_text())
+        submitted["submission"] = {}
+        submitted["state"] = "submitted"
+        (approved_dir / "record.json").write_text(json.dumps(submitted))
+        rejected = live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy)
+        if not any("not a submit-free plan" in m for m in rejected):
+            raise RuntimeError("a submitted record passes as an approved dry run")
+        write_json(approved_dir, record)
+        # The submit path with a mismatching approved record stops before
+        # the Sampler and leaves an approval_required record.
+        run_dir = Path(directory) / "run"
+        run_dir.mkdir()
+        args.approved_record = approved_dir
+        gated_record = copy.deepcopy(record)
+        gated_record["shots"] = int(record["shots"]) + 1
+        live_run_module.configure_sampler = counting_sampler
+        try:
+            try:
+                live_run_module.submit(
+                    service, list(choices), args, gated_record, lambda: write_archive(run_dir, choices), lambda: None
+                )
+            except LiveRunError as error:
+                if "differs from the approved record" not in str(error):
+                    raise RuntimeError(f"the approved-record gate reports {error}") from error
+            else:
+                raise RuntimeError("a plan that differs from the approved record reaches submission")
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+            args.approved_record = None
+        mismatches = gated_record.get("renewed_approval", {}).get("mismatches", [])
+        if constructions or gated_record["state"] != "approval_required" or "shots differs" not in mismatches:
+            raise RuntimeError(f"the approved-record gate leaves {gated_record.get('state')} after {constructions}")
+
+
 def _verify_schema_lifecycle() -> None:
     backend = _ProbeBackend("viable", FakeFez())
     service = _ProbeService([backend])
@@ -2380,6 +2449,7 @@ def _verify() -> None:
     _verify_job_usage_cases()
     _verify_packing_equivalence()
     _verify_usage_wait()
+    _verify_approved_record_gate()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()

@@ -72,6 +72,33 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T152922.787095Z` is the first hardware record: the owner-approved Step 3 dynamic
+job on ibm_kingston, job `db5qmqclf4us73c4e1ug`, submitted and collected from
+clean source commit `2a4f0fb` (sources_modified=false, experiment digest
+`0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2`), whose plan
+matched the approved dry run `2026-10-11T121402.617901Z` byte for byte in QPY
+(`69f085f5319a`), layouts, replicas, and PUB bounds under a later calibration
+(2026-10-11T07:57:41-07:00 against 03:48:01). The job ran under one
+calibration with no update inside any PUB's shots. QPU charge 9 s for
+24576 submitted PUB shots: 2730.667 PUB shots per QPU second, the
+project's first measured rate (the literature range was 1,000 to 4,900).
+Hybrid Shor is admitted on hardware: factor yield 0.4971
+[0.4726, 0.5216] against the uniform null 0.2969, identity null
+0.0042 [0.0003, 0.0080]. Folded QPE reads p_correct_mean
+0.7154 against the noise model's 0.90. Packing: both groups read
+equivalent_within_0.03 (hybrid Shor difference +0.0020, 95 percent interval
+[-0.0199, 0.0238]; folded QPE -0.0037,
+[-0.0243, 0.0170]). Timing came from
+executor chunk timing; scheduler residuals above the execution-time Target
+bound read {'ibm_kingston_dynamic_pub_01': 2735, 'ibm_kingston_dynamic_pub_02': 2587, 'ibm_kingston_dynamic_pub_03': 3557, 'ibm_kingston_dynamic_pub_04': 2395, 'ibm_kingston_dynamic_pub_05': 2395, 'ibm_kingston_dynamic_pub_06': 2404} dt, and the
+packed PUB's residual exceeds the reference PUB's by 148 dt, an unattributed global
+packing scheduling cost. Readout correction is withheld by design for
+feed-forward circuits. Record SHA-256 is
+`3b81e5b3ba59bf5041daeaae911d9c5b62063fe4186544c5ed79e9ef709c1e59`; QPY
+SHA-256 is
+`69f085f5319a19578aff823ec30d98c0029b83de156d515f909bd53fe6413a24`; collect.json SHA-256 is
+`0207f35e24ce37804aea3824e6ab693fbdad2232630fe3109532c8254c7df508`.
+
 `2026-10-11T121402.617901Z` is the Step 3 submission-ready dry run: the program's exact
 command on ibm_kingston (6 pending jobs under the default bound of 25) for
 folded QPE and hybrid Shor alone, six dynamic PUBs at 4096 shots (24,576
