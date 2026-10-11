@@ -2290,6 +2290,24 @@ APPROVED_RECORD_FIELDS = (
 )
 
 
+def approved_calibration_drift(record: dict[str, Any], backend_name: str, calibration: str) -> str | None:
+    """Why a batch's calibration departs from the one the approved-record gate accepted, or None.
+
+    A run that has sent no batch returns to approval_required; a run with a
+    batch already sent keeps its submission lifecycle and records that the
+    unsent batches need renewed approval.
+    """
+    approved = record.get("approved_record", {}).get("calibrations", {})
+    if backend_name not in approved or calibration == approved[backend_name]:
+        return None
+    reason = f"calibration moved after the approved-record check ({approved[backend_name]} -> {calibration})"
+    if record.get("submission", {}).get("jobs"):
+        record["renewed_approval_for_unsent_batches"] = {"required_at": _now(), "reason": reason}
+    else:
+        record["state"] = "approval_required"
+    return reason
+
+
 def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: list[ExecutionPub]) -> dict[str, Any]:
     """A record-shaped view of the plan as it stands after the pre-submission refresh.
 
@@ -2833,13 +2851,9 @@ def submit(
         # The approved-record check compared calibration timestamps at the
         # refresh; a calibration that rolls between that check and this
         # batch leaves the consumed values unchanged yet is unapproved.
-        approved_calibrations = record.get("approved_record", {}).get("calibrations", {})
-        if name in approved_calibrations and fresh.calibration != approved_calibrations[name]:
-            record["state"] = "approval_required"
-            raise LiveRunError(
-                f"{name}: {batch_tag} calibration moved after the approved-record check "
-                f"({approved_calibrations[name]} -> {fresh.calibration}); no circuit in this batch was submitted"
-            )
+        drift = approved_calibration_drift(record, name, fresh.calibration)
+        if drift is not None:
+            raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
         sampler = configure_sampler(

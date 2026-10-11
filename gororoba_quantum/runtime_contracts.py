@@ -1990,6 +1990,19 @@ def _verify_approved_record_gate() -> None:
             args.approved_record = None
         if runs or rolled_record["state"] != "approval_required":
             raise RuntimeError("a rolled batch calibration runs a Sampler or leaves the state unchanged")
+        # With a batch already sent, the lifecycle stays with the submission.
+        partial = copy.deepcopy(record)
+        partial["submission"] = {"jobs": [{"job_id": "sent-earlier"}]}
+        partial["approved_record"] = {"calibrations": {backend.name: "approved"}}
+        partial["state"] = "submitted"
+        rolled = original_take_snapshot(service, backend.name)
+        rolled.calibration = "2099-01-01T00:00:00+00:00"
+        if partial["approved_record"]["calibrations"].get(backend.name) == rolled.calibration:
+            raise RuntimeError("fixture calibrations coincide")
+        if live_run_module.approved_calibration_drift(partial, backend.name, rolled.calibration) is None:
+            raise RuntimeError("a rolled calibration after a sent batch is not reported")
+        if partial["state"] != "submitted" or "renewed_approval_for_unsent_batches" not in partial:
+            raise RuntimeError("a rolled calibration after a sent batch resets the lifecycle or goes unrecorded")
 
 
 def _verify_schema_lifecycle() -> None:

@@ -78,12 +78,14 @@
 
 ## Exact command
 
-The command below is the one the owner approved and ran (see Outcome). It
-is retained as run. A future submission cannot reuse this record: the gate
-compares the experiment digest, which covers live_run.py, so an approved
-dry run must come from the same source revision as the submitting checkout,
-and this record predates the gate. A future case therefore starts from a
-fresh dry run at a revision that carries --approved-record.
+The command below is the one the owner approved and ran (see Outcome),
+retained exactly as run; at that revision live_run.py had no
+--approved-record option. A future submission cannot reuse this record: the
+gate compares the experiment digest, which covers live_run.py, so an
+approved dry run must come from the same source revision as the submitting
+checkout, and this record predates the gate. A future case therefore starts
+from a fresh dry run at a revision that carries --approved-record and adds
+`--approved-record <that run directory>` to the command below.
 
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"
@@ -96,15 +98,16 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" live_run.py \
   --isolated-reference \
   --min-remaining-seconds 60 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-11T121402.617901Z \
   --submit
 ```
 
-The run re-reads the live calibration, recompiles, compares the fresh plan
-with this record (`--approved-record`: experiment digest, shots, policy,
-groups, backends, seeds, layouts, replica qubits, fused PUB manifests,
-calibration, QPY bytes), and stops before Sampler construction with an
-approval_required record on any difference. This case authorizes nothing by itself; the static job
+As run, the command re-read the live calibration, recompiled, and compared
+the fresh plan only with a second refresh from the same process. With
+`--approved-record`, a run also compares the fresh plan with the approved
+record (experiment digest, shots, policy, versions, instance, groups,
+backends, seeds, layouts, replica qubits, fused PUB manifests, calibration,
+QPY bytes) and stops before Sampler construction with an approval_required
+record on any difference. This case authorizes nothing by itself; the static job
 (57,344 submitted PUB shots) and the feed-forward timing ladder each need a
 case of their own.
 
