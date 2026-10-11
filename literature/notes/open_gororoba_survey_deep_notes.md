@@ -456,11 +456,12 @@ Group G_n = <L_{e_p} (p in F_2^n), -1> in the signed permutation group of
 2^n points. |G_n| = 4, 8, 128, 4096, 2^21, 2^38, 2^71, 2^136 for n = 1..8.
 For n >= 3 the pattern is |G_n| = 2^(n + 2^(n-1)): a translation part of order
 2^n (the XOR group) times a sign subgroup of order 2^(2^(n-1)) = 2^(dim/2).
-Observed for n = 3..8; not proved. The group is a 2-group inside
+left_mult_sign_rank.md proves the pattern for every n >= 3: the sign
+subgroup is {g(x') + c x_{n-1} : g of even weight on the low n-1 bits}, of
+dimension 2^(n-1), and its F_2 rank computation reproduces 2^265 at n = 9 and
+continues through n = 11. The group is a 2-group inside
 F_2^n x| {+-1}^(2^n), so every element has 2-power order. A modular
 multiplication permutation has order ord_N(a), generally not a power of 2.
-Prediction for n = 9: 2^265 (not run; dim 512 is expected to take longer than
-the 765 seconds the dim-256 run needed).
 
 ### 8.7 Walsh spectrum facts
 
@@ -1191,7 +1192,7 @@ prints totals and the files with admissions, axioms, parameters, or conjectures.
 | Claim | What would falsify it | Status |
 | --- | --- | --- |
 | Row degree is n-1 for every non-identity p, all n | one row of lower degree at some n | verified n = 3..11; unproved |
-| |G_n| = 2^(n + 2^(n-1)) | order different at n = 9 | verified n = 3..8; unproved |
+| |G_n| = 2^(n + 2^(n-1)) | order different at any n >= 3 | proved for n >= 3 (left_mult_sign_rank.md); computed n = 3..11 |
 | N(n) closed form | none expected: proof sketch in 8.3 | proof sketch plus n = 1..11 |
 | v(N) = N^3/2 - 14N + 24 and E(D) = v(D/2)/2 | a computed v(N) off the formula, or a measured edge total off E(D) | v: N = 4..2048; E: D = 16..256; extrapolation to D = 4096 unmeasured |
 | Fold recursion | none expected: algebraic identity | verified n <= 10, circuit n <= 6 |
