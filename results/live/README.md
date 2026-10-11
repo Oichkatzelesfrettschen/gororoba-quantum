@@ -4,6 +4,15 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+- **Schema 5 records.** The `live-target-cross-group-fused-pubs-v1` contract
+  jointly allocates same-backend, same-kind replica pools and archives the
+  exact fused Runtime PUBs. Ordered manifests map each PUB to namespaced
+  logical components and bind that map into recovery tags. The full experiment
+  has 29 logical static entries in 14 PUBs and 9 logical dynamic entries in 6
+  PUBs when each kind uses one backend. The shared reference PUB changes the
+  old isolated crosstalk statistic into a global packed-workload versus global
+  replica-0 comparison. Collection reconstructs each logical entry from QPY
+  and fans the PUB's execution window and calibration out to every component.
 - **Schema 4 records.** The `live-target-packed-replicas-v1` contract combines
   live system inventory, circuit-derived capability admission,
   degraded-hardware-filtered routing, recursive Target validation, packed
@@ -73,7 +82,7 @@ SHA-256 is
 `34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
 A dynamic member marks `duration_bound: lower_without_classical_latency`.
-Schema-4 top-level inventory fields describe initial planning;
+Schema-5 and schema-4 top-level inventory fields describe initial planning;
 `revalidation[].system_inventory` describes each full pre-submission refresh;
 `submission.planned_jobs[].pre_submit_revalidation` describes each immediate
 batch refresh. Record, QPY, and collection writes use atomic replacement with
@@ -84,7 +93,8 @@ The two historical schema-3 contracts require shape-aware classification:
 ```sh
 for record_path in results/live/*/record.json; do
     jq -r --arg path "$record_path" '
-      if .schema_version == 4 then "schema4-combined"
+      if .schema_version == 5 then "schema5-fused-pubs"
+      elif .schema_version == 4 then "schema4-combined"
       elif .schema_version == 3 and has("system_inventory")
         then "schema3-capability"
       elif .schema_version == 3 then "schema3-replicas"

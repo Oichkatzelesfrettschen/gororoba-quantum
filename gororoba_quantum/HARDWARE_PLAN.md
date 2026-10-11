@@ -47,24 +47,28 @@ does not establish default-policy submission readiness.
    parameters and nested control-flow instructions in every routed primary,
    control, and mirror against the original fresh Target. A failure advances to
    the next candidate or backend.
-5. **Place replicas and references.** `packing.py` embeds the winning pattern
-   in the admitted CZ graph, ranks embeddings by the same layout score, and
-   places disjoint replicas one qubit apart. An explicit `--replica-floor`
-   governs every group; otherwise a group's declared floor applies, with 0.9
-   as the default. Hybrid Shor declares 0.8. Each multi-replica group adds an
-   isolated primary on replica 0's qubits as its crosstalk reference. Record
-   `222132` places 21 replicas for design A, 18 for design C dim 8, seven for
-   hybrid Shor, and three to six for the other five-qubit groups.
-6. **Derive execution requirements.** The runner re-derives entry count,
-   classical width, static or dynamic kind, packed layouts, and reference
-   requirements from the exact circuits written to `isa.qpy`. These values
-   describe the execution set after mirrors, replicas, and references exist.
-7. **Partition complete groups into job batches.** The partitioner keeps every
-   member, mirror, and isolated reference from a group together. It uses
-   `IBMBackend.max_circuits` only as a client-reported compatibility bound;
-   IBM documents that the value no longer accurately represents the service
-   circuit limit. Job-batch partitioning leaves every circuit as a separate
-   PUB and does not perform the future PUB fusion below.
+5. **Allocate one placement pool.** `packing.py` enumerates each winning
+   pattern's floor-qualified embeddings in the admitted CZ graph. A
+   round-fair backtracking allocator gives every same-backend, same-kind group
+   the two placements needed for its replica-0 reference before allocating
+   surplus rounds. Replicas of one group stay one CZ hop apart; groups that
+   share a PUB occupy disjoint physical qubits. An explicit
+   `--replica-floor` governs every group; otherwise a group's declared floor
+   applies, with 0.9 as the default and 0.8 for hybrid Shor.
+6. **Fuse the execution PUBs.** Row zero combines every group's packed
+   primary. Row one combines each group's primary on replica 0, forming one
+   shared global reference workload. Later rows align the remaining members
+   and mirrors in group order. Stable outer register prefixes preserve each
+   component and replica boundary. The full surface therefore maps 29 logical
+   static entries to 14 static PUBs and 9 logical dynamic entries to 6 dynamic
+   PUBs when all groups of a kind select one backend.
+7. **Derive and bind execution requirements.** The record retains the logical
+   entry requirements, joint-placement evidence, fused-PUB cardinalities, and
+   ordered PUB-to-component manifests. `isa.qpy` contains the exact fused
+   circuits sent to Runtime. One result-complete backend-and-kind cluster must
+   fit the 10-million-execution Sampler job bound. Runtime 0.50's deprecated
+   `IBMBackend.max_circuits` property always returns `None` and does not define
+   an additional submission limit.
 8. **Revalidate live configuration.** Before a ledger becomes immutable,
    `--submit` repeats cross-system discovery and deterministic selection. Any
    change to the approved backend, layout, replica maps, packed circuits,
@@ -80,9 +84,11 @@ does not establish default-policy submission readiness.
   variance with a chi-squared test across replicas; folded QPE adds an
   instance axis. The noise model predicts layout variance of 2e-5 to 4e-4 in
   the primaries, and 3.1e-5 in Shor factor yield, within shot noise (p 0.17).
-- **Crosstalk.** The primary runs alone on replica 0's qubits beside the
-  packed run; the noise model puts their difference at zero, so a measured
-  difference is crosstalk from packing.
+- **Global packing crosstalk.** One PUB runs all packed primaries and the shared
+  reference PUB runs all groups on replica 0. The per-group score difference
+  measures the global packed workload against the global replica-0 workload;
+  it does not attribute crosstalk to one group. The noise model puts the
+  difference at zero.
 - **ODR.** The pooled value averages each replica's witness over its own twin
   and needs 16384 shots over all replicas, so packing meets it at the default
   4096 shots for every mirrored group: design A pools 86,016 shots over 21
@@ -98,40 +104,36 @@ does not establish default-policy submission readiness.
 
 ## QPU cost
 
-QPU time scales with PUBs times shots; replicas ride along inside a PUB at no
-extra shots. The record holds 38 PUBs, 29 static and 9 dynamic, so the full
-program at 4096 shots is 155,648 shots. The project has not measured its own
+QPU time scales with PUBs times shots; replicas and cross-group components ride
+along inside a PUB at no extra shots. Fusion reduces the full program from 38
+logical execution entries to 20 PUBs, 14 static and 6 dynamic, so 4096 shots
+per PUB produce 81,920 executions. The project has not measured its own
 shot rate; the literature bounds it between about 1,000 shots/s for many-twirl
 runs (literature/notes/2505.22629.md) and 4,900 shots/s derived from
-literature/notes/2507.08088.md, which puts the full program between 32 s and
-156 s plus job overhead.
+literature/notes/2507.08088.md, which puts the full program between 17 s and
+82 s plus job overhead.
 
 | job | groups | PUBs | shots | at 4,900/s | at 1,000/s |
 |---|---|---:|---:|---:|---:|
-| dynamic | folded QPE, hybrid Shor | 9 | 36,864 | 7.5 s | 37 s |
-| static | design A, fringe, design C 8/16/32 | 29 | 118,784 | 24 s | 119 s |
+| dynamic | folded QPE, hybrid Shor | 6 | 24,576 | 5.0 s | 25 s |
+| static | design A, fringe, design C 8/16/32 | 14 | 57,344 | 12 s | 57 s |
 
 ## Path to the first submission
 
-1. **Default-policy refresh.** Repeat the schema-4 dry run without a queue
+1. **Default-policy refresh.** Run the schema-5 fused-PUB path without a queue
    override when at least one system passes `--max-pending 25`. Use that record
    as the written case's current execution evidence; retain `232219` as the
-   combined-path qualification under its explicit 250-job dry-run bound.
-2. **PUB fusion.** Groups on one backend and job kind share PUBs: entry i of
-   every group packs into one circuit on disjoint placements, so the static
-   job needs as many PUBs as its largest group (14, the fringe) instead of 29,
-   and the dynamic job 6 instead of 9. Placement then allocates one pool of
-   admissible qubits across groups, and the per-group decoding is unchanged.
-3. **Written case.** The case states the job split, the fused PUB count, the
+   historical schema-4 qualification under its explicit 250-job dry-run bound.
+2. **Written case.** The case states the job split, the fused PUB count, the
    fresh dry run's predictions, and the seconds bound from the table above,
    and waits for approval (AGENTS.md).
-4. **Dynamic job first.** It is the smaller job and carries the questions only
+3. **Dynamic job first.** It is the smaller job and carries the questions only
    hardware answers: hybrid Shor admission, concurrent feed-forward across
-   packed replicas (the crosstalk reference), feed-forward latency from the
+   packed replicas (the global packing comparison), feed-forward latency from the
    execution spans, and the project's own shot rate, measured by the job's
    usage seconds. That rate replaces the literature bounds before the static
    job is costed.
-5. **Static job.** Submitted with --twirl and a DD sequence only when the
+4. **Static job.** Submitted with --twirl and a DD sequence only when the
    case argues that the hardware-versus-model gap with them on is the
    question; otherwise both stay off so the first static measurement compares
    directly with the noise model.
@@ -140,7 +142,7 @@ literature/notes/2507.08088.md, which puts the full program between 32 s and
 
 - [IBMBackend API](https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/ibm-backend)
   defines status, cached versus refreshed properties, Target history,
-  `refresh()`, and the `max_circuits` compatibility warning.
+  `refresh()`, and the removed backend circuit-limit semantics.
 - [IBMBackend 0.50 source](https://github.com/Qiskit/qiskit-ibm-runtime/blob/stable/0.50/qiskit_ibm_runtime/ibm_backend.py)
   grounds the refresh and cached-property behavior used by the coherent
   snapshot.
@@ -154,7 +156,8 @@ literature/notes/2507.08088.md, which puts the full program between 32 s and
 ## Risks
 
 - **Parallel feed-forward.** Hardware handling of three or more simultaneous
-  if_else branches is unmeasured; the isolated reference detects a cost.
+  if_else branches is unmeasured; the shared replica-0 reference detects a
+  global packed-workload cost without attributing it to one group.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.

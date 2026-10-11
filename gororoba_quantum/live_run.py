@@ -4,8 +4,10 @@ Each plan refreshes every requested backend once, derives logical requirements
 from the source circuits, removes degraded qubits and CZ couplers from the
 routing Target, and validates every routed instruction against the original
 fresh Target. Seeded candidates rank by gate, readout, duration, and coherence
-calibration. The winner is placed as disjoint replicas; each packed member and
-optional isolated crosstalk reference then receives final Target validation.
+calibration. The winners that share a backend and execution kind draw replicas
+from one placement pool, so corresponding members can share a Runtime PUB on
+disjoint hardware. Each packed member and optional group-isolated reference
+component then receives final Target validation.
 
 An explicit `--replica-floor` governs every group; otherwise each group's
 declared floor applies, with 0.9 as the default. Before submission, the runner
@@ -13,12 +15,13 @@ repeats discovery and deterministic selection across all viable systems. Any
 change to the approved backend, layout, replica placement, execution circuits,
 capabilities, or used calibration values rewrites the submit-free plan and
 stops for a renewed written case and user approval. An unchanged plan is
-partitioned into whole static or dynamic client-side Sampler jobs under the
-backend's client-reported compatibility bound. Every batch receives another
-hardware refresh. The QPY digest, complete ledger, effective options, recovery
-tags, attempt marker, and returned job identifier reach durable storage in that
-order. Collection verifies the ledger and archive, recovers response-lost job
-identifiers, and replays each replica under its execution-time calibration.
+fused by member index into static or dynamic client-side Sampler jobs under the
+documented 10-million-execution job bound. Every job receives another hardware
+refresh. The QPY digest, complete PUB manifest, effective options,
+recovery tags, attempt marker, and returned job identifier reach durable
+storage in that order. Collection verifies the ledger and archive, recovers
+response-lost job identifiers, and replays each logical component under its
+fused PUB's execution-time calibration.
 """
 
 from __future__ import annotations
@@ -71,15 +74,17 @@ JOINT_CANDIDATES = 3
 DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
-RECORD_SCHEMA_VERSION = 4
-RECORD_SCHEMA_CONTRACT = "live-target-packed-replicas-v1"
+MAX_JOB_EXECUTIONS = 10_000_000
+RECORD_SCHEMA_VERSION = 5
+RECORD_SCHEMA_CONTRACT = "live-target-cross-group-fused-pubs-v1"
 CONTROL_FLOW_OPERATIONS = frozenset({"if_else", "while_loop", "for_loop", "switch_case", "break_loop", "continue_loop"})
 DIRECT_TARGET_OPERATIONS = CONTROL_FLOW_OPERATIONS | {"delay", "measure", "reset", "store"}
 # A replica is placed only while its layout score stays at least this fraction
 # of the best placement's, so packing fills the device with near-best hardware.
 DEFAULT_REPLICA_FLOOR = 0.9
-# The unpacked copy of a group's primary member on replica 0's qubits; its
-# difference from packed replica 0 measures crosstalk from the other replicas.
+# The unpacked copy of a group's primary member on replica 0's qubits. All
+# groups' copies share one reference PUB, so the comparison is between the
+# global packed and global replica-0 workloads.
 ISOLATED_SUFFIX = "_isolated"
 
 EXPERIMENT_SOURCE_MANIFEST = (
@@ -111,7 +116,6 @@ class BackendCapabilities:
     """Submission-relevant capabilities read from one freshly refreshed backend."""
 
     num_qubits: int
-    max_circuits: int | None
     dynamic_circuits: bool
     operation_names: tuple[str, ...]
     control_flow: tuple[str, ...]
@@ -123,7 +127,6 @@ class BackendCapabilities:
     def summary(self) -> dict[str, Any]:
         return {
             "num_qubits": self.num_qubits,
-            "max_circuits": self.max_circuits,
             "dynamic_circuits": self.dynamic_circuits,
             "operation_names": list(self.operation_names),
             "control_flow": list(self.control_flow),
@@ -200,7 +203,6 @@ def _backend_capabilities(backend: Any) -> BackendCapabilities:
     supported_features = getattr(backend.configuration(), "supported_features", [])
     return BackendCapabilities(
         num_qubits=int(backend.num_qubits),
-        max_circuits=int(backend.max_circuits) if backend.max_circuits is not None else None,
         dynamic_circuits="dynamic_circuits" in supported_features,
         operation_names=operation_names,
         control_flow=tuple(sorted(CONTROL_FLOW_OPERATIONS.intersection(operation_names))),
@@ -455,13 +457,6 @@ def capability_violations(requirements: CircuitRequirements, capabilities: Backe
         violations.append(f"missing target operations {missing}")
     if requirements.dynamic_circuits and not capabilities.dynamic_circuits:
         violations.append("service dynamic-circuit filter rejects backend")
-    largest_batch = max(requirements.static_circuits, requirements.dynamic_circuits)
-    if capabilities.max_circuits is not None and largest_batch > capabilities.max_circuits:
-        violations.append(
-            f"group needs at least {largest_batch} circuits in one result-complete batch; "
-            "client-reported max_circuits compatibility bound is "
-            f"{capabilities.max_circuits}"
-        )
     return violations
 
 
@@ -655,7 +650,7 @@ def check_target_matches_properties(isas: list[QuantumCircuit], target: Any, pro
 
 @dataclass
 class Entry:
-    """One PUB: the single-copy compiled base, its ideal, the packed circuit that runs, and its replicas.
+    """One logical result entry and the packed replicas that become a fused-PUB component.
 
     replicas holds the single-replica circuits split from packed, in replica
     order, each carrying only its own registers; simulation, readout
@@ -694,6 +689,64 @@ class Choice:
     entries: list[Entry] = field(default_factory=list)
     replicas: list[Replica] = field(default_factory=list)
     replica_floor: float = DEFAULT_REPLICA_FLOOR
+    fusion_index: int | None = None
+
+
+@dataclass(frozen=True)
+class PubComponent:
+    """One logical entry inside a fused Runtime PUB."""
+
+    choice: Choice
+    entry: Entry
+    register_prefix: str
+
+    def manifest(self) -> dict[str, Any]:
+        registers_by_replica = [
+            [self.register_prefix + name for name in packing.registers(self.entry.packed, replica_prefix)]
+            for replica_prefix in self.entry.prefixes
+        ]
+        if any(not register_names for register_names in registers_by_replica):
+            raise LiveRunError(f"{self.entry.name}: fused component has a replica without result registers")
+        return {
+            "group": self.choice.group.name,
+            "member": self.entry.name,
+            "reference": self.entry.reference,
+            "register_prefix": self.register_prefix,
+            "physical_qubits": sorted({qubit for replica in self.entry.replica_qubits for qubit in replica}),
+            "registers_by_replica": registers_by_replica,
+        }
+
+
+@dataclass(frozen=True)
+class ExecutionPub:
+    """One submitted PUB and the logical entries decoded from its namespaced registers."""
+
+    name: str
+    backend: str
+    kind: str
+    circuit: QuantumCircuit
+    components: tuple[PubComponent, ...]
+
+    def manifest(self) -> dict[str, Any]:
+        return {
+            "name": self.name,
+            "backend": self.backend,
+            "kind": self.kind,
+            "components": [component.manifest() for component in self.components],
+        }
+
+
+@dataclass
+class _FusionPlacementPool:
+    """Candidate embeddings and selected replicas for one group in a shared device pool."""
+
+    choice: Choice
+    graph: Any
+    candidates: list[Replica]
+    original_index: int
+    pattern_width: int
+    selected: list[Replica] = field(default_factory=list)
+    blocked: set[int] = field(default_factory=set)
 
 
 def build_admission_target(snapshot: Snapshot) -> Target:
@@ -852,8 +905,8 @@ def replica_floor(group: Group, policy: ReplicaPolicy) -> float:
     return DEFAULT_REPLICA_FLOOR if group.replica_floor is None else group.replica_floor
 
 
-def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, policy: ReplicaPolicy) -> list[Replica]:
-    """Disjoint placements of the group's compiled pattern on snap, best layout score first.
+def _replica_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float) -> tuple[Any, list[Replica], int]:
+    """Return the admitted graph and every floor-qualified embedding of one group's pattern.
 
     The pattern is every qubit and CZ edge the group's circuits touch, mirror
     twins included, so one mapping moves every member consistently. A
@@ -875,7 +928,31 @@ def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, pol
     def score(mapping: dict[int, int]) -> float:
         return layout_score(packing.relabel(isas[0], mapping, ""), target)
 
-    replicas = packing.place(used, edges, graph, admissible, score, floor, policy.max_replicas)
+    candidates = packing.candidate_replicas(used, edges, graph, admissible, score, floor)
+    return graph, candidates, len(used)
+
+
+def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, policy: ReplicaPolicy) -> list[Replica]:
+    """Disjoint placements of the group's compiled pattern on snap, best layout score first.
+
+    The pattern is every qubit and CZ edge the group's circuits touch, mirror
+    twins included, so one mapping moves every member consistently. A
+    placement is admissible when every moved operation exists in the Target
+    and avoids excluded qubits and edges; the score is the layout score of the
+    moved primary circuit, so ranking reads the same calibration as selection.
+    """
+    graph, candidates, _ = _replica_candidates(snap, isas, floor)
+    chosen: list[Replica] = []
+    blocked: set[int] = set()
+    for candidate in candidates:
+        if policy.max_replicas is not None and len(chosen) >= policy.max_replicas:
+            break
+        qubits = set(candidate.qubits)
+        if qubits & blocked:
+            continue
+        chosen.append(Replica(len(chosen), candidate.mapping, candidate.score))
+        blocked |= qubits | {neighbor for qubit in qubits for neighbor in graph.neighbors(qubit)}
+    replicas = chosen
     if not replicas:
         raise LiveRunError(f"{snap.name}: no admissible placement of the compiled pattern")
     return replicas
@@ -897,15 +974,15 @@ def _entry(
     )
 
 
-def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
-    """Entries: each member packed over the replicas, followed directly by its packed mirror twin.
+def _entry_bases(choice: Choice) -> list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]]:
+    """Stable non-reference entry definitions for initial and joint placement.
 
-    A twin is cut from the member's single-copy ISA and packed with the same
-    placements, so replica k of a witness and of its twin occupy the same
-    qubits; adjacent in the job, the pair stays inside one calibration
-    whenever the job allows. With more than one replica, the primary member
-    also runs alone on replica 0's qubits as the crosstalk reference.
+    A mirror twin is cut from the member's single-copy ISA. The later entry
+    builder packs the member and twin on identical replicas so corresponding
+    samples retain their physical-qubit pairing.
     """
+    if choice.entries:
+        return [(entry.name, entry.base, entry.ideal, entry.weights) for entry in choice.entries if not entry.reference]
     bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] = []
     for member, isa in zip(choice.group.members, choice.isas, strict=True):
         bases.append((member.name, isa, member.ideal, member.weights))
@@ -914,8 +991,14 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
             zeros = np.zeros(2**member.circuit.num_clbits)
             zeros[0] = 1.0
             bases.append((name, mirror_isa(isa, choice.snap.backend, name), zeros, None))
+    return bases
+
+
+def _set_entries(choice: Choice, replicas: list[Replica], policy: ReplicaPolicy) -> Choice:
+    """Rebuild one group's logical entries on an already admitted replica set."""
+    bases = _entry_bases(choice)
     choice.replica_floor = replica_floor(choice.group, policy)
-    choice.replicas = place_replicas(choice.snap, [base[1] for base in bases], choice.replica_floor, policy)
+    choice.replicas = replicas
     choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
     if policy.isolated_reference and len(choice.replicas) > 1:
         primary = choice.entries[0]
@@ -934,6 +1017,262 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
             )
         )
     return choice
+
+
+def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
+    """Build one group's independently placed logical entries for candidate selection."""
+    bases = _entry_bases(choice)
+    floor = replica_floor(choice.group, policy)
+    replicas = place_replicas(choice.snap, [base[1] for base in bases], floor, policy)
+    return _set_entries(choice, replicas, policy)
+
+
+def _placement_footprint(pool: _FusionPlacementPool, replica: Replica) -> set[int]:
+    """Replica qubits plus their CZ neighbors in the cluster's admitted graph."""
+    qubits = set(replica.qubits)
+    return qubits | {neighbor for qubit in qubits for neighbor in pool.graph.neighbors(qubit)}
+
+
+def _round_assignment(
+    pools: list[_FusionPlacementPool], occupied: set[int]
+) -> list[tuple[_FusionPlacementPool, Replica]] | None:
+    """Find one additional non-overlapping placement for every pool in a fair round."""
+    available: dict[int, list[Replica]] = {}
+    for pool in pools:
+        available[id(pool)] = [
+            candidate
+            for candidate in pool.candidates
+            if not set(candidate.qubits).intersection(occupied | pool.blocked)
+        ]
+    ordered = sorted(pools, key=lambda pool: (len(available[id(pool)]), pool.original_index))
+    if any(not available[id(pool)] for pool in ordered):
+        return None
+
+    selected: list[tuple[_FusionPlacementPool, Replica]] = []
+
+    def search(index: int, round_qubits: set[int]) -> bool:
+        if index == len(ordered):
+            return True
+        pool = ordered[index]
+        for candidate in available[id(pool)]:
+            qubits = set(candidate.qubits)
+            if qubits & round_qubits:
+                continue
+            selected.append((pool, candidate))
+            if search(index + 1, round_qubits | qubits):
+                return True
+            selected.pop()
+        return False
+
+    return selected if search(0, set()) else None
+
+
+def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
+    """Jointly place every same-backend, same-kind group before cross-group fusion.
+
+    Each allocation round gives every group that still has an individually
+    available candidate one replica. Backtracking resolves layout collisions
+    inside the round. The required rounds place two replicas when isolated
+    references are enabled, unless --max-replicas=1 explicitly selects the
+    single-replica surface. Later rounds advance every group that can still
+    participate. A per-group blocked set keeps replicas of that group one CZ
+    hop apart; the shared occupied set keeps different groups physically
+    disjoint without imposing an additional cross-group neighbor exclusion.
+    """
+    clusters: dict[tuple[str, str], list[tuple[int, Choice]]] = {}
+    for choice_index, choice in enumerate(choices):
+        kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in choice.entries}
+        if len(kinds) != 1:
+            raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
+        kind = next(iter(kinds))
+        clusters.setdefault((choice.snap.name, kind), []).append((choice_index, choice))
+
+    cluster_records: list[dict[str, Any]] = []
+    for (backend_name, kind), indexed_choices in clusters.items():
+        snapshot = indexed_choices[0][1].snap
+        if any(choice.snap is not snapshot for _, choice in indexed_choices):
+            raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
+        pools: list[_FusionPlacementPool] = []
+        for choice_index, choice in indexed_choices:
+            bases = _entry_bases(choice)
+            floor = replica_floor(choice.group, policy)
+            graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
+            if not candidates:
+                raise LiveRunError(
+                    f"{backend_name} {kind}: {choice.group.name} has no floor-qualified fusion placement"
+                )
+            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width))
+
+        occupied: set[int] = set()
+        allocation_round = 0
+        required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
+        while True:
+            under_cap = [
+                pool for pool in pools if policy.max_replicas is None or len(pool.selected) < policy.max_replicas
+            ]
+            if allocation_round < required_rounds:
+                eligible = under_cap
+            else:
+                eligible = [
+                    pool
+                    for pool in under_cap
+                    if any(
+                        not set(candidate.qubits).intersection(occupied | pool.blocked) for candidate in pool.candidates
+                    )
+                ]
+            if not eligible:
+                break
+            assignment = _round_assignment(eligible, occupied)
+            if assignment is None:
+                if allocation_round < required_rounds:
+                    diagnostics = {
+                        pool.choice.group.name: {
+                            "pattern_width": pool.pattern_width,
+                            "floor_candidates": len(pool.candidates),
+                            "selected_replicas": len(pool.selected),
+                        }
+                        for pool in pools
+                    }
+                    raise LiveRunError(
+                        f"{backend_name} {kind}: cannot satisfy {required_rounds} required joint-placement rounds; "
+                        f"groups={json.dumps(diagnostics, sort_keys=True)}"
+                    )
+                break
+            for pool, candidate in assignment:
+                selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
+                pool.selected.append(selected)
+                qubits = set(selected.qubits)
+                occupied.update(qubits)
+                pool.blocked.update(_placement_footprint(pool, selected))
+            allocation_round += 1
+
+        if any(len(pool.selected) < required_rounds for pool in pools):
+            missing = {
+                pool.choice.group.name: len(pool.selected) for pool in pools if len(pool.selected) < required_rounds
+            }
+            raise LiveRunError(
+                f"{backend_name} {kind}: joint placement left groups below {required_rounds} replicas: {missing}"
+            )
+        for pool in pools:
+            _set_entries(pool.choice, pool.selected, policy)
+        cluster_records.append(
+            {
+                "backend": backend_name,
+                "kind": kind,
+                "rounds": allocation_round,
+                "required_rounds": required_rounds,
+                "physical_qubits": sorted(occupied),
+                "groups": [
+                    {
+                        "group": pool.choice.group.name,
+                        "pattern_width": pool.pattern_width,
+                        "floor_candidates": len(pool.candidates),
+                        "selected_replicas": len(pool.selected),
+                        "selected_scores": [replica.score for replica in pool.selected],
+                        "selected_qubits": [replica.qubits for replica in pool.selected],
+                    }
+                    for pool in pools
+                ],
+            }
+        )
+    return {
+        "cross_group_disjoint": True,
+        "within_group_one_hop_separated": True,
+        "allocation": "required-round-backtracking-then-fair-surplus",
+        "clusters": cluster_records,
+    }
+
+
+def _fusion_entry_order(choice: Choice) -> list[Entry]:
+    """Primary, shared-PUB replica-0 reference, then remaining entries for aligned fusion rows."""
+    if not choice.entries:
+        raise LiveRunError(f"{choice.group.name}: fusion received an empty execution set")
+    references = [entry for entry in choice.entries if entry.reference]
+    if len(references) > 1:
+        raise LiveRunError(f"{choice.group.name}: fusion supports one isolated reference, got {len(references)}")
+    remaining = [entry for entry in choice.entries[1:] if not entry.reference]
+    return [choice.entries[0], *references, *remaining]
+
+
+def _assign_fusion_indices(choices: list[Choice]) -> None:
+    """Persist unique outer-register indices before choices split by backend."""
+    assigned = [choice.fusion_index for choice in choices if choice.fusion_index is not None]
+    if any(index < 0 for index in assigned) or len(assigned) != len(set(assigned)):
+        raise LiveRunError(f"fusion indices must be unique non-negative integers: {assigned}")
+    available = (index for index in range(len(choices) + len(assigned)) if index not in assigned)
+    for choice in choices:
+        if choice.fusion_index is None:
+            choice.fusion_index = next(available)
+
+
+def execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
+    """Fuse corresponding logical entries on each backend and job-kind cluster.
+
+    Row zero aligns every packed primary. Row one aligns every group-isolated
+    replica-0 component when the cluster has them, so every comparison uses
+    the same global replica-0 reference workload.
+    Remaining members and mirrors retain their per-group order. A short group
+    simply contributes no component to later rows.
+    """
+    _assign_fusion_indices(choices)
+    clusters: dict[tuple[str, str], list[tuple[int, Choice, list[Entry]]]] = {}
+    for choice in choices:
+        if choice.fusion_index is None:
+            raise LiveRunError(f"{choice.group.name}: fusion index assignment failed")
+        ordered = _fusion_entry_order(choice)
+        kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in ordered}
+        if len(kinds) != 1:
+            raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
+        clusters.setdefault((choice.snap.name, next(iter(kinds))), []).append((choice.fusion_index, choice, ordered))
+
+    pubs: list[ExecutionPub] = []
+    for (backend_name, kind), cluster in clusters.items():
+        snapshot = cluster[0][1].snap
+        if any(choice.snap is not snapshot for _, choice, _ in cluster):
+            raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
+        reference_presence = {bool([entry for entry in ordered if entry.reference]) for _, _, ordered in cluster}
+        if len(reference_presence) != 1:
+            raise LiveRunError(
+                f"{backend_name} {kind}: groups mix isolated-reference and non-reference execution surfaces"
+            )
+        for row_index in range(max(len(ordered) for _, _, ordered in cluster)):
+            components = tuple(
+                PubComponent(choice, ordered[row_index], f"g{choice_index}_")
+                for choice_index, choice, ordered in cluster
+                if row_index < len(ordered)
+            )
+            name = f"{backend_name}_{kind}_pub_{row_index + 1:02d}"
+            circuit = packing.fuse(
+                [component.entry.packed for component in components],
+                [component.register_prefix for component in components],
+                name,
+            )
+            actual_kind = "dynamic" if _is_dynamic(circuit) else "static"
+            if actual_kind != kind:
+                raise LiveRunError(f"{name}: fusion changed {kind} components into a {actual_kind} PUB")
+            rejected = compiled_violations(circuit, snapshot)
+            if rejected:
+                raise LiveRunError(f"{name}: fused execution violates {backend_name} Target: {rejected}")
+            pubs.append(ExecutionPub(name, backend_name, kind, circuit, components))
+    return pubs
+
+
+def fusion_summary(pubs: list[ExecutionPub]) -> dict[str, Any]:
+    """Logical-entry, execution-PUB, and reference cardinalities for the exact fused surface."""
+    logical_entries = {"static": 0, "dynamic": 0}
+    execution_counts = {"static": 0, "dynamic": 0}
+    reference_components = {"static": 0, "dynamic": 0}
+    for pub in pubs:
+        execution_counts[pub.kind] += 1
+        logical_entries[pub.kind] += len(pub.components)
+        reference_components[pub.kind] += sum(component.entry.reference for component in pub.components)
+    return {
+        "strategy": "aligned_members_with_shared_replica0_reference",
+        "reference_estimand": "global_packed_workload_vs_global_replica0_workload",
+        "logical_entries": logical_entries,
+        "execution_pubs": execution_counts,
+        "reference_components": reference_components,
+    }
 
 
 def execution_requirements(choice: Choice) -> dict[str, Any]:
@@ -1075,21 +1414,6 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any],
                     "seed": candidate.seed,
                     "layout": candidate.layout,
                     "execution_rejections": {"group": ["packed execution set mixes static and dynamic circuits"]},
-                }
-            )
-            continue
-        compatibility_bound = candidate.snap.capabilities.max_circuits
-        if compatibility_bound is not None and len(candidate.entries) > compatibility_bound:
-            trace.append(
-                {
-                    "seed": candidate.seed,
-                    "layout": candidate.layout,
-                    "execution_rejections": {
-                        "group": [
-                            f"{len(candidate.entries)} packed entries exceed client-reported "
-                            f"max_circuits compatibility bound {compatibility_bound}"
-                        ]
-                    },
                 }
             )
             continue
@@ -1269,15 +1593,17 @@ def _pooled_summaries(
 def replica_statistics(
     group: Group, entries: list[Entry], dists: dict[str, list[np.ndarray]], shots: int
 ) -> dict[str, Any]:
-    """Pooled, per-replica, interval, variance, crosstalk, and admission views of one group's replicas.
+    """Pooled, per-replica, interval, variance, global packing, and admission views.
 
     The pooled summary averages each summary value over the replicas
     (_pooled_summaries), and summary_interval spans it; a value the group
     declares a per-shot rate (Group.rate_keys) also carries its pooled-shot
     Wilson bound. variance decomposes every entry's ideal-weighted score into shot
     and layout variance, and instance_variance adds the instance axis over the
-    group's declared instances. crosstalk compares the primary's isolated
-    reference with packed replica 0 on the same qubits.
+    group's declared instances. global_packing_crosstalk compares packed
+    replica 0 with the same group's component in the shared replica-0
+    reference PUB. The two PUBs represent the global packed and global
+    replica-0 workloads, so the value does not isolate one group's crosstalk.
     """
     runs = [e for e in entries if not e.reference]
     count = len(runs[0].replicas)
@@ -1305,8 +1631,8 @@ def replica_statistics(
             iso, iso_var = variance.score(dists[e.name][0], e.ideal, e.weights)
             packed, packed_var = scores[runs[0].name][0]
             sd = math.sqrt((iso_var + packed_var) / shots)
-            out["crosstalk"] = {
-                "isolated_score": iso,
+            out["global_packing_crosstalk"] = {
+                "global_replica0_score": iso,
                 "packed_replica0_score": packed,
                 "difference": packed - iso,
                 "z": (packed - iso) / sd if sd > 0 else None,
@@ -1477,6 +1803,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     groups = [group for group in available_groups if not args.groups or group.name in args.groups]
     trace: dict[str, Any] = {}
     choices = [select(group, snaps, args.seeds, trace, _policy(args)) for group in groups]
+    fusion_placement = allocate_fusion_replicas(choices, _policy(args))
+    pubs = execution_pubs(choices)
     record = {
         "schema_version": RECORD_SCHEMA_VERSION,
         "schema_contract": RECORD_SCHEMA_CONTRACT,
@@ -1501,6 +1829,9 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "skipped_backends": skipped,
         "circuit_requirements": {group.name: group_requirements(group).summary() for group in groups},
         "execution_requirements": {choice.group.name: execution_requirements(choice) for choice in choices},
+        "fusion_placement": fusion_placement,
+        "fusion_summary": fusion_summary(pubs),
+        "execution_pubs": [pub.manifest() for pub in pubs],
         "selection_trace": trace,
     }
     return choices, record
@@ -1517,6 +1848,20 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     sims: dict[int, tuple[AerSimulator, str]] = {}
     record["groups"] = []
     record["execution_requirements"] = {choice.group.name: execution_requirements(choice) for choice in choices}
+    pubs = execution_pubs(choices)
+    record["fusion_summary"] = fusion_summary(pubs)
+    record["execution_pubs"] = [pub.manifest() for pub in pubs]
+    fused_by_snapshot: dict[int, tuple[Snapshot, list[QuantumCircuit]]] = {}
+    for pub in pubs:
+        snapshot = pub.components[0].choice.snap
+        fused_by_snapshot.setdefault(id(snapshot), (snapshot, []))[1].append(pub.circuit)
+    for snapshot, fused_circuits in fused_by_snapshot.values():
+        check_target_matches_properties(
+            fused_circuits,
+            snapshot.backend.target,
+            snapshot.properties,
+            f"{snapshot.name} fused PUBs",
+        )
     for choice in choices:
         isas = [entry.packed for entry in choice.entries]
         check_target_matches_properties(isas, choice.snap.backend.target, choice.snap.properties, choice.snap.name)
@@ -1568,12 +1913,6 @@ def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     isas = [entry.packed for entry in choice.entries]
     for entry in choice.entries:
         reasons.extend(f"{entry.name}: {reason}" for reason in compiled_violations(entry.packed, fresh))
-    compatibility_bound = fresh.capabilities.max_circuits
-    if compatibility_bound is not None and len(choice.entries) > compatibility_bound:
-        reasons.append(
-            f"{len(choice.entries)} packed entries exceed client-reported "
-            f"max_circuits compatibility bound {compatibility_bound}"
-        )
     try:
         if fingerprint(isas, fresh.backend.target, fresh.properties) != fingerprint(
             isas, choice.snap.backend.target, choice.snap.properties
@@ -1606,46 +1945,22 @@ def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
     return sorted(set(reasons))
 
 
-def submission_batches(
-    choices: list[Choice], kind: str, max_circuits: int | None
-) -> list[list[tuple[str, QuantumCircuit, Choice]]]:
-    """Partition whole result-complete groups into deterministic first-fit-decreasing jobs."""
-    groups: list[tuple[int, list[tuple[str, QuantumCircuit, Choice]]]] = []
-    for group_index, choice in enumerate(choices):
-        classified = [
-            (
-                entry.name,
-                entry.packed,
-                choice,
-                "dynamic" if _is_dynamic(entry.packed) else "static",
-            )
-            for entry in choice.entries
-        ]
-        choice_kinds = {entry_kind for _, _, _, entry_kind in classified}
-        if len(choice_kinds) != 1:
-            raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
-        if kind not in choice_kinds:
-            continue
-        entries = [(name, isa, owner) for name, isa, owner, _ in classified]
-        if max_circuits is not None and len(entries) > max_circuits:
-            raise LiveRunError(
-                f"{choice.group.name}: {len(entries)} circuits exceed client-reported "
-                f"max_circuits compatibility bound {max_circuits}"
-            )
-        groups.append((group_index, entries))
-    if not groups:
+def submission_batches(choices: list[Choice], kind: str, shots: int = SHOTS) -> list[list[ExecutionPub]]:
+    """Keep one result-complete fused cluster inside the Sampler execution bound."""
+    if kind not in ("static", "dynamic"):
+        raise LiveRunError(f"unknown submission kind {kind!r}")
+    if shots < 1 or shots > MAX_JOB_EXECUTIONS:
+        raise LiveRunError(f"{shots} shots cannot fit the {MAX_JOB_EXECUTIONS}-execution Sampler job limit")
+    pubs = [pub for pub in execution_pubs(choices) if pub.kind == kind]
+    if not pubs:
         return []
-    if max_circuits is None:
-        return [[entry for _, entries in groups for entry in entries]]
-    batches: list[list[tuple[str, QuantumCircuit, Choice]]] = []
-    for _, entries in sorted(groups, key=lambda item: (-len(item[1]), item[0])):
-        for batch in batches:
-            if len(batch) + len(entries) <= max_circuits:
-                batch.extend(entries)
-                break
-        else:
-            batches.append(list(entries))
-    return batches
+    pubs_per_job = MAX_JOB_EXECUTIONS // shots
+    if len(pubs) > pubs_per_job:
+        raise LiveRunError(
+            f"{len(pubs)} {kind} PUBs at {shots} shots exceed the {MAX_JOB_EXECUTIONS}-execution "
+            "Sampler job limit; lower --shots so every result-complete fusion cluster stays in one job"
+        )
+    return [pubs]
 
 
 def _submission_key(entry: dict[str, Any]) -> tuple[str, str, int, int]:
@@ -1663,7 +1978,7 @@ def _recovery_tags(
     kind: str,
     batch_index: int,
     batch_count: int,
-    members: list[str],
+    pubs: list[dict[str, Any]],
     qpy_archive_sha256: str,
 ) -> list[str]:
     """Tags that identify exactly one planned Runtime job after response loss."""
@@ -1675,7 +1990,7 @@ def _recovery_tags(
             "kind": kind,
             "batch_index": batch_index,
             "batch_count": batch_count,
-            "members": members,
+            "pubs": pubs,
             "qpy_archive_sha256": qpy_archive_sha256,
         },
         sort_keys=True,
@@ -1687,23 +2002,23 @@ def _recovery_tags(
 
 def build_submission_plan(
     choices: list[Choice], args: argparse.Namespace, qpy_archive_sha256: str
-) -> tuple[dict[str, Any], list[tuple[int, str, str, list[tuple[str, QuantumCircuit, Choice]]]]]:
+) -> tuple[dict[str, Any], list[tuple[int, str, str, list[ExecutionPub]]]]:
     """Materialize the complete immutable batch identity before any job call."""
     planned_backends = sorted({choice.snap.name for choice in choices})
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
         by_backend.setdefault(choice.snap.name, []).append(choice)
-    runtime_batches: list[tuple[int, str, str, list[tuple[str, QuantumCircuit, Choice]]]] = []
+    runtime_batches: list[tuple[int, str, str, list[ExecutionPub]]] = []
     planned_jobs: list[dict[str, Any]] = []
     for name, group_choices in by_backend.items():
         backend = group_choices[0].snap.backend
         if any(choice.snap.backend is not backend for choice in group_choices):
             raise LiveRunError(f"{name}: final groups do not share one refreshed backend snapshot")
-        for kind in ("static", "dynamic"):
-            max_circuits = group_choices[0].snap.capabilities.max_circuits
-            batches = submission_batches(group_choices, kind, max_circuits)
+        for kind in ("dynamic", "static"):
+            batches = submission_batches(group_choices, kind, args.shots)
             for batch_index, batch in enumerate(batches, start=1):
-                members = [member_name for member_name, _, _ in batch]
+                pub_manifests = [pub.manifest() for pub in batch]
+                members = [component.entry.name for pub in batch for component in pub.components]
                 batch_count = len(batches)
                 recovery_tags = _recovery_tags(
                     args.started,
@@ -1711,7 +2026,7 @@ def build_submission_plan(
                     kind,
                     batch_index,
                     batch_count,
-                    members,
+                    pub_manifests,
                     qpy_archive_sha256,
                 )
                 sampler = configure_sampler(
@@ -1730,8 +2045,11 @@ def build_submission_plan(
                         "batch_index": batch_index,
                         "batch_count": batch_count,
                         "members": members,
+                        "pubs": pub_manifests,
                         "qpy_archive_sha256": qpy_archive_sha256,
-                        "calibrations": sorted({choice.snap.calibration for _, _, choice in batch}),
+                        "calibrations": sorted(
+                            {component.choice.snap.calibration for pub in batch for component in pub.components}
+                        ),
                         "recovery_tags": recovery_tags,
                         "options": sampler.options.model_dump(mode="json"),
                         "state": "planned",
@@ -1739,6 +2057,7 @@ def build_submission_plan(
                 )
                 runtime_batches.append((plan_index, name, kind, batch))
     return {
+        "started": args.started,
         "planned_backends": planned_backends,
         "qpy_archive_sha256": qpy_archive_sha256,
         "planned_jobs": planned_jobs,
@@ -1754,12 +2073,13 @@ def _job_record(plan_entry: dict[str, Any], job_id: str, recovered: bool = False
         "batch_index": plan_entry["batch_index"],
         "batch_count": plan_entry["batch_count"],
         "job_id": job_id,
-        "members": plan_entry["members"],
+        "members": copy.deepcopy(plan_entry["members"]),
+        "pubs": copy.deepcopy(plan_entry["pubs"]),
         "qpy_archive_sha256": plan_entry["qpy_archive_sha256"],
-        "calibrations": plan_entry["calibrations"],
-        "recovery_tags": plan_entry["recovery_tags"],
-        "budget_before": plan_entry["budget_before"],
-        "options": plan_entry["options"],
+        "calibrations": copy.deepcopy(plan_entry["calibrations"]),
+        "recovery_tags": copy.deepcopy(plan_entry["recovery_tags"]),
+        "budget_before": copy.deepcopy(plan_entry["budget_before"]),
+        "options": copy.deepcopy(plan_entry["options"]),
     }
     if recovered:
         record["job_id_recovered"] = True
@@ -1777,18 +2097,49 @@ def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], l
     archive_digest = submission.get("qpy_archive_sha256")
     if not isinstance(archive_digest, str) or len(archive_digest) != 64:
         raise LiveRunError("submission plan has no valid QPY archive SHA-256")
+    started = submission.get("started")
+    if not isinstance(started, str) or not started:
+        raise LiveRunError("submission plan has no run-start identity")
     planned_by_key: dict[tuple[str, str, int, int], dict[str, Any]] = {}
     planned_members: set[str] = set()
+    planned_pubs: set[str] = set()
     for planned_job in planned_jobs:
         key = _submission_key(planned_job)
         if key in planned_by_key:
             raise LiveRunError(f"duplicate planned job identity {key}")
         if planned_job.get("qpy_archive_sha256") != archive_digest:
             raise LiveRunError(f"planned job {key} differs from the submission QPY archive digest")
-        duplicate_members = planned_members.intersection(planned_job["members"])
+        members = planned_job["members"]
+        if len(members) != len(set(members)):
+            raise LiveRunError(f"planned job {key} repeats a logical member")
+        duplicate_members = planned_members.intersection(members)
         if duplicate_members:
             raise LiveRunError(f"planned circuits appear in more than one job: {sorted(duplicate_members)}")
-        planned_members.update(planned_job["members"])
+        planned_members.update(members)
+        pub_names = [pub["name"] for pub in planned_job.get("pubs", [])]
+        if len(pub_names) != len(set(pub_names)):
+            raise LiveRunError(f"planned job {key} repeats a fused PUB name")
+        for pub in planned_job.get("pubs", []):
+            if pub.get("backend") != planned_job["backend"] or pub.get("kind") != planned_job["kind"]:
+                raise LiveRunError(f"planned job {key} has a fused PUB with different backend or kind")
+        duplicate_pubs = planned_pubs.intersection(pub_names)
+        if duplicate_pubs:
+            raise LiveRunError(f"fused PUBs appear in more than one job: {sorted(duplicate_pubs)}")
+        mapped_members = [component["member"] for pub in planned_job.get("pubs", []) for component in pub["components"]]
+        if mapped_members != members:
+            raise LiveRunError(f"planned job {key} flat members differ from its ordered PUB component map")
+        expected_tags = _recovery_tags(
+            started,
+            str(planned_job["backend"]),
+            str(planned_job["kind"]),
+            int(planned_job["batch_index"]),
+            int(planned_job["batch_count"]),
+            planned_job.get("pubs", []),
+            archive_digest,
+        )
+        if planned_job.get("recovery_tags") != expected_tags:
+            raise LiveRunError(f"planned job {key} recovery tags do not bind its fused-PUB manifest")
+        planned_pubs.update(pub_names)
         planned_by_key[key] = planned_job
 
     submitted_by_key: dict[tuple[str, str, int, int], dict[str, Any]] = {}
@@ -1806,7 +2157,7 @@ def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], l
             raise LiveRunError(f"submitted job id {job_id!r} appears more than once")
         submitted_job_ids.add(job_id)
         planned_job = planned_by_key[key]
-        for field_name in ("members", "qpy_archive_sha256", "calibrations", "recovery_tags", "options"):
+        for field_name in ("members", "pubs", "qpy_archive_sha256", "calibrations", "recovery_tags", "options"):
             if submitted_job.get(field_name) != planned_job.get(field_name):
                 raise LiveRunError(f"submitted job {key} differs from its plan in {field_name}")
         submitted_by_key[key] = submitted_job
@@ -1905,17 +2256,26 @@ def submit(
         raise LiveRunError("no eligible backend remains before submission")
     attempt_trace: dict[str, Any] = {}
     reselected: dict[str, Any] = {}
-    for idx, choice in enumerate(choices):
-        previous_backend = choice.snap.name
-        fresh_choice = select(
-            choice.group,
-            fresh_snapshots,
-            args.seeds,
-            attempt_trace,
-            _policy(args),
+    fresh_choices: list[Choice] = []
+    for choice in choices:
+        fresh_choices.append(
+            select(
+                choice.group,
+                fresh_snapshots,
+                args.seeds,
+                attempt_trace,
+                _policy(args),
+            )
         )
+    fresh_fusion_placement = allocate_fusion_replicas(fresh_choices, _policy(args))
+    old_execution_pubs = execution_pubs(choices)
+    fresh_execution_pubs = execution_pubs(fresh_choices)
+    fused_changed = _qpy_digest([pub.circuit for pub in old_execution_pubs]) != _qpy_digest(
+        [pub.circuit for pub in fresh_execution_pubs]
+    ) or [pub.manifest() for pub in old_execution_pubs] != [pub.manifest() for pub in fresh_execution_pubs]
+    for choice, fresh_choice in zip(choices, fresh_choices, strict=True):
+        previous_backend = choice.snap.name
         reasons = choice_reselection_reasons(choice, fresh_choice)
-        choices[idx] = fresh_choice
         if reasons:
             print(f"{choice.group.name}: live configuration changed; preparing a revised submit-free plan")
             reselected[choice.group.name] = {
@@ -1923,12 +2283,16 @@ def submit(
                 "selected_backend": fresh_choice.snap.name,
                 "reasons": reasons,
             }
+    if fused_changed:
+        reselected["execution_pubs"] = {"reasons": ["fused PUB circuits or ordered component mapping changed"]}
+    choices[:] = fresh_choices
     record.setdefault("revalidation", []).append(
         {
             "attempt": 1,
             "system_inventory": inventory,
             "skipped_backends": skipped,
             "reselected_groups": reselected,
+            "fusion_placement": fresh_fusion_placement,
             "selection_trace": attempt_trace,
         }
     )
@@ -1937,6 +2301,7 @@ def submit(
         record["backends"] = {snapshot.name: snapshot.summary() for snapshot in fresh_snapshots}
         record["skipped_backends"] = skipped
         record["selection_trace"] = attempt_trace
+        record["fusion_placement"] = fresh_fusion_placement
         evaluate(choices, record)
         record["reevaluated_before_submit"] = 1
         record["state"] = "approval_required"
@@ -1971,13 +2336,15 @@ def submit(
             raise LiveRunError(f"{name}: {batch_tag} left the eligibility gate ({ineligible})")
         owner_reasons: dict[str, list[str]] = {}
         seen_owners: set[int] = set()
-        for _, _, owner in batch:
-            if id(owner) in seen_owners:
-                continue
-            seen_owners.add(id(owner))
-            reasons = choice_change_reasons(owner, fresh)
-            if reasons:
-                owner_reasons[owner.group.name] = reasons
+        for pub in batch:
+            for component in pub.components:
+                owner = component.choice
+                if id(owner) in seen_owners:
+                    continue
+                seen_owners.add(id(owner))
+                reasons = choice_change_reasons(owner, fresh)
+                if reasons:
+                    owner_reasons[owner.group.name] = reasons
         if owner_reasons:
             raise LiveRunError(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
@@ -2008,7 +2375,7 @@ def submit(
         # The recovery identity and attempt marker reach disk before the remote
         # call, so collection can resolve a response-lost accepted job exactly.
         checkpoint()
-        job = sampler.run([isa for _, isa, _ in batch])
+        job = sampler.run([pub.circuit for pub in batch])
         job_id = job.job_id()
         record["submission"]["jobs"].append(_job_record(plan_entry, job_id))
         plan_entry["state"] = "accepted"
@@ -2016,7 +2383,10 @@ def submit(
         # disk before the next job is sent.
         record["state"] = "partially_submitted"
         checkpoint()
-        print(f"submitted {len(batch)} {batch_tag} circuits to {name}: job {job_id}")
+        component_count = sum(len(pub.components) for pub in batch)
+        print(
+            f"submitted {len(batch)} {batch_tag} fused PUBs ({component_count} logical entries) to {name}: job {job_id}"
+        )
     record["submission"]["complete"] = True
     record["state"] = "submitted"
     checkpoint()
@@ -2116,6 +2486,24 @@ def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
     return windows
 
 
+def component_execution_records(
+    pub_manifest: dict[str, Any],
+    start: datetime,
+    stop: datetime,
+    calibration: datetime,
+    calibration_changed: bool,
+) -> dict[str, dict[str, Any]]:
+    """Fan one fused PUB's execution window and calibration out to every logical component."""
+    evidence = {
+        "pub": pub_manifest["name"],
+        "start": start.isoformat(),
+        "stop": stop.isoformat(),
+        "calibration": calibration.isoformat(),
+        "calibration_changed_during_shots": calibration_changed,
+    }
+    return {component["member"]: copy.deepcopy(evidence) for component in pub_manifest["components"]}
+
+
 def _odr_withheld(
     names: list[str], executed: dict[str, dict[str, Any]], shots: int, replicas: int
 ) -> tuple[str | None, str | None]:
@@ -2165,13 +2553,14 @@ def _gate_odr(stats: dict[str, Any], pooled: str | None, per_replica: str | None
 
 
 def _comparisons_withheld(names: list[str], executed: dict[str, dict[str, Any]]) -> str | None:
-    """Why statistics that combine separate PUBs of a group are not valid, or None when they are.
+    """Why statistics that combine a group's components across PUBs are invalid, or None.
 
-    Each member, twin, and isolated reference runs as its own PUB, and every
-    group summary combines them: a dark/bright ratio, a fringe fit, a margin
-    over a null, crosstalk, and admission. A calibration update between PUBs
-    would read as the experiment's signal, so these need every PUB of the
-    group under one calibration with no update inside any PUB's shots.
+    A group's members occupy aligned cross-group PUBs, and every group summary
+    combines multiple components: a dark/bright ratio, a fringe fit, a margin
+    over a null, global packing crosstalk, and admission. A calibration update
+    between those PUBs would read as the experiment's signal, so every
+    contributing PUB needs one shared calibration with no update inside its
+    shots.
     """
     ran = [executed[n] for n in names if n in executed]
     if any(e["calibration_changed_during_shots"] for e in ran) or len({e["calibration"] for e in ran}) > 1:
@@ -2184,29 +2573,122 @@ def _single_pub_views(stats: dict[str, Any]) -> dict[str, Any]:
     return {"variance": stats["variance"]}
 
 
+def _validate_archived_pub(pub_manifest: dict[str, Any], circuit: QuantumCircuit, backend: str, kind: str) -> None:
+    """Prove one retained PUB manifest describes its exact archived circuit."""
+    name = str(pub_manifest.get("name"))
+    if name != circuit.name:
+        raise LiveRunError(f"fused PUB manifest {name!r} names QPY circuit {circuit.name!r}")
+    if pub_manifest.get("backend") != backend or pub_manifest.get("kind") != kind:
+        raise LiveRunError(f"{name}: fused PUB manifest differs from its job backend or kind")
+    actual_kind = "dynamic" if _is_dynamic(circuit) else "static"
+    if actual_kind != kind:
+        raise LiveRunError(f"{name}: QPY circuit is {actual_kind}, planned job is {kind}")
+    components = pub_manifest.get("components", [])
+    if not components:
+        raise LiveRunError(f"{name}: fused PUB manifest has no logical components")
+    prefixes = [component.get("register_prefix") for component in components]
+    if any(not isinstance(prefix, str) or not prefix for prefix in prefixes) or len(prefixes) != len(set(prefixes)):
+        raise LiveRunError(f"{name}: fused PUB manifest has invalid or duplicate register prefixes")
+    recorded_registers = [
+        register_name
+        for component in components
+        for replica_registers in component.get("registers_by_replica", [])
+        for register_name in replica_registers
+    ]
+    archived_registers = [register.name for register in circuit.cregs]
+    if recorded_registers != archived_registers:
+        raise LiveRunError(f"{name}: fused PUB manifest register order differs from isa.qpy")
+
+    occupied: set[int] = set()
+    touched_by_component: list[set[int]] = [set() for _ in components]
+    physical_by_component: list[set[int]] = []
+    for component, prefix in zip(components, prefixes, strict=True):
+        register_groups = component.get("registers_by_replica", [])
+        if not register_groups or any(not group for group in register_groups):
+            raise LiveRunError(f"{name}: component {component.get('member')!r} has an empty register group")
+        if any(not register_name.startswith(prefix) for group in register_groups for register_name in group):
+            raise LiveRunError(f"{name}: component {component.get('member')!r} has a register outside {prefix!r}")
+        physical = set(component.get("physical_qubits", []))
+        if not physical or any(
+            not isinstance(qubit, int) or qubit < 0 or qubit >= circuit.num_qubits for qubit in physical
+        ):
+            raise LiveRunError(f"{name}: component {component.get('member')!r} has invalid physical qubits")
+        overlap = occupied.intersection(physical)
+        if overlap:
+            raise LiveRunError(f"{name}: fused PUB manifest overlaps component qubits {sorted(overlap)}")
+        occupied.update(physical)
+        physical_by_component.append(physical)
+    for instruction in circuit.data:
+        instruction_qubits = {circuit.find_bit(qubit).index for qubit in instruction.qubits}
+        if not instruction_qubits:
+            continue
+        owners = [index for index, physical in enumerate(physical_by_component) if instruction_qubits <= physical]
+        if len(owners) != 1:
+            raise LiveRunError(f"{name}: QPY instruction qubits {sorted(instruction_qubits)} have {len(owners)} owners")
+        touched_by_component[owners[0]].update(instruction_qubits)
+    for component, physical, touched in zip(components, physical_by_component, touched_by_component, strict=True):
+        # A group's placement reserves the union needed by every member. One
+        # member, such as a null control, can touch only a strict subset.
+        if not touched or not touched <= physical:
+            raise LiveRunError(
+                f"{name}: component {component.get('member')!r} touches qubits outside its reserved footprint"
+            )
+
+
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
-    """Each group's entries rebuilt from the archived packed circuits and the record's replica layout."""
+    """Rebuild logical entries from archived fused PUBs and their component map."""
     weights = {m.name: m.weights for g in experiment_groups() for m in g.members}
+    planned_jobs = record.get("submission", {}).get("planned_jobs")
+    if planned_jobs is None:
+        raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
+    components: dict[str, tuple[str, dict[str, Any]]] = {}
+    for planned_job in planned_jobs:
+        for pub in planned_job["pubs"]:
+            if pub["name"] not in isas:
+                raise LiveRunError(f"planned fused PUB {pub['name']!r} is absent from isa.qpy")
+            _validate_archived_pub(pub, isas[pub["name"]], planned_job["backend"], planned_job["kind"])
+            for component in pub["components"]:
+                member_name = component["member"]
+                if member_name in components:
+                    raise LiveRunError(f"logical member {member_name!r} appears in multiple fused PUB components")
+                components[member_name] = (pub["name"], component)
     out: dict[str, list[Entry]] = {}
     for group in record["groups"]:
         entries = out.setdefault(group["group"], [])
         for member in group["members"]:
-            packed = isas[member["name"]]
+            member_name = member["name"]
+            if member_name not in components:
+                raise LiveRunError(f"logical member {member_name!r} has no fused PUB component")
+            pub_name, component = components[member_name]
+            if component["group"] != group["group"] or bool(component["reference"]) != bool(member["reference"]):
+                raise LiveRunError(f"logical member {member_name!r} differs between group record and PUB map")
+            component_prefix = component["register_prefix"]
+            physical_qubits = sorted({qubit for replica in member["replica_qubits"] for qubit in replica})
+            if physical_qubits != component["physical_qubits"]:
+                raise LiveRunError(f"logical member {member_name!r} differs from its PUB-map physical qubits")
+            packed = packing.extract(isas[pub_name], component_prefix, physical_qubits, member_name)
+            expected_registers_by_replica = [
+                packing.registers(packed, component_prefix + replica_prefix)
+                for replica_prefix in member["replica_prefixes"]
+            ]
+            if component["registers_by_replica"] != expected_registers_by_replica:
+                raise LiveRunError(f"logical member {member_name!r} register map differs from isa.qpy")
+            prefixes = [component_prefix + prefix for prefix in member["replica_prefixes"]]
             replicas = [
-                packing.split(packed, prefix, qubits, member["name"])
-                for prefix, qubits in zip(member["replica_prefixes"], member["replica_qubits"], strict=True)
+                packing.split(packed, prefix, qubits, member_name)
+                for prefix, qubits in zip(prefixes, member["replica_qubits"], strict=True)
             ]
             entries.append(
                 Entry(
-                    name=member["name"],
+                    name=member_name,
                     base=replicas[0],
                     ideal=np.asarray(member["ideal"]),
                     packed=packed,
                     replicas=replicas,
-                    prefixes=member["replica_prefixes"],
+                    prefixes=prefixes,
                     replica_qubits=member["replica_qubits"],
                     reference=member["reference"],
-                    weights=weights.get(member["name"].removesuffix(ISOLATED_SUFFIX)),
+                    weights=weights.get(member_name.removesuffix(ISOLATED_SUFFIX)),
                 )
             )
     return out
@@ -2237,22 +2719,34 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         actual_archive_sha256 = hashlib.sha256(qpy_bytes).hexdigest()
         if actual_archive_sha256 != submission.get("qpy_archive_sha256"):
             raise LiveRunError("isa.qpy differs from the archive digest checkpointed before submission")
-    isas = {c.name: c for c in qpy.load(io.BytesIO(qpy_bytes))}
+    archived_circuits = list(qpy.load(io.BytesIO(qpy_bytes)))
+    isas = {circuit.name: circuit for circuit in archived_circuits}
+    if len(isas) != len(archived_circuits):
+        raise LiveRunError("isa.qpy contains duplicate fused-PUB circuit names")
     if planned_jobs is not None:
         planned_members = [member for planned_job in planned_jobs for member in planned_job["members"]]
         if len(planned_members) != len(set(planned_members)):
-            raise LiveRunError("submission plan assigns one packed circuit to multiple jobs")
-        missing_from_plan = sorted(set(isas) - set(planned_members))
-        missing_from_archive = sorted(set(planned_members) - set(isas))
+            raise LiveRunError("submission plan assigns one logical member to multiple jobs")
+        planned_pubs = [pub for planned_job in planned_jobs for pub in planned_job["pubs"]]
+        planned_pub_names = [pub["name"] for pub in planned_pubs]
+        if len(planned_pub_names) != len(set(planned_pub_names)):
+            raise LiveRunError("submission plan assigns one fused PUB to multiple jobs")
+        mapped_members = [component["member"] for pub in planned_pubs for component in pub["components"]]
+        if mapped_members != planned_members:
+            raise LiveRunError("submission plan flat members differ from the ordered fused-PUB component map")
+        missing_from_plan = sorted(set(isas) - set(planned_pub_names))
+        missing_from_archive = sorted(set(planned_pub_names) - set(isas))
         if missing_from_plan or missing_from_archive:
             raise LiveRunError(
                 "submission plan and QPY archive differ: "
                 f"archive-only={missing_from_plan}, plan-only={missing_from_archive}"
             )
         for planned_job in planned_jobs:
-            for member_name in planned_job["members"]:
-                if member_name not in isas:
-                    raise LiveRunError(f"planned circuit {member_name!r} is absent from isa.qpy")
+            for pub in planned_job["pubs"]:
+                if pub["name"] not in isas:
+                    raise LiveRunError(f"planned fused PUB {pub['name']!r} is absent from isa.qpy")
+                _validate_archived_pub(pub, isas[pub["name"]], planned_job["backend"], planned_job["kind"])
+        submission_gaps(submission)
         try:
             reconciled = reconcile_attempted_jobs(service, submission)
         finally:
@@ -2284,8 +2778,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         job = service.job(job_entry["job_id"])
         result = job.result()
         metrics = job.metrics()
-        members = job_entry["members"]
-        windows = pub_windows(result, len(members))
+        pub_manifests = job_entry["pubs"]
+        if len(result) != len(pub_manifests):
+            raise LiveRunError(
+                f"job {job_entry['job_id']} returned {len(result)} PUB results for "
+                f"{len(pub_manifests)} planned fused PUBs"
+            )
+        windows = pub_windows(result, len(pub_manifests))
         twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
         backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
@@ -2299,29 +2798,40 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     props_then,
                     noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
                 )
-                starting = [isas[n] for (st, _), n in zip(windows, members, strict=True) if st == start]
+                starting = [
+                    isas[pub_manifest["name"]]
+                    for (span_start, _), pub_manifest in zip(windows, pub_manifests, strict=True)
+                    if span_start == start
+                ]
                 check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
         measured: dict[str, list[np.ndarray]] = {}
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
-        for idx, (name, pub) in enumerate(zip(members, result, strict=True)):
-            entry = by_name[name]
+        for idx, (pub_manifest, pub_result) in enumerate(zip(pub_manifests, result, strict=True)):
             start, stop = windows[idx]
             props_then, sim_then = at[start]
-            measured[name] = [
-                _distribution(_pub_counts(pub, packing.registers(entry.packed, prefix), name), rep.num_clbits)
-                for prefix, rep in zip(entry.prefixes, entry.replicas, strict=True)
-            ]
-            props_by_name[name] = props_then
-            replayed[name] = run_replicas(sim_then, entry, shots, seed)
             stop_calibration = backend.properties(datetime=stop).last_update_date
-            executed[name] = {
-                "start": start.isoformat(),
-                "stop": stop.isoformat(),
-                "calibration": props_then.last_update_date.isoformat(),
-                "calibration_changed_during_shots": stop_calibration != props_then.last_update_date,
-            }
+            execution_records = component_execution_records(
+                pub_manifest,
+                start,
+                stop,
+                props_then.last_update_date,
+                stop_calibration != props_then.last_update_date,
+            )
+            for component in pub_manifest["components"]:
+                name = component["member"]
+                entry = by_name[name]
+                measured[name] = [
+                    _distribution(
+                        _pub_counts(pub_result, packing.registers(entry.packed, prefix), name),
+                        replica.num_clbits,
+                    )
+                    for prefix, replica in zip(entry.prefixes, entry.replicas, strict=True)
+                ]
+                props_by_name[name] = props_then
+                replayed[name] = run_replicas(sim_then, entry, shots, seed)
+                executed[name] = execution_records[name]
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
             if not any(n in measured for n in required):
@@ -2350,10 +2860,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             stats = replica_statistics(group, entries, measured, shots)
             comparison_reason = _comparisons_withheld(required, executed)
             if comparison_reason:
-                # Every summary combines members that ran as separate PUBs, so
-                # under split calibrations only each entry's own replica
-                # variance stands; the raw distributions above stay for
-                # reanalysis.
+                # Every summary combines components from multiple fused PUBs,
+                # so under split calibrations only each entry's own replica
+                # variance stands; the raw distributions stay for reanalysis.
                 out_entry["comparisons_withheld"] = comparison_reason
                 out_entry["measured_statistics"] = _single_pub_views(stats)
                 if straddling:
@@ -2440,7 +2949,7 @@ def main(argv: list[str] | None = None) -> int:
         "--isolated-reference",
         action=argparse.BooleanOptionalAction,
         default=True,
-        help="run each replicated group's primary alone on replica 0 as the crosstalk reference",
+        help="put each group's replica-0 primary in the shared global reference PUB",
     )
     parser.add_argument(
         "--twirl",
@@ -2506,13 +3015,12 @@ def _replace_atomically(target: Path, write: Callable[[Any], None], mode: str) -
 
 
 def write_archive(run_dir: Path, choices: list[Choice]) -> str:
-    """Write the packed execution circuits and return the exact QPY-file digest."""
+    """Write the exact fused Runtime PUB circuits and return the QPY-file digest."""
     archived = []
-    for choice in choices:
-        for entry in choice.entries:
-            named = copy.copy(entry.packed)
-            named.name = entry.name
-            archived.append(named)
+    for pub in execution_pubs(choices):
+        named = copy.copy(pub.circuit)
+        named.name = pub.name
+        archived.append(named)
     buffer = io.BytesIO()
     qpy.dump(archived, buffer)
     qpy_bytes = buffer.getvalue()

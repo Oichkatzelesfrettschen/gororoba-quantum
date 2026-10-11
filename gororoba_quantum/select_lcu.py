@@ -65,7 +65,7 @@ def phase_oracle_from_anf(
         elif len(monomial_qubits) == 3:
             circuit.ccz(*monomial_qubits)
         else:
-            circuit.append(ZGate().control(len(monomial_qubits) - 1), monomial_qubits)
+            circuit.append(ZGate().control(len(monomial_qubits) - 1, annotated=False), monomial_qubits)
     return circuit
 
 
