@@ -23,6 +23,7 @@ from qiskit.circuit import Gate, Parameter, ParameterExpression
 from qiskit.circuit.library import DiagonalGate
 from qiskit.quantum_info import Operator, Statevector
 
+import parallel
 import predict
 from boolean_anf import anf_coefficients, anf_degree_histogram
 from cd_core import cd_sign, fano_completion, sedenion_zero_divisor_corpus, sedenion_zero_divisors
@@ -391,16 +392,29 @@ def _check_design_d() -> None:
     print(f"  {len(partners)} elements a: annihilator dim 4 spanned by partners; Gram spectrum {counts}")
 
 
+def _design_c_pair_error(pair: tuple[int, int, int]) -> tuple[float, float]:
+    """Largest operator and probability deviation of one Design C circuit from its prediction."""
+    dim, i, j = pair
+    qc = design_c_associator_spectrum(dim, i, j)
+    omega = predict.associator_phase(dim, i, j)
+    got = Operator(_unitary_part(qc)).data
+    worst_op = float(np.max(np.abs(got - np.diag(np.array(omega, dtype=float)))))
+    probs = Statevector(qc.remove_final_measurements(inplace=False)).probabilities()
+    return worst_op, float(np.max(np.abs(probs - predict.walsh_distribution(omega))))
+
+
 def _check_design_c() -> None:
-    for dim in (8, 16, 32):
-        worst_op = worst_p = 0.0
-        for i, j in combinations(range(1, dim), 2):
-            qc = design_c_associator_spectrum(dim, i, j)
-            omega = predict.associator_phase(dim, i, j)
-            got = Operator(_unitary_part(qc)).data
-            worst_op = max(worst_op, float(np.max(np.abs(got - np.diag(np.array(omega, dtype=float))))))
-            probs = Statevector(qc.remove_final_measurements(inplace=False)).probabilities()
-            worst_p = max(worst_p, float(np.max(np.abs(probs - predict.walsh_distribution(omega)))))
+    dims = (8, 16, 32)
+    pairs_by_dim = {dim: [(dim, i, j) for i, j in combinations(range(1, dim), 2)] for dim in dims}
+    errors = parallel.ordered_map(
+        _design_c_pair_error, [pair for dim in dims for pair in pairs_by_dim[dim]], min_items=16
+    )
+    position = 0
+    for dim in dims:
+        dim_errors = errors[position : position + len(pairs_by_dim[dim])]
+        position += len(pairs_by_dim[dim])
+        worst_op = max(op for op, _ in dim_errors)
+        worst_p = max(p for _, p in dim_errors)
         _require(worst_op < 1e-12 and worst_p < 1e-12, f"dim {dim}: operator {worst_op:.1e}, probs {worst_p:.1e}")
         pairs = (dim - 1) * (dim - 2) // 2
         print(f"design C dim {dim}: {pairs} pairs, W = diag(omega) within {worst_op:.1e}, spectra within {worst_p:.1e}")

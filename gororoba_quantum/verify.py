@@ -29,12 +29,14 @@ import os
 import random
 import sys
 import tomllib
-from collections import Counter
+from collections import Counter, defaultdict
 from collections.abc import Callable
+from functools import cache
 from itertools import combinations
 from math import isclose
 from pathlib import Path
 
+import parallel
 from boolean_anf import (
     anf_coefficients,
     anf_degree,
@@ -84,16 +86,31 @@ def _require(cond: bool, message: str) -> None:
         raise CheckFailed(message)
 
 
+def _dataset_pin(record: Path) -> tuple[str, str | None, str | None]:
+    with open(record, "rb") as handle:
+        dataset = tomllib.load(handle).get("dataset", {})
+    return record.name, dataset.get("source_csv"), dataset.get("source_sha256")
+
+
+@cache
+def _registry_pins() -> dict[str, list[tuple[str, str | None]]]:
+    """Every registry record's (name, source_sha256), keyed by the source_csv it pins.
+
+    The registry's TOML records total tens of megabytes, so each is parsed
+    once, across processes, and the index serves every pinned CSV.
+    """
+    index: dict[str, list[tuple[str, str | None]]] = defaultdict(list)
+    for name, source, sha256 in parallel.ordered_map(_dataset_pin, sorted(REGISTRY.rglob("*.toml")), min_items=16):
+        if source is not None:
+            index[source].append((name, sha256))
+    return dict(index)
+
+
 def _pinned_csv(rel: str) -> Path:
     """The kernel CSV at rel, once its bytes match every registry record of it."""
     path = GOROROBA_ROOT / rel
     _require(path.is_file(), f"{rel} missing under GOROROBA_ROOT={GOROROBA_ROOT}")
-    pins = []
-    for record in sorted(REGISTRY.rglob("*.toml")):
-        with open(record, "rb") as handle:
-            dataset = tomllib.load(handle).get("dataset", {})
-        if dataset.get("source_csv") == rel:
-            pins.append((record.name, dataset.get("source_sha256")))
+    pins = _registry_pins().get(rel, [])
     _require(bool(pins), f"no registry record pins {rel}")
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     stale = [name for name, pin in pins if pin != digest]

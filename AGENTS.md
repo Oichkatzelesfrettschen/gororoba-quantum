@@ -21,7 +21,7 @@ lint and type-check configuration only. Before any push, these exit 0:
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
-    predict.py select_lcu.py experiments.py live_run.py order_finding.py \
+    parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py
@@ -43,6 +43,14 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
 )
 ```
+
+CPU-bound loops over independent items (embedding scores in replica
+placement, operator checks, registry parsing) run through parallel.py, an
+order-preserving process pool started with spawn on every platform, so a
+parallel run returns exactly what the serial loop returns.
+`GOROROBA_WORKERS=N` caps the worker count and `GOROROBA_WORKERS=1` runs
+serially; the default is the CPUs available to the process. Aer runs batch
+every replica of a choice in one call and parallelize experiments itself.
 
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under

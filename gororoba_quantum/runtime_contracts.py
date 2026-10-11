@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import math
+import os
 import tempfile
 from contextlib import redirect_stdout
 from datetime import UTC, datetime, timedelta
@@ -30,6 +31,7 @@ from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
 import packing
+import parallel
 from experiments import MIRROR_SUFFIX, Group, experiment_groups
 from live_run import (
     RECORD_SCHEMA_CONTRACT,
@@ -924,6 +926,76 @@ def _zero_replica_distributions(entry: Entry) -> list[np.ndarray]:
     return distributions
 
 
+def _verify_worker_quota() -> None:
+    """The default worker count honors the tightest CPU quota on the process's cgroup or any ancestor."""
+    with tempfile.TemporaryDirectory(prefix="gororoba-cgroup-") as directory:
+        root = Path(directory)
+        proc = root / "proc_self_cgroup"
+        v2 = root / "v2"
+        leaf = v2 / "user.slice" / "session.scope"
+        leaf.mkdir(parents=True)
+        (v2 / "cpu.max").write_text("max 100000\n")
+        (v2 / "user.slice" / "cpu.max").write_text("150000 100000\n")
+        (leaf / "cpu.max").write_text("300000 100000\n")
+        proc.write_text("0::/user.slice/session.scope\n")
+        if parallel.cgroup_cpu_quota(proc, v2) != 1.5:
+            raise RuntimeError("a tighter ancestor quota does not bind the nested cgroup")
+        (v2 / "user.slice" / "cpu.max").write_text("garbage\n")
+        if parallel.cgroup_cpu_quota(proc, v2) != 3.0:
+            raise RuntimeError("a malformed ancestor file is not skipped")
+        (leaf / "cpu.max").write_text("max 100000\n")
+        if parallel.cgroup_cpu_quota(proc, v2) is not None:
+            raise RuntimeError("an unlimited hierarchy reports a quota")
+        v1 = root / "v1"
+        cpu = v1 / "cpu,cpuacct" / "docker" / "abc"
+        cpu.mkdir(parents=True)
+        (cpu / "cpu.cfs_quota_us").write_text("200000\n")
+        (cpu / "cpu.cfs_period_us").write_text("100000\n")
+        (v1 / "cpu,cpuacct" / "cpu.cfs_quota_us").write_text("-1\n")
+        (v1 / "cpu,cpuacct" / "cpu.cfs_period_us").write_text("100000\n")
+        proc.write_text("12:cpu,cpuacct:/docker/abc\n3:memory:/docker/abc\n")
+        if parallel.cgroup_cpu_quota(proc, v1) != 2.0:
+            raise RuntimeError("the cgroup v1 cpu controller path is not resolved")
+        if parallel.cgroup_cpu_quota(root / "absent", v1) is not None:
+            raise RuntimeError("a missing /proc/self/cgroup reports a quota")
+    original = parallel.cgroup_cpu_quota
+    parallel.cgroup_cpu_quota = lambda *args: 1.5
+    try:
+        if os.environ.get("GOROROBA_WORKERS") is None and parallel.workers() != 2:
+            raise RuntimeError(f"a 1.5-CPU quota sizes {parallel.workers()} workers")
+    finally:
+        parallel.cgroup_cpu_quota = original
+
+
+def _verify_replay_seed_independence() -> None:
+    """Replay batches under different calibrations never share a (seed, position) pair."""
+    circuit = QuantumCircuit(1, 1)
+    circuit.h(0)
+    circuit.measure(0, 0)
+    packed = _synthetic_entry("packed", circuit, np.array([0.5, 0.5]))
+    reference = _synthetic_entry("packed_isolated", circuit, np.array([0.5, 0.5]))
+    first, second = datetime(2026, 10, 10, tzinfo=UTC), datetime(2026, 10, 11, tzinfo=UTC)
+    calls: list[tuple[int, list[str]]] = []
+    original = live_run_module.simulate_entries
+
+    def recording(noise: Any, entries: list[Entry], shots: int, seed: int) -> dict[str, list[np.ndarray]]:
+        del noise, shots
+        calls.append((seed, [entry.name for entry in entries]))
+        return {entry.name: _zero_replica_distributions(entry) for entry in entries}
+
+    live_run_module.simulate_entries = recording
+    try:
+        replayed = live_run_module.replay_entries(
+            {first: object(), second: object()}, {second: [reference], first: [packed]}, 64, 7
+        )
+    finally:
+        live_run_module.simulate_entries = original
+    if set(replayed) != {"packed", "packed_isolated"}:
+        raise RuntimeError(f"replay loses entries: {sorted(replayed)}")
+    if calls != [(7, ["packed"]), (8, ["packed_isolated"])]:
+        raise RuntimeError(f"replay batches share seeds or run out of calibration order: {calls}")
+
+
 def _verify_fused_collection() -> None:
     """Collect one complete mocked job through fused result decoding and execution-window fan-out."""
     backend = _ProbeBackend("viable", FakeFez())
@@ -1028,15 +1100,17 @@ def _verify_fused_collection() -> None:
 
         collection_service = _CollectionProbeService(backend, {job_id: _ProbeResultJob(result)})
         original_noise_simulator = live_run_module.noise_simulator
-        original_run_replicas = live_run_module.run_replicas
+        original_simulate_entries = live_run_module.simulate_entries
         live_run_module.noise_simulator = lambda name, target, props: object()
-        live_run_module.run_replicas = lambda noise, entry, shots, seed: _zero_replica_distributions(entry)
+        live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
+            entry.name: _zero_replica_distributions(entry) for entry in entries
+        }
         try:
             with redirect_stdout(io.StringIO()):
                 collect(collection_service, run_dir)
         finally:
             live_run_module.noise_simulator = original_noise_simulator
-            live_run_module.run_replicas = original_run_replicas
+            live_run_module.simulate_entries = original_simulate_entries
 
         collected = json.loads((run_dir / "collect.json").read_text())
         executed = {
@@ -1094,8 +1168,10 @@ def _verify_joint_fusion_candidate_backtracking() -> None:
     ]
     attempts: list[tuple[int, ...]] = []
 
-    def forced_joint_placement(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
-        del policy
+    def forced_joint_placement(
+        choices: list[Choice], policy: ReplicaPolicy, cache: dict[tuple[int, float], Any] | None = None
+    ) -> dict[str, Any]:
+        del policy, cache
         seeds = tuple(choice.seed for choice in choices)
         attempts.append(seeds)
         if seeds == (11, 21):
@@ -1169,6 +1245,21 @@ def _verify_required_placement_backtracking() -> None:
         if any(sum(entry.reference for entry in choice.entries) != 1 for choice in choices):
             raise RuntimeError("required replica-set backtracking loses a group's reference entry")
         execution_pubs(choices)
+
+        candidate_calls = 0
+
+        def counted_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float) -> Any:
+            nonlocal candidate_calls
+            candidate_calls += 1
+            return path_candidates(snap, isas, floor)
+
+        live_run_module._replica_candidates = counted_candidates
+        placement_cache: dict[tuple[int, float], Any] = {}
+        for _ in range(2):
+            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY, placement_cache)
+        if candidate_calls != len(choices):
+            raise RuntimeError(f"retried joint placement recomputed candidates {candidate_calls} times")
+        live_run_module._replica_candidates = path_candidates
 
         candidate_qubits[0] = [1, 0]
         try:
@@ -1727,6 +1818,8 @@ def _verify() -> None:
     _verify_target_and_bad_qubit_status()
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
+    _verify_worker_quota()
+    _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()
     _verify_joint_fusion_candidate_backtracking()
