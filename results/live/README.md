@@ -82,6 +82,16 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
+`2026-10-11T102037.475268Z` requalifies schema 6 after collection moved its checkpoints to
+collect.partial.json, confined throughput to DONE jobs, and scoped the packing
+comparison. Clean source commit `37506e4` (sources_modified=false) carries
+experiment digest
+`7b0de60e5005b33c7e0a16e87a4f459e7b42e19330fe650f5f6368cddca8ac62`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`5f8ec0bf35d0f30ee35db204203f1b84df764da9c9dcc20de863bd9e4075a270`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T100526.684788Z` requalifies schema 6 after packing_schedule moved to scheduler
 residuals gated on a complete timing status. Clean source commit `9756ec3`
 (sources_modified=false) carries experiment digest
