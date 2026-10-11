@@ -47,7 +47,6 @@ from live_run import (
     _physical,
     _pub_counts,
     _recovery_tags,
-    allocate_fusion_replicas,
     build_admission_target,
     build_submission_plan,
     capability_violations,
@@ -69,6 +68,8 @@ from live_run import (
     replica_floor,
     routing_admission_violations,
     select,
+    select_candidates,
+    select_fusion_choices,
     submission_batches,
     submission_gaps,
     target_violations,
@@ -696,6 +697,18 @@ def _verify_pub_fusion_contracts() -> None:
     for key, expected in expected_summary.items():
         if summary[key] != expected:
             raise RuntimeError(f"PUB fusion {key} is {summary[key]}, expected {expected}")
+
+    no_reference_choices = copy.deepcopy(static_choices[:2])
+    for choice in no_reference_choices:
+        choice.entries = [entry for entry in choice.entries if not entry.reference]
+    no_reference_summary = fusion_summary(execution_pubs(no_reference_choices))
+    if (
+        no_reference_summary["strategy"] != "aligned_members_without_reference"
+        or no_reference_summary["reference_estimand"] is not None
+        or no_reference_summary["reference_estimand_by_kind"] != {"static": None, "dynamic": None}
+        or no_reference_summary["reference_components"] != {"static": 0, "dynamic": 0}
+    ):
+        raise RuntimeError(f"reference-free PUB fusion metadata is {no_reference_summary}")
     static_pubs = [pub for pub in pubs if pub.kind == "static"]
     dynamic_pubs = [pub for pub in pubs if pub.kind == "dynamic"]
     if any(_is_dynamic(pub.circuit) for pub in static_pubs):
@@ -981,10 +994,8 @@ def _verify_fused_collection() -> None:
 def _verify_joint_fusion_placement() -> None:
     snapshot = _fake_snapshot(FakeFez())
     groups = {group.name: group for group in experiment_groups()}
-    choices = [
-        select(groups[name], [snapshot], 1, {}, PACKED_REPLICA_POLICY) for name in ("design_a", "design_c_8_1_4")
-    ]
-    evidence = allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+    candidate_sets = [select_candidates(groups[name], [snapshot], 1, {}) for name in ("design_a", "design_c_8_1_4")]
+    choices, evidence = select_fusion_choices(candidate_sets, PACKED_REPLICA_POLICY)
     if not evidence["cross_group_disjoint"] or not evidence["within_group_one_hop_separated"]:
         raise RuntimeError(f"joint placement records incomplete separation evidence: {evidence}")
     if any(len(choice.replicas) != 2 for choice in choices):
@@ -1000,6 +1011,56 @@ def _verify_joint_fusion_placement() -> None:
         first, second = (set(replica.qubits) for replica in choice.replicas)
         if first.intersection(second) or any(graph.has_edge(a, b) for a in first for b in second):
             raise RuntimeError(f"{choice.group.name}: joint placement loses within-group one-hop separation")
+
+
+def _verify_joint_fusion_candidate_backtracking() -> None:
+    """The coupled selector retries after the independently best combination fails."""
+    snapshot = _fake_snapshot(FakeFez())
+    groups = {group.name: group for group in experiment_groups()}
+
+    def candidate(group_name: str, seed: int, score: float) -> Choice:
+        return Choice(groups[group_name], snapshot, seed, [], [], [], score)
+
+    candidate_sets = [
+        [candidate("design_a", 11, 0.99), candidate("design_a", 12, 0.80)],
+        [candidate("design_c_8_1_4", 21, 0.98), candidate("design_c_8_1_4", 22, 0.90)],
+    ]
+    attempts: list[tuple[int, ...]] = []
+
+    def forced_joint_placement(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
+        del policy
+        seeds = tuple(choice.seed for choice in choices)
+        attempts.append(seeds)
+        if seeds == (11, 21):
+            raise LiveRunError("fixture rejects the independently best combination")
+        return {
+            "cross_group_disjoint": True,
+            "within_group_one_hop_separated": True,
+            "allocation": "fixture",
+            "clusters": [],
+        }
+
+    original_allocate_fusion_replicas = live_run_module.allocate_fusion_replicas
+    original_execution_pubs = live_run_module.execution_pubs
+    live_run_module.allocate_fusion_replicas = forced_joint_placement
+    live_run_module.execution_pubs = lambda choices: []
+    try:
+        selected, evidence = select_fusion_choices(candidate_sets, PACKED_REPLICA_POLICY)
+    finally:
+        live_run_module.allocate_fusion_replicas = original_allocate_fusion_replicas
+        live_run_module.execution_pubs = original_execution_pubs
+
+    if attempts != [(11, 21), (11, 22)]:
+        raise RuntimeError(f"joint candidate backtracking attempts are {attempts}")
+    if [choice.seed for choice in selected] != [11, 22]:
+        raise RuntimeError(f"joint candidate backtracking selected {[choice.seed for choice in selected]}")
+    selection = evidence.get("candidate_selection", {})
+    if (
+        selection.get("attempted_combinations") != 2
+        or selection.get("rejected_combinations") != 1
+        or [item["candidate_index"] for item in selection.get("selected", [])] != [0, 1]
+    ):
+        raise RuntimeError(f"joint candidate backtracking evidence is {selection}")
 
 
 def _fixture_args(**overrides: Any) -> argparse.Namespace:
@@ -1071,16 +1132,15 @@ def _verify_schema_lifecycle() -> None:
     def approval_checkpoint() -> None:
         approval_checkpoints.append(copy.deepcopy(approval_record))
 
-    def changed_select(
+    def changed_select_candidates(
         group: Group,
         snaps: list[Snapshot],
         seeds: int,
         log: dict[str, Any],
-        policy: ReplicaPolicy,
-    ) -> Choice:
-        del snaps, seeds, policy
+    ) -> list[Choice]:
+        del snaps, seeds
         log[group.name] = {"fixture": [{"stage": "renewed_approval_contract"}]}
-        return revised_choice
+        return [revised_choice]
 
     def forbidden_configure_sampler(
         backend: Any,
@@ -1095,11 +1155,11 @@ def _verify_schema_lifecycle() -> None:
         sampler_constructions += 1
         raise RuntimeError("Sampler construction reached after approved circuits changed")
 
-    original_select = live_run_module.select
+    original_select_candidates = live_run_module.select_candidates
     original_configure_sampler = live_run_module.configure_sampler
     with tempfile.TemporaryDirectory(prefix="gororoba-renewed-approval-") as directory:
         run_dir = Path(directory)
-        live_run_module.select = changed_select
+        live_run_module.select_candidates = changed_select_candidates
         live_run_module.configure_sampler = forbidden_configure_sampler
         try:
             try:
@@ -1117,7 +1177,7 @@ def _verify_schema_lifecycle() -> None:
             else:
                 raise RuntimeError("changed approved plan reaches submission")
         finally:
-            live_run_module.select = original_select
+            live_run_module.select_candidates = original_select_candidates
             live_run_module.configure_sampler = original_configure_sampler
         if sampler_constructions:
             raise RuntimeError("changed approved plan constructs a Runtime Sampler")
@@ -1528,6 +1588,7 @@ def _verify() -> None:
     _verify_pub_fusion_contracts()
     _verify_fused_collection()
     _verify_joint_fusion_placement()
+    _verify_joint_fusion_candidate_backtracking()
     _verify_schema_lifecycle()
     _verify_schema_discrimination()
     _verify_every_job_revalidates()

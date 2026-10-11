@@ -29,6 +29,7 @@ from __future__ import annotations
 import argparse
 import copy
 import hashlib
+import heapq
 import io
 import json
 import math
@@ -1033,6 +1034,17 @@ def _placement_footprint(pool: _FusionPlacementPool, replica: Replica) -> set[in
     return qubits | {neighbor for qubit in qubits for neighbor in pool.graph.neighbors(qubit)}
 
 
+def _choice_execution_kind(choice: Choice) -> str:
+    """Classify a routed candidate before placement or its exact packed entries afterward."""
+    circuits = [entry.packed for entry in choice.entries] if choice.entries else choice.isas
+    if not circuits:
+        raise LiveRunError(f"{choice.group.name}: execution-kind classification received no circuits")
+    kinds = {"dynamic" if _is_dynamic(circuit) else "static" for circuit in circuits}
+    if len(kinds) != 1:
+        raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
+    return next(iter(kinds))
+
+
 def _round_assignment(
     pools: list[_FusionPlacementPool], occupied: set[int]
 ) -> list[tuple[_FusionPlacementPool, Replica]] | None:
@@ -1081,10 +1093,7 @@ def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> di
     """
     clusters: dict[tuple[str, str], list[tuple[int, Choice]]] = {}
     for choice_index, choice in enumerate(choices):
-        kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in choice.entries}
-        if len(kinds) != 1:
-            raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
-        kind = next(iter(kinds))
+        kind = _choice_execution_kind(choice)
         clusters.setdefault((choice.snap.name, kind), []).append((choice_index, choice))
 
     cluster_records: list[dict[str, Any]] = []
@@ -1266,9 +1275,25 @@ def fusion_summary(pubs: list[ExecutionPub]) -> dict[str, Any]:
         execution_counts[pub.kind] += 1
         logical_entries[pub.kind] += len(pub.components)
         reference_components[pub.kind] += sum(component.entry.reference for component in pub.components)
+    reference_estimand = {
+        kind: "global_packed_workload_vs_global_replica0_workload" if reference_components[kind] else None
+        for kind in ("static", "dynamic")
+    }
+    populated_kinds = [kind for kind, count in execution_counts.items() if count]
+    referenced_kinds = [kind for kind in populated_kinds if reference_components[kind]]
+    if not referenced_kinds:
+        strategy = "aligned_members_without_reference"
+        combined_estimand = None
+    elif len(referenced_kinds) == len(populated_kinds):
+        strategy = "aligned_members_with_shared_replica0_reference"
+        combined_estimand = "global_packed_workload_vs_global_replica0_workload"
+    else:
+        strategy = "aligned_members_with_kind_specific_replica0_reference"
+        combined_estimand = "available_only_for_kinds_with_shared_replica0_reference"
     return {
-        "strategy": "aligned_members_with_shared_replica0_reference",
-        "reference_estimand": "global_packed_workload_vs_global_replica0_workload",
+        "strategy": strategy,
+        "reference_estimand": combined_estimand,
+        "reference_estimand_by_kind": reference_estimand,
         "logical_entries": logical_entries,
         "execution_pubs": execution_counts,
         "reference_components": reference_components,
@@ -1312,8 +1337,8 @@ def _trace_failure_summary(trace_by_backend: dict[str, list[dict[str, Any]]]) ->
     return summary
 
 
-def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any], policy: ReplicaPolicy) -> Choice:
-    """Best (backend, seed, layout) for the group by geometric-mean layout score over its members."""
+def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any]) -> list[Choice]:
+    """Rank every routed (backend, seed, layout) candidate retained for joint selection."""
     requirements = group_requirements(group)
     candidates: list[Choice] = []
     log[group.name] = {}
@@ -1380,47 +1405,145 @@ def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any],
             trace.append({"seed": seed, "joint_score": joint, "layout": layout})
             candidates.append(Choice(group, snap, seed, layout, isas, scores, joint))
     candidates.sort(key=lambda choice: (choice.joint_score, -choice.snap.pending_jobs), reverse=True)
+    if candidates:
+        return candidates
+    failure_summary = _trace_failure_summary(log[group.name])
+    raise LiveRunError(
+        f"{group.name}: no valid routed candidate; failures={json.dumps(failure_summary, sort_keys=True)}"
+    )
+
+
+def _prepare_individual_candidate(candidate: Choice, log: dict[str, Any], policy: ReplicaPolicy) -> bool:
+    """Build and validate one candidate for callers that do not need cross-group fusion."""
+    trace = log[candidate.group.name][candidate.snap.name]
+    try:
+        build_entries(candidate, policy)
+    except (LiveRunError, QiskitError, ValueError) as error:
+        trace.append(
+            {
+                "seed": candidate.seed,
+                "layout": candidate.layout,
+                "entry_build_error": f"{type(error).__name__}: {error}",
+            }
+        )
+        return False
+    execution_rejections = {
+        entry.name: rejected
+        for entry in candidate.entries
+        if (rejected := compiled_violations(entry.packed, candidate.snap))
+    }
+    if execution_rejections:
+        trace.append(
+            {
+                "seed": candidate.seed,
+                "layout": candidate.layout,
+                "execution_rejections": execution_rejections,
+            }
+        )
+        return False
+    execution_kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in candidate.entries}
+    if len(execution_kinds) != 1:
+        trace.append(
+            {
+                "seed": candidate.seed,
+                "layout": candidate.layout,
+                "execution_rejections": {"group": ["packed execution set mixes static and dynamic circuits"]},
+            }
+        )
+        return False
+    return True
+
+
+def select(group: Group, snaps: list[Snapshot], seeds: int, log: dict[str, Any], policy: ReplicaPolicy) -> Choice:
+    """Best independently placeable candidate for one group."""
+    candidates = select_candidates(group, snaps, seeds, log)
     for candidate in candidates:
-        trace = log[group.name][candidate.snap.name]
-        try:
-            build_entries(candidate, policy)
-        except (LiveRunError, QiskitError, ValueError) as error:
-            trace.append(
-                {
-                    "seed": candidate.seed,
-                    "layout": candidate.layout,
-                    "entry_build_error": f"{type(error).__name__}: {error}",
-                }
-            )
-            continue
-        execution_rejections = {
-            entry.name: rejected
-            for entry in candidate.entries
-            if (rejected := compiled_violations(entry.packed, candidate.snap))
-        }
-        if execution_rejections:
-            trace.append(
-                {
-                    "seed": candidate.seed,
-                    "layout": candidate.layout,
-                    "execution_rejections": execution_rejections,
-                }
-            )
-            continue
-        execution_kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in candidate.entries}
-        if len(execution_kinds) != 1:
-            trace.append(
-                {
-                    "seed": candidate.seed,
-                    "layout": candidate.layout,
-                    "execution_rejections": {"group": ["packed execution set mixes static and dynamic circuits"]},
-                }
-            )
-            continue
-        return candidate
+        if _prepare_individual_candidate(candidate, log, policy):
+            return candidate
     failure_summary = _trace_failure_summary(log[group.name])
     raise LiveRunError(
         f"{group.name}: no valid routed and packed candidate; failures={json.dumps(failure_summary, sort_keys=True)}"
+    )
+
+
+def select_fusion_choices(
+    candidate_sets: list[list[Choice]], policy: ReplicaPolicy
+) -> tuple[list[Choice], dict[str, Any]]:
+    """Best-first search of the finite candidate product until joint placement and fusion pass."""
+    if not candidate_sets or any(not candidates for candidates in candidate_sets):
+        raise LiveRunError("joint fusion selection needs a non-empty candidate set for every group")
+    group_names = [candidates[0].group.name for candidates in candidate_sets]
+    if len(group_names) != len(set(group_names)) or any(
+        candidate.group.name != group_name
+        for group_name, candidates in zip(group_names, candidate_sets, strict=True)
+        for candidate in candidates
+    ):
+        raise LiveRunError(f"joint fusion candidate sets have inconsistent group ownership: {group_names}")
+
+    def priority(indices: tuple[int, ...]) -> tuple[float, int, tuple[int, ...]]:
+        selected = [candidates[index] for candidates, index in zip(candidate_sets, indices, strict=True)]
+        combined_log_score = sum(math.log(candidate.joint_score) for candidate in selected)
+        pending_jobs = sum(candidate.snap.pending_jobs for candidate in selected)
+        return -combined_log_score, pending_jobs, indices
+
+    initial = tuple(0 for _ in candidate_sets)
+    frontier = [priority(initial)]
+    queued = {initial}
+    attempted = 0
+    rejected_sample: list[dict[str, Any]] = []
+    while frontier:
+        negative_score, _, indices = heapq.heappop(frontier)
+        selected = [candidates[index] for candidates, index in zip(candidate_sets, indices, strict=True)]
+        trial = [copy.copy(candidate) for candidate in selected]
+        attempted += 1
+        try:
+            placement = allocate_fusion_replicas(trial, policy)
+            execution_pubs(trial)
+        except (LiveRunError, QiskitError, ValueError) as error:
+            if len(rejected_sample) < 32:
+                rejected_sample.append(
+                    {
+                        "candidate_indices": list(indices),
+                        "reason": f"{type(error).__name__}: {error}",
+                    }
+                )
+        else:
+            placement["candidate_selection"] = {
+                "strategy": "best_first_combined_log_score",
+                "frontier_size": math.prod(len(candidates) for candidates in candidate_sets),
+                "attempted_combinations": attempted,
+                "rejected_combinations": attempted - 1,
+                "rejected_sample": rejected_sample,
+                "combined_log_score": -negative_score,
+                "selected": [
+                    {
+                        "group": candidate.group.name,
+                        "candidate_index": index,
+                        "backend": candidate.snap.name,
+                        "seed": candidate.seed,
+                        "layout": candidate.layout,
+                        "joint_score": candidate.joint_score,
+                    }
+                    for candidate, index in zip(trial, indices, strict=True)
+                ],
+            }
+            return trial, placement
+
+        for position, candidates in enumerate(candidate_sets):
+            if indices[position] + 1 >= len(candidates):
+                continue
+            neighbor = list(indices)
+            neighbor[position] += 1
+            neighbor_indices = tuple(neighbor)
+            if neighbor_indices in queued:
+                continue
+            queued.add(neighbor_indices)
+            heapq.heappush(frontier, priority(neighbor_indices))
+
+    raise LiveRunError(
+        "no jointly placeable fused candidate combination; "
+        f"groups={group_names}, frontier={math.prod(len(candidates) for candidates in candidate_sets)}, "
+        f"attempted={attempted}, rejected_sample={json.dumps(rejected_sample, sort_keys=True)}"
     )
 
 
@@ -1802,8 +1925,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         raise LiveRunError("no eligible backend")
     groups = [group for group in available_groups if not args.groups or group.name in args.groups]
     trace: dict[str, Any] = {}
-    choices = [select(group, snaps, args.seeds, trace, _policy(args)) for group in groups]
-    fusion_placement = allocate_fusion_replicas(choices, _policy(args))
+    candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
+    choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
     pubs = execution_pubs(choices)
     record = {
         "schema_version": RECORD_SCHEMA_VERSION,
@@ -2256,18 +2379,10 @@ def submit(
         raise LiveRunError("no eligible backend remains before submission")
     attempt_trace: dict[str, Any] = {}
     reselected: dict[str, Any] = {}
-    fresh_choices: list[Choice] = []
-    for choice in choices:
-        fresh_choices.append(
-            select(
-                choice.group,
-                fresh_snapshots,
-                args.seeds,
-                attempt_trace,
-                _policy(args),
-            )
-        )
-    fresh_fusion_placement = allocate_fusion_replicas(fresh_choices, _policy(args))
+    fresh_candidate_sets = [
+        select_candidates(choice.group, fresh_snapshots, args.seeds, attempt_trace) for choice in choices
+    ]
+    fresh_choices, fresh_fusion_placement = select_fusion_choices(fresh_candidate_sets, _policy(args))
     old_execution_pubs = execution_pubs(choices)
     fresh_execution_pubs = execution_pubs(fresh_choices)
     fused_changed = _qpy_digest([pub.circuit for pub in old_execution_pubs]) != _qpy_digest(

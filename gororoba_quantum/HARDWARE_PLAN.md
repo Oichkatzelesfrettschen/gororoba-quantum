@@ -42,28 +42,35 @@ execution path but does not establish default-policy submission readiness.
    control flow, and static or dynamic kind from the circuits built in the
    current process. A copy of the fresh Target removes degraded placements
    before layout and routing. Eight transpiler seeds per group and backend
-   compete; the best three compile the controls onto one layout, and the best
-   geometric-mean layout score selects the backend and layout. Record `220438`
-   selects ibm_kingston for every group.
+   compete, and the best three per backend compile the controls onto one
+   layout. The planner retains those candidates for coupled selection rather
+   than finalizing each group independently. Record `220438` selects
+   ibm_kingston for every group.
 4. **Validate routed instructions.** Recursive support checks validate fixed
    parameters and nested control-flow instructions in every routed primary,
-   control, and mirror against the original fresh Target. A failure advances to
-   the next candidate or backend.
-5. **Allocate one placement pool.** `packing.py` enumerates each winning
-   pattern's floor-qualified embeddings in the admitted CZ graph. A
-   round-fair backtracking allocator gives every same-backend, same-kind group
-   the two placements needed for its replica-0 reference before allocating
-   surplus rounds. Replicas of one group stay one CZ hop apart; groups that
-   share a PUB occupy disjoint physical qubits. An explicit
+   control, and mirror against the original fresh Target. A failure removes
+   that routed candidate from the coupled search.
+5. **Allocate one placement pool.** `packing.py` enumerates each candidate
+   pattern's floor-qualified embeddings in the admitted CZ graph. A finite
+   best-first search ranks candidate combinations by their combined log score
+   and advances to the next combination when exact joint placement or fusion
+   fails. A round-fair backtracking allocator gives every same-backend,
+   same-kind group the two placements needed for its replica-0 reference
+   before allocating surplus rounds. Replicas of one group stay one CZ hop
+   apart; groups that share a PUB occupy disjoint physical qubits. The record
+   retains the selected candidate indices, scores, attempted-combination
+   count, and a bounded rejection sample. An explicit
    `--replica-floor` governs every group; otherwise a group's declared floor
    applies, with 0.9 as the default and 0.8 for hybrid Shor.
 6. **Fuse the execution PUBs.** Row zero combines every group's packed
-   primary. Row one combines each group's primary on replica 0, forming one
-   shared global reference workload. Later rows align the remaining members
-   and mirrors in group order. Stable outer register prefixes preserve each
-   component and replica boundary. The full surface therefore maps 29 logical
-   static entries to 14 static PUBs and 9 logical dynamic entries to 6 dynamic
-   PUBs when all groups of a kind select one backend.
+   primary. When isolated references are enabled and placement provides more
+   than one replica, row one combines each group's primary on replica 0,
+   forming one shared global reference workload. Later rows align the
+   remaining members and mirrors in group order. Stable outer register
+   prefixes preserve each component and replica boundary. The full default
+   surface therefore maps 29 logical static entries to 14 static PUBs and 9
+   logical dynamic entries to 6 dynamic PUBs when all groups of a kind select
+   one backend.
 7. **Derive and bind execution requirements.** The record retains the logical
    entry requirements, joint-placement evidence, fused-PUB cardinalities, and
    ordered PUB-to-component manifests. `isa.qpy` contains the exact fused

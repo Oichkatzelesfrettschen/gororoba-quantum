@@ -563,9 +563,12 @@ the backend's CZ coupling graph by subgraph isomorphism (rustworkx
 vf2_mapping). An embedding is admissible when every moved operation exists in
 the live Target and avoids the excluded qubits and edges of that run's
 snapshot; admissible embeddings rank by the layout score of the moved primary
-circuit. The joint allocator takes them in backtracked rounds, one qubit apart
-within a group and physically disjoint across groups that share a PUB, until
-the remaining groups cannot advance together or --max-replicas is reached. An
+circuit. A finite best-first search tries retained compile/backend
+combinations by combined log score until exact placement and fused Target
+validation succeed. The joint allocator takes each combination's embeddings
+in backtracked rounds, one qubit apart within a group and physically disjoint
+across groups that share a PUB, until the remaining groups cannot advance
+together or --max-replicas is reached. An
 explicit --replica-floor sets the
 floor for every group; otherwise a group's declared floor applies (hybrid
 Shor declares 0.8) and the rest use 0.9. A replica is the identical gate
@@ -579,11 +582,13 @@ places every static body ahead of every terminal measurement. Inner registers
 registers recovers its distribution.
 Simulation, readout correction, and replay run on each replica alone, since
 the Aer model carries no crosstalk and a packed width of 21 replicas is beyond
-dense simulation. Each group's primary also runs on replica 0's qubits in one
-shared reference PUB. Its difference from packed replica 0 compares the global
-packed workload with the global replica-0 workload. The result can reveal a
-packing cost, but it cannot attribute crosstalk to one group; the noise model
-sets the difference to zero.
+dense simulation. With isolated references enabled and at least two placed
+replicas, each group's primary also runs on replica 0's qubits in one shared
+reference PUB. Its difference from packed replica 0 compares the global packed
+workload with the global replica-0 workload. A single-replica or
+`--no-isolated-reference` plan records the reference estimand as unavailable.
+The referenced result can reveal a packing cost, but it cannot attribute
+crosstalk to one group; the noise model sets the difference to zero.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
 member's own outcome weights (hybrid Shor scores whether an outcome decodes to
