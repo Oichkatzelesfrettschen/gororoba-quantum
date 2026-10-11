@@ -1,7 +1,8 @@
 """Capture the N=21 modular-synthesis crossover on the static FakeFez target.
 
 The capture compares target-flip, scratch-free, one-clean, two-clean, and ANF arithmetic
-under fixed transpiler seeds. The pass callback records every change in qubit
+under fixed transpiler seeds. The affine-residual challenger compiles only when
+named with ``--candidate``. The pass callback records every change in qubit
 count, recursive depth, or operation census so synthesis cost and heavy-hex
 routing amplification remain separate evidence surfaces. The module submits
 no quantum work.
@@ -41,6 +42,7 @@ BASE = 2
 PHASE_BITS = 10
 NAMED_PASSES = frozenset({"HighLevelSynthesis", "BasisTranslator", "SabreLayout"})
 SOURCE_PATHS = (
+    "gororoba_quantum/affine_residual.py",
     "gororoba_quantum/boolean_anf.py",
     "gororoba_quantum/compile_evidence.py",
     "gororoba_quantum/factoring.py",
@@ -104,6 +106,19 @@ CANDIDATES = (
         workspace_contract="five computed-output qubits restored after each compute-swap-uncompute multiplier",
     ),
 )
+EXPLICIT_CANDIDATES = (
+    Candidate(
+        name="affine_residual_target_flip",
+        multiplier_strategy="affine_residual_target_flip_1_clean",
+        compiler_workspace_qubits=0,
+        mcx_hls_method=None,
+        workspace_contract=(
+            "one clean workspace restored after each residual target flip; "
+            "linear CNOTs promoted to phase-controlled Toffolis"
+        ),
+    ),
+)
+SELECTABLE_CANDIDATES = CANDIDATES + EXPLICIT_CANDIDATES
 
 
 def _canonical_operation_counts(operation_counts: dict[str, int]) -> dict[str, int]:
@@ -227,18 +242,23 @@ def _stage_snapshots(
     return stages
 
 
-def _compile_candidate(
-    candidate: Candidate, seed: int, backend: FakeFez, phase_bits: int = PHASE_BITS
-) -> dict[str, Any]:
-    source, _ = _build_source(candidate, phase_bits)
-    source_snapshot = _circuit_snapshot(source)
+def candidate_pass_manager(candidate: Candidate, seed: int, backend: FakeFez) -> Any:
+    """Return the preset pass manager every capture of this candidate uses."""
     hls_config = HLSConfig(mcx=[candidate.mcx_hls_method]) if candidate.mcx_hls_method is not None else None
-    pass_manager = generate_preset_pass_manager(
+    return generate_preset_pass_manager(
         optimization_level=OPTIMIZATION_LEVEL,
         backend=backend,
         seed_transpiler=seed,
         hls_config=hls_config,
     )
+
+
+def _compile_candidate(
+    candidate: Candidate, seed: int, backend: FakeFez, phase_bits: int = PHASE_BITS
+) -> dict[str, Any]:
+    source, _ = _build_source(candidate, phase_bits)
+    source_snapshot = _circuit_snapshot(source)
+    pass_manager = candidate_pass_manager(candidate, seed, backend)
     aggregate_resource_transitions, named_snapshots, callback = _pass_capture(source_snapshot)
     compiled = pass_manager.run(source, callback=callback)
     final_snapshot = _circuit_snapshot(compiled)
@@ -395,7 +415,7 @@ def _replay_command(
     ]
     if phase_bits != PHASE_BITS:
         arguments.extend(("--phase-bits", str(phase_bits)))
-    if len(candidates) != len(CANDIDATES):
+    if candidates != CANDIDATES:
         for candidate in candidates:
             arguments.extend(("--candidate", candidate.name))
     portable_output = _portable_output_path(output_path)
@@ -457,7 +477,7 @@ def _parser() -> argparse.ArgumentParser:
     parser.add_argument(
         "--candidate",
         action="append",
-        choices=tuple(candidate.name for candidate in CANDIDATES),
+        choices=tuple(candidate.name for candidate in SELECTABLE_CANDIDATES),
         dest="candidates",
     )
     parser.add_argument("--phase-bits", type=int, default=PHASE_BITS)
@@ -471,7 +491,7 @@ def main() -> int:
     if not seeds or len(set(seeds)) != len(seeds):
         raise ValueError("transpiler seeds must form a nonempty set")
     requested_names = set(args.candidates) if args.candidates else {candidate.name for candidate in CANDIDATES}
-    candidates = tuple(candidate for candidate in CANDIDATES if candidate.name in requested_names)
+    candidates = tuple(candidate for candidate in SELECTABLE_CANDIDATES if candidate.name in requested_names)
     record = capture(seeds, candidates, args.out, args.phase_bits)
     payload = json.dumps(record, indent=2, sort_keys=True) + "\n"
     if args.out is None:

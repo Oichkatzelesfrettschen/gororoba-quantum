@@ -90,6 +90,7 @@ DEFAULT_REPLICA_FLOOR = 0.9
 ISOLATED_SUFFIX = "_isolated"
 
 EXPERIMENT_SOURCE_MANIFEST = (
+    "affine_residual.py",
     "boolean_anf.py",
     "cd_core.py",
     "designs.py",

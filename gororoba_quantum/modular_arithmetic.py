@@ -6,7 +6,9 @@ negative power, by bit inversion. Generic synthesis exposes an ANF
 compute/swap/uncompute network, a scratch-free Gray-path cycle network, and an
 explicit one-clean-ancilla Gray-path network. The bounded N=21 path uses
 minimum-cost Boolean target flips; other generic defaults retain the one-clean
-cycle network selected by the FakeFez compiler race.
+cycle network selected by the FakeFez compiler race. The explicit-only
+affine-residual strategy factors a full-rank multiplier into target flips for
+its nonlinear residual followed by phase-controlled linear CNOTs.
 """
 
 from __future__ import annotations
@@ -17,8 +19,9 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 import parallel
+from affine_residual import affine_residual_synthesis
 from boolean_anf import anf_coefficients, anf_degree_from_coefficients, evaluate_anf
-from target_flip import MAX_TARGET_FLIP_WIDTH, target_flip_network
+from target_flip import MAX_TARGET_FLIP_WIDTH, TargetCube, target_flip_network
 
 if TYPE_CHECKING:
     from qiskit import QuantumCircuit
@@ -27,6 +30,7 @@ MAX_ANF_WIDTH = 8
 InputDomain = Literal["full_register", "nonzero_residues"]
 FULL_REGISTER: InputDomain = "full_register"
 NONZERO_RESIDUES: InputDomain = "nonzero_residues"
+AFFINE_RESIDUAL_STRATEGY = "affine_residual_target_flip_1_clean"
 
 
 @dataclass(frozen=True)
@@ -222,6 +226,7 @@ def multiplier_profile(
         "cycle_transpositions_1_clean",
         "anf_compute_swap_uncompute",
         "target_flip_1_clean",
+        AFFINE_RESIDUAL_STRATEGY,
     ):
         raise ValueError(f"unknown modular multiplier strategy {strategy!r}")
     if input_domain not in (FULL_REGISTER, NONZERO_RESIDUES):
@@ -282,10 +287,10 @@ def multiplier_profile(
         selected_strategy = (
             "target_flip_1_clean" if modulus == 21 and normalized in (2, 4, 16) else "cycle_transpositions_1_clean"
         )
-    if selected_strategy == "target_flip_1_clean":
+    if selected_strategy in ("target_flip_1_clean", AFFINE_RESIDUAL_STRATEGY):
         if width > MAX_TARGET_FLIP_WIDTH:
             raise ValueError(f"target-flip synthesis supports at most {MAX_TARGET_FLIP_WIDTH} data qubits, got {width}")
-        network = target_flip_network(permutation)
+        network = _target_flip_word(permutation, selected_strategy)
         control_histogram = Counter(1 + cube.control_mask.bit_count() for cube in network)
         return MultiplierProfile(
             modulus=modulus,
@@ -328,6 +333,53 @@ def multiplier_profile(
         basis_edge_gate_count=basis_edge_gate_count(permutation) if cycle_strategy else 0,
         maximum_control_count=width if cycle_strategy else max(histogram, default=0) + 1,
     )
+
+
+def _target_flip_word(permutation: tuple[int, ...], strategy: str) -> tuple[TargetCube, ...]:
+    if strategy == AFFINE_RESIDUAL_STRATEGY:
+        return affine_residual_synthesis(permutation).network
+    return target_flip_network(permutation)
+
+
+def _append_controlled_target_flips(
+    circuit: QuantumCircuit,
+    phase_control: int,
+    data_qubits: list[int],
+    scratch_qubits: list[int],
+    network: tuple[TargetCube, ...],
+) -> None:
+    """Emit each cube with the phase control added to its data predicate.
+
+    A cube with no data control becomes CX, one data control becomes CCX, and
+    wider predicates use one-clean MCX synthesis on the scratch qubit. X gates
+    around open controls restore their inputs on both phase branches.
+    """
+    from qiskit.synthesis import synth_mcx_1_clean_kg24
+
+    for cube in network:
+        controls = [phase_control] + [
+            data_qubit for bit_index, data_qubit in enumerate(data_qubits) if cube.control_mask & (1 << bit_index)
+        ]
+        open_controls = [
+            data_qubit
+            for bit_index, data_qubit in enumerate(data_qubits)
+            if cube.control_mask & (1 << bit_index) and not cube.control_state & (1 << bit_index)
+        ]
+        for open_control in open_controls:
+            circuit.x(open_control)
+        target_qubit = data_qubits[cube.target]
+        if len(controls) == 1:
+            circuit.cx(phase_control, target_qubit)
+        elif len(controls) == 2:
+            circuit.ccx(*controls, target_qubit)
+        else:
+            circuit.compose(
+                synth_mcx_1_clean_kg24(len(controls)),
+                qubits=controls + [target_qubit] + scratch_qubits,
+                inplace=True,
+            )
+        for open_control in reversed(open_controls):
+            circuit.x(open_control)
 
 
 def _append_controlled_basis_edge(
@@ -472,33 +524,9 @@ def append_controlled_modular_multiply(
                     modulus,
                 )
         return profile
-    if profile.strategy == "target_flip_1_clean":
-        from qiskit.synthesis import synth_mcx_1_clean_kg24
-
-        for cube in target_flip_network(modular_permutation(modulus, profile.multiplier)):
-            controls = [phase_control] + [
-                data_qubit for bit_index, data_qubit in enumerate(data_qubits) if cube.control_mask & (1 << bit_index)
-            ]
-            open_controls = [
-                data_qubit
-                for bit_index, data_qubit in enumerate(data_qubits)
-                if cube.control_mask & (1 << bit_index) and not cube.control_state & (1 << bit_index)
-            ]
-            for open_control in open_controls:
-                circuit.x(open_control)
-            target_qubit = data_qubits[cube.target]
-            if len(controls) == 1:
-                circuit.cx(phase_control, target_qubit)
-            elif len(controls) == 2:
-                circuit.ccx(*controls, target_qubit)
-            else:
-                circuit.compose(
-                    synth_mcx_1_clean_kg24(len(controls)),
-                    qubits=controls + [target_qubit] + scratch_qubits,
-                    inplace=True,
-                )
-            for open_control in reversed(open_controls):
-                circuit.x(open_control)
+    if profile.strategy in ("target_flip_1_clean", AFFINE_RESIDUAL_STRATEGY):
+        network = _target_flip_word(modular_permutation(modulus, profile.multiplier), profile.strategy)
+        _append_controlled_target_flips(circuit, phase_control, data_qubits, scratch_qubits, network)
         return profile
     if profile.strategy in ("cycle_transpositions", "cycle_transpositions_1_clean"):
         permutation = modular_permutation(modulus, profile.multiplier)
@@ -800,6 +828,9 @@ def _verify() -> None:
         (21, 2, "target_flip_1_clean"),
         (21, 4, "target_flip_1_clean"),
         (21, 16, "target_flip_1_clean"),
+        (21, 2, AFFINE_RESIDUAL_STRATEGY),
+        (21, 4, AFFINE_RESIDUAL_STRATEGY),
+        (21, 16, AFFINE_RESIDUAL_STRATEGY),
         (5, 2, "target_flip_1_clean"),
         (9, 2, "target_flip_1_clean"),
         (35, 2, "cycle_transpositions"),
@@ -830,6 +861,13 @@ def _verify() -> None:
         raise RuntimeError("automatic N=21 synthesis must select the measured one-clean target-flip candidate")
     if multiplier_profile(35, 2).strategy != "cycle_transpositions_1_clean":
         raise RuntimeError("unmeasured wider multipliers must retain the bounded one-clean cycle selection")
+    try:
+        multiplier_profile(21, 11, AFFINE_RESIDUAL_STRATEGY)
+    except ValueError as error:
+        if "rank is 4" not in str(error):
+            raise
+    else:
+        raise RuntimeError("affine-residual synthesis accepted the rank-4 linear part of 11 mod 21")
     for modulus, multiplier, strategy in cases:
         profile = multiplier_profile(modulus, multiplier, strategy)
         permutation = modular_permutation(modulus, multiplier)
