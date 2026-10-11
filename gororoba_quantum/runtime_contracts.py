@@ -869,21 +869,33 @@ def _verify_pub_fusion_contracts() -> None:
         name: {"pub": pub_of[name]["name"]} for name in (primary.name, reference.name)
     }
     timing: dict[str, dict[str, Any]] = {
-        pub_of[name]["name"]: {"scheduled_circuit_duration_dt": duration, "parallel_stream_count": streams}
-        for name, duration, streams in ((primary.name, 5200, 9), (reference.name, 4800, 2))
+        pub_of[name]["name"]: {
+            "scheduled_circuit_duration_dt": duration,
+            "scheduler_residual_dt": residual,
+            "timing_status": "complete",
+            "parallel_stream_count": streams,
+        }
+        for name, duration, residual, streams in ((primary.name, 5200, 900, 9), (reference.name, 4800, 500, 2))
     }
     schedule = packing_schedule(hybrid.entries, executed, timing)
     if (
         schedule is None
         or schedule["scope"] != "global"
-        or schedule.get("difference_dt") != 400
+        or schedule.get("residual_difference_dt") != 400
         or schedule["packed_parallel_stream_count"] != 9
+        or not schedule["feed_forward"]
     ):
         raise RuntimeError(f"packing_schedule reports {schedule}")
-    timing[pub_of[reference.name]["name"]]["scheduled_circuit_duration_dt"] = None
+    timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = None
     schedule = packing_schedule(hybrid.entries, executed, timing)
-    if schedule is None or "difference_dt" in schedule or "unavailable" not in schedule:
-        raise RuntimeError(f"packing_schedule without reference timing reports {schedule}")
+    if schedule is None or "residual_difference_dt" in schedule or "unavailable" not in schedule:
+        raise RuntimeError(f"packing_schedule without reference residual reports {schedule}")
+    timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = -50
+    timing[pub_of[reference.name]["name"]]["timing_status"] = "residual_below_target_bound"
+    schedule = packing_schedule(hybrid.entries, executed, timing)
+    withheld = str(schedule.get("unavailable")) if schedule else ""
+    if schedule is None or "residual_difference_dt" in schedule or "not complete" not in withheld:
+        raise RuntimeError(f"packing_schedule with an invalid residual reports {schedule}")
     if any(_is_dynamic(pub.circuit) for pub in static_pubs):
         raise RuntimeError("static cross-group fusion produced a dynamic PUB")
     if any(not _is_dynamic(pub.circuit) for pub in dynamic_pubs):

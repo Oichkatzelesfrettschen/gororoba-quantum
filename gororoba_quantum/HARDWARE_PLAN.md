@@ -121,11 +121,12 @@ execution path but does not establish default-policy submission readiness.
 ## QPU cost
 
 QPU time scales with PUBs times shots; replicas and cross-group components ride
-along inside a PUB at no extra shots. The first job measures the rate directly:
-collection divides the submitted PUB shots (PUB count times shots per PUB) by
-the job's final QPU charge from job.usage(partial=False), in submitted PUB
-shots per QPU charge second, and that measured rate replaces the literature
-bounds below. Fusion reduces the full program from 38
+along inside a PUB at no extra shots. Each collected job measures its own
+rate: collection divides the submitted PUB shots (PUB count times shots per
+PUB) by the job's final QPU charge from job.usage(partial=False), in submitted
+PUB shots per QPU charge second. A measured rate bounds only the workload it
+came from; the static job keeps the literature range below until its own
+job is collected. Fusion reduces the full program from 38
 logical execution entries to 20 PUBs, 14 static and 6 dynamic, so 4096 shots
 per PUB produce 81,920 executions. The project has not measured its own
 shot rate; the literature bounds it between about 1,000 shots/s for many-twirl
@@ -152,8 +153,12 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
    packed replicas (the global packing comparison and the scheduled-duration
    comparison), feed-forward latency from the scheduler timing, and the
    project's own shot rate, measured by the job's
-   usage seconds. That rate replaces the literature bounds before the static
-   job is costed.
+   usage seconds. That rate is evidence for the dynamic workload alone: QPU
+   charge per PUB shot depends on each circuit's scheduled duration and on
+   the enabled options, and the static job holds different circuits and may
+   enable twirling or DD, so the static case keeps its own conservative
+   bound from the literature range until a static-specific measurement
+   exists.
 4. **Static job.** Submitted with --twirl and a DD sequence only when the
    case argues that the hardware-versus-model gap with them on is the
    question; otherwise both stay off so the first static measurement compares

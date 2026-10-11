@@ -617,8 +617,11 @@ scheduled_circuit_duration_dt, their difference scheduler_residual_dt (withheld
 without a window, since the execution-time Target is then unknown),
 timing_status, and the structure counts parallel_stream_count,
 sequential_stage_count, and feed_forward_operation_count. packing_schedule
-compares the packed and reference PUBs' scheduled durations, which lengthen
-with the stream count only when the control system serializes branches.
+compares the packed and reference PUBs' scheduler residuals as a global
+packing scheduling cost: the packed PUB adds every replica's whole circuit,
+so measurement, reset, pulse-channel, and controller resources scale with
+replica count alongside feed-forward, and the comparison attributes its
+difference to none of them.
 The header also carries each job's usage record: job.usage(partial=False)
 supplies the final QPU charge once job.metrics()["usage"] leaves pending,
 and pub_shots_per_qpu_second divides the submitted PUB shots (PUB count times

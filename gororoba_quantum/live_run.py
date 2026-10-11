@@ -2965,22 +2965,26 @@ def packing_schedule(
         "scope": "global",
         "packed_pub": packed["pub"],
         "reference_pub": alone["pub"],
+        "feed_forward": bool(packed_timing["parallel_stream_count"]),
         "packed_parallel_stream_count": packed_timing["parallel_stream_count"],
         "reference_parallel_stream_count": alone_timing["parallel_stream_count"],
         "packed_scheduled_circuit_duration_dt": packed_timing["scheduled_circuit_duration_dt"],
         "reference_scheduled_circuit_duration_dt": alone_timing["scheduled_circuit_duration_dt"],
+        "packed_scheduler_residual_dt": packed_timing["scheduler_residual_dt"],
+        "reference_scheduler_residual_dt": alone_timing["scheduler_residual_dt"],
     }
+    # The two PUBs hold different gate content (every replica against one
+    # copy), so their raw durations differ by gate time alone; only the
+    # residuals, each above its own Target bound, compare scheduler time.
     missing = [
         name
         for name, pub in ((packed["pub"], packed_timing), (alone["pub"], alone_timing))
-        if pub["scheduled_circuit_duration_dt"] is None
+        if pub["scheduler_residual_dt"] is None or pub["timing_status"] != "complete"
     ]
     if missing:
-        out["unavailable"] = f"scheduler timing absent for {missing}"
+        out["unavailable"] = f"scheduler residual absent or not complete for {missing}"
     else:
-        out["difference_dt"] = (
-            packed_timing["scheduled_circuit_duration_dt"] - alone_timing["scheduled_circuit_duration_dt"]
-        )
+        out["residual_difference_dt"] = packed_timing["scheduler_residual_dt"] - alone_timing["scheduler_residual_dt"]
     return out
 
 
