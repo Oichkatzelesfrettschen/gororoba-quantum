@@ -1247,6 +1247,7 @@ def _verify_fused_collection() -> None:
             or fused_timing["execution_window_start"] != expected_start.isoformat()
             or fused_timing["scheduled_circuit_duration_dt"] != durations[fused_index]
             or fused_timing["scheduler_residual_dt"] != durations[fused_index] - lower
+            or fused_timing["planned_target_gate_lower_bound_dt"] != lower
             or fused_timing["parallel_stream_count"] != 0
             or fused_timing["timing_unavailable_reason"] is not None
         ):
@@ -1282,6 +1283,24 @@ def _verify_fused_collection() -> None:
         pending[0]["jobs"][job_id]["usage"] = json.loads(first)[0]["jobs"][job_id]["usage"]
         if pending != json.loads(first):
             raise RuntimeError("pending and final collections differ outside the usage block")
+
+        # A job that ended in ERROR keeps its usage and its reason; collection
+        # continues without its results.
+        failed = _ProbeResultJob(result, status="ERROR", usage=usage, charge=0.25)
+        failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
+        errored = json.loads((run_dir / "collect.json").read_text())
+        job_record = errored[0]["jobs"][job_id]
+        if (
+            job_record["usage"]["usage_status"] != "final"
+            or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
+            or "job failed on the service" not in job_record["result_unavailable"]
+            or len(errored) != 1
+        ):
+            raise RuntimeError(f"a failed job collects as {job_record}")
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
 
 
 def _verify_scheduler_timing_cases() -> None:
@@ -1352,20 +1371,28 @@ def _verify_scheduler_timing_cases() -> None:
 
     manifest = {"target_gate_lower_bound_dt": 1000, "parallel_stream_count": 2}
     window = expected[0]
+    chunk = "executor_chunk_timing"
     statuses = [
-        (pub_timing(manifest, window, None, 1200, None, "executor_chunk_timing"), "complete", 200),
-        (pub_timing(manifest, None, "no chunk", 1200, None, "executor_chunk_timing"), "schedule_only", 200),
-        (pub_timing(manifest, window, None, None, "no timing", "executor_chunk_timing"), "windows_only", None),
+        (pub_timing(manifest, window, None, 1200, None, chunk, 1000), "complete", 200),
+        (pub_timing(manifest, window, None, 1200, None, chunk, 1100), "complete", 100),
+        (pub_timing(manifest, None, "no chunk", 1200, None, chunk), "schedule_only", None),
+        (pub_timing(manifest, window, None, None, "no timing", chunk, 1000), "windows_only", None),
         (pub_timing(manifest, None, "no chunk", None, "no scheduler timing", None), "unavailable", None),
-        (pub_timing(manifest, window, None, 900, None, "executor_chunk_timing"), "residual_below_target_bound", -100),
+        (pub_timing(manifest, window, None, 900, None, chunk, 1000), "residual_below_target_bound", -100),
     ]
     for record, status, residual in statuses:
         if record["timing_status"] != status or record["scheduler_residual_dt"] != residual:
             raise RuntimeError(f"timing record {record} is not {status}/{residual}")
         if status != "complete" and not record["timing_unavailable_reason"]:
             raise RuntimeError(f"{status} timing record carries no reason")
-    if statuses[0][0]["timing_unavailable_reason"] is not None or statuses[1][0]["timing_source"] is not None:
+    if statuses[0][0]["timing_unavailable_reason"] is not None or statuses[2][0]["timing_source"] is not None:
         raise RuntimeError("complete timing carries a reason, or a windowless record names a source")
+    if (
+        statuses[1][0]["target_gate_lower_bound_dt"] != 1100
+        or statuses[1][0]["planned_target_gate_lower_bound_dt"] != 1000
+        or "residual withheld" not in str(statuses[2][0]["timing_unavailable_reason"])
+    ):
+        raise RuntimeError("the residual does not follow the execution-time Target bound")
 
 
 def _verify_feed_forward_structure() -> None:
