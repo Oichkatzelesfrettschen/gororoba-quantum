@@ -156,7 +156,7 @@ Print Assumptions network_{multiplier}_targets_excluded.
 
 """
         )
-    return "".join(blocks)
+    return "".join(blocks).rstrip() + "\n"
 
 
 def main() -> None:

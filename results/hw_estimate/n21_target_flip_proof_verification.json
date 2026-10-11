@@ -92,7 +92,7 @@
   "rocq_version": "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0",
   "ruff_check_exit_status": 0,
   "ruff_format_check_exit_status": 0,
-  "source_sha256": "f5523a81984261edc00b24ed50c0ead34ca60b378ed9498f4d536ca4a254148e",
+  "source_sha256": "494e3e9c1a4370c46f37e26b0f9e7cb301d8acf8ac96f94e2512ad57612e0fc6",
   "unsupported_flag_probe": {
     "exit_status": 1,
     "flag": "-warn-error",
