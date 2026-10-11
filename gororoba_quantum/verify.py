@@ -447,12 +447,13 @@ def _group_by_enumeration(dim: int) -> tuple[int, int]:
 
 
 def check_left_mult_group(dims: tuple[int, ...] = (4, 8, 16, 32, 64)) -> dict[int, int]:
-    """G = <L_{e_m}> has exponent 4 at every dimension and order 2^(n + 2^(n-1)) at the checked ones.
+    """G = <L_{e_m}> has exponent 4 at every dimension and order 2^(n + 2^(n-1)) for every n >= 3.
 
     The exponent bound holds for every n (the argument below). The order
-    formula is a computed pattern: this check pins it at the dimensions passed
-    in, 8 through 64 by default, and the survey's closure extends it to n = 8;
-    no proof covers larger n.
+    formula holds for every n >= 3 by literature/notes/left_mult_sign_rank.md,
+    which proves that the sign vectors span exactly the functions
+    g(x_0, ..., x_{n-2}) + c x_{n-1} with g of even weight; this check pins the
+    rank and degree at the dimensions passed in, 8 through 64 by default.
 
     Every element is a signed XOR translation D P_a, so the translation part maps
     G onto F_2^n with kernel H, the +/-1 diagonals in G. Schreier's lemma with
