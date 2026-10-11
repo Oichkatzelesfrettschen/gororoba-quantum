@@ -175,9 +175,13 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
 
 - **Parallel feed-forward.** Hardware handling of simultaneous if_else
   branches is unmeasured. The scheduled-duration comparison detects
-  serialization exactly; the fidelity comparison detects a packed-workload
-  cost of 0.033 or more in Shor factor yield at 4096 shots and attributes it to
-  no single group.
+  serialization exactly; the fidelity comparison reports the packed-minus-
+  reference difference with a 95 percent interval and a two-one-sided
+  equivalence test against a preregistered margin of 0.03, so a run either
+  detects a packing cost, establishes equivalence within the margin, or
+  states that it resolved neither; a three-sigma result alone detects a
+  difference and never establishes equivalence. Neither comparison
+  attributes a cost to one group.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.

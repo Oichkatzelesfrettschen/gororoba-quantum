@@ -636,14 +636,26 @@ its QPY SHA-256 is
     stream count; parallel branches leave the two equal up to the longest
     member. The comparison is exact and needs no shot statistics.
   - *Fidelity.* `global_packing_crosstalk` compares packed replica 0's factor
-    yield with the reference copy on the same qubits. One matched pair at 4096
-    shots and a yield near 0.5 gives the difference a standard deviation of
-    0.011, so a three-sigma test detects a drop of 0.033 or more; a smaller
-    cost reads as no difference.
+    yield with the reference copy on the same qubits. The record keeps the z
+    statistic (z below -3 is the degradation diagnostic; |z| at most 3 reads
+    "the run detected no difference at this resolution") and adds the
+    difference with its 95 percent interval, Newcombe-Wilson for the Bernoulli
+    factor indicator, and a two-one-sided equivalence test: a 90 percent
+    interval inside the preregistered margin of 0.03 reads
+    `equivalent_within_0.03`, a 95 percent interval below zero reads
+    `packed_degradation_detected`, and anything else reads
+    `difference_not_resolved`. One matched pair at 4096 shots and a yield
+    near 0.5 gives the difference a standard deviation of 0.011, so the 90
+    percent interval is about 0.036 wide and an observed difference within
+    about 0.012 of zero can establish equivalence.
 
-  A yield drop with equal schedules points to quantum crosstalk (spectator
-  mid-circuit measurement, ZZ during CZ, readout crosstalk); a lengthened
-  schedule identifies classical serialization whether or not the yield moves.
+  Collection joins the two into `packing_interpretation`: a longer packed
+  schedule is evidence consistent with serialized feed-forward; equal
+  schedules with a detected yield loss are evidence consistent with quantum,
+  measurement, or readout crosstalk; equal schedules with equivalent yields
+  resolve no packing cost at this resolution. Both PUBs carry both dynamic
+  groups, so the comparison is global and identifies neither one group nor
+  one physical mechanism.
   The identity null shares its PUB with folded QPE `s0` and the primary with
   `s1`; the two folded instances carry identical gate counts and
   measurement, reset, and branch schedules, so the null and the primary face

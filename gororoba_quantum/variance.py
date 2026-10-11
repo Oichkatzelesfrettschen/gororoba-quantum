@@ -132,15 +132,115 @@ def interval(values: Sequence[float], shots: int, bernoulli: bool) -> dict[str, 
     }
 
 
-def _wilson(rate: float, trials: int) -> tuple[float, float]:
-    z = float(stats.norm.ppf(0.5 + CONFIDENCE / 2))
+# Preregistered absolute equivalence margin on a packed-minus-reference score
+# difference; the TOST reads a 90 percent interval against it.
+EQUIVALENCE_MARGIN = 0.03
+
+
+def difference_interval(
+    packed: float,
+    packed_variance: float,
+    reference: float,
+    reference_variance: float,
+    shots: int,
+    bernoulli: bool,
+    confidence: float,
+) -> tuple[float, float]:
+    """Interval on packed - reference, two scores each measured over shots shots.
+
+    A Bernoulli score (every per-shot weight 0 or 1) takes Newcombe's hybrid
+    score interval, built from the two Wilson intervals (Newcombe 1998,
+    method 10), which stays inside [-1, 1] and keeps coverage at small counts
+    and extreme rates. Any other bounded score takes the normal interval from
+    the two per-shot variances.
+    """
+    difference = packed - reference
+    if bernoulli:
+        packed_low, packed_high = _wilson(packed, shots, confidence)
+        reference_low, reference_high = _wilson(reference, shots, confidence)
+        return (
+            difference - math.sqrt((packed - packed_low) ** 2 + (reference_high - reference) ** 2),
+            difference + math.sqrt((packed_high - packed) ** 2 + (reference - reference_low) ** 2),
+        )
+    z = float(stats.norm.ppf(0.5 + confidence / 2))
+    half = z * math.sqrt((packed_variance + reference_variance) / shots)
+    return difference - half, difference + half
+
+
+def equivalence(
+    packed: float,
+    packed_variance: float,
+    reference: float,
+    reference_variance: float,
+    shots: int,
+    bernoulli: bool,
+    margin: float = EQUIVALENCE_MARGIN,
+) -> dict[str, Any]:
+    """Difference detection and two-one-sided equivalence of packed against reference.
+
+    The 95 percent interval reports the difference. The 90 percent interval
+    inside [-margin, margin] establishes equivalence within the margin (two
+    one-sided tests at 5 percent each); a 95 percent interval below zero
+    detects packed degradation; otherwise the difference is not resolved. A
+    difference can be both resolved and inside the margin, so both flags are
+    reported and the verdict follows that precedence.
+    """
+    interval_95 = difference_interval(packed, packed_variance, reference, reference_variance, shots, bernoulli, 0.95)
+    interval_90 = difference_interval(packed, packed_variance, reference, reference_variance, shots, bernoulli, 0.90)
+    within = -margin <= interval_90[0] and interval_90[1] <= margin
+    below = interval_95[1] < 0
+    if within:
+        verdict = f"equivalent_within_{margin:g}"
+    elif below:
+        verdict = "packed_degradation_detected"
+    else:
+        verdict = "difference_not_resolved"
+    return {
+        "method": "newcombe_wilson" if bernoulli else "normal",
+        "margin": margin,
+        "difference_interval_95": list(interval_95),
+        "difference_interval_90": list(interval_90),
+        "within_margin": within,
+        "below_zero_95": below,
+        "verdict": verdict,
+    }
+
+
+def _wilson(rate: float, trials: int, confidence: float = CONFIDENCE) -> tuple[float, float]:
+    z = float(stats.norm.ppf(0.5 + confidence / 2))
     denom = 1 + z * z / trials
     center = (rate + z * z / (2 * trials)) / denom
     half = z * math.sqrt(rate * (1 - rate) / trials + z * z / (4 * trials * trials)) / denom
     return center - half, center + half
 
 
+def _verify_equivalence() -> None:
+    shots = 4096
+    same = equivalence(0.50, 0.25, 0.50, 0.25, shots, True)
+    if same["verdict"] != "equivalent_within_0.03" or not same["within_margin"] or same["below_zero_95"]:
+        raise RuntimeError(f"equal rates at {shots} shots read {same}")
+    low, high = same["difference_interval_95"]
+    if not (-0.03 < low < 0 < high < 0.03) or same["method"] != "newcombe_wilson":
+        raise RuntimeError(f"equal-rate interval is {same}")
+    worse = equivalence(0.40, 0.24, 0.50, 0.25, shots, True)
+    if worse["verdict"] != "packed_degradation_detected" or worse["within_margin"]:
+        raise RuntimeError(f"a 0.10 drop reads {worse}")
+    coarse = equivalence(0.49, 0.25, 0.50, 0.25, 64, True)
+    if coarse["verdict"] != "difference_not_resolved" or coarse["within_margin"] or coarse["below_zero_95"]:
+        raise RuntimeError(f"64 shots read {coarse}")
+    small = equivalence(0.49, 0.25, 0.50, 0.25, 65536, True)
+    if small["verdict"] != "equivalent_within_0.03" or not small["below_zero_95"]:
+        raise RuntimeError(f"a resolved 0.01 drop inside the margin reads {small}")
+    normal = equivalence(0.50, 0.25, 0.50, 0.25, shots, False)
+    if normal["method"] != "normal" or abs(normal["difference_interval_95"][1] - high) > 1e-3:
+        raise RuntimeError(f"normal and Newcombe intervals disagree at p = 0.5: {normal} vs {same}")
+    edge = equivalence(0.0, 0.0, 0.0, 0.0, shots, True)
+    if edge["difference_interval_95"][0] < -1 or edge["difference_interval_95"][1] > 1:
+        raise RuntimeError(f"Newcombe interval leaves [-1, 1] at p = 0: {edge}")
+
+
 def _verify() -> None:
+    _verify_equivalence()
     rng = np.random.default_rng(20261011)
     shots, replicas = 4096, 12
     ideal = np.array([0.0, 1.0])
@@ -172,7 +272,10 @@ def _verify() -> None:
     agreed = interval([0.0, 0.0, 0.0], 64, bernoulli=True)
     if not float(agreed["hi"]) > 0.01:
         raise RuntimeError(f"identical replicas collapse the interval: {agreed}")
-    print("variance: shot, layout, and instance components recover injected values; intervals bounded")
+    print(
+        "variance: shot, layout, and instance components recover injected values; "
+        "intervals bounded; equivalence verdicts classified"
+    )
 
 
 if __name__ == "__main__":

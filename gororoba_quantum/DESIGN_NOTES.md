@@ -597,8 +597,14 @@ replicas, each group's primary also runs on replica 0's qubits in one shared
 reference PUB. Its difference from packed replica 0 compares the global packed
 workload with the global replica-0 workload. A single-replica or
 `--no-isolated-reference` plan records the reference estimand as unavailable.
-The referenced result can reveal a packing cost, but it cannot attribute
-crosstalk to one group. The noise model carries no crosstalk, so its
+The referenced result reports the packed-minus-reference score difference
+with its 95 percent interval (Newcombe-Wilson when every per-shot weight is 0
+or 1, normal otherwise) and a two-one-sided equivalence test whose 90 percent
+interval is read against the preregistered margin EQUIVALENCE_MARGIN = 0.03;
+the verdict is equivalent_within_0.03, packed_degradation_detected, or
+difference_not_resolved, and the z statistic stays as the detection
+diagnostic. The result can reveal or bound a packing cost, but it cannot
+attribute crosstalk to one group. The noise model carries no crosstalk, so its
 difference is shot noise; simulate_entries batches every replica of a choice
 in one Aer run, so each draws from its own position-derived seed, where a
 shared seed would reproduce packed replica 0 in the reference bit for bit.

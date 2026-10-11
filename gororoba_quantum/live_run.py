@@ -1850,16 +1850,74 @@ def replica_statistics(
             iso, iso_var = variance.score(dists[e.name][0], e.ideal, e.weights)
             packed, packed_var = scores[runs[0].name][0]
             sd = math.sqrt((iso_var + packed_var) / shots)
+            z = (packed - iso) / sd if sd > 0 else None
+            # A detection diagnostic and an equivalence test are different
+            # claims: |z| within 3 reads as no difference at this resolution,
+            # and only the interval test can bound the cost.
+            if z is not None and z < -3:
+                resolution = "packed replica 0 scores more than three sigma below the global replica-0 reference"
+            elif z is not None and z > 3:
+                resolution = "packed replica 0 scores more than three sigma above the global replica-0 reference"
+            else:
+                resolution = "the run detected no difference at this resolution"
             out["global_packing_crosstalk"] = {
+                "scope": "global",
                 "global_replica0_score": iso,
                 "packed_replica0_score": packed,
                 "difference": packed - iso,
-                "z": (packed - iso) / sd if sd > 0 else None,
+                "z": z,
+                "resolution": resolution,
                 "tvd": tvd(dists[e.name][0], dists[runs[0].name][0]),
+                **variance.equivalence(packed, packed_var, iso, iso_var, shots, _bernoulli_score(e)),
             }
     if group.admission is not None:
         out["admission"] = group.admission(per_replica, shots)
     return out
+
+
+def _bernoulli_score(entry: Entry) -> bool:
+    """Whether every per-shot score weight of entry is 0 or 1, so its score is a proportion."""
+    if entry.weights is not None:
+        weight = np.asarray(entry.weights, dtype=float)
+    else:
+        peak = float(np.max(entry.ideal))
+        weight = np.asarray(entry.ideal, dtype=float) / peak if peak > 0 else np.zeros_like(entry.ideal, dtype=float)
+    return bool(np.all(np.isclose(weight, 0.0) | np.isclose(weight, 1.0)))
+
+
+def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str, Any] | None) -> str | None:
+    """One reading of the scheduled-duration and fidelity comparisons together.
+
+    A longer packed schedule is evidence consistent with serialized
+    feed-forward. Equal schedules with a detected yield loss are evidence
+    consistent with quantum, measurement, or readout crosstalk. Both PUBs
+    carry every dynamic group, so no reading names one group or one physical
+    mechanism.
+    """
+    if schedule is None or crosstalk is None:
+        return None
+    verdict = crosstalk["verdict"]
+    if "difference_dt" not in schedule:
+        return f"scheduled durations unavailable; the fidelity comparison stands alone ({verdict})"
+    longer = schedule["difference_dt"] > 0
+    if longer and verdict == "packed_degradation_detected":
+        return (
+            "longer packed schedule with a detected packed yield loss: evidence consistent with serialized "
+            "feed-forward; no single group or mechanism identified"
+        )
+    if longer:
+        return (
+            f"longer packed schedule with {verdict}: evidence consistent with serialized feed-forward; "
+            "no single group or mechanism identified"
+        )
+    if verdict == "packed_degradation_detected":
+        return (
+            "equal or shorter packed schedule with a detected packed yield loss: evidence consistent with "
+            "quantum, measurement, or readout crosstalk; no single group or mechanism identified"
+        )
+    if crosstalk["within_margin"]:
+        return "equal or shorter packed schedule with yields equivalent within the margin: no packing cost resolved"
+    return "equal or shorter packed schedule; the yield difference is not resolved at this resolution"
 
 
 def experiment_digest() -> str:
@@ -3374,6 +3432,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             if pooled_reason or replica_reason:
                 out_entry["odr_withheld"] = {"pooled": pooled_reason, "per_replica": replica_reason}
             out_entry["measured_statistics"] = _gate_odr(stats, pooled_reason, replica_reason)
+            out_entry["packing_interpretation"] = packing_interpretation(
+                out_entry["packing_schedule"], stats.get("global_packing_crosstalk")
+            )
             out_entry["measured_summary_readout_corrected"] = _without_odr(
                 corrected_summary(group, entries, measured, props_by_name, symmetric=twirled_readout),
                 pooled_reason,

@@ -87,6 +87,7 @@ from live_run import (
     pub_windows,
     reconcile_attempted_jobs,
     replica_floor,
+    replica_statistics,
     routing_admission_violations,
     scheduled_duration,
     select,
@@ -1306,6 +1307,50 @@ def _verify_scheduler_timing_cases() -> None:
         raise RuntimeError("complete timing carries a reason, or a windowless record names a source")
 
 
+def _verify_packing_equivalence() -> None:
+    """The global packing comparison carries z, the difference interval, and the equivalence verdict."""
+    group = Group(
+        "probe", (), lambda distributions: {"p1": float(distributions["primary"][1])}, rate_keys=frozenset({"p1"})
+    )
+    ideal = np.array([0.0, 1.0])
+    primary = _synthetic_entry("primary", QuantumCircuit(1, 1), ideal)
+    reference = copy.copy(primary)
+    reference.name = "primary_isolated"
+    reference.reference = True
+    entries = [primary, reference]
+    cases: list[tuple[float, float, int, str, str]] = [
+        (0.500, 0.495, 4096, "equivalent_within_0.03", "the run detected no difference"),
+        (0.400, 0.500, 4096, "packed_degradation_detected", "more than three sigma below"),
+        (0.480, 0.500, 64, "difference_not_resolved", "the run detected no difference"),
+    ]
+    for packed, alone, shots, verdict, resolution in cases:
+        dists = {"primary": [np.array([1 - packed, packed])], "primary_isolated": [np.array([1 - alone, alone])]}
+        crosstalk = replica_statistics(group, entries, dists, shots)["global_packing_crosstalk"]
+        if (
+            crosstalk["scope"] != "global"
+            or crosstalk["method"] != "newcombe_wilson"
+            or crosstalk["verdict"] != verdict
+            or resolution not in crosstalk["resolution"]
+            or abs(crosstalk["difference"] - (packed - alone)) > 1e-12
+        ):
+            raise RuntimeError(f"packing comparison at {packed} vs {alone} over {shots} shots reads {crosstalk}")
+    weighted = _synthetic_entry("weighted", QuantumCircuit(1, 1), np.array([0.25, 0.75]))
+    if live_run_module._bernoulli_score(weighted) or not live_run_module._bernoulli_score(primary):
+        raise RuntimeError("Bernoulli score classification follows the per-shot weights")
+    readings: list[tuple[dict[str, Any], dict[str, Any], str]] = [
+        ({"difference_dt": 400}, {"verdict": "packed_degradation_detected", "within_margin": False}, "serialized"),
+        ({"difference_dt": 0}, {"verdict": "packed_degradation_detected", "within_margin": False}, "readout crosstalk"),
+        ({"difference_dt": 0}, {"verdict": "equivalent_within_0.03", "within_margin": True}, "no packing cost"),
+        ({"unavailable": "x"}, {"verdict": "difference_not_resolved", "within_margin": False}, "stands alone"),
+    ]
+    for schedule, crosstalk_view, fragment in readings:
+        text = live_run_module.packing_interpretation(schedule, crosstalk_view)
+        if text is None or fragment not in text:
+            raise RuntimeError(f"packing interpretation of {schedule}, {crosstalk_view} reads {text}")
+    if live_run_module.packing_interpretation(None, {"verdict": "x"}) is not None:
+        raise RuntimeError("an absent schedule produces an interpretation")
+
+
 def _verify_feed_forward_structure() -> None:
     """Operation count, stage depth, and feed-forward presence over static, reset, single, and nested shapes."""
     static = QuantumCircuit(1, 1)
@@ -2049,6 +2094,7 @@ def _verify() -> None:
     _verify_scheduler_timing_cases()
     _verify_feed_forward_structure()
     _verify_job_usage_cases()
+    _verify_packing_equivalence()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()
