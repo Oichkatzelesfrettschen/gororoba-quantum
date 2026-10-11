@@ -72,6 +72,21 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T121402.617901Z` is the Step 3 submission-ready dry run: the program's exact
+command on ibm_kingston (6 pending jobs under the default bound of 25) for
+folded QPE and hybrid Shor alone, six dynamic PUBs at 4096 shots (24,576
+submitted PUB shots), twirling and DD off, isolated references on. Clean
+source commit `c82d5e8` (sources_modified=false) carries experiment digest
+`0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2`.
+The noise model admits hybrid Shor: primary factor yield
+[0.4851, 0.5044] against the uniform null 0.296875 and an
+identity-null upper bound of 0.0106. `STEP3_CASE.md` beside the record is the
+written case; the record stays `planned`, sends zero QPU jobs, and authorizes
+nothing. Record SHA-256 is
+`807f1856b54abc7aaec1a311a999d0c6f8fd197ccf385488bc153531432c447b`; QPY
+SHA-256 is
+`69f085f5319a19578aff823ec30d98c0029b83de156d515f909bd53fe6413a24`.
+
 `2026-10-11T120803.085652Z` requalifies the packing equivalence statistic after the
 false-detection enumeration moved to the process pool. Clean source commit
 `02468f9` (sources_modified=false) carries experiment digest
