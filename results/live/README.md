@@ -72,6 +72,16 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T101630.331262Z` requalifies the packing equivalence statistic with the 1024-shot
+floor from exact enumeration. Clean source commit `fbdb3bc`
+(sources_modified=false) carries experiment digest
+`1a65cf8d997a6c6ad8e2dbd14a3120cbc30ab4fe3f3efd7c3859952cdeaa4945`.
+At 4096 shots the noise model reads design_a equivalent_within_0.03; zero_divisor_fringe equivalent_within_0.03; design_c_8_1_4 equivalent_within_0.03; design_c_16_1_8 equivalent_within_0.03; design_c_32_1_16 difference_not_resolved; folded_qpe_mod15 equivalent_within_0.03; hybrid_shor_mod15 equivalent_within_0.03.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`277204b26629986b77622943ddb765500e6afc3c27972966e70fb872e0a48adf`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T100158.375275Z` requalifies the packing equivalence statistic with the shot
 floor and the residual-status gate. Clean source commit `adc8d97`
 (sources_modified=false) carries experiment digest
