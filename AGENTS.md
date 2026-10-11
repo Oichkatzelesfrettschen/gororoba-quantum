@@ -90,7 +90,8 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
   `--submit` command names that run with `--approved-record`, its record.json
   digest with `--approved-record-sha256`, and the case's seconds with
   `--max-execution-seconds` (the Sampler's max_execution_time, which the
-  service enforces); the fresh plan must match the record in experiment
+  service enforces; the dry run is made with the same value, since the
+  policy carries it); the fresh plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
   replica qubits, fused PUB manifests, calibration at the refresh and again
