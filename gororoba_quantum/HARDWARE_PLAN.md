@@ -128,16 +128,24 @@ PUB shots per QPU charge second. A measured rate bounds only the workload it
 came from; the static job keeps the literature range below until its own
 job is collected. Fusion reduces the full program from 38
 logical execution entries to 20 PUBs, 14 static and 6 dynamic, so 4096 shots
-per PUB produce 81,920 executions. The project has not measured its own
-shot rate; the literature bounds it between about 1,000 shots/s for many-twirl
-runs (literature/notes/2505.22629.md) and 4,900 shots/s derived from
-literature/notes/2507.08088.md, which puts the full program between 17 s and
-82 s plus job overhead.
+per PUB produce 81,920 executions. The dynamic job measured 2,730.7
+submitted PUB shots per QPU charge second (record
+`results/live/2026-10-11T152922.787095Z`: 24,576 PUB shots, 9 s charge),
+inside the literature range of about 1,000 shots/s for many-twirl runs
+(literature/notes/2505.22629.md) to 4,900 shots/s derived from
+literature/notes/2507.08088.md. The job's metrics decompose the charge:
+circuit execution took 272.9 us per shot, the backend's 250 us default
+repetition delay plus the 22.9 us mean scheduled circuit, and 2.3 s of the
+9 s charge lay outside circuit execution. IBM's own estimate for a job
+(quantum.cloud.ibm.com/docs/guides/estimate-job-run-time) adds circuit
+duration, repetition delay, and per-job overhead, so the static workload is
+priced by that model with its own scheduled durations, not by the dynamic
+rate; the literature range stays its conservative bound.
 
-| job | groups | PUBs | shots | at 4,900/s | at 1,000/s |
-|---|---|---:|---:|---:|---:|
-| dynamic | folded QPE, hybrid Shor | 6 | 24,576 | 5.0 s | 25 s |
-| static | design A, fringe, design C 8/16/32 | 14 | 57,344 | 12 s | 57 s |
+| job | groups | PUBs | shots | at 4,900/s | at 1,000/s | measured |
+|---|---|---:|---:|---:|---:|---:|
+| dynamic | folded QPE, hybrid Shor | 6 | 24,576 | 5.0 s | 25 s | 9 s |
+| static | design A, fringe, design C 8/16/32 | 14 | 57,344 | 12 s | 57 s | not run |
 
 ## Path to the first submission
 
@@ -148,10 +156,13 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
 2. **Written case.** The case states the job split, the fused PUB count, the
    fresh dry run's predictions, and the seconds bound from the table above,
    and waits for approval (AGENTS.md). The `--submit` command names the dry
-   run with `--approved-record`, and the fresh plan must match it in digest,
-   shots, policy, groups, backends, seeds, layouts, replica qubits, fused PUB
-   manifests, calibration, and QPY bytes, or the run stops with an
-   approval_required record.
+   run with `--approved-record`, its record digest with
+   `--approved-record-sha256`, and the case's seconds with
+   `--max-execution-seconds`; the fresh plan must match the record in digest,
+   shots, policy, versions, instance, groups, backends, seeds, layouts,
+   replica qubits, fused PUB manifests, calibration (at the refresh and at
+   every batch), and QPY bytes, or the run stops with an approval_required
+   record, and the first batch consumes the approval.
 3. **Dynamic job first.** It is the smaller job and carries the questions only
    hardware answers: hybrid Shor admission, concurrent feed-forward across
    packed replicas (the global packing comparison and the scheduled-duration
@@ -167,6 +178,18 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
    case argues that the hardware-versus-model gap with them on is the
    question; otherwise both stay off so the first static measurement compares
    directly with the noise model.
+5. **Done: the dynamic job** (record `results/live/2026-10-11T152922.787095Z`,
+   adjudicated in its `ADJUDICATION.md`). Hybrid Shor is admitted on
+   hardware by its factor yield, a statistic that for order 4 is the same
+   with and without the feed-forward, so only folded QPE tested the
+   semiclassical inverse QFT (HYBRID_SHOR.md, "Evidence levels"); packing
+   on one layout is equivalent within the margin under the preregistered
+   interval; the scheduled feed-forward round trip is 540
+   to 584 dt; and folded QPE reads 0.715 against the model's 0.899, a gap
+   present in both semiclassical rounds of which the scheduler table's idle
+   time explains a quarter. The next hardware question is that gap's
+   mechanism, which the ladder below is redesigned to separate; the static
+   job's case is written but ranks after it.
 
 ## Runtime source authority
 
@@ -185,15 +208,35 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
 
 ## Risks
 
-- **Parallel feed-forward.** Hardware handling of simultaneous if_else
-  branches is unmeasured. The scheduler-residual comparison measures a global
-  packing scheduling cost without attributing it to feed-forward; the fidelity
-  comparison reports the packed-minus-reference difference with a 95 percent
-  interval and a two-one-sided equivalence test against a preregistered
-  margin of 0.03, so a run either detects a packing cost, establishes
-  equivalence within the margin, or states that it resolved neither; a
+- **Parallel feed-forward.** Measured once: nine concurrent streams against
+  two cost 187 dt of schedule on every replica-0 qubit, which the backend
+  scheduler tables attribute to 23 dt of initialization alignment, 44 dt of
+  broadcast width, and 120 dt of reset stagger on shared readout channels,
+  with no measurable fidelity cost on the shared layout. The fidelity
+  comparison reports the packed-minus-reference difference with a 95
+  percent interval and a two-one-sided equivalence test against a
+  preregistered margin of 0.03, beside the distribution-free Hoeffding view
+  of the same difference; a run either detects a packing cost, establishes
+  equivalence within the margin, or states that it resolved neither, and a
   three-sigma result alone detects a difference and never establishes
   equivalence. Neither comparison attributes a cost to one group.
+- **The model-hardware gap.** The calibration-derived Pauli model with
+  readout error predicted folded QPE at 0.899 and hardware read 0.715, with
+  the excess error in both semiclassical rounds (2.5 and 3.2 times the
+  model's). Idle T1 and T2 during the scheduled measurement, round trip, and
+  reset, charged by the schedule-aware replay, explain a quarter; the rest is
+  gate-level and layout-dependent (two of six hybrid-Shor layouts carry a
+  coherent second-bit bias). The ladder that separates the remaining
+  mechanisms holds the work register and layout fixed and varies one thing
+  per rung: (a) the archived circuit; (b) the mid-circuit measurement
+  replaced by an equal-duration delay with the conditional phase applied
+  unconditionally for a prepared label; (c) the measurement kept and the
+  feed-forward removed; (d) a two-control-qubit phase estimation with no
+  mid-circuit measurement. Rung (b) minus (a) is measurement-induced
+  dephasing of the work register; (d) minus (a) is the whole
+  measure-reset-feed-forward segment; (a) against the schedule-aware replay
+  is the gate-level excess. Twelve PUBs at 4,096 shots on one layout; its
+  case needs its own approval.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.

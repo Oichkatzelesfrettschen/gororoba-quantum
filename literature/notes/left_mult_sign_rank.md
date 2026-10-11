@@ -26,6 +26,20 @@ Reed-Muller code RM(n-2, n-1) on the low bits, direct sum the top coordinate.
 The two descriptions agree because a function of m variables has even weight
 exactly when its ANF omits the full product x_0 ... x_{m-1}.
 
+The theorem is a known result in loop coordinates: Kirshtein 2012
+(literature/notes/1207.4230.md), Theorems 34 and 35 with equation (5), gives
+Inn_l(Q_n) = (Z_2)^(2^(n-1) - 1) and |Mlt_l(Q_n)| = 2^(n + 2^(n-1)) for the
+Cayley-Dickson loop Q_n = {+-e_x}, and G_n, C_n = H_n cap ker(ev_0), and
+H_n = C_n x Z_2 are Mlt_l(Q_n), Inn_l(Q_n), and Inn_l x Z(Q_n) under the
+convention map in that note. The group order and the rank are therefore
+"known theorem reproduced"; the coordinate description of H_n is
+Kirshtein's page 20 generators rewritten; the parity-lemma proof below, the
+ANF-degree bound, and the Reed-Muller presentation are this note's (new
+proof or formalization; the degree bound a candidate result pending a
+search for that exact statement). Kirshtein's printed upper bound at the end
+of the Theorem 34 proof leaves a factor 2 that Lemma 2 below closes, and
+his Theorems 34 and 35 as printed fail at n = 2, the exception stated here.
+
 The proof below is complete for every n >= 3. scripts/left_mult_sign_rank.py
 checks every lemma it uses (the closed form of Lemma 3 at n <= 7) and the
 statement itself, in both containment

@@ -14,19 +14,19 @@ lint and type-check configuration only. Before any push, these exit 0:
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
-    affine_residual.py affine_residual_challenger.py claim_boundaries.py \
+    affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
-    ../scripts/mod15_signed_multiplier_census.py
+    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -41,8 +41,11 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" compile_evidence.py --seeds 20261010 \
     --candidate one_clean_cycle >/dev/null
   "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
+  "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
   "$PYTHON" runtime_contracts.py
   "$PYTHON" variance.py
+  "$PYTHON" adjudicate.py --check
+  "$PYTHON" cd_core.py >/dev/null
   "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 8
   "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional
   "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return
@@ -89,11 +92,20 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 - Every `--submit` waits for the user's approval of a written case: what the
   run measures, why noise simulation cannot answer it, and its expected
   seconds. The case is written against a submit-free dry run, and the
-  `--submit` command names that run with `--approved-record`; the fresh plan
-  must match it in experiment digest, shots, policy, groups, backends, seeds,
-  layouts, replica qubits, fused PUB manifests, calibration, and QPY bytes,
-  or the run writes an `approval_required` record and sends nothing.
-  Calibration reads, transpilation, and noise simulation need no approval.
+  `--submit` command names that run with `--approved-record`, its record.json
+  digest with `--approved-record-sha256`, and the case's seconds with
+  `--max-execution-seconds` (the Sampler's max_execution_time, which the
+  service enforces; the dry run is made with the same value, since the
+  policy carries it); the fresh plan must match the record in experiment
+  digest, shots, policy (twirling, DD, budget floor, execution ceiling),
+  dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
+  replica qubits, fused PUB manifests, calibration at the refresh and again
+  at each batch, and QPY bytes, or the run writes an `approval_required`
+  record and sends nothing. The first batch consumes the approval by writing
+  `approval-consumed.json` into the approved record's directory, so a second
+  invocation on the same record sends nothing. Calibration reads,
+  transpilation, noise simulation, result retrieval, and `--preserve-raw`
+  need no approval.
 - Calibration is a property of the run. live_run.py fetches each backend's
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a
@@ -226,6 +238,16 @@ unresolveReviewThread.
 
 - results/ holds audit records: hw_estimate/ for the fixed ibm_fez compile and
   live/ for live runs.
+- A collected run keeps its lossless result under `raw/<job_id>/` (every
+  classical register as shot-ordered bit strings, each PUB's metadata with
+  the backend scheduler table, the result metadata, the job metrics, and an
+  index of sha256s), written by `--collect` before any analysis and
+  recoverable with `--preserve-raw DIR` for a record collected under an
+  earlier revision. collect.json is the preregistered analysis at the run's
+  experiment digest; `adjudicate.py DIR` writes adjudication-<digest>-seed<seed>.json, a second
+  analysis of the same raw files named by its own analysis digest, beside
+  any earlier one. Raw files
+  are never rewritten by a later collection or analysis.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every
   commit. The IBM credential lives in the qiskit account store,

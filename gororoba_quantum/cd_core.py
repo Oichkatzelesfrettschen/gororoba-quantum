@@ -161,7 +161,84 @@ def sedenion_zero_divisors() -> list[tuple[tuple[int, int], tuple[int, int], int
     return [((i, j), (k, el), s) for i, j, t, k, el, s in sedenion_zero_divisor_corpus() if t == 1]
 
 
+def left_mult_matrix(dim: int, v: list[float]) -> list[list[float]]:
+    """L_v: x -> v x as a dim x dim matrix over the basis, L_v = sum_p v_p L_{e_p}."""
+    mat = [[0.0] * dim for _ in range(dim)]
+    for p, vp in enumerate(v):
+        if vp == 0.0:
+            continue
+        for q in range(dim):
+            mat[p ^ q][q] += vp * cd_sign(dim, p, q)
+    return mat
+
+
+def _determinant(mat: list[list[float]]) -> float:
+    """Determinant by fraction-free Gaussian elimination on a copy; every entry here is an integer."""
+    n = len(mat)
+    a = [[float(x) for x in row] for row in mat]
+    det = 1.0
+    for col in range(n):
+        pivot = next((r for r in range(col, n) if a[r][col] != 0.0), None)
+        if pivot is None:
+            return 0.0
+        if pivot != col:
+            a[col], a[pivot] = a[pivot], a[col]
+            det = -det
+        det *= a[col][col]
+        for r in range(col + 1, n):
+            factor = a[r][col] / a[col][col]
+            if factor:
+                a[r] = [x - factor * y for x, y in zip(a[r], a[col], strict=True)]
+    return det
+
+
+def sedenion_counterexamples() -> dict[str, dict[str, float]]:
+    """det L_v and the squared-norm identity for e_0 + e_9 and e_1 + e_9 in the sedenions.
+
+    Neither element is a zero divisor: det L_v = 256 for both, so a predicate
+    that reads only the equal norms of the two octonion halves (both 1 here)
+    or the polynomial that vanishes on e_0 + e_9 misclassifies them. The
+    imaginary halves of e_1 + e_9 are parallel (e_1 and e_1 after the
+    doubling), so L_v^2 = -2 I rather than the orthogonal zero-divisor
+    structure.
+    """
+    dim = 16
+    out: dict[str, dict[str, float]] = {}
+    for name, (i, j) in (("e0+e9", (0, 9)), ("e1+e9", (1, 9))):
+        v = basis(dim, i)
+        v[j] = 1.0
+        mat = left_mult_matrix(dim, v)
+        square = _matmul(mat, mat)
+        identity_scale = square[0][0]
+        is_scalar = all(square[r][c] == (identity_scale if r == c else 0.0) for r in range(dim) for c in range(dim))
+        out[name] = {
+            "det": _determinant(mat),
+            "square_is_scalar": float(is_scalar),
+            "square_scale": identity_scale if is_scalar else float("nan"),
+        }
+    return out
+
+
+def _check_sedenion_counterexamples() -> None:
+    found = sedenion_counterexamples()
+    for name, facts in found.items():
+        if abs(facts["det"] - 256.0) > 1e-9:
+            raise RuntimeError(f"{name}: det L_v = {facts['det']}, expected 256")
+    if found["e1+e9"]["square_is_scalar"] != 1.0 or found["e1+e9"]["square_scale"] != -2.0:
+        raise RuntimeError(f"e1+e9: L_v^2 is not -2 I: {found['e1+e9']}")
+    if found["e0+e9"]["square_is_scalar"] == 1.0:
+        raise RuntimeError("e0+e9: L_v^2 is scalar, but e_0 + e_9 is not purely imaginary")
+    # Every corpus zero divisor has a singular L_v, the property the counterexamples lack.
+    for i, j, t, _k, _l, _s in sedenion_zero_divisor_corpus()[:8]:
+        v = basis(dim := 16, i)
+        v[j] = float(t)
+        if _determinant(left_mult_matrix(dim, v)) != 0.0:
+            raise RuntimeError(f"corpus zero divisor e_{i} {t:+d} e_{j} has invertible L_v")
+
+
 if __name__ == "__main__":
+    _check_sedenion_counterexamples()
+    print(f"sedenion counterexamples: {sedenion_counterexamples()}")
     assoc, anti = classify_octonion_triples()
     print(f"octonion ordered distinct triples: associative={assoc} anti={anti} total={assoc + anti}")
     print(f"quaternion check e1*e2 -> sign {cd_sign(8, 1, 2)} index {1 ^ 2}")

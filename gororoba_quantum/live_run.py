@@ -28,6 +28,7 @@ from __future__ import annotations
 
 import argparse
 import copy
+import dataclasses
 import hashlib
 import heapq
 import io
@@ -46,6 +47,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import rustworkx as rx
 from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.circuit import ControlFlowOp
 from qiskit.converters import circuit_to_dag
@@ -690,6 +692,10 @@ class ReplicaPolicy:
     floor: float | None = None
     max_replicas: int | None = None
     isolated_reference: bool = True
+    # Different groups keep one CZ hop between their replicas, the
+    # one-hop crosstalk window of multi-programming placement
+    # (literature/notes/2102.05321.md); off, groups are only disjoint.
+    cross_group_buffer: bool = True
 
 
 @dataclass
@@ -775,6 +781,10 @@ class _FusionPlacementPool:
     bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
+    physical_graph: Any = None
+    # Qubits other groups' placed replicas forbid to this group: their
+    # physical CZ footprints when the cross-group buffer is on.
+    foreign: set[int] = field(default_factory=set)
 
 
 def build_admission_target(snapshot: Snapshot) -> Target:
@@ -1107,10 +1117,26 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
     return _set_entries(choice, replicas, policy)
 
 
-def _placement_footprint(pool: _FusionPlacementPool, replica: Replica) -> set[int]:
-    """Replica qubits plus their CZ neighbors in the cluster's admitted graph."""
+def _placement_footprint(pool: _FusionPlacementPool, replica: Replica, graph: Any | None = None) -> set[int]:
+    """Replica qubits plus their CZ neighbors in graph (the cluster's admitted graph when None).
+
+    The within-group footprint reads the admitted graph that routing sees;
+    the cross-group buffer reads the device's physical CZ graph
+    (pool.physical_graph), since a coupler the quality policy excluded still
+    couples its endpoints.
+    """
     qubits = set(replica.qubits)
-    return qubits | {neighbor for qubit in qubits for neighbor in pool.graph.neighbors(qubit)}
+    source = pool.graph if graph is None else graph
+    return qubits | {neighbor for qubit in qubits for neighbor in source.neighbors(qubit)}
+
+
+def physical_cz_graph(snapshot: Snapshot) -> Any:
+    """The backend's full two-qubit coupling graph, excluded couplers included."""
+    graph = rx.PyGraph()
+    graph.add_nodes_from(range(snapshot.backend.target.num_qubits))
+    edges = {tuple(sorted(edge)) for edge in snapshot.backend.target.build_coupling_map().get_edges()}
+    graph.add_edges_from_no_data(sorted(edges))
+    return graph
 
 
 def _choice_execution_kind(choice: Choice) -> str:
@@ -1125,18 +1151,26 @@ def _choice_execution_kind(choice: Choice) -> str:
 
 
 def _placement_assignment(
-    pools: list[_FusionPlacementPool], occupied: set[int], replicas_per_pool: int = 1
+    pools: list[_FusionPlacementPool], occupied: set[int], replicas_per_pool: int = 1, buffer: bool = True
 ) -> list[tuple[_FusionPlacementPool, Replica]] | None:
     """Search all required replicas together, including alternatives to earlier placements.
 
     Increasing candidate indices within a pool remove permutations of the same
     replica set without removing any feasible set. The most constrained pool
     advances first. Pool state changes only after a complete assignment exists.
+    Placed qubits are forbidden to every pool. A placed replica's admitted
+    footprint is forbidden to its own pool, so a group's replicas stay one
+    hop apart on the graph routing sees; with buffer, its physical footprint
+    is forbidden to every other pool, so groups stay one hop apart on the
+    device's couplers, an excluded coupler included.
     """
     qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
     footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
+    physical_footprints = [
+        [_placement_footprint(pool, candidate, pool.physical_graph) for candidate in pool.candidates] for pool in pools
+    ]
     chosen: list[list[int]] = [[] for _ in pools]
-    blocked = [set(pool.blocked) for pool in pools]
+    blocked = [set(pool.blocked) | pool.foreign for pool in pools]
 
     def search(used: set[int]) -> bool:
         available: list[tuple[int, int, int, list[int]]] = []
@@ -1156,14 +1190,19 @@ def _placement_assignment(
         if not available:
             return True
         _, _, pool_index, indices = min(available)
-        previous_blocked = blocked[pool_index]
+        previous = [set(entry) for entry in blocked]
         for index in indices:
             chosen[pool_index].append(index)
-            blocked[pool_index] = previous_blocked | footprints[pool_index][index]
+            blocked[pool_index] = previous[pool_index] | footprints[pool_index][index]
+            if buffer:
+                for other in range(len(pools)):
+                    if other != pool_index:
+                        blocked[other] = previous[other] | physical_footprints[pool_index][index]
             if search(used | qubits[pool_index][index]):
                 return True
             chosen[pool_index].pop()
-        blocked[pool_index] = previous_blocked
+        for position, entry in enumerate(previous):
+            blocked[position] = entry
         return False
 
     if not search(occupied):
@@ -1171,13 +1210,26 @@ def _placement_assignment(
     return [(pool, pool.candidates[index]) for pool, indices in zip(pools, chosen, strict=True) for index in indices]
 
 
-def _commit_placement_assignment(placements: list[tuple[_FusionPlacementPool, Replica]], occupied: set[int]) -> None:
-    """Commit a complete assignment and its separation footprints."""
+def _commit_placement_assignment(
+    placements: list[tuple[_FusionPlacementPool, Replica]],
+    occupied: set[int],
+    cluster: list[_FusionPlacementPool] | None = None,
+) -> None:
+    """Commit a complete assignment and its separation footprints.
+
+    With cluster (the cross-group buffer on), each placed replica's physical
+    footprint joins the foreign set of every other pool of the cluster.
+    """
     for pool, candidate in placements:
         selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
         pool.selected.append(selected)
         occupied.update(selected.qubits)
         pool.blocked.update(_placement_footprint(pool, selected))
+        if cluster is not None:
+            physical = _placement_footprint(pool, selected, pool.physical_graph)
+            for other in cluster:
+                if other is not pool:
+                    other.foreign.update(physical)
 
 
 def allocate_fusion_replicas(
@@ -1191,7 +1243,8 @@ def allocate_fusion_replicas(
     single-replica surface. Later rounds advance every group that can still
     participate. A per-group blocked set keeps replicas of that group one CZ
     hop apart; the shared occupied set keeps different groups physically
-    disjoint without imposing an additional cross-group neighbor exclusion.
+    disjoint, and with policy.cross_group_buffer each pool's foreign set of
+    other groups' physical footprints keeps them one CZ hop apart as well.
     """
     clusters: dict[tuple[str, str], list[tuple[int, Choice]]] = {}
     for choice_index, choice in enumerate(choices):
@@ -1203,6 +1256,7 @@ def allocate_fusion_replicas(
         snapshot = indexed_choices[0][1].snap
         if any(choice.snap is not snapshot for _, choice in indexed_choices):
             raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
+        physical = physical_cz_graph(snapshot)
         pools: list[_FusionPlacementPool] = []
         for choice_index, choice in indexed_choices:
             floor = replica_floor(choice.group, policy)
@@ -1222,11 +1276,16 @@ def allocate_fusion_replicas(
                 raise LiveRunError(
                     f"{backend_name} {kind}: {choice.group.name} has no floor-qualified fusion placement"
                 )
-            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width, bases))
+            pools.append(
+                _FusionPlacementPool(
+                    choice, graph, candidates, choice_index, pattern_width, bases, physical_graph=physical
+                )
+            )
 
         occupied: set[int] = set()
+        cluster_pools: list[_FusionPlacementPool] | None = pools if policy.cross_group_buffer else None
         required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
-        assignment = _placement_assignment(pools, occupied, required_rounds)
+        assignment = _placement_assignment(pools, occupied, required_rounds, policy.cross_group_buffer)
         if assignment is None:
             diagnostics = {
                 pool.choice.group.name: {
@@ -1240,7 +1299,7 @@ def allocate_fusion_replicas(
                 f"groups={json.dumps(diagnostics, sort_keys=True)}"
             )
 
-        _commit_placement_assignment(assignment, occupied)
+        _commit_placement_assignment(assignment, occupied, cluster_pools)
         allocation_round = required_rounds
         while True:
             under_cap = [
@@ -1249,14 +1308,17 @@ def allocate_fusion_replicas(
             eligible = [
                 pool
                 for pool in under_cap
-                if any(not set(candidate.qubits).intersection(occupied | pool.blocked) for candidate in pool.candidates)
+                if any(
+                    not set(candidate.qubits).intersection(occupied | pool.blocked | pool.foreign)
+                    for candidate in pool.candidates
+                )
             ]
             if not eligible:
                 break
-            assignment = _placement_assignment(eligible, occupied)
+            assignment = _placement_assignment(eligible, occupied, 1, policy.cross_group_buffer)
             if assignment is None:
                 break
-            _commit_placement_assignment(assignment, occupied)
+            _commit_placement_assignment(assignment, occupied, cluster_pools)
             allocation_round += 1
 
         if any(len(pool.selected) < required_rounds for pool in pools):
@@ -1275,6 +1337,7 @@ def allocate_fusion_replicas(
                 "rounds": allocation_round,
                 "required_rounds": required_rounds,
                 "physical_qubits": sorted(occupied),
+                "cross_group_buffer": policy.cross_group_buffer,
                 "groups": [
                     {
                         "group": pool.choice.group.name,
@@ -2192,11 +2255,13 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "replica_floor": args.replica_floor,
             "max_replicas": args.max_replicas,
             "isolated_reference": args.isolated_reference,
+            "cross_group_buffer": getattr(args, "cross_group_buffer", True),
             # Twirling and DD change the submitted workload without changing
             # the archived circuits, so the approved-record gate compares them.
             "twirl": bool(getattr(args, "twirl", False)),
             "dd": getattr(args, "dd", None),
             "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
+            "max_execution_seconds": getattr(args, "max_execution_seconds", None),
         },
         "shots": args.shots,
         "instance_sha256_12": _instance_hash(service),
@@ -2217,7 +2282,9 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
 
 
 def _policy(args: argparse.Namespace) -> ReplicaPolicy:
-    return ReplicaPolicy(args.replica_floor, args.max_replicas, args.isolated_reference)
+    return ReplicaPolicy(
+        args.replica_floor, args.max_replicas, args.isolated_reference, getattr(args, "cross_group_buffer", True)
+    )
 
 
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
@@ -2334,7 +2401,47 @@ def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: lis
     }
 
 
-def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_archive_sha256: str) -> list[str]:
+APPROVAL_CONSUMED_FILE = "approval-consumed.json"
+
+
+def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
+    """Mark the approved record's one-attempt authorization as consumed by run_name, exactly once.
+
+    The marker is created with O_EXCL inside the approved record directory,
+    so a second invocation that passes every comparison still finds the
+    authorization spent and sends nothing.
+    """
+    marker = approved_dir / APPROVAL_CONSUMED_FILE
+    payload = {"consumed_at": _now(), "run": run_name}
+    try:
+        descriptor = os.open(marker, os.O_WRONLY | os.O_CREAT | os.O_EXCL, 0o644)
+    except FileExistsError:
+        try:
+            earlier = json.loads(marker.read_text())
+        except (OSError, ValueError):
+            earlier = {}
+        raise LiveRunError(
+            f"the approved record {approved_dir.name} was already consumed by run "
+            f"{earlier.get('run', 'unknown')} at {earlier.get('consumed_at', 'unknown')}; "
+            "a fresh dry run and a renewed written case are required"
+        ) from None
+    with os.fdopen(descriptor, "w") as handle:
+        handle.write(json.dumps(payload, indent=1, sort_keys=True) + "\n")
+        handle.flush()
+        os.fsync(handle.fileno())
+    # The directory entry reaches disk before the remote call, so a crash
+    # after the Sampler accepts the batch leaves the marker in place.
+    directory_fd = os.open(approved_dir, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
+    return payload
+
+
+def approved_record_mismatches(
+    approved_dir: Path, record: dict[str, Any], qpy_archive_sha256: str, expected_record_sha256: str | None = None
+) -> list[str]:
     """Every way the fresh plan in record differs from the approved submit-free record in approved_dir.
 
     The approved record is the dry run the owner read before approving the
@@ -2349,6 +2456,10 @@ def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_a
     approved = json.loads((approved_dir / "record.json").read_text())
     approved_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
     mismatches: list[str] = []
+    if expected_record_sha256 is not None:
+        actual = hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
+        if actual != expected_record_sha256.lower():
+            mismatches.append("approved record.json sha256 differs from --approved-record-sha256")
     if approved.get("state") != "planned" or "submission" in approved:
         mismatches.append(f"approved record state is {approved.get('state')!r}, not a submit-free plan")
     for field_name in APPROVED_RECORD_FIELDS:
@@ -2514,6 +2625,7 @@ def build_submission_plan(
                     args.dd,
                     recovery_tags,
                     args.shots,
+                    getattr(args, "max_execution_seconds", None),
                 )
                 plan_index = len(planned_jobs)
                 planned_jobs.append(
@@ -2794,7 +2906,9 @@ def submit(
         # build_submission_plan sends, since record["groups"] still describes
         # the initial snapshot when the refresh changed nothing routable.
         fresh_view = refreshed_plan_view(record, choices, fresh_execution_pubs)
-        mismatches = approved_record_mismatches(Path(approved_dir), fresh_view, qpy_archive_sha256)
+        mismatches = approved_record_mismatches(
+            Path(approved_dir), fresh_view, qpy_archive_sha256, getattr(args, "approved_record_sha256", None)
+        )
         record["approved_record"] = {
             "run": Path(approved_dir).name,
             "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
@@ -2863,10 +2977,26 @@ def submit(
             args.dd,
             plan_entry["recovery_tags"],
             args.shots,
+            getattr(args, "max_execution_seconds", None),
         )
         effective_options = sampler.options.model_dump(mode="json")
         if effective_options != plan_entry["options"]:
             raise LiveRunError(f"{name}: {batch_tag} effective Sampler options moved after planning")
+        ceiling = getattr(args, "max_execution_seconds", None)
+        remaining = usage.get("usage_remaining_seconds")
+        if ceiling is not None and remaining is not None and float(ceiling) > float(remaining):
+            raise LiveRunError(
+                f"{name}: {batch_tag} execution ceiling {ceiling} s exceeds the {remaining} s of QPU time remaining"
+            )
+        if approved_dir is not None and plan_index == runtime_batches[0][0]:
+            # The authorization is spent at the first batch of the invocation;
+            # a later batch of the same plan belongs to the same attempt.
+            try:
+                record["approval_consumed"] = consume_approval(Path(approved_dir), record["started"])
+            except LiveRunError:
+                record["state"] = "approval_required"
+                checkpoint()
+                raise
         plan_entry["pre_submit_revalidation"] = {
             "fetched_at": fresh.fetched_at,
             "calibration": fresh.calibration,
@@ -2897,7 +3027,13 @@ def submit(
 
 
 def configure_sampler(
-    backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], shots: int = SHOTS
+    backend: Any,
+    kind: str,
+    twirl: bool,
+    dd: str | None,
+    tags: list[str],
+    shots: int = SHOTS,
+    max_execution_seconds: int | None = None,
 ) -> Sampler:
     """The client-side Sampler for one job: twirling and DD apply to static jobs only.
 
@@ -2923,6 +3059,11 @@ def configure_sampler(
             )
     sampler = Sampler(mode=backend)
     sampler.options.default_shots = shots
+    if max_execution_seconds is not None:
+        # The service cancels a job whose system execution time passes this
+        # ceiling (OptionsV2.max_execution_time), so the approved case's
+        # seconds bound the charge the job can make.
+        sampler.options.max_execution_time = int(max_execution_seconds)
     sampler.options.execution.scheduler_timing = True
     sampler.options.environment.job_tags = tags
     if twirl and kind == "static":
@@ -2975,8 +3116,15 @@ def _feed_forward_stages(circuit: QuantumCircuit) -> int:
 
 
 def _instance_hash(service: Any) -> str:
-    """The active IBM Cloud instance as the 12-hex sha256 of its CRN, the only form a record keeps."""
-    return hashlib.sha256(str(service.active_instance() or "").encode()).hexdigest()[:12]
+    """The active IBM Cloud instance as the 12-hex sha256 of its CRN, the only form a record keeps.
+
+    A service without a resolved instance has no quota to plan against, so
+    it is refused rather than hashed as the empty string.
+    """
+    instance = str(service.active_instance() or "")
+    if not instance:
+        raise LiveRunError("the service resolved no IBM Cloud instance; the saved account must name one")
+    return hashlib.sha256(instance.encode()).hexdigest()[:12]
 
 
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
@@ -3640,8 +3788,15 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
             checkpoint(out)
             continue
+        # The lossless result reaches disk before any count is validated,
+        # decoded, replayed, or summarized.
+        job_out["raw"] = write_raw_result(
+            run_dir, job_entry["job_id"], job, result, [pub["name"] for pub in pub_manifests]
+        )
+        checkpoint(out)
         if job_out["usage"]["usage_status"] == "pending":
             job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
+            snapshot_metrics(run_dir, job_entry["job_id"], job)
             checkpoint(out)
         if len(result) != len(pub_manifests):
             raise LiveRunError(
@@ -3861,6 +4016,12 @@ def main(argv: list[str] | None = None) -> int:
         help="put each group's replica-0 primary in the shared global reference PUB",
     )
     parser.add_argument(
+        "--cross-group-buffer",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="keep replicas of different groups one CZ hop apart (the multi-programming crosstalk window)",
+    )
+    parser.add_argument(
         "--twirl",
         action="store_true",
         help="Pauli-twirl gates and measurements on static submission batches; dynamic batches remain disabled",
@@ -3872,9 +4033,26 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--collect", type=Path, help="run directory whose submitted jobs to collect")
     parser.add_argument(
+        "--preserve-raw",
+        type=Path,
+        help="run directory whose submitted jobs' results to write losslessly under raw/, without analysis",
+    )
+    parser.add_argument(
         "--approved-record",
         type=Path,
         help="run directory of the approved dry run; --submit sends nothing unless the fresh plan matches it",
+    )
+    parser.add_argument(
+        "--approved-record-sha256",
+        help="sha256 of the approved record's record.json, as the written case names it",
+    )
+    parser.add_argument(
+        "--max-execution-seconds",
+        type=int,
+        help=(
+            "Sampler max_execution_time, the ceiling the written case names: the service cancels a job past "
+            "this QPU usage; a dry run carries it so the approved record's policy matches the submission"
+        ),
     )
     args = parser.parse_args(argv)
     if args.submit and not args.out:
@@ -3883,10 +4061,22 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--submit needs --approved-record, the dry run the written case was approved on")
     if args.approved_record and not args.submit:
         parser.error("--approved-record applies only with --submit")
+    if args.submit and not args.approved_record_sha256:
+        parser.error("--submit needs --approved-record-sha256, the record.json digest the written case names")
+    if args.submit and args.max_execution_seconds is None:
+        parser.error("--submit needs --max-execution-seconds, the execution ceiling the written case names")
+    if args.approved_record_sha256 and not args.submit:
+        parser.error("--approved-record-sha256 applies only with --submit")
+    if args.max_execution_seconds is not None and args.max_execution_seconds <= 0:
+        parser.error("--max-execution-seconds must be positive")
     service = QiskitRuntimeService()
     try:
         if args.collect:
             collect(service, args.collect)
+            return 0
+        if args.preserve_raw:
+            preserved = preserve_raw(service, args.preserve_raw)
+            print(f"raw results preserved for {len(preserved)} jobs under {args.preserve_raw / RAW_DIRECTORY}")
             return 0
         now = datetime.now(UTC)
         args.started = now.isoformat(timespec="microseconds")
@@ -3915,6 +4105,175 @@ def main(argv: list[str] | None = None) -> int:
         print(f"FAIL: {exc}", file=sys.stderr)
         return 1
     return 0
+
+
+RAW_DIRECTORY = "raw"
+
+
+def _jsonable(value: Any) -> Any:
+    """A JSON-serializable copy: dataclasses to dicts, datetimes to ISO text, other objects to str."""
+    if dataclasses.is_dataclass(value) and not isinstance(value, type):
+        return {member.name: _jsonable(getattr(value, member.name)) for member in dataclasses.fields(value)}
+    if isinstance(value, dict):
+        return {str(k): _jsonable(v) for k, v in value.items()}
+    if isinstance(value, (list, tuple)):
+        return [_jsonable(v) for v in value]
+    if isinstance(value, datetime):
+        return value.isoformat()
+    if isinstance(value, (str, int, float, bool)) or value is None:
+        return value
+    return str(value)
+
+
+def _scrub_instances(value: Any) -> Any:
+    """Replace every string carrying an IBM Cloud CRN by the 12-hex sha256 form a record keeps."""
+    if isinstance(value, dict):
+        return {k: _scrub_instances(v) for k, v in value.items()}
+    if isinstance(value, list):
+        return [_scrub_instances(v) for v in value]
+    if isinstance(value, str) and "crn:" in value:
+        return "crn-sha256-12:" + hashlib.sha256(value.encode()).hexdigest()[:12]
+    return value
+
+
+def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_names: list[str]) -> dict[str, Any]:
+    """Persist a job's result losslessly under raw/<job_id>/ before any analysis reads it.
+
+    Each PUB's classical registers land as shot-ordered bit strings with the
+    PUB's metadata (the backend scheduler table among it), the result
+    metadata (execution chunks) lands beside them, and index.json carries
+    each of those files' sha256. They are written once: a later collection
+    that finds a file whose bytes differ from the indexed digest stops,
+    since the measurement evidence of a job never changes. job_metrics.json
+    carries the provider's latest job metrics (timestamps, usage, circuit
+    execution time), which finalize after the job, so it is rewritten on
+    every collection and stays outside the index. The files are the
+    evidence a later analysis under a different digest reads; collect.json
+    holds the preregistered analysis of the same shots.
+    """
+    directory = run_dir / RAW_DIRECTORY / job_id
+    directory.mkdir(parents=True, exist_ok=True)
+    files: dict[str, Any] = {}
+    for index, pub_result in enumerate(result):
+        registers: dict[str, Any] = {}
+        for name in pub_result.data:
+            array = pub_result.data[name]
+            if not hasattr(array, "get_bitstrings"):
+                raise LiveRunError(f"job {job_id} PUB {index} register {name} is not a bit array")
+            registers[name] = {
+                "num_bits": int(array.num_bits),
+                "num_shots": int(array.num_shots),
+                "bitstrings": list(array.get_bitstrings()),
+            }
+        files[f"pub_{index:02d}.json"] = {
+            "pub_index": index,
+            "pub_name": pub_names[index] if index < len(pub_names) else None,
+            "registers": registers,
+            "metadata": _scrub_instances(_jsonable(pub_result.metadata)),
+        }
+    files["result_metadata.json"] = _scrub_instances(_jsonable(getattr(result, "metadata", {})))
+    digests: dict[str, str] = {}
+    for name, payload in files.items():
+        text = json.dumps(payload, indent=1, sort_keys=True) + "\n"
+        digest = hashlib.sha256(text.encode()).hexdigest()
+        target = directory / name
+        if target.exists():
+            if hashlib.sha256(target.read_bytes()).hexdigest() != digest:
+                raise LiveRunError(f"{target} differs from the result the service returned; raw evidence is write-once")
+        else:
+            _write_text_atomically(target, text)
+        digests[name] = digest
+    _write_text_atomically(
+        directory / "index.json",
+        json.dumps(_merged_index(directory, job_id, digests), indent=1, sort_keys=True) + "\n",
+    )
+    snapshot_metrics(run_dir, job_id, job)
+    return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
+
+
+def _merged_index(directory: Path, job_id: str, digests: dict[str, str]) -> dict[str, Any]:
+    """index.json with these result-file digests and any metrics entries an earlier write recorded."""
+    index_path = directory / "index.json"
+    earlier = json.loads(index_path.read_text()) if index_path.exists() else {}
+    return {**{k: v for k, v in earlier.items() if k.startswith("metrics")}, "job_id": job_id, "files": digests}
+
+
+def snapshot_metrics(run_dir: Path, job_id: str, job: Any) -> str:
+    """Append the job's current metrics as a write-once snapshot under raw/<job_id>/ and return its name.
+
+    Job metrics finalize after the job, so each distinct snapshot is kept:
+    job_metrics.json first, then job_metrics.<k>.json, every one indexed and
+    none rewritten; metrics_latest names the snapshot the newest call saw.
+    Collection calls it again after the usage wait, so a run whose usage was
+    pending at retrieval carries the finalized metrics in its raw evidence.
+    """
+    directory = run_dir / RAW_DIRECTORY / job_id
+    metrics = job.metrics() if hasattr(job, "metrics") else {}
+    metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
+    snapshots = _metrics_snapshots(directory)
+    # Existing snapshots are evidence too: each must still match the digest
+    # the index recorded before a new one is appended beside it.
+    index_path = directory / "index.json"
+    if index_path.exists():
+        earlier = json.loads(index_path.read_text())
+        for name, digest in zip(earlier.get("metrics", []), earlier.get("metrics_sha256", []), strict=False):
+            if not (directory / name).exists() or hashlib.sha256((directory / name).read_bytes()).hexdigest() != digest:
+                raise LiveRunError(f"{directory / name} differs from its indexed sha256; raw evidence is write-once")
+    latest = next((name for name in snapshots if (directory / name).read_text() == metrics_text), None)
+    if latest is None:
+        latest = "job_metrics.json" if not snapshots else f"job_metrics.{len(snapshots)}.json"
+        _write_text_atomically(directory / latest, metrics_text)
+        snapshots.append(latest)
+    metrics_digests = [hashlib.sha256((directory / name).read_bytes()).hexdigest() for name in snapshots]
+    index_payload = json.loads(index_path.read_text()) if index_path.exists() else {"job_id": job_id, "files": {}}
+    index_payload.update({"metrics": snapshots, "metrics_sha256": metrics_digests, "metrics_latest": latest})
+    _write_text_atomically(index_path, json.dumps(index_payload, indent=1, sort_keys=True) + "\n")
+    return latest
+
+
+def _metrics_snapshots(directory: Path) -> list[str]:
+    """The job-metrics snapshot files of a raw directory in writing order."""
+    names = [p.name for p in directory.glob("job_metrics*.json")]
+
+    def order(name: str) -> int:
+        parts = name.split(".")
+        return int(parts[1]) if len(parts) == 3 else 0
+
+    return sorted(names, key=order)
+
+
+def _write_text_atomically(target: Path, text: str) -> None:
+    def write(handle: Any) -> None:
+        handle.write(text)
+
+    _replace_atomically(target, write, "w")
+
+
+def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]:
+    """Fetch every recorded job of a submitted record and write its raw result files.
+
+    The record's experiment digest plays no part: raw preservation depends
+    only on the job ids and the PUB names the submission wrote, so a record
+    collected under an earlier revision still gets its measurement evidence.
+    """
+    record = json.loads((run_dir / "record.json").read_text())
+    jobs = record.get("submission", {}).get("jobs") or []
+    if not jobs:
+        raise LiveRunError(f"{run_dir} records no submitted jobs to preserve")
+    preserved: dict[str, Any] = {}
+    (run_dir / RAW_DIRECTORY).mkdir(parents=True, exist_ok=True)
+    for job_entry in jobs:
+        job = service.job(job_entry["job_id"])
+        status = str(job.status())
+        if status != "DONE":
+            preserved[job_entry["job_id"]] = {"result_unavailable": f"job status {status}"}
+            continue
+        preserved[job_entry["job_id"]] = write_raw_result(
+            run_dir, job_entry["job_id"], job, job.result(), [pub["name"] for pub in job_entry["pubs"]]
+        )
+    text = json.dumps({"preserved_at": _now(), "jobs": preserved}, indent=1, sort_keys=True) + "\n"
+    _write_text_atomically(run_dir / RAW_DIRECTORY / "preserved.json", text)
+    return preserved
 
 
 def _replace_atomically(target: Path, write: Callable[[Any], None], mode: str) -> None:

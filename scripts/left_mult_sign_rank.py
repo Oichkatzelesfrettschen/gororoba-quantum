@@ -182,6 +182,51 @@ def _explicit_basis(n: int) -> list[int]:
     return basis
 
 
+def _normalize(v: int, dim: int) -> int:
+    """P(v) = v + v(0) 1: the sign vector with its scalar direction removed, so P(v)(0) = 0."""
+    return v ^ ((1 << dim) - 1) if v & 1 else v
+
+
+def _check_normalized_code(n: int, pivots: dict[int, int], masks: list[int]) -> None:
+    """C_n = P(H_n) = H_n cap ker(ev_0) has dimension 2^(n-1) - 1 and the stated ANF basis.
+
+    P(v) = v + v(0) 1 is a projection of H_n onto the functions vanishing at
+    zero whose kernel is <1>, and 1 lies in H_n, so H_n = C_n (+) <1> and
+    C_n is spanned by the monomials x^S, S a nonempty proper subset of the
+    low n - 1 coordinates, together with x_{n-1}. The check reduces every
+    basis monomial against the Schreier span, reduces every projected span
+    vector against the monomial basis, and compares the two ranks.
+    """
+    dim = 1 << n
+    ones = (1 << dim) - 1
+    _require(_reduce(ones, pivots) == 0, f"n={n}: the constant-one vector lies outside the Schreier span")
+    projected: dict[int, int] = {}
+    for v in pivots.values():
+        r = _reduce(_normalize(v, dim), projected)
+        if r:
+            projected[r.bit_length() - 1] = r
+    # H_2 = <1> projects to zero; from n = 3 the code has rank 2^(n-1) - 1.
+    want = 0 if n == 2 else (1 << (n - 1)) - 1
+    _require(len(projected) == want, f"n={n}: normalized code has rank {len(projected)}, expected {want}")
+    monomials = [m for m in range(1 << (n - 1)) if m and m != (1 << (n - 1)) - 1] if n >= 3 else []
+    if n >= 3:
+        monomials.append(1 << (n - 1))
+    _require(len(monomials) == want, f"n={n}: {len(monomials)} basis monomials, expected {want}")
+    basis_pivots: dict[int, int] = {}
+    for m in monomials:
+        # x^S as a truth table: 1 exactly where every coordinate of S is set.
+        vector = sum(1 << x for x in range(dim) if x & m == m)
+        _require(vector & 1 == 0, f"n={n}: a basis monomial does not vanish at zero")
+        _require(_reduce(vector, pivots) == 0, f"n={n}: basis monomial {m:b} lies outside the Schreier span")
+        _require(_reduce(vector, projected) == 0, f"n={n}: basis monomial {m:b} lies outside the normalized code")
+        r = _reduce(vector, basis_pivots)
+        _require(r != 0, f"n={n}: basis monomials are dependent")
+        basis_pivots[r.bit_length() - 1] = r
+    for v in projected.values():
+        _require(_reduce(v, basis_pivots) == 0, f"n={n}: a normalized span vector lies outside the monomial basis")
+        _require(_anf(v, masks) & 1 == 0, f"n={n}: a normalized span vector carries the constant monomial")
+
+
 def _reduce(v: int, pivots: dict[int, int]) -> int:
     while v:
         p = pivots.get(v.bit_length() - 1)
@@ -194,7 +239,11 @@ def _reduce(v: int, pivots: dict[int, int]) -> int:
 def check_level(
     n: int, rows: list[int], cols: list[int], prev: tuple[list[int], list[int]] | None
 ) -> tuple[int, int, int, int]:
-    """Return (distinct s_{a,b}, rank, max ANF degree of the span, log2 |G_n|)."""
+    """Return (distinct s_{a,b}, rank, max ANF degree of the span, log2 |G_n|).
+
+    The level also checks the normalized code C_n = H_n cap ker(ev_0) of
+    rank 2^(n-1) - 1 (_check_normalized_code).
+    """
     dim = 1 << n
     masks = _low_masks(n)
     _check_commutator_and_parity(n, rows, cols)
@@ -223,6 +272,8 @@ def check_level(
     _require(len(explicit) == want, f"n={n}: explicit basis has {len(explicit)} vectors, expected {want}")
     for u in explicit:
         _require(_reduce(u, pivots) == 0, f"n={n}: a U_n basis vector lies outside the Schreier span")
+
+    _check_normalized_code(n, pivots, masks)
 
     too_high = sum(1 << m for m in range(dim) if m.bit_count() > max(n - 2, 0))
     exact = sum(1 << m for m in range(dim) if m.bit_count() == max(n - 2, 0))

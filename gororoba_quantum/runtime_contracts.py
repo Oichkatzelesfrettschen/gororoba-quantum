@@ -10,8 +10,10 @@ import io
 import json
 import math
 import os
+import shutil
 import tempfile
 from contextlib import redirect_stdout
+from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
 from pathlib import Path
@@ -43,6 +45,7 @@ import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
 import packing
 import parallel
+import variance
 from experiments import MIRROR_SUFFIX, Group, experiment_groups
 from live_run import (
     RECORD_SCHEMA_CONTRACT,
@@ -102,9 +105,13 @@ from live_run import (
     write_json,
 )
 from order_finding import factor_order_finding
+from packing import Replica
 
 SINGLE_REPLICA_POLICY = ReplicaPolicy(max_replicas=1, isolated_reference=False)
 PACKED_REPLICA_POLICY = ReplicaPolicy(floor=0.8, max_replicas=2, isolated_reference=True)
+# The path-graph backtracking fixture places two groups on adjacent sites,
+# which the cross-group buffer forbids; it exercises the search alone.
+ADJACENT_REPLICA_POLICY = ReplicaPolicy(floor=0.8, max_replicas=2, isolated_reference=True, cross_group_buffer=False)
 
 
 class _ProbeBackend:
@@ -298,8 +305,10 @@ class _BoundedAngleBackend:
 
 
 class _ProbeSamplerOptions:
-    def __init__(self, kind: str, tags: list[str], shots: int):
-        self._value = {"kind": kind, "environment": {"job_tags": tags}, "default_shots": shots}
+    def __init__(self, kind: str, tags: list[str], shots: int, max_execution_seconds: int | None = None):
+        self._value: dict[str, Any] = {"kind": kind, "environment": {"job_tags": tags}, "default_shots": shots}
+        if max_execution_seconds is not None:
+            self._value["max_execution_time"] = int(max_execution_seconds)
 
     def model_dump(self, mode: str) -> dict[str, Any]:
         if mode != "json":
@@ -315,8 +324,9 @@ class _ProbeSampler:
         shots: int,
         before_run: Any,
         after_run: Any = None,
+        max_execution_seconds: int | None = None,
     ):
-        self.options = _ProbeSamplerOptions(kind, tags, shots)
+        self.options = _ProbeSamplerOptions(kind, tags, shots, max_execution_seconds)
         self._before_run = before_run
         self._after_run = after_run
 
@@ -1139,12 +1149,50 @@ def _verify_replay_seed_independence() -> None:
         raise RuntimeError(f"replay batches share seeds or run out of calibration order: {calls}")
 
 
+def _verify_raw_scrubbing() -> None:
+    """Raw files carry instances only as 12-hex CRN hashes, and metadata serializes losslessly enough to re-read."""
+    scrubbed = live_run_module._scrub_instances(
+        {"caller": "x", "instance": "crn:v1:bluemix:public:quantum-computing:us-east:a/abc:def::", "n": [1, "crn:z"]}
+    )
+    expected = (
+        "crn-sha256-12:"
+        + hashlib.sha256(b"crn:v1:bluemix:public:quantum-computing:us-east:a/abc:def::").hexdigest()[:12]
+    )
+    if scrubbed["instance"] != expected or scrubbed["n"][1][:14] != "crn-sha256-12:" or scrubbed["caller"] != "x":
+        raise RuntimeError(f"CRN scrubbing reads {scrubbed}")
+    moment = datetime(2026, 10, 11, 15, 31, 50, 399650, tzinfo=UTC)
+
+    @dataclass
+    class Span:
+        start: datetime
+        parts: list[int]
+
+    serialized = live_run_module._jsonable({"chunk_timing": [Span(moment, [0, 1])], "other": object()})
+    if serialized["chunk_timing"][0]["start"] != moment.isoformat() or serialized["chunk_timing"][0]["parts"] != [0, 1]:
+        raise RuntimeError(f"metadata serialization reads {serialized}")
+    if not isinstance(serialized["other"], str):
+        raise RuntimeError("an unknown object does not serialize to text")
+
+
 def _verify_fused_collection() -> None:
     """Collect one complete mocked job through fused result decoding and execution-window fan-out."""
     backend = _ProbeBackend("viable", FakeFez())
     planning_service = _ProbeService([backend])
     args = _fixture_args(groups=["design_a", "zero_divisor_fringe"], shots=64)
     choices, record = live_run_module.plan(planning_service, args)
+    # Replicas of different groups on one backend share no CZ edge: the
+    # cross-group buffer keeps them one hop apart.
+    edges = {tuple(sorted(edge)) for edge in backend.coupling_map.get_edges()}
+    by_group = {choice.group.name: {q for replica in choice.replicas for q in replica.qubits} for choice in choices}
+    names = list(by_group)
+    for a in range(len(names)):
+        for b in range(a + 1, len(names)):
+            qa, qb = by_group[names[a]], by_group[names[b]]
+            crossing = [e for e in edges if (e[0] in qa and e[1] in qb) or (e[0] in qb and e[1] in qa)]
+            if crossing:
+                raise RuntimeError(f"{names[a]} and {names[b]} share CZ edges {crossing}")
+    if record["policy"].get("cross_group_buffer") is not True:
+        raise RuntimeError("the plan's policy does not record the cross-group buffer")
     pubs = execution_pubs(choices)
     fused_pub = next((pub for pub in pubs if len(pub.components) > 1), None)
     if fused_pub is None:
@@ -1171,6 +1219,7 @@ def _verify_fused_collection() -> None:
             dd: str | None,
             tags: list[str],
             shots: int = 4096,
+            max_execution_seconds: int | None = None,
         ) -> Any:
             del backend, twirl, dd
             return _ProbeSampler(kind, tags, shots, lambda unused_circuits: None)
@@ -1300,6 +1349,32 @@ def _verify_fused_collection() -> None:
         ):
             raise RuntimeError(f"job usage record is {job_usage}")
         first = (run_dir / "collect.json").read_bytes()
+        # The lossless result is on disk under raw/<job_id>/ with an index of
+        # sha256s, every register as shot-ordered bit strings, and no CRN.
+        raw_dir = run_dir / live_run_module.RAW_DIRECTORY / job_id
+        raw_index = json.loads((raw_dir / "index.json").read_text())
+        if job_out["raw"] != {"directory": f"{live_run_module.RAW_DIRECTORY}/{job_id}", "files": raw_index["files"]}:
+            raise RuntimeError(f"collect.json raw index differs from raw/index.json: {job_out['raw']}")
+        for name, digest in raw_index["files"].items():
+            if hashlib.sha256((raw_dir / name).read_bytes()).hexdigest() != digest:
+                raise RuntimeError(f"raw file {name} differs from its indexed sha256")
+        raw_pubs = sorted(name for name in raw_index["files"] if name.startswith("pub_"))
+        if len(raw_pubs) != len(planned_job["pubs"]):
+            raise RuntimeError(f"raw preserved {len(raw_pubs)} PUBs for {len(planned_job['pubs'])} planned")
+        first_pub = json.loads((raw_dir / raw_pubs[0]).read_text())
+        if first_pub["pub_name"] != planned_job["pubs"][0]["name"]:
+            raise RuntimeError("raw PUB 0 is not named after the planned PUB")
+        for register in first_pub["registers"].values():
+            if len(register["bitstrings"]) != args.shots or any(
+                len(b) != register["num_bits"] for b in register["bitstrings"]
+            ):
+                raise RuntimeError("raw register bit strings are not one per shot at the register width")
+        if "crn:" in (raw_dir / "job_metrics.json").read_text() + (raw_dir / "result_metadata.json").read_text():
+            raise RuntimeError("a CRN reached the raw files")
+        if "job_metrics.json" in raw_index["files"] or raw_index["metrics"] != ["job_metrics.json"]:
+            raise RuntimeError(f"job metrics are not a single indexed snapshot: {raw_index}")
+        first_metrics = (raw_dir / "job_metrics.json").read_bytes()
+        raw_bytes = {name: (raw_dir / name).read_bytes() for name in raw_index["files"]}
 
         # Recollection after usage finalizes changes only the usage block.
         probe_job._usage = {"status": "pending"}
@@ -1315,6 +1390,35 @@ def _verify_fused_collection() -> None:
             _collect_with_zero_simulation(collection_service, run_dir)
         if (run_dir / "collect.json").read_bytes() != first:
             raise RuntimeError("recollection after usage finalizes changes bytes outside the usage block")
+        if any((raw_dir / name).read_bytes() != content for name, content in raw_bytes.items()):
+            raise RuntimeError("recollection rewrites the raw result files")
+        # The pending-usage collection added a second metrics snapshot; the
+        # final one matched the first and added none; the first is unchanged.
+        snapshots = json.loads((raw_dir / "index.json").read_text())["metrics"]
+        if (
+            snapshots != ["job_metrics.json", "job_metrics.1.json"]
+            or (raw_dir / "job_metrics.json").read_bytes() != first_metrics
+        ):
+            raise RuntimeError(f"metrics snapshots read {snapshots}")
+        # Raw evidence is write-once: a file whose bytes differ from the
+        # result the service returns stops the collection.
+        tampered = raw_dir / raw_pubs[0]
+        original_pub = tampered.read_bytes()
+        tampered.write_bytes(original_pub.replace(b'"pub_index": 0', b'"pub_index": 9'))
+        try:
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(collection_service, run_dir)
+        except LiveRunError as error:
+            if "write-once" not in str(error):
+                raise RuntimeError(f"tampered raw evidence reports {error}") from error
+        else:
+            raise RuntimeError("a collection over tampered raw evidence proceeds")
+        finally:
+            tampered.write_bytes(original_pub)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
+        if (run_dir / "collect.json").read_bytes() != first:
+            raise RuntimeError("recollection after restoring the raw evidence differs")
         pending[0]["jobs"][job_id]["usage"] = json.loads(first)[0]["jobs"][job_id]["usage"]
         if pending != json.loads(first):
             raise RuntimeError("pending and final collections differ outside the usage block")
@@ -1381,9 +1485,32 @@ def _verify_fused_collection() -> None:
         if (run_dir / "collect.json").read_bytes() != first:
             raise RuntimeError("usage read before a running job's result is not refreshed after it")
 
+        # Metrics still pending after result() finalize during the usage
+        # wait; the raw index then points at the finalized snapshot.
+        class _LateUsageJob(_ProbeResultJob):
+            calls = 0
+
+            def metrics(self) -> dict[str, Any]:
+                self.calls += 1
+                if self.calls >= 3:
+                    self._usage, self._charge = usage, 12.5
+                return super().metrics()
+
+        late_job = _LateUsageJob(result, status="DONE", usage={"status": "pending"}, charge=None)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: late_job}), run_dir)
+        late_index = json.loads((raw_dir / "index.json").read_text())
+        latest_metrics = json.loads((raw_dir / late_index["metrics_latest"]).read_text())
+        if latest_metrics.get("usage") != usage:
+            raise RuntimeError(f"raw metrics after the usage wait read {latest_metrics}")
+
         # A failure after the usage read leaves the usage checkpointed in
         # collect.json: a result with the wrong PUB count stops collection.
+        # The fixture returns a different result for the same job id, which
+        # the write-once raw evidence would refuse first, so the job's raw
+        # directory is cleared around it.
         broken = _ProbeResultJob(PrimitiveResult([], metadata={}), usage=usage, charge=1.0)
+        shutil.rmtree(raw_dir)
         try:
             with redirect_stdout(io.StringIO()):
                 _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: broken}), run_dir)
@@ -1392,6 +1519,8 @@ def _verify_fused_collection() -> None:
                 raise RuntimeError(f"a job with the wrong PUB count reports {error}") from error
         else:
             raise RuntimeError("a job with the wrong PUB count collects")
+        finally:
+            shutil.rmtree(raw_dir, ignore_errors=True)
         partial = json.loads((run_dir / "collect.partial.json").read_text())
         if partial[0]["jobs"][job_id]["usage"]["qpu_charge_time_seconds"] != "1.0" or len(partial) != 1:
             raise RuntimeError(f"the checkpoint after a failed collection lacks the usage: {partial[0]['jobs']}")
@@ -1526,6 +1655,12 @@ def _verify_packing_equivalence() -> None:
     weighted = _synthetic_entry("weighted", QuantumCircuit(1, 1), np.array([0.25, 0.75]))
     if live_run_module._bernoulli_score(weighted) or not live_run_module._bernoulli_score(primary):
         raise RuntimeError("Bernoulli score classification follows the per-shot weights")
+    weighted_view = variance.equivalence(0.5, 0.25, 0.5, 0.25, 4096, live_run_module._bernoulli_score(weighted))
+    bernoulli_view = variance.equivalence(0.5, 0.25, 0.5, 0.25, 4096, live_run_module._bernoulli_score(primary))
+    if weighted_view["method"] != "hoeffding" or bernoulli_view["method"] != "newcombe_wilson":
+        raise RuntimeError(f"score classification does not select the interval: {weighted_view} {bernoulli_view}")
+    if "hoeffding_interval_90" not in crosstalk:
+        raise RuntimeError("the packing comparison omits the Hoeffding view")
     degenerate = {"primary": [np.array([1.0, 0.0])], "primary_isolated": [np.array([0.0, 1.0])]}
     extreme = replica_statistics(group, entries, degenerate, 1024)["global_packing_crosstalk"]
     if extreme["z"] is not None or "unavailable" not in extreme["resolution"] or not extreme["below_zero_95"]:
@@ -1801,7 +1936,7 @@ def _verify_required_placement_backtracking() -> None:
     original_candidates = live_run_module._replica_candidates
     live_run_module._replica_candidates = path_candidates
     try:
-        evidence = live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+        evidence = live_run_module.allocate_fusion_replicas(choices, ADJACENT_REPLICA_POLICY)
         placements = [[replica.qubits for replica in choice.replicas] for choice in choices]
         if placements != [[[0], [2]], [[3], [4]]]:
             raise RuntimeError(f"required replica-set backtracking selected {placements}")
@@ -1821,14 +1956,14 @@ def _verify_required_placement_backtracking() -> None:
         live_run_module._replica_candidates = counted_candidates
         placement_cache: dict[tuple[int, float], Any] = {}
         for _ in range(2):
-            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY, placement_cache)
+            live_run_module.allocate_fusion_replicas(choices, ADJACENT_REPLICA_POLICY, placement_cache)
         if candidate_calls != len(choices):
             raise RuntimeError(f"retried joint placement recomputed candidates {candidate_calls} times")
         live_run_module._replica_candidates = path_candidates
 
         candidate_qubits[0] = [1, 0]
         try:
-            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+            live_run_module.allocate_fusion_replicas(choices, ADJACENT_REPLICA_POLICY)
         except LiveRunError as error:
             if "cannot satisfy 2 required joint-placement rounds" not in str(error):
                 raise RuntimeError(f"infeasible required replica set reports {error}") from error
@@ -1849,9 +1984,12 @@ def _fixture_args(**overrides: Any) -> argparse.Namespace:
         "twirl": False,
         "dd": None,
         "min_remaining_seconds": 0.0,
+        "max_execution_seconds": 60,
+        "approved_record_sha256": None,
         "replica_floor": PACKED_REPLICA_POLICY.floor,
         "max_replicas": PACKED_REPLICA_POLICY.max_replicas,
         "isolated_reference": PACKED_REPLICA_POLICY.isolated_reference,
+        "cross_group_buffer": True,
     }
     values.update(overrides)
     return argparse.Namespace(**values)
@@ -1869,7 +2007,13 @@ def _verify_approved_record_gate() -> None:
     runs: list[int] = []
 
     def counting_sampler(
-        backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], shots: int = 4096
+        backend: Any,
+        kind: str,
+        twirl: bool,
+        dd: str | None,
+        tags: list[str],
+        shots: int = 4096,
+        max_execution_seconds: int | None = None,
     ) -> Any:
         # build_submission_plan constructs a Sampler to record its effective
         # options before any batch runs, so runs, not constructions, count
@@ -1877,7 +2021,9 @@ def _verify_approved_record_gate() -> None:
         nonlocal constructions
         del backend, twirl, dd
         constructions += 1
-        return _ProbeSampler(kind, tags, shots, lambda circuits: runs.append(len(circuits)))
+        return _ProbeSampler(
+            kind, tags, shots, lambda circuits: runs.append(len(circuits)), None, max_execution_seconds
+        )
 
     with tempfile.TemporaryDirectory(prefix="gororoba-approved-record-") as directory:
         approved_dir = Path(directory) / "approved"
@@ -1888,6 +2034,14 @@ def _verify_approved_record_gate() -> None:
         fresh_qpy = hashlib.sha256((approved_dir / "isa.qpy").read_bytes()).hexdigest()
         if live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy):
             raise RuntimeError("an identical fresh plan mismatches its own approved record")
+        record_sha256 = hashlib.sha256((approved_dir / "record.json").read_bytes()).hexdigest()
+        if live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy, record_sha256.upper()):
+            raise RuntimeError("the approved record's own digest mismatches")
+        wrong_digest = live_run_module.approved_record_mismatches(approved_dir, fresh_record, fresh_qpy, "0" * 64)
+        if not any("approved-record-sha256" in m for m in wrong_digest):
+            raise RuntimeError(f"a replaced approved record passes the digest check: {wrong_digest}")
+        if record["policy"].get("max_execution_seconds") != 60:
+            raise RuntimeError("the plan's policy does not record the execution ceiling")
         drifted = copy.deepcopy(record)
         drifted["groups"][0]["calibration"] = "2000-01-01T00:00:00+00:00"
         drifted["groups"][0]["initial_layout"] = list(reversed(drifted["groups"][0]["initial_layout"]))
@@ -1955,6 +2109,59 @@ def _verify_approved_record_gate() -> None:
         mismatches = gated_record.get("renewed_approval", {}).get("mismatches", [])
         if constructions or gated_record["state"] != "approval_required" or "shots differs" not in mismatches:
             raise RuntimeError(f"the approved-record gate leaves {gated_record.get('state')} after {constructions}")
+        if (approved_dir / live_run_module.APPROVAL_CONSUMED_FILE).exists():
+            raise RuntimeError("a refused submission consumed the approval")
+        # A matching plan consumes the authorization at its first batch, and
+        # the Sampler carries the execution ceiling; a second matching
+        # invocation finds the authorization spent and sends nothing.
+        args.approved_record = approved_dir
+        args.approved_record_sha256 = record_sha256
+        live_run_module.configure_sampler = counting_sampler
+        consumed_record = copy.deepcopy(record)
+        try:
+            live_run_module.submit(
+                service, list(choices), args, consumed_record, lambda: write_archive(run_dir, choices), lambda: None
+            )
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+            args.approved_record = None
+            args.approved_record_sha256 = None
+        marker = approved_dir / live_run_module.APPROVAL_CONSUMED_FILE
+        if not runs or not marker.exists() or json.loads(marker.read_text())["run"] != args.started:
+            raise RuntimeError("a matching plan did not consume the approval at its first batch")
+        if consumed_record.get("approval_consumed", {}).get("run") != args.started:
+            raise RuntimeError("the record does not carry the consumption")
+        planned = consumed_record["submission"]["planned_jobs"][0]
+        if planned["options"].get("max_execution_time") != 60:
+            raise RuntimeError(f"the Sampler options carry no execution ceiling: {planned['options']}")
+        real = configure_sampler(FakeFez(), "dynamic", False, None, [], 64, 60)
+        if (
+            real.options.max_execution_time != 60
+            or real.options.model_dump(mode="json").get("max_execution_time") != 60
+        ):
+            raise RuntimeError("configure_sampler does not set max_execution_time on the client-side Sampler")
+        runs.clear()
+        args.approved_record = approved_dir
+        args.approved_record_sha256 = record_sha256
+        live_run_module.configure_sampler = counting_sampler
+        second_record = copy.deepcopy(record)
+        try:
+            try:
+                live_run_module.submit(
+                    service, list(choices), args, second_record, lambda: write_archive(run_dir, choices), lambda: None
+                )
+            except LiveRunError as error:
+                if "already consumed" not in str(error):
+                    raise RuntimeError(f"a second attempt reports {error}") from error
+            else:
+                raise RuntimeError("a second attempt on a consumed approval reaches submission")
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+            args.approved_record = None
+            args.approved_record_sha256 = None
+        if runs or second_record["state"] != "approval_required":
+            raise RuntimeError("a second attempt ran a Sampler or left the state unchanged")
+        marker.unlink()
         # A calibration that rolls between the approved-record check and the
         # batch stops before the Sampler.
         original_take_snapshot = live_run_module.take_snapshot
@@ -2072,6 +2279,7 @@ def _verify_schema_lifecycle() -> None:
         dd: str | None,
         tags: list[str],
         shots: int = 4096,
+        max_execution_seconds: int | None = None,
     ) -> Any:
         del backend, kind, twirl, dd, tags, shots
         nonlocal sampler_constructions
@@ -2145,6 +2353,7 @@ def _verify_schema_lifecycle() -> None:
         dd: str | None,
         tags: list[str],
         shots: int = 4096,
+        max_execution_seconds: int | None = None,
     ) -> Any:
         del backend, twirl, dd
         return _ProbeSampler(kind, tags, shots, before_run)
@@ -2406,6 +2615,7 @@ def _verify_every_job_revalidates() -> None:
         dd: str | None,
         tags: list[str],
         shots: int = 4096,
+        max_execution_seconds: int | None = None,
     ) -> Any:
         del backend, twirl, dd
         return _ProbeSampler(kind, tags, shots, lambda unused_circuits: None, after_run)
@@ -2520,6 +2730,105 @@ def _verify_experiment_source_manifest() -> None:
         raise RuntimeError("experiment source manifest digest is unstable")
 
 
+class _NoInstanceService(_ProbeService):
+    def active_instance(self) -> str:
+        return ""
+
+
+class _LowBudgetService(_ProbeService):
+    def usage(self) -> dict[str, Any]:
+        return {"usage_limit_reached": False, "usage_remaining_seconds": 30.0}
+
+
+def _verify_instance_and_ceiling() -> None:
+    """A service without an instance is refused at planning; a ceiling above the remaining budget stops a batch."""
+    backend = _ProbeBackend("viable", FakeFez())
+    try:
+        live_run_module.plan(_NoInstanceService([backend]), _fixture_args(groups=["hybrid_shor_mod15"]))
+    except LiveRunError as error:
+        if "no IBM Cloud instance" not in str(error):
+            raise RuntimeError(f"an unresolved instance reports {error}") from error
+    else:
+        raise RuntimeError("an unresolved instance plans")
+    service = _LowBudgetService([backend])
+    args = _fixture_args(groups=["hybrid_shor_mod15"], max_execution_seconds=60)
+    choices, record = live_run_module.plan(service, args)
+    live_run_module.evaluate(choices, record)
+    runs: list[int] = []
+    original_configure_sampler = live_run_module.configure_sampler
+
+    def ceiling_sampler(
+        backend: Any,
+        kind: str,
+        twirl: bool,
+        dd: str | None,
+        tags: list[str],
+        shots: int = 4096,
+        max_execution_seconds: int | None = None,
+    ) -> Any:
+        del backend, twirl, dd, max_execution_seconds
+        return _ProbeSampler(kind, tags, shots, lambda circuits: runs.append(len(circuits)))
+
+    live_run_module.configure_sampler = ceiling_sampler
+    with tempfile.TemporaryDirectory(prefix="gororoba-ceiling-") as directory:
+        run_dir = Path(directory)
+        try:
+            try:
+                live_run_module.submit(
+                    service, list(choices), args, record, lambda: write_archive(run_dir, choices), lambda: None
+                )
+            except LiveRunError as error:
+                if "execution ceiling" not in str(error):
+                    raise RuntimeError(f"a ceiling above the remaining budget reports {error}") from error
+            else:
+                raise RuntimeError("a ceiling above the remaining budget reaches submission")
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+    if runs:
+        raise RuntimeError("a refused ceiling ran a Sampler")
+
+
+def _verify_buffer_scope() -> None:
+    """The cross-group buffer separates different groups only, across excluded couplers included.
+
+    The admitted graph omits coupler 0-1 (excluded by quality policy); the
+    physical graph keeps it. Two replicas of one group on qubits 0 and 1 are
+    one hop apart only physically, so the within-group rule (admitted graph)
+    allows them; two groups on 0 and 1 are physical neighbors, so the buffer
+    forbids that pairing and allows it when off.
+    """
+    admitted = rx.PyGraph()
+    admitted.add_nodes_from(range(6))
+    admitted.add_edges_from_no_data([(2, 3), (4, 5)])
+    physical = rx.PyGraph()
+    physical.add_nodes_from(range(6))
+    physical.add_edges_from_no_data([(0, 1), (2, 3), (4, 5)])
+
+    def pool(candidates: list[int], index: int) -> Any:
+        return live_run_module._FusionPlacementPool(
+            None,  # type: ignore[arg-type]
+            admitted,
+            [Replica(k, {0: q}, 1.0 - 0.01 * k) for k, q in enumerate(candidates)],
+            index,
+            1,
+            None,
+            physical_graph=physical,
+        )
+
+    same_group = [pool([0, 1], 0)]
+    if live_run_module._placement_assignment(same_group, set(), 2, True) is None:
+        raise RuntimeError("the cross-group buffer blocks a group's own replica across an excluded coupler")
+    two_groups = [pool([0], 0), pool([1], 1)]
+    if live_run_module._placement_assignment(two_groups, set(), 1, True) is not None:
+        raise RuntimeError("two groups on physically coupled qubits pass the cross-group buffer")
+    if live_run_module._placement_assignment([pool([0], 0), pool([1], 1)], set(), 1, False) is None:
+        raise RuntimeError("two disjoint groups fail with the buffer off")
+    cluster = [pool([0], 0), pool([1, 4], 1)]
+    live_run_module._commit_placement_assignment([(cluster[0], cluster[0].candidates[0])], set(), cluster)
+    if cluster[1].foreign != {0, 1} or cluster[0].foreign:
+        raise RuntimeError(f"committed footprints reach the wrong pools: {[p.foreign for p in cluster]}")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
@@ -2529,6 +2838,8 @@ def _verify() -> None:
     _verify_packing_equivalence()
     _verify_usage_wait()
     _verify_approved_record_gate()
+    _verify_instance_and_ceiling()
+    _verify_raw_scrubbing()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()
@@ -2543,6 +2854,7 @@ def _verify() -> None:
     _verify_joint_fusion_placement()
     _verify_joint_fusion_candidate_backtracking()
     _verify_required_placement_backtracking()
+    _verify_buffer_scope()
     _verify_schema_lifecycle()
     _verify_schema_discrimination()
     _verify_every_job_revalidates()
