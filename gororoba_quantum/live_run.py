@@ -782,6 +782,9 @@ class _FusionPlacementPool:
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
     physical_graph: Any = None
+    # Qubits other groups' placed replicas forbid to this group: their
+    # physical CZ footprints when the cross-group buffer is on.
+    foreign: set[int] = field(default_factory=set)
 
 
 def build_admission_target(snapshot: Snapshot) -> Target:
@@ -1155,9 +1158,11 @@ def _placement_assignment(
     Increasing candidate indices within a pool remove permutations of the same
     replica set without removing any feasible set. The most constrained pool
     advances first. Pool state changes only after a complete assignment exists.
-    With buffer, a placed replica's footprint (its qubits and their CZ
-    neighbors) is forbidden to every pool, so groups stay one hop apart;
-    without it only the qubits themselves are.
+    Placed qubits are forbidden to every pool. A placed replica's admitted
+    footprint is forbidden to its own pool, so a group's replicas stay one
+    hop apart on the graph routing sees; with buffer, its physical footprint
+    is forbidden to every other pool, so groups stay one hop apart on the
+    device's couplers, an excluded coupler included.
     """
     qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
     footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
@@ -1165,7 +1170,7 @@ def _placement_assignment(
         [_placement_footprint(pool, candidate, pool.physical_graph) for candidate in pool.candidates] for pool in pools
     ]
     chosen: list[list[int]] = [[] for _ in pools]
-    blocked = [set(pool.blocked) for pool in pools]
+    blocked = [set(pool.blocked) | pool.foreign for pool in pools]
 
     def search(used: set[int]) -> bool:
         available: list[tuple[int, int, int, list[int]]] = []
@@ -1185,14 +1190,19 @@ def _placement_assignment(
         if not available:
             return True
         _, _, pool_index, indices = min(available)
-        previous_blocked = blocked[pool_index]
+        previous = [set(entry) for entry in blocked]
         for index in indices:
             chosen[pool_index].append(index)
-            blocked[pool_index] = previous_blocked | footprints[pool_index][index]
-            if search(used | (physical_footprints[pool_index][index] if buffer else qubits[pool_index][index])):
+            blocked[pool_index] = previous[pool_index] | footprints[pool_index][index]
+            if buffer:
+                for other in range(len(pools)):
+                    if other != pool_index:
+                        blocked[other] = previous[other] | physical_footprints[pool_index][index]
+            if search(used | qubits[pool_index][index]):
                 return True
             chosen[pool_index].pop()
-        blocked[pool_index] = previous_blocked
+        for position, entry in enumerate(previous):
+            blocked[position] = entry
         return False
 
     if not search(occupied):
@@ -1201,16 +1211,25 @@ def _placement_assignment(
 
 
 def _commit_placement_assignment(
-    placements: list[tuple[_FusionPlacementPool, Replica]], occupied: set[int], buffer: set[int] | None = None
+    placements: list[tuple[_FusionPlacementPool, Replica]],
+    occupied: set[int],
+    cluster: list[_FusionPlacementPool] | None = None,
 ) -> None:
-    """Commit a complete assignment and its separation footprints; buffer collects the cross-group neighbors."""
+    """Commit a complete assignment and its separation footprints.
+
+    With cluster (the cross-group buffer on), each placed replica's physical
+    footprint joins the foreign set of every other pool of the cluster.
+    """
     for pool, candidate in placements:
         selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
         pool.selected.append(selected)
         occupied.update(selected.qubits)
         pool.blocked.update(_placement_footprint(pool, selected))
-        if buffer is not None:
-            buffer.update(_placement_footprint(pool, selected, pool.physical_graph))
+        if cluster is not None:
+            physical = _placement_footprint(pool, selected, pool.physical_graph)
+            for other in cluster:
+                if other is not pool:
+                    other.foreign.update(physical)
 
 
 def allocate_fusion_replicas(
@@ -1224,8 +1243,8 @@ def allocate_fusion_replicas(
     single-replica surface. Later rounds advance every group that can still
     participate. A per-group blocked set keeps replicas of that group one CZ
     hop apart; the shared occupied set keeps different groups physically
-    disjoint, and with policy.cross_group_buffer the shared buffer of placed
-    footprints keeps them one CZ hop apart as well.
+    disjoint, and with policy.cross_group_buffer each pool's foreign set of
+    other groups' physical footprints keeps them one CZ hop apart as well.
     """
     clusters: dict[tuple[str, str], list[tuple[int, Choice]]] = {}
     for choice_index, choice in enumerate(choices):
@@ -1264,7 +1283,7 @@ def allocate_fusion_replicas(
             )
 
         occupied: set[int] = set()
-        buffer: set[int] | None = set() if policy.cross_group_buffer else None
+        cluster_pools: list[_FusionPlacementPool] | None = pools if policy.cross_group_buffer else None
         required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
         assignment = _placement_assignment(pools, occupied, required_rounds, policy.cross_group_buffer)
         if assignment is None:
@@ -1280,24 +1299,26 @@ def allocate_fusion_replicas(
                 f"groups={json.dumps(diagnostics, sort_keys=True)}"
             )
 
-        _commit_placement_assignment(assignment, occupied, buffer)
+        _commit_placement_assignment(assignment, occupied, cluster_pools)
         allocation_round = required_rounds
         while True:
-            taken = occupied | (buffer or set())
             under_cap = [
                 pool for pool in pools if policy.max_replicas is None or len(pool.selected) < policy.max_replicas
             ]
             eligible = [
                 pool
                 for pool in under_cap
-                if any(not set(candidate.qubits).intersection(taken | pool.blocked) for candidate in pool.candidates)
+                if any(
+                    not set(candidate.qubits).intersection(occupied | pool.blocked | pool.foreign)
+                    for candidate in pool.candidates
+                )
             ]
             if not eligible:
                 break
-            assignment = _placement_assignment(eligible, taken, 1, policy.cross_group_buffer)
+            assignment = _placement_assignment(eligible, occupied, 1, policy.cross_group_buffer)
             if assignment is None:
                 break
-            _commit_placement_assignment(assignment, occupied, buffer)
+            _commit_placement_assignment(assignment, occupied, cluster_pools)
             allocation_round += 1
 
         if any(len(pool.selected) < required_rounds for pool in pools):
@@ -3775,6 +3796,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         checkpoint(out)
         if job_out["usage"]["usage_status"] == "pending":
             job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
+            snapshot_metrics(run_dir, job_entry["job_id"], job)
             checkpoint(out)
         if len(result) != len(pub_manifests):
             raise LiveRunError(
@@ -4161,10 +4183,31 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
         else:
             _write_text_atomically(target, text)
         digests[name] = digest
-    # Job metrics finalize after the job, so each distinct snapshot is kept:
-    # job_metrics.json first, then job_metrics.<k>.json, every one indexed
-    # and none rewritten; metrics_latest names the snapshot the newest
-    # collection saw.
+    _write_text_atomically(
+        directory / "index.json",
+        json.dumps(_merged_index(directory, job_id, digests), indent=1, sort_keys=True) + "\n",
+    )
+    snapshot_metrics(run_dir, job_id, job)
+    return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
+
+
+def _merged_index(directory: Path, job_id: str, digests: dict[str, str]) -> dict[str, Any]:
+    """index.json with these result-file digests and any metrics entries an earlier write recorded."""
+    index_path = directory / "index.json"
+    earlier = json.loads(index_path.read_text()) if index_path.exists() else {}
+    return {**{k: v for k, v in earlier.items() if k.startswith("metrics")}, "job_id": job_id, "files": digests}
+
+
+def snapshot_metrics(run_dir: Path, job_id: str, job: Any) -> str:
+    """Append the job's current metrics as a write-once snapshot under raw/<job_id>/ and return its name.
+
+    Job metrics finalize after the job, so each distinct snapshot is kept:
+    job_metrics.json first, then job_metrics.<k>.json, every one indexed and
+    none rewritten; metrics_latest names the snapshot the newest call saw.
+    Collection calls it again after the usage wait, so a run whose usage was
+    pending at retrieval carries the finalized metrics in its raw evidence.
+    """
+    directory = run_dir / RAW_DIRECTORY / job_id
     metrics = job.metrics() if hasattr(job, "metrics") else {}
     metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
     snapshots = _metrics_snapshots(directory)
@@ -4182,15 +4225,10 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
         _write_text_atomically(directory / latest, metrics_text)
         snapshots.append(latest)
     metrics_digests = [hashlib.sha256((directory / name).read_bytes()).hexdigest() for name in snapshots]
-    index_payload = {
-        "job_id": job_id,
-        "files": digests,
-        "metrics": snapshots,
-        "metrics_sha256": metrics_digests,
-        "metrics_latest": latest,
-    }
-    _write_text_atomically(directory / "index.json", json.dumps(index_payload, indent=1, sort_keys=True) + "\n")
-    return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
+    index_payload = json.loads(index_path.read_text()) if index_path.exists() else {"job_id": job_id, "files": {}}
+    index_payload.update({"metrics": snapshots, "metrics_sha256": metrics_digests, "metrics_latest": latest})
+    _write_text_atomically(index_path, json.dumps(index_payload, indent=1, sort_keys=True) + "\n")
+    return latest
 
 
 def _metrics_snapshots(directory: Path) -> list[str]:

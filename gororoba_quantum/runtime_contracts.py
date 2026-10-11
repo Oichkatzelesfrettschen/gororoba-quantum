@@ -105,6 +105,7 @@ from live_run import (
     write_json,
 )
 from order_finding import factor_order_finding
+from packing import Replica
 
 SINGLE_REPLICA_POLICY = ReplicaPolicy(max_replicas=1, isolated_reference=False)
 PACKED_REPLICA_POLICY = ReplicaPolicy(floor=0.8, max_replicas=2, isolated_reference=True)
@@ -1484,6 +1485,25 @@ def _verify_fused_collection() -> None:
         if (run_dir / "collect.json").read_bytes() != first:
             raise RuntimeError("usage read before a running job's result is not refreshed after it")
 
+        # Metrics still pending after result() finalize during the usage
+        # wait; the raw index then points at the finalized snapshot.
+        class _LateUsageJob(_ProbeResultJob):
+            calls = 0
+
+            def metrics(self) -> dict[str, Any]:
+                self.calls += 1
+                if self.calls >= 3:
+                    self._usage, self._charge = usage, 12.5
+                return super().metrics()
+
+        late_job = _LateUsageJob(result, status="DONE", usage={"status": "pending"}, charge=None)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: late_job}), run_dir)
+        late_index = json.loads((raw_dir / "index.json").read_text())
+        latest_metrics = json.loads((raw_dir / late_index["metrics_latest"]).read_text())
+        if latest_metrics.get("usage") != usage:
+            raise RuntimeError(f"raw metrics after the usage wait read {latest_metrics}")
+
         # A failure after the usage read leaves the usage checkpointed in
         # collect.json: a result with the wrong PUB count stops collection.
         # The fixture returns a different result for the same job id, which
@@ -2768,6 +2788,47 @@ def _verify_instance_and_ceiling() -> None:
         raise RuntimeError("a refused ceiling ran a Sampler")
 
 
+def _verify_buffer_scope() -> None:
+    """The cross-group buffer separates different groups only, across excluded couplers included.
+
+    The admitted graph omits coupler 0-1 (excluded by quality policy); the
+    physical graph keeps it. Two replicas of one group on qubits 0 and 1 are
+    one hop apart only physically, so the within-group rule (admitted graph)
+    allows them; two groups on 0 and 1 are physical neighbors, so the buffer
+    forbids that pairing and allows it when off.
+    """
+    admitted = rx.PyGraph()
+    admitted.add_nodes_from(range(6))
+    admitted.add_edges_from_no_data([(2, 3), (4, 5)])
+    physical = rx.PyGraph()
+    physical.add_nodes_from(range(6))
+    physical.add_edges_from_no_data([(0, 1), (2, 3), (4, 5)])
+
+    def pool(candidates: list[int], index: int) -> Any:
+        return live_run_module._FusionPlacementPool(
+            None,  # type: ignore[arg-type]
+            admitted,
+            [Replica(k, {0: q}, 1.0 - 0.01 * k) for k, q in enumerate(candidates)],
+            index,
+            1,
+            None,
+            physical_graph=physical,
+        )
+
+    same_group = [pool([0, 1], 0)]
+    if live_run_module._placement_assignment(same_group, set(), 2, True) is None:
+        raise RuntimeError("the cross-group buffer blocks a group's own replica across an excluded coupler")
+    two_groups = [pool([0], 0), pool([1], 1)]
+    if live_run_module._placement_assignment(two_groups, set(), 1, True) is not None:
+        raise RuntimeError("two groups on physically coupled qubits pass the cross-group buffer")
+    if live_run_module._placement_assignment([pool([0], 0), pool([1], 1)], set(), 1, False) is None:
+        raise RuntimeError("two disjoint groups fail with the buffer off")
+    cluster = [pool([0], 0), pool([1, 4], 1)]
+    live_run_module._commit_placement_assignment([(cluster[0], cluster[0].candidates[0])], set(), cluster)
+    if cluster[1].foreign != {0, 1} or cluster[0].foreign:
+        raise RuntimeError(f"committed footprints reach the wrong pools: {[p.foreign for p in cluster]}")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
@@ -2793,6 +2854,7 @@ def _verify() -> None:
     _verify_joint_fusion_placement()
     _verify_joint_fusion_candidate_backtracking()
     _verify_required_placement_backtracking()
+    _verify_buffer_scope()
     _verify_schema_lifecycle()
     _verify_schema_discrimination()
     _verify_every_job_revalidates()
