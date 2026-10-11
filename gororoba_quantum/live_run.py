@@ -2192,6 +2192,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "replica_floor": args.replica_floor,
             "max_replicas": args.max_replicas,
             "isolated_reference": args.isolated_reference,
+            # Twirling and DD change the submitted workload without changing
+            # the archived circuits, so the approved-record gate compares them.
+            "twirl": bool(getattr(args, "twirl", False)),
+            "dd": getattr(args, "dd", None),
         },
         "shots": args.shots,
         "seed_simulator": SEED_SIMULATOR,
@@ -2273,6 +2277,32 @@ def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
 
 
 APPROVED_GROUP_FIELDS = ("backend", "seed_transpiler", "initial_layout", "replica_floor")
+
+
+def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: list[ExecutionPub]) -> dict[str, Any]:
+    """A record-shaped view of the plan as it stands after the pre-submission refresh.
+
+    The top-level identity (digest, schema, shots, policy) comes from record;
+    the groups and fused PUB manifests come from the refreshed choices and
+    PUBs, so a calibration or layout that moved during the refresh is
+    compared, not the initial plan's copy.
+    """
+    return {
+        **{k: record.get(k) for k in ("experiment_digest", "schema_version", "schema_contract", "shots", "policy")},
+        "groups": [
+            {
+                "group": choice.group.name,
+                "backend": choice.snap.name,
+                "seed_transpiler": choice.seed,
+                "initial_layout": list(choice.layout),
+                "replica_floor": choice.replica_floor,
+                "calibration": choice.snap.calibration,
+                "replicas": [{"physical_qubits": list(replica.qubits)} for replica in choice.replicas],
+            }
+            for choice in choices
+        ],
+        "execution_pubs": [pub.manifest() for pub in pubs],
+    }
 
 
 def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_archive_sha256: str) -> list[str]:
@@ -2730,7 +2760,11 @@ def submit(
     qpy_archive_sha256 = archive()
     approved_dir = getattr(args, "approved_record", None)
     if approved_dir is not None:
-        mismatches = approved_record_mismatches(Path(approved_dir), record, qpy_archive_sha256)
+        # The comparison reads the refreshed choices and PUBs, the plan that
+        # build_submission_plan sends, since record["groups"] still describes
+        # the initial snapshot when the refresh changed nothing routable.
+        fresh_view = refreshed_plan_view(record, choices, fresh_execution_pubs)
+        mismatches = approved_record_mismatches(Path(approved_dir), fresh_view, qpy_archive_sha256)
         record["approved_record"] = {
             "run": Path(approved_dir).name,
             "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),

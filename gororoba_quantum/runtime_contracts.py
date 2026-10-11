@@ -1892,6 +1892,23 @@ def _verify_approved_record_gate() -> None:
             raise RuntimeError(f"drifted plan mismatches read {found}")
         if not any("QPY archive" in m for m in found):
             raise RuntimeError("a changed QPY archive passes the approved-record gate")
+        # The refreshed view carries the refreshed snapshot's calibration and
+        # the refreshed PUB manifests, not the initial plan's copies.
+        pubs = execution_pubs(choices)
+        same_view = live_run_module.refreshed_plan_view(record, choices, pubs)
+        if live_run_module.approved_record_mismatches(approved_dir, same_view, fresh_qpy):
+            raise RuntimeError("the refreshed view of an unchanged plan mismatches the approved record")
+        moved = copy.copy(choices[0])
+        moved.snap = copy.copy(choices[0].snap)
+        moved.snap.calibration = "2000-01-01T00:00:00+00:00"
+        moved_view = live_run_module.refreshed_plan_view(record, [moved], pubs)
+        moved_found = live_run_module.approved_record_mismatches(approved_dir, moved_view, fresh_qpy)
+        if not any("calibration" in m for m in moved_found):
+            raise RuntimeError("a calibration that moved during the refresh passes the approved-record gate")
+        twirled = copy.deepcopy(record)
+        twirled["policy"]["twirl"] = not twirled["policy"].get("twirl", False)
+        if not any("policy" in m for m in live_run_module.approved_record_mismatches(approved_dir, twirled, fresh_qpy)):
+            raise RuntimeError("a changed twirling option passes the approved-record gate")
         submitted = json.loads((approved_dir / "record.json").read_text())
         submitted["submission"] = {}
         submitted["state"] = "submitted"

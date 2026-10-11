@@ -78,8 +78,12 @@
 
 ## Exact command
 
-Run from a clean checkout at the source commit above, in gororoba_quantum/,
-after the owner approves this case:
+The command below is the one the owner approved and ran (see Outcome). It
+is retained as run. A future submission cannot reuse this record: the gate
+compares the experiment digest, which covers live_run.py, so an approved
+dry run must come from the same source revision as the submitting checkout,
+and this record predates the gate. A future case therefore starts from a
+fresh dry run at a revision that carries --approved-record.
 
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"
