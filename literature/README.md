@@ -35,9 +35,13 @@ Two notes survey the sister repository rather than a paper:
 gororoba_quantum/FACTORING_NOTES.md re-checks the sign recursion and the
 defect count independently.
 
-No paper contains Cayley-Dickson, octonion, sedenion, zero-divisor, or
-nonassociative content. Cayley-Dickson content enters through this repository
-alone; gororoba_quantum/FACTORING_NOTES.md carries the factoring analysis.
+The eight quantum and factoring papers in the table contain no Cayley-Dickson,
+octonion, sedenion, zero-divisor, or nonassociative content. The
+[Cayley-Dickson annihilator source ledger](notes/cayley_dickson_annihilator_sources.md)
+adds primary topology papers, theorem locators, constructive formulas, and the
+boundary between published results and local executable checks.
+[FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
+analysis.
 
 ## Action items against the repository
 

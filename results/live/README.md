@@ -72,6 +72,25 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T200341.410400Z` records the submit-free connectivity and default
+seven-group qualification for the Cayley-Dickson claim audit. The command
+`"$PYTHON" -W error live_run.py --out ../results/live` read fresh status and
+calibration from ibm_fez, ibm_kingston, and ibm_marrakesh, each reporting 156
+qubits, then compiled and simulated locally at 4096 shots. The experiment
+sources match `b9b7d48` (`sources_modified=false` at planning); the separate
+claim-audit module did not drive the plan. The 23 archived QPY circuits match
+all 23 unique fused PUB names: 17 static and 6 dynamic. The lifecycle remains
+`planned`, the record omits `submission`, and the invocation sends zero QPU
+jobs. The local zero-divisor-fringe prediction on Kingston uses three replicas,
+with raw suppression ratio 0.0672 and visibility 0.8830. Those predictions
+qualify the calibrated model and circuit pipeline, not physical measurements.
+Record SHA-256 is
+`dbd522bc3e14f7d32c275ba4c95f33e5ed06d094be19a0f84aa887b9a60beb99`;
+QPY SHA-256 is
+`6f149e8c60158fc12f61d899c6bd4d95221fb0da655a0bd9d9ab4219a11888f5`.
+The dry run grants zero submission authority; a hardware run requires a written
+case and explicit approval against its matched dry-run record.
+
 `2026-10-11T163812.041836Z` requalifies the default plan after --submit gained the
 --approved-record gate: the fresh plan, refreshed calibration, twirling, DD,
 budget floor, dependency versions, instance hash, and each batch's own

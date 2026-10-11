@@ -1,0 +1,429 @@
+{
+  "annihilator_fringe": {
+    "element": "e1 + e10",
+    "fixed_element_unit_kernel_sphere": "S3",
+    "gram_polynomial": "G(G-2I)(G-4I)=0 for G=(L1+L10)^T(L1+L10)",
+    "gram_square_trace": 96,
+    "gram_trace": 32,
+    "maximum_statevector_error": 1.3322676295501878e-15,
+    "normalized_gram_spectrum": [
+      {
+        "multiplicity": 4,
+        "value": 0
+      },
+      {
+        "multiplicity": 8,
+        "value": 0.5
+      },
+      {
+        "multiplicity": 4,
+        "value": 1
+      }
+    ],
+    "phase_rows": [
+      {
+        "p0": 0.9999999999999998,
+        "phase_pi_over_four": 0,
+        "product_norm_squared": 3.999999999999999
+      },
+      {
+        "p0": 0.8535533905932737,
+        "phase_pi_over_four": 1,
+        "product_norm_squared": 3.414213562373095
+      },
+      {
+        "p0": 0.4999999999999999,
+        "phase_pi_over_four": 2,
+        "product_norm_squared": 1.9999999999999996
+      },
+      {
+        "p0": 0.14644660940672624,
+        "phase_pi_over_four": 3,
+        "product_norm_squared": 0.585786437626905
+      },
+      {
+        "p0": 3.7493994566546427e-33,
+        "phase_pi_over_four": 4,
+        "product_norm_squared": 1.499759782661857e-32
+      },
+      {
+        "p0": 0.14644660940672616,
+        "phase_pi_over_four": 5,
+        "product_norm_squared": 0.5857864376269046
+      },
+      {
+        "p0": 0.49999999999999983,
+        "phase_pi_over_four": 6,
+        "product_norm_squared": 1.9999999999999993
+      },
+      {
+        "p0": 0.8535533905932735,
+        "phase_pi_over_four": 7,
+        "product_norm_squared": 3.414213562373094
+      },
+      {
+        "p0": 0.9999999999999998,
+        "phase_pi_over_four": 8,
+        "product_norm_squared": 3.999999999999999
+      }
+    ],
+    "pi_over_two_real_variety_member": false,
+    "real_kernel_dimension": 4,
+    "scope": "A fixed-element unit kernel is S3; the complex fringe leaves the real zero-product variety and does not measure its topology."
+  },
+  "associator_spectra": [
+    {
+      "anf_degree": 1,
+      "anf_masks": [
+        2
+      ],
+      "basis_units": [
+        1,
+        4
+      ],
+      "data_qubits": 3,
+      "dimension": 8,
+      "maximum_statevector_error": 1.3322676295501878e-15,
+      "probability_denominator": 64,
+      "scope": "One circuit sample is one outcome; spectrum reconstruction and hidden-oracle identification differ.",
+      "single_sign_mutation_error": 0.43750000000000067,
+      "walsh_numerators": [
+        0,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "anf_degree": 2,
+      "anf_masks": [
+        2,
+        4,
+        6
+      ],
+      "basis_units": [
+        1,
+        8
+      ],
+      "data_qubits": 4,
+      "dimension": 16,
+      "maximum_statevector_error": 6.106226635438361e-16,
+      "probability_denominator": 256,
+      "scope": "One circuit sample is one outcome; spectrum reconstruction and hidden-oracle identification differ.",
+      "single_sign_mutation_error": 0.1406249999999989,
+      "walsh_numerators": [
+        -8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "anf_degree": 3,
+      "anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      "basis_units": [
+        1,
+        16
+      ],
+      "data_qubits": 5,
+      "dimension": 32,
+      "maximum_statevector_error": 1.9984014443252818e-15,
+      "probability_denominator": 1024,
+      "scope": "One circuit sample is one outcome; spectrum reconstruction and hidden-oracle identification differ.",
+      "single_sign_mutation_error": 0.09765624999999822,
+      "walsh_numerators": [
+        -24,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "anf_degree": 4,
+      "anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16,
+        18,
+        20,
+        22,
+        24,
+        26,
+        28,
+        30
+      ],
+      "basis_units": [
+        1,
+        32
+      ],
+      "data_qubits": 6,
+      "dimension": 64,
+      "maximum_statevector_error": 5.662137425588298e-15,
+      "probability_denominator": 4096,
+      "scope": "One circuit sample is one outcome; spectrum reconstruction and hidden-oracle identification differ.",
+      "single_sign_mutation_error": 0.05566406250000644,
+      "walsh_numerators": [
+        -56,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        8,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "classical_recovery": [
+    {
+      "classical_queries": 4,
+      "coefficient_basis_cases": 4,
+      "dense_case_verified": true,
+      "full_truth_table_size": 8,
+      "outside_promise_alias_mask": 3,
+      "promised_maximum_degree": 1,
+      "scope": "Unique recovery assumes an ordinary value oracle and degree <= d; promise testing is separate.",
+      "variables": 3
+    },
+    {
+      "classical_queries": 11,
+      "coefficient_basis_cases": 11,
+      "dense_case_verified": true,
+      "full_truth_table_size": 16,
+      "outside_promise_alias_mask": 7,
+      "promised_maximum_degree": 2,
+      "scope": "Unique recovery assumes an ordinary value oracle and degree <= d; promise testing is separate.",
+      "variables": 4
+    },
+    {
+      "classical_queries": 26,
+      "coefficient_basis_cases": 26,
+      "dense_case_verified": true,
+      "full_truth_table_size": 32,
+      "outside_promise_alias_mask": 15,
+      "promised_maximum_degree": 3,
+      "scope": "Unique recovery assumes an ordinary value oracle and degree <= d; promise testing is separate.",
+      "variables": 5
+    },
+    {
+      "classical_queries": 57,
+      "coefficient_basis_cases": 57,
+      "dense_case_verified": true,
+      "full_truth_table_size": 64,
+      "outside_promise_alias_mask": 31,
+      "promised_maximum_degree": 4,
+      "scope": "Unique recovery assumes an ordinary value oracle and degree <= d; promise testing is separate.",
+      "variables": 6
+    }
+  ],
+  "execution": "local exact arithmetic and Qiskit Statevector",
+  "qpu_executed": false,
+  "representation": {
+    "albert_scope": "The 27-dimensional Albert algebra J3(O) uses a different product from the 16-dimensional sedenion circuits.",
+    "octonion_composed_actions": {
+      "basis_index": 7,
+      "coefficient": -1
+    },
+    "octonion_product_action": {
+      "basis_index": 7,
+      "coefficient": 1
+    },
+    "repeated_action_on_probe": "0",
+    "scope": "These left actions encode products but fail multiplicativity; the sedenion map also fails Jordan square preservation.",
+    "sedenion_element": "e1 + e10",
+    "sedenion_probe": "e4 - e15",
+    "sedenion_square": "-2 e0",
+    "square_action_on_probe": "-2 e4 + 2 e15"
+  },
+  "schema": "cayley-dickson-claim-boundaries-v1",
+  "versions": {
+    "numpy": "2.5.3",
+    "python": "3.14.7",
+    "qiskit": "2.5.2"
+  },
+  "walsh_ambiguity": [
+    {
+      "first_anf_masks": [
+        7
+      ],
+      "input_translation_xor": 1,
+      "probability_denominator": 64,
+      "scope": "Even exact squared Walsh probabilities cannot distinguish these different cubic functions.",
+      "second_anf_masks": [
+        6,
+        7
+      ],
+      "squared_walsh_numerators": [
+        36,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4,
+        4
+      ],
+      "variables": 3
+    },
+    {
+      "first_anf_masks": [
+        7
+      ],
+      "input_translation_xor": 1,
+      "probability_denominator": 1024,
+      "scope": "Even exact squared Walsh probabilities cannot distinguish these different cubic functions.",
+      "second_anf_masks": [
+        6,
+        7
+      ],
+      "squared_walsh_numerators": [
+        576,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        64,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0,
+        0
+      ],
+      "variables": 5
+    }
+  ]
+}
