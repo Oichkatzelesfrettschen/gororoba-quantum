@@ -44,6 +44,7 @@ class MultiplierResource:
     round_index: int
     exponent: int
     multiplier: int
+    input_domain: str
     strategy: str
     scratch_qubits: int
     forward_anf_terms: int
@@ -51,6 +52,7 @@ class MultiplierResource:
     maximum_anf_degree: int
     degree_histogram: tuple[tuple[int, int], ...]
     controlled_swaps: int
+    controlled_x_gates: int
     basis_edge_gates: int
     maximum_control_count: int
 
@@ -59,6 +61,7 @@ class MultiplierResource:
 class OrderFindingPlan:
     modulus: int
     base: int
+    input_domain: str
     work_qubits: int
     phase_bits: int
     quantum_qubits: int
@@ -72,6 +75,7 @@ class OrderFindingPlan:
     maximum_anf_degree: int
     degree_histogram: tuple[tuple[int, int], ...]
     controlled_swaps: int
+    controlled_x_gates: int
     basis_edge_gates: int
     maximum_control_count: int
     measurements: int
@@ -374,6 +378,9 @@ def make_order_finding_plan(
         raise ValueError(f"expected one multiplier resource for each of {phase_bits} phase bits")
     if tuple(resource.round_index for resource in rounds) != tuple(range(phase_bits)):
         raise ValueError("multiplier resources must appear in round order")
+    input_domains = {resource.input_domain for resource in rounds}
+    if len(input_domains) != 1:
+        raise ValueError(f"multiplier resources must share one input domain, got {sorted(input_domains)}")
     scratch_qubits = max((resource.scratch_qubits for resource in rounds), default=0)
     histogram: dict[int, int] = {}
     for resource in rounds:
@@ -394,6 +401,7 @@ def make_order_finding_plan(
     return OrderFindingPlan(
         modulus=modulus,
         base=base % modulus,
+        input_domain=next(iter(input_domains)),
         work_qubits=work_qubits,
         phase_bits=phase_bits,
         quantum_qubits=1 + work_qubits + scratch_qubits,
@@ -407,6 +415,7 @@ def make_order_finding_plan(
         maximum_anf_degree=max((resource.maximum_anf_degree for resource in rounds), default=0),
         degree_histogram=tuple(sorted(histogram.items())),
         controlled_swaps=sum(resource.controlled_swaps for resource in rounds),
+        controlled_x_gates=sum(resource.controlled_x_gates for resource in rounds),
         basis_edge_gates=sum(resource.basis_edge_gates for resource in rounds),
         maximum_control_count=max((resource.maximum_control_count for resource in rounds), default=0),
         measurements=executed_rounds,

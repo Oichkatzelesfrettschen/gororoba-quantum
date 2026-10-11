@@ -204,6 +204,17 @@ base-two theorem. The detailed carry-mask derivation, source witnesses,
 exclusion argument, and overlap count live in
 `literature/notes/open_gororoba_survey_deep_notes.md`.
 
+**Signed Mersenne powers also have a direct circuit boundary.** For every
+`1 <= x < 2^n-1`, multiplication by `-2^k` is a cyclic rotation followed by
+one's-complement inversion. The direct controlled circuit therefore uses the
+positive rotation's Fredkin network plus `n` controlled X gates on the
+nonzero-residue subspace used by order finding. One's-complement inversion
+exchanges the all-zero and all-one bit strings. The identity-padded
+full-register permutation restores those two endpoints with a controlled
+Gray-path transposition of `2n-1` basis edges. Both circuits use zero scratch
+qubits, while their explicit domain labels prevent the subspace circuit from
+claiming full-register equality.
+
 **Executable evidence and call path.** `modular_permutation` defines the
 identity-padded arithmetic map. `modular_displacement_profile` validates the
 complete-register bijection and partitions it by `input XOR output`.

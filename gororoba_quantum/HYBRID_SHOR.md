@@ -117,20 +117,42 @@ out direct replacement of Shor's multiplier by a Cayley-Dickson product.
 
 ## Multiplier syntheses
 
-### Mersenne rotation
+### Signed Mersenne rotations
 
-For `N = 2^n - 1`, multiplication by a power of two rotates the `n` data bits.
-The all-ones invalid state also remains fixed under rotation, so the same wire
-permutation implements the required full-register extension. A controlled
-rotation becomes a short Fredkin network. `N = 15`, `a = 2` uses three
-controlled swaps for multiplication by two and two for multiplication by four.
-The rotation has `T = 2^(n-gcd(n,k))` XOR-displacement fibers for multiplier
-`2^k`, so any nonzero exact scaled LCU over signed XOR translations has
-effective normalization at least T. The direct circuit and the LCU dictionary
-therefore rank the same arithmetic in opposite ways: the direct circuit needs
-`n-gcd(n,k)` swaps while the effective LCU normalization grows exponentially
-whenever `gcd(n,k)=1`. `FACTORING_NOTES.md` derives the bound and its
-non-universal base boundary.
+For `N = 2^n - 1`, multiplication by `2^k` rotates the `n` data bits. The
+all-ones padding state remains fixed under rotation, so the rotation's wire
+permutation implements the full-register extension. A controlled rotation
+becomes a short Fredkin network. `N = 15`, `a = 2` uses three controlled swaps
+for multiplication by two and two for multiplication by four.
+
+Multiplication by `-2^k` rotates and then inverts every data bit for each
+nonzero residue:
+
+```text
+NOT(rotate_k(x)) = (2^n - 1) - rotate_k(x) = -2^k*x mod (2^n - 1).
+```
+
+The order-finding builder prepares `|1>`, and every admitted multiplier is a
+unit, so each circuit branch stays in `1 <= x < N`. The explicit
+`nonzero_residues` domain admits the direct Fredkin-plus-CX network. For
+`N = 15`, multipliers 14, 13, 11, and 7 use respectively 0, 3, 2, and 3
+controlled swaps plus four controlled X gates and zero scratch qubits.
+
+The full-register API preserves both `|0>` and the all-ones padding state.
+Bit inversion alone exchanges those endpoints, so the exact synthesis appends
+a controlled endpoint transposition with `2*n - 1` Gray-path basis edges. The
+endpoint correction also uses zero scratch qubits. Profiles record the input
+domain, controlled swaps, controlled X gates, correction edges, and maximum
+control count, which keeps the subspace optimization separate from the exact
+identity-padded contract.
+
+A positive rotation has `T = 2^(n-gcd(n,k))` XOR-displacement fibers for
+multiplier `2^k`, so any nonzero exact scaled LCU over signed XOR translations
+has effective normalization at least T. The direct circuit and the LCU
+dictionary therefore rank the positive rotation in opposite ways: the direct
+circuit needs `n-gcd(n,k)` swaps while the effective LCU normalization grows
+exponentially whenever `gcd(n,k)=1`. `FACTORING_NOTES.md` derives the bound and
+its non-universal base boundary.
 
 ### ANF compute, swap, uncompute
 
@@ -173,7 +195,7 @@ the workspace. Across the complete `N = 21` schedule, 449 basis edges become
 Exact operator or statevector checks cover control values zero and one, every
 five-bit input, and multipliers 2, 4, and 16. The expected packed output always
 contains a zero workspace bit. `auto` selects the one-clean strategy for a
-generic multiplier; identity and Mersenne-rotation fast paths retain their
+generic multiplier; identity and signed-Mersenne fast paths retain their
 zero-workspace implementations. The CLI keeps scratch-free cycle and ANF
 strategies explicit as falsifiers.
 
@@ -181,9 +203,9 @@ strategies explicit as falsifiers.
 
 `scripts/python_call_graph.py` parses the Python 3.11 grammar, compiler symbol
 tables, imports, and stable direct calls. Its current complete repository map
-contains 16 modules, 276 top-level functions, and 515 direct edges. The
+contains 16 modules, 276 top-level functions, and 516 direct edges. The
 `compile_evidence.main` reachable subgraph contains 39 functions and 50 edges;
-the six declared roots jointly reach 135 functions and 233 edges. The relevant
+the six declared roots jointly reach 135 functions and 234 edges. The relevant
 load-bearing paths are:
 
 ```text

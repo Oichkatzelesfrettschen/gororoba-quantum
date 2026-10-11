@@ -136,6 +136,7 @@ def _build_source(candidate: Candidate) -> tuple[QuantumCircuit, dict[str, Any]]
     if candidate.compiler_workspace_qubits:
         circuit.add_register(QuantumRegister(candidate.compiler_workspace_qubits, "compiler_workspace"))
     coefficients = {
+        "input_domain": plan.input_domain,
         "work_qubits": plan.work_qubits,
         "phase_bits": plan.phase_bits,
         "arithmetic_workspace_qubits": plan.scratch_qubits,
@@ -147,6 +148,7 @@ def _build_source(candidate: Candidate) -> tuple[QuantumCircuit, dict[str, Any]]
             {"degree": degree, "term_count": term_count} for degree, term_count in plan.degree_histogram
         ],
         "controlled_swaps": plan.controlled_swaps,
+        "controlled_x_gates": plan.controlled_x_gates,
         "maximum_control_count": plan.maximum_control_count,
         "unique_multipliers": list(plan.unique_multipliers),
     }
@@ -388,7 +390,7 @@ def capture(
     """Compile every requested candidate and return one self-describing record."""
     backend = FakeFez()
     return {
-        "schema_version": 2,
+        "schema_version": 3,
         "capture": "n21-heavy-hex-mcx-workspace",
         "qpu_executed": False,
         "replay_command": _replay_command(seeds, candidates, output_path),

@@ -17,7 +17,7 @@ from qiskit.quantum_info import Operator, Statevector
 from qiskit_aer import AerSimulator
 
 from factoring import MultiplierResource, OrderFindingPlan, decode_counts, make_order_finding_plan
-from modular_arithmetic import append_controlled_modular_multiply, multiplier_profile
+from modular_arithmetic import NONZERO_RESIDUES, append_controlled_modular_multiply, multiplier_profile
 
 
 def controlled_rotate(qc: QuantumCircuit, ctrl: int, work: list[int], steps: int) -> None:
@@ -96,12 +96,18 @@ def order_finding_plan(
     for round_index in range(precision):
         exponent = 1 << (precision - round_index - 1)
         multiplier = 1 if identity else scheduled_multipliers[round_index]
-        profile = multiplier_profile(modulus, multiplier, multiplier_strategy)
+        profile = multiplier_profile(
+            modulus,
+            multiplier,
+            multiplier_strategy,
+            input_domain=NONZERO_RESIDUES,
+        )
         resources.append(
             MultiplierResource(
                 round_index=round_index,
                 exponent=exponent,
                 multiplier=multiplier,
+                input_domain=profile.input_domain,
                 strategy=profile.strategy,
                 scratch_qubits=profile.scratch_qubits,
                 forward_anf_terms=profile.forward_term_count,
@@ -109,6 +115,7 @@ def order_finding_plan(
                 maximum_anf_degree=profile.maximum_anf_degree,
                 degree_histogram=profile.degree_histogram,
                 controlled_swaps=profile.controlled_swap_count,
+                controlled_x_gates=profile.controlled_x_count,
                 basis_edge_gates=profile.basis_edge_gate_count,
                 maximum_control_count=profile.maximum_control_count,
             )
@@ -161,6 +168,7 @@ def factor_order_finding(
             modulus,
             resource.multiplier,
             multiplier_strategy,
+            input_domain=NONZERO_RESIDUES,
         )
         for prior_round in range(plan.leading_identity_rounds, resource.round_index):
             feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))
@@ -210,14 +218,16 @@ def _verify_folded_conformance(simulator: AerSimulator) -> None:
 def _verify_factor_path(simulator: AerSimulator) -> None:
     plan = order_finding_plan(15, 2, 8)
     coefficients = (
+        plan.input_domain,
         plan.quantum_qubits,
         plan.active_rounds,
         plan.unique_multipliers,
         plan.controlled_swaps,
+        plan.controlled_x_gates,
         plan.conditional_phases,
         plan.leading_identity_rounds,
     )
-    if coefficients != (5, 2, (2, 4), 5, 1, 6):
+    if coefficients != (NONZERO_RESIDUES, 5, 2, (2, 4), 5, 0, 1, 6):
         raise RuntimeError(f"unexpected N=15 resource plan {plan}")
     circuit = factor_order_finding(15, 2, 8)
     counts = simulator.run(circuit, shots=4096, seed_simulator=7).result().get_counts()
@@ -228,6 +238,28 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     recovered_factors = {factor for recovery, _ in decoded for factor in recovery.factors}
     if recovered_factors != {3, 5}:
         raise RuntimeError(f"N=15 recovered factors {sorted(recovered_factors)}, expected [3, 5]")
+    signed_plan = order_finding_plan(15, 7, 8)
+    signed_coefficients = (
+        signed_plan.quantum_qubits,
+        signed_plan.scratch_qubits,
+        signed_plan.unique_multipliers,
+        signed_plan.controlled_swaps,
+        signed_plan.controlled_x_gates,
+        signed_plan.basis_edge_gates,
+        signed_plan.maximum_control_count,
+    )
+    if signed_coefficients != (5, 0, (4, 7), 5, 4, 0, 1):
+        raise RuntimeError(f"unexpected signed N=15 resource plan {signed_plan}")
+    signed_strategies = {resource.strategy for resource in signed_plan.rounds if resource.strategy != "identity"}
+    if signed_strategies != {"mersenne_rotation", "mersenne_signed_rotation"}:
+        raise RuntimeError(f"unexpected signed N=15 synthesis strategies {sorted(signed_strategies)}")
+    signed_counts = simulator.run(factor_order_finding(15, 7, 8), shots=2048, seed_simulator=7).result().get_counts()
+    if set(signed_counts) != expected_support:
+        raise RuntimeError(f"signed N=15 phase support {sorted(signed_counts)}, expected {sorted(expected_support)}")
+    signed_decoded = decode_counts(signed_counts, 8, 15, 7)
+    signed_factors = {factor for recovery, _ in signed_decoded for factor in recovery.factors}
+    if signed_factors != {3, 5}:
+        raise RuntimeError(f"signed N=15 recovered factors {sorted(signed_factors)}, expected [3, 5]")
     null_counts = (
         simulator.run(factor_order_finding(15, 2, 8, identity=True), shots=512, seed_simulator=7).result().get_counts()
     )
@@ -271,8 +303,8 @@ def _verify() -> None:
     _verify_folded_conformance(simulator)
     _verify_factor_path(simulator)
     print(
-        "order finding: folded eigenstate controls exact; N=15 |1> samples "
-        "{0,64,128,192}, validates order 4, and extracts factors 3 and 5"
+        "order finding: folded eigenstate controls exact; N=15 bases 2 and 7 sample "
+        "{0,64,128,192}, validate order 4, and extract factors 3 and 5"
     )
 
 
