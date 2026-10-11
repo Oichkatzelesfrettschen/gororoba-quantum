@@ -1627,6 +1627,40 @@ def _verify_joint_fusion_candidate_backtracking() -> None:
     ):
         raise RuntimeError(f"joint candidate backtracking evidence is {selection}")
 
+    # A calibration that rejects every combination stops the search at the
+    # attempt bound instead of walking the whole frontier.
+    wide_sets = [
+        [candidate("design_a", 100 + k, 0.99 - 0.001 * k) for k in range(20)],
+        [candidate("design_c_8_1_4", 200 + k, 0.98 - 0.001 * k) for k in range(20)],
+    ]
+    rejections = 0
+
+    def reject_everything(
+        choices: list[Choice], policy: ReplicaPolicy, cache: dict[tuple[int, float], Any] | None = None
+    ) -> dict[str, Any]:
+        nonlocal rejections
+        del choices, policy, cache
+        rejections += 1
+        raise LiveRunError("fixture rejects every combination")
+
+    original_bound = live_run_module.FUSION_MAX_ATTEMPTS
+    live_run_module.allocate_fusion_replicas = reject_everything
+    live_run_module.execution_pubs = lambda choices: []
+    live_run_module.FUSION_MAX_ATTEMPTS = 8
+    try:
+        select_fusion_choices(wide_sets, PACKED_REPLICA_POLICY)
+    except LiveRunError as error:
+        if "search stopped at FUSION_MAX_ATTEMPTS" not in str(error) or "attempted=8" not in str(error):
+            raise RuntimeError(f"the exhausted search reports {error}") from error
+    else:
+        raise RuntimeError("a search that rejects every combination returns a selection")
+    finally:
+        live_run_module.allocate_fusion_replicas = original_allocate_fusion_replicas
+        live_run_module.execution_pubs = original_execution_pubs
+        live_run_module.FUSION_MAX_ATTEMPTS = original_bound
+    if rejections != 8:
+        raise RuntimeError(f"the attempt bound of 8 allowed {rejections} attempts")
+
 
 def _verify_required_placement_backtracking() -> None:
     """A preferred path midpoint cannot hide the feasible two-endpoint replica set."""
