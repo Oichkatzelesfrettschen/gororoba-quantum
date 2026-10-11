@@ -1460,8 +1460,9 @@ def _verify_packing_equivalence() -> None:
     cases: list[tuple[float, float, int, str, str]] = [
         (0.500, 0.495, 4096, "equivalent_within_0.03", "the run detected no difference"),
         (0.400, 0.500, 4096, "packed_degradation_detected", "more than three sigma below"),
-        (0.480, 0.500, 64, "difference_not_resolved", "the run detected no difference"),
+        (0.480, 0.500, 1024, "difference_not_resolved", "the run detected no difference"),
         (0.000, 1.000, 8, "insufficient_shots", "unavailable"),
+        (0.480, 0.500, 512, "insufficient_shots", "the run detected no difference"),
     ]
     for packed, alone, shots, verdict, resolution in cases:
         dists = {"primary": [np.array([1 - packed, packed])], "primary_isolated": [np.array([1 - alone, alone])]}
@@ -1478,7 +1479,7 @@ def _verify_packing_equivalence() -> None:
     if live_run_module._bernoulli_score(weighted) or not live_run_module._bernoulli_score(primary):
         raise RuntimeError("Bernoulli score classification follows the per-shot weights")
     degenerate = {"primary": [np.array([1.0, 0.0])], "primary_isolated": [np.array([0.0, 1.0])]}
-    extreme = replica_statistics(group, entries, degenerate, 256)["global_packing_crosstalk"]
+    extreme = replica_statistics(group, entries, degenerate, 1024)["global_packing_crosstalk"]
     if extreme["z"] is not None or "unavailable" not in extreme["resolution"] or not extreme["below_zero_95"]:
         raise RuntimeError(f"zero-variance arms read {extreme}")
     loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": False}

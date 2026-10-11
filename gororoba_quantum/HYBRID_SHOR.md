@@ -653,7 +653,11 @@ its QPY SHA-256 is
     above zero reads `packed_improvement_detected`, and anything else reads
     `difference_not_resolved`; the three flags are reported beside the
     verdict, so a loss the 95 percent interval resolves inside the margin
-    stays visible. One matched pair at 4096 shots and a yield
+    stays visible. The interval is approximate: exact enumeration of two
+    equal Bernoulli arms puts the false-detection probability of the 95
+    percent interval at 0.0600 for 32 shots per arm and 0.0505 for 4096,
+    so no verdict is issued below 1024 shots per arm (`insufficient_shots`),
+    where the enumerated maximum over true rates is 0.0501. One matched pair at 4096 shots and a yield
     near 0.5 gives the difference a standard deviation of 0.011, so the 90
     percent interval is about 0.036 wide and an observed difference within
     about 0.012 of zero can establish equivalence.

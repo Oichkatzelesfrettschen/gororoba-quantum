@@ -135,13 +135,16 @@ def interval(values: Sequence[float], shots: int, bernoulli: bool) -> dict[str, 
 # Preregistered absolute equivalence margin on a packed-minus-reference score
 # difference; the TOST reads a 90 percent interval against it.
 EQUIVALENCE_MARGIN = 0.03
-# Shots per arm below which no inferential verdict is issued: the hybrid score
-# interval's coverage approaches its nominal level only once each arm holds a
-# few dozen trials (Newcombe 1998 tabulates n >= 10 and reports the smallest
-# samples as the least reliable); at two shots per arm the opposite-endpoint
-# outcomes alone would exclude zero with probability 1/8 at a true difference
-# of zero.
-EQUIVALENCE_MIN_SHOTS = 32
+# Shots per arm below which no inferential verdict is issued. The hybrid score
+# interval is approximate: exact enumeration of two equal Bernoulli arms
+# (false_detection_rate) puts the probability that the 95 percent interval
+# excludes zero at 0.0600 for 32 shots, 0.0555 for 64, 0.0525 for 128, 0.0520
+# for 256, 0.0513 for 512, 0.0501 for 1024, and 0.0505 for 4096, each the
+# maximum over true rates 0.02 to 0.98; the floor is the first power of two
+# at which that maximum rounds to the nominal 0.05, and the self-test
+# enumerates it.
+EQUIVALENCE_MIN_SHOTS = 1024
+EQUIVALENCE_FLOOR_FALSE_DETECTION = 0.0502
 
 
 def difference_interval(
@@ -223,6 +226,27 @@ def equivalence(
     }
 
 
+def false_detection_rate(shots: int, rate: float, confidence: float = 0.95) -> float:
+    """Probability that the difference interval excludes zero for two equal Bernoulli arms at rate.
+
+    Exact enumeration over the (shots + 1)^2 outcome pairs; the interval is
+    the same Newcombe hybrid score interval difference_interval uses.
+    """
+    counts = np.arange(shots + 1)
+    pmf = stats.binom.pmf(counts, shots, rate)
+    observed = counts / shots
+    low = np.empty(shots + 1)
+    high = np.empty(shots + 1)
+    for index, value in enumerate(observed):
+        low[index], high[index] = _wilson(float(value), shots, confidence)
+    first, second = observed[:, None], observed[None, :]
+    difference = first - second
+    lower = difference - np.sqrt((first - low[:, None]) ** 2 + (high[None, :] - second) ** 2)
+    upper = difference + np.sqrt((high[:, None] - first) ** 2 + (second - low[None, :]) ** 2)
+    excluded = (upper < 0) | (lower > 0)
+    return float((pmf[:, None] * pmf[None, :] * excluded).sum())
+
+
 def _wilson(rate: float, trials: int, confidence: float = CONFIDENCE) -> tuple[float, float]:
     z = float(stats.norm.ppf(0.5 + confidence / 2))
     denom = 1 + z * z / trials
@@ -242,12 +266,15 @@ def _verify_equivalence() -> None:
     worse = equivalence(0.40, 0.24, 0.50, 0.25, shots, True)
     if worse["verdict"] != "packed_degradation_detected" or worse["within_margin"]:
         raise RuntimeError(f"a 0.10 drop reads {worse}")
-    coarse = equivalence(0.49, 0.25, 0.50, 0.25, 64, True)
+    coarse = equivalence(0.49, 0.25, 0.50, 0.25, 1024, True)
     if coarse["verdict"] != "difference_not_resolved" or coarse["within_margin"] or coarse["below_zero_95"]:
-        raise RuntimeError(f"64 shots read {coarse}")
-    coarse = equivalence(0.49, 0.25, 0.50, 0.25, 64, True)
-    if coarse["verdict"] != "difference_not_resolved" or coarse["within_margin"] or coarse["below_zero_95"]:
-        raise RuntimeError(f"64 shots read {coarse}")
+        raise RuntimeError(f"1024 shots at a 0.01 difference read {coarse}")
+    for arm_shots, bound in ((32, 0.0600), (EQUIVALENCE_MIN_SHOTS, EQUIVALENCE_FLOOR_FALSE_DETECTION)):
+        worst = max(false_detection_rate(arm_shots, rate) for rate in (0.05, 0.3, 0.5, 0.7, 0.95))
+        if not worst <= bound:
+            raise RuntimeError(f"false detection at {arm_shots} shots is {worst:.4f}, above the recorded {bound}")
+    if false_detection_rate(32, 0.5) <= 0.055:
+        raise RuntimeError("32 shots per arm no longer shows the enumerated excess over nominal")
     small = equivalence(0.49, 0.25, 0.50, 0.25, 65536, True)
     if small["verdict"] != "equivalent_within_0.03" or not small["below_zero_95"]:
         raise RuntimeError(f"a resolved 0.01 drop inside the margin reads {small}")

@@ -606,7 +606,11 @@ the verdict is equivalent_within_0.03, packed_degradation_detected,
 packed_improvement_detected, or difference_not_resolved with the three
 interval flags beside it, and the z statistic stays as the detection
 diagnostic, reported as unavailable when both arms have zero per-shot
-variance. The result can reveal or bound a packing cost, but it cannot
+variance. The interval is approximate, so verdicts are withheld below
+EQUIVALENCE_MIN_SHOTS = 1024 shots per arm, the first power of two at which
+exact enumeration of two equal Bernoulli arms (variance.false_detection_rate)
+puts the 95 percent interval's false-detection probability at the nominal
+level (0.0501 maximum over true rates; 0.0600 at 32 shots). The result can reveal or bound a packing cost, but it cannot
 attribute crosstalk to one group. The noise model carries no crosstalk, so its
 difference is shot noise; simulate_entries batches every replica of a choice
 in one Aer run, so each draws from its own position-derived seed, where a
