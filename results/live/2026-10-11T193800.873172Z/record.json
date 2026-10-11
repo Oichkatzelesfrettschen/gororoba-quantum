@@ -2,7 +2,7 @@
   "schema_version": 6,
   "schema_contract": "live-target-cross-group-fused-pubs-scheduler-usage-v1",
   "state": "planned",
-  "started": "2026-10-11T19:17:59.398725+00:00",
+  "started": "2026-10-11T19:38:00.873172+00:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -29,9 +29,9 @@
   "shots": 4096,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e",
+  "experiment_digest": "e5f20751a9d92be081cc56cfd4293d6dcd01ac32350f5cd26b7a6f93102d69b1",
   "code_commit": {
-    "head": "3394bb3eeb9a6ae8e0a53f81efa5c29291e97fe4",
+    "head": "80fecd1de32c5bc1c7835bb0a7fa177995a645fd",
     "sources_modified": false
   },
   "system_inventory": {
@@ -39,9 +39,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-11T11:48:44-07:00",
-      "fetched_at": "2026-10-11T19:18:01+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-11T12:18:18-07:00",
+      "fetched_at": "2026-10-11T19:38:03+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -111,8 +111,8 @@
       "operational": true,
       "status_msg": "active",
       "pending_jobs": 0,
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "fetched_at": "2026-10-11T19:18:02+00:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "fetched_at": "2026-10-11T19:38:04+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -183,9 +183,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-11T11:57:50-07:00",
-      "fetched_at": "2026-10-11T19:18:04+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-11T12:16:49-07:00",
+      "fetched_at": "2026-10-11T19:38:05+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -210,42 +210,40 @@
         ]
       },
       "medians": {
-        "t1_us": 163.69226418137242,
-        "t2_us": 92.0805661174066,
-        "readout_error": 0.0140380859375,
+        "t1_us": 165.71435395681527,
+        "t2_us": 92.50900379471632,
+        "readout_error": 0.01751708984375,
         "cz_error": 0.0027701940305657757
       },
       "excluded_qubits": {
         "2": "readout error 0.144",
-        "13": "readout error 0.104",
         "17": "T1=253.9us T2=13.5us",
         "19": "T1=58.4us T2=17.4us",
         "26": "T1=7.1us T2=7.8us",
         "29": "T1=59.0us T2=18.6us",
-        "34": "readout error 0.084",
+        "31": "readout error 0.105",
         "38": "T1=78.1us T2=16.3us",
         "39": "T1=124.1us T2=14.9us",
-        "42": "readout error 0.303",
-        "46": "readout error 0.139",
+        "46": "readout error 0.089",
         "52": "T1=120.4us T2=15.4us",
         "56": "T1=79.8us T2=15.6us",
-        "58": "readout error 0.453",
+        "58": "readout error 0.332",
+        "65": "readout error 0.097",
         "68": "T1=110.3us T2=13.7us",
         "70": "T1=197.1us T2=18.5us",
         "76": "T1=103.1us T2=17.2us",
-        "77": "readout error 0.109",
         "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
-        "83": "readout error 0.149",
-        "86": "readout error 0.091",
+        "83": "readout error 0.197",
+        "86": "readout error 0.284",
         "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
         "97": "T1=195.8us T2=16.8us",
-        "100": "readout error 0.325",
+        "101": "readout error 0.147",
+        "103": "readout error 0.158",
         "108": "T1=19.5us T2=16.3us",
         "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
         "119": "T1=181.7us T2=19.1us",
         "126": "T1=137.8us T2=18.9us",
-        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
-        "135": "readout error 0.098"
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\""
       },
       "excluded_edges": {
         "10-11": "cz error 0.05655431186983345",
@@ -285,9 +283,9 @@
     "ibm_fez": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-11T11:48:44-07:00",
-      "fetched_at": "2026-10-11T19:18:01+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-11T12:18:18-07:00",
+      "fetched_at": "2026-10-11T19:38:03+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -356,8 +354,8 @@
       "operational": true,
       "status_msg": "active",
       "pending_jobs": 0,
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "fetched_at": "2026-10-11T19:18:02+00:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "fetched_at": "2026-10-11T19:38:04+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -427,9 +425,9 @@
     "ibm_marrakesh": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-11T11:57:50-07:00",
-      "fetched_at": "2026-10-11T19:18:04+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-11T12:16:49-07:00",
+      "fetched_at": "2026-10-11T19:38:05+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -454,42 +452,40 @@
         ]
       },
       "medians": {
-        "t1_us": 163.69226418137242,
-        "t2_us": 92.0805661174066,
-        "readout_error": 0.0140380859375,
+        "t1_us": 165.71435395681527,
+        "t2_us": 92.50900379471632,
+        "readout_error": 0.01751708984375,
         "cz_error": 0.0027701940305657757
       },
       "excluded_qubits": {
         "2": "readout error 0.144",
-        "13": "readout error 0.104",
         "17": "T1=253.9us T2=13.5us",
         "19": "T1=58.4us T2=17.4us",
         "26": "T1=7.1us T2=7.8us",
         "29": "T1=59.0us T2=18.6us",
-        "34": "readout error 0.084",
+        "31": "readout error 0.105",
         "38": "T1=78.1us T2=16.3us",
         "39": "T1=124.1us T2=14.9us",
-        "42": "readout error 0.303",
-        "46": "readout error 0.139",
+        "46": "readout error 0.089",
         "52": "T1=120.4us T2=15.4us",
         "56": "T1=79.8us T2=15.6us",
-        "58": "readout error 0.453",
+        "58": "readout error 0.332",
+        "65": "readout error 0.097",
         "68": "T1=110.3us T2=13.7us",
         "70": "T1=197.1us T2=18.5us",
         "76": "T1=103.1us T2=17.2us",
-        "77": "readout error 0.109",
         "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
-        "83": "readout error 0.149",
-        "86": "readout error 0.091",
+        "83": "readout error 0.197",
+        "86": "readout error 0.284",
         "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
         "97": "T1=195.8us T2=16.8us",
-        "100": "readout error 0.325",
+        "101": "readout error 0.147",
+        "103": "readout error 0.158",
         "108": "T1=19.5us T2=16.3us",
         "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
         "119": "T1=181.7us T2=19.1us",
         "126": "T1=137.8us T2=18.9us",
-        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
-        "135": "readout error 0.098"
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\""
       },
       "excluded_edges": {
         "10-11": "cz error 0.05655431186983345",
@@ -3399,53 +3395,53 @@
           "seed": 20261010,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261011,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261012,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261013,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261014,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261015,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261016,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261017,
           "cz": 16,
           "rejected": [],
-          "primary_score": 0.8573638314503735
+          "primary_score": 0.8563113347262754
         },
         {
           "seed": 20261010,
-          "joint_score": 0.8573638314503735,
+          "joint_score": 0.8563113347262754,
           "layout": [
             54,
             53,
@@ -3454,7 +3450,7 @@
         },
         {
           "seed": 20261011,
-          "joint_score": 0.8573638314503735,
+          "joint_score": 0.8563113347262754,
           "layout": [
             54,
             53,
@@ -3463,7 +3459,7 @@
         },
         {
           "seed": 20261012,
-          "joint_score": 0.8573638314503735,
+          "joint_score": 0.8563113347262754,
           "layout": [
             54,
             53,
@@ -3696,83 +3692,83 @@
         },
         {
           "seed": 20261010,
-          "cz": 46,
+          "cz": 42,
           "rejected": [],
-          "primary_score": 0.4781189430174794
+          "primary_score": 0.5178358480516747
         },
         {
           "seed": 20261011,
-          "cz": 42,
+          "cz": 46,
           "rejected": [],
-          "primary_score": 0.4779764522712518
+          "primary_score": 0.5148553910641532
         },
         {
           "seed": 20261012,
           "cz": 42,
           "rejected": [],
-          "primary_score": 0.4779764522712518
+          "primary_score": 0.5178358480516747
         },
         {
           "seed": 20261013,
           "cz": 42,
           "rejected": [],
-          "primary_score": 0.4779764522712518
+          "primary_score": 0.5178358480516747
         },
         {
           "seed": 20261014,
-          "cz": 42,
+          "cz": 46,
           "rejected": [],
-          "primary_score": 0.4779764522712518
+          "primary_score": 0.5187813020575424
         },
         {
           "seed": 20261015,
           "cz": 42,
           "rejected": [],
-          "primary_score": 0.4779764522712518
+          "primary_score": 0.5178358480516747
         },
         {
           "seed": 20261016,
           "cz": 42,
           "rejected": [],
-          "primary_score": 0.4779764522712518
+          "primary_score": 0.5178358480516747
         },
         {
           "seed": 20261017,
           "cz": 46,
           "rejected": [],
-          "primary_score": 0.4781189430174794
+          "primary_score": 0.5187813020575424
         },
         {
-          "seed": 20261010,
-          "joint_score": 0.47811894301747937,
+          "seed": 20261014,
+          "joint_score": 0.5187813020575424,
           "layout": [
-            147,
-            146,
-            148,
-            149,
-            137
+            110,
+            111,
+            112,
+            109,
+            98
           ]
         },
         {
           "seed": 20261017,
-          "joint_score": 0.47811894301747937,
+          "joint_score": 0.5187813020575424,
           "layout": [
-            147,
-            146,
-            148,
-            149,
-            137
+            110,
+            111,
+            112,
+            109,
+            98
           ]
         },
         {
-          "seed": 20261011,
-          "joint_score": 0.4779764522712518,
+          "seed": 20261010,
+          "joint_score": 0.5178358480516747,
           "layout": [
-            143,
-            136,
-            142,
-            144,
-            123
+            111,
+            110,
+            112,
+            98,
+            109
           ]
         }
       ]
@@ -3991,53 +3987,53 @@
           "seed": 20261010,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261011,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261012,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261013,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261014,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261015,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261016,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261017,
           "cz": 18,
           "rejected": [],
-          "primary_score": 0.8310097705717672
+          "primary_score": 0.8353684328300309
         },
         {
           "seed": 20261010,
-          "joint_score": 0.829070800902357,
+          "joint_score": 0.8334192932273451,
           "layout": [
             54,
             53,
@@ -4046,7 +4042,7 @@
         },
         {
           "seed": 20261011,
-          "joint_score": 0.829070800902357,
+          "joint_score": 0.8334192932273451,
           "layout": [
             54,
             53,
@@ -4055,7 +4051,7 @@
         },
         {
           "seed": 20261012,
-          "joint_score": 0.829070800902357,
+          "joint_score": 0.8334192932273451,
           "layout": [
             54,
             53,
@@ -4284,78 +4280,78 @@
           "seed": 20261010,
           "cz": 49,
           "rejected": [],
-          "primary_score": 0.5260960788811128
+          "primary_score": 0.5321178488735312
         },
         {
           "seed": 20261011,
-          "cz": 51,
+          "cz": 45,
           "rejected": [],
-          "primary_score": 0.5220612452146906
+          "primary_score": 0.46535284556610085
         },
         {
           "seed": 20261012,
-          "cz": 59,
+          "cz": 49,
           "rejected": [],
-          "primary_score": 0.6334631648974292
+          "primary_score": 0.449382353898298
         },
         {
           "seed": 20261013,
-          "cz": 45,
+          "cz": 51,
           "rejected": [],
-          "primary_score": 0.5424002380691229
+          "primary_score": 0.527679241996181
         },
         {
           "seed": 20261014,
-          "cz": 47,
+          "cz": 59,
           "rejected": [],
-          "primary_score": 0.5361337927752885
+          "primary_score": 0.4567004676518431
         },
         {
           "seed": 20261015,
-          "cz": 47,
+          "cz": 51,
           "rejected": [],
-          "primary_score": 0.5341632882722048
+          "primary_score": 0.527679241996181
         },
         {
           "seed": 20261016,
-          "cz": 51,
+          "cz": 57,
           "rejected": [],
-          "primary_score": 0.5220612452146906
+          "primary_score": 0.4653315237523524
         },
         {
           "seed": 20261017,
-          "cz": 45,
+          "cz": 59,
           "rejected": [],
-          "primary_score": 0.5424002380691229
+          "primary_score": 0.4567004676518431
         },
         {
-          "seed": 20261012,
-          "joint_score": 0.6468081368589812,
+          "seed": 20261010,
+          "joint_score": 0.5432236904560096,
           "layout": [
-            54,
-            59,
-            53,
-            55
+            111,
+            110,
+            98,
+            112
           ]
         },
         {
           "seed": 20261013,
-          "joint_score": 0.5485030080968558,
+          "joint_score": 0.5450328973929435,
           "layout": [
-            143,
-            142,
-            136,
-            144
+            111,
+            112,
+            110,
+            98
           ]
         },
         {
-          "seed": 20261017,
-          "joint_score": 0.5516000457654493,
+          "seed": 20261015,
+          "joint_score": 0.5474505481415685,
           "layout": [
-            143,
-            142,
-            136,
-            144
+            111,
+            112,
+            110,
+            98
           ]
         }
       ]
@@ -4584,77 +4580,77 @@
         },
         {
           "seed": 20261010,
-          "cz": 98,
+          "cz": 101,
           "rejected": [],
-          "primary_score": 0.25031902791695987
+          "primary_score": 0.24186691678437694
         },
         {
           "seed": 20261011,
           "cz": 98,
           "rejected": [],
-          "primary_score": 0.25031902791695987
+          "primary_score": 0.2525437180835079
         },
         {
           "seed": 20261012,
-          "cz": 98,
+          "cz": 105,
           "rejected": [],
-          "primary_score": 0.25031902791695987
+          "primary_score": 0.24993143049761374
         },
         {
           "seed": 20261013,
-          "cz": 105,
+          "cz": 103,
           "rejected": [],
-          "primary_score": 0.2420353236132273
+          "primary_score": 0.25549044264206067
         },
         {
           "seed": 20261014,
-          "cz": 99,
+          "cz": 98,
           "rejected": [],
-          "primary_score": 0.24506853002222947
+          "primary_score": 0.2525437180835079
         },
         {
           "seed": 20261015,
-          "cz": 96,
+          "cz": 103,
           "rejected": [],
-          "primary_score": 0.25588666106100266
+          "primary_score": 0.25136468010551705
         },
         {
           "seed": 20261016,
           "cz": 105,
           "rejected": [],
-          "primary_score": 0.2420353236132273
+          "primary_score": 0.24993143049761374
         },
         {
           "seed": 20261017,
-          "cz": 101,
+          "cz": 99,
           "rejected": [],
-          "primary_score": 0.23982549035828962
+          "primary_score": 0.24724655681231306
         },
         {
-          "seed": 20261015,
-          "joint_score": 0.2547559199255777,
+          "seed": 20261013,
+          "joint_score": 0.247967835033502,
           "layout": [
             147,
             149,
             146,
-            137,
-            148
-          ]
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.24957473926525983,
-          "layout": [
-            147,
-            149,
-            146,
-            137,
-            148
+            148,
+            137
           ]
         },
         {
           "seed": 20261011,
-          "joint_score": 0.2477513510395249,
+          "joint_score": 0.25006072753740144,
+          "layout": [
+            147,
+            149,
+            146,
+            137,
+            148
+          ]
+        },
+        {
+          "seed": 20261014,
+          "joint_score": 0.2552519973319169,
           "layout": [
             147,
             149,
@@ -4901,83 +4897,83 @@
         },
         {
           "seed": 20261010,
-          "cz": 67,
+          "cz": 68,
           "rejected": [],
-          "primary_score": 0.23909119367150136
+          "primary_score": 0.26987382844218694
         },
         {
           "seed": 20261011,
-          "cz": 67,
+          "cz": 70,
           "rejected": [],
-          "primary_score": 0.23909119367150136
+          "primary_score": 0.27237758623583436
         },
         {
           "seed": 20261012,
-          "cz": 74,
+          "cz": 67,
           "rejected": [],
-          "primary_score": 0.43865743702819476
+          "primary_score": 0.27948260711302436
         },
         {
           "seed": 20261013,
           "cz": 67,
           "rejected": [],
-          "primary_score": 0.23909119367150136
+          "primary_score": 0.27948260711302436
         },
         {
           "seed": 20261014,
-          "cz": 67,
+          "cz": 80,
           "rejected": [],
-          "primary_score": 0.23909119367150136
+          "primary_score": 0.418632261453086
         },
         {
           "seed": 20261015,
-          "cz": 74,
+          "cz": 67,
           "rejected": [],
-          "primary_score": 0.43865743702819476
+          "primary_score": 0.27948260711302436
         },
         {
           "seed": 20261016,
           "cz": 70,
           "rejected": [],
-          "primary_score": 0.26907711063737216
+          "primary_score": 0.27237758623583436
         },
         {
           "seed": 20261017,
           "cz": 80,
           "rejected": [],
-          "primary_score": 0.418096832010899
+          "primary_score": 0.415687101563489
         },
         {
-          "seed": 20261012,
-          "joint_score": 0.48187546178544544,
+          "seed": 20261014,
+          "joint_score": 0.45960134044137974,
           "layout": [
+            55,
             75,
             59,
-            55,
-            54,
-            53
-          ]
-        },
-        {
-          "seed": 20261015,
-          "joint_score": 0.46819377983256416,
-          "layout": [
-            75,
-            59,
-            55,
             54,
             53
           ]
         },
         {
           "seed": 20261017,
-          "joint_score": 0.47727104514094165,
+          "joint_score": 0.47474326956018786,
           "layout": [
             75,
             59,
             55,
             54,
             53
+          ]
+        },
+        {
+          "seed": 20261012,
+          "joint_score": 0.3170266575637276,
+          "layout": [
+            109,
+            110,
+            111,
+            112,
+            98
           ]
         }
       ]
@@ -5220,81 +5216,81 @@
           "seed": 20261010,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261011,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261012,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261013,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261014,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261015,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261016,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261017,
           "cz": 60,
           "rejected": [],
-          "primary_score": 0.4705639856660998
+          "primary_score": 0.46903090771872297
         },
         {
           "seed": 20261010,
-          "joint_score": 0.6255622946002942,
+          "joint_score": 0.6154141389395844,
           "layout": [
             55,
-            53,
             75,
-            54,
-            59
+            53,
+            59,
+            54
           ]
         },
         {
           "seed": 20261011,
-          "joint_score": 0.6255622946002942,
+          "joint_score": 0.6154141389395844,
           "layout": [
             55,
-            53,
             75,
-            54,
-            59
+            53,
+            59,
+            54
           ]
         },
         {
           "seed": 20261012,
-          "joint_score": 0.6255622946002942,
+          "joint_score": 0.6154141389395844,
           "layout": [
             55,
-            53,
             75,
-            54,
-            59
+            53,
+            59,
+            54
           ]
         }
       ]
@@ -5304,8 +5300,8 @@
     {
       "group": "design_a",
       "backend": "ibm_fez",
-      "calibration": "2026-10-11T11:48:44-07:00",
-      "noise_model_calibration": "2026-10-11T11:48:44-07:00",
+      "calibration": "2026-10-11T12:18:18-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:18-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         2,
@@ -6455,8 +6451,8 @@
     {
       "group": "zero_divisor_fringe",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "noise_model_calibration": "2026-10-11T11:53:46-07:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
       "seed_transpiler": 20261017,
       "initial_layout": [
         152,
@@ -8213,8 +8209,8 @@
     {
       "group": "design_c_8_1_4",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "noise_model_calibration": "2026-10-11T11:53:46-07:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         2,
@@ -9383,8 +9379,8 @@
     {
       "group": "design_c_16_1_8",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "noise_model_calibration": "2026-10-11T11:53:46-07:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
       "seed_transpiler": 20261015,
       "initial_layout": [
         151,
@@ -10142,8 +10138,8 @@
     {
       "group": "design_c_32_1_16",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "noise_model_calibration": "2026-10-11T11:53:46-07:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
       "seed_transpiler": 20261012,
       "initial_layout": [
         151,
@@ -10949,8 +10945,8 @@
     {
       "group": "folded_qpe_mod15",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "noise_model_calibration": "2026-10-11T11:53:46-07:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         153,
@@ -11799,8 +11795,8 @@
     {
       "group": "hybrid_shor_mod15",
       "backend": "ibm_kingston",
-      "calibration": "2026-10-11T11:53:46-07:00",
-      "noise_model_calibration": "2026-10-11T11:53:46-07:00",
+      "calibration": "2026-10-11T12:18:00-07:00",
+      "noise_model_calibration": "2026-10-11T12:18:00-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         59,

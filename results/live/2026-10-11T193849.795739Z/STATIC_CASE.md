@@ -9,10 +9,10 @@ moment it is the right spend.
 ## What the run measures
 
 Seventeen static PUBs at 4,096 shots (69,632 submitted PUB shots) in two
-jobs, one per backend, from this dry run (`2026-10-11T191857.650119Z`, source
-commit `3394bb3`, sources_modified=false, experiment digest
-`dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e`, record
-SHA-256 `0646073e1b97f7cce2b4437bd09e23f54f18e1a61465148031cd94206a1ddd02`,
+jobs, one per backend, from this dry run (`2026-10-11T193849.795739Z`, source
+commit `80fecd1`, sources_modified=false, experiment digest
+`e5f20751a9d92be081cc56cfd4293d6dcd01ac32350f5cd26b7a6f93102d69b1`, record
+SHA-256 `62214b2f6d7fac60e30299be3d931ec52a6b8ecc9f2dc10ceb24dff656629a48`,
 QPY SHA-256
 `0c2ac43cf99b1e3a03fc7c7099be70689c9c81f68549645f4241cb2e0d4d2d80`),
 twirling and DD off, groups one CZ hop apart, so the first static measurement
@@ -68,8 +68,8 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --groups design_a,zero_divisor_fringe,design_c_8_1_4,design_c_16_1_8,design_c_32_1_16 \
   --max-execution-seconds 90 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-11T191857.650119Z \
-  --approved-record-sha256 0646073e1b97f7cce2b4437bd09e23f54f18e1a61465148031cd94206a1ddd02 \
+  --approved-record ../results/live/2026-10-11T193849.795739Z \
+  --approved-record-sha256 62214b2f6d7fac60e30299be3d931ec52a6b8ecc9f2dc10ceb24dff656629a48 \
   --submit
 ```
 

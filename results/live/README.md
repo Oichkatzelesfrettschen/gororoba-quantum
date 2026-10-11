@@ -85,31 +85,31 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `720fd82c6510cc4a712b8dad75e6fcf4facf43d22e2102467079daba5a2ce318`.
 
-`2026-10-11T191759.398725Z` requalifies the default plan after collection
+`2026-10-11T193800.873172Z` requalifies the default plan after collection
 gained write-once raw preservation, the approval gate gained the record
 digest, one-attempt consumption, and the execution ceiling, the packing
 comparison gained the Hoeffding view, and joint placement gained the
 cross-group one-hop buffer: 23 PUBs (3 static on ibm_fez,
 14 static and 6 dynamic on ibm_kingston), 94,208 submitted PUB shots. Clean
-source commit `3394bb3` (sources_modified=false) carries experiment digest
-`dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e`.
+source commit `80fecd1` (sources_modified=false) carries experiment digest
+`e5f20751a9d92be081cc56cfd4293d6dcd01ac32350f5cd26b7a6f93102d69b1`.
 The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
-`440a82ec4d682652d151f09c238a8599141b540d3fc6f90293fc98bc439e0f61`; QPY
+`490096a9a3e6fbaf18f59298614e68abb1d1619afa27db28a145e5072f90e447`; QPY
 SHA-256 is
 `06c013fe366c4bfd83f6fdf047e5d794f52a30ddf0cb4e7baf667ece8ffa0743`.
 
-`2026-10-11T191857.650119Z` is the static job's submission-ready dry run:
+`2026-10-11T193849.795739Z` is the static job's submission-ready dry run:
 the five static groups (design A on ibm_fez; the zero-divisor fringe and
 design C 8, 16, and 32 on ibm_kingston), 17 static PUBs at 4096 shots
 (69,632 submitted PUB shots), twirling and DD off, isolated references on,
 made with `--max-execution-seconds 90` so its policy carries the ceiling the
 case names. Its `STATIC_CASE.md` is written and ranks after the ladder case
 (HARDWARE_PLAN.md, "Risks"); it is not approved and nothing was submitted.
-Clean source commit `3394bb3` (sources_modified=false) carries experiment
+Clean source commit `80fecd1` (sources_modified=false) carries experiment
 digest
-`dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e`.
+`e5f20751a9d92be081cc56cfd4293d6dcd01ac32350f5cd26b7a6f93102d69b1`.
 The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
-`0646073e1b97f7cce2b4437bd09e23f54f18e1a61465148031cd94206a1ddd02`; QPY
+`62214b2f6d7fac60e30299be3d931ec52a6b8ecc9f2dc10ceb24dff656629a48`; QPY
 SHA-256 is
 `0c2ac43cf99b1e3a03fc7c7099be70689c9c81f68549645f4241cb2e0d4d2d80`.
 
