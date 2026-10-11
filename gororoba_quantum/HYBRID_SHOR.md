@@ -690,6 +690,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py
 `results/hw_estimate/hybrid_shor_fake_fez.json` preserves the historical
 single-seed comparison. `n21_heavy_hex_mcx_workspace.json` records the
 instrumented multi-seed comparison without overwriting the historical provenance.
-`live_run.py --out results/live` performs the fresh calibration, compile, and
-local noise-simulation layer when invoked from the repository root. The command
-omits `--submit` and therefore sends zero quantum jobs.
+`gororoba_quantum/live_run.py --out results/live` performs the fresh
+calibration, compile, and local noise-simulation layer when invoked from the
+repository root. The command omits `--submit` and therefore sends zero quantum
+jobs.
