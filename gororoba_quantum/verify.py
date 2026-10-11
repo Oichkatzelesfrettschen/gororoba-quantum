@@ -12,6 +12,10 @@ reproduces the corpus row for row. Norm multiplicativity is invariant under the
 same orthogonal basis change. Each kernel CSV is read only after its sha256
 matches every registry record that pins it.
 
+The C881 bridge reads its copied labels and classes only after the cited Rocq
+source matches the reviewed sha256 below. A source change therefore requires a
+joint review of the external table and the local finite witness.
+
 The 42/168 associative/anti-associative split of ordered octonion triples comes
 from the Cayley-Dickson signs; the all-positive XOR-indexed table is the group
 algebra of F_2^3, which is associative and splits 210/0.
@@ -31,6 +35,15 @@ from itertools import combinations
 from math import isclose
 from pathlib import Path
 
+from boolean_anf import (
+    anf_coefficients,
+    anf_degree,
+    anf_degree_from_coefficients,
+    evaluate_anf,
+    minimum_partial_anf_degree,
+    partial_anf_coefficients,
+    quadratic_polar_rank,
+)
 from cd_core import (
     cd_multiply,
     cd_sign,
@@ -38,7 +51,7 @@ from cd_core import (
     left_mult_matrix_check,
     sedenion_zero_divisor_corpus,
 )
-from predict import anf_degree, associator_phase
+from predict import associator_phase, walsh_distribution
 
 # GOROROBA_ROOT locates the open_gororoba checkout; the default assumes a
 # sibling checkout under ~/Github.
@@ -46,6 +59,17 @@ GOROROBA_ROOT = Path(os.environ.get("GOROROBA_ROOT", "~/Github/open_gororoba")).
 REGISTRY = GOROROBA_ROOT / "registry/data/project_csv"
 ZD_CSV = "data/csv/reggiani_standard_zero_divisor_pairs.csv"
 ZD_COLUMNS = ("u_low", "u_high", "u_sign", "v_low", "v_high", "v_sign")
+C881_SOURCE = "proofs/verified/C881_GF2CubicMinDegree.v"
+C881_SOURCE_SHA256 = "888059f2c064d811e3d0e5a8f4faaa2a104b19eb6a521d3b34e2f339dd8598c1"
+
+# C881_GF2CubicMinDegree.v transcribes these dim-32 top-level cross-assessor
+# component labels and classes from open_gororoba's Rust graph census. The
+# Rocq file checks the cubic witness below but only representative quadratic
+# candidates; the bounded interpolant check here independently closes the
+# degree-two denominator.
+PATHION_COMPONENT_LABELS = (3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14, 1)
+PATHION_HEPTACROSS_CLASSES = (1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1)
+PATHION_CUBIC_WITNESS = (1, 2, 3, 4, 5, 6, 7, 8)
 
 SignFn = Callable[[int, int, int], int]
 ZdRow = tuple[int, int, int, int, int, int]
@@ -74,6 +98,15 @@ def _pinned_csv(rel: str) -> Path:
     digest = hashlib.sha256(path.read_bytes()).hexdigest()
     stale = [name for name, pin in pins if pin != digest]
     _require(not stale, f"{rel} sha256 {digest} disagrees with {stale}")
+    return path
+
+
+def _pinned_source(rel: str, expected_sha256: str) -> Path:
+    """Return an external source only when its bytes match the reviewed pin."""
+    path = GOROROBA_ROOT / rel
+    _require(path.is_file(), f"{rel} missing under GOROROBA_ROOT={GOROROBA_ROOT}")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    _require(digest == expected_sha256, f"{rel} sha256 {digest}, expected {expected_sha256}")
     return path
 
 
@@ -229,6 +262,125 @@ def check_associator_degree_rule(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) -
     return census
 
 
+def check_pathion_separator_sign_bridge() -> tuple[int, tuple[int, ...]]:
+    """Connect C881's dim-32 motif indicator to the dim-16 L_e8 sign row.
+
+    C881's 15 objects are top-level pathion cross-assessor components indexed by
+    the nonzero four-bit labels. They are not the seven sedenion box-kites. The
+    shared binary label set nevertheless gives an exact finite identity after
+    extending the motif indicator by H(0) = 0:
+
+        H(label) = [cd_sign(16, 8, label) = -1].
+
+    The partial interpolation check includes the constant, every linear term,
+    and every quadratic term before admitting the unique cubic witness.
+    """
+    _pinned_source(C881_SOURCE, C881_SOURCE_SHA256)
+    samples = dict(zip(PATHION_COMPONENT_LABELS, PATHION_HEPTACROSS_CLASSES, strict=True))
+    _require(len(samples) == 15, "pathion component labels are not a 15-point denominator")
+    _require(set(samples) == set(range(1, 16)), "pathion component labels do not cover PG(3,2)")
+    _require(sum(samples.values()) == 8, "pathion component classes are not the 8/7 partition")
+
+    upper_affine_cube = tuple(range(8, 16))
+    quadratic_monomials = tuple(mask for mask in range(16) if mask.bit_count() <= 2)
+    _require(
+        all(sum(int(label & mask == mask) for label in upper_affine_cube) % 2 == 0 for mask in quadratic_monomials),
+        "a degree-at-most-two monomial has odd parity on the upper affine cube",
+    )
+    upper_cube_parity = sum(samples[label] for label in upper_affine_cube) % 2
+    _require(upper_cube_parity == 1, "pathion upper affine cube lost its odd class parity falsifier")
+
+    quadratic_fit = partial_anf_coefficients(samples, variable_count=4, maximum_degree=2)
+    _require(quadratic_fit is None, f"pathion classes admit quadratic witness {quadratic_fit}")
+    minimum_degree, interpolant = minimum_partial_anf_degree(samples, variable_count=4)
+    _require(minimum_degree == 3, f"pathion separator minimum degree {minimum_degree}, expected 3")
+    _require(interpolant == PATHION_CUBIC_WITNESS, f"pathion cubic witness {interpolant}")
+
+    sign_truth_table = [0 if cd_sign(16, 8, label) > 0 else 1 for label in range(16)]
+    sign_coefficients = anf_coefficients(sign_truth_table)
+    _require(sign_truth_table[0] == 0, "sedenion L_e8 sign row does not extend H(0) = 0")
+    _require(sign_coefficients == PATHION_CUBIC_WITNESS, f"L_e8 ANF masks {sign_coefficients}")
+    _require(
+        all(sign_truth_table[label] == component_class for label, component_class in samples.items()),
+        "sedenion L_e8 sign row does not reproduce the pathion component classes",
+    )
+
+    quadratic_part = tuple(mask for mask in PATHION_CUBIC_WITNESS if mask.bit_count() <= 2)
+    _require(
+        any(evaluate_anf(quadratic_part, label) != component_class for label, component_class in samples.items()),
+        "removing the cubic monomial unexpectedly preserves the component classes",
+    )
+    return minimum_degree, interpolant
+
+
+def check_associator_walsh_hierarchy(
+    register_widths: tuple[int, ...] = (3, 4, 5, 6, 7),
+) -> dict[int, tuple[int, int, float]]:
+    """Check the high-bit associator exemplars as Boolean phase oracles.
+
+    For pair (1, 2^(n-1)), the ANF contains every nonempty monomial over bits
+    1 through n-2. Its phase is the OR of those bits: the n=3 rung is a linear
+    Bernstein-Vazirani character, while the later rungs are polynomial hidden
+    forms outside the standard HSP promise. The n=4 form is quadratic with
+    polar rank two; later rungs have non-flat higher-degree spectra. Returns
+    dimension to (degree, Walsh-support size, zero-frequency probability).
+    """
+    profiles: dict[int, tuple[int, int, float]] = {}
+    for register_width in register_widths:
+        if register_width < 3:
+            raise ValueError(f"associator Walsh rung needs at least three qubits, got {register_width}")
+        dim = 1 << register_width
+        high_bit_unit = 1 << (register_width - 1)
+        phase = associator_phase(dim, 1, high_bit_unit)
+        truth_table = [0 if sign > 0 else 1 for sign in phase]
+        coefficients = anf_coefficients(truth_table)
+        expected_coefficients = tuple(range(2, 1 << (register_width - 1), 2))
+        _require(
+            coefficients == expected_coefficients,
+            f"dim {dim} high-bit associator ANF {coefficients}, expected {expected_coefficients}",
+        )
+        degree = anf_degree_from_coefficients(coefficients)
+        _require(degree == register_width - 2, f"dim {dim} high-bit associator degree {degree}")
+
+        distribution = walsh_distribution(phase)
+        zero_probability = (1.0 - 2.0 ** (3 - register_width)) ** 2
+        nonzero_probability = 2.0 ** (6 - 2 * register_width)
+        expected_support = set(range(0, 1 << (register_width - 1), 2))
+        if zero_probability == 0.0:
+            expected_support.remove(0)
+        observed_support = {outcome for outcome, probability in enumerate(distribution) if probability > 1e-12}
+        _require(
+            observed_support == expected_support,
+            f"dim {dim} high-bit associator Walsh support {observed_support}",
+        )
+        for outcome, probability in enumerate(distribution):
+            expected_probability = 0.0
+            if outcome == 0:
+                expected_probability = zero_probability
+            elif outcome in expected_support:
+                expected_probability = nonzero_probability
+            _require(
+                isclose(float(probability), expected_probability, rel_tol=0.0, abs_tol=1e-12),
+                f"dim {dim} outcome {outcome} probability {probability}, expected {expected_probability}",
+            )
+
+        if register_width == 3:
+            _require(observed_support == {2}, f"octonion BV outcome is {observed_support}, expected {{2}}")
+        if register_width == 4:
+            polar_rank = quadratic_polar_rank(coefficients, register_width)
+            _require(polar_rank == 2, f"sedenion quadratic polar rank {polar_rank}, expected 2")
+            _require(
+                len(observed_support) == 1 << polar_rank,
+                f"sedenion support size {len(observed_support)}, polar rank {polar_rank}",
+            )
+            _require(
+                all(isclose(float(distribution[outcome]), 0.25, abs_tol=1e-12) for outcome in observed_support),
+                "sedenion quadratic Walsh support is not flat",
+            )
+        profiles[dim] = (degree, len(observed_support), float(distribution[0]))
+    return profiles
+
+
 def check_left_mult_sign_degree(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) -> None:
     """f_m(x) = [cd_sign(dim,m,x) = -1] has degree log2(dim) - 1 for every m != 0.
 
@@ -343,6 +495,16 @@ def main() -> int:
         print(f"associator W: 21 pairs diagonal +/-1, {len(hits)} Z-strings x 3 pairs each")
         for dim, hist in check_associator_degree_rule().items():
             print(f"associator phase degree census dim {dim}: {hist}")
+        separator_degree, separator_coefficients = check_pathion_separator_sign_bridge()
+        print(
+            "pathion component indicator = sedenion L_e8 sign row: "
+            f"minimum degree {separator_degree}, ANF masks {separator_coefficients}"
+        )
+        for dim, (degree, support_size, zero_probability) in check_associator_walsh_hierarchy().items():
+            print(
+                f"associator Walsh exemplar dim {dim}: degree {degree}, "
+                f"Walsh support {support_size}, P(0)={zero_probability:.9f}"
+            )
         check_left_mult_sign_degree()
         print("L_e_m sign degree = log2(dim) - 1 for every m != 0, dims 8 through 128")
         orders = check_left_mult_group()

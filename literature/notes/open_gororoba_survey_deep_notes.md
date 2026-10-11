@@ -157,7 +157,10 @@ Run on built `.vo` files. "none" means the Axioms list contained only
   probes, not of all probes.
 - `C881_GF2CubicMinDegree.v:1-40`: reformulation of a refuted claim; labels and
   classes were extracted at runtime from `algebra_analysis::projective_geometry`
-  and hard-coded.
+  and hard-coded. The file rejects all 15 nonempty linear combinations and six
+  individual quadratic monomials, then proves that masks
+  `[1;2;3;4;5;6;7;8]` separate the classes with degree 3. The sentence claiming
+  exhaustive degree-2 failure is a comment; the Rust test performs that search.
 - `ParityClique.v` / `C882`: edge counts `n(n-1)/2` for the K_n claimed in the
   parity-clique decomposition; the decomposition itself is a Rust-side claim.
 - `C1628_IDCT8ButterflyCompaction.v`: the decoder-side justification for

@@ -155,7 +155,7 @@ Zero divisors, box-kites, Fano structure.
 | `proofs/verified/C958_ZDGraphTopology.v:71,102,120-140` | edge formula (d^2 - 6d + 8)/2 gives 84, 420, 1860, 32004, 129540, 521220 at d = 16, 32, 64, 256, 512, 1024 | R1; arithmetic evaluation conditional on the global axiom; no multiplication is involved |
 | `proofs/verified/C1141_ZDGraphGeneralStructure.v:30-96` | missing-edge counts dim/2 - 1 and vertex counts dim - 2 by arithmetic | Rf, parametric formulas, no product |
 | `proofs/theories/ParityClique.v:42-46`, `C882_ParityCliqueExact.v:20-59` | 2*K_4 = 12, 2*K_8 = 56, 2*K_16 = 240 edges | Rf |
-| `proofs/verified/C881_GF2CubicMinDegree.v:39-148` | no GF(2) polynomial of degree <= 2 separates the 8 heptacross components from the 7 mixed ones in PG(3,2); a cubic does | R0, labels hard-coded from Rust at dim 32 |
+| `proofs/verified/C881_GF2CubicMinDegree.v:39-148` | all 15 nonempty linear candidates and six individual quadratic monomials fail to separate the 8 heptacross components from the 7 mixed components; masks `[1;2;3;4;5;6;7;8]` give a cubic separator | R0 for those finite checks, with labels hard-coded from Rust at dim 32; exhaustive failure of every mixed degree-2 candidate is stated only in a comment and belongs to the Rust test |
 | `proofs/theories/FanoPlane.v:66-192` | 7 points, 7 lines, XOR rule on lines, incidence axioms | R0, Fano plane |
 | `proofs/verified/C004_PSL27Order168.v:18,22` | 7*6*4 = 168; `length fano_lines = 7` | Rf; the action on box-kites is not proved |
 | `proofs/verified/C005_ZDAnnihilatorGeometry.v:13,20`, `C014`, `C015` | an annihilator exists, is closed under linear combination, not self-annihilating | R0; dimension 4 comes from Rust SVD only |
@@ -184,6 +184,10 @@ homogeneity lemma, or formula arithmetic.
   including C958 (global axiom) and C957 (title "VoudonZD", content dim 16).
 - `proofs/verified/C1467_XORSignCocycle.v:94-100` names three finite checks
   "cocycle_*"; the group 2-cocycle identity itself fails at dim >= 8 (section 7).
+- `proofs/verified/C881_GF2CubicMinDegree.v:143-148` describes degree 3 as
+  minimal, but the theorems reject every nonempty linear candidate and only six
+  individual quadratic monomials. The exhaustive degree-2 rejection is a Rust
+  search result, not a Rocq theorem in that file.
 - `crates/algebra_analysis/src/boxkites.rs:62` returns an empty list for
   `find_box_kites(dim != 16)`; the generalization lives in
   `motif_components_for_cross_assessors`.

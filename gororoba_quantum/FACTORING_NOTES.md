@@ -151,7 +151,31 @@ one such combination with two terms.
   that of the quadratic form's symplectic matrix: 4 outcomes for dim 16 pair
   (1,8). The degree-3 and degree-4 exemplars give non-flat distributions.
 - The pair (1, 2^(n-1)) has zero-frequency weight (1 - 2^(3-n))^2, checked for
-  n = 3 through 7. That gives a closed-form target for every rung of the ladder.
+  n = 3 through 7 by `verify.check_associator_walsh_hierarchy`. That check also
+  pins the rank-2 quadratic support and every nonzero probability, giving a
+  closed-form target for each newly introduced rung of the ladder. Lower-degree
+  pairs remain present after a doubling.
+- The n=3 linear character is the standard Bernstein-Vazirani/HSP instance.
+  The higher-degree forms are phase-oracle benchmarks whose nonuniform Walsh
+  spectra fall outside the standard HSP promise.
+
+**The C881 sign-row bridge.**
+- C881's 15 labels denote the top-level dim-32 pathion cross-assessor
+  components in PG(3,2), rather than the seven dim-16 sedenion box-kites. On
+  those shared four-bit labels, its 8/7 heptacross indicator, extended by
+  H(0) = 0, equals `[cd_sign(16, 8, S) = -1]` exactly.
+- Both functions have ANF masks (1, 2, 3, 4, 5, 6, 7, 8). Direct synthesis
+  therefore uses four Z gates, three CZ gates, and one CCZ. The bounded
+  Reed-Muller solver in `verify.check_pathion_separator_sign_bridge` rejects
+  every degree-at-most-two polynomial on the 15 labels before recovering the
+  cubic witness.
+- `C881_GF2CubicMinDegree.v` proves all nonempty linear failures, six individual
+  quadratic failures, and the cubic witness. Its exhaustive quadratic claim is
+  a comment; open_gororoba's Rust search and the independent local solver close
+  that finite lower bound. The verifier hash-pins the cited Rocq source before
+  admitting its copied labels and classes. The result excludes an exact
+  Clifford-only diagonal phase oracle in the fixed binary encoding. It supplies
+  neither an arbitrary classifier lower bound nor a circuit-depth lower bound.
 
 **A certified Toffoli-class benchmark.**
 - Toffoli and CCZ gates make up the 6.5e9-gate core of RSA-2048. A degree-3
