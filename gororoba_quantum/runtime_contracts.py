@@ -9,6 +9,7 @@ import hashlib
 import io
 import json
 import math
+import os
 import tempfile
 from contextlib import redirect_stdout
 from datetime import UTC, datetime, timedelta
@@ -41,6 +42,7 @@ from qiskit_ibm_runtime.results.quantum_program import (
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
 import packing
+import parallel
 from experiments import MIRROR_SUFFIX, Group, experiment_groups
 from live_run import (
     RECORD_SCHEMA_CONTRACT,
@@ -1043,6 +1045,37 @@ def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
         live_run_module.simulate_entries = original_simulate_entries
 
 
+def _verify_worker_quota() -> None:
+    """The default worker count honors a cgroup CPU quota below the affinity count."""
+    with tempfile.TemporaryDirectory(prefix="gororoba-cgroup-") as directory:
+        root = Path(directory)
+        v2, quota, period = root / "cpu.max", root / "cfs_quota_us", root / "cfs_period_us"
+        cases: list[tuple[str | None, str | None, str | None, float | None]] = [
+            ("150000 100000", None, None, 1.5),
+            ("max 100000", None, None, None),
+            ("garbage", None, None, None),
+            (None, "200000", "100000", 2.0),
+            (None, "-1", "100000", None),
+            (None, None, None, None),
+        ]
+        for v2_text, quota_text, period_text, expected in cases:
+            for path, text in ((v2, v2_text), (quota, quota_text), (period, period_text)):
+                if text is None:
+                    path.unlink(missing_ok=True)
+                else:
+                    path.write_text(text)
+            observed = parallel.cgroup_cpu_quota(v2, quota, period)
+            if observed != expected:
+                raise RuntimeError(f"cgroup quota {(v2_text, quota_text, period_text)} reads {observed}")
+    original = parallel.cgroup_cpu_quota
+    parallel.cgroup_cpu_quota = lambda *args: 1.5
+    try:
+        if os.environ.get("GOROROBA_WORKERS") is None and parallel.workers() != 2:
+            raise RuntimeError(f"a 1.5-CPU quota sizes {parallel.workers()} workers")
+    finally:
+        parallel.cgroup_cpu_quota = original
+
+
 def _verify_replay_seed_independence() -> None:
     """Replay batches under different calibrations never share a (seed, position) pair."""
     circuit = QuantumCircuit(1, 1)
@@ -1215,6 +1248,7 @@ def _verify_fused_collection() -> None:
             or fused_timing["execution_window_start"] != expected_start.isoformat()
             or fused_timing["scheduled_circuit_duration_dt"] != durations[fused_index]
             or fused_timing["scheduler_residual_dt"] != durations[fused_index] - lower
+            or fused_timing["planned_target_gate_lower_bound_dt"] != lower
             or fused_timing["parallel_stream_count"] != 0
             or fused_timing["timing_unavailable_reason"] is not None
         ):
@@ -1250,6 +1284,24 @@ def _verify_fused_collection() -> None:
         pending[0]["jobs"][job_id]["usage"] = json.loads(first)[0]["jobs"][job_id]["usage"]
         if pending != json.loads(first):
             raise RuntimeError("pending and final collections differ outside the usage block")
+
+        # A job that ended in ERROR keeps its usage and its reason; collection
+        # continues without its results.
+        failed = _ProbeResultJob(result, status="ERROR", usage=usage, charge=0.25)
+        failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
+        errored = json.loads((run_dir / "collect.json").read_text())
+        job_record = errored[0]["jobs"][job_id]
+        if (
+            job_record["usage"]["usage_status"] != "final"
+            or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
+            or "job failed on the service" not in job_record["result_unavailable"]
+            or len(errored) != 1
+        ):
+            raise RuntimeError(f"a failed job collects as {job_record}")
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
 
 
 def _verify_scheduler_timing_cases() -> None:
@@ -1320,20 +1372,28 @@ def _verify_scheduler_timing_cases() -> None:
 
     manifest = {"target_gate_lower_bound_dt": 1000, "parallel_stream_count": 2}
     window = expected[0]
+    chunk = "executor_chunk_timing"
     statuses = [
-        (pub_timing(manifest, window, None, 1200, None, "executor_chunk_timing"), "complete", 200),
-        (pub_timing(manifest, None, "no chunk", 1200, None, "executor_chunk_timing"), "schedule_only", 200),
-        (pub_timing(manifest, window, None, None, "no timing", "executor_chunk_timing"), "windows_only", None),
+        (pub_timing(manifest, window, None, 1200, None, chunk, 1000), "complete", 200),
+        (pub_timing(manifest, window, None, 1200, None, chunk, 1100), "complete", 100),
+        (pub_timing(manifest, None, "no chunk", 1200, None, chunk), "schedule_only", None),
+        (pub_timing(manifest, window, None, None, "no timing", chunk, 1000), "windows_only", None),
         (pub_timing(manifest, None, "no chunk", None, "no scheduler timing", None), "unavailable", None),
-        (pub_timing(manifest, window, None, 900, None, "executor_chunk_timing"), "residual_below_target_bound", -100),
+        (pub_timing(manifest, window, None, 900, None, chunk, 1000), "residual_below_target_bound", -100),
     ]
     for record, status, residual in statuses:
         if record["timing_status"] != status or record["scheduler_residual_dt"] != residual:
             raise RuntimeError(f"timing record {record} is not {status}/{residual}")
         if status != "complete" and not record["timing_unavailable_reason"]:
             raise RuntimeError(f"{status} timing record carries no reason")
-    if statuses[0][0]["timing_unavailable_reason"] is not None or statuses[1][0]["timing_source"] is not None:
+    if statuses[0][0]["timing_unavailable_reason"] is not None or statuses[2][0]["timing_source"] is not None:
         raise RuntimeError("complete timing carries a reason, or a windowless record names a source")
+    if (
+        statuses[1][0]["target_gate_lower_bound_dt"] != 1100
+        or statuses[1][0]["planned_target_gate_lower_bound_dt"] != 1000
+        or "residual withheld" not in str(statuses[2][0]["timing_unavailable_reason"])
+    ):
+        raise RuntimeError("the residual does not follow the execution-time Target bound")
 
 
 def _verify_packing_equivalence() -> None:
@@ -2132,6 +2192,7 @@ def _verify() -> None:
     _verify_target_and_bad_qubit_status()
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
+    _verify_worker_quota()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()

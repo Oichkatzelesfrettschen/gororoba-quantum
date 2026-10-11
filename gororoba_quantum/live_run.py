@@ -864,8 +864,11 @@ def target_duration_dt(isa: QuantumCircuit, target: Any) -> int:
     The backend scheduler's circuit_duration for the same PUB adds what the
     Target omits. Their difference, the scheduler residual, collects
     feed-forward, alignment, measurement, reset, and controller time on a
-    dynamic PUB; a static PUB of the same job carries the scheduler's own
-    alignment alone and is the control the dynamic residual is read against.
+    dynamic PUB. Static and dynamic circuits run in separate jobs and no
+    static PUB is a schedule-matched copy of a dynamic one, so a static
+    residual from the same submission bounds the scheduler's alignment on a
+    different circuit and attributes nothing; attribution waits for a matched
+    dynamic/control pair in one job.
     """
     return int(_gate_time_view(isa).estimate_duration(target, unit="dt"))
 
@@ -2861,28 +2864,38 @@ def pub_timing(
     scheduled: int | None,
     scheduled_reason: str | None,
     source: str | None,
+    execution_bound: int | None = None,
 ) -> dict[str, Any]:
     """The timing record of one PUB: window, scheduled duration, residual, and structure.
 
-    timing_status is complete when both the window and the schedule are
-    present and the residual is nonnegative; windows_only, schedule_only, or
-    unavailable name what is missing; residual_below_target_bound keeps a
-    schedule shorter than the Target's own critical path and withholds its
-    interpretation. The structure fields come from the plan: the recursive
-    count of control-flow operations in the fused PUB, the deepest feed-forward
-    decision chain along one replica stream, and the number of replica streams
-    that carry feed-forward.
+    The residual subtracts the lower bound computed from the Target in force
+    when the PUB's shots began (execution_bound); the manifest's plan-time
+    bound is kept beside it, since a calibration update between planning and
+    execution changes instruction durations, and a PUB without a window has
+    no execution-time Target, so its residual is withheld. timing_status is
+    complete when the window, the schedule, and a nonnegative residual are
+    present; windows_only, schedule_only, or unavailable name what is
+    missing; residual_below_target_bound keeps a schedule shorter than the
+    Target's own critical path and withholds its interpretation. The
+    structure fields come from the plan: the recursive count of control-flow
+    operations in the fused PUB, the deepest feed-forward decision chain along
+    one replica stream, and the number of replica streams that carry
+    feed-forward.
     """
-    lower = pub_manifest.get("target_gate_lower_bound_dt")
+    lower = execution_bound if window else None
     residual = scheduled - lower if scheduled is not None and lower is not None else None
     reasons = [reason for reason in (window_reason, scheduled_reason) if reason]
+    if scheduled is not None and lower is None and window is None:
+        reasons.append("execution-time Target unknown without a window; residual withheld")
     if residual is not None and residual < 0:
         status = "residual_below_target_bound"
         reasons.append(f"scheduled duration {scheduled} dt is below the Target lower bound {lower} dt")
     elif residual is not None:
-        status = "complete" if window else "schedule_only"
+        status = "complete"
     elif window:
         status = "windows_only"
+    elif scheduled is not None:
+        status = "schedule_only"
     else:
         status = "unavailable"
     return {
@@ -2890,6 +2903,7 @@ def pub_timing(
         "timing_source": source if window else None,
         "execution_window_start": window[0].isoformat() if window else None,
         "execution_window_stop": window[1].isoformat() if window else None,
+        "planned_target_gate_lower_bound_dt": pub_manifest.get("target_gate_lower_bound_dt"),
         "target_gate_lower_bound_dt": lower,
         "scheduled_circuit_duration_dt": scheduled,
         "scheduler_residual_dt": residual,
@@ -3305,36 +3319,33 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     ]
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
-        result = job.result()
         pub_manifests = job_entry["pubs"]
+        # Usage is read before the results: a job that ended in ERROR or
+        # CANCELLED raises on result() and still carries a QPU charge, and
+        # the attempted job stays in the record with that charge.
+        jobs_out[job_entry["job_id"]] = {
+            "backend": job_entry["backend"],
+            "kind": job_entry["kind"],
+            "usage": job_usage_record(job, len(pub_manifests), shots),
+            "pub_timing": {},
+        }
+        try:
+            result = job.result()
+        except Exception as error:  # noqa: BLE001 - the service raises its own hierarchy for failed jobs
+            jobs_out[job_entry["job_id"]]["result_unavailable"] = f"{type(error).__name__}: {error}"
+            continue
         if len(result) != len(pub_manifests):
             raise LiveRunError(
                 f"job {job_entry['job_id']} returned {len(result)} PUB results for "
                 f"{len(pub_manifests)} planned fused PUBs"
             )
         spans = pub_windows(result, len(pub_manifests))
-        # Timing and usage are recorded once per PUB and per job; a PUB without
-        # a window keeps its counts and loses only its calibration-bound views.
-        timing: dict[str, dict[str, Any]] = {}
-        for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
-            scheduled, scheduled_reason = scheduled_duration(pub_result)
-            window_reason = (
-                None if window else spans.reason or f"no {spans.source} chunk covers PUB {pub_manifest['name']}"
-            )
-            timing[pub_manifest["name"]] = pub_timing(
-                pub_manifest, window, window_reason, scheduled, scheduled_reason, spans.source
-            )
-        jobs_out[job_entry["job_id"]] = {
-            "backend": job_entry["backend"],
-            "kind": job_entry["kind"],
-            "usage": job_usage_record(job, len(pub_manifests), shots),
-            "pub_timing": timing,
-        }
         twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
         backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
-        # under the Target and properties in force when its shots began.
-        at: dict[datetime, tuple[Any, Any]] = {}
+        # under the Target and properties in force when its shots began, and
+        # its scheduler residual is read against that Target's durations.
+        at: dict[datetime, tuple[Any, Any, Any]] = {}
         for window in spans.windows:
             if window is None or window[0] in at:
                 continue
@@ -3344,6 +3355,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             at[start] = (
                 props_then,
                 noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
+                target_then,
             )
             starting = [
                 isas[pub_manifest["name"]]
@@ -3351,6 +3363,20 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 if other is not None and other[0] == start
             ]
             check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
+        # Timing and usage are recorded once per PUB and per job; a PUB without
+        # a window keeps its counts and loses only its calibration-bound views,
+        # the residual among them.
+        timing: dict[str, dict[str, Any]] = {}
+        for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
+            scheduled, scheduled_reason = scheduled_duration(pub_result)
+            window_reason = (
+                None if window else spans.reason or f"no {spans.source} chunk covers PUB {pub_manifest['name']}"
+            )
+            execution_bound = target_duration_dt(isas[pub_manifest["name"]], at[window[0]][2]) if window else None
+            timing[pub_manifest["name"]] = pub_timing(
+                pub_manifest, window, window_reason, scheduled, scheduled_reason, spans.source, execution_bound
+            )
+        jobs_out[job_entry["job_id"]]["pub_timing"] = timing
         measured: dict[str, list[np.ndarray]] = {}
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
@@ -3369,7 +3395,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 )
             else:
                 start, stop = window
-                props_then, _ = at[start]
+                props_then = at[start][0]
                 stop_calibration = backend.properties(datetime=stop).last_update_date
                 execution_records = component_execution_records(
                     pub_manifest,

@@ -666,10 +666,15 @@ its QPY SHA-256 is
   record carries `scheduler_residual_dt`, the `scheduled_circuit_duration_dt`
   minus the Target-derived `target_gate_lower_bound_dt`. The residual is a
   scheduler residual: feed-forward, alignment, measurement, reset, and
-  controller time all contribute on a dynamic PUB, and a static PUB of the
-  same submission carries the scheduler's alignment alone, the control the
-  dynamic residual is read against. A residual below zero is retained with
-  `timing_status` `residual_below_target_bound` and no interpretation. Chunk
+  controller time all contribute on a dynamic PUB. The bound comes from the
+  Target in force when the PUB's shots began (the plan-time bound is kept
+  beside it), so a calibration update between planning and execution does
+  not enter the residual. Static and dynamic circuits run in separate jobs
+  and no static PUB is a schedule-matched copy of a dynamic one, so the first
+  dynamic job reports its residuals without attribution; the matched
+  dynamic/control ladder below is the experiment that attributes them. A
+  residual below zero is retained with `timing_status`
+  `residual_below_target_bound` and no interpretation. Chunk
   wall-clock windows do not support this subtraction: a chunk spans every
   shot of one or more PUBs plus repetition delay and service overhead, so the
   windows serve calibration lookup and drift detection only.
@@ -731,8 +736,17 @@ its QPY SHA-256 is
    and scaling falsifier until then; a deeper compile without `N = 21` admission
    adds cost without resolving the active uncertainty.
 9. **Dynamic latency evidence.** Read `scheduler_residual_dt` on dynamic PUBs
-   against the static-PUB control, and the packed PUB's duration against the
-   reference PUB's (`packing_schedule`). Attribute a residual to classical
+   as unattributed scheduler time, and the packed PUB's duration against the
+   reference PUB's (`packing_schedule`). Attribution to feed-forward needs a
+   matched ladder: dynamic/control pairs with identical layout, prepared
+   measurement result, mid-circuit measurement and reset, target gate, and
+   terminal measurement, the control replacing each conditional gate by the
+   unconditional matched gate, swept over sequential stages m in {0, 1, 2, 4}
+   and parallel streams p in {1, 2, 4, 8} (32 PUBs at 256 shots), fitted as
+   residual = alpha + beta_stage m + beta_parallel (p - 1) + beta_interaction
+   m (p - 1), repeated under three separately approved submissions. The
+   result stays scheduler-defined feedback timing unless an independent
+   physical timing observable supports more. Attribute a residual to classical
    control only after repeated jobs show a stable separation. The submission
    approval gate and rolling QPU budget continue to govern every measurement.
 10. **Signed-XOR coefficient certificates.** Solve the exact minimum-one-norm

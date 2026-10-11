@@ -616,8 +616,11 @@ the documented execution spans (result.metadata["execution"]
 span covers instead of raising: its counts stay, and only its
 calibration-bound replay and correction are withheld with the reason.
 Collection writes one timing record per PUB in the header, keyed by job:
-target_gate_lower_bound_dt (the Target's critical path), the scheduler's
-scheduled_circuit_duration_dt, their difference scheduler_residual_dt,
+target_gate_lower_bound_dt (the critical path under the Target in force when
+the shots began; the plan-time bound stays as
+planned_target_gate_lower_bound_dt), the scheduler's
+scheduled_circuit_duration_dt, their difference scheduler_residual_dt (withheld
+without a window, since the execution-time Target is then unknown),
 timing_status, and the structure counts parallel_stream_count,
 sequential_stage_count, and feed_forward_operation_count. packing_schedule
 compares the packed and reference PUBs' scheduled durations, which lengthen
@@ -626,7 +629,9 @@ The header also carries each job's usage record: job.usage(partial=False)
 supplies the final QPU charge once job.metrics()["usage"] leaves pending,
 and pub_shots_per_qpu_second divides the submitted PUB shots (PUB count times
 shots per PUB; replicas and fused components multiply nothing) by that
-charge. Group records reference their job by id instead of copying either.
+charge; usage is read before the results, so a job that ended in ERROR or
+CANCELLED keeps its charge and its result_unavailable reason. Group records
+reference their job by id instead of copying either.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
 member's own outcome weights (hybrid Shor scores whether an outcome decodes to
