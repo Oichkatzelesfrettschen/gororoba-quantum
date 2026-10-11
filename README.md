@@ -29,6 +29,12 @@ observables.
   finite witnesses and a sourced audit separating Walsh sampling, LCU arithmetic,
   and annihilator fibers from claims about hidden polynomials, exceptional
   Jordan mechanics, and global zero-divisor topology.
+- `gororoba_quantum/sedenion_bundle.py` -- real normalized zero-product pairs,
+  seven quaternion charts, SU(2) transition maps and Cayley-frame automorphisms.
+- `gororoba_quantum/annihilator_strata.py` -- exact signed two-term kernel census
+  and published maximal-annihilator lift witnesses through dimension 256.
+  `literature/notes/cayley_dickson_annihilator_sources.md` records primary
+  theorems and the source-pinned Rust and Rocq work reused by the audit.
 - `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
   compilation with pass-level synthesis, routing, layout, and topology capture.
 - `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
@@ -98,6 +104,8 @@ cd gororoba_quantum
 "$PYTHON" verify.py
 "$PYTHON" designs.py
 "$PYTHON" claim_boundaries.py
+"$PYTHON" sedenion_bundle.py
+"$PYTHON" annihilator_strata.py --max-dimension 256
 "$PYTHON" factoring.py
 "$PYTHON" target_flip.py
 "$PYTHON" target_flip_certificate.py --check

@@ -1,0 +1,3307 @@
+{
+  "action": "right unit-quaternion multiplication of fiber coordinates",
+  "atlas": "seven projected imaginary-coordinate charts; numerical conditioning guard recorded",
+  "base": "x=(a,b)/sqrt(2), (a,b) in V_2(R^7)",
+  "dense_cases": 24,
+  "dense_seed": 20261011,
+  "exact_fixtures": [
+    {
+      "arithmetic": "Fraction exact; unit normalization follows by positive scalar rescaling",
+      "cayley_basis_products_checked": 64,
+      "cayley_frame_normalization": "divide last four columns by sqrt(section_norm_squared)",
+      "element_norm_squared": "2",
+      "first": [
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "fixture": "coordinate_basis",
+      "kernel_dimension": 4,
+      "left_action_rank": 12,
+      "partner_norm_squared": "2",
+      "second": [
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "section": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0"
+      ],
+      "section_norm_squared": "1"
+    },
+    {
+      "arithmetic": "Fraction exact; unit normalization follows by positive scalar rescaling",
+      "cayley_basis_products_checked": 64,
+      "cayley_frame_normalization": "divide last four columns by sqrt(section_norm_squared)",
+      "element_norm_squared": "2",
+      "first": [
+        "0",
+        "3/5",
+        "4/5",
+        "0",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "fixture": "pythagorean_cayley_frame",
+      "kernel_dimension": 4,
+      "left_action_rank": 12,
+      "partner_norm_squared": "2",
+      "second": [
+        "0",
+        "0",
+        "0",
+        "1",
+        "0",
+        "0",
+        "0",
+        "0"
+      ],
+      "section": [
+        "0",
+        "0",
+        "0",
+        "0",
+        "3/5",
+        "4/5",
+        "0",
+        "0"
+      ],
+      "section_norm_squared": "1"
+    },
+    {
+      "arithmetic": "Fraction exact; unit normalization follows by positive scalar rescaling",
+      "cayley_basis_products_checked": 64,
+      "cayley_frame_normalization": "divide last four columns by sqrt(section_norm_squared)",
+      "element_norm_squared": "2",
+      "first": [
+        "0",
+        "69/70",
+        "-1/35",
+        "-3/70",
+        "-2/35",
+        "-1/14",
+        "-3/35",
+        "-1/10"
+      ],
+      "fixture": "dense_rational_householder",
+      "kernel_dimension": 4,
+      "left_action_rank": 12,
+      "partner_norm_squared": "9/175",
+      "second": [
+        "0",
+        "-1/35",
+        "33/35",
+        "-3/35",
+        "-4/35",
+        "-1/7",
+        "-6/35",
+        "-1/5"
+      ],
+      "section": [
+        "0",
+        "9/350",
+        "9/175",
+        "0",
+        "62/1225",
+        "37/490",
+        "3/35",
+        "101/1225"
+      ],
+      "section_norm_squared": "9/350"
+    }
+  ],
+  "execution": "local exact rational arithmetic and NumPy; credential-free",
+  "falsifiers": {
+    "chart_admission_regressions": [
+      {
+        "accepted_chart": 5,
+        "accepted_chart_residuals": {
+          "cayley_orthogonality": 4.547473625100212e-13,
+          "frame_complement": 2.710505431213761e-20,
+          "frame_orthogonality": 4.547473508864641e-13,
+          "frame_projector": 4.547684233191864e-13,
+          "lift_annihilation": 2.2737367544323206e-13,
+          "lift_orthogonality": 6.818989817247711e-13,
+          "pair_product": 2.2737367544323206e-13,
+          "pair_unit_norm": 6.818989817247711e-13,
+          "right_action_identity": 1.9166167708542174e-20,
+          "section_complement": 0.0
+        },
+        "base_norm_squared_error": 4.547473508864641e-13,
+        "consumer_checks": "Cayley frame and identity right action; four basis and one dense fiber coordinates",
+        "fixture": "accepted_base_norm_error",
+        "rejected_chart": 1,
+        "rejected_chart_projection_norm": 0.0002,
+        "rejected_chart_residuals": {
+          "frame_complement": 2.273842071120851e-09,
+          "frame_orthogonality": 4.551914400963142e-13,
+          "frame_projector": 2.274069680816707e-09,
+          "lift_annihilation": 2.273842082500123e-09,
+          "lift_orthogonality": 6.825651155395462e-13,
+          "section_complement": 2.2738420711111984e-09
+        }
+      },
+      {
+        "accepted_chart": 5,
+        "accepted_chart_residuals": {
+          "cayley_orthogonality": 2.2204655648892147e-16,
+          "frame_complement": 2.710505431213761e-20,
+          "frame_orthogonality": 2.220446049250313e-16,
+          "frame_projector": 1.5047163444485566e-16,
+          "lift_annihilation": 2.3551387036231297e-16,
+          "lift_orthogonality": 2.220446049250313e-16,
+          "pair_product": 2.3551387036231297e-16,
+          "pair_unit_norm": 3.3306690738754696e-16,
+          "right_action_identity": 1.2412670812477166e-16,
+          "section_complement": 0.0
+        },
+        "base_norm_squared_error": 2.220446049250313e-16,
+        "consumer_checks": "Cayley frame and identity right action; four basis and one dense fiber coordinates",
+        "fixture": "projection_roundoff",
+        "rejected_chart": 1,
+        "rejected_chart_projection_norm": 0.00012499999999999998,
+        "rejected_chart_residuals": {
+          "frame_complement": 1.2037730838174167e-12,
+          "frame_orthogonality": 4.440892098500626e-16,
+          "frame_projector": 1.2039951489019282e-12,
+          "lift_annihilation": 1.2037731024896592e-12,
+          "lift_orthogonality": 4.440892098500626e-16,
+          "section_complement": 1.2037730618320779e-12
+        }
+      }
+    ],
+    "rejected_inputs": 20,
+    "reversed_overlap_order_error": 2.0,
+    "wrong_partner_sign_error": 0.9999999999999998
+  },
+  "fiber": "y=(c,-(a*b)*c)/sqrt(2), c in H-perp, ||c||=1",
+  "minimum_numerical_patch_norm": 0.0001220703125,
+  "numeric_fixtures": [
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 0,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 1,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 2,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 5.551115123125783e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 3,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 5.551115123125783e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 4,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.656209998864846e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 5,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 6,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 7,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 8,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 9,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 10,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 11,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 12,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 1.4201993891514953e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 13,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 1.4201993891514953e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 14,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 15,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 16,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 9.43689570931383e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 17,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 9.43689570931383e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 18,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 19,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 20,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.996003610813204e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 21,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.996003610813204e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 22,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 23,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 24,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 25,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 26,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 5.551115123125783e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 27,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 5.551115123125783e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 28,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 29,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 30,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 31,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 32,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 33,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 34,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 35,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 36,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 37,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 38,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 39,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 40,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.220446049250313e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 41,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.220446049250313e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 42,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3887414716991976e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 43,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3887414716991976e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 44,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 45,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 46,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 47,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 48,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 49,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 50,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 51,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 52,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 1.0022984543569812e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 53,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 1.0022984543569812e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 54,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        6,
+        7
+      ],
+      "case": 55,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 56,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 8.438086420737364e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 57,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 8.438086420737364e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 58,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 59,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 60,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.3306690738754696e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 61,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.440892098500626e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 1.1102230246251565e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 62,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 8.326672684688674e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 63,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 8.326672684688674e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 64,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.9883457604286956e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 65,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.9883457604286956e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 66,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        5,
+        7
+      ],
+      "case": 67,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 68,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.1058402626733396e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        4,
+        7
+      ],
+      "case": 69,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.1058402626733396e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 70,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 8.881784197001252e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 71,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.216449660063518e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 2.7755575615628914e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 72,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 73,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 74,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.106226635438361e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 75,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.106226635438361e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 76,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 5.551115123125783e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 77,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 5.551115123125783e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.9626155733547187e-17,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 78,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.220446049250313e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        5,
+        6
+      ],
+      "case": 79,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.220446049250313e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 80,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 9.992007221626409e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        3,
+        4,
+        6
+      ],
+      "case": 81,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 9.992007221626409e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 82,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        2,
+        3,
+        4,
+        5
+      ],
+      "case": 83,
+      "residuals": {
+        "cayley_multiplication": 0.0,
+        "cayley_orientation": 0.0,
+        "cayley_orthogonality": 0.0,
+        "cocycle": 0.0,
+        "frame_orthogonality": 0.0,
+        "frame_projector": 0.0,
+        "pair_product": 0.0,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 2.299347170293092e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 7.771561172376096e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 0.0,
+        "right_action_law": 5.551115123125783e-17,
+        "transition_api": 0.0,
+        "transition_inverse": 0.0,
+        "transition_su2": 0.0
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 84,
+      "residuals": {
+        "cayley_multiplication": 1.0547118733938987e-15,
+        "cayley_orientation": 9.992007221626409e-16,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 7.216449660063518e-16,
+        "pair_product": 4.718447854656915e-16,
+        "pair_unit_norm": 8.881784197001252e-16,
+        "projector_annihilation": 1.1894795197140089e-16,
+        "projector_idempotence": 2.220446049250313e-16,
+        "projector_svd_comparison": 4.996003610813204e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 4.996003610813204e-16,
+        "right_action_law": 6.661338147750939e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.3322676295501878e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 85,
+      "residuals": {
+        "cayley_multiplication": 2.4980018054066022e-15,
+        "cayley_orientation": 1.3322676295501878e-15,
+        "cayley_orthogonality": 1.2805309878478835e-15,
+        "cocycle": 1.1102230246251565e-15,
+        "frame_orthogonality": 1.1102230246251565e-15,
+        "frame_projector": 9.992007221626409e-16,
+        "pair_product": 7.494005416219807e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 1.45130718800651e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 1.4085954624931674e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 7.180839531000292e-16,
+        "right_action_law": 1.0547118733938987e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 2.220446049250313e-15,
+        "transition_su2": 2.220446049250313e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 86,
+      "residuals": {
+        "cayley_multiplication": 1.1657341758564144e-15,
+        "cayley_orientation": 5.551115123125783e-16,
+        "cayley_orthogonality": 5.851640236091976e-16,
+        "cocycle": 7.771561172376096e-16,
+        "frame_orthogonality": 5.551115123125783e-16,
+        "frame_projector": 4.996003610813204e-16,
+        "pair_product": 3.7470027081099033e-16,
+        "pair_unit_norm": 5.551115123125783e-16,
+        "projector_annihilation": 1.4689254802214619e-16,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.4980018054066022e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 3.3306690738754696e-16,
+        "right_action_law": 7.089948758743922e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.1102230246251565e-15,
+        "transition_su2": 6.661338147750939e-16
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 87,
+      "residuals": {
+        "cayley_multiplication": 1.8041124150158794e-15,
+        "cayley_orientation": 9.992007221626409e-16,
+        "cayley_orthogonality": 9.284011681866082e-16,
+        "cocycle": 8.881784197001252e-16,
+        "frame_orthogonality": 8.881784197001252e-16,
+        "frame_projector": 8.881784197001252e-16,
+        "pair_product": 6.823631294898584e-16,
+        "pair_unit_norm": 1.1102230246251565e-15,
+        "projector_annihilation": 2.1408328919087986e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 9.31933946010875e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 6.106226635438361e-16,
+        "right_action_law": 9.445087446769584e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.7763568394002505e-15,
+        "transition_su2": 1.5543122344752192e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 88,
+      "residuals": {
+        "cayley_multiplication": 7.771561172376096e-16,
+        "cayley_orientation": 9.992007221626409e-16,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 5.551115123125783e-16,
+        "pair_product": 2.659808844942766e-16,
+        "pair_unit_norm": 1.1102230246251565e-15,
+        "projector_annihilation": 1.0230208015780075e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 2.609024107869118e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 3.3306690738754696e-16,
+        "right_action_law": 2.7755575615628914e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.5543122344752192e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 89,
+      "residuals": {
+        "cayley_multiplication": 3.524958103184872e-15,
+        "cayley_orientation": 1.2212453270876722e-15,
+        "cayley_orthogonality": 1.7765023634931833e-15,
+        "cocycle": 9.992007221626409e-16,
+        "frame_orthogonality": 7.771561172376096e-16,
+        "frame_projector": 1.2420620087993939e-15,
+        "pair_product": 1.061650767297806e-15,
+        "pair_unit_norm": 1.1102230246251565e-15,
+        "projector_annihilation": 1.560409932150691e-16,
+        "projector_idempotence": 2.7755575615628914e-16,
+        "projector_svd_comparison": 1.1986939218999737e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 1.1657341758564144e-15,
+        "right_action_law": 1.7908867106861808e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 1.5543122344752192e-15,
+        "transition_su2": 1.5543122344752192e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 90,
+      "residuals": {
+        "cayley_multiplication": 2.220446049250313e-15,
+        "cayley_orientation": 5.551115123125783e-16,
+        "cayley_orthogonality": 1.1271854154254064e-15,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 1.3322676295501878e-15,
+        "pair_product": 5.967448757360216e-16,
+        "pair_unit_norm": 5.551115123125783e-16,
+        "projector_annihilation": 1.0357124602118494e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 2.0539125955565396e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 7.077671781985373e-16,
+        "right_action_law": 1.219274924946619e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 8.881784197001252e-16
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 91,
+      "residuals": {
+        "cayley_multiplication": 7.771561172376096e-16,
+        "cayley_orientation": 1.3322676295501878e-15,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 9.992007221626409e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 6.661338147750939e-16,
+        "pair_product": 2.3245294578089215e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 1.030576280673531e-16,
+        "projector_idempotence": 5.551115123125783e-17,
+        "projector_svd_comparison": 1.8318679906315083e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 2.220446049250313e-16,
+        "right_action_law": 3.3306690738754696e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.5543122344752192e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 92,
+      "residuals": {
+        "cayley_multiplication": 5.48172618408671e-16,
+        "cayley_orientation": 8.881784197001252e-16,
+        "cayley_orthogonality": 4.440892098500626e-16,
+        "cocycle": 4.440892098500626e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 3.3306690738754696e-16,
+        "pair_product": 3.0531133177191805e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 1.0268504016776349e-16,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 6.661338147750939e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 2.004728007363039e-16,
+        "right_action_law": 2.747661802696606e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 1.1102230246251565e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 93,
+      "residuals": {
+        "cayley_multiplication": 4.440892098500626e-16,
+        "cayley_orientation": 5.551115123125783e-16,
+        "cayley_orthogonality": 4.440892098500626e-16,
+        "cocycle": 5.551115123125783e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 3.3306690738754696e-16,
+        "pair_product": 1.6653345369377348e-16,
+        "pair_unit_norm": 6.661338147750939e-16,
+        "projector_annihilation": 1.0989376505019914e-16,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 4.163336342344337e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 1.6653345369377348e-16,
+        "right_action_law": 1.942890293094024e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 1.1102230246251565e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 94,
+      "residuals": {
+        "cayley_multiplication": 3.247402347028583e-15,
+        "cayley_orientation": 7.771561172376096e-16,
+        "cayley_orthogonality": 1.6237011735142914e-15,
+        "cocycle": 8.881784197001252e-16,
+        "frame_orthogonality": 8.881784197001252e-16,
+        "frame_projector": 1.3877787807814457e-15,
+        "pair_product": 9.194034422677078e-16,
+        "pair_unit_norm": 6.661338147750939e-16,
+        "projector_annihilation": 1.9014360341550684e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 8.881784197001252e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 7.359808400080195e-16,
+        "right_action_law": 1.50876072201644e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 1.7763568394002505e-15,
+        "transition_su2": 1.2212453270876722e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 95,
+      "residuals": {
+        "cayley_multiplication": 1.3079815008865125e-15,
+        "cayley_orientation": 8.881784197001252e-16,
+        "cayley_orthogonality": 8.881784197001252e-16,
+        "cocycle": 8.881784197001252e-16,
+        "frame_orthogonality": 8.881784197001252e-16,
+        "frame_projector": 6.661338147750939e-16,
+        "pair_product": 4.935288289154016e-16,
+        "pair_unit_norm": 8.881784197001252e-16,
+        "projector_annihilation": 1.0413009014850777e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 2.220446049250313e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 3.608224830031759e-16,
+        "right_action_law": 6.869154506741515e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.7763568394002505e-15,
+        "transition_su2": 1.7763568394002505e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 96,
+      "residuals": {
+        "cayley_multiplication": 6.661338147750939e-16,
+        "cayley_orientation": 1.1102230246251565e-15,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 4.440892098500626e-16,
+        "pair_product": 2.185751579730777e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 7.965819708084747e-17,
+        "projector_idempotence": 5.551115123125783e-17,
+        "projector_svd_comparison": 3.885780586188048e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 2.220446049250313e-16,
+        "right_action_law": 2.796727192030474e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.3322676295501878e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 97,
+      "residuals": {
+        "cayley_multiplication": 6.106226635438361e-16,
+        "cayley_orientation": 4.440892098500626e-16,
+        "cayley_orthogonality": 4.440892098500626e-16,
+        "cocycle": 4.440892098500626e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 4.440892098500626e-16,
+        "pair_product": 2.220446049250313e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 1.2654617053481748e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 1.582067810090848e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 2.0202840888865516e-16,
+        "right_action_law": 3.26284839070222e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 7.771561172376096e-16
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 98,
+      "residuals": {
+        "cayley_multiplication": 1.1934897514720433e-15,
+        "cayley_orientation": 1.5543122344752192e-15,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 1.2212453270876722e-15,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 7.771561172376096e-16,
+        "pair_product": 4.0245584642661925e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 1.3366109619285187e-16,
+        "projector_idempotence": 5.551115123125783e-17,
+        "projector_svd_comparison": 4.996003610813204e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 4.0245584642661925e-16,
+        "right_action_law": 5.828670879282072e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.9984014443252818e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 99,
+      "residuals": {
+        "cayley_multiplication": 7.91033905045424e-16,
+        "cayley_orientation": 1.3322676295501878e-15,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 7.771561172376096e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 5.551115123125783e-16,
+        "pair_product": 3.2612801348363973e-16,
+        "pair_unit_norm": 4.440892098500626e-16,
+        "projector_annihilation": 1.2077772048702771e-16,
+        "projector_idempotence": 5.551115123125783e-17,
+        "projector_svd_comparison": 3.0531133177191805e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 3.3306690738754696e-16,
+        "right_action_law": 4.440892098500626e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.5543122344752192e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 100,
+      "residuals": {
+        "cayley_multiplication": 1.0547118733938987e-15,
+        "cayley_orientation": 9.992007221626409e-16,
+        "cayley_orthogonality": 6.661338147750939e-16,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 6.38378239159465e-16,
+        "pair_product": 4.579669976578771e-16,
+        "pair_unit_norm": 8.881784197001252e-16,
+        "projector_annihilation": 1.3990395123668986e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 7.025630077706069e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 3.889843744763182e-16,
+        "right_action_law": 4.93107162805373e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.3322676295501878e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 101,
+      "residuals": {
+        "cayley_multiplication": 3.2890357104520263e-15,
+        "cayley_orientation": 1.1102230246251565e-15,
+        "cayley_orthogonality": 1.6445178552260131e-15,
+        "cocycle": 7.771561172376096e-16,
+        "frame_orthogonality": 6.661338147750939e-16,
+        "frame_projector": 1.2212453270876722e-15,
+        "pair_product": 1.2654807757250808e-15,
+        "pair_unit_norm": 5.551115123125783e-16,
+        "projector_annihilation": 1.7511019777612672e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 3.1086244689504383e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 9.43689570931383e-16,
+        "right_action_law": 1.3787374402816899e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 1.3322676295501878e-15,
+        "transition_su2": 1.5543122344752192e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 102,
+      "residuals": {
+        "cayley_multiplication": 8.604228440844963e-16,
+        "cayley_orientation": 7.771561172376096e-16,
+        "cayley_orthogonality": 4.440892098500626e-16,
+        "cocycle": 5.551115123125783e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 6.661338147750939e-16,
+        "pair_product": 2.42861286636753e-16,
+        "pair_unit_norm": 1.1102230246251565e-15,
+        "projector_annihilation": 7.931189430944741e-17,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 3.514293544319679e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 4.203254503048412e-16,
+        "right_action_law": 4.163336342344337e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 1.1102230246251565e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 103,
+      "residuals": {
+        "cayley_multiplication": 4.440892098500626e-16,
+        "cayley_orientation": 6.661338147750939e-16,
+        "cayley_orthogonality": 4.440892098500626e-16,
+        "cocycle": 5.551115123125783e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 3.3306690738754696e-16,
+        "pair_product": 1.5265566588595902e-16,
+        "pair_unit_norm": 7.771561172376096e-16,
+        "projector_annihilation": 1.0416347285072494e-16,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 1.2212453270876722e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 1.6653345369377348e-16,
+        "right_action_law": 2.7476618026966064e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 1.2212453270876722e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 104,
+      "residuals": {
+        "cayley_multiplication": 2.7200464103316335e-15,
+        "cayley_orientation": 1.887379141862766e-15,
+        "cayley_orthogonality": 1.3689953041455867e-15,
+        "cocycle": 9.992007221626409e-16,
+        "frame_orthogonality": 9.992007221626409e-16,
+        "frame_projector": 1.4432899320127035e-15,
+        "pair_product": 9.992007221626409e-16,
+        "pair_unit_norm": 1.5543122344752192e-15,
+        "projector_annihilation": 1.580774815729076e-16,
+        "projector_idempotence": 3.3306690738754696e-16,
+        "projector_svd_comparison": 4.045375145977914e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 9.71445146547012e-16,
+        "right_action_law": 1.1934897514720433e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 1.9984014443252818e-15,
+        "transition_su2": 2.4424906541753444e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 105,
+      "residuals": {
+        "cayley_multiplication": 9.992007221626409e-16,
+        "cayley_orientation": 6.661338147750939e-16,
+        "cayley_orthogonality": 5.244700077475032e-16,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 8.326672684688674e-16,
+        "pair_product": 3.608224830031759e-16,
+        "pair_unit_norm": 2.220446049250313e-16,
+        "projector_annihilation": 9.764653778721745e-17,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 2.858824288409778e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 2.9619140027878293e-16,
+        "right_action_law": 4.1214927040449093e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.1102230246251565e-15,
+        "transition_su2": 1.1102230246251565e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 106,
+      "residuals": {
+        "cayley_multiplication": 1.7486012637846216e-15,
+        "cayley_orientation": 1.7763568394002505e-15,
+        "cayley_orthogonality": 8.881784197001252e-16,
+        "cocycle": 1.1102230246251565e-15,
+        "frame_orthogonality": 8.881784197001252e-16,
+        "frame_projector": 1.3322676295501878e-15,
+        "pair_product": 6.938893903907228e-16,
+        "pair_unit_norm": 8.881784197001252e-16,
+        "projector_annihilation": 1.403093759224788e-16,
+        "projector_idempotence": 1.1102230246251565e-16,
+        "projector_svd_comparison": 3.497202527569243e-15,
+        "projector_symmetry": 0.0,
+        "right_action": 7.355227538141662e-16,
+        "right_action_law": 7.771561172376096e-16,
+        "transition_api": 0.0,
+        "transition_inverse": 1.7763568394002505e-15,
+        "transition_su2": 2.220446049250313e-15
+      }
+    },
+    {
+      "available_charts": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "case": 107,
+      "residuals": {
+        "cayley_multiplication": 3.3306690738754696e-15,
+        "cayley_orientation": 6.661338147750939e-16,
+        "cayley_orthogonality": 1.6771418682854768e-15,
+        "cocycle": 6.661338147750939e-16,
+        "frame_orthogonality": 4.440892098500626e-16,
+        "frame_projector": 1.3322676295501878e-15,
+        "pair_product": 1.0547118733938987e-15,
+        "pair_unit_norm": 6.661338147750939e-16,
+        "projector_annihilation": 1.7983649506466386e-16,
+        "projector_idempotence": 1.6653345369377348e-16,
+        "projector_svd_comparison": 6.106226635438361e-16,
+        "projector_symmetry": 0.0,
+        "right_action": 9.040297984765174e-16,
+        "right_action_law": 1.7847535370194474e-15,
+        "transition_api": 0.0,
+        "transition_inverse": 8.881784197001252e-16,
+        "transition_su2": 8.881784197001252e-16
+      }
+    }
+  ],
+  "numeric_tolerance": 9.094947017729282e-13,
+  "numerical_chart_admission": "projection length guard followed by section complement, frame complement, frame Gram, frame projector, lifted Gram, and lifted annihilation residual checks; matrix residuals use the spectral norm",
+  "qpu_executed": false,
+  "schema": "sedenion-quaternion-bundle-atlas-v1",
+  "scope": "Finite implementation checks; the general bundle construction uses the algebraic derivation.",
+  "standard_signed_base_cases": 84,
+  "transition": "F_source^T F_target=L(h_source_target), acting on target coordinates",
+  "versions": {
+    "numpy": "2.5.3",
+    "python": "3.14.7"
+  }
+}

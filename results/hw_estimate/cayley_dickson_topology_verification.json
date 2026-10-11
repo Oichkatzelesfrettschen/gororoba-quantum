@@ -1,0 +1,47 @@
+{
+  "gates": {
+    "existing_repository_regression_commands": "passed; existing implementation modules unchanged",
+    "mypy": "27 source files passed",
+    "python_call_graph": "passed",
+    "ruff": "passed, including all three added modules",
+    "ruff_format": "27 files passed",
+    "warning_policy": "error"
+  },
+  "outputs": {
+    "annihilator_strata": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error annihilator_strata.py --max-dimension 256",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error annihilator_strata.py --max-dimension 256"
+      ],
+      "path": "results/hw_estimate/annihilator_strata.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "30b3fde6d72f11b5dfcae5ace8f47c80fa35d9aaf782d34c08b299151234af77"
+    },
+    "sedenion_bundle": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error sedenion_bundle.py",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error sedenion_bundle.py"
+      ],
+      "path": "results/hw_estimate/sedenion_bundle.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "b3c0d1a57365f2cdc2a49c4dbdd620679911fc8279a4116b0411cdab7a6ec078"
+    }
+  },
+  "qpu_executed": false,
+  "schema": "cayley-dickson-topology-verification-v1",
+  "scope": "Exact finite integer/rational checks and numerical bundle fixtures; global topology statements depend on the cited primary theorems.",
+  "source_ledger": "literature/notes/cayley_dickson_annihilator_sources.md",
+  "source_sha256": {
+    "gororoba_quantum/CLAIM_BOUNDARIES.md": "1bf8d5e04d2376afd37946461d199806224262570ecaf228d707acc26e425b65",
+    "gororoba_quantum/annihilator_strata.py": "af9eb133bf69d277ee0108899bc1a87abe5edc01455d43f9483d7e8f067b518c",
+    "gororoba_quantum/cd_core.py": "3e28db5844f9a50c0e5e95ee24147e26601bc11bb7115aa7ac2b9d666471bfc1",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/sedenion_bundle.py": "6908c8d9a5f411875a121cf8720698234ed5c016ff203ce86ca236b67912142c",
+    "literature/notes/cayley_dickson_annihilator_sources.md": "02f4cf4fb7dee46e5fd87052cf5d4c0a81087c848948bad17af246b764f080d5"
+  },
+  "versions": {
+    "numpy": "2.5.3",
+    "python": "3.14.7"
+  },
+  "working_directory": "gororoba_quantum"
+}

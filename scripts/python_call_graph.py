@@ -30,6 +30,8 @@ REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 SOURCE_ROOT = REPOSITORY_ROOT / "gororoba_quantum"
 ROOT_FUNCTIONS = (
     "claim_boundaries.main",
+    "sedenion_bundle.main",
+    "annihilator_strata.main",
     "compile_evidence.main",
     "designs._verify",
     "modular_arithmetic._verify",

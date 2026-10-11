@@ -9,6 +9,17 @@ The directory contains compiler and local-simulation records. Every record sets
   runtime versions, and byte-identical serial/four-worker outputs. Reproduce
   from `gororoba_quantum/` with `"$PYTHON" -W error claim_boundaries.py`;
   `CLAIM_BOUNDARIES.md` states the mathematical limits of each witness.
+- `sedenion_bundle.json` records exact rational fixtures and numerical checks
+  for the sedenion bundle charts, transition maps, quaternion action, and
+  Cayley frames. `annihilator_strata.json` records the exact signed two-term
+  census and maximal-annihilator lifts through dimension 256.
+  `cayley_dickson_topology_verification.json` binds both captures to source
+  hashes, versions, and byte-identical serial/four-worker outputs. Reproduce
+  from `gororoba_quantum/` with `"$PYTHON" -W error sedenion_bundle.py` and
+  `"$PYTHON" -W error annihilator_strata.py --max-dimension 256`.
+  The [source ledger](../../literature/notes/cayley_dickson_annihilator_sources.md)
+  attributes the general theorems and distinguishes their domains from the
+  finite implementation checks.
 - `ibm_fez_record.json` and `ibm_fez_isa.qpy` retain the fixed calibrated
   compile used by the design documents.
 - `hybrid_shor_fake_fez.json` retains the original single-seed ANF-versus-cycle

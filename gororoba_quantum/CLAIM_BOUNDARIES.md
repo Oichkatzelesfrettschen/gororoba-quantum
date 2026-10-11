@@ -161,8 +161,9 @@ the fiber is the unit sphere in the four-dimensional annihilator. Reggiani uses
 operands of norm `sqrt(2)`. Constant rescaling identifies that pair space with
 `Z_4` above. The continuous base is fundamentally different from a finite
 assessor graph. The paper studies intrinsic metrics and curvature with explicit
-geometric constructions. The repository's finite checks do not reproduce those
-geometric proofs or settle topology for higher doubling levels.
+geometric constructions. The constructive bundle maps below realize the
+underlying sedenion topology; a curvature calculation requires the additional
+metric data and proofs in the paper.
 
 [designs.py](designs.py), `_check_design_d`, verifies four-dimensional kernels
 and Gram eigenvalue multiplicities `{0:4, 1/2:8, 1:4}` for the 84 standard signed
@@ -190,6 +191,99 @@ zero-product variety. The nine listed phases also repeat the endpoint at
 `2*pi`; they sample eight distinct phases. Fringe visibility characterizes the
 interference signal under compilation and noise. Curvature of a named manifold
 requires a metric and geometric observables beyond this cosine fringe.
+
+## Constructive sedenion bundle and higher-dimensional strata
+
+[sedenion_bundle.py](sedenion_bundle.py) implements local coordinates for the
+continuous sedenion bundle. The construction starts with an ordered orthonormal
+pair `a,b` of imaginary octonions, sets `q=a*b`, and forms the quaternion
+subalgebra `H=span(1,a,b,q)`. The element and partner maps are
+
+```text
+x = (a,b)/sqrt(2),
+y(c) = (c,-q*c)/sqrt(2),  c in H^perp, ||c||=1.
+```
+
+The doubling identity gives
+`2*x*y=(a*c+(-q*c)*b, (-q*c)*a-b*c)=(0,0)`. The parenthesized products matter:
+this calculation uses octonion identities on `H^perp`, rather than treating
+sedenion multiplication as associative. Biss, Dugger, and Isaksen,
+[Corollary 11.2](https://arxiv.org/html/math/0511691v1#S11.SS2), identifies the
+entire annihilator with this four-dimensional space. Therefore the normalized
+fiber is `S3` for every point of the stated continuous base.
+
+The matrix with columns `[1,a,b,q,c,a*c,b*c,q*c]` preserves the octonion
+multiplication table. The source's Theorem 7.1 identifies these Cayley frames
+with `G2`. The implementation checks all 64 basis products for its finite
+fixtures, providing an independent check of the formula and sign convention.
+The published theorem supplies the all-frame identification.
+
+Explicit overlapping charts avoid choosing a supposed global kernel basis.
+Let `P=I-[1,a,b,q][1,a,b,q]^T`. For `r=1,...,7`, use the open set
+`U_r={||P*e_r||>0}` and define
+
+```text
+c_r = P*e_r / ||P*e_r||,
+F_r = [c_r, a*c_r, b*c_r, q*c_r].
+```
+
+Rank `P=4` guarantees that the seven charts cover `V2(R7)`. On an overlap,
+`h_rs=F_r^T*c_s` is a unit quaternion and
+`F_s=F_r*L_H(h_rs)`. The transitions satisfy the inverse relation and
+`h_rt=h_rs*h_st`. They lie in `SU(2)` through quaternion left multiplication;
+right multiplication of the local unit-quaternion fiber coordinate commutes
+with them. This defines the principal action and glues the local `S3` fibers.
+The executable checks cover real zero products, unit norms, chart availability,
+transition inversion and cocycles, the group action, and deliberate mutations.
+The finite audit contains three exact fixtures, including a dense rational
+frame, plus 84 standard signed bases and 24 seeded dense numerical bases.
+Numerical fixtures verify those mechanisms to their declared tolerance; they
+complement the general algebraic derivation and cited theorem. For an exact
+base, `trace(P)=4` guarantees a coordinate projection of norm at least
+`sqrt(4/7)`. The floating-point evaluator first requires projected norm at least
+`eps^(1/4)`, then checks the constructed section, frame, and lifted annihilator.
+The section-complement Euclidean norm and the spectral norms of the frame
+complement, frame Gram, frame projector, lifted Gram, and lifted annihilation
+residuals must each be at most `4096*eps`. An approximately admissible base still
+requires these residual checks; the exact cover theorem alone establishes
+neither floating-point accuracy nor numerical admission. Two near-degenerate
+regressions reject the unstable chart and admit the largest-projection chart.
+
+Higher doubling levels require strata because the fiber rank changes. For a
+nonzero element of `A_n` with `n>=2`, Theorem 9.8 and Proposition 9.10
+give
+
+```text
+dim Ann(a) in {0,4,8,...,M_n},  M_n=2^n-4*n+4.
+```
+
+Theorem 13.2 establishes that every listed value occurs. The source restricts
+the upper bound to nonzero inputs; the zero vector has a full-dimensional
+annihilator. In dimension 32, the positive two-basis-unit census has nullities
+`{0:171,4:84,8:84,12:126}` over 465 inputs. Including both signs doubles that
+finite denominator. [annihilator_strata.py](annihilator_strata.py) verifies the
+signed two-term census through dimension 128 by default, with an explicit
+option through dimension 256. The four-term lift `e1+e10+e18-e25` supplies the
+missing maximum-nullity-16 witness. The integer lift has norm squared four;
+dividing by two gives its unit representative. These finite corpora validate
+representatives and counts, rather than classifying all real coefficients.
+
+For nonzero `a` perpendicular to `C_n=span(1,i_n)`, with
+`i_n=e_(2^(n-1))`, Theorem 10.2 constructs
+`(a,+/-i_n*a)` in `A_(n+1)` with kernel dimension `dim Ann(a)+2^n-4`.
+Starting at a sedenion maximal element gives nullities `4,16,44,104,228` in
+algebra dimensions `16,32,64,128,256`. The direct-sum kernel formula, normalization,
+source hashes, and exact-rank requirements are recorded in the
+[annihilator source ledger](../literature/notes/cayley_dickson_annihilator_sources.md).
+
+Theorem 15.7 identifies the **unit maximal-element stratum** with `2^(n-4)`
+disjoint copies of `V2(R7)`. Its normalized partner fiber is `S^(M_n-1)`.
+Those bases and fibers describe a restricted portion of the full pair variety,
+which also includes smaller-nullity strata. The sequel's Theorem 7.5 supplies
+an `S5`-bundle for a constrained `A5` D-locus, and Theorem 8.12 supplies stability
+for near-maximum threshold families. Each result keeps its stated domain.
+The executable higher-dimensional census and lift checks do not supply a cell
+complex or all homotopy groups for the complete zero-product pair variety.
 
 ## Retained predictions and a bounded research program
 
@@ -225,7 +319,13 @@ The [retained local audit](../results/hw_estimate/cayley_dickson_claim_boundarie
 contains the finite witnesses, including the quartic six-qubit Statevector
 comparison. Its [verification manifest](../results/hw_estimate/cayley_dickson_claim_boundaries_verification.json)
 binds the source hashes, runtime versions, and serial/four-worker equality.
-The [fresh IBM dry-run record](../results/live/2026-10-11T200341.410400Z/record.json)
+The [sedenion bundle audit](../results/hw_estimate/sedenion_bundle.json) records
+exact fixtures, numerical charts, and residual-admission regressions. The
+[annihilator stratum audit](../results/hw_estimate/annihilator_strata.json) covers
+the signed two-term census and maximum-annihilator lifts through dimension 256.
+Their [verification manifest](../results/hw_estimate/cayley_dickson_topology_verification.json)
+binds the implementation and execution evidence. The
+[fresh IBM dry-run record](../results/live/2026-10-11T200341.410400Z/record.json)
 records the separate service-access and calibrated local-simulation evidence.
 
 Run the local executable boundary checks from the repository root:
@@ -240,7 +340,24 @@ Run the local executable boundary checks from the repository root:
 ```
 
 The command checks finite mathematical witnesses and Qiskit statevectors locally.
-For a fresh service contact, Target fetch, compilation, and noise-model dry run,
+The constructive topology checks run through the same selected interpreter:
+
+```sh
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  cd gororoba_quantum
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" sedenion_bundle.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" annihilator_strata.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" annihilator_strata.py --max-dimension 256
+)
+```
+
+The default annihilator audit covers dimensions 8 through 128; the last command
+extends the finite denominator through 256. Each audit writes its evidence to
+stdout. The source ledger distinguishes inherited theorems, exact certificates,
+and numerical checks. For a fresh service contact, Target fetch, compilation,
+and noise-model dry run,
 use the existing approved-record workflow's planning entry point:
 
 ```sh
