@@ -1,0 +1,967 @@
+{
+  "admission": {
+    "clauses": {
+      "every_seed_no_worse_in_cz_depth_duration": false,
+      "logical_equivalence_and_workspace_checks_pass": true,
+      "logical_qubits_not_increased": true,
+      "median_routed_cz_strictly_lower": false,
+      "shared_dynamic_skeleton": true
+    },
+    "per_seed_regressions": [
+      {
+        "baseline": 5385,
+        "challenger": 6099,
+        "metric": "routed_cz",
+        "seed_transpiler": 0
+      },
+      {
+        "baseline": 13681,
+        "challenger": 15529,
+        "metric": "depth",
+        "seed_transpiler": 0
+      },
+      {
+        "baseline": 132000,
+        "challenger": 145173,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 0
+      },
+      {
+        "baseline": 5419,
+        "challenger": 6105,
+        "metric": "routed_cz",
+        "seed_transpiler": 1
+      },
+      {
+        "baseline": 13651,
+        "challenger": 15565,
+        "metric": "depth",
+        "seed_transpiler": 1
+      },
+      {
+        "baseline": 131586,
+        "challenger": 145707,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 1
+      },
+      {
+        "baseline": 5454,
+        "challenger": 6285,
+        "metric": "routed_cz",
+        "seed_transpiler": 2
+      },
+      {
+        "baseline": 13298,
+        "challenger": 15887,
+        "metric": "depth",
+        "seed_transpiler": 2
+      },
+      {
+        "baseline": 125442,
+        "challenger": 150666,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 2
+      },
+      {
+        "baseline": 5404,
+        "challenger": 6105,
+        "metric": "routed_cz",
+        "seed_transpiler": 3
+      },
+      {
+        "baseline": 13673,
+        "challenger": 15536,
+        "metric": "depth",
+        "seed_transpiler": 3
+      },
+      {
+        "baseline": 132177,
+        "challenger": 145053,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 3
+      },
+      {
+        "baseline": 5425,
+        "challenger": 6171,
+        "metric": "routed_cz",
+        "seed_transpiler": 4
+      },
+      {
+        "baseline": 13492,
+        "challenger": 15961,
+        "metric": "depth",
+        "seed_transpiler": 4
+      },
+      {
+        "baseline": 126978,
+        "challenger": 150723,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 4
+      },
+      {
+        "baseline": 5588,
+        "challenger": 6153,
+        "metric": "routed_cz",
+        "seed_transpiler": 5
+      },
+      {
+        "baseline": 13715,
+        "challenger": 15971,
+        "metric": "depth",
+        "seed_transpiler": 5
+      },
+      {
+        "baseline": 132588,
+        "challenger": 150483,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 5
+      },
+      {
+        "baseline": 5384,
+        "challenger": 6148,
+        "metric": "routed_cz",
+        "seed_transpiler": 6
+      },
+      {
+        "baseline": 13706,
+        "challenger": 15898,
+        "metric": "depth",
+        "seed_transpiler": 6
+      },
+      {
+        "baseline": 132246,
+        "challenger": 150102,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 6
+      },
+      {
+        "baseline": 5482,
+        "challenger": 6113,
+        "metric": "routed_cz",
+        "seed_transpiler": 7
+      },
+      {
+        "baseline": 13290,
+        "challenger": 15533,
+        "metric": "depth",
+        "seed_transpiler": 7
+      },
+      {
+        "baseline": 125547,
+        "challenger": 145065,
+        "metric": "scheduled_duration_dt",
+        "seed_transpiler": 7
+      }
+    ],
+    "rule": "admit only when the exhaustive logical-equivalence and workspace checks pass, logical qubits do not increase, every seed is no worse in routed CZ, depth, and scheduled duration, and the median routed CZ is strictly lower",
+    "verdict": "rejected"
+  },
+  "candidate_source_sha256": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+  "candidates": [
+    {
+      "logical_coefficients": {
+        "arithmetic_workspace_qubits": 1,
+        "basis_edge_gates": 0,
+        "compiler_workspace_qubits": 0,
+        "control_arity_histogram": [
+          {
+            "controls": 2,
+            "gate_count": 20
+          },
+          {
+            "controls": 3,
+            "gate_count": 87
+          },
+          {
+            "controls": 4,
+            "gate_count": 20
+          },
+          {
+            "controls": 5,
+            "gate_count": 43
+          }
+        ],
+        "controlled_swaps": 0,
+        "controlled_target_flips": 170,
+        "controlled_x_gates": 0,
+        "degree_histogram": [
+          {
+            "degree": 1,
+            "term_count": 140
+          },
+          {
+            "degree": 2,
+            "term_count": 212
+          },
+          {
+            "degree": 3,
+            "term_count": 320
+          },
+          {
+            "degree": 4,
+            "term_count": 194
+          }
+        ],
+        "forward_anf_terms": 434,
+        "input_domain": "nonzero_residues",
+        "inverse_anf_terms": 432,
+        "maximum_control_count": 5,
+        "phase_bits": 10,
+        "unique_multipliers": [
+          2,
+          4,
+          16
+        ],
+        "work_qubits": 5
+      },
+      "logical_qubits": 7,
+      "medians": {
+        "active_physical_qubits": 7.0,
+        "depth": 13662.0,
+        "routed_cz": 5422.0,
+        "scheduled_duration_dt": 131793.0
+      },
+      "multiplier_strategy": "target_flip_1_clean",
+      "name": "target_flip_one_clean",
+      "runs": [
+        {
+          "active_physical_qubits": 7,
+          "depth": 13681,
+          "logical_qubits": 7,
+          "routed_cz": 5385,
+          "scheduled_duration_dt": 132000,
+          "seed_transpiler": 0
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13651,
+          "logical_qubits": 7,
+          "routed_cz": 5419,
+          "scheduled_duration_dt": 131586,
+          "seed_transpiler": 1
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13298,
+          "logical_qubits": 7,
+          "routed_cz": 5454,
+          "scheduled_duration_dt": 125442,
+          "seed_transpiler": 2
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13673,
+          "logical_qubits": 7,
+          "routed_cz": 5404,
+          "scheduled_duration_dt": 132177,
+          "seed_transpiler": 3
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13492,
+          "logical_qubits": 7,
+          "routed_cz": 5425,
+          "scheduled_duration_dt": 126978,
+          "seed_transpiler": 4
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13715,
+          "logical_qubits": 7,
+          "routed_cz": 5588,
+          "scheduled_duration_dt": 132588,
+          "seed_transpiler": 5
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13706,
+          "logical_qubits": 7,
+          "routed_cz": 5384,
+          "scheduled_duration_dt": 132246,
+          "seed_transpiler": 6
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 13290,
+          "logical_qubits": 7,
+          "routed_cz": 5482,
+          "scheduled_duration_dt": 125547,
+          "seed_transpiler": 7
+        }
+      ],
+      "source_operations": {
+        "ccx": 170,
+        "h": 20,
+        "if_else": 45,
+        "measure": 10,
+        "rccx": 512,
+        "reset": 9,
+        "x": 695
+      },
+      "workspace_contract": "one clean workspace restored after each exact Boolean target flip"
+    },
+    {
+      "logical_coefficients": {
+        "arithmetic_workspace_qubits": 1,
+        "basis_edge_gates": 0,
+        "compiler_workspace_qubits": 0,
+        "control_arity_histogram": [
+          {
+            "controls": 2,
+            "gate_count": 114
+          },
+          {
+            "controls": 3,
+            "gate_count": 63
+          },
+          {
+            "controls": 4,
+            "gate_count": 60
+          },
+          {
+            "controls": 5,
+            "gate_count": 21
+          }
+        ],
+        "controlled_swaps": 0,
+        "controlled_target_flips": 258,
+        "controlled_x_gates": 0,
+        "degree_histogram": [
+          {
+            "degree": 1,
+            "term_count": 140
+          },
+          {
+            "degree": 2,
+            "term_count": 212
+          },
+          {
+            "degree": 3,
+            "term_count": 320
+          },
+          {
+            "degree": 4,
+            "term_count": 194
+          }
+        ],
+        "forward_anf_terms": 434,
+        "input_domain": "nonzero_residues",
+        "inverse_anf_terms": 432,
+        "maximum_control_count": 5,
+        "phase_bits": 10,
+        "unique_multipliers": [
+          2,
+          4,
+          16
+        ],
+        "work_qubits": 5
+      },
+      "logical_qubits": 7,
+      "medians": {
+        "active_physical_qubits": 7.0,
+        "depth": 15726.0,
+        "routed_cz": 6130.5,
+        "scheduled_duration_dt": 147904.5
+      },
+      "multiplier_strategy": "affine_residual_target_flip_1_clean",
+      "name": "affine_residual_target_flip",
+      "runs": [
+        {
+          "active_physical_qubits": 7,
+          "depth": 15529,
+          "logical_qubits": 7,
+          "routed_cz": 6099,
+          "scheduled_duration_dt": 145173,
+          "seed_transpiler": 0
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15565,
+          "logical_qubits": 7,
+          "routed_cz": 6105,
+          "scheduled_duration_dt": 145707,
+          "seed_transpiler": 1
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15887,
+          "logical_qubits": 7,
+          "routed_cz": 6285,
+          "scheduled_duration_dt": 150666,
+          "seed_transpiler": 2
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15536,
+          "logical_qubits": 7,
+          "routed_cz": 6105,
+          "scheduled_duration_dt": 145053,
+          "seed_transpiler": 3
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15961,
+          "logical_qubits": 7,
+          "routed_cz": 6171,
+          "scheduled_duration_dt": 150723,
+          "seed_transpiler": 4
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15971,
+          "logical_qubits": 7,
+          "routed_cz": 6153,
+          "scheduled_duration_dt": 150483,
+          "seed_transpiler": 5
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15898,
+          "logical_qubits": 7,
+          "routed_cz": 6148,
+          "scheduled_duration_dt": 150102,
+          "seed_transpiler": 6
+        },
+        {
+          "active_physical_qubits": 7,
+          "depth": 15533,
+          "logical_qubits": 7,
+          "routed_cz": 6113,
+          "scheduled_duration_dt": 145065,
+          "seed_transpiler": 7
+        }
+      ],
+      "source_operations": {
+        "ccx": 258,
+        "h": 20,
+        "if_else": 45,
+        "measure": 10,
+        "rccx": 492,
+        "reset": 9,
+        "x": 399
+      },
+      "workspace_contract": "one clean workspace restored after each residual target flip; linear CNOTs promoted to phase-controlled Toffolis"
+    }
+  ],
+  "capture": "n21-affine-residual-challenger",
+  "compiler": {
+    "dt_seconds": 4e-09,
+    "optimization_level": 3,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "target": "qiskit_ibm_runtime.fake_provider.FakeFez",
+    "versions": {
+      "numpy": "2.5.3",
+      "python": "3.14.7",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0",
+      "rustworkx": "0.18.1",
+      "scipy": "1.18.1"
+    }
+  },
+  "duration_model": "estimate_duration over the true-branch gate-time view; a lower bound that omits classical feed-forward latency, common to both candidates through their shared dynamic skeleton",
+  "problem": {
+    "base": 2,
+    "modulus": 21,
+    "phase_bits": 10
+  },
+  "qpu_executed": false,
+  "replay_command": "\"$PYTHON\" gororoba_quantum/affine_residual_challenger.py --out results/hw_estimate/n21_affine_residual_challenger.json",
+  "schema_version": 1,
+  "source_files_sha256": {
+    "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+    "gororoba_quantum/affine_residual_challenger.py": "18503f25f4d6cb11a4f99a9a662948bd70f2682a6050472bcf7b6186cf647728",
+    "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+    "gororoba_quantum/compile_evidence.py": "f07e02204118623c79c6e99507f66f6320761ed704a219ee301f234547612635",
+    "gororoba_quantum/live_run.py": "3d79d674981ece434536ef7970806191aeb08033301ab02286d762ad1b286b2e",
+    "gororoba_quantum/modular_arithmetic.py": "df245cb512962ea349f2c1e168be82204e00ace3b55961a7dd795c698f394f36",
+    "gororoba_quantum/order_finding.py": "f97a0bc1add0b381a0589fc7a44d0fe11ab322aeefd0ba48d273a209ba0d5e2d",
+    "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+    "requirements.txt": "3c5d78c24e22b4557df12db0669fc43fcd60e96ac0f33e241edfcbe65a7f9b0b"
+  },
+  "surrogate_cx": {
+    "per_multiplier": {
+      "16": {
+        "baseline": 252,
+        "challenger": 306,
+        "minimum_linear_bound": 288,
+        "residual_only": 234
+      },
+      "2": {
+        "baseline": 288,
+        "challenger": 300,
+        "minimum_linear_bound": 300,
+        "residual_only": 240
+      },
+      "4": {
+        "baseline": 252,
+        "challenger": 300,
+        "minimum_linear_bound": 288,
+        "residual_only": 234
+      }
+    },
+    "round_multipliers": [
+      4,
+      16,
+      4,
+      16,
+      4,
+      16,
+      4,
+      16,
+      4,
+      2
+    ],
+    "ten_round_totals": {
+      "baseline": 2556,
+      "challenger": 3024,
+      "minimum_linear_bound": 2892,
+      "residual_only": 2346
+    },
+    "weights": "phase-controlled CX equivalents per cube with 0-4 data controls: 1/6/12/18/24"
+  },
+  "synthesis": {
+    "modulus": 21,
+    "multipliers": [
+      {
+        "baseline_cube_count": 17,
+        "baseline_cx_surrogate": 288,
+        "challenger_cube_count": 24,
+        "challenger_cx_surrogate": 300,
+        "checks": {
+          "composition_a_after_r_equals_f": true,
+          "controlled_operator_both_branches_clean_workspace": true,
+          "residual_affine_part_is_identity": true,
+          "residual_is_register_permutation": true,
+          "reversed_composition_rejected": true,
+          "single_cnot_deletions_rejected": 10,
+          "uncontrolled_linear_disabled_branch_moved_states": 30
+        },
+        "constant": 0,
+        "inverse_rows": [
+          3,
+          4,
+          9,
+          16,
+          1
+        ],
+        "linear_cnot_count": 10,
+        "linear_cnots": [
+          [
+            4,
+            3
+          ],
+          [
+            4,
+            1
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            4,
+            3
+          ],
+          [
+            2,
+            3
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            1,
+            2
+          ],
+          [
+            2,
+            1
+          ],
+          [
+            0,
+            1
+          ],
+          [
+            1,
+            0
+          ]
+        ],
+        "linear_rank": 5,
+        "linear_rows": [
+          16,
+          17,
+          2,
+          20,
+          8
+        ],
+        "minimum_linear_cnot_count": 10,
+        "multiplier": 2,
+        "register_states_per_branch": 32,
+        "residual": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          6,
+          7,
+          8,
+          9,
+          10,
+          21,
+          20,
+          23,
+          22,
+          17,
+          16,
+          19,
+          18,
+          29,
+          28,
+          31,
+          11,
+          30,
+          12,
+          25,
+          13,
+          24,
+          14,
+          27,
+          15,
+          26
+        ],
+        "residual_cube_count": 14,
+        "residual_cx_surrogate": 240
+      },
+      {
+        "baseline_cube_count": 17,
+        "baseline_cx_surrogate": 252,
+        "challenger_cube_count": 26,
+        "challenger_cx_surrogate": 300,
+        "checks": {
+          "composition_a_after_r_equals_f": true,
+          "controlled_operator_both_branches_clean_workspace": true,
+          "residual_affine_part_is_identity": true,
+          "residual_is_register_permutation": true,
+          "reversed_composition_rejected": true,
+          "single_cnot_deletions_rejected": 11,
+          "uncontrolled_linear_disabled_branch_moved_states": 30
+        },
+        "constant": 0,
+        "inverse_rows": [
+          4,
+          10,
+          16,
+          2,
+          3
+        ],
+        "linear_cnot_count": 11,
+        "linear_cnots": [
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            3,
+            4
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            0
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            0,
+            2
+          ],
+          [
+            2,
+            0
+          ]
+        ],
+        "linear_rank": 5,
+        "linear_rows": [
+          24,
+          8,
+          1,
+          10,
+          4
+        ],
+        "minimum_linear_cnot_count": 9,
+        "multiplier": 4,
+        "register_states_per_branch": 32,
+        "residual": [
+          0,
+          1,
+          2,
+          3,
+          4,
+          5,
+          10,
+          11,
+          8,
+          9,
+          14,
+          26,
+          27,
+          24,
+          25,
+          30,
+          16,
+          17,
+          18,
+          19,
+          20,
+          21,
+          31,
+          15,
+          6,
+          22,
+          28,
+          12,
+          7,
+          23,
+          29,
+          13
+        ],
+        "residual_cube_count": 15,
+        "residual_cx_surrogate": 234
+      },
+      {
+        "baseline_cube_count": 17,
+        "baseline_cx_surrogate": 252,
+        "challenger_cube_count": 26,
+        "challenger_cx_surrogate": 306,
+        "checks": {
+          "composition_a_after_r_equals_f": true,
+          "controlled_operator_both_branches_clean_workspace": true,
+          "residual_affine_part_is_identity": true,
+          "residual_is_register_permutation": true,
+          "reversed_composition_rejected": true,
+          "single_cnot_deletions_rejected": 12,
+          "uncontrolled_linear_disabled_branch_moved_states": 30
+        },
+        "constant": 0,
+        "inverse_rows": [
+          16,
+          8,
+          9,
+          10,
+          4
+        ],
+        "linear_cnot_count": 12,
+        "linear_cnots": [
+          [
+            4,
+            2
+          ],
+          [
+            4,
+            0
+          ],
+          [
+            3,
+            2
+          ],
+          [
+            3,
+            1
+          ],
+          [
+            2,
+            4
+          ],
+          [
+            2,
+            0
+          ],
+          [
+            4,
+            2
+          ],
+          [
+            1,
+            4
+          ],
+          [
+            1,
+            3
+          ],
+          [
+            1,
+            0
+          ],
+          [
+            0,
+            4
+          ],
+          [
+            4,
+            0
+          ]
+        ],
+        "linear_rank": 5,
+        "linear_rows": [
+          6,
+          10,
+          16,
+          2,
+          1
+        ],
+        "minimum_linear_cnot_count": 9,
+        "multiplier": 16,
+        "register_states_per_branch": 32,
+        "residual": [
+          0,
+          1,
+          2,
+          24,
+          4,
+          5,
+          30,
+          28,
+          8,
+          9,
+          26,
+          14,
+          12,
+          13,
+          22,
+          10,
+          16,
+          17,
+          18,
+          6,
+          20,
+          21,
+          25,
+          29,
+          15,
+          11,
+          7,
+          3,
+          31,
+          27,
+          23,
+          19
+        ],
+        "residual_cube_count": 14,
+        "residual_cx_surrogate": 234
+      }
+    ],
+    "rank_census": [
+      {
+        "applicable": true,
+        "constant": 0,
+        "inverse_multiplier": 11,
+        "linear_rank": 5,
+        "multiplier": 2
+      },
+      {
+        "applicable": true,
+        "constant": 0,
+        "inverse_multiplier": 16,
+        "linear_rank": 5,
+        "multiplier": 4
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 17,
+        "linear_rank": 4,
+        "multiplier": 5
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 8,
+        "linear_rank": 4,
+        "multiplier": 8
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 19,
+        "linear_rank": 4,
+        "multiplier": 10
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 2,
+        "linear_rank": 4,
+        "multiplier": 11
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 13,
+        "linear_rank": 4,
+        "multiplier": 13
+      },
+      {
+        "applicable": true,
+        "constant": 0,
+        "inverse_multiplier": 4,
+        "linear_rank": 5,
+        "multiplier": 16
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 5,
+        "linear_rank": 4,
+        "multiplier": 17
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 10,
+        "linear_rank": 4,
+        "multiplier": 19
+      },
+      {
+        "applicable": false,
+        "constant": 0,
+        "inverse_multiplier": 20,
+        "linear_rank": 4,
+        "multiplier": 20
+      }
+    ]
+  }
+}
