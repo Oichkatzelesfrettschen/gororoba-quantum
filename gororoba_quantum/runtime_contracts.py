@@ -1866,14 +1866,18 @@ def _verify_approved_record_gate() -> None:
     live_run_module.evaluate(choices, record)
     original_configure_sampler = live_run_module.configure_sampler
     constructions = 0
+    runs: list[int] = []
 
     def counting_sampler(
         backend: Any, kind: str, twirl: bool, dd: str | None, tags: list[str], shots: int = 4096
     ) -> Any:
+        # build_submission_plan constructs a Sampler to record its effective
+        # options before any batch runs, so runs, not constructions, count
+        # submissions.
         nonlocal constructions
         del backend, twirl, dd
         constructions += 1
-        return _ProbeSampler(kind, tags, shots, lambda unused_circuits: None)
+        return _ProbeSampler(kind, tags, shots, lambda circuits: runs.append(len(circuits)))
 
     with tempfile.TemporaryDirectory(prefix="gororoba-approved-record-") as directory:
         approved_dir = Path(directory) / "approved"
@@ -1905,10 +1909,20 @@ def _verify_approved_record_gate() -> None:
         moved_found = live_run_module.approved_record_mismatches(approved_dir, moved_view, fresh_qpy)
         if not any("calibration" in m for m in moved_found):
             raise RuntimeError("a calibration that moved during the refresh passes the approved-record gate")
-        twirled = copy.deepcopy(record)
-        twirled["policy"]["twirl"] = not twirled["policy"].get("twirl", False)
-        if not any("policy" in m for m in live_run_module.approved_record_mismatches(approved_dir, twirled, fresh_qpy)):
-            raise RuntimeError("a changed twirling option passes the approved-record gate")
+        for label, mutate in (
+            ("twirl", lambda r: r["policy"].__setitem__("twirl", not r["policy"].get("twirl", False))),
+            ("min_remaining_seconds", lambda r: r["policy"].__setitem__("min_remaining_seconds", 999)),
+            ("versions", lambda r: r["versions"].__setitem__("qiskit-ibm-runtime", "0.0.0")),
+            ("instance_sha256_12", lambda r: r.__setitem__("instance_sha256_12", "000000000000")),
+        ):
+            changed = copy.deepcopy(record)
+            mutate(changed)
+            named = live_run_module.approved_record_mismatches(approved_dir, changed, fresh_qpy)
+            field = "policy" if label in ("twirl", "min_remaining_seconds") else label
+            if not any(field in m for m in named):
+                raise RuntimeError(f"a changed {label} passes the approved-record gate")
+        if "instance_sha256_12" not in record or len(record["instance_sha256_12"]) != 12:
+            raise RuntimeError("the plan records no instance hash")
         submitted = json.loads((approved_dir / "record.json").read_text())
         submitted["submission"] = {}
         submitted["state"] = "submitted"
@@ -1941,6 +1955,41 @@ def _verify_approved_record_gate() -> None:
         mismatches = gated_record.get("renewed_approval", {}).get("mismatches", [])
         if constructions or gated_record["state"] != "approval_required" or "shots differs" not in mismatches:
             raise RuntimeError(f"the approved-record gate leaves {gated_record.get('state')} after {constructions}")
+        # A calibration that rolls between the approved-record check and the
+        # batch stops before the Sampler.
+        original_take_snapshot = live_run_module.take_snapshot
+        snapshot_calls = 0
+
+        def rolled_snapshot(service: Any, name: str) -> Snapshot:
+            # The refresh before the gate reads the first snapshot; the
+            # per-batch revalidation reads the next, which has rolled.
+            nonlocal snapshot_calls
+            snapshot_calls += 1
+            snapshot = original_take_snapshot(service, name)
+            if snapshot_calls > 1:
+                snapshot.calibration = "2099-01-01T00:00:00+00:00"
+            return snapshot
+
+        args.approved_record = approved_dir
+        rolled_record = copy.deepcopy(record)
+        live_run_module.configure_sampler = counting_sampler
+        live_run_module.take_snapshot = rolled_snapshot
+        try:
+            try:
+                live_run_module.submit(
+                    service, list(choices), args, rolled_record, lambda: write_archive(run_dir, choices), lambda: None
+                )
+            except LiveRunError as error:
+                if "calibration moved after the approved-record check" not in str(error):
+                    raise RuntimeError(f"a rolled batch calibration reports {error}") from error
+            else:
+                raise RuntimeError("a calibration that rolled before the batch reaches submission")
+        finally:
+            live_run_module.configure_sampler = original_configure_sampler
+            live_run_module.take_snapshot = original_take_snapshot
+            args.approved_record = None
+        if runs or rolled_record["state"] != "approval_required":
+            raise RuntimeError("a rolled batch calibration runs a Sampler or leaves the state unchanged")
 
 
 def _verify_schema_lifecycle() -> None:

@@ -2196,8 +2196,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             # the archived circuits, so the approved-record gate compares them.
             "twirl": bool(getattr(args, "twirl", False)),
             "dd": getattr(args, "dd", None),
+            "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
         },
         "shots": args.shots,
+        "instance_sha256_12": _instance_hash(service),
         "seed_simulator": SEED_SIMULATOR,
         "experiment_digest": experiment_digest(),
         "code_commit": _code_commit(),
@@ -2277,6 +2279,15 @@ def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
 
 
 APPROVED_GROUP_FIELDS = ("backend", "seed_transpiler", "initial_layout", "replica_floor")
+APPROVED_RECORD_FIELDS = (
+    "experiment_digest",
+    "schema_version",
+    "schema_contract",
+    "shots",
+    "policy",
+    "versions",
+    "instance_sha256_12",
+)
 
 
 def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: list[ExecutionPub]) -> dict[str, Any]:
@@ -2288,7 +2299,7 @@ def refreshed_plan_view(record: dict[str, Any], choices: list[Choice], pubs: lis
     compared, not the initial plan's copy.
     """
     return {
-        **{k: record.get(k) for k in ("experiment_digest", "schema_version", "schema_contract", "shots", "policy")},
+        **{k: record.get(k) for k in APPROVED_RECORD_FIELDS},
         "groups": [
             {
                 "group": choice.group.name,
@@ -2310,10 +2321,11 @@ def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_a
 
     The approved record is the dry run the owner read before approving the
     command, so the plan that reaches the service has to be that plan: the
-    same experiment digest and schema, shots, policy, groups on the same
-    backends with the same seeds, layouts, replica qubits, and floors, the
-    same fused PUB manifests, the same calibration on every used backend,
-    and a byte-identical QPY archive. The approved record is itself a dry
+    same experiment digest and schema, shots, policy (replica, queue,
+    twirling, DD, and remaining-budget settings), dependency versions, IBM
+    Cloud instance, groups on the same backends with the same seeds, layouts,
+    replica qubits, and floors, the same fused PUB manifests, the same
+    calibration on every used backend, and a byte-identical QPY archive. The approved record is itself a dry
     run: planned, with no submission.
     """
     approved = json.loads((approved_dir / "record.json").read_text())
@@ -2321,7 +2333,7 @@ def approved_record_mismatches(approved_dir: Path, record: dict[str, Any], qpy_a
     mismatches: list[str] = []
     if approved.get("state") != "planned" or "submission" in approved:
         mismatches.append(f"approved record state is {approved.get('state')!r}, not a submit-free plan")
-    for field_name in ("experiment_digest", "schema_version", "schema_contract", "shots", "policy"):
+    for field_name in APPROVED_RECORD_FIELDS:
         if approved.get(field_name) != record.get(field_name):
             mismatches.append(f"{field_name} differs")
     approved_groups = {g["group"]: g for g in approved.get("groups", [])}
@@ -2769,6 +2781,7 @@ def submit(
             "run": Path(approved_dir).name,
             "record_sha256": hashlib.sha256((Path(approved_dir) / "record.json").read_bytes()).hexdigest(),
             "qpy_archive_sha256": hashlib.sha256((Path(approved_dir) / "isa.qpy").read_bytes()).hexdigest(),
+            "calibrations": {group["backend"]: group["calibration"] for group in fresh_view["groups"]},
             "mismatches": mismatches,
         }
         if mismatches:
@@ -2816,6 +2829,16 @@ def submit(
             raise LiveRunError(
                 f"{name}: {batch_tag} hardware moved after batch planning; "
                 f"no circuit in this batch was submitted ({owner_reasons})"
+            )
+        # The approved-record check compared calibration timestamps at the
+        # refresh; a calibration that rolls between that check and this
+        # batch leaves the consumed values unchanged yet is unapproved.
+        approved_calibrations = record.get("approved_record", {}).get("calibrations", {})
+        if name in approved_calibrations and fresh.calibration != approved_calibrations[name]:
+            record["state"] = "approval_required"
+            raise LiveRunError(
+                f"{name}: {batch_tag} calibration moved after the approved-record check "
+                f"({approved_calibrations[name]} -> {fresh.calibration}); no circuit in this batch was submitted"
             )
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
@@ -2935,6 +2958,11 @@ def _feed_forward_stages(circuit: QuantumCircuit) -> int:
         if isinstance(instruction.operation, ControlFlowOp):
             stages += 1 + max((_feed_forward_stages(block) for block in instruction.operation.blocks), default=0)
     return stages
+
+
+def _instance_hash(service: Any) -> str:
+    """The active IBM Cloud instance as the 12-hex sha256 of its CRN, the only form a record keeps."""
+    return hashlib.sha256(str(service.active_instance() or "").encode()).hexdigest()[:12]
 
 
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
