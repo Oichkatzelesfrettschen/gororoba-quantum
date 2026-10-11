@@ -463,8 +463,8 @@ incompatible shapes.
   instance without a usage limit passes the budget check;
   `usage_limit_reached` stops the run.
 - Execution-time replay: --collect reads each circuit's execution window from
-  the result's execution spans (result.metadata["execution"]
-  ["execution_spans"], the spans whose pub_idxs include it), fetches
+  the executor chunk timing (result.metadata["executor"].chunk_timing, the
+  chunks whose parts name its PUB), fetches
   target_history and properties at that window's start, flags a calibration
   update inside the window, checks the two against each other (342 of 352 ibm_fez
   CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
@@ -596,7 +596,19 @@ reference PUB. Its difference from packed replica 0 compares the global packed
 workload with the global replica-0 workload. A single-replica or
 `--no-isolated-reference` plan records the reference estimand as unavailable.
 The referenced result can reveal a packing cost, but it cannot attribute
-crosstalk to one group; the noise model sets the difference to zero.
+crosstalk to one group. The noise model carries no crosstalk, so its
+difference is shot noise; simulate_entries batches every replica of a choice
+in one Aer run, so each draws from its own position-derived seed, where a
+shared seed would reproduce packed replica 0 in the reference bit for bit.
+Every job requests the backend scheduler's per-PUB timing: pub_windows reads
+the executor chunk timing (result.metadata["executor"].chunk_timing) for each
+PUB's calibration window, and packing_schedule compares the packed and
+reference PUBs' scheduled durations, which lengthen with the
+feed_forward_streams count only when the control system serializes branches.
+Each PUB manifest also records target_duration_dt, the Target-derived
+critical path in dt, and collection records schedule_residual_dt, the
+scheduled duration minus it: classical feed-forward latency on a dynamic PUB,
+scheduler alignment on a static PUB.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
 member's own outcome weights (hybrid Shor scores whether an outcome decodes to

@@ -621,17 +621,40 @@ its QPY SHA-256 is
   isolate topology from all other target-specific translation behavior. An
   all-to-all coupling control with the same basis and synthesis inputs supplies
   the missing causal comparison.
-- **Concurrent feed-forward.** Packed replicas run three or more independent
-  `if_else` branches in one shot. Aer and the local Sampler execute them
-  concurrently; the hardware's handling of simultaneous feed-forward,
-  including whether it serializes their latency, is unmeasured until a
-  packed dynamic job returns. The isolated reference on replica 0's qubits
-  measures any cost packing adds, and a factor yield on packed replica 0 more
-  than three standard deviations below the isolated copy falsifies parallel
-  feed-forward at no cost.
+- **Concurrent feed-forward.** The dynamic job runs every packed replica of
+  folded QPE and hybrid Shor in one PUB and their replica-0 copies together in
+  the shared reference PUB, so neither PUB runs a single feed-forward stream;
+  each PUB manifest records its `feed_forward_streams`. Two measurements
+  separate the candidate mechanisms:
+  - *Schedule.* Every job requests the backend scheduler's per-PUB
+    `circuit_duration`, which includes the classical latency the Target omits,
+    and `packing_schedule` compares the packed PUB with the reference PUB of
+    the same job. Serialized branches lengthen the packed schedule with the
+    stream count; parallel branches leave the two equal up to the longest
+    member. The comparison is exact and needs no shot statistics.
+  - *Fidelity.* `global_packing_crosstalk` compares packed replica 0's factor
+    yield with the reference copy on the same qubits. One matched pair at 4096
+    shots and a yield near 0.5 gives the difference a standard deviation of
+    0.011, so a three-sigma test detects a drop of 0.033 or more; a smaller
+    cost reads as no difference.
+
+  A yield drop with equal schedules points to quantum crosstalk (spectator
+  mid-circuit measurement, ZZ during CZ, readout crosstalk); a lengthened
+  schedule identifies classical serialization whether or not the yield moves.
+  The identity null shares its PUB with folded QPE `s0` and the primary with
+  `s1`; the two folded instances carry identical gate counts and
+  measurement, reset, and branch schedules, so the null and the primary face
+  matched concurrent workloads.
 - **Dynamic duration.** Backend Targets omit classical feed-forward latency.
-  Any duration claim for the hybrid circuit remains a lower bound until a QPU
-  execution span measures the complete schedule.
+  A duration computed from the Target is a lower bound; the scheduler's
+  `circuit_duration` from the first dynamic job replaces it. Each PUB record
+  carries `schedule_residual_dt`, the scheduled duration minus the
+  Target-derived `target_duration_dt`: on a dynamic PUB it is the classical
+  feed-forward latency along the critical path of one shot, and on a static
+  PUB of the same submission it is the scheduler's alignment alone, the
+  control that the dynamic residual is read against. Chunk wall-clock
+  windows do not support this subtraction: a chunk spans every shot of one or
+  more PUBs plus repetition delay and service overhead.
 - **Noise-model authority.** FakeFez and Aer validate construction and local
   option paths. They do not predict a drifting device. Only a submitted and
   collected run supplies hardware evidence.
@@ -689,8 +712,9 @@ its QPY SHA-256 is
    crosses the fresh decoder-margin gate. Preserve `N = 35` as a coefficient
    and scaling falsifier until then; a deeper compile without `N = 21` admission
    adds cost without resolving the active uncertainty.
-9. **Dynamic latency evidence.** Record execution spans and compare them with
-   scheduled gate duration. Attribute the residual to service and classical
+9. **Dynamic latency evidence.** Read `schedule_residual_dt` on dynamic PUBs
+   against the static-PUB control, and the packed PUB's duration against the
+   reference PUB's (`packing_schedule`). Attribute a residual to classical
    control only after repeated jobs show a stable separation. The submission
    approval gate and rolling QPU budget continue to govern every measurement.
 10. **Signed-XOR coefficient certificates.** Solve the exact minimum-one-norm

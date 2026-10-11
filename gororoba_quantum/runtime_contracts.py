@@ -22,10 +22,20 @@ from qiskit.circuit import Clbit
 from qiskit.circuit.controlflow import IfElseOp
 from qiskit.circuit.library import RZGate
 from qiskit.primitives import StatevectorSampler
-from qiskit.primitives.containers import BitArray, DataBin, PrimitiveResult, SamplerPubResult
+from qiskit.primitives.containers import PrimitiveResult, SamplerPubResult
 from qiskit.transpiler import Target
 from qiskit_ibm_runtime.executor_sampler import Sampler
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import local_service as runtime_local_service
+from qiskit_ibm_runtime.results.quantum_program import (
+    ChunkPart,
+    ChunkSpan,
+    ItemMetadata,
+    Metadata,
+    QuantumProgramItemResult,
+    QuantumProgramResult,
+    SchedulerTiming,
+)
 
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
@@ -67,10 +77,12 @@ from live_run import (
     fusion_summary,
     group_requirements,
     mirror_isa,
+    packing_schedule,
     pub_windows,
     reconcile_attempted_jobs,
     replica_floor,
     routing_admission_violations,
+    scheduled_duration,
     select,
     select_candidates,
     select_fusion_choices,
@@ -181,11 +193,38 @@ class _ProbeJob:
         return self._job_id
 
 
-class _ProbeExecutionSpan:
-    def __init__(self, start: datetime, stop: datetime, pub_idxs: list[int]):
-        self.start = start
-        self.stop = stop
-        self.pub_idxs = pub_idxs
+def _executor_result(
+    backend: Any, circuits: list[QuantumCircuit], shots: int, chunks: list[ChunkSpan], durations: list[int]
+) -> PrimitiveResult[SamplerPubResult]:
+    """An all-zero Sampler result decoded by the executor Sampler's own post-processor.
+
+    The local service's program runner is replaced by one that returns zero
+    bits, the given chunk timing, and per-item scheduler durations, so the
+    result metadata takes exactly the shape sampler_v2_post_processor_v0_1
+    gives a hardware job.
+    """
+
+    def execute(backend: Any, program: Any, options: Any) -> QuantumProgramResult:
+        del backend, options
+        items = [
+            QuantumProgramItemResult(
+                {creg.name: np.zeros((program.shots, creg.size), dtype=bool) for creg in item.circuit.cregs},
+                metadata=ItemMetadata(scheduler_timing=SchedulerTiming(timing="", circuit_duration=duration)),
+            )
+            for item, duration in zip(program.items, durations, strict=True)
+        ]
+        result = QuantumProgramResult(items, Metadata(chunk_timing=chunks), program.passthrough_data)
+        result._semantic_role = program._semantic_role
+        return result
+
+    original = runtime_local_service.run_quantum_program
+    runtime_local_service.run_quantum_program = execute
+    try:
+        sampler = Sampler(mode=backend)
+        sampler.options.execution.scheduler_timing = True
+        return sampler.run(circuits, shots=shots).result()
+    finally:
+        runtime_local_service.run_quantum_program = original
 
 
 class _ProbeResultJob:
@@ -778,6 +817,30 @@ def _verify_pub_fusion_contracts() -> None:
         raise RuntimeError(f"reference-free PUB fusion metadata is {no_reference_summary}")
     static_pubs = [pub for pub in pubs if pub.kind == "static"]
     dynamic_pubs = [pub for pub in pubs if pub.kind == "dynamic"]
+    for pub in pubs:
+        streams = pub.manifest()["feed_forward_streams"]
+        expected_streams = sum(
+            len(c.entry.replicas)
+            for c in pub.components
+            if any(isinstance(instruction.operation, IfElseOp) for instruction in c.entry.replicas[0].data)
+        )
+        if streams != expected_streams:
+            raise RuntimeError(f"{pub.name}: feed_forward_streams is {streams}, expected {expected_streams}")
+    hybrid = next(choice for choice in dynamic_choices if choice.group.name == "hybrid_shor_mod15")
+    primary = next(entry for entry in hybrid.entries if not entry.reference)
+    reference = next(entry for entry in hybrid.entries if entry.reference)
+    pub_of = {c.entry.name: pub.manifest() for pub in pubs for c in pub.components}
+    executed: dict[str, dict[str, Any]] = {
+        name: {"pub": pub_of[name]["name"], "scheduled_duration_dt": duration, "feed_forward_streams": streams}
+        for name, duration, streams in ((primary.name, 5200, 9), (reference.name, 4800, 2))
+    }
+    schedule = packing_schedule(hybrid.entries, executed)
+    if schedule is None or schedule.get("difference_dt") != 400 or schedule["packed_feed_forward_streams"] != 9:
+        raise RuntimeError(f"packing_schedule reports {schedule}")
+    executed[reference.name]["scheduled_duration_dt"] = None
+    schedule = packing_schedule(hybrid.entries, executed)
+    if schedule is None or "difference_dt" in schedule or "unavailable" not in schedule:
+        raise RuntimeError(f"packing_schedule without reference timing reports {schedule}")
     if any(_is_dynamic(pub.circuit) for pub in static_pubs):
         raise RuntimeError("static cross-group fusion produced a dynamic PUB")
     if any(not _is_dynamic(pub.circuit) for pub in dynamic_pubs):
@@ -979,64 +1042,66 @@ def _verify_fused_collection() -> None:
 
         with open(run_dir / "isa.qpy", "rb") as handle:
             archived = {circuit.name: circuit for circuit in qpy.load(handle)}
-        pub_results: list[SamplerPubResult] = []
-        for pub_manifest in planned_job["pubs"]:
-            circuit = archived[pub_manifest["name"]]
-            register_data = {
-                register.name: BitArray.from_counts({"0" * register.size: args.shots}, num_bits=register.size)
-                for register in circuit.cregs
-            }
-            pub_results.append(SamplerPubResult(DataBin(**register_data), metadata={}))
+        circuits = [archived[pub_manifest["name"]] for pub_manifest in planned_job["pubs"]]
 
         base_time = datetime(2026, 10, 10, 12, 0, tzinfo=UTC)
         fused_index = next(
             index for index, pub_manifest in enumerate(planned_job["pubs"]) if pub_manifest["name"] == fused_pub.name
         )
-        spans: list[_ProbeExecutionSpan] = []
+        chunks: list[ChunkSpan] = []
         expected_fused_window = (
             base_time + timedelta(seconds=10 * fused_index),
             base_time + timedelta(seconds=10 * fused_index + 5),
         )
-        for index in range(len(pub_results)):
+        for index in range(len(circuits)):
             start = base_time + timedelta(seconds=10 * index)
             if index == fused_index:
-                spans.extend(
+                chunks.extend(
                     [
-                        _ProbeExecutionSpan(start + timedelta(seconds=2), start + timedelta(seconds=3), [index]),
-                        _ProbeExecutionSpan(start, start + timedelta(seconds=5), [index]),
+                        ChunkSpan(start + timedelta(seconds=2), start + timedelta(seconds=3), [ChunkPart(index, 1)]),
+                        ChunkSpan(start, start + timedelta(seconds=5), [ChunkPart(index, 1)]),
                     ]
                 )
             else:
-                spans.append(_ProbeExecutionSpan(start, start + timedelta(seconds=1), [index]))
-        result = PrimitiveResult(pub_results, metadata={"execution": {"execution_spans": spans}})
-        windows = pub_windows(result, len(pub_results))
+                chunks.append(ChunkSpan(start, start + timedelta(seconds=1), [ChunkPart(index, 1)]))
+        durations = [1000 + 10 * index for index in range(len(circuits))]
+        result = _executor_result(FakeFez(), circuits, args.shots, chunks, durations)
+        if sorted(result.metadata) != ["executor", "options", "shots"]:
+            raise RuntimeError(f"executor Sampler result metadata keys are {sorted(result.metadata)}")
+        windows = pub_windows(result, len(circuits))
         if len(windows) != len(planned_job["pubs"]) or windows[fused_index] != expected_fused_window:
             raise RuntimeError(f"fused PUB execution windows are {windows}")
+        if [scheduled_duration(pub_result) for pub_result in result] != durations:
+            raise RuntimeError("scheduler timing does not reach each PUB result")
 
-        incomplete_spans = [span for span in spans if fused_index not in span.pub_idxs]
-        incomplete_result = PrimitiveResult(
-            pub_results,
-            metadata={"execution": {"execution_spans": incomplete_spans}},
+        incomplete = _executor_result(
+            FakeFez(),
+            circuits,
+            args.shots,
+            [chunk for chunk in chunks if all(part.idx_item != fused_index for part in chunk.parts)],
+            durations,
         )
         try:
-            pub_windows(incomplete_result, len(pub_results))
+            pub_windows(incomplete, len(circuits))
         except LiveRunError as error:
-            if f"no execution span covers PUB {fused_index}" not in str(error):
-                raise RuntimeError(f"missing fused execution span reports {error}") from error
+            if f"no execution chunk covers PUB {fused_index}" not in str(error):
+                raise RuntimeError(f"missing fused execution chunk reports {error}") from error
         else:
-            raise RuntimeError("fused PUB result accepts a missing execution span")
+            raise RuntimeError("fused PUB result accepts a missing execution chunk")
 
         collection_service = _CollectionProbeService(backend, {job_id: _ProbeResultJob(result)})
         original_noise_simulator = live_run_module.noise_simulator
-        original_run_replicas = live_run_module.run_replicas
+        original_simulate_entries = live_run_module.simulate_entries
         live_run_module.noise_simulator = lambda name, target, props: object()
-        live_run_module.run_replicas = lambda noise, entry, shots, seed: _zero_replica_distributions(entry)
+        live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
+            entry.name: _zero_replica_distributions(entry) for entry in entries
+        }
         try:
             with redirect_stdout(io.StringIO()):
                 collect(collection_service, run_dir)
         finally:
             live_run_module.noise_simulator = original_noise_simulator
-            live_run_module.run_replicas = original_run_replicas
+            live_run_module.simulate_entries = original_simulate_entries
 
         collected = json.loads((run_dir / "collect.json").read_text())
         executed = {
@@ -1054,6 +1119,10 @@ def _verify_fused_collection() -> None:
             or fused_evidence[0]["start"] != expected_start.isoformat()
             or fused_evidence[0]["stop"] != expected_stop.isoformat()
             or fused_evidence[0]["calibration_changed_during_shots"]
+            or fused_evidence[0]["scheduled_duration_dt"] != durations[fused_index]
+            or fused_evidence[0]["schedule_residual_dt"]
+            != durations[fused_index] - planned_job["pubs"][fused_index]["target_duration_dt"]
+            or fused_evidence[0]["feed_forward_streams"] != 0
         ):
             raise RuntimeError(f"mocked fused execution evidence is {fused_evidence[0]}")
 
@@ -1094,8 +1163,10 @@ def _verify_joint_fusion_candidate_backtracking() -> None:
     ]
     attempts: list[tuple[int, ...]] = []
 
-    def forced_joint_placement(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
-        del policy
+    def forced_joint_placement(
+        choices: list[Choice], policy: ReplicaPolicy, cache: dict[tuple[int, float], Any] | None = None
+    ) -> dict[str, Any]:
+        del policy, cache
         seeds = tuple(choice.seed for choice in choices)
         attempts.append(seeds)
         if seeds == (11, 21):
@@ -1169,6 +1240,21 @@ def _verify_required_placement_backtracking() -> None:
         if any(sum(entry.reference for entry in choice.entries) != 1 for choice in choices):
             raise RuntimeError("required replica-set backtracking loses a group's reference entry")
         execution_pubs(choices)
+
+        candidate_calls = 0
+
+        def counted_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float) -> Any:
+            nonlocal candidate_calls
+            candidate_calls += 1
+            return path_candidates(snap, isas, floor)
+
+        live_run_module._replica_candidates = counted_candidates
+        placement_cache: dict[tuple[int, float], Any] = {}
+        for _ in range(2):
+            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY, placement_cache)
+        if candidate_calls != len(choices):
+            raise RuntimeError(f"retried joint placement recomputed candidates {candidate_calls} times")
+        live_run_module._replica_candidates = path_candidates
 
         candidate_qubits[0] = [1, 0]
         try:

@@ -97,8 +97,11 @@ execution path but does not establish default-policy submission readiness.
 - **Global packing crosstalk.** One PUB runs all packed primaries and the shared
   reference PUB runs all groups on replica 0. The per-group score difference
   measures the global packed workload against the global replica-0 workload;
-  it does not attribute crosstalk to one group. The noise model puts the
-  difference at zero.
+  it does not attribute crosstalk to one group. The noise model carries no
+  crosstalk, so its difference is shot noise: each replica draws from the
+  seed of its position in one batched Aer run. `packing_schedule` compares the
+  two PUBs' scheduled durations, which separates serialized feed-forward from
+  quantum crosstalk.
 - **ODR.** The pooled value averages each replica's witness over its own twin
   and needs 16384 shots over all replicas, so packing meets it at the default
   4096 shots for every mirrored group: design A pools 86,016 shots over 21
@@ -139,8 +142,9 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
    and waits for approval (AGENTS.md).
 3. **Dynamic job first.** It is the smaller job and carries the questions only
    hardware answers: hybrid Shor admission, concurrent feed-forward across
-   packed replicas (the global packing comparison), feed-forward latency from the
-   execution spans, and the project's own shot rate, measured by the job's
+   packed replicas (the global packing comparison and the scheduled-duration
+   comparison), feed-forward latency from the scheduler timing, and the
+   project's own shot rate, measured by the job's
    usage seconds. That rate replaces the literature bounds before the static
    job is costed.
 4. **Static job.** Submitted with --twirl and a DD sequence only when the
@@ -165,9 +169,11 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
 
 ## Risks
 
-- **Parallel feed-forward.** Hardware handling of three or more simultaneous
-  if_else branches is unmeasured; the shared replica-0 reference detects a
-  global packed-workload cost without attributing it to one group.
+- **Parallel feed-forward.** Hardware handling of simultaneous if_else
+  branches is unmeasured. The scheduled-duration comparison detects
+  serialization exactly; the fidelity comparison detects a packed-workload
+  cost of 0.033 or more in Shor factor yield at 4096 shots and attributes it to
+  no single group.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.

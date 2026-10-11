@@ -56,6 +56,7 @@ from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
 import packing
+import parallel
 import variance
 from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
 from packing import Replica
@@ -76,7 +77,7 @@ DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
 MAX_JOB_EXECUTIONS = 10_000_000
-RECORD_SCHEMA_VERSION = 5
+RECORD_SCHEMA_VERSION = 6
 RECORD_SCHEMA_CONTRACT = "live-target-cross-group-fused-pubs-v1"
 CONTROL_FLOW_OPERATIONS = frozenset({"if_else", "while_loop", "for_loop", "switch_case", "break_loop", "continue_loop"})
 DIRECT_TARGET_OPERATIONS = CONTROL_FLOW_OPERATIONS | {"delay", "measure", "reset", "store"}
@@ -98,6 +99,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "modular_arithmetic.py",
     "order_finding.py",
     "packing.py",
+    "parallel.py",
     "predict.py",
     "select_lcu.py",
     "target_flip.py",
@@ -499,10 +501,15 @@ def esp(isa: QuantumCircuit, target: Any) -> float:
 
 
 def _violations(isa: QuantumCircuit, snap: Snapshot) -> list[str]:
+    return _excluded_operations(isa, snap.excluded_qubits, snap.excluded_edges)
+
+
+def _excluded_operations(isa: QuantumCircuit, excluded_qubits: Any, excluded_edges: Any) -> list[str]:
+    """Every excluded qubit and CZ edge isa touches."""
     bad = []
     for name, qargs in _ops(isa):
-        bad += [f"qubit {q}" for q in qargs if q in snap.excluded_qubits]
-        if name == "cz" and (qargs in snap.excluded_edges or tuple(reversed(qargs)) in snap.excluded_edges):
+        bad += [f"qubit {q}" for q in qargs if q in excluded_qubits]
+        if name == "cz" and (qargs in excluded_edges or tuple(reversed(qargs)) in excluded_edges):
             bad.append(f"edge {qargs}")
     return sorted(set(bad))
 
@@ -734,6 +741,12 @@ class ExecutionPub:
             "name": self.name,
             "backend": self.backend,
             "kind": self.kind,
+            "target_duration_dt": target_duration_dt(self.circuit, self.components[0].choice.snap.backend.target),
+            "feed_forward_streams": sum(
+                len(component.entry.replicas)
+                for component in self.components
+                if _has_feed_forward(component.entry.replicas[0])
+            ),
             "components": [component.manifest() for component in self.components],
         }
 
@@ -840,6 +853,17 @@ def duration_s(isa: QuantumCircuit, target: Any) -> float:
     return float(_gate_time_view(isa).estimate_duration(target, unit="s"))
 
 
+def target_duration_dt(isa: QuantumCircuit, target: Any) -> int:
+    """The Target-derived critical-path duration in dt, the gate-time lower bound for one shot.
+
+    The backend scheduler's circuit_duration for the same PUB adds what the
+    Target omits; their difference, schedule_residual_dt, is the classical
+    feed-forward latency on the critical path of a dynamic PUB and the
+    scheduler's own alignment on a static PUB, which serves as its control.
+    """
+    return int(_gate_time_view(isa).estimate_duration(target, unit="dt"))
+
+
 def coherence(isa: QuantumCircuit, target: Any) -> float:
     """exp(-T sum_q 1/T2_q) over the qubits isa touches, T its estimated duration.
 
@@ -932,15 +956,33 @@ def _replica_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float
     used, edges = packing.pattern(base_ops)
     graph = packing.coupling_graph(snap.admission_target, snap.backend.num_qubits)
 
-    def admissible(mapping: dict[int, int]) -> bool:
-        moved = [packing.relabel(isa, mapping, "") for isa in isas]
-        return all(not compiled_violations(isa, snap) for isa in moved)
-
-    def score(mapping: dict[int, int]) -> float:
-        return layout_score(packing.relabel(isas[0], mapping, ""), target)
-
-    candidates = packing.candidate_replicas(used, edges, graph, admissible, score, floor)
+    judge = PlacementJudge(tuple(isas), target, frozenset(snap.excluded_qubits), frozenset(snap.excluded_edges))
+    candidates = packing.candidate_replicas(used, edges, graph, judge, floor, parallel.ordered_map)
     return graph, candidates, len(used)
+
+
+@dataclass(frozen=True)
+class PlacementJudge:
+    """Admissibility and layout score of one embedding, picklable for parallel placement.
+
+    An embedding is admissible when every moved circuit avoids excluded qubits
+    and edges and passes the exact Target check (compiled_violations); its
+    score is the layout score of the moved primary circuit.
+    """
+
+    isas: tuple[QuantumCircuit, ...]
+    target: Any
+    excluded_qubits: frozenset[int]
+    excluded_edges: frozenset[tuple[int, int]]
+
+    def __call__(self, mapping: dict[int, int]) -> float | None:
+        moved = [packing.relabel(isa, mapping, "") for isa in self.isas]
+        for isa in moved:
+            if _excluded_operations(isa, self.excluded_qubits, self.excluded_edges) or target_violations(
+                isa, self.target
+            ):
+                return None
+        return layout_score(moved[0], self.target)
 
 
 def place_replicas(snap: Snapshot, isas: list[QuantumCircuit], floor: float, policy: ReplicaPolicy) -> list[Replica]:
@@ -1111,7 +1153,9 @@ def _commit_placement_assignment(placements: list[tuple[_FusionPlacementPool, Re
         pool.blocked.update(_placement_footprint(pool, selected))
 
 
-def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
+def allocate_fusion_replicas(
+    choices: list[Choice], policy: ReplicaPolicy, cache: dict[tuple[int, float], Any] | None = None
+) -> dict[str, Any]:
     """Jointly place every same-backend, same-kind group before cross-group fusion.
 
     Backtracking searches all required replicas together, revisiting earlier
@@ -1134,9 +1178,19 @@ def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> di
             raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
         pools: list[_FusionPlacementPool] = []
         for choice_index, choice in indexed_choices:
-            bases = _entry_bases(choice)
             floor = replica_floor(choice.group, policy)
-            graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
+            # Candidate selection retries combinations of the same routed
+            # candidates; a shallow-copied trial shares its candidate's isas
+            # list, so mirror cuts and embedding scores are computed once per
+            # candidate and floor.
+            key = (id(choice.isas), floor)
+            if cache is not None and key in cache:
+                graph, candidates, pattern_width = cache[key]
+            else:
+                bases = _entry_bases(choice)
+                graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
+                if cache is not None:
+                    cache[key] = (graph, candidates, pattern_width)
             if not candidates:
                 raise LiveRunError(
                     f"{backend_name} {kind}: {choice.group.name} has no floor-qualified fusion placement"
@@ -1513,6 +1567,7 @@ def select_fusion_choices(
     frontier = [priority(initial)]
     queued = {initial}
     attempted = 0
+    placement_cache: dict[tuple[int, float], Any] = {}
     rejected_sample: list[dict[str, Any]] = []
     while frontier:
         negative_score, _, indices = heapq.heappop(frontier)
@@ -1520,7 +1575,7 @@ def select_fusion_choices(
         trial = [copy.copy(candidate) for candidate in selected]
         attempted += 1
         try:
-            placement = allocate_fusion_replicas(trial, policy)
+            placement = allocate_fusion_replicas(trial, policy, placement_cache)
             execution_pubs(trial)
         except (LiveRunError, QiskitError, ValueError) as error:
             if len(rejected_sample) < 32:
@@ -1646,21 +1701,32 @@ def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[n
     """Noisy distribution of every entry's every replica, each simulated as its own single-replica circuit.
 
     The noise model carries no crosstalk between replicas, so a replica alone
-    and a replica inside the packed circuit simulate identically.
+    and a replica inside the packed circuit share one distribution.
     """
-    return {entry.name: run_replicas(noise, entry, shots, SEED_SIMULATOR) for entry in choice.entries}
+    return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
 
 
-def run_replicas(noise: Any, entry: Entry, shots: int, seed: int) -> list[np.ndarray]:
-    """Noisy distributions of entry's replicas from one batched run, in replica order.
+def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) -> dict[str, list[np.ndarray]]:
+    """Noisy distributions of every entry's replicas from one batched Aer run.
 
-    Aer derives each experiment's seed from seed_simulator and the
-    experiment's position in the batch, so planning and --collect, which both
-    batch an entry's replicas in replica order under the record's seed,
-    replay identical noise draws.
+    Aer serializes the noise model once per run and derives each experiment's
+    seed from seed_simulator and the experiment's position in the batch, so one
+    batch in entry order, then replica order, gives every replica its own shot
+    draws: the shared replica-0 reference draws independently of packed
+    replica 0. Planning and --collect batch in a fixed order, so each replays
+    identical noise draws for identical inputs.
     """
-    result = noise.run(entry.replicas, shots=shots, seed_simulator=seed, max_parallel_experiments=0).result()
-    return [_distribution(result.get_counts(k), rep.num_clbits) for k, rep in enumerate(entry.replicas)]
+    circuits = [replica for entry in entries for replica in entry.replicas]
+    result = noise.run(circuits, shots=shots, seed_simulator=seed, max_parallel_experiments=0).result()
+    out: dict[str, list[np.ndarray]] = {}
+    position = 0
+    for entry in entries:
+        out[entry.name] = [
+            _distribution(result.get_counts(position + k), replica.num_clbits)
+            for k, replica in enumerate(entry.replicas)
+        ]
+        position += len(entry.replicas)
+    return out
 
 
 def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetric: bool = False) -> np.ndarray:
@@ -2536,6 +2602,9 @@ def configure_sampler(
 ) -> Sampler:
     """The client-side Sampler for one job: twirling and DD apply to static jobs only.
 
+    Every job requests the backend scheduler's per-PUB timing, which
+    scheduled_duration reads and packing_schedule compares.
+
     IBM's Sampler rejects dynamical decoupling on dynamic circuits, and the 0.50
     client-side Sampler's twirling boxes circuits through samplomatic, which
     rejects if_else. With DD on, idle qubits still in their initial state get no
@@ -2555,6 +2624,7 @@ def configure_sampler(
             )
     sampler = Sampler(mode=backend)
     sampler.options.default_shots = shots
+    sampler.options.execution.scheduler_timing = True
     sampler.options.environment.job_tags = tags
     if twirl and kind == "static":
         sampler.options.twirling.enable_gates = True
@@ -2600,26 +2670,26 @@ def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, A
 
 
 def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
-    """Start and stop of the execution spans that hold each PUB's shots.
+    """Start and stop of the execution chunks that hold each PUB's shots.
 
-    The Sampler result carries them at result.metadata["execution"]
-    ["execution_spans"] (IBM's Sampler input/output guide, "View execution
-    spans"); the job-level running timestamp can precede the shots by
-    server-side preparation, across a calibration update. Naive span times are
-    UTC.
+    The executor Sampler's post-processor (sampler_v2_post_processor_v0_1)
+    returns result.metadata["executor"], a quantum-program Metadata whose
+    chunk_timing lists ChunkSpan(start, stop, parts); each ChunkPart names the
+    program item, one per PUB, that the chunk executed. A chunk can hold several
+    PUBs and a PUB can span several chunks, so a PUB's window runs from its
+    first chunk's start to its last chunk's stop. The job-level running
+    timestamp can precede the shots by server-side preparation, across a
+    calibration update. Naive span times are UTC.
     """
-    execution = result.metadata.get("execution") or {}
-    spans = execution.get("execution_spans")
-    if spans is None or len(spans) == 0:
-        raise LiveRunError(f"result metadata carries no execution spans (keys {sorted(result.metadata)})")
+    executor = result.metadata.get("executor")
+    spans = getattr(executor, "chunk_timing", None)
+    if not spans:
+        raise LiveRunError(f"result metadata carries no executor chunk timing (keys {sorted(result.metadata)})")
     windows = []
     for idx in range(count):
-        # ExecutionSpans.filter_by_pub keeps every span and empties those
-        # without the PUB, so the PUB's own window comes from the spans whose
-        # pub_idxs include it.
-        own = [span for span in spans if idx in span.pub_idxs]
+        own = [span for span in spans if any(part.idx_item == idx for part in span.parts)]
         if not own:
-            raise LiveRunError(f"no execution span covers PUB {idx}")
+            raise LiveRunError(f"no execution chunk covers PUB {idx}")
         start, stop = min(span.start for span in own), max(span.stop for span in own)
         windows.append(
             (
@@ -2630,22 +2700,77 @@ def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
     return windows
 
 
+def scheduled_duration(pub_result: Any) -> int | None:
+    """The backend scheduler's circuit duration in dt, or None when the job did not return it.
+
+    Sampler.options.execution.scheduler_timing asks the service for each PUB's
+    compiled schedule, carried at metadata["compilation"]["scheduler_timing"].
+    The schedule includes the classical latency that the Target omits, so a
+    dynamic PUB's value is the duration the control system executes.
+    """
+    timing = (pub_result.metadata.get("compilation") or {}).get("scheduler_timing") or {}
+    duration = timing.get("circuit_duration")
+    return int(duration) if duration is not None else None
+
+
 def component_execution_records(
     pub_manifest: dict[str, Any],
     start: datetime,
     stop: datetime,
     calibration: datetime,
     calibration_changed: bool,
+    scheduled_duration_dt: int | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Fan one fused PUB's execution window and calibration out to every logical component."""
+    """Fan one fused PUB's execution window, calibration, and schedule out to every logical component."""
     evidence = {
         "pub": pub_manifest["name"],
         "start": start.isoformat(),
         "stop": stop.isoformat(),
         "calibration": calibration.isoformat(),
         "calibration_changed_during_shots": calibration_changed,
+        "scheduled_duration_dt": scheduled_duration_dt,
+        "target_duration_dt": pub_manifest.get("target_duration_dt"),
+        "schedule_residual_dt": (
+            scheduled_duration_dt - pub_manifest["target_duration_dt"]
+            if scheduled_duration_dt is not None and pub_manifest.get("target_duration_dt") is not None
+            else None
+        ),
+        "feed_forward_streams": pub_manifest.get("feed_forward_streams"),
     }
     return {component["member"]: copy.deepcopy(evidence) for component in pub_manifest["components"]}
+
+
+def packing_schedule(entries: list[Entry], executed: dict[str, dict[str, Any]]) -> dict[str, Any] | None:
+    """Scheduled duration of the packed primary's PUB against the shared replica-0 reference PUB.
+
+    Both PUBs run in one job, so the comparison carries no queue or calibration
+    drift. A control system that serializes concurrent feed-forward branches
+    lengthens the schedule with the stream count; parallel branches leave the
+    two durations equal up to the longest member. Equal durations with a
+    fidelity drop in global_packing_crosstalk point to quantum crosstalk
+    (spectator measurement, ZZ, readout) rather than classical serialization.
+    """
+    references = [e for e in entries if e.reference]
+    if not references:
+        return None
+    primary = next(e for e in entries if not e.reference)
+    reference = references[0]
+    packed, alone = executed.get(primary.name), executed.get(reference.name)
+    if packed is None or alone is None:
+        return None
+    out: dict[str, Any] = {
+        "packed_pub": packed["pub"],
+        "reference_pub": alone["pub"],
+        "packed_feed_forward_streams": packed.get("feed_forward_streams"),
+        "reference_feed_forward_streams": alone.get("feed_forward_streams"),
+        "packed_duration_dt": packed.get("scheduled_duration_dt"),
+        "reference_duration_dt": alone.get("scheduled_duration_dt"),
+    }
+    if out["packed_duration_dt"] is None or out["reference_duration_dt"] is None:
+        out["unavailable"] = "the job returned no scheduler timing for one of the two PUBs"
+    else:
+        out["difference_dt"] = out["packed_duration_dt"] - out["reference_duration_dt"]
+    return out
 
 
 def _odr_withheld(
@@ -2952,6 +3077,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
+        # Components that started under one calibration replay in one batch,
+        # in manifest order.
+        replay_batches: dict[datetime, list[Entry]] = {}
         for idx, (pub_manifest, pub_result) in enumerate(zip(pub_manifests, result, strict=True)):
             start, stop = windows[idx]
             props_then, sim_then = at[start]
@@ -2962,6 +3090,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 stop,
                 props_then.last_update_date,
                 stop_calibration != props_then.last_update_date,
+                scheduled_duration(pub_result),
             )
             for component in pub_manifest["components"]:
                 name = component["member"]
@@ -2974,8 +3103,10 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     for prefix, replica in zip(entry.prefixes, entry.replicas, strict=True)
                 ]
                 props_by_name[name] = props_then
-                replayed[name] = run_replicas(sim_then, entry, shots, seed)
+                replay_batches.setdefault(start, []).append(entry)
                 executed[name] = execution_records[name]
+        for start, batch in replay_batches.items():
+            replayed.update(simulate_entries(at[start][1], batch, shots, seed))
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
             if not any(n in measured for n in required):
@@ -2989,6 +3120,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 "backend": job_entry["backend"],
                 "executed": {n: executed[n] for n in required if n in executed},
                 "job_usage": metrics.get("usage"),
+                "packing_schedule": packing_schedule(entries, executed),
                 "measured": {
                     n: [[round(float(p), 6) for p in dist] for dist in measured[n]] for n in required if n in measured
                 },
