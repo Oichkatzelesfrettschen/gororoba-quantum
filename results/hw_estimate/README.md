@@ -16,6 +16,22 @@ The directory contains compiler and local-simulation records. Every record sets
   depth, or recursive operation census; the transition list is not a full
   structural digest.
 
+- `n21_target_flip_compilation.json` captures eight seeds of the exact
+  Boolean target-flip circuit at ten-bit phase precision.
+- `n21_target_flip_precision5.json` captures the same exact arithmetic
+  at five-bit precision; the shorter circuit has a distinct decoder law.
+
+- `n21_target_flip_proof_verification.json` and `n21_target_flip_proof/`
+  retain fresh kernel checks, assumption output, and failed mutations.
+- `n21_target_flip_ideal_simulation.json` retains credential-free five-bit
+  Aer sampling and exact decoder output.
+- `n21_cross_project_proof_audit.json` binds the selected fresh
+  open_gororoba source proof audit.
+
+Both target-flip captures bind the source generator and finite Rocq
+certificate. `gororoba_quantum/MODULAR_SYNTHESIS.md` gives replay commands
+and keeps compiler evidence separate from physical admission.
+
 The full crossover capture runs from the repository root:
 
 ```sh

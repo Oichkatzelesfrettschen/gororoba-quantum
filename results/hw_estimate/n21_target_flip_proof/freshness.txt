@@ -1,0 +1,4 @@
+N=21 multiplier=2: target_flips=17, controlled_cx_surrogate=288
+N=21 multiplier=4: target_flips=17, controlled_cx_surrogate=252
+N=21 multiplier=16: target_flips=17, controlled_cx_surrogate=252
+certificate fresh; 3 networks, 192 packed inputs

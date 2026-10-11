@@ -1,6 +1,6 @@
 """Capture the N=21 modular-synthesis crossover on the static FakeFez target.
 
-The capture compares scratch-free, one-clean, two-clean, and ANF arithmetic
+The capture compares target-flip, scratch-free, one-clean, two-clean, and ANF arithmetic
 under fixed transpiler seeds. The pass callback records every change in qubit
 count, recursive depth, or operation census so synthesis cost and heavy-hex
 routing amplification remain separate evidence surfaces. The module submits
@@ -47,6 +47,9 @@ SOURCE_PATHS = (
     "gororoba_quantum/hybrid_shor.py",
     "gororoba_quantum/modular_arithmetic.py",
     "gororoba_quantum/order_finding.py",
+    "gororoba_quantum/target_flip.py",
+    "gororoba_quantum/target_flip_certificate.py",
+    "proofs/TargetFlipN21.v",
     "scripts/python_call_graph.py",
     "pyproject.toml",
     "requirements.txt",
@@ -65,6 +68,13 @@ class Candidate:
 
 
 CANDIDATES = (
+    Candidate(
+        name="target_flip_one_clean",
+        multiplier_strategy="target_flip_1_clean",
+        compiler_workspace_qubits=0,
+        mcx_hls_method=None,
+        workspace_contract="one clean workspace restored after each exact Boolean target flip",
+    ),
     Candidate(
         name="scratch_free_cycle",
         multiplier_strategy="cycle_transpositions",
@@ -120,17 +130,17 @@ def _snapshot_signature(snapshot: dict[str, Any]) -> str:
     return json.dumps(snapshot, sort_keys=True, separators=(",", ":"))
 
 
-def _build_source(candidate: Candidate) -> tuple[QuantumCircuit, dict[str, Any]]:
+def _build_source(candidate: Candidate, phase_bits: int = PHASE_BITS) -> tuple[QuantumCircuit, dict[str, Any]]:
     plan = order_finding_plan(
         MODULUS,
         BASE,
-        PHASE_BITS,
+        phase_bits,
         multiplier_strategy=candidate.multiplier_strategy,
     )
     circuit = factor_order_finding(
         MODULUS,
         BASE,
-        PHASE_BITS,
+        phase_bits,
         multiplier_strategy=candidate.multiplier_strategy,
     )
     if candidate.compiler_workspace_qubits:
@@ -142,6 +152,10 @@ def _build_source(candidate: Candidate) -> tuple[QuantumCircuit, dict[str, Any]]
         "arithmetic_workspace_qubits": plan.scratch_qubits,
         "compiler_workspace_qubits": candidate.compiler_workspace_qubits,
         "basis_edge_gates": plan.basis_edge_gates,
+        "controlled_target_flips": plan.controlled_target_flips,
+        "control_arity_histogram": [
+            {"controls": controls, "gate_count": count} for controls, count in plan.control_arity_histogram
+        ],
         "forward_anf_terms": plan.forward_anf_terms,
         "inverse_anf_terms": plan.inverse_anf_terms,
         "degree_histogram": [
@@ -213,8 +227,10 @@ def _stage_snapshots(
     return stages
 
 
-def _compile_candidate(candidate: Candidate, seed: int, backend: FakeFez) -> dict[str, Any]:
-    source, _ = _build_source(candidate)
+def _compile_candidate(
+    candidate: Candidate, seed: int, backend: FakeFez, phase_bits: int = PHASE_BITS
+) -> dict[str, Any]:
+    source, _ = _build_source(candidate, phase_bits)
     source_snapshot = _circuit_snapshot(source)
     hls_config = HLSConfig(mcx=[candidate.mcx_hls_method]) if candidate.mcx_hls_method is not None else None
     pass_manager = generate_preset_pass_manager(
@@ -257,12 +273,14 @@ def _metric_summary(runs: list[dict[str, Any]], metric: str) -> dict[str, int | 
     }
 
 
-def _candidate_record(candidate: Candidate, seeds: tuple[int, ...], backend: FakeFez) -> dict[str, Any]:
-    source, coefficients = _build_source(candidate)
+def _candidate_record(
+    candidate: Candidate, seeds: tuple[int, ...], backend: FakeFez, phase_bits: int = PHASE_BITS
+) -> dict[str, Any]:
+    source, coefficients = _build_source(candidate, phase_bits)
     runs: list[dict[str, Any]] = []
     for seed in seeds:
         print(f"compile candidate={candidate.name} seed={seed}", file=sys.stderr, flush=True)
-        run = _compile_candidate(candidate, seed, backend)
+        run = _compile_candidate(candidate, seed, backend, phase_bits)
         print(
             f"compiled candidate={candidate.name} seed={seed} cz={run['cz_count']} depth={run['depth']}",
             file=sys.stderr,
@@ -317,7 +335,7 @@ def _sha256(path: Path) -> str:
 
 def _git_output(*arguments: str) -> str:
     result = subprocess.run(
-        ["git", *arguments],
+        ["git", "-c", "core.fsmonitor=false", *arguments],
         cwd=REPOSITORY_ROOT,
         check=True,
         capture_output=True,
@@ -329,7 +347,7 @@ def _git_output(*arguments: str) -> str:
 def _source_record() -> dict[str, Any]:
     source_files = {path: _sha256(REPOSITORY_ROOT / path) for path in SOURCE_PATHS}
     source_diff = subprocess.run(
-        ["git", "diff", "--quiet", "HEAD", "--", *SOURCE_PATHS],
+        ["git", "-c", "core.fsmonitor=false", "diff", "--quiet", "HEAD", "--", *SOURCE_PATHS],
         cwd=REPOSITORY_ROOT,
         check=False,
     )
@@ -366,13 +384,17 @@ def _portable_output_path(output_path: Path | None) -> str | None:
         return "<external-output>"
 
 
-def _replay_command(seeds: tuple[int, ...], candidates: tuple[Candidate, ...], output_path: Path | None) -> str:
+def _replay_command(
+    seeds: tuple[int, ...], candidates: tuple[Candidate, ...], output_path: Path | None, phase_bits: int = PHASE_BITS
+) -> str:
     arguments = [
         '"$PYTHON"',
         "gororoba_quantum/compile_evidence.py",
         "--seeds",
         *(str(seed) for seed in seeds),
     ]
+    if phase_bits != PHASE_BITS:
+        arguments.extend(("--phase-bits", str(phase_bits)))
     if len(candidates) != len(CANDIDATES):
         for candidate in candidates:
             arguments.extend(("--candidate", candidate.name))
@@ -386,15 +408,18 @@ def capture(
     seeds: tuple[int, ...],
     candidates: tuple[Candidate, ...],
     output_path: Path | None,
+    phase_bits: int = PHASE_BITS,
 ) -> dict[str, Any]:
     """Compile every requested candidate and return one self-describing record."""
+    if not 1 <= phase_bits <= PHASE_BITS:
+        raise ValueError(f"N=21 precision capture supports 1 through {PHASE_BITS} phase bits, got {phase_bits}")
     backend = FakeFez()
     return {
         "schema_version": 3,
         "capture": "n21-heavy-hex-mcx-workspace",
         "qpu_executed": False,
-        "replay_command": _replay_command(seeds, candidates, output_path),
-        "problem": {"modulus": MODULUS, "base": BASE, "phase_bits": PHASE_BITS},
+        "replay_command": _replay_command(seeds, candidates, output_path, phase_bits),
+        "problem": {"modulus": MODULUS, "base": BASE, "phase_bits": phase_bits},
         "compiler": {
             "optimization_level": OPTIMIZATION_LEVEL,
             "seeds": list(seeds),
@@ -402,7 +427,7 @@ def capture(
         },
         "source": _source_record(),
         "backend": _backend_record(backend),
-        "candidates": [_candidate_record(candidate, seeds, backend) for candidate in candidates],
+        "candidates": [_candidate_record(candidate, seeds, backend, phase_bits) for candidate in candidates],
     }
 
 
@@ -435,6 +460,7 @@ def _parser() -> argparse.ArgumentParser:
         choices=tuple(candidate.name for candidate in CANDIDATES),
         dest="candidates",
     )
+    parser.add_argument("--phase-bits", type=int, default=PHASE_BITS)
     parser.add_argument("--out", type=Path)
     return parser
 
@@ -446,7 +472,7 @@ def main() -> int:
         raise ValueError("transpiler seeds must form a nonempty set")
     requested_names = set(args.candidates) if args.candidates else {candidate.name for candidate in CANDIDATES}
     candidates = tuple(candidate for candidate in CANDIDATES if candidate.name in requested_names)
-    record = capture(seeds, candidates, args.out)
+    record = capture(seeds, candidates, args.out, args.phase_bits)
     payload = json.dumps(record, indent=2, sort_keys=True) + "\n"
     if args.out is None:
         sys.stdout.write(payload)

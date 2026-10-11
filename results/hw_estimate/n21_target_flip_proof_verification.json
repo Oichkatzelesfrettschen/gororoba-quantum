@@ -1,0 +1,114 @@
+{
+  "compiler_freshness": {
+    "command": [
+      "\"$PYTHON\"",
+      "gororoba_quantum/target_flip_certificate.py",
+      "--check"
+    ],
+    "exit_status": 0,
+    "log": "freshness.txt",
+    "regenerated_source_cmp_exit_status": 0
+  },
+  "evidence_directory": "results/hw_estimate/n21_target_flip_proof",
+  "fresh_compile": {
+    "closed_under_global_context_outputs": 6,
+    "command": [
+      "rocq",
+      "compile",
+      "-q",
+      "-w",
+      "+all",
+      "TargetFlipN21.v"
+    ],
+    "exit_status": 0,
+    "log": "compile.txt"
+  },
+  "input_domain": {
+    "data_bits": 5,
+    "modulus": 21,
+    "multipliers": [
+      2,
+      4,
+      16
+    ],
+    "packed_inputs_per_multiplier": 64,
+    "phase_control_bit": 5,
+    "total_packed_inputs": 192
+  },
+  "kernel_check": {
+    "assumed_positivity": [],
+    "axioms": [],
+    "command": [
+      "rocq",
+      "check",
+      "-silent",
+      "-o",
+      "TargetFlipN21"
+    ],
+    "exit_status": 0,
+    "log": "check.txt",
+    "type_in_type": [],
+    "unsafe_fixpoints": []
+  },
+  "log_normalization": "Trailing line whitespace and terminal blank lines removed; diagnostic text retained.",
+  "log_path_redaction": "Temporary proof directory and checkout path replaced by named placeholders; logical test output retained.",
+  "logs_sha256": {
+    "results/hw_estimate/n21_target_flip_proof/check.txt": "d8244eff15764b9053f9bf8199d0ab2aa6dec19e369f872d520a403f6f5b144f",
+    "results/hw_estimate/n21_target_flip_proof/compile.txt": "99a6704258822ca71cbc86001bd22c279bfa19b98dd2513510b2a59528c8e97f",
+    "results/hw_estimate/n21_target_flip_proof/freshness.txt": "b81c4a30fd246902c1ebb8b3590b2635656e56727b25ccde95b3237e0d26b7a9",
+    "results/hw_estimate/n21_target_flip_proof/mutation-compile.txt": "8d9d16a4b10e488ab27370044ebeb50fba8d0132501b416642d0f8d8ec1eeb10",
+    "results/hw_estimate/n21_target_flip_proof/unsupported-warn-error.txt": "c8e3826dc1e6198eb1d0b55ba416d931412e1088fca8ccc348ebdf8d3062f37b",
+    "results/hw_estimate/n21_target_flip_proof/warnings-rejected.txt": "a38ce0725ae7b4035433bec7e5e025a0369b9a59e5c2599ab768486f970f3f4e"
+  },
+  "mypy_exit_status": 0,
+  "network_controlled_cx_surrogates_before_routing": {
+    "16": 252,
+    "2": 288,
+    "4": 252
+  },
+  "network_target_flip_counts": {
+    "16": 17,
+    "2": 17,
+    "4": 17
+  },
+  "proof_boundary": "Boolean permutation behavior and target-control exclusion. Qiskit Operator checks establish circuit phases and clean-workspace restoration separately.",
+  "qpu_executed": false,
+  "required_gate_mutation": {
+    "command": [
+      "rocq",
+      "compile",
+      "-q",
+      "-w",
+      "+all",
+      "TargetFlipN21Mutation.v"
+    ],
+    "exit_status": 1,
+    "expected_exit_status": 1,
+    "failed_lemma": "network_2_finite",
+    "log": "mutation-compile.txt",
+    "message": "Unable to unify \"true\" with \"false\"",
+    "operation": "delete first multiplier-2 cube"
+  },
+  "rocq_version": "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0",
+  "ruff_check_exit_status": 0,
+  "ruff_format_check_exit_status": 0,
+  "source_sha256": "494e3e9c1a4370c46f37e26b0f9e7cb301d8acf8ac96f94e2512ad57612e0fc6",
+  "unsupported_flag_probe": {
+    "exit_status": 1,
+    "flag": "-warn-error",
+    "log": "unsupported-warn-error.txt"
+  },
+  "warning_as_error_probe": {
+    "command": [
+      "rocq",
+      "compile",
+      "-q",
+      "-w",
+      "+all",
+      "WarningsRejected.v"
+    ],
+    "exit_status": 1,
+    "log": "warnings-rejected.txt",
+    "warning": "deprecated-from-Coq"
+  }
+}

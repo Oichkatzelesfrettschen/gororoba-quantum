@@ -1,0 +1,1261 @@
+{
+  "evidence_surface": "credential-free ideal Aer sampling; not a noisy or hardware measurement",
+  "files_sha256": {
+    "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+    "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+    "gororoba_quantum/modular_arithmetic.py": "2b074144bac6fdb985eb0d11c3478d92d1df979935b7dded18625737cc523084",
+    "gororoba_quantum/order_finding.py": "f97a0bc1add0b381a0589fc7a44d0fe11ab322aeefd0ba48d273a209ba0d5e2d",
+    "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6"
+  },
+  "qpu_executed": false,
+  "replay_command": "\"$PYTHON\" gororoba_quantum/hybrid_shor.py simulate 21 --phase-bits 5 --shots 4096 --seed 7",
+  "simulation": {
+    "decode": {
+      "outcomes": [
+        {
+          "bitstring": "00000",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            }
+          ],
+          "count": 693,
+          "factors": [],
+          "measurement": 0,
+          "orders": [],
+          "probability": 0.169189453125
+        },
+        {
+          "bitstring": "00001",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            }
+          ],
+          "count": 9,
+          "factors": [],
+          "measurement": 1,
+          "orders": [],
+          "probability": 0.002197265625
+        },
+        {
+          "bitstring": "00010",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 9,
+          "factors": [],
+          "measurement": 2,
+          "orders": [],
+          "probability": 0.002197265625
+        },
+        {
+          "bitstring": "00011",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 10,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 11,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 10,
+          "factors": [],
+          "measurement": 3,
+          "orders": [],
+          "probability": 0.00244140625
+        },
+        {
+          "bitstring": "00100",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 8,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 44,
+          "factors": [],
+          "measurement": 4,
+          "orders": [],
+          "probability": 0.0107421875
+        },
+        {
+          "bitstring": "00101",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 6,
+              "numerator": 1,
+              "order": 6
+            },
+            {
+              "denominator": 13,
+              "numerator": 2,
+              "order": null
+            }
+          ],
+          "count": 435,
+          "factors": [
+            3,
+            7
+          ],
+          "measurement": 5,
+          "orders": [
+            6
+          ],
+          "probability": 0.106201171875
+        },
+        {
+          "bitstring": "00110",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 5,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 3,
+              "order": null
+            }
+          ],
+          "count": 130,
+          "factors": [],
+          "measurement": 6,
+          "orders": [],
+          "probability": 0.03173828125
+        },
+        {
+          "bitstring": "00111",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 4,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 5,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 9,
+              "numerator": 2,
+              "order": null
+            }
+          ],
+          "count": 26,
+          "factors": [],
+          "measurement": 7,
+          "orders": [],
+          "probability": 0.00634765625
+        },
+        {
+          "bitstring": "01000",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 4,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 13,
+          "factors": [],
+          "measurement": 8,
+          "orders": [],
+          "probability": 0.003173828125
+        },
+        {
+          "bitstring": "01001",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 4,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 7,
+              "numerator": 2,
+              "order": null
+            }
+          ],
+          "count": 27,
+          "factors": [],
+          "measurement": 9,
+          "orders": [],
+          "probability": 0.006591796875
+        },
+        {
+          "bitstring": "01010",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 5,
+              "order": null
+            }
+          ],
+          "count": 120,
+          "factors": [],
+          "measurement": 10,
+          "orders": [],
+          "probability": 0.029296875
+        },
+        {
+          "bitstring": "01011",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 496,
+          "factors": [],
+          "measurement": 11,
+          "orders": [],
+          "probability": 0.12109375
+        },
+        {
+          "bitstring": "01100",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 8,
+              "numerator": 3,
+              "order": null
+            }
+          ],
+          "count": 23,
+          "factors": [],
+          "measurement": 12,
+          "orders": [],
+          "probability": 0.005615234375
+        },
+        {
+          "bitstring": "01101",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 5,
+              "numerator": 2,
+              "order": null
+            }
+          ],
+          "count": 10,
+          "factors": [],
+          "measurement": 13,
+          "orders": [],
+          "probability": 0.00244140625
+        },
+        {
+          "bitstring": "01110",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 7,
+              "numerator": 3,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 7,
+              "order": null
+            }
+          ],
+          "count": 6,
+          "factors": [],
+          "measurement": 14,
+          "orders": [],
+          "probability": 0.00146484375
+        },
+        {
+          "bitstring": "01111",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 15,
+              "numerator": 7,
+              "order": null
+            }
+          ],
+          "count": 5,
+          "factors": [],
+          "measurement": 15,
+          "orders": [],
+          "probability": 0.001220703125
+        },
+        {
+          "bitstring": "10000",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 666,
+          "factors": [],
+          "measurement": 16,
+          "orders": [],
+          "probability": 0.16259765625
+        },
+        {
+          "bitstring": "10001",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 15,
+              "numerator": 8,
+              "order": null
+            }
+          ],
+          "count": 6,
+          "factors": [],
+          "measurement": 17,
+          "orders": [],
+          "probability": 0.00146484375
+        },
+        {
+          "bitstring": "10010",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 7,
+              "numerator": 4,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 9,
+              "order": null
+            }
+          ],
+          "count": 11,
+          "factors": [],
+          "measurement": 18,
+          "orders": [],
+          "probability": 0.002685546875
+        },
+        {
+          "bitstring": "10011",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 5,
+              "numerator": 3,
+              "order": null
+            }
+          ],
+          "count": 16,
+          "factors": [],
+          "measurement": 19,
+          "orders": [],
+          "probability": 0.00390625
+        },
+        {
+          "bitstring": "10100",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 2,
+              "order": null
+            },
+            {
+              "denominator": 8,
+              "numerator": 5,
+              "order": null
+            }
+          ],
+          "count": 36,
+          "factors": [],
+          "measurement": 20,
+          "orders": [],
+          "probability": 0.0087890625
+        },
+        {
+          "bitstring": "10101",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 2,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 2,
+              "order": null
+            }
+          ],
+          "count": 462,
+          "factors": [],
+          "measurement": 21,
+          "orders": [],
+          "probability": 0.11279296875
+        },
+        {
+          "bitstring": "10110",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 2,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 11,
+              "order": null
+            }
+          ],
+          "count": 127,
+          "factors": [],
+          "measurement": 22,
+          "orders": [],
+          "probability": 0.031005859375
+        },
+        {
+          "bitstring": "10111",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 3,
+              "numerator": 2,
+              "order": null
+            },
+            {
+              "denominator": 4,
+              "numerator": 3,
+              "order": null
+            },
+            {
+              "denominator": 7,
+              "numerator": 5,
+              "order": null
+            }
+          ],
+          "count": 31,
+          "factors": [],
+          "measurement": 23,
+          "orders": [],
+          "probability": 0.007568359375
+        },
+        {
+          "bitstring": "11000",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 4,
+              "numerator": 3,
+              "order": null
+            }
+          ],
+          "count": 17,
+          "factors": [],
+          "measurement": 24,
+          "orders": [],
+          "probability": 0.004150390625
+        },
+        {
+          "bitstring": "11001",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 4,
+              "numerator": 3,
+              "order": null
+            },
+            {
+              "denominator": 5,
+              "numerator": 4,
+              "order": null
+            },
+            {
+              "denominator": 9,
+              "numerator": 7,
+              "order": null
+            }
+          ],
+          "count": 21,
+          "factors": [],
+          "measurement": 25,
+          "orders": [],
+          "probability": 0.005126953125
+        },
+        {
+          "bitstring": "11010",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 5,
+              "numerator": 4,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 13,
+              "order": null
+            }
+          ],
+          "count": 113,
+          "factors": [],
+          "measurement": 26,
+          "orders": [],
+          "probability": 0.027587890625
+        },
+        {
+          "bitstring": "11011",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 6,
+              "numerator": 5,
+              "order": 6
+            },
+            {
+              "denominator": 13,
+              "numerator": 11,
+              "order": null
+            }
+          ],
+          "count": 472,
+          "factors": [
+            3,
+            7
+          ],
+          "measurement": 27,
+          "orders": [
+            6
+          ],
+          "probability": 0.115234375
+        },
+        {
+          "bitstring": "11100",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 8,
+              "numerator": 7,
+              "order": null
+            }
+          ],
+          "count": 32,
+          "factors": [],
+          "measurement": 28,
+          "orders": [],
+          "probability": 0.0078125
+        },
+        {
+          "bitstring": "11101",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 10,
+              "numerator": 9,
+              "order": null
+            },
+            {
+              "denominator": 11,
+              "numerator": 10,
+              "order": null
+            }
+          ],
+          "count": 12,
+          "factors": [],
+          "measurement": 29,
+          "orders": [],
+          "probability": 0.0029296875
+        },
+        {
+          "bitstring": "11110",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            },
+            {
+              "denominator": 16,
+              "numerator": 15,
+              "order": null
+            }
+          ],
+          "count": 10,
+          "factors": [],
+          "measurement": 30,
+          "orders": [],
+          "probability": 0.00244140625
+        },
+        {
+          "bitstring": "11111",
+          "convergents": [
+            {
+              "denominator": 1,
+              "numerator": 0,
+              "order": null
+            },
+            {
+              "denominator": 1,
+              "numerator": 1,
+              "order": null
+            }
+          ],
+          "count": 8,
+          "factors": [],
+          "measurement": 31,
+          "orders": [],
+          "probability": 0.001953125
+        }
+      ],
+      "shots": 4096,
+      "state": "factored",
+      "verified_factors": [
+        3,
+        7
+      ]
+    },
+    "mode": "production",
+    "plan": {
+      "active_rounds": 5,
+      "base": 2,
+      "basis_edge_gates": 0,
+      "conditional_phases": 10,
+      "control_arity_histogram": [
+        [
+          2,
+          10
+        ],
+        [
+          3,
+          42
+        ],
+        [
+          4,
+          10
+        ],
+        [
+          5,
+          23
+        ]
+      ],
+      "controlled_swaps": 0,
+      "controlled_target_flips": 85,
+      "controlled_x_gates": 0,
+      "degree_histogram": [
+        [
+          1,
+          70
+        ],
+        [
+          2,
+          102
+        ],
+        [
+          3,
+          160
+        ],
+        [
+          4,
+          104
+        ]
+      ],
+      "executed_rounds": 5,
+      "forward_anf_terms": 219,
+      "input_domain": "nonzero_residues",
+      "inverse_anf_terms": 217,
+      "leading_identity_rounds": 0,
+      "maximum_anf_degree": 4,
+      "maximum_control_count": 5,
+      "measurements": 5,
+      "modulus": 21,
+      "phase_bits": 5,
+      "quantum_qubits": 7,
+      "resets": 4,
+      "rounds": [
+        {
+          "basis_edge_gates": 0,
+          "control_arity_histogram": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              9
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              4
+            ]
+          ],
+          "controlled_swaps": 0,
+          "controlled_target_flips": 17,
+          "controlled_x_gates": 0,
+          "degree_histogram": [
+            [
+              1,
+              14
+            ],
+            [
+              2,
+              22
+            ],
+            [
+              3,
+              32
+            ],
+            [
+              4,
+              18
+            ]
+          ],
+          "exponent": 16,
+          "forward_anf_terms": 43,
+          "input_domain": "nonzero_residues",
+          "inverse_anf_terms": 43,
+          "maximum_anf_degree": 4,
+          "maximum_control_count": 5,
+          "multiplier": 16,
+          "round_index": 0,
+          "scratch_qubits": 1,
+          "strategy": "target_flip_1_clean"
+        },
+        {
+          "basis_edge_gates": 0,
+          "control_arity_histogram": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              9
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              4
+            ]
+          ],
+          "controlled_swaps": 0,
+          "controlled_target_flips": 17,
+          "controlled_x_gates": 0,
+          "degree_histogram": [
+            [
+              1,
+              14
+            ],
+            [
+              2,
+              22
+            ],
+            [
+              3,
+              32
+            ],
+            [
+              4,
+              18
+            ]
+          ],
+          "exponent": 8,
+          "forward_anf_terms": 43,
+          "input_domain": "nonzero_residues",
+          "inverse_anf_terms": 43,
+          "maximum_anf_degree": 4,
+          "maximum_control_count": 5,
+          "multiplier": 4,
+          "round_index": 1,
+          "scratch_qubits": 1,
+          "strategy": "target_flip_1_clean"
+        },
+        {
+          "basis_edge_gates": 0,
+          "control_arity_histogram": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              9
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              4
+            ]
+          ],
+          "controlled_swaps": 0,
+          "controlled_target_flips": 17,
+          "controlled_x_gates": 0,
+          "degree_histogram": [
+            [
+              1,
+              14
+            ],
+            [
+              2,
+              22
+            ],
+            [
+              3,
+              32
+            ],
+            [
+              4,
+              18
+            ]
+          ],
+          "exponent": 4,
+          "forward_anf_terms": 43,
+          "input_domain": "nonzero_residues",
+          "inverse_anf_terms": 43,
+          "maximum_anf_degree": 4,
+          "maximum_control_count": 5,
+          "multiplier": 16,
+          "round_index": 2,
+          "scratch_qubits": 1,
+          "strategy": "target_flip_1_clean"
+        },
+        {
+          "basis_edge_gates": 0,
+          "control_arity_histogram": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              9
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              4
+            ]
+          ],
+          "controlled_swaps": 0,
+          "controlled_target_flips": 17,
+          "controlled_x_gates": 0,
+          "degree_histogram": [
+            [
+              1,
+              14
+            ],
+            [
+              2,
+              22
+            ],
+            [
+              3,
+              32
+            ],
+            [
+              4,
+              18
+            ]
+          ],
+          "exponent": 2,
+          "forward_anf_terms": 43,
+          "input_domain": "nonzero_residues",
+          "inverse_anf_terms": 43,
+          "maximum_anf_degree": 4,
+          "maximum_control_count": 5,
+          "multiplier": 4,
+          "round_index": 3,
+          "scratch_qubits": 1,
+          "strategy": "target_flip_1_clean"
+        },
+        {
+          "basis_edge_gates": 0,
+          "control_arity_histogram": [
+            [
+              2,
+              2
+            ],
+            [
+              3,
+              6
+            ],
+            [
+              4,
+              2
+            ],
+            [
+              5,
+              7
+            ]
+          ],
+          "controlled_swaps": 0,
+          "controlled_target_flips": 17,
+          "controlled_x_gates": 0,
+          "degree_histogram": [
+            [
+              1,
+              14
+            ],
+            [
+              2,
+              14
+            ],
+            [
+              3,
+              32
+            ],
+            [
+              4,
+              32
+            ]
+          ],
+          "exponent": 1,
+          "forward_anf_terms": 47,
+          "input_domain": "nonzero_residues",
+          "inverse_anf_terms": 45,
+          "maximum_anf_degree": 4,
+          "maximum_control_count": 5,
+          "multiplier": 2,
+          "round_index": 4,
+          "scratch_qubits": 1,
+          "strategy": "target_flip_1_clean"
+        }
+      ],
+      "scratch_qubits": 1,
+      "unique_multipliers": [
+        2,
+        4,
+        16
+      ],
+      "work_qubits": 5
+    },
+    "precheck": {
+      "base": 2,
+      "factor": null,
+      "modulus": 21,
+      "reason": "quantum order finding is required",
+      "status": "proceed"
+    },
+    "simulation": {
+      "counts": {
+        "00000": 693,
+        "00001": 9,
+        "00010": 9,
+        "00011": 10,
+        "00100": 44,
+        "00101": 435,
+        "00110": 130,
+        "00111": 26,
+        "01000": 13,
+        "01001": 27,
+        "01010": 120,
+        "01011": 496,
+        "01100": 23,
+        "01101": 10,
+        "01110": 6,
+        "01111": 5,
+        "10000": 666,
+        "10001": 6,
+        "10010": 11,
+        "10011": 16,
+        "10100": 36,
+        "10101": 462,
+        "10110": 127,
+        "10111": 31,
+        "11000": 17,
+        "11001": 21,
+        "11010": 113,
+        "11011": 472,
+        "11100": 32,
+        "11101": 12,
+        "11110": 10,
+        "11111": 8
+      },
+      "engine": "AerSimulator",
+      "ideal": {
+        "factorable_probability": 0.2295125181929906,
+        "order_recovery_probability": 0.2295125181929906
+      },
+      "seed": 7
+    },
+    "state": "locally_simulated"
+  }
+}

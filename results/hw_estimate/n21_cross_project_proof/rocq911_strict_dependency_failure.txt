@@ -1,0 +1,5 @@
+File "./theories/Prelude.v", line 7, characters 0-43:
+Error:
+Error when parsing .vo (from file <rocq911-toolchain>/lib/coq/user-contrib/Stdlib/ZArith/ZArith_base.vo) for library Stdlib.ZArith.ZArith_base: Library File (transitively required)
+Stdlib.ZArith.ZArith_base is deprecated since 9.0. use ZArith instead
+[deprecated-transitive-library-file-since-9.0,deprecated-since-9.0,deprecated-transitive-library-file,deprecated]

@@ -4,8 +4,9 @@ The fast path recognizes multiplication by signed powers of two modulo a
 Mersenne number as a cyclic permutation of qubit wires followed, for a
 negative power, by bit inversion. Generic synthesis exposes an ANF
 compute/swap/uncompute network, a scratch-free Gray-path cycle network, and an
-explicit one-clean-ancilla Gray-path network. The default uses the one-clean
-network selected by the bounded FakeFez compiler race.
+explicit one-clean-ancilla Gray-path network. The bounded N=21 path uses
+minimum-cost Boolean target flips; other generic defaults retain the one-clean
+cycle network selected by the FakeFez compiler race.
 """
 
 from __future__ import annotations
@@ -16,6 +17,7 @@ from dataclasses import dataclass
 from typing import TYPE_CHECKING, Literal
 
 from boolean_anf import anf_coefficients, anf_degree_from_coefficients, evaluate_anf
+from target_flip import MAX_TARGET_FLIP_WIDTH, target_flip_network
 
 if TYPE_CHECKING:
     from qiskit import QuantumCircuit
@@ -52,6 +54,8 @@ class MultiplierProfile:
     controlled_x_count: int
     basis_edge_gate_count: int
     maximum_control_count: int
+    controlled_target_flip_count: int = 0
+    control_arity_histogram: tuple[tuple[int, int], ...] = ()
 
     @property
     def controlled_anf_gate_count(self) -> int:
@@ -216,6 +220,7 @@ def multiplier_profile(
         "cycle_transpositions",
         "cycle_transpositions_1_clean",
         "anf_compute_swap_uncompute",
+        "target_flip_1_clean",
     ):
         raise ValueError(f"unknown modular multiplier strategy {strategy!r}")
     if input_domain not in (FULL_REGISTER, NONZERO_RESIDUES):
@@ -271,7 +276,34 @@ def multiplier_profile(
     inverse = _output_coefficients(modular_permutation(modulus, pow(normalized, -1, modulus)), width)
     all_coefficients = tuple(mask for output in forward + inverse for mask in output)
     histogram = Counter(mask.bit_count() for mask in all_coefficients)
-    selected_strategy = "cycle_transpositions_1_clean" if strategy == "auto" else strategy
+    selected_strategy = strategy
+    if strategy == "auto":
+        selected_strategy = (
+            "target_flip_1_clean" if modulus == 21 and normalized in (2, 4, 16) else "cycle_transpositions_1_clean"
+        )
+    if selected_strategy == "target_flip_1_clean":
+        if width > MAX_TARGET_FLIP_WIDTH:
+            raise ValueError(f"target-flip synthesis supports at most {MAX_TARGET_FLIP_WIDTH} data qubits, got {width}")
+        network = target_flip_network(permutation)
+        control_histogram = Counter(1 + cube.control_mask.bit_count() for cube in network)
+        return MultiplierProfile(
+            modulus=modulus,
+            multiplier=normalized,
+            width=width,
+            input_domain=input_domain,
+            strategy=selected_strategy,
+            scratch_qubits=1,
+            forward_term_count=sum(len(output) for output in forward),
+            inverse_term_count=sum(len(output) for output in inverse),
+            maximum_anf_degree=max((anf_degree_from_coefficients(output) for output in forward + inverse), default=0),
+            degree_histogram=tuple(sorted(histogram.items())),
+            controlled_swap_count=0,
+            controlled_x_count=control_histogram.get(1, 0),
+            basis_edge_gate_count=0,
+            maximum_control_count=max(control_histogram, default=0),
+            controlled_target_flip_count=len(network),
+            control_arity_histogram=tuple(sorted(control_histogram.items())),
+        )
     if selected_strategy == "anf_compute_swap_uncompute":
         scratch_qubits = width
     elif selected_strategy == "cycle_transpositions_1_clean":
@@ -438,6 +470,34 @@ def append_controlled_modular_multiply(
                     0,
                     modulus,
                 )
+        return profile
+    if profile.strategy == "target_flip_1_clean":
+        from qiskit.synthesis import synth_mcx_1_clean_kg24
+
+        for cube in target_flip_network(modular_permutation(modulus, profile.multiplier)):
+            controls = [phase_control] + [
+                data_qubit for bit_index, data_qubit in enumerate(data_qubits) if cube.control_mask & (1 << bit_index)
+            ]
+            open_controls = [
+                data_qubit
+                for bit_index, data_qubit in enumerate(data_qubits)
+                if cube.control_mask & (1 << bit_index) and not cube.control_state & (1 << bit_index)
+            ]
+            for open_control in open_controls:
+                circuit.x(open_control)
+            target_qubit = data_qubits[cube.target]
+            if len(controls) == 1:
+                circuit.cx(phase_control, target_qubit)
+            elif len(controls) == 2:
+                circuit.ccx(*controls, target_qubit)
+            else:
+                circuit.compose(
+                    synth_mcx_1_clean_kg24(len(controls)),
+                    qubits=controls + [target_qubit] + scratch_qubits,
+                    inplace=True,
+                )
+            for open_control in reversed(open_controls):
+                circuit.x(open_control)
         return profile
     if profile.strategy in ("cycle_transpositions", "cycle_transpositions_1_clean"):
         permutation = modular_permutation(modulus, profile.multiplier)
@@ -731,6 +791,11 @@ def _verify() -> None:
         (21, 2, "cycle_transpositions_1_clean"),
         (21, 4, "cycle_transpositions_1_clean"),
         (21, 16, "cycle_transpositions_1_clean"),
+        (21, 2, "target_flip_1_clean"),
+        (21, 4, "target_flip_1_clean"),
+        (21, 16, "target_flip_1_clean"),
+        (5, 2, "target_flip_1_clean"),
+        (9, 2, "target_flip_1_clean"),
         (35, 2, "cycle_transpositions"),
         (35, 4, "cycle_transpositions"),
         (35, 11, "cycle_transpositions"),
@@ -741,8 +806,10 @@ def _verify() -> None:
         (21, 4, "anf_compute_swap_uncompute"),
         (21, 16, "anf_compute_swap_uncompute"),
     )
-    if multiplier_profile(21, 2).strategy != "cycle_transpositions_1_clean":
-        raise RuntimeError("automatic generic synthesis must select the lower-CZ one-clean cycle candidate")
+    if multiplier_profile(21, 2).strategy != "target_flip_1_clean":
+        raise RuntimeError("automatic N=21 synthesis must select the measured one-clean target-flip candidate")
+    if multiplier_profile(35, 2).strategy != "cycle_transpositions_1_clean":
+        raise RuntimeError("unmeasured wider multipliers must retain the bounded one-clean cycle selection")
     for modulus, multiplier, strategy in cases:
         profile = multiplier_profile(modulus, multiplier, strategy)
         permutation = modular_permutation(modulus, multiplier)
