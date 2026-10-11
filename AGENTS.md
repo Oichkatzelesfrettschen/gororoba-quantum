@@ -240,7 +240,7 @@ unresolveReviewThread.
   index of sha256s), written by `--collect` before any analysis and
   recoverable with `--preserve-raw DIR` for a record collected under an
   earlier revision. collect.json is the preregistered analysis at the run's
-  experiment digest; `adjudicate.py DIR` writes adjudication-<digest>.json, a second
+  experiment digest; `adjudicate.py DIR` writes adjudication-<digest>-seed<seed>.json, a second
   analysis of the same raw files named by its own analysis digest, beside
   any earlier one. Raw files
   are never rewritten by a later collection or analysis.

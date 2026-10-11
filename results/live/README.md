@@ -141,7 +141,7 @@ SHA-256 is
 `0207f35e24ce37804aea3824e6ab693fbdad2232630fe3109532c8254c7df508`.
 The record also keeps the lossless result under
 `raw/db5qmqclf4us73c4e1ug/` (preserved with `--preserve-raw` after the
-collection, every file's sha256 in its index.json), `adjudication-<digest>.json`
+collection, every file's sha256 in its index.json), `adjudication-<digest>-seed<seed>.json`
 from `adjudicate.py` (per-bit folded-QPE structure, the schedule-aware replay
 that charges the scheduler table's idle time, drift, shot-wise correlation,
 the scheduled feed-forward round trip, and the packed-minus-reference

@@ -17,9 +17,10 @@ the questions that reduction cannot:
   packed-minus-reference schedule difference per qubit;
 - the distribution-free Hoeffding view of each matched packing endpoint.
 
-Its output, adjudication-<digest>.json, is named by analysis_digest, the
-sha256 of this module and live_run.py, so a later analysis of the same raw
-files under other code is a separate artifact beside the earlier one. The command needs the runtime service only for
+Its output, adjudication-<digest>-seed<seed>.json, is named by
+analysis_digest, the sha256 of this module and live_run.py, and by the
+replay seed, so a later analysis of the same raw files under other code or
+another seed is a separate artifact beside the earlier one. The command needs the runtime service only for
 the execution-time calibration; it submits nothing.
 """
 
@@ -250,23 +251,35 @@ def generic_statistics(values: np.ndarray, bits: int) -> dict[str, Any]:
     }
 
 
-def pub_starts(result_metadata: dict[str, Any], count: int) -> list[datetime | None]:
-    """Each PUB's earliest execution-chunk start from the preserved result metadata, or None when no chunk names it."""
+def pub_starts(result_metadata: dict[str, Any], count: int) -> list[list[datetime]]:
+    """Each PUB's distinct execution-chunk starts from the preserved result metadata, sorted; empty when no chunk names it.
+
+    A PUB can span several chunks (live_run.pub_windows); a PUB with more than
+    one start may have executed under more than one calibration, and its
+    shots carry no chunk tag, so the caller withholds its replay.
+    """
     chunks = result_metadata.get("executor", {}).get("chunk_timing") or []
-    starts: list[datetime | None] = []
-    for idx in range(count):
-        own = [
-            datetime.fromisoformat(chunk["start"])
-            for chunk in chunks
-            if any(int(part["idx_item"]) == idx for part in chunk.get("parts", []))
-        ]
-        starts.append(min(own) if own else None)
-    return starts
+    return [
+        sorted(
+            {
+                datetime.fromisoformat(chunk["start"])
+                for chunk in chunks
+                if any(int(part["idx_item"]) == idx for part in chunk.get("parts", []))
+            }
+        )
+        for idx in range(count)
+    ]
 
 
 def latest_metrics(raw_dir: Path, index: dict[str, Any]) -> dict[str, Any]:
     """The newest job-metrics snapshot the raw index lists (job metrics finalize after the job)."""
-    name = index.get("metrics_latest") or (index.get("metrics") or ["job_metrics.json"])[-1]
+    names = index.get("metrics") or ["job_metrics.json"]
+    name = index.get("metrics_latest") or names[-1]
+    digests = index.get("metrics_sha256") or []
+    if name not in names or len(digests) != len(names):
+        raise AdjudicationError(f"{raw_dir}/index.json lists no digest for the metrics snapshot {name}")
+    if hashlib.sha256((raw_dir / name).read_bytes()).hexdigest() != digests[names.index(name)]:
+        raise AdjudicationError(f"{raw_dir / name} differs from its indexed sha256")
     return dict(json.loads((raw_dir / name).read_text()))
 
 
@@ -304,7 +317,11 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
     import live_run
 
     record = json.loads((run_dir / "record.json").read_text())
-    circuits = {c.name: c for c in qpy.load(io.BytesIO((run_dir / "isa.qpy").read_bytes()))}
+    qpy_bytes = (run_dir / "isa.qpy").read_bytes()
+    expected_qpy = record.get("submission", {}).get("qpy_archive_sha256")
+    if hashlib.sha256(qpy_bytes).hexdigest() != expected_qpy:
+        raise AdjudicationError("isa.qpy differs from the archive digest checkpointed before submission")
+    circuits = {c.name: c for c in qpy.load(io.BytesIO(qpy_bytes))}
     jobs = record.get("submission", {}).get("jobs") or []
     if not jobs:
         raise AdjudicationError(f"{run_dir} records no submitted jobs")
@@ -329,16 +346,18 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
         result_metadata = json.loads((raw_dir / "result_metadata.json").read_text())
         metrics = latest_metrics(raw_dir, index)
         backend = service.backend(job_entry["backend"])
-        starts = pub_starts(result_metadata, len(job_entry["pubs"]))
-        if any(start is None for start in starts):
-            missing = [m["name"] for m, start in zip(job_entry["pubs"], starts, strict=True) if start is None]
+        pub_chunk_starts = pub_starts(result_metadata, len(job_entry["pubs"]))
+        if any(not own for own in pub_chunk_starts):
+            missing = [m["name"] for m, own in zip(job_entry["pubs"], pub_chunk_starts, strict=True) if not own]
             raise AdjudicationError(f"job {job_id}: no execution chunk dates the calibration of {missing}")
         # One calibration, Target, and simulator per distinct chunk start: a
-        # PUB executed after a calibration update replays under its own.
+        # PUB executed after a calibration update replays under its own, and
+        # a PUB spanning several starts gets no replay at all.
         calibrations: dict[datetime, tuple[Any, Any, Any]] = {}
-        for start in starts:
-            assert start is not None
-            if start not in calibrations:
+        replay_seed = seed
+        for own in pub_chunk_starts:
+            start = own[0]
+            if len(own) == 1 and start not in calibrations:
                 props = backend.properties(datetime=start)
                 target = backend.target_history(datetime=start)
                 simulator = live_run.noise_simulator(f"{backend.name}@{start.isoformat()}", target, props)
@@ -372,14 +391,24 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
             name = manifest["name"]
             raw = pub_raw[name]
             circuit = circuits[name]
-            pub_start = starts[pub_index]
-            assert pub_start is not None
-            props, _target, simulator = calibrations[pub_start]
+            own_starts = pub_chunk_starts[pub_index]
+            pub_start = own_starts[0]
+            spans_chunks = len(own_starts) > 1
+            if spans_chunks:
+                calibration_text: str | None = None
+                simulator = None
+            else:
+                props, _target, simulator = calibrations[pub_start]
+                calibration_text = str(props.last_update_date)
             pub_out: dict[str, Any] = {
                 "components": [],
                 "schedule": None,
                 "execution_start": pub_start.isoformat(),
-                "calibration": str(props.last_update_date),
+                "chunk_starts": [moment.isoformat() for moment in own_starts],
+                "calibration": calibration_text,
+                "replay_unavailable": (
+                    "the PUB's shots span several execution chunks and carry no chunk tag" if spans_chunks else None
+                ),
             }
             if name in pub_rows:
                 pub_out["schedule"] = feed_forward_segment(pub_rows[name])
@@ -396,16 +425,23 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
                     width = int(bits["num_bits"])
                     hardware = bit_values(bits["bitstrings"])
                     qubits = list(group_replicas[r]["physical_qubits"])
-                    used_qubits[pub_start].update(qubits)
+                    if simulator is not None:
+                        used_qubits[pub_start].update(qubits)
                     sub = carve_replica(circuit, qubits)
                     aware, mismatches = schedule_aware(sub, tables.get(name, {}))
-                    archived_replay = _simulate(simulator, sub, shots, seed + 7 * pub_index + r)
-                    # A circuit the table does not fully match has no
-                    # schedule-aware view: a partially delayed replay would
-                    # read as an optimistic one.
-                    aware_replay = (
-                        _simulate(simulator, aware, shots, seed + 1000 + 7 * pub_index + r) if not mismatches else None
-                    )
+                    # Every replay call takes the next seed of one advancing
+                    # counter, so no two calls share a noise stream.
+                    archived_replay = None
+                    aware_replay = None
+                    if simulator is not None:
+                        replay_seed += 1
+                        archived_replay = _simulate(simulator, sub, shots, replay_seed)
+                        # A circuit the table does not fully match has no
+                        # schedule-aware view: a partially delayed replay
+                        # would read as an optimistic one.
+                        if not mismatches:
+                            replay_seed += 1
+                            aware_replay = _simulate(simulator, aware, shots, replay_seed)
                     if member.startswith(QPE_PREFIX) and label is not None:
                         decode: Any = lambda v, s=label: qpe_statistics(v, s)  # noqa: E731
                         indicator = (hardware == label).astype(float)
@@ -418,7 +454,7 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
                         indicator = (hardware == modal).astype(float)
                     views = {
                         "hardware": decode(hardware),
-                        "replay_archived": decode(archived_replay[register]),
+                        "replay_archived": decode(archived_replay[register]) if archived_replay is not None else None,
                         "replay_schedule_aware": decode(aware_replay[register]) if aware_replay is not None else None,
                     }
                     pub_out["components"].append(
@@ -493,7 +529,7 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
         out["jobs"][job_id] = job_out
     # One file per analysis digest: a later revision writes beside, never
     # over, an earlier adjudication of the same raw shots.
-    target_path = run_dir / f"adjudication-{out['analysis_digest'][:12]}.json"
+    target_path = run_dir / f"adjudication-{out['analysis_digest'][:12]}-seed{seed}.json"
     text = json.dumps(out, indent=1, sort_keys=True) + "\n"
     if target_path.exists() and target_path.read_text() != text:
         raise AdjudicationError(f"{target_path} exists with different content under the same analysis digest")
@@ -590,6 +626,20 @@ def _check() -> None:
         raise AdjudicationError(f"Hoeffding interval reads {(low, high)}")
     if block_means(np.array([1.0, 0.0, 1.0, 1.0]), 2) != [0.5, 1.0]:
         raise AdjudicationError("block means")
+    metadata = {
+        "executor": {
+            "chunk_timing": [
+                {
+                    "start": "2026-10-11T15:31:50+00:00",
+                    "parts": [{"idx_item": 0, "size": 1}, {"idx_item": 1, "size": 1}],
+                },
+                {"start": "2026-10-11T15:40:00+00:00", "parts": [{"idx_item": 1, "size": 1}]},
+            ]
+        }
+    }
+    starts = pub_starts(metadata, 3)
+    if len(starts[0]) != 1 or len(starts[1]) != 2 or starts[2] != []:
+        raise AdjudicationError(f"PUB chunk starts read {starts}")
     print("adjudicate self-check passed")
 
 

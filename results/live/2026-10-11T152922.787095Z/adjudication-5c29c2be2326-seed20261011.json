@@ -1,5 +1,5 @@
 {
- "analysis_digest": "01fb1919133673a44d48a957deea1b43bab1ad157b9beaeb309940289ee02ed4",
+ "analysis_digest": "5c29c2be2326d53b761073bd1fd527a553a08594ac292615b4d2c69ecee121e4",
  "experiment_digest": "0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2",
  "jobs": {
   "db5qmqclf4us73c4e1ug": {
@@ -310,6 +310,9 @@
    "pubs": {
     "ibm_kingston_dynamic_pub_01": {
      "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_starts": [
+      "2026-10-11T15:31:50.399650+00:00"
+     ],
      "components": [
       {
        "inserted_delay_dt": 11654,
@@ -351,26 +354,26 @@
         "replay_archived": {
          "distribution": [
           0.028076171875,
-          0.885986328125,
+          0.88623046875,
           0.022216796875,
-          0.063720703125
+          0.0634765625
          ],
          "p_bit0_correct": 0.94970703125,
-         "p_bit1_correct_given_bit0_correct": 0.9329048843187661,
+         "p_bit1_correct_given_bit0_correct": 0.9331619537275064,
          "p_bit1_correct_given_bit0_wrong": 0.558252427184466,
-         "p_correct": 0.885986328125
+         "p_correct": 0.88623046875
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.026611328125,
-          0.837158203125,
-          0.0244140625,
-          0.11181640625
+          0.028076171875,
+          0.834228515625,
+          0.02685546875,
+          0.11083984375
          ],
-         "p_bit0_correct": 0.948974609375,
-         "p_bit1_correct_given_bit0_correct": 0.8821713403653203,
-         "p_bit1_correct_given_bit0_wrong": 0.5215311004784688,
-         "p_correct": 0.837158203125
+         "p_bit0_correct": 0.945068359375,
+         "p_bit1_correct_given_bit0_correct": 0.8827176440196332,
+         "p_bit1_correct_given_bit0_wrong": 0.5111111111111111,
+         "p_correct": 0.834228515625
         }
        }
       },
@@ -425,15 +428,15 @@
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.031982421875,
-          0.83984375,
-          0.0205078125,
-          0.107666015625
+          0.030029296875,
+          0.839111328125,
+          0.024169921875,
+          0.106689453125
          ],
-         "p_bit0_correct": 0.947509765625,
-         "p_bit1_correct_given_bit0_correct": 0.8863694923988663,
-         "p_bit1_correct_given_bit0_wrong": 0.6093023255813953,
-         "p_correct": 0.83984375
+         "p_bit0_correct": 0.94580078125,
+         "p_bit1_correct_given_bit0_correct": 0.8871966959215282,
+         "p_bit1_correct_given_bit0_wrong": 0.5540540540540541,
+         "p_correct": 0.839111328125
         }
        }
       },
@@ -488,15 +491,15 @@
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.03125,
-          0.8330078125,
-          0.02392578125,
-          0.11181640625
+          0.030029296875,
+          0.834716796875,
+          0.025390625,
+          0.10986328125
          ],
-         "p_bit0_correct": 0.94482421875,
-         "p_bit1_correct_given_bit0_correct": 0.8816537467700258,
-         "p_bit1_correct_given_bit0_wrong": 0.5663716814159292,
-         "p_correct": 0.8330078125
+         "p_bit0_correct": 0.944580078125,
+         "p_bit1_correct_given_bit0_correct": 0.8836908761953993,
+         "p_bit1_correct_given_bit0_wrong": 0.5418502202643172,
+         "p_correct": 0.834716796875
         }
        }
       },
@@ -540,13 +543,13 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.494384765625,
+         "factorable": 0.494873046875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.261962890625,
-          0.2578125,
-          0.24365234375,
-          0.236572265625
+          0.26171875,
+          0.258544921875,
+          0.243408203125,
+          0.236328125
          ],
          "varying_bits": [
           6,
@@ -554,13 +557,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.500244140625,
+         "factorable": 0.493408203125,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.26220703125,
-          0.25634765625,
-          0.237548828125,
-          0.243896484375
+          0.26416015625,
+          0.255615234375,
+          0.242431640625,
+          0.23779296875
          ],
          "varying_bits": [
           6,
@@ -609,13 +612,13 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.49169921875,
+         "factorable": 0.4921875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.259521484375,
-          0.253173828125,
-          0.248779296875,
-          0.238525390625
+          0.25927734375,
+          0.25390625,
+          0.24853515625,
+          0.23828125
          ],
          "varying_bits": [
           6,
@@ -623,13 +626,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.50244140625,
+         "factorable": 0.494873046875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.261474609375,
-          0.25341796875,
-          0.236083984375,
-          0.2490234375
+          0.261962890625,
+          0.25244140625,
+          0.2431640625,
+          0.242431640625
          ],
          "varying_bits": [
           6,
@@ -678,12 +681,12 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.49560546875,
+         "factorable": 0.49609375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.2568359375,
-          0.2548828125,
-          0.24755859375,
+          0.256591796875,
+          0.25537109375,
+          0.247314453125,
           0.24072265625
          ],
          "varying_bits": [
@@ -692,13 +695,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.50439453125,
+         "factorable": 0.495849609375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.257080078125,
-          0.254638671875,
-          0.238525390625,
-          0.249755859375
+          0.260986328125,
+          0.252685546875,
+          0.2431640625,
+          0.2431640625
          ],
          "varying_bits": [
           6,
@@ -747,11 +750,11 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.494873046875,
+         "factorable": 0.495361328125,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.262939453125,
-          0.25244140625,
+          0.262451171875,
+          0.2529296875,
           0.2421875,
           0.242431640625
          ],
@@ -761,13 +764,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.504150390625,
+         "factorable": 0.495361328125,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.25927734375,
-          0.255615234375,
-          0.236572265625,
-          0.24853515625
+          0.262451171875,
+          0.253173828125,
+          0.2421875,
+          0.2421875
          ],
          "varying_bits": [
           6,
@@ -816,13 +819,13 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.47802734375,
+         "factorable": 0.478759765625,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.27392578125,
+          0.2734375,
           0.24658203125,
-          0.248046875,
-          0.2314453125
+          0.247802734375,
+          0.232177734375
          ],
          "varying_bits": [
           6,
@@ -830,13 +833,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.486572265625,
+         "factorable": 0.47900390625,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.2685546875,
-          0.247802734375,
-          0.244873046875,
-          0.23876953125
+          0.2744140625,
+          0.244384765625,
+          0.24658203125,
+          0.234619140625
          ],
          "varying_bits": [
           6,
@@ -885,13 +888,13 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.490234375,
+         "factorable": 0.490966796875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.261962890625,
+          0.261474609375,
           0.25341796875,
-          0.247802734375,
-          0.23681640625
+          0.24755859375,
+          0.237548828125
          ],
          "varying_bits": [
           6,
@@ -899,13 +902,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.5048828125,
+         "factorable": 0.49755859375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.259033203125,
-          0.2548828125,
-          0.236083984375,
-          0.25
+          0.259521484375,
+          0.254150390625,
+          0.242919921875,
+          0.243408203125
          ],
          "varying_bits": [
           6,
@@ -916,6 +919,7 @@
       }
      ],
      "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
      "schedule": {
       "broadcast_dt": [
        577
@@ -972,6 +976,9 @@
     },
     "ibm_kingston_dynamic_pub_02": {
      "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_starts": [
+      "2026-10-11T15:31:50.399650+00:00"
+     ],
      "components": [
       {
        "inserted_delay_dt": 10834,
@@ -1013,26 +1020,26 @@
         "replay_archived": {
          "distribution": [
           0.028076171875,
-          0.886474609375,
+          0.88720703125,
           0.022216796875,
-          0.063232421875
+          0.0625
          ],
          "p_bit0_correct": 0.94970703125,
-         "p_bit1_correct_given_bit0_correct": 0.9334190231362468,
+         "p_bit1_correct_given_bit0_correct": 0.9341902313624678,
          "p_bit1_correct_given_bit0_wrong": 0.558252427184466,
-         "p_correct": 0.886474609375
+         "p_correct": 0.88720703125
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.0263671875,
-          0.84033203125,
-          0.0244140625,
+          0.0283203125,
+          0.8359375,
+          0.02685546875,
           0.10888671875
          ],
-         "p_bit0_correct": 0.94921875,
-         "p_bit1_correct_given_bit0_correct": 0.8852880658436214,
-         "p_bit1_correct_given_bit0_wrong": 0.5192307692307693,
-         "p_correct": 0.84033203125
+         "p_bit0_correct": 0.94482421875,
+         "p_bit1_correct_given_bit0_correct": 0.8847545219638243,
+         "p_bit1_correct_given_bit0_wrong": 0.5132743362831859,
+         "p_correct": 0.8359375
         }
        }
       },
@@ -1076,13 +1083,13 @@
          ]
         },
         "replay_archived": {
-         "factorable": 0.494873046875,
+         "factorable": 0.49560546875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.26171875,
-          0.258544921875,
-          0.243408203125,
-          0.236328125
+          0.26123046875,
+          0.25830078125,
+          0.2431640625,
+          0.2373046875
          ],
          "varying_bits": [
           6,
@@ -1090,13 +1097,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.499755859375,
+         "factorable": 0.493408203125,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.262939453125,
-          0.25634765625,
-          0.2373046875,
-          0.243408203125
+          0.2646484375,
+          0.255859375,
+          0.241943359375,
+          0.237548828125
          ],
          "varying_bits": [
           6,
@@ -1107,6 +1114,7 @@
       }
      ],
      "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
      "schedule": {
       "broadcast_dt": [
        533
@@ -1128,6 +1136,9 @@
     },
     "ibm_kingston_dynamic_pub_03": {
      "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_starts": [
+      "2026-10-11T15:31:50.399650+00:00"
+     ],
      "components": [
       {
        "inserted_delay_dt": 13426,
@@ -1168,27 +1179,27 @@
         },
         "replay_archived": {
          "distribution": [
-          0.909423828125,
+          0.909912109375,
           0.01611328125,
-          0.0576171875,
-          0.016845703125
+          0.057373046875,
+          0.0166015625
          ],
-         "p_bit0_correct": 0.967041015625,
-         "p_bit1_correct_given_bit0_correct": 0.9404190860893714,
-         "p_bit1_correct_given_bit0_wrong": 0.4888888888888889,
-         "p_correct": 0.909423828125
+         "p_bit0_correct": 0.96728515625,
+         "p_bit1_correct_given_bit0_correct": 0.9406865219586068,
+         "p_bit1_correct_given_bit0_wrong": 0.4925373134328358,
+         "p_correct": 0.909912109375
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.863037109375,
-          0.02197265625,
-          0.095947265625,
+          0.866455078125,
+          0.021240234375,
+          0.09326171875,
           0.01904296875
          ],
-         "p_bit0_correct": 0.958984375,
-         "p_bit1_correct_given_bit0_correct": 0.899949083503055,
-         "p_bit1_correct_given_bit0_wrong": 0.5357142857142857,
-         "p_correct": 0.863037109375
+         "p_bit0_correct": 0.959716796875,
+         "p_bit1_correct_given_bit0_correct": 0.9028237089799034,
+         "p_bit1_correct_given_bit0_wrong": 0.5272727272727272,
+         "p_correct": 0.866455078125
         }
        }
       },
@@ -1231,27 +1242,27 @@
         },
         "replay_archived": {
          "distribution": [
-          0.920166015625,
+          0.92041015625,
           0.01416015625,
           0.0537109375,
-          0.011962890625
+          0.01171875
          ],
-         "p_bit0_correct": 0.973876953125,
-         "p_bit1_correct_given_bit0_correct": 0.9448483329155176,
-         "p_bit1_correct_given_bit0_wrong": 0.5420560747663551,
-         "p_correct": 0.920166015625
+         "p_bit0_correct": 0.97412109375,
+         "p_bit1_correct_given_bit0_correct": 0.9448621553884712,
+         "p_bit1_correct_given_bit0_wrong": 0.5471698113207547,
+         "p_correct": 0.92041015625
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.876708984375,
+          0.879150390625,
           0.015625,
-          0.091796875,
-          0.015869140625
+          0.090087890625,
+          0.01513671875
          ],
-         "p_bit0_correct": 0.968505859375,
-         "p_bit1_correct_given_bit0_correct": 0.9052180489034535,
-         "p_bit1_correct_given_bit0_wrong": 0.49612403100775193,
-         "p_correct": 0.876708984375
+         "p_bit0_correct": 0.96923828125,
+         "p_bit1_correct_given_bit0_correct": 0.9070528967254408,
+         "p_bit1_correct_given_bit0_wrong": 0.5079365079365079,
+         "p_correct": 0.879150390625
         }
        }
       },
@@ -1295,26 +1306,26 @@
         "replay_archived": {
          "distribution": [
           0.920654296875,
-          0.01611328125,
+          0.016357421875,
           0.048095703125,
-          0.01513671875
+          0.014892578125
          ],
          "p_bit0_correct": 0.96875,
          "p_bit1_correct_given_bit0_correct": 0.9503528225806451,
-         "p_bit1_correct_given_bit0_wrong": 0.515625,
+         "p_bit1_correct_given_bit0_wrong": 0.5234375,
          "p_correct": 0.920654296875
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.85986328125,
-          0.018798828125,
-          0.103271484375,
-          0.01806640625
+          0.860107421875,
+          0.02099609375,
+          0.1005859375,
+          0.018310546875
          ],
-         "p_bit0_correct": 0.963134765625,
-         "p_bit1_correct_given_bit0_correct": 0.8927756653992396,
-         "p_bit1_correct_given_bit0_wrong": 0.5099337748344371,
-         "p_correct": 0.85986328125
+         "p_bit0_correct": 0.960693359375,
+         "p_bit1_correct_given_bit0_correct": 0.8952986022871664,
+         "p_bit1_correct_given_bit0_wrong": 0.5341614906832298,
+         "p_correct": 0.860107421875
         }
        }
       },
@@ -1372,13 +1383,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.0048828125,
+         "factorable": 0.00537109375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.990478515625,
+          0.990234375,
           0.0029296875,
-          0.004638671875,
-          0.001953125
+          0.00439453125,
+          0.00244140625
          ],
          "varying_bits": [
           6,
@@ -1430,9 +1441,9 @@
          "factorable": 0.005859375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.9853515625,
+          0.985107421875,
           0.00244140625,
-          0.0087890625,
+          0.009033203125,
           0.00341796875
          ],
          "varying_bits": [
@@ -1441,13 +1452,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.00537109375,
+         "factorable": 0.005859375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.988525390625,
+          0.98828125,
           0.003173828125,
-          0.006103515625,
-          0.002197265625
+          0.005859375,
+          0.002685546875
          ],
          "varying_bits": [
           6,
@@ -1510,13 +1521,13 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.00244140625,
+         "factorable": 0.0029296875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.994873046875,
-          0.001708984375,
+          0.994384765625,
+          0.001953125,
           0.002685546875,
-          0.000732421875
+          0.0009765625
          ],
          "varying_bits": [
           6,
@@ -1568,9 +1579,9 @@
          "factorable": 0.016357421875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.9658203125,
+          0.965576171875,
           0.00830078125,
-          0.017822265625,
+          0.01806640625,
           0.008056640625
          ],
          "varying_bits": [
@@ -1579,11 +1590,11 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.015380859375,
+         "factorable": 0.016357421875,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.9697265625,
-          0.00830078125,
+          0.96875,
+          0.00927734375,
           0.014892578125,
           0.007080078125
          ],
@@ -1637,9 +1648,9 @@
          "factorable": 0.003662109375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.989990234375,
+          0.98974609375,
           0.001953125,
-          0.00634765625,
+          0.006591796875,
           0.001708984375
          ],
          "varying_bits": [
@@ -1651,10 +1662,10 @@
          "factorable": 0.003662109375,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.99169921875,
-          0.00244140625,
-          0.004638671875,
-          0.001220703125
+          0.991943359375,
+          0.002197265625,
+          0.00439453125,
+          0.00146484375
          ],
          "varying_bits": [
           6,
@@ -1717,15 +1728,16 @@
          ]
         },
         "replay_schedule_aware": {
-         "factorable": 0.0,
+         "factorable": 0.000244140625,
          "p_low_bits_zero": 1.0,
          "top_pair_distribution": [
-          0.999267578125,
+          0.9990234375,
           0.0,
           0.000732421875,
-          0.0
+          0.000244140625
          ],
          "varying_bits": [
+          6,
           7
          ]
         }
@@ -1733,6 +1745,7 @@
       }
      ],
      "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
      "schedule": {
       "broadcast_dt": [
        540,
@@ -1792,6 +1805,9 @@
     },
     "ibm_kingston_dynamic_pub_04": {
      "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_starts": [
+      "2026-10-11T15:31:50.399650+00:00"
+     ],
      "components": [
       {
        "inserted_delay_dt": 9970,
@@ -1832,27 +1848,27 @@
         },
         "replay_archived": {
          "distribution": [
-          0.0849609375,
+          0.08447265625,
           0.0166015625,
-          0.87939453125,
-          0.01904296875
+          0.880126953125,
+          0.018798828125
          ],
-         "p_bit0_correct": 0.96435546875,
-         "p_bit1_correct_given_bit0_correct": 0.9118987341772152,
-         "p_bit1_correct_given_bit0_wrong": 0.5342465753424658,
-         "p_correct": 0.87939453125
+         "p_bit0_correct": 0.964599609375,
+         "p_bit1_correct_given_bit0_correct": 0.9124272336117438,
+         "p_bit1_correct_given_bit0_wrong": 0.5310344827586206,
+         "p_correct": 0.880126953125
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.128173828125,
-          0.022216796875,
-          0.8310546875,
-          0.0185546875
+          0.130615234375,
+          0.02099609375,
+          0.828125,
+          0.020263671875
          ],
-         "p_bit0_correct": 0.959228515625,
-         "p_bit1_correct_given_bit0_correct": 0.8663782132858233,
-         "p_bit1_correct_given_bit0_wrong": 0.4550898203592814,
-         "p_correct": 0.8310546875
+         "p_bit0_correct": 0.958740234375,
+         "p_bit1_correct_given_bit0_correct": 0.863763687293099,
+         "p_bit1_correct_given_bit0_wrong": 0.4911242603550296,
+         "p_correct": 0.828125
         }
        }
       },
@@ -1896,26 +1912,26 @@
         "replay_archived": {
          "distribution": [
           0.06689453125,
-          0.013916015625,
-          0.905517578125,
-          0.013671875
+          0.013671875,
+          0.906005859375,
+          0.013427734375
          ],
-         "p_bit0_correct": 0.972412109375,
-         "p_bit1_correct_given_bit0_correct": 0.9312076324378609,
-         "p_bit1_correct_given_bit0_wrong": 0.49557522123893805,
-         "p_correct": 0.905517578125
+         "p_bit0_correct": 0.972900390625,
+         "p_bit1_correct_given_bit0_correct": 0.9312421580928482,
+         "p_bit1_correct_given_bit0_wrong": 0.4954954954954955,
+         "p_correct": 0.906005859375
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.1064453125,
-          0.013427734375,
-          0.86279296875,
-          0.017333984375
+          0.10791015625,
+          0.01513671875,
+          0.859375,
+          0.017578125
          ],
-         "p_bit0_correct": 0.96923828125,
-         "p_bit1_correct_given_bit0_correct": 0.890176322418136,
-         "p_bit1_correct_given_bit0_wrong": 0.5634920634920635,
-         "p_correct": 0.86279296875
+         "p_bit0_correct": 0.96728515625,
+         "p_bit1_correct_given_bit0_correct": 0.8884401817264008,
+         "p_bit1_correct_given_bit0_wrong": 0.5373134328358209,
+         "p_correct": 0.859375
         }
        }
       },
@@ -1958,32 +1974,33 @@
         },
         "replay_archived": {
          "distribution": [
-          0.06591796875,
+          0.066162109375,
           0.0166015625,
-          0.894775390625,
-          0.022705078125
+          0.895263671875,
+          0.02197265625
          ],
-         "p_bit0_correct": 0.960693359375,
-         "p_bit1_correct_given_bit0_correct": 0.9313850063532402,
-         "p_bit1_correct_given_bit0_wrong": 0.577639751552795,
-         "p_correct": 0.894775390625
+         "p_bit0_correct": 0.96142578125,
+         "p_bit1_correct_given_bit0_correct": 0.931183341797867,
+         "p_bit1_correct_given_bit0_wrong": 0.569620253164557,
+         "p_correct": 0.895263671875
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.12255859375,
-          0.016845703125,
-          0.84033203125,
-          0.020263671875
+          0.126708984375,
+          0.017822265625,
+          0.83544921875,
+          0.02001953125
          ],
-         "p_bit0_correct": 0.962890625,
-         "p_bit1_correct_given_bit0_correct": 0.8727180527383367,
-         "p_bit1_correct_given_bit0_wrong": 0.5460526315789473,
-         "p_correct": 0.84033203125
+         "p_bit0_correct": 0.962158203125,
+         "p_bit1_correct_given_bit0_correct": 0.8683075361583354,
+         "p_bit1_correct_given_bit0_wrong": 0.5290322580645161,
+         "p_correct": 0.83544921875
         }
        }
       }
      ],
      "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
      "schedule": {
       "broadcast_dt": [
        540
@@ -2007,6 +2024,9 @@
     },
     "ibm_kingston_dynamic_pub_05": {
      "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_starts": [
+      "2026-10-11T15:31:50.399650+00:00"
+     ],
      "components": [
       {
        "inserted_delay_dt": 9954,
@@ -2047,27 +2067,27 @@
         },
         "replay_archived": {
          "distribution": [
-          0.028564453125,
-          0.0703125,
-          0.02197265625,
-          0.879150390625
+          0.0283203125,
+          0.070556640625,
+          0.021728515625,
+          0.87939453125
          ],
-         "p_bit0_correct": 0.949462890625,
-         "p_bit1_correct_given_bit0_correct": 0.9259449730007714,
-         "p_bit1_correct_given_bit0_wrong": 0.43478260869565216,
-         "p_correct": 0.879150390625
+         "p_bit0_correct": 0.949951171875,
+         "p_bit1_correct_given_bit0_correct": 0.9257260344384477,
+         "p_bit1_correct_given_bit0_wrong": 0.43414634146341463,
+         "p_correct": 0.87939453125
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.0263671875,
-          0.117919921875,
-          0.024169921875,
-          0.83154296875
+          0.028564453125,
+          0.114501953125,
+          0.026611328125,
+          0.830322265625
          ],
-         "p_bit0_correct": 0.949462890625,
-         "p_bit1_correct_given_bit0_correct": 0.8758035484700437,
-         "p_bit1_correct_given_bit0_wrong": 0.4782608695652174,
-         "p_correct": 0.83154296875
+         "p_bit0_correct": 0.94482421875,
+         "p_bit1_correct_given_bit0_correct": 0.8788113695090439,
+         "p_bit1_correct_given_bit0_wrong": 0.4823008849557522,
+         "p_correct": 0.830322265625
         }
        }
       },
@@ -2111,26 +2131,26 @@
         "replay_archived": {
          "distribution": [
           0.0244140625,
-          0.056640625,
-          0.01806640625,
-          0.90087890625
+          0.056396484375,
+          0.017822265625,
+          0.9013671875
          ],
-         "p_bit0_correct": 0.95751953125,
-         "p_bit1_correct_given_bit0_correct": 0.9408465068842428,
-         "p_bit1_correct_given_bit0_wrong": 0.42528735632183906,
-         "p_correct": 0.90087890625
+         "p_bit0_correct": 0.957763671875,
+         "p_bit1_correct_given_bit0_correct": 0.9411164924802448,
+         "p_bit1_correct_given_bit0_wrong": 0.42196531791907516,
+         "p_correct": 0.9013671875
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.031494140625,
-          0.095703125,
-          0.0205078125,
-          0.852294921875
+          0.030517578125,
+          0.09423828125,
+          0.023681640625,
+          0.8515625
          ],
-         "p_bit0_correct": 0.947998046875,
-         "p_bit1_correct_given_bit0_correct": 0.8990471285088849,
-         "p_bit1_correct_given_bit0_wrong": 0.39436619718309857,
-         "p_correct": 0.852294921875
+         "p_bit0_correct": 0.94580078125,
+         "p_bit1_correct_given_bit0_correct": 0.9003613835828601,
+         "p_bit1_correct_given_bit0_wrong": 0.4369369369369369,
+         "p_correct": 0.8515625
         }
        }
       },
@@ -2174,31 +2194,32 @@
         "replay_archived": {
          "distribution": [
           0.025390625,
-          0.057861328125,
-          0.023681640625,
-          0.89306640625
+          0.057373046875,
+          0.0234375,
+          0.893798828125
          ],
-         "p_bit0_correct": 0.950927734375,
-         "p_bit1_correct_given_bit0_correct": 0.9391527599486521,
-         "p_bit1_correct_given_bit0_wrong": 0.48258706467661694,
-         "p_correct": 0.89306640625
+         "p_bit0_correct": 0.951171875,
+         "p_bit1_correct_given_bit0_correct": 0.9396817248459959,
+         "p_bit1_correct_given_bit0_wrong": 0.48,
+         "p_correct": 0.893798828125
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.031005859375,
-          0.1025390625,
-          0.023193359375,
-          0.84326171875
+          0.0302734375,
+          0.101806640625,
+          0.02490234375,
+          0.843017578125
          ],
-         "p_bit0_correct": 0.94580078125,
-         "p_bit1_correct_given_bit0_correct": 0.8915849251419721,
-         "p_bit1_correct_given_bit0_wrong": 0.42792792792792794,
-         "p_correct": 0.84326171875
+         "p_bit0_correct": 0.94482421875,
+         "p_bit1_correct_given_bit0_correct": 0.8922480620155039,
+         "p_bit1_correct_given_bit0_wrong": 0.45132743362831856,
+         "p_correct": 0.843017578125
         }
        }
       }
      ],
      "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
      "schedule": {
       "broadcast_dt": [
        540
@@ -2222,6 +2243,9 @@
     },
     "ibm_kingston_dynamic_pub_06": {
      "calibration": "2026-10-11 07:57:41-07:00",
+     "chunk_starts": [
+      "2026-10-11T15:31:50.399650+00:00"
+     ],
      "components": [
       {
        "inserted_delay_dt": 507,
@@ -2262,27 +2286,27 @@
         },
         "replay_archived": {
          "distribution": [
-          0.976806640625,
+          0.97705078125,
           0.004150390625,
-          0.01416015625,
+          0.013916015625,
           0.0048828125
          ],
          "p_bit0_correct": 0.990966796875,
-         "p_bit1_correct_given_bit0_correct": 0.9857107661985711,
+         "p_bit1_correct_given_bit0_correct": 0.9859571322985957,
          "p_bit1_correct_given_bit0_wrong": 0.4594594594594595,
-         "p_correct": 0.976806640625
+         "p_correct": 0.97705078125
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.98046875,
-          0.004638671875,
-          0.0107421875,
-          0.004150390625
+          0.981201171875,
+          0.005126953125,
+          0.009765625,
+          0.00390625
          ],
-         "p_bit0_correct": 0.9912109375,
-         "p_bit1_correct_given_bit0_correct": 0.9891625615763546,
-         "p_bit1_correct_given_bit0_wrong": 0.5277777777777778,
-         "p_correct": 0.98046875
+         "p_bit0_correct": 0.990966796875,
+         "p_bit1_correct_given_bit0_correct": 0.9901453559990145,
+         "p_bit1_correct_given_bit0_wrong": 0.5675675675675675,
+         "p_correct": 0.981201171875
         }
        }
       },
@@ -2325,27 +2349,27 @@
         },
         "replay_archived": {
          "distribution": [
-          0.960693359375,
+          0.9609375,
           0.009521484375,
-          0.019775390625,
+          0.01953125,
           0.010009765625
          ],
          "p_bit0_correct": 0.98046875,
-         "p_bit1_correct_given_bit0_correct": 0.9798306772908366,
+         "p_bit1_correct_given_bit0_correct": 0.9800796812749004,
          "p_bit1_correct_given_bit0_wrong": 0.4875,
-         "p_correct": 0.960693359375
+         "p_correct": 0.9609375
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.9638671875,
-          0.009765625,
-          0.017578125,
-          0.0087890625
+          0.963134765625,
+          0.01025390625,
+          0.017333984375,
+          0.00927734375
          ],
-         "p_bit0_correct": 0.9814453125,
-         "p_bit1_correct_given_bit0_correct": 0.982089552238806,
-         "p_bit1_correct_given_bit0_wrong": 0.5263157894736842,
-         "p_correct": 0.9638671875
+         "p_bit0_correct": 0.98046875,
+         "p_bit1_correct_given_bit0_correct": 0.9823207171314741,
+         "p_bit1_correct_given_bit0_wrong": 0.525,
+         "p_correct": 0.963134765625
         }
        }
       },
@@ -2400,20 +2424,21 @@
         },
         "replay_schedule_aware": {
          "distribution": [
-          0.99755859375,
+          0.997314453125,
           0.000732421875,
-          0.001220703125,
+          0.00146484375,
           0.00048828125
          ],
          "p_bit0_correct": 0.998779296875,
-         "p_bit1_correct_given_bit0_correct": 0.9987778049376681,
+         "p_bit1_correct_given_bit0_correct": 0.9985333659252017,
          "p_bit1_correct_given_bit0_wrong": 0.6,
-         "p_correct": 0.99755859375
+         "p_correct": 0.997314453125
         }
        }
       }
      ],
      "execution_start": "2026-10-11T15:31:50.399650+00:00",
+     "replay_unavailable": null,
      "schedule": {
       "broadcast_dt": [
        540

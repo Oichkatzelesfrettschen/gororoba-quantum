@@ -5,7 +5,7 @@ Record `2026-10-11T152922.787095Z`, job `db5qmqclf4us73c4e1ug` on ibm_kingston
 analysis is `collect.json`. This note reads the lossless result under
 `raw/db5qmqclf4us73c4e1ug/` (shot-ordered registers, the backend scheduler
 table of every PUB, job metrics) through `gororoba_quantum/adjudicate.py`,
-whose output `adjudication-<digest>.json` carries its own analysis digest. Every number
+whose output `adjudication-<digest>-seed<seed>.json` carries its own analysis digest. Every number
 below is in that file unless marked as arithmetic on it.
 
 ## What held
@@ -106,7 +106,7 @@ differs from the reference PUB (two streams) by 23 dt before the first
 measurement (alignment across 45 initialized qubits), 44 dt in the broadcast
 width (577 against 533 dt for seven more streams), and 120 dt in the stagger
 of the resets whose captures share readout channels; the per-qubit offsets in
-`adjudication-<digest>.json` carry the steps. The scheduler residual difference of
+`adjudication-<digest>-seed<seed>.json` carry the steps. The scheduler residual difference of
 148 dt in collect.json is this 187 dt less the 39 dt by which the Target
 bounds of the two circuits differ.
 

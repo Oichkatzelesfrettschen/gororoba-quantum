@@ -4190,6 +4190,7 @@ def preserve_raw(service: QiskitRuntimeService, run_dir: Path) -> dict[str, Any]
     if not jobs:
         raise LiveRunError(f"{run_dir} records no submitted jobs to preserve")
     preserved: dict[str, Any] = {}
+    (run_dir / RAW_DIRECTORY).mkdir(parents=True, exist_ok=True)
     for job_entry in jobs:
         job = service.job(job_entry["job_id"])
         status = str(job.status())
