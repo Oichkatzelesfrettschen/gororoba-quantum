@@ -1549,7 +1549,7 @@ def _verify_packing_equivalence() -> None:
             "within hybrid_shor_mod15 alone",
         ),
         ({"residual_difference_dt": 400, "feed_forward": True}, loss, "unattributed global packing scheduling cost"),
-        ({"residual_difference_dt": 400, "feed_forward": False}, loss, "scheduling alone"),
+        ({"residual_difference_dt": 400, "feed_forward": False}, loss, "excludes feed-forward"),
         ({"residual_difference_dt": 0, "feed_forward": True}, loss, "readout crosstalk"),
         ({"residual_difference_dt": 0, "feed_forward": True}, small_loss, "loss inside the equivalence margin"),
         ({"residual_difference_dt": 0, "feed_forward": True}, same, "no packing cost"),

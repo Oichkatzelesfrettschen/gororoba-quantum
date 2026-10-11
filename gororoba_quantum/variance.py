@@ -23,6 +23,8 @@ from typing import Any
 import numpy as np
 from scipy import stats
 
+import parallel
+
 OUTLIER_SIGMA = 3.0
 CONFIDENCE = 0.95
 
@@ -252,6 +254,12 @@ def false_detection_rate(shots: int, rate: float, confidence: float = 0.95) -> f
     return float((pmf[:, None] * pmf[None, :] * excluded).sum())
 
 
+def _false_detection_at(case: tuple[int, float]) -> float:
+    """false_detection_rate over a (shots, rate) pair, the unit of the parallel enumeration."""
+    shots, rate = case
+    return false_detection_rate(shots, rate)
+
+
 def _wilson_continuity_corrected(rate: float, trials: int, confidence: float) -> tuple[float, float]:
     """Wilson score interval with continuity correction (Newcombe 1998, method 4), clipped to [0, 1]."""
     z = float(stats.norm.ppf(0.5 + confidence / 2))
@@ -298,7 +306,8 @@ def _verify_equivalence() -> None:
     # two equal arms stays below nominal.
     fine = [round(0.005 * step, 3) for step in range(1, 200)]
     for arm_shots, grid in ((EQUIVALENCE_MIN_SHOTS, fine), (1024, fine[::10])):
-        worst = max(false_detection_rate(arm_shots, rate) for rate in grid)
+        rates = parallel.ordered_map(_false_detection_at, [(arm_shots, rate) for rate in grid], min_items=16)
+        worst = max(rates)
         if not worst <= EQUIVALENCE_NOMINAL_FALSE_DETECTION:
             raise RuntimeError(f"false detection at {arm_shots} shots is {worst:.4f}, above nominal")
     below = equivalence(0.0, 0.0, 1.0, 0.0, EQUIVALENCE_MIN_SHOTS - 1, True)

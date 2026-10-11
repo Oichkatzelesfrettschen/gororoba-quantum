@@ -1960,7 +1960,7 @@ def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str,
     cost: feed-forward, measurement, reset, pulse-channel, and controller
     resources all scale with replica count, and only a matched
     dynamic/control ladder separates them; without feed-forward in the packed
-    PUB the resources in play exclude feed-forward. Equal residuals with a
+    PUB the cost excludes feed-forward and is attributed no further. Equal residuals with a
     detected yield loss are evidence consistent with quantum, measurement, or
     readout crosstalk. A loss the 95 percent interval resolves is reported
     even when the 90 percent interval sits inside the margin. No reading
@@ -1993,8 +1993,8 @@ def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str,
     longer = schedule["residual_difference_dt"] > 0
     if not schedule.get("feed_forward"):
         return (
-            f"no feed-forward in the packed PUB, so a residual difference is measurement, reset, or alignment "
-            f"scheduling alone; {yield_reading}"
+            f"no feed-forward in the packed PUB, so a residual difference is an unattributed packing scheduling "
+            f"cost that excludes feed-forward; {yield_reading}"
         )
     if longer:
         return (
