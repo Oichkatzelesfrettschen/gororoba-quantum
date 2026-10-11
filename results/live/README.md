@@ -60,6 +60,27 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T071616.724800Z` requalifies schema 5 after coupled candidate
+selection, complete required-set placement backtracking, and integration of
+the reviewed modular synthesis sources. Clean source commit `b89fdf6` carries
+experiment digest
+`2544c7b1b031ed9631785dabded7f0c65fae166de51513725b976532a176300f`,
+including the new `target_flip.py` dependency. The submit-free invocation uses
+`live_run.py --out ../results/live --max-pending 300`; Fez, Kingston, and
+Marrakesh report 3, 48, and 24 pending jobs respectively. The first ranked
+combination satisfies joint placement, selects Kingston for all seven groups,
+and archives 14 static plus six dynamic PUBs covering 38 unique components.
+Independent QPY checks confirm manifest and register order, member ownership,
+disjoint reserved footprints, and instruction confinement to each component.
+The identity-null control leaves part of its reserved footprint idle. The
+record stays `planned`, carries `sources_modified=false`, and has no
+`submission` field. Local simulation and archive validation establish the
+dry-run implementation surface; QPU behavior and default-queue-policy
+readiness remain separate. Record SHA-256 is
+`54946d4b19b9ec9ff92d7c536ff050ba4dbdd0e3504d7f4e621ff70198682524`; QPY
+SHA-256 is
+`d0894ad616d82f0ee6b896304b214d3f9e18b9fd3e500019c44452df9b234e5c`.
+
 `2026-10-10T223619.798923Z` is the first combined schema-4 qualification. The
 default queue gate first rejects Fez at 194 pending jobs and Kingston at 81;
 Marrakesh reports maintenance. The retained rerun sets `--max-pending 250` for
