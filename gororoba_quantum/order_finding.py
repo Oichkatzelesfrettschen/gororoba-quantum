@@ -329,14 +329,66 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
         raise RuntimeError(f"N=21 five-bit identity null returned {target_null_counts}")
 
 
+def _without_feed_forward(circuit: QuantumCircuit) -> QuantumCircuit:
+    """circuit with every conditional phase removed: the control measures with no inverse-QFT correction."""
+    out = circuit.copy_empty_like()
+    for instruction in circuit.data:
+        if instruction.operation.name not in ("if_else", "if_test"):
+            out.append(instruction)
+    return out
+
+
+def _distribution(counts: dict[str, int]) -> list[float]:
+    total = sum(counts.values())
+    return sorted(count / total for count in counts.values())
+
+
+def _verify_feed_forward_sensitivity(simulator: AerSimulator) -> None:
+    """Which order-finding circuits test the semiclassical inverse QFT at all.
+
+    For a power-of-two order the control is entangled with orthogonal work
+    states at every round, so the ideal outcome distribution is the same
+    with and without the conditional phases (Martin-Lopez et al. 2012, page
+    2); every unit modulo 15 has order 2 or 4, so the N = 15 factor yield
+    cannot detect a broken feed-forward. N = 21, a = 4 (order 3) at two phase
+    bits reads (3/8, 1/4, 1/8, 1/4) with the feed-forward and
+    (3/8, 1/8, 1/8, 3/8) without, 1/8 apart in total variation; folded QPE on
+    an eigenstate reads one outcome with the feed-forward and a split
+    without.
+    """
+    shots = 20000
+    insensitive = factor_order_finding(15, 2, 8)
+    with_ff = simulator.run(insensitive, shots=shots, seed_simulator=11).result().get_counts()
+    without_ff = simulator.run(_without_feed_forward(insensitive), shots=shots, seed_simulator=12).result().get_counts()
+    if set(with_ff) != set(without_ff) or max(abs(with_ff[k] - without_ff[k]) / shots for k in with_ff) > 0.02:
+        raise RuntimeError(f"N=15 a=2 outcome distribution depends on the feed-forward: {with_ff} vs {without_ff}")
+    sensitive = transpile(factor_order_finding(21, 4, 2), simulator, optimization_level=0)
+    stripped = transpile(_without_feed_forward(factor_order_finding(21, 4, 2)), simulator, optimization_level=0)
+    with_ff = simulator.run(sensitive, shots=shots, seed_simulator=11).result().get_counts()
+    without_ff = simulator.run(stripped, shots=shots, seed_simulator=12).result().get_counts()
+    expected_with = [1 / 8, 1 / 4, 1 / 4, 3 / 8]
+    expected_without = [1 / 8, 1 / 8, 3 / 8, 3 / 8]
+    if max(abs(a - b) for a, b in zip(_distribution(with_ff), expected_with, strict=True)) > 0.02:
+        raise RuntimeError(f"N=21 a=4 two-bit distribution with feed-forward is {with_ff}")
+    if max(abs(a - b) for a, b in zip(_distribution(without_ff), expected_without, strict=True)) > 0.02:
+        raise RuntimeError(f"N=21 a=4 two-bit distribution without feed-forward is {without_ff}")
+    folded = folded_qpe(3)
+    folded_with = simulator.run(folded, shots=2000, seed_simulator=11).result().get_counts()
+    folded_without = simulator.run(_without_feed_forward(folded), shots=2000, seed_simulator=12).result().get_counts()
+    if folded_with != {"11": 2000} or len(folded_without) < 2:
+        raise RuntimeError(f"folded QPE s=3 reads {folded_with} with and {folded_without} without the feed-forward")
+
+
 def _verify() -> None:
     simulator = AerSimulator()
     _verify_folded_conformance(simulator)
     _verify_factor_path(simulator)
+    _verify_feed_forward_sensitivity(simulator)
     print(
         "order finding: folded eigenstate controls exact; N=15 bases 2 and 7 sample "
         "{0,64,128,192}, validate order 4, and extract factors 3 and 5; "
-        "N=21 target flips recover factors 3 and 7 at five-bit precision"
+        "N=21 target flips recover factors 3 and 7 at five-bit precision; "
+        "N=15 outcomes are feed-forward-insensitive, N=21 a=4 at two bits and folded QPE are not"
     )
 
 

@@ -691,6 +691,10 @@ class ReplicaPolicy:
     floor: float | None = None
     max_replicas: int | None = None
     isolated_reference: bool = True
+    # Different groups keep one CZ hop between their replicas, the
+    # one-hop crosstalk window of multi-programming placement
+    # (literature/notes/2102.05321.md); off, groups are only disjoint.
+    cross_group_buffer: bool = True
 
 
 @dataclass
@@ -1126,13 +1130,16 @@ def _choice_execution_kind(choice: Choice) -> str:
 
 
 def _placement_assignment(
-    pools: list[_FusionPlacementPool], occupied: set[int], replicas_per_pool: int = 1
+    pools: list[_FusionPlacementPool], occupied: set[int], replicas_per_pool: int = 1, buffer: bool = True
 ) -> list[tuple[_FusionPlacementPool, Replica]] | None:
     """Search all required replicas together, including alternatives to earlier placements.
 
     Increasing candidate indices within a pool remove permutations of the same
     replica set without removing any feasible set. The most constrained pool
     advances first. Pool state changes only after a complete assignment exists.
+    With buffer, a placed replica's footprint (its qubits and their CZ
+    neighbors) is forbidden to every pool, so groups stay one hop apart;
+    without it only the qubits themselves are.
     """
     qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
     footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
@@ -1161,7 +1168,7 @@ def _placement_assignment(
         for index in indices:
             chosen[pool_index].append(index)
             blocked[pool_index] = previous_blocked | footprints[pool_index][index]
-            if search(used | qubits[pool_index][index]):
+            if search(used | (footprints[pool_index][index] if buffer else qubits[pool_index][index])):
                 return True
             chosen[pool_index].pop()
         blocked[pool_index] = previous_blocked
@@ -1172,13 +1179,18 @@ def _placement_assignment(
     return [(pool, pool.candidates[index]) for pool, indices in zip(pools, chosen, strict=True) for index in indices]
 
 
-def _commit_placement_assignment(placements: list[tuple[_FusionPlacementPool, Replica]], occupied: set[int]) -> None:
-    """Commit a complete assignment and its separation footprints."""
+def _commit_placement_assignment(
+    placements: list[tuple[_FusionPlacementPool, Replica]], occupied: set[int], buffer: set[int] | None = None
+) -> None:
+    """Commit a complete assignment and its separation footprints; buffer collects the cross-group neighbors."""
     for pool, candidate in placements:
         selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
         pool.selected.append(selected)
         occupied.update(selected.qubits)
-        pool.blocked.update(_placement_footprint(pool, selected))
+        footprint = _placement_footprint(pool, selected)
+        pool.blocked.update(footprint)
+        if buffer is not None:
+            buffer.update(footprint)
 
 
 def allocate_fusion_replicas(
@@ -1192,7 +1204,8 @@ def allocate_fusion_replicas(
     single-replica surface. Later rounds advance every group that can still
     participate. A per-group blocked set keeps replicas of that group one CZ
     hop apart; the shared occupied set keeps different groups physically
-    disjoint without imposing an additional cross-group neighbor exclusion.
+    disjoint, and with policy.cross_group_buffer the shared buffer of placed
+    footprints keeps them one CZ hop apart as well.
     """
     clusters: dict[tuple[str, str], list[tuple[int, Choice]]] = {}
     for choice_index, choice in enumerate(choices):
@@ -1226,8 +1239,9 @@ def allocate_fusion_replicas(
             pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width, bases))
 
         occupied: set[int] = set()
+        buffer: set[int] | None = set() if policy.cross_group_buffer else None
         required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
-        assignment = _placement_assignment(pools, occupied, required_rounds)
+        assignment = _placement_assignment(pools, occupied, required_rounds, policy.cross_group_buffer)
         if assignment is None:
             diagnostics = {
                 pool.choice.group.name: {
@@ -1241,23 +1255,24 @@ def allocate_fusion_replicas(
                 f"groups={json.dumps(diagnostics, sort_keys=True)}"
             )
 
-        _commit_placement_assignment(assignment, occupied)
+        _commit_placement_assignment(assignment, occupied, buffer)
         allocation_round = required_rounds
         while True:
+            taken = occupied | (buffer or set())
             under_cap = [
                 pool for pool in pools if policy.max_replicas is None or len(pool.selected) < policy.max_replicas
             ]
             eligible = [
                 pool
                 for pool in under_cap
-                if any(not set(candidate.qubits).intersection(occupied | pool.blocked) for candidate in pool.candidates)
+                if any(not set(candidate.qubits).intersection(taken | pool.blocked) for candidate in pool.candidates)
             ]
             if not eligible:
                 break
-            assignment = _placement_assignment(eligible, occupied)
+            assignment = _placement_assignment(eligible, taken, 1, policy.cross_group_buffer)
             if assignment is None:
                 break
-            _commit_placement_assignment(assignment, occupied)
+            _commit_placement_assignment(assignment, occupied, buffer)
             allocation_round += 1
 
         if any(len(pool.selected) < required_rounds for pool in pools):
@@ -1276,6 +1291,7 @@ def allocate_fusion_replicas(
                 "rounds": allocation_round,
                 "required_rounds": required_rounds,
                 "physical_qubits": sorted(occupied),
+                "cross_group_buffer": policy.cross_group_buffer,
                 "groups": [
                     {
                         "group": pool.choice.group.name,
@@ -2193,6 +2209,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "replica_floor": args.replica_floor,
             "max_replicas": args.max_replicas,
             "isolated_reference": args.isolated_reference,
+            "cross_group_buffer": getattr(args, "cross_group_buffer", True),
             # Twirling and DD change the submitted workload without changing
             # the archived circuits, so the approved-record gate compares them.
             "twirl": bool(getattr(args, "twirl", False)),
@@ -2219,7 +2236,9 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
 
 
 def _policy(args: argparse.Namespace) -> ReplicaPolicy:
-    return ReplicaPolicy(args.replica_floor, args.max_replicas, args.isolated_reference)
+    return ReplicaPolicy(
+        args.replica_floor, args.max_replicas, args.isolated_reference, getattr(args, "cross_group_buffer", True)
+    )
 
 
 def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
@@ -2364,6 +2383,13 @@ def consume_approval(approved_dir: Path, run_name: str) -> dict[str, Any]:
         handle.write(json.dumps(payload, indent=1, sort_keys=True) + "\n")
         handle.flush()
         os.fsync(handle.fileno())
+    # The directory entry reaches disk before the remote call, so a crash
+    # after the Sampler accepts the batch leaves the marker in place.
+    directory_fd = os.open(approved_dir, os.O_RDONLY | os.O_DIRECTORY)
+    try:
+        os.fsync(directory_fd)
+    finally:
+        os.close(directory_fd)
     return payload
 
 
@@ -3943,6 +3969,12 @@ def main(argv: list[str] | None = None) -> int:
         help="put each group's replica-0 primary in the shared global reference PUB",
     )
     parser.add_argument(
+        "--cross-group-buffer",
+        action=argparse.BooleanOptionalAction,
+        default=True,
+        help="keep replicas of different groups one CZ hop apart (the multi-programming crosstalk window)",
+    )
+    parser.add_argument(
         "--twirl",
         action="store_true",
         help="Pauli-twirl gates and measurements on static submission batches; dynamic batches remain disabled",
@@ -4104,14 +4136,39 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
         else:
             _write_text_atomically(target, text)
         digests[name] = digest
-    index_text = json.dumps({"job_id": job_id, "files": digests}, indent=1, sort_keys=True) + "\n"
-    _write_text_atomically(directory / "index.json", index_text)
+    # Job metrics finalize after the job, so each distinct snapshot is kept:
+    # job_metrics.json first, then job_metrics.<k>.json, every one indexed
+    # and none rewritten; metrics_latest names the snapshot the newest
+    # collection saw.
     metrics = job.metrics() if hasattr(job, "metrics") else {}
-    _write_text_atomically(
-        directory / "job_metrics.json",
-        json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n",
-    )
+    metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
+    snapshots = _metrics_snapshots(directory)
+    latest = next((name for name in snapshots if (directory / name).read_text() == metrics_text), None)
+    if latest is None:
+        latest = "job_metrics.json" if not snapshots else f"job_metrics.{len(snapshots)}.json"
+        _write_text_atomically(directory / latest, metrics_text)
+        snapshots.append(latest)
+    metrics_digests = [hashlib.sha256((directory / name).read_bytes()).hexdigest() for name in snapshots]
+    index_payload = {
+        "job_id": job_id,
+        "files": digests,
+        "metrics": snapshots,
+        "metrics_sha256": metrics_digests,
+        "metrics_latest": latest,
+    }
+    _write_text_atomically(directory / "index.json", json.dumps(index_payload, indent=1, sort_keys=True) + "\n")
     return {"directory": f"{RAW_DIRECTORY}/{job_id}", "files": digests}
+
+
+def _metrics_snapshots(directory: Path) -> list[str]:
+    """The job-metrics snapshot files of a raw directory in writing order."""
+    names = [p.name for p in directory.glob("job_metrics*.json")]
+
+    def order(name: str) -> int:
+        parts = name.split(".")
+        return int(parts[1]) if len(parts) == 3 else 0
+
+    return sorted(names, key=order)
 
 
 def _write_text_atomically(target: Path, text: str) -> None:

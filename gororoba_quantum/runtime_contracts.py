@@ -108,6 +108,9 @@ from order_finding import factor_order_finding
 
 SINGLE_REPLICA_POLICY = ReplicaPolicy(max_replicas=1, isolated_reference=False)
 PACKED_REPLICA_POLICY = ReplicaPolicy(floor=0.8, max_replicas=2, isolated_reference=True)
+# The path-graph backtracking fixture places two groups on adjacent sites,
+# which the cross-group buffer forbids; it exercises the search alone.
+ADJACENT_REPLICA_POLICY = ReplicaPolicy(floor=0.8, max_replicas=2, isolated_reference=True, cross_group_buffer=False)
 
 
 class _ProbeBackend:
@@ -1176,6 +1179,19 @@ def _verify_fused_collection() -> None:
     planning_service = _ProbeService([backend])
     args = _fixture_args(groups=["design_a", "zero_divisor_fringe"], shots=64)
     choices, record = live_run_module.plan(planning_service, args)
+    # Replicas of different groups on one backend share no CZ edge: the
+    # cross-group buffer keeps them one hop apart.
+    edges = {tuple(sorted(edge)) for edge in backend.coupling_map.get_edges()}
+    by_group = {choice.group.name: {q for replica in choice.replicas for q in replica.qubits} for choice in choices}
+    names = list(by_group)
+    for a in range(len(names)):
+        for b in range(a + 1, len(names)):
+            qa, qb = by_group[names[a]], by_group[names[b]]
+            crossing = [e for e in edges if (e[0] in qa and e[1] in qb) or (e[0] in qb and e[1] in qa)]
+            if crossing:
+                raise RuntimeError(f"{names[a]} and {names[b]} share CZ edges {crossing}")
+    if record["policy"].get("cross_group_buffer") is not True:
+        raise RuntimeError("the plan's policy does not record the cross-group buffer")
     pubs = execution_pubs(choices)
     fused_pub = next((pub for pub in pubs if len(pub.components) > 1), None)
     if fused_pub is None:
@@ -1354,8 +1370,9 @@ def _verify_fused_collection() -> None:
                 raise RuntimeError("raw register bit strings are not one per shot at the register width")
         if "crn:" in (raw_dir / "job_metrics.json").read_text() + (raw_dir / "result_metadata.json").read_text():
             raise RuntimeError("a CRN reached the raw files")
-        if "job_metrics.json" in raw_index["files"] or not (raw_dir / "job_metrics.json").exists():
-            raise RuntimeError("job metrics are indexed as immutable evidence or missing")
+        if "job_metrics.json" in raw_index["files"] or raw_index["metrics"] != ["job_metrics.json"]:
+            raise RuntimeError(f"job metrics are not a single indexed snapshot: {raw_index}")
+        first_metrics = (raw_dir / "job_metrics.json").read_bytes()
         raw_bytes = {name: (raw_dir / name).read_bytes() for name in raw_index["files"]}
 
         # Recollection after usage finalizes changes only the usage block.
@@ -1374,6 +1391,14 @@ def _verify_fused_collection() -> None:
             raise RuntimeError("recollection after usage finalizes changes bytes outside the usage block")
         if any((raw_dir / name).read_bytes() != content for name, content in raw_bytes.items()):
             raise RuntimeError("recollection rewrites the raw result files")
+        # The pending-usage collection added a second metrics snapshot; the
+        # final one matched the first and added none; the first is unchanged.
+        snapshots = json.loads((raw_dir / "index.json").read_text())["metrics"]
+        if (
+            snapshots != ["job_metrics.json", "job_metrics.1.json"]
+            or (raw_dir / "job_metrics.json").read_bytes() != first_metrics
+        ):
+            raise RuntimeError(f"metrics snapshots read {snapshots}")
         # Raw evidence is write-once: a file whose bytes differ from the
         # result the service returns stops the collection.
         tampered = raw_dir / raw_pubs[0]
@@ -1891,7 +1916,7 @@ def _verify_required_placement_backtracking() -> None:
     original_candidates = live_run_module._replica_candidates
     live_run_module._replica_candidates = path_candidates
     try:
-        evidence = live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+        evidence = live_run_module.allocate_fusion_replicas(choices, ADJACENT_REPLICA_POLICY)
         placements = [[replica.qubits for replica in choice.replicas] for choice in choices]
         if placements != [[[0], [2]], [[3], [4]]]:
             raise RuntimeError(f"required replica-set backtracking selected {placements}")
@@ -1944,6 +1969,7 @@ def _fixture_args(**overrides: Any) -> argparse.Namespace:
         "replica_floor": PACKED_REPLICA_POLICY.floor,
         "max_replicas": PACKED_REPLICA_POLICY.max_replicas,
         "isolated_reference": PACKED_REPLICA_POLICY.isolated_reference,
+        "cross_group_buffer": True,
     }
     values.update(overrides)
     return argparse.Namespace(**values)

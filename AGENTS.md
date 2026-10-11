@@ -240,8 +240,9 @@ unresolveReviewThread.
   index of sha256s), written by `--collect` before any analysis and
   recoverable with `--preserve-raw DIR` for a record collected under an
   earlier revision. collect.json is the preregistered analysis at the run's
-  experiment digest; `adjudicate.py DIR` writes adjudication.json, a second
-  analysis of the same raw files under its own analysis digest. Raw files
+  experiment digest; `adjudicate.py DIR` writes adjudication-<digest>.json, a second
+  analysis of the same raw files named by its own analysis digest, beside
+  any earlier one. Raw files
   are never rewritten by a later collection or analysis.
 - A record names an IBM Cloud instance only by a 12-hex sha256 of its CRN.
 - Tokens, account identifiers, and local absolute paths stay out of every

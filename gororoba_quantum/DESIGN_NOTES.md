@@ -149,6 +149,16 @@ Measured (results/hw_estimate/ibm_fez_record.json, calibration
 16 CZ on physical qubits 131-133, and the same circuit under the backend noise
 model gives P1 = 0.9685.
 
+Prior work on the same seven strings: Levratti (2026, author-hosted,
+literature/notes/levratti-2026-fano-css.md) reaches the identical dual
+Z-string Z^v of each Fano line by projective orthogonality from a Clifford
+triple product and ties it to Steane stabilizer supports by group labeling;
+every one of the 21 associator phases here is that Z^v with v orthogonal to
+the pair's line (checked from cd_sign). The associator reading, the
+normalized sign slices, the interference circuit with controls, and the
+compile record are this repository's; the manuscript computes no associator
+and carries no verifiable hardware record.
+
 ## Design B: sedenion zero-divisor interference witness
 
 Source: find_zero_divisors(16, 1e-10). A sedenion zero divisor is a pair

@@ -17,9 +17,9 @@ the questions that reduction cannot:
   packed-minus-reference schedule difference per qubit;
 - the distribution-free Hoeffding view of each matched packing endpoint.
 
-Its output, adjudication.json, carries analysis_digest, the sha256 of this
-module and live_run.py, so a later analysis of the same raw files under other
-code is a separate artifact. The command needs the runtime service only for
+Its output, adjudication-<digest>.json, is named by analysis_digest, the
+sha256 of this module and live_run.py, so a later analysis of the same raw
+files under other code is a separate artifact beside the earlier one. The command needs the runtime service only for
 the execution-time calibration; it submits nothing.
 """
 
@@ -31,7 +31,7 @@ import io
 import json
 import math
 import sys
-from collections import defaultdict
+from collections import Counter, defaultdict
 from datetime import datetime
 from pathlib import Path
 from typing import Any
@@ -152,8 +152,11 @@ def schedule_aware(circuit: QuantumCircuit, table: ScheduleTable) -> tuple[Quant
 
     Each qubit's instructions are walked in circuit order against the
     table's instances of the same label (a cz matches either qubit order).
-    The returned mismatches name instructions the table does not carry at
-    that position; such a qubit gets no further delays.
+    An rz the table does not carry at that position is a virtual rotation the
+    scheduler elided (the null circuits' conditional phases, for one) and is
+    passed through without advancing the table. Any other mismatch names the
+    instruction and stops the qubit's matching; the caller treats a circuit
+    with remaining mismatches as having no schedule-aware view.
     """
     index = {qubit: position for position, qubit in enumerate(circuit.qubits)}
     counters: dict[int, int] = defaultdict(int)
@@ -178,6 +181,8 @@ def schedule_aware(circuit: QuantumCircuit, table: ScheduleTable) -> tuple[Quant
                 or (name == "cz" and set(sequence[k][0].split("_")[1:]) == {str(q) for q in qubits})
             )
             if not same:
+                if name == "rz":
+                    continue
                 expected = sequence[k][0] if k < len(sequence) else None
                 mismatches.append(f"qubit {qubit} instruction {k} {label} vs {expected}")
                 blocked.add(qubit)
@@ -230,6 +235,39 @@ def shor_statistics(values: np.ndarray, phase_bits: int) -> dict[str, Any]:
         "top_pair_distribution": (np.bincount(top, minlength=4) / len(values)).tolist(),
         "factorable": float(np.mean(top % 2 == 1)),
     }
+
+
+def generic_statistics(values: np.ndarray, bits: int) -> dict[str, Any]:
+    """Outcome probabilities of a register whose decoder this module does not carry."""
+    counts = Counter(int(v) for v in values)
+    total = len(values)
+    top = counts.most_common(16)
+    return {
+        "num_bits": bits,
+        "modal_outcome": format(top[0][0], f"0{bits}b") if top else None,
+        "outcome_probabilities": {format(value, f"0{bits}b"): count / total for value, count in top},
+        "statistics": "unsupported member family: outcome probabilities only",
+    }
+
+
+def pub_starts(result_metadata: dict[str, Any], count: int) -> list[datetime | None]:
+    """Each PUB's earliest execution-chunk start from the preserved result metadata, or None when no chunk names it."""
+    chunks = result_metadata.get("executor", {}).get("chunk_timing") or []
+    starts: list[datetime | None] = []
+    for idx in range(count):
+        own = [
+            datetime.fromisoformat(chunk["start"])
+            for chunk in chunks
+            if any(int(part["idx_item"]) == idx for part in chunk.get("parts", []))
+        ]
+        starts.append(min(own) if own else None)
+    return starts
+
+
+def latest_metrics(raw_dir: Path, index: dict[str, Any]) -> dict[str, Any]:
+    """The newest job-metrics snapshot the raw index lists (job metrics finalize after the job)."""
+    name = index.get("metrics_latest") or (index.get("metrics") or ["job_metrics.json"])[-1]
+    return dict(json.loads((raw_dir / name).read_text()))
 
 
 def hoeffding_interval(difference: float, shots: int, confidence: float = 0.90) -> tuple[float, float]:
@@ -289,25 +327,36 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
             if hashlib.sha256((raw_dir / name).read_bytes()).hexdigest() != digest:
                 raise AdjudicationError(f"{raw_dir / name} differs from its indexed sha256")
         result_metadata = json.loads((raw_dir / "result_metadata.json").read_text())
-        metrics = json.loads((raw_dir / "job_metrics.json").read_text())
-        chunks = result_metadata.get("executor", {}).get("chunk_timing") or []
-        start = datetime.fromisoformat(chunks[0]["start"]) if chunks else None
+        metrics = latest_metrics(raw_dir, index)
         backend = service.backend(job_entry["backend"])
-        if start is None:
-            raise AdjudicationError(f"job {job_id} carries no execution chunk to date its calibration")
-        props = backend.properties(datetime=start)
-        target = backend.target_history(datetime=start)
-        simulator = live_run.noise_simulator(f"{backend.name}@{start.isoformat()}", target, props)
-        dt = float(target.dt)
+        starts = pub_starts(result_metadata, len(job_entry["pubs"]))
+        if any(start is None for start in starts):
+            missing = [m["name"] for m, start in zip(job_entry["pubs"], starts, strict=True) if start is None]
+            raise AdjudicationError(f"job {job_id}: no execution chunk dates the calibration of {missing}")
+        # One calibration, Target, and simulator per distinct chunk start: a
+        # PUB executed after a calibration update replays under its own.
+        calibrations: dict[datetime, tuple[Any, Any, Any]] = {}
+        for start in starts:
+            assert start is not None
+            if start not in calibrations:
+                props = backend.properties(datetime=start)
+                target = backend.target_history(datetime=start)
+                simulator = live_run.noise_simulator(f"{backend.name}@{start.isoformat()}", target, props)
+                calibrations[start] = (props, target, simulator)
+        first_start = min(calibrations)
+        dt = float(calibrations[first_start][1].dt)
         job_out: dict[str, Any] = {
             "backend": job_entry["backend"],
-            "execution_start": start.isoformat(),
-            "calibration": str(props.last_update_date),
-            "dt_seconds": dt,
+            "execution_start": first_start.isoformat(),
+            "calibrations": {
+                start.isoformat(): {"calibration": str(props.last_update_date), "dt_seconds": float(target.dt)}
+                for start, (props, target, _sim) in sorted(calibrations.items())
+            },
             "metrics": metrics,
             "pubs": {},
             "coherence_us": {},
         }
+        used_qubits: dict[datetime, set[int]] = defaultdict(set)
         tables: dict[str, ScheduleTable] = {}
         pub_rows: dict[str, Any] = {}
         pub_raw: dict[str, Any] = {}
@@ -323,7 +372,15 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
             name = manifest["name"]
             raw = pub_raw[name]
             circuit = circuits[name]
-            pub_out: dict[str, Any] = {"components": [], "schedule": None}
+            pub_start = starts[pub_index]
+            assert pub_start is not None
+            props, _target, simulator = calibrations[pub_start]
+            pub_out: dict[str, Any] = {
+                "components": [],
+                "schedule": None,
+                "execution_start": pub_start.isoformat(),
+                "calibration": str(props.last_update_date),
+            }
             if name in pub_rows:
                 pub_out["schedule"] = feed_forward_segment(pub_rows[name])
                 pub_out["schedule"]["circuit_duration_dt"] = raw["metadata"]["compilation"]["scheduler_timing"].get(
@@ -336,27 +393,34 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
                 for r, registers in enumerate(component["registers_by_replica"]):
                     register = registers[0]
                     bits = raw["registers"][register]
+                    width = int(bits["num_bits"])
                     hardware = bit_values(bits["bitstrings"])
                     qubits = list(group_replicas[r]["physical_qubits"])
+                    used_qubits[pub_start].update(qubits)
                     sub = carve_replica(circuit, qubits)
                     aware, mismatches = schedule_aware(sub, tables.get(name, {}))
                     archived_replay = _simulate(simulator, sub, shots, seed + 7 * pub_index + r)
-                    aware_replay = _simulate(simulator, aware, shots, seed + 1000 + 7 * pub_index + r)
-                    if label is not None:
-                        views = {
-                            "hardware": qpe_statistics(hardware, label),
-                            "replay_archived": qpe_statistics(archived_replay[register], label),
-                            "replay_schedule_aware": qpe_statistics(aware_replay[register], label),
-                        }
+                    # A circuit the table does not fully match has no
+                    # schedule-aware view: a partially delayed replay would
+                    # read as an optimistic one.
+                    aware_replay = (
+                        _simulate(simulator, aware, shots, seed + 1000 + 7 * pub_index + r) if not mismatches else None
+                    )
+                    if member.startswith(QPE_PREFIX) and label is not None:
+                        decode: Any = lambda v, s=label: qpe_statistics(v, s)  # noqa: E731
                         indicator = (hardware == label).astype(float)
+                    elif member.startswith(SHOR_PREFIX):
+                        decode = lambda v, w=width: shor_statistics(v, w)  # noqa: E731
+                        indicator = ((hardware >> (width - 2)) % 2 == 1).astype(float)
                     else:
-                        phase_bits = int(bits["num_bits"])
-                        views = {
-                            "hardware": shor_statistics(hardware, phase_bits),
-                            "replay_archived": shor_statistics(archived_replay[register], phase_bits),
-                            "replay_schedule_aware": shor_statistics(aware_replay[register], phase_bits),
-                        }
-                        indicator = ((hardware >> (phase_bits - 2)) % 2 == 1).astype(float)
+                        decode = lambda v, w=width: generic_statistics(v, w)  # noqa: E731
+                        modal = Counter(int(v) for v in hardware).most_common(1)[0][0]
+                        indicator = (hardware == modal).astype(float)
+                    views = {
+                        "hardware": decode(hardware),
+                        "replay_archived": decode(archived_replay[register]),
+                        "replay_schedule_aware": decode(aware_replay[register]) if aware_replay is not None else None,
+                    }
                     pub_out["components"].append(
                         {
                             "member": member,
@@ -364,7 +428,8 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
                             "register": register,
                             "physical_qubits": qubits,
                             "schedule_mismatches": mismatches,
-                            "inserted_delay_dt": inserted_delay_dt(aware),
+                            "schedule_aware_unavailable": bool(mismatches),
+                            "inserted_delay_dt": inserted_delay_dt(aware) if not mismatches else None,
                             "views": views,
                             "shot_blocks": block_means(indicator),
                             "indicator": indicator.tolist(),
@@ -388,18 +453,28 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
             pub_out["shotwise_correlation_null_sd"] = 1 / math.sqrt(shots)
             for component in components:
                 del component["indicator"]
-        # Packed-versus-reference schedules on the replica-0 qubits of each group.
-        packed = next((m["name"] for m in job_entry["pubs"] if len(m["components"]) > 1), None)
+        # Packed-versus-reference schedules on the replica-0 qubits of the
+        # groups the packed PUB carries: the first PUB with no reference
+        # component against the first PUB of only reference components.
+        packed_manifest = next((m for m in job_entry["pubs"] if not any(c["reference"] for c in m["components"])), None)
         reference = next((m["name"] for m in job_entry["pubs"] if all(c["reference"] for c in m["components"])), None)
-        if packed and reference and packed in tables and reference in tables:
-            qubits = sorted({q for g in replicas_by_group.values() for q in g[0]["physical_qubits"]})
+        if packed_manifest and reference and packed_manifest["name"] in tables and reference in tables:
+            packed = packed_manifest["name"]
+            qubits = sorted(
+                {q for c in packed_manifest["components"] for q in replicas_by_group[c["group"]][0]["physical_qubits"]}
+            )
             job_out["packed_minus_reference_schedule"] = {
                 "packed_pub": packed,
                 "reference_pub": reference,
                 "per_qubit": schedule_offsets(tables[packed], tables[reference], qubits),
             }
-        used = sorted({q for g in replicas_by_group.values() for rep in g for q in rep["physical_qubits"]})
-        job_out["coherence_us"] = {str(q): {"t1": props.t1(q) * 1e6, "t2": props.t2(q) * 1e6} for q in used}
+        job_out["coherence_us"] = {
+            start.isoformat(): {
+                str(q): {"t1": calibrations[start][0].t1(q) * 1e6, "t2": calibrations[start][0].t2(q) * 1e6}
+                for q in sorted(qubits_used)
+            }
+            for start, qubits_used in sorted(used_qubits.items())
+        }
         charge = metrics.get("usage", {}).get("qpu_charge_time_seconds")
         execution_ns = metrics.get("circuits_execution_time_ns")
         submitted = shots * len(job_entry["pubs"])
@@ -416,7 +491,14 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
             "default_rep_delay_seconds": getattr(backend.configuration(), "default_rep_delay", None),
         }
         out["jobs"][job_id] = job_out
-    live_run._write_text_atomically(run_dir / "adjudication.json", json.dumps(out, indent=1, sort_keys=True) + "\n")
+    # One file per analysis digest: a later revision writes beside, never
+    # over, an earlier adjudication of the same raw shots.
+    target_path = run_dir / f"adjudication-{out['analysis_digest'][:12]}.json"
+    text = json.dumps(out, indent=1, sort_keys=True) + "\n"
+    if target_path.exists() and target_path.read_text() != text:
+        raise AdjudicationError(f"{target_path} exists with different content under the same analysis digest")
+    live_run._write_text_atomically(target_path, text)
+    out["path"] = target_path.name
     return out
 
 
@@ -469,6 +551,19 @@ def _check() -> None:
     aware, mismatches = schedule_aware(circuit, table)
     if mismatches:
         raise AdjudicationError(f"a matching schedule reports mismatches {mismatches}")
+    elided = circuit.copy_empty_like()
+    for instruction in circuit.data:
+        elided.append(instruction)
+        if instruction.operation.name == "measure":
+            elided.rz(0.25, 1)  # a virtual rotation the scheduler table does not carry
+    elided_aware, elided_mismatches = schedule_aware(elided, table)
+    if elided_mismatches or inserted_delay_dt(elided_aware) != inserted_delay_dt(aware):
+        raise AdjudicationError(f"an elided rz blocks matching: {elided_mismatches}")
+    broken = QuantumCircuit(3, 1)
+    broken.sx(1)
+    broken.x(1)
+    if not schedule_aware(broken, table)[1]:
+        raise AdjudicationError("an instruction the table lacks passes as matched")
     delays = [
         (aware.find_bit(inst.qubits[0]).index, int(inst.operation.duration))
         for inst in aware.data
@@ -517,7 +612,7 @@ def main() -> int:
         print(f"FAIL: {error}", file=sys.stderr)
         return 1
     for job_id, job in out["jobs"].items():
-        print(f"job {job_id}: {len(job['pubs'])} PUBs adjudicated; analysis digest {out['analysis_digest'][:12]}")
+        print(f"job {job_id}: {len(job['pubs'])} PUBs adjudicated; wrote {out['path']}")
     return 0
 
 

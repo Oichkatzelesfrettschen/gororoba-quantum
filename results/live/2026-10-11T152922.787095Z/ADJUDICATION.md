@@ -5,14 +5,20 @@ Record `2026-10-11T152922.787095Z`, job `db5qmqclf4us73c4e1ug` on ibm_kingston
 analysis is `collect.json`. This note reads the lossless result under
 `raw/db5qmqclf4us73c4e1ug/` (shot-ordered registers, the backend scheduler
 table of every PUB, job metrics) through `gororoba_quantum/adjudicate.py`,
-whose output `adjudication.json` carries its own analysis digest. Every number
+whose output `adjudication-<digest>.json` carries its own analysis digest. Every number
 below is in that file unless marked as arithmetic on it.
 
 ## What held
 
-- **Hybrid Shor admission.** Factor yield 0.4971 [0.4726, 0.5216] against the
-  exact uniform null 0.2969 and the identity null 0.0042 [0.0003, 0.0080]
-  (collect.json). The raw registers confirm the pruned structure: only phase
+- **Hybrid Shor admission, as preregistered.** Factor yield 0.4971
+  [0.4726, 0.5216] against the exact uniform null 0.2969 and the identity
+  null 0.0042 [0.0003, 0.0080] (collect.json). What the statistic measures
+  is narrower than the plan said: for order 4 the ideal outcome distribution
+  is the same with and without the conditional phases (checked in Aer on the
+  archived circuit with its if_else blocks removed), so the yield tests the
+  controlled arithmetic and the decoder on hardware and says nothing about
+  the feed-forward; folded QPE is this record's only feed-forward test
+  (HYBRID_SHOR.md, "Evidence levels"). The raw registers confirm the pruned structure: only phase
   bits 6 and 7 vary in every replica, the six leading bits read zero in every
   shot, and the null replicas read the zero outcome in 97.2 to 99.0 percent of
   shots against 96.6 to 99.2 percent in the replay.
@@ -100,7 +106,7 @@ differs from the reference PUB (two streams) by 23 dt before the first
 measurement (alignment across 45 initialized qubits), 44 dt in the broadcast
 width (577 against 533 dt for seven more streams), and 120 dt in the stagger
 of the resets whose captures share readout channels; the per-qubit offsets in
-`adjudication.json` carry the steps. The scheduler residual difference of
+`adjudication-<digest>.json` carry the steps. The scheduler residual difference of
 148 dt in collect.json is this 187 dt less the 39 dt by which the Target
 bounds of the two circuits differ.
 

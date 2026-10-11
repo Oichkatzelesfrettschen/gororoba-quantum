@@ -180,8 +180,11 @@ rate; the literature range stays its conservative bound.
    directly with the noise model.
 5. **Done: the dynamic job** (record `results/live/2026-10-11T152922.787095Z`,
    adjudicated in its `ADJUDICATION.md`). Hybrid Shor is admitted on
-   hardware; packing on one layout is equivalent within the margin under
-   the preregistered interval; the scheduled feed-forward round trip is 540
+   hardware by its factor yield, a statistic that for order 4 is the same
+   with and without the feed-forward, so only folded QPE tested the
+   semiclassical inverse QFT (HYBRID_SHOR.md, "Evidence levels"); packing
+   on one layout is equivalent within the margin under the preregistered
+   interval; the scheduled feed-forward round trip is 540
    to 584 dt; and folded QPE reads 0.715 against the model's 0.899, a gap
    present in both semiclassical rounds of which the scheduler table's idle
    time explains a quarter. The next hardware question is that gap's

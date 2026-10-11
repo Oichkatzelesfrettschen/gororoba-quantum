@@ -49,9 +49,24 @@ zeros in every shot. The factor-yield endpoint is coarse: it agrees with the
 execution-calibration replay (0.4955) while two of the six layouts carry a
 coherent bias on the feed-forward-conditioned bit that the Pauli model does
 not draw, and the folded-QPE conformance test on the same device reads 0.715
-against the model's 0.899. Hardware conformance of the semiclassical
-inverse QFT is therefore established at the level of the decoder's factor
-yield and not at the level of the per-bit distribution.
+against the model's 0.899. The factor yield is also phase-insensitive: for a
+power-of-two order the ideal outcome distribution of the order-finding
+circuit does not depend on the conditional phases at all (the control is
+entangled with orthogonal work states, so the second bit is uniform
+whatever phase is applied; Martin-Lopez et al. 2012, page 2, for r = 2^p),
+and every unit modulo 15 has order 2 or 4, so no N = 15 hybrid-Shor circuit
+tests the feed-forward. order_finding.py checks this in the gate by
+comparing each circuit's ideal outcome distribution with and without its
+conditional phases. The first hardware record therefore establishes the
+controlled arithmetic and the decoder on hardware and nothing about the
+semiclassical inverse QFT; folded QPE, whose eigenstate inputs make the
+second bit deterministic only under the correct conditional phase, is the
+feed-forward test that record contains. The feed-forward-sensitive
+order-finding circuit is N = 21, a = 4 at two phase bits (order 3): ideal
+distribution (3/8, 1/4, 1/8, 1/4), and (3/8, 1/8, 1/8, 3/8) without the
+feed-forward, 1/8 apart in total variation; order recovery is identically
+zero at two bits, so its observable is the four-outcome distribution
+(literature/notes/1111.4147.md, literature/notes/quant-ph-9511007.md).
 
 ## Host and QPU boundary
 
