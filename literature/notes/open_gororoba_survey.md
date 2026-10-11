@@ -57,6 +57,27 @@ replayable scripts and the full evidence log:
    (comment-and-string-aware scan). Global axioms exist in three CD-adjacent
    files (C958, CDFidelity, SStructuralGaps; confirmed with `rocqchk -o`).
 
+## Theorem-specific source reconciliation
+
+The selected source audit at `127816214c3f96cc1777bd4bd9ba1b286ccc5917`
+recompiled sign, Cariow, count, and higher-CD dependency closures in temporary
+storage. `Print Assumptions` distinguishes each theorem from axioms elsewhere
+in its module. `C958_ZDGraphTopology.zd_graph_three_components` uses its named
+project axiom and asserts hard-coded count/size facts. The separate
+`zd_edge_formula` theorem depends on standard classical-real axioms, while
+`zd_edges_at_16` is closed under the global context. A module-wide R1 label
+therefore overstates the assumptions of those arithmetic theorems. The theorem
+statements still define arithmetic counts rather than a CD-product graph.
+
+The dimension-4096 and dimension-65536 `C1471_HigherCDTrilinearity` statements
+prove first-slot scalar homogeneity with standard classical-real axioms.
+The names do not enlarge those statements to full trilinearity or quantum
+circuit correctness. `gororoba_quantum/MODULAR_SYNTHESIS.md` applies the
+recursive-predicate compilation principle to a separate exact N=21 circuit,
+with its own finite certificate and coherent Operator checks. The retained
+source hashes and assumption output are in
+`results/hw_estimate/n21_cross_project_proof_audit.json`.
+
 ## 1. Evidence classes used in this report
 
 | Tag | Meaning |
@@ -716,3 +737,13 @@ CD material above supplies none of those components.
 10. Quantum content is a simulator, a Grover search, and hardware profiles;
     there is no QFT, modular arithmetic, or Shor code, and the box-kite
     "QEC" and "compiler" modules are not implementations.
+
+The foreign-source warning gate has a separate open dependency. A strict
+`-w +all` replay on both installed Rocq 9.1.1 and 9.2 rejects Prelude's
+transitive `Stdlib.ZArith.ZArith_base` import as deprecated. The retained
+selected-source compilation and kernel checks used default diagnostic
+severity; their proof terms remain checked, while the all-warning gate stays
+open. `scripts/open_gororoba_proof_audit.sh` reproduces the strict failure
+with a checked 16-source hash manifest. Repairing that installed Stdlib
+dependency belongs to the toolchain owner. The new modular certificate uses
+an arithmetic-only import closure and passes the strict Rocq 9.2 gate.

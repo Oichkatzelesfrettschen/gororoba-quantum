@@ -55,6 +55,8 @@ class MultiplierResource:
     controlled_x_gates: int
     basis_edge_gates: int
     maximum_control_count: int
+    controlled_target_flips: int = 0
+    control_arity_histogram: tuple[tuple[int, int], ...] = ()
 
 
 @dataclass(frozen=True)
@@ -82,6 +84,8 @@ class OrderFindingPlan:
     resets: int
     conditional_phases: int
     rounds: tuple[MultiplierResource, ...]
+    controlled_target_flips: int = 0
+    control_arity_histogram: tuple[tuple[int, int], ...] = ()
 
 
 def _require_exact_precheck_range(modulus: int) -> None:
@@ -383,9 +387,12 @@ def make_order_finding_plan(
         raise ValueError(f"multiplier resources must share one input domain, got {sorted(input_domains)}")
     scratch_qubits = max((resource.scratch_qubits for resource in rounds), default=0)
     histogram: dict[int, int] = {}
+    control_histogram: dict[int, int] = {}
     for resource in rounds:
         for degree, count in resource.degree_histogram:
             histogram[degree] = histogram.get(degree, 0) + count
+        for arity, count in resource.control_arity_histogram:
+            control_histogram[arity] = control_histogram.get(arity, 0) + count
     active = tuple(resource for resource in rounds if resource.strategy != "identity")
     if leading_identity_rounds is None:
         leading_identity_rounds = 0
@@ -422,6 +429,8 @@ def make_order_finding_plan(
         resets=max(0, executed_rounds - 1),
         conditional_phases=executed_rounds * (executed_rounds - 1) // 2,
         rounds=tuple(rounds),
+        controlled_target_flips=sum(resource.controlled_target_flips for resource in rounds),
+        control_arity_histogram=tuple(sorted(control_histogram.items())),
     )
 
 

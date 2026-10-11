@@ -100,6 +100,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "packing.py",
     "predict.py",
     "select_lcu.py",
+    "target_flip.py",
     "variance.py",
 )
 

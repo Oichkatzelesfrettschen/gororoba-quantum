@@ -12,7 +12,7 @@ from __future__ import annotations
 import math
 
 import numpy as np
-from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
 from qiskit.quantum_info import Operator, Statevector
 from qiskit_aer import AerSimulator
 
@@ -118,6 +118,8 @@ def order_finding_plan(
                 controlled_x_gates=profile.controlled_x_count,
                 basis_edge_gates=profile.basis_edge_gate_count,
                 maximum_control_count=profile.maximum_control_count,
+                controlled_target_flips=profile.controlled_target_flip_count,
+                control_arity_histogram=profile.control_arity_histogram,
             )
         )
     return make_order_finding_plan(
@@ -275,13 +277,13 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     )
     if null_schedule != (6, 2, 2, 1, 1):
         raise RuntimeError(f"N=15 identity null schedule is {null_schedule}")
-    generic_plan = order_finding_plan(21, 2, 10)
+    generic_plan = order_finding_plan(21, 2, 10, multiplier_strategy="cycle_transpositions_1_clean")
     if generic_plan.quantum_qubits != 7 or generic_plan.unique_multipliers != (2, 4, 16):
         raise RuntimeError(f"unexpected N=21 resource plan {generic_plan}")
     generic_strategies = {resource.strategy for resource in generic_plan.rounds if resource.strategy != "identity"}
     if generic_strategies != {"cycle_transpositions_1_clean"}:
         raise RuntimeError(f"unexpected N=21 synthesis strategies {sorted(generic_strategies)}")
-    generic_circuit = factor_order_finding(21, 2, 10)
+    generic_circuit = factor_order_finding(21, 2, 10, multiplier_strategy="cycle_transpositions_1_clean")
     generic_operations = generic_circuit.count_ops()
     expected_synthesis_counts = {"rccx": 2_694, "ccx": 449}
     observed_synthesis_counts = {
@@ -297,6 +299,35 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
             f"opaque operations are {opaque_mcx_operations}"
         )
 
+    target_plan = order_finding_plan(21, 2, 10)
+    target_counts = (
+        target_plan.quantum_qubits,
+        target_plan.controlled_target_flips,
+        target_plan.basis_edge_gates,
+        target_plan.control_arity_histogram,
+    )
+    if target_counts != (7, 170, 0, ((2, 20), (3, 87), (4, 20), (5, 43))):
+        raise RuntimeError(f"unexpected N=21 target-flip coefficients {target_counts}")
+    target_operations = factor_order_finding(21, 2, 10).count_ops()
+    if target_operations.get("rccx", 0) != 512 or target_operations.get("ccx", 0) != 170:
+        raise RuntimeError(f"unexpected N=21 target-flip synthesis {dict(target_operations)}")
+    target_phase_bits = 5
+    target_simulation_circuit = transpile(
+        factor_order_finding(21, 2, target_phase_bits), simulator, optimization_level=0
+    )
+    target_counts_sampled = simulator.run(target_simulation_circuit, shots=2048, seed_simulator=7).result().get_counts()
+    target_decoded = decode_counts(target_counts_sampled, target_phase_bits, 21, 2)
+    target_factors = {factor for recovery, _ in target_decoded for factor in recovery.factors}
+    if target_factors != {3, 7}:
+        raise RuntimeError(f"N=21 target flips recovered factors {sorted(target_factors)}, expected [3, 7]")
+    target_null_counts = (
+        simulator.run(factor_order_finding(21, 2, target_phase_bits, identity=True), shots=512, seed_simulator=7)
+        .result()
+        .get_counts()
+    )
+    if target_null_counts != {"00000": 512}:
+        raise RuntimeError(f"N=21 five-bit identity null returned {target_null_counts}")
+
 
 def _verify() -> None:
     simulator = AerSimulator()
@@ -304,7 +335,8 @@ def _verify() -> None:
     _verify_factor_path(simulator)
     print(
         "order finding: folded eigenstate controls exact; N=15 bases 2 and 7 sample "
-        "{0,64,128,192}, validate order 4, and extract factors 3 and 5"
+        "{0,64,128,192}, validate order 4, and extract factors 3 and 5; "
+        "N=21 target flips recover factors 3 and 7 at five-bit precision"
     )
 
 

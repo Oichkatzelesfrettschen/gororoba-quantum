@@ -1,0 +1,194 @@
+# Exact N=21 synthesis and the boundary of impossibility
+
+The N=21 modular multiplier is inexpensive enough to challenge the quoted
+48,895-CZ ANF and 63,818-CZ cycle implementations. The exact Boolean target-flip
+network uses 5,492 CZ at the same ten-round precision and reference FakeFez
+seed. The finite counterexample changes the compiler frontier. Physical
+usefulness still requires fresh calibration, noise simulation, measured
+dynamic latency, and a positive decoder margin.
+
+## Separate the three claims
+
+The identity-padded multiplier fixes zero and every invalid data value. For
+N=21, multipliers 2, 4, and 16 have respectively 12, 14, and 14 fixed points
+among 32 register states. Their occupied XOR-displacement counts are 16, 14,
+and 14. Multiplier 2 therefore has substantial dispersion rather than maximal
+dispersion: multipliers 10 and 19 modulo 21 have 19 occupied fibers, and a
+five-bit permutation can occupy all 32.
+
+Words in Cayley-Dickson basis left multiplications remain signed translations
+of the form `|x> -> sign(x)|x XOR t>`. A nonidentity translation moves every
+index. That restricted dictionary cannot express the nontrivial modular
+permutation as one word. Its exact scaled LCU also obeys the established
+`lambda/|beta| >= T` floor; T=16 bounds its raw good-branch probability by
+1/256. These conclusions constrain the dictionary and its postselection
+construction. They supply neither a general CZ lower bound nor a physical
+impossibility theorem.
+
+A state-conditioned target flip instead implements
+`x -> x XOR (predicate(x_without_target) << target)`. The predicate creates
+fixed points and enlarges the available permutation group. The target-flip
+counterexample leaves the signed-translation obstruction intact. Adding only
+diagonal signs would preserve the restricted permutation action.
+
+An invertible affine map over GF(2) has either zero or a power-of-two number
+of fixed points. The 12/14/14 fixed-point census rules out a purely affine
+network, even after arbitrary bijective relabeling. A CRT 3-by-7 register
+offers another cheap N=21 demonstration, but its encoder consumes known
+factors. The implemented compiler derives its complete permutation from
+public N and multiplier alone; the compiler consumes neither factors,
+reference orders, nor orbit labels.
+
+## Factor predicates before expanding basis transpositions
+
+`target_flip.py` pairs inputs and outputs along a chosen target bit. Each
+permutation entry forms an edge between its input pair and output pair. Every
+vertex has degree two, so each bipartite cycle admits alternating edge colors.
+The first target switch sends the input bit to its edge color; the last switch
+sends that color to the output bit. The middle permutation preserves the bit
+and splits into two smaller permutations. Recursion joins the branch
+predicates and yields at most `2*n-1` target layers.
+
+Every layer predicate excludes its target. Its cube flips commute and combine
+by XOR parity, so predicate expansion preserves reversibility. The compiler
+searches all 120 bit orders and the reversed networks of inverse permutations
+at width five. Component color orientation minimizes a switch-count heuristic;
+the search establishes a bounded family, rather than globally optimal circuits.
+
+Each four-variable predicate has 65,536 possible truth tables and an 81-cube
+dictionary. A graph vertex is a truth table; an edge XORs one cube into the
+table. Edge weights 1, 6, 12, 18, and 24 count the exact phase-controlled
+CX-equivalent synthesis cost for zero through four data controls. Dijkstra
+computes the minimum cost for every vertex. The verifier checks every graph
+edge's distance inequality and every nonzero vertex's descending equality
+witness. Canonical reconstruction chooses the first cube satisfying that
+equality and validates the full predicate again. The bound requires at most
+five data qubits: a six-bit network would expose five-variable predicates and
+a graph of 2^32 truth tables.
+
+`modular_arithmetic.py` emits one exact controlled cube at a time, using
+explicit one-clean MCX synthesis when needed. The default selects target
+flips for measured N=21 multipliers 2, 4, and 16. Other generic defaults keep
+the existing one-clean cycle path. The ANF coefficient census remains a
+property of the original multiplier truth table; the new target-flip count
+and control-arity histogram describe the emitted circuit.
+
+## Exact witnesses and compiled cost
+
+All three multiplier networks contain 17 controlled cubes. The ten-round
+schedule has 170 cubes, with control arities 2/3/4/5 occurring 20/87/20/43
+times. Explicit synthesis produces 512 RCCX and 170 CCX gates, equivalent
+to 2,556 CX before routing. The prior cycle has 2,694 RCCX and 449 CCX gates,
+equivalent to 10,776 CX. Open-control X gates restore their input state even
+on the disabled phase branch.
+
+`proofs/TargetFlipN21.v` independently evaluates the integer gate word and
+the modular formula. Rocq proves all 64 packed phase/data inputs for each
+multiplier, including padding states 21 through 31 and the disabled control.
+The exporter binds the proof's witness lists to the compiler's actual output.
+Fresh compilation and kernel checking succeed, and the theorem assumption
+reports are closed under the global context. Deleting a required gate makes
+both exporter freshness and actual Rocq compilation fail.
+
+The Boolean certificate excludes quantum gate phases and workspace behavior.
+The independent Qiskit Operator checks inspect all 32 data inputs and both
+control branches with clean workspace, requiring the expected amplitude +1
+and restored workspace at tolerance 1e-12. Operator linearity extends those
+basis-column checks to coherent superpositions within the clean-workspace
+input subspace. Native-gate lowering to Aer is required before local sampling;
+the CLI now transpiles explicit RCCX synthesis to Aer-supported instructions.
+
+| Circuit | Logical qubits | Reference CZ / depth | Eight-seed CZ range | Eight-seed depth range |
+|---|---:|---:|---:|---:|
+| Ten-bit one-clean cycle control | 7 | 17,736 / 47,354 | 17,736-18,773 | 47,354-49,688 |
+| Ten-bit exact target flips | 7 | 5,492 / 13,355 | 5,394-5,623 | 13,355-13,790 |
+| Five-bit exact target flips | 7 | 2,762 / 6,646 | 2,713-2,804 | 6,646-6,935 |
+
+The reference seed is 20261010; the bounded seed set ends at 20261017. At
+equal ten-bit precision the target flips reduce CZ by 69.0 percent and depth
+by 71.8 percent against the cycle control, and CZ by 88.8 percent and 91.4
+percent against the quoted ANF and scratch-free cycle respectively. The
+captures retain source hashes, versions, full topology, pass-level resources,
+and physical layouts. Historical controls remain in their original capture.
+
+Precision is a separate admission axis. The existing exact decoder gives
+five-bit ideal factor yield 0.2295125182 and uniform-null yield 0.0625, for
+margin 0.1670125182. Ten-bit values are 0.3309426044, 0.14453125, and
+0.1864113544. Smaller precision reduces dynamic feedback branches from 45
+to 10 and measurements from ten to five while changing the phase law.
+Ideal simulation recovers factors 3 and 7; the identity null returns zero.
+The ten-bit default remains the faithful baseline. Five-bit precision is an
+explicit finite benchmark choice, rather than a general Shor precision claim.
+
+## Transfer from the dimension ladder and Rocq corpus
+
+The useful transfer from open_gororoba is structural compilation and proof
+reflection. Its sign kernel preserves operand swaps and zero predicates
+through recursion. Flattening those predicates prematurely into ANF obscures
+sharing, just as flattening a modular permutation into isolated basis swaps
+obscures reversible switch structure. Cayley-Dickson nonassociativity remains
+an algebraic observable; ordinary circuit matrix composition remains
+associative.
+
+The fresh source audit pins open_gororoba at
+`127816214c3f96cc1777bd4bd9ba1b286ccc5917`. The source-hash and theorem-assumption
+record is `results/hw_estimate/n21_cross_project_proof_audit.json`.
+
+| Dimension surface | Index qubits | Evidence and boundary |
+|---|---:|---|
+| 4, 8, 16, 32, 64 | 2-6 | Prior fold gate simulation is exhaustive; dimension-generic one-step sign lemmas are closed under the global context. |
+| 128, 256, 512, 1024, 2048 | 7-11 | Prior recursive sign/table comparison extends through n=11; that comparison is separate from an end-to-end circuit theorem. |
+| 4096 | 12 | Associator first-slot scalar homogeneity is kernel-checkable; alternator counts and ignored GPU tests carry distinct execution scope. |
+| 65536 | 16 | The named higher-CD theorem again proves first-slot scalar homogeneity, with standard classical-real axioms. |
+
+At dimension 4096 the derived joint basis-product fold has logical counts
+132 CSWAP, 34 phase gates, and 12 CNOT across two 12-qubit index registers.
+Those counts supply a synthesis hypothesis; physical native cost, routed
+duration, and a circuit theorem require their own evidence.
+
+The audit compiled selected source closures afresh with Rocq 9.1.1 and OCaml
+5.4.0 because retained object files require a different OCaml build. The four
+`CDSignHalfStep.v` lemmas are dimension-generic recurrence statements. The
+Cariow dimension-16 theorem concerns 122 real scalar multiplications, rather
+than quantum gate counts. The 4096/65536 theorems in
+`C1471_HigherCDTrilinearity.v` prove only the first slot's scalar homogeneity.
+`C958_ZDGraphTopology.v` requires theorem-specific assumptions: its graph
+component proposition uses a project axiom about hard-coded sizes, whereas
+its formula and finite numeric evaluations have separate arithmetic scope.
+Each statement transfers a proof technique or mathematical invariant; the
+new modular network earns its own finite certificate.
+
+## Replay and remaining admission
+
+From the repository root, use the pinned runtime:
+
+```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
+"$PYTHON" gororoba_quantum/target_flip.py
+"$PYTHON" gororoba_quantum/target_flip_certificate.py --check
+"$PYTHON" gororoba_quantum/compile_evidence.py \
+  --candidate target_flip_one_clean \
+  --out results/hw_estimate/n21_target_flip_compilation.json
+"$PYTHON" gororoba_quantum/compile_evidence.py \
+  --candidate target_flip_one_clean --phase-bits 5 \
+  --out results/hw_estimate/n21_target_flip_precision5.json
+"$PYTHON" gororoba_quantum/hybrid_shor.py simulate 21 \
+  --phase-bits 5 --shots 4096 --seed 7
+```
+
+The fresh Rocq replay command is in AGENTS.md. The open set consists of
+fresh live Target compilation, degraded-edge filtering, a noisy primary lower
+bound above the exact uniform decoder null, an identity-null upper bound below
+the primary, and dynamic-duration accounting that includes classical latency.
+QPU submission then requires a written measurement case, estimated seconds,
+and immediate owner approval. Every capture here executes zero QPU jobs.
+
+The foreign-source warning gate has a separate open dependency. A strict
+`-w +all` replay on both installed Rocq 9.1.1 and 9.2 rejects Prelude's
+transitive `Stdlib.ZArith.ZArith_base` import as deprecated. The retained
+selected-source compilation and kernel checks used default diagnostic
+severity; their proof terms remain checked, while the all-warning gate stays
+open. `scripts/open_gororoba_proof_audit.sh` reproduces the strict failure
+with a checked 16-source hash manifest. Repairing that installed Stdlib
+dependency belongs to the toolchain owner. The new modular certificate uses
+an arithmetic-only import closure and passes the strict Rocq 9.2 gate.

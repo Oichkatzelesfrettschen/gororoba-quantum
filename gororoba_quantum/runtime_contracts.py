@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import argparse
+import ast
 import copy
 import hashlib
 import io
@@ -1629,6 +1630,27 @@ def _verify_discovery_failure_isolation() -> None:
             raise RuntimeError(f"{failure_stage} failure prevents viable selection")
 
 
+def _verify_experiment_source_manifest() -> None:
+    """Every static local import in the declared run sources participates in replay identity."""
+    source_root = Path(live_run_module.__file__).resolve().parent
+    manifest = set(live_run_module.EXPERIMENT_SOURCE_MANIFEST)
+    for relative_path in sorted(manifest):
+        for node in ast.walk(ast.parse((source_root / relative_path).read_text())):
+            modules: list[str] = []
+            if isinstance(node, ast.Import):
+                modules = [alias.name for alias in node.names]
+            elif isinstance(node, ast.ImportFrom) and node.module:
+                modules = [node.module]
+            for module in modules:
+                dependency = module.split(".")[0] + ".py"
+                if (source_root / dependency).is_file() and dependency not in manifest:
+                    raise RuntimeError(f"experiment source manifest omits {relative_path}'s dependency {dependency}")
+    first_digest = experiment_digest()
+    second_digest = experiment_digest()
+    if len(first_digest) != 64 or first_digest != second_digest:
+        raise RuntimeError("experiment source manifest digest is unstable")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_nested_operations()
@@ -1652,10 +1674,7 @@ def _verify() -> None:
     _verify_packed_static_stays_static()
     _verify_rate_keys()
     _verify_replica_floor_resolution()
-    first_digest = experiment_digest()
-    second_digest = experiment_digest()
-    if len(first_digest) != 64 or first_digest != second_digest:
-        raise RuntimeError("experiment source manifest digest is unstable")
+    _verify_experiment_source_manifest()
     print(
         "runtime contracts: discovery, direct pinned lookup, capability admission, "
         "bounded-angle isolation, coherent snapshots, Target routing, joint placement, "
