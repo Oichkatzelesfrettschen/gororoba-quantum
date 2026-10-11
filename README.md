@@ -12,11 +12,12 @@ observables.
   cd_kernel, plus associator and zero-divisor enumeration.
 - `gororoba_quantum/verify.py` -- fail-closed checks: the sign tensor against the
   kernel's hash-pinned multiplication tables, the zero-divisor corpus against
-  the kernel CSV, norm multiplicativity, and the phase-degree rules along the
-  ladder.
+  the kernel CSV, norm multiplicativity, the exact C881 sign-row bridge, and
+  phase-degree and Walsh-spectrum rules along the ladder.
 - `gororoba_quantum/boolean_anf.py` and `modular_arithmetic.py` -- exact Boolean
-  coefficient extraction and controlled modular-permutation synthesis through
-  Mersenne rotations, ANF networks, or scratch-free cycle transpositions.
+  coefficient extraction, bounded Reed-Muller interpolation, quadratic polar
+  rank, and controlled modular-permutation synthesis through Mersenne rotations,
+  ANF networks, or scratch-free cycle transpositions.
 - `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
   classical admission and decoding around faithful `|1>` semiclassical order
   finding, plus a credential-free plan, simulation, and decode CLI.
@@ -31,12 +32,13 @@ observables.
 - `gororoba_quantum/packing.py` and `variance.py` -- disjoint replica placement
   and packing of compiled circuits, and the shot, layout, and instance
   variance decomposition with replicate intervals.
-- `gororoba_quantum/select_lcu.py` -- the ancilla-selected left multiplication
-  (one joint sign diagonal, X, CX) and sparse pair-state preparation.
+- `gororoba_quantum/select_lcu.py` -- ancilla-selected left multiplication with
+  equivalent DiagonalGate and direct Reed-Muller sign strategies, plus validated
+  sparse pair-state preparation.
 - `gororoba_quantum/predict.py` -- every algebraic prediction, from cd_sign and
   cd_multiply; no circuit builder imports it.
 - `gororoba_quantum/designs.py` -- the four designs, checked by statevector and
-  operator equality over every instance.
+  operator equality over every instance, including both SELECT sign strategies.
 - `gororoba_quantum/experiments.py` -- experiment groups: a primary circuit, its
   controls, their ideals, and the summary of each design's observable.
 - `gororoba_quantum/live_run.py` -- live system discovery, circuit-derived
@@ -68,7 +70,9 @@ observables.
   through a one-ancilla linear combination of unitaries (4 data qubits + 1
   ancilla), compiled to 46 CZ on ibm_fez.
 - Design C measures the Walsh spectrum of the associator phase at dims 8, 16,
-  and 32, with sign-flip and omitted-block controls.
+  and 32, with sign-flip and omitted-block controls. The high-bit exemplar
+  escalates from a Bernstein-Vazirani character through a rank-2 quadratic to
+  a non-flat cubic spectrum with exact closed-form probabilities.
 - Design D sweeps the relative phase of design B's input and fits offset,
   visibility, and phase of the (1 - s cos phi)/2 fringe.
 

@@ -19,16 +19,23 @@ from itertools import combinations
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
-from qiskit.circuit import Gate, ParameterExpression
+from qiskit.circuit import Gate, Parameter, ParameterExpression
 from qiskit.circuit.library import DiagonalGate
 from qiskit.quantum_info import Operator, Statevector
 
 import predict
+from boolean_anf import anf_coefficients, anf_degree_histogram
 from cd_core import cd_sign, fano_completion, sedenion_zero_divisor_corpus, sedenion_zero_divisors
-from select_lcu import joint_select_signs, select_circuit, sparse_pair_prep
+from select_lcu import (
+    joint_select_signs,
+    phase_oracle_from_truth_table,
+    select_circuit,
+    sparse_pair_prep,
+)
 
 SWEEP_PHASES = [k * math.pi / 4 for k in range(9)]
 SPECTRUM_EXEMPLARS = ((8, 1, 4), (16, 1, 8), (32, 1, 16))
+SIGN_HIERARCHY_EXEMPLARS = ((8, 4), (16, 8), (32, 16))
 
 
 def left_mult_gate(dim: int, m: int, flip: int | None = None) -> Gate:
@@ -198,15 +205,87 @@ def _check_design_a() -> None:
     print("design A: all 21 pairs read bit 1 with probability 1")
 
 
-def _check_select_and_prep() -> None:
+def _check_reed_muller_phase_oracles() -> None:
+    expected_exemplar_operations = {
+        8: {"z": 3, "cz": 1},
+        16: {"z": 4, "cz": 3, "ccz": 1},
+        32: {"z": 5, "cz": 6, "ccz": 4, "c3z": 1},
+    }
     worst = 0.0
+    constant_true = Operator(phase_oracle_from_truth_table([1, 1], name="constant_true")).data
+    worst = max(worst, float(np.max(np.abs(constant_true + np.eye(2)))))
+    checked_rows = 0
+    for dim in (8, 16, 32):
+        for unit_index in range(1, dim):
+            truth_table = [0 if cd_sign(dim, unit_index, basis_index) > 0 else 1 for basis_index in range(dim)]
+            circuit = phase_oracle_from_truth_table(truth_table, name=f"sign_{dim}_{unit_index}")
+            got = Operator(circuit).data
+            want = np.diag(np.array([1.0 if value == 0 else -1.0 for value in truth_table]))
+            worst = max(worst, float(np.max(np.abs(got - want))))
+            checked_rows += 1
+    _require(worst < 1e-12, f"Reed-Muller phase oracle deviates by {worst:.2e}")
+
+    for dim, unit_index in SIGN_HIERARCHY_EXEMPLARS:
+        truth_table = [0 if cd_sign(dim, unit_index, basis_index) > 0 else 1 for basis_index in range(dim)]
+        coefficients = anf_coefficients(truth_table)
+        histogram = anf_degree_histogram(coefficients)
+        expected_histogram = {
+            degree: math.comb(dim.bit_length() - 2, degree) for degree in range(1, dim.bit_length() - 1)
+        }
+        expected_histogram[1] += 1
+        _require(histogram == expected_histogram, f"dim {dim} L_e{unit_index} ANF histogram {histogram}")
+        circuit = phase_oracle_from_truth_table(truth_table, name=f"sign_{dim}_{unit_index}")
+        operations = {name: int(count) for name, count in circuit.count_ops().items()}
+        _require(
+            operations == expected_exemplar_operations[dim],
+            f"dim {dim} L_e{unit_index} operations {operations}",
+        )
+    print(
+        f"Reed-Muller signs: {checked_rows} row oracles exact within {worst:.1e}; "
+        "high-bit ladder emits CZ, CCZ, then C3Z"
+    )
+
+
+def _check_select_and_prep() -> None:
+    worst_diagonal = 0.0
+    worst_reed_muller = 0.0
+    diagonal_cz_savings: list[int] = []
     for i, j in combinations(range(1, 16), 2):
-        got = Operator(select_circuit(16, i, j)).data
-        worst = max(worst, float(np.max(np.abs(got - predict.select_matrix(16, i, j)))))
+        want = predict.select_matrix(16, i, j)
+        diagonal_circuit = select_circuit(16, i, j, "diagonal")
+        reed_muller_circuit = select_circuit(16, i, j, "reed_muller")
+        diagonal = Operator(diagonal_circuit).data
+        reed_muller = Operator(reed_muller_circuit).data
+        worst_diagonal = max(worst_diagonal, float(np.max(np.abs(diagonal - want))))
+        worst_reed_muller = max(worst_reed_muller, float(np.max(np.abs(reed_muller - want))))
         g = [0 if s > 0 else 1 for s in joint_select_signs(16, i, j)]
         _require(predict.anf_degree(g) == 4, f"SELECT sign for ({i},{j}) has degree {predict.anf_degree(g)}")
-    _require(worst < 1e-12, f"SELECT operator deviates by {worst:.2e}")
-    print(f"SELECT: 105 operators equal the signed-permutation definition within {worst:.1e}; sign degree 4")
+        diagonal_isa = transpile(
+            diagonal_circuit,
+            basis_gates=["cz", "rz", "sx", "x"],
+            optimization_level=3,
+            seed_transpiler=20261010,
+        )
+        reed_muller_isa = transpile(
+            reed_muller_circuit,
+            basis_gates=["cz", "rz", "sx", "x"],
+            optimization_level=3,
+            seed_transpiler=20261010,
+        )
+        diagonal_cz_savings.append(
+            int(reed_muller_isa.count_ops().get("cz", 0) - diagonal_isa.count_ops().get("cz", 0))
+        )
+    _require(worst_diagonal < 1e-12, f"diagonal SELECT operator deviates by {worst_diagonal:.2e}")
+    _require(worst_reed_muller < 1e-12, f"Reed-Muller SELECT operator deviates by {worst_reed_muller:.2e}")
+    _require(
+        all(saving > 0 for saving in diagonal_cz_savings),
+        f"diagonal SELECT does not win every pinned all-to-all compile: {diagonal_cz_savings}",
+    )
+    print(
+        "SELECT: 105 diagonal and Reed-Muller operators equal the signed-permutation definition "
+        f"within {max(worst_diagonal, worst_reed_muller):.1e}; diagonal saves "
+        f"{min(diagonal_cz_savings)}..{max(diagonal_cz_savings)} CZ in the pinned all-to-all compile"
+    )
 
     worst = 0.0
     for k, el in combinations(range(16), 2):
@@ -214,10 +293,45 @@ def _check_select_and_prep() -> None:
             want = np.zeros(16, dtype=complex)
             want[k] = 1.0 / math.sqrt(2.0)
             want[el] = np.exp(1j * phase) / math.sqrt(2.0)
-            got = Statevector(sparse_pair_prep(4, k, el, phase)).data
+            circuit = sparse_pair_prep(4, k, el, phase)
+            operations = circuit.count_ops()
+            _require(operations.get("h", 0) == 1, f"sparse prep ({k},{el}) has {operations.get('h', 0)} H")
+            _require(
+                operations.get("cx", 0) == (k ^ el).bit_count() - 1,
+                f"sparse prep ({k},{el}) has {operations.get('cx', 0)} CX",
+            )
+            _require(
+                operations.get("p", 0) == int(phase != 0.0),
+                f"sparse prep ({k},{el}) phase {phase} has {operations.get('p', 0)} P",
+            )
+            got = Statevector(circuit).data
             worst = max(worst, float(np.max(np.abs(got - want))))
     _require(worst < 1e-12, f"sparse prep deviates by {worst:.2e}")
-    print(f"sparse prep: 120 index pairs x {len(SWEEP_PHASES)} phases exact within {worst:.1e}")
+
+    symbolic_phase = Parameter("phi")
+    symbolic = sparse_pair_prep(4, 4, 15, symbolic_phase)
+    bound_phase = math.pi / 3
+    bound = symbolic.assign_parameters({symbolic_phase: bound_phase})
+    symbolic_want = np.zeros(16, dtype=complex)
+    symbolic_want[4] = 1.0 / math.sqrt(2.0)
+    symbolic_want[15] = np.exp(1j * bound_phase) / math.sqrt(2.0)
+    _require(
+        float(np.max(np.abs(Statevector(bound).data - symbolic_want))) < 1e-12,
+        "symbolic sparse-pair phase binding changes the prepared state",
+    )
+
+    invalid_preparations = ((0, 0, 1), (4, -1, 1), (4, 0, 16), (4, 3, 3))
+    for qubit_count, first_index, second_index in invalid_preparations:
+        try:
+            sparse_pair_prep(qubit_count, first_index, second_index, 0.0)
+        except ValueError:
+            pass
+        else:
+            raise DesignCheckFailed(f"sparse prep accepted n={qubit_count}, indices ({first_index},{second_index})")
+    print(
+        f"sparse prep: 120 index pairs x {len(SWEEP_PHASES)} phases exact within {worst:.1e}; "
+        "one H and popcount(k XOR l)-1 CX"
+    )
 
 
 def _check_design_b() -> None:
@@ -314,6 +428,7 @@ def _check_design_c() -> None:
 
 def _verify() -> None:
     _check_design_a()
+    _check_reed_muller_phase_oracles()
     _check_select_and_prep()
     _check_design_b()
     _check_design_d()

@@ -63,6 +63,30 @@ and stated as conjectures beyond:
   factors carries a cubic sign, so the composition cancels the cubic terms; W
   leaves the Clifford group from dim 32 on.
 
+`verify.check_pathion_separator_sign_bridge` establishes an exact cross-level
+identity behind the cubic rung. C881's 15 labels index the top-level dim-32
+pathion cross-assessor components in PG(3,2); they are distinct from the seven
+dim-16 sedenion box-kites. Extend C881's 8/7 heptacross indicator by H(0) = 0.
+On all 16 four-bit inputs,
+
+H(S) = [cd_sign(16, 8, S) = -1].
+
+Both functions have ANF masks (1, 2, 3, 4, 5, 6, 7, 8), so direct phase
+synthesis emits four Z gates, three CZ gates, and one CCZ. The partial
+Reed-Muller solver includes the constant and every linear and quadratic
+monomial, rejects degree at most two, and returns that unique cubic witness.
+The result rules out a Clifford-only exact diagonal phase oracle in this fixed
+binary encoding and shows that one CCZ suffices. The result does not establish
+a lower bound for arbitrary classification protocols or circuit depth.
+
+The current `C881_GF2CubicMinDegree.v` theorems check every nonempty linear
+combination, six individual quadratic monomials, the cubic witness, and its
+degree. Its exhaustive quadratic conclusion appears only in a comment.
+open_gororoba's Rust search and the independent solver in `verify.py` establish
+the finite lower bound; the Rocq source establishes the cubic upper-bound
+witness. The verifier also requires the Rocq source bytes to match the reviewed
+sha256 before admitting the copied labels and classes.
+
 ## Design A: octonion associator as a Fano Z-string
 
 Source: cd_associator, A(e_i,e_j,e_k) = (e_i e_j) e_k - e_i (e_j e_k).
@@ -120,15 +144,21 @@ X on the bits of i; and CX from the ancilla onto the bits of i ^ j. The input
 |b> is loaded by H on a pivot bit of k ^ l, the sign or phase on that bit, CX
 fan-out over the rest of k ^ l, and the X load of k last, so the X layer
 relabels branches without touching their relative phase. g has degree 4 for
-every sedenion pair, so a per-monomial Z/CZ/CCZ/C3Z emission costs more than
-DiagonalGate's uniformly controlled Rz synthesis. The builder receives (i, j)
-and the input specification and never the expected outcome.
+every pair of distinct nonzero sedenion units. `select_circuit` exposes both
+the direct Reed-Muller Z/CZ/CCZ/C3Z route and the DiagonalGate route. Both
+operators match all 105 signed-permutation definitions; under the pinned
+Qiskit version, basis, optimization level, and seed, DiagonalGate saves 10 to
+71 all-to-all CZ gates for every pair and remains the default. The builder
+receives (i, j) and the input specification and never the expected outcome.
 
 Checks: `designs.py` compares the SELECT operator against its signed-permutation
-definition for all 105 pairs (32 x 32, phase included), the prepared state
-against its target for all 120 index pairs at 9 phases, and all 168 dark and
-168 bright circuits against |a b|^2 / 8 from cd_multiply. Mutating the SELECT
-sign layer or loading k before the Hadamard fails these checks.
+definition for both strategies over all 105 pairs (32 x 32, phase included),
+the prepared state against its target for all 120 index pairs at 9 phases, and
+all 168 dark and 168 bright circuits against |a b|^2 / 8 from cd_multiply. The
+sparse-preparation checks require one H, popcount(k XOR l) - 1 CX, the optional
+phase gate, exact symbolic-parameter binding, and in-range distinct indices.
+Mutating the SELECT sign layer or loading k before the Hadamard fails these
+checks.
 
 Predicted ideal: zero-divisor pair (e1+e10)(e4-e15) gives P(anc=0) = 0; the
 sign-flipped control (e1+e10)(e4+e15) gives P(anc=0) = 1.
@@ -169,6 +199,17 @@ exemplar at dim 32 gives a non-flat one.
 Predicted ideal (qubit 0 least significant): dim 8 pair (1,4) gives P(2) = 1;
 dim 16 pair (1,8) gives P = 1/4 on {0, 2, 4, 6}; dim 32 pair (1,16) gives
 P(0) = 9/16 and 1/16 on each of {2, 4, ..., 14}.
+
+`verify.check_associator_walsh_hierarchy` checks the high-bit pair
+(1, 2^(n-1)) for n = 3 through 7. Its ANF contains every nonempty monomial over
+bits 1 through n-2. The n=3 function is the linear Bernstein-Vazirani
+character. The n=4 quadratic has polar symplectic rank 2 and a flat affine
+support of size 2^2 = 4. Every rung has zero-frequency weight
+(1 - 2^(3-n))^2; each other supported outcome has weight 2^(6-2n). The n=5
+case therefore has weight 9/16 at zero and 1/16 at seven nonzero outcomes.
+Only the n=3 character carries the standard BV/HSP promise. The higher-degree
+forms are phase-oracle benchmarks whose nonuniform Walsh spectra fall outside
+standard HSP coset sampling.
 
 Checks: `designs.py` compares the composed unitary against diag(omega) and the
 statevector distribution against the Walsh prediction for all 21, 105, and 465
