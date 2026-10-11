@@ -549,6 +549,220 @@ many edges as the octonions have non-Fano ordered triples (168); the pathion
 graph (D = 32, 924 edges) has half as many edges as the sedenions have
 non-associative ordered triples (1848).
 
+### 8.12 Signed-XOR LCU displacement bounds
+
+Let the identity-padded permutation pi map x to `a*x mod N` for x < N and fix
+x >= N. Every Cayley-Dickson group word has the form
+`U_g|x> = sigma_g(x)|x XOR t_g>`. In a nonzero exact scaled representation
+`beta P_pi = sum_g c_g U_g`, each occupied displacement fiber
+`{x : pi(x) XOR x = t}` forces coefficient one-norm at least `|beta|` in its
+t block. If T fibers are occupied, the complete coefficient one-norm satisfies
+`lambda >= |beta| T`. The effective normalization therefore satisfies
+`lambda/|beta| >= T`, and a normalized input has standard-LCU success at most
+`1/T^2`.
+
+Base two supplies an exact exponential family. For odd n-bit N and
+`0 <= x <= (N-1)/2`, pi(x) = 2x and the displacement is
+`x XOR (x << 1)`. The GF(2) map `I + left_shift` is invertible, so
+`T >= (N+1)/2 > 2^(n-2)`. For `N = 2^n-1` and multiplier `2^k`, cyclic
+rotation gives `T = 2^(n-gcd(n,k))`.
+
+A linear-displacement counterfamily proves that no matching exponential law
+holds for every base. Its even-m subfamily also yields nontrivial factors
+through standard Shor post-processing. Set
+
+```text
+M = 2^m,  q = M+1,  N = 3q,  a = 2q+1,  m >= 2.
+```
+
+The modulus has width n = m+2 and `gcd(a,N)=1`. Since
+`a*x = x + 2q*x mod 3q`, the residue `x mod 3` and the reduction interval give
+five exact cases:
+
+```text
+pi(x) = x       when x mod 3 = 0, or N <= x < 4M
+pi(x) = x+2q    when x mod 3 = 1 and 0 <= x < q
+pi(x) = x-q     when x mod 3 = 1 and q <= x < N
+pi(x) = x+q     when x mod 3 = 2 and 0 <= x < 2q
+pi(x) = x-2q    when x mod 3 = 2 and 2q <= x < N.
+```
+
+Negative shifts reduce to additions without changing XOR masks. With `y=x-q`
+or `y=x-2q`, respectively,
+
+```text
+x XOR (x-q)  = y XOR (y+q),
+x XOR (x-2q) = y XOR (y+2q).
+```
+
+Two carry identities control every branch. The first zero above the trailing
+ones fixes a unique `j >= 1` with
+
+```text
+z XOR (z+1) = 2^j-1.
+```
+
+The first zero above the run of ones beginning at bit one similarly fixes a
+unique `j >= 1` with
+
+```text
+z XOR (z+2) = 2^(j+1)-2.
+```
+
+Every source has one unique carry length, so the two identities exclude every
+noncontiguous lower-bit mask. The relation `2^j` congruent to `(-1)^j` modulo
+3 then selects which carry lengths occur in each residue class. Define
+
+```text
+L_j = M + 2^j - 1,
+H_j = 3M + 2^j - 1,
+E_j = 2M + 2^(j+1) - 2.
+```
+
+For the `+q` branch, splitting `x` into the intervals below M and from M to
+`2M-1` attaches high masks M and 3M to the unique `+1` carry mask. The two
+possible sources at `2M` and `2M+1` duplicate lower masks. Explicit sources for
+every admitted mask are
+
+```text
+L_j:  x = 3*2^(j-1)-1                         for 1 <= j < m,
+H_j:  x = M+c*2^(j-1)-1                       for 1 <= j < m-1,
+       c = 1 when m and j have equal parity, and c = 5 otherwise,
+4M-1: x = 3M/2-1.
+```
+
+Each source lies below `2q` and has residue two. The residue condition excludes
+`H_(m-1)` and every other boundary carry. Therefore every m has
+
+```text
+D_(+q) =
+  {L_j : 1 <= j < m}
+  union {H_j : 1 <= j < m-1}
+  union {4M - 1}.
+```
+
+For the `+2q` branch, define
+
+```text
+u_j = 2^j-1     when j is odd,
+u_j = 3*2^j-2   when j is even.
+```
+
+Every `u_j` has residue one. For even m, the sources `x=u_j` for
+`1 <= j < m` lie below q and attain every `E_j`. For odd m, the same sources
+for `1 <= j < m-1` attain the ordinary masks, and `x=M-1` attains the terminal
+mask `4M-2`. The unique `+2` carry length excludes every other mask. The branch
+sets are
+
+```text
+D_(+2q) = {E_j : 1 <= j < m}                         for even m,
+D_(+2q) = {E_j : 1 <= j < m-1} union {4M-2}          for odd m.
+```
+
+For the `-q` branch, XOR symmetry maps each source to `x=q+y`. When m is even,
+`q mod 3 = 2`, so every `+q` source y maps bijectively to a valid residue-one
+source and
+
+```text
+D_(-q) = D_(+q).
+```
+
+When m is odd, `q mod 3 = 0`. The required addition sources y have residue one.
+The following witnesses attain every mask:
+
+```text
+D_(-q) sources:
+L_j:  y = c*2^(j-1)-1 for 1 <= j < m,
+       c = 1 when j is even, and c = 5 when j is odd,
+3M-1: y = M-1,
+H_j:  y = M+3*2^(j-1)-1 for 1 <= j < m.
+```
+
+Partitioning y into the two M-sized blocks leaves one unique `+1` carry mask
+in each block, while `y=M-1` supplies the sole boundary mask. Hence
+
+```text
+D_(-q) =
+  {L_j : 1 <= j < m}
+  union {3M - 1}
+  union {H_j : 1 <= j < m}                          for odd m.
+```
+
+The `-2q` branch maps each source to `x=2q+y`. When m is even,
+`2q mod 3 = 1`, so the mapping from the residue-one `+2q` sources is bijective
+and
+
+```text
+D_(-2q) = D_(+2q) = {E_j : 1 <= j < m}              for even m.
+```
+
+When m is odd, define
+
+```text
+v_j = 3*2^j-1   when j is odd,
+v_j = 2^j-2     when j is even.
+```
+
+Every `v_j` has residue two. The source `x=2q+v_j` attains `E_j`. The range
+`1 <= j < m-1` supplies the ordinary masks, and `j=m-1` gives
+`v_j=M/2-2` and the terminal mask `3M-2`. Unique `+2` carry length excludes all
+other masks, so
+
+```text
+D_(-2q) = {E_j : 1 <= j < m-1} union {3M-2}         for odd m.
+```
+
+Every q-shift displacement is odd. Every 2q-shift displacement is positive and
+even. The fixed branch contributes zero, so the fixed, q-shift, and 2q-shift
+classes are disjoint. For even m, equality of the positive and negative branch
+sets gives
+
+```text
+|D_(+q) union D_(-q)| = (m-1)+(m-2)+1 = 2m-2,
+|D_(+2q) union D_(-2q)| = m-1.
+```
+
+For odd m, the q sets share the `m-1` lower masks and the `m-2` high masks. The
+2q sets share `m-2` ordinary masks and carry distinct terminal masks:
+
+```text
+|D_(+q) union D_(-q)| = 2m,
+|D_(+2q) union D_(-2q)| = m.
+```
+
+The complete displacement counts are therefore
+
+```text
+T = 1 + (2m-2) + (m-1) = 3m-2  for even m,
+T = 1 + 2m     + m     = 3m+1  for odd m.
+```
+
+The arithmetic order separates the factor-yielding subfamily. Every m has
+`gcd(a,N)=1`. For even m, q+1 is divisible by three and
+
+```text
+a^2-1 = 4q(q+1),
+gcd(a-1,N) = q,
+gcd(a+1,N) = 3.
+```
+
+Thus `ord_N(a)=2`, and standard Shor post-processing returns both nontrivial
+factors. For odd m, q is divisible by three and the binomial expansion gives
+
+```text
+a^r = (1+2q)^r = 1+2rq mod 3q.
+```
+
+Thus `ord_N(a)=3`; standard Shor post-processing rejects the odd order. The
+smallest odd member is `m=3`, `N=27`, and `a=19`. The member has `T=10` and
+order three.
+
+`modular_arithmetic._verify_xor_displacement_profiles` compares every observed
+branch set with the formulas above for m = 2 through 12. The verifier also
+checks the total, the exact order, and both extracted factors for every tested
+even-m member. The carry identities, explicit witnesses, range and residue
+exclusions, and overlap count prove the formulas for every m >= 2.
+
 ## 9. Replayable scripts
 
 Place the five files in one directory and run with an interpreter that puts the
@@ -983,14 +1197,30 @@ prints totals and the files with admissions, axioms, parameters, or conjectures.
 | Fold recursion | none expected: algebraic identity | verified n <= 10, circuit n <= 6 |
 | Heavy-lane census numbers | rerun disagreement | not rerun (no `cargo` in the read-only tree); CSV row counts agree for edges through 128 |
 | Cocycle defect equals associator support | an associator zero where the defect is non-zero | identity of definitions; counts cross-checked against two Rocq theorems |
+| Signed-XOR LCU floor | one fiber violates its block bound | proved |
+| Base-two displacement growth | an odd N violates the floor | proved |
+| Linear-T counterfamily | one branch formula fails | proved |
 | 15960 coincidence (8.4) | independent derivation showing the two quantities are unrelated | open |
+
+The signed-XOR floor fails if one occupied displacement block has coefficient
+one-norm below `abs(beta)`. Disjoint matrix support and the triangle inequality
+exclude the violation. The base-two claim fails if an odd n-bit N has
+`T < (N+1)/2`; injectivity of `I + left_shift` excludes the violation, and the
+verifier checks all 127 odd N through n = 8. The linear-T counterfamily fails if
+a carry mask lies outside the proved sets, an admitted mask lacks a witness, or
+an even-m member yields gcds other than `2^m+1` and 3. The branch proof covers
+every m >= 2, and the verifier checks each branch, order, and even-m factor for
+m = 2 through 12.
 
 Next experiments with value for the sister project: (a) compile the fold
 circuit to a Clifford+T gate set and record T counts per dimension; (b) check the
 circuit against `L_{e_p}` from `get_sedenion_matrices()` for n = 4; (c) test the
-block-encoding normalization `sum |a_p|` for chosen elements; (d) rerun the
+single-element block-encoding normalization `sum |a_p|` for chosen elements,
+separate from the group-word coefficient one-norm; (d) rerun the
 cross-pair census at 512 and 1024 and compare with the test predictions;
 (e) derive the associator tensor from the fold recursion to avoid the O(dim^3)
 enumeration; (f) prove v(N) = N^3/2 - 14N + 24 from the fold recursion and
 check E(512) = 4192524 against the ignored census when a heavy lane is
-available.
+available; (g) compute exact unit-output-scale group-word LCU coefficient
+minima at n = 3..5 and retain linear-program dual certificates that separate
+the true minimum from the displacement floor T.

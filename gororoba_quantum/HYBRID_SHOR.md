@@ -121,6 +121,13 @@ The all-ones invalid state also remains fixed under rotation, so the same wire
 permutation implements the required full-register extension. A controlled
 rotation becomes a short Fredkin network. `N = 15`, `a = 2` uses three
 controlled swaps for multiplication by two and two for multiplication by four.
+The rotation has `T = 2^(n-gcd(n,k))` XOR-displacement fibers for multiplier
+`2^k`, so any nonzero exact scaled LCU over signed XOR translations has
+effective normalization at least T. The direct circuit and the LCU dictionary
+therefore rank the same arithmetic in opposite ways: the direct circuit needs
+`n-gcd(n,k)` swaps while the effective LCU normalization grows exponentially
+whenever `gcd(n,k)=1`. `FACTORING_NOTES.md` derives the bound and its
+non-universal base boundary.
 
 ### ANF compute, swap, uncompute
 
@@ -464,6 +471,14 @@ its QPY SHA-256 is
 8. **`N = 35` admission.** Compile and simulate `N = 35` only after `N = 21`
    crosses the preceding gate. Preserve `N = 35` as a coefficient-level
    falsifier until then.
+9. **Signed-XOR coefficient certificates.** Solve the exact minimum-one-norm
+   group-word LCU at n = 3 through 5 and retain primal reconstruction plus a
+   matching linear-program dual bound. Extend the experiment only after a zero
+   duality gap separates the unit-output-scale coefficient one-norm from the
+   displacement floor.
+   Keep the LCU experiment separate from the direct arithmetic compiler because
+   the base-two rotation proves that effective normalization and direct gate
+   count measure different resources.
 
 ## Replay commands
 

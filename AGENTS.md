@@ -10,18 +10,26 @@ package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only. Before any push, these exit 0:
 
 ```sh
-PYTHON="${PYTHON:-$(command -v python3)}"
-ruff check gororoba_quantum && ruff format --check gororoba_quantum
-cd gororoba_quantum
-mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py hybrid_shor.py modular_arithmetic.py packing.py predict.py select_lcu.py experiments.py live_run.py order_finding.py runtime_contracts.py variance.py
-"$PYTHON" verify.py         # needs the open_gororoba checkout at GOROROBA_ROOT
-"$PYTHON" designs.py
-"$PYTHON" factoring.py
-"$PYTHON" modular_arithmetic.py
-"$PYTHON" order_finding.py
-"$PYTHON" runtime_contracts.py
-"$PYTHON" variance.py
-"$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  ruff check gororoba_quantum scripts/python_call_graph.py
+  ruff format --check gororoba_quantum scripts/python_call_graph.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
+  cd gororoba_quantum
+  mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
+    hybrid_shor.py modular_arithmetic.py packing.py predict.py select_lcu.py \
+    experiments.py live_run.py order_finding.py runtime_contracts.py \
+    variance.py ../scripts/python_call_graph.py
+  "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
+  "$PYTHON" designs.py
+  "$PYTHON" factoring.py
+  "$PYTHON" modular_arithmetic.py
+  "$PYTHON" order_finding.py
+  "$PYTHON" runtime_contracts.py
+  "$PYTHON" variance.py
+  "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+)
 ```
 
 A change to live_run.py or experiments.py also gets a dry run,

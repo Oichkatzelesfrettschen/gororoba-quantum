@@ -43,6 +43,28 @@ class MultiplierProfile:
         return self.forward_term_count + self.inverse_term_count
 
 
+@dataclass(frozen=True)
+class XorDisplacementProfile:
+    """XOR-displacement fibers of one full-register permutation.
+
+    ``signed_xor_lcu_normalization_floor`` is the effective-normalization floor
+    for a nonzero exact scaled LCU over signed XOR translations. The same value
+    is the coefficient one-norm floor at unit output scale. The profile does not
+    assert that the Cayley-Dickson group span contains the permutation.
+    """
+
+    width: int
+    fiber_sizes: tuple[tuple[int, int], ...]
+
+    @property
+    def distinct_displacement_count(self) -> int:
+        return len(self.fiber_sizes)
+
+    @property
+    def signed_xor_lcu_normalization_floor(self) -> int:
+        return self.distinct_displacement_count
+
+
 def register_width(modulus: int) -> int:
     """Return the number of qubits required to represent residues below modulus."""
     if modulus < 3:
@@ -60,6 +82,32 @@ def modular_permutation(modulus: int, multiplier: int) -> tuple[int, ...]:
     if len(set(permutation)) != len(permutation):
         raise ValueError(f"modular map for {normalized} modulo {modulus} is not a permutation")
     return permutation
+
+
+def xor_displacement_profile(permutation: tuple[int, ...]) -> XorDisplacementProfile:
+    """Partition a power-of-two permutation by ``input XOR output``.
+
+    For ``M`` inputs and ``T`` occupied fibers, complete-register validation
+    and the sorted fiber census use ``O(M + T log T)`` time and ``O(M)``
+    auxiliary space.
+    """
+    state_count = len(permutation)
+    if state_count == 0 or state_count & (state_count - 1):
+        raise ValueError(f"permutation size must be a positive power of two, got {state_count}")
+    if any(output_value < 0 or output_value >= state_count for output_value in permutation):
+        raise ValueError("displacement profile requires every output to lie in the complete register")
+    if len(set(permutation)) != state_count:
+        raise ValueError("displacement profile requires a bijection of the complete register")
+    fiber_counts = Counter(input_value ^ output_value for input_value, output_value in enumerate(permutation))
+    return XorDisplacementProfile(
+        width=state_count.bit_length() - 1,
+        fiber_sizes=tuple(sorted(fiber_counts.items())),
+    )
+
+
+def modular_displacement_profile(modulus: int, multiplier: int) -> XorDisplacementProfile:
+    """Return the XOR-displacement profile for an identity-padded multiplier."""
+    return xor_displacement_profile(modular_permutation(modulus, multiplier))
 
 
 def _output_coefficients(permutation: tuple[int, ...], width: int) -> tuple[tuple[int, ...], ...]:
@@ -335,7 +383,156 @@ def _verify_multiplier(modulus: int, multiplier: int, strategy: str = "auto") ->
                 )
 
 
+def _verify_xor_displacement_profiles() -> None:
+    named_counts = {
+        (15, 2): 8,
+        (15, 7): 7,
+        (21, 2): 16,
+        (35, 2): 30,
+    }
+    for (modulus, multiplier), expected_count in named_counts.items():
+        observed_count = modular_displacement_profile(modulus, multiplier).distinct_displacement_count
+        if observed_count != expected_count:
+            raise RuntimeError(
+                f"{multiplier} mod {modulus} has {observed_count} XOR displacements, expected {expected_count}"
+            )
+
+    identity_profile = modular_displacement_profile(15, 1)
+    if identity_profile.fiber_sizes != ((0, 16),):
+        raise RuntimeError(f"identity displacement fiber changed: {identity_profile.fiber_sizes}")
+
+    checked_odd_moduli = 0
+    checked_mersenne_rotations = 0
+    checked_mersenne_reflections = 0
+    for width in range(2, 9):
+        first_odd_modulus = (1 << (width - 1)) | 1
+        for modulus in range(first_odd_modulus, 1 << width, 2):
+            displacement_count = modular_displacement_profile(modulus, 2).distinct_displacement_count
+            proven_floor = (modulus + 1) // 2
+            if displacement_count < proven_floor:
+                raise RuntimeError(
+                    f"2 mod {modulus} has {displacement_count} XOR displacements below floor {proven_floor}"
+                )
+            checked_odd_moduli += 1
+
+        mersenne_modulus = (1 << width) - 1
+        for shift in range(width):
+            multiplier = pow(2, shift, mersenne_modulus)
+            displacement_count = modular_displacement_profile(mersenne_modulus, multiplier).distinct_displacement_count
+            expected_count = 1 << (width - math.gcd(width, shift))
+            if displacement_count != expected_count:
+                raise RuntimeError(
+                    f"rotate {shift} at width {width} has {displacement_count} XOR displacements, "
+                    f"expected {expected_count}"
+                )
+            checked_mersenne_rotations += 1
+
+        reflection_count = modular_displacement_profile(
+            mersenne_modulus, mersenne_modulus - 1
+        ).distinct_displacement_count
+        if reflection_count != 2:
+            raise RuntimeError(f"negation mod {mersenne_modulus} has {reflection_count} XOR displacements, expected 2")
+        checked_mersenne_reflections += 1
+
+    checked_low_dispersion_members = 0
+    for exponent in range(2, 13):
+        power = 1 << exponent
+        quotient = power + 1
+        modulus = 3 * quotient
+        multiplier = 2 * quotient + 1
+        permutation = modular_permutation(modulus, multiplier)
+        branch_displacements: dict[str, set[int]] = {
+            "fixed": set(),
+            "+q": set(),
+            "-q": set(),
+            "+2q": set(),
+            "-2q": set(),
+        }
+        for input_value, output_value in enumerate(permutation):
+            if input_value >= modulus or input_value % 3 == 0:
+                branch_name = "fixed"
+            elif input_value % 3 == 1:
+                branch_name = "+2q" if input_value < quotient else "-q"
+            else:
+                branch_name = "+q" if input_value < 2 * quotient else "-2q"
+            branch_displacements[branch_name].add(input_value ^ output_value)
+
+        lower_q_masks = {power + (1 << mask_width) - 1 for mask_width in range(1, exponent)}
+        upper_q_masks = {3 * power + (1 << mask_width) - 1 for mask_width in range(1, exponent - 1)}
+        expected_plus_q = lower_q_masks | upper_q_masks | {4 * power - 1}
+        ordinary_2q_masks = {2 * power + (1 << (mask_width + 1)) - 2 for mask_width in range(1, exponent)}
+        if exponent % 2 == 0:
+            expected_branch_displacements = {
+                "fixed": {0},
+                "+q": expected_plus_q,
+                "-q": expected_plus_q,
+                "+2q": ordinary_2q_masks,
+                "-2q": ordinary_2q_masks,
+            }
+            expected_order = 2
+        else:
+            expected_branch_displacements = {
+                "fixed": {0},
+                "+q": expected_plus_q,
+                "-q": lower_q_masks
+                | {3 * power - 1}
+                | {3 * power + (1 << mask_width) - 1 for mask_width in range(1, exponent)},
+                "+2q": {2 * power + (1 << (mask_width + 1)) - 2 for mask_width in range(1, exponent - 1)}
+                | {4 * power - 2},
+                "-2q": {2 * power + (1 << (mask_width + 1)) - 2 for mask_width in range(1, exponent - 1)}
+                | {3 * power - 2},
+            }
+            expected_order = 3
+        if branch_displacements != expected_branch_displacements:
+            raise RuntimeError(
+                f"low-dispersion branch fibers changed for exponent {exponent}: "
+                f"observed {branch_displacements}, expected {expected_branch_displacements}"
+            )
+
+        expected_count = 3 * exponent - 2 if exponent % 2 == 0 else 3 * exponent + 1
+        displacement_profile = xor_displacement_profile(permutation)
+        observed_count = displacement_profile.distinct_displacement_count
+        if observed_count != expected_count:
+            raise RuntimeError(
+                f"low-dispersion family member {multiplier} mod {modulus} has {observed_count} XOR displacements, "
+                f"expected {expected_count}"
+            )
+        if pow(multiplier, expected_order, modulus) != 1 or any(
+            pow(multiplier, candidate_order, modulus) == 1 for candidate_order in range(1, expected_order)
+        ):
+            raise RuntimeError(
+                f"low-dispersion family member {multiplier} mod {modulus} does not have order {expected_order}"
+            )
+        if exponent % 2 == 0 and (
+            math.gcd(multiplier - 1, modulus) != quotient or math.gcd(multiplier + 1, modulus) != 3
+        ):
+            raise RuntimeError(
+                f"even-exponent family member {multiplier} mod {modulus} does not yield factors {quotient} and 3"
+            )
+        checked_low_dispersion_members += 1
+
+    mutated_permutation = list(modular_permutation(15, 2))
+    mutated_permutation[0] = mutated_permutation[1]
+    invalid_permutations = ((), (0, 1, 2), (0, 1, 2, 4), tuple(mutated_permutation))
+    for invalid_permutation in invalid_permutations:
+        try:
+            xor_displacement_profile(invalid_permutation)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError(f"displacement profiler accepted invalid permutation {invalid_permutation}")
+
+    print(
+        "XOR displacement effective-normalization floor: "
+        f"{checked_odd_moduli} odd base-2 moduli satisfy T >= (N+1)/2; "
+        f"{checked_mersenne_rotations} rotations satisfy T=2^(n-gcd(n,k)); "
+        f"{checked_mersenne_reflections} reflections have T=2; "
+        f"{checked_low_dispersion_members} low-dispersion family members match every branch formula and order"
+    )
+
+
 def _verify() -> None:
+    _verify_xor_displacement_profiles()
     cases = (
         (15, 2, "auto"),
         (15, 4, "auto"),
