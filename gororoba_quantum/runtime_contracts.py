@@ -1495,7 +1495,7 @@ def _verify_packing_equivalence() -> None:
         (0.400, 0.500, 4096, "packed_degradation_detected", "more than three sigma below"),
         (0.480, 0.500, 1024, "difference_not_resolved", "the run detected no difference"),
         (0.000, 1.000, 8, "insufficient_shots", "unavailable"),
-        (0.480, 0.500, 512, "insufficient_shots", "the run detected no difference"),
+        (0.480, 0.500, 63, "insufficient_shots", "the run detected no difference"),
     ]
     for packed, alone, shots, verdict, resolution in cases:
         dists = {"primary": [np.array([1 - packed, packed])], "primary_isolated": [np.array([1 - alone, alone])]}

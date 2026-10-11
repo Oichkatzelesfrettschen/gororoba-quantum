@@ -135,16 +135,18 @@ def interval(values: Sequence[float], shots: int, bernoulli: bool) -> dict[str, 
 # Preregistered absolute equivalence margin on a packed-minus-reference score
 # difference; the TOST reads a 90 percent interval against it.
 EQUIVALENCE_MARGIN = 0.03
-# Shots per arm below which no inferential verdict is issued. The hybrid score
-# interval is approximate: exact enumeration of two equal Bernoulli arms
-# (false_detection_rate) puts the probability that the 95 percent interval
-# excludes zero at 0.0600 for 32 shots, 0.0555 for 64, 0.0525 for 128, 0.0520
-# for 256, 0.0513 for 512, 0.0501 for 1024, and 0.0505 for 4096, each the
-# maximum over true rates 0.02 to 0.98; the floor is the first power of two
-# at which that maximum rounds to the nominal 0.05, and the self-test
-# enumerates it.
-EQUIVALENCE_MIN_SHOTS = 1024
-EQUIVALENCE_FLOOR_FALSE_DETECTION = 0.0502
+# Shots per arm below which no inferential verdict is issued. The difference
+# interval is Newcombe's continuity-corrected hybrid score interval (method
+# 11): exact enumeration of two equal Bernoulli arms (false_detection_rate)
+# over true rates 0.005 to 0.995 in steps of 0.005 puts the probability that
+# its 95 percent interval excludes zero at 0.0416 for 64 shots, 0.0420 for
+# 128, 0.0466 for 256, 0.0472 for 512, 0.0482 for 1024, and 0.0488 for 4096
+# (step 0.01), below the nominal 0.05 at every enumerated size; the
+# uncorrected interval (method 10) exceeds it at every one of those sizes,
+# 0.0555 at 64 down to 0.0506 at 4096. The floor is the smallest enumerated
+# size, and the self-test enumerates the floor and 1024.
+EQUIVALENCE_MIN_SHOTS = 64
+EQUIVALENCE_NOMINAL_FALSE_DETECTION = 0.05
 
 
 def difference_interval(
@@ -159,19 +161,21 @@ def difference_interval(
     """Interval on packed - reference, two scores each measured over shots shots.
 
     Both scores are means of per-shot weights in [0, 1]. The interval is
-    Newcombe's hybrid score interval built from the two Wilson intervals
-    (Newcombe 1998, method 10). For a Bernoulli score (every weight 0 or 1) it
-    is the standard proportion interval. For any other [0, 1]-bounded score
-    the Bhatia-Davis inequality bounds the per-shot variance by mean (1 -
-    mean), so the same interval is conservative: it never shrinks to zero
-    width when the observed shots happen to share one score, as a plug-in
-    normal interval does, and it stays inside [-1, 1]. The plug-in variances
-    are retained by the caller for the z diagnostic only.
+    Newcombe's hybrid score interval built from the two continuity-corrected
+    Wilson intervals (Newcombe 1998, method 11), whose false-detection
+    probability stays below nominal at every enumerated size (see
+    EQUIVALENCE_MIN_SHOTS). For a Bernoulli score (every weight 0 or 1) it is
+    a proportion interval. For any other [0, 1]-bounded score the
+    Bhatia-Davis inequality bounds the per-shot variance by mean (1 - mean),
+    so the same interval is conservative: it never shrinks to zero width when
+    the observed shots happen to share one score, as a plug-in normal
+    interval does, and it stays inside [-1, 1]. The plug-in variances are
+    retained by the caller for the z diagnostic only.
     """
     del packed_variance, reference_variance, bernoulli
     difference = packed - reference
-    packed_low, packed_high = _wilson(packed, shots, confidence)
-    reference_low, reference_high = _wilson(reference, shots, confidence)
+    packed_low, packed_high = _wilson_continuity_corrected(packed, shots, confidence)
+    reference_low, reference_high = _wilson_continuity_corrected(reference, shots, confidence)
     return (
         difference - math.sqrt((packed - packed_low) ** 2 + (reference_high - reference) ** 2),
         difference + math.sqrt((packed_high - packed) ** 2 + (reference - reference_low) ** 2),
@@ -230,7 +234,8 @@ def false_detection_rate(shots: int, rate: float, confidence: float = 0.95) -> f
     """Probability that the difference interval excludes zero for two equal Bernoulli arms at rate.
 
     Exact enumeration over the (shots + 1)^2 outcome pairs; the interval is
-    the same Newcombe hybrid score interval difference_interval uses.
+    the same continuity-corrected hybrid score interval difference_interval
+    uses.
     """
     counts = np.arange(shots + 1)
     pmf = stats.binom.pmf(counts, shots, rate)
@@ -238,13 +243,32 @@ def false_detection_rate(shots: int, rate: float, confidence: float = 0.95) -> f
     low = np.empty(shots + 1)
     high = np.empty(shots + 1)
     for index, value in enumerate(observed):
-        low[index], high[index] = _wilson(float(value), shots, confidence)
+        low[index], high[index] = _wilson_continuity_corrected(float(value), shots, confidence)
     first, second = observed[:, None], observed[None, :]
     difference = first - second
     lower = difference - np.sqrt((first - low[:, None]) ** 2 + (high[None, :] - second) ** 2)
     upper = difference + np.sqrt((high[:, None] - first) ** 2 + (second - low[None, :]) ** 2)
     excluded = (upper < 0) | (lower > 0)
     return float((pmf[:, None] * pmf[None, :] * excluded).sum())
+
+
+def _wilson_continuity_corrected(rate: float, trials: int, confidence: float) -> tuple[float, float]:
+    """Wilson score interval with continuity correction (Newcombe 1998, method 4), clipped to [0, 1]."""
+    z = float(stats.norm.ppf(0.5 + confidence / 2))
+    n = trials
+    if rate <= 0:
+        low = 0.0
+    else:
+        low = (2 * n * rate + z * z - 1 - z * math.sqrt(z * z - 2 - 1 / n + 4 * rate * (n * (1 - rate) + 1))) / (
+            2 * (n + z * z)
+        )
+    if rate >= 1:
+        high = 1.0
+    else:
+        high = (2 * n * rate + z * z + 1 + z * math.sqrt(z * z + 2 - 1 / n + 4 * rate * (n * (1 - rate) - 1))) / (
+            2 * (n + z * z)
+        )
+    return max(low, 0.0), min(high, 1.0)
 
 
 def _wilson(rate: float, trials: int, confidence: float = CONFIDENCE) -> tuple[float, float]:
@@ -269,12 +293,17 @@ def _verify_equivalence() -> None:
     coarse = equivalence(0.49, 0.25, 0.50, 0.25, 1024, True)
     if coarse["verdict"] != "difference_not_resolved" or coarse["within_margin"] or coarse["below_zero_95"]:
         raise RuntimeError(f"1024 shots at a 0.01 difference read {coarse}")
-    for arm_shots, bound in ((32, 0.0600), (EQUIVALENCE_MIN_SHOTS, EQUIVALENCE_FLOOR_FALSE_DETECTION)):
-        worst = max(false_detection_rate(arm_shots, rate) for rate in (0.05, 0.3, 0.5, 0.7, 0.95))
-        if not worst <= bound:
-            raise RuntimeError(f"false detection at {arm_shots} shots is {worst:.4f}, above the recorded {bound}")
-    if false_detection_rate(32, 0.5) <= 0.055:
-        raise RuntimeError("32 shots per arm no longer shows the enumerated excess over nominal")
+    # The error bound is enumerated, not assumed: at the floor over the fine
+    # grid and at 1024 over a coarser one, the false-detection probability of
+    # two equal arms stays below nominal.
+    fine = [round(0.005 * step, 3) for step in range(1, 200)]
+    for arm_shots, grid in ((EQUIVALENCE_MIN_SHOTS, fine), (1024, fine[::10])):
+        worst = max(false_detection_rate(arm_shots, rate) for rate in grid)
+        if not worst <= EQUIVALENCE_NOMINAL_FALSE_DETECTION:
+            raise RuntimeError(f"false detection at {arm_shots} shots is {worst:.4f}, above nominal")
+    below = equivalence(0.0, 0.0, 1.0, 0.0, EQUIVALENCE_MIN_SHOTS - 1, True)
+    if below["verdict"] != "insufficient_shots":
+        raise RuntimeError(f"one shot below the floor issues a verdict: {below}")
     small = equivalence(0.49, 0.25, 0.50, 0.25, 65536, True)
     if small["verdict"] != "equivalent_within_0.03" or not small["below_zero_95"]:
         raise RuntimeError(f"a resolved 0.01 drop inside the margin reads {small}")
