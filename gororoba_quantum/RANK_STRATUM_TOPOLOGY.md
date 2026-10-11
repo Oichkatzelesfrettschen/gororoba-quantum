@@ -20,6 +20,17 @@ the nonempty positive-nullity loci have `k=4,8,12,16`. The published
 all-dimensional bound and occurrence theorem establish the possible values;
 the formulas below describe membership for arbitrary real coefficients.
 
+The maximal element base already has a published classification. Corollary
+14.7 of Biss-Dugger-Isaksen gives `D_(5,16)` as two disjoint copies of
+`V_2(R^7)`. More generally, Theorem 15.7 identifies `D_(n,M_n)` with
+`2^(n-4)` copies of `V_2(R^7)`, where `M_n=2^n-4*n+4` and `n>=4`.
+These statements concern unit elements. The normalized partner fiber over
+`D_(5,16)` is `S15`, and over `D_(n,M_n)` it is `S^(M_n-1)`; base and
+fiber homeomorphism types alone do not determine the total sphere bundle or
+its attachments to lower-nullity loci. The remaining dimension-32 base
+geometry therefore focuses on `D_(5,4)`, `D_(5,8)`, and `D_(5,12)`, while
+retaining the known maximal base.
+
 The global incidence equations use the signed basis product
 `e_i*e_j=sign(d,i,j)*e_(i XOR j)`. For each `ell=0,...,d-1`, define
 
@@ -95,7 +106,7 @@ E_j(x) = (1/j) * sum_(i=1)^j (-1)^(i-1) E_(j-i)(x) q_i(x).
 Each `E_j` is homogeneous of degree `2*j`. Newton's identities identify
 `E_j` with the elementary symmetric function of degree `j` in the `beta`
 values. Consequently, `E_j>=0` for every real coefficient vector. If exactly
-`s` of those values are positive, then `E_s>0` and `E_(s+1)=0`. Conversely,
+`s<m` of those values are positive, then `E_s>0` and `E_(s+1)=0`. Conversely,
 those two conditions imply exactly `s` positive values: each elementary
 symmetric sum contains nonnegative terms, and any `s+1` positive entries would
 make `E_(s+1)>0`. The removed `N` block is positive. Therefore, for `1<=k<=m`,
@@ -375,6 +386,7 @@ that dimension.
 Retained evidence:
 
 - [Rank-polynomial and incidence audit](../results/hw_estimate/rank_polynomials.json).
+- [Dimension-64 rank-polynomial audit](../results/hw_estimate/rank_polynomials_dimension64.json).
 - [Kernel-chart audit](../results/hw_estimate/rank_charts.json).
 - [Polynomial attachment audit](../results/hw_estimate/rank_attachments.json).
 - [Integral chain-homology audit](../results/hw_estimate/integral_homology.json).
@@ -398,11 +410,13 @@ the generic homology routine certifies only the supplied chain complex.
    identities, exceptional ranks, constant common kernel, normalization, and
    endpoint inclusion certificates. Verify the quotient model and its cellular
    homology. Retain polynomial certificates rather than sampled plots alone.
-3. **Describe every base component in dimension 32.** Starting from the
-   exhaustive rank predicates, compute a certified semialgebraic decomposition
-   and its connected components. Record a covering argument for every real
-   coefficient vector and exact admission for boundaries. A list of successful
-   numerical charts does not meet this condition.
+3. **Describe the remaining base components in dimension 32.** Preserve the
+   published two-component `V_2(R^7)` description of `D_(5,16)`. Starting from
+   the exhaustive rank predicates, compute certified semialgebraic
+   decompositions and connected components for `D_(5,4)`, `D_(5,8)`, and
+   `D_(5,12)`. Record a covering argument for every real coefficient vector
+   and exact admission for boundaries. A list of successful numerical charts
+   does not meet this condition.
 4. **Resolve local regularity and links.** Prove which pieces are smooth using
    independent local equations. Construct a suitable stratification, dimensions,
    normal links, and componentwise closure incidences. Keep rank loci and smooth

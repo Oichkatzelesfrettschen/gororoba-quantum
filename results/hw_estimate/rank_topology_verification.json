@@ -1,0 +1,147 @@
+{
+  "certification_boundary": "The general arguments are written mathematical proofs using cited theorems; executable certificates verify their stated exact algebraic identities, rather than a proof-assistant formalization of every theorem.",
+  "documentation_sha256": {
+    "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md": "7247a9bf1d1ac6d1376ff09f068cbed1250ce0a8be4a5ad7ac5728c1a419aa5c",
+    "literature/notes/cayley_dickson_rank_topology_sources.md": "bd478146132ddade390396b5b330f3a08091b2ebae83d9bacab1d23644756a30"
+  },
+  "environment": {
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONWARNINGS": "error"
+  },
+  "executable_source_hashes_before_after_equal": true,
+  "gates": {
+    "command_source": "AGENTS.md first shell block, run from repository root",
+    "exit_code": 0,
+    "log_sha256": "c146a104e359585faa75140893c974fe3f29e17d2aecd526e00132ddf5a11893",
+    "mypy": "34 source files passed",
+    "python_call_graph": "passed",
+    "repository_regressions": "all commands in the recorded gate passed",
+    "ruff": "passed",
+    "ruff_format": "34 files passed",
+    "warning_policy": "error"
+  },
+  "outputs": {
+    "integral_homology": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error integral_homology.py",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error integral_homology.py"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/integral_homology.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "930e851106b907071813094307272f0c06bf8fc2c522db2e7d9f224f52b832e9"
+    },
+    "rank_attachments": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error rank_attachments.py",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error rank_attachments.py"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/rank_attachments.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "459e7be97166b920e7be165cf8630de11385b60b8cabc1c32f6d2e6762be6af1"
+    },
+    "rank_charts": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error rank_charts.py",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error rank_charts.py"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/rank_charts.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "1e24c2429ef1b627f9e1dce76f8c94992806a08c3599c7f933c33d0bbe44ae64"
+    },
+    "rank_path_topology": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error rank_path_topology.py",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error rank_path_topology.py"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/rank_path_topology.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "6f38b79f2786ce67a6b0463e1c400c0e6d72391955de06d88bf30ccc617663d6"
+    },
+    "rank_path_topology_embedded": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error rank_path_topology.py --stage 6",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error rank_path_topology.py --stage 6"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/rank_path_topology_embedded.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "4c6605ce0bb469f3fe28ff20a587d57c3e0ddf445f38b8830b0985eff6c8d96f"
+    },
+    "rank_polynomials": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error rank_polynomials.py",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error rank_polynomials.py"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/rank_polynomials.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "a81bf9d8b2b8e9f63106a9b559ee8fbd2c61dcf1c65c461a33944d808817bbf2"
+    },
+    "rank_polynomials_dimension64": {
+      "commands": [
+        "GOROROBA_WORKERS=1 \"$PYTHON\" -W error rank_polynomials.py --max-dimension 64",
+        "GOROROBA_WORKERS=4 \"$PYTHON\" -W error rank_polynomials.py --max-dimension 64"
+      ],
+      "exit_codes": [
+        0,
+        0
+      ],
+      "path": "results/hw_estimate/rank_polynomials_dimension64.json",
+      "serial_parallel_bytes_equal": true,
+      "sha256": "8fefd54172c7e00bfb96772635110a92cf19fcc0e6ef96e47920ede18860d923"
+    }
+  },
+  "qpu_executed": false,
+  "review": {
+    "github_review": "PR head-bound review is maintained by GitHub separately from this source-bound audit",
+    "independent_implementation_review": "passed after retained certificate entry-domain repair",
+    "independent_mathematical_review": "passed for the stated restricted domain",
+    "integration_review": "gate, dependency, call-graph, and artifact consistency checks passed"
+  },
+  "schema": "cayley-dickson-rank-topology-verification-v1",
+  "scope": "Exact rational and polynomial identities, kernel atlas fixtures, and a restricted incidence topology theorem. Complete Z5 and unrestricted all-dimensional topology remain unestablished.",
+  "source_ledger": "literature/notes/cayley_dickson_rank_topology_sources.md",
+  "source_sha256": {
+    "AGENTS.md": "615c4c29900e3e9a1447d786324ac699af02b4385672847a0c528542187f24ec",
+    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+    "gororoba_quantum/integral_homology.py": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+    "gororoba_quantum/rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+    "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+    "requirements.txt": "1c0baf346b644a5ba6e10d588b847c43d5775a90b1b28e797fd85660c7a793e0",
+    "scripts/python_call_graph.py": "37d7caaea9a3d316a7f52b27fb16fc378d768cdb8dffa9fe8f77a839f649633a"
+  },
+  "versions": {
+    "gmpy2": "2.3.2",
+    "numpy": "2.5.3",
+    "python": "3.14.7",
+    "sympy": "1.14.0"
+  },
+  "working_directory": "gororoba_quantum"
+}

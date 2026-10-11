@@ -1,0 +1,458 @@
+{
+  "changed_basis_torsion_fixture": {
+    "boundary_squared_zero": true,
+    "coefficient_ring": "Z",
+    "homology": [
+      {
+        "boundary": {
+          "rows": [],
+          "shape": [
+            0,
+            1
+          ]
+        },
+        "boundary_left_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "boundary_right_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "boundary_smith": {
+          "rows": [],
+          "shape": [
+            0,
+            1
+          ]
+        },
+        "chain_rank": 1,
+        "degree": 0,
+        "free_rank": 0,
+        "image_left_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "image_rank": 1,
+        "image_right_unimodular": {
+          "rows": [
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "shape": [
+            2,
+            2
+          ]
+        },
+        "image_smith": {
+          "rows": [
+            [
+              1,
+              0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "kernel_rank": 1,
+        "next_boundary_in_kernel_basis": {
+          "rows": [
+            [
+              1,
+              -2
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "torsion_invariant_factors": []
+      },
+      {
+        "boundary": {
+          "rows": [
+            [
+              1,
+              -2
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "boundary_left_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "boundary_right_unimodular": {
+          "rows": [
+            [
+              1,
+              2
+            ],
+            [
+              0,
+              1
+            ]
+          ],
+          "shape": [
+            2,
+            2
+          ]
+        },
+        "boundary_smith": {
+          "rows": [
+            [
+              1,
+              0
+            ]
+          ],
+          "shape": [
+            1,
+            2
+          ]
+        },
+        "chain_rank": 2,
+        "degree": 1,
+        "free_rank": 0,
+        "image_left_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "image_rank": 1,
+        "image_right_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "image_smith": {
+          "rows": [
+            [
+              6
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "kernel_rank": 1,
+        "next_boundary_in_kernel_basis": {
+          "rows": [
+            [
+              6
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "torsion_invariant_factors": [
+          6
+        ]
+      },
+      {
+        "boundary": {
+          "rows": [
+            [
+              12
+            ],
+            [
+              6
+            ]
+          ],
+          "shape": [
+            2,
+            1
+          ]
+        },
+        "boundary_left_unimodular": {
+          "rows": [
+            [
+              0,
+              1
+            ],
+            [
+              1,
+              -2
+            ]
+          ],
+          "shape": [
+            2,
+            2
+          ]
+        },
+        "boundary_right_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "boundary_smith": {
+          "rows": [
+            [
+              6
+            ],
+            [
+              0
+            ]
+          ],
+          "shape": [
+            2,
+            1
+          ]
+        },
+        "chain_rank": 1,
+        "degree": 2,
+        "free_rank": 0,
+        "image_left_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "image_rank": 0,
+        "image_right_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "image_smith": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "kernel_rank": 0,
+        "next_boundary_in_kernel_basis": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "torsion_invariant_factors": []
+      }
+    ]
+  },
+  "qpu_executed": false,
+  "rejected_invalid_chain_complexes": 5,
+  "schema": "integral-chain-homology-audit-v1",
+  "scope": "Exact finite chain complexes; topological identification requires an external geometric certificate.",
+  "sphere_fixture": {
+    "boundary_squared_zero": true,
+    "coefficient_ring": "Z",
+    "homology": [
+      {
+        "boundary": {
+          "rows": [],
+          "shape": [
+            0,
+            1
+          ]
+        },
+        "boundary_left_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "boundary_right_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "boundary_smith": {
+          "rows": [],
+          "shape": [
+            0,
+            1
+          ]
+        },
+        "chain_rank": 1,
+        "degree": 0,
+        "free_rank": 1,
+        "image_left_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "image_rank": 0,
+        "image_right_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "image_smith": {
+          "rows": [
+            []
+          ],
+          "shape": [
+            1,
+            0
+          ]
+        },
+        "kernel_rank": 1,
+        "next_boundary_in_kernel_basis": {
+          "rows": [
+            []
+          ],
+          "shape": [
+            1,
+            0
+          ]
+        },
+        "torsion_invariant_factors": []
+      },
+      {
+        "boundary": {
+          "rows": [],
+          "shape": [
+            0,
+            1
+          ]
+        },
+        "boundary_left_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "boundary_right_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "boundary_smith": {
+          "rows": [],
+          "shape": [
+            0,
+            1
+          ]
+        },
+        "chain_rank": 1,
+        "degree": 3,
+        "free_rank": 1,
+        "image_left_unimodular": {
+          "rows": [
+            [
+              1
+            ]
+          ],
+          "shape": [
+            1,
+            1
+          ]
+        },
+        "image_rank": 0,
+        "image_right_unimodular": {
+          "rows": [],
+          "shape": [
+            0,
+            0
+          ]
+        },
+        "image_smith": {
+          "rows": [
+            []
+          ],
+          "shape": [
+            1,
+            0
+          ]
+        },
+        "kernel_rank": 1,
+        "next_boundary_in_kernel_basis": {
+          "rows": [
+            []
+          ],
+          "shape": [
+            1,
+            0
+          ]
+        },
+        "torsion_invariant_factors": []
+      }
+    ]
+  },
+  "sympy_version": "1.14.0"
+}

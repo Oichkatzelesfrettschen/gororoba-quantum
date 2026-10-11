@@ -21,7 +21,9 @@ The directory contains compiler and local-simulation records. Every record sets
   attributes the general theorems and distinguishes their domains from the
   finite implementation checks.
 - `rank_polynomials.json` and `rank_charts.json` retain exact rank-predicate,
-  incidence-equation, pivot-chart, and transition checks. `rank_attachments.json`
+  incidence-equation, pivot-chart, and transition checks.
+  `rank_polynomials_dimension64.json` extends the exact finite rank fixtures
+  through dimension 64. `rank_attachments.json`
   certifies a rank-changing polynomial path over every real parameter.
   `integral_homology.json` validates integral Smith certificates, including torsion.
   `rank_path_topology.json` and `rank_path_topology_embedded.json` record the

@@ -17,6 +17,10 @@ from collections.abc import Sequence
 from typing import Any
 
 import sympy as sp
+
+import parallel
+from cd_core import cd_sign
+from integral_homology import integral_homology, matrix_record
 from rank_attachments import (
     audit_rank_attachments,
     common_kernel_basis,
@@ -24,10 +28,6 @@ from rank_attachments import (
     path_coefficients,
     path_matrix,
 )
-
-import parallel
-from cd_core import cd_sign
-from integral_homology import integral_homology, matrix_record
 
 
 def _require(condition: bool, message: str) -> None:
