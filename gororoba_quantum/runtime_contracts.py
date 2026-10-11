@@ -1936,14 +1936,14 @@ def _verify_required_placement_backtracking() -> None:
         live_run_module._replica_candidates = counted_candidates
         placement_cache: dict[tuple[int, float], Any] = {}
         for _ in range(2):
-            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY, placement_cache)
+            live_run_module.allocate_fusion_replicas(choices, ADJACENT_REPLICA_POLICY, placement_cache)
         if candidate_calls != len(choices):
             raise RuntimeError(f"retried joint placement recomputed candidates {candidate_calls} times")
         live_run_module._replica_candidates = path_candidates
 
         candidate_qubits[0] = [1, 0]
         try:
-            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+            live_run_module.allocate_fusion_replicas(choices, ADJACENT_REPLICA_POLICY)
         except LiveRunError as error:
             if "cannot satisfy 2 required joint-placement rounds" not in str(error):
                 raise RuntimeError(f"infeasible required replica set reports {error}") from error
