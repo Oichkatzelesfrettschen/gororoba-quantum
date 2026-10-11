@@ -244,8 +244,26 @@ def _verify_factor_path(simulator: AerSimulator) -> None:
     if null_schedule != (6, 2, 2, 1, 1):
         raise RuntimeError(f"N=15 identity null schedule is {null_schedule}")
     generic_plan = order_finding_plan(21, 2, 10)
-    if generic_plan.quantum_qubits != 11 or generic_plan.unique_multipliers != (2, 4, 16):
+    if generic_plan.quantum_qubits != 7 or generic_plan.unique_multipliers != (2, 4, 16):
         raise RuntimeError(f"unexpected N=21 resource plan {generic_plan}")
+    generic_strategies = {resource.strategy for resource in generic_plan.rounds if resource.strategy != "identity"}
+    if generic_strategies != {"cycle_transpositions_1_clean"}:
+        raise RuntimeError(f"unexpected N=21 synthesis strategies {sorted(generic_strategies)}")
+    generic_circuit = factor_order_finding(21, 2, 10)
+    generic_operations = generic_circuit.count_ops()
+    expected_synthesis_counts = {"rccx": 2_694, "ccx": 449}
+    observed_synthesis_counts = {
+        operation: generic_operations.get(operation, 0) for operation in expected_synthesis_counts
+    }
+    opaque_mcx_operations = {
+        name: count for name, count in generic_operations.items() if name == "mcx" or name.startswith("mcx_o")
+    }
+    if observed_synthesis_counts != expected_synthesis_counts or opaque_mcx_operations:
+        raise RuntimeError(
+            f"N=21 one-clean source synthesis is {dict(generic_operations)}, "
+            f"expected {expected_synthesis_counts} and zero opaque MCX gates; "
+            f"opaque operations are {opaque_mcx_operations}"
+        )
 
 
 def _verify() -> None:

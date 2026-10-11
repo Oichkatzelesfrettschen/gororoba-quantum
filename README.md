@@ -17,10 +17,13 @@ observables.
 - `gororoba_quantum/boolean_anf.py` and `modular_arithmetic.py` -- exact Boolean
   coefficient extraction, bounded Reed-Muller interpolation, quadratic polar
   rank, and controlled modular-permutation synthesis through Mersenne rotations,
-  ANF networks, or scratch-free cycle transpositions.
+  ANF networks, scratch-free cycle transpositions, or explicit one-clean-ancilla
+  cycle transpositions.
 - `gororoba_quantum/factoring.py`, `order_finding.py`, and `hybrid_shor.py` --
   classical admission and decoding around faithful `|1>` semiclassical order
   finding, plus a credential-free plan, simulation, and decode CLI.
+- `gororoba_quantum/compile_evidence.py` -- reproducible multi-seed FakeFez
+  compilation with pass-level synthesis, routing, layout, and topology capture.
 - `gororoba_quantum/FACTORING_NOTES.md` -- what Cayley-Dickson structure can and
   cannot contribute to Shor's algorithm, against the RSA-2048 resource floor.
 - `gororoba_quantum/HYBRID_SHOR.md` -- host/QPU boundary, coefficient
@@ -59,8 +62,8 @@ observables.
   combines live capability admission and submission recovery with packed
   replicas, variance, crosstalk, and statistical admission. Earlier schemas
   remain historical evidence under `results/live/README.md`.
-- `results/hw_estimate/` -- the fixed ibm_fez compile behind the design
-  sections' "Measured" figures.
+- `results/hw_estimate/` -- fixed ibm_fez design compiles and the replayable
+  FakeFez modular-synthesis crossover capture.
 
 ## Designs
 
@@ -86,6 +89,8 @@ cd gororoba_quantum
 "$PYTHON" factoring.py
 "$PYTHON" modular_arithmetic.py
 "$PYTHON" order_finding.py
+"$PYTHON" compile_evidence.py --seeds 20261010 \
+  --candidate one_clean_cycle >/dev/null
 "$PYTHON" runtime_contracts.py
 "$PYTHON" hybrid_shor.py plan 15
 "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
