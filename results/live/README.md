@@ -4,6 +4,18 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+- **Schema 6 records.** The
+  `live-target-cross-group-fused-pubs-scheduler-usage-v1` contract keeps the
+  schema-5 fused-PUB surface and adds per-PUB scheduler timing and per-job
+  usage. Each PUB manifest records `target_gate_lower_bound_dt` and the
+  feed-forward structure counts; every job requests
+  `execution.scheduler_timing`. Collection writes one timing record per PUB
+  (`timing_status`, window, `scheduled_circuit_duration_dt`,
+  `scheduler_residual_dt`, reason) and one usage record per job (`usage_status`,
+  `qpu_charge_time_seconds` from `job.usage(partial=False)`,
+  `pub_shots_per_qpu_second`) in the collection header; group records reference
+  their job by id. A PUB without an execution window keeps its counts and
+  loses only its calibration-bound views.
 - **Schema 5 records.** The `live-target-cross-group-fused-pubs-v1` contract
   jointly allocates same-backend, same-kind replica pools and archives the
   exact fused Runtime PUBs. Ordered manifests map each PUB to namespaced
@@ -59,6 +71,81 @@ unestablished. Record SHA-256 is
 `813be4a7e9e654c5a0043c596f900d4f3537c010d5bc9a863037f77163f4ae50`; QPY
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
+
+`2026-10-11T093445.248590Z` requalifies schema 6 after collection moved the residual bound
+to the execution-time Target and began reading usage before results. Clean
+source commit `878167f` (sources_modified=false) carries experiment
+digest
+`47f6564d67cfd6f72fb89fcdef77f7d3454c629e7d37d22a3b9e132e62b2d004`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`54c1705b70e1b7884cff4ebfc5610e3af090df0303f92689e8b67d0eb521fb23`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
+`2026-10-11T114048.080610Z` requalifies schema 6 after collection began polling a finished
+job's usage until the service's calculation completes. Clean source commit
+`106e59b` (sources_modified=false) carries experiment digest
+`ce8bc72d890ce3aa57b48f5f12aabd3295d15fe6e70b653923a083d9e4a37ec7`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`d18c0ef542b10260bc9affc275c9a4eae6a963a9719fa85a2b3881a2162792af`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T111237.410777Z` requalifies schema 6 after the joint-placement search gained
+its attempt bound and per-candidate entry bases, and after collection began
+re-reading usage for a job that fails while collection waits. Clean source
+commit `76eb303` (sources_modified=false) carries experiment digest
+`e38510b4a6d3a4fe87b7cd0fdc6473143e34fe617b5e8acbdca3e668af6f9a05`.
+The search accepted combination 1 of a frontier of
+4782969. The record stays `planned` and sends zero QPU jobs.
+Record SHA-256 is
+`b7223494e0b11a7672a0949007c04952e0156ab19b7d6d7da028ae5d98051aed`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T102037.475268Z` requalifies schema 6 after collection moved its checkpoints to
+collect.partial.json, confined throughput to DONE jobs, and scoped the packing
+comparison. Clean source commit `37506e4` (sources_modified=false) carries
+experiment digest
+`7b0de60e5005b33c7e0a16e87a4f459e7b42e19330fe650f5f6368cddca8ac62`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`5f8ec0bf35d0f30ee35db204203f1b84df764da9c9dcc20de863bd9e4075a270`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T100526.684788Z` requalifies schema 6 after packing_schedule moved to scheduler
+residuals gated on a complete timing status. Clean source commit `9756ec3`
+(sources_modified=false) carries experiment digest
+`20bd45a5149145e8164bb382dd061b03c66e54dd21d3a4ff275f74d1a31fa00a`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`d7400b165b2089d5081167bf60d56e6638c9fd8e11786f8f00e6ce3ffaab4f92`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T095108.705673Z` requalifies schema 6 after collection began checkpointing
+each job's usage and refreshing it once a running job's result returns.
+Clean source commit `abb481e` (sources_modified=false) carries
+experiment digest
+`33a529a3a2980f7a148ab71db4f0c5a16b100ce972eccac3efca9197850548c3`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`4836ac0086cf84e5f2cff1837c9d4423ac2af00833cfa3c82d3adbda7663415a`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
+`2026-10-11T090500.749224Z` is the first schema-6 record, contract
+`live-target-cross-group-fused-pubs-scheduler-usage-v1`, from clean source
+commit `51a55ae` (sources_modified=false) with experiment digest
+`5543c0f06d36339949cc8fdd76841e7d307c03fc28e3c21fb3fbcd50506063e4`.
+Every PUB manifest now carries `target_gate_lower_bound_dt` and the
+feed-forward structure counts; the 6 dynamic PUBs read
+(parallel streams, sequential stages, control-flow operations) =
+{'ibm_kingston_dynamic_pub_01': (9, 1, 9), 'ibm_kingston_dynamic_pub_02': (2, 1, 2), 'ibm_kingston_dynamic_pub_03': (9, 1, 9), 'ibm_kingston_dynamic_pub_04': (3, 1, 3), 'ibm_kingston_dynamic_pub_05': (3, 1, 3), 'ibm_kingston_dynamic_pub_06': (3, 1, 3)}
+with Target lower bounds {'ibm_kingston_dynamic_pub_01': 3334, 'ibm_kingston_dynamic_pub_02': 3295, 'ibm_kingston_dynamic_pub_03': 3334, 'ibm_kingston_dynamic_pub_04': 3334, 'ibm_kingston_dynamic_pub_05': 3334, 'ibm_kingston_dynamic_pub_06': 1659} dt. The record stays
+`planned`, sends zero QPU jobs, and carries no timing or usage records, which
+only a collected job supplies. Record SHA-256 is
+`6c0d04b9cc4e7417ccd872af39ebe8935a3d5b3c301b0870df251d7df0607472`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
 `2026-10-11T095541.923847Z` requalifies the affine challenger branch after it took the
 process-pool main. Clean source commit `07f197b` (sources_modified=false)
@@ -189,7 +276,8 @@ The two historical schema-3 contracts require shape-aware classification:
 ```sh
 for record_path in results/live/*/record.json; do
     jq -r --arg path "$record_path" '
-      if .schema_version == 5 then "schema5-fused-pubs"
+      if .schema_version == 6 then "schema6-scheduler-usage"
+      elif .schema_version == 5 then "schema5-fused-pubs"
       elif .schema_version == 4 then "schema4-combined"
       elif .schema_version == 3 and has("system_inventory")
         then "schema3-capability"

@@ -13,6 +13,7 @@ import os
 import tempfile
 from contextlib import redirect_stdout
 from datetime import UTC, datetime, timedelta
+from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
@@ -23,10 +24,20 @@ from qiskit.circuit import Clbit
 from qiskit.circuit.controlflow import IfElseOp
 from qiskit.circuit.library import RZGate
 from qiskit.primitives import StatevectorSampler
-from qiskit.primitives.containers import BitArray, DataBin, PrimitiveResult, SamplerPubResult
+from qiskit.primitives.containers import DataBin, PrimitiveResult, SamplerPubResult
 from qiskit.transpiler import Target
 from qiskit_ibm_runtime.executor_sampler import Sampler
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
+from qiskit_ibm_runtime.fake_provider import local_service as runtime_local_service
+from qiskit_ibm_runtime.results.quantum_program import (
+    ChunkPart,
+    ChunkSpan,
+    ItemMetadata,
+    Metadata,
+    QuantumProgramItemResult,
+    QuantumProgramResult,
+    SchedulerTiming,
+)
 
 import hybrid_shor  # noqa: F401 - proves the digest ignores module load order
 import live_run as live_run_module
@@ -45,7 +56,10 @@ from live_run import (
     Snapshot,
     _archived_entries,
     _compile,
+    _control_flow_count,
     _distribution,
+    _feed_forward_stages,
+    _has_feed_forward,
     _is_dynamic,
     _ops,
     _physical,
@@ -68,11 +82,15 @@ from live_run import (
     experiment_digest,
     fusion_summary,
     group_requirements,
+    job_usage_record,
     mirror_isa,
+    packing_schedule,
+    pub_timing,
     pub_windows,
     reconcile_attempted_jobs,
     replica_floor,
     routing_admission_violations,
+    scheduled_duration,
     select,
     select_candidates,
     select_fusion_choices,
@@ -184,21 +202,75 @@ class _ProbeJob:
 
 
 class _ProbeExecutionSpan:
+    """The documented execution_spans shape: start, stop, and the PUB indices a span holds."""
+
     def __init__(self, start: datetime, stop: datetime, pub_idxs: list[int]):
         self.start = start
         self.stop = stop
         self.pub_idxs = pub_idxs
 
 
+def _executor_result(
+    backend: Any, circuits: list[QuantumCircuit], shots: int, chunks: list[ChunkSpan], durations: list[int]
+) -> PrimitiveResult[SamplerPubResult]:
+    """An all-zero Sampler result decoded by the executor Sampler's own post-processor.
+
+    The local service's program runner is replaced by one that returns zero
+    bits, the given chunk timing, and per-item scheduler durations, so the
+    result metadata takes exactly the shape sampler_v2_post_processor_v0_1
+    gives a hardware job.
+    """
+
+    def execute(backend: Any, program: Any, options: Any) -> QuantumProgramResult:
+        del backend, options
+        items = [
+            QuantumProgramItemResult(
+                {creg.name: np.zeros((program.shots, creg.size), dtype=bool) for creg in item.circuit.cregs},
+                metadata=ItemMetadata(scheduler_timing=SchedulerTiming(timing="", circuit_duration=duration)),
+            )
+            for item, duration in zip(program.items, durations, strict=True)
+        ]
+        result = QuantumProgramResult(items, Metadata(chunk_timing=chunks), program.passthrough_data)
+        result._semantic_role = program._semantic_role
+        return result
+
+    original = runtime_local_service.run_quantum_program
+    runtime_local_service.run_quantum_program = execute
+    try:
+        sampler = Sampler(mode=backend)
+        sampler.options.execution.scheduler_timing = True
+        return sampler.run(circuits, shots=shots).result()
+    finally:
+        runtime_local_service.run_quantum_program = original
+
+
 class _ProbeResultJob:
-    def __init__(self, result: PrimitiveResult[SamplerPubResult]):
+    """A finished job whose usage metadata and canonical charge the contract chooses."""
+
+    def __init__(
+        self,
+        result: PrimitiveResult[SamplerPubResult],
+        status: str = "DONE",
+        usage: dict[str, Any] | None = None,
+        charge: Any = None,
+    ):
         self._result = result
+        self._status = status
+        self._usage = usage
+        self._charge = charge
 
     def result(self) -> PrimitiveResult[SamplerPubResult]:
         return self._result
 
+    def status(self) -> str:
+        return self._status
+
     def metrics(self) -> dict[str, Any]:
-        return {"usage": {"quantum_seconds": 0.0}}
+        return {"usage": self._usage} if self._usage is not None else {}
+
+    def usage(self, partial: bool = False) -> Any:
+        del partial
+        return self._charge
 
 
 class _CollectionProbeService(_ProbeService):
@@ -780,6 +852,62 @@ def _verify_pub_fusion_contracts() -> None:
         raise RuntimeError(f"reference-free PUB fusion metadata is {no_reference_summary}")
     static_pubs = [pub for pub in pubs if pub.kind == "static"]
     dynamic_pubs = [pub for pub in pubs if pub.kind == "dynamic"]
+    for pub in pubs:
+        streams = pub.manifest()["parallel_stream_count"]
+        expected_streams = sum(
+            len(c.entry.replicas)
+            for c in pub.components
+            if any(isinstance(instruction.operation, IfElseOp) for instruction in c.entry.replicas[0].data)
+        )
+        if streams != expected_streams:
+            raise RuntimeError(f"{pub.name}: parallel_stream_count is {streams}, expected {expected_streams}")
+    hybrid = next(choice for choice in dynamic_choices if choice.group.name == "hybrid_shor_mod15")
+    primary = next(entry for entry in hybrid.entries if not entry.reference)
+    reference = next(entry for entry in hybrid.entries if entry.reference)
+    pub_of = {c.entry.name: pub.manifest() for pub in pubs for c in pub.components}
+    executed: dict[str, dict[str, Any]] = {
+        name: {"pub": pub_of[name]["name"]} for name in (primary.name, reference.name)
+    }
+    executed[primary.name].update({"calibration": "c1", "calibration_changed_during_shots": False})
+    executed[reference.name].update({"calibration": "c1", "calibration_changed_during_shots": False})
+    timing: dict[str, dict[str, Any]] = {
+        pub_of[name]["name"]: {
+            "scheduled_circuit_duration_dt": duration,
+            "scheduler_residual_dt": residual,
+            "timing_status": "complete",
+            "parallel_stream_count": streams,
+            "groups": ["folded_qpe_mod15", "hybrid_shor_mod15"],
+        }
+        for name, duration, residual, streams in ((primary.name, 5200, 900, 9), (reference.name, 4800, 500, 2))
+    }
+    schedule = packing_schedule(hybrid.entries, executed, timing)
+    if (
+        schedule is None
+        or schedule["scope"] != "global"
+        or schedule.get("residual_difference_dt") != 400
+        or schedule["packed_parallel_stream_count"] != 9
+        or not schedule["feed_forward"]
+    ):
+        raise RuntimeError(f"packing_schedule reports {schedule}")
+    timing[pub_of[primary.name]["name"]]["groups"] = ["hybrid_shor_mod15"]
+    if packing_schedule(hybrid.entries, executed, timing)["scope"] != "single_group":  # type: ignore[index]
+        raise RuntimeError("a one-group packed PUB reports a global scope")
+    executed[reference.name]["calibration"] = "c2"
+    split = packing_schedule(hybrid.entries, executed, timing)
+    withheld_split = str(split.get("unavailable")) if split else ""
+    if split is None or "residual_difference_dt" in split or "one unchanged calibration" not in withheld_split:
+        raise RuntimeError(f"packing_schedule across calibrations reports {split}")
+    executed[reference.name]["calibration"] = "c1"
+    timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = None
+    schedule = packing_schedule(hybrid.entries, executed, timing)
+    if schedule is None or "residual_difference_dt" in schedule or "unavailable" not in schedule:
+        raise RuntimeError(f"packing_schedule without reference residual reports {schedule}")
+    timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = -50
+    timing[pub_of[reference.name]["name"]]["timing_status"] = "residual_below_target_bound"
+    schedule = packing_schedule(hybrid.entries, executed, timing)
+    withheld = str(schedule.get("unavailable")) if schedule else ""
+    if schedule is None or "residual_difference_dt" in schedule or "not complete" not in withheld:
+        raise RuntimeError(f"packing_schedule with an invalid residual reports {schedule}")
     if any(_is_dynamic(pub.circuit) for pub in static_pubs):
         raise RuntimeError("static cross-group fusion produced a dynamic PUB")
     if any(not _is_dynamic(pub.circuit) for pub in dynamic_pubs):
@@ -815,8 +943,7 @@ def _verify_pub_fusion_contracts() -> None:
     start = datetime(2026, 10, 10, tzinfo=UTC)
     executions = component_execution_records(
         shared_pub,
-        start,
-        start + timedelta(seconds=1),
+        (start, start + timedelta(seconds=1)),
         start - timedelta(minutes=5),
         False,
     )
@@ -924,6 +1051,21 @@ def _zero_replica_distributions(entry: Entry) -> list[np.ndarray]:
         distribution[0] = 1.0
         distributions.append(distribution)
     return distributions
+
+
+def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
+    """collect with the noise model replaced by all-zero replica distributions."""
+    original_noise_simulator = live_run_module.noise_simulator
+    original_simulate_entries = live_run_module.simulate_entries
+    live_run_module.noise_simulator = lambda name, target, props: object()
+    live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
+        entry.name: _zero_replica_distributions(entry) for entry in entries
+    }
+    try:
+        collect(service, run_dir)
+    finally:
+        live_run_module.noise_simulator = original_noise_simulator
+        live_run_module.simulate_entries = original_simulate_entries
 
 
 def _verify_worker_quota() -> None:
@@ -1051,66 +1193,65 @@ def _verify_fused_collection() -> None:
 
         with open(run_dir / "isa.qpy", "rb") as handle:
             archived = {circuit.name: circuit for circuit in qpy.load(handle)}
-        pub_results: list[SamplerPubResult] = []
-        for pub_manifest in planned_job["pubs"]:
-            circuit = archived[pub_manifest["name"]]
-            register_data = {
-                register.name: BitArray.from_counts({"0" * register.size: args.shots}, num_bits=register.size)
-                for register in circuit.cregs
-            }
-            pub_results.append(SamplerPubResult(DataBin(**register_data), metadata={}))
+        circuits = [archived[pub_manifest["name"]] for pub_manifest in planned_job["pubs"]]
 
         base_time = datetime(2026, 10, 10, 12, 0, tzinfo=UTC)
         fused_index = next(
             index for index, pub_manifest in enumerate(planned_job["pubs"]) if pub_manifest["name"] == fused_pub.name
         )
-        spans: list[_ProbeExecutionSpan] = []
+        chunks: list[ChunkSpan] = []
         expected_fused_window = (
             base_time + timedelta(seconds=10 * fused_index),
             base_time + timedelta(seconds=10 * fused_index + 5),
         )
-        for index in range(len(pub_results)):
+        for index in range(len(circuits)):
             start = base_time + timedelta(seconds=10 * index)
             if index == fused_index:
-                spans.extend(
+                chunks.extend(
                     [
-                        _ProbeExecutionSpan(start + timedelta(seconds=2), start + timedelta(seconds=3), [index]),
-                        _ProbeExecutionSpan(start, start + timedelta(seconds=5), [index]),
+                        ChunkSpan(start + timedelta(seconds=2), start + timedelta(seconds=3), [ChunkPart(index, 1)]),
+                        ChunkSpan(start, start + timedelta(seconds=5), [ChunkPart(index, 1)]),
                     ]
                 )
             else:
-                spans.append(_ProbeExecutionSpan(start, start + timedelta(seconds=1), [index]))
-        result = PrimitiveResult(pub_results, metadata={"execution": {"execution_spans": spans}})
-        windows = pub_windows(result, len(pub_results))
-        if len(windows) != len(planned_job["pubs"]) or windows[fused_index] != expected_fused_window:
-            raise RuntimeError(f"fused PUB execution windows are {windows}")
+                chunks.append(ChunkSpan(start, start + timedelta(seconds=1), [ChunkPart(index, 1)]))
+        # Each fixture schedule exceeds its PUB's Target lower bound by 10 dt
+        # times the index, so every residual is nonnegative and distinct.
+        durations = [
+            pub_manifest["target_gate_lower_bound_dt"] + 10 * index
+            for index, pub_manifest in enumerate(planned_job["pubs"])
+        ]
+        result = _executor_result(FakeFez(), circuits, args.shots, chunks, durations)
+        if sorted(result.metadata) != ["executor", "options", "shots"]:
+            raise RuntimeError(f"executor Sampler result metadata keys are {sorted(result.metadata)}")
+        spans = pub_windows(result, len(circuits))
+        if (
+            spans.source != "executor_chunk_timing"
+            or len(spans.windows) != len(planned_job["pubs"])
+            or spans.windows[fused_index] != expected_fused_window
+        ):
+            raise RuntimeError(f"fused PUB execution windows are {spans}")
+        if [scheduled_duration(pub_result) for pub_result in result] != [(d, None) for d in durations]:
+            raise RuntimeError("scheduler timing does not reach each PUB result")
 
-        incomplete_spans = [span for span in spans if fused_index not in span.pub_idxs]
-        incomplete_result = PrimitiveResult(
-            pub_results,
-            metadata={"execution": {"execution_spans": incomplete_spans}},
+        incomplete = _executor_result(
+            FakeFez(),
+            circuits,
+            args.shots,
+            [chunk for chunk in chunks if all(part.idx_item != fused_index for part in chunk.parts)],
+            durations,
         )
-        try:
-            pub_windows(incomplete_result, len(pub_results))
-        except LiveRunError as error:
-            if f"no execution span covers PUB {fused_index}" not in str(error):
-                raise RuntimeError(f"missing fused execution span reports {error}") from error
-        else:
-            raise RuntimeError("fused PUB result accepts a missing execution span")
+        partial = pub_windows(incomplete, len(circuits))
+        if partial.windows[fused_index] is not None or partial.reason is not None:
+            raise RuntimeError(f"a PUB without a chunk reports {partial}")
+        if any(window is None for index, window in enumerate(partial.windows) if index != fused_index):
+            raise RuntimeError("a missing chunk for one PUB removes another PUB's window")
 
-        collection_service = _CollectionProbeService(backend, {job_id: _ProbeResultJob(result)})
-        original_noise_simulator = live_run_module.noise_simulator
-        original_simulate_entries = live_run_module.simulate_entries
-        live_run_module.noise_simulator = lambda name, target, props: object()
-        live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
-            entry.name: _zero_replica_distributions(entry) for entry in entries
-        }
-        try:
-            with redirect_stdout(io.StringIO()):
-                collect(collection_service, run_dir)
-        finally:
-            live_run_module.noise_simulator = original_noise_simulator
-            live_run_module.simulate_entries = original_simulate_entries
+        usage = {"status": "completed", "qpu_charge_time_seconds": 12.5}
+        probe_job = _ProbeResultJob(result, usage=usage, charge=12.5)
+        collection_service = _CollectionProbeService(backend, {job_id: probe_job})
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
 
         collected = json.loads((run_dir / "collect.json").read_text())
         executed = {
@@ -1128,8 +1269,325 @@ def _verify_fused_collection() -> None:
             or fused_evidence[0]["start"] != expected_start.isoformat()
             or fused_evidence[0]["stop"] != expected_stop.isoformat()
             or fused_evidence[0]["calibration_changed_during_shots"]
+            or "scheduled_circuit_duration_dt" in fused_evidence[0]
         ):
             raise RuntimeError(f"mocked fused execution evidence is {fused_evidence[0]}")
+        job_out = collected[0]["jobs"][job_id]
+        fused_timing = job_out["pub_timing"][fused_pub.name]
+        lower = planned_job["pubs"][fused_index]["target_gate_lower_bound_dt"]
+        if (
+            fused_timing["timing_status"] != "complete"
+            or fused_timing["timing_source"] != "executor_chunk_timing"
+            or fused_timing["execution_window_start"] != expected_start.isoformat()
+            or fused_timing["scheduled_circuit_duration_dt"] != durations[fused_index]
+            or fused_timing["scheduler_residual_dt"] != durations[fused_index] - lower
+            or fused_timing["planned_target_gate_lower_bound_dt"] != lower
+            or fused_timing["parallel_stream_count"] != 0
+            or fused_timing["timing_unavailable_reason"] is not None
+        ):
+            raise RuntimeError(f"fused PUB timing record is {fused_timing}")
+        if any(group_record["job_id"] != job_id for group_record in collected[1:]):
+            raise RuntimeError("group records do not reference their owning job")
+        job_usage = job_out["usage"]
+        expected_shots = len(planned_job["pubs"]) * args.shots
+        if (
+            job_usage["usage_status"] != "final"
+            or job_usage["submitted_pub_shots"] != expected_shots
+            or job_usage["qpu_charge_time_seconds"] != "12.5"
+            or job_usage["pub_shots_per_qpu_second"]
+            != str((Decimal(expected_shots) / Decimal("12.5")).quantize(Decimal("0.001")))
+        ):
+            raise RuntimeError(f"job usage record is {job_usage}")
+        first = (run_dir / "collect.json").read_bytes()
+
+        # Recollection after usage finalizes changes only the usage block.
+        probe_job._usage = {"status": "pending"}
+        probe_job._charge = None
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
+        pending = json.loads((run_dir / "collect.json").read_text())
+        if pending[0]["jobs"][job_id]["usage"]["usage_status"] != "pending":
+            raise RuntimeError("pending usage does not read pending")
+        probe_job._usage = usage
+        probe_job._charge = 12.5
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
+        if (run_dir / "collect.json").read_bytes() != first:
+            raise RuntimeError("recollection after usage finalizes changes bytes outside the usage block")
+        pending[0]["jobs"][job_id]["usage"] = json.loads(first)[0]["jobs"][job_id]["usage"]
+        if pending != json.loads(first):
+            raise RuntimeError("pending and final collections differ outside the usage block")
+
+        # A job that ended in ERROR keeps its usage and its reason; collection
+        # continues without its results.
+        failed = _ProbeResultJob(result, status="ERROR", usage=usage, charge=0.25)
+        failed.result = lambda: (_ for _ in ()).throw(RuntimeError("job failed on the service"))  # type: ignore[method-assign]
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: failed}), run_dir)
+        errored = json.loads((run_dir / "collect.json").read_text())
+        job_record = errored[0]["jobs"][job_id]
+        if (
+            job_record["usage"]["usage_status"] != "final"
+            or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
+            or job_record["usage"]["pub_shots_per_qpu_second"] is not None
+            or "job failed on the service" not in job_record["result_unavailable"]
+            or len(errored) != 1
+            or (run_dir / "collect.partial.json").exists()
+        ):
+            raise RuntimeError(f"a failed job collects as {job_record}")
+
+        # A job still running at collection start that then fails keeps the
+        # charge read after the failure.
+        class _FailingRunningJob(_ProbeResultJob):
+            def result(self) -> PrimitiveResult[SamplerPubResult]:
+                self._status, self._usage, self._charge = "ERROR", usage, 0.75
+                raise RuntimeError("job failed while collection waited")
+
+        late = _FailingRunningJob(result, status="RUNNING", usage={"status": "pending"}, charge=None)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: late}), run_dir)
+        late_usage = json.loads((run_dir / "collect.json").read_text())[0]["jobs"][job_id]["usage"]
+        if late_usage["usage_status"] != "final" or late_usage["qpu_charge_time_seconds"] != "0.75":
+            raise RuntimeError(f"a job that failed while collection waited keeps {late_usage}")
+        # A DONE job whose result retrieval raises propagates the failure and
+        # leaves the complete earlier collect.json in place.
+        flaky = _ProbeResultJob(result, status="DONE", usage=usage, charge=12.5)
+        flaky.result = lambda: (_ for _ in ()).throw(RuntimeError("decoder failure"))  # type: ignore[method-assign]
+        before = (run_dir / "collect.json").read_bytes()
+        try:
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: flaky}), run_dir)
+        except RuntimeError as error:
+            if "decoder failure" not in str(error):
+                raise
+        else:
+            raise RuntimeError("a DONE job's retrieval failure passes for a failed job")
+        if (run_dir / "collect.json").read_bytes() != before or not (run_dir / "collect.partial.json").exists():
+            raise RuntimeError("a retrieval failure replaced the complete collection or left no partial checkpoint")
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
+
+        # A job still running at collection start reports pending usage
+        # before result() and final usage after it.
+        class _RunningJob(_ProbeResultJob):
+            def result(self) -> PrimitiveResult[SamplerPubResult]:
+                self._status, self._usage, self._charge = "DONE", usage, 12.5
+                return self._result
+
+        running = _RunningJob(result, status="RUNNING", usage={"status": "pending"}, charge=None)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: running}), run_dir)
+        if (run_dir / "collect.json").read_bytes() != first:
+            raise RuntimeError("usage read before a running job's result is not refreshed after it")
+
+        # A failure after the usage read leaves the usage checkpointed in
+        # collect.json: a result with the wrong PUB count stops collection.
+        broken = _ProbeResultJob(PrimitiveResult([], metadata={}), usage=usage, charge=1.0)
+        try:
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: broken}), run_dir)
+        except LiveRunError as error:
+            if "returned 0 PUB results" not in str(error):
+                raise RuntimeError(f"a job with the wrong PUB count reports {error}") from error
+        else:
+            raise RuntimeError("a job with the wrong PUB count collects")
+        partial = json.loads((run_dir / "collect.partial.json").read_text())
+        if partial[0]["jobs"][job_id]["usage"]["qpu_charge_time_seconds"] != "1.0" or len(partial) != 1:
+            raise RuntimeError(f"the checkpoint after a failed collection lacks the usage: {partial[0]['jobs']}")
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
+        if (run_dir / "collect.partial.json").exists() or (run_dir / "collect.json").read_bytes() != first:
+            raise RuntimeError("a complete collection leaves the partial checkpoint or differs from the first")
+
+
+def _verify_scheduler_timing_cases() -> None:
+    """Window sources, scheduler durations, and residual classification over every documented shape."""
+    backend = FakeFez()
+    circuit = QuantumCircuit(1, 1)
+    circuit.measure(0, 0)
+    circuits = [transpile(circuit, backend, optimization_level=0, initial_layout=[k]) for k in range(3)]
+    base = datetime(2026, 10, 10, 12, 0)  # naive: normalized to UTC
+    for kind in ("static", "dynamic"):
+        if configure_sampler(backend, kind, False, None, [], 4096).options.execution.scheduler_timing is not True:
+            raise RuntimeError(f"{kind} job does not request scheduler timing")
+
+    # One PUB in one chunk, one PUB across two chunks, two PUBs sharing one
+    # chunk, and a duplicate part for one PUB in one chunk.
+    chunks = [
+        ChunkSpan(base, base + timedelta(seconds=1), [ChunkPart(0, 1), ChunkPart(0, 1)]),
+        ChunkSpan(base + timedelta(seconds=2), base + timedelta(seconds=3), [ChunkPart(1, 1), ChunkPart(2, 1)]),
+        ChunkSpan(base + timedelta(seconds=5), base + timedelta(seconds=6), [ChunkPart(1, 1)]),
+    ]
+    spans = pub_windows(_executor_result(backend, circuits, 8, chunks, [100, 100, 100]), 3)
+    expected = [
+        (base.replace(tzinfo=UTC), (base + timedelta(seconds=1)).replace(tzinfo=UTC)),
+        ((base + timedelta(seconds=2)).replace(tzinfo=UTC), (base + timedelta(seconds=6)).replace(tzinfo=UTC)),
+        ((base + timedelta(seconds=2)).replace(tzinfo=UTC), (base + timedelta(seconds=3)).replace(tzinfo=UTC)),
+    ]
+    if spans.source != "executor_chunk_timing" or spans.windows != expected or spans.reason is not None:
+        raise RuntimeError(f"chunk windows are {spans}")
+
+    legacy_spans = [
+        _ProbeExecutionSpan(base, base + timedelta(seconds=1), [0, 1]),
+        _ProbeExecutionSpan(base, base, [2]),
+    ]
+    legacy = PrimitiveResult([], metadata={"execution": {"execution_spans": legacy_spans}})
+    spans = pub_windows(legacy, 3)
+    if spans.source != "execution_spans" or spans.windows[0] != expected[0] or spans.windows[0] != spans.windows[1]:
+        raise RuntimeError(f"legacy execution spans read {spans}")
+
+    missing = pub_windows(_executor_result(backend, circuits, 8, chunks[:1], [100, 100, 100]), 3)
+    if missing.windows[0] is None or missing.windows[1:] != [None, None] or missing.reason is not None:
+        raise RuntimeError(f"PUBs without chunks read {missing}")
+    beyond = [ChunkSpan(base, base, [ChunkPart(3, 1)])]
+    outside = pub_windows(_executor_result(backend, circuits, 8, beyond, [1] * 3), 3)
+    if outside.windows != [None] * 3 or "outside 0..2" not in str(outside.reason):
+        raise RuntimeError(f"out-of-range chunk index reads {outside}")
+    empty = pub_windows(PrimitiveResult([], metadata={"options": {}}), 2)
+    if empty.windows != [None, None] or empty.source is not None or "no executor chunk timing" not in str(empty.reason):
+        raise RuntimeError(f"result without timing reads {empty}")
+
+    def pub_with(compilation: Any) -> SamplerPubResult:
+        metadata = {"compilation": compilation} if compilation is not None else {}
+        return SamplerPubResult(DataBin(), metadata=metadata)
+
+    cases: list[tuple[Any, int | None, str | None]] = [
+        ({"scheduler_timing": {"timing": "", "circuit_duration": 1200}}, 1200, None),
+        (None, None, "no scheduler timing"),
+        ({"stretch_values": []}, None, "no scheduler timing"),
+        ({"scheduler_timing": {"circuit_duration": "1200"}}, None, "malformed"),
+        ({"scheduler_timing": {"circuit_duration": 10.5}}, None, "malformed"),
+        ({"scheduler_timing": {"circuit_duration": -1}}, None, "malformed"),
+        ({"scheduler_timing": {"circuit_duration": True}}, None, "malformed"),
+        ({"scheduler_timing": {"circuit_duration": float("nan")}}, None, "malformed"),
+    ]
+    for compilation, duration, fragment in cases:
+        value, reason = scheduled_duration(pub_with(compilation))
+        if value != duration or (fragment is None) != (reason is None) or (fragment and fragment not in str(reason)):
+            raise RuntimeError(f"scheduler duration {compilation} reads {(value, reason)}")
+
+    manifest = {"target_gate_lower_bound_dt": 1000, "parallel_stream_count": 2}
+    window = expected[0]
+    chunk = "executor_chunk_timing"
+    statuses = [
+        (pub_timing(manifest, window, None, 1200, None, chunk, 1000), "complete", 200),
+        (pub_timing(manifest, window, None, 1200, None, chunk, 1100), "complete", 100),
+        (pub_timing(manifest, None, "no chunk", 1200, None, chunk), "schedule_only", None),
+        (pub_timing(manifest, window, None, None, "no timing", chunk, 1000), "windows_only", None),
+        (pub_timing(manifest, None, "no chunk", None, "no scheduler timing", None), "unavailable", None),
+        (pub_timing(manifest, window, None, 900, None, chunk, 1000), "residual_below_target_bound", -100),
+    ]
+    for record, status, residual in statuses:
+        if record["timing_status"] != status or record["scheduler_residual_dt"] != residual:
+            raise RuntimeError(f"timing record {record} is not {status}/{residual}")
+        if status != "complete" and not record["timing_unavailable_reason"]:
+            raise RuntimeError(f"{status} timing record carries no reason")
+    if statuses[0][0]["timing_unavailable_reason"] is not None or statuses[2][0]["timing_source"] is not None:
+        raise RuntimeError("complete timing carries a reason, or a windowless record names a source")
+    if (
+        statuses[1][0]["target_gate_lower_bound_dt"] != 1100
+        or statuses[1][0]["planned_target_gate_lower_bound_dt"] != 1000
+        or "residual withheld" not in str(statuses[2][0]["timing_unavailable_reason"])
+    ):
+        raise RuntimeError("the residual does not follow the execution-time Target bound")
+
+
+def _verify_feed_forward_structure() -> None:
+    """Operation count, stage depth, and feed-forward presence over static, reset, single, and nested shapes."""
+    static = QuantumCircuit(1, 1)
+    static.h(0)
+    static.measure(0, 0)
+    reset_only = QuantumCircuit(1, 1)
+    reset_only.reset(0)
+    reset_only.measure(0, 0)
+    single = QuantumCircuit(1, 2)
+    single.measure(0, 0)
+    with single.if_test((single.clbits[0], 1)):
+        single.x(0)
+    single.measure(0, 1)
+    nested = QuantumCircuit(1, 3)
+    nested.measure(0, 0)
+    with nested.if_test((nested.clbits[0], 1)):
+        nested.x(0)
+        nested.measure(0, 1)
+        with nested.if_test((nested.clbits[1], 1)):
+            nested.x(0)
+    nested.measure(0, 2)
+    with nested.if_test((nested.clbits[2], 1)):
+        nested.x(0)
+    expected = {"static": (0, 0, False), "reset_only": (0, 0, False), "single": (1, 1, True), "nested": (3, 3, True)}
+    for label, circuit in (("static", static), ("reset_only", reset_only), ("single", single), ("nested", nested)):
+        observed = (_control_flow_count(circuit), _feed_forward_stages(circuit), _has_feed_forward(circuit))
+        if observed != expected[label]:
+            raise RuntimeError(f"{label} feed-forward structure reads {observed}, expected {expected[label]}")
+
+
+def _verify_usage_wait() -> None:
+    """Collection polls a finished job's usage until the service's calculation completes, within a bound."""
+    result = PrimitiveResult([], metadata={})
+    final = {"status": "completed", "qpu_charge_time_seconds": 3}
+
+    class _LateUsageJob(_ProbeResultJob):
+        def __init__(self, flips_after: int):
+            super().__init__(result, status="DONE", usage={"status": "pending"}, charge=None)
+            self.reads = 0
+            self.flips_after = flips_after
+
+        def metrics(self) -> dict[str, Any]:
+            self.reads += 1
+            if self.reads > self.flips_after:
+                self._usage, self._charge = final, 3
+            return super().metrics()
+
+    naps: list[float] = []
+    record = live_run_module.wait_for_usage(_LateUsageJob(2), 6, 4096, 120.0, 5.0, naps.append)
+    if record["usage_status"] != "final" or record["pub_shots_per_qpu_second"] != "8192.000" or naps != [5.0, 5.0]:
+        raise RuntimeError(f"usage that completes after two polls reads {record} with naps {naps}")
+    naps.clear()
+    stuck = live_run_module.wait_for_usage(_LateUsageJob(10**6), 6, 4096, 20.0, 5.0, naps.append)
+    if (
+        stuck["usage_status"] != "pending"
+        or "still pending 20 s" not in str(stuck["throughput_unavailable_reason"])
+        or len(naps) != 4
+    ):
+        raise RuntimeError(f"usage that stays pending reads {stuck} after {len(naps)} polls")
+    running = live_run_module.wait_for_usage(
+        _ProbeResultJob(result, status="RUNNING", usage={"status": "pending"}), 6, 4096, 20.0, 5.0, naps.append
+    )
+    if running["usage_status"] != "pending" or len(naps) != 4:
+        raise RuntimeError("a job that has not ended is polled for usage")
+
+
+def _verify_job_usage_cases() -> None:
+    """Throughput derives only from a final job with final usage, over submitted PUB shots."""
+    result = PrimitiveResult([], metadata={})
+    final = {"status": "completed", "qpu_charge_time_seconds": 10}
+    cases: list[tuple[_ProbeResultJob, str, str | None, str | None]] = [
+        (_ProbeResultJob(result, status="RUNNING", usage=final, charge=10), "pending", None, "not final"),
+        (_ProbeResultJob(result, status="DONE"), "missing", None, "no usage"),
+        (_ProbeResultJob(result, status="DONE", usage={"status": "pending"}, charge=None), "pending", None, "pending"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge=None), "missing", None, "no qpu_charge"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge=0), "final", None, "zero QPU charge"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge=10), "final", "2457.600", None),
+        (_ProbeResultJob(result, status="ERROR", usage=final, charge=0.5), "final", None, "did not complete"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge="abc"), "malformed", None, "not a finite"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge=float("inf")), "malformed", None, "not a finite"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge=-1), "malformed", None, "not a finite"),
+        (_ProbeResultJob(result, status="DONE", usage=final, charge=True), "malformed", None, "not a finite"),
+    ]
+    for job, status, rate, fragment in cases:
+        record = job_usage_record(job, 6, 4096)
+        if record["submitted_pub_shots"] != 24576:
+            raise RuntimeError(f"six PUBs at 4096 shots submit {record['submitted_pub_shots']} PUB shots")
+        if record["usage_status"] != status or record["pub_shots_per_qpu_second"] != rate:
+            raise RuntimeError(f"usage case {job.status()}/{job.metrics()}/{job._charge!r} reads {record}")
+        if (fragment is None) != (record["throughput_unavailable_reason"] is None) or (
+            fragment and fragment not in record["throughput_unavailable_reason"]
+        ):
+            raise RuntimeError(f"usage case reason is {record['throughput_unavailable_reason']!r}")
+    exact = job_usage_record(_ProbeResultJob(result, status="DONE", usage=final, charge=0.1), 6, 4096)
+    if exact["qpu_charge_time_seconds"] != "0.1" or exact["pub_shots_per_qpu_second"] != "245760.000":
+        raise RuntimeError(f"decimal charge text is {exact}")
 
 
 def _verify_joint_fusion_placement() -> None:
@@ -1204,6 +1662,40 @@ def _verify_joint_fusion_candidate_backtracking() -> None:
         or [item["candidate_index"] for item in selection.get("selected", [])] != [0, 1]
     ):
         raise RuntimeError(f"joint candidate backtracking evidence is {selection}")
+
+    # A calibration that rejects every combination stops the search at the
+    # attempt bound instead of walking the whole frontier.
+    wide_sets = [
+        [candidate("design_a", 100 + k, 0.99 - 0.001 * k) for k in range(20)],
+        [candidate("design_c_8_1_4", 200 + k, 0.98 - 0.001 * k) for k in range(20)],
+    ]
+    rejections = 0
+
+    def reject_everything(
+        choices: list[Choice], policy: ReplicaPolicy, cache: dict[tuple[int, float], Any] | None = None
+    ) -> dict[str, Any]:
+        nonlocal rejections
+        del choices, policy, cache
+        rejections += 1
+        raise LiveRunError("fixture rejects every combination")
+
+    original_bound = live_run_module.FUSION_MAX_ATTEMPTS
+    live_run_module.allocate_fusion_replicas = reject_everything
+    live_run_module.execution_pubs = lambda choices: []
+    live_run_module.FUSION_MAX_ATTEMPTS = 8
+    try:
+        select_fusion_choices(wide_sets, PACKED_REPLICA_POLICY)
+    except LiveRunError as error:
+        if "search stopped at FUSION_MAX_ATTEMPTS" not in str(error) or "attempted=8" not in str(error):
+            raise RuntimeError(f"the exhausted search reports {error}") from error
+    else:
+        raise RuntimeError("a search that rejects every combination returns a selection")
+    finally:
+        live_run_module.allocate_fusion_replicas = original_allocate_fusion_replicas
+        live_run_module.execution_pubs = original_execution_pubs
+        live_run_module.FUSION_MAX_ATTEMPTS = original_bound
+    if rejections != 8:
+        raise RuntimeError(f"the attempt bound of 8 allowed {rejections} attempts")
 
 
 def _verify_required_placement_backtracking() -> None:
@@ -1810,6 +2302,10 @@ def _verify_experiment_source_manifest() -> None:
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
+    _verify_scheduler_timing_cases()
+    _verify_feed_forward_structure()
+    _verify_job_usage_cases()
+    _verify_usage_wait()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()
@@ -1838,7 +2334,7 @@ def _verify() -> None:
         "runtime contracts: discovery, direct pinned lookup, capability admission, "
         "bounded-angle isolation, coherent snapshots, Target routing, joint placement, "
         "cross-group PUB fusion, renewed approval, job revalidation, schema lifecycle, "
-        "recovery, result order, rate keys, and digest pass"
+        "recovery, result order, rate keys, scheduler timing, job usage, and digest pass"
     )
 
 

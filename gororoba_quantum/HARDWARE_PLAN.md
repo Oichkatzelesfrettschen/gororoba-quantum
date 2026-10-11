@@ -99,7 +99,12 @@ execution path but does not establish default-policy submission readiness.
   measures the global packed workload against the global replica-0 workload;
   it does not attribute crosstalk to one group. The noise model carries no
   crosstalk, so its difference is shot noise: each replica draws from the
-  seed of its position in one batched Aer run.
+  seed of its position in one batched Aer run. `packing_schedule` compares the
+  two PUBs' scheduler residuals as a global packing scheduling cost: the
+  packed PUB adds every replica's whole circuit, so measurement, reset,
+  pulse-channel, and other controller resources scale with replica count
+  alongside feed-forward, and a larger packed residual is attributed to none
+  of them without a matched non-feed-forward control.
 - **ODR.** The pooled value averages each replica's witness over its own twin
   and needs 16384 shots over all replicas, so packing meets it at the default
   4096 shots for every mirrored group: design A pools 86,016 shots over 21
@@ -116,7 +121,12 @@ execution path but does not establish default-policy submission readiness.
 ## QPU cost
 
 QPU time scales with PUBs times shots; replicas and cross-group components ride
-along inside a PUB at no extra shots. Fusion reduces the full program from 38
+along inside a PUB at no extra shots. Each collected job measures its own
+rate: collection divides the submitted PUB shots (PUB count times shots per
+PUB) by the job's final QPU charge from job.usage(partial=False), in submitted
+PUB shots per QPU charge second. A measured rate bounds only the workload it
+came from; the static job keeps the literature range below until its own
+job is collected. Fusion reduces the full program from 38
 logical execution entries to 20 PUBs, 14 static and 6 dynamic, so 4096 shots
 per PUB produce 81,920 executions. The project has not measured its own
 shot rate; the literature bounds it between about 1,000 shots/s for many-twirl
@@ -140,10 +150,15 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
    and waits for approval (AGENTS.md).
 3. **Dynamic job first.** It is the smaller job and carries the questions only
    hardware answers: hybrid Shor admission, concurrent feed-forward across
-   packed replicas (the global packing comparison), feed-forward latency from the
-   execution spans, and the project's own shot rate, measured by the job's
-   usage seconds. That rate replaces the literature bounds before the static
-   job is costed.
+   packed replicas (the global packing comparison and the scheduled-duration
+   comparison), feed-forward latency from the scheduler timing, and the
+   project's own shot rate, measured by the job's
+   usage seconds. That rate is evidence for the dynamic workload alone: QPU
+   charge per PUB shot depends on each circuit's scheduled duration and on
+   the enabled options, and the static job holds different circuits and may
+   enable twirling or DD, so the static case keeps its own conservative
+   bound from the literature range until a static-specific measurement
+   exists.
 4. **Static job.** Submitted with --twirl and a DD sequence only when the
    case argues that the hardware-versus-model gap with them on is the
    question; otherwise both stay off so the first static measurement compares
@@ -166,9 +181,11 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
 
 ## Risks
 
-- **Parallel feed-forward.** Hardware handling of three or more simultaneous
-  if_else branches is unmeasured; the shared replica-0 reference detects a
-  global packed-workload cost without attributing it to one group.
+- **Parallel feed-forward.** Hardware handling of simultaneous if_else
+  branches is unmeasured. The scheduler-residual comparison measures a global
+  packing scheduling cost without attributing it to feed-forward; the fidelity
+  comparison detects a packed-workload cost of 0.033 or more in Shor factor
+  yield at 4096 shots and attributes it to no single group.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.

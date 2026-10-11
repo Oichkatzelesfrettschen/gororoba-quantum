@@ -321,7 +321,9 @@ stores the requested-system inventory, capability summaries, exclusion reasons,
 logical circuit requirements, joint placement, fused execution-PUB manifests,
 selection trace, exact fused ISA circuits, and simulated outcomes. The process
 never reads a retained calibration record to drive a submission. Current
-records use schema 5 and contract `live-target-cross-group-fused-pubs-v1`;
+records use schema 6 and contract
+`live-target-cross-group-fused-pubs-scheduler-usage-v1`, which adds per-PUB
+scheduler timing and per-job usage to the schema-5 fused-PUB surface;
 schema 4 and both historical schema-3 families remain retained evidence with
 incompatible shapes.
 
@@ -463,8 +465,8 @@ incompatible shapes.
   instance without a usage limit passes the budget check;
   `usage_limit_reached` stops the run.
 - Execution-time replay: --collect reads each circuit's execution window from
-  the result's execution spans (result.metadata["execution"]
-  ["execution_spans"], the spans whose pub_idxs include it), fetches
+  the executor chunk timing (result.metadata["executor"].chunk_timing, the
+  chunks whose parts name its PUB), fetches
   target_history and properties at that window's start, flags a calibration
   update inside the window, checks the two against each other (342 of 352 ibm_fez
   CZ errors differ between 2026-10-09 and 2026-10-10, and the two history APIs
@@ -600,6 +602,41 @@ crosstalk to one group. The noise model carries no crosstalk, so its
 difference is shot noise; simulate_entries batches every replica of a choice
 in one Aer run, so each draws from its own position-derived seed, where a
 shared seed would reproduce packed replica 0 in the reference bit for bit.
+Every job requests the backend scheduler's per-PUB timing. pub_windows reads
+each PUB's execution window from the executor chunk timing
+(result.metadata["executor"].chunk_timing, the 0.50 decoder's path) or from
+the documented execution spans (result.metadata["execution"]
+["execution_spans"]), records which source answered, and classifies a PUB no
+span covers instead of raising: its counts stay, and only its
+calibration-bound replay and correction are withheld with the reason.
+Collection writes one timing record per PUB in the header, keyed by job:
+target_gate_lower_bound_dt (the critical path under the Target in force when
+the shots began; the plan-time bound stays as
+planned_target_gate_lower_bound_dt), the scheduler's
+scheduled_circuit_duration_dt, their difference scheduler_residual_dt (withheld
+without a window, since the execution-time Target is then unknown),
+timing_status, and the structure counts parallel_stream_count,
+sequential_stage_count, and feed_forward_operation_count. packing_schedule
+compares the packed and reference PUBs' scheduler residuals as a global
+packing scheduling cost: the packed PUB adds every replica's whole circuit,
+so measurement, reset, pulse-channel, and controller resources scale with
+replica count alongside feed-forward, and the comparison attributes its
+difference to none of them.
+The header also carries each job's usage record: job.usage(partial=False)
+supplies the final QPU charge once job.metrics()["usage"] leaves pending,
+and pub_shots_per_qpu_second divides the submitted PUB shots (PUB count times
+shots per PUB; replicas and fused components multiply nothing) by that
+charge, and only a DONE job, whose charge covers the whole workload, gets the
+quotient; usage is read before the results and checkpointed to
+collect.partial.json at once, so a job that ended in ERROR or CANCELLED keeps
+its charge and its result_unavailable reason, a later failure keeps every
+earlier job's charge without replacing a complete collect.json, a retrieval
+or decoding failure on a DONE job propagates, and a job whose usage still
+reads pending after it ended is polled every USAGE_POLL_SECONDS for up to
+USAGE_WAIT_SECONDS (the service computes usage after the job's terminal
+state), after which the pending record names the wait; the final write
+replaces collect.json and removes the partial file. Group records reference their job by id instead of copying
+either.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
 member's own outcome weights (hybrid Shor scores whether an outcome decodes to

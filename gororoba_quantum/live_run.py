@@ -36,9 +36,11 @@ import math
 import os
 import subprocess
 import sys
+import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
+from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
 from importlib.metadata import version
 from pathlib import Path
 from typing import Any
@@ -77,8 +79,8 @@ DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
 MAX_JOB_EXECUTIONS = 10_000_000
-RECORD_SCHEMA_VERSION = 5
-RECORD_SCHEMA_CONTRACT = "live-target-cross-group-fused-pubs-v1"
+RECORD_SCHEMA_VERSION = 6
+RECORD_SCHEMA_CONTRACT = "live-target-cross-group-fused-pubs-scheduler-usage-v1"
 CONTROL_FLOW_OPERATIONS = frozenset({"if_else", "while_loop", "for_loop", "switch_case", "break_loop", "continue_loop"})
 DIRECT_TARGET_OPERATIONS = CONTROL_FLOW_OPERATIONS | {"delay", "measure", "reset", "store"}
 # A replica is placed only while its layout score stays at least this fraction
@@ -88,6 +90,11 @@ DEFAULT_REPLICA_FLOOR = 0.9
 # groups' copies share one reference PUB, so the comparison is between the
 # global packed and global replica-0 workloads.
 ISOLATED_SUFFIX = "_isolated"
+# Combinations of routed candidates the joint-placement search tries before
+# it stops: each attempt packs every group's entries, and a calibration that
+# rejects the best combinations would otherwise walk a frontier of hundreds
+# of thousands for hours.
+FUSION_MAX_ATTEMPTS = 256
 
 EXPERIMENT_SOURCE_MANIFEST = (
     "affine_residual.py",
@@ -738,10 +745,20 @@ class ExecutionPub:
     components: tuple[PubComponent, ...]
 
     def manifest(self) -> dict[str, Any]:
+        target = self.components[0].choice.snap.backend.target
+        streams = [replica for component in self.components for replica in component.entry.replicas]
         return {
             "name": self.name,
             "backend": self.backend,
             "kind": self.kind,
+            "target_gate_lower_bound_dt": target_duration_dt(self.circuit, target),
+            "feed_forward_operation_count": _control_flow_count(self.circuit),
+            "sequential_stage_count": max((_feed_forward_stages(replica) for replica in streams), default=0),
+            "parallel_stream_count": sum(
+                len(component.entry.replicas)
+                for component in self.components
+                if _has_feed_forward(component.entry.replicas[0])
+            ),
             "components": [component.manifest() for component in self.components],
         }
 
@@ -755,6 +772,7 @@ class _FusionPlacementPool:
     candidates: list[Replica]
     original_index: int
     pattern_width: int
+    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
 
@@ -846,6 +864,21 @@ def _gate_time_view(isa: QuantumCircuit) -> QuantumCircuit:
 
 def duration_s(isa: QuantumCircuit, target: Any) -> float:
     return float(_gate_time_view(isa).estimate_duration(target, unit="s"))
+
+
+def target_duration_dt(isa: QuantumCircuit, target: Any) -> int:
+    """The Target-derived critical-path duration in dt, the gate-time lower bound for one execution.
+
+    The backend scheduler's circuit_duration for the same PUB adds what the
+    Target omits. Their difference, the scheduler residual, collects
+    feed-forward, alignment, measurement, reset, and controller time on a
+    dynamic PUB. Static and dynamic circuits run in separate jobs and no
+    static PUB is a schedule-matched copy of a dynamic one, so a static
+    residual from the same submission bounds the scheduler's alignment on a
+    different circuit and attributes nothing; attribution waits for a matched
+    dynamic/control pair in one job.
+    """
+    return int(_gate_time_view(isa).estimate_duration(target, unit="dt"))
 
 
 def coherence(isa: QuantumCircuit, target: Any) -> float:
@@ -1031,9 +1064,19 @@ def _entry_bases(choice: Choice) -> list[tuple[str, QuantumCircuit, np.ndarray, 
     return bases
 
 
-def _set_entries(choice: Choice, replicas: list[Replica], policy: ReplicaPolicy) -> Choice:
-    """Rebuild one group's logical entries on an already admitted replica set."""
-    bases = _entry_bases(choice)
+def _set_entries(
+    choice: Choice,
+    replicas: list[Replica],
+    policy: ReplicaPolicy,
+    bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None,
+) -> Choice:
+    """Rebuild one group's logical entries on an already admitted replica set.
+
+    bases, the group's single-copy entry definitions with their mirror twins,
+    is computed once per routed candidate when the caller passes it, since the
+    twins come from the transpiler.
+    """
+    bases = _entry_bases(choice) if bases is None else bases
     choice.replica_floor = replica_floor(choice.group, policy)
     choice.replicas = replicas
     choice.entries = [_entry(name, isa, ideal, choice.replicas, w) for name, isa, ideal, w in bases]
@@ -1169,17 +1212,17 @@ def allocate_fusion_replicas(
             # candidate and floor.
             key = (id(choice.isas), floor)
             if cache is not None and key in cache:
-                graph, candidates, pattern_width = cache[key]
+                graph, candidates, pattern_width, bases = cache[key]
             else:
                 bases = _entry_bases(choice)
                 graph, candidates, pattern_width = _replica_candidates(choice.snap, [base[1] for base in bases], floor)
                 if cache is not None:
-                    cache[key] = (graph, candidates, pattern_width)
+                    cache[key] = (graph, candidates, pattern_width, bases)
             if not candidates:
                 raise LiveRunError(
                     f"{backend_name} {kind}: {choice.group.name} has no floor-qualified fusion placement"
                 )
-            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width))
+            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width, bases))
 
         occupied: set[int] = set()
         required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
@@ -1224,7 +1267,7 @@ def allocate_fusion_replicas(
                 f"{backend_name} {kind}: joint placement left groups below {required_rounds} replicas: {missing}"
             )
         for pool in pools:
-            _set_entries(pool.choice, pool.selected, policy)
+            _set_entries(pool.choice, pool.selected, policy, pool.bases)
         cluster_records.append(
             {
                 "backend": backend_name,
@@ -1553,7 +1596,7 @@ def select_fusion_choices(
     attempted = 0
     placement_cache: dict[tuple[int, float], Any] = {}
     rejected_sample: list[dict[str, Any]] = []
-    while frontier:
+    while frontier and attempted < FUSION_MAX_ATTEMPTS:
         negative_score, _, indices = heapq.heappop(frontier)
         selected = [candidates[index] for candidates, index in zip(candidate_sets, indices, strict=True)]
         trial = [copy.copy(candidate) for candidate in selected]
@@ -1602,8 +1645,9 @@ def select_fusion_choices(
             queued.add(neighbor_indices)
             heapq.heappush(frontier, priority(neighbor_indices))
 
+    outcome = "search stopped at FUSION_MAX_ATTEMPTS" if frontier else "frontier exhausted"
     raise LiveRunError(
-        "no jointly placeable fused candidate combination; "
+        f"no jointly placeable fused candidate combination ({outcome}); "
         f"groups={group_names}, frontier={math.prod(len(candidates) for candidates in candidate_sets)}, "
         f"attempted={attempted}, rejected_sample={json.dumps(rejected_sample, sort_keys=True)}"
     )
@@ -2602,6 +2646,9 @@ def configure_sampler(
 ) -> Sampler:
     """The client-side Sampler for one job: twirling and DD apply to static jobs only.
 
+    Every job requests the backend scheduler's per-PUB timing, which
+    scheduled_duration reads and packing_schedule compares.
+
     IBM's Sampler rejects dynamical decoupling on dynamic circuits, and the 0.50
     client-side Sampler's twirling boxes circuits through samplomatic, which
     rejects if_else. With DD on, idle qubits still in their initial state get no
@@ -2621,6 +2668,7 @@ def configure_sampler(
             )
     sampler = Sampler(mode=backend)
     sampler.options.default_shots = shots
+    sampler.options.execution.scheduler_timing = True
     sampler.options.environment.job_tags = tags
     if twirl and kind == "static":
         sampler.options.twirling.enable_gates = True
@@ -2653,6 +2701,24 @@ def _has_feed_forward(isa: QuantumCircuit) -> bool:
     return any(isinstance(instruction.operation, ControlFlowOp) for instruction in isa.data)
 
 
+def _control_flow_count(circuit: QuantumCircuit) -> int:
+    """Recursive count of control-flow operations, nested blocks included."""
+    total = 0
+    for instruction in circuit.data:
+        if isinstance(instruction.operation, ControlFlowOp):
+            total += 1 + sum(_control_flow_count(block) for block in instruction.operation.blocks)
+    return total
+
+
+def _feed_forward_stages(circuit: QuantumCircuit) -> int:
+    """Maximum feed-forward decisions along one execution path: each branch counts one plus its deepest block."""
+    stages = 0
+    for instruction in circuit.data:
+        if isinstance(instruction.operation, ControlFlowOp):
+            stages += 1 + max((_feed_forward_stages(block) for block in instruction.operation.blocks), default=0)
+    return stages
+
+
 def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, Any]:
     """usage() seconds and window, with the instance identified only by a hash of its CRN."""
     instance = str(service.active_instance() or "")
@@ -2665,53 +2731,336 @@ def _budget(service: QiskitRuntimeService, usage: dict[str, Any]) -> dict[str, A
     }
 
 
-def pub_windows(result: Any, count: int) -> list[tuple[datetime, datetime]]:
-    """Start and stop of the execution spans that hold each PUB's shots.
+@dataclass(frozen=True)
+class PubWindows:
+    """Execution windows of each PUB in one job and the metadata path that supplied them.
 
-    The Sampler result carries them at result.metadata["execution"]
-    ["execution_spans"] (IBM's Sampler input/output guide, "View execution
-    spans"); the job-level running timestamp can precede the shots by
-    server-side preparation, across a calibration update. Naive span times are
-    UTC.
+    windows holds None for a PUB no span covers; reason explains an absent or
+    unusable source and leaves every window None.
     """
+
+    windows: list[tuple[datetime, datetime] | None]
+    source: str | None
+    reason: str | None
+
+
+def pub_windows(result: Any, count: int) -> PubWindows:
+    """Start and stop of the execution chunks that hold each PUB's shots.
+
+    The 0.50 executor Sampler's post-processor (sampler_v2_post_processor_v0_1)
+    returns result.metadata["executor"], a quantum-program Metadata whose
+    chunk_timing lists ChunkSpan(start, stop, parts), each part naming the
+    program item, one per PUB, that the chunk executed. IBM's Sampler
+    input/output guide ("View execution spans") documents the earlier path
+    result.metadata["execution"]["execution_spans"], spans whose pub_idxs name
+    the PUBs. Which path a hardware job returns is recorded as the source. A
+    chunk can hold several PUBs and a PUB can span several chunks, so a PUB's
+    window runs from its first chunk's start to its last chunk's stop. The
+    job-level running timestamp can precede the shots by server-side
+    preparation, across a calibration update. Naive times are UTC.
+    """
+    executor = result.metadata.get("executor")
+    chunks = getattr(executor, "chunk_timing", None)
+    if chunks:
+        spans = [(chunk.start, chunk.stop, [part.idx_item for part in chunk.parts]) for chunk in chunks]
+        return _windows_from_spans("executor_chunk_timing", spans, count)
     execution = result.metadata.get("execution") or {}
-    spans = execution.get("execution_spans")
-    if spans is None or len(spans) == 0:
-        raise LiveRunError(f"result metadata carries no execution spans (keys {sorted(result.metadata)})")
-    windows = []
+    legacy = execution.get("execution_spans")
+    if legacy is not None and len(legacy):
+        spans = [(span.start, span.stop, list(span.pub_idxs)) for span in legacy]
+        return _windows_from_spans("execution_spans", spans, count)
+    keys = sorted(result.metadata)
+    reason = f"result metadata carries no executor chunk timing or execution spans; keys {keys}"
+    return PubWindows([None] * count, None, reason)
+
+
+def _windows_from_spans(source: str, spans: list[tuple[datetime, datetime, list[int]]], count: int) -> PubWindows:
+    outside = sorted({index for _, _, indices in spans for index in indices if not 0 <= index < count})
+    if outside:
+        return PubWindows([None] * count, source, f"{source} names PUB indices {outside} outside 0..{count - 1}")
+    windows: list[tuple[datetime, datetime] | None] = []
     for idx in range(count):
-        # ExecutionSpans.filter_by_pub keeps every span and empties those
-        # without the PUB, so the PUB's own window comes from the spans whose
-        # pub_idxs include it.
-        own = [span for span in spans if idx in span.pub_idxs]
+        own = [(start, stop) for start, stop, indices in spans if idx in indices]
         if not own:
-            raise LiveRunError(f"no execution span covers PUB {idx}")
-        start, stop = min(span.start for span in own), max(span.stop for span in own)
-        windows.append(
-            (
-                start if start.tzinfo else start.replace(tzinfo=UTC),
-                stop if stop.tzinfo else stop.replace(tzinfo=UTC),
-            )
+            windows.append(None)
+            continue
+        start, stop = min(start for start, _ in own), max(stop for _, stop in own)
+        windows.append((_as_utc(start), _as_utc(stop)))
+    return PubWindows(windows, source, None)
+
+
+def _as_utc(moment: datetime) -> datetime:
+    return moment if moment.tzinfo else moment.replace(tzinfo=UTC)
+
+
+def scheduled_duration(pub_result: Any) -> tuple[int | None, str | None]:
+    """The backend scheduler's circuit duration in dt, or None with the reason it is unusable.
+
+    Sampler.options.execution.scheduler_timing asks the service for each PUB's
+    compiled schedule, carried at metadata["compilation"]["scheduler_timing"]
+    ["circuit_duration"] in dt (ItemMetadata.scheduler_timing). The schedule
+    includes the classical latency that the Target omits, so a dynamic PUB's
+    value is the duration the control system executes.
+    """
+    compilation = pub_result.metadata.get("compilation")
+    timing = compilation.get("scheduler_timing") if isinstance(compilation, dict) else None
+    if not isinstance(timing, dict) or "circuit_duration" not in timing:
+        return None, "job returned no scheduler timing for the PUB"
+    duration = timing["circuit_duration"]
+    if (
+        isinstance(duration, bool)
+        or not isinstance(duration, (int, float))
+        or not math.isfinite(duration)
+        or duration != int(duration)
+        or duration < 0
+    ):
+        return None, f"malformed scheduler circuit_duration {duration!r}: expected a nonnegative integer count of dt"
+    return int(duration), None
+
+
+def pub_timing(
+    pub_manifest: dict[str, Any],
+    window: tuple[datetime, datetime] | None,
+    window_reason: str | None,
+    scheduled: int | None,
+    scheduled_reason: str | None,
+    source: str | None,
+    execution_bound: int | None = None,
+) -> dict[str, Any]:
+    """The timing record of one PUB: window, scheduled duration, residual, and structure.
+
+    The residual subtracts the lower bound computed from the Target in force
+    when the PUB's shots began (execution_bound); the manifest's plan-time
+    bound is kept beside it, since a calibration update between planning and
+    execution changes instruction durations, and a PUB without a window has
+    no execution-time Target, so its residual is withheld. timing_status is
+    complete when the window, the schedule, and a nonnegative residual are
+    present; windows_only, schedule_only, or unavailable name what is
+    missing; residual_below_target_bound keeps a schedule shorter than the
+    Target's own critical path and withholds its interpretation. The
+    structure fields come from the plan: the recursive count of control-flow
+    operations in the fused PUB, the deepest feed-forward decision chain along
+    one replica stream, and the number of replica streams that carry
+    feed-forward.
+    """
+    lower = execution_bound if window else None
+    residual = scheduled - lower if scheduled is not None and lower is not None else None
+    reasons = [reason for reason in (window_reason, scheduled_reason) if reason]
+    if scheduled is not None and lower is None and window is None:
+        reasons.append("execution-time Target unknown without a window; residual withheld")
+    if residual is not None and residual < 0:
+        status = "residual_below_target_bound"
+        reasons.append(f"scheduled duration {scheduled} dt is below the Target lower bound {lower} dt")
+    elif residual is not None:
+        status = "complete"
+    elif window:
+        status = "windows_only"
+    elif scheduled is not None:
+        status = "schedule_only"
+    else:
+        status = "unavailable"
+    return {
+        "timing_status": status,
+        "timing_source": source if window else None,
+        "execution_window_start": window[0].isoformat() if window else None,
+        "execution_window_stop": window[1].isoformat() if window else None,
+        "planned_target_gate_lower_bound_dt": pub_manifest.get("target_gate_lower_bound_dt"),
+        "target_gate_lower_bound_dt": lower,
+        "scheduled_circuit_duration_dt": scheduled,
+        "scheduler_residual_dt": residual,
+        "feed_forward_operation_count": pub_manifest.get("feed_forward_operation_count"),
+        "sequential_stage_count": pub_manifest.get("sequential_stage_count"),
+        "parallel_stream_count": pub_manifest.get("parallel_stream_count"),
+        "groups": sorted({component["group"] for component in pub_manifest.get("components", [])}),
+        "timing_unavailable_reason": "; ".join(reasons) if reasons else None,
+    }
+
+
+JOB_FINAL_STATES = ("DONE", "CANCELLED", "ERROR")
+# The service computes a job's usage after the job ends; collection waits
+# this long, polling at this interval, for the usage status to leave pending
+# before it records the job as still pending.
+USAGE_WAIT_SECONDS = 120.0
+USAGE_POLL_SECONDS = 5.0
+
+
+def wait_for_usage(
+    job: Any,
+    pub_count: int,
+    shots: int,
+    wait_seconds: float = USAGE_WAIT_SECONDS,
+    poll_seconds: float = USAGE_POLL_SECONDS,
+    sleep: Callable[[float], None] = time.sleep,
+) -> dict[str, Any]:
+    """The job's usage record once its status leaves pending, or the pending record after wait_seconds.
+
+    BaseRuntimeJob.usage reports zero until the service finishes the usage
+    calculation, which follows the job's terminal state by an unspecified
+    delay; a record left pending names the wait and a recollection updates
+    only the usage block.
+    """
+    record = job_usage_record(job, pub_count, shots)
+    waited = 0.0
+    while record["usage_status"] == "pending" and str(job.status()) in JOB_FINAL_STATES and waited < wait_seconds:
+        sleep(poll_seconds)
+        waited += poll_seconds
+        record = job_usage_record(job, pub_count, shots)
+    if record["usage_status"] == "pending" and str(job.status()) in JOB_FINAL_STATES:
+        record["throughput_unavailable_reason"] = (
+            f"usage calculation still pending {wait_seconds:g} s after the job ended; recollect to update it"
         )
-    return windows
+    return record
+
+
+def job_usage_record(job: Any, pub_count: int, shots: int) -> dict[str, Any]:
+    """The job's final QPU charge and submitted-PUB-shot throughput, or why they are withheld.
+
+    job.metrics()["usage"] carries the raw usage metadata and its status;
+    job.usage(partial=False) returns the canonical final charge once that
+    status leaves pending (BaseRuntimeJob.usage). The numerator is the PUB
+    count times the shots per PUB: packed replicas and fused components ride
+    inside a PUB and multiply nothing, and only a DONE job, whose charge
+    covers the whole workload, gets the quotient. The unit is submitted PUB
+    shots per QPU charge second. The charge keeps the service's decimal text exactly; the
+    rate rounds to three decimals.
+    """
+    status = str(job.status())
+    metrics = job.metrics()
+    raw = metrics.get("usage") if isinstance(metrics, dict) else None
+    record: dict[str, Any] = {
+        "job_status": status,
+        "usage_status": "pending",
+        "usage_source": None,
+        "submitted_pub_shots": pub_count * shots,
+        "qpu_charge_time_seconds": None,
+        "pub_shots_per_qpu_second": None,
+        "throughput_unavailable_reason": None,
+        "raw_usage_metadata": copy.deepcopy(raw) if isinstance(raw, dict) else raw,
+    }
+    if status not in JOB_FINAL_STATES:
+        record["throughput_unavailable_reason"] = f"job status {status} is not final"
+        return record
+    # The charge of a failed or cancelled job covers whatever part of the
+    # workload ran, so dividing the full submitted shots by it overstates the
+    # rate; the charge is kept for the budget audit alone.
+    divide = status == "DONE"
+    if not isinstance(raw, dict):
+        record["usage_status"] = "missing"
+        record["throughput_unavailable_reason"] = "job metrics carry no usage"
+        return record
+    if raw.get("status", "pending") == "pending":
+        record["throughput_unavailable_reason"] = "usage status is pending"
+        return record
+    value = job.usage(partial=False)
+    record["usage_source"] = "job.usage(partial=False)"
+    if value is None:
+        record["usage_status"] = "missing"
+        record["throughput_unavailable_reason"] = "final usage carries no qpu_charge_time_seconds"
+        return record
+    try:
+        charge = Decimal(str(value))
+    except InvalidOperation:
+        charge = Decimal("NaN")
+    if isinstance(value, bool) or not charge.is_finite() or charge < 0:
+        record["usage_status"] = "malformed"
+        record["throughput_unavailable_reason"] = f"final usage {value!r} is not a finite nonnegative number"
+        return record
+    record["usage_status"] = "final"
+    record["qpu_charge_time_seconds"] = str(charge)
+    if not divide:
+        record["throughput_unavailable_reason"] = f"job status {status} did not complete the workload"
+        return record
+    if charge == 0:
+        record["throughput_unavailable_reason"] = "zero QPU charge; the division is withheld"
+        return record
+    rate = (Decimal(record["submitted_pub_shots"]) / charge).quantize(Decimal("0.001"), rounding=ROUND_HALF_EVEN)
+    record["pub_shots_per_qpu_second"] = str(rate)
+    return record
 
 
 def component_execution_records(
     pub_manifest: dict[str, Any],
-    start: datetime,
-    stop: datetime,
-    calibration: datetime,
-    calibration_changed: bool,
+    window: tuple[datetime, datetime] | None,
+    calibration: datetime | None,
+    calibration_changed: bool | None,
+    window_reason: str | None = None,
 ) -> dict[str, dict[str, Any]]:
-    """Fan one fused PUB's execution window and calibration out to every logical component."""
+    """Fan one fused PUB's execution window and calibration out to every logical component.
+
+    Timing and usage live once per PUB and job in the collection header; each
+    component keeps only its PUB name and the calibration evidence that gates
+    its summaries.
+    """
     evidence = {
         "pub": pub_manifest["name"],
-        "start": start.isoformat(),
-        "stop": stop.isoformat(),
-        "calibration": calibration.isoformat(),
+        "start": window[0].isoformat() if window else None,
+        "stop": window[1].isoformat() if window else None,
+        "calibration": calibration.isoformat() if calibration else None,
         "calibration_changed_during_shots": calibration_changed,
+        "window_unavailable_reason": window_reason,
     }
     return {component["member"]: copy.deepcopy(evidence) for component in pub_manifest["components"]}
+
+
+def packing_schedule(
+    entries: list[Entry], executed: dict[str, dict[str, Any]], timing: dict[str, dict[str, Any]]
+) -> dict[str, Any] | None:
+    """Scheduler residual of the packed primary's PUB against the shared replica-0 reference PUB.
+
+    Both PUBs run in one job, so the comparison carries no queue drift; the
+    scope is global when the packed PUB carries more than one group and
+    single_group otherwise. The difference is a global packing scheduling
+    cost: the packed PUB adds every replica's whole circuit, so measurement,
+    reset, pulse-channel, and controller resources scale with replica count
+    alongside feed-forward, and the difference is attributed to none of them
+    without a matched control.
+    """
+    references = [e for e in entries if e.reference]
+    if not references:
+        return None
+    primary = next(e for e in entries if not e.reference)
+    packed, alone = executed.get(primary.name), executed.get(references[0].name)
+    if packed is None or alone is None:
+        return None
+    packed_timing, alone_timing = timing[packed["pub"]], timing[alone["pub"]]
+    groups = packed_timing.get("groups") or []
+    out: dict[str, Any] = {
+        "scope": "global" if len(groups) > 1 else "single_group",
+        "groups": groups,
+        "packed_pub": packed["pub"],
+        "reference_pub": alone["pub"],
+        "feed_forward": bool(packed_timing["parallel_stream_count"]),
+        "packed_parallel_stream_count": packed_timing["parallel_stream_count"],
+        "reference_parallel_stream_count": alone_timing["parallel_stream_count"],
+        "packed_scheduled_circuit_duration_dt": packed_timing["scheduled_circuit_duration_dt"],
+        "reference_scheduled_circuit_duration_dt": alone_timing["scheduled_circuit_duration_dt"],
+        "packed_scheduler_residual_dt": packed_timing["scheduler_residual_dt"],
+        "reference_scheduler_residual_dt": alone_timing["scheduler_residual_dt"],
+    }
+    # The two PUBs hold different gate content (every replica against one
+    # copy), so their raw durations differ by gate time alone; only the
+    # residuals, each above its own Target bound, compare scheduler time.
+    missing = [
+        name
+        for name, pub in ((packed["pub"], packed_timing), (alone["pub"], alone_timing))
+        if pub["scheduler_residual_dt"] is None or pub["timing_status"] != "complete"
+    ]
+    # One job does not guarantee one calibration: the residuals are compared
+    # only when both PUBs ran under the same calibration with no update
+    # inside either PUB's shots.
+    same_calibration = (
+        packed.get("calibration") is not None
+        and packed.get("calibration") == alone.get("calibration")
+        and not packed.get("calibration_changed_during_shots")
+        and not alone.get("calibration_changed_during_shots")
+    )
+    if missing:
+        out["unavailable"] = f"scheduler residual absent or not complete for {missing}"
+    elif not same_calibration:
+        out["unavailable"] = "the packed and reference PUBs did not both run under one unchanged calibration"
+    else:
+        out["residual_difference_dt"] = packed_timing["scheduler_residual_dt"] - alone_timing["scheduler_residual_dt"]
+    return out
 
 
 def _odr_withheld(
@@ -2773,6 +3122,9 @@ def _comparisons_withheld(names: list[str], executed: dict[str, dict[str, Any]])
     shots.
     """
     ran = [executed[n] for n in names if n in executed]
+    unknown = [n for n in names if n in executed and executed[n]["calibration"] is None]
+    if unknown:
+        return f"execution windows are unavailable for {unknown}, so the calibration at execution is unknown"
     if any(e["calibration_changed_during_shots"] for e in ran) or len({e["calibration"] for e in ran}) > 1:
         return "the group's PUBs did not all run under one calibration"
     return None
@@ -2976,44 +3328,104 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     shots, seed = int(record["shots"]), int(record["seed_simulator"])
     by_group = _archived_entries(record, isas)
     by_name = {e.name: e for entries in by_group.values() for e in entries}
+    jobs_out: dict[str, dict[str, Any]] = {}
+
+    # Checkpoints go to collect.partial.json, so a failure after a job's
+    # usage is read keeps that usage without replacing a complete earlier
+    # collect.json with an incomplete one; the final write replaces
+    # collect.json and removes the partial file.
+    def checkpoint(entries_out: list[dict[str, Any]], final: bool = False) -> None:
+        text = json.dumps(entries_out, indent=2) + "\n"
+        target = run_dir / ("collect.json" if final else "collect.partial.json")
+        _replace_atomically(target, lambda handle: handle.write(text), "w")
+        if final:
+            (run_dir / "collect.partial.json").unlink(missing_ok=True)
+
     out: list[dict[str, Any]] = [
         {
             "submission_complete": bool(submission.get("complete", False)),
             "backends_without_recorded_job_id": backends_without_id,
             "members_without_recorded_job_id": members_without_id,
             "jobs_without_recorded_id": jobs_without_id,
+            "jobs": jobs_out,
         }
     ]
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
-        result = job.result()
-        metrics = job.metrics()
         pub_manifests = job_entry["pubs"]
+        # Usage is read before the results and checkpointed to collect.json
+        # at once: a job that ended in ERROR or CANCELLED raises on result()
+        # and still carries a QPU charge, and a later job's failure must not
+        # lose an earlier job's charge. A job still running when collection
+        # starts reports pending usage here; result() waits for it, and the
+        # usage is read again once the shots are in.
+        job_out = {
+            "backend": job_entry["backend"],
+            "kind": job_entry["kind"],
+            "usage": job_usage_record(job, len(pub_manifests), shots),
+            "pub_timing": {},
+        }
+        jobs_out[job_entry["job_id"]] = job_out
+        checkpoint(out)
+        try:
+            result = job.result()
+        except Exception as error:  # noqa: BLE001 - the service raises its own hierarchy for failed jobs
+            # Only a job that ended in ERROR or CANCELLED is expected to
+            # raise here; a retrieval or decoding failure on a DONE job
+            # propagates, so a transient fault never passes for a result.
+            if str(job.status()) not in ("ERROR", "CANCELLED"):
+                raise
+            job_out["result_unavailable"] = f"{type(error).__name__}: {error}"
+            if job_out["usage"]["usage_status"] == "pending":
+                job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
+            checkpoint(out)
+            continue
+        if job_out["usage"]["usage_status"] == "pending":
+            job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
+            checkpoint(out)
         if len(result) != len(pub_manifests):
             raise LiveRunError(
                 f"job {job_entry['job_id']} returned {len(result)} PUB results for "
                 f"{len(pub_manifests)} planned fused PUBs"
             )
-        windows = pub_windows(result, len(pub_manifests))
+        spans = pub_windows(result, len(pub_manifests))
         twirled_readout = bool(job_entry.get("options", {}).get("twirling", {}).get("enable_measure"))
         backend = service.backend(job_entry["backend"])
         # One calibration fetch per distinct execution start: a PUB is replayed
-        # under the Target and properties in force when its shots began.
-        at: dict[datetime, tuple[Any, Any]] = {}
-        for start, _ in windows:
-            if start not in at:
-                props_then = backend.properties(datetime=start)
-                target_then = backend.target_history(datetime=start)
-                at[start] = (
-                    props_then,
-                    noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
-                )
-                starting = [
-                    isas[pub_manifest["name"]]
-                    for (span_start, _), pub_manifest in zip(windows, pub_manifests, strict=True)
-                    if span_start == start
-                ]
-                check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
+        # under the Target and properties in force when its shots began, and
+        # its scheduler residual is read against that Target's durations.
+        at: dict[datetime, tuple[Any, Any, Any]] = {}
+        for window in spans.windows:
+            if window is None or window[0] in at:
+                continue
+            start = window[0]
+            props_then = backend.properties(datetime=start)
+            target_then = backend.target_history(datetime=start)
+            at[start] = (
+                props_then,
+                noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
+                target_then,
+            )
+            starting = [
+                isas[pub_manifest["name"]]
+                for other, pub_manifest in zip(spans.windows, pub_manifests, strict=True)
+                if other is not None and other[0] == start
+            ]
+            check_target_matches_properties(starting, target_then, props_then, f"{backend.name}@{start}")
+        # Timing and usage are recorded once per PUB and per job; a PUB without
+        # a window keeps its counts and loses only its calibration-bound views,
+        # the residual among them.
+        timing: dict[str, dict[str, Any]] = {}
+        for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
+            scheduled, scheduled_reason = scheduled_duration(pub_result)
+            window_reason = (
+                None if window else spans.reason or f"no {spans.source} chunk covers PUB {pub_manifest['name']}"
+            )
+            execution_bound = target_duration_dt(isas[pub_manifest["name"]], at[window[0]][2]) if window else None
+            timing[pub_manifest["name"]] = pub_timing(
+                pub_manifest, window, window_reason, scheduled, scheduled_reason, spans.source, execution_bound
+            )
+        jobs_out[job_entry["job_id"]]["pub_timing"] = timing
         measured: dict[str, list[np.ndarray]] = {}
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
@@ -3025,17 +3437,21 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         # otherwise repeat packed replica 0 shot for shot.
         replay_batches: dict[datetime, list[Entry]] = {}
         sims_by_calibration: dict[datetime, Any] = {}
-        for idx, (pub_manifest, pub_result) in enumerate(zip(pub_manifests, result, strict=True)):
-            start, stop = windows[idx]
-            props_then, sim_then = at[start]
-            stop_calibration = backend.properties(datetime=stop).last_update_date
-            execution_records = component_execution_records(
-                pub_manifest,
-                start,
-                stop,
-                props_then.last_update_date,
-                stop_calibration != props_then.last_update_date,
-            )
+        for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
+            if window is None:
+                execution_records = component_execution_records(
+                    pub_manifest, None, None, None, timing[pub_manifest["name"]]["timing_unavailable_reason"]
+                )
+            else:
+                start, stop = window
+                props_then = at[start][0]
+                stop_calibration = backend.properties(datetime=stop).last_update_date
+                execution_records = component_execution_records(
+                    pub_manifest,
+                    window,
+                    props_then.last_update_date,
+                    stop_calibration != props_then.last_update_date,
+                )
             for component in pub_manifest["components"]:
                 name = component["member"]
                 entry = by_name[name]
@@ -3046,11 +3462,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     )
                     for prefix, replica in zip(entry.prefixes, entry.replicas, strict=True)
                 ]
-                props_by_name[name] = props_then
-                calibration = props_then.last_update_date
-                sims_by_calibration.setdefault(calibration, sim_then)
-                replay_batches.setdefault(calibration, []).append(entry)
                 executed[name] = execution_records[name]
+                if window is not None:
+                    props_then = at[window[0]][0]
+                    props_by_name[name] = props_then
+                    calibration = props_then.last_update_date
+                    sims_by_calibration.setdefault(calibration, at[window[0]][1])
+                    replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
@@ -3063,16 +3481,19 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             out_entry: dict[str, Any] = {
                 "group": gname,
                 "backend": job_entry["backend"],
+                "job_id": job_entry["job_id"],
                 "executed": {n: executed[n] for n in required if n in executed},
-                "job_usage": metrics.get("usage"),
+                "packing_schedule": packing_schedule(entries, executed, timing),
                 "measured": {
                     n: [[round(float(p), 6) for p in dist] for dist in measured[n]] for n in required if n in measured
                 },
             }
-            # A circuit whose shots straddle a calibration update has no single
-            # calibration to correct or replay against; its group keeps the raw
-            # measurement and states why the rest is absent.
+            # A circuit whose shots straddle a calibration update, or whose
+            # window is unknown, has no single calibration to correct or replay
+            # against; its group keeps the raw measurement and states why the
+            # rest is absent.
             straddling = [n for n in required if n in executed and executed[n]["calibration_changed_during_shots"]]
+            unwindowed = [n for n in required if n in executed and executed[n]["calibration"] is None]
             if missing:
                 out_entry["summary_unavailable"] = f"missing {missing}"
                 out.append(out_entry)
@@ -3085,10 +3506,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 # variance stands; the raw distributions stay for reanalysis.
                 out_entry["comparisons_withheld"] = comparison_reason
                 out_entry["measured_statistics"] = _single_pub_views(stats)
-                if straddling:
-                    out_entry["calibration_dependent_summaries_unavailable"] = (
-                        f"calibration changed during the shots of {straddling}"
-                    )
+                if straddling or unwindowed:
+                    unavailable = []
+                    if straddling:
+                        unavailable.append(f"calibration changed during the shots of {straddling}")
+                    if unwindowed:
+                        unavailable.append(f"execution windows unavailable for {unwindowed}")
+                    out_entry["calibration_dependent_summaries_unavailable"] = "; ".join(unavailable)
                 else:
                     out_entry["replayed_statistics"] = _single_pub_views(
                         replica_statistics(group, entries, replayed, shots)
@@ -3116,8 +3540,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
-    text = json.dumps(out, indent=2) + "\n"
-    _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
+    checkpoint(out, final=True)
     print(json.dumps(out, indent=2))
 
 
