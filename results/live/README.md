@@ -72,6 +72,17 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T094055.608273Z` requalifies the packing equivalence statistic with the
+bounded Newcombe interval for every score and the improvement verdict. Clean
+source commit `ddbbcb8` (sources_modified=false) carries experiment
+digest
+`22702d25e3eb68081e0f774c1c048d3809973b4f242b30ec0e3c049be9e3a488`.
+The noise model reads design_a equivalent_within_0.03 (newcombe_wilson); zero_divisor_fringe equivalent_within_0.03 (newcombe_wilson); design_c_8_1_4 equivalent_within_0.03 (newcombe_wilson); design_c_16_1_8 equivalent_within_0.03 (newcombe_wilson); design_c_32_1_16 difference_not_resolved (newcombe_wilson_bhatia_davis); folded_qpe_mod15 equivalent_within_0.03 (newcombe_wilson); hybrid_shor_mod15 equivalent_within_0.03 (newcombe_wilson).
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`3734874afce712274a239478ad6b17e6564befff66116f6f54647bbbe6e8e64d`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
 `2026-10-11T091715.073826Z` qualifies the packing equivalence statistic. Clean source
 commit `d1a0920` (sources_modified=false) carries experiment digest
 `bbb43a7d1e9e09febbda2ca3812f58b6c5c3efd0a66294d4ba1ff6afd3b29ae7`.
