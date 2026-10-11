@@ -21,12 +21,14 @@ lint and type-check configuration only. Before any push, these exit 0:
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
+    affine_residual.py affine_residual_challenger.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
+  "$PYTHON" affine_residual.py
   "$PYTHON" modular_arithmetic.py
   "$PYTHON" order_finding.py
   "$PYTHON" compile_evidence.py --seeds 20261010 \
