@@ -927,27 +927,37 @@ def _zero_replica_distributions(entry: Entry) -> list[np.ndarray]:
 
 
 def _verify_worker_quota() -> None:
-    """The default worker count honors a cgroup CPU quota below the affinity count."""
+    """The default worker count honors the tightest CPU quota on the process's cgroup or any ancestor."""
     with tempfile.TemporaryDirectory(prefix="gororoba-cgroup-") as directory:
         root = Path(directory)
-        v2, quota, period = root / "cpu.max", root / "cfs_quota_us", root / "cfs_period_us"
-        cases: list[tuple[str | None, str | None, str | None, float | None]] = [
-            ("150000 100000", None, None, 1.5),
-            ("max 100000", None, None, None),
-            ("garbage", None, None, None),
-            (None, "200000", "100000", 2.0),
-            (None, "-1", "100000", None),
-            (None, None, None, None),
-        ]
-        for v2_text, quota_text, period_text, expected in cases:
-            for path, text in ((v2, v2_text), (quota, quota_text), (period, period_text)):
-                if text is None:
-                    path.unlink(missing_ok=True)
-                else:
-                    path.write_text(text)
-            observed = parallel.cgroup_cpu_quota(v2, quota, period)
-            if observed != expected:
-                raise RuntimeError(f"cgroup quota {(v2_text, quota_text, period_text)} reads {observed}")
+        proc = root / "proc_self_cgroup"
+        v2 = root / "v2"
+        leaf = v2 / "user.slice" / "session.scope"
+        leaf.mkdir(parents=True)
+        (v2 / "cpu.max").write_text("max 100000\n")
+        (v2 / "user.slice" / "cpu.max").write_text("150000 100000\n")
+        (leaf / "cpu.max").write_text("300000 100000\n")
+        proc.write_text("0::/user.slice/session.scope\n")
+        if parallel.cgroup_cpu_quota(proc, v2) != 1.5:
+            raise RuntimeError("a tighter ancestor quota does not bind the nested cgroup")
+        (v2 / "user.slice" / "cpu.max").write_text("garbage\n")
+        if parallel.cgroup_cpu_quota(proc, v2) != 3.0:
+            raise RuntimeError("a malformed ancestor file is not skipped")
+        (leaf / "cpu.max").write_text("max 100000\n")
+        if parallel.cgroup_cpu_quota(proc, v2) is not None:
+            raise RuntimeError("an unlimited hierarchy reports a quota")
+        v1 = root / "v1"
+        cpu = v1 / "cpu,cpuacct" / "docker" / "abc"
+        cpu.mkdir(parents=True)
+        (cpu / "cpu.cfs_quota_us").write_text("200000\n")
+        (cpu / "cpu.cfs_period_us").write_text("100000\n")
+        (v1 / "cpu,cpuacct" / "cpu.cfs_quota_us").write_text("-1\n")
+        (v1 / "cpu,cpuacct" / "cpu.cfs_period_us").write_text("100000\n")
+        proc.write_text("12:cpu,cpuacct:/docker/abc\n3:memory:/docker/abc\n")
+        if parallel.cgroup_cpu_quota(proc, v1) != 2.0:
+            raise RuntimeError("the cgroup v1 cpu controller path is not resolved")
+        if parallel.cgroup_cpu_quota(root / "absent", v1) is not None:
+            raise RuntimeError("a missing /proc/self/cgroup reports a quota")
     original = parallel.cgroup_cpu_quota
     parallel.cgroup_cpu_quota = lambda *args: 1.5
     try:
