@@ -639,11 +639,14 @@ The header also carries each job's usage record: job.usage(partial=False)
 supplies the final QPU charge once job.metrics()["usage"] leaves pending,
 and pub_shots_per_qpu_second divides the submitted PUB shots (PUB count times
 shots per PUB; replicas and fused components multiply nothing) by that
-charge; usage is read before the results and checkpointed to collect.json at
-once, so a job that ended in ERROR or CANCELLED keeps its charge and its
-result_unavailable reason, a later failure keeps every earlier job's charge,
-and a job still running at collection start has its usage read again once
-result() returns. Group records reference their job by id instead of copying
+charge, and only a DONE job, whose charge covers the whole workload, gets the
+quotient; usage is read before the results and checkpointed to
+collect.partial.json at once, so a job that ended in ERROR or CANCELLED keeps
+its charge and its result_unavailable reason, a later failure keeps every
+earlier job's charge without replacing a complete collect.json, a retrieval
+or decoding failure on a DONE job propagates, and a job still running at
+collection start has its usage read again once result() returns; the final
+write replaces collect.json and removes the partial file. Group records reference their job by id instead of copying
 either.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a

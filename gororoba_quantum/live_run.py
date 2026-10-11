@@ -2930,6 +2930,7 @@ def pub_timing(
         "feed_forward_operation_count": pub_manifest.get("feed_forward_operation_count"),
         "sequential_stage_count": pub_manifest.get("sequential_stage_count"),
         "parallel_stream_count": pub_manifest.get("parallel_stream_count"),
+        "groups": sorted({component["group"] for component in pub_manifest.get("components", [])}),
         "timing_unavailable_reason": "; ".join(reasons) if reasons else None,
     }
 
@@ -2944,8 +2945,9 @@ def job_usage_record(job: Any, pub_count: int, shots: int) -> dict[str, Any]:
     job.usage(partial=False) returns the canonical final charge once that
     status leaves pending (BaseRuntimeJob.usage). The numerator is the PUB
     count times the shots per PUB: packed replicas and fused components ride
-    inside a PUB and multiply nothing. The unit is submitted PUB shots per QPU
-    charge second. The charge keeps the service's decimal text exactly; the
+    inside a PUB and multiply nothing, and only a DONE job, whose charge
+    covers the whole workload, gets the quotient. The unit is submitted PUB
+    shots per QPU charge second. The charge keeps the service's decimal text exactly; the
     rate rounds to three decimals.
     """
     status = str(job.status())
@@ -2964,6 +2966,10 @@ def job_usage_record(job: Any, pub_count: int, shots: int) -> dict[str, Any]:
     if status not in JOB_FINAL_STATES:
         record["throughput_unavailable_reason"] = f"job status {status} is not final"
         return record
+    # The charge of a failed or cancelled job covers whatever part of the
+    # workload ran, so dividing the full submitted shots by it overstates the
+    # rate; the charge is kept for the budget audit alone.
+    divide = status == "DONE"
     if not isinstance(raw, dict):
         record["usage_status"] = "missing"
         record["throughput_unavailable_reason"] = "job metrics carry no usage"
@@ -2987,6 +2993,9 @@ def job_usage_record(job: Any, pub_count: int, shots: int) -> dict[str, Any]:
         return record
     record["usage_status"] = "final"
     record["qpu_charge_time_seconds"] = str(charge)
+    if not divide:
+        record["throughput_unavailable_reason"] = f"job status {status} did not complete the workload"
+        return record
     if charge == 0:
         record["throughput_unavailable_reason"] = "zero QPU charge; the division is withheld"
         return record
@@ -3022,14 +3031,15 @@ def component_execution_records(
 def packing_schedule(
     entries: list[Entry], executed: dict[str, dict[str, Any]], timing: dict[str, dict[str, Any]]
 ) -> dict[str, Any] | None:
-    """Scheduled duration of the packed primary's PUB against the shared replica-0 reference PUB.
+    """Scheduler residual of the packed primary's PUB against the shared replica-0 reference PUB.
 
-    Both PUBs run in one job, so the comparison carries no queue or calibration
-    drift, and both dynamic groups share the two PUBs, so the scope is global.
-    A longer packed schedule is evidence consistent with serialized
-    feed-forward; equal schedules with a factor-yield loss are evidence
-    consistent with quantum, measurement, or readout crosstalk; neither
-    identifies one group or one physical mechanism.
+    Both PUBs run in one job, so the comparison carries no queue drift; the
+    scope is global when the packed PUB carries more than one group and
+    single_group otherwise. The difference is a global packing scheduling
+    cost: the packed PUB adds every replica's whole circuit, so measurement,
+    reset, pulse-channel, and controller resources scale with replica count
+    alongside feed-forward, and the difference is attributed to none of them
+    without a matched control.
     """
     references = [e for e in entries if e.reference]
     if not references:
@@ -3039,8 +3049,10 @@ def packing_schedule(
     if packed is None or alone is None:
         return None
     packed_timing, alone_timing = timing[packed["pub"]], timing[alone["pub"]]
+    groups = packed_timing.get("groups") or []
     out: dict[str, Any] = {
-        "scope": "global",
+        "scope": "global" if len(groups) > 1 else "single_group",
+        "groups": groups,
         "packed_pub": packed["pub"],
         "reference_pub": alone["pub"],
         "feed_forward": bool(packed_timing["parallel_stream_count"]),
@@ -3059,8 +3071,19 @@ def packing_schedule(
         for name, pub in ((packed["pub"], packed_timing), (alone["pub"], alone_timing))
         if pub["scheduler_residual_dt"] is None or pub["timing_status"] != "complete"
     ]
+    # One job does not guarantee one calibration: the residuals are compared
+    # only when both PUBs ran under the same calibration with no update
+    # inside either PUB's shots.
+    same_calibration = (
+        packed.get("calibration") is not None
+        and packed.get("calibration") == alone.get("calibration")
+        and not packed.get("calibration_changed_during_shots")
+        and not alone.get("calibration_changed_during_shots")
+    )
     if missing:
         out["unavailable"] = f"scheduler residual absent or not complete for {missing}"
+    elif not same_calibration:
+        out["unavailable"] = "the packed and reference PUBs did not both run under one unchanged calibration"
     else:
         out["residual_difference_dt"] = packed_timing["scheduler_residual_dt"] - alone_timing["scheduler_residual_dt"]
     return out
@@ -3333,9 +3356,16 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     by_name = {e.name: e for entries in by_group.values() for e in entries}
     jobs_out: dict[str, dict[str, Any]] = {}
 
-    def checkpoint(entries_out: list[dict[str, Any]]) -> None:
+    # Checkpoints go to collect.partial.json, so a failure after a job's
+    # usage is read keeps that usage without replacing a complete earlier
+    # collect.json with an incomplete one; the final write replaces
+    # collect.json and removes the partial file.
+    def checkpoint(entries_out: list[dict[str, Any]], final: bool = False) -> None:
         text = json.dumps(entries_out, indent=2) + "\n"
-        _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
+        target = run_dir / ("collect.json" if final else "collect.partial.json")
+        _replace_atomically(target, lambda handle: handle.write(text), "w")
+        if final:
+            (run_dir / "collect.partial.json").unlink(missing_ok=True)
 
     out: list[dict[str, Any]] = [
         {
@@ -3366,6 +3396,11 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         try:
             result = job.result()
         except Exception as error:  # noqa: BLE001 - the service raises its own hierarchy for failed jobs
+            # Only a job that ended in ERROR or CANCELLED is expected to
+            # raise here; a retrieval or decoding failure on a DONE job
+            # propagates, so a transient fault never passes for a result.
+            if str(job.status()) not in ("ERROR", "CANCELLED"):
+                raise
             job_out["result_unavailable"] = f"{type(error).__name__}: {error}"
             checkpoint(out)
             continue
@@ -3532,7 +3567,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
-    checkpoint(out)
+    checkpoint(out, final=True)
     print(json.dumps(out, indent=2))
 
 

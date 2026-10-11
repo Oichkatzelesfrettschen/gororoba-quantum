@@ -869,12 +869,15 @@ def _verify_pub_fusion_contracts() -> None:
     executed: dict[str, dict[str, Any]] = {
         name: {"pub": pub_of[name]["name"]} for name in (primary.name, reference.name)
     }
+    executed[primary.name].update({"calibration": "c1", "calibration_changed_during_shots": False})
+    executed[reference.name].update({"calibration": "c1", "calibration_changed_during_shots": False})
     timing: dict[str, dict[str, Any]] = {
         pub_of[name]["name"]: {
             "scheduled_circuit_duration_dt": duration,
             "scheduler_residual_dt": residual,
             "timing_status": "complete",
             "parallel_stream_count": streams,
+            "groups": ["folded_qpe_mod15", "hybrid_shor_mod15"],
         }
         for name, duration, residual, streams in ((primary.name, 5200, 900, 9), (reference.name, 4800, 500, 2))
     }
@@ -887,6 +890,15 @@ def _verify_pub_fusion_contracts() -> None:
         or not schedule["feed_forward"]
     ):
         raise RuntimeError(f"packing_schedule reports {schedule}")
+    timing[pub_of[primary.name]["name"]]["groups"] = ["hybrid_shor_mod15"]
+    if packing_schedule(hybrid.entries, executed, timing)["scope"] != "single_group":  # type: ignore[index]
+        raise RuntimeError("a one-group packed PUB reports a global scope")
+    executed[reference.name]["calibration"] = "c2"
+    split = packing_schedule(hybrid.entries, executed, timing)
+    withheld_split = str(split.get("unavailable")) if split else ""
+    if split is None or "residual_difference_dt" in split or "one unchanged calibration" not in withheld_split:
+        raise RuntimeError(f"packing_schedule across calibrations reports {split}")
+    executed[reference.name]["calibration"] = "c1"
     timing[pub_of[reference.name]["name"]]["scheduler_residual_dt"] = None
     schedule = packing_schedule(hybrid.entries, executed, timing)
     if schedule is None or "residual_difference_dt" in schedule or "unavailable" not in schedule:
@@ -1318,10 +1330,27 @@ def _verify_fused_collection() -> None:
         if (
             job_record["usage"]["usage_status"] != "final"
             or job_record["usage"]["qpu_charge_time_seconds"] != "0.25"
+            or job_record["usage"]["pub_shots_per_qpu_second"] is not None
             or "job failed on the service" not in job_record["result_unavailable"]
             or len(errored) != 1
+            or (run_dir / "collect.partial.json").exists()
         ):
             raise RuntimeError(f"a failed job collects as {job_record}")
+        # A DONE job whose result retrieval raises propagates the failure and
+        # leaves the complete earlier collect.json in place.
+        flaky = _ProbeResultJob(result, status="DONE", usage=usage, charge=12.5)
+        flaky.result = lambda: (_ for _ in ()).throw(RuntimeError("decoder failure"))  # type: ignore[method-assign]
+        before = (run_dir / "collect.json").read_bytes()
+        try:
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: flaky}), run_dir)
+        except RuntimeError as error:
+            if "decoder failure" not in str(error):
+                raise
+        else:
+            raise RuntimeError("a DONE job's retrieval failure passes for a failed job")
+        if (run_dir / "collect.json").read_bytes() != before or not (run_dir / "collect.partial.json").exists():
+            raise RuntimeError("a retrieval failure replaced the complete collection or left no partial checkpoint")
         with redirect_stdout(io.StringIO()):
             _collect_with_zero_simulation(collection_service, run_dir)
 
@@ -1349,9 +1378,13 @@ def _verify_fused_collection() -> None:
                 raise RuntimeError(f"a job with the wrong PUB count reports {error}") from error
         else:
             raise RuntimeError("a job with the wrong PUB count collects")
-        partial = json.loads((run_dir / "collect.json").read_text())
+        partial = json.loads((run_dir / "collect.partial.json").read_text())
         if partial[0]["jobs"][job_id]["usage"]["qpu_charge_time_seconds"] != "1.0" or len(partial) != 1:
             raise RuntimeError(f"the checkpoint after a failed collection lacks the usage: {partial[0]['jobs']}")
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(collection_service, run_dir)
+        if (run_dir / "collect.partial.json").exists() or (run_dir / "collect.json").read_bytes() != first:
+            raise RuntimeError("a complete collection leaves the partial checkpoint or differs from the first")
 
 
 def _verify_scheduler_timing_cases() -> None:
@@ -1546,7 +1579,7 @@ def _verify_job_usage_cases() -> None:
         (_ProbeResultJob(result, status="DONE", usage=final, charge=None), "missing", None, "no qpu_charge"),
         (_ProbeResultJob(result, status="DONE", usage=final, charge=0), "final", None, "zero QPU charge"),
         (_ProbeResultJob(result, status="DONE", usage=final, charge=10), "final", "2457.600", None),
-        (_ProbeResultJob(result, status="ERROR", usage=final, charge=0.5), "final", "49152.000", None),
+        (_ProbeResultJob(result, status="ERROR", usage=final, charge=0.5), "final", None, "did not complete"),
         (_ProbeResultJob(result, status="DONE", usage=final, charge="abc"), "malformed", None, "not a finite"),
         (_ProbeResultJob(result, status="DONE", usage=final, charge=float("inf")), "malformed", None, "not a finite"),
         (_ProbeResultJob(result, status="DONE", usage=final, charge=-1), "malformed", None, "not a finite"),

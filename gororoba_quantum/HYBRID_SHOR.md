@@ -673,8 +673,10 @@ its QPY SHA-256 is
   yield loss are evidence consistent with quantum, measurement, or readout
   crosstalk; equal residuals with equivalent yields resolve no packing cost;
   a static group's residual difference excludes feed-forward. The scope is
-  global only when the packed PUB carries both dynamic groups, and the
-  reading identifies neither one group nor one physical mechanism.
+  global only when the packed PUB carries both dynamic groups (a record whose
+  groups landed on different backends compares each group with its own
+  reference), and the reading identifies neither one group nor one physical
+  mechanism.
   The identity null shares its PUB with folded QPE `s0` and the primary with
   `s1`; the two folded instances carry identical gate counts and
   measurement, reset, and branch schedules, so the null and the primary face
