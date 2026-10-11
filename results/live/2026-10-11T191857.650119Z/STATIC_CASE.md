@@ -9,14 +9,14 @@ moment it is the right spend.
 ## What the run measures
 
 Seventeen static PUBs at 4,096 shots (69,632 submitted PUB shots) in two
-jobs, one per backend, from this dry run (`2026-10-11T180802.703006Z`, source
-commit `889062d`, sources_modified=false, experiment digest
-`105bdde5efe95277b74f992987eca1a28169328c66f699383df34ef36d085e52`, record
-SHA-256 `17f89d7e8c78f645c9e3eed46bd924a1c0c4532814c9b9bb636e1c80401cf6ae`,
+jobs, one per backend, from this dry run (`2026-10-11T191857.650119Z`, source
+commit `3394bb3`, sources_modified=false, experiment digest
+`dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e`, record
+SHA-256 `0646073e1b97f7cce2b4437bd09e23f54f18e1a61465148031cd94206a1ddd02`,
 QPY SHA-256
-`161fa6a827bfe3f038c7f667a653790ba1d0089d6ff3f9cdcfee23538992e682`),
-twirling and DD off so the first static measurement compares directly with
-the calibration-derived noise model:
+`0c2ac43cf99b1e3a03fc7c7099be70689c9c81f68549645f4241cb2e0d4d2d80`),
+twirling and DD off, groups one CZ hop apart, so the first static measurement
+compares directly with the calibration-derived noise model:
 
 | group | backend | replicas | PUBs | noise-model prediction (execution-calibration replay at submission) |
 |---|---|---:|---:|---|
@@ -68,8 +68,8 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --groups design_a,zero_divisor_fringe,design_c_8_1_4,design_c_16_1_8,design_c_32_1_16 \
   --max-execution-seconds 90 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-11T180802.703006Z \
-  --approved-record-sha256 17f89d7e8c78f645c9e3eed46bd924a1c0c4532814c9b9bb636e1c80401cf6ae \
+  --approved-record ../results/live/2026-10-11T191857.650119Z \
+  --approved-record-sha256 0646073e1b97f7cce2b4437bd09e23f54f18e1a61465148031cd94206a1ddd02 \
   --submit
 ```
 

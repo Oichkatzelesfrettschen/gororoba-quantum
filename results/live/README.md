@@ -85,32 +85,33 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `720fd82c6510cc4a712b8dad75e6fcf4facf43d22e2102467079daba5a2ce318`.
 
-`2026-10-11T180652.022233Z` requalifies the default plan after collection
+`2026-10-11T191759.398725Z` requalifies the default plan after collection
 gained write-once raw preservation, the approval gate gained the record
-digest, one-attempt consumption, and the execution ceiling, and the
-packing comparison gained the Hoeffding view: 23 PUBs (3 static on ibm_fez,
+digest, one-attempt consumption, and the execution ceiling, the packing
+comparison gained the Hoeffding view, and joint placement gained the
+cross-group one-hop buffer: 23 PUBs (3 static on ibm_fez,
 14 static and 6 dynamic on ibm_kingston), 94,208 submitted PUB shots. Clean
-source commit `889062d` (sources_modified=false) carries experiment digest
-`105bdde5efe95277b74f992987eca1a28169328c66f699383df34ef36d085e52`.
+source commit `3394bb3` (sources_modified=false) carries experiment digest
+`dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e`.
 The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
-`5ef1d52824a389a740b60d5603b49d248798a86a88f6890cc8f1baf445463ee0`; QPY
+`440a82ec4d682652d151f09c238a8599141b540d3fc6f90293fc98bc439e0f61`; QPY
 SHA-256 is
-`d54b9b73ed386aaccef5a52ee39518e6aeb0a681074c339b9c07e58854481230`.
+`06c013fe366c4bfd83f6fdf047e5d794f52a30ddf0cb4e7baf667ece8ffa0743`.
 
-`2026-10-11T180802.703006Z` is the static job's submission-ready dry run:
+`2026-10-11T191857.650119Z` is the static job's submission-ready dry run:
 the five static groups (design A on ibm_fez; the zero-divisor fringe and
 design C 8, 16, and 32 on ibm_kingston), 17 static PUBs at 4096 shots
 (69,632 submitted PUB shots), twirling and DD off, isolated references on,
 made with `--max-execution-seconds 90` so its policy carries the ceiling the
 case names. Its `STATIC_CASE.md` is written and ranks after the ladder case
 (HARDWARE_PLAN.md, "Risks"); it is not approved and nothing was submitted.
-Clean source commit `889062d` (sources_modified=false) carries experiment
+Clean source commit `3394bb3` (sources_modified=false) carries experiment
 digest
-`105bdde5efe95277b74f992987eca1a28169328c66f699383df34ef36d085e52`.
+`dfb0a9142f9f48d2e3f122329ffdd77348711069a924a30680aece217927e41e`.
 The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
-`17f89d7e8c78f645c9e3eed46bd924a1c0c4532814c9b9bb636e1c80401cf6ae`; QPY
+`0646073e1b97f7cce2b4437bd09e23f54f18e1a61465148031cd94206a1ddd02`; QPY
 SHA-256 is
-`161fa6a827bfe3f038c7f667a653790ba1d0089d6ff3f9cdcfee23538992e682`.
+`0c2ac43cf99b1e3a03fc7c7099be70689c9c81f68549645f4241cb2e0d4d2d80`.
 
 `2026-10-11T152922.787095Z` is the first hardware record: the owner-approved Step 3 dynamic
 job on ibm_kingston, job `db5qmqclf4us73c4e1ug`, submitted and collected from
