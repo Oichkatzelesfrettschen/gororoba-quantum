@@ -565,8 +565,9 @@ the live Target and avoids the excluded qubits and edges of that run's
 snapshot; admissible embeddings rank by the layout score of the moved primary
 circuit. A finite best-first search tries retained compile/backend
 combinations by combined log score until exact placement and fused Target
-validation succeed. The joint allocator takes each combination's embeddings
-in backtracked rounds, one qubit apart within a group and physically disjoint
+validation succeed. The joint allocator searches each combination's complete
+required replica set before committing placements, then advances fair surplus
+rounds. Replicas stay one qubit apart within a group and physically disjoint
 across groups that share a PUB, until the remaining groups cannot advance
 together or --max-replicas is reached. An
 explicit --replica-floor sets the

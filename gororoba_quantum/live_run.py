@@ -1045,47 +1045,68 @@ def _choice_execution_kind(choice: Choice) -> str:
     return next(iter(kinds))
 
 
-def _round_assignment(
-    pools: list[_FusionPlacementPool], occupied: set[int]
+def _placement_assignment(
+    pools: list[_FusionPlacementPool], occupied: set[int], replicas_per_pool: int = 1
 ) -> list[tuple[_FusionPlacementPool, Replica]] | None:
-    """Find one additional non-overlapping placement for every pool in a fair round."""
-    available: dict[int, list[Replica]] = {}
-    for pool in pools:
-        available[id(pool)] = [
-            candidate
-            for candidate in pool.candidates
-            if not set(candidate.qubits).intersection(occupied | pool.blocked)
-        ]
-    ordered = sorted(pools, key=lambda pool: (len(available[id(pool)]), pool.original_index))
-    if any(not available[id(pool)] for pool in ordered):
-        return None
+    """Search all required replicas together, including alternatives to earlier placements.
 
-    selected: list[tuple[_FusionPlacementPool, Replica]] = []
+    Increasing candidate indices within a pool remove permutations of the same
+    replica set without removing any feasible set. The most constrained pool
+    advances first. Pool state changes only after a complete assignment exists.
+    """
+    qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
+    footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
+    chosen: list[list[int]] = [[] for _ in pools]
+    blocked = [set(pool.blocked) for pool in pools]
 
-    def search(index: int, round_qubits: set[int]) -> bool:
-        if index == len(ordered):
-            return True
-        pool = ordered[index]
-        for candidate in available[id(pool)]:
-            qubits = set(candidate.qubits)
-            if qubits & round_qubits:
+    def search(used: set[int]) -> bool:
+        available: list[tuple[int, int, int, list[int]]] = []
+        for pool_index, pool in enumerate(pools):
+            remaining = replicas_per_pool - len(chosen[pool_index])
+            if remaining == 0:
                 continue
-            selected.append((pool, candidate))
-            if search(index + 1, round_qubits | qubits):
+            start = chosen[pool_index][-1] + 1 if chosen[pool_index] else 0
+            indices = [
+                index
+                for index in range(start, len(pool.candidates))
+                if not qubits[pool_index][index].intersection(used | blocked[pool_index])
+            ]
+            if len(indices) < remaining:
+                return False
+            available.append((len(indices) - remaining, pool.original_index, pool_index, indices))
+        if not available:
+            return True
+        _, _, pool_index, indices = min(available)
+        previous_blocked = blocked[pool_index]
+        for index in indices:
+            chosen[pool_index].append(index)
+            blocked[pool_index] = previous_blocked | footprints[pool_index][index]
+            if search(used | qubits[pool_index][index]):
                 return True
-            selected.pop()
+            chosen[pool_index].pop()
+        blocked[pool_index] = previous_blocked
         return False
 
-    return selected if search(0, set()) else None
+    if not search(occupied):
+        return None
+    return [(pool, pool.candidates[index]) for pool, indices in zip(pools, chosen, strict=True) for index in indices]
+
+
+def _commit_placement_assignment(placements: list[tuple[_FusionPlacementPool, Replica]], occupied: set[int]) -> None:
+    """Commit a complete assignment and its separation footprints."""
+    for pool, candidate in placements:
+        selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
+        pool.selected.append(selected)
+        occupied.update(selected.qubits)
+        pool.blocked.update(_placement_footprint(pool, selected))
 
 
 def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
     """Jointly place every same-backend, same-kind group before cross-group fusion.
 
-    Each allocation round gives every group that still has an individually
-    available candidate one replica. Backtracking resolves layout collisions
-    inside the round. The required rounds place two replicas when isolated
-    references are enabled, unless --max-replicas=1 explicitly selects the
+    Backtracking searches all required replicas together, revisiting earlier
+    placements when a later requirement fails. The required set places two
+    replicas when isolated references are enabled, unless --max-replicas=1 explicitly selects the
     single-replica surface. Later rounds advance every group that can still
     participate. A per-group blocked set keeps replicas of that group one CZ
     hop apart; the shared occupied set keeps different groups physically
@@ -1113,46 +1134,38 @@ def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> di
             pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width))
 
         occupied: set[int] = set()
-        allocation_round = 0
         required_rounds = 2 if policy.isolated_reference and policy.max_replicas != 1 else 1
+        assignment = _placement_assignment(pools, occupied, required_rounds)
+        if assignment is None:
+            diagnostics = {
+                pool.choice.group.name: {
+                    "pattern_width": pool.pattern_width,
+                    "floor_candidates": len(pool.candidates),
+                }
+                for pool in pools
+            }
+            raise LiveRunError(
+                f"{backend_name} {kind}: cannot satisfy {required_rounds} required joint-placement rounds; "
+                f"groups={json.dumps(diagnostics, sort_keys=True)}"
+            )
+
+        _commit_placement_assignment(assignment, occupied)
+        allocation_round = required_rounds
         while True:
             under_cap = [
                 pool for pool in pools if policy.max_replicas is None or len(pool.selected) < policy.max_replicas
             ]
-            if allocation_round < required_rounds:
-                eligible = under_cap
-            else:
-                eligible = [
-                    pool
-                    for pool in under_cap
-                    if any(
-                        not set(candidate.qubits).intersection(occupied | pool.blocked) for candidate in pool.candidates
-                    )
-                ]
+            eligible = [
+                pool
+                for pool in under_cap
+                if any(not set(candidate.qubits).intersection(occupied | pool.blocked) for candidate in pool.candidates)
+            ]
             if not eligible:
                 break
-            assignment = _round_assignment(eligible, occupied)
+            assignment = _placement_assignment(eligible, occupied)
             if assignment is None:
-                if allocation_round < required_rounds:
-                    diagnostics = {
-                        pool.choice.group.name: {
-                            "pattern_width": pool.pattern_width,
-                            "floor_candidates": len(pool.candidates),
-                            "selected_replicas": len(pool.selected),
-                        }
-                        for pool in pools
-                    }
-                    raise LiveRunError(
-                        f"{backend_name} {kind}: cannot satisfy {required_rounds} required joint-placement rounds; "
-                        f"groups={json.dumps(diagnostics, sort_keys=True)}"
-                    )
                 break
-            for pool, candidate in assignment:
-                selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
-                pool.selected.append(selected)
-                qubits = set(selected.qubits)
-                occupied.update(qubits)
-                pool.blocked.update(_placement_footprint(pool, selected))
+            _commit_placement_assignment(assignment, occupied)
             allocation_round += 1
 
         if any(len(pool.selected) < required_rounds for pool in pools):
@@ -1187,7 +1200,7 @@ def allocate_fusion_replicas(choices: list[Choice], policy: ReplicaPolicy) -> di
     return {
         "cross_group_disjoint": True,
         "within_group_one_hop_separated": True,
-        "allocation": "required-round-backtracking-then-fair-surplus",
+        "allocation": "required-set-backtracking-then-fair-surplus",
         "clusters": cluster_records,
     }
 

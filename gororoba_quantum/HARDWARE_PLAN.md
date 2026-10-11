@@ -55,8 +55,9 @@ execution path but does not establish default-policy submission readiness.
    best-first search ranks candidate combinations by their combined log score
    and advances to the next combination when exact joint placement or fusion
    fails. A round-fair backtracking allocator gives every same-backend,
-   same-kind group the two placements needed for its replica-0 reference
-   before allocating surplus rounds. Replicas of one group stay one CZ hop
+   same-kind group the two placements needed for its replica-0 reference.
+   The search considers all required placements together before committing
+   any placement, then allocates surplus rounds. Replicas of one group stay one CZ hop
    apart; groups that share a PUB occupy disjoint physical qubits. The record
    retains the selected candidate indices, scores, attempted-combination
    count, and a bounded rejection sample. An explicit

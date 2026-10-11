@@ -15,6 +15,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qpy, transpile
 from qiskit.circuit import Clbit
 from qiskit.circuit.controlflow import IfElseOp
@@ -1063,6 +1064,58 @@ def _verify_joint_fusion_candidate_backtracking() -> None:
         raise RuntimeError(f"joint candidate backtracking evidence is {selection}")
 
 
+def _verify_required_placement_backtracking() -> None:
+    """A preferred path midpoint cannot hide the feasible two-endpoint replica set."""
+    snapshot = _fake_snapshot(FakeFez())
+    groups = {group.name: group for group in experiment_groups()}
+    choices = [
+        _synthetic_fusion_choice(groups["design_a"], snapshot, 0, False),
+        _synthetic_fusion_choice(groups["design_c_8_1_4"], snapshot, 3, False),
+    ]
+    graph = rx.PyGraph()
+    graph.add_nodes_from(range(snapshot.capabilities.num_qubits))
+    graph.add_edges_from_no_data([(0, 1), (1, 2)])
+    candidate_qubits = {0: [1, 0, 2], 3: [3, 4]}
+
+    def path_candidates(
+        snap: Snapshot, isas: list[QuantumCircuit], floor: float
+    ) -> tuple[Any, list[packing.Replica], int]:
+        del snap, floor
+        source = _physical(isas[0])[0]
+        return (
+            graph,
+            [
+                packing.Replica(index, {source: qubit}, 1.0 - index * 0.01)
+                for index, qubit in enumerate(candidate_qubits[source])
+            ],
+            1,
+        )
+
+    original_candidates = live_run_module._replica_candidates
+    live_run_module._replica_candidates = path_candidates
+    try:
+        evidence = live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+        placements = [[replica.qubits for replica in choice.replicas] for choice in choices]
+        if placements != [[[0], [2]], [[3], [4]]]:
+            raise RuntimeError(f"required replica-set backtracking selected {placements}")
+        if evidence["clusters"][0]["required_rounds"] != 2:
+            raise RuntimeError("required replica-set backtracking changes the reference requirement")
+        if any(sum(entry.reference for entry in choice.entries) != 1 for choice in choices):
+            raise RuntimeError("required replica-set backtracking loses a group's reference entry")
+        execution_pubs(choices)
+
+        candidate_qubits[0] = [1, 0]
+        try:
+            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY)
+        except LiveRunError as error:
+            if "cannot satisfy 2 required joint-placement rounds" not in str(error):
+                raise RuntimeError(f"infeasible required replica set reports {error}") from error
+        else:
+            raise RuntimeError("required replica-set search accepts adjacent replicas")
+    finally:
+        live_run_module._replica_candidates = original_candidates
+
+
 def _fixture_args(**overrides: Any) -> argparse.Namespace:
     values = {
         "backends": None,
@@ -1589,6 +1642,7 @@ def _verify() -> None:
     _verify_fused_collection()
     _verify_joint_fusion_placement()
     _verify_joint_fusion_candidate_backtracking()
+    _verify_required_placement_backtracking()
     _verify_schema_lifecycle()
     _verify_schema_discrimination()
     _verify_every_job_revalidates()
