@@ -666,13 +666,15 @@ its QPY SHA-256 is
   compares scheduler residuals, each PUB's scheduled duration above its own
   execution-time Target bound, because the packed and reference PUBs hold
   different gate content and their raw durations differ by gate time alone.
-  A larger packed residual on a PUB that carries feed-forward is evidence
-  consistent with serialized feed-forward; equal residuals with a detected
+  A larger packed residual is an unattributed global packing scheduling
+  cost: feed-forward, measurement, reset, pulse-channel, and controller
+  resources all scale with replica count, and only the matched
+  dynamic/control ladder separates them; equal residuals with a detected
   yield loss are evidence consistent with quantum, measurement, or readout
   crosstalk; equal residuals with equivalent yields resolve no packing cost;
-  a static group's residual difference is alignment alone. Both PUBs carry
-  every group of their kind, so the comparison is global and identifies
-  neither one group nor one physical mechanism.
+  a static group's residual difference excludes feed-forward. The scope is
+  global only when the packed PUB carries both dynamic groups, and the
+  reading identifies neither one group nor one physical mechanism.
   The identity null shares its PUB with folded QPE `s0` and the primary with
   `s1`; the two folded instances carry identical gate counts and
   measurement, reset, and branch schedules, so the null and the primary face

@@ -1488,8 +1488,8 @@ def _verify_packing_equivalence() -> None:
     open_question = {"below_zero_95": False, "above_zero_95": False, "within_margin": False}
     gain = {"below_zero_95": False, "above_zero_95": True, "within_margin": False}
     readings: list[tuple[dict[str, Any], dict[str, Any], str]] = [
-        ({"residual_difference_dt": 400, "feed_forward": True}, loss, "serialized"),
-        ({"residual_difference_dt": 400, "feed_forward": False}, loss, "alignment alone"),
+        ({"residual_difference_dt": 400, "feed_forward": True}, loss, "unattributed global packing scheduling cost"),
+        ({"residual_difference_dt": 400, "feed_forward": False}, loss, "scheduling alone"),
         ({"residual_difference_dt": 0, "feed_forward": True}, loss, "readout crosstalk"),
         ({"residual_difference_dt": 0, "feed_forward": True}, small_loss, "loss inside the equivalence margin"),
         ({"residual_difference_dt": 0, "feed_forward": True}, same, "no packing cost"),

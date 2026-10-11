@@ -1909,13 +1909,15 @@ def _bernoulli_score(entry: Entry) -> bool:
 def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str, Any] | None) -> str | None:
     """One reading of the scheduler-residual and fidelity comparisons together.
 
-    A larger packed residual on a PUB that carries feed-forward is evidence
-    consistent with serialized feed-forward; without feed-forward the residual
-    difference is alignment alone. Equal residuals with a detected yield loss
-    are evidence consistent with quantum, measurement, or readout crosstalk. A
-    loss the 95 percent interval resolves is reported even when the 90
-    percent interval sits inside the margin. Both PUBs carry every group of
-    their kind, so no reading names one group or one physical mechanism.
+    A larger packed residual is an unattributed global packing scheduling
+    cost: feed-forward, measurement, reset, pulse-channel, and controller
+    resources all scale with replica count, and only a matched
+    dynamic/control ladder separates them; without feed-forward in the packed
+    PUB the resources in play exclude feed-forward. Equal residuals with a
+    detected yield loss are evidence consistent with quantum, measurement, or
+    readout crosstalk. A loss the 95 percent interval resolves is reported
+    even when the 90 percent interval sits inside the margin. No reading
+    names one group or one physical mechanism.
     """
     if schedule is None or crosstalk is None:
         return None
@@ -1937,11 +1939,15 @@ def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str,
         return f"scheduler residuals unavailable; the fidelity comparison stands alone: {yield_reading}"
     longer = schedule["residual_difference_dt"] > 0
     if not schedule.get("feed_forward"):
-        return f"no feed-forward in the packed PUB, so the residual difference is alignment alone; {yield_reading}"
+        return (
+            f"no feed-forward in the packed PUB, so a residual difference is measurement, reset, or alignment "
+            f"scheduling alone; {yield_reading}"
+        )
     if longer:
         return (
-            f"larger packed scheduler residual with {yield_reading}: evidence consistent with serialized "
-            f"feed-forward{tail}"
+            f"larger packed scheduler residual with {yield_reading}: an unattributed global packing scheduling "
+            f"cost that only a matched dynamic/control ladder separates into feed-forward, measurement, reset, "
+            f"pulse-channel, and controller shares{tail}"
         )
     if loss:
         return (
