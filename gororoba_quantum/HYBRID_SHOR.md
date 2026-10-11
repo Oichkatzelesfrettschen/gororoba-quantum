@@ -19,11 +19,14 @@ implementation conformance rather than quantum advantage. `N = 21` and
 The project keeps four evidence levels separate.
 
 1. **Exact host evidence.** Exhaustive basis-state checks prove each bounded
-   modular permutation, each ANF reconstruction, and each synthesized
-   controlled multiplier. Aer verifies the phase support and factor decoder.
+   modular permutation, each ANF reconstruction, each controlled multiplier,
+   and every scratch-workspace restoration. Aer verifies the phase support and
+   factor decoder.
 2. **Compiler evidence.** FakeFez compilation measures width, CZ count, depth,
-   and control-flow structure against the pinned Qiskit stack. The fake backend
-   supplies a static target snapshot rather than a prediction of live noise.
+   layout, and recursive control-flow operation census against the pinned
+   Qiskit stack. The pass callback separates high-level synthesis, basis
+   translation, routing, and final optimization. The fake backend supplies a
+   static target snapshot rather than a prediction of live noise.
 3. **Live dry-run evidence.** `live_run.py` discovers the requested systems,
    refreshes their status, Targets, properties, and submission capabilities,
    derives the hybrid group's requirements from circuits built in the current
@@ -112,7 +115,7 @@ nonidentity translation moves zero, while modular multiplication fixes zero.
 The signed translations also have exponent at most four. These invariants rule
 out direct replacement of Shor's multiplier by a Cayley-Dickson product.
 
-## Three multiplier syntheses
+## Multiplier syntheses
 
 ### Mersenne rotation
 
@@ -147,11 +150,94 @@ transpositions `(p, v1), ..., (p, vk)`. A Hamming-distance `d` transposition
 walks a Gray path forward and back with `2*d - 1` basis-edge swaps. Each edge
 uses the phase control and open or closed controls on every unchanged data bit.
 
-The cycle representation reduces logical width and often reduces logical gate
-count. Heron routing decides the useful circuit. The `N = 21` compile shows why
-a logical count cannot select the winner: 449 cycle edges route to more CZ gates
-and greater depth than 866 ANF terms. `auto` therefore selects ANF on the
-bounded generic frontier while the CLI keeps both candidates explicit.
+The cycle representation reduces logical width and logical operation count.
+The scratch-free form makes every `N = 21` edge a five-control X: one phase
+control plus the four unchanged data bits. Qiskit 2.5.2 lowers the six-qubit
+candidate with `noaux_v24`; the circuit borrows zero dirty ancillas. The
+resulting dense logical interaction demand meets a 156-qubit FakeFez graph
+with 176 undirected edges, maximum degree three, and degree census 8 at degree
+one, 100 at degree two, and 48 at degree three. The dense-interaction and
+degree-three mismatch makes routing, not the 449-edge coefficient count alone,
+decisive.
+
+### One-clean cycle transpositions
+
+`cycle_transpositions_1_clean` preserves the same cycles, pivots, Gray paths,
+and open-control truth conditions. Each basis edge wraps its zero-valued data
+controls in X gates and composes Qiskit's public
+`synth_mcx_1_clean_kg24` circuit over one clean workspace qubit. The synthesis
+turns each five-control X into six RCCX gates and one CCX gate, then restores
+the workspace. Across the complete `N = 21` schedule, 449 basis edges become
+2,694 RCCX and 449 CCX gates with zero opaque MCX gates.
+
+Exact operator or statevector checks cover control values zero and one, every
+five-bit input, and multipliers 2, 4, and 16. The expected packed output always
+contains a zero workspace bit. `auto` selects the one-clean strategy for a
+generic multiplier; identity and Mersenne-rotation fast paths retain their
+zero-workspace implementations. The CLI keeps scratch-free cycle and ANF
+strategies explicit as falsifiers.
+
+## Static call and flow map
+
+`scripts/python_call_graph.py` parses the Python 3.11 grammar, compiler symbol
+tables, imports, and stable direct calls. Its current complete repository map
+contains 16 modules, 276 top-level functions, and 515 direct edges. The
+`compile_evidence.main` reachable subgraph contains 39 functions and 50 edges;
+the six declared roots jointly reach 135 functions and 233 edges. The relevant
+load-bearing paths are:
+
+```text
+compile_evidence.main
+  -> compile_evidence.capture
+    -> compile_evidence._candidate_record
+      -> compile_evidence._compile_candidate
+        -> compile_evidence._build_source
+          -> order_finding.order_finding_plan
+            -> modular_arithmetic.multiplier_profile
+          -> order_finding.factor_order_finding
+            -> order_finding.order_finding_plan
+            -> modular_arithmetic.append_controlled_modular_multiply
+              -> modular_arithmetic._append_controlled_basis_transposition
+                -> modular_arithmetic._append_controlled_basis_edge
+
+hybrid_shor.main
+  -> hybrid_shor._plan_payload
+    -> order_finding.order_finding_plan
+      -> modular_arithmetic.multiplier_profile
+  -> hybrid_shor._simulate_payload
+    -> order_finding.factor_order_finding
+      -> order_finding.order_finding_plan
+      -> modular_arithmetic.append_controlled_modular_multiply
+```
+
+GNU cflow 1.8 and cscope 15.9 provide negative controls rather than semantic
+Python authority. A direct cflow run over the three path modules emits 200
+parser diagnostics, including unterminated-string and false-redefinition
+reports, and produces only 11 malformed graph lines. cscope builds an index, but
+the documented caller query returns one definition-like lexical row. The AST
+map therefore supplies the reproducible call graph; cflow and cscope establish
+that C-family parsing cannot support a Python control-flow claim. The AST model
+deliberately excludes nested callback bodies and dynamic Qiskit dispatch; the
+retained aggregate-resource pass transitions supply runtime evidence for the
+callback boundary. Each transition records a change in qubit count, recursive
+depth, or recursive operation census. Named stage snapshots bind the synthesis
+and routing boundaries without claiming a full structural digest of operation
+order, arguments, parameters, control flow, or layout.
+
+The parser controls run from the repository root:
+
+```sh
+FLOW_PROBE_DIRECTORY="$(mktemp -d)"
+trap 'rm -r -- "$FLOW_PROBE_DIRECTORY"' EXIT
+cflow --no-cpp --all gororoba_quantum/compile_evidence.py \
+  gororoba_quantum/order_finding.py gororoba_quantum/modular_arithmetic.py \
+  >"$FLOW_PROBE_DIRECTORY/cflow.out" 2>"$FLOW_PROBE_DIRECTORY/cflow.err"
+cscope -bqk -f "$FLOW_PROBE_DIRECTORY/cscope.out" \
+  gororoba_quantum/compile_evidence.py gororoba_quantum/order_finding.py \
+  gororoba_quantum/modular_arithmetic.py
+cscope -dL -3 append_controlled_modular_multiply \
+  -f "$FLOW_PROBE_DIRECTORY/cscope.out"
+```
 
 ## Leading-identity pruning
 
@@ -195,14 +281,96 @@ The coefficient and compile frontier uses `a = 2` and `m = 2*bit_length(N)`.
 | Modulus and strategy | qubits | arithmetic coefficient count | FakeFez CZ | FakeFez depth | admission |
 |---|---:|---:|---:|---:|---|
 | `N = 15`, Mersenne rotation | 5 | 5 controlled swaps | 60 | 183 | executable conformance case |
-| `N = 21`, ANF | 11 | 866 ANF terms, 50 swaps | 48,895 | 116,968 | compile-only rejection surface |
-| `N = 21`, cycle | 6 | 449 basis edges | 63,818 | 210,473 | refutes gate-count-only selection |
+| `N = 21`, one-clean cycle | 7 | 449 basis edges | 17,736 | 47,354 | best compile; noise admission pending |
+| `N = 21`, two-clean cycle control | 8 | 449 basis edges | 21,970 | 50,079 | ancilla-count causal control |
+| `N = 21`, ANF | 11 | 866 ANF terms, 50 swaps | 48,895 | 116,968 | arity-distribution control |
+| `N = 21`, scratch-free cycle | 6 | 449 basis edges | 63,818 | 210,473 | no-auxiliary falsifier |
 | `N = 35`, ANF | 13 | 3,476 ANF terms, 72 swaps | unmeasured | unmeasured | conditional ceiling |
 | `N = 35`, cycle | 7 | 1,037 basis edges | unmeasured | unmeasured | conditional ceiling |
 
-The `N = 21` result blocks QPU admission under the current synthesis. The
-`N = 35` compile remains deferred until a structural change lowers the `N = 21`
-cost; a larger compile alone supplies little new information.
+The reference column uses seed 20261010. The one-clean circuit reduces CZ by
+72.2 percent and depth by 77.5 percent against the scratch-free circuit. The
+one-clean circuit reduces CZ by 63.7 percent and depth by 59.5 percent against
+ANF while using seven rather than eleven logical qubits.
+
+The ten-round schedule exposes each coefficient sum. Multiplier 2 contributes
+53 basis edges once, multiplier 4 contributes 44 edges five times, and
+multiplier 16 contributes 44 edges four times, so the cycle total is
+`53 + 5*44 + 4*44 = 449`. The corresponding ANF totals are 92, 86, and 86,
+which give `92 + 5*86 + 4*86 = 866` terms. The one-clean gate census then
+follows directly as `6*449 = 2,694` RCCX gates plus 449 CCX gates.
+
+The ANF coefficient histogram explains part of the crossover. The phase
+control raises each monomial's control arity by one:
+
+| ANF monomial degree | controlled-X controls | complete-schedule terms |
+|---:|---:|---:|
+| 1 | 2 | 140 |
+| 2 | 3 | 212 |
+| 3 | 4 | 320 |
+| 4 | 5 | 194 |
+
+ANF therefore places 672 of 866 terms, or 77.6 percent, below five controls.
+The scratch-free cycle places all 449 edges at five controls. The five ANF
+scratch qubits hold computed output data during the network; they do not remain
+five continuously clean routing buffers. The corrected mechanism combines
+control-arity distribution, synthesis-family selection, and topology routing.
+
+The seed-20261010 pass trace separates the arithmetic coefficients from routing
+amplification:
+
+| Stage | scratch-free cycle | one-clean cycle |
+|---|---:|---:|
+| Source | 449 open-control MCX | 2,694 RCCX + 449 CCX |
+| After high-level synthesis | 36,818 CX + 449 CRZ | unchanged explicit RCCX/CCX |
+| Pre-routing tracked entanglers | 36,818 CX + 449 CRZ | 10,776 CZ |
+| SabreLayout insertions | 13,202 swaps | 4,283 swaps |
+| Post-routing basis translation | 77,322 CZ | 23,625 CZ |
+| Final optimization | 63,818 CZ | 17,736 CZ |
+
+The accounting subtracts the 36,818 HLS CX gates from the scratch-free final
+CZ count and the 10,776 pre-routing CZ gates from the one-clean final count.
+The final 46,082-CZ reduction then decomposes algebraically into a 26,042-gate
+tracked synthesis reduction and a 20,040-gate residual. The residual includes
+CRZ translation, routing, and final optimization, so it is not a pure SWAP
+count. The independent swap reduction from 13,202 to 4,283 supplies the direct
+routing evidence.
+
+Eight fixed transpiler seeds, 20261010 through 20261017, preserve the CZ-count
+ordering. Their bounded-sample means preserve the depth ordering shown below,
+while one seed reverses the one-clean and two-clean depths:
+
+| Candidate | CZ range | CZ mean | depth range | depth mean |
+|---|---:|---:|---:|---:|
+| one-clean cycle | 17,736-18,773 | 17,865.625 | 47,354-49,688 | 47,645.75 |
+| two-clean cycle control | 20,966-22,115 | 21,622 | 49,284-51,170 | 50,250.5 |
+| ANF | 48,895-58,358 | 52,010.25 | 116,968-134,193 | 122,437.25 |
+| scratch-free cycle | 63,628-63,818 | 63,747 | 210,473-210,768 | 210,615.75 |
+
+Seven one-clean seeds select the same initial layout, final layout, CZ count,
+and depth. Seed 20261015 selects the sole alternate one-clean layout basin.
+That seed gives the two-clean control depth 49,284 and the one-clean depth
+49,688, so per-seed depth ordering reverses once while the one-clean depth mean
+remains lower across the bounded seed set.
+The two-clean and ANF candidates select eight distinct initial and final
+layouts. The layout census provides a structural correlate for the one-clean
+candidate's narrow compile distribution without claiming live-target stability.
+
+One and two clean ancillas both reach 10,776 pre-routing CZ at the reference
+seed. The two-clean circuit nevertheless needs 5,339 SabreLayout swaps and
+finishes at 21,970 CZ, while the one-clean circuit needs 4,283 swaps and
+finishes at 17,736 CZ. Ancilla count therefore changes physical embedding cost
+non-monotonically even when abstract entangling-gate count matches. The compiler
+must optimize synthesis family and routed interaction graph together.
+
+`results/hw_estimate/n21_heavy_hex_mcx_workspace.json` retains the complete
+coupling graph, versions, source hashes, layouts, aggregate-resource pass
+transitions, stage snapshots, per-seed results, and summary statistics. The
+one-clean result materially advances the generic compiler frontier but keeps
+`N = 21` at compile-only status. Fresh noise simulation must establish a
+positive decoder margin before any QPU proposal. The `N = 35` compile remains
+deferred until `N = 21` crosses the decoder-margin admission gate; a larger
+compile alone supplies little new information.
 
 The ideal decoder and the uniform decoder null establish a second admission
 surface:
@@ -412,10 +580,16 @@ its QPY SHA-256 is
   current guard bounds the method to eight data qubits. This method serves as a
   bounded exact compiler and oracle. It does not provide scalable RSA
   arithmetic.
-- **Routed generic cost.** The `N = 21` circuits exceed the useful noisy depth
-  by orders of magnitude. A proposed synthesis earns admission only when fresh
+- **Routed generic cost.** The one-clean `N = 21` circuit lowers depth from
+  210,473 to 47,354 at the reference seed, but compiler depth does not establish
+  useful noisy execution. A proposed synthesis earns admission only when fresh
   Target compilation and noise simulation produce a positive factor-yield
   margin over the uniform null.
+- **Topology attribution.** The pass trace proves a large routed penalty on
+  FakeFez and records the exact degree-three graph. The pass trace does not yet
+  isolate topology from all other target-specific translation behavior. An
+  all-to-all coupling control with the same basis and synthesis inputs supplies
+  the missing causal comparison.
 - **Concurrent feed-forward.** Packed replicas run three or more independent
   `if_else` branches in one shot. Aer and the local Sampler execute them
   concurrently; the hardware's handling of simultaneous feed-forward,
@@ -433,52 +607,68 @@ its QPY SHA-256 is
 - **Small-case interpretation.** `N = 15` remains a structured Mersenne case
   with classically known short arithmetic. A successful run proves the pipeline
   and hardware control path rather than computational advantage.
-- **Compiler selection.** `auto` follows one bounded `N = 21` race. A new
-  target, Qiskit release, or synthesis invalidates that decision when a repeated
-  seeded compile reverses CZ, duration, or simulated factor-yield ordering.
+- **Compiler selection.** `auto` follows a bounded eight-seed `N = 21` race on
+  the pinned FakeFez target. A new target, Qiskit release, or synthesis
+  invalidates the selection when a repeated seeded compile reverses CZ,
+  duration, or simulated factor-yield ordering.
 
 ## Roadmap
 
-1. **Target-aware mixed synthesis.** Compile ANF and cycle candidates for each
-   unique multiplier, then permit a per-multiplier mixture. Select by calibrated
-   duration and simulated decoder margin. Reject the idea when the mixed circuit
-   fails to beat whole-circuit ANF across repeated transpiler seeds.
-2. **Affine-skeleton extraction.** Separate constant and degree-one ANF terms
+1. **All-to-all topology control.** Recompile the four `N = 21` candidates with
+   the same synthesis methods, seeds, basis operations, and optimization level
+   on a complete coupling graph. Compare pre-routing operations, routed
+   operations, and final depth. The control attributes the crossover to
+   heavy-hex only when the no-auxiliary disadvantage contracts materially while
+   the source circuits remain identical.
+2. **Three-clean M15 challenger.** Add an explicit
+   `synth_mcx_n_clean_m15` cycle candidate with three clean ancillas. Verify
+   every basis state and restored ancilla, then run the same seed matrix. The
+   challenger survives only when its lower synthesis depth offsets its wider
+   physical embedding; otherwise the result strengthens the non-monotonic
+   ancilla finding.
+3. **Target-weighted Gray paths.** Replace Hamming-only pivots and bit order
+   with a deterministic cost derived from the admitted coupling subgraph and
+   the selected MCX interaction graph. Keep the current pivot rule as a
+   baseline. Accept the new path only when exact permutation checks pass and
+   repeated routed compiles lower both CZ and depth.
+4. **Per-multiplier mixed synthesis.** Compile multipliers 2, 4, and 16 as
+   independent ANF, scratch-free, one-clean, and later three-clean candidates.
+   Compose the lowest-cost compatible choices while sharing a bounded workspace
+   register. Whole-circuit compilation must beat the one-clean baseline across
+   the seed matrix; isolated multiplier wins alone do not qualify. The current
+   four-way capture supplies the whole-circuit baseline and materially advances
+   the previously uninstrumented per-multiplier item.
+5. **Affine-skeleton extraction.** Separate constant and degree-one ANF terms
    into an optimized X/CNOT network and synthesize only the nonlinear residual.
-   The Cayley-Dickson work motivates this split because its useful sign circuits
-   expose low-degree Boolean structure directly. Retain the method only when
-   exact permutation checks pass and `N = 21` routed cost falls.
-3. **Target-weighted Gray paths.** Replace Hamming-only cycle pivots and paths
-   with costs derived from the selected coupling subgraph and native controlled
-   gate decomposition. Retain Hamming minimization as the deterministic
-   baseline and compare the complete routed circuit.
-4. **Structured modular arithmetic.** Introduce reversible add, compare, and
-   conditional-reduction blocks for widths beyond the truth-table guard. Cross-
+   The Cayley-Dickson sign compiler supplies the low-degree Boolean precedent.
+   Exhaustive permutation equality and workspace restoration remain mandatory;
+   the method survives only when complete routed `N = 21` cost falls.
+6. **Fresh decoder-margin admission.** Compile the one-clean primary and its
+   schedule-matched identity null against a fresh live Target, then run the
+   calibration-derived noise model without submission. Advance `N = 21` only
+   when replicated factor and order-recovery lower bounds exceed the exact
+   uniform-null yield and the identity-null upper bounds remain below the
+   primary lower bounds.
+7. **Structured modular arithmetic.** Introduce reversible add, compare, and
+   conditional-reduction blocks beyond the eight-bit truth-table guard. Cross-
    check every new block against the exhaustive permutation oracle at widths
-   where both implementations fit.
-5. **Statistical admission.** Implemented as the `hybrid_shor_mod15` admission
-   rule over replicated factor and order-recovery yields: the primary lower
-   bound must exceed the exact uniform-null yield and the identity-null upper
-   bound must stay below the primary lower bound. A QPU result is interpreted
-   only through this verdict.
-6. **Dynamic latency evidence.** Record execution spans and compare them with
-   scheduled gate duration. Attribute the residual to service and classical
-   control only after repeated jobs show a stable separation.
-7. **`N = 21` rescope gate.** Recompile the complete circuit after each
-   arithmetic change. Advance `N = 21` to a proposed QPU case only when fresh
-   local noise simulation preserves a positive decoder margin and the written
-   QPU-time case fits the rolling budget.
+   where both implementations fit, and retain explicit arithmetic and workspace
+   resource formulas.
 8. **`N = 35` admission.** Compile and simulate `N = 35` only after `N = 21`
-   crosses the preceding gate. Preserve `N = 35` as a coefficient-level
-   falsifier until then.
-9. **Signed-XOR coefficient certificates.** Solve the exact minimum-one-norm
-   group-word LCU at n = 3 through 5 and retain primal reconstruction plus a
-   matching linear-program dual bound. Extend the experiment only after a zero
-   duality gap separates the unit-output-scale coefficient one-norm from the
-   displacement floor.
-   Keep the LCU experiment separate from the direct arithmetic compiler because
-   the base-two rotation proves that effective normalization and direct gate
-   count measure different resources.
+   crosses the fresh decoder-margin gate. Preserve `N = 35` as a coefficient
+   and scaling falsifier until then; a deeper compile without `N = 21` admission
+   adds cost without resolving the active uncertainty.
+9. **Dynamic latency evidence.** Record execution spans and compare them with
+   scheduled gate duration. Attribute the residual to service and classical
+   control only after repeated jobs show a stable separation. The submission
+   approval gate and rolling QPU budget continue to govern every measurement.
+10. **Signed-XOR coefficient certificates.** Solve the exact minimum-one-norm
+    group-word LCU at `n = 3` through `n = 5` and retain primal reconstruction
+    plus a matching linear-program dual bound. Extend the experiment only after
+    a zero duality gap separates the unit-output-scale coefficient one-norm from
+    the displacement floor. Keep the signed-XOR experiment separate from the
+    direct arithmetic compiler because base-two rotation proves that effective
+    normalization and direct gate count measure different resources.
 
 ## Replay commands
 
@@ -486,16 +676,20 @@ All commands run without QPU submission:
 
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"
-cd gororoba_quantum
-"$PYTHON" factoring.py
-"$PYTHON" modular_arithmetic.py
-"$PYTHON" order_finding.py
-"$PYTHON" runtime_contracts.py
-"$PYTHON" hybrid_shor.py plan 15
-"$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
+"$PYTHON" gororoba_quantum/factoring.py
+"$PYTHON" gororoba_quantum/modular_arithmetic.py
+"$PYTHON" gororoba_quantum/order_finding.py
+"$PYTHON" gororoba_quantum/runtime_contracts.py
+"$PYTHON" gororoba_quantum/hybrid_shor.py plan 15
+"$PYTHON" gororoba_quantum/hybrid_shor.py simulate 15 --shots 256 --seed 7
+PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py
+"$PYTHON" gororoba_quantum/compile_evidence.py \
+  --out results/hw_estimate/n21_heavy_hex_mcx_workspace.json
 ```
 
-`results/hw_estimate/hybrid_shor_fake_fez.json` records the pinned compiler
-measurements above. `live_run.py --out ../results/live` performs the fresh
-calibration, compile, and local noise-simulation layer. The command omits
-`--submit` and therefore sends zero quantum jobs.
+`results/hw_estimate/hybrid_shor_fake_fez.json` preserves the historical
+single-seed comparison. `n21_heavy_hex_mcx_workspace.json` records the
+instrumented multi-seed comparison without overwriting the historical provenance.
+`live_run.py --out results/live` performs the fresh calibration, compile, and
+local noise-simulation layer when invoked from the repository root. The command
+omits `--submit` and therefore sends zero quantum jobs.
