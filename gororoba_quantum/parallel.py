@@ -42,17 +42,16 @@ _pool_size = 0
 _worker_cache: dict[str, Callable[[Any], Any]] = {}
 
 
-CGROUP_V2_CPU_MAX = Path("/sys/fs/cgroup/cpu.max")
-CGROUP_V1_CPU_QUOTA = Path("/sys/fs/cgroup/cpu/cpu.cfs_quota_us")
-CGROUP_V1_CPU_PERIOD = Path("/sys/fs/cgroup/cpu/cpu.cfs_period_us")
+PROC_SELF_CGROUP = Path("/proc/self/cgroup")
+CGROUP_ROOT = Path("/sys/fs/cgroup")
 
 
 def workers() -> int:
     """The worker count: GOROROBA_WORKERS when set, else the CPUs available to this process.
 
-    The affinity mask counts the CPUs the scheduler may use; a container's
-    CPU quota (cgroup v2 cpu.max, cgroup v1 cfs_quota_us / cfs_period_us)
-    can grant fewer, so the smaller of the two is the count, rounded up to a
+    The affinity mask counts the CPUs the scheduler may use; the process's
+    cgroup hierarchy can grant fewer through a CPU quota on its own cgroup or
+    any ancestor, so the smaller of the two is the count, rounded up to a
     whole worker.
     """
     configured = os.environ.get("GOROROBA_WORKERS")
@@ -71,30 +70,68 @@ def workers() -> int:
     return max(1, min(available, math.ceil(quota))) if quota is not None else available
 
 
-def cgroup_cpu_quota(
-    v2_max: Path = CGROUP_V2_CPU_MAX, v1_quota: Path = CGROUP_V1_CPU_QUOTA, v1_period: Path = CGROUP_V1_CPU_PERIOD
-) -> float | None:
-    """CPUs the enclosing cgroup grants, or None without a quota or outside a cgroup.
+def cgroup_cpu_quota(proc_cgroup: Path = PROC_SELF_CGROUP, cgroup_root: Path = CGROUP_ROOT) -> float | None:
+    """CPUs the process's cgroup hierarchy grants: the tightest quota on its cgroup or any ancestor, or None.
 
-    cgroup v2 cpu.max reads "QUOTA PERIOD" in microseconds, "max" for no
-    quota; cgroup v1 keeps the quota and period in two files, -1 for no quota.
-    A malformed or unreadable file counts as no quota.
+    /proc/self/cgroup names the process's cgroup in each hierarchy. A cgroup
+    v2 line "0::/path" places cpu.max ("QUOTA PERIOD" in microseconds, "max"
+    for none) under cgroup_root/path and in every ancestor directory up to the
+    root. A cgroup v1 line whose controllers include cpu places
+    cpu.cfs_quota_us (-1 for none) and cpu.cfs_period_us under the cpu
+    controller mount, cgroup_root/cpu or cgroup_root/cpu,cpuacct. Quotas on
+    ancestors bind the descendant, so the minimum over the walk is the grant.
+    An unreadable or malformed file counts as no quota at that node.
     """
     try:
-        if v2_max.is_file():
-            quota_text, period_text = v2_max.read_text().split()
-            if quota_text == "max":
-                return None
-            quota, period = int(quota_text), int(period_text)
-        elif v1_quota.is_file() and v1_period.is_file():
-            quota, period = int(v1_quota.read_text()), int(v1_period.read_text())
-        else:
+        lines = proc_cgroup.read_text().splitlines()
+    except OSError:
+        return None
+    quotas: list[float] = []
+    for line in lines:
+        fields = line.split(":", 2)
+        if len(fields) != 3:
+            continue
+        hierarchy, controllers, path = fields
+        if hierarchy == "0" and controllers == "":
+            for node in _cgroup_ancestors(cgroup_root, path):
+                quota = _cgroup_v2_quota(node / "cpu.max")
+                if quota is not None:
+                    quotas.append(quota)
+        elif "cpu" in controllers.split(","):
+            for mount in (cgroup_root / "cpu", cgroup_root / "cpu,cpuacct"):
+                if not mount.is_dir():
+                    continue
+                for node in _cgroup_ancestors(mount, path):
+                    quota = _cgroup_v1_quota(node / "cpu.cfs_quota_us", node / "cpu.cfs_period_us")
+                    if quota is not None:
+                        quotas.append(quota)
+                break
+    return min(quotas) if quotas else None
+
+
+def _cgroup_ancestors(mount: Path, path: str) -> list[Path]:
+    """The cgroup directory named by path under mount, then each ancestor up to mount."""
+    parts = [part for part in path.strip("/").split("/") if part]
+    return [mount.joinpath(*parts[:depth]) for depth in range(len(parts), -1, -1)]
+
+
+def _cgroup_v2_quota(cpu_max: Path) -> float | None:
+    try:
+        quota_text, period_text = cpu_max.read_text().split()
+        if quota_text == "max":
             return None
+        quota, period = int(quota_text), int(period_text)
     except (OSError, ValueError):
         return None
-    if quota <= 0 or period <= 0:
+    return quota / period if quota > 0 and period > 0 else None
+
+
+def _cgroup_v1_quota(quota_file: Path, period_file: Path) -> float | None:
+    try:
+        quota, period = int(quota_file.read_text()), int(period_file.read_text())
+    except (OSError, ValueError):
         return None
-    return quota / period
+    return quota / period if quota > 0 and period > 0 else None
 
 
 def _executor(count: int) -> ProcessPoolExecutor:

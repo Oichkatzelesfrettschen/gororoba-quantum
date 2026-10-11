@@ -1,0 +1,1934 @@
+{
+  "backend": {
+    "class": "qiskit_ibm_runtime.fake_provider.FakeFez",
+    "dt_seconds": 4e-09,
+    "evidence_surface": "static compiler target; not a live calibration or noise prediction",
+    "qubits": 156
+  },
+  "bases": [
+    {
+      "base": 2,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 36,
+              "median": 36.0,
+              "minimum": 34
+            },
+            "depth": {
+              "maximum": 112,
+              "median": 111.0,
+              "minimum": 111
+            },
+            "duration_dt": {
+              "maximum": 990,
+              "median": 990.0,
+              "minimum": 963
+            },
+            "duration_seconds": {
+              "maximum": 3.96e-06,
+              "median": 3.96e-06,
+              "minimum": 3.8520000000000006e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 36,
+              "median": 36.0,
+              "minimum": 34
+            },
+            "depth": {
+              "maximum": 112,
+              "median": 111.0,
+              "minimum": 111
+            },
+            "duration_dt": {
+              "maximum": 990,
+              "median": 990.0,
+              "minimum": 963
+            },
+            "duration_seconds": {
+              "maximum": 3.96e-06,
+              "median": 3.96e-06,
+              "minimum": 3.8520000000000006e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 3,
+            "controlled_x": 0,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 3,
+            "controlled_x": 0,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_rotation"
+        }
+      },
+      "factors_from_exact_order": [
+        3,
+        5
+      ],
+      "ideal_factor_yield": 0.5,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 8,
+      "negative": false,
+      "order": 4,
+      "phase_bits": 8,
+      "role": "factor_useful",
+      "shift": 1,
+      "signed_form": "+2^1",
+      "strategy": "mersenne_rotation",
+      "uniform_null_factor_yield": 0.296875,
+      "uniform_null_order_recovery_probability": 0.296875
+    },
+    {
+      "base": 4,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 20,
+              "median": 20.0,
+              "minimum": 20
+            },
+            "depth": {
+              "maximum": 61,
+              "median": 61.0,
+              "minimum": 61
+            },
+            "duration_dt": {
+              "maximum": 522,
+              "median": 522.0,
+              "minimum": 522
+            },
+            "duration_seconds": {
+              "maximum": 2.088e-06,
+              "median": 2.088e-06,
+              "minimum": 2.088e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 20,
+              "depth": 61,
+              "duration_dt": 522,
+              "duration_seconds": 2.088e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 20,
+              "median": 20.0,
+              "minimum": 20
+            },
+            "depth": {
+              "maximum": 61,
+              "median": 61.0,
+              "minimum": 61
+            },
+            "duration_dt": {
+              "maximum": 522,
+              "median": 522.0,
+              "minimum": 522
+            },
+            "duration_seconds": {
+              "maximum": 2.088e-06,
+              "median": 2.088e-06,
+              "minimum": 2.088e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 2,
+            "controlled_x": 0,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 2,
+            "controlled_x": 0,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_rotation"
+        }
+      },
+      "factors_from_exact_order": [
+        3,
+        5
+      ],
+      "ideal_factor_yield": 0.5,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 4,
+      "negative": false,
+      "order": 2,
+      "phase_bits": 8,
+      "role": "factor_useful",
+      "shift": 2,
+      "signed_form": "+2^2",
+      "strategy": "mersenne_rotation",
+      "uniform_null_factor_yield": 0.70703125,
+      "uniform_null_order_recovery_probability": 0.70703125
+    },
+    {
+      "base": 7,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 463,
+              "depth": 1298,
+              "duration_dt": 11802,
+              "duration_seconds": 4.7208000000000006e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 463,
+              "median": 463.0,
+              "minimum": 463
+            },
+            "depth": {
+              "maximum": 1298,
+              "median": 1298.0,
+              "minimum": 1298
+            },
+            "duration_dt": {
+              "maximum": 11802,
+              "median": 11802.0,
+              "minimum": 11802
+            },
+            "duration_seconds": {
+              "maximum": 4.7208000000000006e-05,
+              "median": 4.7208000000000006e-05,
+              "minimum": 4.7208000000000006e-05
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 40,
+              "depth": 127,
+              "duration_dt": 1119,
+              "duration_seconds": 4.476e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 40,
+              "depth": 126,
+              "duration_dt": 1113,
+              "duration_seconds": 4.452e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 40,
+              "median": 40.0,
+              "minimum": 40
+            },
+            "depth": {
+              "maximum": 127,
+              "median": 126.0,
+              "minimum": 126
+            },
+            "duration_dt": {
+              "maximum": 1119,
+              "median": 1113.0,
+              "minimum": 1113
+            },
+            "duration_seconds": {
+              "maximum": 4.476e-06,
+              "median": 4.452e-06,
+              "minimum": 4.452e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 7,
+            "controlled_swaps": 3,
+            "controlled_x": 4,
+            "maximum_control_count": 4
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 15,
+            "15": 0
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 3,
+            "controlled_x": 4,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        }
+      },
+      "factors_from_exact_order": [
+        3,
+        5
+      ],
+      "ideal_factor_yield": 0.5,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 13,
+      "negative": true,
+      "order": 4,
+      "phase_bits": 8,
+      "role": "factor_useful",
+      "shift": 3,
+      "signed_form": "-2^3",
+      "strategy": "mersenne_signed_rotation",
+      "uniform_null_factor_yield": 0.296875,
+      "uniform_null_order_recovery_probability": 0.296875
+    },
+    {
+      "base": 8,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 36,
+              "median": 36.0,
+              "minimum": 34
+            },
+            "depth": {
+              "maximum": 112,
+              "median": 111.0,
+              "minimum": 111
+            },
+            "duration_dt": {
+              "maximum": 990,
+              "median": 990.0,
+              "minimum": 963
+            },
+            "duration_seconds": {
+              "maximum": 3.96e-06,
+              "median": 3.96e-06,
+              "minimum": 3.8520000000000006e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 34,
+              "depth": 112,
+              "duration_dt": 963,
+              "duration_seconds": 3.8520000000000006e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 36,
+              "depth": 111,
+              "duration_dt": 990,
+              "duration_seconds": 3.96e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 36,
+              "median": 36.0,
+              "minimum": 34
+            },
+            "depth": {
+              "maximum": 112,
+              "median": 111.0,
+              "minimum": 111
+            },
+            "duration_dt": {
+              "maximum": 990,
+              "median": 990.0,
+              "minimum": 963
+            },
+            "duration_seconds": {
+              "maximum": 3.96e-06,
+              "median": 3.96e-06,
+              "minimum": 3.8520000000000006e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 3,
+            "controlled_x": 0,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 3,
+            "controlled_x": 0,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_rotation"
+        }
+      },
+      "factors_from_exact_order": [
+        3,
+        5
+      ],
+      "ideal_factor_yield": 0.5,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 2,
+      "negative": false,
+      "order": 4,
+      "phase_bits": 8,
+      "role": "factor_useful",
+      "shift": 3,
+      "signed_form": "+2^3",
+      "strategy": "mersenne_rotation",
+      "uniform_null_factor_yield": 0.296875,
+      "uniform_null_order_recovery_probability": 0.296875
+    },
+    {
+      "base": 11,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 533,
+              "depth": 1407,
+              "duration_dt": 12579,
+              "duration_seconds": 5.0316000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 533,
+              "depth": 1407,
+              "duration_dt": 12579,
+              "duration_seconds": 5.0316000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 451,
+              "depth": 1278,
+              "duration_dt": 11430,
+              "duration_seconds": 4.572e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 451,
+              "depth": 1278,
+              "duration_dt": 11430,
+              "duration_seconds": 4.572e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 533,
+              "depth": 1407,
+              "duration_dt": 12579,
+              "duration_seconds": 5.0316000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 454,
+              "depth": 1255,
+              "duration_dt": 11448,
+              "duration_seconds": 4.5792000000000005e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 454,
+              "depth": 1255,
+              "duration_dt": 11448,
+              "duration_seconds": 4.5792000000000005e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 454,
+              "depth": 1255,
+              "duration_dt": 11448,
+              "duration_seconds": 4.5792000000000005e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 533,
+              "median": 454.0,
+              "minimum": 451
+            },
+            "depth": {
+              "maximum": 1407,
+              "median": 1278.0,
+              "minimum": 1255
+            },
+            "duration_dt": {
+              "maximum": 12579,
+              "median": 11448.0,
+              "minimum": 11430
+            },
+            "duration_seconds": {
+              "maximum": 5.0316000000000004e-05,
+              "median": 4.5792000000000005e-05,
+              "minimum": 4.572e-05
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 24,
+              "depth": 63,
+              "duration_dt": 570,
+              "duration_seconds": 2.28e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 22,
+              "depth": 64,
+              "duration_dt": 528,
+              "duration_seconds": 2.1120000000000003e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 30,
+              "depth": 82,
+              "duration_dt": 759,
+              "duration_seconds": 3.0360000000000002e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 22,
+              "depth": 64,
+              "duration_dt": 528,
+              "duration_seconds": 2.1120000000000003e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 24,
+              "depth": 63,
+              "duration_dt": 570,
+              "duration_seconds": 2.28e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 22,
+              "depth": 64,
+              "duration_dt": 528,
+              "duration_seconds": 2.1120000000000003e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 24,
+              "depth": 63,
+              "duration_dt": 570,
+              "duration_seconds": 2.28e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 22,
+              "depth": 64,
+              "duration_dt": 528,
+              "duration_seconds": 2.1120000000000003e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 30,
+              "median": 23.0,
+              "minimum": 22
+            },
+            "depth": {
+              "maximum": 82,
+              "median": 64.0,
+              "minimum": 63
+            },
+            "duration_dt": {
+              "maximum": 759,
+              "median": 549.0,
+              "minimum": 528
+            },
+            "duration_seconds": {
+              "maximum": 3.0360000000000002e-06,
+              "median": 2.1960000000000002e-06,
+              "minimum": 2.1120000000000003e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 7,
+            "controlled_swaps": 2,
+            "controlled_x": 4,
+            "maximum_control_count": 4
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 15,
+            "15": 0
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 2,
+            "controlled_x": 4,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        }
+      },
+      "factors_from_exact_order": [
+        3,
+        5
+      ],
+      "ideal_factor_yield": 0.5,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 11,
+      "negative": true,
+      "order": 2,
+      "phase_bits": 8,
+      "role": "factor_useful",
+      "shift": 2,
+      "signed_form": "-2^2",
+      "strategy": "mersenne_signed_rotation",
+      "uniform_null_factor_yield": 0.70703125,
+      "uniform_null_order_recovery_probability": 0.70703125
+    },
+    {
+      "base": 13,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 468,
+              "depth": 1330,
+              "duration_dt": 11970,
+              "duration_seconds": 4.788e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 468,
+              "median": 468.0,
+              "minimum": 468
+            },
+            "depth": {
+              "maximum": 1330,
+              "median": 1330.0,
+              "minimum": 1330
+            },
+            "duration_dt": {
+              "maximum": 11970,
+              "median": 11970.0,
+              "minimum": 11970
+            },
+            "duration_seconds": {
+              "maximum": 4.788e-05,
+              "median": 4.788e-05,
+              "minimum": 4.788e-05
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 42,
+              "depth": 126,
+              "duration_dt": 1161,
+              "duration_seconds": 4.644e-06,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 42,
+              "median": 42.0,
+              "minimum": 42
+            },
+            "depth": {
+              "maximum": 126,
+              "median": 126.0,
+              "minimum": 126
+            },
+            "duration_dt": {
+              "maximum": 1161,
+              "median": 1161.0,
+              "minimum": 1161
+            },
+            "duration_seconds": {
+              "maximum": 4.644e-06,
+              "median": 4.644e-06,
+              "minimum": 4.644e-06
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 7,
+            "controlled_swaps": 3,
+            "controlled_x": 4,
+            "maximum_control_count": 4
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 15,
+            "15": 0
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 3,
+            "controlled_x": 4,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        }
+      },
+      "factors_from_exact_order": [
+        3,
+        5
+      ],
+      "ideal_factor_yield": 0.5,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 7,
+      "negative": true,
+      "order": 4,
+      "phase_bits": 8,
+      "role": "factor_useful",
+      "shift": 1,
+      "signed_form": "-2^1",
+      "strategy": "mersenne_signed_rotation",
+      "uniform_null_factor_yield": 0.296875,
+      "uniform_null_order_recovery_probability": 0.296875
+    },
+    {
+      "base": 14,
+      "compile": {
+        "full_register": {
+          "input_domain": "full_register",
+          "runs": [
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 427,
+              "depth": 1188,
+              "duration_dt": 10860,
+              "duration_seconds": 4.3440000000000004e-05,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 427,
+              "median": 427.0,
+              "minimum": 427
+            },
+            "depth": {
+              "maximum": 1188,
+              "median": 1188.0,
+              "minimum": 1188
+            },
+            "duration_dt": {
+              "maximum": 10860,
+              "median": 10860.0,
+              "minimum": 10860
+            },
+            "duration_seconds": {
+              "maximum": 4.3440000000000004e-05,
+              "median": 4.3440000000000004e-05,
+              "minimum": 4.3440000000000004e-05
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        },
+        "nonzero_residues": {
+          "input_domain": "nonzero_residues",
+          "runs": [
+            {
+              "cz_count": 7,
+              "depth": 18,
+              "duration_dt": 162,
+              "duration_seconds": 6.480000000000001e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 0
+            },
+            {
+              "cz_count": 7,
+              "depth": 15,
+              "duration_dt": 177,
+              "duration_seconds": 7.08e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 1
+            },
+            {
+              "cz_count": 7,
+              "depth": 15,
+              "duration_dt": 177,
+              "duration_seconds": 7.08e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 2
+            },
+            {
+              "cz_count": 7,
+              "depth": 17,
+              "duration_dt": 177,
+              "duration_seconds": 7.08e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 3
+            },
+            {
+              "cz_count": 7,
+              "depth": 17,
+              "duration_dt": 141,
+              "duration_seconds": 5.64e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 4
+            },
+            {
+              "cz_count": 7,
+              "depth": 18,
+              "duration_dt": 162,
+              "duration_seconds": 6.480000000000001e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 5
+            },
+            {
+              "cz_count": 7,
+              "depth": 19,
+              "duration_dt": 183,
+              "duration_seconds": 7.32e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 6
+            },
+            {
+              "cz_count": 7,
+              "depth": 17,
+              "duration_dt": 177,
+              "duration_seconds": 7.08e-07,
+              "logical_qubits": 5,
+              "physical_qubits_used": 5,
+              "seed_transpiler": 7
+            }
+          ],
+          "summary": {
+            "cz_count": {
+              "maximum": 7,
+              "median": 7.0,
+              "minimum": 7
+            },
+            "depth": {
+              "maximum": 19,
+              "median": 17.0,
+              "minimum": 15
+            },
+            "duration_dt": {
+              "maximum": 183,
+              "median": 177.0,
+              "minimum": 141
+            },
+            "duration_seconds": {
+              "maximum": 7.32e-07,
+              "median": 7.08e-07,
+              "minimum": 5.64e-07
+            },
+            "physical_qubits_used": {
+              "maximum": 5,
+              "median": 5.0,
+              "minimum": 5
+            }
+          }
+        }
+      },
+      "domains": {
+        "full_register": {
+          "endpoint_outputs_control_1": {
+            "0": 0,
+            "15": 15
+          },
+          "input_domain": "full_register",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 7,
+            "controlled_swaps": 0,
+            "controlled_x": 4,
+            "maximum_control_count": 4
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        },
+        "nonzero_residues": {
+          "endpoint_outputs_control_1": {
+            "0": 15,
+            "15": 0
+          },
+          "input_domain": "nonzero_residues",
+          "inverse_composition_identity_on_all_32_states": true,
+          "logical_gates": {
+            "basis_edges": 0,
+            "controlled_swaps": 0,
+            "controlled_x": 4,
+            "maximum_control_count": 1
+          },
+          "map_verified_states": 32,
+          "scratch_qubits": 0,
+          "strategy": "mersenne_signed_rotation"
+        }
+      },
+      "factors_from_exact_order": [],
+      "ideal_factor_yield": 0.0,
+      "ideal_order_recovery_probability": 0.5,
+      "inverse": 14,
+      "negative": true,
+      "order": 2,
+      "phase_bits": 8,
+      "role": "arithmetic_negative_control",
+      "shift": 0,
+      "signed_form": "-2^0",
+      "strategy": "mersenne_signed_rotation",
+      "uniform_null_factor_yield": 0.0,
+      "uniform_null_order_recovery_probability": 0.70703125
+    }
+  ],
+  "capture": "mod15-signed-multiplier-census",
+  "compiler": {
+    "duration": "QuantumCircuit.estimate_duration on the FakeFez Target, in dt",
+    "optimization_level": 3,
+    "seeds": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7
+    ],
+    "versions": {
+      "numpy": "2.5.3",
+      "python": "3.14.7",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0",
+      "rustworkx": "0.18.1",
+      "scipy": "1.18.1"
+    }
+  },
+  "endpoint_transposition": {
+    "exchanged_states": [
+      0,
+      15
+    ],
+    "gates": {
+      "basis_edges": 7,
+      "controlled_swaps": 0,
+      "controlled_x": 0,
+      "maximum_control_count": 4
+    }
+  },
+  "problem": {
+    "arithmetic_negative_control_base": 14,
+    "bases": [
+      2,
+      4,
+      7,
+      8,
+      11,
+      13,
+      14
+    ],
+    "compiled_unit": "one controlled multiplier (control qubit plus four work qubits, no measurement)",
+    "factor_useful_bases": [
+      2,
+      4,
+      7,
+      8,
+      11,
+      13
+    ],
+    "modulus": 15,
+    "phase_bits": 8,
+    "work_qubits": 4
+  },
+  "qpu_executed": false,
+  "replay_command": "\"$PYTHON\" scripts/mod15_signed_multiplier_census.py --out results/hw_estimate/mod15_signed_multiplier_census.json",
+  "schema_version": 1,
+  "source": {
+    "files_sha256": {
+      "gororoba_quantum/compile_evidence.py": "de7e6aea2aced537e52a286327dce476dfbeb4b83a556edaa67f182192055f55",
+      "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+      "gororoba_quantum/modular_arithmetic.py": "2b074144bac6fdb985eb0d11c3478d92d1df979935b7dded18625737cc523084",
+      "gororoba_quantum/order_finding.py": "f97a0bc1add0b381a0589fc7a44d0fe11ab322aeefd0ba48d273a209ba0d5e2d",
+      "scripts/mod15_signed_multiplier_census.py": "ba55b507ff03df893bf2bab40e6571b29678cabb80bb1156b0b8c8089344fbc7"
+    }
+  }
+}
