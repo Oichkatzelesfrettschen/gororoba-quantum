@@ -13,15 +13,18 @@ lint and type-check configuration only. Before any push, these exit 0:
 (
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
-  ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py
-  ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py
+  ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
+    scripts/mod15_signed_multiplier_census.py
+  ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
+    scripts/mod15_signed_multiplier_census.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
-    ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py
+    ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
+    ../scripts/mod15_signed_multiplier_census.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" factoring.py
@@ -31,6 +34,7 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" order_finding.py
   "$PYTHON" compile_evidence.py --seeds 20261010 \
     --candidate one_clean_cycle >/dev/null
+  "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
   "$PYTHON" runtime_contracts.py
   "$PYTHON" variance.py
   "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 8
