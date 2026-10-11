@@ -1,5 +1,11 @@
 {
- "analysis_digest": "5c29c2be2326d53b761073bd1fd527a553a08594ac292615b4d2c69ecee121e4",
+ "analysis_digest": "05b97e57a73f46aa55bbe4e2d7250e8833c656dee582fd340f8d92cd835f98a6",
+ "analysis_versions": {
+  "numpy": "2.5.3",
+  "qiskit": "2.5.2",
+  "qiskit-aer": "0.17.2",
+  "qiskit-ibm-runtime": "0.50.0"
+ },
  "experiment_digest": "0d5e840440fe89cc51053f848f5a2ecddc8e3532cb83362389f20c5e843c40f2",
  "jobs": {
   "db5qmqclf4us73c4e1ug": {
@@ -310,8 +316,11 @@
    "pubs": {
     "ibm_kingston_dynamic_pub_01": {
      "calibration": "2026-10-11 07:57:41-07:00",
-     "chunk_starts": [
-      "2026-10-11T15:31:50.399650+00:00"
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
      ],
      "components": [
       {
@@ -976,8 +985,11 @@
     },
     "ibm_kingston_dynamic_pub_02": {
      "calibration": "2026-10-11 07:57:41-07:00",
-     "chunk_starts": [
-      "2026-10-11T15:31:50.399650+00:00"
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
      ],
      "components": [
       {
@@ -1136,8 +1148,11 @@
     },
     "ibm_kingston_dynamic_pub_03": {
      "calibration": "2026-10-11 07:57:41-07:00",
-     "chunk_starts": [
-      "2026-10-11T15:31:50.399650+00:00"
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
      ],
      "components": [
       {
@@ -1805,8 +1820,11 @@
     },
     "ibm_kingston_dynamic_pub_04": {
      "calibration": "2026-10-11 07:57:41-07:00",
-     "chunk_starts": [
-      "2026-10-11T15:31:50.399650+00:00"
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
      ],
      "components": [
       {
@@ -2024,8 +2042,11 @@
     },
     "ibm_kingston_dynamic_pub_05": {
      "calibration": "2026-10-11 07:57:41-07:00",
-     "chunk_starts": [
-      "2026-10-11T15:31:50.399650+00:00"
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
      ],
      "components": [
       {
@@ -2243,8 +2264,11 @@
     },
     "ibm_kingston_dynamic_pub_06": {
      "calibration": "2026-10-11 07:57:41-07:00",
-     "chunk_starts": [
-      "2026-10-11T15:31:50.399650+00:00"
+     "chunk_windows": [
+      [
+       "2026-10-11T15:31:50.399650+00:00",
+       "2026-10-11T15:31:57.994101+00:00"
+      ]
      ],
      "components": [
       {

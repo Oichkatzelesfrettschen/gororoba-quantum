@@ -47,6 +47,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
+import rustworkx as rx
 from qiskit import QuantumCircuit, qpy, transpile
 from qiskit.circuit import ControlFlowOp
 from qiskit.converters import circuit_to_dag
@@ -780,6 +781,7 @@ class _FusionPlacementPool:
     bases: list[tuple[str, QuantumCircuit, np.ndarray, np.ndarray | None]] | None = None
     selected: list[Replica] = field(default_factory=list)
     blocked: set[int] = field(default_factory=set)
+    physical_graph: Any = None
 
 
 def build_admission_target(snapshot: Snapshot) -> Target:
@@ -1112,10 +1114,26 @@ def build_entries(choice: Choice, policy: ReplicaPolicy) -> Choice:
     return _set_entries(choice, replicas, policy)
 
 
-def _placement_footprint(pool: _FusionPlacementPool, replica: Replica) -> set[int]:
-    """Replica qubits plus their CZ neighbors in the cluster's admitted graph."""
+def _placement_footprint(pool: _FusionPlacementPool, replica: Replica, graph: Any | None = None) -> set[int]:
+    """Replica qubits plus their CZ neighbors in graph (the cluster's admitted graph when None).
+
+    The within-group footprint reads the admitted graph that routing sees;
+    the cross-group buffer reads the device's physical CZ graph
+    (pool.physical_graph), since a coupler the quality policy excluded still
+    couples its endpoints.
+    """
     qubits = set(replica.qubits)
-    return qubits | {neighbor for qubit in qubits for neighbor in pool.graph.neighbors(qubit)}
+    source = pool.graph if graph is None else graph
+    return qubits | {neighbor for qubit in qubits for neighbor in source.neighbors(qubit)}
+
+
+def physical_cz_graph(snapshot: Snapshot) -> Any:
+    """The backend's full two-qubit coupling graph, excluded couplers included."""
+    graph = rx.PyGraph()
+    graph.add_nodes_from(range(snapshot.backend.target.num_qubits))
+    edges = {tuple(sorted(edge)) for edge in snapshot.backend.target.build_coupling_map().get_edges()}
+    graph.add_edges_from_no_data(sorted(edges))
+    return graph
 
 
 def _choice_execution_kind(choice: Choice) -> str:
@@ -1143,6 +1161,9 @@ def _placement_assignment(
     """
     qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
     footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
+    physical_footprints = [
+        [_placement_footprint(pool, candidate, pool.physical_graph) for candidate in pool.candidates] for pool in pools
+    ]
     chosen: list[list[int]] = [[] for _ in pools]
     blocked = [set(pool.blocked) for pool in pools]
 
@@ -1168,7 +1189,7 @@ def _placement_assignment(
         for index in indices:
             chosen[pool_index].append(index)
             blocked[pool_index] = previous_blocked | footprints[pool_index][index]
-            if search(used | (footprints[pool_index][index] if buffer else qubits[pool_index][index])):
+            if search(used | (physical_footprints[pool_index][index] if buffer else qubits[pool_index][index])):
                 return True
             chosen[pool_index].pop()
         blocked[pool_index] = previous_blocked
@@ -1187,10 +1208,9 @@ def _commit_placement_assignment(
         selected = Replica(len(pool.selected), candidate.mapping, candidate.score)
         pool.selected.append(selected)
         occupied.update(selected.qubits)
-        footprint = _placement_footprint(pool, selected)
-        pool.blocked.update(footprint)
+        pool.blocked.update(_placement_footprint(pool, selected))
         if buffer is not None:
-            buffer.update(footprint)
+            buffer.update(_placement_footprint(pool, selected, pool.physical_graph))
 
 
 def allocate_fusion_replicas(
@@ -1217,6 +1237,7 @@ def allocate_fusion_replicas(
         snapshot = indexed_choices[0][1].snap
         if any(choice.snap is not snapshot for _, choice in indexed_choices):
             raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
+        physical = physical_cz_graph(snapshot)
         pools: list[_FusionPlacementPool] = []
         for choice_index, choice in indexed_choices:
             floor = replica_floor(choice.group, policy)
@@ -1236,7 +1257,11 @@ def allocate_fusion_replicas(
                 raise LiveRunError(
                     f"{backend_name} {kind}: {choice.group.name} has no floor-qualified fusion placement"
                 )
-            pools.append(_FusionPlacementPool(choice, graph, candidates, choice_index, pattern_width, bases))
+            pools.append(
+                _FusionPlacementPool(
+                    choice, graph, candidates, choice_index, pattern_width, bases, physical_graph=physical
+                )
+            )
 
         occupied: set[int] = set()
         buffer: set[int] | None = set() if policy.cross_group_buffer else None
@@ -4143,6 +4168,14 @@ def write_raw_result(run_dir: Path, job_id: str, job: Any, result: Any, pub_name
     metrics = job.metrics() if hasattr(job, "metrics") else {}
     metrics_text = json.dumps(_scrub_instances(_jsonable(metrics)), indent=1, sort_keys=True) + "\n"
     snapshots = _metrics_snapshots(directory)
+    # Existing snapshots are evidence too: each must still match the digest
+    # the index recorded before a new one is appended beside it.
+    index_path = directory / "index.json"
+    if index_path.exists():
+        earlier = json.loads(index_path.read_text())
+        for name, digest in zip(earlier.get("metrics", []), earlier.get("metrics_sha256", []), strict=False):
+            if not (directory / name).exists() or hashlib.sha256((directory / name).read_bytes()).hexdigest() != digest:
+                raise LiveRunError(f"{directory / name} differs from its indexed sha256; raw evidence is write-once")
     latest = next((name for name in snapshots if (directory / name).read_text() == metrics_text), None)
     if latest is None:
         latest = "job_metrics.json" if not snapshots else f"job_metrics.{len(snapshots)}.json"

@@ -34,6 +34,7 @@ import math
 import sys
 from collections import Counter, defaultdict
 from datetime import datetime
+from importlib.metadata import version
 from pathlib import Path
 from typing import Any
 
@@ -53,12 +54,22 @@ class AdjudicationError(RuntimeError):
     pass
 
 
+ANALYSIS_PACKAGES = ("qiskit", "qiskit-aer", "qiskit-ibm-runtime", "numpy")
+
+
+def analysis_versions() -> dict[str, str]:
+    return {package: version(package) for package in ANALYSIS_PACKAGES}
+
+
 def analysis_digest() -> str:
+    """sha256 over this module, live_run.py, and the versions of the packages the replay runs on."""
     here = Path(__file__).resolve().parent
     digest = hashlib.sha256()
     for name in ("adjudicate.py", "live_run.py"):
         digest.update(name.encode())
         digest.update((here / name).read_bytes())
+    for package, installed in analysis_versions().items():
+        digest.update(f"{package}=={installed}".encode())
     return digest.hexdigest()
 
 
@@ -251,24 +262,31 @@ def generic_statistics(values: np.ndarray, bits: int) -> dict[str, Any]:
     }
 
 
-def pub_starts(result_metadata: dict[str, Any], count: int) -> list[list[datetime]]:
-    """Each PUB's distinct execution-chunk starts from the result metadata, sorted; empty when no chunk names it.
+def pub_chunks(result_metadata: dict[str, Any], count: int) -> list[list[tuple[datetime, datetime]]]:
+    """Each PUB's distinct execution-chunk windows (start, stop) from the result metadata, sorted.
 
     A PUB can span several chunks (live_run.pub_windows); a PUB with more than
-    one start may have executed under more than one calibration, and its
-    shots carry no chunk tag, so the caller withholds its replay.
+    one window may have executed under more than one calibration, and its
+    shots carry no chunk tag, so the caller withholds its replay. A single
+    window still needs the calibration at its stop to equal the one at its
+    start, which the caller checks.
     """
     chunks = result_metadata.get("executor", {}).get("chunk_timing") or []
     return [
         sorted(
             {
-                datetime.fromisoformat(chunk["start"])
+                (datetime.fromisoformat(chunk["start"]), datetime.fromisoformat(chunk["stop"]))
                 for chunk in chunks
                 if any(int(part["idx_item"]) == idx for part in chunk.get("parts", []))
             }
         )
         for idx in range(count)
     ]
+
+
+def pub_starts(result_metadata: dict[str, Any], count: int) -> list[list[datetime]]:
+    """Each PUB's distinct execution-chunk starts (pub_chunks without the stops)."""
+    return [[start for start, _stop in windows] for windows in pub_chunks(result_metadata, count)]
 
 
 def latest_metrics(raw_dir: Path, index: dict[str, Any]) -> dict[str, Any]:
@@ -329,6 +347,7 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
     out: dict[str, Any] = {
         "run": run_dir.name,
         "analysis_digest": analysis_digest(),
+        "analysis_versions": analysis_versions(),
         "experiment_digest": record.get("experiment_digest"),
         "seed": seed,
         "jobs": {},
@@ -346,24 +365,51 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
         result_metadata = json.loads((raw_dir / "result_metadata.json").read_text())
         metrics = latest_metrics(raw_dir, index)
         backend = service.backend(job_entry["backend"])
-        pub_chunk_starts = pub_starts(result_metadata, len(job_entry["pubs"]))
+        pub_windows = pub_chunks(result_metadata, len(job_entry["pubs"]))
+        pub_chunk_starts = [[start for start, _stop in windows] for windows in pub_windows]
         if any(not own for own in pub_chunk_starts):
             missing = [m["name"] for m, own in zip(job_entry["pubs"], pub_chunk_starts, strict=True) if not own]
             raise AdjudicationError(f"job {job_id}: no execution chunk dates the calibration of {missing}")
         # One calibration, Target, and simulator per distinct chunk start: a
-        # PUB executed after a calibration update replays under its own, and
-        # a PUB spanning several starts gets no replay at all.
+        # PUB executed after a calibration update replays under its own; a
+        # PUB spanning several chunks, or whose one chunk ends under another
+        # calibration, gets no replay at all. The Target and properties of
+        # each start must agree on the circuits that start there, as collect
+        # requires before any calibration-dependent view.
         calibrations: dict[datetime, tuple[Any, Any, Any]] = {}
+        replay_withheld: dict[int, str] = {}
         replay_seed = seed
-        for own in pub_chunk_starts:
-            start = own[0]
-            if len(own) == 1 and start not in calibrations:
+        for pub_index, windows in enumerate(pub_windows):
+            if len(windows) != 1:
+                replay_withheld[pub_index] = "the PUB's shots span several execution chunks and carry no chunk tag"
+                continue
+            start, stop = windows[0]
+            if start not in calibrations:
                 props = backend.properties(datetime=start)
                 target = backend.target_history(datetime=start)
+                stop_calibration = backend.properties(datetime=stop).last_update_date
+                if stop_calibration != props.last_update_date:
+                    replay_withheld[pub_index] = (
+                        f"calibration changed during the chunk ({props.last_update_date} -> {stop_calibration})"
+                    )
+                    continue
+                starting = [
+                    circuits[m["name"]]
+                    for m, other in zip(job_entry["pubs"], pub_windows, strict=True)
+                    if len(other) == 1 and other[0][0] == start
+                ]
+                live_run.check_target_matches_properties(starting, target, props, f"{backend.name}@{start}")
                 simulator = live_run.noise_simulator(f"{backend.name}@{start.isoformat()}", target, props)
                 calibrations[start] = (props, target, simulator)
-        first_start = min(calibrations)
-        dt = float(calibrations[first_start][1].dt)
+            elif pub_index in replay_withheld:
+                continue
+        for pub_index, windows in enumerate(pub_windows):
+            if pub_index not in replay_withheld and windows[0][0] not in calibrations:
+                replay_withheld[pub_index] = (
+                    f"calibration changed during the chunk starting {windows[0][0].isoformat()}"
+                )
+        first_start = min(start for windows in pub_windows for start, _stop in windows)
+        dt = float(calibrations[first_start][1].dt) if first_start in calibrations else float(backend.target.dt)
         job_out: dict[str, Any] = {
             "backend": job_entry["backend"],
             "execution_start": first_start.isoformat(),
@@ -393,8 +439,8 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
             circuit = circuits[name]
             own_starts = pub_chunk_starts[pub_index]
             pub_start = own_starts[0]
-            spans_chunks = len(own_starts) > 1
-            if spans_chunks:
+            withheld = replay_withheld.get(pub_index)
+            if withheld is not None:
                 calibration_text: str | None = None
                 simulator = None
             else:
@@ -404,11 +450,9 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
                 "components": [],
                 "schedule": None,
                 "execution_start": pub_start.isoformat(),
-                "chunk_starts": [moment.isoformat() for moment in own_starts],
+                "chunk_windows": [[start.isoformat(), stop.isoformat()] for start, stop in pub_windows[pub_index]],
                 "calibration": calibration_text,
-                "replay_unavailable": (
-                    "the PUB's shots span several execution chunks and carry no chunk tag" if spans_chunks else None
-                ),
+                "replay_unavailable": withheld,
             }
             if name in pub_rows:
                 pub_out["schedule"] = feed_forward_segment(pub_rows[name])
@@ -631,15 +675,28 @@ def _check() -> None:
             "chunk_timing": [
                 {
                     "start": "2026-10-11T15:31:50+00:00",
+                    "stop": "2026-10-11T15:31:58+00:00",
                     "parts": [{"idx_item": 0, "size": 1}, {"idx_item": 1, "size": 1}],
                 },
-                {"start": "2026-10-11T15:40:00+00:00", "parts": [{"idx_item": 1, "size": 1}]},
+                {
+                    "start": "2026-10-11T15:40:00+00:00",
+                    "stop": "2026-10-11T15:40:09+00:00",
+                    "parts": [{"idx_item": 1, "size": 1}],
+                },
             ]
         }
     }
     starts = pub_starts(metadata, 3)
-    if len(starts[0]) != 1 or len(starts[1]) != 2 or starts[2] != []:
-        raise AdjudicationError(f"PUB chunk starts read {starts}")
+    windows = pub_chunks(metadata, 3)
+    if (
+        len(starts[0]) != 1
+        or len(starts[1]) != 2
+        or starts[2] != []
+        or windows[0][0][1].isoformat()[11:19] != "15:31:58"
+    ):
+        raise AdjudicationError(f"PUB chunk windows read {windows}")
+    if not analysis_versions() or analysis_digest() != analysis_digest():
+        raise AdjudicationError("the analysis digest does not bind the package versions deterministically")
     print("adjudicate self-check passed")
 
 
