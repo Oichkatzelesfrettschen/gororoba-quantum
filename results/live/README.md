@@ -72,6 +72,15 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T154515.634431Z` requalifies the default plan after --submit gained the
+--approved-record gate. Source commit `2a4f0fb` (sources_modified=true; the
+gate's commit followed on an identical source tree) carries experiment digest
+`a64332e57b4015da44f167840c749d22d2752b3af0fef30c3d1e94e856f31e46`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`8f0d81c5da20019c91f8a6a0c68b50e42d3ca5b32687695524356d96fb01cdb9`; QPY
+SHA-256 is
+`720fd82c6510cc4a712b8dad75e6fcf4facf43d22e2102467079daba5a2ce318`.
+
 `2026-10-11T152922.787095Z` is the first hardware record: the owner-approved Step 3 dynamic
 job on ibm_kingston, job `db5qmqclf4us73c4e1ug`, submitted and collected from
 clean source commit `2a4f0fb` (sources_modified=false, experiment digest

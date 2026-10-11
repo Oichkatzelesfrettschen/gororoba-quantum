@@ -92,12 +92,28 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" live_run.py \
   --isolated-reference \
   --min-remaining-seconds 60 \
   --out ../results/live \
+  --approved-record ../results/live/2026-10-11T121402.617901Z \
   --submit
 ```
 
-The run re-reads the live calibration, recompiles, and stops before Sampler
-construction with an approval_required record if the backend, calibration,
-exclusions, layouts, replicas, capabilities, experiment digest, or QPY differ
-from this case. This case authorizes nothing by itself; the static job
+The run re-reads the live calibration, recompiles, compares the fresh plan
+with this record (`--approved-record`: experiment digest, shots, policy,
+groups, backends, seeds, layouts, replica qubits, fused PUB manifests,
+calibration, QPY bytes), and stops before Sampler construction with an
+approval_required record on any difference. This case authorizes nothing by itself; the static job
 (57,344 submitted PUB shots) and the feed-forward timing ladder each need a
 case of their own.
+
+## Outcome
+
+The owner approved the command on 2026-10-11 and it ran as record
+`2026-10-11T152922.787095Z` (job `db5qmqclf4us73c4e1ug`, 9 QPU seconds,
+24,576 submitted PUB shots, 2,730.667 PUB shots per QPU second). That run
+predates `--approved-record`: the submit path then compared only its own two
+in-process snapshots. The binding to this case holds after the fact by
+comparison of the two records: identical QPY archive (`69f085f5319a`),
+experiment digest, layouts, replica qubits, fused PUB manifests, and
+exclusions, under a calibration that had advanced from 03:48:01 to
+07:57:41 (-07:00). Under the gate as now written, that calibration change
+would have stopped the run and asked for a renewed case; every later
+`--submit` carries the gate.
