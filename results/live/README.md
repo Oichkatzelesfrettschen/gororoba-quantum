@@ -82,6 +82,16 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
+`2026-10-11T095108.705673Z` requalifies schema 6 after collection began checkpointing
+each job's usage and refreshing it once a running job's result returns.
+Clean source commit `abb481e` (sources_modified=false) carries
+experiment digest
+`33a529a3a2980f7a148ab71db4f0c5a16b100ce972eccac3efca9197850548c3`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`4836ac0086cf84e5f2cff1837c9d4423ac2af00833cfa3c82d3adbda7663415a`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
 `2026-10-11T090500.749224Z` is the first schema-6 record, contract
 `live-target-cross-group-fused-pubs-scheduler-usage-v1`, from clean source
 commit `51a55ae` (sources_modified=false) with experiment digest
