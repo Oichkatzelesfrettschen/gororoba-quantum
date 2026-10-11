@@ -72,6 +72,21 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T090500.749224Z` is the first schema-6 record, contract
+`live-target-cross-group-fused-pubs-scheduler-usage-v1`, from clean source
+commit `51a55ae` (sources_modified=false) with experiment digest
+`5543c0f06d36339949cc8fdd76841e7d307c03fc28e3c21fb3fbcd50506063e4`.
+Every PUB manifest now carries `target_gate_lower_bound_dt` and the
+feed-forward structure counts; the 6 dynamic PUBs read
+(parallel streams, sequential stages, control-flow operations) =
+{'ibm_kingston_dynamic_pub_01': (9, 1, 9), 'ibm_kingston_dynamic_pub_02': (2, 1, 2), 'ibm_kingston_dynamic_pub_03': (9, 1, 9), 'ibm_kingston_dynamic_pub_04': (3, 1, 3), 'ibm_kingston_dynamic_pub_05': (3, 1, 3), 'ibm_kingston_dynamic_pub_06': (3, 1, 3)}
+with Target lower bounds {'ibm_kingston_dynamic_pub_01': 3334, 'ibm_kingston_dynamic_pub_02': 3295, 'ibm_kingston_dynamic_pub_03': 3334, 'ibm_kingston_dynamic_pub_04': 3334, 'ibm_kingston_dynamic_pub_05': 3334, 'ibm_kingston_dynamic_pub_06': 1659} dt. The record stays
+`planned`, sends zero QPU jobs, and carries no timing or usage records, which
+only a collected job supplies. Record SHA-256 is
+`6c0d04b9cc4e7417ccd872af39ebe8935a3d5b3c301b0870df251d7df0607472`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
 `2026-10-11T085437.294823Z` qualifies the process-pool branch. Clean source
 commit `1ea5de1` (sources_modified=false) carries experiment digest
 `7bbc903555609d683b13055e1d903ad8c18de0a28a0422bd7196759238d326eb`,
