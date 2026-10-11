@@ -384,6 +384,65 @@ PY
    costs on the same multiplier; a normalization bound alone is not a compiler
    resource estimate.
 
+### Signed modulo-15 census
+
+`scripts/mod15_signed_multiplier_census.py` enumerates the seven nonidentity
+units of (Z/15)^x, each of which `_mersenne_power_of_two` classifies as a
+signed power of two: 2, 4, 8 are positive rotations and 7 = -8, 11 = -4,
+13 = -2, 14 = -1 are rotations followed by one's-complement inversion. For
+each base and both input domains the script builds the controlled multiplier
+and reads its 32-state unitary (control plus four work qubits). It requires
+unit-phase basis images; the control-0 identity; control 1 equal to
+`a x mod 15` on residues 1..14; the raw rotate-and-invert rule on all 16 states
+(endpoints 0 and 15 exchanged for a negative base); the full-register endpoint
+rule (0 and 15 fixed) as the nonzero-residue circuit plus the controlled
+Gray-path transposition of 0 and 15; zero scratch qubits; a gate census
+that matches `multiplier_profile`; and `a` followed by `a^-1` (either order)
+equal to the identity. The ideal yield uses `ideal_phase_distribution` and
+`distribution_success` at eight phase bits, the count `order_finding_plan`
+selects for N = 15. The compile column is one controlled multiplier on the
+static FakeFez target at optimization level 3 over seeds 0 through 7; routed CZ,
+depth, and critical-path duration (`QuantumCircuit.estimate_duration`) come
+from the same compiled circuit.
+
+| base | order | signed form | cswap | cx | ideal factor yield | median routed CZ | depth range |
+|---:|---:|---|---:|---:|---:|---:|---:|
+| 2 | 4 | +2^1 | 3 | 0 | 0.500000 | 36 | 111-112 |
+| 4 | 2 | +2^2 | 2 | 0 | 0.500000 | 20 | 61-61 |
+| 7 | 4 | -2^3 | 3 | 4 | 0.500000 | 40 | 126-127 |
+| 8 | 4 | +2^3 | 3 | 0 | 0.500000 | 36 | 111-112 |
+| 11 | 2 | -2^2 | 2 | 4 | 0.500000 | 23 | 63-82 |
+| 13 | 4 | -2^1 | 3 | 4 | 0.500000 | 42 | 126-126 |
+| 14 | 2 | -2^0 | 0 | 4 | 0.000000 | 7 | 15-19 |
+
+CZ and depth in the table belong to the nonzero-residue domain, the domain of
+the order-finding circuit. Base 14 = -1 has order 2 and a^(r/2) = -1, so the
+factor extractor rejects every sample while the order recovery probability
+stays 0.5; it is the arithmetic negative control, executable and factor-useless.
+The six other bases each yield factors 3 and 5 with ideal probability 0.5. The
+full-register domain adds seven controlled basis edges (four-control MCX gates
+with no scratch) to each negative base, which raises the median routed CZ to
+463, 454, 468, and 427 for bases 7, 11, 13, and 14 against 40, 23, 42, and 7 on
+the nonzero-residue domain. The nonzero-residue circuit leaves 0 and 15
+exchanged under control 1, so the endpoint rule holds on the full register only;
+positive rotations fix both endpoints in either domain. The retained record
+`results/hw_estimate/mod15_signed_multiplier_census.json` holds the per-seed
+CZ, depth, duration, and qubit counts for both domains, the endpoint
+outputs, tool versions, and the script hash.
+
+The census is compiler and exact-host evidence; every record sets
+`qpu_executed` to `false`. Step 3 hardware work stays on base 2. A multi-base
+hardware run needs its own written case and approval under the QPU rules in
+`AGENTS.md`.
+
+Replay from the repository root (under 10 s):
+
+```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
+PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/mod15_signed_multiplier_census.py \
+  --out results/hw_estimate/mod15_signed_multiplier_census.json
+```
+
 ## What the algebra does connect to
 
 **Bernstein-Vazirani over F_2^3.**

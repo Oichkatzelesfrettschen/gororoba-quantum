@@ -31,6 +31,9 @@ The directory contains compiler and local-simulation records. Every record sets
   Aer sampling and exact decoder output.
 - `n21_cross_project_proof_audit.json` binds the selected fresh
   open_gororoba source proof audit.
+- `mod15_signed_multiplier_census.json` retains the unitary checks, ideal
+  order-finding yield, and eight-seed FakeFez compile of one controlled
+  multiplier for each nonidentity unit modulo 15.
 
 Both target-flip captures bind the source generator and finite Rocq
 certificate. `gororoba_quantum/MODULAR_SYNTHESIS.md` gives replay commands

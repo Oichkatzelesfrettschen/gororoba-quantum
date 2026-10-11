@@ -24,7 +24,10 @@ the closed form at n <= 7 only:
   degree      every span basis vector has ANF degree <= n-2, attained
 
 Any mismatch prints the failing statement to stderr and exits 1. Stdout is
-byte-deterministic; --timing adds per-level seconds on stderr.
+byte-deterministic; --timing adds per-level seconds on stderr. --mutate
+replaces one branch of the sign recursion by a wrong one and inverts the
+verdict: the run exits 0 only when a check catches the mutation, so the gate
+proves the checks have teeth.
 """
 
 from __future__ import annotations
@@ -69,6 +72,43 @@ def _anf(v: int, masks: list[int]) -> int:
     for i, m in enumerate(masks):
         v ^= (v & m) << (1 << i)
     return v
+
+
+MUTATIONS = ("high-low-unconditional", "high-high-no-early-return")
+
+
+def _mutated_sign(mutation: str) -> Callable[[int, int, int], int]:
+    """cd_sign's doubling recursion with one branch replaced by a wrong one.
+
+    high-low-unconditional negates on the high-low branch for q = 0 as well,
+    which breaks Lemma 0 (e_p e_0 = e_p). high-high-no-early-return drops the
+    both-high early return, so e_p e_p for high p stops being -e_0 and the
+    recursion (R) no longer holds.
+    """
+
+    def sign(dim: int, p: int, q: int) -> int:
+        value = 1
+        half = dim >> 1
+        while half > 0:
+            p_hi = p >= half
+            q_hi = q >= half
+            if not p_hi and not q_hi:
+                pass
+            elif not p_hi and q_hi:
+                p, q = q - half, p
+            elif p_hi and not q_hi:
+                p -= half
+                if q != 0 or mutation == "high-low-unconditional":
+                    value = -value
+            else:
+                qh, ph = q - half, p - half
+                if qh == 0 and mutation != "high-high-no-early-return":
+                    return -value
+                p, q = qh, ph
+            half >>= 1
+        return value
+
+    return sign
 
 
 def _rows_and_columns(n: int, sign: Callable[[int, int, int], int]) -> tuple[list[int], list[int]]:
@@ -199,6 +239,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--max-n", type=int, default=8, help="largest n = log2(dim), at least 2")
     parser.add_argument("--timing", action="store_true", help="print per-level seconds on stderr")
+    parser.add_argument("--mutate", choices=MUTATIONS, help="flip one recursion branch; exit 0 only if caught")
     args = parser.parse_args()
     if args.max_n < 2:
         parser.error("--max-n must be at least 2")
@@ -206,12 +247,13 @@ def main() -> int:
     sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
     from cd_core import cd_sign
 
+    sign = _mutated_sign(args.mutate) if args.mutate else cd_sign
     print("n dim distinct_s rank max_deg log2|G|")
     prev: tuple[list[int], list[int]] | None = None
     try:
         for n in range(1, args.max_n + 1):
             start = time.perf_counter()
-            rows, cols = _rows_and_columns(n, cd_sign)
+            rows, cols = _rows_and_columns(n, sign)
             if n >= 2:
                 distinct, rank, degree, order = check_level(n, rows, cols, prev)
                 print(f"{n} {1 << n} {distinct} {rank} {degree} {order}")
@@ -219,7 +261,13 @@ def main() -> int:
                     print(f"n={n}: {time.perf_counter() - start:.2f} s", file=sys.stderr)
             prev = (rows, cols)
     except Mismatch as exc:
+        if args.mutate:
+            print(f"mutation {args.mutate} caught: {exc}")
+            return 0
         print(f"mismatch: {exc}", file=sys.stderr)
+        return 1
+    if args.mutate:
+        print(f"mutation {args.mutate} survived every check through n={args.max_n}", file=sys.stderr)
         return 1
     return 0
 
