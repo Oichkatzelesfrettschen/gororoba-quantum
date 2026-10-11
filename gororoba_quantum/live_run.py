@@ -1847,7 +1847,11 @@ def _pooled_summaries(
 
 
 def replica_statistics(
-    group: Group, entries: list[Entry], dists: dict[str, list[np.ndarray]], shots: int
+    group: Group,
+    entries: list[Entry],
+    dists: dict[str, list[np.ndarray]],
+    shots: int,
+    scope: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     """Pooled, per-replica, interval, variance, global packing, and admission views.
 
@@ -1899,8 +1903,11 @@ def replica_statistics(
                 resolution = "packed replica 0 scores more than three sigma above the global replica-0 reference"
             else:
                 resolution = "the run detected no difference at this resolution"
+            # The comparison's scope is the packed PUB's group set: global
+            # when the PUB carries more than one group, single_group
+            # otherwise; the caller supplies it from the PUB manifests.
             out["global_packing_crosstalk"] = {
-                "scope": "global",
+                **(scope or {"scope": "unknown", "groups": []}),
                 "global_replica0_score": iso,
                 "packed_replica0_score": packed,
                 "difference": packed - iso,
@@ -1912,6 +1919,27 @@ def replica_statistics(
     if group.admission is not None:
         out["admission"] = group.admission(per_replica, shots)
     return out
+
+
+def _reference_scope(choice: Choice, scopes: dict[str, dict[str, Any]] | None) -> dict[str, Any] | None:
+    """The scope record of the PUB carrying choice's packed primary, when the caller supplies the map."""
+    if scopes is None:
+        return None
+    primary = next((entry for entry in choice.entries if not entry.reference), None)
+    return scopes.get(primary.name) if primary else None
+
+
+def pub_scopes(pubs: list[ExecutionPub]) -> dict[str, dict[str, Any]]:
+    """For each logical entry, the scope and group set of the PUB that carries it."""
+    scopes: dict[str, dict[str, Any]] = {}
+    for pub in pubs:
+        groups = sorted({component.choice.group.name for component in pub.components})
+        for component in pub.components:
+            scopes[component.entry.name] = {
+                "scope": "global" if len(groups) > 1 else "single_group",
+                "groups": groups,
+            }
+    return scopes
 
 
 def _bernoulli_score(entry: Entry) -> bool:
@@ -1942,7 +1970,9 @@ def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str,
     loss = bool(crosstalk.get("below_zero_95"))
     gain = bool(crosstalk.get("above_zero_95"))
     within = bool(crosstalk.get("within_margin"))
-    if loss and within:
+    if crosstalk.get("verdict") == "insufficient_shots":
+        yield_reading = "no yield verdict, since the shots are below the equivalence floor"
+    elif loss and within:
         yield_reading = "a detected packed yield loss inside the equivalence margin"
     elif loss:
         yield_reading = "a detected packed yield loss"
@@ -1952,7 +1982,11 @@ def packing_interpretation(schedule: dict[str, Any] | None, crosstalk: dict[str,
         yield_reading = "yields equivalent within the margin"
     else:
         yield_reading = "an unresolved yield difference"
-    tail = "; no single group or mechanism identified"
+    groups = schedule.get("groups") or crosstalk.get("groups") or []
+    if len(groups) == 1:
+        tail = f"; within {groups[0]} alone, no single mechanism identified"
+    else:
+        tail = "; no single group or mechanism identified"
     if "residual_difference_dt" not in schedule:
         return f"scheduler residuals unavailable; the fidelity comparison stands alone: {yield_reading}"
     longer = schedule["residual_difference_dt"] > 0
@@ -2018,7 +2052,11 @@ def _physical(isa: QuantumCircuit) -> list[int]:
 
 
 def _choice_record(
-    choice: Choice, noisy: dict[str, list[np.ndarray]], noise_calibration: str, shots: int
+    choice: Choice,
+    noisy: dict[str, list[np.ndarray]],
+    noise_calibration: str,
+    shots: int,
+    scopes: dict[str, dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     target = choice.snap.backend.target
     members = []
@@ -2069,7 +2107,7 @@ def _choice_record(
             }
             for r in choice.replicas
         ],
-        **replica_statistics(choice.group, choice.entries, noisy, shots),
+        **replica_statistics(choice.group, choice.entries, noisy, shots, _reference_scope(choice, scopes)),
         "summary_readout_corrected": corrected_summary(choice.group, choice.entries, noisy, choice.snap.properties),
         "members": members,
     }
@@ -2185,6 +2223,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
     pubs = execution_pubs(choices)
     record["fusion_summary"] = fusion_summary(pubs)
     record["execution_pubs"] = [pub.manifest() for pub in pubs]
+    scopes = pub_scopes(pubs)
     fused_by_snapshot: dict[int, tuple[Snapshot, list[QuantumCircuit]]] = {}
     for pub in pubs:
         snapshot = pub.components[0].choice.snap
@@ -2207,7 +2246,7 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             )
         sim, cal = sims[key]
         noisy = simulate(choice, sim, int(record["shots"]))
-        entry = _choice_record(choice, noisy, cal, int(record["shots"]))
+        entry = _choice_record(choice, noisy, cal, int(record["shots"]), scopes)
         record["groups"].append(entry)
         cz = [m["cz"] for m in entry["members"]]
         summary = {k: round(v, 4) for k, v in entry["summary"].items()}
@@ -3542,7 +3581,10 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 out_entry["summary_unavailable"] = f"missing {missing}"
                 out.append(out_entry)
                 continue
-            stats = replica_statistics(group, entries, measured, shots)
+            primary_pub = executed[required[0]]["pub"]
+            pub_groups = timing[primary_pub].get("groups") or []
+            scope = {"scope": "global" if len(pub_groups) > 1 else "single_group", "groups": pub_groups}
+            stats = replica_statistics(group, entries, measured, shots, scope)
             comparison_reason = _comparisons_withheld(required, executed)
             if comparison_reason:
                 # Every summary combines components from multiple fused PUBs,
@@ -3559,7 +3601,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     out_entry["calibration_dependent_summaries_unavailable"] = "; ".join(unavailable)
                 else:
                     out_entry["replayed_statistics"] = _single_pub_views(
-                        replica_statistics(group, entries, replayed, shots)
+                        replica_statistics(group, entries, replayed, shots, scope)
                     )
                     out_entry["tvd_measured_to_replayed"] = {
                         n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
@@ -3581,7 +3623,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 pooled_reason,
             )
             out_entry["replayed_statistics"] = _gate_odr(
-                replica_statistics(group, entries, replayed, shots), pooled_reason, replica_reason
+                replica_statistics(group, entries, replayed, shots, scope), pooled_reason, replica_reason
             )
             out_entry["tvd_measured_to_replayed"] = {
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required

@@ -653,11 +653,14 @@ its QPY SHA-256 is
     above zero reads `packed_improvement_detected`, and anything else reads
     `difference_not_resolved`; the three flags are reported beside the
     verdict, so a loss the 95 percent interval resolves inside the margin
-    stays visible. The interval is approximate: exact enumeration of two
-    equal Bernoulli arms puts the false-detection probability of the 95
-    percent interval at 0.0600 for 32 shots per arm and 0.0505 for 4096,
-    so no verdict is issued below 1024 shots per arm (`insufficient_shots`),
-    where the enumerated maximum over true rates is 0.0501. One matched pair at 4096 shots and a yield
+    stays visible. The interval is Newcombe's
+    continuity-corrected hybrid score interval: exact enumeration of two
+    equal Bernoulli arms over true rates 0.005 to 0.995 puts its 95 percent
+    false-detection probability below nominal at every enumerated size
+    (0.0416 at 64 shots per arm, 0.0482 at 1024, 0.0488 at 4096), where the
+    uncorrected interval exceeds nominal at every size (0.0555 down to
+    0.0506); no verdict is issued below 64 shots per arm
+    (`insufficient_shots`). One matched pair at 4096 shots and a yield
     near 0.5 gives the difference a standard deviation of 0.011, so the 90
     percent interval is about 0.036 wide and an observed difference within
     about 0.012 of zero can establish equivalence.

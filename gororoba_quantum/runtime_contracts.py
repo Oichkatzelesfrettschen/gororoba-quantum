@@ -1513,7 +1513,8 @@ def _verify_packing_equivalence() -> None:
     ]
     for packed, alone, shots, verdict, resolution in cases:
         dists = {"primary": [np.array([1 - packed, packed])], "primary_isolated": [np.array([1 - alone, alone])]}
-        crosstalk = replica_statistics(group, entries, dists, shots)["global_packing_crosstalk"]
+        scope = {"scope": "global", "groups": ["folded_qpe_mod15", "hybrid_shor_mod15"]}
+        crosstalk = replica_statistics(group, entries, dists, shots, scope)["global_packing_crosstalk"]
         if (
             crosstalk["scope"] != "global"
             or crosstalk["method"] != "newcombe_wilson"
@@ -1529,12 +1530,24 @@ def _verify_packing_equivalence() -> None:
     extreme = replica_statistics(group, entries, degenerate, 1024)["global_packing_crosstalk"]
     if extreme["z"] is not None or "unavailable" not in extreme["resolution"] or not extreme["below_zero_95"]:
         raise RuntimeError(f"zero-variance arms read {extreme}")
+    if extreme["scope"] != "unknown":
+        raise RuntimeError("a comparison without a PUB scope claims one")
+    scoped = replica_statistics(group, entries, degenerate, 1024, {"scope": "single_group", "groups": ["probe"]})
+    if scoped["global_packing_crosstalk"]["scope"] != "single_group":
+        raise RuntimeError("a single-group PUB scope is not propagated")
     loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": False}
     small_loss = {"below_zero_95": True, "above_zero_95": False, "within_margin": True}
     same = {"below_zero_95": False, "above_zero_95": False, "within_margin": True}
     open_question = {"below_zero_95": False, "above_zero_95": False, "within_margin": False}
     gain = {"below_zero_95": False, "above_zero_95": True, "within_margin": False}
+    few = {"verdict": "insufficient_shots", "below_zero_95": False, "above_zero_95": False, "within_margin": False}
     readings: list[tuple[dict[str, Any], dict[str, Any], str]] = [
+        ({"residual_difference_dt": 0, "feed_forward": True}, few, "below the equivalence floor"),
+        (
+            {"residual_difference_dt": 400, "feed_forward": True, "groups": ["hybrid_shor_mod15"]},
+            loss,
+            "within hybrid_shor_mod15 alone",
+        ),
         ({"residual_difference_dt": 400, "feed_forward": True}, loss, "unattributed global packing scheduling cost"),
         ({"residual_difference_dt": 400, "feed_forward": False}, loss, "scheduling alone"),
         ({"residual_difference_dt": 0, "feed_forward": True}, loss, "readout crosstalk"),
