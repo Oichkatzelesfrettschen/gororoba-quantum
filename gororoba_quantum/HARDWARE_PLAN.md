@@ -100,8 +100,11 @@ execution path but does not establish default-policy submission readiness.
   it does not attribute crosstalk to one group. The noise model carries no
   crosstalk, so its difference is shot noise: each replica draws from the
   seed of its position in one batched Aer run. `packing_schedule` compares the
-  two PUBs' scheduled durations, which separates serialized feed-forward from
-  quantum crosstalk.
+  two PUBs' scheduler residuals as a global packing scheduling cost: the
+  packed PUB adds every replica's whole circuit, so measurement, reset,
+  pulse-channel, and other controller resources scale with replica count
+  alongside feed-forward, and a larger packed residual is attributed to none
+  of them without a matched non-feed-forward control.
 - **ODR.** The pooled value averages each replica's witness over its own twin
   and needs 16384 shots over all replicas, so packing meets it at the default
   4096 shots for every mirrored group: design A pools 86,016 shots over 21
@@ -174,14 +177,14 @@ literature/notes/2507.08088.md, which puts the full program between 17 s and
 ## Risks
 
 - **Parallel feed-forward.** Hardware handling of simultaneous if_else
-  branches is unmeasured. The scheduled-duration comparison detects
-  serialization exactly; the fidelity comparison reports the packed-minus-
-  reference difference with a 95 percent interval and a two-one-sided
-  equivalence test against a preregistered margin of 0.03, so a run either
-  detects a packing cost, establishes equivalence within the margin, or
-  states that it resolved neither; a three-sigma result alone detects a
-  difference and never establishes equivalence. Neither comparison
-  attributes a cost to one group.
+  branches is unmeasured. The scheduler-residual comparison measures a global
+  packing scheduling cost without attributing it to feed-forward; the fidelity
+  comparison reports the packed-minus-reference difference with a 95 percent
+  interval and a two-one-sided equivalence test against a preregistered
+  margin of 0.03, so a run either detects a packing cost, establishes
+  equivalence within the margin, or states that it resolved neither; a
+  three-sigma result alone detects a difference and never establishes
+  equivalence. Neither comparison attributes a cost to one group.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.

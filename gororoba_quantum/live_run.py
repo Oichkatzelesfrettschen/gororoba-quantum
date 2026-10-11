@@ -3326,6 +3326,11 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     by_group = _archived_entries(record, isas)
     by_name = {e.name: e for entries in by_group.values() for e in entries}
     jobs_out: dict[str, dict[str, Any]] = {}
+
+    def checkpoint(entries_out: list[dict[str, Any]]) -> None:
+        text = json.dumps(entries_out, indent=2) + "\n"
+        _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
+
     out: list[dict[str, Any]] = [
         {
             "submission_complete": bool(submission.get("complete", False)),
@@ -3338,20 +3343,29 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         pub_manifests = job_entry["pubs"]
-        # Usage is read before the results: a job that ended in ERROR or
-        # CANCELLED raises on result() and still carries a QPU charge, and
-        # the attempted job stays in the record with that charge.
-        jobs_out[job_entry["job_id"]] = {
+        # Usage is read before the results and checkpointed to collect.json
+        # at once: a job that ended in ERROR or CANCELLED raises on result()
+        # and still carries a QPU charge, and a later job's failure must not
+        # lose an earlier job's charge. A job still running when collection
+        # starts reports pending usage here; result() waits for it, and the
+        # usage is read again once the shots are in.
+        job_out = {
             "backend": job_entry["backend"],
             "kind": job_entry["kind"],
             "usage": job_usage_record(job, len(pub_manifests), shots),
             "pub_timing": {},
         }
+        jobs_out[job_entry["job_id"]] = job_out
+        checkpoint(out)
         try:
             result = job.result()
         except Exception as error:  # noqa: BLE001 - the service raises its own hierarchy for failed jobs
-            jobs_out[job_entry["job_id"]]["result_unavailable"] = f"{type(error).__name__}: {error}"
+            job_out["result_unavailable"] = f"{type(error).__name__}: {error}"
+            checkpoint(out)
             continue
+        if job_out["usage"]["usage_status"] == "pending":
+            job_out["usage"] = job_usage_record(job, len(pub_manifests), shots)
+            checkpoint(out)
         if len(result) != len(pub_manifests):
             raise LiveRunError(
                 f"job {job_entry['job_id']} returned {len(result)} PUB results for "
@@ -3512,8 +3526,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
-    text = json.dumps(out, indent=2) + "\n"
-    _replace_atomically(run_dir / "collect.json", lambda handle: handle.write(text), "w")
+    checkpoint(out)
     print(json.dumps(out, indent=2))
 
 
