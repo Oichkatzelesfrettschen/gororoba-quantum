@@ -1302,6 +1302,34 @@ def _verify_fused_collection() -> None:
         with redirect_stdout(io.StringIO()):
             _collect_with_zero_simulation(collection_service, run_dir)
 
+        # A job still running at collection start reports pending usage
+        # before result() and final usage after it.
+        class _RunningJob(_ProbeResultJob):
+            def result(self) -> PrimitiveResult[SamplerPubResult]:
+                self._status, self._usage, self._charge = "DONE", usage, 12.5
+                return self._result
+
+        running = _RunningJob(result, status="RUNNING", usage={"status": "pending"}, charge=None)
+        with redirect_stdout(io.StringIO()):
+            _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: running}), run_dir)
+        if (run_dir / "collect.json").read_bytes() != first:
+            raise RuntimeError("usage read before a running job's result is not refreshed after it")
+
+        # A failure after the usage read leaves the usage checkpointed in
+        # collect.json: a result with the wrong PUB count stops collection.
+        broken = _ProbeResultJob(PrimitiveResult([], metadata={}), usage=usage, charge=1.0)
+        try:
+            with redirect_stdout(io.StringIO()):
+                _collect_with_zero_simulation(_CollectionProbeService(backend, {job_id: broken}), run_dir)
+        except LiveRunError as error:
+            if "returned 0 PUB results" not in str(error):
+                raise RuntimeError(f"a job with the wrong PUB count reports {error}") from error
+        else:
+            raise RuntimeError("a job with the wrong PUB count collects")
+        partial = json.loads((run_dir / "collect.json").read_text())
+        if partial[0]["jobs"][job_id]["usage"]["qpu_charge_time_seconds"] != "1.0" or len(partial) != 1:
+            raise RuntimeError(f"the checkpoint after a failed collection lacks the usage: {partial[0]['jobs']}")
+
 
 def _verify_scheduler_timing_cases() -> None:
     """Window sources, scheduler durations, and residual classification over every documented shape."""

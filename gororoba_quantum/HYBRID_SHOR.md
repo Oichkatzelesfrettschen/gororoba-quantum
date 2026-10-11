@@ -633,8 +633,10 @@ its QPY SHA-256 is
     `circuit_duration`, which includes the classical latency the Target omits,
     and `packing_schedule` compares the packed PUB with the reference PUB of
     the same job. Serialized branches lengthen the packed schedule with the
-    stream count; parallel branches leave the two equal up to the longest
-    member. The comparison is exact and needs no shot statistics.
+    stream count, and so do serialized measurement, reset, or pulse-channel
+    resources, since the packed PUB adds every replica's whole circuit; the
+    comparison is exact and needs no shot statistics, and it measures a
+    global packing scheduling cost rather than feed-forward alone.
   - *Fidelity.* `global_packing_crosstalk` compares packed replica 0's factor
     yield with the reference copy on the same qubits. One matched pair at 4096
     shots and a yield near 0.5 gives the difference a standard deviation of
