@@ -21,6 +21,10 @@ The directory contains compiler and local-simulation records. Every record sets
 - `n21_target_flip_precision5.json` captures the same exact arithmetic
   at five-bit precision; the shorter circuit has a distinct decoder law.
 
+- `n21_affine_residual_challenger.json` compares the affine-residual
+  multiplier with the target-flip circuit over transpiler seeds 0 through 7
+  and records the admission rule, its clauses, and the rejection verdict.
+
 - `n21_target_flip_proof_verification.json` and `n21_target_flip_proof/`
   retain fresh kernel checks, assumption output, and failed mutations.
 - `n21_target_flip_ideal_simulation.json` retains credential-free five-bit

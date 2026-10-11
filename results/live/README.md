@@ -126,6 +126,26 @@ only a collected job supplies. Record SHA-256 is
 SHA-256 is
 `9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
+`2026-10-11T095541.923847Z` requalifies the affine challenger branch after it took the
+process-pool main. Clean source commit `07f197b` (sources_modified=false)
+carries experiment digest
+`c5e78d489bf098dfba152eaf276915f66ef0d97b37c13a8ded7fe86fa4364765`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`4b5e61dcaa5e87c5a76a7cbccf7bf85e5ef115951d87fe118a5b8b4fd5f28dfa`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
+`2026-10-11T093336.320234Z` qualifies the experiment digest after affine_residual.py joined
+the source manifest (modular_arithmetic imports it for the explicit-only
+affine-residual candidate). Source commit `ce40cd6` (sources_modified=false;
+the commit message was reworded afterward on an identical tree) carries
+experiment digest
+`097c5b48dca92ffe4e45bec4c3da45844ce26c26a6d41b4e33698b1729546232`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`2245c42f8eb4f853c93fdf672c3979760eba85a96708394eb4db27627e2b58c0`; QPY
+SHA-256 is
+`9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
+
 `2026-10-11T091019.824103Z` requalifies the process-pool branch after collection replay
 moved to one seeded batch per calibration (replay_entries). Clean source
 commit `eb40fa1` (sources_modified=false) carries experiment digest

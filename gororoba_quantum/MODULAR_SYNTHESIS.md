@@ -120,6 +120,83 @@ Ideal simulation recovers factors 3 and 7; the identity null returns zero.
 The ten-bit default remains the faithful baseline. Five-bit precision is an
 explicit finite benchmark choice, rather than a general Shor precision claim.
 
+## Affine-residual challenger
+
+`affine_residual.py` reads the degree-zero vector b and the degree-one matrix
+A over GF(2) from the output-bit ANFs, so `f(x) = A x XOR b XOR q(x)` with q
+of degree two and higher. The constant term of every output bit is a bit of
+f(0), and modular multiplication fixes zero, so b = 0 for every unit modulo
+21. When A has full rank, `r(x) = A^-1 (f(x) XOR b)` is a register
+permutation whose own affine part is the identity, and `f = A o r`: the
+circuit applies the target-flip network of r first and the linear network of
+A second. `target_flip_network` synthesizes r unchanged. Swap-free
+Gauss-Jordan elimination synthesizes A in place with 10, 11, and 12 CNOTs for
+multipliers 2, 4, and 16; bidirectional search over GL(5,2) gives minima of
+10, 9, and 9.
+
+The linear part is singular for most units. Multipliers 2, 4, and 16 have
+rank 5; the other eight units, 5, 8, 10, 11, 13, 17, 19, and 20, have rank 4.
+A rank-deficient A has no in-place reversible realization, so the method is
+inapplicable there and `multiplier_profile` raises ValueError naming the
+rank. Multiplier 11, the inverse of 2, is the singular fixture in
+`modular_arithmetic._verify`.
+
+Each in-place CNOT from bit c to bit t is a target-flip cube with predicate
+`x_c`, and a constant X is a cube with the empty predicate. Phase-control
+emission adds the outer control to every cube, so a CNOT becomes a CCX and an
+X becomes a CX. Order finding requires the identity on the disabled branch;
+an uncontrolled CNOT network applies A there, and the verifier's mutation with
+uncontrolled linear CNOTs moves 30 of the 32 disabled-branch states for each
+multiplier. The argument binds the direct composition: a conjugated form,
+uncontrolled `A^-1`, then controlled `r o A`, then uncontrolled A, keeps the
+CNOTs uncontrolled but synthesizes the different residual `r o A`.
+
+The exhaustive checks cover all 32 register states for each of 2, 4, and 16:
+r is a bijection with identity affine part, `A o r` equals f, the reversed
+order `r o A` differs from f, and deleting any single linear CNOT breaks A.
+`_verify_multiplier` checks the phase-controlled circuit on both control
+branches with clean workspace, requiring amplitude +1 and restored workspace
+at tolerance 1e-12.
+
+The residual alone costs 2,346 phase-controlled CX equivalents over the ten
+rounds, 210 below the 2,556 target-flip baseline. The promoted linear
+Toffolis add 678 for a 3,024 total. Minimum-CNOT linear networks bound the
+direct composition at 2,892, so no in-place CNOT synthesis of A recovers the
+baseline surrogate.
+
+`affine_residual_challenger.py` builds both ten-round circuits through
+`compile_evidence` and compiles them with the same preset pass manager on the
+captured FakeFez target over transpiler seeds 0 through 7. Scheduled duration
+is `estimate_duration` over the true-branch gate-time view of `live_run`, in
+units of dt = 4 ns. That view omits classical feed-forward latency; both
+circuits carry the same 20 H, 45 if_else, 10 measure, and 9 reset operations,
+so the omitted latency is common to them.
+
+| Seed | Baseline CZ | Challenger CZ | Baseline depth | Challenger depth | Baseline dt | Challenger dt |
+|---:|---:|---:|---:|---:|---:|---:|
+| 0 | 5,385 | 6,099 | 13,681 | 15,529 | 132,000 | 145,173 |
+| 1 | 5,419 | 6,105 | 13,651 | 15,565 | 131,586 | 145,707 |
+| 2 | 5,454 | 6,285 | 13,298 | 15,887 | 125,442 | 150,666 |
+| 3 | 5,404 | 6,105 | 13,673 | 15,536 | 132,177 | 145,053 |
+| 4 | 5,425 | 6,171 | 13,492 | 15,961 | 126,978 | 150,723 |
+| 5 | 5,588 | 6,153 | 13,715 | 15,971 | 132,588 | 150,483 |
+| 6 | 5,384 | 6,148 | 13,706 | 15,898 | 132,246 | 150,102 |
+| 7 | 5,482 | 6,113 | 13,290 | 15,533 | 125,547 | 145,065 |
+| Median | 5,422 | 6,130.5 | 13,662 | 15,726 | 131,793 | 147,904.5 |
+
+Both candidates use seven logical qubits, and every seed routes onto seven
+physical qubits. The admission rule requires passing logical-equivalence and
+workspace checks, no logical-qubit increase, every seed no worse in routed CZ,
+depth, and scheduled duration, and a strictly lower median routed CZ. The
+checks pass and the qubit count holds, but every seed regresses on all three
+metrics, by at least 565 CZ, 1,848 depth, and 12,876 dt, and the median routed
+CZ rises 13.1 percent. The verdict is rejection. The default remains
+`target_flip_1_clean`; `compile_evidence.py` compiles the challenger only when
+`--candidate affine_residual_target_flip` names it. The script evaluates the
+rule and writes `results/hw_estimate/n21_affine_residual_challenger.json`
+with tool versions, source hashes, the rank census, per-multiplier networks
+and checks, the surrogate totals, and every per-seed record.
+
 ## Transfer from the dimension ladder and Rocq corpus
 
 The useful transfer from open_gororoba is structural compilation and proof
@@ -174,6 +251,9 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --out results/hw_estimate/n21_target_flip_precision5.json
 "$PYTHON" gororoba_quantum/hybrid_shor.py simulate 21 \
   --phase-bits 5 --shots 4096 --seed 7
+"$PYTHON" gororoba_quantum/affine_residual.py
+"$PYTHON" gororoba_quantum/affine_residual_challenger.py \
+  --out results/hw_estimate/n21_affine_residual_challenger.json
 ```
 
 The fresh Rocq replay command is in AGENTS.md. The open set consists of
