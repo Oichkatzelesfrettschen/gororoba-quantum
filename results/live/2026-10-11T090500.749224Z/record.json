@@ -1,8 +1,8 @@
 {
   "schema_version": 6,
-  "schema_contract": "live-target-cross-group-fused-pubs-v1",
+  "schema_contract": "live-target-cross-group-fused-pubs-scheduler-usage-v1",
   "state": "planned",
-  "started": "2026-10-11T08:48:58.238143+00:00",
+  "started": "2026-10-11T09:05:00.749224+00:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -23,19 +23,20 @@
   },
   "shots": 4096,
   "seed_simulator": 20261011,
-  "experiment_digest": "ef9fc483132012f2e98cd8add3eca8079ee7a65a4a5c9f4a8b18058c3a28fa79",
+  "experiment_digest": "5543c0f06d36339949cc8fdd76841e7d307c03fc28e3c21fb3fbcd50506063e4",
   "code_commit": {
-    "head": "1314ee2c7cc5ef291184d10f11e3f5085b485c9d",
+    "head": "51a55aebc74fd02bcacaa4c74809556ca2d2bc79",
     "sources_modified": false
   },
   "system_inventory": {
     "ibm_fez": {
-      "eligibility": "eligible",
+      "eligibility": "ineligible",
+      "reason": "42 pending jobs exceeds --max-pending 25",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 6,
+      "pending_jobs": 42,
       "calibration": "2026-10-11T01:21:37-07:00",
-      "fetched_at": "2026-10-11T08:49:01+00:00",
+      "fetched_at": "2026-10-11T09:05:03+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -106,9 +107,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 25,
+      "pending_jobs": 9,
       "calibration": "2026-10-11T01:09:33-07:00",
-      "fetched_at": "2026-10-11T08:49:02+00:00",
+      "fetched_at": "2026-10-11T09:05:04+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -181,9 +182,9 @@
       "reason": "status operational=True msg='maintenance'",
       "operational": true,
       "status_msg": "maintenance",
-      "pending_jobs": 11,
+      "pending_jobs": 13,
       "calibration": "2026-10-11T01:27:27-07:00",
-      "fetched_at": "2026-10-11T08:49:02+00:00",
+      "fetched_at": "2026-10-11T09:05:05+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -272,84 +273,12 @@
     }
   },
   "backends": {
-    "ibm_fez": {
-      "operational": true,
-      "status_msg": "active",
-      "pending_jobs": 6,
-      "calibration": "2026-10-11T01:21:37-07:00",
-      "fetched_at": "2026-10-11T08:49:01+00:00",
-      "capabilities": {
-        "num_qubits": 156,
-        "dynamic_circuits": true,
-        "operation_names": [
-          "cz",
-          "delay",
-          "id",
-          "if_else",
-          "measure",
-          "measure_2",
-          "measure_reset",
-          "measure_reset_2",
-          "reset",
-          "reset_2",
-          "rz",
-          "sx",
-          "x",
-          "xslow"
-        ],
-        "control_flow": [
-          "if_else"
-        ]
-      },
-      "medians": {
-        "t1_us": 129.42836519253427,
-        "t2_us": 97.24005476090232,
-        "readout_error": 0.0106201171875,
-        "cz_error": 0.0027413012213221982
-      },
-      "excluded_qubits": {
-        "11": "T1=74.6us T2=12.2us",
-        "46": "T1=160.4us T2=14.6us",
-        "49": "T1=35.4us T2=19.5us",
-        "53": "T1=140.2us T2=16.9us",
-        "63": "readout error 0.257",
-        "65": "readout error 0.276",
-        "66": "T1=109.8us T2=19.0us",
-        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
-        "75": "readout error 0.212",
-        "83": "readout error 0.170",
-        "96": "readout error 0.085",
-        "102": "readout error 0.120",
-        "113": "readout error 0.088",
-        "131": "readout error 0.084",
-        "149": "T1=52.6us T2=4.6us",
-        "150": "T1=79.9us T2=5.4us"
-      },
-      "excluded_edges": {
-        "27-28": "cz error 1.0",
-        "28-27": "cz error 1.0",
-        "31-32": "cz error 0.03928338859983327",
-        "32-31": "cz error 0.03928338859983327",
-        "32-33": "cz error 1.0",
-        "33-32": "cz error 1.0",
-        "63-64": "cz error 0.05109041533207512",
-        "64-63": "cz error 0.05109041533207512",
-        "71-72": "cz error 1.0",
-        "72-71": "cz error 1.0",
-        "72-73": "cz error 1.0",
-        "73-72": "cz error 1.0",
-        "102-103": "cz error 0.058524667428099364",
-        "103-102": "cz error 0.058524667428099364",
-        "148-149": "cz error 0.06439104692101763",
-        "149-148": "cz error 0.06439104692101763"
-      }
-    },
     "ibm_kingston": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 25,
+      "pending_jobs": 9,
       "calibration": "2026-10-11T01:09:33-07:00",
-      "fetched_at": "2026-10-11T08:49:02+00:00",
+      "fetched_at": "2026-10-11T09:05:04+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -419,13 +348,86 @@
     }
   },
   "skipped_backends": {
+    "ibm_fez": {
+      "reason": "42 pending jobs exceeds --max-pending 25",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 42,
+      "calibration": "2026-10-11T01:21:37-07:00",
+      "fetched_at": "2026-10-11T09:05:03+00:00",
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "medians": {
+        "t1_us": 129.42836519253427,
+        "t2_us": 97.24005476090232,
+        "readout_error": 0.0106201171875,
+        "cz_error": 0.0027413012213221982
+      },
+      "excluded_qubits": {
+        "11": "T1=74.6us T2=12.2us",
+        "46": "T1=160.4us T2=14.6us",
+        "49": "T1=35.4us T2=19.5us",
+        "53": "T1=140.2us T2=16.9us",
+        "63": "readout error 0.257",
+        "65": "readout error 0.276",
+        "66": "T1=109.8us T2=19.0us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "75": "readout error 0.212",
+        "83": "readout error 0.170",
+        "96": "readout error 0.085",
+        "102": "readout error 0.120",
+        "113": "readout error 0.088",
+        "131": "readout error 0.084",
+        "149": "T1=52.6us T2=4.6us",
+        "150": "T1=79.9us T2=5.4us"
+      },
+      "excluded_edges": {
+        "27-28": "cz error 1.0",
+        "28-27": "cz error 1.0",
+        "31-32": "cz error 0.03928338859983327",
+        "32-31": "cz error 0.03928338859983327",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "63-64": "cz error 0.05109041533207512",
+        "64-63": "cz error 0.05109041533207512",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.058524667428099364",
+        "103-102": "cz error 0.058524667428099364",
+        "148-149": "cz error 0.06439104692101763",
+        "149-148": "cz error 0.06439104692101763"
+      }
+    },
     "ibm_marrakesh": {
       "reason": "status operational=True msg='maintenance'",
       "operational": true,
       "status_msg": "maintenance",
-      "pending_jobs": 11,
+      "pending_jobs": 13,
       "calibration": "2026-10-11T01:27:27-07:00",
-      "fetched_at": "2026-10-11T08:49:02+00:00",
+      "fetched_at": "2026-10-11T09:05:05+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -603,53 +605,14 @@
       ],
       "static_circuits": 3,
       "dynamic_circuits": 0,
-      "max_classical_bits": 15,
+      "max_classical_bits": 2,
       "physical_qubits": [
-        1,
-        2,
-        3,
+        12,
         13,
         14,
-        15,
-        21,
-        22,
-        23,
-        25,
-        37,
-        45,
-        54,
-        55,
-        58,
-        59,
-        70,
-        71,
-        87,
-        88,
-        89,
-        93,
-        94,
-        95,
-        105,
-        106,
-        110,
-        111,
-        112,
-        116,
-        117,
-        118,
-        120,
-        121,
-        127,
-        129,
-        130,
-        137,
-        138,
-        142,
-        143,
-        144,
-        147,
-        151,
-        152
+        80,
+        81,
+        82
       ],
       "operation_names": [
         "cz",
@@ -658,7 +621,7 @@
         "sx",
         "x"
       ],
-      "replicas": 15,
+      "replicas": 2,
       "isolated_references": 1,
       "target_validated": true
     },
@@ -813,13 +776,8 @@
       ],
       "static_circuits": 0,
       "dynamic_circuits": 6,
-      "max_classical_bits": 8,
+      "max_classical_bits": 6,
       "physical_qubits": [
-        47,
-        57,
-        66,
-        67,
-        68,
         79,
         92,
         93,
@@ -844,7 +802,7 @@
         "sx",
         "x"
       ],
-      "replicas": 4,
+      "replicas": 3,
       "isolated_references": 1,
       "target_validated": true
     },
@@ -859,36 +817,36 @@
       "dynamic_circuits": 3,
       "max_classical_bits": 48,
       "physical_qubits": [
+        0,
         1,
         2,
         3,
-        4,
-        5,
-        20,
-        21,
-        22,
-        23,
-        24,
-        37,
-        43,
-        44,
-        45,
-        56,
-        78,
-        87,
-        88,
-        89,
-        97,
-        120,
-        121,
-        122,
-        123,
-        124,
-        140,
-        141,
-        142,
-        143,
-        144
+        16,
+        19,
+        32,
+        33,
+        34,
+        35,
+        47,
+        51,
+        57,
+        58,
+        65,
+        66,
+        67,
+        71,
+        72,
+        73,
+        80,
+        81,
+        82,
+        83,
+        96,
+        107,
+        108,
+        109,
+        118,
+        129
       ],
       "operation_names": [
         "cz",
@@ -909,161 +867,6 @@
     "allocation": "required-set-backtracking-then-fair-surplus",
     "clusters": [
       {
-        "backend": "ibm_fez",
-        "kind": "static",
-        "rounds": 15,
-        "required_rounds": 2,
-        "physical_qubits": [
-          1,
-          2,
-          3,
-          13,
-          14,
-          15,
-          21,
-          22,
-          23,
-          25,
-          37,
-          45,
-          54,
-          55,
-          58,
-          59,
-          70,
-          71,
-          87,
-          88,
-          89,
-          93,
-          94,
-          95,
-          105,
-          106,
-          110,
-          111,
-          112,
-          116,
-          117,
-          118,
-          120,
-          121,
-          127,
-          129,
-          130,
-          137,
-          138,
-          142,
-          143,
-          144,
-          147,
-          151,
-          152
-        ],
-        "groups": [
-          {
-            "group": "design_a",
-            "pattern_width": 3,
-            "floor_candidates": 137,
-            "selected_replicas": 15,
-            "selected_scores": [
-              0.9154567672060366,
-              0.9037196728949866,
-              0.9022128976954986,
-              0.880761172094387,
-              0.8781716633845639,
-              0.8772437835211596,
-              0.8761415898252398,
-              0.8704522928862174,
-              0.8675675305080963,
-              0.8632000981412244,
-              0.8568501836801965,
-              0.8564801274582325,
-              0.8534951576833443,
-              0.8489920771201365,
-              0.8379036769176513
-            ],
-            "selected_qubits": [
-              [
-                1,
-                2,
-                3
-              ],
-              [
-                21,
-                22,
-                23
-              ],
-              [
-                142,
-                143,
-                144
-              ],
-              [
-                127,
-                137,
-                147
-              ],
-              [
-                87,
-                88,
-                89
-              ],
-              [
-                25,
-                37,
-                45
-              ],
-              [
-                13,
-                14,
-                15
-              ],
-              [
-                105,
-                106,
-                117
-              ],
-              [
-                116,
-                120,
-                121
-              ],
-              [
-                58,
-                70,
-                71
-              ],
-              [
-                138,
-                151,
-                152
-              ],
-              [
-                93,
-                94,
-                95
-              ],
-              [
-                110,
-                111,
-                112
-              ],
-              [
-                54,
-                55,
-                59
-              ],
-              [
-                118,
-                129,
-                130
-              ]
-            ]
-          }
-        ]
-      },
-      {
         "backend": "ibm_kingston",
         "kind": "static",
         "rounds": 2,
@@ -1072,11 +875,17 @@
           0,
           1,
           2,
+          12,
+          13,
+          14,
           57,
           66,
           67,
           68,
           79,
+          80,
+          81,
+          82,
           92,
           93,
           94,
@@ -1105,6 +914,28 @@
           153
         ],
         "groups": [
+          {
+            "group": "design_a",
+            "pattern_width": 3,
+            "floor_candidates": 233,
+            "selected_replicas": 2,
+            "selected_scores": [
+              0.9121481910667297,
+              0.8944227496059548
+            ],
+            "selected_qubits": [
+              [
+                80,
+                81,
+                82
+              ],
+              [
+                12,
+                13,
+                14
+              ]
+            ]
+          },
           {
             "group": "zero_divisor_fringe",
             "pattern_width": 5,
@@ -1208,24 +1039,49 @@
       {
         "backend": "ibm_kingston",
         "kind": "dynamic",
-        "rounds": 4,
+        "rounds": 6,
         "required_rounds": 2,
         "physical_qubits": [
+          0,
+          1,
+          2,
+          3,
+          16,
+          19,
+          32,
+          33,
+          34,
+          35,
           47,
+          51,
           57,
+          58,
+          65,
           66,
           67,
-          68,
+          71,
+          72,
+          73,
           79,
+          80,
+          81,
+          82,
+          83,
           92,
           93,
           94,
           95,
+          96,
           104,
           105,
           106,
+          107,
+          108,
+          109,
           117,
+          118,
           125,
+          129,
           138,
           150,
           151,
@@ -1237,12 +1093,11 @@
             "group": "folded_qpe_mod15",
             "pattern_width": 5,
             "floor_candidates": 22,
-            "selected_replicas": 4,
+            "selected_replicas": 3,
             "selected_scores": [
               0.6405177271075525,
               0.6403055854181877,
-              0.5980395529090965,
-              0.5963040125223893
+              0.5980395529090965
             ],
             "selected_qubits": [
               [
@@ -1265,111 +1120,64 @@
                 93,
                 94,
                 95
+              ]
+            ]
+          },
+          {
+            "group": "hybrid_shor_mod15",
+            "pattern_width": 5,
+            "floor_candidates": 102,
+            "selected_replicas": 6,
+            "selected_scores": [
+              0.6490976732572681,
+              0.6392022478839275,
+              0.6296190464565115,
+              0.6209013384952204,
+              0.5959296860711327,
+              0.5868590289160573
+            ],
+            "selected_qubits": [
+              [
+                0,
+                1,
+                2,
+                3,
+                16
+              ],
+              [
+                80,
+                81,
+                82,
+                83,
+                96
               ],
               [
                 47,
                 57,
+                65,
                 66,
-                67,
-                68
-              ]
-            ]
-          }
-        ]
-      },
-      {
-        "backend": "ibm_fez",
-        "kind": "dynamic",
-        "rounds": 6,
-        "required_rounds": 2,
-        "physical_qubits": [
-          1,
-          2,
-          3,
-          4,
-          5,
-          20,
-          21,
-          22,
-          23,
-          24,
-          37,
-          43,
-          44,
-          45,
-          56,
-          78,
-          87,
-          88,
-          89,
-          97,
-          120,
-          121,
-          122,
-          123,
-          124,
-          140,
-          141,
-          142,
-          143,
-          144
-        ],
-        "groups": [
-          {
-            "group": "hybrid_shor_mod15",
-            "pattern_width": 5,
-            "floor_candidates": 74,
-            "selected_replicas": 6,
-            "selected_scores": [
-              0.6203795957983632,
-              0.5950231538086433,
-              0.5821622153179778,
-              0.5449699391825742,
-              0.5243300434738042,
-              0.5068378801854903
-            ],
-            "selected_qubits": [
-              [
-                1,
-                2,
-                3,
-                4,
-                5
+                67
               ],
               [
-                140,
-                141,
-                142,
-                143,
-                144
+                19,
+                32,
+                33,
+                34,
+                35
               ],
               [
-                20,
-                21,
-                22,
-                23,
-                24
+                51,
+                58,
+                71,
+                72,
+                73
               ],
               [
-                37,
-                43,
-                44,
-                45,
-                56
-              ],
-              [
-                120,
-                121,
-                122,
-                123,
-                124
-              ],
-              [
-                78,
-                87,
-                88,
-                89,
-                97
+                107,
+                108,
+                109,
+                118,
+                129
               ]
             ]
           }
@@ -1378,23 +1186,23 @@
     ],
     "candidate_selection": {
       "strategy": "best_first_combined_log_score",
-      "frontier_size": 279936,
+      "frontier_size": 2187,
       "attempted_combinations": 1,
       "rejected_combinations": 0,
       "rejected_sample": [],
-      "combined_log_score": -1.933326230337295,
+      "combined_log_score": -1.9796989166133776,
       "selected": [
         {
           "group": "design_a",
           "candidate_index": 0,
-          "backend": "ibm_fez",
+          "backend": "ibm_kingston",
           "seed": 20261010,
           "layout": [
-            22,
-            23,
-            21
+            59,
+            55,
+            75
           ],
-          "joint_score": 0.9037196728949866
+          "joint_score": 0.8766013806252139
         },
         {
           "group": "zero_divisor_fringe",
@@ -1466,16 +1274,16 @@
         {
           "group": "hybrid_shor_mod15",
           "candidate_index": 0,
-          "backend": "ibm_fez",
+          "backend": "ibm_kingston",
           "seed": 20261010,
           "layout": [
-            22,
-            20,
-            24,
-            21,
-            23
+            59,
+            54,
+            74,
+            55,
+            75
           ],
-          "joint_score": 0.7341134273196173
+          "joint_score": 0.7225291148311124
         }
       ]
     }
@@ -1492,8 +1300,8 @@
       "dynamic": 9
     },
     "execution_pubs": {
-      "static": 17,
-      "dynamic": 9
+      "static": 14,
+      "dynamic": 6
     },
     "reference_components": {
       "static": 5,
@@ -1502,11 +1310,13 @@
   },
   "execution_pubs": [
     {
-      "name": "ibm_fez_static_pub_01",
-      "backend": "ibm_fez",
+      "name": "ibm_kingston_static_pub_01",
+      "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 801,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 2994,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "design_a",
@@ -1514,51 +1324,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            1,
-            2,
-            3,
+            12,
             13,
             14,
-            15,
-            21,
-            22,
-            23,
-            25,
-            37,
-            45,
-            54,
-            55,
-            58,
-            59,
-            70,
-            71,
-            87,
-            88,
-            89,
-            93,
-            94,
-            95,
-            105,
-            106,
-            110,
-            111,
-            112,
-            116,
-            117,
-            118,
-            120,
-            121,
-            127,
-            129,
-            130,
-            137,
-            138,
-            142,
-            143,
-            144,
-            147,
-            151,
-            152
+            80,
+            81,
+            82
           ],
           "registers_by_replica": [
             [
@@ -1566,191 +1337,9 @@
             ],
             [
               "g0_r1_c"
-            ],
-            [
-              "g0_r2_c"
-            ],
-            [
-              "g0_r3_c"
-            ],
-            [
-              "g0_r4_c"
-            ],
-            [
-              "g0_r5_c"
-            ],
-            [
-              "g0_r6_c"
-            ],
-            [
-              "g0_r7_c"
-            ],
-            [
-              "g0_r8_c"
-            ],
-            [
-              "g0_r9_c"
-            ],
-            [
-              "g0_r10_c"
-            ],
-            [
-              "g0_r11_c"
-            ],
-            [
-              "g0_r12_c"
-            ],
-            [
-              "g0_r13_c"
-            ],
-            [
-              "g0_r14_c"
             ]
           ]
-        }
-      ]
-    },
-    {
-      "name": "ibm_fez_static_pub_02",
-      "backend": "ibm_fez",
-      "kind": "static",
-      "target_duration_dt": 801,
-      "feed_forward_streams": 0,
-      "components": [
-        {
-          "group": "design_a",
-          "member": "design_a_1_2_isolated",
-          "reference": true,
-          "register_prefix": "g0_",
-          "physical_qubits": [
-            1,
-            2,
-            3
-          ],
-          "registers_by_replica": [
-            [
-              "g0_r0_c"
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ibm_fez_static_pub_03",
-      "backend": "ibm_fez",
-      "kind": "static",
-      "target_duration_dt": 783,
-      "feed_forward_streams": 0,
-      "components": [
-        {
-          "group": "design_a",
-          "member": "design_a_1_2_mirror",
-          "reference": false,
-          "register_prefix": "g0_",
-          "physical_qubits": [
-            1,
-            2,
-            3,
-            13,
-            14,
-            15,
-            21,
-            22,
-            23,
-            25,
-            37,
-            45,
-            54,
-            55,
-            58,
-            59,
-            70,
-            71,
-            87,
-            88,
-            89,
-            93,
-            94,
-            95,
-            105,
-            106,
-            110,
-            111,
-            112,
-            116,
-            117,
-            118,
-            120,
-            121,
-            127,
-            129,
-            130,
-            137,
-            138,
-            142,
-            143,
-            144,
-            147,
-            151,
-            152
-          ],
-          "registers_by_replica": [
-            [
-              "g0_r0_c"
-            ],
-            [
-              "g0_r1_c"
-            ],
-            [
-              "g0_r2_c"
-            ],
-            [
-              "g0_r3_c"
-            ],
-            [
-              "g0_r4_c"
-            ],
-            [
-              "g0_r5_c"
-            ],
-            [
-              "g0_r6_c"
-            ],
-            [
-              "g0_r7_c"
-            ],
-            [
-              "g0_r8_c"
-            ],
-            [
-              "g0_r9_c"
-            ],
-            [
-              "g0_r10_c"
-            ],
-            [
-              "g0_r11_c"
-            ],
-            [
-              "g0_r12_c"
-            ],
-            [
-              "g0_r13_c"
-            ],
-            [
-              "g0_r14_c"
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ibm_kingston_static_pub_01",
-      "backend": "ibm_kingston",
-      "kind": "static",
-      "target_duration_dt": 2994,
-      "feed_forward_streams": 0,
-      "components": [
+        },
         {
           "group": "zero_divisor_fringe",
           "member": "design_b_dark_1_10_4_15",
@@ -1855,9 +1444,27 @@
       "name": "ibm_kingston_static_pub_02",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 2994,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 2994,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
+        {
+          "group": "design_a",
+          "member": "design_a_1_2_isolated",
+          "reference": true,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            80,
+            81,
+            82
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_c"
+            ]
+          ]
+        },
         {
           "group": "zero_divisor_fringe",
           "member": "design_b_dark_1_10_4_15_isolated",
@@ -1933,9 +1540,33 @@
       "name": "ibm_kingston_static_pub_03",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 3877,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 3877,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
+        {
+          "group": "design_a",
+          "member": "design_a_1_2_mirror",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            12,
+            13,
+            14,
+            80,
+            81,
+            82
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_c"
+            ],
+            [
+              "g0_r1_c"
+            ]
+          ]
+        },
         {
           "group": "zero_divisor_fringe",
           "member": "design_b_dark_1_10_4_15_mirror",
@@ -2040,8 +1671,10 @@
       "name": "ibm_kingston_static_pub_04",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 2180,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 2180,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2147,8 +1780,10 @@
       "name": "ibm_kingston_static_pub_05",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1593,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1593,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2182,8 +1817,10 @@
       "name": "ibm_kingston_static_pub_06",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2217,8 +1854,10 @@
       "name": "ibm_kingston_static_pub_07",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2252,8 +1891,10 @@
       "name": "ibm_kingston_static_pub_08",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2287,8 +1928,10 @@
       "name": "ibm_kingston_static_pub_09",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2322,8 +1965,10 @@
       "name": "ibm_kingston_static_pub_10",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2357,8 +2002,10 @@
       "name": "ibm_kingston_static_pub_11",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2392,8 +2039,10 @@
       "name": "ibm_kingston_static_pub_12",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2427,8 +2076,10 @@
       "name": "ibm_kingston_static_pub_13",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2462,8 +2113,10 @@
       "name": "ibm_kingston_static_pub_14",
       "backend": "ibm_kingston",
       "kind": "static",
-      "target_duration_dt": 1643,
-      "feed_forward_streams": 0,
+      "target_gate_lower_bound_dt": 1643,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
       "components": [
         {
           "group": "zero_divisor_fringe",
@@ -2497,8 +2150,10 @@
       "name": "ibm_kingston_dynamic_pub_01",
       "backend": "ibm_kingston",
       "kind": "dynamic",
-      "target_duration_dt": 3334,
-      "feed_forward_streams": 4,
+      "target_gate_lower_bound_dt": 3334,
+      "feed_forward_operation_count": 9,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 9,
       "components": [
         {
           "group": "folded_qpe_mod15",
@@ -2506,11 +2161,6 @@
           "reference": false,
           "register_prefix": "g5_",
           "physical_qubits": [
-            47,
-            57,
-            66,
-            67,
-            68,
             79,
             92,
             93,
@@ -2536,9 +2186,64 @@
             ],
             [
               "g5_r2_c"
+            ]
+          ]
+        },
+        {
+          "group": "hybrid_shor_mod15",
+          "member": "hybrid_shor_N15_a2",
+          "reference": false,
+          "register_prefix": "g6_",
+          "physical_qubits": [
+            0,
+            1,
+            2,
+            3,
+            16,
+            19,
+            32,
+            33,
+            34,
+            35,
+            47,
+            51,
+            57,
+            58,
+            65,
+            66,
+            67,
+            71,
+            72,
+            73,
+            80,
+            81,
+            82,
+            83,
+            96,
+            107,
+            108,
+            109,
+            118,
+            129
+          ],
+          "registers_by_replica": [
+            [
+              "g6_r0_phase"
             ],
             [
-              "g5_r3_c"
+              "g6_r1_phase"
+            ],
+            [
+              "g6_r2_phase"
+            ],
+            [
+              "g6_r3_phase"
+            ],
+            [
+              "g6_r4_phase"
+            ],
+            [
+              "g6_r5_phase"
             ]
           ]
         }
@@ -2548,8 +2253,10 @@
       "name": "ibm_kingston_dynamic_pub_02",
       "backend": "ibm_kingston",
       "kind": "dynamic",
-      "target_duration_dt": 3295,
-      "feed_forward_streams": 1,
+      "target_gate_lower_bound_dt": 3295,
+      "feed_forward_operation_count": 2,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 2,
       "components": [
         {
           "group": "folded_qpe_mod15",
@@ -2568,6 +2275,24 @@
               "g5_r0_c"
             ]
           ]
+        },
+        {
+          "group": "hybrid_shor_mod15",
+          "member": "hybrid_shor_N15_a2_isolated",
+          "reference": true,
+          "register_prefix": "g6_",
+          "physical_qubits": [
+            0,
+            1,
+            2,
+            3,
+            16
+          ],
+          "registers_by_replica": [
+            [
+              "g6_r0_phase"
+            ]
+          ]
         }
       ]
     },
@@ -2575,8 +2300,10 @@
       "name": "ibm_kingston_dynamic_pub_03",
       "backend": "ibm_kingston",
       "kind": "dynamic",
-      "target_duration_dt": 3334,
-      "feed_forward_streams": 4,
+      "target_gate_lower_bound_dt": 3334,
+      "feed_forward_operation_count": 9,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 9,
       "components": [
         {
           "group": "folded_qpe_mod15",
@@ -2584,11 +2311,6 @@
           "reference": false,
           "register_prefix": "g5_",
           "physical_qubits": [
-            47,
-            57,
-            66,
-            67,
-            68,
             79,
             92,
             93,
@@ -2614,9 +2336,64 @@
             ],
             [
               "g5_r2_c"
+            ]
+          ]
+        },
+        {
+          "group": "hybrid_shor_mod15",
+          "member": "hybrid_shor_N15_a2_null",
+          "reference": false,
+          "register_prefix": "g6_",
+          "physical_qubits": [
+            0,
+            1,
+            2,
+            3,
+            16,
+            19,
+            32,
+            33,
+            34,
+            35,
+            47,
+            51,
+            57,
+            58,
+            65,
+            66,
+            67,
+            71,
+            72,
+            73,
+            80,
+            81,
+            82,
+            83,
+            96,
+            107,
+            108,
+            109,
+            118,
+            129
+          ],
+          "registers_by_replica": [
+            [
+              "g6_r0_phase"
             ],
             [
-              "g5_r3_c"
+              "g6_r1_phase"
+            ],
+            [
+              "g6_r2_phase"
+            ],
+            [
+              "g6_r3_phase"
+            ],
+            [
+              "g6_r4_phase"
+            ],
+            [
+              "g6_r5_phase"
             ]
           ]
         }
@@ -2626,8 +2403,10 @@
       "name": "ibm_kingston_dynamic_pub_04",
       "backend": "ibm_kingston",
       "kind": "dynamic",
-      "target_duration_dt": 3334,
-      "feed_forward_streams": 4,
+      "target_gate_lower_bound_dt": 3334,
+      "feed_forward_operation_count": 3,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 3,
       "components": [
         {
           "group": "folded_qpe_mod15",
@@ -2635,11 +2414,6 @@
           "reference": false,
           "register_prefix": "g5_",
           "physical_qubits": [
-            47,
-            57,
-            66,
-            67,
-            68,
             79,
             92,
             93,
@@ -2665,9 +2439,6 @@
             ],
             [
               "g5_r2_c"
-            ],
-            [
-              "g5_r3_c"
             ]
           ]
         }
@@ -2677,8 +2448,10 @@
       "name": "ibm_kingston_dynamic_pub_05",
       "backend": "ibm_kingston",
       "kind": "dynamic",
-      "target_duration_dt": 3334,
-      "feed_forward_streams": 4,
+      "target_gate_lower_bound_dt": 3334,
+      "feed_forward_operation_count": 3,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 3,
       "components": [
         {
           "group": "folded_qpe_mod15",
@@ -2686,11 +2459,6 @@
           "reference": false,
           "register_prefix": "g5_",
           "physical_qubits": [
-            47,
-            57,
-            66,
-            67,
-            68,
             79,
             92,
             93,
@@ -2716,9 +2484,6 @@
             ],
             [
               "g5_r2_c"
-            ],
-            [
-              "g5_r3_c"
             ]
           ]
         }
@@ -2728,8 +2493,10 @@
       "name": "ibm_kingston_dynamic_pub_06",
       "backend": "ibm_kingston",
       "kind": "dynamic",
-      "target_duration_dt": 1659,
-      "feed_forward_streams": 4,
+      "target_gate_lower_bound_dt": 1659,
+      "feed_forward_operation_count": 3,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 3,
       "components": [
         {
           "group": "folded_qpe_mod15",
@@ -2737,11 +2504,6 @@
           "reference": false,
           "register_prefix": "g5_",
           "physical_qubits": [
-            47,
-            57,
-            66,
-            67,
-            68,
             79,
             92,
             93,
@@ -2767,170 +2529,6 @@
             ],
             [
               "g5_r2_c"
-            ],
-            [
-              "g5_r3_c"
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ibm_fez_dynamic_pub_01",
-      "backend": "ibm_fez",
-      "kind": "dynamic",
-      "target_duration_dt": 2618,
-      "feed_forward_streams": 6,
-      "components": [
-        {
-          "group": "hybrid_shor_mod15",
-          "member": "hybrid_shor_N15_a2",
-          "reference": false,
-          "register_prefix": "g6_",
-          "physical_qubits": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            20,
-            21,
-            22,
-            23,
-            24,
-            37,
-            43,
-            44,
-            45,
-            56,
-            78,
-            87,
-            88,
-            89,
-            97,
-            120,
-            121,
-            122,
-            123,
-            124,
-            140,
-            141,
-            142,
-            143,
-            144
-          ],
-          "registers_by_replica": [
-            [
-              "g6_r0_phase"
-            ],
-            [
-              "g6_r1_phase"
-            ],
-            [
-              "g6_r2_phase"
-            ],
-            [
-              "g6_r3_phase"
-            ],
-            [
-              "g6_r4_phase"
-            ],
-            [
-              "g6_r5_phase"
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ibm_fez_dynamic_pub_02",
-      "backend": "ibm_fez",
-      "kind": "dynamic",
-      "target_duration_dt": 2618,
-      "feed_forward_streams": 1,
-      "components": [
-        {
-          "group": "hybrid_shor_mod15",
-          "member": "hybrid_shor_N15_a2_isolated",
-          "reference": true,
-          "register_prefix": "g6_",
-          "physical_qubits": [
-            1,
-            2,
-            3,
-            4,
-            5
-          ],
-          "registers_by_replica": [
-            [
-              "g6_r0_phase"
-            ]
-          ]
-        }
-      ]
-    },
-    {
-      "name": "ibm_fez_dynamic_pub_03",
-      "backend": "ibm_fez",
-      "kind": "dynamic",
-      "target_duration_dt": 1263,
-      "feed_forward_streams": 6,
-      "components": [
-        {
-          "group": "hybrid_shor_mod15",
-          "member": "hybrid_shor_N15_a2_null",
-          "reference": false,
-          "register_prefix": "g6_",
-          "physical_qubits": [
-            1,
-            2,
-            3,
-            4,
-            5,
-            20,
-            21,
-            22,
-            23,
-            24,
-            37,
-            43,
-            44,
-            45,
-            56,
-            78,
-            87,
-            88,
-            89,
-            97,
-            120,
-            121,
-            122,
-            123,
-            124,
-            140,
-            141,
-            142,
-            143,
-            144
-          ],
-          "registers_by_replica": [
-            [
-              "g6_r0_phase"
-            ],
-            [
-              "g6_r1_phase"
-            ],
-            [
-              "g6_r2_phase"
-            ],
-            [
-              "g6_r3_phase"
-            ],
-            [
-              "g6_r4_phase"
-            ],
-            [
-              "g6_r5_phase"
             ]
           ]
         }
@@ -2939,101 +2537,6 @@
   ],
   "selection_trace": {
     "design_a": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 3,
-            "classical_bits": 1,
-            "static_circuits": 2,
-            "dynamic_circuits": 0,
-            "target_operations": [
-              "measure"
-            ],
-            "control_flow": []
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261011,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261012,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261013,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261014,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261015,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261016,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261017,
-          "cz": 16,
-          "rejected": [],
-          "primary_score": 0.9037196728949866
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.9037196728949866,
-          "layout": [
-            22,
-            23,
-            21
-          ]
-        },
-        {
-          "seed": 20261011,
-          "joint_score": 0.9037196728949866,
-          "layout": [
-            22,
-            23,
-            21
-          ]
-        },
-        {
-          "seed": 20261012,
-          "joint_score": 0.9037196728949866,
-          "layout": [
-            22,
-            23,
-            21
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -3131,107 +2634,6 @@
       ]
     },
     "zero_divisor_fringe": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 5,
-            "classical_bits": 1,
-            "static_circuits": 13,
-            "dynamic_circuits": 0,
-            "target_operations": [
-              "measure"
-            ],
-            "control_flow": []
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 42,
-          "rejected": [],
-          "primary_score": 0.6839934754199313
-        },
-        {
-          "seed": 20261011,
-          "cz": 46,
-          "rejected": [],
-          "primary_score": 0.6776744934234089
-        },
-        {
-          "seed": 20261012,
-          "cz": 42,
-          "rejected": [],
-          "primary_score": 0.6839934754199313
-        },
-        {
-          "seed": 20261013,
-          "cz": 42,
-          "rejected": [],
-          "primary_score": 0.6839934754199313
-        },
-        {
-          "seed": 20261014,
-          "cz": 42,
-          "rejected": [],
-          "primary_score": 0.6839934754199313
-        },
-        {
-          "seed": 20261015,
-          "cz": 42,
-          "rejected": [],
-          "primary_score": 0.6839934754199313
-        },
-        {
-          "seed": 20261016,
-          "cz": 46,
-          "rejected": [],
-          "primary_score": 0.6801007439795478
-        },
-        {
-          "seed": 20261017,
-          "cz": 42,
-          "rejected": [],
-          "primary_score": 0.6839934754199313
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.6839934754199313,
-          "layout": [
-            143,
-            144,
-            142,
-            136,
-            145
-          ]
-        },
-        {
-          "seed": 20261012,
-          "joint_score": 0.6839934754199313,
-          "layout": [
-            143,
-            144,
-            142,
-            136,
-            145
-          ]
-        },
-        {
-          "seed": 20261013,
-          "joint_score": 0.6839934754199313,
-          "layout": [
-            143,
-            144,
-            142,
-            136,
-            145
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -3335,101 +2737,6 @@
       ]
     },
     "design_c_8_1_4": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 3,
-            "classical_bits": 3,
-            "static_circuits": 3,
-            "dynamic_circuits": 0,
-            "target_operations": [
-              "measure"
-            ],
-            "control_flow": []
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261011,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261012,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261013,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261014,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261015,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261016,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261017,
-          "cz": 18,
-          "rejected": [],
-          "primary_score": 0.6988363661218141
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.6954298272063273,
-          "layout": [
-            9,
-            10,
-            8
-          ]
-        },
-        {
-          "seed": 20261011,
-          "joint_score": 0.6954298272063273,
-          "layout": [
-            9,
-            10,
-            8
-          ]
-        },
-        {
-          "seed": 20261012,
-          "joint_score": 0.6954298272063273,
-          "layout": [
-            9,
-            10,
-            8
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -3527,104 +2834,6 @@
       ]
     },
     "design_c_16_1_8": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 4,
-            "classical_bits": 4,
-            "static_circuits": 3,
-            "dynamic_circuits": 0,
-            "target_operations": [
-              "measure"
-            ],
-            "control_flow": []
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 51,
-          "rejected": [],
-          "primary_score": 0.6751763451279319
-        },
-        {
-          "seed": 20261011,
-          "cz": 51,
-          "rejected": [],
-          "primary_score": 0.6751763451279319
-        },
-        {
-          "seed": 20261012,
-          "cz": 49,
-          "rejected": [],
-          "primary_score": 0.6814035290697773
-        },
-        {
-          "seed": 20261013,
-          "cz": 51,
-          "rejected": [],
-          "primary_score": 0.6751763451279319
-        },
-        {
-          "seed": 20261014,
-          "cz": 49,
-          "rejected": [],
-          "primary_score": 0.6822929196374351
-        },
-        {
-          "seed": 20261015,
-          "cz": 51,
-          "rejected": [],
-          "primary_score": 0.6751763451279319
-        },
-        {
-          "seed": 20261016,
-          "cz": 47,
-          "rejected": [],
-          "primary_score": 0.6881258976249256
-        },
-        {
-          "seed": 20261017,
-          "cz": 47,
-          "rejected": [],
-          "primary_score": 0.6887747925151322
-        },
-        {
-          "seed": 20261017,
-          "joint_score": 0.7013666936542048,
-          "layout": [
-            143,
-            136,
-            144,
-            142
-          ]
-        },
-        {
-          "seed": 20261016,
-          "joint_score": 0.6949139331903321,
-          "layout": [
-            143,
-            144,
-            142,
-            136
-          ]
-        },
-        {
-          "seed": 20261014,
-          "joint_score": 0.6921122417342331,
-          "layout": [
-            143,
-            144,
-            142,
-            136
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -3725,107 +2934,6 @@
       ]
     },
     "design_c_32_1_16": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 5,
-            "classical_bits": 5,
-            "static_circuits": 3,
-            "dynamic_circuits": 0,
-            "target_operations": [
-              "measure"
-            ],
-            "control_flow": []
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 96,
-          "rejected": [],
-          "primary_score": 0.46169861479971747
-        },
-        {
-          "seed": 20261011,
-          "cz": 98,
-          "rejected": [],
-          "primary_score": 0.4559613448086183
-        },
-        {
-          "seed": 20261012,
-          "cz": 98,
-          "rejected": [],
-          "primary_score": 0.4559613448086183
-        },
-        {
-          "seed": 20261013,
-          "cz": 96,
-          "rejected": [],
-          "primary_score": 0.46169861479971747
-        },
-        {
-          "seed": 20261014,
-          "cz": 99,
-          "rejected": [],
-          "primary_score": 0.4517121343126014
-        },
-        {
-          "seed": 20261015,
-          "cz": 96,
-          "rejected": [],
-          "primary_score": 0.46169861479971747
-        },
-        {
-          "seed": 20261016,
-          "cz": 96,
-          "rejected": [],
-          "primary_score": 0.46169861479971747
-        },
-        {
-          "seed": 20261017,
-          "cz": 98,
-          "rejected": [],
-          "primary_score": 0.4559613448086183
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.45602393130578067,
-          "layout": [
-            143,
-            145,
-            142,
-            136,
-            144
-          ]
-        },
-        {
-          "seed": 20261013,
-          "joint_score": 0.45602393130578067,
-          "layout": [
-            143,
-            145,
-            142,
-            136,
-            144
-          ]
-        },
-        {
-          "seed": 20261015,
-          "joint_score": 0.45996360718860996,
-          "layout": [
-            143,
-            145,
-            142,
-            136,
-            144
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -3929,111 +3037,6 @@
       ]
     },
     "folded_qpe_mod15": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 5,
-            "classical_bits": 2,
-            "static_circuits": 0,
-            "dynamic_circuits": 5,
-            "target_operations": [
-              "if_else",
-              "measure",
-              "reset"
-            ],
-            "control_flow": [
-              "if_else"
-            ]
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261011,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261012,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261013,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261014,
-          "cz": 70,
-          "rejected": [],
-          "primary_score": 0.5795869089450243
-        },
-        {
-          "seed": 20261015,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261016,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261017,
-          "cz": 67,
-          "rejected": [],
-          "primary_score": 0.5880514574041924
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.6267447840948194,
-          "layout": [
-            1,
-            2,
-            3,
-            16,
-            4
-          ]
-        },
-        {
-          "seed": 20261011,
-          "joint_score": 0.6258199202443586,
-          "layout": [
-            1,
-            2,
-            3,
-            16,
-            4
-          ]
-        },
-        {
-          "seed": 20261012,
-          "joint_score": 0.6258199202443586,
-          "layout": [
-            1,
-            2,
-            3,
-            16,
-            4
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -4141,111 +3144,6 @@
       ]
     },
     "hybrid_shor_mod15": {
-      "ibm_fez": [
-        {
-          "stage": "capability_admission",
-          "requirements": {
-            "qubits": 5,
-            "classical_bits": 8,
-            "static_circuits": 0,
-            "dynamic_circuits": 2,
-            "target_operations": [
-              "if_else",
-              "measure",
-              "reset"
-            ],
-            "control_flow": [
-              "if_else"
-            ]
-          },
-          "rejected": []
-        },
-        {
-          "stage": "routing_admission",
-          "rejected": []
-        },
-        {
-          "seed": 20261010,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261011,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261012,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261013,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261014,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261015,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261016,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261017,
-          "cz": 60,
-          "rejected": [],
-          "primary_score": 0.5821622153179778
-        },
-        {
-          "seed": 20261010,
-          "joint_score": 0.7341134273196173,
-          "layout": [
-            22,
-            20,
-            24,
-            21,
-            23
-          ]
-        },
-        {
-          "seed": 20261011,
-          "joint_score": 0.7341134273196173,
-          "layout": [
-            22,
-            20,
-            24,
-            21,
-            23
-          ]
-        },
-        {
-          "seed": 20261012,
-          "joint_score": 0.7341134273196173,
-          "layout": [
-            22,
-            20,
-            24,
-            21,
-            23
-          ]
-        }
-      ],
       "ibm_kingston": [
         {
           "stage": "capability_admission",
@@ -4356,493 +3254,149 @@
   "groups": [
     {
       "group": "design_a",
-      "backend": "ibm_fez",
-      "calibration": "2026-10-11T01:21:37-07:00",
-      "noise_model_calibration": "2026-10-11T01:21:37-07:00",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-11T01:09:33-07:00",
+      "noise_model_calibration": "2026-10-11T01:09:33-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
-        22,
-        23,
-        21
+        59,
+        55,
+        75
       ],
-      "joint_score": 0.9037196728949866,
+      "joint_score": 0.8766013806252139,
       "replica_floor": 0.9,
       "replicas": [
         {
           "index": 0,
           "prefix": "r0_",
-          "score": 0.9154567672060366,
+          "score": 0.9121481910667297,
           "physical_qubits": [
-            1,
-            2,
-            3
+            80,
+            81,
+            82
           ],
           "initial_layout": [
-            2,
-            3,
-            1
+            81,
+            82,
+            80
           ],
           "mapping": {
-            "21": 1,
-            "22": 2,
-            "23": 3
+            "55": 82,
+            "59": 81,
+            "75": 80
           }
         },
         {
           "index": 1,
           "prefix": "r1_",
-          "score": 0.9037196728949866,
+          "score": 0.8944227496059548,
           "physical_qubits": [
-            21,
-            22,
-            23
+            12,
+            13,
+            14
           ],
           "initial_layout": [
-            22,
-            23,
-            21
-          ],
-          "mapping": {
-            "21": 21,
-            "22": 22,
-            "23": 23
-          }
-        },
-        {
-          "index": 2,
-          "prefix": "r2_",
-          "score": 0.9022128976954986,
-          "physical_qubits": [
-            142,
-            143,
-            144
-          ],
-          "initial_layout": [
-            143,
-            144,
-            142
-          ],
-          "mapping": {
-            "21": 142,
-            "22": 143,
-            "23": 144
-          }
-        },
-        {
-          "index": 3,
-          "prefix": "r3_",
-          "score": 0.880761172094387,
-          "physical_qubits": [
-            127,
-            137,
-            147
-          ],
-          "initial_layout": [
-            137,
-            127,
-            147
-          ],
-          "mapping": {
-            "21": 147,
-            "22": 137,
-            "23": 127
-          }
-        },
-        {
-          "index": 4,
-          "prefix": "r4_",
-          "score": 0.8781716633845639,
-          "physical_qubits": [
-            87,
-            88,
-            89
-          ],
-          "initial_layout": [
-            88,
-            89,
-            87
-          ],
-          "mapping": {
-            "21": 87,
-            "22": 88,
-            "23": 89
-          }
-        },
-        {
-          "index": 5,
-          "prefix": "r5_",
-          "score": 0.8772437835211596,
-          "physical_qubits": [
-            25,
-            37,
-            45
-          ],
-          "initial_layout": [
-            37,
-            25,
-            45
-          ],
-          "mapping": {
-            "21": 45,
-            "22": 37,
-            "23": 25
-          }
-        },
-        {
-          "index": 6,
-          "prefix": "r6_",
-          "score": 0.8761415898252398,
-          "physical_qubits": [
             13,
             14,
-            15
-          ],
-          "initial_layout": [
-            14,
-            15,
-            13
+            12
           ],
           "mapping": {
-            "21": 13,
-            "22": 14,
-            "23": 15
-          }
-        },
-        {
-          "index": 7,
-          "prefix": "r7_",
-          "score": 0.8704522928862174,
-          "physical_qubits": [
-            105,
-            106,
-            117
-          ],
-          "initial_layout": [
-            105,
-            106,
-            117
-          ],
-          "mapping": {
-            "21": 117,
-            "22": 105,
-            "23": 106
-          }
-        },
-        {
-          "index": 8,
-          "prefix": "r8_",
-          "score": 0.8675675305080963,
-          "physical_qubits": [
-            116,
-            120,
-            121
-          ],
-          "initial_layout": [
-            121,
-            120,
-            116
-          ],
-          "mapping": {
-            "21": 116,
-            "22": 121,
-            "23": 120
-          }
-        },
-        {
-          "index": 9,
-          "prefix": "r9_",
-          "score": 0.8632000981412244,
-          "physical_qubits": [
-            58,
-            70,
-            71
-          ],
-          "initial_layout": [
-            71,
-            58,
-            70
-          ],
-          "mapping": {
-            "21": 70,
-            "22": 71,
-            "23": 58
-          }
-        },
-        {
-          "index": 10,
-          "prefix": "r10_",
-          "score": 0.8568501836801965,
-          "physical_qubits": [
-            138,
-            151,
-            152
-          ],
-          "initial_layout": [
-            151,
-            138,
-            152
-          ],
-          "mapping": {
-            "21": 152,
-            "22": 151,
-            "23": 138
-          }
-        },
-        {
-          "index": 11,
-          "prefix": "r11_",
-          "score": 0.8564801274582325,
-          "physical_qubits": [
-            93,
-            94,
-            95
-          ],
-          "initial_layout": [
-            94,
-            93,
-            95
-          ],
-          "mapping": {
-            "21": 95,
-            "22": 94,
-            "23": 93
-          }
-        },
-        {
-          "index": 12,
-          "prefix": "r12_",
-          "score": 0.8534951576833443,
-          "physical_qubits": [
-            110,
-            111,
-            112
-          ],
-          "initial_layout": [
-            111,
-            110,
-            112
-          ],
-          "mapping": {
-            "21": 112,
-            "22": 111,
-            "23": 110
-          }
-        },
-        {
-          "index": 13,
-          "prefix": "r13_",
-          "score": 0.8489920771201365,
-          "physical_qubits": [
-            54,
-            55,
-            59
-          ],
-          "initial_layout": [
-            55,
-            59,
-            54
-          ],
-          "mapping": {
-            "21": 54,
-            "22": 55,
-            "23": 59
-          }
-        },
-        {
-          "index": 14,
-          "prefix": "r14_",
-          "score": 0.8379036769176513,
-          "physical_qubits": [
-            118,
-            129,
-            130
-          ],
-          "initial_layout": [
-            129,
-            118,
-            130
-          ],
-          "mapping": {
-            "21": 130,
-            "22": 129,
-            "23": 118
+            "55": 14,
+            "59": 13,
+            "75": 12
           }
         }
       ],
       "summary": {
-        "p1": 0.9514322916666667,
-        "p1_odr": 0.9832748485814007,
-        "mirror_z": 0.9339518229166667,
-        "tvd_to_uniform": 0.45143229166666665
+        "p1": 0.956298828125,
+        "p1_odr": 0.9851403655631883,
+        "mirror_z": 0.9404296875,
+        "tvd_to_uniform": 0.456298828125
       },
       "summary_per_replica": [
         {
-          "p1": 0.9697265625,
-          "p1_odr": 0.9880771182141045,
-          "mirror_z": 0.96240234375,
-          "tvd_to_uniform": 0.4697265625
+          "p1": 0.96826171875,
+          "p1_odr": 0.9882892057026477,
+          "mirror_z": 0.958984375,
+          "tvd_to_uniform": 0.46826171875
         },
         {
-          "p1": 0.96435546875,
-          "p1_odr": 0.9864450127877238,
-          "mirror_z": 0.95458984375,
-          "tvd_to_uniform": 0.46435546875
-        },
-        {
-          "p1": 0.9560546875,
-          "p1_odr": 0.9804526748971194,
-          "mirror_z": 0.94921875,
-          "tvd_to_uniform": 0.4560546875
-        },
-        {
-          "p1": 0.961669921875,
-          "p1_odr": 0.9898963730569947,
-          "mirror_z": 0.9423828125,
-          "tvd_to_uniform": 0.461669921875
-        },
-        {
-          "p1": 0.947998046875,
-          "p1_odr": 0.9705128205128205,
-          "mirror_z": 0.9521484375,
-          "tvd_to_uniform": 0.447998046875
-        },
-        {
-          "p1": 0.95654296875,
-          "p1_odr": 0.992364402317009,
-          "mirror_z": 0.92724609375,
-          "tvd_to_uniform": 0.45654296875
-        },
-        {
-          "p1": 0.964111328125,
-          "p1_odr": 0.9945369406867846,
-          "mirror_z": 0.9384765625,
-          "tvd_to_uniform": 0.464111328125
-        },
-        {
-          "p1": 0.951416015625,
-          "p1_odr": 0.9825156576200418,
-          "mirror_z": 0.935546875,
-          "tvd_to_uniform": 0.451416015625
-        },
-        {
-          "p1": 0.940673828125,
-          "p1_odr": 0.9765047518479408,
-          "mirror_z": 0.9248046875,
-          "tvd_to_uniform": 0.440673828125
-        },
-        {
-          "p1": 0.95068359375,
-          "p1_odr": 0.9827405857740585,
-          "mirror_z": 0.93359375,
-          "tvd_to_uniform": 0.45068359375
-        },
-        {
-          "p1": 0.948486328125,
-          "p1_odr": 0.983421052631579,
-          "mirror_z": 0.927734375,
-          "tvd_to_uniform": 0.448486328125
-        },
-        {
-          "p1": 0.94921875,
-          "p1_odr": 0.9914529914529915,
-          "mirror_z": 0.9140625,
-          "tvd_to_uniform": 0.44921875
-        },
-        {
-          "p1": 0.95703125,
-          "p1_odr": 0.9880083420229406,
-          "mirror_z": 0.9365234375,
-          "tvd_to_uniform": 0.45703125
-        },
-        {
-          "p1": 0.904052734375,
-          "p1_odr": 0.9556718061674009,
-          "mirror_z": 0.88671875,
-          "tvd_to_uniform": 0.404052734375
-        },
-        {
-          "p1": 0.949462890625,
-          "p1_odr": 0.986522198731501,
-          "mirror_z": 0.923828125,
-          "tvd_to_uniform": 0.449462890625
+          "p1": 0.9443359375,
+          "p1_odr": 0.9819915254237288,
+          "mirror_z": 0.921875,
+          "tvd_to_uniform": 0.4443359375
         }
       ],
       "summary_interval": {
         "p1": {
-          "mean": 0.9514322916666667,
-          "lo": 0.9430123291290123,
-          "hi": 0.959852254204321,
-          "method": "student_t_over_15_replicas_union_wilson_over_61440_shots"
+          "mean": 0.956298828125,
+          "lo": 0.8042958906072851,
+          "hi": 1.1083017656427148,
+          "method": "student_t_over_2_replicas_union_wilson_over_8192_shots"
         },
         "p1_odr": {
-          "mean": 0.9832748485814007,
-          "lo": 0.9778052447065883,
-          "hi": 0.9887444524562131,
-          "method": "student_t_over_15_replicas"
+          "mean": 0.9851403655631883,
+          "lo": 0.9451305580697319,
+          "hi": 1.0251501730566446,
+          "method": "student_t_over_2_replicas"
         },
         "mirror_z": {
-          "mean": 0.9339518229166667,
-          "lo": 0.9237012773263652,
-          "hi": 0.9442023685069681,
-          "method": "student_t_over_15_replicas"
+          "mean": 0.9404296875,
+          "lo": 0.7046700293092586,
+          "hi": 1.1761893456907413,
+          "method": "student_t_over_2_replicas"
         },
         "tvd_to_uniform": {
-          "mean": 0.45143229166666665,
-          "lo": 0.4430123291290123,
-          "hi": 0.459852254204321,
-          "method": "student_t_over_15_replicas"
+          "mean": 0.456298828125,
+          "lo": 0.3042958906072851,
+          "hi": 0.6083017656427149,
+          "method": "student_t_over_2_replicas"
         }
       },
       "variance": {
         "design_a_1_2": {
-          "replicas": 15.0,
-          "mean": 0.9514322916666667,
-          "shot_variance": 1.1228789420177539e-05,
-          "between_replica_variance": 0.00023117633092971076,
-          "layout_variance": 0.00021994754150953322,
-          "median": 0.951416015625,
+          "replicas": 2.0,
+          "mean": 0.956298828125,
+          "shot_variance": 1.016803435049951e-05,
+          "between_replica_variance": 0.0002862215042114258,
+          "layout_variance": 0.00027605346986092627,
+          "median": 0.956298828125,
           "outliers": [
             0,
-            1,
-            3,
-            6,
-            8,
-            13
+            1
           ],
-          "chi2": 288.2295242976227,
-          "dof": 14.0,
-          "p_value": 3.3497019309508386e-53
+          "chi2": 28.149148040335344,
+          "dof": 1.0,
+          "p_value": 1.1231709999875446e-07
         },
         "design_a_1_2_mirror": {
-          "replicas": 15.0,
-          "mean": 0.9669759114583333,
-          "shot_variance": 7.776746254724761e-06,
-          "between_replica_variance": 8.565584818522134e-05,
-          "layout_variance": 7.787910193049657e-05,
-          "median": 0.9677734375,
+          "replicas": 2.0,
+          "mean": 0.97021484375,
+          "shot_variance": 7.034162990748882e-06,
+          "between_replica_variance": 0.00017213821411132812,
+          "layout_variance": 0.00016510405112057924,
+          "median": 0.97021484375,
           "outliers": [
             0,
-            1,
-            11,
-            13
+            1
           ],
-          "chi2": 154.20097754437288,
-          "dof": 14.0,
-          "p_value": 1.0360431795118841e-25
+          "chi2": 24.47174089336842,
+          "dof": 1.0,
+          "p_value": 7.540776921716077e-07
         }
       },
       "global_packing_crosstalk": {
-        "global_replica0_score": 0.962646484375,
-        "packed_replica0_score": 0.9697265625,
-        "difference": 0.007080078125,
-        "z": 1.7730089859547475,
-        "tvd": 0.007080078125
+        "global_replica0_score": 0.963134765625,
+        "packed_replica0_score": 0.96826171875,
+        "difference": 0.005126953125,
+        "z": 1.274936329492564,
+        "tvd": 0.005126953125
       },
       "summary_readout_corrected": {
-        "p1": 0.9644963917190548,
-        "p1_odr": 0.992418149186742,
-        "mirror_z": 0.943318399987804,
-        "tvd_to_uniform": 0.4644963917190548
+        "p1": 0.9661092609324594,
+        "p1_odr": 0.9915303045980133,
+        "mirror_z": 0.94803520231205,
+        "tvd_to_uniform": 0.4661092609324594
       },
       "members": [
         {
@@ -4855,96 +3409,18 @@
           "feed_forward": false,
           "replica_prefixes": [
             "r0_",
-            "r1_",
-            "r2_",
-            "r3_",
-            "r4_",
-            "r5_",
-            "r6_",
-            "r7_",
-            "r8_",
-            "r9_",
-            "r10_",
-            "r11_",
-            "r12_",
-            "r13_",
-            "r14_"
+            "r1_"
           ],
           "replica_qubits": [
             [
-              1,
-              2,
-              3
+              80,
+              81,
+              82
             ],
             [
-              21,
-              22,
-              23
-            ],
-            [
-              142,
-              143,
-              144
-            ],
-            [
-              127,
-              137,
-              147
-            ],
-            [
-              87,
-              88,
-              89
-            ],
-            [
-              25,
-              37,
-              45
-            ],
-            [
+              12,
               13,
-              14,
-              15
-            ],
-            [
-              105,
-              106,
-              117
-            ],
-            [
-              116,
-              120,
-              121
-            ],
-            [
-              58,
-              70,
-              71
-            ],
-            [
-              138,
-              151,
-              152
-            ],
-            [
-              93,
-              94,
-              95
-            ],
-            [
-              110,
-              111,
-              112
-            ],
-            [
-              54,
-              55,
-              59
-            ],
-            [
-              118,
-              129,
-              130
+              14
             ]
           ],
           "ideal": [
@@ -4954,228 +3430,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                1,
-                2,
-                3
+                80,
+                81,
+                82
               ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9569876534147065,
-              "coherence": 0.9566024848278031,
+              "duration_s": 3.876000000000001e-06,
+              "esp": 0.9609747084107183,
+              "coherence": 0.9491906322646733,
               "noisy": [
-                0.030273,
-                0.969727
+                0.031738,
+                0.968262
               ],
-              "tvd_noisy_to_ideal": 0.0302734375
+              "tvd_noisy_to_ideal": 0.03173828125
             },
             {
               "physical_qubits": [
-                21,
-                22,
-                23
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9578761066096176,
-              "coherence": 0.9434619640881151,
-              "noisy": [
-                0.035645,
-                0.964355
-              ],
-              "tvd_noisy_to_ideal": 0.03564453125
-            },
-            {
-              "physical_qubits": [
-                142,
-                143,
-                144
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9525234177568322,
-              "coherence": 0.9471818549303348,
-              "noisy": [
-                0.043945,
-                0.956055
-              ],
-              "tvd_noisy_to_ideal": 0.0439453125
-            },
-            {
-              "physical_qubits": [
-                127,
-                137,
-                147
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9502173660692248,
-              "coherence": 0.9269049414849593,
-              "noisy": [
-                0.03833,
-                0.96167
-              ],
-              "tvd_noisy_to_ideal": 0.038330078125
-            },
-            {
-              "physical_qubits": [
-                87,
-                88,
-                89
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9391772673853899,
-              "coherence": 0.935043568323729,
-              "noisy": [
-                0.052002,
-                0.947998
-              ],
-              "tvd_noisy_to_ideal": 0.052001953125
-            },
-            {
-              "physical_qubits": [
-                25,
-                37,
-                45
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9461655901540764,
-              "coherence": 0.9271567182846996,
-              "noisy": [
-                0.043457,
-                0.956543
-              ],
-              "tvd_noisy_to_ideal": 0.04345703125
-            },
-            {
-              "physical_qubits": [
+                12,
                 13,
-                14,
-                15
+                14
               ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9530317906166302,
-              "coherence": 0.9193204239895912,
+              "duration_s": 3.876000000000001e-06,
+              "esp": 0.9255820015108995,
+              "coherence": 0.9663355036570709,
               "noisy": [
-                0.035889,
-                0.964111
+                0.055664,
+                0.944336
               ],
-              "tvd_noisy_to_ideal": 0.035888671875
-            },
-            {
-              "physical_qubits": [
-                105,
-                106,
-                117
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9418033543066281,
-              "coherence": 0.9242399582735181,
-              "noisy": [
-                0.048584,
-                0.951416
-              ],
-              "tvd_noisy_to_ideal": 0.048583984375
-            },
-            {
-              "physical_qubits": [
-                116,
-                120,
-                121
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9254280186968878,
-              "coherence": 0.9374770516779188,
-              "noisy": [
-                0.059326,
-                0.940674
-              ],
-              "tvd_noisy_to_ideal": 0.059326171875
-            },
-            {
-              "physical_qubits": [
-                58,
-                70,
-                71
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.937526685668813,
-              "coherence": 0.920720563303683,
-              "noisy": [
-                0.049316,
-                0.950684
-              ],
-              "tvd_noisy_to_ideal": 0.04931640625
-            },
-            {
-              "physical_qubits": [
-                138,
-                151,
-                152
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9405373492916437,
-              "coherence": 0.9110219645456128,
-              "noisy": [
-                0.051514,
-                0.948486
-              ],
-              "tvd_noisy_to_ideal": 0.051513671875
-            },
-            {
-              "physical_qubits": [
-                93,
-                94,
-                95
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9296961336053622,
-              "coherence": 0.9212473801916354,
-              "noisy": [
-                0.050781,
-                0.949219
-              ],
-              "tvd_noisy_to_ideal": 0.05078125
-            },
-            {
-              "physical_qubits": [
-                110,
-                111,
-                112
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9445977711750789,
-              "coherence": 0.9035540668506945,
-              "noisy": [
-                0.042969,
-                0.957031
-              ],
-              "tvd_noisy_to_ideal": 0.04296875
-            },
-            {
-              "physical_qubits": [
-                54,
-                55,
-                59
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.8994944897230753,
-              "coherence": 0.9438546726189653,
-              "noisy": [
-                0.095947,
-                0.904053
-              ],
-              "tvd_noisy_to_ideal": 0.095947265625
-            },
-            {
-              "physical_qubits": [
-                118,
-                129,
-                130
-              ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9364506885483997,
-              "coherence": 0.8947654021339799,
-              "noisy": [
-                0.050537,
-                0.949463
-              ],
-              "tvd_noisy_to_ideal": 0.050537109375
+              "tvd_noisy_to_ideal": 0.0556640625
             }
           ]
         },
@@ -5189,96 +3470,18 @@
           "feed_forward": false,
           "replica_prefixes": [
             "r0_",
-            "r1_",
-            "r2_",
-            "r3_",
-            "r4_",
-            "r5_",
-            "r6_",
-            "r7_",
-            "r8_",
-            "r9_",
-            "r10_",
-            "r11_",
-            "r12_",
-            "r13_",
-            "r14_"
+            "r1_"
           ],
           "replica_qubits": [
             [
-              1,
-              2,
-              3
+              80,
+              81,
+              82
             ],
             [
-              21,
-              22,
-              23
-            ],
-            [
-              142,
-              143,
-              144
-            ],
-            [
-              127,
-              137,
-              147
-            ],
-            [
-              87,
-              88,
-              89
-            ],
-            [
-              25,
-              37,
-              45
-            ],
-            [
+              12,
               13,
-              14,
-              15
-            ],
-            [
-              105,
-              106,
-              117
-            ],
-            [
-              116,
-              120,
-              121
-            ],
-            [
-              58,
-              70,
-              71
-            ],
-            [
-              138,
-              151,
-              152
-            ],
-            [
-              93,
-              94,
-              95
-            ],
-            [
-              110,
-              111,
-              112
-            ],
-            [
-              54,
-              55,
-              59
-            ],
-            [
-              118,
-              129,
-              130
+              14
             ]
           ],
           "ideal": [
@@ -5288,228 +3491,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                1,
-                2,
-                3
+                80,
+                81,
+                82
               ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9578544487540799,
-              "coherence": 0.9575567113931831,
+              "duration_s": 3.7800000000000002e-06,
+              "esp": 0.9617894985407182,
+              "coherence": 0.9504173347808414,
               "noisy": [
-                0.981201,
-                0.018799
+                0.979492,
+                0.020508
               ],
-              "tvd_noisy_to_ideal": 0.018798828125
+              "tvd_noisy_to_ideal": 0.0205078125
             },
             {
               "physical_qubits": [
-                21,
-                22,
-                23
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9592646331407907,
-              "coherence": 0.9446966760060798,
-              "noisy": [
-                0.977295,
-                0.022705
-              ],
-              "tvd_noisy_to_ideal": 0.022705078125
-            },
-            {
-              "physical_qubits": [
-                142,
-                143,
-                144
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9529223420641223,
-              "coherence": 0.9483375715441303,
-              "noisy": [
-                0.974609,
-                0.025391
-              ],
-              "tvd_noisy_to_ideal": 0.025390625
-            },
-            {
-              "physical_qubits": [
-                127,
-                137,
-                147
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9504150281684409,
-              "coherence": 0.9284873251735131,
-              "noisy": [
-                0.971191,
-                0.028809
-              ],
-              "tvd_noisy_to_ideal": 0.02880859375
-            },
-            {
-              "physical_qubits": [
-                87,
-                88,
-                89
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9409023540666804,
-              "coherence": 0.9364558594276262,
-              "noisy": [
-                0.976074,
-                0.023926
-              ],
-              "tvd_noisy_to_ideal": 0.02392578125
-            },
-            {
-              "physical_qubits": [
-                25,
-                37,
-                45
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.946424124016806,
-              "coherence": 0.928733863481891,
-              "noisy": [
-                0.963623,
-                0.036377
-              ],
-              "tvd_noisy_to_ideal": 0.036376953125
-            },
-            {
-              "physical_qubits": [
+                12,
                 13,
-                14,
-                15
+                14
               ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9535496635198883,
-              "coherence": 0.9210599044619057,
+              "duration_s": 3.7800000000000002e-06,
+              "esp": 0.9270074790795242,
+              "coherence": 0.9671554520543961,
               "noisy": [
-                0.969238,
-                0.030762
+                0.960938,
+                0.039062
               ],
-              "tvd_noisy_to_ideal": 0.03076171875
-            },
-            {
-              "physical_qubits": [
-                105,
-                106,
-                117
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9427744650756528,
-              "coherence": 0.9258776975014111,
-              "noisy": [
-                0.967773,
-                0.032227
-              ],
-              "tvd_noisy_to_ideal": 0.0322265625
-            },
-            {
-              "physical_qubits": [
-                116,
-                120,
-                121
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.928774124603871,
-              "coherence": 0.9388381810988438,
-              "noisy": [
-                0.962402,
-                0.037598
-              ],
-              "tvd_noisy_to_ideal": 0.03759765625
-            },
-            {
-              "physical_qubits": [
-                58,
-                70,
-                71
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9385710433340234,
-              "coherence": 0.9224311462395279,
-              "noisy": [
-                0.966797,
-                0.033203
-              ],
-              "tvd_noisy_to_ideal": 0.033203125
-            },
-            {
-              "physical_qubits": [
-                138,
-                151,
-                152
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9408789320649433,
-              "coherence": 0.9129317514246662,
-              "noisy": [
-                0.963867,
-                0.036133
-              ],
-              "tvd_noisy_to_ideal": 0.0361328125
-            },
-            {
-              "physical_qubits": [
-                93,
-                94,
-                95
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9306090769329715,
-              "coherence": 0.9229470779943247,
-              "noisy": [
-                0.957031,
-                0.042969
-              ],
-              "tvd_noisy_to_ideal": 0.04296875
-            },
-            {
-              "physical_qubits": [
-                110,
-                111,
-                112
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9459135515284147,
-              "coherence": 0.9056156927379576,
-              "noisy": [
-                0.968262,
-                0.031738
-              ],
-              "tvd_noisy_to_ideal": 0.03173828125
-            },
-            {
-              "physical_qubits": [
-                54,
-                55,
-                59
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9015771212583844,
-              "coherence": 0.9450810602184675,
-              "noisy": [
-                0.943359,
-                0.056641
-              ],
-              "tvd_noisy_to_ideal": 0.056640625
-            },
-            {
-              "physical_qubits": [
-                118,
-                129,
-                130
-              ],
-              "duration_s": 3.132e-06,
-              "esp": 0.9375715766681288,
-              "coherence": 0.8970039795650443,
-              "noisy": [
-                0.961914,
-                0.038086
-              ],
-              "tvd_noisy_to_ideal": 0.0380859375
+              "tvd_noisy_to_ideal": 0.0390625
             }
           ]
         },
@@ -5526,9 +3534,9 @@
           ],
           "replica_qubits": [
             [
-              1,
-              2,
-              3
+              80,
+              81,
+              82
             ]
           ],
           "ideal": [
@@ -5538,18 +3546,18 @@
           "replicas": [
             {
               "physical_qubits": [
-                1,
-                2,
-                3
+                80,
+                81,
+                82
               ],
-              "duration_s": 3.2039999999999993e-06,
-              "esp": 0.9569876534147065,
-              "coherence": 0.9566024848278031,
+              "duration_s": 3.876000000000001e-06,
+              "esp": 0.9609747084107183,
+              "coherence": 0.9491906322646733,
               "noisy": [
-                0.037354,
-                0.962646
+                0.036865,
+                0.963135
               ],
-              "tvd_noisy_to_ideal": 0.037353515625
+              "tvd_noisy_to_ideal": 0.036865234375
             }
           ]
         }
@@ -8829,215 +6837,173 @@
             "152": 94,
             "153": 95
           }
-        },
-        {
-          "index": 3,
-          "prefix": "r3_",
-          "score": 0.5963040125223893,
-          "physical_qubits": [
-            47,
-            57,
-            66,
-            67,
-            68
-          ],
-          "initial_layout": [
-            47,
-            57,
-            67,
-            68,
-            66
-          ],
-          "mapping": {
-            "138": 68,
-            "150": 66,
-            "151": 67,
-            "152": 57,
-            "153": 47
-          }
         }
       ],
       "summary": {
-        "p_correct_s0": 0.90606689453125,
-        "p_correct_s1": 0.889892578125,
-        "p_correct_s2": 0.887939453125,
-        "p_correct_s3": 0.88519287109375,
-        "p_correct_mean": 0.89227294921875,
-        "null_p0": 0.98223876953125,
-        "tvd_to_uniform_mean": 0.64227294921875
+        "p_correct_s0": 0.9227701822916666,
+        "p_correct_s1": 0.897705078125,
+        "p_correct_s2": 0.8966471354166666,
+        "p_correct_s3": 0.8964029947916666,
+        "p_correct_mean": 0.90338134765625,
+        "null_p0": 0.978515625,
+        "tvd_to_uniform_mean": 0.65338134765625
       },
       "summary_per_replica": [
         {
-          "p_correct_s0": 0.921142578125,
+          "p_correct_s0": 0.921630859375,
           "p_correct_s1": 0.885986328125,
-          "p_correct_s2": 0.8896484375,
-          "p_correct_s3": 0.885498046875,
-          "p_correct_mean": 0.89556884765625,
-          "null_p0": 0.977783203125,
-          "tvd_to_uniform_mean": 0.64556884765625
+          "p_correct_s2": 0.87841796875,
+          "p_correct_s3": 0.891357421875,
+          "p_correct_mean": 0.89434814453125,
+          "null_p0": 0.976318359375,
+          "tvd_to_uniform_mean": 0.64434814453125
         },
         {
-          "p_correct_s0": 0.920166015625,
+          "p_correct_s0": 0.93212890625,
           "p_correct_s1": 0.90234375,
-          "p_correct_s2": 0.906005859375,
-          "p_correct_s3": 0.903076171875,
-          "p_correct_mean": 0.90789794921875,
-          "null_p0": 0.966064453125,
-          "tvd_to_uniform_mean": 0.65789794921875
+          "p_correct_s2": 0.906494140625,
+          "p_correct_s3": 0.90380859375,
+          "p_correct_mean": 0.91119384765625,
+          "null_p0": 0.96240234375,
+          "tvd_to_uniform_mean": 0.66119384765625
         },
         {
-          "p_correct_s0": 0.910400390625,
+          "p_correct_s0": 0.91455078125,
           "p_correct_s1": 0.90478515625,
-          "p_correct_s2": 0.892578125,
-          "p_correct_s3": 0.894287109375,
-          "p_correct_mean": 0.9005126953125,
-          "null_p0": 0.994873046875,
-          "tvd_to_uniform_mean": 0.6505126953125
-        },
-        {
-          "p_correct_s0": 0.87255859375,
-          "p_correct_s1": 0.866455078125,
-          "p_correct_s2": 0.863525390625,
-          "p_correct_s3": 0.85791015625,
-          "p_correct_mean": 0.8651123046875,
-          "null_p0": 0.990234375,
-          "tvd_to_uniform_mean": 0.6151123046875
+          "p_correct_s2": 0.905029296875,
+          "p_correct_s3": 0.89404296875,
+          "p_correct_mean": 0.90460205078125,
+          "null_p0": 0.996826171875,
+          "tvd_to_uniform_mean": 0.65460205078125
         }
       ],
       "summary_interval": {
         "p_correct_s0": {
-          "mean": 0.90606689453125,
-          "lo": 0.8696925998810526,
-          "hi": 0.9424411891814474,
-          "method": "student_t_over_4_replicas_union_wilson_over_16384_shots"
+          "mean": 0.9227701822916666,
+          "lo": 0.9007997905839106,
+          "hi": 0.9447405739994227,
+          "method": "student_t_over_3_replicas_union_wilson_over_12288_shots"
         },
         "p_correct_s1": {
-          "mean": 0.889892578125,
-          "lo": 0.8617050767276078,
-          "hi": 0.9180800795223922,
-          "method": "student_t_over_4_replicas_union_wilson_over_16384_shots"
+          "mean": 0.897705078125,
+          "lo": 0.8723125069766534,
+          "hi": 0.9230976492733466,
+          "method": "student_t_over_3_replicas_union_wilson_over_12288_shots"
         },
         "p_correct_s2": {
-          "mean": 0.887939453125,
-          "lo": 0.8596699748797844,
-          "hi": 0.9162089313702156,
-          "method": "student_t_over_4_replicas_union_wilson_over_16384_shots"
+          "mean": 0.8966471354166666,
+          "lo": 0.857388065569846,
+          "hi": 0.9359062052634872,
+          "method": "student_t_over_3_replicas_union_wilson_over_12288_shots"
         },
         "p_correct_s3": {
-          "mean": 0.88519287109375,
-          "lo": 0.8540797139343479,
-          "hi": 0.9163060282531521,
-          "method": "student_t_over_4_replicas_union_wilson_over_16384_shots"
+          "mean": 0.8964029947916666,
+          "lo": 0.8801256907373909,
+          "hi": 0.9126802988459424,
+          "method": "student_t_over_3_replicas_union_wilson_over_12288_shots"
         },
         "p_correct_mean": {
-          "mean": 0.89227294921875,
-          "lo": 0.8623540382368791,
-          "hi": 0.9221918602006209,
-          "method": "student_t_over_4_replicas_union_wilson_over_16384_shots"
+          "mean": 0.90338134765625,
+          "lo": 0.8822936643682673,
+          "hi": 0.9244690309442327,
+          "method": "student_t_over_3_replicas_union_wilson_over_12288_shots"
         },
         "null_p0": {
-          "mean": 0.98223876953125,
-          "lo": 0.9615933976575974,
-          "hi": 1.0028841414049026,
-          "method": "student_t_over_4_replicas_union_wilson_over_16384_shots"
+          "mean": 0.978515625,
+          "lo": 0.9354983517054642,
+          "hi": 1.0215328982945358,
+          "method": "student_t_over_3_replicas_union_wilson_over_12288_shots"
         },
         "tvd_to_uniform_mean": {
-          "mean": 0.64227294921875,
-          "lo": 0.6123540382368791,
-          "hi": 0.6721918602006209,
-          "method": "student_t_over_4_replicas"
+          "mean": 0.65338134765625,
+          "lo": 0.6322936643682673,
+          "hi": 0.6744690309442327,
+          "method": "student_t_over_3_replicas"
         }
       },
       "variance": {
         "folded_qpe_s1": {
-          "replicas": 4.0,
-          "mean": 0.889892578125,
-          "shot_variance": 2.386436244705692e-05,
-          "between_replica_variance": 0.00031379858652750653,
-          "layout_variance": 0.0002899342240804496,
-          "median": 0.8941650390625,
+          "replicas": 3.0,
+          "mean": 0.897705078125,
+          "shot_variance": 2.2402591033217806e-05,
+          "between_replica_variance": 0.00010448694229125977,
+          "layout_variance": 8.208435125804196e-05,
+          "median": 0.90234375,
           "outliers": [
-            3
+            0
           ],
-          "chi2": 39.44776491184316,
-          "dof": 3.0,
-          "p_value": 1.3950708793708895e-08
+          "chi2": 9.328112282756049,
+          "dof": 2.0,
+          "p_value": 0.009428142859137326
         },
         "folded_qpe_s0": {
-          "replicas": 4.0,
-          "mean": 0.90606689453125,
-          "shot_variance": 2.0683048205683008e-05,
-          "between_replica_variance": 0.0005225489536921183,
-          "layout_variance": 0.0005018659054864353,
-          "median": 0.915283203125,
-          "outliers": [
-            3
-          ],
-          "chi2": 75.79380202989704,
-          "dof": 3.0,
-          "p_value": 2.4488520456142903e-16
+          "replicas": 3.0,
+          "mean": 0.9227701822916666,
+          "shot_variance": 1.738604138760517e-05,
+          "between_replica_variance": 7.822116216023764e-05,
+          "layout_variance": 6.0835120772632464e-05,
+          "median": 0.921630859375,
+          "outliers": [],
+          "chi2": 8.998156672513495,
+          "dof": 2.0,
+          "p_value": 0.011119240017372058
         },
         "folded_qpe_s2": {
-          "replicas": 4.0,
-          "mean": 0.887939453125,
-          "shot_variance": 2.423492696834728e-05,
-          "between_replica_variance": 0.00031562646230061847,
-          "layout_variance": 0.0002913915353322712,
-          "median": 0.89111328125,
+          "replicas": 3.0,
+          "mean": 0.8966471354166666,
+          "shot_variance": 2.2584116474414866e-05,
+          "between_replica_variance": 0.0002497633298238119,
+          "layout_variance": 0.00022717921334939703,
+          "median": 0.905029296875,
           "outliers": [
-            1,
-            3
+            0
           ],
-          "chi2": 39.070857863056666,
-          "dof": 3.0,
-          "p_value": 1.6766975924848073e-08
+          "chi2": 22.118494660330345,
+          "dof": 2.0,
+          "p_value": 1.5740912707368266e-05
         },
         "folded_qpe_s3": {
-          "replicas": 4.0,
-          "mean": 0.88519287109375,
-          "shot_variance": 2.4741140805417672e-05,
-          "between_replica_variance": 0.0003823190927505493,
-          "layout_variance": 0.00035757795194513164,
-          "median": 0.889892578125,
-          "outliers": [
-            3
-          ],
-          "chi2": 46.358302039188665,
-          "dof": 3.0,
-          "p_value": 4.758924137401671e-10
+          "replicas": 3.0,
+          "mean": 0.8964029947916666,
+          "shot_variance": 2.266504937627663e-05,
+          "between_replica_variance": 4.293521245320638e-05,
+          "layout_variance": 2.027016307692975e-05,
+          "median": 0.89404296875,
+          "outliers": [],
+          "chi2": 3.788671424483761,
+          "dof": 2.0,
+          "p_value": 0.15041822284964182
         },
         "folded_qpe_null": {
-          "replicas": 4.0,
-          "mean": 0.98223876953125,
-          "shot_variance": 4.228397301631048e-06,
-          "between_replica_variance": 0.00016833841800689697,
-          "layout_variance": 0.00016411002070526592,
-          "median": 0.9840087890625,
+          "replicas": 3.0,
+          "mean": 0.978515625,
+          "shot_variance": 5.08371158502996e-06,
+          "between_replica_variance": 0.00029987096786499023,
+          "layout_variance": 0.0002947872562799603,
+          "median": 0.976318359375,
           "outliers": [
-            0,
             1,
-            2,
-            3
+            2
           ],
-          "chi2": 119.43420118679197,
-          "dof": 3.0,
-          "p_value": 1.021618655191736e-25
+          "chi2": 117.97324173465006,
+          "dof": 2.0,
+          "p_value": 2.4123262973012765e-26
         }
       },
       "instance_variance": {
         "instances": 4.0,
-        "replicas": 4.0,
-        "shot_variance": 2.338086960662622e-05,
-        "instance_variance": 7.826834917068481e-05,
-        "layout_variance": 0.0003435189525286357,
-        "interaction_variance": 1.667345168243628e-05
+        "replicas": 3.0,
+        "shot_variance": 2.125944956787862e-05,
+        "instance_variance": 0.0001466025908788044,
+        "layout_variance": 5.646546681722005e-05,
+        "interaction_variance": 4.112674529703024e-05
       },
       "global_packing_crosstalk": {
-        "global_replica0_score": 0.899169921875,
+        "global_replica0_score": 0.892333984375,
         "packed_replica0_score": 0.885986328125,
-        "difference": -0.01318359375,
-        "z": -1.9272041971766778,
-        "tvd": 0.01416015625
+        "difference": -0.00634765625,
+        "z": -0.915087499195114,
+        "tvd": 0.00634765625
       },
       "summary_readout_corrected": {
         "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
@@ -9054,8 +7020,7 @@
           "replica_prefixes": [
             "r0_",
             "r1_",
-            "r2_",
-            "r3_"
+            "r2_"
           ],
           "replica_qubits": [
             [
@@ -9078,13 +7043,6 @@
               93,
               94,
               95
-            ],
-            [
-              47,
-              57,
-              66,
-              67,
-              68
             ]
           ],
           "ideal": [
@@ -9150,25 +7108,6 @@
                 0.050049
               ],
               "tvd_noisy_to_ideal": 0.09521484375
-            },
-            {
-              "physical_qubits": [
-                47,
-                57,
-                66,
-                67,
-                68
-              ],
-              "duration_s": 1.3180000000000028e-05,
-              "esp": 0.8165246156069951,
-              "coherence": 0.7302952062003712,
-              "noisy": [
-                0.031494,
-                0.866455,
-                0.030762,
-                0.071289
-              ],
-              "tvd_noisy_to_ideal": 0.133544921875
             }
           ]
         },
@@ -9183,8 +7122,7 @@
           "replica_prefixes": [
             "r0_",
             "r1_",
-            "r2_",
-            "r3_"
+            "r2_"
           ],
           "replica_qubits": [
             [
@@ -9207,13 +7145,6 @@
               93,
               94,
               95
-            ],
-            [
-              47,
-              57,
-              66,
-              67,
-              68
             ]
           ],
           "ideal": [
@@ -9235,12 +7166,12 @@
               "esp": 0.8613765521327174,
               "coherence": 0.7435978208620475,
               "noisy": [
-                0.921143,
-                0.018799,
-                0.047363,
-                0.012695
+                0.921631,
+                0.018311,
+                0.048096,
+                0.011963
               ],
-              "tvd_noisy_to_ideal": 0.078857421875
+              "tvd_noisy_to_ideal": 0.078369140625
             },
             {
               "physical_qubits": [
@@ -9254,12 +7185,12 @@
               "esp": 0.8803142716396195,
               "coherence": 0.7273602235547013,
               "noisy": [
-                0.920166,
-                0.015381,
-                0.050293,
-                0.01416
+                0.932129,
+                0.013916,
+                0.04248,
+                0.011475
               ],
-              "tvd_noisy_to_ideal": 0.079833984375
+              "tvd_noisy_to_ideal": 0.06787109375
             },
             {
               "physical_qubits": [
@@ -9273,31 +7204,12 @@
               "esp": 0.8776291435863607,
               "coherence": 0.6814262690334737,
               "noisy": [
-                0.9104,
-                0.01709,
-                0.056152,
-                0.016357
+                0.914551,
+                0.015625,
+                0.049805,
+                0.02002
               ],
-              "tvd_noisy_to_ideal": 0.089599609375
-            },
-            {
-              "physical_qubits": [
-                47,
-                57,
-                66,
-                67,
-                68
-              ],
-              "duration_s": 1.3180000000000028e-05,
-              "esp": 0.8165246156069951,
-              "coherence": 0.7302952062003712,
-              "noisy": [
-                0.872559,
-                0.030762,
-                0.068848,
-                0.027832
-              ],
-              "tvd_noisy_to_ideal": 0.12744140625
+              "tvd_noisy_to_ideal": 0.08544921875
             }
           ]
         },
@@ -9312,8 +7224,7 @@
           "replica_prefixes": [
             "r0_",
             "r1_",
-            "r2_",
-            "r3_"
+            "r2_"
           ],
           "replica_qubits": [
             [
@@ -9336,13 +7247,6 @@
               93,
               94,
               95
-            ],
-            [
-              47,
-              57,
-              66,
-              67,
-              68
             ]
           ],
           "ideal": [
@@ -9364,12 +7268,12 @@
               "esp": 0.8621304615864654,
               "coherence": 0.7435978208620475,
               "noisy": [
-                0.080566,
-                0.016357,
-                0.889648,
-                0.013428
+                0.089355,
+                0.012207,
+                0.878418,
+                0.02002
               ],
-              "tvd_noisy_to_ideal": 0.1103515625
+              "tvd_noisy_to_ideal": 0.12158203125
             },
             {
               "physical_qubits": [
@@ -9383,12 +7287,12 @@
               "esp": 0.8807239716947244,
               "coherence": 0.7273602235547013,
               "noisy": [
-                0.064453,
-                0.012451,
-                0.906006,
-                0.01709
+                0.07251,
+                0.010742,
+                0.906494,
+                0.010254
               ],
-              "tvd_noisy_to_ideal": 0.093994140625
+              "tvd_noisy_to_ideal": 0.093505859375
             },
             {
               "physical_qubits": [
@@ -9402,31 +7306,12 @@
               "esp": 0.8782826365061321,
               "coherence": 0.6814262690334737,
               "noisy": [
-                0.069824,
-                0.018066,
-                0.892578,
-                0.019531
+                0.063721,
+                0.015869,
+                0.905029,
+                0.015381
               ],
-              "tvd_noisy_to_ideal": 0.107421875
-            },
-            {
-              "physical_qubits": [
-                47,
-                57,
-                66,
-                67,
-                68
-              ],
-              "duration_s": 1.3180000000000028e-05,
-              "esp": 0.8169946245186844,
-              "coherence": 0.7302952062003712,
-              "noisy": [
-                0.087158,
-                0.022705,
-                0.863525,
-                0.026611
-              ],
-              "tvd_noisy_to_ideal": 0.136474609375
+              "tvd_noisy_to_ideal": 0.094970703125
             }
           ]
         },
@@ -9441,8 +7326,7 @@
           "replica_prefixes": [
             "r0_",
             "r1_",
-            "r2_",
-            "r3_"
+            "r2_"
           ],
           "replica_qubits": [
             [
@@ -9465,13 +7349,6 @@
               93,
               94,
               95
-            ],
-            [
-              47,
-              57,
-              66,
-              67,
-              68
             ]
           ],
           "ideal": [
@@ -9493,12 +7370,12 @@
               "esp": 0.8613765521327174,
               "coherence": 0.7435978208620475,
               "noisy": [
-                0.023438,
-                0.067383,
-                0.023682,
-                0.885498
+                0.024414,
+                0.065918,
+                0.018311,
+                0.891357
               ],
-              "tvd_noisy_to_ideal": 0.114501953125
+              "tvd_noisy_to_ideal": 0.108642578125
             },
             {
               "physical_qubits": [
@@ -9512,12 +7389,12 @@
               "esp": 0.8803142716396195,
               "coherence": 0.7273602235547013,
               "noisy": [
-                0.020264,
-                0.057129,
-                0.019531,
-                0.903076
+                0.02124,
+                0.059326,
+                0.015625,
+                0.903809
               ],
-              "tvd_noisy_to_ideal": 0.096923828125
+              "tvd_noisy_to_ideal": 0.09619140625
             },
             {
               "physical_qubits": [
@@ -9532,30 +7409,11 @@
               "coherence": 0.6814262690334737,
               "noisy": [
                 0.02417,
-                0.063232,
-                0.018311,
-                0.894287
+                0.060791,
+                0.020996,
+                0.894043
               ],
-              "tvd_noisy_to_ideal": 0.105712890625
-            },
-            {
-              "physical_qubits": [
-                47,
-                57,
-                66,
-                67,
-                68
-              ],
-              "duration_s": 1.3180000000000028e-05,
-              "esp": 0.8165246156069951,
-              "coherence": 0.7302952062003712,
-              "noisy": [
-                0.029053,
-                0.07959,
-                0.033447,
-                0.85791
-              ],
-              "tvd_noisy_to_ideal": 0.14208984375
+              "tvd_noisy_to_ideal": 0.10595703125
             }
           ]
         },
@@ -9570,8 +7428,7 @@
           "replica_prefixes": [
             "r0_",
             "r1_",
-            "r2_",
-            "r3_"
+            "r2_"
           ],
           "replica_qubits": [
             [
@@ -9594,13 +7451,6 @@
               93,
               94,
               95
-            ],
-            [
-              47,
-              57,
-              66,
-              67,
-              68
             ]
           ],
           "ideal": [
@@ -9622,12 +7472,12 @@
               "esp": 0.9378128604764254,
               "coherence": 0.8614300283092038,
               "noisy": [
-                0.977783,
-                0.005371,
-                0.012207,
-                0.004639
+                0.976318,
+                0.006104,
+                0.010986,
+                0.006592
               ],
-              "tvd_noisy_to_ideal": 0.022216796875
+              "tvd_noisy_to_ideal": 0.023681640625
             },
             {
               "physical_qubits": [
@@ -9641,12 +7491,12 @@
               "esp": 0.9359027002738737,
               "coherence": 0.8535058624802359,
               "noisy": [
-                0.966064,
-                0.00708,
-                0.017822,
-                0.009033
+                0.962402,
+                0.010254,
+                0.016602,
+                0.010742
               ],
-              "tvd_noisy_to_ideal": 0.033935546875
+              "tvd_noisy_to_ideal": 0.03759765625
             },
             {
               "physical_qubits": [
@@ -9660,31 +7510,12 @@
               "esp": 0.9751833209574896,
               "coherence": 0.8243811350625443,
               "noisy": [
-                0.994873,
-                0.001221,
-                0.002686,
-                0.001221
+                0.996826,
+                0.000488,
+                0.001709,
+                0.000977
               ],
-              "tvd_noisy_to_ideal": 0.005126953125
-            },
-            {
-              "physical_qubits": [
-                47,
-                57,
-                66,
-                67,
-                68
-              ],
-              "duration_s": 6.635999999999999e-06,
-              "esp": 0.9653218012243374,
-              "coherence": 0.8536361843149326,
-              "noisy": [
-                0.990234,
-                0.002197,
-                0.004395,
-                0.003174
-              ],
-              "tvd_noisy_to_ideal": 0.009765625
+              "tvd_noisy_to_ideal": 0.003173828125
             }
           ]
         },
@@ -9727,12 +7558,12 @@
               "esp": 0.8613765521327174,
               "coherence": 0.7435978208620475,
               "noisy": [
-                0.024902,
-                0.89917,
-                0.023193,
-                0.052734
+                0.023926,
+                0.892334,
+                0.022217,
+                0.061523
               ],
-              "tvd_noisy_to_ideal": 0.100830078125
+              "tvd_noisy_to_ideal": 0.107666015625
             }
           ]
         }
@@ -9740,300 +7571,300 @@
     },
     {
       "group": "hybrid_shor_mod15",
-      "backend": "ibm_fez",
-      "calibration": "2026-10-11T01:21:37-07:00",
-      "noise_model_calibration": "2026-10-11T01:21:37-07:00",
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-11T01:09:33-07:00",
+      "noise_model_calibration": "2026-10-11T01:09:33-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
-        22,
-        20,
-        24,
-        21,
-        23
+        59,
+        54,
+        74,
+        55,
+        75
       ],
-      "joint_score": 0.7341134273196173,
+      "joint_score": 0.7225291148311124,
       "replica_floor": 0.8,
       "replicas": [
         {
           "index": 0,
           "prefix": "r0_",
-          "score": 0.6203795957983632,
+          "score": 0.6490976732572681,
           "physical_qubits": [
+            0,
             1,
             2,
             3,
-            4,
-            5
+            16
           ],
           "initial_layout": [
-            3,
-            1,
-            5,
             2,
-            4
+            16,
+            0,
+            3,
+            1
           ],
           "mapping": {
-            "20": 1,
-            "21": 2,
-            "22": 3,
-            "23": 4,
-            "24": 5
+            "54": 16,
+            "55": 3,
+            "59": 2,
+            "74": 0,
+            "75": 1
           }
         },
         {
           "index": 1,
           "prefix": "r1_",
-          "score": 0.5950231538086433,
+          "score": 0.6392022478839275,
           "physical_qubits": [
-            140,
-            141,
-            142,
-            143,
-            144
+            80,
+            81,
+            82,
+            83,
+            96
           ],
           "initial_layout": [
-            142,
-            144,
-            140,
-            143,
-            141
+            82,
+            80,
+            96,
+            81,
+            83
           ],
           "mapping": {
-            "20": 144,
-            "21": 143,
-            "22": 142,
-            "23": 141,
-            "24": 140
+            "54": 80,
+            "55": 81,
+            "59": 82,
+            "74": 96,
+            "75": 83
           }
         },
         {
           "index": 2,
           "prefix": "r2_",
-          "score": 0.5821622153179778,
+          "score": 0.6296190464565115,
           "physical_qubits": [
-            20,
-            21,
-            22,
-            23,
-            24
+            47,
+            57,
+            65,
+            66,
+            67
           ],
           "initial_layout": [
-            22,
-            20,
-            24,
-            21,
-            23
+            67,
+            65,
+            47,
+            66,
+            57
           ],
           "mapping": {
-            "20": 20,
-            "21": 21,
-            "22": 22,
-            "23": 23,
-            "24": 24
+            "54": 65,
+            "55": 66,
+            "59": 67,
+            "74": 47,
+            "75": 57
           }
         },
         {
           "index": 3,
           "prefix": "r3_",
-          "score": 0.5449699391825742,
+          "score": 0.6209013384952204,
           "physical_qubits": [
-            37,
-            43,
-            44,
-            45,
-            56
+            19,
+            32,
+            33,
+            34,
+            35
           ],
           "initial_layout": [
-            44,
-            56,
-            37,
-            43,
-            45
+            34,
+            32,
+            19,
+            33,
+            35
           ],
           "mapping": {
-            "20": 56,
-            "21": 43,
-            "22": 44,
-            "23": 45,
-            "24": 37
+            "54": 32,
+            "55": 33,
+            "59": 34,
+            "74": 19,
+            "75": 35
           }
         },
         {
           "index": 4,
           "prefix": "r4_",
-          "score": 0.5243300434738042,
+          "score": 0.5959296860711327,
           "physical_qubits": [
-            120,
-            121,
-            122,
-            123,
-            124
+            51,
+            58,
+            71,
+            72,
+            73
           ],
           "initial_layout": [
-            122,
-            120,
-            124,
-            121,
-            123
+            71,
+            51,
+            73,
+            58,
+            72
           ],
           "mapping": {
-            "20": 120,
-            "21": 121,
-            "22": 122,
-            "23": 123,
-            "24": 124
+            "54": 51,
+            "55": 58,
+            "59": 71,
+            "74": 73,
+            "75": 72
           }
         },
         {
           "index": 5,
           "prefix": "r5_",
-          "score": 0.5068378801854903,
+          "score": 0.5868590289160573,
           "physical_qubits": [
-            78,
-            87,
-            88,
-            89,
-            97
+            107,
+            108,
+            109,
+            118,
+            129
           ],
           "initial_layout": [
-            88,
-            97,
-            78,
-            87,
-            89
+            109,
+            107,
+            129,
+            108,
+            118
           ],
           "mapping": {
-            "20": 97,
-            "21": 87,
-            "22": 88,
-            "23": 89,
-            "24": 78
+            "54": 107,
+            "55": 108,
+            "59": 109,
+            "74": 129,
+            "75": 118
           }
         }
       ],
       "summary": {
-        "order_recovery_probability": 0.4947102864583333,
-        "factorable_probability": 0.4947102864583333,
-        "identity_null_factorable_probability": 0.0037027994791666665,
-        "identity_null_order_recovery_probability": 0.0037027994791666665,
+        "order_recovery_probability": 0.4947509765625,
+        "factorable_probability": 0.4947509765625,
+        "identity_null_factorable_probability": 0.005411783854166667,
+        "identity_null_order_recovery_probability": 0.005411783854166667,
         "uniform_null_factorable_probability": 0.296875,
         "uniform_null_order_recovery_probability": 0.296875,
-        "factorable_margin_over_identity_null": 0.4910074869791667,
-        "order_recovery_margin_over_identity_null": 0.4910074869791667,
-        "factorable_margin_over_uniform_null": 0.19783528645833334,
-        "order_recovery_margin_over_uniform_null": 0.19783528645833334,
-        "tvd_to_ideal": 0.013224283854166666,
-        "identity_null_p0": 0.9920247395833334
+        "factorable_margin_over_identity_null": 0.4893391927083333,
+        "order_recovery_margin_over_identity_null": 0.4893391927083333,
+        "factorable_margin_over_uniform_null": 0.1978759765625,
+        "order_recovery_margin_over_uniform_null": 0.1978759765625,
+        "tvd_to_ideal": 0.013916015625,
+        "identity_null_p0": 0.9884440104166666
       },
       "summary_per_replica": [
         {
-          "order_recovery_probability": 0.485107421875,
-          "factorable_probability": 0.485107421875,
-          "identity_null_factorable_probability": 0.01318359375,
-          "identity_null_order_recovery_probability": 0.01318359375,
+          "order_recovery_probability": 0.494384765625,
+          "factorable_probability": 0.494384765625,
+          "identity_null_factorable_probability": 0.004638671875,
+          "identity_null_order_recovery_probability": 0.004638671875,
           "uniform_null_factorable_probability": 0.296875,
           "uniform_null_order_recovery_probability": 0.296875,
-          "factorable_margin_over_identity_null": 0.471923828125,
-          "order_recovery_margin_over_identity_null": 0.471923828125,
-          "factorable_margin_over_uniform_null": 0.188232421875,
-          "order_recovery_margin_over_uniform_null": 0.188232421875,
-          "tvd_to_ideal": 0.014892578125,
-          "identity_null_p0": 0.973876953125
+          "factorable_margin_over_identity_null": 0.48974609375,
+          "order_recovery_margin_over_identity_null": 0.48974609375,
+          "factorable_margin_over_uniform_null": 0.197509765625,
+          "order_recovery_margin_over_uniform_null": 0.197509765625,
+          "tvd_to_ideal": 0.019775390625,
+          "identity_null_p0": 0.990478515625
         },
         {
-          "order_recovery_probability": 0.496826171875,
-          "factorable_probability": 0.496826171875,
-          "identity_null_factorable_probability": 0.001708984375,
-          "identity_null_order_recovery_probability": 0.001708984375,
+          "order_recovery_probability": 0.49658203125,
+          "factorable_probability": 0.49658203125,
+          "identity_null_factorable_probability": 0.005859375,
+          "identity_null_order_recovery_probability": 0.005859375,
           "uniform_null_factorable_probability": 0.296875,
           "uniform_null_order_recovery_probability": 0.296875,
-          "factorable_margin_over_identity_null": 0.4951171875,
-          "order_recovery_margin_over_identity_null": 0.4951171875,
-          "factorable_margin_over_uniform_null": 0.199951171875,
-          "order_recovery_margin_over_uniform_null": 0.199951171875,
-          "tvd_to_ideal": 0.011474609375,
-          "identity_null_p0": 0.994873046875
+          "factorable_margin_over_identity_null": 0.49072265625,
+          "order_recovery_margin_over_identity_null": 0.49072265625,
+          "factorable_margin_over_uniform_null": 0.19970703125,
+          "order_recovery_margin_over_uniform_null": 0.19970703125,
+          "tvd_to_ideal": 0.00830078125,
+          "identity_null_p0": 0.988037109375
         },
         {
-          "order_recovery_probability": 0.49169921875,
-          "factorable_probability": 0.49169921875,
-          "identity_null_factorable_probability": 0.0,
-          "identity_null_order_recovery_probability": 0.0,
+          "order_recovery_probability": 0.491943359375,
+          "factorable_probability": 0.491943359375,
+          "identity_null_factorable_probability": 0.00244140625,
+          "identity_null_order_recovery_probability": 0.00244140625,
           "uniform_null_factorable_probability": 0.296875,
           "uniform_null_order_recovery_probability": 0.296875,
-          "factorable_margin_over_identity_null": 0.49169921875,
-          "order_recovery_margin_over_identity_null": 0.49169921875,
-          "factorable_margin_over_uniform_null": 0.19482421875,
-          "order_recovery_margin_over_uniform_null": 0.19482421875,
-          "tvd_to_ideal": 0.01904296875,
-          "identity_null_p0": 1.0
+          "factorable_margin_over_identity_null": 0.489501953125,
+          "order_recovery_margin_over_identity_null": 0.489501953125,
+          "factorable_margin_over_uniform_null": 0.195068359375,
+          "order_recovery_margin_over_uniform_null": 0.195068359375,
+          "tvd_to_ideal": 0.008056640625,
+          "identity_null_p0": 0.9921875
         },
         {
-          "order_recovery_probability": 0.488525390625,
-          "factorable_probability": 0.488525390625,
-          "identity_null_factorable_probability": 0.001953125,
-          "identity_null_order_recovery_probability": 0.001953125,
+          "order_recovery_probability": 0.4921875,
+          "factorable_probability": 0.4921875,
+          "identity_null_factorable_probability": 0.0146484375,
+          "identity_null_order_recovery_probability": 0.0146484375,
           "uniform_null_factorable_probability": 0.296875,
           "uniform_null_order_recovery_probability": 0.296875,
-          "factorable_margin_over_identity_null": 0.486572265625,
-          "order_recovery_margin_over_identity_null": 0.486572265625,
-          "factorable_margin_over_uniform_null": 0.191650390625,
-          "order_recovery_margin_over_uniform_null": 0.191650390625,
-          "tvd_to_ideal": 0.02099609375,
-          "identity_null_p0": 0.99462890625
+          "factorable_margin_over_identity_null": 0.4775390625,
+          "order_recovery_margin_over_identity_null": 0.4775390625,
+          "factorable_margin_over_uniform_null": 0.1953125,
+          "order_recovery_margin_over_uniform_null": 0.1953125,
+          "tvd_to_ideal": 0.00830078125,
+          "identity_null_p0": 0.969482421875
         },
         {
-          "order_recovery_probability": 0.499267578125,
-          "factorable_probability": 0.499267578125,
+          "order_recovery_probability": 0.482666015625,
+          "factorable_probability": 0.482666015625,
           "identity_null_factorable_probability": 0.00439453125,
           "identity_null_order_recovery_probability": 0.00439453125,
           "uniform_null_factorable_probability": 0.296875,
           "uniform_null_order_recovery_probability": 0.296875,
-          "factorable_margin_over_identity_null": 0.494873046875,
-          "order_recovery_margin_over_identity_null": 0.494873046875,
-          "factorable_margin_over_uniform_null": 0.202392578125,
-          "order_recovery_margin_over_uniform_null": 0.202392578125,
-          "tvd_to_ideal": 0.006103515625,
-          "identity_null_p0": 0.990478515625
+          "factorable_margin_over_identity_null": 0.478271484375,
+          "order_recovery_margin_over_identity_null": 0.478271484375,
+          "factorable_margin_over_uniform_null": 0.185791015625,
+          "order_recovery_margin_over_uniform_null": 0.185791015625,
+          "tvd_to_ideal": 0.017333984375,
+          "identity_null_p0": 0.990966796875
         },
         {
-          "order_recovery_probability": 0.5068359375,
-          "factorable_probability": 0.5068359375,
-          "identity_null_factorable_probability": 0.0009765625,
-          "identity_null_order_recovery_probability": 0.0009765625,
+          "order_recovery_probability": 0.5107421875,
+          "factorable_probability": 0.5107421875,
+          "identity_null_factorable_probability": 0.00048828125,
+          "identity_null_order_recovery_probability": 0.00048828125,
           "uniform_null_factorable_probability": 0.296875,
           "uniform_null_order_recovery_probability": 0.296875,
-          "factorable_margin_over_identity_null": 0.505859375,
-          "order_recovery_margin_over_identity_null": 0.505859375,
-          "factorable_margin_over_uniform_null": 0.2099609375,
-          "order_recovery_margin_over_uniform_null": 0.2099609375,
-          "tvd_to_ideal": 0.0068359375,
-          "identity_null_p0": 0.998291015625
+          "factorable_margin_over_identity_null": 0.51025390625,
+          "order_recovery_margin_over_identity_null": 0.51025390625,
+          "factorable_margin_over_uniform_null": 0.2138671875,
+          "order_recovery_margin_over_uniform_null": 0.2138671875,
+          "tvd_to_ideal": 0.021728515625,
+          "identity_null_p0": 0.99951171875
         }
       ],
       "summary_interval": {
         "order_recovery_probability": {
-          "mean": 0.4947102864583333,
-          "lo": 0.4864229102196008,
-          "hi": 0.5029976626970658,
+          "mean": 0.4947509765625,
+          "lo": 0.4851361058047032,
+          "hi": 0.5043658473202968,
           "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
         },
         "factorable_probability": {
-          "mean": 0.4947102864583333,
-          "lo": 0.4864229102196008,
-          "hi": 0.5029976626970658,
+          "mean": 0.4947509765625,
+          "lo": 0.4851361058047032,
+          "hi": 0.5043658473202968,
           "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
         },
         "identity_null_factorable_probability": {
-          "mean": 0.0037027994791666665,
-          "lo": -0.0014070729066140912,
-          "hi": 0.008812671864947424,
+          "mean": 0.005411783854166667,
+          "lo": 0.0002660672477498944,
+          "hi": 0.01055750046058344,
           "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
         },
         "identity_null_order_recovery_probability": {
-          "mean": 0.0037027994791666665,
-          "lo": -0.0014070729066140912,
-          "hi": 0.008812671864947424,
+          "mean": 0.005411783854166667,
+          "lo": 0.0002660672477498944,
+          "hi": 0.01055750046058344,
           "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
         },
         "uniform_null_factorable_probability": {
@@ -10049,89 +7880,90 @@
           "method": "student_t_over_6_replicas"
         },
         "factorable_margin_over_identity_null": {
-          "mean": 0.4910074869791667,
-          "lo": 0.4791646954197947,
-          "hi": 0.5028502785385387,
+          "mean": 0.4893391927083333,
+          "lo": 0.47691085696055413,
+          "hi": 0.5017675284561125,
           "method": "student_t_over_6_replicas"
         },
         "order_recovery_margin_over_identity_null": {
-          "mean": 0.4910074869791667,
-          "lo": 0.4791646954197947,
-          "hi": 0.5028502785385387,
+          "mean": 0.4893391927083333,
+          "lo": 0.47691085696055413,
+          "hi": 0.5017675284561125,
           "method": "student_t_over_6_replicas"
         },
         "factorable_margin_over_uniform_null": {
-          "mean": 0.19783528645833334,
-          "lo": 0.18954791021960082,
-          "hi": 0.20612266269706586,
+          "mean": 0.1978759765625,
+          "lo": 0.1882611058047032,
+          "hi": 0.2074908473202968,
           "method": "student_t_over_6_replicas"
         },
         "order_recovery_margin_over_uniform_null": {
-          "mean": 0.19783528645833334,
-          "lo": 0.18954791021960082,
-          "hi": 0.20612266269706586,
+          "mean": 0.1978759765625,
+          "lo": 0.1882611058047032,
+          "hi": 0.2074908473202968,
           "method": "student_t_over_6_replicas"
         },
         "tvd_to_ideal": {
-          "mean": 0.013224283854166666,
-          "lo": 0.006727624577120974,
-          "hi": 0.019720943131212358,
+          "mean": 0.013916015625,
+          "lo": 0.007205468677313346,
+          "hi": 0.020626562572686656,
           "method": "student_t_over_6_replicas"
         },
         "identity_null_p0": {
-          "mean": 0.9920247395833334,
-          "lo": 0.9820744681560872,
-          "hi": 1.0019750110105794,
+          "mean": 0.9884440104166666,
+          "lo": 0.9778793782275965,
+          "hi": 0.9990086426057367,
           "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
         }
       },
       "variance": {
         "hybrid_shor_N15_a2": {
           "replicas": 6.0,
-          "mean": 0.4947102864583333,
-          "shot_variance": 6.101563728104035e-05,
-          "between_replica_variance": 6.236235300699871e-05,
-          "layout_variance": 1.3467157259583622e-06,
-          "median": 0.4942626953125,
+          "mean": 0.4947509765625,
+          "shot_variance": 6.1011351742005594e-05,
+          "between_replica_variance": 8.394122123718261e-05,
+          "layout_variance": 2.292986949517702e-05,
+          "median": 0.4932861328125,
           "outliers": [],
-          "chi2": 5.110358244703348,
+          "chi2": 6.879147801227134,
           "dof": 5.0,
-          "p_value": 0.40256104071370696
+          "p_value": 0.22978452043161182
         },
         "hybrid_shor_N15_a2_null": {
           "replicas": 6.0,
-          "mean": 0.0037027994791666665,
-          "shot_variance": 8.958328786926965e-07,
-          "between_replica_variance": 2.370874087015788e-05,
-          "layout_variance": 2.2812907991465182e-05,
-          "median": 0.0018310546875,
+          "mean": 0.005411783854166667,
+          "shot_variance": 1.3091945826696854e-06,
+          "between_replica_variance": 2.4042526880900066e-05,
+          "layout_variance": 2.273333229823038e-05,
+          "median": 0.0045166015625,
           "outliers": [
-            0
+            3,
+            5
           ],
-          "chi2": 132.32792317667796,
+          "chi2": 91.82182388760343,
           "dof": 5.0,
-          "p_value": 7.628879674700449e-27
+          "p_value": 2.782866606975803e-18
         }
       },
       "global_packing_crosstalk": {
-        "global_replica0_score": 0.49560546875,
-        "packed_replica0_score": 0.485107421875,
-        "difference": -0.010498046875,
-        "z": -0.9504039079806231,
-        "tvd": 0.016357421875
+        "global_replica0_score": 0.50244140625,
+        "packed_replica0_score": 0.494384765625,
+        "difference": -0.008056640625,
+        "z": -0.7292312084528801,
+        "tvd": 0.0146484375
       },
       "admission": {
         "factorable_probability": {
           "primary": {
-            "mean": 0.4947102864583333,
-            "lo": 0.4864229102196008,
-            "hi": 0.5029976626970658,
+            "mean": 0.4947509765625,
+            "lo": 0.4851361058047032,
+            "hi": 0.5043658473202968,
             "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
           },
           "identity_null": {
-            "mean": 0.0037027994791666665,
-            "lo": -0.0014070729066140912,
-            "hi": 0.008812671864947424,
+            "mean": 0.005411783854166667,
+            "lo": 0.0002660672477498944,
+            "hi": 0.01055750046058344,
             "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
           },
           "uniform_null": 0.296875,
@@ -10139,15 +7971,15 @@
         },
         "order_recovery_probability": {
           "primary": {
-            "mean": 0.4947102864583333,
-            "lo": 0.4864229102196008,
-            "hi": 0.5029976626970658,
+            "mean": 0.4947509765625,
+            "lo": 0.4851361058047032,
+            "hi": 0.5043658473202968,
             "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
           },
           "identity_null": {
-            "mean": 0.0037027994791666665,
-            "lo": -0.0014070729066140912,
-            "hi": 0.008812671864947424,
+            "mean": 0.005411783854166667,
+            "lo": 0.0002660672477498944,
+            "hi": 0.01055750046058344,
             "method": "student_t_over_6_replicas_union_wilson_over_24576_shots"
           },
           "uniform_null": 0.296875,
@@ -10176,46 +8008,46 @@
           ],
           "replica_qubits": [
             [
+              0,
               1,
               2,
               3,
-              4,
-              5
+              16
             ],
             [
-              140,
-              141,
-              142,
-              143,
-              144
+              80,
+              81,
+              82,
+              83,
+              96
             ],
             [
-              20,
-              21,
-              22,
-              23,
-              24
+              47,
+              57,
+              65,
+              66,
+              67
             ],
             [
-              37,
-              43,
-              44,
-              45,
-              56
+              19,
+              32,
+              33,
+              34,
+              35
             ],
             [
-              120,
-              121,
-              122,
-              123,
-              124
+              51,
+              58,
+              71,
+              72,
+              73
             ],
             [
-              78,
-              87,
-              88,
-              89,
-              97
+              107,
+              108,
+              109,
+              118,
+              129
             ]
           ],
           "ideal": [
@@ -10479,17 +8311,17 @@
           "replicas": [
             {
               "physical_qubits": [
+                0,
                 1,
                 2,
                 3,
-                4,
-                5
+                16
               ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.8219429019762307,
-              "coherence": 0.7547721311380139,
+              "duration_s": 1.2616000000000023e-05,
+              "esp": 0.8833955245778286,
+              "coherence": 0.7347758226050211,
               "noisy": [
-                0.26001,
+                0.261963,
                 0.0,
                 0.0,
                 0.0,
@@ -10553,7 +8385,214 @@
                 0.0,
                 0.0,
                 0.0,
-                0.248779,
+                0.257812,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.243652,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.236572,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.019775390625
+            },
+            {
+              "physical_qubits": [
+                80,
+                81,
+                82,
+                83,
+                96
+              ],
+              "duration_s": 1.2616000000000023e-05,
+              "esp": 0.8827202657194934,
+              "coherence": 0.7241277590505101,
+              "noisy": [
+                0.253174,
                 0.0,
                 0.0,
                 0.0,
@@ -10681,7 +8720,71 @@
                 0.0,
                 0.0,
                 0.0,
-                0.236328,
+                0.250244,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.241699,
                 0.0,
                 0.0,
                 0.0,
@@ -10746,21 +8849,21 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.014892578125
+              "tvd_noisy_to_ideal": 0.00830078125
             },
             {
               "physical_qubits": [
-                140,
-                141,
-                142,
-                143,
-                144
+                47,
+                57,
+                65,
+                66,
+                67
               ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.8371623772083143,
-              "coherence": 0.7107619381951531,
+              "duration_s": 1.2616000000000023e-05,
+              "esp": 0.8226250844984081,
+              "coherence": 0.7653778839486992,
               "noisy": [
-                0.24292,
+                0.254883,
                 0.0,
                 0.0,
                 0.0,
@@ -10824,7 +8927,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.251221,
+                0.246338,
                 0.0,
                 0.0,
                 0.0,
@@ -10888,7 +8991,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.260254,
+                0.253174,
                 0.0,
                 0.0,
                 0.0,
@@ -11017,356 +9120,21 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.011474609375
+              "tvd_noisy_to_ideal": 0.008056640625
             },
             {
               "physical_qubits": [
-                20,
-                21,
-                22,
-                23,
-                24
+                19,
+                32,
+                33,
+                34,
+                35
               ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.84008952203409,
-              "coherence": 0.692976403167607,
+              "duration_s": 1.325600000000002e-05,
+              "esp": 0.8228607749854977,
+              "coherence": 0.754564268185178,
               "noisy": [
-                0.262207,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.256836,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.246094,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.234863,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0
-              ],
-              "tvd_noisy_to_ideal": 0.01904296875
-            },
-            {
-              "physical_qubits": [
-                37,
-                43,
-                44,
-                45,
-                56
-              ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.8189478829675915,
-              "coherence": 0.6654513071183316,
-              "noisy": [
-                0.266113,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.254883,
+                0.258301,
                 0.0,
                 0.0,
                 0.0,
@@ -11494,7 +9262,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.233643,
+                0.249512,
                 0.0,
                 0.0,
                 0.0,
@@ -11557,22 +9325,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.0
-              ],
-              "tvd_noisy_to_ideal": 0.02099609375
-            },
-            {
-              "physical_qubits": [
-                120,
-                121,
-                122,
-                123,
-                124
-              ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.810238689000987,
-              "coherence": 0.6471303463924881,
-              "noisy": [
+                0.0,
                 0.246826,
                 0.0,
                 0.0,
@@ -11636,214 +9389,86 @@
                 0.0,
                 0.0,
                 0.0,
-                0.0,
-                0.24707,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.253906,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.252197,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.006103515625
+              "tvd_noisy_to_ideal": 0.00830078125
             },
             {
               "physical_qubits": [
-                78,
-                87,
-                88,
-                89,
-                97
+                51,
+                58,
+                71,
+                72,
+                73
               ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.7816108804776635,
-              "coherence": 0.6484529487047929,
+              "duration_s": 1.2616000000000023e-05,
+              "esp": 0.8641652389528724,
+              "coherence": 0.6896015474925068,
               "noisy": [
+                0.26709,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
                 0.248779,
                 0.0,
                 0.0,
@@ -11908,7 +9533,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.251709,
+                0.250244,
                 0.0,
                 0.0,
                 0.0,
@@ -11972,71 +9597,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.244385,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.255127,
+                0.233887,
                 0.0,
                 0.0,
                 0.0,
@@ -12101,7 +9662,278 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.0068359375
+              "tvd_noisy_to_ideal": 0.017333984375
+            },
+            {
+              "physical_qubits": [
+                107,
+                108,
+                109,
+                118,
+                129
+              ],
+              "duration_s": 1.2616000000000023e-05,
+              "esp": 0.8635995274988584,
+              "coherence": 0.679549965266549,
+              "noisy": [
+                0.260986,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.256592,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.228271,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.25415,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.021728515625
             }
           ]
         },
@@ -12123,46 +9955,46 @@
           ],
           "replica_qubits": [
             [
+              0,
               1,
               2,
               3,
-              4,
-              5
+              16
             ],
             [
-              140,
-              141,
-              142,
-              143,
-              144
+              80,
+              81,
+              82,
+              83,
+              96
             ],
             [
-              20,
-              21,
-              22,
-              23,
-              24
+              47,
+              57,
+              65,
+              66,
+              67
             ],
             [
-              37,
-              43,
-              44,
-              45,
-              56
+              19,
+              32,
+              33,
+              34,
+              35
             ],
             [
-              120,
-              121,
-              122,
-              123,
-              124
+              51,
+              58,
+              71,
+              72,
+              73
             ],
             [
-              78,
-              87,
-              88,
-              89,
-              97
+              107,
+              108,
+              109,
+              118,
+              129
             ]
           ],
           "ideal": [
@@ -12426,14 +10258,14 @@
           "replicas": [
             {
               "physical_qubits": [
-                1,
-                3
+                2,
+                16
               ],
-              "duration_s": 5.052e-06,
-              "esp": 0.9528009269041116,
-              "coherence": 0.9599909566566593,
+              "duration_s": 6.635999999999999e-06,
+              "esp": 0.9823927227559184,
+              "coherence": 0.9093127130755089,
               "noisy": [
-                0.973877,
+                0.990479,
                 0.0,
                 0.0,
                 0.0,
@@ -12497,7 +10329,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.007812,
+                0.002686,
                 0.0,
                 0.0,
                 0.0,
@@ -12561,7 +10393,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.012939,
+                0.004883,
                 0.0,
                 0.0,
                 0.0,
@@ -12625,7 +10457,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.005371,
+                0.001953,
                 0.0,
                 0.0,
                 0.0,
@@ -12690,18 +10522,286 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.026123046875
+              "tvd_noisy_to_ideal": 0.009521484375
             },
             {
               "physical_qubits": [
-                142,
-                144
+                80,
+                82
               ],
-              "duration_s": 5.052e-06,
-              "esp": 0.9871547782891996,
-              "coherence": 0.9473381304331203,
+              "duration_s": 6.635999999999999e-06,
+              "esp": 0.9799410460518005,
+              "coherence": 0.942036062884785,
               "noisy": [
-                0.994873,
+                0.988037,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.00293,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.006104,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.00293,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0,
+                0.0
+              ],
+              "tvd_noisy_to_ideal": 0.011962890625
+            },
+            {
+              "physical_qubits": [
+                65,
+                67
+              ],
+              "duration_s": 6.635999999999999e-06,
+              "esp": 0.9889937556394051,
+              "coherence": 0.9399810570533513,
+              "noisy": [
+                0.992188,
                 0.0,
                 0.0,
                 0.0,
@@ -12829,7 +10929,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.003418,
+                0.005371,
                 0.0,
                 0.0,
                 0.0,
@@ -12893,7 +10993,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.000488,
+                0.001221,
                 0.0,
                 0.0,
                 0.0,
@@ -12958,18 +11058,18 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.005126953125
+              "tvd_noisy_to_ideal": 0.0078125
             },
             {
               "physical_qubits": [
-                20,
-                22
+                32,
+                34
               ],
-              "duration_s": 5.052e-06,
-              "esp": 0.994354504845808,
-              "coherence": 0.9309815516360013,
+              "duration_s": 6.635999999999999e-06,
+              "esp": 0.9677472223068682,
+              "coherence": 0.9634813757089556,
               "noisy": [
-                1.0,
+                0.969482,
                 0.0,
                 0.0,
                 0.0,
@@ -13033,6 +11133,7 @@
                 0.0,
                 0.0,
                 0.0,
+                0.006592,
                 0.0,
                 0.0,
                 0.0,
@@ -13096,6 +11197,7 @@
                 0.0,
                 0.0,
                 0.0,
+                0.015869,
                 0.0,
                 0.0,
                 0.0,
@@ -13159,9 +11261,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.0,
-                0.0,
-                0.0,
+                0.008057,
                 0.0,
                 0.0,
                 0.0,
@@ -13226,286 +11326,18 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.0
+              "tvd_noisy_to_ideal": 0.030517578125
             },
             {
               "physical_qubits": [
-                44,
-                56
+                51,
+                71
               ],
-              "duration_s": 5.052e-06,
-              "esp": 0.9892828252819563,
-              "coherence": 0.9332059254359025,
+              "duration_s": 6.635999999999999e-06,
+              "esp": 0.9550939992875829,
+              "coherence": 0.9337951062306147,
               "noisy": [
-                0.994629,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.000488,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.003418,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.001465,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0,
-                0.0
-              ],
-              "tvd_noisy_to_ideal": 0.00537109375
-            },
-            {
-              "physical_qubits": [
-                120,
-                122
-              ],
-              "duration_s": 5.052e-06,
-              "esp": 0.9853565465975449,
-              "coherence": 0.9027246186859901,
-              "noisy": [
-                0.990479,
+                0.990967,
                 0.0,
                 0.0,
                 0.0,
@@ -13633,7 +11465,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.005127,
+                0.004639,
                 0.0,
                 0.0,
                 0.0,
@@ -13762,18 +11594,18 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.009521484375
+              "tvd_noisy_to_ideal": 0.009033203125
             },
             {
               "physical_qubits": [
-                88,
-                97
+                107,
+                109
               ],
-              "duration_s": 5.052e-06,
-              "esp": 0.9840706974283581,
-              "coherence": 0.9303000237580215,
+              "duration_s": 6.635999999999999e-06,
+              "esp": 0.9930869585747807,
+              "coherence": 0.9471674325662325,
               "noisy": [
-                0.998291,
+                0.999512,
                 0.0,
                 0.0,
                 0.0,
@@ -13837,7 +11669,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.000732,
+                0.000244,
                 0.0,
                 0.0,
                 0.0,
@@ -13901,7 +11733,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.000732,
+                0.0,
                 0.0,
                 0.0,
                 0.0,
@@ -14030,7 +11862,7 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.001708984375
+              "tvd_noisy_to_ideal": 0.00048828125
             }
           ]
         },
@@ -14047,11 +11879,11 @@
           ],
           "replica_qubits": [
             [
+              0,
               1,
               2,
               3,
-              4,
-              5
+              16
             ]
           ],
           "ideal": [
@@ -14315,17 +12147,17 @@
           "replicas": [
             {
               "physical_qubits": [
+                0,
                 1,
                 2,
                 3,
-                4,
-                5
+                16
               ],
-              "duration_s": 1.0472000000000004e-05,
-              "esp": 0.8219429019762307,
-              "coherence": 0.7547721311380139,
+              "duration_s": 1.2616000000000023e-05,
+              "esp": 0.8833955245778286,
+              "coherence": 0.7347758226050211,
               "noisy": [
-                0.262451,
+                0.266357,
                 0.0,
                 0.0,
                 0.0,
@@ -14389,7 +12221,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.245361,
+                0.255615,
                 0.0,
                 0.0,
                 0.0,
@@ -14453,7 +12285,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.241943,
+                0.231201,
                 0.0,
                 0.0,
                 0.0,
@@ -14517,7 +12349,7 @@
                 0.0,
                 0.0,
                 0.0,
-                0.250244,
+                0.246826,
                 0.0,
                 0.0,
                 0.0,
@@ -14582,7 +12414,7 @@
                 0.0,
                 0.0
               ],
-              "tvd_noisy_to_ideal": 0.0126953125
+              "tvd_noisy_to_ideal": 0.02197265625
             }
           ]
         }

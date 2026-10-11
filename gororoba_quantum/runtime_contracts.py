@@ -1043,6 +1043,35 @@ def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
         live_run_module.simulate_entries = original_simulate_entries
 
 
+def _verify_replay_seed_independence() -> None:
+    """Replay batches under different calibrations never share a (seed, position) pair."""
+    circuit = QuantumCircuit(1, 1)
+    circuit.h(0)
+    circuit.measure(0, 0)
+    packed = _synthetic_entry("packed", circuit, np.array([0.5, 0.5]))
+    reference = _synthetic_entry("packed_isolated", circuit, np.array([0.5, 0.5]))
+    first, second = datetime(2026, 10, 10, tzinfo=UTC), datetime(2026, 10, 11, tzinfo=UTC)
+    calls: list[tuple[int, list[str]]] = []
+    original = live_run_module.simulate_entries
+
+    def recording(noise: Any, entries: list[Entry], shots: int, seed: int) -> dict[str, list[np.ndarray]]:
+        del noise, shots
+        calls.append((seed, [entry.name for entry in entries]))
+        return {entry.name: _zero_replica_distributions(entry) for entry in entries}
+
+    live_run_module.simulate_entries = recording
+    try:
+        replayed = live_run_module.replay_entries(
+            {first: object(), second: object()}, {second: [reference], first: [packed]}, 64, 7
+        )
+    finally:
+        live_run_module.simulate_entries = original
+    if set(replayed) != {"packed", "packed_isolated"}:
+        raise RuntimeError(f"replay loses entries: {sorted(replayed)}")
+    if calls != [(7, ["packed"]), (8, ["packed_isolated"])]:
+        raise RuntimeError(f"replay batches share seeds or run out of calibration order: {calls}")
+
+
 def _verify_fused_collection() -> None:
     """Collect one complete mocked job through fused result decoding and execution-window fan-out."""
     backend = _ProbeBackend("viable", FakeFez())
@@ -2103,6 +2132,7 @@ def _verify() -> None:
     _verify_target_and_bad_qubit_status()
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
+    _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()
     _verify_joint_fusion_candidate_backtracking()
