@@ -78,30 +78,43 @@ def place(
     floor stops placement at the first candidate below floor times the best
     score, so an added replica never sits on hardware much worse than the best.
     """
+    candidates = candidate_replicas(used, edges, graph, admissible, score, floor)
+    chosen: list[Replica] = []
+    blocked: set[int] = set()
+    for candidate in candidates:
+        if max_replicas is not None and len(chosen) >= max_replicas:
+            break
+        qubits = set(candidate.qubits)
+        if qubits & blocked:
+            continue
+        chosen.append(Replica(len(chosen), candidate.mapping, candidate.score))
+        blocked |= qubits | {neighbor for qubit in qubits for neighbor in graph.neighbors(qubit)}
+    return chosen
+
+
+def candidate_replicas(
+    used: list[int],
+    edges: set[tuple[int, int]],
+    graph: rx.PyGraph,
+    admissible: Callable[[dict[int, int]], bool],
+    score: Callable[[dict[int, int]], float],
+    floor: float,
+) -> list[Replica]:
+    """Every admissible embedding at the score floor, in deterministic best-first order."""
     small = rx.PyGraph()
     small.add_nodes_from(used)
-    index = {q: i for i, q in enumerate(used)}
-    small.add_edges_from_no_data([(index[a], index[b]) for a, b in sorted(edges)])
+    pattern_index = {qubit: index for index, qubit in enumerate(used)}
+    small.add_edges_from_no_data([(pattern_index[first], pattern_index[second]) for first, second in sorted(edges)])
     candidates: list[tuple[float, tuple[tuple[int, int], ...]]] = []
     for found in rx.vf2_mapping(graph, small, subgraph=True, induced=False, id_order=True):
         mapping = {used[small_node]: big_node for big_node, small_node in found.items()}
         if admissible(mapping):
             candidates.append((score(mapping), tuple(sorted(mapping.items()))))
     candidates.sort(key=lambda item: (-item[0], item[1]))
-    chosen: list[Replica] = []
-    blocked: set[int] = set()
-    for value, items in candidates:
-        if max_replicas is not None and len(chosen) >= max_replicas:
-            break
-        if value < floor * candidates[0][0]:
-            break
-        mapping = dict(items)
-        qubits = set(mapping.values())
-        if qubits & blocked:
-            continue
-        chosen.append(Replica(len(chosen), mapping, value))
-        blocked |= qubits | {n for q in qubits for n in graph.neighbors(q)}
-    return chosen
+    if not candidates:
+        return []
+    threshold = floor * candidates[0][0]
+    return [Replica(index, dict(items), value) for index, (value, items) in enumerate(candidates) if value >= threshold]
 
 
 def relabel(isa: QuantumCircuit, mapping: dict[int, int], prefix: str, name: str | None = None) -> QuantumCircuit:
@@ -145,9 +158,7 @@ def pack(isa: QuantumCircuit, replicas: Sequence[Replica], name: str) -> Quantum
     stays static; replicas share no qubit or clbit, so the reordering leaves
     each replica's computation unchanged.
     """
-    tail_start = len(isa.data)
-    while tail_start > 0 and isa.data[tail_start - 1].operation.name in ("measure", "barrier"):
-        tail_start -= 1
+    tail_start = _measurement_tail_start(isa)
     out = QuantumCircuit(*isa.qregs, name=name)
     moved = [relabel(isa, replica.mapping, replica.prefix) for replica in replicas]
     for circuit in moved:
@@ -160,6 +171,84 @@ def pack(isa: QuantumCircuit, replicas: Sequence[Replica], name: str) -> Quantum
                 piece.append(inst)
             out.compose(piece, qubits=range(isa.num_qubits), clbits=circuit.clbits, inplace=True)
     return out
+
+
+def fuse(circuits: Sequence[QuantumCircuit], prefixes: Sequence[str], name: str) -> QuantumCircuit:
+    """Compose disjoint packed circuits into one PUB with namespaced result registers.
+
+    Every component keeps its physical qubit indices. Classical register names
+    receive the corresponding prefix, which makes every result field unique.
+    All component bodies precede all terminal measurements so fusing static
+    circuits cannot turn the PUB into a dynamic circuit.
+    """
+    if not circuits or len(circuits) != len(prefixes):
+        raise ValueError("PUB fusion needs equally many non-empty circuits and prefixes")
+    if len(set(prefixes)) != len(prefixes) or any(not prefix for prefix in prefixes):
+        raise ValueError(f"PUB fusion prefixes must be unique and non-empty: {list(prefixes)}")
+    width = circuits[0].num_qubits
+    occupied: set[int] = set()
+    namespaced: list[QuantumCircuit] = []
+    for circuit, prefix in zip(circuits, prefixes, strict=True):
+        if circuit.num_qubits != width:
+            raise ValueError(f"{name}: component {circuit.name} has width {circuit.num_qubits}, expected {width}")
+        physical = {circuit.find_bit(qubit).index for instruction in circuit.data for qubit in instruction.qubits}
+        overlap = occupied.intersection(physical)
+        if overlap:
+            raise ValueError(f"{name}: component {circuit.name} overlaps fused qubits {sorted(overlap)}")
+        occupied.update(physical)
+        if sum(register.size for register in circuit.cregs) != circuit.num_clbits:
+            raise ValueError(f"{name}: component {circuit.name} has classical bits outside named registers")
+        renamed = QuantumCircuit(*circuit.qregs, name=circuit.name)
+        registers = [ClassicalRegister(register.size, prefix + register.name) for register in circuit.cregs]
+        for register in registers:
+            renamed.add_register(register)
+        renamed.compose(
+            circuit,
+            qubits=range(width),
+            clbits=[bit for register in registers for bit in register],
+            inplace=True,
+        )
+        namespaced.append(renamed)
+
+    out = QuantumCircuit(*circuits[0].qregs, name=name)
+    for circuit in namespaced:
+        for register in circuit.cregs:
+            out.add_register(register)
+    tail_starts = [_measurement_tail_start(circuit) for circuit in namespaced]
+    for tail in (False, True):
+        for circuit, tail_start in zip(namespaced, tail_starts, strict=True):
+            part = slice(tail_start, None) if tail else slice(0, tail_start)
+            piece = circuit.copy_empty_like()
+            for instruction in circuit.data[part]:
+                piece.append(instruction)
+            out.compose(piece, qubits=range(width), clbits=circuit.clbits, inplace=True)
+    return out
+
+
+def extract(circuit: QuantumCircuit, prefix: str, qubits: Iterable[int], name: str) -> QuantumCircuit:
+    """Extract one namespaced fusion component while retaining its register objects."""
+    own = set(qubits)
+    kept = [register for register in circuit.cregs if register.name.startswith(prefix)]
+    if not kept:
+        raise ValueError(f"{circuit.name}: no classical register carries component prefix {prefix!r}")
+    out = QuantumCircuit(*circuit.qregs, *kept, name=name)
+    allowed = {bit for register in kept for bit in register}
+    for instruction in circuit.data:
+        indices = {circuit.find_bit(qubit).index for qubit in instruction.qubits}
+        if not indices or not indices <= own:
+            continue
+        if any(bit not in allowed for bit in instruction.clbits):
+            raise ValueError(f"{circuit.name}: component {prefix} writes another component's bits")
+        out.append(instruction.operation, instruction.qubits, instruction.clbits)
+    return out
+
+
+def _measurement_tail_start(circuit: QuantumCircuit) -> int:
+    """Index of the trailing measurement-and-barrier run."""
+    tail_start = len(circuit.data)
+    while tail_start > 0 and circuit.data[tail_start - 1].operation.name in ("measure", "barrier"):
+        tail_start -= 1
+    return tail_start
 
 
 def registers(circuit: QuantumCircuit, prefix: str) -> list[str]:

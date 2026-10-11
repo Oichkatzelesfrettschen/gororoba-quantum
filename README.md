@@ -51,22 +51,24 @@ observables.
   controls, their ideals, and the summary of each design's observable.
 - `gororoba_quantum/live_run.py` -- live system discovery, circuit-derived
   capability admission, degraded-hardware-filtered routing, recursive Target
-  validation, ESP-and-coherence-ranked selection, disjoint replica placement,
+  validation, ESP-and-coherence-ranked selection, joint disjoint replica placement,
+  cross-group PUB fusion with namespaced result registers,
   direct pinned-system probing, approval-gated cross-system reselection, local
   noise simulation, gated client-side Sampler submission, and execution-time
   replay.
 - `gororoba_quantum/runtime_contracts.py` -- credential-free checks for packed
-  static and dynamic circuits, capability and routing admission, recursive
-  Target support, coherent calibration snapshots, final execution-set job-batch
-  partitioning, bounded-angle system isolation, renewed-approval enforcement,
-  every-batch revalidation, submission recovery, archive integrity,
-  per-replica result order, twirling shots, and source-manifest stability.
+  and fused static and dynamic circuits, joint placement, exact PUB
+  cardinalities, capability and routing admission, recursive Target support,
+  coherent calibration snapshots, bounded-angle system isolation,
+  renewed-approval enforcement, every-job revalidation, submission recovery,
+  archive integrity, per-replica result order, twirling shots, and
+  source-manifest stability.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design, and the live-calibration policy.
-- `results/live/<UTC start>/` -- retained JSON and QPY evidence. Schema 4
-  combines live capability admission and submission recovery with packed
-  replicas, variance, crosstalk, and statistical admission. Earlier schemas
-  remain historical evidence under `results/live/README.md`.
+- `results/live/<UTC start>/` -- retained JSON and QPY evidence. Schema 5 adds
+  joint placement, exact fused Runtime PUBs, ordered component manifests, and
+  global packing crosstalk to the schema-4 admission and recovery path. Earlier
+  schemas remain historical evidence under `results/live/README.md`.
 - `results/hw_estimate/` -- fixed ibm_fez design compiles and the replayable
   FakeFez modular-synthesis crossover capture.
 

@@ -4,6 +4,15 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+- **Schema 5 records.** The `live-target-cross-group-fused-pubs-v1` contract
+  jointly allocates same-backend, same-kind replica pools and archives the
+  exact fused Runtime PUBs. Ordered manifests map each PUB to namespaced
+  logical components and bind that map into recovery tags. The full experiment
+  has 29 logical static entries in 14 PUBs and 9 logical dynamic entries in 6
+  PUBs when each kind uses one backend. The shared reference PUB changes the
+  old isolated crosstalk statistic into a global packed-workload versus global
+  replica-0 comparison. Collection reconstructs each logical entry from QPY
+  and fans the PUB's execution window and calibration out to every component.
 - **Schema 4 records.** The `live-target-packed-replicas-v1` contract combines
   live system inventory, circuit-derived capability admission,
   degraded-hardware-filtered routing, recursive Target validation, packed
@@ -34,6 +43,43 @@ evidence; `isa.qpy` carries the exact circuits produced by that revision.
   planned-job ledger.
 - **Legacy records.** Records without `schema_version` are historical dry-run
   plans. `--collect` rejects them.
+
+`2026-10-11T062204.877756Z` is the first retained schema-5 fused-PUB
+qualification. It comes from clean source commit `4b5dd78` with experiment
+digest `7d756845d39509883131ed3453f61be6b6ce4b35fba25677a070128cf3063374`.
+The explicit `--max-pending 300` dry-run bound admits Fez at 270 pending jobs
+and Kingston at 183; Marrakesh reports maintenance. Kingston wins all seven
+groups. The archive holds 20 uniquely named circuits and its manifests map 38
+unique logical components to 14 static and six dynamic PUBs. Independent QPY
+validation confirms exact manifest/register order, component ownership,
+disjoint cross-group footprints, and the required joint-placement rounds. The
+record stays `planned`, has no `submission` field, and sends zero QPU jobs, so
+the explicit queue bound leaves default-policy submission readiness
+unestablished. Record SHA-256 is
+`813be4a7e9e654c5a0043c596f900d4f3537c010d5bc9a863037f77163f4ae50`; QPY
+SHA-256 is
+`999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
+
+`2026-10-11T071616.724800Z` requalifies schema 5 after coupled candidate
+selection, complete required-set placement backtracking, and integration of
+the reviewed modular synthesis sources. Clean source commit `b89fdf6` carries
+experiment digest
+`2544c7b1b031ed9631785dabded7f0c65fae166de51513725b976532a176300f`,
+including the new `target_flip.py` dependency. The submit-free invocation uses
+`live_run.py --out ../results/live --max-pending 300`; Fez, Kingston, and
+Marrakesh report 3, 48, and 24 pending jobs respectively. The first ranked
+combination satisfies joint placement, selects Kingston for all seven groups,
+and archives 14 static plus six dynamic PUBs covering 38 unique components.
+Independent QPY checks confirm manifest and register order, member ownership,
+disjoint reserved footprints, and instruction confinement to each component.
+The identity-null control leaves part of its reserved footprint idle. The
+record stays `planned`, carries `sources_modified=false`, and has no
+`submission` field. Local simulation and archive validation establish the
+dry-run implementation surface; QPU behavior and default-queue-policy
+readiness remain separate. Record SHA-256 is
+`54946d4b19b9ec9ff92d7c536ff050ba4dbdd0e3504d7f4e621ff70198682524`; QPY
+SHA-256 is
+`d0894ad616d82f0ee6b896304b214d3f9e18b9fd3e500019c44452df9b234e5c`.
 
 `2026-10-10T223619.798923Z` is the first combined schema-4 qualification. The
 default queue gate first rejects Fez at 194 pending jobs and Kingston at 81;
@@ -73,7 +119,7 @@ SHA-256 is
 `34111afea1e4940f69651ce3575c7946d0be2a6402c8c1e3aa6c66ba344cbc60`.
 
 A dynamic member marks `duration_bound: lower_without_classical_latency`.
-Schema-4 top-level inventory fields describe initial planning;
+Schema-5 and schema-4 top-level inventory fields describe initial planning;
 `revalidation[].system_inventory` describes each full pre-submission refresh;
 `submission.planned_jobs[].pre_submit_revalidation` describes each immediate
 batch refresh. Record, QPY, and collection writes use atomic replacement with
@@ -84,7 +130,8 @@ The two historical schema-3 contracts require shape-aware classification:
 ```sh
 for record_path in results/live/*/record.json; do
     jq -r --arg path "$record_path" '
-      if .schema_version == 4 then "schema4-combined"
+      if .schema_version == 5 then "schema5-fused-pubs"
+      elif .schema_version == 4 then "schema4-combined"
       elif .schema_version == 3 and has("system_inventory")
         then "schema3-capability"
       elif .schema_version == 3 then "schema3-replicas"

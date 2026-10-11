@@ -467,14 +467,14 @@ snapshots, logical `circuit_requirements`, final packed
 `execution_requirements`, and capability and routing decisions in
 `selection_trace`. Submission adds one `revalidation` entry per fresh admission
 pass. A changed pass writes `renewed_approval` and stops; an unchanged pass
-materializes `planned_jobs` before the first job. Each planned batch preserves a
-complete experiment group, respects the refreshed backend's client-reported
-`max_circuits` compatibility bound, and records ordered member names, the exact
-`isa.qpy` SHA-256,
-effective options, calibration stamps, and recovery tags. Collection validates
+materializes `planned_jobs` before the first job. Each backend-and-kind job
+preserves every logical component of its fused groups, respects the
+10-million-execution Sampler job bound, and records ordered member names, the
+exact `isa.qpy` SHA-256, effective options, calibration stamps, and recovery
+tags. Collection validates
 the planned and accepted job ledgers as a one-to-one mapping for a complete
 submission and as a subset for a partial submission. The same ledger names
-every batch and circuit without a recorded job id.
+every PUB and logical component without a recorded job id.
 
 Each circuit runs as packed disjoint replicas (`packing.py`, and the
 DESIGN_NOTES.md section on packed replicas): every replica of the primary and
