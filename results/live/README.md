@@ -60,6 +60,21 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
+`2026-10-11T082455.919602Z` qualifies the dynamic-mitigation boundaries:
+ODR mirrors reject dynamic circuits, and terminal readout correction is
+withheld only for feed-forward circuits. Clean source commit `54aa215` carries
+experiment digest
+`79a34743244b77cd2b3356f6951abbb8abaf5ad668857ac3e8a734193e36463e`.
+The default-policy invocation `live_run.py --out ../results/live` admits Fez
+and Kingston; Marrakesh reports maintenance. Fez wins design A and hybrid
+Shor, and Kingston the other five groups. The record stays `planned` and sends
+zero QPU jobs. Every group's `global_packing_crosstalk` difference reads
+exactly 0.0, because every entry's simulation shares one seed and the
+reference copy reproduces packed replica 0 shot for shot. Record SHA-256 is
+`503cc3da9d08f2426b80a145bf6091dc18405ea416d33aef0621777c66e188ef`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T071616.724800Z` requalifies schema 5 after coupled candidate
 selection, complete required-set placement backtracking, and integration of
 the reviewed modular synthesis sources. Clean source commit `b89fdf6` carries

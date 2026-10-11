@@ -59,12 +59,14 @@ from live_run import (
     compiled_violations,
     component_execution_records,
     configure_sampler,
+    corrected_summary,
     discover_snapshots,
     execution_pubs,
     execution_requirements,
     experiment_digest,
     fusion_summary,
     group_requirements,
+    mirror_isa,
     pub_windows,
     reconcile_attempted_jobs,
     replica_floor,
@@ -262,6 +264,69 @@ def _verify_dynamic_classification() -> None:
     later_work.x(1)
     if not _is_dynamic(later_work):
         raise RuntimeError("measurement followed by work on another qubit classifies as static")
+
+
+def _verify_dynamic_mitigation_boundaries() -> None:
+    """Feed-forward controls use identity nulls, never unitary mirrors or terminal readout inversion."""
+    groups = {group.name: group for group in experiment_groups()}
+    for group in groups.values():
+        invalid = [member.name for member in group.members if member.mirror and _is_dynamic(member.circuit)]
+        if invalid:
+            raise RuntimeError(f"{group.name}: dynamic members request ODR mirrors: {invalid}")
+
+    folded = groups["folded_qpe_mod15"]
+    folded_primary = next(member.circuit for member in folded.members if member.name == "folded_qpe_s1")
+    folded_null = next(member.circuit for member in folded.members if member.name == "folded_qpe_null")
+    hybrid = groups["hybrid_shor_mod15"]
+    hybrid_primary = next(member.circuit for member in hybrid.members if member.name == "hybrid_shor_N15_a2")
+    hybrid_null = next(member.circuit for member in hybrid.members if member.name == "hybrid_shor_N15_a2_null")
+
+    def dynamic_schedule(circuit: QuantumCircuit) -> list[str]:
+        return [
+            instruction.operation.name
+            for instruction in circuit.data
+            if isinstance(instruction.operation, IfElseOp) or instruction.operation.name in ("measure", "reset")
+        ]
+
+    for label, primary, null in (
+        ("folded QPE", folded_primary, folded_null),
+        ("hybrid Shor", hybrid_primary, hybrid_null),
+    ):
+        if dynamic_schedule(primary) != dynamic_schedule(null):
+            raise RuntimeError(f"{label} identity null changes the dynamic-control schedule")
+        try:
+            mirror_isa(primary, FakeFez(), f"{label} mirror")
+        except LiveRunError as error:
+            if "unitary static circuit" not in str(error):
+                raise RuntimeError(f"{label} ODR rejection reports {error}") from error
+        else:
+            raise RuntimeError(f"{label} dynamic circuit reaches ODR mirror construction")
+
+    entries = [_synthetic_entry(member.name, member.circuit, member.ideal) for member in folded.members]
+    skipped = corrected_summary(folded, entries, {}, None)
+    expected = {"skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"}
+    if skipped != expected:
+        raise RuntimeError(f"feed-forward readout correction reports {skipped}")
+
+    reset_only = QuantumCircuit(1, 1, name="reset_only")
+    reset_only.reset(0)
+    reset_only.measure(0, 0)
+    reset_group = Group("reset_only", (), lambda distributions: {"p0": float(distributions["reset_only"][0])})
+    reset_entry = _synthetic_entry("reset_only", reset_only, np.array([1.0, 0.0]))
+
+    class ExactReadout:
+        def qubit_property(self, qubit: int, name: str) -> tuple[float]:
+            del qubit, name
+            return (0.0,)
+
+    reset_summary = corrected_summary(
+        reset_group,
+        [reset_entry],
+        {"reset_only": [np.array([1.0, 0.0])]},
+        ExactReadout(),
+    )
+    if reset_summary != {"p0": 1.0}:
+        raise RuntimeError(f"reset-only terminal readout correction reports {reset_summary}")
 
 
 def _verify_nested_operations() -> None:
@@ -1653,6 +1718,7 @@ def _verify_experiment_source_manifest() -> None:
 
 def _verify() -> None:
     _verify_dynamic_classification()
+    _verify_dynamic_mitigation_boundaries()
     _verify_nested_operations()
     _verify_result_register_order()
     _verify_twirling_shot_contract()
