@@ -596,7 +596,10 @@ reference PUB. Its difference from packed replica 0 compares the global packed
 workload with the global replica-0 workload. A single-replica or
 `--no-isolated-reference` plan records the reference estimand as unavailable.
 The referenced result can reveal a packing cost, but it cannot attribute
-crosstalk to one group; the noise model sets the difference to zero.
+crosstalk to one group. The noise model carries no crosstalk, so its
+difference is shot noise; simulate_entries batches every replica of a choice
+in one Aer run, so each draws from its own position-derived seed, where a
+shared seed would reproduce packed replica 0 in the reference bit for bit.
 
 variance.py scores each shot by the ideal-weighted w(x) = q(x)/max q, or by a
 member's own outcome weights (hybrid Shor scores whether an outcome decodes to

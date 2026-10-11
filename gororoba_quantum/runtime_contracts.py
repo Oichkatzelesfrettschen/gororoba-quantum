@@ -1028,15 +1028,17 @@ def _verify_fused_collection() -> None:
 
         collection_service = _CollectionProbeService(backend, {job_id: _ProbeResultJob(result)})
         original_noise_simulator = live_run_module.noise_simulator
-        original_run_replicas = live_run_module.run_replicas
+        original_simulate_entries = live_run_module.simulate_entries
         live_run_module.noise_simulator = lambda name, target, props: object()
-        live_run_module.run_replicas = lambda noise, entry, shots, seed: _zero_replica_distributions(entry)
+        live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
+            entry.name: _zero_replica_distributions(entry) for entry in entries
+        }
         try:
             with redirect_stdout(io.StringIO()):
                 collect(collection_service, run_dir)
         finally:
             live_run_module.noise_simulator = original_noise_simulator
-            live_run_module.run_replicas = original_run_replicas
+            live_run_module.simulate_entries = original_simulate_entries
 
         collected = json.loads((run_dir / "collect.json").read_text())
         executed = {
@@ -1094,8 +1096,10 @@ def _verify_joint_fusion_candidate_backtracking() -> None:
     ]
     attempts: list[tuple[int, ...]] = []
 
-    def forced_joint_placement(choices: list[Choice], policy: ReplicaPolicy) -> dict[str, Any]:
-        del policy
+    def forced_joint_placement(
+        choices: list[Choice], policy: ReplicaPolicy, cache: dict[tuple[int, float], Any] | None = None
+    ) -> dict[str, Any]:
+        del policy, cache
         seeds = tuple(choice.seed for choice in choices)
         attempts.append(seeds)
         if seeds == (11, 21):
@@ -1169,6 +1173,21 @@ def _verify_required_placement_backtracking() -> None:
         if any(sum(entry.reference for entry in choice.entries) != 1 for choice in choices):
             raise RuntimeError("required replica-set backtracking loses a group's reference entry")
         execution_pubs(choices)
+
+        candidate_calls = 0
+
+        def counted_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float) -> Any:
+            nonlocal candidate_calls
+            candidate_calls += 1
+            return path_candidates(snap, isas, floor)
+
+        live_run_module._replica_candidates = counted_candidates
+        placement_cache: dict[tuple[int, float], Any] = {}
+        for _ in range(2):
+            live_run_module.allocate_fusion_replicas(choices, PACKED_REPLICA_POLICY, placement_cache)
+        if candidate_calls != len(choices):
+            raise RuntimeError(f"retried joint placement recomputed candidates {candidate_calls} times")
+        live_run_module._replica_candidates = path_candidates
 
         candidate_qubits[0] = [1, 0]
         try:

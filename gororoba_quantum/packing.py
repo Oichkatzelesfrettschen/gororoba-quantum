@@ -78,7 +78,9 @@ def place(
     floor stops placement at the first candidate below floor times the best
     score, so an added replica never sits on hardware much worse than the best.
     """
-    candidates = candidate_replicas(used, edges, graph, admissible, score, floor)
+    candidates = candidate_replicas(
+        used, edges, graph, lambda mapping: score(mapping) if admissible(mapping) else None, floor
+    )
     chosen: list[Replica] = []
     blocked: set[int] = set()
     for candidate in candidates:
@@ -96,20 +98,31 @@ def candidate_replicas(
     used: list[int],
     edges: set[tuple[int, int]],
     graph: rx.PyGraph,
-    admissible: Callable[[dict[int, int]], bool],
-    score: Callable[[dict[int, int]], float],
+    evaluate: Callable[[dict[int, int]], float | None],
     floor: float,
+    mapper: Callable[[Callable[[dict[int, int]], float | None], list[dict[int, int]]], list[float | None]]
+    | None = None,
 ) -> list[Replica]:
-    """Every admissible embedding at the score floor, in deterministic best-first order."""
+    """Every admissible embedding at the score floor, in deterministic best-first order.
+
+    evaluate returns an embedding's score, or None when the embedding is
+    inadmissible. mapper applies evaluate to every embedding in order; an
+    order-preserving parallel map leaves the result unchanged.
+    """
     small = rx.PyGraph()
     small.add_nodes_from(used)
     pattern_index = {qubit: index for index, qubit in enumerate(used)}
     small.add_edges_from_no_data([(pattern_index[first], pattern_index[second]) for first, second in sorted(edges)])
-    candidates: list[tuple[float, tuple[tuple[int, int], ...]]] = []
-    for found in rx.vf2_mapping(graph, small, subgraph=True, induced=False, id_order=True):
-        mapping = {used[small_node]: big_node for big_node, small_node in found.items()}
-        if admissible(mapping):
-            candidates.append((score(mapping), tuple(sorted(mapping.items()))))
+    mappings = [
+        {used[small_node]: big_node for big_node, small_node in found.items()}
+        for found in rx.vf2_mapping(graph, small, subgraph=True, induced=False, id_order=True)
+    ]
+    scores = mapper(evaluate, mappings) if mapper is not None else [evaluate(mapping) for mapping in mappings]
+    candidates = [
+        (value, tuple(sorted(mapping.items())))
+        for mapping, value in zip(mappings, scores, strict=True)
+        if value is not None
+    ]
     candidates.sort(key=lambda item: (-item[0], item[1]))
     if not candidates:
         return []
