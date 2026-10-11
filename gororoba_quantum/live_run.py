@@ -1712,6 +1712,21 @@ def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[n
     return simulate_entries(noise, choice.entries, shots, SEED_SIMULATOR)
 
 
+def replay_entries(
+    sims: dict[datetime, Any], batches: dict[datetime, list[Entry]], shots: int, seed: int
+) -> dict[str, list[np.ndarray]]:
+    """Replay every batch under its calibration's noise model, each batch under its own seed.
+
+    Batches run in calibration order and batch k takes seed + k, so entries in
+    different batches never share a (seed, batch position) pair and the
+    replay is deterministic for one record.
+    """
+    replayed: dict[str, list[np.ndarray]] = {}
+    for offset, calibration in enumerate(sorted(batches)):
+        replayed.update(simulate_entries(sims[calibration], batches[calibration], shots, seed + offset))
+    return replayed
+
+
 def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) -> dict[str, list[np.ndarray]]:
     """Noisy distributions of every entry's replicas from one batched Aer run.
 
@@ -1719,8 +1734,9 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
     seed from seed_simulator and the experiment's position in the batch, so one
     batch in entry order, then replica order, gives every replica its own shot
     draws: the shared replica-0 reference draws independently of packed
-    replica 0. Planning and --collect batch in a fixed order, so each replays
-    identical noise draws for identical inputs.
+    replica 0. Planning batches one choice per call and --collect batches
+    one calibration per call (replay_entries), each in a fixed order, so each
+    is deterministic for its inputs.
     """
     circuits = [replica for entry in entries for replica in entry.replicas]
     result = noise.run(circuits, shots=shots, seed_simulator=seed, max_parallel_experiments=0).result()
@@ -3281,9 +3297,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         props_by_name: dict[str, Any] = {}
         replayed: dict[str, list[np.ndarray]] = {}
         executed: dict[str, dict[str, Any]] = {}
-        # Components that started under one calibration replay in one batch,
-        # in manifest order.
+        # Every windowed component of the job replays in one batch per
+        # calibration, in manifest order, and replay_entries gives each batch
+        # its own seed, so no two components of the job share a (seed,
+        # position) pair: a reference at the head of its own batch would
+        # otherwise repeat packed replica 0 shot for shot.
         replay_batches: dict[datetime, list[Entry]] = {}
+        sims_by_calibration: dict[datetime, Any] = {}
         for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
             if window is None:
                 execution_records = component_execution_records(
@@ -3311,10 +3331,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 ]
                 executed[name] = execution_records[name]
                 if window is not None:
-                    props_by_name[name] = at[window[0]][0]
-                    replay_batches.setdefault(window[0], []).append(entry)
-        for start, batch in replay_batches.items():
-            replayed.update(simulate_entries(at[start][1], batch, shots, seed))
+                    props_then = at[window[0]][0]
+                    props_by_name[name] = props_then
+                    calibration = props_then.last_update_date
+                    sims_by_calibration.setdefault(calibration, at[window[0]][1])
+                    replay_batches.setdefault(calibration, []).append(entry)
+        replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
             if not any(n in measured for n in required):

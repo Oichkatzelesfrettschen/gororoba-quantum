@@ -87,6 +87,16 @@ only a collected job supplies. Record SHA-256 is
 SHA-256 is
 `9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
+`2026-10-11T091019.824103Z` requalifies the process-pool branch after collection replay
+moved to one seeded batch per calibration (replay_entries). Clean source
+commit `eb40fa1` (sources_modified=false) carries experiment digest
+`39644e96aead937775a48e3f7e3ee418fab0e0005d67a9744b0248e3d55357d0`.
+The default-policy invocation plans in 50 s wall and stays `planned` with zero
+QPU jobs. Record SHA-256 is
+`96318b9b46ca355089b99011136311b4f6d8ee252ea87b6d93e69a4586b253cd`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T085437.294823Z` qualifies the process-pool branch. Clean source
 commit `1ea5de1` (sources_modified=false) carries experiment digest
 `7bbc903555609d683b13055e1d903ad8c18de0a28a0422bd7196759238d326eb`,
