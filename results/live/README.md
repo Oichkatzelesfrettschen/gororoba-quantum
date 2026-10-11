@@ -44,6 +44,22 @@ evidence; `isa.qpy` carries the exact circuits produced by that revision.
 - **Legacy records.** Records without `schema_version` are historical dry-run
   plans. `--collect` rejects them.
 
+`2026-10-11T062204.877756Z` is the first retained schema-5 fused-PUB
+qualification. It comes from clean source commit `4b5dd78` with experiment
+digest `7d756845d39509883131ed3453f61be6b6ce4b35fba25677a070128cf3063374`.
+The explicit `--max-pending 300` dry-run bound admits Fez at 270 pending jobs
+and Kingston at 183; Marrakesh reports maintenance. Kingston wins all seven
+groups. The archive holds 20 uniquely named circuits and its manifests map 38
+unique logical components to 14 static and six dynamic PUBs. Independent QPY
+validation confirms exact manifest/register order, component ownership,
+disjoint cross-group footprints, and the required joint-placement rounds. The
+record stays `planned`, has no `submission` field, and sends zero QPU jobs, so
+the explicit queue bound leaves default-policy submission readiness
+unestablished. Record SHA-256 is
+`813be4a7e9e654c5a0043c596f900d4f3537c010d5bc9a863037f77163f4ae50`; QPY
+SHA-256 is
+`999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
+
 `2026-10-10T223619.798923Z` is the first combined schema-4 qualification. The
 default queue gate first rejects Fez at 194 pending jobs and Kingston at 81;
 Marrakesh reports maintenance. The retained rerun sets `--max-pending 250` for

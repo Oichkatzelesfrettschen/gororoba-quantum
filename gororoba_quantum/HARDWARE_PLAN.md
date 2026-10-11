@@ -8,10 +8,12 @@ statistics and QPU-cost quantities come from
 capability admission, filtered routing, and single-layout evidence come from
 `results/live/2026-10-10T220438.712726Z` at source `0205a61`. The combined path
 qualification comes from `results/live/2026-10-10T232219.919322Z` at source
-`584a78d`. All three records are submit-free noise-model runs. The schema-4 run
-uses `--max-pending 250` after the default gate rejects both active systems, so
-it qualifies the combined execution path under that explicit dry-run bound and
-does not establish default-policy submission readiness.
+`584a78d`. The fused submission-path qualification comes from
+`results/live/2026-10-11T062204.877756Z` at source `4b5dd78`. All four records
+are submit-free noise-model runs. The schema-5 run uses `--max-pending 300`,
+selects Kingston for all seven groups, and archives the exact 14 static and six
+dynamic fused PUBs. The explicit dry-run queue bound qualifies the fused
+execution path but does not establish default-policy submission readiness.
 
 ## What each group claims and what refutes it
 
