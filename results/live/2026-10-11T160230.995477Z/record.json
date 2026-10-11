@@ -2,7 +2,7 @@
   "schema_version": 6,
   "schema_contract": "live-target-cross-group-fused-pubs-scheduler-usage-v1",
   "state": "planned",
-  "started": "2026-10-11T15:47:08.601031+00:00",
+  "started": "2026-10-11T16:02:30.995477+00:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -19,13 +19,15 @@
     "joint_candidates": 3,
     "replica_floor": null,
     "max_replicas": null,
-    "isolated_reference": true
+    "isolated_reference": true,
+    "twirl": false,
+    "dd": null
   },
   "shots": 4096,
   "seed_simulator": 20261011,
-  "experiment_digest": "a64332e57b4015da44f167840c749d22d2752b3af0fef30c3d1e94e856f31e46",
+  "experiment_digest": "074aa3a8a8fba2a236e8e2c870c4b4ef0e04c668086fbc8d495b5bcf2d6d3d0b",
   "code_commit": {
-    "head": "71d8ebdb1575a9dc05d5b7bc11244ee0c712531b",
+    "head": "0fd6b5f0f6e44d7116beda51ced48f95b6e6f828",
     "sources_modified": false
   },
   "system_inventory": {
@@ -33,9 +35,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 3,
+      "pending_jobs": 0,
       "calibration": "2026-10-11T08:11:13-07:00",
-      "fetched_at": "2026-10-11T15:47:11+00:00",
+      "fetched_at": "2026-10-11T16:02:33+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -102,9 +104,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
+      "pending_jobs": 0,
       "calibration": "2026-10-11T08:32:50-07:00",
-      "fetched_at": "2026-10-11T15:47:11+00:00",
+      "fetched_at": "2026-10-11T16:02:34+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -176,9 +178,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-11T07:35:29-07:00",
-      "fetched_at": "2026-10-11T15:47:12+00:00",
+      "pending_jobs": 2,
+      "calibration": "2026-10-11T08:42:00-07:00",
+      "fetched_at": "2026-10-11T16:02:34+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -277,9 +279,9 @@
     "ibm_fez": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 3,
+      "pending_jobs": 0,
       "calibration": "2026-10-11T08:11:13-07:00",
-      "fetched_at": "2026-10-11T15:47:11+00:00",
+      "fetched_at": "2026-10-11T16:02:33+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -345,9 +347,9 @@
     "ibm_kingston": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
+      "pending_jobs": 0,
       "calibration": "2026-10-11T08:32:50-07:00",
-      "fetched_at": "2026-10-11T15:47:11+00:00",
+      "fetched_at": "2026-10-11T16:02:34+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -418,9 +420,9 @@
     "ibm_marrakesh": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
-      "calibration": "2026-10-11T07:35:29-07:00",
-      "fetched_at": "2026-10-11T15:47:12+00:00",
+      "pending_jobs": 2,
+      "calibration": "2026-10-11T08:42:00-07:00",
+      "fetched_at": "2026-10-11T16:02:34+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,

@@ -72,12 +72,13 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
-`2026-10-11T154708.601031Z` requalifies the default plan after --submit gained the
---approved-record gate. Clean source commit `71d8ebd` (sources_modified=false)
+`2026-10-11T160230.995477Z` requalifies the default plan after --submit gained the
+--approved-record gate, compared against the refreshed plan with twirling and
+DD in the recorded policy. Clean source commit `0fd6b5f` (sources_modified=false)
 carries experiment digest
-`a64332e57b4015da44f167840c749d22d2752b3af0fef30c3d1e94e856f31e46`.
+`074aa3a8a8fba2a236e8e2c870c4b4ef0e04c668086fbc8d495b5bcf2d6d3d0b`.
 The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
-`05248cd6cca3131dca3a706be51cdccde4ee9a74fa86cc14b020ed99a4c01339`; QPY
+`5de9436271b772dfb87f09ab66013548512edcbc31e485b0ffa34221c7c0c43b`; QPY
 SHA-256 is
 `720fd82c6510cc4a712b8dad75e6fcf4facf43d22e2102467079daba5a2ce318`.
 
