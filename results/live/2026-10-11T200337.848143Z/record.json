@@ -2,7 +2,7 @@
   "schema_version": 6,
   "schema_contract": "live-target-cross-group-fused-pubs-scheduler-usage-v1",
   "state": "planned",
-  "started": "2026-10-11T19:38:49.795739+00:00",
+  "started": "2026-10-11T20:03:37.848143+00:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -29,9 +29,9 @@
   "shots": 4096,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "e5f20751a9d92be081cc56cfd4293d6dcd01ac32350f5cd26b7a6f93102d69b1",
+  "experiment_digest": "84eb5555ee2b132b70984b156f05488fd1049ee6045266b139cd920adca4410e",
   "code_commit": {
-    "head": "80fecd1de32c5bc1c7835bb0a7fa177995a645fd",
+    "head": "7bd675e8f0b0bd16a813e5468844414f2c191c33",
     "sources_modified": false
   },
   "system_inventory": {
@@ -39,9 +39,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
+      "pending_jobs": 2,
       "calibration": "2026-10-11T12:18:18-07:00",
-      "fetched_at": "2026-10-11T19:38:51+00:00",
+      "fetched_at": "2026-10-11T20:03:39+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -112,7 +112,7 @@
       "status_msg": "active",
       "pending_jobs": 0,
       "calibration": "2026-10-11T12:18:00-07:00",
-      "fetched_at": "2026-10-11T19:38:52+00:00",
+      "fetched_at": "2026-10-11T20:03:41+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -183,9 +183,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
-      "calibration": "2026-10-11T12:16:49-07:00",
-      "fetched_at": "2026-10-11T19:38:53+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T12:45:56-07:00",
+      "fetched_at": "2026-10-11T20:03:42+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -283,9 +283,9 @@
     "ibm_fez": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
+      "pending_jobs": 2,
       "calibration": "2026-10-11T12:18:18-07:00",
-      "fetched_at": "2026-10-11T19:38:51+00:00",
+      "fetched_at": "2026-10-11T20:03:39+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -355,7 +355,7 @@
       "status_msg": "active",
       "pending_jobs": 0,
       "calibration": "2026-10-11T12:18:00-07:00",
-      "fetched_at": "2026-10-11T19:38:52+00:00",
+      "fetched_at": "2026-10-11T20:03:41+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -425,9 +425,9 @@
     "ibm_marrakesh": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
-      "calibration": "2026-10-11T12:16:49-07:00",
-      "fetched_at": "2026-10-11T19:38:53+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T12:45:56-07:00",
+      "fetched_at": "2026-10-11T20:03:42+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
