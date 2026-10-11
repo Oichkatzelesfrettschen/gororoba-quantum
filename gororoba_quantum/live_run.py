@@ -36,6 +36,7 @@ import math
 import os
 import subprocess
 import sys
+import time
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -2993,6 +2994,39 @@ def pub_timing(
 
 
 JOB_FINAL_STATES = ("DONE", "CANCELLED", "ERROR")
+# The service computes a job's usage after the job ends; collection waits
+# this long, polling at this interval, for the usage status to leave pending
+# before it records the job as still pending.
+USAGE_WAIT_SECONDS = 120.0
+USAGE_POLL_SECONDS = 5.0
+
+
+def wait_for_usage(
+    job: Any,
+    pub_count: int,
+    shots: int,
+    wait_seconds: float = USAGE_WAIT_SECONDS,
+    poll_seconds: float = USAGE_POLL_SECONDS,
+    sleep: Callable[[float], None] = time.sleep,
+) -> dict[str, Any]:
+    """The job's usage record once its status leaves pending, or the pending record after wait_seconds.
+
+    BaseRuntimeJob.usage reports zero until the service finishes the usage
+    calculation, which follows the job's terminal state by an unspecified
+    delay; a record left pending names the wait and a recollection updates
+    only the usage block.
+    """
+    record = job_usage_record(job, pub_count, shots)
+    waited = 0.0
+    while record["usage_status"] == "pending" and str(job.status()) in JOB_FINAL_STATES and waited < wait_seconds:
+        sleep(poll_seconds)
+        waited += poll_seconds
+        record = job_usage_record(job, pub_count, shots)
+    if record["usage_status"] == "pending" and str(job.status()) in JOB_FINAL_STATES:
+        record["throughput_unavailable_reason"] = (
+            f"usage calculation still pending {wait_seconds:g} s after the job ended; recollect to update it"
+        )
+    return record
 
 
 def job_usage_record(job: Any, pub_count: int, shots: int) -> dict[str, Any]:
@@ -3460,11 +3494,11 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 raise
             job_out["result_unavailable"] = f"{type(error).__name__}: {error}"
             if job_out["usage"]["usage_status"] == "pending":
-                job_out["usage"] = job_usage_record(job, len(pub_manifests), shots)
+                job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
             checkpoint(out)
             continue
         if job_out["usage"]["usage_status"] == "pending":
-            job_out["usage"] = job_usage_record(job, len(pub_manifests), shots)
+            job_out["usage"] = wait_for_usage(job, len(pub_manifests), shots)
             checkpoint(out)
         if len(result) != len(pub_manifests):
             raise LiveRunError(

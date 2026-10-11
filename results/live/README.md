@@ -147,6 +147,15 @@ The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
 SHA-256 is
 `9bcc20c25bde69a889ea641a93606478074e063f23f4f53fb4693a5ab6c88917`.
 
+`2026-10-11T114048.080610Z` requalifies schema 6 after collection began polling a finished
+job's usage until the service's calculation completes. Clean source commit
+`106e59b` (sources_modified=false) carries experiment digest
+`ce8bc72d890ce3aa57b48f5f12aabd3295d15fe6e70b653923a083d9e4a37ec7`.
+The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
+`d18c0ef542b10260bc9affc275c9a4eae6a963a9719fa85a2b3881a2162792af`; QPY
+SHA-256 is
+`9f89eb73365278c1a94c8cf2888657089c212f96d854e44ff175ff691ef80a23`.
+
 `2026-10-11T111237.410777Z` requalifies schema 6 after the joint-placement search gained
 its attempt bound and per-candidate entry bases, and after collection began
 re-reading usage for a job that fails while collection waits. Clean source
