@@ -103,12 +103,19 @@ head.
 - *Progress.* The bot keeps one summary comment per PR, marked
   `codex-pull-request-review-summary`, which reads Running while a review is in
   progress.
-- *Outcome.* A review ends either in an issue comment "Codex Review: Didn't find
-  any major issues" or in inline review comments with P1 or P2 badges.
+- *Outcome.* A review with findings publishes inline review comments with P1 or
+  P2 badges. A clean review either posts an issue comment beginning "Codex
+  Review: Didn't find any major issues" with a reviewed commit matching the PR
+  head, or adds an app-owned `+1` reaction after the completed summary update
+  for the current head. A prior reaction cannot qualify a later review round.
 - *Status tool.* `scripts/codex_review_status.sh PR...` prints each PR's head,
-  review state, and latest clean verdict, then every unresolved thread with its
-  root comment id and full body. It follows every page of issue comments and
-  review threads.
+  summary head, review state, and head-bound clean signal, then every unresolved
+  thread with its root comment id and full body. It accepts comments and
+  reactions only from the stable app and bot identities, requires the clean
+  comment to follow the current review request and the reaction to occur
+  strictly after the completed summary update. It paginates every issue,
+  reaction, thread, and thread-comment connection, then re-reads the head and
+  PR update marker, and summary to reject a changing snapshot.
 
 **One round, per PR:**
 1. Wait until the summary comment stops reading Running. Then read every
@@ -137,7 +144,8 @@ head.
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
 6. Comment `@codex review` and start again at step 1. A PR leaves the loop when
-   its latest review reports no major issues and no thread is open.
+   the current-head status reports `verdict=clean-comment...` or
+   `verdict=clean-reaction...` and no thread is open.
 
 **Stacked PRs.**
 - Each branch builds on the one below it, so a fix lands on the lowest branch
