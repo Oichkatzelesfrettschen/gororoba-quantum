@@ -2,7 +2,7 @@
   "schema_version": 6,
   "schema_contract": "live-target-cross-group-fused-pubs-scheduler-usage-v1",
   "state": "planned",
-  "started": "2026-10-11T16:20:38.875423+00:00",
+  "started": "2026-10-11T16:38:12.041836+00:00",
   "versions": {
     "qiskit": "2.5.2",
     "qiskit-aer": "0.17.2",
@@ -27,9 +27,9 @@
   "shots": 4096,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "6d6a379a10080c6aacb52434cbd947219def6c143e956a8abb6656b20aa600a9",
+  "experiment_digest": "efa4be04658da3d4c9c9f1dcb441d5e309686a64a044236a03697d317609bfc9",
   "code_commit": {
-    "head": "19b324d19a2197b5c272a8663865b6f6113708c7",
+    "head": "204d293886bbf138fe354ad0b51c2bd0e2f96db5",
     "sources_modified": false
   },
   "system_inventory": {
@@ -37,9 +37,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
-      "calibration": "2026-10-11T08:11:13-07:00",
-      "fetched_at": "2026-10-11T16:20:41+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T09:19:16-07:00",
+      "fetched_at": "2026-10-11T16:38:14+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -106,9 +106,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
+      "pending_jobs": 2,
       "calibration": "2026-10-11T08:55:36-07:00",
-      "fetched_at": "2026-10-11T16:20:42+00:00",
+      "fetched_at": "2026-10-11T16:38:15+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -180,9 +180,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
-      "calibration": "2026-10-11T08:57:00-07:00",
-      "fetched_at": "2026-10-11T16:20:43+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T09:08:23-07:00",
+      "fetched_at": "2026-10-11T16:38:16+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -281,9 +281,9 @@
     "ibm_fez": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
-      "calibration": "2026-10-11T08:11:13-07:00",
-      "fetched_at": "2026-10-11T16:20:41+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T09:19:16-07:00",
+      "fetched_at": "2026-10-11T16:38:14+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -349,9 +349,9 @@
     "ibm_kingston": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 0,
+      "pending_jobs": 2,
       "calibration": "2026-10-11T08:55:36-07:00",
-      "fetched_at": "2026-10-11T16:20:42+00:00",
+      "fetched_at": "2026-10-11T16:38:15+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -422,9 +422,9 @@
     "ibm_marrakesh": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 1,
-      "calibration": "2026-10-11T08:57:00-07:00",
-      "fetched_at": "2026-10-11T16:20:43+00:00",
+      "pending_jobs": 0,
+      "calibration": "2026-10-11T09:08:23-07:00",
+      "fetched_at": "2026-10-11T16:38:16+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -5063,8 +5063,8 @@
     {
       "group": "design_a",
       "backend": "ibm_fez",
-      "calibration": "2026-10-11T08:11:13-07:00",
-      "noise_model_calibration": "2026-10-11T08:11:13-07:00",
+      "calibration": "2026-10-11T09:19:16-07:00",
+      "noise_model_calibration": "2026-10-11T09:19:16-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
         23,

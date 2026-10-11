@@ -72,14 +72,16 @@ unestablished. Record SHA-256 is
 SHA-256 is
 `999c9efdf2aa68113eacd0160774e9178a4d3dc46be6939991a9b1003821b7bb`.
 
-`2026-10-11T162038.875423Z` requalifies the default plan after --submit gained the
+`2026-10-11T163812.041836Z` requalifies the default plan after --submit gained the
 --approved-record gate: the fresh plan, refreshed calibration, twirling, DD,
 budget floor, dependency versions, instance hash, and each batch's own
-calibration are compared with the approved dry run. Clean source commit
-`19b324d` (sources_modified=false) carries experiment digest
-`6d6a379a10080c6aacb52434cbd947219def6c143e956a8abb6656b20aa600a9`.
+calibration are compared with the approved dry run, and a partial
+submission keeps its lifecycle when a later batch's calibration rolls.
+Clean source commit `204d293` (sources_modified=false) carries experiment
+digest
+`efa4be04658da3d4c9c9f1dcb441d5e309686a64a044236a03697d317609bfc9`.
 The record stays `planned` and sends zero QPU jobs. Record SHA-256 is
-`02cd6cdcaec58705d7458c02491c8da24b32f5cee11bbe1b8081e0fc5dd172a3`; QPY
+`3042735c391ade3a8741b214242989bddfba2877ee0b22d341e42e302ca5d2d2`; QPY
 SHA-256 is
 `720fd82c6510cc4a712b8dad75e6fcf4facf43d22e2102467079daba5a2ce318`.
 
