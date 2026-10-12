@@ -151,27 +151,40 @@ merged the four-coordinate `{1, 10, 18, 25}` classification, kernel frames,
 integral attachments and ordinary-doubling extension. Its first operand stays
 on that support; its partner ranges over the ambient algebra. The local-chart
 [PR #41](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/41)
-merged dimension-32 skew-Schur chart transport. The integrated source stack is
-revision `cf4e6830e36c89aea9d40f12f01e4e1e335b103f`.
+merged dimension-32 skew-Schur chart transport. The principal-kernel
+[PR #42](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/42)
+adds fifteen explicit four-coordinate pivots covering every nonzero
+doubly-pure coefficient vector in dimension 32, with exact principal
+elimination and kernel-restricted overlap maps across changing ranks.
+The integrated source stack is revision
+`f3d78152931009aff16d8eb6d955c7ddea98f6cc`.
+
+The [principal-cover note](../docs/notes/principal_skew_atlas.md) gives the
+all-real identities and published foundations. The selected finite cover and
+retained certificates form a repository construction; publication priority
+remains unestablished. A global incidence presentation supplies new geometric
+coordinates for the algebraic visuals. Smooth subdivisions, frontier
+attachments, unrestricted topology and formal certification remain separate
+obligations. Finite noisy measurements cannot discharge those proofs.
 
 Written all-real/all-stage proofs, finite regression checks and Rocq kernel
 certification retain distinct statuses. The [source roadmap](../docs/RESEARCH_ROADMAP.md)
-and [chart note](../docs/notes/dimension32_skew_schur_charts.md) state their
-coverage and remaining obligations. Global chart coverage, overlaps, and
-unrestricted dimension-32 rank-stratum topology remain open. The [formal follow-up PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
-retains its separate fold-descent, conditional terminal-channel and inference
-obligations at reviewed source revision
-`9beeb1efbedf476893769329b7436dc0baa1026b`. A further principal-kernel-chart
-cover is proposed in [PR #42](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/42)
-at revision `3e84b39a11b21e48500857aff569402f85be10d9`. Both follow-ups remain
-separate, open dependencies; their proofs and remaining certification duties
-retain their own evidence scope. The source-integration merge preserved the
-historical pilot's 41-file closure. The later readout-scoring repair changes
-that closure and requires renewal; physical execution remains unapproved.
+records the resolved cover and remaining dependencies. The
+[formal follow-up PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
+retains separate fold-descent, conditional terminal-channel and inference
+obligations at source revision
+`aa5bed809239c9423773ad0994d44b7814307ed2`, which remains under review. Its
+formal plan now incorporates the principal cover, refinement-checker and
+overlap obligations. The written pivot identity extends to every stage
+`n>=2`; nonzero-nullity runtime fixtures remain dimension 32, while the
+128/256-dimensional fixtures use invertible inputs with empty kernels.
+That work remains a separate open dependency. The source integrations preserve the 41-file runtime closure;
+the earlier readout-scoring repair changes the historical pilot's closure and
+requires renewal. Physical execution remains unapproved.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)
-- [Fresh three-system pilot case](../results/ripple/CORRECTION_PREPARATION.md)
+- [Current three-system pilot readiness](../results/ripple/CORRECTION_PREPARATION.md)
 - [Mock diagnosis](../results/ripple/KINGSTON_MOCK_DIAGNOSIS.md)
 - [Retained atlas preparation](../results/ripple/PREPARATION.md)
 - [Execution roadmap](QPU_EXECUTION_ROADMAP.md)

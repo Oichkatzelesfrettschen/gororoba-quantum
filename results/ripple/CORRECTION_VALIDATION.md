@@ -61,3 +61,12 @@ qualifies the failure path; it supplies neither a fresh timing estimate nor
 an executable approval case. Earlier pilot, atlas and measured-job records
 retain identical bytes. The earlier validation receipts retain their named
 historical revisions and scope.
+
+The [principal-atlas integration receipt](principal-integration-validation.json)
+combines the retained full suite with expanded static checks and fresh source
+replays after PR #42. All 116 pre-existing code, proof, shell and dependency
+inputs retain their bytes; all 41 runtime-manifest files and 50 protected
+case/archive files match. The expanded checks cover 93 formatted repository
+files, 90 repository mypy targets and 11 source-library targets. The source
+merge adds geometric coverage while the backend-eligibility gate continues
+to withhold a renewed hardware case.

@@ -27,7 +27,8 @@ comparison before it receives a novelty claim.
 | [Continuous four-coordinate ranks](notes/four_support_rank_loci.md) and [incidence geometry](notes/four_support_incidence_geometry.md) | Exact sector identities classify every real tuple on support `{1,10,18,25}`. The unit base has 96 connected smooth strata and 704 closure incidences including reflexive pairs. Five coordinate blocks give an explicit homeomorphism for its full partner incidence | The finite CW model and integral invariants below cover this support. Other coefficient directions, Whitney conditions, and unrestricted global topology remain separate obligations. |
 | [Ordinary doubling](notes/four_support_doubling.md) and [cellular homology](notes/four_support_cellular_homology.md) | Structural induction preserves the five-factor model for every `n>=5`. A 1,200-cell CW construction has explicit attaching maps; exact integral cancellations give torsion-free groups and a square-zero positive-degree cohomology ideal | The first operand remains on the zero-padded four-coordinate support. The partner uses the full ambient algebra. A wedge decomposition, higher homotopy operations, unrestricted classification, and a Rocq formalization remain separate obligations. |
 | [Local Schur evidence](evidence/local_schur/README.md) | Six rational perturbations pass rank, skew, lift, and negative-control checks. Pointwise unit-base linearized bounds equal 23, 21, 11 | Only the maximal bound matches an already known stratum dimension. The production reduction below extends these fixtures; a complete germ atlas and lower-stratum regularity proofs remain open. |
-| [Dimension-32 skew-Schur charts](notes/dimension32_skew_schur_charts.md) | Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain, retains nonzero reduced ranks, and certifies complete kernel lifts, inverse coordinates and sphere metrics. Written all-real block identities supply the local incidence homeomorphism | A pair of exact paths shares an initial tangent while exhibiting different nearby ranks. Linearization supplies a bound; global center coverage, overlaps, smooth subdivisions and attachments require further proofs. |
+| [Dimension-32 skew-Schur charts](notes/dimension32_skew_schur_charts.md) | Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain, retains nonzero reduced ranks, and certifies complete kernel lifts, inverse coordinates and sphere metrics. Written all-real block identities supply the local incidence homeomorphism | A pair of exact paths shares an initial tangent while exhibiting different nearby ranks. Linearization supplies a bound; the principal atlas below supplies a separate global cover. Nonlinear rank geometry and attachments require further proofs. |
+| [Principal kernel atlas](notes/principal_skew_atlas.md) | Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element. A largest-pair selector controls the initial inverse norm; exact refinement and overlap identities glue the full incidence across changing ranks. An all-stage proof supplies the corresponding finite cover | The resulting global semialgebraic presentation still requires computed smooth subdivisions, closure links and a compatible finite attachment model before global invariants follow. |
 | [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The pinned discrete/sign-code chain passes fresh compile and kernel checks, with seven globally closed assumption queries | C881's exhaustive quadratic rejection remains a finite Rust check. Count identities lack topology-transfer maps. A separate deprecated-import failure remains recorded. |
 | [Folded hardware evidence](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md) | Sixteen PUBs in two Kingston jobs retain shot-level evidence and 40 final charged seconds | Layout, terminal writer, measurement, reset, latency, and history confound a unique physical attribution. Existing outcomes support bounded model exclusions. |
 | [Installed local computation](../gororoba_quantum/LOCAL_COMPUTE.md) | The tested stack uses NumPy 2.5.4, Qiskit 2.5.2, Runtime 0.50.0, and CPU Aer 0.17.2 | Custom Aer/CUDA packaging stays paused. Native accelerator use requires actual installed support and equivalence evidence before activation. |
@@ -124,9 +125,12 @@ The mathematical chain has the following acceptance gates.
    Use the [production skew-Schur charts](notes/dimension32_skew_schur_charts.md)
    to retain nonzero residuals and complete kernel lifts on explicit invertible
    pivot domains. Their same-tangent path fixture distinguishes first-order
-   bounds from actual rank behavior. Prove global center coverage and overlap
-   maps, then resolve the real reduced equations, their dependencies and real
-   radicals before claiming smoothness or codimension.
+   bounds from actual rank behavior. The [principal atlas](notes/principal_skew_atlas.md)
+   replaces center selection with 15 explicit pivot domains and verifies
+   residual-factor overlap, inverse, cocycle and metric identities. Its
+   principal refinements give kernel bundles on each fixed-rank locus.
+   Resolve the real reduced equations, their dependencies and real radicals
+   before claiming smoothness or codimension.
 3. Classify the connected components of nullities 4, 8, and 12 with certified
    coverage of all real coefficients. Subdivide the rank loci into appropriate
    smooth strata. Certify dimensions, normal links, closure incidences, and
@@ -145,8 +149,11 @@ The mathematical chain has the following acceptance gates.
    embedding doubles annihilators and the complete five-block frame for the
    specified restricted family at every `n>=5`. The same 1,200-cell chain
    matrices persist; a preserved top-factor grading shifts their degrees.
-   Published fixed-deficit stability has its own hypotheses. Unrestricted
-   coverage still requires a theorem for other coefficient directions.
+   Published fixed-deficit stability has its own hypotheses. The principal
+   atlas covers all nonzero doubly-pure coefficients by `2^(n-1)-1` explicit
+   domains for every `n>=2`. That all-stage gluing construction supplies
+   equations and maps; unrestricted classification still requires solving
+   their geometry and attachments.
 8. Formalize chosen lemmas with explicit dependency and assumption manifests.
    Preserve full average/detail coordinates or all XOR sectors when information
    matters; average-only multiplication fails. Certify the proposed complex
