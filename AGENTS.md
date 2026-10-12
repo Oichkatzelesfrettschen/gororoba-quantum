@@ -14,9 +14,11 @@ lint and type-check configuration only. Before any push, these exit 0:
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
+    results/live/verify_source_closure.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
+    results/live/verify_source_closure.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
@@ -30,7 +32,8 @@ lint and type-check configuration only. Before any push, these exit 0:
     rank_polynomials.py rank_charts.py rank_attachments.py \
     integral_homology.py rank_path_topology.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
-    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py
+    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
+    ../results/live/verify_source_closure.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -58,6 +61,7 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" qpu_planning_contracts.py
   "$PYTHON" qpu_cases.py --check
   "$PYTHON" local_compute.py
+  "$PYTHON" ../results/live/verify_source_closure.py --check
   "$PYTHON" variance.py
   "$PYTHON" adjudicate.py --check
   "$PYTHON" cd_core.py >/dev/null

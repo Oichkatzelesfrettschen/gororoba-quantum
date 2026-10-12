@@ -4,6 +4,66 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+## Source-closure audits
+
+`verify_source_closure.py` compares every declared experiment source with the
+commit named by a retained record, recomputes the experiment digest, and
+checks committed dependency pins against installed and recorded versions.
+The manifest comes from the committed runner. The report lists unmanifested
+Python files and broader directory status separately; exclusion alone
+assigns neither safety nor completion status.
+
+The recorded `sources_modified` flag covers the whole experiment directory,
+including documentation and unmanifested files. The verifier preserves that
+flag and every existing run artifact. Its separate `source-closure.json`
+records the bounded comparison at audit time. Changed source or dependency
+inputs fail the audit; the verifier does not rewrite historical provenance.
+
+From the repository root, select a retained record and run:
+
+```sh
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  : "${RUN_RECORD:?set RUN_RECORD to a retained record.json path}"
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/live/verify_source_closure.py --repo . --record "$RUN_RECORD"
+)
+```
+
+`--out` selects a separate JSON destination. The writer refuses to replace a
+non-audit artifact. `--check` exercises source, manifest, requirements,
+record-digest, recorded-version, and installed-version mutations in a
+temporary synthetic Git repository, including output preservation. The
+utility performs local reads and writes its separate audit artifact; it
+constructs zero IBM service or Sampler objects.
+
+## CPU-policy and precision-cost evidence
+
+The following submit-free records name commit `877f73c2bd15f242a8a5d54089347ab0bcf6d16d`
+and preserve `sources_modified=true`. Their separate source-closure reports
+observe all 21 declared source files equal to that commit and every pinned
+package equal to its installed version. The broad directory status remains
+visible in each sidecar. Both records retain CPU density matrices, double
+precision, two threads, 512 MB, and disabled shot branching.
+
+| Record | Bounded result |
+|---|---|
+| [Default preparation](2026-10-12T014428.093689Z/record.json) | 4096 shots; 7 groups, 38 members, 26 PUBs (17 static, 9 dynamic), and 147 evaluated replica circuits. The general run supplies preparation evidence; family optimizer costs and endpoint intervals are absent. |
+| [Folded precision design](2026-10-12T014450.672483Z/record.json) | `precision_at_budget` selects 8192 shots and 16 PUBs (12 dynamic, 4 static). All twelve endpoint half-widths are 0.040945053228709165. Nominal charge is 39.624273408 seconds; the declared latency-stress scenario raises the estimate to 45.534993408 seconds. |
+
+The folded scenario sets 4.6 seconds overhead and 60 microseconds per
+sequential classical stage. Each job has a 60-second ceiling; the invocation
+reserves 120 seconds plus a 60-second quota reserve. Those figures are
+planning assumptions and enforced ceilings, distinct from measured QPU
+billing. The [written case](2026-10-12T014450.672483Z/UNAPPROVED_CASE.md)
+remains explicitly unapproved. Both records stay `planned` and contain zero
+submission entries. Source comparisons appear beside the
+[default record](2026-10-12T014428.093689Z/source-closure.json) and the
+[folded record](2026-10-12T014450.672483Z/source-closure.json).
+
+## Record schemas
+
 - **Schema 7 records.** The
   `live-target-statistical-design-invocation-budget-v1` contract adds bounded
   experiment selection, signed observable contracts, calibration-bound family

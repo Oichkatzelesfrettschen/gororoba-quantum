@@ -483,9 +483,11 @@ def _render(
     if source["sources_modified"]:
         lines.extend(
             [
-                "The source flag marks validation-only evidence from edited sources. The base commit "
-                "alone cannot reproduce those edits; reproduction needs the exact source files bound "
-                "by the experiment digest. A reviewed-source dry run supplies the release evidence.",
+                "The source flag records changes anywhere in the experiment directory, including "
+                "documentation and unmanifested files. Reproduction requires verification of every "
+                "declared source against the experiment digest; the broad flag alone does not establish "
+                "which source bytes differ from the recorded commit. A separate source-closure audit "
+                "can establish that comparison without altering the retained record.",
                 "",
             ]
         )
@@ -924,7 +926,7 @@ def _verify() -> None:
         changed["code_commit"]["sources_modified"] = True
         retain(changed)
         assert write_case(run_dir, changed) == destination
-        assert "validation-only evidence from edited sources" in destination.read_text()
+        assert "source flag records changes anywhere" in destination.read_text()
         retain(record)
         changed = copy.deepcopy(record)
         changed["shots"] = 4096

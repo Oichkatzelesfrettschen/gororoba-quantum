@@ -4,11 +4,11 @@ The runner chooses a concrete experiment from a finite set before spending
 QPU time. `live_run.py --family folded-qpe --optimize` and
 `--family n21-feedback --optimize` retain fresh hardware admission,
 deterministic compilation, exact QPY archives, and owner approval. The
-optimizer minimizes estimated charged seconds subject to every declared
-observable and budget constraint. ESP and coherence screen routed candidates;
+optimizer ranks admitted designs by minimum estimated charge or strongest
+worst-endpoint precision within the declared budget. ESP and coherence screen routed candidates;
 they do not define statistical power or useful information per second.
 
-The implementation has six parts:
+The implementation has seven parts:
 
 | Module | Responsibility |
 |---|---|
@@ -18,6 +18,7 @@ The implementation has six parts:
 | `qpu_planning.py` | Fresh-calibration compilation, finite-shot predictions, matched layouts, and invocation accounting |
 | `qpu_planning_contracts.py` | Credential-free integration checks against fake backend fixtures |
 | `qpu_cases.py` | Unapproved written cases bound to feasible saved records and their QPY evidence |
+| `local_compute.py` | Explicit CPU execution policy, ordered simulation evidence, and GPU/hybrid capability rejection |
 
 ## Measured quantities and exact laws
 
@@ -100,6 +101,12 @@ density-matrix methods for two-bit feedback and one-bit reset-only members.
 The explicit density-matrix method retains the gate, coherence, and readout
 noise channels. Exact compiled validation checks circuit conformance;
 agreement with a noise model remains a separate empirical question.
+
+The [local compute plan](LOCAL_COMPUTE.md) records the execution policy,
+failed noisy branching comparison, CPU/CUDA/Aer capability distinctions,
+precision frontier, and remaining GPU qualification gates. Local simulation
+time stays separate from IBM QPU charge. Additional shots narrow sampling
+intervals without establishing improved hardware fidelity.
 
 ## Statistical admission
 
@@ -195,8 +202,9 @@ Final accounting keeps the existing unit: submitted PUB shots divided by
 the completed job's final `job.usage(partial=False)` charge. Replicas do
 not multiply submitted PUB shots. A joint job charge has no exact
 per-observable allocation. The optimizer minimizes an estimated total
-charge while preserving separately labeled observables; it does not report
-that proxy as measured scientific information per charged second.
+charge or maximizes declared precision within the budget while preserving
+separately labeled observables; neither objective measures scientific
+information per charged second.
 
 The collection header's `invocation_usage` retains known final charges,
 including billing for failed or cancelled jobs. `charge_complete` records
@@ -243,6 +251,10 @@ the fresh record supplies the actual estimate and admission result.
 | `--precision` | 0.08, folded terminal-contrast half-width |
 | `--alpha`, `--power` | 0.05 and 0.8; folded alpha is divided among twelve precision contracts |
 | `--simulation-alpha` | 0.01 over the supplied finite search |
+| `--objective` | `minimum_charge`; `precision_at_budget` accepts folded precision-only contracts |
+| `--cost-scenario` | Repeatable `NAME:OVERHEAD_SECONDS:LATENCY_US`; every supplied scenario must pass the same budget gates |
+| `--local-compute` | `cpu`; GPU and hybrid requests fail capability admission before IBM service construction |
+| `--simulation-threads`, `--simulation-memory-mb` | 2 threads and 512 MB; density matrices and double precision remain fixed |
 | `--max-pending` | 25, unchanged backend queue admission |
 | `--reserve-seconds` | 0; set an explicit reserve when the case requires one |
 
@@ -253,19 +265,28 @@ the fresh record supplies the actual estimate and admission result.
 unmitigated policy. General static jobs retain their existing mitigation
 options; dynamic jobs keep twirling and DD disabled.
 
-The design search returns the cheapest feasible estimated charge and
-breaks ties by candidate name. It retains every rejection and the feasible
-Pareto frontier across cost, per-endpoint precision, and conservative
-modeled effects. The search is bounded by supplied backends, retained
-routes, replica caps, and shot tiers. A selected candidate establishes
+The default design search minimizes worst-case estimated charge across
+nominal inputs and every declared cost scenario, then breaks ties by
+candidate name. `precision_at_budget` minimizes the largest endpoint
+confidence half-width divided by its precision target, then worst-case
+charge and candidate name. The precision objective requires precision-only
+contracts and the CLI restricts it to folded QPE. The search retains every
+rejection and the feasible Pareto frontier across cost, per-endpoint
+precision, and conservative modeled effects. The search is bounded by
+supplied backends, retained routes, replica caps, and shot tiers. A selected candidate establishes
 neither a global optimum nor a general hardware-performance claim.
 
 Schema 7 records retain `family_configuration`, exact signed
 `observable_contracts`, `optimizer_settings`, `optimization_budget`, the
 candidate table, `budget_plan`, and `execution_contract`. The execution
-contract binds each selected backend's repetition settings and every
-selected job/PUB's cost inputs to approval. The runner recomputes the
-contract after fresh selection, so unchanged QPY bytes alone cannot admit
+contract binds each selected backend's repetition settings, every selected
+job/PUB's cost inputs, and the selected cost scenarios to approval.
+`optimizer_settings` binds the objective and scenario list; `policy.local_compute`
+binds the simulation settings. `local_simulation_batches` and
+`evaluation_simulation_batches` retain ordered circuit/noise identities and
+Aer method/device metadata. The channel digest excludes custom delay
+relaxation passes; the [compute plan](LOCAL_COMPUTE.md) names their separate
+calibration inputs. The runner recomputes the contract after fresh selection, so unchanged QPY bytes alone cannot admit
 changed repetition delays or cost assumptions. If every candidate fails
 the design contracts, the runner writes `state="design_infeasible"`,
 `optimization.selected=null`, all rejection reasons, and a concrete
