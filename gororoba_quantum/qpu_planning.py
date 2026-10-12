@@ -275,7 +275,11 @@ def prepare(
     """Compile and simulate the bounded candidate set before choosing a shot tier."""
     candidates = family_candidates(runtime, snapshots, args, trace)
     if not candidates:
-        raise runtime.LiveRunError("the experiment family has no admitted routed candidate")
+        diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
+        raise runtime.LiveRunError(
+            "the experiment family has no admitted routed candidate; "
+            f"family={args.family!r}; selection_trace={json.dumps(diagnostic, sort_keys=True)}"
+        )
     contracts = family_contracts(args.family, args.precision, args.alpha, args.power)
     plans: list[CandidatePlan] = []
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
