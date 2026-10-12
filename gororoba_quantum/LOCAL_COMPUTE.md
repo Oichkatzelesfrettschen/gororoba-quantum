@@ -247,7 +247,7 @@ the same outputs. The observation applies a standard quantum-channel
 identity to the qualification design; it establishes no new topology or
 quantum-information theorem.
 
-Future deterministic-density or GPU qualification includes independent
+Native Aer CPU/GPU qualification includes independent
 `|1> -> delay(t) -> measure` T1 sentinels and
 `H -> delay(t) -> H -> measure` Ramsey T2 sentinels. With zero-temperature
 relaxation, ideal preparation/readout, and zero detuning, their laws are
@@ -264,16 +264,14 @@ Deterministic probabilities use a declared numerical tolerance; sampled
 comparisons retain finite-shot bounds. Those sentinels expose omitted delay
 noise that the family alone cannot identify.
 
-A separate deterministic noisy-density evaluator remains under qualification.
-The active planner samples Aer on the admitted CPU policy. The deterministic
-design propagates unnormalized density matrices indexed by reported
-classical memory and sums branches with identical memory by linearity.
-Qualification covers measurement quantum noise, asymmetric readout,
-reported-bit feed-forward, reset noise, physical-wire mapping, delay passes,
-and trace/positivity/probability residuals. Passing those gates can remove
-Monte Carlo prediction uncertainty; floating-point error and hardware-model
-discrepancy remain separate residuals. The optimizer/evidence integration
-retains its own review boundary while evaluator qualification proceeds.
+The simulation engine remains native Qiskit Aer. Acceleration uses Aer's
+upstream CUDA capabilities through a system package built from pinned
+sources. CPU/GPU qualification covers measurement quantum noise, asymmetric
+readout, reported-bit feed-forward, reset, physical-wire mapping, explicit
+delay passes, and labeled probabilities. A successful native GPU build
+establishes capability; retained workload parity and memory checks establish
+which configurations the planner can admit. The project implements neither
+a replacement simulator nor custom CUDA kernels.
 
 ## Remaining acceleration gates
 
