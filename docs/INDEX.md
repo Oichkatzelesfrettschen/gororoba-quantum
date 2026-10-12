@@ -123,6 +123,14 @@ and verified kernel-restricted overlap identities. The same construction
 covers every higher stage. Computed smooth strata, global attachments, and
 unrestricted topology remain separate obligations.
 
+The [Schur acceleration certificates](notes/schur_acceleration_certificates.md)
+and their [replay](evidence/schur_acceleration/README.md) separate first-order
+admission, second-order compatibility, and exact obstruction witnesses. A
+nullity-12 example passes the linear constraints but fails a necessary
+quadratic tangent condition. Compatible acceleration certificates describe
+formal second-order solutions; actual curves and complete tangent cones
+require further analysis.
+
 ## Ripple source supplement
 
 The [De Marrais Box-Kites III note](notes/math-0403113.md) records a bounded

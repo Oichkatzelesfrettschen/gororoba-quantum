@@ -29,6 +29,7 @@ comparison before it receives a novelty claim.
 | [Local Schur evidence](evidence/local_schur/README.md) | Six rational perturbations pass rank, skew, lift, and negative-control checks. Pointwise unit-base linearized bounds equal 23, 21, 11 | Only the maximal bound matches an already known stratum dimension. The production reduction below extends these fixtures; a complete germ atlas and lower-stratum regularity proofs remain open. |
 | [Dimension-32 skew-Schur charts](notes/dimension32_skew_schur_charts.md) | Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain, retains nonzero reduced ranks, and certifies complete kernel lifts, inverse coordinates and sphere metrics. Written all-real block identities supply the local incidence homeomorphism | A pair of exact paths shares an initial tangent while exhibiting different nearby ranks. Linearization supplies a bound; the principal atlas below supplies a separate global cover. Nonlinear rank geometry and attachments require further proofs. |
 | [Principal kernel atlas](notes/principal_skew_atlas.md) | Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element. A largest-pair selector controls the initial inverse norm; exact refinement and overlap identities glue the full incidence across changing ranks. An all-stage proof supplies the corresponding finite cover | The resulting global semialgebraic presentation still requires computed smooth subdivisions, closure links and a compatible finite attachment model before global invariants follow. |
+| [Schur acceleration certificates](notes/schur_acceleration_certificates.md) | Exact rational certificates at admitted dimension-32 centers distinguish first-order failure, a complete affine space of compatible accelerations, and a separating obstruction witness. Written projected-Schur identities supply a necessary quadratic tangent condition; an explicit nullity-12 direction violates it despite passing all linear constraints | Formal second-order compatibility establishes neither an actual curve nor smoothness. The quadratic conditions supply an outer bound for the same-nullity tangent cone; real-radical analysis, higher orders, and other rank loci remain separate obligations. |
 | [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The pinned discrete/sign-code chain passes fresh compile and kernel checks, with seven globally closed assumption queries | C881's exhaustive quadratic rejection remains a finite Rust check. Count identities lack topology-transfer maps. A separate deprecated-import failure remains recorded. |
 | [Folded hardware evidence](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md) | Sixteen PUBs in two Kingston jobs retain shot-level evidence and 40 final charged seconds | Layout, terminal writer, measurement, reset, latency, and history confound a unique physical attribution. Existing outcomes support bounded model exclusions. |
 | [Installed local computation](../gororoba_quantum/LOCAL_COMPUTE.md) | The tested stack uses NumPy 2.5.4, Qiskit 2.5.2, Runtime 0.50.0, and CPU Aer 0.17.2 | Custom Aer/CUDA packaging stays paused. Native accelerator use requires actual installed support and equivalence evidence before activation. |
@@ -129,8 +130,13 @@ The mathematical chain has the following acceptance gates.
    replaces center selection with 15 explicit pivot domains and verifies
    residual-factor overlap, inverse, cocycle and metric identities. Its
    principal refinements give kernel bundles on each fixed-rank locus.
-   Resolve the real reduced equations, their dependencies and real radicals
-   before claiming smoothness or codimension.
+   The [acceleration certificates](notes/schur_acceleration_certificates.md)
+   test `D(a)+2 B(h)^T A0^(-1) B(h)=0` with the fixed-norm condition.
+   A separating cokernel functional also excludes a direction from the
+   same-nullity tangent cone. Use those quadratic equations as necessary
+   outer bounds, then resolve their real zero sets and higher-order
+   compatibility. Resolve the real reduced equations, their dependencies
+   and real radicals before claiming smoothness or codimension.
 3. Classify the connected components of nullities 4, 8, and 12 with certified
    coverage of all real coefficients. Subdivide the rank loci into appropriate
    smooth strata. Certify dimensions, normal links, closure incidences, and
@@ -162,13 +168,12 @@ The mathematical chain has the following acceptance gates.
    Kernel transport, algebra homomorphisms, and
    homotopy equivalences each require their own maps and identities.
 
-The proof-planning chat **Resolve #34 commit issues** owns branch
-[PR #39](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
-on `codex/formal-evidence-dependencies`. The branch contains three checked
-Rocq certificates: scalar rational average/detail inverse identities and an
-average-only obstruction, plus rational and real terminal-channel exclusion
+Main includes the three checked Rocq certificates from
+[PR #39](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39):
+scalar rational average/detail inverse identities and an average-only
+obstruction, plus rational and real terminal-channel exclusion
 under four radius premises. The full Cayley-Dickson scalar embedding, tower,
-and zero-product bridge remain the owner's open proof obligations. The proof
+and zero-product bridge remain open proof obligations. The proof
 plan separates deterministic arithmetic, probabilistic assumptions, and physical
 models. The [formal-evidence plan](notes/formal_evidence_dependencies.md) owns
 the detailed dependency queue, tomography scope and stopping assumptions.
@@ -201,7 +206,8 @@ owners. Scope changes update these dependencies before implementation.
 
 Every integration uses a focused branch, local gates, current-head review,
 resolved reachable findings, and clean GitHub mergeability. Copilot supplies the
-requested review while Codex review credits are exhausted. Canonical main then
+requested substitute review when hosted Codex review quota is exhausted,
+under the current-head admission rules in `AGENTS.md`. Canonical main then
 fast-forwards while preserving concurrent edits. Verified merged Git worktrees
 and branches receive removal/pruning; active work stays intact. A source-path
 migration verifies hashes and references before replacing historical paths.
