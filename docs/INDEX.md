@@ -90,6 +90,34 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Griffiths and Niu 1996 -- Semiclassical Fourier Transform for Quantum Computation (arXiv quant-ph/9511007)](notes/quant-ph-9511007.md) | [PDF](https://arxiv.org/pdf/quant-ph/9511007v1) | `quant-ph-9511007v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/9511007v1) |
 | [Howard et al. -- Time-uniform confidence sequences](notes/1810.08240.md) | [PDF](https://arxiv.org/pdf/1810.08240v9) | `1810.08240v9.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1810.08240v9) |
 
+## Repository research certificates
+
+The [continuous four-coordinate rank derivation](notes/four_support_rank_loci.md)
+and its [exact replay](evidence/four_support_rank/README.md) classify a
+specified real coefficient family and construct its kernel frames.
+The [incidence geometry](notes/four_support_incidence_geometry.md) refines
+the unit coefficient sphere into 96 connected smooth strata, certifies
+their closures, and constructs an explicit partner-incidence homeomorphism.
+Both derivations attribute the published annihilator results and keep
+the wider topology obligations explicit.
+
+The [ordinary-doubling proof](notes/four_support_doubling.md) extends
+the same support and complete kernel model to every higher stage. Its
+[replay](evidence/four_support_doubling/README.md) checks the finite expanded
+identities separately from the structural induction. The
+[cellular model](notes/four_support_cellular_homology.md) and
+[integral replay](evidence/four_support_homology/README.md) identify 1,200 CW
+cells, certify integral homology and zero torsion, and determine the
+cohomology ring for the restricted pair space.
+
+The [dimension-32 skew-Schur charts](notes/dimension32_skew_schur_charts.md)
+and their [exact replay](evidence/dimension32_skew_schur/README.md) retain
+rank-changing points in all 30 doubly-pure coefficient directions on each
+admitted pivot domain. Complete kernel lifts, inverse coordinates and the
+induced metric describe the local incidence. Two exact paths with the same
+initial tangent and different nearby ranks expose the limit of linearization.
+Global chart coverage and unrestricted topology remain separate obligations.
+
 ## Verification and research navigation
 
 Run from the repository root:

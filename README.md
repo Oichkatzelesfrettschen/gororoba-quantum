@@ -43,6 +43,16 @@ objectives, evidence boundaries, ownership, and ordered delivery gates.
   theorems and the source-pinned Rust and Rocq work reused by the audit.
 - `gororoba_quantum/rank_polynomials.py` and `rank_charts.py` -- exact
   spectral rank predicates and fixed-minor kernel charts for general coefficients.
+- `gororoba_quantum/skew_schur_charts.py` -- exact dimension-32 reduced rank
+  certificates, kernel lifts, sphere metrics, and polynomial pivot domains
+  across all 30 doubly-pure coefficient directions.
+- `gororoba_quantum/four_support_rank.py` and `four_support_geometry.py` --
+  exact real ranks, connected smooth strata, complete kernel frames, closure
+  maps, and a partner-incidence model on support `{1,10,18,25}`.
+- `gororoba_quantum/four_support_doubling.py` -- structural ordinary-doubling
+  frames and inverse maps for the same support at every higher stage.
+- `gororoba_quantum/four_support_homology.py` -- an explicit finite CW model,
+  integral cancellation certificates, and the restricted cohomology ring.
 - `gororoba_quantum/rank_attachments.py`, `rank_path_topology.py`, and
   `integral_homology.py` -- exact polynomial attachment certificates, a proved
   restricted pair-space model, and integral homology with torsion certificates.

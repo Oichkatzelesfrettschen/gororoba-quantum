@@ -67,7 +67,8 @@ lint and type-check configuration only. Before any push, these exit 0:
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
-    integral_homology.py rank_path_topology.py \
+    integral_homology.py rank_path_topology.py four_support_rank.py four_support_geometry.py \
+    four_support_doubling.py four_support_homology.py skew_schur_charts.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
@@ -171,7 +172,7 @@ also pass these local gates before push:
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
   ruff format --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
-  mypy docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/verify_sources.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
@@ -180,6 +181,21 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/local_schur/probe.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_rank/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_rank/replay.py --check
+  (cd docs/evidence/four_support_rank && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_geometry/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_geometry/replay.py --check
+  (cd docs/evidence/four_support_geometry && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_doubling/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_doubling/replay.py --check
+  (cd docs/evidence/four_support_doubling && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_homology/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_homology/replay.py --check
+  (cd docs/evidence/four_support_homology && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/dimension32_skew_schur/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check
+  (cd docs/evidence/dimension32_skew_schur && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
   shellcheck docs/evidence/folding_proofs/replay_rocq.sh
