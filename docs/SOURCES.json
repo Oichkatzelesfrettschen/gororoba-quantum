@@ -292,7 +292,9 @@
         "decision": "publish_under_explicit_license",
         "evidence_summary": "The source-specific license covers the retained version or a deposited file with matching bytes.",
         "copy_status": "unchanged",
-        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF."
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/zenodo-record-20431754.json",
+        "evidence_retrieved_at_utc": "2026-10-12T08:16:50.722458+00:00"
       },
       "redistribution": "explicit_license_verified"
     },
@@ -326,7 +328,9 @@
         "decision": "publish_under_explicit_license",
         "evidence_summary": "The source-specific license covers the retained version or a deposited file with matching bytes.",
         "copy_status": "unchanged",
-        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF."
+        "conditions": "Preserve author attribution, original notices, source and license links; identify any later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/zenodo-record-20445734.json",
+        "evidence_retrieved_at_utc": "2026-10-12T08:17:15.836929+00:00"
       },
       "redistribution": "explicit_license_verified"
     }
