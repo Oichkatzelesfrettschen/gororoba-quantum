@@ -1,5 +1,11 @@
 # Levratti 2026 -- Fano Duality, Projective Orthogonality and the CSS Bridge (author-hosted manuscript)
 
+## Source copy and license
+
+The unchanged [source PDF](https://www.informationalidentityboundary.info/public/paper8.pdf) is retained under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+The [source-specific license evidence](https://zenodo.org/api/records/20445734) identifies the grant.
+[SOURCES.json](../SOURCES.json) binds the source bytes, evidence hash and reading scope.
+
 Tag convention: [P] marks a statement or number given in the paper; [I] marks an
 inference or a computation by the note author, with its basis named. Relevance
 ratings and numbered action items are the note author's judgment and count as [I].
@@ -13,9 +19,9 @@ record, or the hosting page.
 - Stated date: May 29, 2026 (the "Date:" footnote on page 1). No version number, venue, or arXiv identifier appears in the text.
 - Hosting URL: https://www.informationalidentityboundary.info/public/paper8.pdf (author-hosted site).
 - sha256: 05295802b74533ec8598c215a4b1898907f3c20ab21ffebc907e2388ce84ee9c (recomputed on the downloaded file and equal to the value recorded at download).
-- Local copy: kept outside this repository; fetch from the URL above and verify the sha256.
+- Retained unchanged copy: `docs/pdf/levratti-2026-fano-css.pdf`; the source-rights audit verifies its CC BY 4.0 Zenodo record and matching deposited bytes.
 - Pages read: all 8 pages, from the PDF text layer, including Tables 1 and 2. The text layer garbles some display formulas (formula (1) in the Introduction is partly unreadable); every theorem statement, both tables, and the reference list are legible.
-- Provenance caveat: author-hosted manuscript, not peer reviewed, not on arXiv, not published in a journal. The author states that the first companion paper is "under review at Communications in Algebra". The five companion manuscripts [1]-[5] are Zenodo preprints (DOIs listed in the reference list); no Zenodo record was retrieved, so every result the manuscript imports from [1], [4], and [5] is unchecked here. The acknowledgements state that Claude (Anthropic) assisted with "algebraic verification, structural analysis, and proof scaffolding" and that "all mathematical results have been independently verified numerically"; that numerical verification is not retrievable.
+- Provenance caveat: author-hosted manuscript, not peer reviewed, not on arXiv, not published in a journal. The author states that the first companion paper is "under review at Communications in Algebra". The five companion manuscripts [1]-[5] are Zenodo preprints (DOIs listed in the reference list); the original mathematical reading leaves their imported results unchecked. The separate rights audit verifies the Zenodo identities of this manuscript and reference [4]; it does not independently prove imported results. The acknowledgements state that Claude (Anthropic) assisted with "algebraic verification, structural analysis, and proof scaffolding" and that "all mathematical results have been independently verified numerically"; that numerical verification is not retrievable.
 
 ## Main claims
 

@@ -1,5 +1,8 @@
 # Sources and research notes
 
+[INDEX.md](INDEX.md) distinguishes hosted papers from ignored local reading copies
+and links every PDF source to its note and hosting evidence.
+
 One note per paper under notes/. Each note:
 - carries the citation, the URL that served the PDF, and its sha256;
 - tags every statement as from-paper or inference;
@@ -9,8 +12,10 @@ One note per paper under notes/. Each note:
 The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
-byte count, page count, acquisition status, and owning note.
-[PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the complete PDF set from the
+byte count, page count, acquisition status, owning note, and exact-version
+license evidence. The library publishes 11 licensed PDFs and two aliases;
+39 external sources retain citations and optional ignored local reading copies.
+[PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
 
 The `literature -> docs` compatibility link preserves historical paths used
@@ -25,8 +30,13 @@ The registry records the retained copies and their fresh hash checks.
 The Nature articles are paywalled. The retained arXiv preprints remain distinct
 from the versions of record, including the two explicitly named PDF aliases.
 HTML-only sources and their reading scopes appear in the registry and notes.
+Explicit CC BY 4.0 or CC0 permission supports the published PDFs. ArXiv-only
+hosting grants, personal-copy permissions, and sources without an established
+rehosting grant receive external records and ignored local copies under
+`local_source_cache/`. The registry retains first-party evidence URLs and hashes.
 Downloaded documents retain their authors' notices and licenses; repository
-licensing does not relabel third-party papers.
+licensing does not relabel third-party papers. The source verifier checks local
+copies when present and permits a fresh checkout without those optional files.
 
 The [coordinated research roadmap](RESEARCH_ROADMAP.md) consolidates the
 cumulative objectives, verified results, ownership, ordering, and remaining
@@ -100,12 +110,13 @@ The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
 joint-shot inference, billed usage, and IQP claim boundaries. The
 [design and execution documentation note](notes/quantum_experiment_design_sources.md)
-records NIST, Qiskit and IBM sources with capture hashes. The nine retained parallel-experiment
+records NIST, Qiskit and IBM sources with capture hashes. The two retained parallel-experiment
 PDFs have [replayable checksums](parallel_experiment_pdfs.sha256); direct,
 version-pinned retrieval links and reading scopes live in each paper note.
-The Das paper remains a cited external source with a verified author-laboratory
-PDF URL and content hash. Its notice requires permission for server redistribution,
-so the tracked library excludes that PDF and retains the analysis and retrieval identity.
+The remaining parallel-experiment papers retain direct URLs, hashes, and
+reading notes as external sources. The Das notice expressly requires permission
+for server redistribution; an arXiv-only grant also differs from permission to
+rehost a PDF. The source registry records each individual decision.
 
 Every note from the prior-work review labels each overlapping repository
 claim as known theorem reproduced, new proof or formalization, new

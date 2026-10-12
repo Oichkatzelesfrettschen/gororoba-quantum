@@ -1,5 +1,13 @@
 # Das et al. 2019 -- A Case for Multi-Programming Quantum Computers
 
+## Source copy and license
+
+The [source PDF](https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf) remains external to the published library.
+Its optional personal reading copy is `docs/local_source_cache/das-2019-multiprogramming.pdf`.
+The [rights evidence](https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf) records `LicenseRef-ACM-personal-copy`;
+the inspected evidence supplies no general repository rehosting grant.
+[SOURCES.json](../SOURCES.json) binds the source bytes, evidence hash and reading scope.
+
 Tag convention: [P] identifies a statement from the paper; [I] identifies a
 repository inference or proposed application. Citation and retrieval fields
 record bibliographic facts and measurements of the retrieved file.
@@ -18,7 +26,7 @@ record bibliographic facts and measurements of the retrieved file.
 - Optional local ignored cache: `docs/local_source_cache/das-2019-multiprogramming.pdf`.
 - Publication status: external-only PDF. [SOURCES.json](../SOURCES.json)
   retains its URL, digest and size; both published checksum inventories
-  exclude its bytes. The 49-PDF library count excludes this local copy.
+  exclude its bytes. The 11-PDF library count excludes this local copy.
 - File: 13 PDF pages; 2,840,791 bytes; `pdfinfo` and `pdftotext` exit 0.
 - SHA-256: `78da2c5da829b74c7564ba21e89735c8802a8e16d665c4102caf2ace2fb6950a`.
 - Rights: the first page permits personal/classroom copies under its stated

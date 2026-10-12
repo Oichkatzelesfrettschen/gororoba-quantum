@@ -1,9 +1,9 @@
 {
   "schema": "source-library-validation-v1",
   "base_commit": "c4e2074f3dd2d58e2cceb9e2bff4b202dc3ec4b4",
-  "pdfs": 49,
-  "pdf_bytes": 58537511,
-  "pdf_pages": 1153,
+  "pdfs": 11,
+  "pdf_bytes": 26723547,
+  "pdf_pages": 299,
   "pdf_aliases": 2,
   "unchanged_production_files": 40,
   "production_sha256": {
@@ -76,11 +76,11 @@
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
-      "result": "exit 0; nine publication/cache admission tests"
+      "result": "exit 0; 31 publication, optional-cache, exact-version license and deposited-file identity tests"
     },
     {
       "command": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/check_verify_sources.py",
-      "result": "exit 0; the same nine tests retain their guards under optimized Python"
+      "result": "exit 0; 31 publication, optional-cache, exact-version license and deposited-file identity tests"
     }
   ],
   "dependency_versions": {
@@ -91,7 +91,11 @@
     "sympy": "1.14.0"
   },
   "boundary": "Source integration, exact CPU probes and copied-source proof replay. Physical QPU submissions: zero.",
-  "external_pdfs": 1,
+  "external_pdfs": 39,
   "pdf_inventory_scope": "Published source-library copies; optional external-only reading caches are excluded.",
-  "external_pdf_cache_status": "The optional Das local reading copy preserves the recorded 2840791 bytes and SHA-256; Git ignore admission passes and the published manifests exclude it."
+  "external_pdf_cache_status": "All 39 external source copies preserve their registered original byte counts and SHA-256 values; the ignored cache is optional and excluded from published checksum inventories.",
+  "rights_audit_scope": "45 exact-version arXiv license links; four non-arXiv source notices or author-linked deposit licenses; previously verified Das ACM notice. Eleven source copies carry explicit CC BY 4.0 or CC0 evidence.",
+  "source_index": "docs/INDEX.md distinguishes all 11 hosted PDF records from all 39 external/local-only records and links their owning notes.",
+  "local_link_count": 360,
+  "rights_verification_boundary": "Offline guards establish consistency between recorded source bytes, exact-version metadata, licenses and deposited-file identities. The primary-source audit supplies the rights judgment."
 }

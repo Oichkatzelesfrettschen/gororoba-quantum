@@ -1,5 +1,13 @@
 # Coste: semialgebraic triangulation and triviality
 
+## Source copy and license
+
+The [source PDF](http://nicolas.patrois.free.fr/maths/agr%C3%A9gation/documents/semialgebraic-geometry-Coste.pdf) remains external to the published library.
+Its optional personal reading copy is `docs/local_source_cache/coste-semialgebraic-geometry-2002.pdf`.
+The [rights evidence](https://perso.univ-rennes1.fr/michel.coste/polyens/SAG.pdf) records `NOASSERTION`;
+the inspected evidence supplies no general repository rehosting grant.
+[SOURCES.json](../SOURCES.json) binds the source bytes, evidence hash and reading scope.
+
 Michel Coste, *An Introduction to Semialgebraic Geometry*, Institut de
 Recherche Mathematique de Rennes, October 2002, 78 PDF pages. The author
 presents established semialgebraic geometry and its algorithmic foundations;
@@ -9,7 +17,7 @@ The [third-party teaching mirror](http://nicolas.patrois.free.fr/maths/agr%C3%A9
 hosts a downloadable copy of Coste's exposition. Coste supplies the source
 text; Nicolas Patrois's website supplies the retrieved file. The mirror is
 distinct from the author's institutional hosting authority. The
-[retained copy](../pdf/coste-semialgebraic-geometry-2002.pdf)
+[retained copy](http://nicolas.patrois.free.fr/maths/agr%C3%A9gation/documents/semialgebraic-geometry-Coste.pdf)
 has SHA-256
 `86dbd8733c84db3b6955a36921bd43599a98a82d76fb5f5c041c5a512b8f8a31`.
 [SOURCES.json](../SOURCES.json) carries its retrieval identity. The original

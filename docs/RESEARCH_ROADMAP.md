@@ -127,10 +127,14 @@ The mathematical chain has the following acceptance gates.
    homotopy equivalences each require their own maps and identities.
 
 The proof-planning chat **Resolve #34 commit issues** owns branch
-`codex/formal-evidence-dependencies`: the rational average/detail certificate,
-its bridge into the full Cayley-Dickson tower, and the explicit separation of
-deterministic arithmetic, probabilistic assumptions, and physical models.
-Implementation proceeds independently; integration follows the source migration.
+[PR #39](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
+on `codex/formal-evidence-dependencies`. The branch contains three checked
+Rocq certificates: scalar rational average/detail inverse identities and an
+average-only obstruction, plus rational and real terminal-channel exclusion
+under four radius premises. The full Cayley-Dickson scalar embedding, tower,
+and zero-product bridge remain the owner's open proof obligations. The proof
+plan separates deterministic arithmetic, probabilistic assumptions, and physical
+models. Integration follows the source migration.
 Finite QPU frequencies supply measurement evidence; universal algebraic claims
 require mathematical proof independently of those frequencies.
 
@@ -139,8 +143,11 @@ require mathematical proof independently of those frequencies.
 The [coordination ledger](../results/live/qpu-coordination.json) records family
 ownership, accepted jobs, shared reservations, and observation times. The ledger
 is cooperative coordination rather than an account-wide atomic lock. The
-execution owner refreshes usage, pending jobs, calibration, compilation, and
-source/QPY identities before each proposed submission. Every changed physical
+execution owner skips the unavailable mock backend and refreshes live
+calibration on `ibm_fez`, `ibm_kingston`, and `ibm_marrakesh` immediately before
+run preparation. The complete matched family competes across admitted systems
+for the best accuracy/charge decision. Fresh usage, pending-job reconciliation,
+compilation, and source/QPY identities determine the proposed case. Every changed physical
 case requires its exact written approval; prior consumed approvals authorize
 only their recorded execution.
 

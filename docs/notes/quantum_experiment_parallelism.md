@@ -123,7 +123,7 @@ it supplies neither an exhaustive novelty search nor a general optimality proof.
 ## Retrieve and verify source identities
 
 Each linked per-paper note gives the direct PDF URL, inspected version,
-SHA-256 and reading scope. The nine published PDFs in this comparison live
+SHA-256 and reading scope. The two published PDFs in this comparison live
 under `docs/pdf/`; the compatibility link preserves their historical
 `literature/pdf/` paths. From the repository root, verify that set with:
 
@@ -131,9 +131,10 @@ under `docs/pdf/`; the compatibility link preserves their historical
 sha256sum -c docs/parallel_experiment_pdfs.sha256
 ```
 
-The [Das note](das-2019-multiprogramming.md) records the ACM redistribution
-notice. Its author-hosted PDF remains an external source with an optional
-local reading copy at `docs/local_source_cache/das-2019-multiprogramming.pdf`.
+Sarovar and QuMC carry verified CC BY 4.0 grants. The other eight papers
+in the ten-paper comparison remain external sources with optional personal
+reading copies under `docs/local_source_cache/`. Their source-specific
+license and notice evidence stays in the registry and per-paper notes.
 The ignored cache stays outside both published checksum inventories. The
 [source registry](../SOURCES.json) retains the URL and exact identity.
 Local download access and permission to republish are separate conditions.

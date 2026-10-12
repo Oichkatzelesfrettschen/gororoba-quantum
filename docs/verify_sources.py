@@ -6,13 +6,134 @@ import hashlib
 import json
 import re
 import subprocess
+from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
+from urllib.parse import urlsplit
 
 
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise ValueError(message)
+
+
+# The allowlist records reviewed grants and evidence routes, not inferred permissions.
+LICENSE_URLS = {
+    "CC-BY-4.0": "https://creativecommons.org/licenses/by/4.0/",
+    "CC0-1.0": "https://creativecommons.org/publicdomain/zero/1.0/",
+    "LicenseRef-arXiv-nonexclusive-distrib-1.0": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+    "LicenseRef-arXiv-assumed-1991-2003": "https://arxiv.org/licenses/assumed-1991-2003/",
+}
+PUBLIC_LICENSES = {"CC-BY-4.0", "CC0-1.0"}
+ARXIV_VERSION = r"(?:\d{4}\.\d{4,5}|[a-zA-Z][a-zA-Z0-9.-]*/\d{7})v[1-9]\d*"
+
+
+def require_mapping(value: Any, message: str) -> dict[str, Any]:
+    if not isinstance(value, dict):
+        raise ValueError(message)
+    return value
+
+
+def require_text(value: Any, message: str) -> str:
+    if not isinstance(value, str) or not value.strip():
+        raise ValueError(message)
+    return value
+
+
+def require_digest(value: Any, message: str) -> None:
+    require(isinstance(value, str) and re.fullmatch(r"[0-9a-f]{64}", value) is not None, message)
+
+
+def require_url(value: Any, message: str) -> str:
+    value = require_text(value, message)
+    parsed = urlsplit(value)
+    require(parsed.scheme in {"https", "http"} and bool(parsed.netloc), message)
+    return value
+
+
+def require_timestamp(value: Any, message: str) -> None:
+    require_text(value, message)
+    try:
+        observed = datetime.fromisoformat(value)
+    except ValueError as error:
+        raise ValueError(message) from error
+    require(observed.utcoffset() == timedelta(0), message)
+
+
+def verify_license_document(registry: dict[str, Any], identifier: str) -> None:
+    documents = require_mapping(registry.get("license_documents"), "operative license documents")
+    document = require_mapping(documents.get(identifier), "operative license document")
+    expected_url = LICENSE_URLS[identifier]
+    if identifier in PUBLIC_LICENSES:
+        expected_url += "legalcode.en"
+    require(document.get("url") == expected_url, "operative license URL")
+    require_digest(document.get("sha256"), "operative license SHA-256")
+    require_text(document.get("reading_scope"), "operative license reading scope")
+    require_timestamp(document.get("verified_at_utc"), "operative license timestamp")
+
+
+def verify_source_rights(
+    entry: dict[str, Any], registry: dict[str, Any], *, published: bool, payload: bytes = b""
+) -> None:
+    """Check recorded rights consistency; primary-source inspection supplies the judgment."""
+    rights = require_mapping(entry.get("rights"), "source rights object")
+    require(rights.get("verified") is True, "source rights verification")
+    require_digest(rights.get("pdf_sha256"), "rights PDF SHA-256")
+    require(rights["pdf_sha256"] == entry["sha256"], "rights PDF identity")
+    require_digest(rights.get("evidence_sha256"), "rights evidence SHA-256")
+    require_url(rights.get("evidence_url"), "rights evidence URL")
+    require_timestamp(rights.get("verified_at_utc"), "rights verification timestamp")
+    for field in ("evidence_locator", "reading_scope", "evidence_summary", "license_identifier"):
+        require_text(rights.get(field), f"rights {field}")
+    identifier = rights["license_identifier"]
+    if published:
+        require(entry.get("status") == "retained", "published retention status")
+        require(entry.get("redistribution") == "explicit_license_verified", "published redistribution status")
+        require(rights.get("decision") == "publish_under_explicit_license", "published rights decision")
+        require(identifier in PUBLIC_LICENSES, "published license allowlist")
+        require(rights.get("copy_status") == "unchanged", "published copy status")
+        require_text(rights.get("conditions"), "published license conditions")
+        require(rights.get("license_url") == LICENSE_URLS[identifier], "published license URL")
+        require(bool(payload), "published PDF payload")
+        require(hashlib.sha256(payload).hexdigest() == entry["sha256"], "published rights payload identity")
+    else:
+        require(rights.get("decision") == "external_only", "external-only rights decision")
+        if rights.get("license_url") is not None:
+            require_url(rights["license_url"], "external-only license URL")
+    if identifier in LICENSE_URLS:
+        verify_license_document(registry, identifier)
+    source_url = entry["source_url"]
+    require_url(source_url, "rights source URL")
+    if urlsplit(source_url).netloc == "arxiv.org":
+        source = re.fullmatch(rf"https://arxiv\.org/pdf/({ARXIV_VERSION})(?:\.pdf)?", source_url)
+        if source is None:
+            raise ValueError("arXiv source version")
+        require(rights["evidence_url"] == f"https://arxiv.org/abs/{source[1]}", "arXiv evidence version")
+        allowed_identifiers = PUBLIC_LICENSES if published else set(LICENSE_URLS) - PUBLIC_LICENSES
+        require(identifier in allowed_identifiers, "arXiv rights classification")
+        observed_url = rights.get("observed_license_url") if published else rights.get("license_url")
+        observed_url = require_url(observed_url, "arXiv observed license URL")
+        require(observed_url.replace("http://", "https://", 1) == LICENSE_URLS[identifier], "arXiv license identity")
+    elif published:
+        record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
+        if record is None:
+            raise ValueError("published license evidence route")
+        licensed_file = require_mapping(rights.get("licensed_file"), "licensed deposit file")
+        require_url(licensed_file.get("url"), "licensed deposit file URL")
+        require(
+            re.fullmatch(rf"https://zenodo\.org/api/records/{record[1]}/files/[^/?#]+/content", licensed_file["url"])
+            is not None,
+            "licensed deposit record identity",
+        )
+        require(licensed_file.get("sha256") == entry["sha256"], "licensed deposit SHA-256")
+        require(
+            type(licensed_file.get("bytes")) is int and licensed_file["bytes"] == len(payload),
+            "licensed deposit size",
+        )
+        require(
+            licensed_file.get("md5") == hashlib.md5(payload, usedforsecurity=False).hexdigest(),
+            "licensed deposit MD5",
+        )
 
 
 def verify_external_sources(root: Path, registry: dict[str, Any], published_digests: set[str]) -> int:
@@ -42,6 +163,7 @@ def verify_external_sources(root: Path, registry: dict[str, Any], published_dige
         require(digest not in external_digests, "duplicate external-only PDF digest")
         require(digest not in published_digests, "external-only PDF appears in the published inventory")
         external_digests.add(digest)
+        verify_source_rights(entry, registry, published=False)
         for size_field in ("bytes", "pages"):
             require(type(entry[size_field]) is int and entry[size_field] > 0, f"external-only {size_field}")
         note = root / entry["note"]
@@ -97,6 +219,10 @@ def verify() -> None:
         require(entry["pages"] > 0, f"recorded page count: {relative}")
         require(entry["source_url"].startswith(("https://", "http://")), f"retrieval URL: {relative}")
         require((root / entry["note"]).is_file(), f"owning note: {relative}")
+        verify_source_rights(entry, registry, published=True, payload=payload)
+        note_text = (root / entry["note"]).read_text()
+        for identity in (entry["source_url"], entry["rights"]["license_url"], entry["rights"]["evidence_url"]):
+            require(identity in note_text, f"published note rights links: {relative}")
         checksum_lines.append(f"{digest}  {relative}\n")
     actual_paths = {
         path.relative_to(root).as_posix() for path in (library / "pdf").glob("*.pdf") if not path.is_symlink()

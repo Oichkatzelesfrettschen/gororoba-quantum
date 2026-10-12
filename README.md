@@ -6,7 +6,8 @@ basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables.
 
-The [source library](docs/README.md) retains primary papers, per-paper notes,
+The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
+The [source library](docs/README.md) retains licensed primary PDFs, per-paper notes,
 download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
 [coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
 objectives, evidence boundaries, ownership, and ordered delivery gates.

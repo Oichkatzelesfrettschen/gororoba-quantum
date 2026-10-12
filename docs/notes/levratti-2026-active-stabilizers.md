@@ -1,5 +1,11 @@
 # Levratti: active stabilizers and Cayley-Dickson zero-divisor supports
 
+## Source copy and license
+
+The unchanged [source PDF](https://www.informationalidentityboundary.info/public/paper5.pdf) is retained under [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/).
+The [source-specific license evidence](https://zenodo.org/api/records/20431754) identifies the grant.
+[SOURCES.json](../SOURCES.json) binds the source bytes, evidence hash and reading scope.
+
 [P] marks a statement or number in the source. [I] marks a repository
 inference or exact check. Author-reported hardware observations remain
 independent of the repository's own retained QPU evidence.
@@ -14,7 +20,8 @@ independent of the repository's own retained QPU evidence.
 - Direct PDF, linked by that page:
   https://www.informationalidentityboundary.info/public/paper5.pdf
 - The page links DOI https://doi.org/10.5281/zenodo.20431754.
-  The Zenodo record and its deposited bytes remain unverified.
+  The source-rights audit verifies the linked CC BY 4.0 record and the
+  deposited PDF against the retained byte count, SHA-256 and record MD5.
 - Retained PDF: [9-page manuscript](../pdf/levratti-2026-active-stabilizers.pdf),
   390731 bytes, retrieved 12 October 2026 UTC; SHA-256
   `7bd01b5fda24b2de56b10bf9404efaa968e48d467350f1b8f361ef9ed36c3a9b`.
@@ -25,8 +32,9 @@ independent of the repository's own retained QPU evidence.
 - Reading scope: all nine pages as extracted text; page images 3-8 verify
   the support table, Theorems 3.1, 4.2, 5.1, 5.4 and 5.5, the complete
   hardware table, and the bridge-unit argument. The imported proofs from
-  references [1]-[4], the author's verification code, raw hardware data,
-  and the Zenodo record receive no independent verification here.
+  references [1]-[4], the author's verification code and raw hardware data
+  receive no independent verification here. The separate rights audit
+  verifies Zenodo license metadata and deposited-file identity.
 - Status: author-hosted manuscript. The retrieved PDF establishes neither
   peer review nor an independently reproduced hardware result. The
   acknowledgements disclose AI assistance and author-run numerical checks.
@@ -156,9 +164,9 @@ zero-product fringe.
 ## Repository use and remaining evidence
 
 The PDF retrieval and requested theorem/hardware-section inspection are
-complete. The Zenodo identity, imported sign-classification proofs, corrected
-Type-B argument, and lossless experimental data remain separate evidence
-items. The [Fano-CSS companion note](levratti-2026-fano-css.md) retains its
+complete. The source-rights audit also verifies the Zenodo file identity
+and CC BY 4.0 grant. Imported sign-classification proofs, the corrected
+Type-B argument, and lossless experimental data remain separate evidence items. The [Fano-CSS companion note](levratti-2026-fano-css.md) retains its
 original narrower audit; claims imported from this source now route here.
 
 The standard support and syndrome identities supply classical conformance
