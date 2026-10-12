@@ -16,6 +16,10 @@ and signed box-kite fringes, with the proposed hardware depths labeled.
 - `cayley-dickson-ripples.html` is generated from the evidence and the
   repository HTML template. All displayed distributions are ideal local
   predictions. A measured rendering requires a separately approved QPU run.
+- [rank-sector-norms.svg](rank-sector-norms.svg) plots the eight four-qubit
+  sectors and all 160 acquisition values along the exact multiplication path.
+  [The PNG preview](rank-sector-norms.png) carries the same explicitly ideal
+  curves, exceptional parameters, and coefficient normalization.
 
 The [derivation and interpretation](../../gororoba_quantum/RIPPLE_DYNAMICS.md)
 state the mathematical and physical claim boundaries. The
@@ -48,6 +52,36 @@ retained numerical residuals must be finite and below the fixed tolerance.
 Dependency versions record provenance and can differ on a replay. The
 renderer checks data consistency and exact HTML reproduction; it relies on
 the preceding verifier for independent scientific validation.
+
+The rank-sector renderer uses the optional plotting pin `matplotlib==3.11.2`,
+which is separate from the QPU dependencies in `requirements.txt`. Install
+that version into the intended plotting environment with
+`"$PYTHON" -m pip install "matplotlib==3.11.2"` when needed. The retained images
+were generated with Matplotlib 3.11.2 and NumPy 2.5.4 using the bundled DejaVu
+Sans font and the Agg backend.
+
+The renderer constructs the 32 quartic norm numerators from each sector's
+signed-permutation matrices. Five exact full 32-dimensional matrix evaluations
+verify all 160 acquisition probabilities before either image is written.
+The SVG embeds the rational probabilities, polynomial coefficients and probe
+coordinates with relative source references. Every curve represents the ideal
+model; marker locations identify proposed acquisition settings.
+
+Regenerate both formats from the repository root:
+
+```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \
+  MPLCONFIGDIR=/tmp/rank-sector-mplconfig \
+  "$PYTHON" scripts/render_rank_sector_norms.py \
+  --png results/ripple/rank-sector-norms.png
+```
+
+Add `--check` to render in temporary storage and compare both retained images
+byte for byte without rewriting them. The check also repeats the exact-value
+verification. Two renders in the recorded plotting environment produced
+identical SVG and PNG bytes. Package or font changes can alter image bytes;
+review and regenerate the images when the plotting environment changes.
 
 The verifier's built-in negative controls reject invalid depths, unsupported
 pairs, mutated algebra signs, failed normalization and confusion between a

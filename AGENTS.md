@@ -9,6 +9,9 @@ The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only. Before any push, these exit 0:
 
+The rank-sector image gate also uses the plotting-only pin
+`matplotlib==3.11.2`, documented in [results/ripple/README.md](results/ripple/README.md).
+
 ```sh
 (
   set -eu
@@ -18,13 +21,13 @@ lint and type-check configuration only. Before any push, these exit 0:
     results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
-    scripts/render_ripple_visualization.py
+    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
     results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
-    scripts/render_ripple_visualization.py
+    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/verify_evidence.py
@@ -43,7 +46,7 @@ lint and type-check configuration only. Before any push, these exit 0:
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
-    runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
+    runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
     qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
     qpu_planning.py qpu_planning_contracts.py qpu_cases.py local_compute.py \
     algebra_planning.py algebra_planning_contracts.py \
@@ -59,7 +62,7 @@ lint and type-check configuration only. Before any push, these exit 0:
     ../results/live/verify_source_closure.py ../results/local_compute/verify_evidence.py \
     ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
     ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py \
-    ../scripts/render_ripple_visualization.py
+    ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -75,6 +78,9 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" ../scripts/render_ripple_visualization.py \
     --evidence ../results/ripple/evidence.json \
     --out ../results/ripple/cayley-dickson-ripples.html --check
+  PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-/tmp/rank-sector-mplconfig}" \
+    "$PYTHON" ../scripts/render_rank_sector_norms.py \
+    --png ../results/ripple/rank-sector-norms.png --check
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
@@ -86,6 +92,7 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
   "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
   "$PYTHON" runtime_contracts.py
+  "$PYTHON" parameter_binding_contracts.py
   "$PYTHON" qpe_diagnostics.py
   "$PYTHON" experiment_optimizer.py
   "$PYTHON" qpu_planning_contracts.py
