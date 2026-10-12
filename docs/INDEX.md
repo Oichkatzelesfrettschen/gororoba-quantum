@@ -164,8 +164,14 @@ and their [replay](evidence/schur_acceleration/README.md) separate first-order
 admission, second-order compatibility, and exact obstruction witnesses. A
 nullity-12 example passes the linear constraints but fails a necessary
 quadratic tangent condition. Compatible acceleration certificates describe
-formal second-order solutions; actual curves and complete tangent cones
-require further analysis.
+formal second-order solutions. The
+[selected-center proof](notes/nullity_twelve_local_geometry.md) and
+[replay](evidence/nullity_twelve_locus/README.md) also construct actual curves
+and prove the complete Bouligand cone `A15 union B17`, with intersection
+dimension thirteen, at `e1+e18` on the doubly-pure dimension-32,
+norm-squared-two nullity-twelve locus. Exact CPU certificates and written
+arguments establish that result; a Rocq port, other centers, neighborhood
+branches and attachments remain separate obligations.
 
 The [finite field-model replay](evidence/vacuum_models/README.md) checks
 invariant-sector encoding, observable-specific cutoff bias, synthesis error,

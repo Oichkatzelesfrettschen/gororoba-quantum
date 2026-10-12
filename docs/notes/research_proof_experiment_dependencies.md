@@ -28,14 +28,16 @@ exact solution. A real tangent direction may require ramification
 `x(s)=x0+s^q*h+...`; demanding a nonzero first derivative is stronger.
 
 The mathematics-owned selected-center construction establishes the Bouligand
-cone `A15 union B17` at `e1+e18` on the norm-squared-two nullity-twelve
-locus, with intersection dimension thirteen. A four-parameter exact slice
+cone `A15 union B17` at `e1+e18` on the doubly-pure dimension-32,
+norm-squared-two nullity-twelve locus, with intersection dimension thirteen. A four-parameter exact slice
 supplies the directions beyond an eleven-dimensional octonion-automorphism
 orbit; the published bundle and length ratio realize B17. The nonlinear cone
 rules out C1 embedded-manifold structure at that center. The owning
-`nullity_twelve_local_geometry.md` note and `nullity_twelve_locus` replay
-carry the coefficient identities, actual curves, equivariance and domain
-checks. Their integration retains the mathematics workstream's review gates.
+[proof note](nullity_twelve_local_geometry.md) and
+[replay](../evidence/nullity_twelve_locus/README.md) carry the coefficient
+identities, actual curves, equivariance and domain checks. Exact CPU
+certificates and written arguments establish the result; Rocq formalization
+remains a separate proof obligation.
 A selected-center cone equality still leaves neighborhood parametrizations,
 local links and attachments, other centers and the global rank-stratum
 classification as separate problems. The
@@ -47,7 +49,7 @@ larger questions.
 | Candidate theorem / artifact | Relevant source | Required bridge and falsifier |
 | --- | --- | --- |
 | Exact rank at a rational/algebraic point | [MathComp / CoqEAL](mathcomp-coqeal-matrix-certificates.md) | Lower witness `M*A*N=I_r` and upper factorization `A=B*C`; use correct field and dimensions. `kermx` is a left kernel, whereas repository annihilator vectors use the right/column convention |
-| Schur rank-locus or curve certificate | Same matrix libraries; curve-selection sources above | Prove determinant/pivot domain, cleared denominator signs and exact polynomial identities; finite evaluations cannot replace all-real coefficient equality |
+| [Selected-center cone and curve certificate](nullity_twelve_local_geometry.md) | Same matrix libraries; curve-selection sources above | Prove determinant/pivot domain, cleared denominator signs and exact polynomial identities; finite evaluations cannot replace all-real coefficient equality |
 | Ideal controlled circuit and arithmetic | [SQIR / VOQC](sqir-voqc-proof-interfaces.md) | Bit/basis order, ancilla cleanup, exact relative phase, parser/translation and output decoder; up-to-global-phase optimizer equivalence needs a controlled-context bridge |
 | Dynamic program with retained outcomes | SQIR density semantics; [QILGST](2103.03008.md) | Outcome-indexed instrument maps or explicit classical registers; unconditional branch-summed equality can hide a wrong joint record |
 | Numeric interval decision from retained counts | [CoqInterval](coqinterval-certified-enclosures.md) | Rational inputs, enclosure/domain proofs, source-bound count certificate; a correct interval evaluator alone supplies no coverage theorem |
@@ -59,6 +61,9 @@ named declarations were inspected; joint build compatibility with the pinned
 Rocq environment remains untested. Adoption requires a pinned dependency set,
 compile/kernel replay, `Print Assumptions`, source/generator hashes and a
 translation or independently checked certificate from repository inputs.
+The replay toolchain should also pin formatter versions: a formatter change
+can alter certificate-source bytes and requires coordinated regeneration of
+dependent source hashes even when the mathematical semantics agree.
 Physical stationarity, calibrated POVMs and noise laws remain stated empirical
 assumptions; a proof assistant cannot infer them from a finite shot file.
 

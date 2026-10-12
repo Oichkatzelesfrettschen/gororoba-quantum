@@ -128,7 +128,13 @@ dimension. Four repair routes have different proof obligations:
    with fifteen domains in dimension 32. Its kernel-restricted overlap
    identities give a global semialgebraic incidence presentation. The
    all-stage written proof, finite exact replay and Rocq formalization remain
-   separate evidence surfaces.
+   separate evidence surfaces. The
+   [selected-center cone proof](nullity_twelve_local_geometry.md) supplies a
+   concrete next port: projected-Schur coefficient completeness, the real
+   sum-of-squares reduction, actual `A15` and `B17` curves, and both Bouligand
+   cone inclusions. Rocq must connect the exact certificate to matrix
+   semantics and formalize positivity, denominator domains, automorphism
+   flows and tangent limits; CPU replay alone leaves those bridges open.
 
 4. **Keep every support sector.** For support in affine XOR coset `a+H`,
    the input sector `c+H` maps into `a+c+H`. Certify the coset cover and zero
@@ -155,6 +161,7 @@ keeping `m1=0`.
 | Average-only obstruction | Equal averages can yield different product averages; complete average/detail coordinates have inverse maps | Newly checked scalar `Qc` certificate; full tower bridge remains open |
 | Exact zero products and rank | Sound recursive sign/product checker plus the retained 16D counterexample; certified pivot and kernel dimensions | Exact Python/Rust evidence exists; port checker soundness and witnesses to Rocq |
 | Schur and sector reduction | Block-elimination kernel bijection, rank sum, metric and full sector cover | Written principal-cover and overlap proofs and exact replay exist; port field/matrix lemmas, cover and refinement-checker soundness to Rocq |
+| [Selected-center tangent cone](nullity_twelve_local_geometry.md) | At doubly-pure `e1+e18` in dimension 32, norm squared two and nullity twelve, prove `A15 union B17` with intersection dimension thirteen | Exact CPU certificates and written curve/limit proofs exist; Rocq correspondence and analytic lemmas remain open; neighborhood branches and attachments require additional mathematics |
 | Boolean sign and synthesis | Connect checked normalized sign-code results to basis recursion and controlled-phase reconstruction | Seven prior sign-code/C881 assumption queries are closed; exhaustive quadratic exclusion remains separate finite Rust evidence |
 | Labeled QPE laws | Exact Gaussian-integer amplitudes and normalized distributions; two-bit arms use `y=b0+2*b1`, while the delay arm uses only its measured terminal bit | Port `qpe_diagnostics.py`; ideal laws require zero hardware samples |
 | Finite ripple dynamics | Exact operators, unitarity, return periods and signed graph obstruction | Port the execution owner's exact checker; a depth-0-to-4 hardware run cannot prove a longer operator period |

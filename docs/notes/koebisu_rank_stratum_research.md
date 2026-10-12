@@ -168,8 +168,14 @@ the skew reduction and derivative calculation on the stated fixtures. The
 residual equations, kernel lifts and metrics across all 30 doubly-pure
 coefficient directions. The [principal atlas](principal_skew_atlas.md)
 supplies 15 covering domains in dimension 32 and verifies the overlap maps
-on their residual kernels. Solving the reduced germs and their attachments
-remains a separate obligation. The finite probe checks the six rational
+on their residual kernels. The
+[selected-center proof](nullity_twelve_local_geometry.md) now resolves the
+complete Bouligand cone at `e1+e18` on the doubly-pure, norm-squared-two,
+nullity-twelve locus as `A15 union B17`, with intersection dimension thirteen.
+Exact slice curves and automorphism flows realize `A15`; the published
+bundle and positive length ratio realize `B17`. The result sharpens the
+first-order bound below while leaving full neighborhood equations,
+attachments and other centers open. The finite probe checks the six rational
 perturbations `x_*(j)+e_i/3`, with `j=0,1,2` and `i=2,17`, where `x_*(j)`
 is the unnormalized certified path endpoint. Every pivot remains invertible;
 every reduced/full rank and lifted-residual identity agrees; all six
