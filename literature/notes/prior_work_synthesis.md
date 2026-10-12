@@ -8,6 +8,14 @@ tree by a gate or by the orchestrator; [A] marks a delegate's derivation
 carried by no gate; [H] marks a hardware measurement from record
 2026-10-11T152922.787095Z.
 
+The [parallel-experiment literature synthesis](quantum_experiment_parallelism.md)
+adds source-level connections for multiprogramming, simultaneous/context
+characterization, drift, blocked designs, execution accounting and IQP
+hardness. It distinguishes established methods from candidate diagnostic
+implementations and keeps the experiment priorities below intact. The
+[PDF checksum set](../parallel_experiment_pdfs.sha256) and per-paper notes
+provide retrieval and reading provenance.
+
 ## Ledger
 
 | repository claim | label | source and item | what remains ours |
@@ -43,9 +51,10 @@ calibration-derived Pauli model [H for the measured gap]. The remaining
 residual has unresolved causes; two of six layouts carry a coherent
 second-bit bias. The mechanism ladder tests specific explanations under
 the control assumptions in HARDWARE_PLAN.md. Nine concurrent
-feed-forward streams cost 187 dt of schedule against two, with no measurable
-fidelity cost on the shared layout, and that layout had a cross-group
-one-hop neighbor in the packed PUB [H, V]. The factor-yield admission of
+feed-forward streams cost 187 dt of schedule against two. The preregistered
+packing intervals pass the 0.03 margin on the shared layout, while the
+retained distribution-free folded-QPE interval crosses that margin. The
+layout had a cross-group one-hop neighbor in the packed PUB [H, V]. The factor-yield admission of
 hybrid Shor is true and phase-insensitive; folded QPE is the one feed-forward
 test the record contains [V].
 
