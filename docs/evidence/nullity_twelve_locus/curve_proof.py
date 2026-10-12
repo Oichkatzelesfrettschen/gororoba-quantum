@@ -375,7 +375,7 @@ def orbit_proof() -> dict[str, object]:
         [[[int(value) for value in row] for row in matrix.tolist()] for matrix in extended],
         min_items=4,
     )
-    require(extended_checks == [1024] * 14, "extended derivation denominator differs")
+    require(extended_checks == [1024] * 14, "per-derivation basis-pair check counts differ")
     center = column(1) + column(18)
     orbit = sp.Matrix.hstack(*(matrix * center for matrix in extended))
     require(orbit.rank() == 11, "automorphism orbit rank differs")
