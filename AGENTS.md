@@ -23,6 +23,8 @@ lint and type-check configuration only. Before any push, these exit 0:
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
+    qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
+    qpu_planning.py qpu_planning_contracts.py qpu_cases.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
@@ -51,6 +53,10 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
   "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
   "$PYTHON" runtime_contracts.py
+  "$PYTHON" qpe_diagnostics.py
+  "$PYTHON" experiment_optimizer.py
+  "$PYTHON" qpu_planning_contracts.py
+  "$PYTHON" qpu_cases.py --check
   "$PYTHON" variance.py
   "$PYTHON" adjudicate.py --check
   "$PYTHON" cd_core.py >/dev/null
@@ -72,6 +78,12 @@ every replica of a choice in one call and parallelize experiments itself.
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under
 results/live/.
+
+The matched diagnostic families and statistical design contracts are documented
+in [QPU_OPTIMIZATION.md](gororoba_quantum/QPU_OPTIMIZATION.md). Their local
+gates exercise exact labeled laws, bounded inference, fake-backend layouts,
+aggregate budgets, and negative dry-run records; hardware claims require
+separately approved results.
 
 The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
 when its generator, witnesses, or evaluator changes. Run the checks on a copy
@@ -104,7 +116,9 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
   digest with `--approved-record-sha256`, and the case's seconds with
   `--max-execution-seconds` (the Sampler's max_execution_time, which the
   service enforces; the dry run is made with the same value, since the
-  policy carries it); the fresh plan must match the record in experiment
+  policy carries it). `--max-total-execution-seconds` caps the sum of all
+  job ceilings, and `--reserve-seconds` names the retained quota. The fresh
+  plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
   replica qubits, fused PUB manifests, calibration at the refresh and again

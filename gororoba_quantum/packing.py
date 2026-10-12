@@ -4,11 +4,13 @@ A compiled group occupies a pattern: the physical qubits its ISA circuits touch
 and the CZ edges between them. Every subgraph-isomorphic embedding of that
 pattern in the backend's CZ coupling graph runs the identical gate sequence on
 other hardware, so a replica differs from the compiled original only in the
-qubits it occupies. Replicas sit on disjoint qubit sets separated by at least
-one qubit, which leaves no CZ coupler between two replicas; each carries its
-own classical registers, named by a replica prefix, so one shot yields one
-independent sample per replica and the registers split the result back into
-per-replica distributions.
+qubits it occupies. The placement policy separates same-group replicas by one
+hop in the admitted routing graph; cross-group buffering also follows the
+physical couplers, including excluded edges. Each replica carries its own
+classical registers, named by a replica prefix, so one shot yields a labeled
+outcome per replica and the registers recover per-replica distributions.
+Disjoint registers and separated qubits do not establish statistical
+independence; inference must state its dependence assumptions.
 """
 
 from __future__ import annotations

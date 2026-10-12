@@ -1,0 +1,905 @@
+"""Bounded experiment design under explicit statistical and charge assumptions.
+
+The optimizer compares supplied plans; it neither compiles circuits nor contacts
+a service. A plan must meet every named observable contract. Signed contrasts
+remain separate objectives, and the cheapest feasible plan wins deterministically.
+
+Hoeffding bounds assume independent repetitions of stationary, bounded outcomes.
+Replicas and components within one PUB shot may be arbitrarily dependent. A
+declared covariance upper bound can tighten the bound through Cantelli or
+Chebyshev. Union bounds require no independence between PUBs. Finite-shot noise
+predictions receive a separate simultaneous Hoeffding error allowance across the
+entire candidate search. These guarantees concern the supplied noise model;
+hardware-model discrepancy remains unquantified.
+
+Run the module directly for deterministic, service-free self-tests.
+"""
+
+from __future__ import annotations
+
+import math
+from dataclasses import asdict, dataclass, field, replace
+from typing import Any
+
+import numpy as np
+
+
+@dataclass(frozen=True)
+class ObservableTerm:
+    """One member's bounded score vector, added or subtracted from a contrast."""
+
+    member: str
+    values: tuple[float, ...]
+    sign: int = 1
+
+
+@dataclass(frozen=True)
+class ObservableContract:
+    """A named endpoint with precision or one-sided effect/power requirements.
+
+    A positive minimum_effect specifies an alternative that far above null_value.
+    The prediction must clear that alternative, and the experiment must detect
+    the declared minimum effect with the requested conditional power. Zero uses
+    the positive modeled gap after the simulation allowance as the alternative;
+    the result names that effect explicitly. alpha is
+    per endpoint; the model-simulation confidence is a separate search-wide
+    allowance. precision_half_width requests a two-sided confidence interval.
+    """
+
+    name: str
+    terms: tuple[ObservableTerm, ...]
+    null_value: float = 0.0
+    minimum_effect: float | None = None
+    alpha: float = 0.05
+    power: float = 0.8
+    precision_half_width: float | None = None
+
+
+@dataclass(frozen=True)
+class PubPrediction:
+    """Predicted replica marginals and the cost of repeating one exact PUB.
+
+    A member name occurs in exactly one PUB across a plan. simulation_shots
+    records the samples behind every marginal; None asserts exact deterministic
+    model probabilities. scheduled_seconds contains the supplied circuit
+    duration. reset_seconds and classical_latency_seconds add only components
+    absent from that duration. duration_assumption states that accounting
+    boundary, including uncertainty such as an unmeasured scheduler residual.
+    """
+
+    name: str
+    member_distributions: dict[str, tuple[tuple[float, ...], ...]]
+    scheduled_seconds: float
+    repetition_delay_seconds: float
+    duration_assumption: str
+    reset_seconds: float = 0.0
+    classical_latency_seconds: float = 0.0
+    simulation_shots: int | None = None
+
+
+@dataclass(frozen=True)
+class JobCandidate:
+    """One actual backend/kind batch, with its own execution ceiling."""
+
+    name: str
+    pubs: tuple[PubPrediction, ...]
+    shots: int
+    overhead_seconds: float
+    max_execution_seconds: float
+    overhead_assumption: str
+    minimum_shots: int = 1
+    shot_granularity: int = 1
+
+
+@dataclass(frozen=True)
+class CovarianceBound:
+    """Explicit PSD upper bound on one observable's same-shot score covariance.
+
+    labels lists member/rN in observable term order and replica order. matrix
+    bounds the covariance of the unsigned per-replica score variables in PSD
+    order; the optimizer applies each term's sign and replica-average weight.
+    The bound must include cross-member covariance when the PUB fuses members.
+    assumption records the evidence or modeling assumption supporting the bound.
+    """
+
+    observable_name: str
+    pub_name: str
+    labels: tuple[str, ...]
+    matrix: tuple[tuple[float, ...], ...]
+    assumption: str
+
+
+@dataclass(frozen=True)
+class CandidatePlan:
+    name: str
+    jobs: tuple[JobCandidate, ...]
+    covariance_bounds: tuple[CovarianceBound, ...] = ()
+    proxy_metadata: dict[str, float | str] = field(default_factory=dict)
+
+
+@dataclass(frozen=True)
+class BudgetContract:
+    remaining_seconds: float
+    reserve_seconds: float
+    max_total_execution_seconds: float
+
+
+@dataclass(frozen=True)
+class PubCost:
+    name: str
+    shots: int
+    scheduled_seconds: float
+    repetition_delay_seconds: float
+    reset_seconds: float
+    classical_latency_seconds: float
+    estimated_execution_seconds: float
+    duration_assumption: str
+
+
+@dataclass(frozen=True)
+class JobCost:
+    name: str
+    pubs: tuple[PubCost, ...]
+    overhead_seconds: float
+    estimated_charge_seconds: float
+    max_execution_seconds: float
+    overhead_assumption: str
+
+
+@dataclass(frozen=True)
+class ObservableResult:
+    name: str
+    predicted_value: float
+    simulation_error_radius: float
+    modeled_value_lower_bound: float
+    modeled_value_upper_bound: float
+    confidence_half_width: float
+    detection_radius: float | None
+    power_radius: float | None
+    effect_used_for_power: float | None
+    minimum_effect: float | None
+    precision_half_width: float | None
+    alpha: float
+    power: float | None
+    null_value: float
+    bound_methods: tuple[str, ...]
+    covariance_assumptions: tuple[str, ...]
+    feasible: bool
+    rejection_reasons: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class CandidateResult:
+    name: str
+    feasible: bool
+    estimated_charge_seconds: float | None
+    total_execution_ceiling_seconds: float | None
+    jobs: tuple[JobCost, ...]
+    observables: tuple[ObservableResult, ...]
+    rejection_reasons: tuple[str, ...]
+    proxy_metadata: dict[str, float | str]
+
+
+@dataclass(frozen=True)
+class OptimizationResult:
+    selected: str | None
+    candidates: tuple[CandidateResult, ...]
+    pareto_frontier: tuple[str, ...]
+    rejection_reasons: tuple[str, ...]
+    simulation_alpha: float
+    simulation_comparisons: int
+    assumptions: tuple[str, ...]
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+@dataclass(frozen=True)
+class ObservedPub:
+    """Measured replica marginals from one immutable PUB identity."""
+
+    name: str
+    member_distributions: dict[str, tuple[tuple[float, ...], ...]]
+    shots: int
+
+
+@dataclass(frozen=True)
+class ObservationResult:
+    name: str
+    estimate: float
+    lo: float
+    hi: float
+    confidence_half_width: float
+    alpha: float
+    null_value: float
+    detection_radius: float | None
+    reject_null: bool | None
+    bound_methods: tuple[str, ...]
+
+
+@dataclass(frozen=True)
+class ObservationAnalysis:
+    observables: tuple[ObservationResult, ...]
+    method: str
+    assumptions: tuple[str, ...]
+
+    def as_dict(self) -> dict[str, Any]:
+        return asdict(self)
+
+
+ASSUMPTIONS = (
+    "independent stationary repetitions; arbitrary dependence within each PUB shot unless explicitly bounded",
+    "union bounds across PUBs; no independence assumption between PUBs",
+    "observable alpha and power are per endpoint, conditional on the supplied outcome model",
+    "finite simulation error is controlled simultaneously across all supplied candidate-observable marginals",
+    "hardware-model discrepancy and cost-model error remain unquantified",
+    "charge estimates include every PUB, control, repetition delay, declared duration addition, and job overhead",
+    "execution ceilings apply per job; their aggregate must preserve the declared reserve",
+)
+
+
+def _finite(value: float) -> bool:
+    return not isinstance(value, bool) and math.isfinite(value)
+
+
+def _positive_integer(value: int) -> bool:
+    return isinstance(value, int) and not isinstance(value, bool) and value > 0
+
+
+def _require(condition: bool, message: str) -> None:
+    if not condition:
+        raise ValueError(message)
+
+
+def _validate_observable_contracts(contracts: tuple[ObservableContract, ...]) -> None:
+    _require(bool(contracts), "at least one observable contract is required")
+    _require(len({contract.name for contract in contracts}) == len(contracts), "observable names must be unique")
+    for contract in contracts:
+        _require(bool(contract.name.strip()) and bool(contract.terms), "each observable needs a name and terms")
+        _require(_finite(contract.null_value), f"{contract.name}: null value must be finite")
+        _require(_finite(contract.alpha) and 0 < contract.alpha < 1, f"{contract.name}: alpha must lie in (0, 1)")
+        _require(_finite(contract.power) and 0 < contract.power < 1, f"{contract.name}: power must lie in (0, 1)")
+        _require(
+            contract.minimum_effect is not None or contract.precision_half_width is not None,
+            f"{contract.name}: specify minimum_effect or precision_half_width",
+        )
+        _require(
+            contract.minimum_effect is None or (_finite(contract.minimum_effect) and contract.minimum_effect >= 0),
+            f"{contract.name}: minimum_effect must be finite and nonnegative",
+        )
+        _require(
+            contract.precision_half_width is None
+            or (_finite(contract.precision_half_width) and contract.precision_half_width > 0),
+            f"{contract.name}: precision_half_width must be finite and positive",
+        )
+        members = [term.member for term in contract.terms]
+        _require(len(set(members)) == len(members), f"{contract.name}: each member may occur once")
+        for term in contract.terms:
+            _require(bool(term.member.strip()), f"{contract.name}: member name is required")
+            _require(type(term.sign) is int and term.sign in (-1, 1), f"{contract.name}: term sign must be -1 or +1")
+            _require(
+                bool(term.values) and all(_finite(value) and -1 <= value <= 1 for value in term.values),
+                f"{contract.name}/{term.member}: score values must be finite and lie in [-1, 1]",
+            )
+
+
+def _validate_contracts(contracts: tuple[ObservableContract, ...], budget: BudgetContract) -> None:
+    _validate_observable_contracts(contracts)
+    for label, value in asdict(budget).items():
+        _require(_finite(value) and value >= 0, f"budget {label} must be finite and nonnegative")
+    _require(budget.max_total_execution_seconds > 0, "aggregate execution ceiling must be positive")
+    _require(budget.reserve_seconds <= budget.remaining_seconds, "budget reserve exceeds remaining seconds")
+
+
+def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...]) -> None:
+    _require(bool(plan.name.strip()) and bool(plan.jobs), "each candidate needs a name and jobs")
+    _require(len({job.name for job in plan.jobs}) == len(plan.jobs), f"{plan.name}: job names must be unique")
+    _require(len({job.shots for job in plan.jobs}) == 1, f"{plan.name}: jobs must share one uniform shots tier")
+    pub_names: set[str] = set()
+    member_names: set[str] = set()
+    for job in plan.jobs:
+        _require(bool(job.name.strip()) and bool(job.pubs), f"{plan.name}: each job needs a name and PUBs")
+        _require(_positive_integer(job.shots), f"{job.name}: shots must be a positive integer")
+        _require(_positive_integer(job.minimum_shots), f"{job.name}: minimum_shots must be a positive integer")
+        _require(_positive_integer(job.shot_granularity), f"{job.name}: shot_granularity must be a positive integer")
+        _require(job.shots >= job.minimum_shots, f"{job.name}: shots are below the required minimum")
+        _require(job.shots % job.shot_granularity == 0, f"{job.name}: shots violate the declared granularity")
+        _require(
+            _finite(job.overhead_seconds) and job.overhead_seconds >= 0,
+            f"{job.name}: overhead must be finite and nonnegative",
+        )
+        _require(
+            _finite(job.max_execution_seconds) and job.max_execution_seconds > 0,
+            f"{job.name}: execution ceiling must be finite and positive",
+        )
+        _require(bool(job.overhead_assumption.strip()), f"{job.name}: overhead assumption is required")
+        for pub in job.pubs:
+            _require(bool(pub.name.strip()) and pub.name not in pub_names, f"{job.name}: PUB names must be unique")
+            pub_names.add(pub.name)
+            _require(bool(pub.member_distributions), f"{pub.name}: member predictions are required")
+            _require(bool(pub.duration_assumption.strip()), f"{pub.name}: duration assumption is required")
+            _require(
+                pub.simulation_shots is None or _positive_integer(pub.simulation_shots),
+                f"{pub.name}: simulation_shots must be positive or None for exact probabilities",
+            )
+            for label, value in (
+                ("scheduled_seconds", pub.scheduled_seconds),
+                ("repetition_delay_seconds", pub.repetition_delay_seconds),
+                ("reset_seconds", pub.reset_seconds),
+                ("classical_latency_seconds", pub.classical_latency_seconds),
+            ):
+                _require(_finite(value) and value >= 0, f"{pub.name}: {label} must be finite and nonnegative")
+            _require(_repetition_seconds(pub) > 0, f"{pub.name}: total repetition duration must be positive")
+            for member, replicas in pub.member_distributions.items():
+                _require(bool(member.strip()) and member not in member_names, f"{member}: member names must be unique")
+                member_names.add(member)
+                _require(bool(replicas), f"{member}: at least one replica prediction is required")
+                for distribution in replicas:
+                    _require(
+                        bool(distribution)
+                        and all(_finite(value) and 0 <= value <= 1 for value in distribution)
+                        and math.isclose(math.fsum(distribution), 1.0, rel_tol=0.0, abs_tol=1e-9),
+                        f"{member}: every distribution must be finite, nonnegative, and normalized",
+                    )
+    for contract in contracts:
+        for term in contract.terms:
+            _require(term.member in member_names, f"{contract.name}: member {term.member!r} is absent")
+    keys = [(bound.observable_name, bound.pub_name) for bound in plan.covariance_bounds]
+    _require(len(set(keys)) == len(keys), f"{plan.name}: covariance bounds must have unique observable/PUB keys")
+    for bound in plan.covariance_bounds:
+        _require(
+            bound.observable_name in {contract.name for contract in contracts} and bound.pub_name in pub_names,
+            f"{plan.name}: covariance bound names an unknown observable or PUB",
+        )
+
+
+def _repetition_seconds(pub: PubPrediction) -> float:
+    return math.fsum(
+        (pub.scheduled_seconds, pub.repetition_delay_seconds, pub.reset_seconds, pub.classical_latency_seconds)
+    )
+
+
+def _costs(plan: CandidatePlan, budget: BudgetContract) -> tuple[tuple[JobCost, ...], list[str]]:
+    jobs: list[JobCost] = []
+    reasons: list[str] = []
+    for job in plan.jobs:
+        pubs = tuple(
+            PubCost(
+                pub.name,
+                job.shots,
+                pub.scheduled_seconds,
+                pub.repetition_delay_seconds,
+                pub.reset_seconds,
+                pub.classical_latency_seconds,
+                job.shots * _repetition_seconds(pub),
+                pub.duration_assumption,
+            )
+            for pub in job.pubs
+        )
+        charge = math.fsum([job.overhead_seconds, *(pub.estimated_execution_seconds for pub in pubs)])
+        _require(math.isfinite(charge), f"{job.name}: estimated charge overflowed")
+        jobs.append(
+            JobCost(job.name, pubs, job.overhead_seconds, charge, job.max_execution_seconds, job.overhead_assumption)
+        )
+        if charge > job.max_execution_seconds:
+            reasons.append(f"{job.name}: estimated charge exceeds the per-job execution ceiling")
+    ceiling = math.fsum(job.max_execution_seconds for job in plan.jobs)
+    _require(math.isfinite(ceiling), f"{plan.name}: aggregate execution ceiling overflowed")
+    if ceiling > budget.max_total_execution_seconds:
+        reasons.append("aggregate per-job ceilings exceed max_total_execution_seconds")
+    if ceiling > budget.remaining_seconds - budget.reserve_seconds:
+        reasons.append("aggregate per-job ceilings consume the declared budget reserve")
+    return tuple(jobs), reasons
+
+
+@dataclass(frozen=True)
+class _PubObservable:
+    name: str
+    shots: int
+    span: float
+    variance_bound: float | None
+    covariance_assumption: str | None
+
+
+def _covariance_variance(bound: CovarianceBound, labels: list[str], weights: list[float]) -> float:
+    _require(tuple(labels) == bound.labels, f"{bound.pub_name}: covariance labels differ from the observable vector")
+    _require(bool(bound.assumption.strip()), f"{bound.pub_name}: covariance assumption is required")
+    size = len(labels)
+    _require(
+        len(bound.matrix) == size
+        and all(len(row) == size and all(_finite(value) for value in row) for row in bound.matrix),
+        f"{bound.pub_name}: covariance bound must be a finite square matrix",
+    )
+    matrix = np.asarray(bound.matrix, dtype=float)
+    _require(
+        np.allclose(matrix, matrix.T, rtol=0.0, atol=1e-12), f"{bound.pub_name}: covariance bound must be symmetric"
+    )
+    matrix = (matrix + matrix.T) / 2
+    _require(float(np.linalg.eigvalsh(matrix).min()) >= 0, f"{bound.pub_name}: covariance bound must be PSD")
+    vector = np.asarray(weights, dtype=float)
+    variance_bound = float(vector @ matrix @ vector)
+    _require(math.isfinite(variance_bound), f"{bound.pub_name}: covariance projection overflowed")
+    _require(variance_bound >= 0, f"{bound.pub_name}: covariance projection must be nonnegative")
+    return variance_bound
+
+
+def _observable_inputs(
+    pubs: tuple[ObservedPub, ...],
+    contract: ObservableContract,
+    simulation_tail: float,
+    covariance_bounds: tuple[CovarianceBound, ...] = (),
+    simulation_shots: dict[str, int | None] | None = None,
+) -> tuple[float, float, tuple[_PubObservable, ...]]:
+    covariance = {(bound.observable_name, bound.pub_name): bound for bound in covariance_bounds}
+    predictions: list[float] = []
+    simulation_errors: list[float] = []
+    streams: list[_PubObservable] = []
+    for pub in pubs:
+        labels: list[str] = []
+        weights: list[float] = []
+        spans: list[float] = []
+        samples = (simulation_shots or {}).get(pub.name)
+        for term in contract.terms:
+            replicas = pub.member_distributions.get(term.member)
+            if replicas is None:
+                continue
+            weight = term.sign / len(replicas)
+            span = max(term.values) - min(term.values)
+            for replica_index, distribution in enumerate(replicas):
+                _require(
+                    len(distribution) == len(term.values),
+                    f"{contract.name}/{term.member}: score and distribution dimensions differ",
+                )
+                predictions.append(
+                    weight * math.fsum(p * value for p, value in zip(distribution, term.values, strict=True))
+                )
+                labels.append(f"{term.member}/r{replica_index}")
+                weights.append(weight)
+                spans.append(abs(weight) * span)
+                if samples is not None and span:
+                    radius = span * math.sqrt(math.log(2.0 / simulation_tail) / (2 * samples))
+                    simulation_errors.append(abs(weight) * min(radius, span))
+        if labels:
+            bound = covariance.get((contract.name, pub.name))
+            variance_bound = _covariance_variance(bound, labels, weights) if bound is not None else None
+            streams.append(
+                _PubObservable(
+                    pub.name,
+                    pub.shots,
+                    math.fsum(spans),
+                    variance_bound,
+                    bound.assumption if bound is not None else None,
+                )
+            )
+        else:
+            _require(
+                (contract.name, pub.name) not in covariance,
+                f"{contract.name}/{pub.name}: covariance bound has no observable terms",
+            )
+    return math.fsum(predictions), math.fsum(simulation_errors), tuple(streams)
+
+
+def _radius(streams: tuple[_PubObservable, ...], probability: float, two_sided: bool) -> float:
+    active = [stream for stream in streams if stream.span > 0]
+    if not active:
+        return 0.0
+    tail = probability / len(active)
+    if tail == 0:
+        # The total score range remains valid when a subnormal probability
+        # underflows during the union-bound allocation.
+        return math.fsum(stream.span for stream in active)
+    radii: list[float] = []
+    for stream in active:
+        hoeffding = stream.span * math.sqrt(math.log((2.0 if two_sided else 1.0) / tail) / (2 * stream.shots))
+        radius = min(hoeffding, stream.span)
+        if stream.variance_bound is not None:
+            multiplier = 1.0 / tail if two_sided else (1.0 - tail) / tail
+            covariance_radius = math.sqrt(stream.variance_bound / stream.shots * multiplier)
+            radius = min(radius, covariance_radius)
+        radii.append(radius)
+    return math.fsum(radii)
+
+
+def _evaluate_observable(plan: CandidatePlan, contract: ObservableContract, simulation_tail: float) -> ObservableResult:
+    pubs = tuple(ObservedPub(pub.name, pub.member_distributions, job.shots) for job in plan.jobs for pub in job.pubs)
+    samples = {pub.name: pub.simulation_shots for job in plan.jobs for pub in job.pubs}
+    predicted, model_radius, streams = _observable_inputs(
+        pubs, contract, simulation_tail, plan.covariance_bounds, samples
+    )
+    confidence = _radius(streams, contract.alpha, two_sided=True)
+    reasons: list[str] = []
+    detection = power = effect_used = None
+    if contract.minimum_effect is not None:
+        detection = _radius(streams, contract.alpha, two_sided=False)
+        power = _radius(streams, 1 - contract.power, two_sided=False)
+        modeled_gap = predicted - model_radius - contract.null_value
+        effect_used = modeled_gap if contract.minimum_effect == 0 else contract.minimum_effect
+        if modeled_gap <= 0 or modeled_gap < contract.minimum_effect:
+            reasons.append("model contrast after simultaneous simulation allowance is below the minimum effect")
+        if detection + power > effect_used:
+            reasons.append("shot tier cannot detect the reported alternative effect at the declared alpha and power")
+    if contract.precision_half_width is not None and confidence > contract.precision_half_width:
+        reasons.append("shot tier exceeds the declared confidence half-width")
+    return ObservableResult(
+        contract.name,
+        predicted,
+        model_radius,
+        predicted - model_radius,
+        predicted + model_radius,
+        confidence,
+        detection,
+        power,
+        effect_used,
+        contract.minimum_effect,
+        contract.precision_half_width,
+        contract.alpha,
+        contract.power if contract.minimum_effect is not None else None,
+        contract.null_value,
+        tuple(
+            "hoeffding_arbitrary_within_shot"
+            if stream.variance_bound is None
+            else "minimum_of_hoeffding_and_declared_covariance_cantelli_or_chebyshev"
+            for stream in streams
+        ),
+        tuple(stream.covariance_assumption for stream in streams if stream.covariance_assumption is not None),
+        not reasons,
+        tuple(reasons),
+    )
+
+
+def analyze_observations(
+    pubs: tuple[ObservedPub, ...], contracts: tuple[ObservableContract, ...]
+) -> ObservationAnalysis:
+    """Apply the planner's grouped bounds and directional test to measured data.
+
+    No cost or model-prediction fields are needed. The two-sided confidence
+    interval describes precision; reject_null applies the same one-sided alpha
+    threshold used by the planner's power contract. Dependence within a PUB shot
+    remains arbitrary. Invalid identities or marginal distributions raise
+    ValueError so a collector can withhold the analysis explicitly.
+    """
+    _validate_observable_contracts(contracts)
+    _require(bool(pubs), "at least one observed PUB is required")
+    _require(len({pub.name for pub in pubs}) == len(pubs), "observed PUB names must be unique")
+    members: set[str] = set()
+    for pub in pubs:
+        _require(bool(pub.name.strip()), "observed PUB name is required")
+        _require(_positive_integer(pub.shots), f"{pub.name}: observed shots must be a positive integer")
+        _require(bool(pub.member_distributions), f"{pub.name}: observed members are required")
+        for member, replicas in pub.member_distributions.items():
+            _require(bool(member.strip()) and member not in members, "observed member identities must be unique")
+            members.add(member)
+            _require(bool(replicas), f"{member}: at least one measured replica is required")
+            for distribution in replicas:
+                _require(
+                    bool(distribution)
+                    and all(_finite(value) and 0 <= value <= 1 for value in distribution)
+                    and math.isclose(math.fsum(distribution), 1.0, rel_tol=0.0, abs_tol=1e-9),
+                    f"{member}: observed distributions must be finite, nonnegative, and normalized",
+                )
+    rows: list[ObservationResult] = []
+    for contract in contracts:
+        for term in contract.terms:
+            _require(term.member in members, f"{contract.name}: observed member {term.member!r} is absent")
+        estimate, _, streams = _observable_inputs(pubs, contract, simulation_tail=1.0)
+        confidence = _radius(streams, contract.alpha, two_sided=True)
+        detection = _radius(streams, contract.alpha, two_sided=False) if contract.minimum_effect is not None else None
+        rows.append(
+            ObservationResult(
+                contract.name,
+                estimate,
+                estimate - confidence,
+                estimate + confidence,
+                confidence,
+                contract.alpha,
+                contract.null_value,
+                detection,
+                estimate - detection > contract.null_value if detection is not None else None,
+                tuple("hoeffding_arbitrary_within_shot" for _ in streams),
+            )
+        )
+    return ObservationAnalysis(
+        tuple(rows),
+        "shared planning/collection Hoeffding bounds grouped by immutable PUB identity",
+        (
+            "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot",
+            "union bounds across PUBs; no independence assumption between PUBs or jobs",
+            "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius",
+        ),
+    )
+
+
+def _simulation_comparisons(plans: tuple[CandidatePlan, ...], contracts: tuple[ObservableContract, ...]) -> int:
+    return sum(
+        len(pub.member_distributions.get(term.member, ()))
+        for plan in plans
+        for job in plan.jobs
+        for pub in job.pubs
+        if pub.simulation_shots is not None
+        for contract in contracts
+        for term in contract.terms
+        if max(term.values) > min(term.values)
+    )
+
+
+def evaluate_candidate(
+    plan: CandidatePlan,
+    contracts: tuple[ObservableContract, ...],
+    budget: BudgetContract,
+    *,
+    simulation_alpha: float = 0.01,
+    simulation_comparisons: int | None = None,
+) -> CandidateResult:
+    """Evaluate one plan; malformed or infeasible plans produce diagnostic results.
+
+    optimize supplies the search-wide comparison count. Calling this function
+    alone bounds the simulation error for the single plan only.
+    """
+    jobs: tuple[JobCost, ...] = ()
+    observables: tuple[ObservableResult, ...] = ()
+    estimated_charge = ceiling = None
+    try:
+        _validate_contracts(contracts, budget)
+        _validate_plan(plan, contracts)
+        _require(_finite(simulation_alpha) and 0 < simulation_alpha < 1, "simulation_alpha must lie in (0, 1)")
+        own_comparisons = _simulation_comparisons((plan,), contracts)
+        comparisons = own_comparisons if simulation_comparisons is None else simulation_comparisons
+        _require(
+            type(comparisons) is int and comparisons >= own_comparisons,
+            "simulation_comparisons must cover every scored finite-shot marginal",
+        )
+        jobs, reasons = _costs(plan, budget)
+        estimated_charge = math.fsum(job.estimated_charge_seconds for job in jobs)
+        ceiling = math.fsum(job.max_execution_seconds for job in jobs)
+        _require(math.isfinite(estimated_charge), f"{plan.name}: aggregate estimated charge overflowed")
+        simulation_tail = simulation_alpha / max(comparisons, 1)
+        _require(simulation_tail > 0, "simulation probability underflows at the supplied comparison count")
+        observables = tuple(_evaluate_observable(plan, contract, simulation_tail) for contract in contracts)
+        reasons.extend(f"{result.name}: {reason}" for result in observables for reason in result.rejection_reasons)
+    except (ValueError, OverflowError, np.linalg.LinAlgError) as error:
+        reasons = [str(error)]
+    return CandidateResult(
+        plan.name, not reasons, estimated_charge, ceiling, jobs, observables, tuple(reasons), dict(plan.proxy_metadata)
+    )
+
+
+def _dominates(first: CandidateResult, second: CandidateResult) -> bool:
+    if first.estimated_charge_seconds is None or second.estimated_charge_seconds is None:
+        return False
+    if not first.observables or len(first.observables) != len(second.observables):
+        return False
+    # Each named endpoint retains its own precision and effect coordinate.
+    first_axes = [first.estimated_charge_seconds]
+    second_axes = [second.estimated_charge_seconds]
+    for left, right in zip(first.observables, second.observables, strict=True):
+        first_axes.append(left.confidence_half_width)
+        second_axes.append(right.confidence_half_width)
+        if left.minimum_effect is not None:
+            first_axes.append(-left.modeled_value_lower_bound)
+            second_axes.append(-right.modeled_value_lower_bound)
+    return all(left <= right for left, right in zip(first_axes, second_axes, strict=True)) and any(
+        left < right for left, right in zip(first_axes, second_axes, strict=True)
+    )
+
+
+def optimize(
+    plans: tuple[CandidatePlan, ...],
+    contracts: tuple[ObservableContract, ...],
+    budget: BudgetContract,
+    *,
+    simulation_alpha: float = 0.01,
+) -> OptimizationResult:
+    """Choose the cheapest feasible plan; preserve every rejection and feasible Pareto point."""
+    try:
+        _validate_contracts(contracts, budget)
+        _require(bool(plans), "at least one candidate plan is required")
+        _require(len({plan.name for plan in plans}) == len(plans), "candidate plan names must be unique")
+        _require(_finite(simulation_alpha) and 0 < simulation_alpha < 1, "simulation_alpha must lie in (0, 1)")
+        comparisons = _simulation_comparisons(plans, contracts)
+    except (ValueError, OverflowError) as error:
+        return OptimizationResult(None, (), (), (str(error),), simulation_alpha, 0, ASSUMPTIONS)
+    results = tuple(
+        evaluate_candidate(
+            plan, contracts, budget, simulation_alpha=simulation_alpha, simulation_comparisons=comparisons
+        )
+        for plan in sorted(plans, key=lambda item: item.name)
+    )
+    feasible = [result for result in results if result.feasible]
+    selected = (
+        min(feasible, key=lambda result: (result.estimated_charge_seconds, result.name)).name if feasible else None
+    )
+    frontier = tuple(result.name for result in feasible if not any(_dominates(other, result) for other in feasible))
+    reasons = () if feasible else ("every supplied candidate failed at least one contract",)
+    return OptimizationResult(selected, results, frontier, reasons, simulation_alpha, comparisons, ASSUMPTIONS)
+
+
+def _verify() -> None:
+    """Finite regression cases exercise scientific and budget admission boundaries."""
+    terms = (ObservableTerm("signal", (0.0, 1.0)), ObservableTerm("null", (0.0, 1.0), -1))
+    contract = ObservableContract("signal_above_null", terms, minimum_effect=0.2)
+    budget = BudgetContract(100.0, 10.0, 80.0)
+
+    def candidate(name: str, proxy: float = 0.9, duration: float = 0.001, shots: int = 4096) -> CandidatePlan:
+        pubs = (
+            PubPrediction("signal_pub", {"signal": ((0.2, 0.8),)}, duration, 0.00025, "full scheduled duration"),
+            PubPrediction("null_pub", {"null": ((0.8, 0.2),)}, duration, 0.00025, "full scheduled duration"),
+        )
+        return CandidatePlan(
+            name, (JobCandidate("job", pubs, shots, 2.0, 40.0, "fixed overhead model"),), (), {"esp": proxy}
+        )
+
+    expensive = candidate("high_proxy", 0.99, 0.003)
+    cheap = candidate("low_proxy", 0.75)
+    result = optimize((expensive, cheap), (contract,), budget)
+    assert result.selected == "low_proxy", result
+    assert result.pareto_frontier == ("low_proxy",), result
+    assert result == optimize((cheap, expensive), (contract,), budget)
+    noisier_pub = replace(cheap.jobs[0].pubs[0], member_distributions={"signal": ((0.35, 0.65),)})
+    noisier = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(noisier_pub, cheap.jobs[0].pubs[1])),))
+    tradeoff = optimize((expensive, noisier), (contract,), budget)
+    assert tradeoff.selected == "low_proxy" and tradeoff.pareto_frontier == ("high_proxy", "low_proxy")
+    tied = optimize((replace(cheap, name="zeta"), replace(cheap, name="alpha")), (contract,), budget)
+    assert tied.selected == "alpha" and tied.pareto_frontier == ("alpha", "zeta")
+
+    weaker_pub = replace(cheap.jobs[0].pubs[0], member_distributions={"signal": ((0.7, 0.3),)})
+    weak = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(weaker_pub, cheap.jobs[0].pubs[1])),))
+    assert not evaluate_candidate(weak, (contract,), budget).feasible
+    assert optimize((weak,), (contract,), budget).selected is None
+    assert not evaluate_candidate(candidate("too_few", shots=16), (contract,), budget).feasible
+    model_effect = evaluate_candidate(cheap, (replace(contract, minimum_effect=0.0),), budget)
+    assert model_effect.feasible
+    assert math.isclose(model_effect.observables[0].effect_used_for_power or 0.0, 0.6)
+
+    precision = ObservableContract("precision", (terms[0],), precision_half_width=0.03)
+    assert evaluate_candidate(cheap, (precision,), budget).feasible
+    assert not evaluate_candidate(candidate("imprecise", shots=64), (precision,), budget).feasible
+
+    observed_pubs = tuple(
+        ObservedPub(pub.name, pub.member_distributions, job.shots) for job in cheap.jobs for pub in job.pubs
+    )
+    observed = analyze_observations(observed_pubs, (contract, precision))
+    planned = evaluate_candidate(cheap, (contract, precision), budget)
+    for measured, predicted in zip(observed.observables, planned.observables, strict=True):
+        assert measured.confidence_half_width == predicted.confidence_half_width
+        assert measured.detection_radius == predicted.detection_radius
+    assert observed.observables[0].reject_null is True
+    assert observed.observables[1].reject_null is None
+    assert observed.observables[1].detection_radius is None
+    fused_pub = replace(
+        cheap.jobs[0].pubs[0],
+        name="fused_pub",
+        member_distributions={
+            member: distributions
+            for pub in cheap.jobs[0].pubs
+            for member, distributions in pub.member_distributions.items()
+        },
+    )
+    fused = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(fused_pub,)),))
+    fused_planned = evaluate_candidate(fused, (contract,), budget).observables[0]
+    fused_observed = analyze_observations(
+        (ObservedPub(fused_pub.name, fused_pub.member_distributions, cheap.jobs[0].shots),), (contract,)
+    ).observables[0]
+    assert fused_observed.confidence_half_width == fused_planned.confidence_half_width
+    assert fused_observed.detection_radius == fused_planned.detection_radius
+    assert fused_observed.confidence_half_width < observed.observables[0].confidence_half_width
+    assert fused_observed.detection_radius is not None
+    assert observed.observables[0].detection_radius is not None
+    assert fused_observed.detection_radius < observed.observables[0].detection_radius
+    directional_estimate = (fused_observed.detection_radius + fused_observed.confidence_half_width) / 2
+    directional = analyze_observations(
+        (
+            ObservedPub(
+                "fused_pub",
+                {"signal": ((0.5 - directional_estimate, 0.5 + directional_estimate),), "null": ((0.5, 0.5),)},
+                cheap.jobs[0].shots,
+            ),
+        ),
+        (contract,),
+    ).observables[0]
+    assert directional.reject_null is True and directional.lo <= contract.null_value
+    for invalid_observed in (
+        (),
+        observed_pubs + (observed_pubs[0],),
+        (replace(observed_pubs[0], shots=0), observed_pubs[1]),
+        (replace(observed_pubs[0], member_distributions={"signal": ((0.5, 0.4),)}), observed_pubs[1]),
+        (observed_pubs[0],),
+    ):
+        try:
+            analyze_observations(invalid_observed, (contract,))
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("invalid observation data passed admission")
+
+    for duration in (-1.0, float("nan"), float("inf")):
+        assert not evaluate_candidate(candidate("invalid_cost", duration=duration), (contract,), budget).feasible
+    ceiling = replace(cheap, jobs=(replace(cheap.jobs[0], max_execution_seconds=1.0),))
+    assert not evaluate_candidate(ceiling, (contract,), budget).feasible
+    granularity = replace(cheap, jobs=(replace(cheap.jobs[0], shot_granularity=3),))
+    assert not evaluate_candidate(granularity, (contract,), budget).feasible
+    assert not evaluate_candidate(cheap, (contract,), BudgetContract(45.0, 10.0, 80.0)).feasible
+    split = replace(
+        cheap,
+        jobs=(
+            replace(cheap.jobs[0], name="signal_job", pubs=cheap.jobs[0].pubs[:1]),
+            replace(cheap.jobs[0], name="null_job", pubs=cheap.jobs[0].pubs[1:]),
+        ),
+    )
+    assert not evaluate_candidate(split, (contract,), BudgetContract(100.0, 10.0, 70.0)).feasible
+    assert evaluate_candidate(split, (contract,), budget).total_execution_ceiling_seconds == 80.0
+    mixed_shots = replace(split, jobs=(split.jobs[0], replace(split.jobs[1], shots=2048)))
+    assert not evaluate_candidate(mixed_shots, (contract,), budget).feasible
+    with_additions = replace(
+        cheap,
+        jobs=(
+            replace(
+                cheap.jobs[0],
+                pubs=tuple(
+                    replace(pub, reset_seconds=0.00001, classical_latency_seconds=0.00002) for pub in cheap.jobs[0].pubs
+                ),
+            ),
+        ),
+    )
+    priced = evaluate_candidate(with_additions, (contract,), budget)
+    assert math.isclose(priced.estimated_charge_seconds or 0.0, 2.0 + 2 * 4096 * 0.00128)
+
+    simulated = replace(
+        cheap,
+        jobs=(replace(cheap.jobs[0], pubs=tuple(replace(pub, simulation_shots=16) for pub in cheap.jobs[0].pubs)),),
+    )
+    simulated_result = evaluate_candidate(simulated, (contract,), budget)
+    assert not simulated_result.feasible and simulated_result.observables[0].simulation_error_radius > 0
+    search = optimize((simulated, replace(simulated, name="another")), (contract,), budget)
+    assert search.simulation_comparisons == 4
+    assert (
+        search.candidates[0].observables[0].simulation_error_radius
+        >= simulated_result.observables[0].simulation_error_radius
+    )
+
+    replicas = 16
+    replicated_pub = replace(cheap.jobs[0].pubs[0], member_distributions={"signal": ((0.2, 0.8),) * replicas})
+    replicated = replace(cheap, jobs=(replace(cheap.jobs[0], pubs=(replicated_pub, cheap.jobs[0].pubs[1])),))
+    assert (
+        evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
+        == evaluate_candidate(cheap, (precision,), budget).observables[0].confidence_half_width
+    )
+    covariance = CovarianceBound(
+        "precision",
+        "signal_pub",
+        tuple(f"signal/r{index}" for index in range(replicas)),
+        tuple(tuple(0.16 if row == column else 0.0 for column in range(replicas)) for row in range(replicas)),
+        "independent replica-score model, covariance bounded by diagonal 0.16",
+    )
+    independent = replace(replicated, covariance_bounds=(covariance,))
+    assert (
+        evaluate_candidate(independent, (precision,), budget).observables[0].confidence_half_width
+        < evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
+    )
+    correlated = replace(
+        covariance,
+        matrix=tuple(tuple(0.16 if row == column else 0.15 for column in range(replicas)) for row in range(replicas)),
+    )
+    assert (
+        evaluate_candidate(replace(replicated, covariance_bounds=(correlated,)), (precision,), budget)
+        .observables[0]
+        .confidence_half_width
+        == evaluate_candidate(replicated, (precision,), budget).observables[0].confidence_half_width
+    )
+    invalid_covariance = replace(covariance, matrix=((-1.0,),))
+    assert not evaluate_candidate(
+        replace(replicated, covariance_bounds=(invalid_covariance,)), (precision,), budget
+    ).feasible
+    non_psd = replace(
+        covariance,
+        matrix=tuple(tuple(-0.16 if row == column else 0.0 for column in range(replicas)) for row in range(replicas)),
+    )
+    assert not evaluate_candidate(replace(replicated, covariance_bounds=(non_psd,)), (precision,), budget).feasible
+    nearly_psd = replace(covariance, labels=("signal/r0",), matrix=((-1e-13,),))
+    assert not evaluate_candidate(replace(cheap, covariance_bounds=(nearly_psd,)), (precision,), budget).feasible
+    assert optimize((), (contract,), budget).selected is None
+    assert optimize((cheap,), (), budget).selected is None
+    print("experiment optimizer: statistical, cost, covariance, simulation, and deterministic-selection checks passed")
+
+
+if __name__ == "__main__":
+    _verify()

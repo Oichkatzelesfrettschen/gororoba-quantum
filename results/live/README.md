@@ -4,6 +4,16 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+- **Schema 7 records.** The
+  `live-target-statistical-design-invocation-budget-v1` contract adds bounded
+  experiment selection, signed observable contracts, calibration-bound family
+  controls, and invocation-wide ceiling reservations. Approval binds the
+  selected repetition settings and job/PUB cost inputs. Feasible family dry
+  runs also produce `UNAPPROVED_CASE.md`; infeasible designs retain their
+  reasons and a diagnostic archive. Collection reports the shared family
+  inference and final billing, with full-workload cost residuals restricted
+  to successful completed jobs. See
+  [bounded QPU experiment design](../../gororoba_quantum/QPU_OPTIMIZATION.md).
 - **Schema 6 records.** The
   `live-target-cross-group-fused-pubs-scheduler-usage-v1` contract keeps the
   schema-5 fused-PUB surface and adds per-PUB scheduler timing and per-job
