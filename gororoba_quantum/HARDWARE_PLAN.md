@@ -200,18 +200,23 @@ semiclassical inverse-QFT test. The preregistered packing interval reports
 equivalence within the margin on one layout; the scheduled feed-forward
 round trip is 540 to 584 dt. Folded QPE reads 0.715 against the model's
 0.899. Schedule-aware replay explains about a quarter of the gap, leaving
-its remaining mechanism to the matched diagnostic experiment.
+its remaining mechanism to subsequent matched diagnostics. The later
+[folded-QPE ladder](../results/ripple/folded-job-review.md) completed sixteen
+PUBs in two Kingston jobs for 40 charged seconds. Its retained observations
+now motivate the [matched correction pilot](MODEL_DISCRIMINATION.md).
+The [execution roadmap](QPU_EXECUTION_ROADMAP.md) records current readiness.
 
-The hardware queue has three separate cases:
+The following families retain separate evidence and admission contracts:
 
 1. **Folded-QPE mechanism ladder.** `--family folded-qpe --optimize`
    compiles four controls for every eigenstate label on a shared initial
    control/work mapping. Exact branch checks validate all sixteen labeled
    laws. The optimizer requires simultaneous precision for twelve raw
    terminal-bit contrasts and accounts for twelve dynamic and four static
-   PUBs across two jobs. A fresh admitted dry run and its written
-   measurement, control, and time case remain prerequisites for owner
-   approval. [QPU_OPTIMIZATION.md](QPU_OPTIMIZATION.md) defines the delay
+   PUBs across two jobs. The 8,192-shot ladder has completed; its raw results
+   supply reusable evidence and duplicate execution is excluded. Any new
+   intervention requires fresh preparation and a written measurement, control
+   and time case before owner approval. [QPU_OPTIMIZATION.md](QPU_OPTIMIZATION.md) defines the delay
    intervention and the limits of causal attribution.
 2. **N = 21, a = 4 at two phase bits.** `--family n21-feedback --optimize`
    compares the labeled laws `(3, 2, 1, 2)/8` with feed-forward and

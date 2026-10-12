@@ -1,6 +1,10 @@
 # Ripple spatial packing and derived observables
 
-The prepared ripple family already assigns seven five-qubit atlas lanes, two four-qubit walk lanes, and three Design C lanes of widths three, four, and five: 55 logical qubits before routing footprints and separation buffers. The source schedule contains 146 physical execution rows: 96 canonical atlas rows, five matched companion rows, 24 readout rows, and 21 isolated rows. The walk occupies ten atlas/companion rows; the nine Design C members occupy three atlas rows. Extra physical qubits alone do not remove any required row.
+The retained historical ripple plan assigns seven five-qubit atlas lanes, two four-qubit walk lanes, and three Design C lanes of widths three, four, and five: 55 logical qubits before routing footprints and separation buffers. The source schedule contains 146 physical execution rows: 96 canonical atlas rows, five matched companion rows, 24 readout rows, and 21 isolated rows. The walk occupies ten atlas/companion rows; the nine Design C members occupy three atlas rows. Extra physical qubits alone do not remove any required row.
+
+The historical ripple and rank cases require current-source renewal and remain
+held behind the model-discrimination decision. Their current admission and
+execution authorization are false.
 
 The supported family interface fixes one placement per scientifically distinct lane. `algebra_planning.family_candidates` and the CLI require replica tier one. The optimizer also permits arbitrary dependence among components in each shared shot, so additional identical replicas do not automatically reduce the required shot count. Raising replica tiers or filling an isolated row would alter the current measurement contract.
 
@@ -12,9 +16,9 @@ The supported family interface fixes one placement per scientifically distinct l
 
 3. Packing the twenty rank-sector science rows into twenty ordinary atlas rows is a separate combined-family design. Preserve all sixteen rank-sector isolated rows as globally isolated workloads, retain the ripple isolated rows, and keep rank activity out of the matched walk pair unless both companion rows receive identical rank activity. The ideal row arithmetic becomes 146 + 16 = 162 instead of 146 + 36 = 182, with 87 logical qubits before routing and buffers. The combined design changes the packed context of both families, so independently prepared cases cannot inherit their old admission. The current family selector does not combine families.
 
-4. Keep folded-QPE in its separately admitted dynamic/fixed-placement case. Spatially allocating different diagnostic variants to unrelated patches confounds mechanism and patch. A future balanced patch crossover requires its own controls, scheduler qualification, and pricing; a Batch wrapper supplies no same-shot packing.
+4. Reuse the completed folded-QPE evidence. Any new dynamic/fixed-placement case requires separate admission and approval. Spatially allocating different diagnostic variants to unrelated patches confounds mechanism and patch. A future balanced patch crossover requires its own controls, scheduler qualification, and pricing; a Batch wrapper supplies no same-shot packing.
 
-The existing 146-row schedule remains the immediate preparation target, subject to its own fresh placement and statistical gates. Native dry-run scheduler availability remains a separate provider capability constraint.
+The 146-row schedule remains the reference atlas design. Its next preparation follows the model-discrimination decision and requires fresh placement and statistical admission. Native dry-run scheduler availability remains a separate provider capability constraint.
 
 ## Bounded placement evidence
 
@@ -30,7 +34,7 @@ The 90- and 87-qubit backtracking probes each reached their 180-second limit bef
 
 The 90-qubit probe split incumbent atlas members by edge parity. It did not compile or place the new 110-row allocation, whose group composition and bridge copies require separate preparation. The compact evidence retains occupied-qubit sets and physical edges for replay of the finite binary models, and hashes the full mapping payloads and routed source files. That replay establishes spatial incompatibility within the recorded domains; it does not reproduce calibration scoring or qualify an execution schedule.
 
-## Additional visuals from existing shots
+## Additional visuals from the planned acquisition
 
 - For each four-bit walk outcome distribution, calculate all fifteen nontrivial Z-string parities. The complete vector is the classical Walsh transform of the measured distribution; it does not recover unmeasured coherent phases. A parity texture or signed hypercube color field supplies a view beyond return probability.
 - Form the five Hamming-distance shell probabilities about the prepared basis vertex, the mean distance, and its second moment. The RX mixer connects one-bit neighbors, so radial occupancy on the four-dimensional Boolean cube has a direct circuit interpretation. Arbitrary artistic embeddings must retain the basis-label mapping.
@@ -39,7 +43,7 @@ The 90-qubit probe split incumbent atlas members by edge parity. It did not comp
 - Use retained shot ordering to compute same-PUB cross-lane covariance of ancilla or return indicators and connected parity correlations. Show a separate covariance matrix per fixed execution row or matched block. Pooling unlike rows can create correlation from different programmed means. Observed covariance can diagnose shared disturbance but does not identify a specific crosstalk mechanism.
 - For rank-sector shots, retain all four selector outcomes, their parity, and leakage into each unsuccessful selector state. The current circuit measures selectors only; a data-qubit distribution would require additional measurements and a new archive/analysis contract.
 
-These observables require zero additional QPU rows. The current admission contract covers selected means and contrasts; newly promoted inferential claims need explicit uncertainty and multiple-comparison treatment. Exploratory visuals can be labeled descriptive and derived from the unchanged raw archive.
+These observables would reuse the planned ripple/rank rows after an approved acquisition. The statistical contract covers selected means and contrasts; newly promoted inferential claims need explicit uncertainty and multiple-comparison treatment. Exploratory visuals would remain descriptive and derive from the retained raw archive of that future acquisition. The completed folded-QPE archive supplies its own distinct measured outcomes.
 
 ## Source surfaces
 

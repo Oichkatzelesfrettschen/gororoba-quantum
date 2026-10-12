@@ -1,0 +1,138 @@
+{
+  "artifact_sha256": {
+    "docs/README.md": "8307f083ca19ef29aa9d61fc19e4b5ca5d2d263d5cfc68b0b1bc0d23bdbdc7e5",
+    "docs/notes/reality_ripple_measurement_design.md": "a1a78843eb3f91f24afeb42afce110c29f524833e51bf978d580e9f965c9272e",
+    "gororoba_quantum/HARDWARE_PLAN.md": "3dddb9c67efd0c13d5308a059d61f73d062e367ecd715ccfc5dc1c13a1a758be",
+    "gororoba_quantum/MODEL_DISCRIMINATION.md": "c3119cbc3681cd902b93d13083867d3acb6eabb1bf93d76b32593f1eb33d07e4",
+    "gororoba_quantum/PACKED_ALGEBRA.md": "5bbf901a603e012e2ddcc5f169d98779da85990ac42984d061f195add6007d34",
+    "gororoba_quantum/QPU_EXECUTION_ROADMAP.md": "ad117b2a47139c0e4f17a6778e9c83eb689df2eecce09a7aedf2c65a3961d7ac",
+    "results/live/README.md": "ecb699c81c9863955faba0487f2d18497fda9969047304d9fb6f8531327f4edf",
+    "results/ripple/README.md": "8582d10470b32e0919a2265e2e8537233cbae7585f4b84e0338abb943ed39111",
+    "results/ripple/single-job-proposal.json": "fbe46dabc6139a8edbd801eb9645913241ee68d17b3bbb60072f9955c98da423",
+    "results/ripple/spatial-packing-assessment.md": "0a64d78415484b5ad1ab3637e83c6429aab230aa89376e87e1877d30f91715e3"
+  },
+  "base_revision": "bf24a35837ffc1a30b4494e539c8c8eb066b2123",
+  "current_admission": false,
+  "execution_input_preservation": {
+    "all_selected_files_byte_equal": true,
+    "baseline_revision": "bf24a35837ffc1a30b4494e539c8c8eb066b2123",
+    "coverage": "Retained full runtime and expanded static/source gate coverage applies to identical executable/configuration inputs. Fresh source-registry and local-link checks cover changed narrative inputs.",
+    "experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881",
+    "path_selection": "Tracked .py, .v and .sh files, requirements.txt, pyproject.toml and AGENTS.md",
+    "protected_record_raw_case_count": 50,
+    "retained_gate_receipt": "results/ripple/review-scope-validation.json",
+    "retained_gate_receipt_sha256": "32ef79c394b4da6df5f32da8f3a9a41aefe619967fecd1657b055cb0b8fe4008",
+    "runtime_file_count": 41,
+    "selected_hash_map_sha256": "fa72966e99f80daacb43b1a13f7a5e29e48f493cd7706e2bdc5e72d77211c219",
+    "tracked_executable_and_configuration_file_count": 120
+  },
+  "fresh_checks": {
+    "changed_document_local_link_counts": {
+      "docs/README.md": 45,
+      "docs/notes/reality_ripple_measurement_design.md": 17,
+      "gororoba_quantum/HARDWARE_PLAN.md": 8,
+      "gororoba_quantum/MODEL_DISCRIMINATION.md": 4,
+      "gororoba_quantum/PACKED_ALGEBRA.md": 3,
+      "gororoba_quantum/QPU_EXECUTION_ROADMAP.md": 24,
+      "results/live/README.md": 19,
+      "results/ripple/README.md": 11,
+      "results/ripple/spatial-packing-assessment.md": 1
+    },
+    "commands": [
+      "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \"$PYTHON\" -W error docs/verify_sources.py",
+      "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \"$PYTHON\" -O -W error docs/verify_sources.py",
+      "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \"$PYTHON\" -W error docs/check_verify_sources.py",
+      "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \"$PYTHON\" -O -W error docs/check_verify_sources.py",
+      "sha256sum -c docs/PDF_SHA256SUMS",
+      "git -c core.fsmonitor=false diff --check"
+    ],
+    "exit_code": 0,
+    "log_sha256": "24ab73c40b99116b2d1d98c0d33e7b8e76612d466fbe341c0ed6f8f49fab0073",
+    "published_pdf_checksums": 11,
+    "source_regression_tests_per_mode": 60,
+    "source_verifier_local_links": 477
+  },
+  "historical_proposal_reconstructed_exactly": true,
+  "historical_receipts": [
+    {
+      "artifact_revision": "b0cbfb8883434c1a742f394fd28c8f0cdb88af27",
+      "changed_artifact_reconciliation": {
+        "results/ripple/README.md": {
+          "current_sha256": "8582d10470b32e0919a2265e2e8537233cbae7585f4b84e0338abb943ed39111",
+          "historical_sha256": "554e370f45a7e6c14ebaf77390d7dc885892bb20778893cdd86db9db65d026b3"
+        }
+      },
+      "historical_artifacts_verified": 21,
+      "path": "results/ripple/folded-renderer-validation.json",
+      "receipt_bytes_preserved": true,
+      "sha256": "139609f913433f8bd78083f2cd8fc1bdc37b53ad7d65a98f1a0e5eca9b491aa1"
+    },
+    {
+      "artifact_revision": "3e8afd9e55fa9f97695961308567e18c983540fa",
+      "changed_artifact_reconciliation": {
+        "docs/README.md": {
+          "current_sha256": "8307f083ca19ef29aa9d61fc19e4b5ca5d2d263d5cfc68b0b1bc0d23bdbdc7e5",
+          "historical_sha256": "f4db1a28d42fde18946d7e99e3bc863954af3ced2f60dc97320ddd4ebddcc765"
+        },
+        "docs/notes/reality_ripple_measurement_design.md": {
+          "current_sha256": "a1a78843eb3f91f24afeb42afce110c29f524833e51bf978d580e9f965c9272e",
+          "historical_sha256": "65fab68a426ffdc1d3c88de934abf71a7ac5af1657afe9932ef37c541b51f933"
+        },
+        "gororoba_quantum/MODEL_DISCRIMINATION.md": {
+          "current_sha256": "c3119cbc3681cd902b93d13083867d3acb6eabb1bf93d76b32593f1eb33d07e4",
+          "historical_sha256": "f36e61c2835015ca509f89d6bc6c257f21d4bf19cc67792d0ee6a53078e0e9cb"
+        },
+        "results/ripple/README.md": {
+          "current_sha256": "8582d10470b32e0919a2265e2e8537233cbae7585f4b84e0338abb943ed39111",
+          "historical_sha256": "554e370f45a7e6c14ebaf77390d7dc885892bb20778893cdd86db9db65d026b3"
+        }
+      },
+      "historical_artifacts_verified": 44,
+      "path": "results/ripple/source-integration-validation.json",
+      "receipt_bytes_preserved": true,
+      "sha256": "aecd178b91cc565d8a0666e572d412ec4e36bcabd14925f953ea4cc1be0915af"
+    },
+    {
+      "artifact_revision": "30aff52032f218407f85e196b45b18d7a411732f",
+      "changed_artifact_reconciliation": {
+        "gororoba_quantum/QPU_EXECUTION_ROADMAP.md": {
+          "current_sha256": "ad117b2a47139c0e4f17a6778e9c83eb689df2eecce09a7aedf2c65a3961d7ac",
+          "historical_sha256": "4ec615a3e0f9ca8920d3c7afabad897bd5b127f50c652d2e00da738336fc4a4d"
+        }
+      },
+      "historical_artifacts_verified": 13,
+      "path": "results/ripple/scoring-repair-validation.json",
+      "receipt_bytes_preserved": true,
+      "sha256": "1865e657e18c726dd0ace6ecbe6547f1789b062556553a709765194474aa4dac"
+    },
+    {
+      "artifact_revision": "e4acd410c3928e1241e167cc6528d13b9655da4e",
+      "changed_artifact_reconciliation": {},
+      "historical_artifacts_verified": 15,
+      "path": "results/ripple/principal-integration-validation.json",
+      "receipt_bytes_preserved": true,
+      "sha256": "fb5c50c881e1d25e830b259731d87d074d14603fd43e0a4a522bd3fad1e38ad7"
+    },
+    {
+      "artifact_revision": "bf24a35837ffc1a30b4494e539c8c8eb066b2123",
+      "changed_artifact_reconciliation": {},
+      "historical_artifacts_verified": 10,
+      "path": "results/ripple/review-scope-validation.json",
+      "receipt_bytes_preserved": true,
+      "sha256": "32ef79c394b4da6df5f32da8f3a9a41aefe619967fecd1657b055cb0b8fe4008"
+    }
+  ],
+  "independent_review": "Read-only review found no actionable defect in eight changed files. Root additionally reconciled the packed-algebra and hardware-plan entrypoints, verified all ten changed files, and checked receipt hashes and historical reconstruction. Independent review of the subsequent receipt and final two files was unavailable after an agent usage limit.",
+  "observed_at": "2026-10-12T15:32:35.673685+00:00",
+  "physical_execution_authorized": false,
+  "physical_or_mock_jobs_submitted": 0,
+  "review_comment_ids": [
+    4247284895,
+    4247284940,
+    4247284988
+  ],
+  "schema": "ripple-readiness-entrypoints-validation-v1",
+  "scope": "Mutable readiness entrypoints and prospective visual descriptions; historical acquisition and proof artifacts retain their existing scope.",
+  "service_calls": 0,
+  "worker_audit_sha256": "3adfe573e24ae8545b2ec72f8c5d8ce3389295e71f0c4212cccc9bc985086e7e"
+}

@@ -1,5 +1,5 @@
 {
-  "status": "Fresh local statistical admission passed for all 1138 endpoints; owner approval pending; native mock timing unavailable",
+  "status": "historical_renewal_required",
   "source": "gororoba_quantum/RIPPLE_DYNAMICS.md and results/ripple/evidence.json",
   "execution": {
     "jobs": 1,
@@ -34,12 +34,13 @@
     "historical_repetition_delay_seconds": 0.00025,
     "illustrative_shots_per_pub": 4096,
     "repetition_delay_only_seconds": 149.504,
-    "qualification": "Local calibration-based estimate. Native mock qualification returned unavailable; physical duration and final charge await approved execution.",
+    "qualification": "Historical calibration-based estimate at the retained record revision. The retained native mock attempt returned unavailable. Current-source preparation and a new written case must precede owner approval; physical duration and final charge require approved execution.",
     "admitted_nominal_seconds": 157.08726656,
     "admitted_stress_seconds": 159.38726656,
     "service_ceiling_seconds": 180,
     "qualified_record": "results/live/2026-10-12T062505.208379Z/record.json",
-    "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038"
+    "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+    "inputs_scope": "historical_record_only"
   },
   "mathematical_program": {
     "common_source": "Cayley-Dickson multiplication signs",
@@ -96,5 +97,14 @@
     "Check all independently admitted family ceilings against the shared quota and retained reserve",
     "Write exact digest-bound cases and obtain explicit owner approval under AGENTS.md"
   ],
-  "schema": "cayley-dickson-ripple-proposal-v1"
+  "schema": "cayley-dickson-ripple-proposal-v1",
+  "admitted": false,
+  "physical_execution_authorized": false,
+  "evidence_scope": "Execution settings, endpoint admission, timing estimates and calibration describe the retained record at its original source revision. Source and scoring changes require fresh preparation and a new written case before owner approval.",
+  "historical": {
+    "proposal_revision": "c31c15152176341a6e34aad4a0453d4f0d0bb227",
+    "proposal_sha256": "b9ece46d3d4ce09f0b9727b3f2e8a3e964b1be87c355e09b7278543600885cea",
+    "status": "Fresh local statistical admission passed for all 1138 endpoints; owner approval pending; native mock timing unavailable",
+    "time_model_qualification": "Local calibration-based estimate. Native mock qualification returned unavailable; physical duration and final charge await approved execution."
+  }
 }

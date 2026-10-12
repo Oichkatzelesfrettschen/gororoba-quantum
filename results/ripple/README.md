@@ -1,8 +1,11 @@
 # Finite Cayley-Dickson ripple evidence
 
-The [execution preparation summary](PREPARATION.md) binds the admitted ripple
-and rank-sector records, exact approval cases, 197.022-second nominal estimate,
-and 240-second combined ceiling. The two families require separate approval.
+The [historical execution preparation summary](PREPARATION.md) binds the
+ripple and rank-sector records, retained written cases, 197.022-second nominal
+estimate and proposed 240-second combined ceiling. Both families have current
+state `historical_renewal_required`; current admission and physical execution
+authorization are false. Source and scoring changes require fresh preparation
+and new written cases before each family can receive owner approval.
 
 [Open the standalone explorer](cayley-dickson-ripples.html) in a browser after
 downloading or cloning the repository. The HTML embeds all data and needs
@@ -13,10 +16,12 @@ and signed box-kite fringes, with the proposed hardware depths labeled.
   recurrence certificates, signed graphs, all 336 zero-product rows, 672
   phase checks and source hashes. `execution_metadata` records numerical
   residuals and dependency versions separately from the exact payload.
-- `single-job-proposal.json` records the implemented 55-logical-qubit,
-  146-row experiment. The preparation summary records its source-bound
-  statistical admission and calibration. Native timing remains separately
-  unqualified; the earlier 35-second illustration is superseded.
+- `single-job-proposal.json` retains the 55-logical-qubit, 146-row design
+  with current state `historical_renewal_required`. The preparation summary
+  preserves statistical admission and calibration at the recorded revision.
+  Retained native attempts leave scheduler timing unqualified. The historical
+  157.0873-second nominal estimate superseded the 35-second illustration;
+  renewed preparation must establish the current estimate.
 - `cayley-dickson-ripples.html` is generated from the evidence and the
   repository HTML template. All displayed distributions are ideal local
   predictions. A measured rendering requires a separately approved QPU run.

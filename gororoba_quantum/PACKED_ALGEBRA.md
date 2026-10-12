@@ -1,9 +1,12 @@
 # Packed algebra experiments and independent admission
 
-The campaign prepares three independently admitted families: the static ripple
-and box-kite acquisition, the four-qubit rank-path sectors, and the complete
-4,096-shot folded-QPE diagnostic. Each family keeps its scientific controls,
-precision contract, calibration, compiled circuits, and written approval case.
+The campaign defines separate admission contracts for the static ripple and
+box-kite acquisition, four-qubit rank-path sectors, and folded-QPE diagnostic.
+The retained ripple and rank-sector cases have state
+`historical_renewal_required`, with current admission and execution
+authorization false. Renewed source-bound preparation and new written cases
+must precede owner approval. Each family retains its scientific controls,
+precision contract, calibration and compiled-circuit evidence.
 The ripple acquisition targets one static job on one backend. The folded
 diagnostic retains twelve dynamic and four coherent PUBs in two jobs. The
 coordinated 8,192-shot diagnostic has completed at 40 charged seconds; the

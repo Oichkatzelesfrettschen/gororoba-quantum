@@ -4,8 +4,9 @@ The [integrated campaign directive](RIPPLE_CAMPAIGN.md) reconciles the user's
 additive requests, cross-chat findings, ownership and evidence boundaries.
 
 The execution priority is model discrimination and a measurable optimizer
-decision before broad atlas expenditure. The prepared 197-second ripple/rank
-campaign remains retained and unapproved behind that decision gate. The
+decision before broad atlas expenditure. The historical 197-second ripple/rank
+plans require current-source renewal and remain held behind that decision gate.
+Their current admission and execution authorization are false. The
 four-PUB pilot uses exact-count statistical analysis, common-template circuit
 verification and a validator for returned native schedules. The user directed
 preparation from fresh live calibration across Fez, Kingston and Marrakesh

@@ -7,13 +7,17 @@ contrasts. The processor supplies physical counts, joint errors, and model
 residuals. The visualization exposes those observations on a mathematical
 geometry whose construction is independently checked.
 
-The [packed acquisition](../../gororoba_quantum/PACKED_ALGEBRA.md) keeps the
-ripple/atlas, rank-sector, and folded-QPE families independently admitted.
-The five connections below reuse their planned observations and add zero
-execution rows. Adding physical qubits can improve simultaneous coverage,
-but row count, shots, circuit duration, repetition delay, and job overhead
-determine the relevant time costs. Readiness and final seconds belong to
-the fresh, source-bound preparation records.
+The [packed acquisition](../../gororoba_quantum/PACKED_ALGEBRA.md) evaluates
+each family independently. The completed folded-QPE data remain reusable.
+The retained ripple/atlas and rank-sector plans have state
+`historical_renewal_required`, with current admission and execution
+authorization false. New source-bound preparation and written cases must
+precede owner approval. The five connections below describe observables that
+would reuse the planned rows after an approved acquisition. Adding physical
+qubits can improve simultaneous coverage, but row count, shots, circuit
+duration, repetition delay, and job overhead determine the time costs.
+The [preparation summary](../../results/ripple/PREPARATION.md) distinguishes
+historical estimates from current readiness.
 
 ## What a reality ripple means here
 
@@ -63,7 +67,7 @@ Gram matrix. The most informative outcome is a reproducible model failure,
 context response, or validated intervention that changes a concrete compiler
 or placement decision.
 
-The two prepared families use separate alpha=0.05 uncertainty allocations.
+The two historical atlas plans use separate alpha=0.05 uncertainty allocations.
 The union bound gives at least 90 percent simultaneous coverage across both
 families; each family's 95 percent statement remains local to its own
 declared endpoints. Packing contrasts target half-width 0.08 in their declared observable units

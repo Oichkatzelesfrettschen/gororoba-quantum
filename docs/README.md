@@ -52,8 +52,9 @@ statements the sister repository actually proves. The
 sets the hardware priority before broad atlas expenditure.
 
 The [reality-ripple measurement design](notes/reality_ripple_measurement_design.md)
-joins the Cayley-Dickson sources to the prepared atlas, walk, rank-sector, and
-joint-error views. The [de Marrais source note](notes/math-0403113.md) records
+joins the Cayley-Dickson sources to the planned atlas, walk, rank-sector, and
+joint-error views. The retained atlas cases require current-source renewal;
+the completed folded-QPE archive supplies the measured evidence. The [de Marrais source note](notes/math-0403113.md) records
 the bounded box-kite reading and the local PDF identity. A
 [version-bound open_gororoba evidence contract](sources/open_gororoba/README.md)
 retains the sister repository's algebraic corrections with its provenance
