@@ -147,6 +147,7 @@ from evidence already merged into the repository.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)
+- [Fresh three-system pilot case](../results/ripple/CORRECTION_PREPARATION.md)
 - [Mock diagnosis](../results/ripple/KINGSTON_MOCK_DIAGNOSIS.md)
 - [Retained atlas preparation](../results/ripple/PREPARATION.md)
 - [Execution roadmap](QPU_EXECUTION_ROADMAP.md)

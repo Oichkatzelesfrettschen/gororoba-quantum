@@ -1,16 +1,19 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T06:56:43.568923+00:00",
+  "updated_at": "2026-10-12T07:48:11.113528+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
     "folded_reserved_ceiling_seconds": 0,
-    "other_proposed_ceiling_seconds": 240,
+    "other_proposed_ceiling_seconds": 270,
     "single_shared_reserve_seconds": 60,
-    "combined_requirement_seconds": 300,
-    "unallocated_at_snapshot_seconds": 251,
+    "combined_requirement_seconds": 330,
+    "unallocated_at_snapshot_seconds": 221,
     "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
-    "folded_settled_charge_seconds": 40
+    "folded_settled_charge_seconds": 40,
+    "correction_proposed_ceiling_seconds": 30,
+    "held_atlas_proposed_ceiling_seconds": 240,
+    "proposals_are_account_reservations": false
   },
   "families": [
     {
@@ -83,6 +86,34 @@
       "admitted_endpoints": 196,
       "required_endpoints": 196,
       "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
+    },
+    {
+      "family": "folded-correction",
+      "owner": "Design a single-run reality ripple",
+      "science": "Fixed-sample measured-bit versus known-label correction for two odd supplied eigenlabels; retain measurement, reset and dispatch",
+      "backend": "ibm_fez",
+      "state": "prepared_unapproved",
+      "case": "2026-10-12T074042.840320Z",
+      "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+      "experiment_digest": "e29428189eac0bad0aae4e9fb0d787addd3f118b6ec1e7d10833557cce8c60b8",
+      "proposed_pubs": 4,
+      "proposed_shots_per_pub": 8192,
+      "proposed_ceiling_seconds": 30,
+      "reported_nominal_seconds": 11.515410176,
+      "reported_stress_seconds": 14.470770176,
+      "accepted_job_ids": [],
+      "qualified_candidates": 18,
+      "searched_backends": [
+        "ibm_fez",
+        "ibm_kingston",
+        "ibm_marrakesh"
+      ],
+      "qualification": "Fresh three-system calibration comparison, exact circuit and count contracts, source closure and written case; returned execution schedules gate matched inference after approved acquisition.",
+      "model_gain_known_minus_measured": {
+        "1": 0.000823974609375,
+        "3": 0.00640869140625
+      },
+      "physical_execution_authorized": false
     }
   ],
   "deduplication": {
@@ -93,51 +124,57 @@
   "other_chat_confirmation": "Direct user priority verified: model discrimination and a measurable optimizer decision precede atlas spending; broad cases remain unapproved and their record/QPY bytes remain retained.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
-    "observed_at": "2026-10-12T06:33:43.572729+00:00",
-    "scope": "Read-only account usage, accessible backend names, pending jobs and two accepted job statuses",
-    "instance_sha256_12": "e3de05b6901e",
-    "budget": {
-      "usage_limit_seconds": 600,
-      "usage_consumed_seconds": 49,
-      "usage_remaining_seconds": 551,
-      "usage_period": {
-        "start_time": "2026-09-14T06:33:43.520Z",
-        "end_time": "2026-10-12T06:33:43.520Z"
+    "accepted_jobs": [
+      {
+        "charge_seconds": 29,
+        "id": "db67fqsvf2bc73d0pk4g",
+        "status": "DONE",
+        "usage_source": "job.usage(partial=False)"
+      },
+      {
+        "charge_seconds": 11,
+        "id": "db67frimb58s738bci4g",
+        "status": "DONE",
+        "usage_source": "job.usage(partial=False)"
       }
-    },
+    ],
     "accessible_backend_names": [
       "ibm_fez",
       "ibm_kingston",
       "ibm_marrakesh"
     ],
-    "pending_account_jobs": [],
-    "accepted_jobs": [
-      {
-        "id": "db67fqsvf2bc73d0pk4g",
-        "status": "DONE",
-        "charge_seconds": 29,
-        "usage_source": "job.usage(partial=False)"
+    "budget": {
+      "usage_consumed_seconds": 49,
+      "usage_limit_seconds": 600,
+      "usage_period": {
+        "end_time": "2026-10-12T07:45:40.357Z",
+        "start_time": "2026-09-14T07:45:40.357Z"
       },
-      {
-        "id": "db67frimb58s738bci4g",
-        "status": "DONE",
-        "charge_seconds": 11,
-        "usage_source": "job.usage(partial=False)"
-      }
-    ]
+      "usage_remaining_seconds": 551
+    },
+    "instance_sha256_12": "e3de05b6901e",
+    "observed_at": "2026-10-12T07:45:40.423317+00:00",
+    "pending_account_jobs": [],
+    "scope": "Read-only account usage, backend names, pending account jobs and settled prior-job charges"
   },
   "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
   "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions require owner approval of the linked cases.",
   "scientific_priority_gate": {
-    "state": "model_discrimination_design_recommended_unqualified",
+    "state": "model_discrimination_pilot_prepared_unapproved",
     "source": "Direct user instruction verified in Audit Heron quantum claims",
     "design": "gororoba_quantum/MODEL_DISCRIMINATION.md",
     "broad_atlas_spending": "held",
     "recommended_pubs": 4,
     "recommended_shots_per_pub": 8192,
     "historical_conditional_seconds": 11.242518272,
-    "service_ceiling_seconds": null,
+    "service_ceiling_seconds": 30,
     "physical_execution_authorized": false,
-    "decision": "Known-label correction must improve unconditional terminal success by more than 0.01 for BOTH odd labels under simultaneous 95 percent directional bounds; circuit/schedule matching and fresh admission precede any written approval case."
-  }
+    "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; fixed-case approval precedes physical execution.",
+    "case": "2026-10-12T074042.840320Z",
+    "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+    "selected_backend": "ibm_fez",
+    "reported_nominal_seconds": 11.515410176,
+    "reported_stress_seconds": 14.470770176
+  },
+  "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission."
 }
