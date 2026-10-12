@@ -53,6 +53,19 @@ statements the sister repository actually proves. The
 [model-discrimination decision](notes/model_discrimination_optimizer.md)
 sets the hardware priority before broad atlas expenditure.
 
+The [reality-ripple measurement design](notes/reality_ripple_measurement_design.md)
+joins the Cayley-Dickson sources to the planned atlas, walk, rank-sector, and
+joint-error views. The [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+qualifies the correction, ripple and rank cases against one audited runtime
+source closure; reviewed
+merge, fresh live bindings and independent family execution admission remain
+gates. The completed folded-QPE archive supplies the measured evidence.
+The [de Marrais source note](notes/math-0403113.md) records
+the bounded box-kite reading and the local PDF identity. A
+[version-bound open_gororoba evidence contract](sources/open_gororoba/README.md)
+retains the sister repository's algebraic corrections with its provenance
+and license text.
+
 The [formal-evidence dependency plan](notes/formal_evidence_dependencies.md)
 connects faithful fold repairs, checked arithmetic, prospective count
 certificates, tomography and adaptive stopping to explicit assumptions.
@@ -64,6 +77,7 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | note | paper | (a) | (b) | (c) |
 |---|---|---|---|---|
 | s41567-023-02340-9 | Glick et al., Covariant quantum kernels for data with group structure, Nat. Phys. 20, 479 (2024); preprint arXiv:2105.03406 | medium | low | low |
+| [2102.01682](notes/2102.01682.md) | Corcoles et al., Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits, PRL 127, 100501 (2021) | high | none | low |
 | 2411.05760 | Deshpande et al., Dynamic parameterized quantum circuits | low | none | none |
 | s42254-024-00770-9 | Abbas et al., Challenges and opportunities in quantum optimization, Nat. Rev. Phys. 6, 718 (2024); preprint arXiv:2312.02279 | high | none | low |
 | 2501.09702 | Yu et al., Quantum-centric algorithm for sample-based Krylov diagonalization (ibm_fez) | medium | none | none |

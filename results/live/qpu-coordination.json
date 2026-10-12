@@ -1,16 +1,29 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T06:13:42.402221+00:00",
-  "scope": "two active IBMQuantum chats; cooperative ownership supplements per-invocation runner guards",
+  "updated_at": "2026-10-12T17:16:04.048430+00:00",
+  "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
-    "folded_reserved_ceiling_seconds": 0,
-    "other_proposed_ceiling_seconds": 240,
+    "remaining_seconds_source": "results/ripple/fresh-campaign-preparation-audit.json#minimum_quota_snapshot_remaining_seconds",
+    "account_inventory_scope": "The separately retained account_inventory_observation keeps its own observation time; the preparation quota value is not a fresh pending-account-job inventory.",
+    "user_campaign_ceiling_seconds": 180,
+    "maximum_remaining_atlas_ceiling_seconds": 150,
+    "unallocated_campaign_ceiling_seconds": 10,
     "single_shared_reserve_seconds": 60,
-    "combined_requirement_seconds": 300,
-    "unallocated_at_snapshot_seconds": 251,
+    "campaign_cap_plus_reserve_seconds": 240,
+    "unallocated_account_seconds_after_campaign_cap_and_reserve": 311,
+    "folded_reserved_ceiling_seconds": 0,
+    "folded_settled_charge_seconds": 40,
+    "budget_scope": "The user 180-second cap covers all new correction and atlas executions. Five prepared job ceilings sum to 170 seconds; historical charges 49 seconds are already settled. Planned ceilings become reservations only on attempted submission.",
     "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
-    "folded_settled_charge_seconds": 40
+    "proposals_are_account_reservations": false,
+    "aggregate_enforcement": "The execution owner must reconcile accepted and attempted job ceilings, settled charges, remaining user cap and fresh account quota before each submission. The runner enforces one invocation ceiling; this ledger creates neither an atomic account reservation nor an account-wide service ceiling.",
+    "correction_planned_ceiling_seconds": 30,
+    "currently_admitted_ceiling_seconds": 0,
+    "proposed_campaign_ceiling_seconds": 170,
+    "proposed_atlas_ceiling_seconds": 140,
+    "planned_campaign_plus_reserve_seconds": 230,
+    "historical_settled_charge_seconds": 49
   },
   "families": [
     {
@@ -39,73 +52,404 @@
       ],
       "total_charge_seconds": 40,
       "raw_evidence": "2026-10-12T055624.091217Z/raw",
-      "collection": "2026-10-12T055624.091217Z/collect.json"
+      "collection": "2026-10-12T055624.091217Z/collect.json",
+      "excluded_from_new_submission": true,
+      "evidence_pull_request": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37"
     },
     {
       "family": "ripple",
       "owner": "Design a single-run reality ripple",
-      "science": "packed finite Cayley-Dickson walk, box-kite, and Design C hardware comparison",
       "backend": "ibm_kingston",
-      "state": "submit_free_preparation_unapproved",
+      "state": "prepared_pending_review_merge_and_live_admission",
+      "case": "2026-10-12T163354.310138Z",
+      "record_sha256": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87",
+      "qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "case_sha256": "32ce46ebc336539a562a85844b28b1099826ed5445596073c1a214abfe8c7d8d",
+      "experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+      "prepared_source_commit": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
       "proposed_pubs": 146,
-      "proposed_ceiling_seconds": 180,
+      "member_count": 929,
+      "shot_allocation_histogram": {
+        "1024": 120,
+        "4096": 26
+      },
+      "reported_nominal_seconds": 64.321793536,
+      "reported_stress_seconds": 68.921793536,
+      "proposed_ceiling_seconds": 80,
+      "job_ceilings_seconds": [
+        40,
+        40
+      ],
       "accepted_job_ids": [],
-      "qualification": "placement search rejects tested pool combinations; source repair and remaining routed candidates pending"
+      "planning_admission": true,
+      "current_admission": false,
+      "physical_execution_authorized": false,
+      "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
+      "qualification": "Independent source, case, QPY, endpoint and cost audit passed. Review, merge, live calibration and quota revalidation remain required.",
+      "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
+      "audit": "results/ripple/fresh-campaign-preparation-audit.json",
+      "admitted_endpoints": 1138,
+      "required_endpoints": 1138
     },
     {
       "family": "rank-sector",
       "owner": "Design a single-run reality ripple",
-      "science": "finite rank-sector dark, bright, and isolated control comparison",
       "backend": "ibm_kingston",
-      "state": "submit_free_preparation_unapproved",
+      "state": "prepared_pending_review_merge_and_live_admission",
+      "case": "2026-10-12T163354.210407Z",
+      "record_sha256": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+      "qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+      "case_sha256": "7c78446aa8788d38349b963ce0516561be63455b779521842e61e231cf5239c8",
+      "experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+      "prepared_source_commit": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
       "proposed_pubs": 36,
+      "member_count": 176,
+      "shot_allocation_histogram": {
+        "1024": 15,
+        "4096": 21
+      },
+      "reported_nominal_seconds": 30.44909824,
+      "reported_stress_seconds": 35.04909824,
       "proposed_ceiling_seconds": 60,
+      "job_ceilings_seconds": [
+        30,
+        30
+      ],
       "accepted_job_ids": [],
-      "proposed_shots_per_pub": 4096,
-      "reported_nominal_seconds": 39.9347,
-      "reported_stress_seconds": 42.2347,
-      "qualification": "other owner reports admitted candidate; final source refresh pending"
+      "planning_admission": true,
+      "current_admission": false,
+      "physical_execution_authorized": false,
+      "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
+      "qualification": "Independent source, case, QPY, endpoint and cost audit passed. Review, merge, live calibration and quota revalidation remain required.",
+      "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
+      "audit": "results/ripple/fresh-campaign-preparation-audit.json",
+      "admitted_endpoints": 196,
+      "required_endpoints": 196
+    },
+    {
+      "family": "folded-correction",
+      "owner": "Design a single-run reality ripple",
+      "backend": "ibm_fez",
+      "state": "prepared_pending_review_merge_and_live_admission",
+      "case": "2026-10-12T170742.727534Z",
+      "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
+      "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+      "case_sha256": "f90da9376aeac5b6551ca101ebca56e5b816f63d0f84a79f7aff372682e2b40a",
+      "experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+      "prepared_source_commit": "0bc7f060202f8e9270e06da0a585d5566bc2b6a5",
+      "proposed_pubs": 4,
+      "member_count": 4,
+      "shot_allocation_histogram": {
+        "8192": 4
+      },
+      "reported_nominal_seconds": 11.519211263999999,
+      "reported_stress_seconds": 14.474571264,
+      "proposed_ceiling_seconds": 30.0,
+      "job_ceilings_seconds": [
+        30.0
+      ],
+      "accepted_job_ids": [],
+      "planning_admission": true,
+      "current_admission": false,
+      "physical_execution_authorized": false,
+      "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
+      "qualification": "Independent source, case, QPY, endpoint and cost audit passed. Review, merge, live calibration and quota revalidation remain required.",
+      "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
+      "audit": "results/ripple/renewed-campaign-preparation-audit.json",
+      "source_closure_audit": "results/live/2026-10-12T170742.727534Z/source-closure.json",
+      "calibration": "2026-10-12T09:22:41-07:00"
     }
   ],
   "deduplication": {
     "folded_4096_other_chat": "comparison preparation only; excluded from hardware campaign; reuse owner raw and collected results",
-    "static_witness_overlap": "reconcile historical static endpoints against ripple/rank-sector controls before authorizing both"
+    "static_witness_overlap": "Rank sectors measure coefficient-normalized multiplication-path norms; ripple measures associator interference and sedenion fringes. Endpoint and member names are disjoint. Historical DesignC repetitions are intentional fresh-patch/packing controls:9members share3atlas rows and3isolated reference rows measure changed neighboring workload."
   },
   "backend_policy": "each complete control family stays on its independently admitted backend; alternate QPUs require their own live case and approval",
-  "other_chat_confirmation": "zero accepted or in-flight physical jobs; hold ripple and rank physical submissions until concrete cases and owner approval; preserve canonical main",
+  "other_chat_confirmation": "The user authorizes execution after reviewed merged code, current cases and a combined 180-second ceiling. Correction precedes independent static accuracy admission. Fresh preparations total 170 seconds of ceilings.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
-    "observed_at": "2026-10-12T06:07:45.213941+00:00",
-    "scope": "Read-only account usage, accessible backend names, pending jobs and two accepted job statuses",
-    "instance_sha256_12": "e3de05b6901e",
-    "budget": {
-      "usage_limit_seconds": 600,
-      "usage_consumed_seconds": 49,
-      "usage_remaining_seconds": 551,
-      "usage_period": {
-        "start_time": "2026-09-14T06:07:45.125Z",
-        "end_time": "2026-10-12T06:07:45.125Z"
+    "accepted_jobs": [
+      {
+        "charge_seconds": 29,
+        "id": "db67fqsvf2bc73d0pk4g",
+        "status": "DONE",
+        "usage_source": "job.usage(partial=False)"
+      },
+      {
+        "charge_seconds": 11,
+        "id": "db67frimb58s738bci4g",
+        "status": "DONE",
+        "usage_source": "job.usage(partial=False)"
       }
-    },
+    ],
     "accessible_backend_names": [
       "ibm_fez",
       "ibm_kingston",
       "ibm_marrakesh"
     ],
-    "pending_account_jobs": [],
-    "accepted_jobs": [
-      {
-        "id": "db67fqsvf2bc73d0pk4g",
-        "status": "DONE",
-        "charge_seconds": 29,
-        "usage_source": "job.usage(partial=False)"
+    "budget": {
+      "usage_consumed_seconds": 49,
+      "usage_limit_seconds": 600,
+      "usage_period": {
+        "end_time": "2026-10-12T10:21:01.466Z",
+        "start_time": "2026-09-14T10:21:01.466Z"
       },
-      {
-        "id": "db67frimb58s738bci4g",
-        "status": "DONE",
-        "charge_seconds": 11,
-        "usage_source": "job.usage(partial=False)"
+      "usage_remaining_seconds": 551
+    },
+    "instance_sha256_12": "e3de05b6901e",
+    "observed_at": "2026-10-12T10:21:03.446011+00:00",
+    "pending_account_jobs": [],
+    "scope": "Read-only account usage, backend names, pending account jobs and settled prior-job charges"
+  },
+  "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions follow the recorded conditional user authority and current-case execution gates.",
+  "scientific_priority_gate": {
+    "state": "model_discrimination_pilot_prepared_pending_review_merge_and_live_admission",
+    "source": "Direct user instruction verified in Audit Heron quantum claims",
+    "design": "gororoba_quantum/MODEL_DISCRIMINATION.md",
+    "broad_atlas_spending": "held",
+    "recommended_pubs": 4,
+    "recommended_shots_per_pub": 8192,
+    "historical_conditional_seconds": 11.242518272,
+    "service_ceiling_seconds": 30,
+    "physical_execution_authorized": false,
+    "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; the conditional execution gates must qualify before physical execution.",
+    "case": "2026-10-12T170742.727534Z",
+    "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
+    "selected_backend": "ibm_fez",
+    "reported_nominal_seconds": 11.519211263999999,
+    "reported_stress_seconds": 14.474571264,
+    "historical_preparation": {
+      "case": "2026-10-12T074042.840320Z",
+      "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+      "selected_backend": "ibm_fez",
+      "reported_nominal_seconds": 11.515410176,
+      "reported_stress_seconds": 14.470770176
+    },
+    "renewal_evidence": "results/ripple/renewed-campaign-preparation-audit.json",
+    "historical_renewal_rejection": {
+      "state": "model_discrimination_pilot_renewal_unavailable",
+      "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
+    },
+    "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
+    "case_scope": "Source-bound qualified preparation; revalidate calibration, source, QPY and quota before execution."
+  },
+  "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission.",
+  "historical_campaign_proposals": [
+    {
+      "recorded_at": "2026-10-12T10:34:16.000651+00:00",
+      "ledger_sha256": "0caf6b74ddac37a2015eba64eb350a1eb86903bdf33066315856adb0722f4fb1",
+      "scope": "Superseded 270-second pilot-plus-atlas proposal and separate 60-second reserve; the user subsequently capped the campaign at 180 seconds.",
+      "shared_quota": {
+        "last_observed_remaining_seconds": 551,
+        "folded_reserved_ceiling_seconds": 0,
+        "other_proposed_ceiling_seconds": 270,
+        "single_shared_reserve_seconds": 60,
+        "combined_requirement_seconds": 330,
+        "unallocated_at_snapshot_seconds": 221,
+        "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
+        "folded_settled_charge_seconds": 40,
+        "correction_proposed_ceiling_seconds": 30,
+        "held_atlas_proposed_ceiling_seconds": 240,
+        "proposals_are_account_reservations": false
       }
-    ]
+    },
+    {
+      "scope": "Superseded pre-allocation preparations; immutable cases remain retained.",
+      "families": [
+        {
+          "family": "ripple",
+          "owner": "Design a single-run reality ripple",
+          "science": "packed finite Cayley-Dickson walk, box-kite, and Design C hardware comparison",
+          "backend": "ibm_kingston",
+          "state": "historical_preparation_requires_renewal_held_for_model_discrimination",
+          "proposed_pubs": 146,
+          "proposed_ceiling_seconds": 180,
+          "accepted_job_ids": [],
+          "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before applying the recorded conditional user authority to an exact case; native mock timing remains unavailable.",
+          "case": "2026-10-12T062505.208379Z",
+          "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+          "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+          "proposed_shots_per_pub": 4096,
+          "reported_nominal_seconds": 157.08726656,
+          "reported_stress_seconds": 159.38726656,
+          "admitted_endpoints": 1138,
+          "required_endpoints": 1138,
+          "relative_placement_score_floor": 0.8,
+          "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; fresh digest-bound case qualification applies the recorded conditional user authority.",
+          "proposal_scope": "historical_record_only",
+          "current_admission": false,
+          "physical_execution_authorized": false,
+          "current_proposed_ceiling_seconds": null,
+          "budget_requalification": "Renew both atlas families within the combined 150-second allowance remaining after the 30-second pilot; the retained 240-second atlas proposal exceeds that allowance."
+        },
+        {
+          "family": "rank-sector",
+          "owner": "Design a single-run reality ripple",
+          "science": "finite rank-sector dark, bright, and isolated control comparison",
+          "backend": "ibm_kingston",
+          "state": "historical_preparation_requires_renewal_held_for_model_discrimination",
+          "proposed_pubs": 36,
+          "proposed_ceiling_seconds": 60,
+          "accepted_job_ids": [],
+          "proposed_shots_per_pub": 4096,
+          "reported_nominal_seconds": 39.93470336,
+          "reported_stress_seconds": 42.23470336,
+          "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before applying the recorded conditional user authority to an exact case; native mock timing remains unavailable.",
+          "case": "2026-10-12T062505.552988Z",
+          "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+          "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+          "admitted_endpoints": 196,
+          "required_endpoints": 196,
+          "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; fresh digest-bound case qualification applies the recorded conditional user authority.",
+          "proposal_scope": "historical_record_only",
+          "current_admission": false,
+          "physical_execution_authorized": false,
+          "current_proposed_ceiling_seconds": null,
+          "budget_requalification": "Renew both atlas families within the combined 150-second allowance remaining after the 30-second pilot; the retained 240-second atlas proposal exceeds that allowance."
+        },
+        {
+          "family": "folded-correction",
+          "owner": "Design a single-run reality ripple",
+          "science": "Fixed-sample measured-bit versus known-label correction for two odd supplied eigenlabels; retain measurement, reset and dispatch",
+          "backend": "ibm_fez",
+          "state": "historical_renewal_required",
+          "case": "2026-10-12T153635.004894Z",
+          "record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+          "experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881",
+          "proposed_pubs": 4,
+          "proposed_shots_per_pub": 8192,
+          "proposed_ceiling_seconds": 30,
+          "reported_nominal_seconds": 11.519211263999999,
+          "reported_stress_seconds": 14.474571264,
+          "accepted_job_ids": [],
+          "qualified_candidates": 18,
+          "searched_backends": [
+            "ibm_fez",
+            "ibm_kingston",
+            "ibm_marrakesh"
+          ],
+          "qualification": "The successful retained preparation admitted all 18 candidates at fb13b067, whose 41 runtime sources match committed merge ea8eae1. Subsequent working runtime shot-allocation changes require a fresh current-source case. Archived pair, timing and model evidence retain historical scope; actual returned schedules and raw counts gate later inference.",
+          "model_gain_known_minus_measured": {
+            "1": 0.001068115234375,
+            "3": 0.005889892578125
+          },
+          "physical_execution_authorized": false,
+          "historical_preparation": {
+            "case": "2026-10-12T074042.840320Z",
+            "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+            "experiment_digest": "e29428189eac0bad0aae4e9fb0d787addd3f118b6ec1e7d10833557cce8c60b8",
+            "backend": "ibm_fez",
+            "reported_nominal_seconds": 11.515410176,
+            "reported_stress_seconds": 14.470770176,
+            "qualified_candidates": 18,
+            "model_gain_known_minus_measured": {
+              "1": 0.000823974609375,
+              "3": 0.00640869140625
+            }
+          },
+          "renewal_evidence": "results/ripple/correction-current-source-validation.json",
+          "current_source_commit": "ea8eae17005d2226afa981cadad889241d415c47",
+          "current_experiment_digest": null,
+          "historical_renewal_rejection": {
+            "state": "renewal_unavailable_backend_eligibility",
+            "qualification": "Scoring repair requires source-bound renewal. Fez queue and Marrakesh maintenance prevent the required three-system snapshot set; local tests pass separately. Historical preparation remains retained.",
+            "renewal_evidence": "results/ripple/correction-renewal-rejection.json",
+            "current_source_commit": "efa187f30cf0604265455198ce1aa9b8addd1acd",
+            "current_experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881"
+          },
+          "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+          "current_admission": false,
+          "execution_authority_state": "conditional_user_authority_pending_source_renewal_and_execution_gates",
+          "prepared_source_commit": "fb13b0675530c3eb9a4d8c0225bf37cacd8b5923",
+          "proposal_scope": "historical_record_only"
+        }
+      ]
+    },
+    {
+      "scope": "Superseded correction calibration preparation; original record and audit remain immutable.",
+      "family": {
+        "family": "folded-correction",
+        "owner": "Design a single-run reality ripple",
+        "backend": "ibm_fez",
+        "state": "prepared_pending_review_merge_and_live_admission",
+        "case": "2026-10-12T163354.247043Z",
+        "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+        "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+        "case_sha256": "4b0aa9aced98eccbb20be811aa9b4634bb4416115532953df8cca41918345726",
+        "experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+        "prepared_source_commit": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
+        "proposed_pubs": 4,
+        "member_count": 4,
+        "shot_allocation_histogram": {
+          "8192": 4
+        },
+        "reported_nominal_seconds": 11.519211263999999,
+        "reported_stress_seconds": 14.474571264,
+        "proposed_ceiling_seconds": 30.0,
+        "job_ceilings_seconds": [
+          30.0
+        ],
+        "accepted_job_ids": [],
+        "planning_admission": true,
+        "current_admission": false,
+        "physical_execution_authorized": false,
+        "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
+        "qualification": "Independent source, case, QPY, endpoint and cost audit passed. Review, merge, live calibration and quota revalidation remain required.",
+        "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
+        "audit": "results/ripple/fresh-campaign-preparation-audit.json"
+      }
+    }
+  ],
+  "conditional_execution_authority": {
+    "state": "conditional_user_authority_pending_review_merge_and_live_admission",
+    "user_authorized_subject_to_conditions": true,
+    "user_campaign_ceiling_seconds": 180,
+    "case": "2026-10-12T170742.727534Z",
+    "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
+    "conditions": [
+      "Reviewed and merged code with clean current-head Copilot review and required checks.",
+      "A current digest-bound case whose source, dependencies, calibration, selection, layout and QPY pass submission revalidation.",
+      "The execution owner verifies the combined new correction-plus-atlas campaign remains within 180 seconds and preserves the account reserve."
+    ],
+    "verified_conditions": {
+      "reviewed_merged_code": false,
+      "combined_execution_plan_within_user_cap": true,
+      "fresh_submission_revalidation": false,
+      "retained_case_protocol_at_prepared_revision": true,
+      "current_source_case": true
+    },
+    "conditions_verified_for_submission": false,
+    "physical_execution_authorized": false,
+    "generated_case_scope": "UNAPPROVED_CASE.md retains the planner-generated text; this separate ledger records the subsequent conditional user instruction without rewriting that case.",
+    "historical_case": "2026-10-12T153635.004894Z",
+    "historical_record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+    "correction_planned_job_ceiling_seconds": 30,
+    "cases": {
+      "ripple": {
+        "record": "results/live/2026-10-12T163354.310138Z",
+        "record_sha256": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87"
+      },
+      "rank-sector": {
+        "record": "results/live/2026-10-12T163354.210407Z",
+        "record_sha256": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522"
+      },
+      "folded-correction": {
+        "record": "results/live/2026-10-12T170742.727534Z",
+        "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8"
+      }
+    }
+  },
+  "static_practical_accuracy_protocol": {
+    "state": "preregistered_before_acquisition_pending_review_and_execution_gates",
+    "document": "results/ripple/STATIC_PACKING_ACCURACY.md",
+    "endpoint_audit": "results/ripple/static-practical-accuracy-admission.json",
+    "endpoint_audit_sha256": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f",
+    "normalized_score_tolerance": 0.1,
+    "control_count": 37,
+    "controls_with_possible_equivalence": 36,
+    "controls_with_possible_practical_defect": 37,
+    "whole_family_preservation_claim": false,
+    "approval_scope": "Conditional user authority; correction decision and review, merge, source, calibration, quota and single-use case binding still gate each static submission."
   }
 }

@@ -39,8 +39,8 @@ class Member:
     """One circuit of a group.
 
     binding assigns the parameters of a shared circuit: members whose circuit is
-    the same parametrized object as the group's primary compile once and differ
-    only by bound angles, so they share routing and readout qubits
+    the same parametrized object compile once and differ only by bound angles,
+    so they share routing and readout qubits
     (live_run.select). mirror asks the compiler for a calibration twin cut from
     the member's compiled ISA circuit, on the same physical qubits with the same
     two-qubit content (live_run.mirror_isa); summaries find its distribution
@@ -72,6 +72,9 @@ class Group:
     replicate intervals carry a pooled-shot Wilson bound. replica_floor, when
     set, replaces the default replica floor for this group; an explicit
     --replica-floor still governs every group (live_run.replica_floor).
+    execution_rows assigns each member an explicit global PUB row; sparse
+    rows preserve isolated workloads without inserting idle measurements.
+    Explicit schedules prohibit automatic mirrors and replica references.
     """
 
     name: str
@@ -81,6 +84,21 @@ class Group:
     admission: Admission | None = None
     rate_keys: frozenset[str] = frozenset()
     replica_floor: float | None = None
+    execution_rows: tuple[int, ...] | None = None
+
+    def __post_init__(self) -> None:
+        if self.execution_rows is None:
+            return
+        if not isinstance(self.execution_rows, tuple):
+            raise ValueError(f"{self.name}: execution rows must be an immutable tuple")
+        if len(self.execution_rows) != len(self.members):
+            raise ValueError(f"{self.name}: execution rows must match member count")
+        if any(type(row) is not int or row < 0 for row in self.execution_rows):
+            raise ValueError(f"{self.name}: execution rows must be nonnegative integers")
+        if len(set(self.execution_rows)) != len(self.execution_rows):
+            raise ValueError(f"{self.name}: execution rows must be unique within a group")
+        if any(member.mirror for member in self.members):
+            raise ValueError(f"{self.name}: explicit execution rows prohibit automatic mirrors")
 
 
 def tvd(p: np.ndarray, q: np.ndarray) -> float:

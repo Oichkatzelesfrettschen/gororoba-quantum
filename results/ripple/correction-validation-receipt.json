@@ -1,0 +1,436 @@
+{
+  "concrete_case_audit": {
+    "case_rerender_matches": true,
+    "finite_rank_recomputed": true,
+    "parsed_replay_matches_record": true,
+    "record_qpy_case_hashes_unchanged": true,
+    "service_calls": 0
+  },
+  "correction_contracts": {
+    "case_rejected_mutations": 38,
+    "circuit_rejected_mutations": 19,
+    "cli_rejections_before_service": 17,
+    "full_synthetic_collection_pipeline": true,
+    "normal_and_optimized_python": true,
+    "raw_rejections": 13,
+    "schedule_rejected_mutations": 92,
+    "withheld_collection_mutations": 21
+  },
+  "default_live_dry_run": {
+    "attempted_combinations": 256,
+    "exit_code": 1,
+    "frontier_combinations": 4782969,
+    "outcome": "bounded joint-placement rejection",
+    "physical_and_mock_primitive_submissions": 0
+  },
+  "evidence_boundary": "Local contracts and live calibration preparation; fresh physical outcomes, returned schedules and final charges await exact-case approval and execution.",
+  "experiment_digest": "e29428189eac0bad0aae4e9fb0d787addd3f118b6ec1e7d10833557cce8c60b8",
+  "fresh_offline_compilation": {
+    "backend_search": [
+      {
+        "admitted_candidate_count": 1,
+        "backend": "ibm_fez",
+        "calibration": "2025-02-26T15:16:25-05:00",
+        "compiled_candidate_count": 1,
+        "eligible": true,
+        "rejection_reason": null
+      },
+      {
+        "admitted_candidate_count": 1,
+        "backend": "ibm_kingston",
+        "calibration": "2026-04-15T09:15:15+02:00",
+        "compiled_candidate_count": 1,
+        "eligible": true,
+        "rejection_reason": null
+      },
+      {
+        "admitted_candidate_count": 1,
+        "backend": "ibm_marrakesh",
+        "calibration": "2025-02-26T14:52:45-05:00",
+        "compiled_candidate_count": 1,
+        "eligible": true,
+        "rejection_reason": null
+      }
+    ],
+    "checks": {
+      "final_pub_archive_equal": true,
+      "frozen_configuration_equal": true,
+      "packed_archive_equal": true,
+      "reselection_reasons_empty": true
+    },
+    "final_pub_archive_sha256": "4cb54679091d98be12399d04050e07ce4a99b8760ecf9ca5776e6e478fee66f3",
+    "packed_archive_sha256": "3768f32c634814b1b52d5ce1200b0100662cc2918453fd9579963b88540cb173",
+    "scope": "offline bundled targets and local simulation; six actual compilations across fresh snapshot objects"
+  },
+  "full_required_gates": {
+    "exit_code": 0,
+    "gororoba_workers": 2,
+    "mypy_files": 80,
+    "replay": "AGENTS.md first shell block",
+    "ruff_format_files": 83,
+    "warnings": "errors"
+  },
+  "live_dry_run": {
+    "candidate_count": 18,
+    "exit_code": 0,
+    "family": "folded-correction",
+    "physical_and_mock_primitive_submissions": 0,
+    "record": "results/live/2026-10-12T074042.840320Z/record.json"
+  },
+  "operator_log_sha256": {
+    "default_live_rejection": "e6ca6c0de68d0bb5f48ba0bdffcfd3b4ac6e1da684ce827949269c51e63ff1c1",
+    "full_gate_script": "cdf330e1c14bf5a5f5bbb972bdbb5389f6e7e08338a26fbc578c7a53193d20b1",
+    "full_repository_gates": "2f17e7a02e74996b32f1fd1befc8dbc00e1139b4ea57a47b0c1426d2789a3cdf",
+    "live_three_backend_preparation": "bd4146dea10df285f8d0c622d98fa647b3f38ce622c2c450e4c1e264efe639c2",
+    "runtime_local_probes": "ac02f8cffc06d4e8ea9b32aad95227eed3507986a5a7d5675b8f9c9c0d56bd84"
+  },
+  "planner_contracts": {
+    "archived_pair_roundtrips": 2,
+    "backend_search": [
+      {
+        "admitted_candidate_count": 1,
+        "backend": "ibm_fez",
+        "calibration": "2025-02-26T15:16:25-05:00",
+        "compiled_candidate_count": 1,
+        "eligible": true,
+        "rejection_reason": null
+      },
+      {
+        "admitted_candidate_count": 1,
+        "backend": "ibm_kingston",
+        "calibration": "2026-04-15T09:15:15+02:00",
+        "compiled_candidate_count": 1,
+        "eligible": true,
+        "rejection_reason": null
+      },
+      {
+        "admitted_candidate_count": 1,
+        "backend": "ibm_marrakesh",
+        "calibration": "2025-02-26T14:52:45-05:00",
+        "compiled_candidate_count": 1,
+        "eligible": true,
+        "rejection_reason": null
+      }
+    ],
+    "candidate_seeds_per_backend": 1,
+    "collector_reconstructed_members": 4,
+    "cost_rejections": 2,
+    "execution_manifest_sha256": "2b0078a14124197ec3465841f987288a0c5ef2f3941bdb62800912c92b88d19e",
+    "execution_qpy_sha256": "4cb54679091d98be12399d04050e07ce4a99b8760ecf9ca5776e6e478fee66f3",
+    "family_configuration_sha256": "c048e4026c49d90e3a92d2920c624f6799275f2833c2d4f5091eeff9f7029bc6",
+    "finite_candidate_frontier_size": 3,
+    "fresh_inventory_permutation_invariant": true,
+    "isolated_pubs": 4,
+    "offline_backend_targets": 3,
+    "protocol_rejections": 15,
+    "routed_templates": 3,
+    "scope": "bundled calibration fixtures, local simulation, and archive validation only",
+    "selected_fake_backend": "ibm_kingston"
+  },
+  "runtime_local_verification": {
+    "configure_sampler_sha256": "96a562ae9719444f7494145c7c9c768acd76af3a7ea3f0a9b6624860f85e4623",
+    "hardware_submitted": false,
+    "import_modules": {
+      "EstimatorV2": "qiskit_ibm_runtime.executor_estimator.estimator",
+      "Sampler": "qiskit_ibm_runtime.executor_sampler.sampler",
+      "SamplerV2": "qiskit_ibm_runtime.executor_sampler.sampler"
+    },
+    "probes": [
+      {
+        "effective_options": {
+          "default_shots": 64,
+          "dynamical_decoupling": {
+            "enable": false,
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "sequence_type": "XX",
+            "skip_reset_qubits": false
+          },
+          "environment": {
+            "image": null,
+            "job_tags": [
+              "local-runtime-audit"
+            ],
+            "log_level": "WARNING",
+            "max_execution_time": null,
+            "private": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "meas_type": "classified",
+            "rep_delay": 0.00025,
+            "scheduler_timing": true,
+            "stretch_values": false
+          },
+          "experimental": {},
+          "max_execution_time": 60,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "twirling": {
+            "enable_gates": false,
+            "enable_measure": false,
+            "group": "pauli",
+            "num_randomizations": "auto",
+            "shots_per_randomization": "auto",
+            "strategy": "active-accum"
+          }
+        },
+        "job_type": "qiskit_ibm_runtime.fake_provider.local_runtime_job.LocalRuntimeJob",
+        "label": "static_plain",
+        "local_elapsed_seconds": 0.10355536002316512,
+        "options": {
+          "default_shots": 64,
+          "dynamical_decoupling": {
+            "enable": false,
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "sequence_type": "XX",
+            "skip_reset_qubits": false
+          },
+          "environment": {
+            "image": null,
+            "job_tags": [
+              "local-runtime-audit"
+            ],
+            "log_level": "WARNING",
+            "max_execution_time": null,
+            "private": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "meas_type": "classified",
+            "rep_delay": 0.00025,
+            "scheduler_timing": true,
+            "stretch_values": false
+          },
+          "experimental": {},
+          "max_execution_time": 60,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "twirling": {
+            "enable_gates": null,
+            "enable_measure": null,
+            "group": "pauli",
+            "num_randomizations": "auto",
+            "shots_per_randomization": "auto",
+            "strategy": "active-accum"
+          }
+        },
+        "passed": true,
+        "qubits": 5,
+        "shots": 64
+      },
+      {
+        "effective_options": {
+          "default_shots": 2048,
+          "dynamical_decoupling": {
+            "enable": true,
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "sequence_type": "XX",
+            "skip_reset_qubits": true
+          },
+          "environment": {
+            "image": null,
+            "job_tags": [
+              "local-runtime-audit"
+            ],
+            "log_level": "WARNING",
+            "max_execution_time": null,
+            "private": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "meas_type": "classified",
+            "rep_delay": 0.00025,
+            "scheduler_timing": true,
+            "stretch_values": false
+          },
+          "experimental": {},
+          "max_execution_time": 60,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "twirling": {
+            "enable_gates": true,
+            "enable_measure": true,
+            "group": "pauli",
+            "num_randomizations": 32,
+            "shots_per_randomization": 64,
+            "strategy": "active-accum"
+          }
+        },
+        "job_type": "qiskit_ibm_runtime.fake_provider.local_runtime_job.LocalRuntimeJob",
+        "label": "static_twirling_dd",
+        "local_elapsed_seconds": 0.1381242189963814,
+        "options": {
+          "default_shots": 2048,
+          "dynamical_decoupling": {
+            "enable": true,
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "sequence_type": "XX",
+            "skip_reset_qubits": true
+          },
+          "environment": {
+            "image": null,
+            "job_tags": [
+              "local-runtime-audit"
+            ],
+            "log_level": "WARNING",
+            "max_execution_time": null,
+            "private": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "meas_type": "classified",
+            "rep_delay": 0.00025,
+            "scheduler_timing": true,
+            "stretch_values": false
+          },
+          "experimental": {},
+          "max_execution_time": 60,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "twirling": {
+            "enable_gates": true,
+            "enable_measure": true,
+            "group": "pauli",
+            "num_randomizations": 32,
+            "shots_per_randomization": 64,
+            "strategy": "active-accum"
+          }
+        },
+        "passed": true,
+        "qubits": 5,
+        "shots": 2048
+      },
+      {
+        "effective_options": {
+          "default_shots": 64,
+          "dynamical_decoupling": {
+            "enable": false,
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "sequence_type": "XX",
+            "skip_reset_qubits": false
+          },
+          "environment": {
+            "image": null,
+            "job_tags": [
+              "local-runtime-audit"
+            ],
+            "log_level": "WARNING",
+            "max_execution_time": null,
+            "private": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "meas_type": "classified",
+            "rep_delay": 0.00025,
+            "scheduler_timing": true,
+            "stretch_values": false
+          },
+          "experimental": {},
+          "max_execution_time": 60,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "twirling": {
+            "enable_gates": false,
+            "enable_measure": false,
+            "group": "pauli",
+            "num_randomizations": "auto",
+            "shots_per_randomization": "auto",
+            "strategy": "active-accum"
+          }
+        },
+        "job_type": "qiskit_ibm_runtime.fake_provider.local_runtime_job.LocalRuntimeJob",
+        "label": "dynamic_suppression_guard",
+        "local_elapsed_seconds": 0.09536157399998046,
+        "options": {
+          "default_shots": 64,
+          "dynamical_decoupling": {
+            "enable": false,
+            "extra_slack_distribution": "middle",
+            "scheduling_method": "alap",
+            "sequence_type": "XX",
+            "skip_reset_qubits": false
+          },
+          "environment": {
+            "image": null,
+            "job_tags": [
+              "local-runtime-audit"
+            ],
+            "log_level": "WARNING",
+            "max_execution_time": null,
+            "private": false
+          },
+          "execution": {
+            "init_qubits": true,
+            "meas_type": "classified",
+            "rep_delay": 0.00025,
+            "scheduler_timing": true,
+            "stretch_values": false
+          },
+          "experimental": {},
+          "max_execution_time": 60,
+          "simulator": {
+            "angle_decimals": 5,
+            "layer_noise_model": null,
+            "seed_simulator": null,
+            "warn_absent": true
+          },
+          "twirling": {
+            "enable_gates": null,
+            "enable_measure": null,
+            "group": "pauli",
+            "num_randomizations": "auto",
+            "shots_per_randomization": "auto",
+            "strategy": "active-accum"
+          }
+        },
+        "passed": true,
+        "qubits": 5,
+        "shots": 64
+      }
+    ],
+    "scope": "Import and local option-path execution, not QPU calibration or session timing",
+    "service_constructed": false,
+    "warning_policy": "error"
+  },
+  "schema": "correction-production-validation-v1",
+  "source_closure": {
+    "files": 41,
+    "recorded_sources_modified": false,
+    "verdict": "declared_source_closure_and_dependency_versions_match"
+  },
+  "source_commit": "67106bd1d11397f0dcacb0c48f509a2e0d02fb89",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "rustworkx": "0.18.1",
+    "scipy": "1.18.1",
+    "sympy": "1.14.0"
+  }
+}

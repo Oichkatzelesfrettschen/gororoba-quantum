@@ -9,6 +9,9 @@ The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
 lint and type-check configuration only. Before any push, these exit 0:
 
+The rank-sector image gate also uses the plotting-only pin
+`matplotlib==3.11.2`, documented in [results/ripple/README.md](results/ripple/README.md).
+
 ```sh
 (
   set -eu
@@ -19,14 +22,32 @@ lint and type-check configuration only. Before any push, these exit 0:
     results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client \
     results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
-    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py
+    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
+    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
+    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
+    scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
+    scripts/check_diagnose_qiskit_mock.py \
+    scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
+    scripts/check_render_ripple_visualization.py \
+    scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py \
+    scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py \
+    docs/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
     results/live/verify_source_closure.py results/live/folded_raw_analysis.py \
     results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client \
     results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
-    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py
+    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
+    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
+    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
+    scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
+    scripts/check_diagnose_qiskit_mock.py \
+    scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
+    scripts/check_render_ripple_visualization.py \
+    scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py \
+    scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py \
+    docs/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/verify_evidence.py
@@ -41,6 +62,10 @@ lint and type-check configuration only. Before any push, these exit 0:
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" \
+    docs/sources/open_gororoba/check_signed_kite_switching.py | \
+    cmp - docs/sources/open_gororoba/signed_kite_switching.json
+  (cd docs/sources/open_gororoba && sha256sum -c SHA256SUMS)
   (cd results/live
     PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest test_folded_raw_analysis
     PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest test_folded_raw_analysis)
@@ -48,6 +73,26 @@ lint and type-check configuration only. Before any push, these exit 0:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error results/live/folded_raw_analysis.py \
     results/live/2026-10-12T055624.091217Z | \
     cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_diagnose_qiskit_mock.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_diagnose_qiskit_mock.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_folded_job_review.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_folded_job_review.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_review_folded_jobs.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_review_folded_jobs.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_rank_sector_norms.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_rank_sector_norms.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_ripple_visualization.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_ripple_visualization.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_extract_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_extract_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/review_folded_jobs.py \
+    --run-dir results/live/2026-10-12T055624.091217Z --check
+  PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \
+    MPLCONFIGDIR="${MPLCONFIGDIR:-/tmp/folded-review-mplconfig}" \
+    "$PYTHON" scripts/render_folded_job_review.py \
+    --png results/ripple/folded-job-review.png --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error \
     results/local_compute/mixed_pub_client/probe.py >/dev/null
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error \
@@ -58,24 +103,47 @@ lint and type-check configuration only. Before any push, these exit 0:
     sha256sum -c SHA256SUMS)
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
+    correction_circuits.py correction_circuits_contracts.py \
+    correction_schedule.py correction_schedule_contracts.py \
+    correction_statistics.py correction_statistics_contracts.py \
+    correction_preparation.py correction_preparation_contracts.py \
+    correction_planning.py correction_planning_contracts.py \
+    correction_collection.py correction_collection_contracts.py correction_case_contracts.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
-    runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
+    runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
     qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
-    qpu_planning.py qpu_planning_contracts.py qpu_cases.py local_compute.py \
+    qpu_planning.py qpu_planning_contracts.py qpu_cases.py \
+    qpu_case_allocation_contracts.py local_compute.py \
+    algebra_planning.py algebra_planning_contracts.py \
+    pub_shot_allocation.py pub_shot_allocation_contracts.py pub_shot_runtime_contracts.py \
+    ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
+    native_preflight.py native_preflight_contracts.py \
+    placement_feasibility.py placement_feasibility_contracts.py \
     aer_delay_sentinels.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
-    integral_homology.py rank_path_topology.py four_support_rank.py four_support_geometry.py \
-    four_support_doubling.py four_support_homology.py skew_schur_charts.py principal_skew_atlas.py \
+    integral_homology.py rank_path_topology.py ripple_dynamics.py \
+    four_support_rank.py four_support_geometry.py \
+    four_support_doubling.py four_support_homology.py skew_schur_charts.py \
+    principal_skew_atlas.py \
     schur_acceleration.py nullity_twelve_locus.py nullity_twelve_curves.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
     ../results/local_compute/verify_evidence.py \
     ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
-    ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py
+    ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py \
+    ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
+    ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py \
+    ../scripts/check_render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py \
+    ../scripts/check_diagnose_qiskit_mock.py \
+    ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py \
+    ../scripts/check_render_ripple_visualization.py \
+    ../scripts/extract_measured_ripple.py ../scripts/check_extract_measured_ripple.py \
+    ../scripts/render_measured_ripple.py ../scripts/check_render_measured_ripple.py \
+    ../docs/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -87,6 +155,13 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" integral_homology.py >/dev/null
   "$PYTHON" rank_path_topology.py >/dev/null
   "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
+  "$PYTHON" ripple_dynamics.py --check ../results/ripple/evidence.json
+  "$PYTHON" ../scripts/render_ripple_visualization.py \
+    --evidence ../results/ripple/evidence.json \
+    --out ../results/ripple/cayley-dickson-ripples.html --check
+  PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-/tmp/rank-sector-mplconfig}" \
+    "$PYTHON" ../scripts/render_rank_sector_norms.py \
+    --png ../results/ripple/rank-sector-norms.png --check
   "$PYTHON" -W error schur_acceleration.py >/dev/null
   "$PYTHON" -O -W error schur_acceleration.py >/dev/null
   "$PYTHON" -W error nullity_twelve_locus.py >/dev/null
@@ -104,10 +179,37 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
   "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
   "$PYTHON" runtime_contracts.py
+  "$PYTHON" parameter_binding_contracts.py
+  "$PYTHON" correction_circuits_contracts.py
+  "$PYTHON" correction_statistics_contracts.py
+  "$PYTHON" correction_schedule_contracts.py
+  "$PYTHON" correction_preparation_contracts.py
+  "$PYTHON" correction_planning_contracts.py
+  "$PYTHON" correction_collection_contracts.py
+  "$PYTHON" correction_case_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_circuits_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_statistics_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_schedule_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_preparation_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_planning_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_collection_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_case_contracts.py
   "$PYTHON" qpe_diagnostics.py
   "$PYTHON" experiment_optimizer.py
   "$PYTHON" qpu_planning_contracts.py
+  "$PYTHON" algebra_planning_contracts.py
+  "$PYTHON" pub_shot_allocation_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_allocation_contracts.py
+  "$PYTHON" pub_shot_runtime_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_runtime_contracts.py
+  "$PYTHON" ripple_contracts.py
+  "$PYTHON" rank_sector_contracts.py
+  "$PYTHON" native_preflight_contracts.py
+  "$PYTHON" placement_feasibility_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py
   "$PYTHON" qpu_cases.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error qpu_case_allocation_contracts.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error qpu_case_allocation_contracts.py
   "$PYTHON" local_compute.py
   "$PYTHON" aer_delay_sentinels.py >/dev/null
   "$PYTHON" ../results/live/verify_source_closure.py --check
@@ -138,6 +240,19 @@ in [QPU_OPTIMIZATION.md](gororoba_quantum/QPU_OPTIMIZATION.md). Their local
 gates exercise exact labeled laws, bounded inference, fake-backend layouts,
 aggregate budgets, and negative dry-run records; hardware claims require
 separately approved results.
+
+The independently admitted packed ripple and rank-sector families are described
+in [PACKED_ALGEBRA.md](gororoba_quantum/PACKED_ALGEBRA.md). `--native-dry-run`
+calls Runtime with `dry_run=True` and retains mock timing in a separate sidecar.
+Mock outcomes never enter scientific analysis or measured visualizations.
+
+The measured folded-job figure uses `results/ripple/folded-job-review.json`.
+After changing its renderer, run `"$PYTHON" scripts/render_folded_job_review.py
+--png results/ripple/folded-job-review.png --check` from the root. Independent
+raw replay uses `"$PYTHON" scripts/review_folded_jobs.py --run-dir "$FOLDED_RUN"
+--check`, with `FOLDED_RUN` pointing to the retained archive in hardware
+[evidence PR #37](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37).
+The raw archive remains owned by that evidence change.
 
 The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
 when its generator, witnesses, or evaluator changes. Run the checks on a copy

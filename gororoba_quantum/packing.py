@@ -177,11 +177,14 @@ def pack(isa: QuantumCircuit, replicas: Sequence[Replica], name: str) -> Quantum
     out = QuantumCircuit(*isa.qregs, name=name)
     moved = [relabel(isa, replica.mapping, replica.prefix) for replica in replicas]
     for circuit in moved:
+        out.global_phase += circuit.global_phase
         for register in circuit.cregs:
             out.add_register(register)
     for part in (slice(0, tail_start), slice(tail_start, None)):
         for circuit in moved:
             piece = circuit.copy_empty_like()
+            # The output owns each replica's phase once across both slices.
+            piece.global_phase = 0
             for inst in circuit.data[part]:
                 piece.append(inst)
             out.compose(piece, qubits=range(isa.num_qubits), clbits=circuit.clbits, inplace=True)
@@ -227,6 +230,7 @@ def fuse(circuits: Sequence[QuantumCircuit], prefixes: Sequence[str], name: str)
 
     out = QuantumCircuit(*circuits[0].qregs, name=name)
     for circuit in namespaced:
+        out.global_phase += circuit.global_phase
         for register in circuit.cregs:
             out.add_register(register)
     tail_starts = [_measurement_tail_start(circuit) for circuit in namespaced]
@@ -234,6 +238,8 @@ def fuse(circuits: Sequence[QuantumCircuit], prefixes: Sequence[str], name: str)
         for circuit, tail_start in zip(namespaced, tail_starts, strict=True):
             part = slice(tail_start, None) if tail else slice(0, tail_start)
             piece = circuit.copy_empty_like()
+            # The output owns each component's phase once across both slices.
+            piece.global_phase = 0
             for instruction in circuit.data[part]:
                 piece.append(instruction)
             out.compose(piece, qubits=range(width), clbits=circuit.clbits, inplace=True)

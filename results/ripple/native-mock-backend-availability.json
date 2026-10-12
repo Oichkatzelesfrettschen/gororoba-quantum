@@ -1,0 +1,27 @@
+{
+  "scope": "read-only backend metadata; zero primitive calls",
+  "lookups": {
+    "ibm_kingston": {
+      "available": true,
+      "resolved_name": "ibm_kingston",
+      "num_qubits": 156
+    },
+    "mock_kingston": {
+      "available": false,
+      "exception_type": "QiskitBackendNotFoundError"
+    }
+  },
+  "configuration_requests": [
+    {
+      "backend": "ibm_kingston",
+      "configuration_returned": true
+    },
+    {
+      "backend": "mock_kingston",
+      "exception_type": "RequestsApiError",
+      "http_status": 404
+    }
+  ],
+  "same_instance_as_retained_runs": true,
+  "observed_at": "2026-10-12T05:32:49.849211+00:00"
+}

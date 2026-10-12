@@ -19,16 +19,18 @@ from decimal import Decimal
 from functools import partial
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
 import numpy as np
 import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qpy, transpile
-from qiskit.circuit import Clbit
+from qiskit.circuit import Clbit, Measure, Parameter
 from qiskit.circuit.controlflow import IfElseOp
-from qiskit.circuit.library import RZGate
+from qiskit.circuit.library import CZGate, RZGate, SXGate
 from qiskit.primitives import StatevectorSampler
 from qiskit.primitives.containers import DataBin, PrimitiveResult, SamplerPubResult
-from qiskit.transpiler import Target
+from qiskit.quantum_info import Operator
+from qiskit.transpiler import InstructionProperties, QubitProperties, Target
 from qiskit_ibm_runtime.executor_sampler import Sampler
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
 from qiskit_ibm_runtime.fake_provider import local_service as runtime_local_service
@@ -504,6 +506,78 @@ def _verify_packed_replica_split() -> None:
         fused_counts = _pub_counts(fused_pub, packing.registers(fused, prefix), prefix)
         if fused_counts.get("11", 0) < 48:
             raise RuntimeError(f"fused dynamic component {prefix} reads {fused_counts}")
+
+
+def _verify_packing_global_phase() -> None:
+    """Packing and fusion preserve full tensor-product operators, including phase."""
+    identity = np.eye(2, dtype=complex)
+
+    def fixture(
+        active: int, phase: float, angle: float, gates: bool, measured: bool
+    ) -> tuple[QuantumCircuit, np.ndarray]:
+        circuit = QuantumCircuit(4, int(measured), global_phase=phase)
+        local = QuantumCircuit(1, global_phase=phase)
+        if gates:
+            circuit.h(active)
+            circuit.rz(angle, active)
+            local.h(0)
+            local.rz(angle, 0)
+        if measured:
+            circuit.measure(active, 0)
+        return circuit, Operator(local).data
+
+    def exact_operator(circuit: QuantumCircuit, expected: np.ndarray, label: str) -> None:
+        actual = Operator(circuit.remove_final_measurements(inplace=False)).data
+        if not np.allclose(actual, expected, rtol=0, atol=1e-12):
+            error = float(np.max(np.abs(actual - expected)))
+            raise RuntimeError(f"{label}: packed full operator differs by {error}")
+        if _is_dynamic(circuit):
+            raise RuntimeError(f"{label}: terminal measurements became dynamic")
+
+    for phase in (0.3, -0.41, math.pi, 2 * math.pi + 0.19, -2 * math.pi - 0.29):
+        for gates in (False, True):
+            for measured in (False, True):
+                first, first_operator = fixture(0, phase, 0.37, gates, measured)
+                second, second_operator = fixture(2, -0.27, -0.21, gates, measured)
+                originals = (first.copy(), second.copy())
+                single = packing.pack(first, [Replica(0, {0: 0}, 1.0)], "single_phase")
+                exact_operator(single, np.kron(np.eye(8), first_operator), "single replica")
+                fused_single = packing.fuse([first], ["g0_"], "single_fused_phase")
+                exact_operator(fused_single, np.kron(np.eye(8), first_operator), "single fusion component")
+                fused_sources = packing.fuse([first, second], ["g0_", "g1_"], "source_phase_fusion")
+                exact_operator(
+                    fused_sources,
+                    np.kron(np.kron(identity, second_operator), np.kron(identity, first_operator)),
+                    "two source components",
+                )
+                packed_first = packing.pack(
+                    first, [Replica(0, {0: 0}, 1.0), Replica(1, {0: 1}, 1.0)], "first_phase_replicas"
+                )
+                packed_second = packing.pack(
+                    second, [Replica(0, {2: 2}, 1.0), Replica(1, {2: 3}, 1.0)], "second_phase_replicas"
+                )
+                first_pair = np.kron(first_operator, first_operator)
+                second_pair = np.kron(second_operator, second_operator)
+                exact_operator(packed_first, np.kron(np.eye(4), first_pair), "two first-source replicas")
+                exact_operator(packed_second, np.kron(second_pair, np.eye(4)), "two second-source replicas")
+                fused_packs = packing.fuse([packed_first, packed_second], ["g0_", "g1_"], "packed_phase_fusion")
+                exact_operator(fused_packs, np.kron(second_pair, first_pair), "two packed components")
+                exact_operator(packing.pack(first, [], "empty_phase_pack"), np.eye(16), "empty replica set")
+                if first != originals[0] or second != originals[1]:
+                    raise RuntimeError("phase-preserving composition mutated a source circuit")
+
+    phase_parameter = Parameter("replica_global_phase")
+    parameterized = QuantumCircuit(2, 1, global_phase=phase_parameter)
+    parameterized.h(0)
+    parameterized.measure(0, 0)
+    packed = packing.pack(parameterized, [Replica(0, {0: 0}, 1.0), Replica(1, {0: 1}, 1.0)], "parameterized_phase_pack")
+    fused = packing.fuse([packed], ["g0_"], "parameterized_phase_fusion")
+    for value in (0.3, -0.41):
+        local = QuantumCircuit(1, global_phase=value)
+        local.h(0)
+        expected = np.kron(Operator(local).data, Operator(local).data)
+        exact_operator(packed.assign_parameters({phase_parameter: value}), expected, "bound packed phase")
+        exact_operator(fused.assign_parameters({phase_parameter: value}), expected, "bound fused phase")
 
 
 def _verify_packed_static_stays_static() -> None:
@@ -2843,6 +2917,116 @@ def _verify_buffer_scope() -> None:
         raise RuntimeError(f"committed footprints reach the wrong pools: {[p.foreign for p in cluster]}")
 
 
+def _verify_placement_duplicate_branch_order() -> None:
+    """Equivalent embeddings retain their multiplicity in the original pool heuristic."""
+    graph = rx.PyGraph()
+    graph.add_nodes_from(range(8))
+    graph.add_edges_from_no_data([(0, 1), (2, 3), (4, 5), (6, 7)])
+
+    def pool(index: int, mappings: list[tuple[int, int]]) -> Any:
+        return live_run_module._FusionPlacementPool(
+            None,  # type: ignore[arg-type]
+            graph,
+            [Replica(number, dict(enumerate(mapping)), 1.0 - number * 0.01) for number, mapping in enumerate(mappings)],
+            index,
+            2,
+            physical_graph=graph,
+        )
+
+    pools = [pool(0, [(0, 1), (1, 0), (2, 3)]), pool(1, [(0, 1), (2, 3)])]
+    result = live_run_module._placement_assignment(pools, set(), 1, False)
+    observed = [(item.original_index, candidate.index, candidate.mapping) for item, candidate in result or []]
+    expected = [(0, 2, {0: 2, 1: 3}), (1, 0, {0: 0, 1: 1})]
+    if observed != expected:
+        raise RuntimeError(f"equivalent-candidate pruning changed the first placement: {observed}")
+    repeated = [pool(0, [(0, 1), (1, 0), (2, 3), (3, 2), (4, 5), (5, 4), (6, 7)])]
+    occupied: set[int] = set()
+    for required, expected_indices in ((2, [0, 2]), (1, [4]), (1, [6])):
+        result = live_run_module._placement_assignment(repeated, occupied, required, True)
+        if result is None or [candidate.index for _, candidate in result] != expected_indices:
+            raise RuntimeError("equivalent-candidate pruning changed a required or surplus replica round")
+        live_run_module._commit_placement_assignment(result, occupied, repeated)
+
+
+def _verify_static_placement_judge() -> None:
+    """Static check coalescing equals complete relabeling, including parameter bounds."""
+    target = FakeFez().target
+    sources = []
+    for angle in (0.0, math.pi / 4, math.pi / 2, math.pi, -math.pi, 2 * math.pi, 0.0, math.pi):
+        circuit = QuantumCircuit(target.num_qubits, 1)
+        circuit.sx(0)
+        circuit.rz(angle, 0)
+        circuit.cz(0, 1)
+        circuit.barrier(0, 1)
+        circuit.measure(1, 0)
+        sources.append(circuit)
+    mappings = [dict(enumerate(edge)) for edge in list(target["cz"])[:16]]
+
+    def compare(judge: live_run_module.PlacementJudge, mapping: dict[int, int]) -> float | None:
+        reference = copy.copy(judge)
+        object.__setattr__(reference, "static_checks", None)
+        expected = reference(mapping)
+        observed = judge(mapping)
+        if observed != expected:
+            raise RuntimeError(f"static placement validation changed an exact score: {expected} -> {observed}")
+        return observed
+
+    judge = live_run_module.PlacementJudge(tuple(sources), target, frozenset(), frozenset())
+    if judge.static_checks is None or len(judge.static_checks) >= sum(len(circuit.data) for circuit in sources):
+        raise RuntimeError("shared static instruction checks were not coalesced")
+    for mapping in mappings:
+        compare(judge, mapping)
+        for excluded_qubits, excluded_edges in (
+            (frozenset([mapping[0]]), frozenset()),
+            (frozenset(), frozenset([tuple(mapping.values())])),
+            (frozenset(), frozenset([tuple(reversed(tuple(mapping.values())))])),
+        ):
+            rejected = live_run_module.PlacementJudge(tuple(sources), target, excluded_qubits, excluded_edges)
+            if compare(rejected, mapping) is not None:
+                raise RuntimeError("static placement validation admitted an excluded qubit or coupler")
+    with patch.object(packing, "relabel", wraps=packing.relabel) as relabel:
+        if judge(mappings[0]) is None or relabel.call_count != 1:
+            raise RuntimeError("static placement validation must relabel only the admitted primary for scoring")
+
+    bounded = Target(num_qubits=4, qubit_properties=[QubitProperties(t1=100.0, t2=100.0)] * 4)
+    singles = {(qubit,): InstructionProperties(duration=1.0, error=0.001) for qubit in range(4)}
+    bounded.add_instruction(RZGate(Parameter("bounded_placement_angle")), singles, angle_bounds=[(0.0, 1.0)])
+    bounded.add_instruction(SXGate(), singles)
+    bounded.add_instruction(Measure(), singles)
+    bounded.add_instruction(CZGate(), {(0, 1): InstructionProperties(duration=2.0, error=0.002)})
+    valid = QuantumCircuit(4, 1)
+    valid.rz(0.25, 0)
+    valid.sx(0)
+    valid.cz(0, 1)
+    valid.measure(1, 0)
+    invalid = valid.copy()
+    invalid.data[0] = invalid.data[0].replace(operation=RZGate(1.25))
+    for circuits, accepted in (((valid, valid.copy()), True), ((valid, invalid), False)):
+        constrained = live_run_module.PlacementJudge(circuits, bounded, frozenset(), frozenset())
+        if (compare(constrained, {0: 0, 1: 1}) is not None) != accepted:
+            raise RuntimeError("static placement validation erased a distinct bounded-angle check")
+
+    delayed = QuantumCircuit(target.num_qubits, 1)
+    delayed.delay(256, target.num_qubits - 1, unit="dt")
+    delayed.sx(0)
+    delayed.measure(0, 0)
+    delay_judge = live_run_module.PlacementJudge((delayed,), target, frozenset(), frozenset())
+    compare(delay_judge, {0: target.num_qubits - 1})
+    unsupported = QuantumCircuit(4, 1)
+    unsupported.unitary(np.eye(2), 0)
+    unsupported.measure(0, 0)
+    dynamic = QuantumCircuit(target.num_qubits, 1)
+    dynamic.measure(0, 0)
+    with dynamic.if_test((dynamic.clbits[0], 1)):
+        dynamic.x(1)
+    dynamic.measure(1, 0)
+    for circuit, checked_target in ((unsupported, bounded), (dynamic, target)):
+        recursive = live_run_module.PlacementJudge((circuit,), checked_target, frozenset(), frozenset())
+        if recursive.static_checks is not None:
+            raise RuntimeError("non-scalar or dynamic placement bypassed complete relabeling")
+        compare(recursive, {0: 0, 1: 1})
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
@@ -2869,12 +3053,15 @@ def _verify() -> None:
     _verify_joint_fusion_candidate_backtracking()
     _verify_required_placement_backtracking()
     _verify_buffer_scope()
+    _verify_placement_duplicate_branch_order()
+    _verify_static_placement_judge()
     _verify_schema_lifecycle()
     _verify_schema_discrimination()
     _verify_every_job_revalidates()
     _verify_live_reselection()
     _verify_discovery_failure_isolation()
     _verify_packed_replica_split()
+    _verify_packing_global_phase()
     _verify_packed_static_stays_static()
     _verify_rate_keys()
     _verify_replica_floor_resolution()

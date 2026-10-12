@@ -200,18 +200,23 @@ semiclassical inverse-QFT test. The preregistered packing interval reports
 equivalence within the margin on one layout; the scheduled feed-forward
 round trip is 540 to 584 dt. Folded QPE reads 0.715 against the model's
 0.899. Schedule-aware replay explains about a quarter of the gap, leaving
-its remaining mechanism to the matched diagnostic experiment.
+its remaining mechanism to subsequent matched diagnostics. The later
+[folded-QPE ladder](../results/ripple/folded-job-review.md) completed sixteen
+PUBs in two Kingston jobs for 40 charged seconds. Its retained observations
+now motivate the [matched correction pilot](MODEL_DISCRIMINATION.md).
+The [execution roadmap](QPU_EXECUTION_ROADMAP.md) records current readiness.
 
-The hardware queue has three separate cases:
+The following families retain separate evidence and admission contracts:
 
 1. **Folded-QPE mechanism ladder.** `--family folded-qpe --optimize`
    compiles four controls for every eigenstate label on a shared initial
    control/work mapping. Exact branch checks validate all sixteen labeled
    laws. The optimizer requires simultaneous precision for twelve raw
    terminal-bit contrasts and accounts for twelve dynamic and four static
-   PUBs across two jobs. A fresh admitted dry run and its written
-   measurement, control, and time case remain prerequisites for owner
-   approval. [QPU_OPTIMIZATION.md](QPU_OPTIMIZATION.md) defines the delay
+   PUBs across two jobs. The 8,192-shot ladder has completed; its raw results
+   supply reusable evidence and duplicate execution is excluded. Any new
+   intervention requires fresh preparation and a written measurement, control
+   and time case before owner approval. [QPU_OPTIMIZATION.md](QPU_OPTIMIZATION.md) defines the delay
    intervention and the limits of causal attribution.
 2. **N = 21, a = 4 at two phase bits.** `--family n21-feedback --optimize`
    compares the labeled laws `(3, 2, 1, 2)/8` with feed-forward and
@@ -224,10 +229,12 @@ The hardware queue has three separate cases:
    record rather than manufacturing hardware readiness. A fresh admitted
    dry run, written distribution-test case, time bounds, and owner approval
    remain necessary before hardware execution.
-3. **Static witnesses.** The retained case is written and awaits approval
-   after the two dynamic questions. Twirling and DD remain off in its
-   retained plan, so each static workload tests its own calibration-derived
-   model. A changed mitigation policy requires a matching dry run and case.
+3. **Static witnesses.** Renew the packed algebraic case independently of the
+   folded-QPE diagnostic and N21 admission. Ripple and rank-sector families
+   receive complete controls, fresh calibration, statistical admission, and
+   separate written cases. Twirling and DD remain off in the matched plans,
+   so each static workload tests its own calibration-derived model.
+   A changed mitigation policy requires a matching dry run and case.
    Different circuits and placements prevent the static comparison from
    isolating the mechanism of the folded-QPE gap.
 

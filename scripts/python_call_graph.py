@@ -37,6 +37,7 @@ ROOT_FUNCTIONS = (
     "rank_attachments.main",
     "integral_homology.main",
     "rank_path_topology.main",
+    "ripple_dynamics.main",
     "compile_evidence.main",
     "designs._verify",
     "modular_arithmetic._verify",

@@ -1,0 +1,135 @@
+{
+  "baseline_receipt": "results/ripple/allocation-baseline-validation.json",
+  "checks": [
+    {
+      "command": "ruff check --no-cache gororoba_quantum/pub_shot_allocation.py gororoba_quantum/pub_shot_allocation_contracts.py gororoba_quantum/qpu_planning.py",
+      "directory": "repository root",
+      "exit_code": 0
+    },
+    {
+      "command": "ruff format --check --no-cache gororoba_quantum/pub_shot_allocation.py gororoba_quantum/pub_shot_allocation_contracts.py gororoba_quantum/qpu_planning.py",
+      "directory": "repository root",
+      "exit_code": 0
+    },
+    {
+      "command": "mypy pub_shot_allocation.py pub_shot_allocation_contracts.py qpu_planning.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" pub_shot_allocation_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" -O pub_shot_allocation_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" pub_shot_runtime_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" -O pub_shot_runtime_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" qpu_case_allocation_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" -O qpu_case_allocation_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" qpu_cases.py --check",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    },
+    {
+      "command": "\"$PYTHON\" qpu_planning_contracts.py",
+      "directory": "gororoba_quantum",
+      "exit_code": 0
+    }
+  ],
+  "consolidation_contract": {
+    "confidence_event": "Every alternative reuses the original routed plans and finite-shot model marginals. Deterministic shot-tier transformations add zero model samples; all evaluations use the original simultaneous comparison count.",
+    "finite_domain": "Every used sufficient tier group independently maps to a declared equal or higher tier; uniform maps are included.",
+    "hardware_boundary": "Allocation precedes future hardware outcomes. Whole PUBs retain joint shot vectors; union bounds require zero cross-PUB or cross-job independence assumptions.",
+    "invariants": [
+      "complete PUB membership",
+      "matched companion coupling",
+      "original PUB order within each homogeneous job",
+      "unscored controls at maximum declared tier",
+      "per-job ceilings",
+      "aggregate ceiling and reserve",
+      "all declared cost scenarios",
+      "per-PUB measured denominators",
+      "calibration-bound comparisons"
+    ],
+    "objective_contracts": [
+      "minimum_charge",
+      "precision_at_budget with precision-only endpoints"
+    ],
+    "optimality_boundary": "Endpoint-wise sufficient minima and whole-tier promotion define the finite domain; arbitrary per-PUB global allocation optimality remains unclaimed.",
+    "search_admission": "Compute the complete variant count before enumeration and reject domains above the limit without truncation.",
+    "selection": "Retain one feasible allocation per routed plan using the optimizer objective, worst-scenario charge, and deterministic name order.",
+    "variant_limit_per_routed_plan": 4096
+  },
+  "environment": {
+    "GOROROBA_WORKERS": "2",
+    "MKL_NUM_THREADS": "2",
+    "OMP_NUM_THREADS": "2",
+    "OPENBLAS_NUM_THREADS": "2",
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "PYTHONWARNINGS": "error"
+  },
+  "limitation": "The receipt establishes local software behavior. Fresh live calibration, candidate admission, review, and the approved execution record determine hardware readiness.",
+  "physical_qpu_jobs_submitted": 0,
+  "recorded_at_utc": "2026-10-12T16:26:52.022408+00:00",
+  "regression_outcomes": {
+    "aggregate_ceiling_can_reject_mixed_alternative": true,
+    "case_mutations_rejected_in_each_interpreter_mode": 36,
+    "comparison_count_and_model_radii_preserved": true,
+    "excessive_domains_rejected_before_enumeration": true,
+    "four_pub_overhead_counterexample": {
+      "mixed_1024_4096_nominal_seconds": 7.2624,
+      "selected": "uniform_4096",
+      "uniform_4096_nominal_seconds": 6.55984
+    },
+    "mixed_selected_when_shot_work_savings_dominate_overhead": true,
+    "per_job_ceiling_can_reject_cheaper_uniform_alternative": true,
+    "planning_forwards_precision_objective": true,
+    "precision_objective_promotes_worst_endpoint_then_minimizes_charge": true,
+    "runtime_local_executor_shot_counts": [
+      64,
+      128
+    ],
+    "stress_overhead_can_reverse_selection_to_uniform": true
+  },
+  "schema": "shot-allocation-validation-v1",
+  "scope": "Local allocation, homogeneous Runtime fixture jobs, measured denominators, case binding, and planning integration.",
+  "source_sha256": {
+    "gororoba_quantum/experiment_optimizer.py": "a548562dde3622b2c0aedef7beee5e01fc9d47f52898fe0c0ba58290813a7d03",
+    "gororoba_quantum/live_run.py": "9645bcf88eb2e88a368e492ec3bb3018c96f0230e550c099930d031820a45fcd",
+    "gororoba_quantum/native_preflight.py": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a",
+    "gororoba_quantum/pub_shot_allocation.py": "5d7834df8b4e9d8b219894a5d48fd0f399c9884412cb33c76cc2631b3bd21888",
+    "gororoba_quantum/pub_shot_allocation_contracts.py": "b08885b7b27db90890e996fb8c48cf735ac0ee5a4987e426077f6899bf676494",
+    "gororoba_quantum/pub_shot_runtime_contracts.py": "95f683d8fc0470c16a3092c34aed3eddc45b3da85b9b3916938637056922b62f",
+    "gororoba_quantum/qpu_case_allocation_contracts.py": "fd52f5c2fa16681cb21d08ee13ab16d6724c65e7afd9ce4acd77cbc78ca49936",
+    "gororoba_quantum/qpu_cases.py": "f3f3757f31b0708ad936365b43b628b5f031dcc91772058315fa035602a0d377",
+    "gororoba_quantum/qpu_planning.py": "3d67572320efbfb481172344aa2d6fea2091ebff5bbcc367838d8148526eaa32",
+    "gororoba_quantum/qpu_planning_contracts.py": "cc08042de03499ff31a1a192beda805372416f71de7ae6434485fb9e5a99c483"
+  },
+  "status": "pass",
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  }
+}

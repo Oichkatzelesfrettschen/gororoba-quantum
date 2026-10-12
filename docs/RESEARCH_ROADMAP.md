@@ -59,22 +59,32 @@ owns the link from literature and observations to the next intervention.
    Preserve the distinction between an added binary report channel, replacement
    readout model, continuing-state disturbance, coherent error, and temporal
    dependence. Fit and validate against separate observations.
-3. Qualify the known-label feedback/correction pilot owned by
+3. Complete execution admission for the prepared known-label correction pilot owned by
    [PR #36](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/36).
    Labels `s1,s3` each receive measured feedback `F` and unconditional correction
-   `U`: four PUBs at the proposed 8192 shots. Both arms retain measurement,
+   `U`: four PUBs at the selected 8192 shots. Both arms retain measurement,
    reset, and both output bits. Routed prefix/suffix, terminal writer, and
-   schedule matching remain admission gates. The owner's preparation remains
-   unqualified until those gates pass.
+   schedule matching remain evidence gates. The [coordination ledger](../results/live/qpu-coordination.json)
+   and [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+   own source-bound readiness and timing. The
+   [exact correction case](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
+   passes independent planning checks at source `f1b9830`. Clean current-head
+   Copilot review, passing checks, merge and fresh live bindings remain gates
+   under the user's conditional authority. Returned execution schedules qualify
+   the matched inference after acquisition.
 4. Apply the declared optimizer decision: both labels must satisfy
    `lower_CP(p_U)-upper_CP(p_F)>0.01`, with four one-sided tails of `0.0125`.
    Binomial assumptions support at least 95% simultaneous coverage. Independent
    accuracy validation and equal-or-lower charged time, or an explicitly
    justified tradeoff, precede policy adoption. Known labels cannot supply
    unavailable phase information to an unknown-phase algorithm.
-5. Price the complete admitted case. The historical conditional estimate for
-   the four-PUB pilot is 11.2425 seconds, rather than a fresh forecast. The
-   executed folded case attributes most nominal cost to repetition delay;
+5. Retain the fresh source-bound forecast and refresh its bindings before
+   execution. The four-PUB correction case estimates 11.519211264 nominal
+   seconds and 14.474571264 stress seconds under a 30-second ceiling. The
+   current campaign totals 106.290103040 nominal seconds and 118.445463040
+   stress seconds, with five job ceilings totaling 170 seconds. The earlier
+   11.2425-second conditional estimate remains historical. The executed folded
+   case attributes most nominal cost to repetition delay;
    precision selection, qualified initialization delay, and compatible endpoint
    packing therefore receive cost attention alongside circuit fidelity.
 6. Qualify native mechanisms separately: the N21 shared-predicate challenger,
@@ -92,14 +102,23 @@ owns the link from literature and observations to the next intervention.
    coverage under unrestricted stopping.
 8. Admit a broad atlas only after its additional estimand, controls, effect or
    equivalence margins, multiplicity coverage, and incremental information value
-   justify the expenditure. The broad cases remain lower-priority proposals.
+   justify the expenditure. The prospective
+   [practical accuracy protocol](../results/ripple/STATIC_PACKING_ACCURACY.md)
+   supplies the current static criterion; its under-resolved weighted control
+   prevents a blanket equivalence claim at the frozen shot allocation. The planning-qualified
+   [ripple case](../results/live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) and
+   [rank case](../results/live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md)
+   preserve their controls and joint shot vectors; independent execution
+   admission follows the correction decision and remaining campaign gates.
 
 The installed runner creates separate static and dynamic jobs and uses no
 Runtime Batch context. A future Batch wrapper changes orchestration; measured
 job overhead and physical usage determine savings. Several QPUs share the
 account's rolling allowance, so backend count supplies neither extra quota nor
-a reason to duplicate data. The complete future campaign has no admitted total
-job count or QPU-second estimate until its individual cases pass admission.
+a reason to duplicate data. The three retained campaign cases qualify five
+homogeneous-shot jobs within 170 seconds of service ceilings, leaving ten
+seconds under the user's 180-second cap. Current-head review, merge, live
+binding and each family's execution admission remain gates.
 
 ## Ordered topology and proof work
 

@@ -23,32 +23,74 @@ future layout, job allocation, duration, and admission decision.
 The [source-grounded decision synthesis](../docs/notes/model_discrimination_optimizer.md)
 prioritizes model discrimination and a measurable optimizer decision before
 broad atlas expenditure. The coordinated four-PUB feedback/correction pilot
-has a historical conditional estimate of about 11.24 seconds; fresh compilation,
-statistical admission and exact-case approval remain required. The
+has a historical conditional estimate of about 11.24 seconds. Fresh preparation
+on source `f1b9830` qualifies the pilot and both static families locally;
+digest-bound live revalidation and the remaining campaign gates still precede
+execution under the recorded conditional user authority. The
 [rank research plan](../docs/notes/koebisu_rank_stratum_research.md) assigns
 continuous classification and attachment proofs to exact classical work.
 
 ## Execution queue and budget
 
+The user prioritizes the [four-PUB model-discrimination design](MODEL_DISCRIMINATION.md)
+and its measurable known-label optimizer decision before broad atlas spending.
+The [correction preparation record](../results/ripple/CORRECTION_PREPARATION.md)
+implements that design. Its historical three-system comparison selected Fez
+at 8192 shots per PUB: 11.5154 nominal seconds, 14.4708 stress-scenario seconds
+and a proposed 30-second ceiling. A later renewal at source `fb13b06`
+admitted eighteen candidates across all three backends and selected Fez,
+with 11.519211264 nominal seconds and 14.474571264 stress-scenario seconds.
+The [fresh campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+renews all three families on source `f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed`.
+The independent audit checks source closure, model denominators, QPY manifests,
+endpoint and cost arithmetic, fixed allocations, ceilings, and exact case bytes.
+The preparation submits zero physical jobs. Clean current-head Copilot review,
+required checks, merge, and fresh source/calibration/quota binding still gate
+execution. The correction decision precedes static spending; ripple and rank
+retain their own scientific admission gates. Actual returned schedules must
+qualify before the correction inference.
+
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
+| [Matched correction pilot](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md) | One dynamic Fez job; 8192 shots/PUB | 4 | 11.519211264 nominal; 14.474571264 stress; ceiling 30 | Fresh preparation qualified; review, merge and live binding remain |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
 | [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
-| Ripple finite walk/box-kite comparison | Other chat owns submit-free preparation | Candidate manifest under qualification | Proposed ceiling 180 | Unapproved |
-| Rank-sector controls | Other chat owns submit-free preparation | 36 proposed | Proposed ceiling 60 | Unapproved |
+| [Ripple finite walk/box-kite comparison](../results/live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) | Two static Kingston jobs; 120 PUBs at 1024 shots, 26 at 4096 | 146 | 64.321793536 nominal; 68.921793536 stress; ceilings 40 + 40 | 1138 endpoints qualify locally; correction decision and independent scientific admission remain |
+| [Rank-sector controls](../results/live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md) | Two static Kingston jobs; 15 PUBs at 1024 shots, 21 at 4096 | 36 | 30.449098240 nominal; 35.049098240 stress; ceilings 30 + 30 | 196 endpoints qualify locally; correction decision and independent scientific admission remain |
 
-The completed folded case spends 40 seconds. The remaining campaign has no
-admitted total or fixed job count. Historical static witnesses can overlap
-ripple/rank-sector controls; reconcile scientific endpoints before approving
-both. N21 synthesis and static mathematical witnesses answer different
-questions and can progress independently through local qualification.
+The completed folded case charged 40 seconds. The historical ripple/rank plans
+contain two independent jobs, totaling 197.0220 nominal seconds, 201.6220
+stress-scenario seconds, and a proposed 240-second aggregate service ceiling.
+Those historical records retain their original unapproved scope; the fresh
+cases above supply the renewed local qualification. Their 1,334 endpoint names
+and roles are disjoint; repeated historical Design C
+members act as fresh-patch and neighboring-workload controls. The coordinator
+excludes duplicate folded execution. Additional N21 and historical static
+cases remain outside those historical plans and require separate qualification
+and overlap reconciliation.
 
 The [shared coordination record](../results/live/qpu-coordination.json) names
 one execution owner per family across `ibm_fez`, `ibm_kingston`, and
-`ibm_marrakesh`. The settled account read reports 551 seconds remaining with
-an empty pending-job list. The two proposed ceilings total 240 seconds;
-one shared 60-second reserve leaves 251 seconds unallocated at that snapshot.
+`ibm_marrakesh`. The retained account snapshot records 551 seconds remaining
+and an empty pending-job list. The historical atlas ceilings total 240 seconds
+and the pilot adds a proposed 30 seconds; a shared 60-second reserve leaves
+221 seconds unallocated under that older proposal.
+
+The [integrated directive](RIPPLE_CAMPAIGN.md) records the user's replacement
+180-second combined ceiling for the remaining correction and atlas acquisitions.
+The [fixed-shot allocation](PACKED_ALGEBRA.md#fixed-shot-allocation) preserves
+all static rows. The fresh audit totals five jobs at 106.290103040 nominal
+seconds and 118.445463040 stress-scenario seconds, with 170 seconds of summed
+service ceilings. The plan leaves ten seconds under the user's campaign cap
+and retains the separate 60-second account reserve. Queue delay and local
+preparation remain outside the QPU estimates; final charges require execution.
+The ripple PUBs use up to 47 active physical qubits, and the rank PUBs use up to
+32. Active-wire counts describe wires participating during one shot, rather
+than simultaneous pulse activity; QPY container width alone measures neither.
+The selected packing preserves controls and joint shot vectors without claiming
+a global maximum of useful concurrent qubits. Proposed allocations remain
+distinct from account reservations.
 All three backends draw on the same rolling 600-second allowance. Multiple
 QPUs can reduce queue contention; assigning duplicate experiments to them
 adds charge and changes the calibration conditions.
@@ -185,6 +227,15 @@ without physical execution. Returned randomized mock outcomes stay outside
 fidelity prediction and scientific adjudication. Scheduled-time estimates,
 CPU predictions, executed scheduler metadata, and final billing retain
 separate provenance. The local dry-run mode remains submit-free.
+
+For the correction-policy pilot, the user selected fresh live calibration from
+Fez, Kingston and Marrakesh as the preparation route. The planner compares the
+complete four-PUB family on each system and retains its finite search and
+selection rule. Submission revalidates the selected calibration. Collection
+qualifies the actual returned schedules before admitting the matched-policy
+decision; missing schedule evidence withholds the inference. See the
+[integrated directive](RIPPLE_CAMPAIGN.md) and
+[fixed-sample protocol](MODEL_DISCRIMINATION.md).
 
 ## Dynamic-circuit fidelity uses native mechanisms
 
@@ -330,13 +381,14 @@ and reset-delay planning mechanisms.
    no-feed-forward labels, so a uniform accuracy penalty cannot fit the data.
    Qualify matched readout/routing crossovers before interpreting the coherent
    advantage as one physical error mechanism.
-4. Price explicitly chosen precision, qualify repetition-delay controls, and
-   implement compatible mixed-job policy after local contracts pass. Bind each
-   new physical variant to a fresh written case and approval. Preserve all
-   complete control families and the single shared quota reserve.
-5. Promote and qualify the native N21 challenger. Fresh CPU noise admission
-   determines its next case. Renew static cases independently, with scientific
-   deduplication; recompute campaign totals from admitted cases.
+4. Complete current-head Copilot review, required checks and merge for the
+   prepared campaign. Revalidate each digest-bound case against live source,
+   calibration and quota under the recorded conditional user authority. Preserve
+   every control family and the single shared quota reserve.
+5. Resolve the correction-policy decision before static spending, then verify
+   ripple and rank scientific admission independently and reconcile their job
+   ceilings with the 180-second campaign cap. The separately scoped N21
+   challenger still requires successful CPU noise admission and its own case.
 6. Keep the mathematical classification program on its classical proof path.
    Compatible semialgebraic decompositions for the remaining dimension-32
    rank loci precede full attachments, global invariants, and an unrestricted

@@ -1,0 +1,47 @@
+{
+  "campaign_parent": "270a2e022fabdd9d73e3e65ecd6c7cffdd682a33",
+  "conflict_resolution": "AGENTS.md retains the union of runtime, rendering, finite-model, tangent-cone and source-library gates. The only merge conflict was the mypy module list.",
+  "finite_field_model_replay": {
+    "normal_workers": 1,
+    "optimized_workers": 2,
+    "status": "pass"
+  },
+  "mathematical_dependency_sha256": {
+    "docs/evidence/nullity_twelve_locus/curve_proof.py": "9d8d47d3071e56aafe3fe07ae0f6e0a3507f4d7e85842e909e0435330a46abf5",
+    "docs/evidence/nullity_twelve_locus/replay.py": "e95dafc8df905c7e246370b6dc38350a9c5d57e43218303a4c7713588d6432a7",
+    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+    "gororoba_quantum/nullity_twelve_curves.py": "9d8a6b6994d53c7756ad445ab307b66d7172c0b5afbc244111483bcd0e311fc5",
+    "gororoba_quantum/nullity_twelve_locus.py": "2d86e64b965d20d0e4ea45cf3236887af7ca3dc5101efae46ce081172a5e2169",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+    "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+    "gororoba_quantum/schur_acceleration.py": "8788a72319a54af2b8f66aa8de95feecdde5d67c712e11b70334c40cc96c8c9d",
+    "gororoba_quantum/skew_schur_charts.py": "b7b180911309bb7452bc56c77cb219d192ab4be381259c32b152ddbab6bac85b"
+  },
+  "mathematical_validation_boundary": "The source owner reports full combined production/source gates and final normal/optimized cone replay passed for this candidate. Recursive local Python imports below equal that candidate byte-for-byte; integration rechecks types and retained evidence hashes. QPU-runtime changes have zero overlap with this mathematical dependency closure.",
+  "new_integration_log_sha256": "397c4e4775037c65c680797dafbb190eb94ba4370938bbfda52fc71d69891c0c",
+  "physical_qpu_jobs_submitted": 0,
+  "production_lint_targets": 105,
+  "production_type_targets": 102,
+  "remaining_gates": [
+    "current-head hosted reviews",
+    "ordered geometry/source/campaign PR merges",
+    "canonical synchronization",
+    "live account and source/calibration/QPY binding",
+    "correction decision before independent static acquisition"
+  ],
+  "retained_pdf_checksum_count": 14,
+  "runtime_experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+  "schema": "merged-campaign-source-validation-v1",
+  "source_geometry_candidate": "5454a6af5287db40b6424a49000feae2deacb1c9",
+  "source_lint_type_targets": 15,
+  "source_local_links": 690,
+  "source_test_cases_per_mode": 120,
+  "source_test_modes": [
+    "normal",
+    "optimized"
+  ],
+  "status": "pass",
+  "three_case_audit": "results/ripple/integrated-campaign-source-audit.json",
+  "three_case_audit_sha256": "e70f7035e3396186ab590d32eb711e306461d4a1191bc957304f686beca17904"
+}

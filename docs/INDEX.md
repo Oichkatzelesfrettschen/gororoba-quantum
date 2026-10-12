@@ -181,6 +181,16 @@ classical references, physical boundaries, costs and next admission gates.
 The [proof/experiment synthesis](notes/research_proof_experiment_dependencies.md)
 connects those results to the geometry, Rocq and inference dependencies.
 
+## Ripple source supplement
+
+The [De Marrais Box-Kites III note](notes/math-0403113.md) records a bounded
+reading of an unversioned local copy, its content hash, and the box-kite
+sign conventions used by the ripple experiment. The reading copy remains in
+ignored `docs/local_source_cache/`; its unestablished version and publication
+permission keep it outside the version-qualified PDF registry. The
+[measurement-design synthesis](notes/reality_ripple_measurement_design.md)
+connects that source to the circuit observables and prior work.
+
 ## Verification and research navigation
 
 Run from the repository root:

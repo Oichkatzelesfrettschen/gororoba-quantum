@@ -1,0 +1,71 @@
+{
+  "diagnostic_source_sha256": "3a82e0147d19c0aca77deea2dcd93199ebb00257e63c9b12b49b875976ea2998",
+  "discovery_http_events": [
+    {
+      "backend": "ibm_marrakesh",
+      "endpoint": "configuration",
+      "method": "GET",
+      "status_code": 200
+    }
+  ],
+  "historical_projection": {
+    "fresh_service_observations": 0,
+    "operation": "Replace complete discovery inventory with availability of the requested backend",
+    "preserved_fields": "All original fields except available_backend_names; original observation time, diagnostic source identity, probes and HTTP events retained",
+    "requested_backend": "ibm_marrakesh",
+    "source_report_commit": "e4acd410c3928e1241e167cc6528d13b9655da4e",
+    "source_report_sha256": "0cdce843f439f0c3a424755cb2ae701c29472e1c3dccef56b964716ccb5ed673"
+  },
+  "instance_sha256_12": "e3de05b6901e",
+  "observed_at": "2026-10-12T07:22:49.934534+00:00",
+  "probes": [
+    {
+      "backend": "ibm_marrakesh",
+      "explicit_instance": true,
+      "found": true,
+      "http_events": [
+        {
+          "backend": "ibm_marrakesh",
+          "endpoint": "status",
+          "method": "GET",
+          "status_code": 200
+        }
+      ],
+      "operational": true,
+      "status_msg": "active"
+    },
+    {
+      "backend": "mock_marrakesh",
+      "error_type": "QiskitBackendNotFoundError",
+      "explicit_instance": false,
+      "found": false,
+      "http_events": [
+        {
+          "backend": "mock_marrakesh",
+          "endpoint": "configuration",
+          "method": "GET",
+          "status_code": 404
+        }
+      ]
+    },
+    {
+      "backend": "mock_marrakesh",
+      "error_type": "QiskitBackendNotFoundError",
+      "explicit_instance": true,
+      "found": false,
+      "http_events": [
+        {
+          "backend": "mock_marrakesh",
+          "endpoint": "configuration",
+          "method": "GET",
+          "status_code": 404
+        }
+      ]
+    }
+  ],
+  "requested_backend_available": true,
+  "runtime_version": "0.50.0",
+  "saved_instance_explicit": false,
+  "schema": "qiskit-mock-backend-diagnosis-v1",
+  "scope": "backend discovery/configuration/status only; zero primitive submissions"
+}
