@@ -31,7 +31,16 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
 The diagnostic observes SDK HTTP responses without altering requests. It
 retains backend/endpoint/status only, excludes credentials and response bodies,
 and restores the logger's original level. The report is
-`kingston-mock-diagnosis.json` beside this note.
+`kingston-mock-diagnosis.json` beside this note. Discovery retains only the
+requested backend's availability, excluding other account-visible names.
+
+The three retained reports are explicit projections of their timestamped
+historical observations. Each projection records the original JSON hash and
+Git revision, replaces the complete discovery inventory with requested-backend
+availability, and preserves the original producer hash, probes and HTTP events.
+Projection adds zero fresh service observations. The credential-free regression
+checks cover unrelated backend names, request metadata, response bodies,
+lookup failures and logger restoration under normal and optimized Python.
 
 The already-completed [Fez](fez-mock-diagnosis.json) and
 [Marrakesh](marrakesh-mock-diagnosis.json) probes record the same boundary:

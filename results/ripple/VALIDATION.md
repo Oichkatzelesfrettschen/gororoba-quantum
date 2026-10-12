@@ -3,7 +3,7 @@
 The [receipt](validation-receipt.json) records the checked source, versions,
 scope, outcomes and hashes of operator-held logs. [AGENTS.md](../../AGENTS.md)
 carries the replayable gate commands. The final documentation changes preserve
-the prepared records and the experiment digest.
+the historical records and their experiment digest.
 
 The first full gate run passed the mathematical segment and then failed when
 experiment sources changed during a runtime-contract fixture. That run remains
@@ -34,10 +34,11 @@ qualifies its own recorded experiment.
 
 The required default CLI dry run reached a bounded placement rejection after
 256 combinations. That result establishes the fail-closed path, rather than
-default-policy admission. The two target-family dry runs admit their exact
-cases separately. Runtime mock qualification remains unavailable because the
+default-policy admission. The two historical target-family dry runs admitted their exact
+cases separately at the recorded source revision. Runtime mock qualification remains unavailable because the
 Kingston mock configuration returns HTTP 404; the sidecars returned zero mock
-job identities. Physical execution requires approval of the written cases.
+job identities. Physical execution requires renewed current-source preparation and approval of
+new written cases.
 
 The Runtime skill audit exercised the installed client-side Sampler locally;
 the validated configure_sampler function remains byte-identical. The proof,
@@ -52,3 +53,19 @@ their pre-merge bytes. Four manifest-bound historical guides keep their
 recorded bytes through the `literature -> docs` alias; current mutable notes
 use canonical `docs/` links. Earlier validation receipts retain their original
 revision scope and hashes. Source integration grants zero QPU authorization.
+
+The [review-scope receipt](review-scope-validation.json) reconciles the later
+machine-readable readiness and diagnostic scope repairs. The atlas summary
+sets current admission and execution authorization to false while retaining
+old case identities, numerical estimates and original admission under explicit
+historical metadata. The three diagnostic reports preserve their original
+observations through documented projections that replace the account backend
+inventory with the requested backend's availability. The projections bind the
+original report hashes and Git revision and add zero service observations.
+
+Earlier receipts retain their original bytes and apply to the revisions named
+in the review-scope receipt. The new receipt records changed artifact hashes,
+checks the historical versions against those older hashes, and verifies the
+unchanged runtime manifest and measured/case archives. Fresh static checks,
+normal/optimized credential-free diagnostic contracts and source-library
+checks complement the retained gates over unchanged runtime inputs.

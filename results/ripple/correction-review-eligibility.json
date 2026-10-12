@@ -1,0 +1,32 @@
+{
+  "all_eligible": false,
+  "backends": [
+    {
+      "backend": "ibm_fez",
+      "eligible": false,
+      "operational": true,
+      "pending_jobs": 37,
+      "reason": "37 pending jobs exceeds --max-pending 25",
+      "status_msg": "active"
+    },
+    {
+      "backend": "ibm_kingston",
+      "eligible": true,
+      "operational": true,
+      "pending_jobs": 4,
+      "reason": null,
+      "status_msg": "active"
+    },
+    {
+      "backend": "ibm_marrakesh",
+      "eligible": false,
+      "operational": true,
+      "pending_jobs": 12,
+      "reason": "status operational=True msg='maintenance'",
+      "status_msg": "maintenance"
+    }
+  ],
+  "max_pending": 25,
+  "observed_at": "2026-10-12T10:56:10.180944+00:00",
+  "scope": "Read-only backend eligibility refresh; calibration and candidate compilation require a new production preparation"
+}

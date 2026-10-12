@@ -68,7 +68,7 @@ def diagnose(backend_name: str) -> dict[str, Any]:
                 raise ValueError("service has no resolved active instance")
             report["saved_instance_explicit"] = bool((service.active_account() or {}).get("instance"))
             report["instance_sha256_12"] = hashlib.sha256(instance.encode()).hexdigest()[:12]
-            report["available_backend_names"] = sorted(backend.name for backend in service.backends())
+            report["requested_backend_available"] = any(backend.name == backend_name for backend in service.backends())
             report["discovery_http_events"] = list(events)
             for name, explicit in ((backend_name, True), (mock_name, False), (mock_name, True)):
                 entry: dict[str, Any] = {"backend": name, "explicit_instance": explicit}

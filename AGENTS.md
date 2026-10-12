@@ -26,6 +26,7 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
     scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
     scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
+    scripts/check_diagnose_qiskit_mock.py \
     scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     scripts/check_render_ripple_visualization.py \
     docs/sources/open_gororoba/check_signed_kite_switching.py
@@ -39,6 +40,7 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
     scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
     scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
+    scripts/check_diagnose_qiskit_mock.py \
     scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     scripts/check_render_ripple_visualization.py \
     docs/sources/open_gororoba/check_signed_kite_switching.py
@@ -67,6 +69,8 @@ The rank-sector image gate also uses the plotting-only pin
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error results/live/folded_raw_analysis.py \
     results/live/2026-10-12T055624.091217Z | \
     cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_diagnose_qiskit_mock.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_diagnose_qiskit_mock.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_folded_job_review.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_folded_job_review.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_review_folded_jobs.py
@@ -123,6 +127,7 @@ The rank-sector image gate also uses the plotting-only pin
     ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
     ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py \
     ../scripts/check_render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py \
+    ../scripts/check_diagnose_qiskit_mock.py \
     ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py \
     ../scripts/check_render_ripple_visualization.py \
     ../docs/sources/open_gororoba/check_signed_kite_switching.py

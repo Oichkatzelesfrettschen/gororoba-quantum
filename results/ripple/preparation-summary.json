@@ -1,6 +1,6 @@
 {
   "schema": "packed-algebra-preparation-summary-v1",
-  "status": "prepared; exact-case owner approval pending",
+  "status": "historical_renewal_required",
   "integrated_objective": "Integrate Cayley-Dickson box-kites and zero-divisor fringes, associator interference walks, original Design C controls, and four-qubit rank-path sectors into independently qualified packed acquisition; preserve joint shot order, uncertainty, control differences and model residuals; retain source documents and prior-work boundaries; maximize useful measurements per charged second; reuse the completed folded-QPE evidence; publish one iterative PR and obtain review before separately approved execution.",
   "source_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
   "families": [
@@ -8,7 +8,7 @@
       "family": "ripple",
       "record": "results/live/2026-10-12T062505.208379Z/record.json",
       "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
-      "state": "planned",
+      "state": "historical_renewal_required",
       "shots": 4096,
       "source": {
         "head": "c998e4aa9a088bf58449dc320b95fff98fa31d6d",
@@ -30,9 +30,12 @@
         "reserve_seconds": 60.0,
         "max_total_execution_seconds": 180.0,
         "remaining_seconds": 551,
-        "admitted": true,
-        "reasons": [],
-        "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+        "admitted": false,
+        "reasons": [
+          "Source changes invalidate current admission; renew preparation, calibration, placement, QPY, quota, and the written case before owner approval."
+        ],
+        "reservation_scope": "invocation-local ceilings; external submissions can change shared quota",
+        "inputs_scope": "historical_record_only"
       },
       "native_reports": [
         {
@@ -48,13 +51,36 @@
       "feasible_endpoints": 1138,
       "maximum_simultaneous_half_width": 0.07467067752937152,
       "job_count": 1,
-      "pub_count": 146
+      "pub_count": 146,
+      "historical": {
+        "state": "planned",
+        "budget": {
+          "jobs": [
+            {
+              "backend": "ibm_kingston",
+              "kind": "static",
+              "batch_index": 1,
+              "pubs": 146,
+              "ceiling_seconds": 180
+            }
+          ],
+          "combined_ceiling_seconds": 180.0,
+          "reserve_seconds": 60.0,
+          "max_total_execution_seconds": 180.0,
+          "remaining_seconds": 551,
+          "admitted": true,
+          "reasons": [],
+          "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+        }
+      },
+      "admitted": false,
+      "physical_execution_authorized": false
     },
     {
       "family": "rank-sector",
       "record": "results/live/2026-10-12T062505.552988Z/record.json",
       "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
-      "state": "planned",
+      "state": "historical_renewal_required",
       "shots": 4096,
       "source": {
         "head": "c998e4aa9a088bf58449dc320b95fff98fa31d6d",
@@ -76,9 +102,12 @@
         "reserve_seconds": 60.0,
         "max_total_execution_seconds": 60.0,
         "remaining_seconds": 551,
-        "admitted": true,
-        "reasons": [],
-        "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+        "admitted": false,
+        "reasons": [
+          "Source changes invalidate current admission; renew preparation, calibration, placement, QPY, quota, and the written case before owner approval."
+        ],
+        "reservation_scope": "invocation-local ceilings; external submissions can change shared quota",
+        "inputs_scope": "historical_record_only"
       },
       "native_reports": [
         {
@@ -94,7 +123,30 @@
       "feasible_endpoints": 196,
       "maximum_simultaneous_half_width": 0.06867944282071789,
       "job_count": 1,
-      "pub_count": 36
+      "pub_count": 36,
+      "historical": {
+        "state": "planned",
+        "budget": {
+          "jobs": [
+            {
+              "backend": "ibm_kingston",
+              "kind": "static",
+              "batch_index": 1,
+              "pubs": 36,
+              "ceiling_seconds": 60
+            }
+          ],
+          "combined_ceiling_seconds": 60.0,
+          "reserve_seconds": 60.0,
+          "max_total_execution_seconds": 60.0,
+          "remaining_seconds": 551,
+          "admitted": true,
+          "reasons": [],
+          "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+        }
+      },
+      "admitted": false,
+      "physical_execution_authorized": false
     }
   ],
   "combined_nominal_seconds": 197.02196992,
@@ -114,5 +166,22 @@
     "fresh calibration and quota must match before submission",
     "mock_kingston unavailable; native scheduler timing remains unqualified",
     "local noise simulation omits physical common disturbances and does not replace measured packing references"
-  ]
+  ],
+  "historical": {
+    "summary_revision": "c31c15152176341a6e34aad4a0453d4f0d0bb227",
+    "summary_sha256": "7b5568d5b3df4285f24f2593827c39b213d4fe39e4f32182ab0faa9d29376877",
+    "status": "prepared; exact-case owner approval pending",
+    "budget": {
+      "combined_nominal_seconds": 197.02196992,
+      "combined_stress_seconds": 201.62196992,
+      "combined_service_ceiling_seconds": 240,
+      "shared_reserve_seconds": 60,
+      "observed_remaining_seconds": 551,
+      "unallocated_after_ceilings_and_reserve_seconds": 251
+    },
+    "budget_scope": "Two retained atlas cases and one shared reserve; the separate later 30-second correction pilot is excluded."
+  },
+  "admitted": false,
+  "physical_execution_authorized": false,
+  "evidence_scope": "Source identities, endpoint counts, precision, timing estimates, and budget inputs describe the retained records at their recorded source revision. Current-source preparation and new written cases are required before owner approval."
 }

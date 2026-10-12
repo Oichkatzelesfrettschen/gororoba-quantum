@@ -1,8 +1,9 @@
-# Packed algebra execution cases
+# Historical packed algebra execution cases
 
 The user now prioritizes [model discrimination and a measurable optimizer
 decision](../../gororoba_quantum/MODEL_DISCRIMINATION.md) before broad atlas
-spending. Both cases below remain retained and unapproved behind that gate.
+spending. Both cases below have current state `historical_renewal_required`; renewed
+preparation and written cases must pass that gate before owner approval.
 The [four-PUB correction pilot](CORRECTION_PREPARATION.md) is implemented.
 Its historical Fez case estimated 11.5154 nominal seconds and 14.4708 stress
 seconds under a proposed 30-second ceiling. Renewal after the scoring repair
@@ -24,49 +25,60 @@ recorded revision. Subsequent source changes require fresh preparation before
 physical execution. The scoring repair evaluates readout controls after binding
 physical writers and before candidate truncation; retained selection scores
 precede that repair. Historical QPY, precision and count evidence keep their
-original scope. Both families remain unapproved for physical execution. They use separate static jobs because the
-combined 87-qubit candidate has only a bounded infeasibility result. Each
-family independently fits one job on Kingston.
+original scope. Current admission and physical execution authorization are
+false for both families. The retained plans assigned separate static jobs
+because the combined 87-qubit candidate had only a bounded infeasibility
+result. Each family independently fitted one Kingston job at that revision.
 
-| Prepared family | Allocated qubit footprint | PUBs | Shots/PUB | Qualified endpoints | Nominal QPU seconds | Stress seconds | Service ceiling |
+| Historical family | Allocated qubit footprint | PUBs | Shots/PUB | Qualified endpoints | Nominal QPU seconds | Stress seconds | Service ceiling |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Ripple atlas, walks and Design C | 55 | 146 | 4096 | 1138 / 1138 | 157.0873 | 159.3873 | 180 s |
 | Rank-path sectors | 32 | 36 | 4096 | 196 / 196 | 39.9347 | 42.2347 | 60 s |
 | Combined atlas | separate jobs | 182 | 4096 | 1334 / 1334 | 197.0220 | 201.6220 | 240 s |
 
-The ripple job allocates 55 distinct physical qubits across its PUBs, with
-at most 47 active in a single PUB. Rank sectors use at most 32 per PUB.
+The retained ripple plan allocates 55 distinct physical qubits across its
+PUBs, with at most 47 active in a single PUB. The retained rank-sector plan
+uses at most 32 per PUB.
 
-The estimate is about 3 minutes 17 seconds of QPU usage, excluding queue and
-local preparation time. Stress assumptions are named scenarios, rather than
-confidence bounds on billing. The service ceilings bound each job through
-`max_execution_time`. The 551-second remaining-usage observation covers the
-240-second atlas ceiling, the correction pilot's separate 30-second ceiling,
-and one shared 60-second reserve, leaving 221 seconds unallocated. The
-[coordination ledger](../live/qpu-coordination.json) records those proposals;
-concurrent jobs can change the observation.
+The historical estimate was about 3 minutes 17 seconds of QPU usage,
+excluding queue and local preparation time. Stress assumptions are named
+scenarios, rather than confidence bounds on billing. The proposed service
+ceilings would bound each job through `max_execution_time`. The summary
+preserves its original 551-second remaining-usage observation, 240-second
+atlas ceiling and shared 60-second reserve, leaving 251 seconds in that
+historical budget scope. The later campaign proposal also allocated the
+correction pilot's separate 30-second ceiling, leaving 221 seconds from the
+same observation. The [coordination ledger](../live/qpu-coordination.json)
+tracks campaign proposals and subsequent observations; both old allocations
+require fresh quota and preparation checks.
 
 The [validation report](VALIDATION.md) records successful gates and their
 bounded coverage, alongside the default-placement and mock-timing limits.
 
-## Exact cases
+## Retained historical cases
 
 - [Ripple case](../live/2026-10-12T062505.208379Z/UNAPPROVED_CASE.md):
   record SHA-256 `bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038`.
 - [Rank-sector case](../live/2026-10-12T062505.552988Z/UNAPPROVED_CASE.md):
   record SHA-256 `f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d`.
 - [Machine-readable preparation summary](preparation-summary.json) binds both
-  records, sources, endpoint counts, costs, ceilings and native sidecars.
+  records, sources, endpoint counts, costs, ceilings and native sidecars. Its
+  current status and family states are `historical_renewal_required`; current
+  admission and physical execution authorization are false. Explicit
+  `historical` metadata preserves the old status, family states and admitted
+  budgets. Numeric estimates and retained budget inputs have historical scope.
 
 Both records bind source digest
 `493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085`.
-Their source-closure reports verify all 36 declared files and dependency
-versions, with `sources_modified=false`. Submission refreshes calibration,
-placements, QPY and quota; a mismatch requires a new case.
+Their retained source-closure reports verified all 36 declared files and
+dependency versions at that revision, with `sources_modified=false`. Later
+source changes invalidate current admission. Fresh preparation must bind the
+current source, calibration, placements, QPY and quota in new written cases.
 
-Kingston's physical backend is accessible, while its runtime mock configuration
-returns HTTP 404. Both native attempts retained `status=unavailable`, with
-zero returned mock job identities. Native scheduler timing remains unqualified.
+The historical preparation observed Kingston's physical backend as accessible;
+its runtime mock configuration returned HTTP 404. Both native attempts retained
+`status=unavailable`, with zero returned mock job identities. Those attempts
+leave the retained plans' native scheduler timing unqualified.
 The completed folded diagnostic charged 40 s versus 39.6324 s forecast, which
 supports that workload's accounting and does not bound the new schedules.
 
@@ -74,17 +86,17 @@ supports that workload's accounting and does not bound the new schedules.
 
 The [90-percent-floor search](routing-admission-rejection.json) rejected 256
 of 4096 routed combinations before the bounded search stopped. A relative
-placement-score floor of 0.8 admits more physical patches; its first routed
+placement-score floor of 0.8 admitted more physical patches; its first routed
 combination placed every ripple lane with the original physical one-hop
 buffers. The quality exclusions, scientific controls, shot precision, and
-spending ceilings stayed in force. Fresh noise simulation then admitted every
-required endpoint. The largest simultaneous half-width is 0.074671 for ripple
+spending ceilings stayed in force. Noise simulation at that revision then admitted every
+required endpoint. The largest retained simultaneous half-width is 0.074671 for ripple
 and 0.068680 for rank sectors, within the requested 0.08.
 
-Admission qualifies endpoint precision and specified positive-control signals.
+Historical admission qualified endpoint precision and specified positive-control signals.
 Packing endpoints target half-width 0.08 in their declared observable units,
 without a practical
-equivalence margin. Admission therefore does not certify preserved packed
+equivalence margin. Historical admission therefore does not certify preserved packed
 accuracy. Each new family allocates alpha=0.05 separately; the union bound
 provides at least 90 percent joint coverage across both families, rather than
 a campaign-wide 95 percent guarantee. Rank normalized squared-norm intervals scale by alpha(t)^2;
@@ -130,5 +142,7 @@ changes a recorded distribution relative to a specified reference. The exact
 algebra predicts the field; hardware supplies its measured realization and
 residuals; visual geometry makes those quantities inspectable.
 
-Physical execution follows explicit approval of the two linked cases under
-[AGENTS.md](../../AGENTS.md). Preparation submitted zero physical QPU jobs.
+Physical execution requires fresh current-source preparation, new written
+cases and explicit owner approval under [AGENTS.md](../../AGENTS.md). The
+linked historical cases retain evidence and cannot authorize the current
+source. The retained preparation submitted zero physical QPU jobs.

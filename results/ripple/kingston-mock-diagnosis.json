@@ -1,9 +1,4 @@
 {
-  "available_backend_names": [
-    "ibm_fez",
-    "ibm_kingston",
-    "ibm_marrakesh"
-  ],
   "diagnostic_source_sha256": "3a82e0147d19c0aca77deea2dcd93199ebb00257e63c9b12b49b875976ea2998",
   "discovery_http_events": [
     {
@@ -13,6 +8,14 @@
       "status_code": 200
     }
   ],
+  "historical_projection": {
+    "fresh_service_observations": 0,
+    "operation": "Replace complete discovery inventory with availability of the requested backend",
+    "preserved_fields": "All original fields except available_backend_names; original observation time, diagnostic source identity, probes and HTTP events retained",
+    "requested_backend": "ibm_kingston",
+    "source_report_commit": "e4acd410c3928e1241e167cc6528d13b9655da4e",
+    "source_report_sha256": "f43b1cfce9d4f0af31c20de7f7cf049bbede5eff2469e2e7ae5afde7fce3d739"
+  },
   "instance_sha256_12": "e3de05b6901e",
   "observed_at": "2026-10-12T07:18:00.796517+00:00",
   "probes": [
@@ -60,6 +63,7 @@
       ]
     }
   ],
+  "requested_backend_available": true,
   "runtime_version": "0.50.0",
   "saved_instance_explicit": false,
   "schema": "qiskit-mock-backend-diagnosis-v1",
