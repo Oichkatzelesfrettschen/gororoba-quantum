@@ -1,0 +1,72 @@
+{
+  "artifact_sha256": {
+    "AGENTS.md": "4a1bc0f5e349d20825ce9be3027981e78f05ea96a2ba1bb4f2de0d91811f4f82",
+    "results/ripple/folded-job-review.json": "888a378440ce4c1312470ec24213e188000edc2d4cef720b27281e765650b45c",
+    "results/ripple/folded-job-review.png": "49fe833e98bce1b807223282b3e389af2cbc6476b940f88eca8836c7943e8290",
+    "results/ripple/folded-job-review.svg": "d9d5cdfaf4883a05c9d92f88cd141185b345a79115f56245a9b26ab942717e99",
+    "scripts/check_render_folded_job_review.py": "6b0c1419a056f167187a82fd6206ed19c65b63a4ab8f546d3cabd3a9f1b051f2",
+    "scripts/render_folded_job_review.py": "4adaa66cca6677d0d72f7d853e7df9a2b44777e17adb60ec08c4f8b7486966ac"
+  },
+  "full_repository_gates": {
+    "exit_code": 0,
+    "mypy_source_files": 81,
+    "operator_log_sha256": "bb460b611f2f15f7ed394f8146e54f6cf6c156067b5265a4990f983f3b562ac1",
+    "operator_script_sha256": "6310606460de2bc40d24e2ba52647b53d1eb64844ce40789b971f2850ac9bab1",
+    "ruff_formatted_files": 84,
+    "warnings_as_errors": true
+  },
+  "independent_review": {
+    "changed_caption_bindings": [
+      "backend",
+      "charge",
+      "job identities",
+      "CZ",
+      "writer",
+      "overlapping windows",
+      "delay zero-inclusion"
+    ],
+    "expanded_plot_limits": [
+      [
+        -4.0,
+        104.0
+      ],
+      [
+        -23.329856885370916,
+        94.61891938537092
+      ],
+      [
+        -111.1766357421875,
+        31.5745849609375
+      ]
+    ],
+    "rejected_mutations": [
+      "empty_contract_checks",
+      "truthy_nonboolean_contract_check",
+      "forged_integer_marginal",
+      "unreconciled_charge",
+      "duplicate_classical_writer",
+      "exact_zero_residual",
+      "forged_tiny_negative_residual_at_true_zero",
+      "forged_dyadic_contrast"
+    ],
+    "renderer_sha256": "4adaa66cca6677d0d72f7d853e7df9a2b44777e17adb60ec08c4f8b7486966ac",
+    "scope": "offline synthetic mutation review; modified fixtures are not hardware evidence"
+  },
+  "observed_at": "2026-10-12T08:34:21.689754+00:00",
+  "pilot_preservation": {
+    "qpy_sha256": "2fcb598592888b8a48669df83401979692bb07900e81c07e090fa36ccdaf9aad",
+    "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+    "run": "results/live/2026-10-12T074042.840320Z",
+    "source_closure_and_versions": "match",
+    "source_file_count": 41
+  },
+  "regression": {
+    "normal_and_optimized_results_equal": true,
+    "qualified_variants": 3,
+    "rejected_mutations": 90,
+    "svg_and_png_reproduction": "pass",
+    "visual_inspection": "pass"
+  },
+  "schema": "folded-figure-qualification-validation-v1",
+  "scope": "Local figure qualification and regression checks; modified test fixtures are synthetic and supply zero hardware evidence."
+}

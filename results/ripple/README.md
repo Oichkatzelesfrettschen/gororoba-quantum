@@ -123,5 +123,16 @@ PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
 ```
 
 The renderer uses the same plotting pin as the rank-sector figure and embeds
-its input SHA-256. Regeneration changes derived images; the raw archive stays
-under its original evidence owner.
+its input SHA-256. Its supported input is the sixteen-member, twelve-contrast
+folded audit. Qualification requires the complete named audit checks,
+integer-count marginals, confidence declarations, and consistent job/PUB
+metadata. Captions derive charges, routing, readout sites, execution windows,
+and interval conclusions from that qualified evidence. The renderer checks
+internal consistency; raw provenance still requires the independent audit.
+
+Run `"$PYTHON" scripts/check_render_folded_job_review.py` and its `-O` variant
+to exercise malformed-input rejection and changed-caption evidence. Both checks
+and byte-for-byte image reproduction belong to the required repository gates.
+Regeneration changes derived images; the raw archive stays under its original
+evidence owner. The [validation receipt](folded-renderer-validation.json)
+binds the tested source, image hashes, regression counts and full-gate result.

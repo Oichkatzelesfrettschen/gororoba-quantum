@@ -10,10 +10,12 @@ import argparse
 import hashlib
 import json
 import math
+import re
 from dataclasses import dataclass
+from datetime import datetime
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 if TYPE_CHECKING:
     from matplotlib.axes import Axes
@@ -25,6 +27,16 @@ COLORS = ("#276B9C", "#C36332", "#8656A1", "#277F68")
 INK = "#23323B"
 MUTED = "#596A75"
 PAPER = "#F6F7F3"
+CONTRACT_CHECKS = frozenset(
+    (
+        "all12_contrasts_match",
+        "all16_terminal_estimates_match",
+        "all16_measurement_site_maps_match_qpy",
+        "all16_replay_quantized_count_estimates_match",
+        "all_declared_shot_counts_match",
+        "approval_mismatches_empty",
+    )
+)
 
 
 @dataclass(frozen=True)
@@ -35,6 +47,11 @@ class Outcome:
     ideal: float
     replay: float
     residual: float
+    job_id: str
+    cz: int
+    terminal_qubit: int
+    start: datetime
+    stop: datetime
 
 
 @dataclass(frozen=True)
@@ -47,6 +64,13 @@ class Contrast:
 
 
 @dataclass(frozen=True)
+class Job:
+    job_id: str
+    pubs: int
+    charged_seconds: float
+
+
+@dataclass(frozen=True)
 class Evidence:
     digest: str
     run: str
@@ -55,6 +79,8 @@ class Evidence:
     shots: int
     charged_seconds: float
     half_width: float
+    backend: str
+    jobs: tuple[Job, ...]
 
 
 def _require(condition: bool, message: str) -> None:
@@ -62,73 +88,342 @@ def _require(condition: bool, message: str) -> None:
         raise ValueError(message)
 
 
+def _integer(value: Any, label: str, *, minimum: int = 0) -> int:
+    _require(type(value) is int and value >= minimum, f"invalid {label}")
+    return int(value)
+
+
+def _real(value: Any, label: str) -> float:
+    _require(type(value) in (int, float), f"invalid {label}")
+    number = float(value)
+    _require(math.isfinite(number), f"nonfinite {label}")
+    return number
+
+
+def _identity(value: Any, label: str) -> str:
+    _require(isinstance(value, str) and re.fullmatch(r"[A-Za-z0-9_.:+-]+", value) is not None, f"invalid {label}")
+    return str(value)
+
+
+def _timestamp(value: Any) -> datetime:
+    _require(isinstance(value, str), "execution timestamp must be a string")
+    timestamp = datetime.fromisoformat(value)
+    _require(timestamp.utcoffset() is not None, "execution timestamp must include a timezone")
+    return timestamp
+
+
+def _counts(value: Any, width: int, shots: int, label: str) -> list[int]:
+    _require(isinstance(value, list) and len(value) == width, f"{label} outcome count differs")
+    counts = [_integer(count, label) for count in value]
+    _require(sum(counts) == shots, f"{label} differs from shots")
+    return counts
+
+
+def _probabilities(value: Any, expected: list[float], label: str) -> None:
+    _require(isinstance(value, list) and len(value) == len(expected), f"{label} outcome count differs")
+    _require([_real(item, label) for item in value] == expected, f"{label} differs from its labeled counts or law")
+
+
 def read_evidence(path: Path) -> Evidence:
-    """Require the measured audit schema and reconcile the plotted marginals."""
+    """Validate the fixed 16-PUB, 12-contrast, 8192-shot audited ladder.
+
+    The renderer checks internal evidence consistency. Replaying the independent
+    audit against its retained raw archive establishes the separate source link.
+    """
     contents = path.read_bytes()
+    try:
+        return _read_evidence(contents)
+    except (KeyError, TypeError, IndexError, AttributeError, OverflowError) as error:
+        raise ValueError(f"incomplete or malformed folded audit: {error}") from error
+
+
+def _read_evidence(contents: bytes) -> Evidence:
     data = json.loads(contents)
+    _require(isinstance(data, dict), "folded audit must be an object")
     _require(data["schema"] == "independent-folded-raw-audit-v1", "unsupported folded audit schema")
-    _require(all(value is True for value in data["contract_checks"].values()), "audit contract failure")
+    checks = data["contract_checks"]
+    _require(isinstance(checks, dict) and set(checks) == CONTRACT_CHECKS, "audit contract checks are incomplete")
+    _require(all(checks[name] is True for name in CONTRACT_CHECKS), "audit contract failure")
     _require(data["source_hashes_unchanged_during_audit"] is True, "source hashes changed during audit")
     _require(data["defects"] == [], "audit records defects")
+    _require(
+        _integer(data["raw_register_count"], "raw register count") == 16
+        and _integer(data["raw_pub_shots"], "raw shot count") == 16 * 8192,
+        "raw acquisition totals differ",
+    )
+    _require(
+        _integer(data["hash_verified_indexed_files"], "indexed file count") == 20, "indexed raw audit coverage differs"
+    )
+    _require(data["shared_shot_pairing_scope"] == "within one PUB only", "cross-PUB pairing is unsupported")
+    source_hashes = data["source_sha256"]
+    _require(isinstance(source_hashes, dict), "source hashes are missing")
+    for digest in [data["audit_script_sha256"], *source_hashes.values()]:
+        _require(isinstance(digest, str) and re.fullmatch(r"[a-f0-9]{64}", digest) is not None, "invalid source digest")
+    _require(
+        {"record.json", "collect.json", "isa.qpy", "settled-account-usage.json"} <= set(source_hashes),
+        "required audit source identities are missing",
+    )
+    _require(isinstance(data["jobs"], list) and len(data["jobs"]) == 2, "expected two audited jobs")
+    jobs = []
+    for job in data["jobs"]:
+        job_id = _identity(job["job_id"], "job identity")
+        pubs = _integer(job["pubs"], "job PUB count", minimum=1)
+        _require(pubs in (4, 12), "job PUB count differs from ladder")
+        _require(_integer(job["shots_per_pub"], "job shots", minimum=1) == 8192, "job shot count differs")
+        charge = _real(job["charge_seconds"], "job charge")
+        _require(charge > 0, "job charge must be positive")
+        required_files = {f"raw/{job_id}/{name}" for name in ("index.json", "job_metrics.json", "result_metadata.json")}
+        required_files.update(f"raw/{job_id}/pub_{index:02d}.json" for index in range(pubs))
+        _require(required_files <= set(source_hashes), "job raw source identities are missing")
+        jobs.append(Job(job_id, pubs, charge))
+    _require(
+        len({job.job_id for job in jobs}) == 2 and sorted(job.pubs for job in jobs) == [4, 12], "job identities differ"
+    )
     _require(
         len(data["members"]) == 16 and len(data["contrasts"]) == 12, "expected sixteen outcomes and twelve contrasts"
     )
     members = {(member["rung"], member["phase_label"]): member for member in data["members"]}
     _require(set(members) == {(rung, label) for rung in RUNG_NAMES for label in range(4)}, "member identities differ")
     outcomes = []
+    identities: dict[str, list[tuple[str, int]]] = {job.job_id: [] for job in jobs}
+    backends = set()
+    calibrations = set()
+    pub_names = set()
     for rung in RUNG_NAMES:
         for label in range(4):
             member = members[(rung, label)]
-            _require(member["shots"] == 8192, "expected 8192 measured shots per PUB")
-            measured = float(member["terminal_probability"])
-            ideal = float(member["ideal_terminal_probability"])
-            replay = float(member["replay_terminal_probability"])
-            residual = float(member["hardware_minus_replay"])
+            _require(member["member"] == f"qpe_{rung}_s{label}", "member name differs from rung and label")
+            _require(type(member["phase_label"]) is int, "phase label must be an integer")
+            _require(
+                _integer(member["shots"], "member shots", minimum=1) == 8192, "expected 8192 measured shots per PUB"
+            )
+            job_id = _identity(member["job_id"], "member job")
+            _require(job_id in identities, "member job is absent from the job ledger")
+            pub = member["pub"]
+            match = re.fullmatch(r"(ibm_[a-z0-9]+)_(dynamic|static)_pub_([0-9]+)", pub)
+            _require(match is not None and pub not in pub_names, "invalid or duplicate PUB identity")
+            if match is None:
+                raise ValueError("PUB identity cannot be decoded")
+            backend, kind, pub_index = match.groups()
+            _require(kind == ("static" if rung == "coherent" else "dynamic"), "PUB execution kind differs from rung")
+            backends.add(backend)
+            pub_names.add(pub)
+            identities[job_id].append((kind, int(pub_index)))
+            width = 2 if rung == "delay" else 4
+            terminal_bit = 0 if rung == "delay" else 1
+            counts = _counts(member["bit_counts_integer_order"], width, 8192, "raw counts")
+            replay_counts = _counts(member["replay_reconstructed_counts_integer_order"], width, 8192, "replay counts")
+            successes = sum(count for outcome, count in enumerate(counts) if outcome >> terminal_bit == label >> 1)
+            replay_successes = sum(
+                count for outcome, count in enumerate(replay_counts) if outcome >> terminal_bit == label >> 1
+            )
+            _require(
+                _integer(member["terminal_successes"], "terminal successes") == successes,
+                "raw terminal marginal differs",
+            )
+            _probabilities(
+                member["measured_probabilities_integer_order"], [count / 8192 for count in counts], "measured vector"
+            )
+            _probabilities(
+                member["replay_probabilities_integer_order"], [count / 8192 for count in replay_counts], "replay vector"
+            )
+            expected_ideal = [0.0] * width
+            if rung == "delay":
+                expected_ideal[label >> 1] = 1.0
+            elif rung == "no_feed_forward" and label % 2:
+                expected_ideal[label] = expected_ideal[label ^ 2] = 0.5
+            else:
+                expected_ideal[label] = 1.0
+            _probabilities(member["exact_ideal_probabilities_integer_order"], expected_ideal, "ideal vector")
+            measured = _real(member["terminal_probability"], "measured terminal probability")
+            ideal = _real(member["ideal_terminal_probability"], "ideal terminal probability")
+            replay = _real(member["replay_terminal_probability"], "replay terminal probability")
+            residual = _real(member["hardware_minus_replay"], "replay residual")
             _require(
                 all(math.isfinite(value) and 0 <= value <= 1 for value in (measured, ideal, replay)),
                 "invalid probability",
             )
             _require(
-                measured == member["terminal_successes"] / member["shots"], "measured probability differs from counts"
+                measured == successes / 8192 and replay == replay_successes / 8192,
+                "terminal probability differs from labeled counts",
             )
-            _require(sum(member["bit_counts_integer_order"]) == member["shots"], "raw counts differ from shots")
-            _require(math.isclose(residual, measured - replay, abs_tol=1e-14), "residual differs from marginals")
-            outcomes.append(Outcome(rung, label, measured, ideal, replay, residual))
+            _require(
+                ideal
+                == sum(value for outcome, value in enumerate(expected_ideal) if outcome >> terminal_bit == label >> 1),
+                "ideal terminal marginal differs",
+            )
+            _require(residual == measured - replay, "residual differs from marginals")
+            sites = member["measurement_sites"]
+            _require(isinstance(sites, list) and len(sites) == terminal_bit + 1, "measurement writer count differs")
+            writers = {}
+            for site in sites:
+                _require(isinstance(site, list) and len(site) == 2, "invalid measurement writer")
+                qubit = _integer(site[0], "physical measurement qubit")
+                bit = _integer(site[1], "classical measurement bit")
+                _require(bit not in writers, "repeated classical writer")
+                writers[bit] = qubit
+            _require(set(writers) == set(range(terminal_bit + 1)), "measurement bits differ")
+            start, stop = _timestamp(member["executor_chunk_start"]), _timestamp(member["executor_chunk_stop"])
+            calibration = _timestamp(member["calibration"])
+            _require(calibration <= start < stop, "invalid execution window or calibration")
+            calibrations.add(calibration)
+            outcomes.append(
+                Outcome(
+                    rung,
+                    label,
+                    measured,
+                    ideal,
+                    replay,
+                    residual,
+                    job_id,
+                    _integer(member["cz"], "CZ count"),
+                    writers[terminal_bit],
+                    start,
+                    stop,
+                )
+            )
+    _require(len(backends) == 1 and len(calibrations) == 1, "contrast ladder needs one backend and shared calibration")
+    for job in jobs:
+        entries = identities[job.job_id]
+        _require(
+            len(entries) == job.pubs and len({kind for kind, _index in entries}) == 1,
+            "job membership differs from its PUB ledger",
+        )
+        _require(sorted(index for _kind, index in entries) == list(range(1, job.pubs + 1)), "job PUB indices differ")
     positive_residuals = {(outcome.rung, outcome.label) for outcome in outcomes if outcome.residual > 0}
     _require(
         positive_residuals == {("no_feed_forward", 1), ("no_feed_forward", 3)},
         "highlighted residual-sign pattern differs",
     )
+    _require(
+        all(outcome.residual < 0 for outcome in outcomes if (outcome.rung, outcome.label) not in positive_residuals),
+        "the other fourteen residuals must be strictly negative",
+    )
     confidence = data["confidence"]
-    _require(confidence["comparisons"] == 12 and confidence["family_alpha"] == 0.05, "confidence family differs")
+    _require(
+        _integer(confidence["comparisons"], "confidence comparisons") == 12
+        and _real(confidence["family_alpha"], "family alpha") == 0.05,
+        "confidence family differs",
+    )
     half_width = 2 * math.sqrt(math.log(4 / (0.05 / 12)) / (2 * 8192))
-    _require(math.isclose(confidence["half_width"], half_width, abs_tol=1e-14), "confidence formula differs")
+    _require(
+        math.isclose(_real(confidence["half_width"], "confidence half-width"), half_width, rel_tol=0, abs_tol=1e-14),
+        "confidence formula differs",
+    )
+    _require(_real(confidence["per_contrast_alpha"], "per-contrast alpha") == 0.05 / 12, "per-contrast alpha differs")
+    _require(
+        confidence["raw_unpaired_pub_identity_preserved"] is True
+        and confidence["precision_contract_reject_null_remains_null"] is True,
+        "confidence qualification failed",
+    )
     source_contrasts = {contrast["name"]: contrast for contrast in data["contrasts"]}
     _require(len(source_contrasts) == 12, "contrast identities repeat")
     contrasts = []
     for rung in RUNG_NAMES[1:]:
         for label in range(4):
             contrast = source_contrasts[f"qpe_{rung}_minus_archived_s{label}"]
-            difference = float(contrast["difference"])
-            lower, upper = map(float, contrast["simultaneous_interval"])
+            difference = _real(contrast["difference"], "contrast difference")
+            interval = contrast["simultaneous_interval"]
+            _require(isinstance(interval, list) and len(interval) == 2, "invalid contrast interval")
+            lower, upper = (_real(endpoint, "contrast endpoint") for endpoint in interval)
             expected = (
                 members[(rung, label)]["terminal_probability"] - members[("archived", label)]["terminal_probability"]
             )
-            _require(math.isclose(difference, expected, abs_tol=1e-14), "contrast differs from measured marginals")
-            _require(math.isclose(lower, difference - half_width, abs_tol=1e-14), "lower confidence endpoint differs")
-            _require(math.isclose(upper, difference + half_width, abs_tol=1e-14), "upper confidence endpoint differs")
+            _require(difference == expected, "contrast differs from measured marginals")
+            _require(
+                math.isclose(lower, difference - half_width, rel_tol=0, abs_tol=1e-14),
+                "lower confidence endpoint differs",
+            )
+            _require(
+                math.isclose(upper, difference + half_width, rel_tol=0, abs_tol=1e-14),
+                "upper confidence endpoint differs",
+            )
             _require(contrast["retained_reject_null"] is None, "precision contract changed to a hypothesis decision")
+            _require(
+                math.isclose(
+                    _real(contrast["half_width"], "contrast half-width"), half_width, rel_tol=0, abs_tol=1e-14
+                ),
+                "contrast half-width differs",
+            )
+            _require(contrast["excludes_zero"] is (lower > 0 or upper < 0), "contrast zero-inclusion flag differs")
+            _require(
+                _real(contrast["ideal_difference"], "ideal contrast")
+                == members[(rung, label)]["ideal_terminal_probability"]
+                - members[("archived", label)]["ideal_terminal_probability"],
+                "ideal contrast differs from member laws",
+            )
             contrasts.append(Contrast(rung, label, difference, lower, upper))
-    charged = float(data["timing_totals"]["charged_seconds"])
-    _require(charged == 40 and sum(job["charge_seconds"] for job in data["jobs"]) == charged, "charged totals differ")
+    charged = _real(data["timing_totals"]["charged_seconds"], "charged total")
+    _require(math.fsum(job.charged_seconds for job in jobs) == charged, "charged totals differ")
     return Evidence(
         hashlib.sha256(contents).hexdigest(),
-        str(data["run"]),
+        _identity(data["run"], "run identity"),
         tuple(outcomes),
         tuple(contrasts),
         8192,
         charged,
         half_width,
+        next(iter(backends)),
+        tuple(jobs),
+    )
+
+
+def figure_captions(evidence: Evidence) -> dict[str, str]:
+    """Bind factual captions to the qualified audit rather than one retained run."""
+    delay_contrasts = [contrast for contrast in evidence.contrasts if contrast.rung == "delay"]
+    including_zero = sum(contrast.lower <= 0 <= contrast.upper for contrast in delay_contrasts)
+    delay_statement = (
+        f"{including_zero} of {len(delay_contrasts)} delay intervals include zero; equivalence is untested."
+    )
+    summaries = []
+    for rung in ("coherent", "archived"):
+        outcomes = [outcome for outcome in evidence.outcomes if outcome.rung == rung]
+        cz_counts = "/".join(str(count) for count in sorted({outcome.cz for outcome in outcomes}))
+        terminal_writers = "/".join(f"q{qubit}" for qubit in sorted({outcome.terminal_qubit for outcome in outcomes}))
+        summaries.append(f"{rung}: {cz_counts} CZ, {terminal_writers}")
+    windows = []
+    for job in evidence.jobs:
+        job_outcomes = [outcome for outcome in evidence.outcomes if outcome.job_id == job.job_id]
+        windows.append((min(outcome.start for outcome in job_outcomes), max(outcome.stop for outcome in job_outcomes)))
+    separated = windows[0][1] <= windows[1][0] or windows[1][1] <= windows[0][0]
+    window_statement = "separate" if separated else "overlapping"
+    outcome_map = {(outcome.rung, outcome.label): outcome for outcome in evidence.outcomes}
+    odd_ideal_differences = {
+        100 * (outcome_map[("no_feed_forward", label)].ideal - outcome_map[("archived", label)].ideal)
+        for label in (1, 3)
+    }
+    odd_ideal = "/".join(f"{difference:+g}" for difference in sorted(odd_ideal_differences))
+    return {
+        "subtitle": f"Folded phase estimation on {evidence.backend}",
+        "acquisition": f"MEASURED QPU DATA  /  {len(evidence.outcomes)} PUBs × {evidence.shots:,} SHOTS  /  "
+        f"{evidence.charged_seconds:g} s CHARGED",
+        "inference": "Inference: Hoeffding + union bound; 12-family α = 0.05; "
+        f"half-width {100 * evidence.half_width:.4f} pp. "
+        "Independent stationary repetitions within each PUB are required.",
+        "dependence": "Within-shot and cross-PUB dependence are unrestricted by the bound. PUBs remain unpaired. "
+        + delay_statement,
+        "metadata": f"Audit metadata ({'; '.join(summaries)}); job-window hulls are {window_statement}. "
+        f"Odd no-feedback ideal contrast: {odd_ideal} pp.",
+        "source": "Jobs: "
+        + " · ".join(f"{job.job_id} ({job.charged_seconds:g} s)" for job in evidence.jobs)
+        + "   |   Source: audit-qualified raw counts, QPY mappings, and recorded model replay.",
+    }
+
+
+def plot_limits(evidence: Evidence) -> tuple[tuple[float, float], ...]:
+    """Keep every probability, contrast endpoint, and residual inside its panel."""
+    probability_values = [
+        100 * value for outcome in evidence.outcomes for value in (outcome.measured, outcome.ideal, outcome.replay)
+    ]
+    contrast_values = [
+        100 * endpoint for contrast in evidence.contrasts for endpoint in (contrast.lower, contrast.upper)
+    ]
+    residual_values = [0.0, *(100 * outcome.residual for outcome in evidence.outcomes)]
+    residual_padding = max(6.0, (max(residual_values) - min(residual_values)) * 0.17)
+    return (
+        (min(43.0, min(probability_values) - 4), max(104.0, max(probability_values) + 4)),
+        (min(-23.0, min(contrast_values) - 3), max(18.0, max(contrast_values) + 3)),
+        (min(-24.0, min(residual_values) - residual_padding), max(20.0, max(residual_values) + residual_padding)),
     )
 
 
@@ -169,12 +464,12 @@ def render(evidence: Evidence, output: Path, png: Path | None) -> None:
             "savefig.facecolor": PAPER,
         }
     )
+    captions = figure_captions(evidence)
+    limits = plot_limits(evidence)
     figure = plt.figure(figsize=(17.0, 12.0))
     figure.text(0.055, 0.954, "WHERE HARDWARE DEPARTS FROM THE MODEL", fontsize=23, color=INK, weight="bold")
-    figure.text(0.055, 0.918, "Folded phase estimation on ibm_kingston", fontsize=16, color=INK)
-    figure.text(
-        0.055, 0.886, "MEASURED QPU DATA  /  16 PUBs × 8,192 SHOTS  /  40 s CHARGED", fontsize=10.5, color=MUTED
-    )
+    figure.text(0.055, 0.918, captions["subtitle"], fontsize=16, color=INK)
+    figure.text(0.055, 0.886, captions["acquisition"], fontsize=10.5, color=MUTED)
     grid = figure.add_gridspec(
         1, 3, left=0.155, right=0.967, bottom=0.290, top=0.766, width_ratios=(1.14, 1, 1), wspace=0.24
     )
@@ -182,14 +477,11 @@ def render(evidence: Evidence, output: Path, png: Path | None) -> None:
     _style_axis(probabilities, "01  TERMINAL-BIT SUCCESS", "Each row is one measured circuit and phase label.")
     _style_axis(contrasts, "02  CHANGE FROM ARCHIVED", "95% simultaneous intervals across 12 contrasts.")
     _style_axis(residuals, "03  HARDWARE − FINITE REPLAY", "Descriptive discrepancies; contrast CIs do not apply.")
-    probabilities.set_xlim(43, 104)
-    probabilities.set_xticks([50, 60, 70, 80, 90, 100])
+    probabilities.set_xlim(*limits[0])
     probabilities.set_xlabel("Success probability (%)", color=MUTED, fontsize=10.5, labelpad=12)
-    contrasts.set_xlim(-23, 18)
-    contrasts.set_xticks([-20, -10, 0, 10])
+    contrasts.set_xlim(*limits[1])
     contrasts.set_xlabel("Difference (percentage points)", color=MUTED, fontsize=10.5, labelpad=12)
-    residuals.set_xlim(-24, 20)
-    residuals.set_xticks([-20, -10, 0, 10, 20])
+    residuals.set_xlim(*limits[2])
     residuals.set_xlabel("Residual (percentage points)", color=MUTED, fontsize=10.5, labelpad=12)
     contrasts.axvline(0, color="#8798A2", linewidth=1.1)
     residuals.axvline(0, color="#8798A2", linewidth=1.1)
@@ -317,24 +609,21 @@ def render(evidence: Evidence, output: Path, png: Path | None) -> None:
     figure.text(
         0.055,
         0.154,
-        "Inference: Hoeffding + union bound; 12-family α = 0.05; half-width 4.0945 pp. "
-        "Independent stationary repetitions within each PUB are required.",
+        captions["inference"],
         fontsize=9.8,
         color=MUTED,
     )
     figure.text(
         0.055,
         0.130,
-        "Within-shot and cross-PUB dependence are unrestricted by the bound. PUBs remain unpaired. "
-        "Delay intervals include zero; equivalence is untested.",
+        captions["dependence"],
         fontsize=9.8,
         color=MUTED,
     )
     figure.text(
         0.055,
         0.099,
-        "Confounds: coherent routing / terminal writer differ (69 CZ, q94 versus 72 CZ, q93); "
-        "the two jobs ran in separate windows. Odd no-feedback ideal contrast is −50 pp.",
+        captions["metadata"],
         fontsize=9.8,
         color=MUTED,
     )
@@ -349,8 +638,7 @@ def render(evidence: Evidence, output: Path, png: Path | None) -> None:
     figure.text(
         0.055,
         0.038,
-        "Jobs: db67fqsvf2bc73d0pk4g (29 s) · db67frimb58s738bci4g (11 s)   |   "
-        "Source: independently checked raw counts, QPY mappings, and recorded model replay.",
+        captions["source"],
         fontsize=9.3,
         color=MUTED,
     )
