@@ -14,9 +14,11 @@ lint and type-check configuration only. Before any push, these exit 0:
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
+    scripts/render_ripple_visualization.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
+    scripts/render_ripple_visualization.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
@@ -26,9 +28,10 @@ lint and type-check configuration only. Before any push, these exit 0:
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
-    integral_homology.py rank_path_topology.py \
+    integral_homology.py rank_path_topology.py ripple_dynamics.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
-    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py
+    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
+    ../scripts/render_ripple_visualization.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -40,6 +43,10 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" integral_homology.py >/dev/null
   "$PYTHON" rank_path_topology.py >/dev/null
   "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
+  "$PYTHON" ripple_dynamics.py --check ../results/ripple/evidence.json
+  "$PYTHON" ../scripts/render_ripple_visualization.py \
+    --evidence ../results/ripple/evidence.json \
+    --out ../results/ripple/cayley-dickson-ripples.html --check
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check

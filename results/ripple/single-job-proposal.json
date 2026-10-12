@@ -1,0 +1,95 @@
+{
+  "status": "Research proposal; live-run integration, calibration, packing, and submission approval remain required",
+  "source": "gororoba_quantum/RIPPLE_DYNAMICS.md and results/ripple/evidence.json",
+  "execution": {
+    "jobs": 1,
+    "backends": 1,
+    "kind": "static",
+    "shots_per_setting": 1024,
+    "logical_tiles": {
+      "zero_divisor": 7,
+      "associator_core": 2
+    },
+    "logical_qubits": 43,
+    "physical_qubits": "Fresh calibration and topology-qualified joint placement must determine this value",
+    "atlas_settings": 96,
+    "atlas_construction": "12 edges per box kite times eight distinct phases; each setting samples one edge from each of seven box kites concurrently",
+    "atlas_edge_phase_observations": 688128,
+    "walk_settings": "Depths 0 through 4 on both cores, followed by exchanging class assignments between the two physical tiles; co-schedule those ten paired settings inside the 96-setting atlas",
+    "additional_controls": {
+      "isolated_walk_endpoints": 4,
+      "isolated_representative_dark_bright_edges": 14,
+      "all_zero_all_one_readout_preparations": 2
+    },
+    "total_candidate_settings": 116,
+    "total_candidate_pub_shots": 118784,
+    "control_boundary": "Isolated edge references cover one representative edge per box kite, not every edge. Readout preparations characterize endpoint bias, not a full correlated readout channel. Randomize and counterbalance settings with a recorded seed to limit order and workload confounding."
+  },
+  "time_model": {
+    "formula": "job overhead + sum_settings shots * (scheduled circuit duration + repetition delay)",
+    "illustrative_repetition_delay_seconds": 0.00025,
+    "illustrative_schedule_seconds": 2.5e-05,
+    "historical_overhead_seconds": 2.3,
+    "illustrative_total_seconds": 34.9656,
+    "qualification": "About 35 seconds under explicit illustrative assumptions; live compilation, scheduler duration, and service overhead remain unqualified. Extra width can change schedule and crosstalk. Historical timing comes from results/live/2026-10-11T152922.787095Z/ADJUDICATION.md."
+  },
+  "mathematical_program": {
+    "common_source": "Cayley-Dickson multiplication signs",
+    "walk": "U=M W, M=Rx(pi/2) tensor four, W is the four-bit core of the dimension-32 associator phase",
+    "pairs": [
+      [
+        25,
+        31
+      ],
+      [
+        9,
+        22
+      ]
+    ],
+    "factored_qubit": "Both full five-bit oracles have form diag(D,-D), equivalent to an independent Z on bit 4 multiplying D on bits 0 through 3; the protocol omits that independent factor",
+    "oracle_terms_per_core": {
+      "Z": 2,
+      "CZ": 3,
+      "CCZ": 2
+    },
+    "primary_observable": "Return probability at depth 4, compared between classes after exchanging physical tiles",
+    "ideal_primary_contrast": "9/16 - 1/4 = 5/16",
+    "secondary_observable": "Depth-2 collision probabilities 11/32 and 5/32; depth-3 return probabilities 1/4 and 0",
+    "collision_estimator": "sum_x count_x*(count_x-1)/(N*(N-1)); uncertainty must account for dependent collision pairs",
+    "nulls": "Depth 1 is uniform and identical for both classes. A fully dephased model stays uniform after each mixer; this is a modeled reference unless an actual dephasing protocol is included.",
+    "periods": {
+      "first_state_returns": [
+        24,
+        30
+      ],
+      "first_projective_operator_returns": [
+        24,
+        120
+      ]
+    },
+    "period_boundary": "Exact Gaussian-integer checks establish these finite ideal periods for the specified protocol. Early hardware prefixes cannot verify the long periods, literature novelty, or computational advantage.",
+    "box_kites": "Seven assessor octahedra with 42 unsigned vertices, 84 edges, and 336 ordered signed zero-product witnesses",
+    "fringe": "P(ancilla=0)=(1-r*cos(phi))/2 for an edge sign r; only the appropriate real-phase endpoint is a real zero product",
+    "frustration": "All 56 triangular faces have edge-sign product -1; separate edge experiments cannot be reinterpreted as one globally dark assignment"
+  },
+  "rendering": {
+    "associator_motion": "Fixed Hamming-distance geometry, node area from measured probabilities, theoretical exact frames kept explicitly labeled",
+    "box_kites": "Fixed assessor geometry, edge darkness from measured ancilla-0 probability with uncertainty, continuous curves labeled fits",
+    "timing_art": "Actual retained scheduler event times with physical-qubit labels and separate initialization, gates, readout, and finalization",
+    "residuals": "Hardware-minus-model differences shown separately; preserve imperfections instead of painting over them",
+    "phase_color_boundary": "Computational-basis counts alone do not measure complex amplitudes or phase",
+    "playback_boundary": "Frames are separately prepared circuit prefixes from one job; display interpolation is artistic playback, not continuous observation of one state"
+  },
+  "before_submission": [
+    "Integrate the experiment families and per-edge manifests into the live runner through a reviewed change",
+    "Validate the live execution environment against requirements.txt; retained local evidence uses the pinned NumPy 2.5.3 and Qiskit 2.5.2",
+    "Read fresh backend Target, properties, service usage, and support on one backend",
+    "Qualify all circuits, exact phase bindings, physical tile maps, fusion, raw-register demultiplexing, and instance identities",
+    "Qualify all 84 edge templates, exact phase bindings, fusion, and physical layouts against fresh hardware data; the retained local statevector checks cover every edge but do not establish hardware qualification",
+    "Preregister raw observables, intervals, multiplicity handling, layout comparisons, and model-conformance criteria",
+    "Run repository gates, submit-free dry run, and current-head review",
+    "Write a case bound to the dry-run digest, exact circuits, expected seconds, and one-job execution ceiling",
+    "Obtain explicit owner approval under AGENTS.md before submitting"
+  ],
+  "schema": "cayley-dickson-ripple-proposal-v1"
+}

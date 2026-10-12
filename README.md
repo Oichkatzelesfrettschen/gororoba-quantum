@@ -31,6 +31,11 @@ observables.
   Jordan mechanics, and global zero-divisor topology.
 - `gororoba_quantum/sedenion_bundle.py` -- real normalized zero-product pairs,
   seven quaternion charts, SU(2) transition maps and Cayley-frame automorphisms.
+- `gororoba_quantum/ripple_dynamics.py` -- exact finite associator recurrences,
+  all seven signed box-kite graphs, and 672 local phase-circuit checks.
+  [RIPPLE_DYNAMICS.md](gororoba_quantum/RIPPLE_DYNAMICS.md) derives the
+  protocol and a single-job hardware proposal; [results/ripple](results/ripple/README.md)
+  retains replayable evidence and a portable interactive visualization.
 - `gororoba_quantum/annihilator_strata.py` -- exact signed two-term kernel census
   and published maximal-annihilator lift witnesses through dimension 256.
   `literature/notes/cayley_dickson_annihilator_sources.md` records primary
