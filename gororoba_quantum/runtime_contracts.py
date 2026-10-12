@@ -16,6 +16,7 @@ from contextlib import redirect_stdout
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -1065,18 +1066,21 @@ def _zero_replica_distributions(entry: Entry) -> list[np.ndarray]:
 
 
 def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
-    """collect with the noise model replaced by all-zero replica distributions."""
+    """Collect fixture results with deterministic simulation and logical polling time."""
     original_noise_simulator = live_run_module.noise_simulator
     original_simulate_entries = live_run_module.simulate_entries
+    original_wait_for_usage = live_run_module.wait_for_usage
     live_run_module.noise_simulator = lambda name, target, props: object()
     live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
         entry.name: _zero_replica_distributions(entry) for entry in entries
     }
+    live_run_module.wait_for_usage = partial(original_wait_for_usage, sleep=lambda seconds: None)
     try:
         collect(service, run_dir)
     finally:
         live_run_module.noise_simulator = original_noise_simulator
         live_run_module.simulate_entries = original_simulate_entries
+        live_run_module.wait_for_usage = original_wait_for_usage
 
 
 def _verify_worker_quota() -> None:
