@@ -62,6 +62,38 @@ submission entries. Source comparisons appear beside the
 [default record](2026-10-12T014428.093689Z/source-closure.json) and the
 [folded record](2026-10-12T014450.672483Z/source-closure.json).
 
+## Native N21 model-resolution rejection
+
+The [N21 dry run](2026-10-12T020459.130482Z/record.json) retains
+`design_infeasible` after a fresh Kingston calibration and a bounded search of
+one routed candidate, one replica, and 2048/4096/8192/16384 hardware-shot tiers.
+The 256-shot native noise prediction gives a signed contrast of 0.05078125
+with a simultaneous simulation allowance of 0.48016139565996035. Every tier
+fails positive-effect and power admission. The rejection belongs to the
+supplied design and model-shot resolution; physical impossibility and the
+feasibility of other designs remain outside that result.
+
+The budget gate admits one 60-second job ceiling plus a 60-second quota
+reserve from 591 remaining seconds. The CLI invokes zero submissions and
+retains two dynamic PUBs. A separate 2048-shot local evaluation gives a
+contrast difference of 0.01953125; the optimizer retains its preregistered
+256-shot predictions and rejection. The case writer produces no submission
+case for the rejected design.
+
+Both native Aer batches report CPU density matrices, seven active qubits,
+double precision, two configured threads, and disabled shot branching. The
+256-shot batch takes 97.803 seconds and the 2048-shot batch takes 770.300
+seconds; the complete command takes 917.79 seconds. Those timings describe
+one invocation under concurrent host work. The
+[source audit](2026-10-12T020459.130482Z/source-closure.json) verifies all 21
+declared files against recorded commit `4d9b1ce` and preserves the broader
+`sources_modified=true` flag. The
+[native preparation record](2026-10-12T020459.130482Z/native-preparation.json)
+retains the replay arguments and environment, the mapped native-extension
+digest, package `python-qiskit-aer 0.17.2-3`, process observations, and artifact
+checks. The QPY archive and original record remain byte-identical to the
+completed dry run.
+
 ## Record schemas
 
 - **Schema 7 records.** The

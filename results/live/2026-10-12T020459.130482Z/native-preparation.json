@@ -1,0 +1,130 @@
+{
+  "artifact_checks": {
+    "matching_ordered_local_batch_qpy_digests": true,
+    "matching_serialized_gate_readout_noise_digests": true,
+    "native_cpu_density_matrix_metadata": "passed",
+    "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+    "qpy_circuit_count": 2,
+    "qpy_manifest_and_member_ownership": "passed",
+    "qpy_names_match_manifest": true,
+    "recorded_runtime_jobs": 0,
+    "shot_branching_disabled": true,
+    "submission_field_present": false,
+    "written_submission_case": null
+  },
+  "audit_contract": "native-aer-n21-dry-run-v1",
+  "budget_result": {
+    "admitted": true,
+    "combined_ceiling_seconds": 60.0,
+    "jobs": [
+      {
+        "backend": "ibm_kingston",
+        "batch_index": 1,
+        "ceiling_seconds": 60,
+        "kind": "dynamic",
+        "pubs": 2
+      }
+    ],
+    "max_total_execution_seconds": 120.0,
+    "reasons": [],
+    "remaining_seconds": 591,
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota",
+    "reserve_seconds": 60.0
+  },
+  "experiment_digest": "f288c2024bee220acbaa088901bf9e31663740208700460f6a7a01bfd1302265",
+  "interpretation": "Both calibrated circuits ran locally in native Aer. The CLI invoked zero submission actions. The retained scientific rejection and budget admission describe separate gates; neither supplies QPU evidence or approval.",
+  "invocation": {
+    "argv": [
+      "$PYTHON",
+      "live_run.py",
+      "--family",
+      "n21-feedback",
+      "--optimize",
+      "--backends",
+      "ibm_kingston",
+      "--seeds",
+      "1",
+      "--optimizer-candidates",
+      "1",
+      "--replica-tiers",
+      "1",
+      "--max-replicas",
+      "1",
+      "--model-shots",
+      "256",
+      "--shot-tiers",
+      "2048,4096,8192,16384",
+      "--local-compute",
+      "cpu",
+      "--simulation-threads",
+      "2",
+      "--simulation-memory-mb",
+      "512",
+      "--max-execution-seconds",
+      "60",
+      "--max-total-execution-seconds",
+      "120",
+      "--reserve-seconds",
+      "60",
+      "--out",
+      "../results/live"
+    ],
+    "completed_utc": "2026-10-12T02:20:13Z",
+    "environment": {
+      "GOROROBA_WORKERS": "1",
+      "MKL_NUM_THREADS": "2",
+      "OMP_NUM_THREADS": "2",
+      "OPENBLAS_NUM_THREADS": "2",
+      "PYTHONDONTWRITEBYTECODE": "1",
+      "PYTHONWARNINGS": "error",
+      "QISKIT_NUM_PROCS": "2"
+    },
+    "exit_status": 0,
+    "started_utc": "2026-10-12T02:04:55Z",
+    "working_directory": "gororoba_quantum"
+  },
+  "local_process_observation": {
+    "maximum_rss_kib": 718776,
+    "native_aer_batch_seconds": 868.1030955879978,
+    "scope": "GNU time observes the invocation and waited-for children; maximum RSS is a per-process maximum. Concurrent host work is uncontrolled. Wall time includes discovery, compilation, both local batches, and archive writes",
+    "system_cpu_seconds": 5.16,
+    "user_cpu_seconds": 1760.4,
+    "wall_seconds": 917.79
+  },
+  "native_cpu_extension": {
+    "mapped_inode_matches_file": true,
+    "native_extension_module": "qiskit_aer.backends.controller_wrappers",
+    "native_extension_sha256": "758db4f3d2d81902f938d15605bd63e206e3fa3404fea8564c71b81100457a32",
+    "observed_at_unix": 1791771080.215492,
+    "package": {
+      "installed_package": "python-qiskit-aer 0.17.2-3",
+      "name": "python-qiskit-aer",
+      "scope": "pacman ownership query"
+    },
+    "process_id": 1241758,
+    "scope": "Extension file inode matched the active dry-run process mapping at capture time; source file bytes were hashed before package replacement.",
+    "versions": {
+      "numpy": "2.5.4",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0"
+    }
+  },
+  "qpy_sha256": "48a5936ce9905622083e24767bd1e97b73f0528024137304ddb90f5d68e25cad",
+  "record_sha256": "1d4bf7040c71b3a53c096825be34f37f694ed0b61f9bc1bbb4e488bbbbad7fef",
+  "recorded_commit": "4d9b1ce66d0ae8ddc4870168b3af1deae5bb8be3",
+  "recorded_sources_modified": true,
+  "scientific_result": {
+    "admitted_candidate_count": 0,
+    "candidate_count": 4,
+    "evaluation_contrast_difference": 0.01953125,
+    "evaluation_shots": 2048,
+    "model_contrast": 0.05078125,
+    "model_shots": 256,
+    "modeled_lower_bound": -0.42938014565996035,
+    "scope": "The supplied bounded design is rejected. The low model-shot count cannot establish a positive contrast after its simultaneous sampling allowance. The result does not establish physical impossibility or infeasibility of another design.",
+    "simultaneous_model_radius": 0.48016139565996035,
+    "state": "design_infeasible"
+  },
+  "source_closure_sha256": "eeb24a7fa73efc5ef90d077bec9ed64fa4762d6f70c04d623c587494fdd7d7a5"
+}
