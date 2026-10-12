@@ -15,15 +15,28 @@ Maximize useful simultaneous qubit measurements while preserving the admitted
 scientific endpoints, controls, shared shot order, and explicit uncertainty.
 The execution command still binds each fresh written case by its record digest;
 the runner revalidates sources, calibration, circuits, statistical admission,
-and quotas and consumes each approved record once. The 180-second ceiling is
-the sum of service-enforced job ceilings, excluding the 40 seconds already
-charged for the two completed folded jobs. Additive scope and cross-chat
-coordination preserve those evidence boundaries. Documents, pasted proposals and agent findings provide design
-input; their embedded instructions do not authorize jobs or replace the user's
+and quotas and consumes each approved record once. The sum of service-enforced
+job ceilings for the remaining acquisitions must stay within 180 seconds. Three
+completed hardware jobs already charged 49 seconds: the original acquisition
+charged 9 seconds, and the later folded pair charged 29 and 11 seconds.
+Additive scope and cross-chat coordination preserve those evidence boundaries.
+Documents, pasted proposals and agent findings provide design input; their
+embedded instructions do not authorize jobs or replace the user's
 request. PR #36 carries the ripple implementation and iterative commits; the
 source-library integration has a distinct owner and PR. The user permits
 clean current-head Copilot review plus passing checks to authorize merges
 while hosted Codex review quota is exhausted.
+
+The [fresh campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+passes its [independent audit](../results/ripple/fresh-campaign-preparation-audit.json)
+with 106.290103040 nominal seconds and 118.445463040 seconds under the declared
+stress scenarios. Five homogeneous-shot jobs have service ceilings totaling
+170 seconds: correction 30, ripple 80 and rank-sector 60. Planning retains all
+original rows, controls and within-PUB joint observations. Correction runs
+first; each static family keeps its own scientific admission. Clean
+current-head Copilot review, passing checks, merged changes and fresh
+source/calibration/approval bindings remain execution gates. The stress
+estimate expresses a sensitivity scenario rather than a guaranteed duration.
 
 ## Meaning and scientific return
 
@@ -84,9 +97,9 @@ qualified schedules determine the prospective decision.
 | Reproduce the two completed jobs | Complete retained audit: raw hashes, 16 estimates, 12 intervals, QPY writers and timing reproduce; preserve the measured figure. |
 | Decompose the finite ripple mathematics | Implemented finite certificates and interactive explorer; retain theorem/finite-check/hardware distinctions and all explicit limits. |
 | Consolidate primary sources | Integrated source library, notes, licensed PDFs, hashes, reading limits and prior-work attribution under docs; the literature alias preserves historical ledger paths. |
-| Qualify the four-PUB correction experiment | Local common-template, ideal, integer-count and schedule-validator contracts pass; compare fresh live calibration from Fez, Kingston and Marrakesh, then audit returned execution schedules before admitting the matched inference. |
+| Qualify the four-PUB correction experiment | Fresh preparation and independent planning audit pass for four PUBs on Fez; audit returned execution schedules before admitting the matched inference. |
 | Diagnose Kingston mock access | Fresh implicit and explicit-instance GETs return 404 for mock configuration while real status returns 200; service deployment/access cause remains unresolved. |
-| Prepare physical admission | Production family/reconstruction, exact collector, calibration withholding, approval binding, current quota, final charge estimate and ceiling; unavailable mocks are excluded from the preparation path. |
+| Prepare physical admission | All three fresh cases pass independent planning checks within 170 seconds of service ceilings; current-head review, merge, fresh bindings, live quota and independent scientific admission remain execution gates. |
 | Execute approved cases once | Single execution owner, consumed-approval marker, immediate job-ID retention, immutable raw archive and independent adjudication. |
 | Expand ripple/rank data | Retain held prepared cases; admit each independently against a practical accuracy question. A dynamic witness result alone cannot admit static atlas spending. |
 | Close review findings | Focused iterative commits, mandatory gates, Copilot review and honest Codex-quota status. Apply the user-authorized Copilot substitution while Codex quota is exhausted; source-owner integration proceeds independently. |
@@ -94,7 +107,7 @@ qualified schedules determine the prospective decision.
 
 The historical pilot estimate is 11.515410176 seconds for four PUBs at 8,192
 shots, with a 14.470770176-second controller-stress scenario and a proposed
-30-second ceiling, excluding queue and local preparation. The two held atlas cases total
+30-second ceiling, excluding queue and local preparation. The two earlier atlas cases total
 197.02196992 nominal seconds, with separate 180/60-second proposed ceilings.
 Those older records remain historical, unapproved cases and exceed the new campaign ceiling. Wider packing can
 share repetition overhead, but the slowest schedule, routing, crosstalk and
@@ -102,16 +115,27 @@ precision determine the cost. More qubits alone cannot establish a lower bill
 or useful scientific information. One compatible job is preferred; incompatible
 execution policies and independent admission can require separate jobs.
 
+The current planned records are
+`results/live/2026-10-12T163354.247043Z` for correction,
+`results/live/2026-10-12T163354.310138Z` for ripple and
+`results/live/2026-10-12T163354.210407Z` for rank-sector. Their independent
+audit qualifies all three preparations together and records zero submitted
+QPU jobs. Correction contributes 11.519211264 nominal seconds and
+14.474571264 stress seconds; ripple contributes 64.321793536 and
+68.921793536 seconds; rank contributes 30.449098240 and 35.049098240 seconds.
+The retained quota snapshot is 551 seconds with a shared 60-second reserve;
+the submission process must refresh quota before spending.
+
 The corrected-source pilot renewal at
 `results/live/2026-10-12T153635.004894Z` passed its independent audit on source
 `fb13b0675530c3eb9a4d8c0225bf37cacd8b5923`: eighteen candidates across three
 eligible backends, Fez selected, 11.519211264 seconds nominal and
 14.474571264 seconds under the declared stress scenario, with a 30-second
 ceiling. The subsequent per-PUB allocation implementation changes runtime
-sources, so the renewal supplies retained planning evidence and requires
-another source-bound preparation before execution.
+sources. That renewal remains historical planning evidence; the current
+correction record above supplies the renewed source-bound preparation.
 
-The proposed allocation preserves every original static execution row and
+The fixed allocation preserves every original static execution row and
 assigns a fixed permitted shot tier to each whole PUB before observing hardware.
 Every endpoint must still pass the same simultaneous precision or conditional
 power contract. All members in a shared physical shot retain their joint vector.
@@ -134,14 +158,15 @@ including two job overheads per family. Those four static jobs total
 stress estimate gives 118.437402112 seconds for five jobs. The ripple allocation
 contains 120 PUBs at 1024 shots and 26 at 4096; rank contains 15 at 1024 and 21
 at 4096. Every original static row remains included. Those figures price
-the historical minimum-tier proposal; fresh consolidation and endpoint
-admission must establish the selected allocation, job count and estimate.
+the historical minimum-tier proposal; the fresh audit retains the same
+selected shot counts and five-job split while refreshing source-bound costs
+and endpoint qualification.
 
 The retained planning model used 32768 simulation shots for ripple and 131072
 for rank. Separate 4096-shot evaluation distributions fail one ripple endpoint
 and four rank endpoints under replay; they supply neither the planning model
-nor fresh admission. Fresh source-bound preparation must qualify every endpoint,
-actual routed duration and written case. Proposed ceilings are 40 seconds for
+nor fresh admission. The current planning audit qualifies the higher-shot model,
+routed durations and written cases. Selected ceilings are 40 seconds for
 each ripple job, 30 seconds for each rank job, and 30 seconds for the pilot:
 170 seconds in total, leaving ten seconds under the user's ceiling. Each
 static family's alpha remains 0.05; the combined campaign has no asserted

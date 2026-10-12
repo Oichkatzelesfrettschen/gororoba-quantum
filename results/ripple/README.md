@@ -1,21 +1,36 @@
 # Finite Cayley-Dickson ripple evidence
 
-The [historical execution preparation summary](PREPARATION.md) binds the
-ripple and rank-sector records, retained written cases, 197.022-second nominal
-estimate and proposed 240-second combined ceiling. Both families have current
-state `historical_renewal_required`; current admission and physical execution
-authorization are false. Source and scoring changes require fresh preparation
-and new written cases that satisfy the user's conditional execution authority.
+The [fresh campaign preparation](CAMPAIGN_PREPARATION.md) qualifies a
+106.290103040-second nominal QPU estimate and a 118.445463040-second declared
+stress scenario. Five jobs have service ceilings totaling 170 seconds:
+30 for correction, 80 for ripple and 60 for rank-sector. The ceilings fit the
+user's 180-second total limit with ten seconds unallocated. Queue and local
+preparation time are excluded; the stress scenario is a sensitivity assumption.
+The [independent audit](fresh-campaign-preparation-audit.json) passes source,
+model-denominator, circuit, endpoint, allocation, case and budget checks.
 
-The [integrated campaign directive](../../gororoba_quantum/RIPPLE_CAMPAIGN.md)
-records the user's 180-second total ceiling and Copilot-plus-checks merge
-authorization while Codex review quota is exhausted. The
+Correction runs first. Planning qualification retains every original row,
+control and within-PUB shot vector; each Runtime job uses one homogeneous shot
+count. Execution still requires clean current-head Copilot review, passing
+checks, merged changes, fresh approval bindings and independent scientific
+admission for each family. The
+[integrated campaign directive](../../gororoba_quantum/RIPPLE_CAMPAIGN.md)
+records the user's conditional execution authority and the Copilot-plus-checks
+substitution while Codex review quota is exhausted. The three completed
+hardware jobs already charged 49 seconds: the original acquisition charged
+9 seconds, and the later folded pair charged 29 and 11 seconds. Those measured
+charges precede the remaining campaign budget.
+
+The [historical execution preparation summary](PREPARATION.md) retains the
+earlier ripple and rank-sector cases, 197.022-second nominal estimate and
+proposed 240-second combined ceiling. Those records remain
+`historical_renewal_required`; the fresh campaign cases carry the renewed
+planning qualification. The
 [fixed shot allocation](../../gororoba_quantum/PACKED_ALGEBRA.md#fixed-shot-allocation)
 preserves all static rows and compares complete shot-tier assignments with
 eligible uniform baselines. Historical minimum-tier planning arithmetic gives
-a provisional 118.437402112-second stress estimate
-and proposed ceilings totaling 170 seconds for five jobs. Fresh source-bound
-preparation must establish current admission; the separate 4096-shot evaluation
+a 118.437402112-second stress estimate; the fresh audit above supplies the
+current estimate. The separate 4096-shot evaluation
 distributions remain distinct from the higher-shot planning model summaries.
 
 [Open the standalone explorer](cayley-dickson-ripples.html) in a browser after
@@ -32,7 +47,7 @@ and signed box-kite fringes, with the proposed hardware depths labeled.
   preserves statistical admission and calibration at the recorded revision.
   Retained native attempts leave scheduler timing unqualified. The historical
   157.0873-second nominal estimate superseded the 35-second illustration;
-  renewed preparation must establish the current estimate.
+  the fresh campaign audit supplies the renewed estimate.
 - `cayley-dickson-ripples.html` is generated from the evidence and the
   repository HTML template. All displayed distributions are ideal local
   predictions. A measured rendering requires a separately approved QPU run.

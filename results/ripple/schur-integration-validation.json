@@ -1,0 +1,18 @@
+{
+  "exit_status": 0,
+  "gate_log_sha256": "d5969051acb790f6627ae7721fce08183bc3a4486b3da979f4742dd06fdd1654",
+  "gate_script_sha256": "21b78666e06eb25895fc37406025f111dd0c59707143d56e77cefd43a3e74dfc",
+  "integration_commit": "7a4c6b3",
+  "merged_main_commit": "95fdc7f2dc25316eb2ba7952a1a5f65c640ec6b2",
+  "physical_qpu_jobs": 0,
+  "schema": "schur-integration-validation-v1",
+  "scope": "Fresh Schur production normal/optimized checks and complete source-library gate block, with warnings as errors. Mathematics-only integration preserves acquisition source files.",
+  "source_sha256": {
+    "AGENTS.md": "0f502215dc71d924ca9019854f42f3ff7dfb0d737c97370ef8b6546b1d093ad4",
+    "docs/evidence/schur_acceleration/SHA256SUMS": "2686758220feb64bf7256505343a8e6a9c59d4e6a9ca2b3c544dd9e1f156198b",
+    "docs/evidence/schur_acceleration/replay.py": "23a6189b0521a9d7491483c3b5e36857aca7770c0554af48eb3edbe1f1741ebe",
+    "docs/evidence/schur_acceleration/result.json": "a0713df2b31c65f286142a6a1fdc19a1470be47a2d6f88ae784e979af5aab8f0",
+    "docs/notes/schur_acceleration_certificates.md": "58b9b7e5504cde8f1c54e941b04f2a33a6772e75cb3993631d661348e0c8a975",
+    "gororoba_quantum/schur_acceleration.py": "8788a72319a54af2b8f66aa8de95feecdde5d67c712e11b70334c40cc96c8c9d"
+  }
+}
