@@ -78,17 +78,17 @@
       "transformation": "Extract qualification observations and append explicit provenance limits."
     },
     {
-      "bytes": 10232,
+      "bytes": 12348,
       "path": "README.md",
       "role": "evidence-explanation",
-      "sha256": "0580eda49af0b119c6e153c672fdd60b06c4c4c23552004cbf4fc5b6615acb91",
+      "sha256": "5e82dc738147ec99373f5392d1d6e264d280c31ac7845f1c1b76992535f55f0e",
       "transformation": "New retention documentation or verifier."
     },
     {
-      "bytes": 7905,
+      "bytes": 11212,
       "path": "verify_evidence.py",
       "role": "integrity-and-result-verifier",
-      "sha256": "a16307090d29b0aed0e86acd4d788731b618b9f39a1efe8fd5d46f6db45be767",
+      "sha256": "a66b5c10c9e59b65a7aca5003c157f875742f0039469c776e33d692c290f82f4",
       "transformation": "New retention documentation or verifier."
     },
     {
@@ -132,14 +132,14 @@
       "transformation": "lossless gzip, compression level 9, timestamp 0"
     },
     {
-      "bytes": 8878,
+      "bytes": 22658,
       "path": "cpu_branching_reuse_analysis.py",
       "role": "replay-or-analysis-generator",
-      "sha256": "8f17a17b125beab712a169785da6ec1ba0e2fff8ea98edac5c786607f572e323",
+      "sha256": "f30e07fbb30f0460e880328a0dba8b4cef2856ca513dae6382010d9400a9352c",
       "source_bytes": 8878,
       "source_name": "cpu_branching_reuse_analysis.py",
       "source_sha256": "8f17a17b125beab712a169785da6ec1ba0e2fff8ea98edac5c786607f572e323",
-      "transformation": "byte-identical copy; portable replay runner adds post-capture version/fixture guards as documented"
+      "transformation": "Add post-capture QPY-bound execution-mode classification and regression checks, including density-matrix reset and measurement-deferral eligibility. Preserve the original analysis archive and scientific comparisons."
     },
     {
       "bytes": 6305,
@@ -160,6 +160,20 @@
       "source_name": "cpu_branching_reuse_probe_executed.py",
       "source_sha256": "bb6557e1c7f927b607bffc7a89124dfa354b21fb6817707166ac9e7ddc9ccd0d",
       "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 6374,
+      "path": "check_verify_evidence.py",
+      "role": "optimized-python-integrity-regression-checker",
+      "sha256": "1ffa9aa814b31f3bf395f0d6cd69b50ac3ddecd3d4c018719bd4a05d4dcf3417",
+      "transformation": "New temporary-fixture regressions for valid, corrupted, and missing-contract evidence across Python optimization modes."
+    },
+    {
+      "bytes": 5114,
+      "path": "cpu_branching_execution_mode_audit.json",
+      "role": "post-capture-execution-mode-audit",
+      "sha256": "a47a8b547cec7599b9f7bd7e44fd539a20313699de4e23b7b2ce005d6968c87d",
+      "transformation": "Extract circuit-bound execution-mode checks from the corrected analyzer; compare scientific fields and original archive digests without replacing historical evidence."
     }
   ],
   "purpose": "Retain failed CPU branching qualification and bounded local GPU capability observations.",

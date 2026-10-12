@@ -15,13 +15,19 @@ lint and type-check configuration only. Before any push, these exit 0:
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
-    results/live/verify_source_closure.py
+    results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
+    results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
-    results/live/verify_source_closure.py
+    results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
+    results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/verify_evidence.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/check_verify_evidence.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/cpu_branching_reuse_analysis.py --check
   (cd results/local_compute && sha256sum -c SHA256SUMS)
   (cd results/local_compute/aer_delay_sentinels && sha256sum -c SHA256SUMS)
   (cd results/local_compute/n21_shared_predicate && sha256sum -c SHA256SUMS)
@@ -39,7 +45,8 @@ lint and type-check configuration only. Before any push, these exit 0:
     integral_homology.py rank_path_topology.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
-    ../results/live/verify_source_closure.py
+    ../results/live/verify_source_closure.py ../results/local_compute/verify_evidence.py \
+    ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null

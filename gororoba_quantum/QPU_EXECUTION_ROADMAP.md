@@ -33,6 +33,17 @@ have a fresh feasible case. The complete campaign has no admitted total yet.
 The static program remains independent of the N21 synthesis problem; a changed
 scientific priority can move its separately renewed case ahead of N21.
 
+All seconds below are retained model estimates. The ledger prices explicit
+circuit resets but leaves `reset_seconds=0` for additional initialization.
+Installed client-side Runtime 0.50 defaults `init_qubits=True`; IBM's
+[usage example][usage] separately adds Target reset duration for implicit
+initialization. The nominal and stress scenarios therefore leave that
+component unseparated. Their overhead term derives from a historical residual
+and can already absorb part of unmodeled work, so blindly adding another
+reset estimate can double-count it. Renewed server timing and usage must
+resolve initialization, circuit time, and overhead before the next hardware
+case. Service ceilings and quota reservations remain separate protections.
+
 The [folded case](../results/live/2026-10-12T024756.245948Z/UNAPPROVED_CASE.md)
 uses 8192 shots per PUB, or 131072 submitted PUB shots:
 
@@ -72,14 +83,15 @@ The selected folded ledger supplies these nominal components:
 |---|---:|---:|
 | 250-microsecond repetition delay | 32.768000000 | 82.72% |
 | Two modeled job overheads | 4.600000000 | 11.61% |
-| Target circuit duration, including reset instructions | 1.588330496 | 4.01% |
+| Target circuit duration, including explicit reset instructions | 1.588330496 | 4.01% |
 | Explicit classical-latency allowance | 0.655360000 | 1.65% |
 
 The [IBM usage model][usage] includes circuit duration, repetition delay, and
 job overhead. Eliminating every Target-circuit and modeled classical-latency term would
 save only 5.66% here. Gate improvement still matters for fidelity, but shot design
 and initialization delay dominate this experiment's throughput opportunity.
-These percentages belong to the retained folded workload, not every QPU job.
+These percentages describe the retained modeled components. Implicit
+initialization and scheduler residuals can change the physical shares.
 
 ## Precision choices use the existing optimizer
 
@@ -151,8 +163,9 @@ A separate preparation mode can use the exact admitted QPY circuits to obtain
 server scheduling information before a hardware case. Its records must label
 the returned measurements as randomized mock data and exclude them from
 fidelity prediction, scientific adjudication, and measured-hardware evidence.
-Server-side schedule estimates can constrain modeled latency; executed
-scheduler tables and final billing remain separate evidence. The preparation
+Server-side schedule estimates can constrain modeled latency and separate
+implicit initialization from explicit circuit resets and residual overhead;
+executed scheduler tables and final billing remain separate evidence. The preparation
 mode also needs tests proving that its submitted request binds `dry_run=True`.
 The present local dry-run implementation does not call this server feature.
 
@@ -271,7 +284,8 @@ and reset-delay planning mechanisms.
 1. Resolve evidence-integrity review findings, run all required gates, complete
    review, merge, synchronize the canonical checkout, and prune merged residue.
 2. Qualify access to the native server-side dry-run path and distinguish its
-   mock outcomes from CPU simulation and hardware results. Produce fresh folded
+   mock outcomes from CPU simulation and hardware results. Resolve implicit
+   initialization and overhead accounting before pricing fresh folded
    cases for explicitly chosen precision targets using the installed CPU Aer.
    Compare modeled charge, stress charge, and ceilings; obtain owner approval
    for one concrete plan.

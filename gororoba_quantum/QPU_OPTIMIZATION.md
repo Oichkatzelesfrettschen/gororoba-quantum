@@ -169,7 +169,7 @@ estimated charge = job overhead
                                     + declared classical latency)
 ```
 
-The Target circuit duration includes its reset instructions. Dynamic
+The Target circuit duration includes its explicit reset instructions. Dynamic
 Target duration omits classical feed-forward latency, so the planner adds
 `--classical-latency-us` times the deepest sequential feed-forward stage
 count. The default 20 microseconds per stage is an explicit unmeasured
@@ -179,6 +179,18 @@ from the retained dynamic job's non-circuit charge; a different job can
 have different overhead. Sensitivity runs must name changes to either
 assumption. Such runs qualify the declared cost model rather than the
 physical charge.
+
+The family planner leaves the additional `reset_seconds` term at zero.
+Installed client-side Runtime 0.50 enables `init_qubits` by default, so the
+service can insert implicit initialization before the supplied circuit.
+IBM's [local usage-estimation example](https://quantum.cloud.ibm.com/docs/en/guides/estimate-job-run-time)
+adds Target reset duration for that initialization separately. The retained
+nominal and stress ledgers leave the implicit term unseparated; neither
+scenario supplies a bound for it. The historical overhead residual can also
+absorb unmodeled work, so an extra reset proxy requires a reconciled accounting
+boundary. A renewed hardware case needs server timing and usage estimates
+that distinguish implicit initialization, explicit resets, and overhead.
+The service ceilings and invocation reservations enforce their separate limits.
 
 The planner reads `backend.configuration().default_rep_delay` in seconds,
 validates the backend's repetition-delay support and range, and binds the
