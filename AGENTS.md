@@ -69,7 +69,7 @@ lint and type-check configuration only. Before any push, these exit 0:
     rank_polynomials.py rank_charts.py rank_attachments.py \
     integral_homology.py rank_path_topology.py four_support_rank.py four_support_geometry.py \
     four_support_doubling.py four_support_homology.py skew_schur_charts.py principal_skew_atlas.py \
-    schur_acceleration.py \
+    schur_acceleration.py nullity_twelve_locus.py nullity_twelve_curves.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
@@ -89,6 +89,10 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
   "$PYTHON" -W error schur_acceleration.py >/dev/null
   "$PYTHON" -O -W error schur_acceleration.py >/dev/null
+  "$PYTHON" -W error nullity_twelve_locus.py >/dev/null
+  "$PYTHON" -O -W error nullity_twelve_locus.py >/dev/null
+  "$PYTHON" -W error nullity_twelve_curves.py >/dev/null
+  "$PYTHON" -O -W error nullity_twelve_curves.py >/dev/null
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
@@ -208,6 +212,9 @@ also pass these local gates before push:
   GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py --check
   GOROROBA_WORKERS=2 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
   (cd docs/evidence/vacuum_models && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/nullity_twelve_locus/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/nullity_twelve_locus/replay.py --check
+  (cd docs/evidence/nullity_twelve_locus && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
   shellcheck docs/evidence/folding_proofs/replay_rocq.sh
