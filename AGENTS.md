@@ -20,6 +20,11 @@ lint and type-check configuration only. Before any push, these exit 0:
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
     results/live/verify_source_closure.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/verify_evidence.py
+  (cd results/local_compute && sha256sum -c SHA256SUMS)
+  (cd results/local_compute/aer_delay_sentinels && sha256sum -c SHA256SUMS)
+  (cd results/local_compute/n21_shared_predicate && sha256sum -c SHA256SUMS)
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
