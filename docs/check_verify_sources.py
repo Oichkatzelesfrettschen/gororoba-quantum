@@ -18,6 +18,7 @@ from unittest.mock import patch
 from verify_sources import (
     LICENSE_URLS,
     PUBLIC_LICENSES,
+    verify_capture_inventory,
     verify_external_sources,
     verify_source_archives,
     verify_source_rights,
@@ -182,6 +183,20 @@ class SourceRightsChecks(unittest.TestCase):
         raw_response = self.arxiv_html.encode("utf-8")
         self.arxiv_path.write_bytes(raw_response)
         self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
+    def use_external_arxiv(self, identifier: str = "LicenseRef-arXiv-nonexclusive-distrib-1.0") -> None:
+        previous_url = self.entry["rights"]["observed_license_url"]
+        observed_url = LICENSE_URLS[identifier].replace("https://", "http://", 1)
+        self.entry["rights"].update(
+            decision="external_only",
+            license_identifier=identifier,
+            license_url=LICENSE_URLS[identifier],
+            observed_license_url=observed_url,
+        )
+        self.arxiv_html = self.arxiv_html.replace(previous_url, observed_url).replace(
+            'class="has_license"', 'title="Rights to this article"'
+        )
+        self.write_arxiv_capture()
 
     def verify(self, *, published: bool = True) -> None:
         verify_source_rights(self.entry, self.registry, root=self.root, published=published, payload=self.payload)
@@ -446,10 +461,77 @@ class SourceRightsChecks(unittest.TestCase):
     def test_external_arxiv_grants_pass(self) -> None:
         for identifier in set(LICENSE_URLS) - PUBLIC_LICENSES:
             with self.subTest(identifier=identifier):
-                self.entry["rights"].update(
-                    decision="external_only", license_identifier=identifier, license_url=LICENSE_URLS[identifier]
-                )
+                self.use_external_arxiv(identifier)
                 self.verify(published=False)
+
+    def test_external_arxiv_capture_without_observed_spelling_passes(self) -> None:
+        self.use_external_arxiv()
+        del self.entry["rights"]["observed_license_url"]
+        self.verify(published=False)
+
+    def test_external_arxiv_capture_observed_spelling_is_checked_when_recorded(self) -> None:
+        self.use_external_arxiv()
+        self.entry["rights"]["observed_license_url"] = LICENSE_URLS["LicenseRef-arXiv-nonexclusive-distrib-1.0"]
+        self.reject("captured arXiv observed license identity", published=False)
+
+    def test_external_arxiv_capture_tampering_is_rejected(self) -> None:
+        self.use_external_arxiv()
+        self.arxiv_path.write_bytes(self.arxiv_path.read_bytes() + b" ")
+        self.reject("captured arXiv evidence SHA-256", published=False)
+
+    def test_external_arxiv_capture_missing_file_is_rejected(self) -> None:
+        self.use_external_arxiv()
+        self.arxiv_path.unlink()
+        self.reject("captured arXiv evidence file", published=False)
+
+    def test_external_arxiv_capture_metadata_is_required(self) -> None:
+        self.use_external_arxiv()
+        original = copy.deepcopy(self.entry["rights"])
+        for field, value, message in (
+            ("evidence_path", None, "captured arXiv evidence path"),
+            ("evidence_path", "/tmp/arxiv.html", "captured arXiv evidence path"),
+            ("evidence_path", "docs/evidence/source_rights/../arxiv.html", "captured arXiv evidence path"),
+            ("evidence_retrieved_at_utc", "2026-10-12T16:00:00", "captured arXiv retrieval timestamp"),
+            ("evidence_retrieved_at_utc", None, "captured arXiv retrieval timestamp"),
+        ):
+            with self.subTest(field=field, value=value):
+                self.entry["rights"] = copy.deepcopy(original)
+                self.entry["rights"][field] = value
+                self.reject(message, published=False)
+
+    def test_external_arxiv_capture_file_symlink_is_rejected(self) -> None:
+        self.use_external_arxiv()
+        target = self.root / "other.html"
+        self.arxiv_path.rename(target)
+        self.arxiv_path.symlink_to(target)
+        self.reject("captured arXiv evidence file", published=False)
+
+    def test_external_arxiv_capture_directory_symlink_is_rejected(self) -> None:
+        self.use_external_arxiv()
+        directory = self.arxiv_path.parent
+        target = self.root / "other-captures"
+        directory.rename(target)
+        directory.symlink_to(target, target_is_directory=True)
+        self.reject("captured arXiv evidence file", published=False)
+
+    def test_external_arxiv_semantic_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_external_arxiv()
+        original = self.arxiv_html
+        for before, after, message in (
+            ('content="1904.00633"', 'content="1908.09855"', "captured arXiv citation identity"),
+            ("/pdf/1904.00633v2", "/pdf/1904.00633v1", "captured arXiv download version"),
+            (
+                "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+                "http://arxiv.org/licenses/assumed-1991-2003/",
+                "captured arXiv license identity",
+            ),
+            ('title="Rights to this article"', 'title="Site rights"', "captured arXiv license anchor"),
+            ('class="abs-license"', 'class="footer-license"', "captured arXiv license count"),
+        ):
+            with self.subTest(before=before):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject(message, published=False)
 
     def test_external_publication_decision_is_rejected(self) -> None:
         self.reject("external-only rights decision", published=False)
@@ -470,6 +552,8 @@ class SourceRightsChecks(unittest.TestCase):
             license_identifier="LicenseRef-arXiv-assumed-1991-2003",
             license_url=LICENSE_URLS["LicenseRef-arXiv-assumed-1991-2003"],
         )
+        del self.entry["rights"]["evidence_path"]
+        del self.entry["rights"]["evidence_retrieved_at_utc"]
         self.verify(published=False)
 
     def test_matched_zenodo_deposit_passes(self) -> None:
@@ -754,6 +838,218 @@ class SourceRightsChecks(unittest.TestCase):
                 self.arxiv_html = original.split(suffix, 1)[0] + suffix
                 self.write_arxiv_capture()
                 self.reject("captured arXiv unclosed evidence")
+
+
+class ExternalArticleCaptureChecks(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="external-article-capture-check-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.capture = self.root / "docs/evidence/source_rights/greenberg-1966-article.html"
+        self.capture.parent.mkdir(parents=True)
+        self.entry: dict[str, Any] = {
+            "title": "Rational points in henselian discrete valuation rings",
+            "source_url": "https://pmihes.centre-mersenne.org/item/10.1007/BF02684802.pdf",
+            "sha256": "3" * 64,
+            "rights": rights_fixture("3" * 64, external=True),
+        }
+        self.entry["rights"].update(
+            evidence_url="https://pmihes.centre-mersenne.org/articles/10.1007/BF02684802/",
+            evidence_path=self.capture.relative_to(self.root).as_posix(),
+            evidence_retrieved_at_utc="2026-10-12T16:21:46+00:00",
+        )
+        self.html = (
+            '<html><head><meta name="citation_doi" content="10.1007/BF02684802">'
+            '<meta name="citation_title" content="' + self.entry["title"] + '">'
+            '<meta name="citation_pdf_url" content="' + self.entry["source_url"] + '"></head>'
+            "<body><footer>Metadata CC0; article rights require manual inspection.</footer></body></html>"
+        )
+        self.write_capture()
+
+    def write_capture(self) -> None:
+        payload = self.html.encode("utf-8")
+        self.capture.write_bytes(payload)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+
+    def verify(self) -> None:
+        verify_source_rights(self.entry, {}, root=self.root, published=False)
+
+    def reject(self, message: str) -> None:
+        with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
+            self.verify()
+
+    def test_retained_external_article_capture_passes(self) -> None:
+        self.verify()
+
+    def test_historical_external_article_without_capture_passes(self) -> None:
+        del self.entry["rights"]["evidence_path"]
+        del self.entry["rights"]["evidence_retrieved_at_utc"]
+        self.capture.unlink()
+        self.verify()
+
+    def test_changed_capture_bytes_are_rejected(self) -> None:
+        self.capture.write_bytes(self.capture.read_bytes() + b" ")
+        self.reject("captured external evidence SHA-256")
+
+    def test_missing_capture_is_rejected(self) -> None:
+        self.capture.unlink()
+        self.reject("captured external evidence file")
+
+    def test_capture_metadata_mutations_are_rejected(self) -> None:
+        original = copy.deepcopy(self.entry["rights"])
+        for field, value, message in (
+            ("evidence_path", None, "source capture path"),
+            ("evidence_path", "/tmp/article.html", "source capture path"),
+            ("evidence_path", "docs/evidence/source_rights/../article.html", "source capture path"),
+            ("evidence_path", "docs/evidence/source_rights/subdir/article.html", "source capture path"),
+            ("evidence_retrieved_at_utc", None, "captured external retrieval timestamp"),
+            ("evidence_retrieved_at_utc", "2026-10-12T16:00:00", "captured external retrieval timestamp"),
+            (
+                "evidence_url",
+                "https://pmihes.centre-mersenne.org/articles/10.1007/OTHER/",
+                "captured external article evidence identity",
+            ),
+        ):
+            with self.subTest(field=field, value=value):
+                self.entry["rights"] = copy.deepcopy(original)
+                self.entry["rights"][field] = value
+                self.reject(message)
+
+    def test_capture_symlink_is_rejected(self) -> None:
+        target = self.root / "other.html"
+        self.capture.rename(target)
+        self.capture.symlink_to(target)
+        self.reject("captured external evidence file")
+
+    def test_capture_directory_symlink_is_rejected(self) -> None:
+        directory = self.capture.parent
+        target = self.root / "other-captures"
+        directory.rename(target)
+        directory.symlink_to(target, target_is_directory=True)
+        self.reject("captured external evidence file")
+
+    def test_unknown_captured_publisher_requires_an_identity_route(self) -> None:
+        self.entry["source_url"] = "https://example.org/article.pdf"
+        self.reject("captured external article source route")
+
+    def test_rehashed_article_metadata_substitutions_are_rejected(self) -> None:
+        original = self.html
+        for before, after, message in (
+            ('content="10.1007/BF02684802"', 'content="10.1007/OTHER"', "captured external article DOI identity"),
+            (self.entry["title"], "Unrelated article", "captured external article title identity"),
+            (self.entry["source_url"], "https://example.org/article.pdf", "captured external article PDF identity"),
+        ):
+            with self.subTest(before=before):
+                self.html = original.replace(before, after)
+                self.write_capture()
+                self.reject(message)
+
+    def test_rehashed_missing_duplicate_and_footer_metadata_are_rejected(self) -> None:
+        original = self.html
+        for field, label in (("citation_doi", "DOI"), ("citation_pdf_url", "PDF"), ("citation_title", "title")):
+            match = re.search(r'<meta name="' + field + r'" content="[^"]+">', original)
+            self.assertIsNotNone(match)
+            if match is None:
+                raise AssertionError("Missing fixture field")
+            for copies in (0, 2):
+                with self.subTest(field=field, copies=copies):
+                    self.html = original.replace(match[0], match[0] * copies)
+                    self.write_capture()
+                    self.reject(f"captured external article {label} identity")
+
+    def test_rehashed_duplicate_attributes_are_rejected(self) -> None:
+        self.html = self.html.replace('name="citation_doi"', 'name="citation_doi" name="other"')
+        self.write_capture()
+        self.reject("captured external article duplicate attributes")
+
+    def test_invalid_capture_encoding_is_rejected_after_rehash(self) -> None:
+        payload = b"\xff"
+        self.capture.write_bytes(payload)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+        self.reject("captured external HTML encoding")
+
+
+class CaptureInventoryChecks(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="source-capture-inventory-check-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.directory = self.root / "docs/evidence/source_rights"
+        self.directory.mkdir(parents=True)
+        (self.directory / "README.md").write_text("Captured evidence and manual-audit boundary\n")
+        self.registry: dict[str, Any] = {"pdfs": [], "external_pdfs": []}
+        for section, filename in (("pdfs", "hosted.html"), ("external_pdfs", "external.html")):
+            capture = self.directory / filename
+            capture.write_bytes(b"retained response")
+            self.registry[section].append(
+                {
+                    "rights": {
+                        "evidence_path": capture.relative_to(self.root).as_posix(),
+                        "evidence_retrieved_at_utc": "2026-10-12T16:00:00+00:00",
+                    }
+                }
+            )
+        self.registry["external_pdfs"].append({"rights": {"evidence_url": "https://example.org/manual-audit"}})
+
+    def reject(self, message: str) -> None:
+        with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
+            verify_capture_inventory(self.root, self.registry)
+
+    def test_closed_inventory_and_manual_audit_count_pass(self) -> None:
+        self.assertEqual(verify_capture_inventory(self.root, self.registry), (2, 1))
+
+    def test_duplicate_registered_capture_is_rejected(self) -> None:
+        self.registry["external_pdfs"].append(copy.deepcopy(self.registry["pdfs"][0]))
+        self.reject("duplicate source capture path")
+
+    def test_missing_registered_capture_is_rejected(self) -> None:
+        (self.directory / "external.html").unlink()
+        self.reject("source capture file")
+
+    def test_registered_capture_symlink_is_rejected(self) -> None:
+        source = self.directory / "external.html"
+        target = self.root / "outside.html"
+        source.rename(target)
+        source.symlink_to(target)
+        self.reject("source capture file")
+
+    def test_unregistered_capture_file_directory_and_symlink_are_rejected(self) -> None:
+        extra = self.directory / "extra.html"
+        extra.write_text("unregistered")
+        self.reject("source capture inventory differs from registry")
+        extra.unlink()
+        extra.mkdir()
+        self.reject("source capture inventory differs from registry")
+        extra.rmdir()
+        extra.symlink_to(self.root / "missing")
+        self.reject("source capture inventory differs from registry")
+
+    def test_removing_capture_registration_leaves_an_orphan(self) -> None:
+        rights = self.registry["external_pdfs"][0]["rights"]
+        del rights["evidence_path"]
+        self.reject("source capture path")
+        del rights["evidence_retrieved_at_utc"]
+        self.reject("source capture inventory differs from registry")
+
+    def test_capture_directory_symlink_is_rejected(self) -> None:
+        target = self.root / "other-captures"
+        self.directory.rename(target)
+        self.directory.symlink_to(target, target_is_directory=True)
+        self.reject("source capture directory")
+
+    def test_capture_ancestor_symlink_is_rejected(self) -> None:
+        ancestor = self.root / "docs"
+        target = self.root / "other-docs"
+        ancestor.rename(target)
+        ancestor.symlink_to(target, target_is_directory=True)
+        self.reject("source capture directory")
+
+    def test_capture_readme_symlink_is_rejected(self) -> None:
+        readme = self.directory / "README.md"
+        target = self.root / "other.md"
+        readme.rename(target)
+        readme.symlink_to(target)
+        self.reject("source capture README")
 
 
 class SourceArchiveChecks(unittest.TestCase):

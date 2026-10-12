@@ -8,7 +8,7 @@ preserve original response bytes. External-only sources retain their inspected
 rights limitations and optional ignored personal reading copies.
 
 The [source verifier](../../verify_sources.py) treats captures as data.
-For hosted arXiv papers it requires one article citation identity, one download
+For every retained arXiv capture it requires one article citation identity, one download
 link to the exact version, and one balanced article license section. It rejects
 missing or duplicate fields, duplicate relevant attributes, malformed nesting
 and generic footer substitutions. The observed URL preserves source spelling;
@@ -19,7 +19,15 @@ must agree with the registry and the captured canonical landing URL. The
 storage URL must identify that DOI's PDF. A footer grant cannot qualify a
 paper. For Zenodo, the record ID/self link and article license must agree;
 one matching deposited file must have the registered filename, size and MD5.
-Every hosted route checks the canonical capture path, timestamp and hash.
+Every retained capture has a checked canonical path, retrieval timestamp and
+SHA-256 digest, including captures supporting external-only decisions. The
+Greenberg publisher capture also binds the article DOI and PDF link. The
+capture inventory contains exactly the registered response files and this
+README; missing, unregistered or symlinked captures fail admission. Older
+external-only entries without a retained capture keep their recorded
+primary-source inspection as a manual-audit boundary. Their historical
+evidence digest identifies the inspected response; the offline verifier
+cannot recheck response bytes that the repository does not retain.
 
 The [licensed source archives](../../INDEX.md#licensed-software-source-snapshots)
 use a separate original-software route: exact inventory, pinned retrieval,

@@ -126,7 +126,10 @@ class ArxivRightsParser(HTMLParser):
             self.license_stack.append(tag)
         elif self.license_stack:
             if tag == "a":
-                require("has_license" in classes, "captured arXiv license anchor")
+                require(
+                    "has_license" in classes or attributes.get("title") == "Rights to this article",
+                    "captured arXiv license anchor",
+                )
                 self.license_urls.append(require_text(attributes.get("href"), "captured arXiv license URL"))
             if tag not in self.VOID_TAGS:
                 self.license_stack.append(tag)
@@ -174,8 +177,75 @@ def verify_arxiv_evidence(root: Path, rights: dict[str, Any], version: str) -> N
     )
     require(parser.license_sections == 1 and len(parser.license_urls) == 1, "captured arXiv license count")
     observed = require_url(parser.license_urls[0], "captured arXiv license URL")
-    require(observed.replace("http://", "https://", 1) == rights["license_url"], "captured arXiv license identity")
-    require(observed == rights["observed_license_url"], "captured arXiv observed license identity")
+    require(
+        observed.replace("http://", "https://", 1) == rights["license_url"].replace("http://", "https://", 1),
+        "captured arXiv license identity",
+    )
+    if "observed_license_url" in rights:
+        require(observed == rights["observed_license_url"], "captured arXiv observed license identity")
+
+
+class ExternalArticleParser(HTMLParser):
+    """Read article identity metadata; rights interpretation remains a manual audit."""
+
+    FIELD_NAMES = {"citation_doi", "citation_title", "citation_pdf_url"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.fields: dict[str, list[str]] = {name: [] for name in self.FIELD_NAMES}
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag != "meta" or not any(key == "name" and value in self.FIELD_NAMES for key, value in attrs):
+            return
+        require(len({key for key, _ in attrs}) == len(attrs), "captured external article duplicate attributes")
+        attributes = dict(attrs)
+        field = require_text(attributes.get("name"), "captured external article field name")
+        self.fields[field].append(require_text(attributes.get("content"), "captured external article field value"))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+
+
+def capture_relative_path(rights: dict[str, Any]) -> str:
+    relative = require_text(rights.get("evidence_path"), "source capture path")
+    require(
+        re.fullmatch(r"docs/evidence/source_rights/[A-Za-z0-9][A-Za-z0-9_.-]*\.(?:html|json)", relative) is not None,
+        "source capture path",
+    )
+    return relative
+
+
+def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any]) -> None:
+    """Bind a retained external article capture to its bytes and publisher identity."""
+    relative = capture_relative_path(rights)
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured external evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured external retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured external evidence SHA-256")
+    article = re.fullmatch(
+        r"https://pmihes\.centre-mersenne\.org/item/(10\.1007/[A-Za-z0-9_.-]+)\.pdf", entry["source_url"]
+    )
+    if article is None:
+        raise ValueError("captured external article source route")
+    require(
+        rights["evidence_url"] == f"https://pmihes.centre-mersenne.org/articles/{article[1]}/",
+        "captured external article evidence identity",
+    )
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured external HTML encoding") from error
+    parser = ExternalArticleParser()
+    parser.feed(html)
+    parser.close()
+    require(parser.fields["citation_doi"] == [article[1]], "captured external article DOI identity")
+    require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured external article PDF identity")
+    title = require_text(entry.get("title"), "captured external article registered title")
+    require(parser.fields["citation_title"] == [title], "captured external article title identity")
 
 
 class DagstuhlRightsParser(HTMLParser):
@@ -337,7 +407,7 @@ def verify_source_rights(
         observed_url = rights.get("observed_license_url") if published else rights.get("license_url")
         observed_url = require_url(observed_url, "arXiv observed license URL")
         require(observed_url.replace("http://", "https://", 1) == LICENSE_URLS[identifier], "arXiv license identity")
-        if published:
+        if published or "evidence_path" in rights or "evidence_retrieved_at_utc" in rights:
             verify_arxiv_evidence(root, rights, source[1])
     elif published and urlsplit(rights["evidence_url"]).netloc == "drops.dagstuhl.de":
         document = re.fullmatch(
@@ -368,6 +438,37 @@ def verify_source_rights(
             "licensed deposit MD5",
         )
         verify_zenodo_evidence(root, rights, licensed_file, record[1])
+    elif "evidence_path" in rights or "evidence_retrieved_at_utc" in rights:
+        verify_external_article_evidence(root, entry, rights)
+
+
+def verify_capture_inventory(root: Path, registry: dict[str, Any]) -> tuple[int, int]:
+    """Close retained capture paths and count uncaptured external manual-audit records."""
+    capture_root = root / "docs/evidence/source_rights"
+    require(
+        capture_root.is_dir()
+        and not capture_root.is_symlink()
+        and capture_root.resolve() == root.resolve() / "docs/evidence/source_rights",
+        "source capture directory",
+    )
+    readme = capture_root / "README.md"
+    require(readme.is_file() and not readme.is_symlink(), "source capture README")
+    registered: set[str] = set()
+    manual_audits = 0
+    for section in ("pdfs", "external_pdfs"):
+        for entry in registry[section]:
+            rights = require_mapping(entry.get("rights"), "source rights object")
+            if section == "external_pdfs" and not {"evidence_path", "evidence_retrieved_at_utc"}.intersection(rights):
+                manual_audits += 1
+                continue
+            relative = capture_relative_path(rights)
+            require(relative not in registered, "duplicate source capture path")
+            registered.add(relative)
+            source = root / relative
+            require(source.is_file() and not source.is_symlink(), "source capture file")
+    actual = {path.relative_to(root).as_posix() for path in capture_root.iterdir() if path.name != "README.md"}
+    require(actual == registered, "source capture inventory differs from registry")
+    return len(registered), manual_audits
 
 
 def verify_external_sources(root: Path, registry: dict[str, Any], published_digests: set[str]) -> int:
@@ -611,6 +712,7 @@ def verify() -> None:
     require(actual_paths == registered_paths, "PDF inventory differs from registry")
     require((library / "PDF_SHA256SUMS").read_text() == "".join(checksum_lines), "PDF checksum inventory")
     external_count = verify_external_sources(root, registry, published_digests)
+    capture_count, manual_audit_count = verify_capture_inventory(root, registry)
     archive_count = verify_source_archives(root, registry)
     alias_paths: set[str] = set()
     for entry in registry["aliases"] + [registry["historical_path_alias"]]:
@@ -639,6 +741,7 @@ def verify() -> None:
             link_count += 1
     print(
         f"Verified {len(registered_paths)} published PDFs, {external_count} external-only PDFs, "
+        f"{capture_count} rights captures ({manual_audit_count} external manual-audit records without captures), "
         f"{archive_count} source archives, "
         f"{len(alias_paths)} PDF aliases, "
         f"historical identities, and {link_count} local links"
