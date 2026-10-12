@@ -1,7 +1,7 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T06:13:42.402221+00:00",
-  "scope": "two active IBMQuantum chats; cooperative ownership supplements per-invocation runner guards",
+  "updated_at": "2026-10-12T06:35:58.983174+00:00",
+  "scope": "Single coordinated writer for the admitted ripple/rank cases; completed folded evidence retained separately",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
     "folded_reserved_ceiling_seconds": 0,
@@ -39,43 +39,59 @@
       ],
       "total_charge_seconds": 40,
       "raw_evidence": "2026-10-12T055624.091217Z/raw",
-      "collection": "2026-10-12T055624.091217Z/collect.json"
+      "collection": "2026-10-12T055624.091217Z/collect.json",
+      "excluded_from_new_submission": true,
+      "evidence_pull_request": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37"
     },
     {
       "family": "ripple",
       "owner": "Design a single-run reality ripple",
       "science": "packed finite Cayley-Dickson walk, box-kite, and Design C hardware comparison",
       "backend": "ibm_kingston",
-      "state": "submit_free_preparation_unapproved",
+      "state": "prepared_statistically_admitted_unapproved",
       "proposed_pubs": 146,
       "proposed_ceiling_seconds": 180,
       "accepted_job_ids": [],
-      "qualification": "placement search rejects tested pool combinations; source repair and remaining routed candidates pending"
+      "qualification": "All declared local statistical endpoints pass. Native mock timing is unavailable (HTTP404); physical execution awaits exact-case owner approval.",
+      "case": "2026-10-12T062505.208379Z",
+      "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+      "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+      "proposed_shots_per_pub": 4096,
+      "reported_nominal_seconds": 157.08726656,
+      "reported_stress_seconds": 159.38726656,
+      "admitted_endpoints": 1138,
+      "required_endpoints": 1138,
+      "relative_placement_score_floor": 0.8
     },
     {
       "family": "rank-sector",
       "owner": "Design a single-run reality ripple",
       "science": "finite rank-sector dark, bright, and isolated control comparison",
       "backend": "ibm_kingston",
-      "state": "submit_free_preparation_unapproved",
+      "state": "prepared_statistically_admitted_unapproved",
       "proposed_pubs": 36,
       "proposed_ceiling_seconds": 60,
       "accepted_job_ids": [],
       "proposed_shots_per_pub": 4096,
-      "reported_nominal_seconds": 39.9347,
-      "reported_stress_seconds": 42.2347,
-      "qualification": "other owner reports admitted candidate; final source refresh pending"
+      "reported_nominal_seconds": 39.93470336,
+      "reported_stress_seconds": 42.23470336,
+      "qualification": "All declared local statistical endpoints pass. Native mock timing is unavailable (HTTP404); physical execution awaits exact-case owner approval.",
+      "case": "2026-10-12T062505.552988Z",
+      "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+      "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+      "admitted_endpoints": 196,
+      "required_endpoints": 196
     }
   ],
   "deduplication": {
     "folded_4096_other_chat": "comparison preparation only; excluded from hardware campaign; reuse owner raw and collected results",
-    "static_witness_overlap": "reconcile historical static endpoints against ripple/rank-sector controls before authorizing both"
+    "static_witness_overlap": "Rank sectors measure coefficient-normalized multiplication-path norms; ripple measures associator interference and sedenion fringes. Endpoint and member names are disjoint. Historical DesignC repetitions are intentional fresh-patch/packing controls:9members share3atlas rows and3isolated reference rows measure changed neighboring workload."
   },
   "backend_policy": "each complete control family stays on its independently admitted backend; alternate QPUs require their own live case and approval",
-  "other_chat_confirmation": "zero accepted or in-flight physical jobs; hold ripple and rank physical submissions until concrete cases and owner approval; preserve canonical main",
+  "other_chat_confirmation": "Folded owner completed both jobs and handed off ledger maintenance; ripple owner has submitted zero physical jobs and holds both cases for exact owner approval.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
-    "observed_at": "2026-10-12T06:07:45.213941+00:00",
+    "observed_at": "2026-10-12T06:33:43.572729+00:00",
     "scope": "Read-only account usage, accessible backend names, pending jobs and two accepted job statuses",
     "instance_sha256_12": "e3de05b6901e",
     "budget": {
@@ -83,8 +99,8 @@
       "usage_consumed_seconds": 49,
       "usage_remaining_seconds": 551,
       "usage_period": {
-        "start_time": "2026-09-14T06:07:45.125Z",
-        "end_time": "2026-10-12T06:07:45.125Z"
+        "start_time": "2026-09-14T06:33:43.520Z",
+        "end_time": "2026-10-12T06:33:43.520Z"
       }
     },
     "accessible_backend_names": [
@@ -107,5 +123,7 @@
         "usage_source": "job.usage(partial=False)"
       }
     ]
-  }
+  },
+  "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions require owner approval of the linked cases."
 }
