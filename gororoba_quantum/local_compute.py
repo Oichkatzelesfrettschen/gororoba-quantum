@@ -1,0 +1,179 @@
+"""Qualified local simulation policy and ordered batch evidence.
+
+CPU density matrices provide the qualified execution path. GPU and hybrid requests
+remain explicit capability errors until a pinned Aer GPU build passes the
+same circuit, noise, numerical, and memory qualification. Local preparation
+time stays separate from the QPU charge ledger.
+"""
+
+from __future__ import annotations
+
+import hashlib
+import io
+import json
+import time
+from typing import Any
+
+import numpy as np
+from qiskit import qpy
+from qiskit_aer import AerSimulator
+
+
+def settings(args: Any = None) -> dict[str, Any]:
+    return {
+        "mode": getattr(args, "local_compute", "cpu"),
+        "threads": getattr(args, "simulation_threads", 2),
+        "memory_mb": getattr(args, "simulation_memory_mb", 512),
+        "shot_branching": False,
+        "method": "density_matrix",
+        "precision": "double",
+        "shot_branching_sampling": False,
+        "parallel_experiments": 1,
+    }
+
+
+def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> None:
+    """Reject unavailable or unqualified execution before service construction."""
+    if set(policy) != set(settings()):
+        raise ValueError("local compute policy fields differ from the supported contract")
+    if policy["mode"] not in ("cpu", "gpu", "hybrid"):
+        raise ValueError("local compute mode must be cpu, gpu, or hybrid")
+    for key in ("threads", "memory_mb"):
+        if type(policy[key]) is not int or policy[key] <= 0:
+            raise ValueError(f"local compute {key} must be a positive integer")
+    if type(policy["shot_branching"]) is not bool:
+        raise ValueError("shot_branching must be Boolean")
+    if policy["shot_branching"]:
+        raise ValueError("shot branching fails noisy folded-circuit qualification and remains disabled")
+    for key in ("method", "precision", "shot_branching_sampling", "parallel_experiments"):
+        if policy[key] != settings()[key]:
+            raise ValueError(f"local compute {key} differs from the qualified configuration")
+    available = tuple(AerSimulator().available_devices()) if devices is None else devices
+    if policy["mode"] != "cpu":
+        if "GPU" not in available:
+            raise ValueError(f"local compute {policy['mode']} requires Aer GPU; available devices: {available}")
+        raise ValueError("GPU/hybrid requires a pinned Aer GPU build with retained workload and memory qualification")
+    if "CPU" not in available:
+        raise ValueError("the qualified CPU simulation device is unavailable")
+
+
+def _json_value(value: Any) -> Any:
+    if isinstance(value, np.ndarray):
+        return _json_value(value.tolist())
+    if isinstance(value, np.generic):
+        return _json_value(value.item())
+    if isinstance(value, complex):
+        return {"real": value.real, "imag": value.imag}
+    if isinstance(value, dict):
+        return {str(key): _json_value(item) for key, item in value.items()}
+    if isinstance(value, (tuple, list)):
+        return [_json_value(item) for item in value]
+    return value
+
+
+def configure(simulator: Any, policy: dict[str, Any]) -> None:
+    validate(policy)
+    simulator.set_options(
+        device="CPU",
+        method=policy["method"],
+        precision=policy["precision"],
+        max_parallel_threads=policy["threads"],
+        max_parallel_experiments=policy["parallel_experiments"],
+        max_parallel_shots=policy["threads"],
+        max_memory_mb=policy["memory_mb"],
+        shot_branching_enable=policy["shot_branching"],
+        shot_branching_sampling_enable=policy["shot_branching_sampling"],
+    )
+    noise = _json_value(simulator.options.noise_model.to_dict())
+    # QuantumError IDs are generated UUIDs; channel instructions/probabilities
+    # carry the semantics and remain in the digest.
+    for error in noise.get("errors", []):
+        error.pop("id", None)
+    noise["errors"] = sorted(
+        noise.get("errors", []), key=lambda error: json.dumps(error, sort_keys=True, separators=(",", ":"))
+    )
+    simulator._gororoba_noise_digest = hashlib.sha256(
+        json.dumps(noise, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    ).hexdigest()
+    simulator._gororoba_compute_policy = dict(policy)
+    simulator._gororoba_simulation_batches = []
+
+
+def batches(simulator: Any) -> list[dict[str, Any]]:
+    return list(getattr(simulator, "_gororoba_simulation_batches", []))
+
+
+def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
+    """Preserve declared order and retain actual Aer device/kernel evidence."""
+    start = time.perf_counter()
+    result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
+    elapsed = time.perf_counter() - start
+    if not result.success:
+        raise RuntimeError(f"local Aer simulation failed: {result.status}")
+    policy = getattr(simulator, "_gororoba_compute_policy", None)
+    if policy is not None:
+        for experiment in result.results:
+            if not experiment.success:
+                raise RuntimeError(f"local Aer experiment failed: {experiment.status}")
+            metadata = experiment.metadata
+            if metadata.get("device") != "CPU" or metadata.get("method") != policy["method"]:
+                raise RuntimeError("Aer result device/method differs from the admitted local compute policy")
+        buffer = io.BytesIO()
+        qpy.dump(circuits, buffer)
+        simulator._gororoba_simulation_batches.append(
+            {
+                "policy": dict(policy),
+                "ordered_circuit_names": [circuit.name for circuit in circuits],
+                "ordered_qpy_sha256": hashlib.sha256(buffer.getvalue()).hexdigest(),
+                "noise_serialized_channels_sha256": simulator._gororoba_noise_digest,
+                "noise_digest_scope": (
+                    "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded "
+                    "by Aer serialization and depends on the run's Target T1/T2/dt calibration"
+                ),
+                "shots": shots,
+                "seed_simulator": seed,
+                "wall_seconds": elapsed,
+                "experiment_metadata": [_json_value(experiment.metadata) for experiment in result.results],
+            }
+        )
+    return result
+
+
+def _verify() -> None:
+    from qiskit import QuantumCircuit
+    from qiskit_aer.noise import NoiseModel
+
+    policy = settings()
+    validate(policy, ("CPU",))
+    for bad in (
+        policy | {"mode": "gpu"},
+        policy | {"mode": "hybrid"},
+        policy | {"threads": 0},
+        policy | {"memory_mb": True},
+        policy | {"precision": "single"},
+        policy | {"shot_branching": 1},
+    ):
+        try:
+            validate(bad, ("CPU", "GPU"))
+        except ValueError:
+            pass
+        else:
+            raise AssertionError(f"unqualified local compute policy passes: {bad}")
+    circuit = QuantumCircuit(1, 2, name="reset_feed_forward")
+    circuit.x(0)
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    with circuit.if_test((circuit.clbits[0], True)):
+        circuit.x(0)
+    circuit.measure(0, 1)
+    simulator = AerSimulator(noise_model=NoiseModel())
+    configure(simulator, policy)
+    result = run(simulator, [circuit], 64, 20261012)
+    assert result.get_counts(0) == {"11": 64}
+    assert batches(simulator)[0]["ordered_circuit_names"] == [circuit.name]
+    assert not batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False)
+    print("local compute policy, capability rejection, and CPU dynamic batch checks pass")
+
+
+if __name__ == "__main__":
+    _verify()

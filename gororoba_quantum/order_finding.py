@@ -37,7 +37,7 @@ def eigenstate_prep(qc: QuantumCircuit, work: list[int], phase_label: int) -> No
         qc.p(-2 * math.pi * phase_label * work_index / 4, work[work_index])
 
 
-def folded_qpe(phase_label: int, identity: bool = False) -> QuantumCircuit:
+def folded_qpe(phase_label: int, identity: bool = False, *, feed_forward: bool = True) -> QuantumCircuit:
     """Read a supplied two-bit eigenphase for the dynamic-control conformance test."""
     if phase_label not in range(4):
         raise ValueError(f"phase_label must lie in [0, 4), got {phase_label}")
@@ -61,8 +61,9 @@ def folded_qpe(phase_label: int, identity: bool = False) -> QuantumCircuit:
     circuit.h(0)
     if not identity:
         controlled_rotate(circuit, 0, work_qubits, 1)
-    with circuit.if_test((phase_register[0], 1)):
-        circuit.p(-math.pi / 2, 0)
+    if feed_forward:
+        with circuit.if_test((phase_register[0], 1)):
+            circuit.p(-math.pi / 2, 0)
     circuit.h(0)
     circuit.measure(0, phase_register[1])
     return circuit
@@ -138,6 +139,7 @@ def factor_order_finding(
     *,
     identity: bool = False,
     multiplier_strategy: str = "auto",
+    feed_forward: bool = True,
 ) -> QuantumCircuit:
     """Build one coherent order-finding attempt or a schedule-matched identity null."""
     plan = order_finding_plan(
@@ -172,10 +174,11 @@ def factor_order_finding(
             multiplier_strategy,
             input_domain=NONZERO_RESIDUES,
         )
-        for prior_round in range(plan.leading_identity_rounds, resource.round_index):
-            feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))
-            with circuit.if_test((phase_register[prior_round], 1)):
-                circuit.p(feedback_angle, control_qubit)
+        if feed_forward:
+            for prior_round in range(plan.leading_identity_rounds, resource.round_index):
+                feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))
+                with circuit.if_test((phase_register[prior_round], 1)):
+                    circuit.p(feedback_angle, control_qubit)
         circuit.h(control_qubit)
         circuit.measure(control_qubit, phase_register[resource.round_index])
         if resource.round_index + 1 < plan.phase_bits:
@@ -338,9 +341,9 @@ def _without_feed_forward(circuit: QuantumCircuit) -> QuantumCircuit:
     return out
 
 
-def _distribution(counts: dict[str, int]) -> list[float]:
+def _distribution(counts: dict[str, int], phase_bits: int) -> list[float]:
     total = sum(counts.values())
-    return sorted(count / total for count in counts.values())
+    return [counts.get(format(label, f"0{phase_bits}b"), 0) / total for label in range(1 << phase_bits)]
 
 
 def _verify_feed_forward_sensitivity(simulator: AerSimulator) -> None:
@@ -356,6 +359,8 @@ def _verify_feed_forward_sensitivity(simulator: AerSimulator) -> None:
     an eigenstate reads one outcome with the feed-forward and a split
     without.
     """
+    from qpe_diagnostics import n21_labeled_law
+
     shots = 20000
     insensitive = factor_order_finding(15, 2, 8)
     with_ff = simulator.run(insensitive, shots=shots, seed_simulator=11).result().get_counts()
@@ -366,11 +371,11 @@ def _verify_feed_forward_sensitivity(simulator: AerSimulator) -> None:
     stripped = transpile(_without_feed_forward(factor_order_finding(21, 4, 2)), simulator, optimization_level=0)
     with_ff = simulator.run(sensitive, shots=shots, seed_simulator=11).result().get_counts()
     without_ff = simulator.run(stripped, shots=shots, seed_simulator=12).result().get_counts()
-    expected_with = [1 / 8, 1 / 4, 1 / 4, 3 / 8]
-    expected_without = [1 / 8, 1 / 8, 3 / 8, 3 / 8]
-    if max(abs(a - b) for a, b in zip(_distribution(with_ff), expected_with, strict=True)) > 0.02:
+    expected_with = n21_labeled_law(feed_forward=True)
+    expected_without = n21_labeled_law(feed_forward=False)
+    if max(abs(a - float(b)) for a, b in zip(_distribution(with_ff, 2), expected_with, strict=True)) > 0.02:
         raise RuntimeError(f"N=21 a=4 two-bit distribution with feed-forward is {with_ff}")
-    if max(abs(a - b) for a, b in zip(_distribution(without_ff), expected_without, strict=True)) > 0.02:
+    if max(abs(a - float(b)) for a, b in zip(_distribution(without_ff, 2), expected_without, strict=True)) > 0.02:
         raise RuntimeError(f"N=21 a=4 two-bit distribution without feed-forward is {without_ff}")
     folded = folded_qpe(3)
     folded_with = simulator.run(folded, shots=2000, seed_simulator=11).result().get_counts()

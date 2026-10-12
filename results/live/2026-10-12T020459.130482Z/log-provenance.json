@@ -1,0 +1,5 @@
+{
+  "raw_log_sha256": "8eb5b0a7a9cf48cfc9da3ddf05aa3eed6462967255e49581a8a2ffe582cc2444",
+  "portable_log_sha256": "62bd390d72099ce5f38e84f6df3bdc32062fb41271570002d15565cb8132d67e",
+  "normalization": "The timed interpreter path is represented as $PYTHON; every remaining log byte is retained."
+}

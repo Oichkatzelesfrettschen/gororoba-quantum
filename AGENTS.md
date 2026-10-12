@@ -14,21 +14,46 @@ lint and type-check configuration only. Before any push, these exit 0:
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
+    results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
+    results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
+    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py
+    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
+    results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
+    results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
+    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/verify_evidence.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/check_verify_evidence.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/cpu_branching_reuse_analysis.py --check
+  (cd results/local_compute && sha256sum -c SHA256SUMS)
+  (cd results/local_compute/aer_delay_sentinels && sha256sum -c SHA256SUMS)
+  (cd results/local_compute/n21_shared_predicate && sha256sum -c SHA256SUMS)
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
+  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
+    qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
+    qpu_planning.py qpu_planning_contracts.py qpu_cases.py local_compute.py \
+    aer_delay_sentinels.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
     integral_homology.py rank_path_topology.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
-    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py
+    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
+    ../results/live/verify_source_closure.py ../results/local_compute/verify_evidence.py \
+    ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
+    ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -51,6 +76,13 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
   "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
   "$PYTHON" runtime_contracts.py
+  "$PYTHON" qpe_diagnostics.py
+  "$PYTHON" experiment_optimizer.py
+  "$PYTHON" qpu_planning_contracts.py
+  "$PYTHON" qpu_cases.py --check
+  "$PYTHON" local_compute.py
+  "$PYTHON" aer_delay_sentinels.py >/dev/null
+  "$PYTHON" ../results/live/verify_source_closure.py --check
   "$PYTHON" variance.py
   "$PYTHON" adjudicate.py --check
   "$PYTHON" cd_core.py >/dev/null
@@ -72,6 +104,12 @@ every replica of a choice in one call and parallelize experiments itself.
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under
 results/live/.
+
+The matched diagnostic families and statistical design contracts are documented
+in [QPU_OPTIMIZATION.md](gororoba_quantum/QPU_OPTIMIZATION.md). Their local
+gates exercise exact labeled laws, bounded inference, fake-backend layouts,
+aggregate budgets, and negative dry-run records; hardware claims require
+separately approved results.
 
 The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
 when its generator, witnesses, or evaluator changes. Run the checks on a copy
@@ -104,7 +142,9 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
   digest with `--approved-record-sha256`, and the case's seconds with
   `--max-execution-seconds` (the Sampler's max_execution_time, which the
   service enforces; the dry run is made with the same value, since the
-  policy carries it); the fresh plan must match the record in experiment
+  policy carries it). `--max-total-execution-seconds` caps the sum of all
+  job ceilings, and `--reserve-seconds` names the retained quota. The fresh
+  plan must match the record in experiment
   digest, shots, policy (twirling, DD, budget floor, execution ceiling),
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
   replica qubits, fused PUB manifests, calibration at the refresh and again

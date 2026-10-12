@@ -59,9 +59,12 @@ from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
+import local_compute
 import packing
 import parallel
+import qpu_planning
 import variance
+from diagnostic_experiments import FAMILY_NAMES, record_groups
 from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
 from packing import Replica
 
@@ -81,8 +84,8 @@ DEFAULT_SEEDS = 8
 DEFAULT_MAX_PENDING = 25
 DEFAULT_MIN_REMAINING_S = 60.0
 MAX_JOB_EXECUTIONS = 10_000_000
-RECORD_SCHEMA_VERSION = 6
-RECORD_SCHEMA_CONTRACT = "live-target-cross-group-fused-pubs-scheduler-usage-v1"
+RECORD_SCHEMA_VERSION = 7
+RECORD_SCHEMA_CONTRACT = "live-target-statistical-design-invocation-budget-v1"
 CONTROL_FLOW_OPERATIONS = frozenset({"if_else", "while_loop", "for_loop", "switch_case", "break_loop", "continue_loop"})
 DIRECT_TARGET_OPERATIONS = CONTROL_FLOW_OPERATIONS | {"delay", "measure", "reset", "store"}
 # A replica is placed only while its layout score stays at least this fraction
@@ -103,14 +106,20 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "boolean_anf.py",
     "cd_core.py",
     "designs.py",
+    "diagnostic_experiments.py",
+    "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
     "live_run.py",
+    "local_compute.py",
     "modular_arithmetic.py",
     "order_finding.py",
     "packing.py",
     "parallel.py",
     "predict.py",
+    "qpe_diagnostics.py",
+    "qpu_cases.py",
+    "qpu_planning.py",
     "select_lcu.py",
     "target_flip.py",
     "variance.py",
@@ -1765,7 +1774,7 @@ class TargetView(BackendV2):
         raise NotImplementedError("TargetView carries a Target for noise modeling only")
 
 
-def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
+def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str, Any] | None = None) -> AerSimulator:
     """AerSimulator with gate and coherence noise from this Target and readout from props.
 
     The Target's measure entries carry only the aggregate readout_error, from
@@ -1785,7 +1794,13 @@ def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
         except Exception:  # BackendPropertyError: no readout calibration at all
             continue
         noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
-    return AerSimulator.from_backend(view, noise_model=noise)
+    # A fixed kernel makes noisy batches independent of the automatic method
+    # selector. Aer 0.17.2 miscomputes a reset-only one-bit member following a
+    # two-bit feedback member when it switches from statevector to density
+    # matrix inside the batch (qpu_planning_contracts verifies the mixed case).
+    simulator = AerSimulator.from_backend(view, noise_model=noise, method="density_matrix")
+    local_compute.configure(simulator, local_compute.settings() if compute_policy is None else compute_policy)
+    return simulator
 
 
 def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[np.ndarray]]:
@@ -1824,7 +1839,7 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
     is deterministic for its inputs.
     """
     circuits = [replica for entry in entries for replica in entry.replicas]
-    result = noise.run(circuits, shots=shots, seed_simulator=seed, max_parallel_experiments=0).result()
+    result = local_compute.run(noise, circuits, shots, seed)
     out: dict[str, list[np.ndarray]] = {}
     position = 0
     for entry in entries:
@@ -2236,17 +2251,25 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     snaps, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
     if not snaps:
         raise LiveRunError("no eligible backend")
-    groups = [group for group in available_groups if not args.groups or group.name in args.groups]
     trace: dict[str, Any] = {}
-    candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
-    choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
+    design: dict[str, Any] = {}
+    if getattr(args, "family", None):
+        choices, design = qpu_planning.prepare(sys.modules[__name__], snaps, args, service.usage(), trace)
+        groups = [choice.group for choice in choices]
+        fusion_placement = {"allocation": "matched-family", "configuration": design["family_configuration"]}
+    else:
+        groups = [group for group in available_groups if not args.groups or group.name in args.groups]
+        candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
+        choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
     pubs = execution_pubs(choices)
     record = {
         "schema_version": RECORD_SCHEMA_VERSION,
         "schema_contract": RECORD_SCHEMA_CONTRACT,
         "state": "planned",
         "started": args.started,
-        "versions": {pkg: version(pkg) for pkg in ("qiskit", "qiskit-aer", "qiskit-ibm-runtime")},
+        "versions": {
+            pkg: version(pkg) for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx")
+        },
         "policy": QUALITY
         | {
             "max_pending": args.max_pending,
@@ -2262,6 +2285,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "dd": getattr(args, "dd", None),
             "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
             "max_execution_seconds": getattr(args, "max_execution_seconds", None),
+            "design": qpu_planning.settings(args),
+            "local_compute": local_compute.settings(args),
         },
         "shots": args.shots,
         "instance_sha256_12": _instance_hash(service),
@@ -2277,7 +2302,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "fusion_summary": fusion_summary(pubs),
         "execution_pubs": [pub.manifest() for pub in pubs],
         "selection_trace": trace,
+        **design,
     }
+    record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, service.usage())
+    record["execution_contract"] = qpu_planning.execution_contract(choices, record)
+    if design.get("optimization", {}).get("selected") is None and design:
+        record["state"] = "design_infeasible"
+    if not record["budget_plan"]["admitted"]:
+        record["state"] = "budget_infeasible"
     return choices, record
 
 
@@ -2315,7 +2347,12 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
         key = id(choice.snap)
         if key not in sims:
             sims[key] = (
-                noise_simulator(choice.snap.name, choice.snap.backend.target, choice.snap.properties),
+                noise_simulator(
+                    choice.snap.name,
+                    choice.snap.backend.target,
+                    choice.snap.properties,
+                    record.get("policy", {}).get("local_compute", local_compute.settings()),
+                ),
                 choice.snap.calibration,
             )
         sim, cal = sims[key]
@@ -2330,6 +2367,9 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             f"joint_score={choice.joint_score:.4f} replicas={len(choice.replicas)} scores={scores} "
             f"cz={cz} summary={summary}"
         )
+    record["evaluation_simulation_batches"] = [
+        batch for simulator, _calibration in sims.values() for batch in local_compute.batches(simulator)
+    ]
 
 
 def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
@@ -2354,6 +2394,9 @@ APPROVED_RECORD_FIELDS = (
     "policy",
     "versions",
     "instance_sha256_12",
+    "family_configuration",
+    "observable_contracts",
+    "execution_contract",
 )
 
 
@@ -2846,10 +2889,32 @@ def submit(
         raise LiveRunError("no eligible backend remains before submission")
     attempt_trace: dict[str, Any] = {}
     reselected: dict[str, Any] = {}
-    fresh_candidate_sets = [
-        select_candidates(choice.group, fresh_snapshots, args.seeds, attempt_trace) for choice in choices
-    ]
-    fresh_choices, fresh_fusion_placement = select_fusion_choices(fresh_candidate_sets, _policy(args))
+    if record.get("state") != "planned":
+        reasons = record.get("budget_plan", {}).get("reasons", [])
+        raise LiveRunError(
+            f"submission requires an admitted plan, received {record.get('state')!r}: {'; '.join(reasons)}"
+        )
+    fresh_design: dict[str, Any] = {}
+    if getattr(args, "family", None):
+        fresh_choices, fresh_design = qpu_planning.prepare(
+            sys.modules[__name__], fresh_snapshots, args, service.usage(), attempt_trace
+        )
+        fresh_fusion_placement = {"allocation": "matched-family", "configuration": fresh_design["family_configuration"]}
+        if (
+            fresh_design["optimization"]["selected"] is None
+            or args.shots != record["shots"]
+            or any(fresh_design.get(key) != record.get(key) for key in ("family_configuration", "observable_contracts"))
+        ):
+            reselected["statistical_design"] = {
+                "reasons": ["statistical admission, shot tier, or matched-family contract changed"]
+            }
+        record.update(fresh_design)
+        record["shots"] = args.shots
+    else:
+        fresh_candidate_sets = [
+            select_candidates(choice.group, fresh_snapshots, args.seeds, attempt_trace) for choice in choices
+        ]
+        fresh_choices, fresh_fusion_placement = select_fusion_choices(fresh_candidate_sets, _policy(args))
     old_execution_pubs = execution_pubs(choices)
     fresh_execution_pubs = execution_pubs(fresh_choices)
     fused_changed = _qpy_digest([pub.circuit for pub in old_execution_pubs]) != _qpy_digest(
@@ -2868,6 +2933,7 @@ def submit(
     if fused_changed:
         reselected["execution_pubs"] = {"reasons": ["fused PUB circuits or ordered component mapping changed"]}
     choices[:] = fresh_choices
+    record["execution_contract"] = qpu_planning.execution_contract(choices, record)
     record.setdefault("revalidation", []).append(
         {
             "attempt": 1,
@@ -2930,7 +2996,13 @@ def submit(
                 f"{Path(approved_dir).name} ({'; '.join(mismatches)}); a renewed written case and approval are "
                 "required; no Runtime job was submitted"
             )
+    record["budget_plan"] = qpu_planning.budget_plan(sys.modules[__name__], choices, args, service.usage())
+    if not record["budget_plan"]["admitted"]:
+        record["state"] = "budget_infeasible"
+        checkpoint()
+        raise LiveRunError("; ".join(record["budget_plan"]["reasons"]))
     submission, runtime_batches = build_submission_plan(choices, args, qpy_archive_sha256)
+    submission["budget_reservation"] = record["budget_plan"]
     # The complete batch ledger reaches disk before the first job starts. A
     # partial submission can therefore name every unsent circuit, including a
     # later batch on a backend that already accepted an earlier one.
@@ -2970,6 +3042,17 @@ def submit(
             raise LiveRunError(f"{name}: {batch_tag} {drift}; no circuit in this batch was submitted")
         usage = service.usage()
         check_budget(name, usage, args.min_remaining_seconds)
+        # Accepted jobs may remain unbilled. Every ceiling stays reserved until
+        # collection supplies attributable final charge; quota snapshots alone
+        # cannot release a particular job's reservation.
+        remaining = usage.get("usage_remaining_seconds")
+        reservation = record["submission"]["budget_reservation"]
+        combined_ceiling = reservation["combined_ceiling_seconds"]
+        required = combined_ceiling + reservation["reserve_seconds"] if combined_ceiling is not None else None
+        if required is not None and remaining is not None and required > float(remaining):
+            raise LiveRunError(
+                f"{name}: unsettled execution ceilings and reserve require {required} s; remaining {remaining} s"
+            )
         sampler = configure_sampler(
             fresh.backend,
             kind,
@@ -3059,6 +3142,9 @@ def configure_sampler(
             )
     sampler = Sampler(mode=backend)
     sampler.options.default_shots = shots
+    configuration = backend.configuration()
+    if getattr(configuration, "dynamic_reprate_enabled", False):
+        sampler.options.execution.rep_delay = qpu_planning.repetition_delay(backend)
     if max_execution_seconds is not None:
         # The service cancels a job whose system execution time passes this
         # ceiling (OptionsV2.max_execution_time), so the approved case's
@@ -3607,7 +3693,7 @@ def _validate_archived_pub(pub_manifest: dict[str, Any], circuit: QuantumCircuit
 
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
     """Rebuild logical entries from archived fused PUBs and their component map."""
-    weights = {m.name: m.weights for g in experiment_groups() for m in g.members}
+    weights = {m.name: m.weights for g in [*experiment_groups(), *record_groups(record)] for m in g.members}
     planned_jobs = record.get("submission", {}).get("planned_jobs")
     if planned_jobs is None:
         raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
@@ -3668,7 +3754,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
-    groups = {g.name: g for g in experiment_groups()}
+    groups = {g.name: g for g in [*experiment_groups(), *record_groups(record)]}
     if (
         record.get("experiment_digest") != experiment_digest()
         or record.get("schema_version") != RECORD_SCHEMA_VERSION
@@ -3758,6 +3844,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             "jobs": jobs_out,
         }
     ]
+    family_measured: dict[str, list[np.ndarray]] = {}
+    family_executed: dict[str, Any] = {}
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         pub_manifests = job_entry["pubs"]
@@ -3818,7 +3906,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             target_then = backend.target_history(datetime=start)
             at[start] = (
                 props_then,
-                noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
+                noise_simulator(
+                    f"{backend.name}@{start.isoformat()}",
+                    target_then,
+                    props_then,
+                    record.get("policy", {}).get("local_compute", local_compute.settings()),
+                ),
                 target_then,
             )
             starting = [
@@ -3885,6 +3978,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     sims_by_calibration.setdefault(calibration, at[window[0]][1])
                     replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
+        family_measured.update(measured)
+        family_executed.update(executed)
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
             if not any(n in measured for n in required):
@@ -3961,8 +4056,54 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
+    if record.get("observable_contracts"):
+        out[0]["family_analysis"] = qpu_planning.measured_family(
+            record, family_measured, family_executed, sys.modules[__name__]
+        )
+    out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
     print(json.dumps(out, indent=2))
+
+
+def invocation_usage(record: dict[str, Any], jobs_out: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """Compare predicted full-workload charge only after successful final execution."""
+    submission = record["submission"]
+    final_charges = {
+        job_id: Decimal(job["usage"]["qpu_charge_time_seconds"])
+        for job_id, job in jobs_out.items()
+        if job["usage"].get("usage_status") == "final"
+    }
+    charge_complete = bool(submission.get("complete")) and len(final_charges) == len(submission["jobs"])
+    known_charge = sum(final_charges.values(), Decimal(0))
+    selected = record.get("optimization", {}).get("selected")
+    selected_prediction: dict[str, Any] = next(
+        (
+            candidate
+            for candidate in record.get("optimization", {}).get("candidates", [])
+            if candidate["name"] == selected
+        ),
+        {},
+    )
+    prediction = selected_prediction.get("estimated_charge_seconds")
+    workload_complete = charge_complete and all(job["usage"].get("job_status") == "DONE" for job in jobs_out.values())
+    return {
+        "known_final_charge_seconds": str(known_charge),
+        "total_charge_seconds": str(known_charge) if charge_complete else None,
+        "charge_complete": charge_complete,
+        "workload_complete": workload_complete,
+        "predicted_charge_seconds": prediction,
+        "charge_prediction_residual_seconds": float(known_charge) - prediction
+        if workload_complete and prediction is not None
+        else None,
+        "charge_prediction_residual_withheld": (
+            "the complete planned workload lacks final charge or successful completion"
+            if not workload_complete
+            else "the record contains no selected cost prediction"
+            if prediction is None
+            else None
+        ),
+        "jobs_without_final_charge": sorted(set(jobs_out) - final_charges.keys()),
+    }
 
 
 def _positive_int(text: str) -> int:
@@ -3979,10 +4120,94 @@ def _fraction(text: str) -> float:
     return value
 
 
+def _cost_scenario(value: str) -> dict[str, Any]:
+    """Parse an explicit sensitivity assumption; the values carry zero confidence claims."""
+    try:
+        name, overhead, latency = value.split(":")
+        values = [float(overhead), float(latency)]
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("cost scenario needs NAME:OVERHEAD_SECONDS:LATENCY_US") from error
+    if (
+        not name
+        or name[0] not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        or any(
+            character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" for character in name
+        )
+    ):
+        raise argparse.ArgumentTypeError("cost scenario name starts with a letter/digit and uses letters/digits/_/-")
+    if name == "nominal":
+        raise argparse.ArgumentTypeError("cost scenario name nominal is reserved for the base cost model")
+    if any(not math.isfinite(number) or number < 0 for number in values):
+        raise argparse.ArgumentTypeError("cost scenario overhead and latency must be finite and nonnegative")
+    return {"name": name, "job_overhead_seconds": values[0], "classical_latency_us": values[1]}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--backends", type=lambda s: s.split(","), help="comma-separated pin; default all accessible")
     parser.add_argument("--groups", type=lambda s: s.split(","), help="comma-separated experiment groups")
+    parser.add_argument(
+        "--family", choices=FAMILY_NAMES, help="matched diagnostic family with statistical design admission"
+    )
+    parser.add_argument(
+        "--optimize", action="store_true", help="search bounded shot and replica tiers for the diagnostic family"
+    )
+    parser.add_argument(
+        "--objective",
+        choices=("minimum_charge", "precision_at_budget"),
+        default="minimum_charge",
+        help="rank admitted designs by charge or worst normalized precision within the declared budget",
+    )
+    parser.add_argument(
+        "--cost-scenario",
+        dest="cost_scenarios",
+        action="append",
+        type=_cost_scenario,
+        default=[],
+        help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
+    )
+    parser.add_argument("--local-compute", choices=("cpu", "gpu", "hybrid"), default="cpu")
+    parser.add_argument("--simulation-threads", type=_positive_int, default=2)
+    parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
+    parser.add_argument(
+        "--shot-tiers",
+        type=lambda value: [_positive_int(item) for item in value.split(",")],
+        default=[2048, 4096, 8192, 16384],
+    )
+    parser.add_argument(
+        "--replica-tiers", type=lambda value: [_positive_int(item) for item in value.split(",")], default=[1, 2, 4]
+    )
+    parser.add_argument(
+        "--optimizer-candidates",
+        type=_positive_int,
+        default=6,
+        help="maximum routed family sets before replica and shot expansion",
+    )
+    parser.add_argument("--model-shots", type=_positive_int, default=32768)
+    parser.add_argument(
+        "--precision", type=float, default=0.08, help="simultaneous terminal-contrast half-width for the folded family"
+    )
+    parser.add_argument("--alpha", type=float, default=0.05)
+    parser.add_argument("--power", type=float, default=0.8)
+    parser.add_argument("--simulation-alpha", type=float, default=0.01)
+    parser.add_argument(
+        "--job-overhead-seconds",
+        type=float,
+        default=2.3,
+        help="explicit planning assumption; historical dynamic-job overhead",
+    )
+    parser.add_argument(
+        "--classical-latency-us",
+        type=float,
+        default=20.0,
+        help="explicit unmeasured per-feed-forward-stage cost assumption",
+    )
+    parser.add_argument("--reserve-seconds", type=float, default=0.0, help="quota retained after all job ceilings")
+    parser.add_argument(
+        "--max-total-execution-seconds",
+        type=float,
+        help="combined ceiling across every backend and job; required for submission and diagnostic design",
+    )
     parser.add_argument("--seeds", type=int, default=DEFAULT_SEEDS, help="transpiler seeds per group and backend")
     parser.add_argument("--max-pending", type=int, default=DEFAULT_MAX_PENDING)
     parser.add_argument("--out", type=Path, help="directory under which the run's audit record is written")
@@ -4069,6 +4294,53 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--approved-record-sha256 applies only with --submit")
     if args.max_execution_seconds is not None and args.max_execution_seconds <= 0:
         parser.error("--max-execution-seconds must be positive")
+    if args.seeds <= 0:
+        parser.error("--seeds must be positive")
+    if args.submit and args.max_total_execution_seconds is None:
+        parser.error("--submit needs --max-total-execution-seconds, the combined invocation ceiling")
+    if args.family and (args.groups or args.twirl or args.dd):
+        parser.error("matched families require their complete group set and a common unmitigated execution policy")
+    if args.optimize and not args.family:
+        parser.error("--optimize requires --family and its explicit scientific observable contract")
+    if (args.objective != "minimum_charge" or args.cost_scenarios) and not args.family:
+        parser.error("--objective and --cost-scenario require --family scientific admission")
+    if args.objective == "precision_at_budget" and args.family != "folded-qpe":
+        parser.error("precision_at_budget requires the folded-qpe precision-only family")
+    if len({scenario["name"] for scenario in args.cost_scenarios}) != len(args.cost_scenarios):
+        parser.error("--cost-scenario names must be distinct")
+    if args.family and (args.max_execution_seconds is None or args.max_total_execution_seconds is None):
+        parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
+    if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
+        parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if args.family:
+        args.isolated_reference = False
+    for name in ("alpha", "power", "simulation_alpha"):
+        if not math.isfinite(getattr(args, name)) or not 0 < getattr(args, name) < 1:
+            parser.error(f"--{name.replace('_', '-')} must lie strictly between zero and one")
+    for name in ("precision", "max_total_execution_seconds"):
+        value = getattr(args, name)
+        if value is not None and (not math.isfinite(value) or value <= 0):
+            parser.error(f"--{name.replace('_', '-')} must be finite and positive")
+    for name in ("job_overhead_seconds", "classical_latency_us", "reserve_seconds", "min_remaining_seconds"):
+        value = getattr(args, name)
+        if not math.isfinite(value) or value < 0:
+            parser.error(f"--{name.replace('_', '-')} must be finite and nonnegative")
+    try:
+        local_compute.validate(local_compute.settings(args))
+    except ValueError as error:
+        if args.out:
+            failed_dir = args.out / datetime.now(UTC).strftime("%Y-%m-%dT%H%M%S.%fZ")
+            failed_dir.mkdir(parents=True, exist_ok=False)
+            write_json(
+                failed_dir,
+                {
+                    "state": "local_compute_unavailable",
+                    "policy": local_compute.settings(args),
+                    "reason": str(error),
+                },
+            )
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 1
     service = QiskitRuntimeService()
     try:
         if args.collect:
@@ -4089,6 +4361,15 @@ def main(argv: list[str] | None = None) -> int:
             run_dir.mkdir(parents=True, exist_ok=False)
             write_archive(run_dir, choices)
             write_json(run_dir, record)
+            if args.family and not args.submit:
+                from qpu_cases import write_case
+
+                try:
+                    case_path = write_case(run_dir, record)
+                except (ValueError, OSError) as exc:
+                    raise LiveRunError(f"written case validation failed: {exc}") from exc
+                if case_path is not None:
+                    print(f"unapproved written case: {case_path}")
         if args.submit and run_dir:
             try:
                 submit(

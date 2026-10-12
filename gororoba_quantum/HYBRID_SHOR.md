@@ -66,14 +66,14 @@ feed-forward test that record contains. For N = 21, a = 4 at two phase
 bits (order 3), the [source notes](../literature/notes/1111.4147.md) propose
 probabilities (3/8, 1/4, 1/8, 1/4) with feed-forward and
 (3/8, 1/8, 1/8, 3/8) without it, in phase-index order (0, 1, 2, 3), a total
-variation distance of 1/8. The repository gate checks sorted sampled
-probability masses, so outcome-label permutations pass that check. Before
-a hardware case, an independent exact branch or coherent-QPE calculation
-must validate all four labeled probabilities and the classical-register
-bit order that decodes into phase indices 0 through 3. Order recovery is
-zero at two bits, so the proposed observable is the labeled distribution;
-the [hardware plan](HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
-tracks that validation prerequisite. The
+variation distance of 1/8. `qpe_diagnostics.py` derives the exact labeled
+probabilities, checks circuit branches and sampled labels in phase-index
+order `b0 + 2*b1`, and rejects a swapped-register mutation.
+`order_finding.py` also checks the sampled frequencies against those labeled
+laws. Order recovery is zero at two bits, so the proposed observable is the
+labeled distribution; the
+[hardware plan](HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
+tracks statistical admission and the separate approval boundary. The
 [semiclassical-QFT source note](../literature/notes/quant-ph-9511007.md)
 grounds the independent coherent-QPE comparison.
 

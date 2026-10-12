@@ -4,6 +4,139 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+## Source-closure audits
+
+`verify_source_closure.py` compares every declared experiment source with the
+commit named by a retained record, recomputes the experiment digest, and
+checks committed dependency pins against installed and recorded versions.
+The manifest comes from the committed runner. The report lists unmanifested
+Python files and broader directory status separately; exclusion alone
+assigns neither safety nor completion status.
+
+The recorded `sources_modified` flag covers the whole experiment directory,
+including documentation and unmanifested files. The verifier preserves that
+flag and the retained record bytes. Its separate `source-closure.json`
+records the bounded comparison at audit time. Changed source or dependency
+inputs fail the audit; the verifier does not rewrite historical provenance.
+
+From the repository root, select a retained record and run:
+
+```sh
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  : "${RUN_RECORD:?set RUN_RECORD to a retained record.json path}"
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/live/verify_source_closure.py --repo . --record "$RUN_RECORD"
+)
+```
+
+`--out` selects a separate JSON destination. An existing audit accepts a
+refresh only when its normalized repository-relative record path and record
+SHA-256 both match the new audit. Missing identity, changed record bytes,
+and a different run each reject replacement and preserve the destination.
+The writer also refuses to replace a non-audit artifact. `--check` exercises
+source, manifest, requirements, record-digest, recorded-version, and
+installed-version mutations in a temporary synthetic Git repository. Output
+checks cover new reports, same-record refreshes, and rejection with both
+runs' records and sibling audit bytes preserved. The utility performs local
+reads and writes its separate audit artifact; it constructs zero IBM service
+or Sampler objects.
+
+## Fresh folded case with native CPU qualification
+
+The [folded dry run](2026-10-12T024756.245948Z/record.json) completes at
+source `7ef9f29606dfd6a77361580f79b89b74cfcd037c` with
+`sources_modified=false`. The [source audit](2026-10-12T024756.245948Z/source-closure.json)
+confirms all 21 declared files and installed dependency versions. The
+[written case](2026-10-12T024756.245948Z/UNAPPROVED_CASE.md) remains unapproved.
+
+Fresh Kingston metadata supports 8192 shots per PUB across twelve dynamic
+and four static PUBs. All twelve endpoint half-widths equal
+`0.040945053228709165`. Nominal modeled charge is `39.611690496` seconds;
+the declared latency-stress scenario gives `45.522410496` seconds. Two
+60-second job ceilings plus a 60-second reserve fit the recorded 591-second
+remaining quota. The record contains zero submission entries.
+
+The [preparation summary](2026-10-12T024756.245948Z/preparation.json) and
+[replay script](2026-10-12T024756.245948Z/replay.sh) retain the installed CPU
+policy and bounded search. The command exits zero in 246 seconds. The
+[validation summary](2026-10-12T024756.245948Z/validation.json) records the
+complete repository gates at the same implementation commit: exit zero,
+453 seconds, and 43 type-checked source files. Tracked-file hashes, index,
+HEAD, local refs, Aer package, and extension hash match before and after
+those gates; the concurrent jobs create only the two named untracked
+evidence directories on the measured checkout surface. The
+[checksums](2026-10-12T024756.245948Z/SHA256SUMS) bind all retained members.
+
+## CPU-policy and precision-cost evidence
+
+The following submit-free records name commit `877f73c2bd15f242a8a5d54089347ab0bcf6d16d`
+and preserve `sources_modified=true`. Their separate source-closure reports
+observe all 21 declared source files equal to that commit and every pinned
+package equal to its installed version. The broad directory status remains
+visible in each sidecar. Both records retain CPU density matrices, double
+precision, two threads, 512 MB, and disabled shot branching.
+
+| Record | Bounded result |
+|---|---|
+| [Default preparation](2026-10-12T014428.093689Z/record.json) | 4096 shots; 7 groups, 38 members, 26 PUBs (17 static, 9 dynamic), and 147 evaluated replica circuits. The general run supplies preparation evidence; family optimizer costs and endpoint intervals are absent. |
+| [Folded precision design](2026-10-12T014450.672483Z/record.json) | `precision_at_budget` selects 8192 shots and 16 PUBs (12 dynamic, 4 static). All twelve endpoint half-widths are 0.040945053228709165. Nominal charge is 39.624273408 seconds; the declared latency-stress scenario raises the estimate to 45.534993408 seconds. |
+
+The folded scenario sets 4.6 seconds overhead and 60 microseconds per
+sequential classical stage. Each job has a 60-second ceiling; the invocation
+reserves 120 seconds plus a 60-second quota reserve. Those figures are
+planning assumptions and enforced ceilings, distinct from measured QPU
+billing. The [written case](2026-10-12T014450.672483Z/UNAPPROVED_CASE.md)
+remains explicitly unapproved. Both records stay `planned` and contain zero
+submission entries. Source comparisons appear beside the
+[default record](2026-10-12T014428.093689Z/source-closure.json) and the
+[folded record](2026-10-12T014450.672483Z/source-closure.json).
+
+## Native N21 model-resolution rejection
+
+The [N21 dry run](2026-10-12T020459.130482Z/record.json) retains
+`design_infeasible` after a fresh Kingston calibration and a bounded search of
+one routed candidate, one replica, and 2048/4096/8192/16384 hardware-shot tiers.
+The 256-shot native noise prediction gives a signed contrast of 0.05078125
+with a simultaneous simulation allowance of 0.48016139565996035. Every tier
+fails positive-effect and power admission. The rejection belongs to the
+supplied design and model-shot resolution; physical impossibility and the
+feasibility of other designs remain outside that result.
+
+The budget gate admits one 60-second job ceiling plus a 60-second quota
+reserve from 591 remaining seconds. The CLI invokes zero submissions and
+retains two dynamic PUBs. A separate 2048-shot local evaluation gives a
+contrast difference of 0.01953125; the optimizer retains its preregistered
+256-shot predictions and rejection. The case writer produces no submission
+case for the rejected design.
+
+Both native Aer batches report CPU density matrices, seven active qubits,
+double precision, two configured threads, and disabled shot branching. The
+256-shot batch takes 97.803 seconds and the 2048-shot batch takes 770.300
+seconds; the complete command takes 917.79 seconds. Those timings describe
+one invocation under concurrent host work. The
+[source audit](2026-10-12T020459.130482Z/source-closure.json) verifies all 21
+declared files against recorded commit `4d9b1ce` and preserves the broader
+`sources_modified=true` flag. The
+[native preparation record](2026-10-12T020459.130482Z/native-preparation.json)
+retains the replay arguments and environment, the mapped native-extension
+digest, package `python-qiskit-aer 0.17.2-3`, process observations, and artifact
+checks. The QPY archive and original record remain byte-identical to the
+completed dry run.
+
+## Record schemas
+
+- **Schema 7 records.** The
+  `live-target-statistical-design-invocation-budget-v1` contract adds bounded
+  experiment selection, signed observable contracts, calibration-bound family
+  controls, and invocation-wide ceiling reservations. Approval binds the
+  selected repetition settings and job/PUB cost inputs. Feasible family dry
+  runs also produce `UNAPPROVED_CASE.md`; infeasible designs retain their
+  reasons and a diagnostic archive. Collection reports the shared family
+  inference and final billing, with full-workload cost residuals restricted
+  to successful completed jobs. See
+  [bounded QPU experiment design](../../gororoba_quantum/QPU_OPTIMIZATION.md).
 - **Schema 6 records.** The
   `live-target-cross-group-fused-pubs-scheduler-usage-v1` contract keeps the
   schema-5 fused-PUB surface and adds per-PUB scheduler timing and per-job

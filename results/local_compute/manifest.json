@@ -1,0 +1,184 @@
+{
+  "files": [
+    {
+      "bytes": 10615,
+      "path": "cpu_branching_benchmark.py",
+      "role": "historical-generator",
+      "sha256": "bc198116275895e5255f2054378ff5829beff23f268ad0712e8014113301ff08",
+      "source_bytes": 10615,
+      "source_name": "cpu_branching_benchmark.py",
+      "source_sha256": "bc198116275895e5255f2054378ff5829beff23f268ad0712e8014113301ff08",
+      "transformation": "byte-identical copy"
+    },
+    {
+      "bytes": 13655,
+      "path": "cpu_branching_qualify.py",
+      "role": "historical-generator",
+      "sha256": "273b73d2c1e439076a2a2fcc6528985bfd6d8e5981827cc4032297fa1a4de5d3",
+      "source_bytes": 13655,
+      "source_name": "cpu_branching_qualify.py",
+      "source_sha256": "273b73d2c1e439076a2a2fcc6528985bfd6d8e5981827cc4032297fa1a4de5d3",
+      "transformation": "byte-identical copy"
+    },
+    {
+      "bytes": 17860,
+      "path": "cpu_branching_inputs.qpy.gz",
+      "role": "raw-exact-target-evidence",
+      "sha256": "68b13f7cec9ca389f4752309ee25078aa0441f47ec7522eab886a761a5f201d1",
+      "source_bytes": 725842,
+      "source_name": "cpu_branching_inputs.qpy",
+      "source_sha256": "9fe387171f4f00e45ce9f1225158961ba1742fe75323960d9698c2d4c08b98d6",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 5341,
+      "path": "cpu_branching_results.json.gz",
+      "role": "interrupted-checkpoint",
+      "sha256": "5c37b8f1c351563036030a75cbb381b81f5843489e20a1a6cacc983dd398077f",
+      "source_bytes": 160611,
+      "source_name": "cpu_branching_results.json",
+      "source_sha256": "c4be848ef8a64336088b3621bc60c06e1fbd0abda4f982d5910644c75bb86c63",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 8878,
+      "path": "cpu_branching_qualification.json.gz",
+      "role": "completed-failed-qualification",
+      "sha256": "11a92e7870540ad4cad53ca1fdc8dd3e719b896d53b2bca0e88084942f6f9b02",
+      "source_bytes": 203634,
+      "source_name": "cpu_branching_qualification.json",
+      "source_sha256": "45690cc3f408ffd52bb51b36eb84dbc038a83542d585e9a4b0711feb1fef14ba",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 178911,
+      "path": "cpu_branching_noise_semantic.json.gz",
+      "role": "reconstructed-noise-evidence",
+      "sha256": "a7945b73b221bc8f9efc3107ef9a5f0bead4bd050ac4b7fcd982b77f6604f5cf",
+      "source_bytes": 7551913,
+      "source_name": "cpu_branching_noise_semantic.json",
+      "source_sha256": "134346e41ae3cd572a5d4eec787671d441273be5236ae09611cdaa4ba077d8ea",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 4292,
+      "path": "GPU_INVENTORY_OBSERVATIONS.json",
+      "role": "transcribed-observation",
+      "sha256": "ac0bec2acac499f7f4ad718ed84583a97ea10215184f2d5f39b62447c1e0b5fe",
+      "source_bytes": 4301,
+      "source_name": "GPU_INVENTORY_OBSERVATIONS.json",
+      "source_sha256": "55ee2f628652d51a29f216a1516ce4cc6efc31223cd778e9bd4afbbb98ec0a5c",
+      "transformation": "reduce loaded CUDA library absolute path to basename; sort JSON keys"
+    },
+    {
+      "bytes": 15634,
+      "path": "summary.json",
+      "role": "synthesized-truth-surface",
+      "sha256": "6f25d5ff8a554ac13a4a472825b0be12c7707f04ba7c5939f9db798a0d8dd382",
+      "transformation": "Extract qualification observations and append explicit provenance limits."
+    },
+    {
+      "bytes": 12348,
+      "path": "README.md",
+      "role": "evidence-explanation",
+      "sha256": "5e82dc738147ec99373f5392d1d6e264d280c31ac7845f1c1b76992535f55f0e",
+      "transformation": "New retention documentation or verifier."
+    },
+    {
+      "bytes": 11212,
+      "path": "verify_evidence.py",
+      "role": "integrity-and-result-verifier",
+      "sha256": "a66b5c10c9e59b65a7aca5003c157f875742f0039469c776e33d692c290f82f4",
+      "transformation": "New retention documentation or verifier."
+    },
+    {
+      "bytes": 7689,
+      "path": "cpu_branching_rca.py",
+      "role": "replay-generator-with-canonical-channel-ordering",
+      "sha256": "e4e8d82d5cffc447781dbb64443e7fb4cc97ddea6e1bf112b769b6e316398591",
+      "source_bytes": 6299,
+      "source_name": "cpu_branching_rca.py",
+      "source_sha256": "ccff8c991ce6eb0f9a5045025aac95ac36ca717c8d978f8f6f4d7d2b5b1125e3",
+      "transformation": "Retain source schedule; add import sorting, exact Python/package version checks, fixture config/properties hash checks, and replay source hashing after original result capture. Original result bytes remain unchanged."
+    },
+    {
+      "bytes": 1392,
+      "path": "cpu_branching_rca.json.gz",
+      "role": "completed-bounded-non-reproduction",
+      "sha256": "bf99a87cba3a470ee3b7a5e536a718db7fd66570cd1b9024b33a4fece20f7237",
+      "source_bytes": 18681,
+      "source_name": "cpu_branching_rca.json",
+      "source_sha256": "438420cbc1ae622b382157528104eeed650a716a8281dbc0099271a6a6f8e0a3",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 7767,
+      "path": "cpu_branching_reuse_probe.py",
+      "role": "replay-or-analysis-generator",
+      "sha256": "7c883cda1851d02a9232a6b8ac880a921fe3eda7f6638f7a4b0ef8f72a38ab6a",
+      "source_bytes": 7597,
+      "source_name": "cpu_branching_reuse_probe.py",
+      "source_sha256": "02e6794b65242a131ee6d9405d8b04f439a53d73d310517c10033d83c62049b4",
+      "transformation": "Copy guarded portable replay; add exact Python version check and repository import order after capture. Executed-source archive preserves original script."
+    },
+    {
+      "bytes": 6847,
+      "path": "cpu_branching_reuse_probe.json.gz",
+      "role": "raw-completed-replay",
+      "sha256": "0de6143f1656e335cb0fe6453fc50e5f9c51a24adda7705e8a262fa779cdbdbc",
+      "source_bytes": 219280,
+      "source_name": "cpu_branching_reuse_probe.json",
+      "source_sha256": "59f22c8fe331ec6500875044496ff8b5a0dfcef47877134657e0ac48b6629d32",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 22658,
+      "path": "cpu_branching_reuse_analysis.py",
+      "role": "replay-or-analysis-generator",
+      "sha256": "f30e07fbb30f0460e880328a0dba8b4cef2856ca513dae6382010d9400a9352c",
+      "source_bytes": 8878,
+      "source_name": "cpu_branching_reuse_analysis.py",
+      "source_sha256": "8f17a17b125beab712a169785da6ec1ba0e2fff8ea98edac5c786607f572e323",
+      "transformation": "Add post-capture QPY-bound execution-mode classification and regression checks, including density-matrix reset and measurement-deferral eligibility. Preserve the original analysis archive and scientific comparisons."
+    },
+    {
+      "bytes": 6305,
+      "path": "cpu_branching_reuse_analysis.json.gz",
+      "role": "completed-failed-replay-analysis",
+      "sha256": "7749c07886cda6d5653519eda2c2b827ac633da853db6ab7b82aeb3a6129cf53",
+      "source_bytes": 87640,
+      "source_name": "cpu_branching_reuse_analysis.json",
+      "source_sha256": "a733693409c8291966a174748aa90d519f21f3e6bf8bb9e484622bc8aea84752",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 2289,
+      "path": "cpu_branching_reuse_probe_executed.py.gz",
+      "role": "executed-replay-source",
+      "sha256": "646e7f527cfe6c71292513488167a1d14149d0d2c21134d78e4402c74ccb5621",
+      "source_bytes": 6990,
+      "source_name": "cpu_branching_reuse_probe_executed.py",
+      "source_sha256": "bb6557e1c7f927b607bffc7a89124dfa354b21fb6817707166ac9e7ddc9ccd0d",
+      "transformation": "lossless gzip, compression level 9, timestamp 0"
+    },
+    {
+      "bytes": 6374,
+      "path": "check_verify_evidence.py",
+      "role": "optimized-python-integrity-regression-checker",
+      "sha256": "1ffa9aa814b31f3bf395f0d6cd69b50ac3ddecd3d4c018719bd4a05d4dcf3417",
+      "transformation": "New temporary-fixture regressions for valid, corrupted, and missing-contract evidence across Python optimization modes."
+    },
+    {
+      "bytes": 5114,
+      "path": "cpu_branching_execution_mode_audit.json",
+      "role": "post-capture-execution-mode-audit",
+      "sha256": "a47a8b547cec7599b9f7bd7e44fd539a20313699de4e23b7b2ce005d6968c87d",
+      "transformation": "Extract circuit-bound execution-mode checks from the corrected analyzer; compare scientific fields and original archive digests without replacing historical evidence."
+    }
+  ],
+  "purpose": "Retain failed CPU branching qualification and bounded local GPU capability observations.",
+  "qpu_jobs_submitted": 0,
+  "schema_version": 1,
+  "serialized_noise_scope": "Serialized channels only; NoiseModel.to_dict excludes custom delay RelaxationNoisePass. Pinned fixture/code and T1/T2/dt inputs remain necessary for full-model replay.",
+  "source_provenance_boundary": "The benchmark records a repository HEAD but omits dirty-source hashes; the capture does not establish a clean source tree. The retained benchmark script includes a later semantic-noise digest correction."
+}

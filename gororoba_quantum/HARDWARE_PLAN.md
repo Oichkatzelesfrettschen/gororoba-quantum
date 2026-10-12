@@ -15,6 +15,16 @@ selects Kingston for all seven groups, and archives the exact 14 static and six
 dynamic fused PUBs. The explicit dry-run queue bound qualifies the fused
 execution path but does not establish default-policy submission readiness.
 
+The [bounded experiment-design path](QPU_OPTIMIZATION.md) adds matched
+folded-QPE controls and the labeled N=21 feedback diagnostic. Its schema-7
+records retain explicit observables, conditional statistical admission,
+charged-time assumptions, and aggregate invocation ceilings. Historical
+records below retain their original schemas and evidence scope.
+
+The [execution and optimization roadmap](QPU_EXECUTION_ROADMAP.md) reconciles
+the three pending scientific cases, current job-mode semantics, retained
+QPU-second estimates, and source-grounded accuracy and runtime priorities.
+
 ## What each group claims and what refutes it
 
 | group | claim | observable | control or null | falsifier |
@@ -159,7 +169,7 @@ so the two ceilings total 180 s; 90 s does not cap the combined invocation.
 
 ## Submission controls
 
-1. **Default-policy refresh.** Run the schema-6 fused-PUB path under
+1. **Default-policy refresh.** Run the schema-7 fused-PUB path under
    `--max-pending 25`. The dry run records the selected groups, live
    calibration, exact circuits, and per-job execution ceiling for the case.
    Retained default and static dry runs qualify their recorded plans;
@@ -168,7 +178,11 @@ so the two ceilings total 180 s; 90 s does not cap the combined invocation.
    predictions, expected seconds, and per-job ceilings with their combined
    maximum. The `--submit` command names the dry run with `--approved-record`,
    its digest with `--approved-record-sha256`, and the per-job ceiling with
-   `--max-execution-seconds`. The fresh plan must match the record in digest,
+   `--max-execution-seconds`. `--max-total-execution-seconds` caps the sum
+   of every backend/kind job's ceiling; `--reserve-seconds` retains quota
+   beyond that sum. Diagnostic families also bind their exact signed
+   observables, statistical thresholds, and cost assumptions. The fresh
+   plan must match the record in digest,
    shots, policy, versions, instance, groups, backends, seeds, layouts,
    replica qubits, fused PUB manifests, calibration at refresh and every
    batch, and QPY bytes. A mismatch writes an `approval_required` record.
@@ -190,22 +204,26 @@ its remaining mechanism to the matched diagnostic experiment.
 
 The hardware queue has three separate cases:
 
-1. **Folded-QPE mechanism ladder.** Implement and validate the four matched
-   controls under "Risks" below on one work register and layout. Archive a
-   submit-free dry run and write its measurement, control, and time case.
-   The case remains unwritten and requires owner approval.
-2. **N = 21, a = 4 at two phase bits.** Use the four labeled phase outcomes
-   as the observable; order recovery is zero at that resolution. Before a
-   hardware case, validate the register-to-phase bit order and each labeled
-   probability, with and without feed-forward, against an independent
-   coherent-QPE or exact branch calculation. The proposed distributions in
-   [HYBRID_SHOR.md](HYBRID_SHOR.md#evidence-levels) differ by 1/8 in total
-   variation. The `order_finding.py` gate compares sorted sampled masses,
-   which permits outcome-label permutations and therefore leaves the
-   labeled-distribution check open. Compile matched controls, retain a
-   submit-free dry run, and write the case with a preregistered distribution
-   test and time bounds. The case remains unwritten and requires owner
-   approval.
+1. **Folded-QPE mechanism ladder.** `--family folded-qpe --optimize`
+   compiles four controls for every eigenstate label on a shared initial
+   control/work mapping. Exact branch checks validate all sixteen labeled
+   laws. The optimizer requires simultaneous precision for twelve raw
+   terminal-bit contrasts and accounts for twelve dynamic and four static
+   PUBs across two jobs. A fresh admitted dry run and its written
+   measurement, control, and time case remain prerequisites for owner
+   approval. [QPU_OPTIMIZATION.md](QPU_OPTIMIZATION.md) defines the delay
+   intervention and the limits of causal attribution.
+2. **N = 21, a = 4 at two phase bits.** `--family n21-feedback --optimize`
+   compares the labeled laws `(3, 2, 1, 2)/8` with feed-forward and
+   `(3, 1, 1, 3)/8` without it. `qpe_diagnostics.py` verifies those exact
+   laws against circuit branches and seeded labeled samples, and rejects
+   a swapped-register mutation. The signed score `(0, 1, 0, -1)` gives a
+   difference of 1/4; the laws differ by 1/8 in total variation. Order
+   recovery remains zero at this resolution. The conditional power gate
+   can reject every supplied design, preserving a `design_infeasible`
+   record rather than manufacturing hardware readiness. A fresh admitted
+   dry run, written distribution-test case, time bounds, and owner approval
+   remain necessary before hardware execution.
 3. **Static witnesses.** The retained case is written and awaits approval
    after the two dynamic questions. Twirling and DD remain off in its
    retained plan, so each static workload tests its own calibration-derived
@@ -248,21 +266,29 @@ The hardware queue has three separate cases:
   model's). Idle T1 and T2 during the scheduled measurement, round trip, and
   reset, charged by the schedule-aware replay, explain a quarter. The
   remaining discrepancy also varies with layout: two of six hybrid-Shor
-  layouts carry a coherent second-bit bias. The diagnostic ladder keeps the
-  work register and its layout fixed: (a) the archived circuit; (b) the
-  mid-circuit measurement replaced by an equal-duration delay with the
+  layouts carry a coherent second-bit bias. The diagnostic ladder pins a
+  shared initial work-register mapping: (a) the archived circuit; (b) the
+  mid-circuit measurement replaced by a calibrated delay with the
   conditional phase applied unconditionally for a prepared label; (c) the
   measurement kept and the feed-forward removed; (d) two-control-qubit phase
   estimation with terminal measurements. Rung (b) against (a) probes both
   measurement backaction and the measurement-dependent correction path,
   including incorrect recorded bits. Rung (d) against (a) compares the
-  dynamic segment with a coherent implementation whose added control and
-  gates require separate accounting. Rung (a) against schedule-aware replay
+  dynamic segment with a coherent implementation whose added control, gates,
+  routing, and terminal readout sites require separate accounting. Each
+  prepared phase uses the compiled archived arm's first measurement writer
+  to obtain a fresh Target duration, rounded up to timing granularity. The
+  compiler verifies that the matching delay uses the same physical writer;
+  the record retains per-phase delays and every arm's measurement sites.
+  Rung (a) against schedule-aware replay
   measures the residual model error. The case must state these control
   assumptions before attributing a difference to a single mechanism. The
-  proposed budget is twelve PUBs at 4,096 shots on one layout; compilation
-  and a submit-free dry run establish the actual schedule and time case
-  before owner approval.
+  implemented ladder has sixteen PUBs across separate dynamic and static
+  jobs, with one uniform shot tier chosen from the bounded design search.
+  Compilation and a submit-free dry run retain Target duration bounds and
+  explicit latency/overhead assumptions. Collected backend scheduler
+  metadata supplies executed schedules after separately approved hardware
+  execution.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.
