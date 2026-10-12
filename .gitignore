@@ -16,5 +16,4 @@ qiskit-ibm.json
 *.key
 *apikey*
 
-# Downloaded papers stay local; notes under literature/notes are tracked
-literature/pdf/
+# Primary-source PDFs and notes are tracked under docs/.

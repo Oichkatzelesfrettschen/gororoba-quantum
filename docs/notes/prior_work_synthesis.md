@@ -22,7 +22,7 @@ provide retrieval and reading provenance.
 |---|---|---|---|
 | |G_n| = 2^(n + 2^(n-1)), H_n elementary abelian of rank 2^(n-1), C_n of rank 2^(n-1) - 1 | known theorem reproduced | Kirshtein 2012, eq. (5), Thm 34, Thm 35, Lemma 10 (1207.4230.md) | the parity-lemma proof, the Boolean-coordinate form, the Rocq plan; Kirshtein's printed bound leaves a factor 2 that Lemma 2 closes [A] |
 | H_n as even-weight functions of the low bits plus the top coordinate; RM(n-2, n-1) direct sum | reformulation of a known theorem | Kirshtein p. 20 generators; Elkies, RM(m-1, m) is the parity-check code (elkies-2013-m256.md) | H_n = (g \| g + c 1), C_n = H_n shortened at the origin [A] |
-| sign-function degree log2(dim) - 1; associator degree max(1, bitlen(max(i, j)) - 2); census 21, 84, 360, 1488, 6048 | candidate new result | Bales 2016 states no ANF degree (1602.02843.md); induction proofs from his Cor. 4.3, Prop. 4.2, Prop. 4.5 exist as unverified derivations [A] | the formal proof |
+| sign-function degree log2(dim) - 1; associator degree max(1, bitlen(max(i, j)) - 2); census 21, 84, 360, 1488, 6048 | candidate new result | Bales 2016 states no ANF degree (1602.02843.md); induction arguments from Albuquerque-Majid Cor. 4.3, Prop. 4.2, Prop. 4.5 (math-9802116.md) exist as unverified derivations [A] | the formal proof |
 | Walsh spectral classes within one degree: 1, 1, 2, 6, 22 classes at dims 8 to 128 | candidate new result | none found; scripts/associator_walsh_classes.py [V] | the classification and its multiplicities |
 | sedenion zero-divisor spectrum {0 (x4), 1/2 (x8), 1 (x4)} | known theorem reproduced | BCDI 2009 Thm 7.2, Cor. 7.3, Prop. 7.4: M_a = L_{a*} L_a / \|a\|^2 with {0, 1, 2}; B^T B = M_a / 2 (0905.2987.md) | the Design D fringe as the eigenvalue-2 weight [A] |
 | Sedenion finite corpus and four-partner structure | known theorem reproduced | Reggiani 2024 Table 1; BDI 2005 Cor. 11.2 (2411.18881.md, math-0511691.md) | [shared count conventions](cayley_dickson_sparse_census.md): 84 table pairs, 336 ordered signed rows, 168 first-relative-sign +1 rows, 84 canonical first operands [V] |
@@ -58,42 +58,40 @@ layout had a cross-group one-hop neighbor in the packed PUB [H, V]. The factor-y
 hybrid Shor is true and phase-insensitive; folded QPE is the one feed-forward
 test the record contains [V].
 
-## What the program does next, in order
+## Current execution and research priority
 
-1. The feed-forward mechanism ladder on one layout (HARDWARE_PLAN.md,
-   "Risks"): archived circuit; measurement replaced by an equal delay with
-   the correction applied unconditionally; measurement kept and
-   feed-forward removed; two-control QPE. Each contrast tests a mechanism
-   under explicit control assumptions; the contrasts alone cannot assign
-   the whole residual to gate errors. The written case remains a prerequisite
-   for requesting hardware approval.
-2. The feed-forward-sensitive order-finding circuit, N = 21, a = 4 at two
-   phase bits, whose four-outcome distribution moves by 1/8 in total
-   variation in the sorted ideal probability masses when feed-forward is
-   removed. The sampled gate checks sorted masses; labeled-outcome validation
-   remains a prerequisite for a hardware case that relies on the exact
-   distribution. The N21 case follows the mechanism ladder.
-3. The two cubic Walsh classes at dimension 32 on five qubits
-   (collision probabilities 11/32 and 5/32), after the class census is
-   compared with a formal proof of the degree formula.
-4. Packing keeps a one-hop buffer between groups as the default
-   (QuMC's crosstalk window); the pilot's adjacency showed no cost at the
-   0.03 margin on one layout and is not evidence for every pair.
-5. Mathematics with finite acceptance tests: formalize the degree
-   induction; exact-arithmetic rerun of the A_6 Stiefel nullity (a
-   candidate negative answer to Moreno's open question [A]); the ZD_12
-   length-ratio parameter; the C1465 statement review in open_gororoba.
-   The A_5 sparse census, exact rank predicates, kernel-chart identities,
-   and restricted attachment topology have retained gates. The
-   [global classification roadmap](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md#global-classification-roadmap-and-admission-gates)
-   tracks the remaining continuous base components, smooth subdivisions,
-   full bundle attachments, global invariants, and unrestricted dimensional
-   construction.
-6. Cheap self-tests the handbacks named: the Fano-line Z-string product,
-   the 63/42 anticommutation split, the mixed-flat corpus shape.
-7. The [static job case](../../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md)
-   remains behind the mechanism ladder and N21. Its approximately 23-second
-   expectation differs from the two 90-second per-job service ceilings
-   (180 seconds combined). The case tests static-workload model conformance.
-   The Albert construction needs a different encoding than LCU (alpha of
-   1458) before a case exists.
+The [execution roadmap](../../gororoba_quantum/QPU_EXECUTION_ROADMAP.md)
+records completion of the 16-PUB folded-QPE mechanism ladder in two Kingston
+jobs, with 40 charged seconds. The first six-PUB pilot adds nine seconds.
+The [labeled N21 laws](../../gororoba_quantum/QPU_OPTIMIZATION.md) already
+have exact and compiled local checks; the retained hardware candidates still
+fail statistical admission. Earlier handbacks describe the earlier state.
+
+1. Reuse the three physical jobs' raw, ordered outcomes to challenge explicit
+   model explanations. The [decision contract](model_discrimination_optimizer.md)
+   specifies the falsifiers and the limits of the already-confounded contrasts.
+2. Select one measurable compiler or scheduling action, with matched controls,
+   a practical effect/degradation margin, and equal-or-lower charged-time
+   validation. Request hardware approval only against a newly admitted case.
+3. Qualify N21 synthesis and static mathematical witnesses locally in parallel.
+   Their distinct questions impose no automatic N21-before-static dependency.
+   Reconcile overlapping endpoints before spending on ripple/rank/static cases.
+4. Gate broad atlas expenditure on the model comparison and optimizer decision.
+   Many signed-cosine rows reproduce one ideal law; extra rows need a declared
+   information gain beyond that positive control.
+5. Advance [rank geometry](koebisu_rank_stratum_research.md) classically:
+   generalize the complete affine-XOR support family, certify local kernel
+   reductions, resolve smooth pieces and their links, then construct a global
+   attachment model. The exact rank predicates and restricted path topology
+   remain established; full real-locus geometry remains open.
+6. Use the [fresh Rocq audit](open_gororoba_folding_proofs.md) for phase-exact
+   sign-code reuse. It separates the universal binary-code proof from C881's
+   finite witness, conditional dimension arithmetic, and unproved topology
+   transfer. Existing polynomial sign synthesis still requires a fair physical
+   resource comparison; another implementation of the same recurrence alone
+   would duplicate existing work.
+
+The [historical static case](../../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md)
+estimates about 23 seconds with two 90-second caps. Its retained record grants
+no execution approval for a refreshed case. The Albert construction still
+requires a different encoding and an independently justified scientific task.

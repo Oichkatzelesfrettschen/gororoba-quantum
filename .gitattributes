@@ -1,0 +1,2 @@
+# Preserve primary-source PDF bytes and keep binary streams out of text diffs.
+docs/pdf/*.pdf binary

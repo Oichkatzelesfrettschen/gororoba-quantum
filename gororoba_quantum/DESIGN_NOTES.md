@@ -83,7 +83,7 @@ collision-rate estimator separates by 3/16. Every class size is a multiple
 of 126 or of 21 up to the factors 2 and 3, which is the shape a symmetry
 argument would explain; the closed form of the classes, their
 multiplicities, and their relation to the published twist formulas
-(literature/notes/1602.02843.md) are open, so the census is finite evidence
+(docs/notes/1602.02843.md) are open, so the census is finite evidence
 and the classification is a candidate result, not a theorem. The two cubic
 classes are the content of a five-qubit hardware comparison (does the
 compiled circuit preserve the predicted spectral distinction on one
@@ -150,7 +150,7 @@ Measured (results/hw_estimate/ibm_fez_record.json, calibration
 model gives P1 = 0.9685.
 
 Prior work on the same seven strings: Levratti (2026, author-hosted,
-literature/notes/levratti-2026-fano-css.md) reaches the identical dual
+docs/notes/levratti-2026-fano-css.md) reaches the identical dual
 Z-string Z^v of each Fano line by projective orthogonality from a Clifford
 triple product and ties it to Steane stabilizer supports by group labeling;
 every one of the 21 associator phases here is that Z^v with v orthogonal to
@@ -328,13 +328,13 @@ the ladder, and falsifiable observables with controls. Each claim carries one
 of four labels against the literature notes: known theorem reproduced, new
 proof or formalization, new implementation or measurement, or candidate new
 result. The sign-kernel order and rank are known in loop coordinates
-(literature/notes/1207.4230.md); the sedenion zero-divisor spectrum
+(docs/notes/1207.4230.md); the sedenion zero-divisor spectrum
 {0, 1/2, 1} is a rescaling of a known eigentheory result
-(literature/notes/0905.2987.md); the degree formula, its census, and the
+(docs/notes/0905.2987.md); the degree formula, its census, and the
 Walsh classes above are candidate results pending the comparison with the
-published twist formulas (literature/notes/1602.02843.md); the Fano Z-string
+published twist formulas (docs/notes/1602.02843.md); the Fano Z-string
 has close prior conceptual overlap
-(literature/notes/levratti-2026-fano-css.md); the Fano-Hamming-Steane
+(docs/notes/levratti-2026-fano-css.md); the Fano-Hamming-Steane
 incidence below is standard.
 
 ## Reference: Fano plane and the Steane code
@@ -719,9 +719,9 @@ ideal's support). Per member, the between-replica variance of the mean score
 minus the shot variance is the layout variance, a chi-squared test asks
 whether the replicas agree within shot noise, and a replica more than three
 shot standard deviations from the median is flagged
-(literature/notes/2507.08088.md, action item 3). Folded QPE's four
+(docs/notes/2507.08088.md, action item 3). Folded QPE's four
 eigenstates are equal-cost instances, so a two-way decomposition separates
-instance, layout, and interaction variance (literature/notes/2509.18259.md,
+instance, layout, and interaction variance (docs/notes/2509.18259.md,
 action item 4). Every pooled summary value is the mean of that value computed
 on each replica alone, so a ratio, fringe fit, or TVD and its interval share
 one estimand. Every pooled value gets a Student t interval over its replicas. A

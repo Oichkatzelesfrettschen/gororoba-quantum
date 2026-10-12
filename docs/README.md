@@ -1,4 +1,4 @@
-# Literature notes
+# Sources and research notes
 
 One note per paper under notes/. Each note:
 - carries the citation, the URL that served the PDF, and its sha256;
@@ -6,9 +6,36 @@ One note per paper under notes/. Each note:
 - rates relevance to (a) calibration-aware compilation on IBM hardware,
   (b) Cayley-Dickson structure, and (c) factoring resource estimates.
 
-The PDFs stay local under literature/pdf/, which is git-ignored. The Nature
-articles are paywalled, so their notes read the arXiv preprints, which differ
-from the version of record. Each of those notes says so at the top.
+The canonical source library lives under `docs/`: paper descriptions in
+`notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
+`evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
+byte count, page count, acquisition status, and owning note.
+[PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the complete PDF set from the
+repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
+
+The `literature -> docs` compatibility link preserves historical paths used
+in source comments, verification manifests, and the original ten-paper checksum
+file. Both names identify the same files. New browser links use `docs/`, since
+GitHub displays a directory symlink as a link blob. The two implementation-audit
+ledgers and the two mathematical guides named by their manifests retain their original
+bytes. Per-paper notes retain the scope and dates of their original readings;
+older references to an ignored/local cache describe that acquisition history.
+The registry records the retained copies and their fresh hash checks.
+
+The Nature articles are paywalled. The retained arXiv preprints remain distinct
+from the versions of record, including the two explicitly named PDF aliases.
+HTML-only sources and their reading scopes appear in the registry and notes.
+Downloaded documents retain their authors' notices and licenses; repository
+licensing does not relabel third-party papers.
+
+The [rank-stratum research decomposition](notes/koebisu_rank_stratum_research.md)
+connects Koebisu's Question 4, exact rank predicates, local kernel reductions,
+attachment geometry, and bounded hardware measurements. The
+[folding and Rocq audit](notes/open_gororoba_folding_proofs.md) identifies which
+dimensional reductions preserve the algebraic information and which formal
+statements the sister repository actually proves. The
+[model-discrimination decision](notes/model_discrimination_optimizer.md)
+sets the hardware priority before broad atlas expenditure.
 
 | note | paper | (a) | (b) | (c) |
 |---|---|---|---|---|
@@ -54,7 +81,17 @@ from the version of record. Each of those notes says so at the top.
 | 1806.01838 | Gilyen, Su, Low, Wiebe, Quantum singular value transformation and beyond (2018) | low | low | none |
 | 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
 | levratti-2026-fano-css | Levratti, Fano duality, projective orthogonality and the CSS bridge (author-hosted, 2026) | none | high | none |
-| levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted page, 2026) | none | low | none |
+| levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted manuscript, 2026) | none | low | none |
+
+| [2102.01682](notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
+| [2608.08232](notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
+| [2608.26893](notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
+| [2608.28176](notes/2608.28176.md) | Zhilina, Orthogonality graphs Part I (2021 journal; 2026 arXiv posting) | none | high | none |
+| [2608.28163](notes/2608.28163.md) | Zhilina, Orthogonality graphs Part II (2021 journal; 2026 arXiv posting) | none | high | none |
+| [2103.03008](notes/2103.03008.md) | Rudinger et al., Quantum-instrument GST (2021 preprint, 2022 journal) | high | none | none |
+| [2602.03938](notes/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
+| [Coste](notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |
+| [Hatcher](notes/hatcher-algebraic-topology.md) | Algebraic Topology, Chapter 0, attachment and quotient hypotheses | none | method | none |
 
 The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
@@ -113,7 +150,16 @@ manifests bind their hashes.
 [FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
 analysis.
 
-## Action items against the repository
+## Historical action items and current status
+
+The list below records the source review's original proposals. The
+[execution roadmap](../gororoba_quantum/QPU_EXECUTION_ROADMAP.md) owns live
+completion status. The folded mechanism ladder completes in two retained jobs;
+native static mitigation and coherent/dynamic option separation exist in the
+runner. Dynamic DD/twirling compatibility, N21 admission, initialization-delay
+qualification, and fresh hardware approval retain their documented gates.
+The [decision note](notes/model_discrimination_optimizer.md) supersedes any
+historical ordering that places a broad atlas before model discrimination.
 
 The notes were written against the dense design B: 224 CZ, P_zd = 0.319. The
 structural compile in gororoba_quantum/select_lcu.py supersedes it at 42 to 46

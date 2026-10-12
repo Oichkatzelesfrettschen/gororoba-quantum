@@ -64,7 +64,9 @@ Designs B and D against this source.
 
 - [I] The manuscript uses the sedenion zero-divisor set only through counts and the anticommutator dichotomy above. It has no zero-divisor product (e_i + t e_j)(e_k + s e_l) = 0, no linear combination of unitaries, and no interference observable, so it neither duplicates nor tests Designs B and D. The anticommutator mechanism in the previous bullet is a necessary condition on the index pairs of Design B and could be cited as a consistency check.
 
-## Action items
+The [active-stabilizer PDF audit](levratti-2026-active-stabilizers.md#mathematical-claims-and-checks) supplies the later full-text assessment of reference [4], including its convention checks and hardware claim limits.
+
+## Historical action items
 
 1. Add the manuscript to the Prior art section of gororoba_quantum/DESIGN_NOTES.md as an unreviewed independent statement of the Fano-line to Z-string duality, with the label "close prior conceptual overlap" and the 3-qubit versus 7-qubit distinction stated in one sentence. Acceptance: the sentence names Corollary 4.1(c), states that the manuscript builds no associator slice or circuit, and keeps the existing Albuquerque and Majid attribution. Source: Sections 3 and 4.
 2. Add an operator check beside Design A: for each of the 7 Fano lines the product L_p L_q L_{p xor q} equals plus or minus Z^(v_L) with v_L the vector orthogonal to the line, in cd_core's basis-index convention. Acceptance: 7 of 7 lines match with an explicit sign table. Source: Table 1; computed above.

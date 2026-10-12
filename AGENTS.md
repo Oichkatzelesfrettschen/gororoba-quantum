@@ -150,6 +150,37 @@ under temporary storage so the checkout retains source files only:
 The certificate proves finite Boolean permutation action. Operator checks in
 modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 
+## Source library and research replay
+
+`docs/` owns source notes, retained PDFs, retrieval identities and research
+replays. `literature -> docs` preserves recorded paths; new Markdown links use
+`docs/`. Immutable source ledgers retain their recorded bytes. Source changes
+also pass these local gates before push:
+
+```sh
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  ruff check --no-cache docs/verify_sources.py docs/evidence
+  ruff format --check --no-cache docs/verify_sources.py docs/evidence
+  mypy docs/verify_sources.py docs/evidence
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/local_schur/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/local_schur/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
+  shellcheck docs/evidence/folding_proofs/replay_rocq.sh
+  (cd docs/evidence/local_schur && sha256sum -c SHA256SUMS)
+  (cd docs/evidence/folding_proofs && sha256sum -c SHA256SUMS)
+)
+```
+
+Changes to proof replay inputs also follow the pinned Rocq replay in
+`docs/evidence/folding_proofs/README.md`. Imported paper parser diagnostics
+remain source limitations in the registry; checksum admission preserves the
+original bytes and differs from a fresh mathematical proof check.
+
 ## QPU time and calibration
 
 - The plan allows 600 s of quantum time on a rolling 28-day window: usage()
