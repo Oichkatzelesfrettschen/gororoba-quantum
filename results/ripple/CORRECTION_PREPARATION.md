@@ -1,5 +1,26 @@
 # Live-calibrated correction-policy preparation
 
+The scoring repair is committed at `efa187f`. Renewal stopped at backend
+admission: Fez exceeded the 25-job queue limit and Marrakesh reported
+maintenance. Kingston alone failed the required three-system snapshot
+condition. The [rejection evidence](correction-renewal-rejection.json) retains
+both discovery and a later eligibility observation. Current-source preparation
+and a fresh written approval case remain outstanding. Physical execution
+remains unapproved.
+
+The [fresh account observation](correction-renewal-account.json) records 551
+of 600 seconds available and an empty pending-account-job list at its stated
+time. Quota availability and backend eligibility are separate conditions.
+The [scoring validation receipt](scoring-repair-validation.json) records the
+software checks; those checks grant no hardware admission.
+
+## Historical case at source revision 67106bd1
+
+The retained record below remains immutable. Its 11.515410176-second nominal
+estimate, 14.470770176-second stress scenario and proposed 30-second ceiling
+apply to that historical preparation. The changed shared source digest and
+fresh calibration require a renewed case before execution.
+
 The complete four-PUB comparison selects Fez from 18 routed candidates using
 fresh Target/properties snapshots: six transpiler seeds for each of Fez,
 Kingston and Marrakesh. Every candidate passed the finite admission checks.

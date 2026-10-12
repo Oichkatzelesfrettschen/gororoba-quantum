@@ -74,7 +74,8 @@ owns the link from literature and observations to the next intervention.
    unavailable phase information to an unknown-phase algorithm.
 5. Price the complete admitted case. The historical conditional estimate for
    the four-PUB pilot is 11.2425 seconds. The current preparation linked above
-   supplies the renewed forecast and proposed ceiling. The
+   records renewal readiness; an admitted renewal must supply the fresh forecast
+   and proposed ceiling. The
    executed folded case attributes most nominal cost to repetition delay;
    precision selection, qualified initialization delay, and compatible endpoint
    packing therefore receive cost attention alongside circuit fidelity.

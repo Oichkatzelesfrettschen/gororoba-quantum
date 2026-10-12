@@ -30,9 +30,10 @@ decision. The [protocol](gororoba_quantum/MODEL_DISCRIMINATION.md) records the
 fixed-count rule and the separation between modeled sensitivity and measured
 improvement.
 
-The [fresh correction preparation](results/ripple/CORRECTION_PREPARATION.md)
-selects Fez from 18 candidates: 11.52 estimated QPU seconds, a 14.47-second
-stress scenario and a proposed 30-second cap. The case remains unapproved.
+The [correction preparation](results/ripple/CORRECTION_PREPARATION.md) records
+current-source renewal as unavailable at the backend-eligibility gate. Its
+retained historical Fez case estimated 11.52 QPU seconds, a 14.47-second stress
+scenario and a proposed 30-second cap. A fresh written case remains required.
 
 ## Contents
 

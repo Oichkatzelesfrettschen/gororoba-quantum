@@ -33,21 +33,22 @@ continuous classification and attachment proofs to exact classical work.
 The user prioritizes the [four-PUB model-discrimination design](MODEL_DISCRIMINATION.md)
 and its measurable known-label optimizer decision before broad atlas spending.
 The [prepared correction case](../results/ripple/CORRECTION_PREPARATION.md)
-implements that design and qualifies all 18 candidates across fresh Fez,
-Kingston and Marrakesh Targets/properties. Fez is selected at 8192 shots per
-PUB: 11.5154 nominal seconds, 14.4708 stress-scenario seconds and a proposed
-30-second ceiling. The case awaits explicit approval; actual returned schedules
+implements that design. Its historical three-system comparison selected Fez
+at 8192 shots per PUB: 11.5154 nominal seconds, 14.4708 stress-scenario seconds
+and a proposed 30-second ceiling. Renewal after the readout-scoring repair
+stopped at backend eligibility; the current source awaits a fresh written
+case. Exact-case approval precedes execution, and actual returned schedules
 must qualify before inference. The ripple/rank cases below stay held and
 unapproved while the optimizer decision gate is resolved.
 
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
-| [Matched correction pilot](../results/ripple/CORRECTION_PREPARATION.md) | One prepared dynamic Fez job | 4 | 11.5154 nominal; 14.4708 stress; ceiling 30 | Prepared across three live systems; unapproved |
+| [Matched correction pilot](../results/ripple/CORRECTION_PREPARATION.md) | One historical dynamic Fez case | 4 | Historical 11.5154 nominal; 14.4708 stress; proposed ceiling 30 | Renewal stopped at backend eligibility; unapproved |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
 | [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
-| [Ripple finite walk/box-kite comparison](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 146 | 157.0873 nominal; ceiling 180 | Locally admitted; unapproved |
-| [Rank-sector controls](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 36 | 39.9347 nominal; ceiling 60 | Locally admitted; unapproved |
+| [Ripple finite walk/box-kite comparison](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 146 | 157.0873 nominal; ceiling 180 | Historical local admission; renewal required; held |
+| [Rank-sector controls](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 36 | 39.9347 nominal; ceiling 60 | Historical local admission; renewal required; held |
 
 The completed folded case spends 40 seconds. The prepared ripple/rank subset
 contains two independent jobs, totaling 197.0220 nominal seconds, 201.6220

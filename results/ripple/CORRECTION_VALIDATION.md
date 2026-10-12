@@ -33,7 +33,7 @@ plain static, twirling/DD static and guarded dynamic circuits. Dynamic
 mitigation remains disabled. Every probe uses a local backend; the service
 constructor remains unused.
 
-The [fresh live case](CORRECTION_PREPARATION.md) admits the complete family
+The [historical live case](../live/2026-10-12T074042.840320Z/UNAPPROVED_CASE.md) admits the complete family
 after comparing 18 candidates across all three live systems. Its 41-file
 source closure and seven dependency versions match. A separate audit
 recomputes selection and costs, rerenders identical case bytes, parses the
@@ -45,3 +45,19 @@ joint-placement limit. That bounded rejection is retained explicitly; the
 four-PUB family succeeds independently. Both invocations send zero physical
 or mock primitive jobs. Returned hardware schedules and actual charged
 seconds remain execution-time evidence.
+
+## Readout scoring repair and renewal
+
+The [new receipt](scoring-repair-validation.json) binds source `efa187f`, the
+full repository and source-library gates, eight real-Target ranking cases and
+seven rejected scoring mutants. Normal and optimized algebra contracts agree.
+Candidate scores follow readout-writer binding, deterministic reranking and
+then truncation. The bounded primary frontier and primary-based placement
+quality retain their separate meanings.
+
+The live renewal exits 1 before compilation because backend eligibility
+cannot supply all three required snapshots. Its [retained rejection](correction-renewal-rejection.json)
+qualifies the failure path; it supplies neither a fresh timing estimate nor
+an executable approval case. Earlier pilot, atlas and measured-job records
+retain identical bytes. The earlier validation receipts retain their named
+historical revisions and scope.

@@ -3,12 +3,12 @@
 The user now prioritizes [model discrimination and a measurable optimizer
 decision](../../gororoba_quantum/MODEL_DISCRIMINATION.md) before broad atlas
 spending. Both cases below remain retained and unapproved behind that gate.
-The [four-PUB correction pilot](CORRECTION_PREPARATION.md) is implemented and
-qualified across 18 candidates on fresh Fez, Kingston and Marrakesh
-Targets/properties. Its prepared Fez case estimates 11.5154 nominal seconds
-and 14.4708 stress-scenario seconds, with a proposed 30-second ceiling.
-The case awaits explicit approval and returned-schedule qualification before
-any optimizer decision.
+The [four-PUB correction pilot](CORRECTION_PREPARATION.md) is implemented.
+Its historical Fez case estimated 11.5154 nominal seconds and 14.4708 stress
+seconds under a proposed 30-second ceiling. Renewal after the scoring repair
+stopped at the three-system eligibility gate; the current source awaits a
+fresh preparation and written approval case. Returned schedules must qualify
+before any optimizer decision.
 
 The integrated objective joins the user's mathematical, scientific, philosophical,
 and visual requests: realize exact Cayley-Dickson predictions through measured

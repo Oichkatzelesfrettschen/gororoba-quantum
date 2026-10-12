@@ -79,7 +79,7 @@ The decision does not certify unknown-eigenstate QPE or general Shor.
 | Close review findings | Focused iterative commits, mandatory gates, Copilot review and honest Codex-quota status. Keep PR #36 open; source-owner integration proceeds independently. |
 | Extend mathematical proofs | Follow the bounded dependencies below; empirical outcomes remain distinct from universal mathematical certificates. |
 
-The prepared pilot estimate is 11.515410176 seconds for four PUBs at 8,192
+The historical pilot estimate is 11.515410176 seconds for four PUBs at 8,192
 shots, with a 14.470770176-second controller-stress scenario and a proposed
 30-second ceiling, excluding queue and local preparation. The two held atlas cases total
 197.02196992 nominal seconds, with separate 180/60-second proposed ceilings.
@@ -88,6 +88,12 @@ share repetition overhead, but the slowest schedule, routing, crosstalk and
 precision determine the cost. More qubits alone cannot establish a lower bill
 or useful scientific information. One compatible job is preferred; incompatible
 execution policies and independent admission can require separate jobs.
+
+The readout scoring repair at `efa187f` changes the shared experiment digest.
+A fresh pilot preparation stopped because Fez exceeded the declared queue
+limit and Marrakesh reported maintenance. The current preparation summary and
+coordination ledger record the outstanding three-system renewal. The retained
+historical pilot supplies timing context and grants no current admission.
 
 The user's live-calibration instruction supersedes the earlier mock-scheduler
 prerequisite. The production preparation reads fresh Targets and properties
@@ -159,8 +165,9 @@ obligations at reviewed source revision
 cover is proposed in [PR #42](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/42)
 at revision `3e84b39a11b21e48500857aff569402f85be10d9`. Both follow-ups remain
 separate, open dependencies; their proofs and remaining certification duties
-retain their own evidence scope. Source integration preserves the correction
-pilot's 41-file experiment closure and grants zero physical-execution approval.
+retain their own evidence scope. The source-integration merge preserved the
+historical pilot's 41-file closure. The later readout-scoring repair changes
+that closure and requires renewal; physical execution remains unapproved.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)
