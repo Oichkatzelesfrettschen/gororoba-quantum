@@ -4,7 +4,9 @@ The complete four-PUB comparison selects Fez from 18 routed candidates using
 fresh Target/properties snapshots: six transpiler seeds for each of Fez,
 Kingston and Marrakesh. Every candidate passed the finite admission checks.
 The selection maximizes the weakest calibrated arm score, then minimizes the
-declared lower-charge scenario, total CZ count, seed and backend name. The
+Target-plus-repetition charge with zero added controller latency, total CZ
+count, seed and backend name. The nominal estimate separately includes the
+declared 20-microsecond per-stage controller latency. The
 score is a calibration proxy, separate from measured fidelity.
 
 | Best candidate per system | Weakest-arm proxy | Nominal QPU seconds | CZ gates per PUB |

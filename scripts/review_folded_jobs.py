@@ -32,10 +32,43 @@ def _require(condition: bool, message: object) -> None:
         raise ValueError(str(message))
 
 
+def audit_sources(run: Path) -> list[Path]:
+    paths = [run / name for name in ("record.json", "collect.json", "isa.qpy", "settled-account-usage.json")]
+    return paths + sorted((run / "raw").glob("*/*.json"))
+
+
+def output_paths(run: Path, stem: Path) -> tuple[Path, Path]:
+    """Keep both report files outside the retained evidence, including aliases."""
+    retained_directory = run.resolve()
+    paths = (stem.with_suffix(".json").resolve(), stem.with_suffix(".md").resolve())
+    _require(paths[0] != paths[1], "Report outputs alias each other")
+    for path in paths:
+        _require(
+            not path.is_relative_to(retained_directory),
+            f"Report output overlaps retained run: {path}",
+        )
+    existing_outputs = [path for path in paths if path.exists()]
+    if len(existing_outputs) == 2:
+        _require(not existing_outputs[0].samefile(existing_outputs[1]), "Report outputs alias each other")
+    if existing_outputs:
+        retained_identities = set()
+        retained_files = list(retained_directory.rglob("*")) + audit_sources(retained_directory)
+        for retained_file in retained_files:
+            if retained_file.is_file():
+                status = retained_file.stat()
+                retained_identities.add((status.st_dev, status.st_ino))
+        for path in existing_outputs:
+            status = path.stat()
+            _require(
+                (status.st_dev, status.st_ino) not in retained_identities,
+                f"Report output aliases retained evidence: {path}",
+            )
+    return paths
+
+
 def audit(run: Path) -> tuple[dict[str, Any], str]:
     jobs = ("db67fqsvf2bc73d0pk4g", "db67frimb58s738bci4g")
-    source_paths = [run / name for name in ("record.json", "collect.json", "isa.qpy", "settled-account-usage.json")]
-    source_paths += sorted((run / "raw").glob("*/*.json"))
+    source_paths = audit_sources(run)
     source_hashes = {str(path.relative_to(run)): digest(path) for path in source_paths}
     record = read(run / "record.json")
     collection = read(run / "collect.json")
@@ -574,10 +607,11 @@ def main() -> None:
     )
     parser.add_argument("--check", action="store_true", help="compare existing outputs without writing")
     args = parser.parse_args()
+    json_path, markdown_path = output_paths(args.run_dir, args.out)
     report, markdown = audit(args.run_dir)
     outputs = {
-        args.out.with_suffix(".json"): json.dumps(report, indent=2) + "\n",
-        args.out.with_suffix(".md"): markdown,
+        json_path: json.dumps(report, indent=2) + "\n",
+        markdown_path: markdown,
     }
     if args.check:
         for path, content in outputs.items():

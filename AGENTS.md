@@ -26,6 +26,7 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
     scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
     scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
+    scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     literature/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
@@ -37,6 +38,7 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
     scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
     scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
+    scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     literature/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
@@ -65,6 +67,12 @@ The rank-sector image gate also uses the plotting-only pin
     cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_folded_job_review.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_folded_job_review.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_review_folded_jobs.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_review_folded_jobs.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_rank_sector_norms.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_rank_sector_norms.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/review_folded_jobs.py \
+    --run-dir results/live/2026-10-12T055624.091217Z --check
   PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \
     MPLCONFIGDIR="${MPLCONFIGDIR:-/tmp/folded-review-mplconfig}" \
     "$PYTHON" scripts/render_folded_job_review.py \
@@ -108,6 +116,7 @@ The rank-sector image gate also uses the plotting-only pin
     ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
     ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py \
     ../scripts/check_render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py \
+    ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py \
     ../literature/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py

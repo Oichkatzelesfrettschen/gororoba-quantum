@@ -8,7 +8,7 @@
    <cc:Work>
     <dc:type rdf:resource="http://purl.org/dc/dcmitype/StillImage"/>
     <dc:title>Where hardware departs from the model: measured folded-QPE diagnostics</dc:title>
-    <dc:description>{"charged_seconds":40.0,"contrast_intervals":12,"evidence_kind":"measured quantum hardware and separately identified model predictions","evidence_schema":"independent-folded-raw-audit-v1","evidence_sha256":"888a378440ce4c1312470ec24213e188000edc2d4cef720b27281e765650b45c","outcomes":16,"renderer":"scripts/render_folded_job_review.py","residual_inference":"descriptive; contrast intervals do not cover replay residuals","run":"2026-10-12T055624.091217Z","schema":"folded-job-review-figure-v1","shots_per_pub":8192}</dc:description>
+    <dc:description>{"charged_seconds":40.0,"contrast_intervals":12,"evidence_kind":"measured quantum hardware and separately identified model predictions","evidence_schema":"independent-folded-raw-audit-v1","evidence_sha256":"ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a","outcomes":16,"renderer":"scripts/render_folded_job_review.py","residual_inference":"descriptive; contrast intervals do not cover replay residuals","run":"2026-10-12T055624.091217Z","schema":"folded-job-review-figure-v1","shots_per_pub":8192}</dc:description>
     <dc:format>image/svg+xml</dc:format>
     <dc:creator>
      <cc:Agent>

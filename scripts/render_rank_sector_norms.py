@@ -56,6 +56,14 @@ class NormTrace:
     planned: tuple[Fraction, ...]
 
 
+def validate_output_paths(output: Path, png: Path | None) -> None:
+    """Reject SVG/PNG aliases before either format can replace the other."""
+    if png is not None and (
+        output.resolve() == png.resolve() or (output.exists() and png.exists() and output.samefile(png))
+    ):
+        raise ValueError("--out and --png must identify distinct files")
+
+
 def _polynomial(coefficients: tuple[Fraction, ...], parameter: Fraction) -> Fraction:
     return sum((coefficient * parameter**power for power, coefficient in enumerate(coefficients)), Fraction(0))
 
@@ -163,6 +171,7 @@ def _panel(axis: Axes, sector: int, traces: tuple[NormTrace, ...]) -> None:
 
 
 def render(traces: tuple[NormTrace, ...], output: Path, png: Path | None) -> None:
+    validate_output_paths(output, png)
     import matplotlib
 
     matplotlib.use("Agg")
@@ -309,6 +318,10 @@ def main() -> int:
     parser.add_argument("--png", type=Path, help="optional raster copy for preview")
     parser.add_argument("--check", action="store_true", help="verify retained image bytes without rewriting them")
     args = parser.parse_args()
+    try:
+        validate_output_paths(args.out, args.png)
+    except ValueError as error:
+        parser.error(str(error))
     traces = verified_traces()
     if args.check:
         with TemporaryDirectory(prefix="rank-sector-render-") as temporary:

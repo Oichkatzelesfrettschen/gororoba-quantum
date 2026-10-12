@@ -1,18 +1,69 @@
 {
+  "artifact_path_admission": {
+    "audit_writer": {
+      "default_write_check_and_mismatch_rejection": "pass",
+      "modes_per_fixture": [
+        "write",
+        "check",
+        "real CLI write"
+      ],
+      "rejected_path_fixtures": 18,
+      "retained_fixture_bytes": "equal"
+    },
+    "folded_renderer": {
+      "qualified_inputs": 3,
+      "rejected_mutations": 90,
+      "rejected_path_aliases": 25,
+      "retained_audit_sha256": "ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a"
+    },
+    "independent_review": "qualified pass over documented artifact interfaces; read-only inspection and independent execution of all three checkers",
+    "normal_and_optimized_results_equal": true,
+    "rank_renderer": {
+      "distinct_path_render_and_check": true,
+      "entry_point_rejections": 1,
+      "png_sha256": "510f581a78e2058ed64be66fb94196c2781091dad5c6ba7a089cd28e28b64274",
+      "rejected_cli_aliases": 12,
+      "rejected_direct_aliases": 6,
+      "svg_sha256": "a225f541defa4e31a3d3eb874d1f59882ae038f061545bbfc3d2c1a8306e3300",
+      "verified_acquisition_values": 160
+    },
+    "scope": "Direct and canonical paths, symlinks, existing hardlinks; concurrent adversarial path replacement is outside the documented CLI contract."
+  },
   "artifact_sha256": {
-    "AGENTS.md": "4a1bc0f5e349d20825ce9be3027981e78f05ea96a2ba1bb4f2de0d91811f4f82",
-    "results/ripple/folded-job-review.json": "888a378440ce4c1312470ec24213e188000edc2d4cef720b27281e765650b45c",
+    "AGENTS.md": "d92e9ebb95834d22a86e05471f6b2fd41d3c4310b5c73bf9f66cac5fbe20306b",
+    "results/ripple/CORRECTION_PREPARATION.md": "652f4ac7f5e57e55292e61f9c99ea6d08d4f989c0910c3ed261af8d068441c85",
+    "results/ripple/README.md": "481c9212eb4d9bd3b13ed361c84c53500549966eccb15f587fa13b720d45a7ee",
+    "results/ripple/folded-job-review.json": "ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a",
+    "results/ripple/folded-job-review.md": "a8305337c83265ed547ffc5ea79905bb9e30ee1b52bfb84d1256a03edbba3b27",
     "results/ripple/folded-job-review.png": "49fe833e98bce1b807223282b3e389af2cbc6476b940f88eca8836c7943e8290",
-    "results/ripple/folded-job-review.svg": "d9d5cdfaf4883a05c9d92f88cd141185b345a79115f56245a9b26ab942717e99",
-    "scripts/check_render_folded_job_review.py": "6b0c1419a056f167187a82fd6206ed19c65b63a4ab8f546d3cabd3a9f1b051f2",
-    "scripts/render_folded_job_review.py": "4adaa66cca6677d0d72f7d853e7df9a2b44777e17adb60ec08c4f8b7486966ac"
+    "results/ripple/folded-job-review.svg": "268c097f4d95f64fb0bda5a100549c3dd36a1b8b539c2d4b894a1492fa2cdf9a",
+    "results/ripple/rank-sector-norms.png": "510f581a78e2058ed64be66fb94196c2781091dad5c6ba7a089cd28e28b64274",
+    "results/ripple/rank-sector-norms.svg": "a225f541defa4e31a3d3eb874d1f59882ae038f061545bbfc3d2c1a8306e3300",
+    "scripts/check_render_folded_job_review.py": "9effcfa79d59dc609963c44e5a6da5776b1419d90dbea5e634fb9dda8f7b26aa",
+    "scripts/check_render_rank_sector_norms.py": "109be9497c555ab86d3008d4942a9defcc26af933f4024f8409792baf971970e",
+    "scripts/check_review_folded_jobs.py": "21cad00a2b8c0cc5c1374b4e2cc1d973f71e413e0460e0eeadf64bfd27318edd",
+    "scripts/render_folded_job_review.py": "77a7fe450c83883d12c1aedac388d0a579d1c9925e44063a720cdf7a895416af",
+    "scripts/render_rank_sector_norms.py": "2de20274ed04b0641546ab3c5d2ea58fb22f9810ae87f02ed7b06f71a66651a8",
+    "scripts/review_folded_jobs.py": "81ea85b40eac3b1de2fcb5041eb5a92b0037e483fa03c3ca944a205f361f0256"
+  },
+  "derived_audit_regeneration": {
+    "changed_fields": [
+      "audit_script_sha256"
+    ],
+    "derived_json_previous_sha256": "888a378440ce4c1312470ec24213e188000edc2d4cef720b27281e765650b45c",
+    "derived_json_sha256": "ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a",
+    "markdown_bytes_equal": true,
+    "old_producer_sha256": "ad290624fb54e290074610ff836e161b5fe2a033a81a759e0be7655ba18dd652",
+    "producer_sha256": "81ea85b40eac3b1de2fcb5041eb5a92b0037e483fa03c3ca944a205f361f0256",
+    "retained_archive_file_count": 34,
+    "retained_archive_names_and_sha256_equal": true
   },
   "full_repository_gates": {
     "exit_code": 0,
-    "mypy_source_files": 81,
-    "operator_log_sha256": "bb460b611f2f15f7ed394f8146e54f6cf6c156067b5265a4990f983f3b562ac1",
-    "operator_script_sha256": "6310606460de2bc40d24e2ba52647b53d1eb64844ce40789b971f2850ac9bab1",
-    "ruff_formatted_files": 84,
+    "mypy_source_files": 83,
+    "operator_log_sha256": "4b3cff51cbe7f6293a837c07af7c1149c30fbe309b098144306719e85ab791f9",
+    "operator_script_sha256": "aabcca7ba162909d6bbd916c2aeba62ec0096ad9ff0ec723e18de7ca2bb442b8",
+    "ruff_formatted_files": 86,
     "warnings_as_errors": true
   },
   "independent_review": {
@@ -49,10 +100,10 @@
       "forged_tiny_negative_residual_at_true_zero",
       "forged_dyadic_contrast"
     ],
-    "renderer_sha256": "4adaa66cca6677d0d72f7d853e7df9a2b44777e17adb60ec08c4f8b7486966ac",
+    "renderer_sha256": "77a7fe450c83883d12c1aedac388d0a579d1c9925e44063a720cdf7a895416af",
     "scope": "offline synthetic mutation review; modified fixtures are not hardware evidence"
   },
-  "observed_at": "2026-10-12T08:34:21.689754+00:00",
+  "observed_at": "2026-10-12T09:01:15.777102+00:00",
   "pilot_preservation": {
     "qpy_sha256": "2fcb598592888b8a48669df83401979692bb07900e81c07e090fa36ccdaf9aad",
     "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
@@ -68,5 +119,5 @@
     "visual_inspection": "pass"
   },
   "schema": "folded-figure-qualification-validation-v1",
-  "scope": "Local figure qualification and regression checks; modified test fixtures are synthetic and supply zero hardware evidence."
+  "scope": "Local artifact preservation, figure qualification and regression checks; modified test fixtures are synthetic and supply zero hardware evidence."
 }

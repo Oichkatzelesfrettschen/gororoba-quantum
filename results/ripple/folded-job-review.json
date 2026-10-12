@@ -2,7 +2,7 @@
   "schema": "independent-folded-raw-audit-v1",
   "run": "2026-10-12T055624.091217Z",
   "audit_method": "Independent integer bitstring decode and stdlib Hoeffding recomputation; QPY inspected through Qiskit; collector analysis functions were not imported.",
-  "audit_script_sha256": "ad290624fb54e290074610ff836e161b5fe2a033a81a759e0be7655ba18dd652",
+  "audit_script_sha256": "81ea85b40eac3b1de2fcb5041eb5a92b0037e483fa03c3ca944a205f361f0256",
   "source_sha256": {
     "record.json": "91145c3456e8670a19eea258416412d020ca5e3fa71aa37b91ce7a5cb7f74670",
     "collect.json": "6de820a83905e778e7c11b2e75d729ee6a40311003716e47eff9834d2199aed9",

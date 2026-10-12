@@ -74,6 +74,66 @@ def change_counts(data: dict[str, Any], rung: str, label: int, measured: list[in
         )
 
 
+def check_path_aliases(directory: Path, audit_bytes: bytes) -> int:
+    """Reject all CLI path-pair aliases while preserving every existing byte."""
+    rejected = 0
+    for left, right in (("evidence", "out"), ("evidence", "png"), ("out", "png")):
+        for alias_kind in ("direct", "canonical", "symlink", "hardlink"):
+            for check_mode in (False, True):
+                case_directory = directory / f"{left}-{right}-{alias_kind}-{check_mode}"
+                case_directory.mkdir()
+                paths = {
+                    "evidence": case_directory / "audit.json",
+                    "out": case_directory / "figure.svg",
+                    "png": case_directory / "figure.png",
+                }
+                paths["evidence"].write_bytes(audit_bytes)
+                paths["out"].write_bytes(b"retained SVG bytes")
+                paths["png"].write_bytes(b"retained PNG bytes")
+                retained_paths = list(paths.values())
+                target = paths[left]
+                if alias_kind == "direct":
+                    paths[right] = target
+                elif alias_kind == "canonical":
+                    child = case_directory / "child"
+                    child.mkdir()
+                    paths[right] = child / ".." / target.name
+                else:
+                    alias = case_directory / f"{right}-alias"
+                    if alias_kind == "symlink":
+                        alias.symlink_to(target)
+                    else:
+                        alias.hardlink_to(target)
+                    paths[right] = alias
+                retained_paths.extend(paths.values())
+                before = {path: path.read_bytes() for path in retained_paths}
+                command = [sys.executable, str(ROOT / "scripts/render_folded_job_review.py")]
+                for flag, path in paths.items():
+                    command.extend((f"--{flag}", str(path)))
+                if check_mode:
+                    command.append("--check")
+                process = subprocess.run(command, capture_output=True, text=True, check=False)
+                require(
+                    process.returncode != 0 and "paths must identify distinct files" in process.stderr,
+                    f"CLI accepted {left}/{right} {alias_kind} alias with check={check_mode}",
+                )
+                require(all(path.read_bytes() == value for path, value in before.items()), "CLI changed aliased files")
+                rejected += 1
+    direct_output = directory / "direct-render.svg"
+    direct_output.write_bytes(b"retained direct-render bytes")
+    original = direct_output.read_bytes()
+    evidence_source = directory / "direct-audit.json"
+    evidence_source.write_bytes(audit_bytes)
+    try:
+        render(read_evidence(evidence_source), direct_output, direct_output)
+    except ValueError as error:
+        require("paths must identify distinct files" in str(error), "direct render failed for unrelated reason")
+    else:
+        raise RuntimeError("direct renderer accepted aliased outputs")
+    require(direct_output.read_bytes() == original, "direct renderer changed aliased output")
+    return rejected + 1
+
+
 def main() -> int:
     source = ROOT / "results/ripple/folded-job-review.json"
     original = source.read_bytes()
@@ -272,11 +332,13 @@ def main() -> int:
             "CLI accepted bad evidence",
         )
         require(not cli_svg.exists() and not cli_png.exists(), "CLI wrote output before qualification")
+        alias_rejections = check_path_aliases(directory, original)
         require(source.read_bytes() == original, "retained audit changed")
     print(
         json.dumps(
             {
                 "rejected_mutations": rejected,
+                "rejected_path_aliases": alias_rejections,
                 "qualified_inputs": accepted,
                 "retained_audit_sha256": hashlib.sha256(original).hexdigest(),
             },

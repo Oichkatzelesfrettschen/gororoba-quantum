@@ -447,7 +447,23 @@ def _style_axis(axis: Axes, title: str, subtitle: str) -> None:
         axis.axhspan(position - 0.44, position + 0.44, color="#F1EAF5", zorder=0)
 
 
+def validate_output_paths(output: Path, png: Path | None, *, evidence_path: Path | None = None) -> None:
+    """Protect the audit and distinguish image destinations before any writes."""
+    paths = [("--out", output)]
+    if png is not None:
+        paths.append(("--png", png))
+    if evidence_path is not None:
+        paths.append(("--evidence", evidence_path))
+    for index, (name, path) in enumerate(paths):
+        for other_name, other_path in paths[:index]:
+            aliases = path.resolve() == other_path.resolve() or (
+                path.exists() and other_path.exists() and path.samefile(other_path)
+            )
+            _require(not aliases, f"{name} and {other_name} paths must identify distinct files")
+
+
 def render(evidence: Evidence, output: Path, png: Path | None) -> None:
+    validate_output_paths(output, png)
     import matplotlib
 
     matplotlib.use("Agg")
@@ -682,6 +698,7 @@ def main() -> int:
     parser.add_argument("--png", type=Path, help="optional raster copy for preview")
     parser.add_argument("--check", action="store_true", help="verify retained image bytes without rewriting them")
     args = parser.parse_args()
+    validate_output_paths(args.out, args.png, evidence_path=args.evidence)
     evidence = read_evidence(args.evidence)
     if args.check:
         with TemporaryDirectory(prefix="folded-job-render-") as temporary:
