@@ -181,9 +181,17 @@ separate PUBs are unpaired. Conditional strata remain descriptive unless a
 prospective inferential contract explicitly includes them. Preparation skips
 the broken mock service and refreshes Target/properties from all three live
 devices before selecting the best backend for the actual matched family.
-The execution owner records endpoint quality, layout, schedule and cost
-criteria, refreshes calibration again before submission, and separates local
-timing estimates from measured service timing. Hardware submission remains
+The execution owner's [retained preparation comparison](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/fb5e6aaad2a91466e1a7c1f33220ba57af1d39ef/results/ripple/CORRECTION_PREPARATION.md)
+ranks 18 admitted candidates, six seeds per backend. Fez has the highest
+weakest-arm calibration proxy in that snapshot; the score estimates circuit
+quality and supplies no measured fidelity. The execution workstream owns
+that comparison and its unapproved record.
+
+Submission preflight must refresh and rerank all three systems. The selected
+backend is refreshed again before its batch; queueing separates those checks
+from physical execution. Changed selection, calibration or QPY requires
+renewed approval. The execution owner separates local timing estimates from
+returned schedules and measured service usage. Hardware submission remains
 bound to its concrete approved record.
 
 Freeze the following before acquisition:
