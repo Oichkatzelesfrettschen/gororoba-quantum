@@ -52,6 +52,12 @@ objectives, evidence boundaries, ownership, and ordered delivery gates.
 - `gororoba_quantum/schur_acceleration.py` -- exact first-order admission,
   complete affine acceleration certificates, and separating witnesses for
   second-order rank obstructions at dimension-32 centers.
+- `gororoba_quantum/nullity_twelve_locus.py` -- the complete real quadratic-compatible
+  velocity set at `e1+e18`, exact equation reconstruction and a certified
+  decomposition into two linear pieces of dimensions 15 and 17.
+- `gororoba_quantum/nullity_twelve_curves.py` -- an exact rational slice,
+  rank-preserving symmetries and automorphism flows that realize the complete
+  selected-center tangent cone, with its proof and retained replay in `docs/`.
 - `gororoba_quantum/four_support_rank.py` and `four_support_geometry.py` --
   exact real ranks, connected smooth strata, complete kernel frames, closure
   maps, and a partner-incidence model on support `{1,10,18,25}`.

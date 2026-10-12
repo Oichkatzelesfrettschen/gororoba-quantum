@@ -130,7 +130,13 @@ The mathematical chain has the following acceptance gates.
    A separating cokernel functional also excludes a direction from the
    same-nullity tangent cone. Use those quadratic equations as necessary
    outer bounds, then resolve their real zero sets and higher-order
-   compatibility. Resolve the real reduced equations, their dependencies
+   compatibility. The [selected-center certificate](notes/nullity_twelve_local_geometry.md)
+   resolves the complete real quadratic locus at `e1+e18` as `A15 union B17`,
+   with a 13-dimensional intersection. Exact slice curves and automorphism
+   flows realize `A15`; the published D-locus bundle realizes `B17`. The
+   two inclusions prove the selected-center tangent cone and its nonlinearity.
+   Actual local branch equations and attachments remain obligations.
+   Resolve the other real reduced equations, their dependencies
    and real radicals before claiming smoothness or codimension.
 3. Classify the connected components of nullities 4, 8, and 12 with certified
    coverage of all real coefficients. Subdivide the rank loci into appropriate
