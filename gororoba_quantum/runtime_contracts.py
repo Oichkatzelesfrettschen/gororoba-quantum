@@ -2608,7 +2608,7 @@ def _verify_every_job_revalidates() -> None:
         select(groups[name], snapshots, 1, {}, SINGLE_REPLICA_POLICY) for name in ("design_a", "hybrid_shor_mod15")
     ]
     args = _fixture_args(max_replicas=1, isolated_reference=False)
-    record: dict[str, Any] = {"shots": args.shots}
+    record: dict[str, Any] = {"state": "planned", "shots": args.shots}
     checkpoints: list[dict[str, Any]] = []
     run_count = 0
 
