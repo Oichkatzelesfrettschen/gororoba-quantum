@@ -59,6 +59,7 @@ from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
+import correction_collection
 import local_compute
 import packing
 import parallel
@@ -107,6 +108,11 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "affine_residual.py",
     "boolean_anf.py",
     "cd_core.py",
+    "correction_circuits.py",
+    "correction_collection.py",
+    "correction_planning.py",
+    "correction_schedule.py",
+    "correction_statistics.py",
     "designs.py",
     "diagnostic_experiments.py",
     "experiment_optimizer.py",
@@ -3985,6 +3991,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     ]
     family_measured: dict[str, list[np.ndarray]] = {}
     family_executed: dict[str, Any] = {}
+    correction_family = record.get("family_configuration", {}).get("name") == "folded-correction"
+    correction_evidence: list[dict[str, Any]] = []
     for job_entry in record["submission"]["jobs"]:
         job = service.job(job_entry["job_id"])
         pub_manifests = job_entry["pubs"]
@@ -4084,7 +4092,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         # otherwise repeat packed replica 0 shot for shot.
         replay_batches: dict[datetime, list[Entry]] = {}
         sims_by_calibration: dict[datetime, Any] = {}
-        for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
+        for pub_index, (pub_manifest, pub_result, window) in enumerate(
+            zip(pub_manifests, result, spans.windows, strict=True)
+        ):
             if window is None:
                 execution_records = component_execution_records(
                     pub_manifest, None, None, None, timing[pub_manifest["name"]]["timing_unavailable_reason"]
@@ -4102,12 +4112,31 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             for component in pub_manifest["components"]:
                 name = component["member"]
                 entry = by_name[name]
+                replica_counts = [
+                    _pub_counts(pub_result, packing.registers(entry.packed, prefix), name) for prefix in entry.prefixes
+                ]
+                if correction_family:
+                    try:
+                        if len(replica_counts) != 1:
+                            raise ValueError("correction collection requires exactly one replica")
+                        correction_evidence.append(
+                            correction_collection.retained_member(
+                                run_dir,
+                                job_out["raw"],
+                                job_id=job_entry["job_id"],
+                                pub_index=pub_index,
+                                pub_manifest=pub_manifest,
+                                member=name,
+                                circuit=isas[pub_manifest["name"]],
+                                histogram=replica_counts[0],
+                                dt_seconds=float(at[window[0]][2].dt) if window else None,
+                            )
+                        )
+                    except (ValueError, KeyError, TypeError, IndexError, AttributeError, OSError) as error:
+                        correction_evidence.append({"name": name, "error": str(error)})
                 measured[name] = [
-                    _distribution(
-                        _pub_counts(pub_result, packing.registers(entry.packed, prefix), name),
-                        replica.num_clbits,
-                    )
-                    for prefix, replica in zip(entry.prefixes, entry.replicas, strict=True)
+                    _distribution(counts, replica.num_clbits)
+                    for counts, replica in zip(replica_counts, entry.replicas, strict=True)
                 ]
                 executed[name] = execution_records[name]
                 if window is not None:
@@ -4137,6 +4166,18 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     n: [[round(float(p), 6) for p in dist] for dist in measured[n]] for n in required if n in measured
                 },
             }
+            if correction_family:
+                out_entry["integer_counts"] = {
+                    row["name"]: row["counts"]
+                    for row in correction_evidence
+                    if row["name"] in required and "counts" in row
+                }
+                comparison_reason = _comparisons_withheld(required, executed)
+                if missing or comparison_reason:
+                    out_entry["comparisons_withheld"] = comparison_reason or f"missing {missing}"
+                out_entry["inference"] = "the header family_analysis gates the sole exact-binomial optimizer decision"
+                out.append(out_entry)
+                continue
             # A circuit whose shots straddle a calibration update, or whose
             # window is unknown, has no single calibration to correct or replay
             # against; its group keeps the raw measurement and states why the
@@ -4195,9 +4236,13 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
-    if record.get("observable_contracts"):
+    if record.get("observable_contracts") or correction_family:
         out[0]["family_analysis"] = qpu_planning.measured_family(
-            record, family_measured, family_executed, sys.modules[__name__]
+            record,
+            family_measured,
+            family_executed,
+            sys.modules[__name__],
+            correction_evidence=correction_evidence if correction_family else None,
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
@@ -4460,6 +4505,34 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if args.family == "folded-correction":
+        if args.native_dry_run:
+            parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
+        if args.max_execution_seconds != 30 or args.max_total_execution_seconds != 30:
+            parser.error("folded-correction requires a 30-second per-job ceiling and aggregate cap")
+        if not args.cost_scenarios or any(
+            scenario["job_overhead_seconds"] < args.job_overhead_seconds
+            or scenario["classical_latency_us"] < args.classical_latency_us
+            for scenario in args.cost_scenarios
+        ):
+            parser.error(
+                "folded-correction requires explicit cost scenarios with overhead and latency at least nominal"
+            )
+        if args.shots != 8192 or args.alpha != 0.05 or args.power != 0.8:
+            parser.error("folded-correction requires --shots 8192, --alpha 0.05 and --power 0.8")
+        if args.max_replicas not in (None, 1):
+            parser.error("folded-correction requires exactly one replica")
+        if args.optimize and (args.shot_tiers != [8192] or args.replica_tiers != [1]):
+            parser.error("folded-correction optimization requires --shot-tiers 8192 --replica-tiers 1")
+        if not args.optimize:
+            args.shot_tiers = [8192]
+            args.replica_tiers = [1]
+        correction_backends = ["ibm_fez", "ibm_kingston", "ibm_marrakesh"]
+        if args.backends is None:
+            args.backends = correction_backends
+        elif len(args.backends) != 3 or set(args.backends) != set(correction_backends):
+            parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
+        args.max_replicas = 1
     if args.family in ("ripple", "rank-sector"):
         if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
             parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")

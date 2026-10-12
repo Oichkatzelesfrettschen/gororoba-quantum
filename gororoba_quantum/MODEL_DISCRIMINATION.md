@@ -6,10 +6,13 @@ additive requests, cross-chat findings, ownership and evidence boundaries.
 The execution priority is model discrimination and a measurable optimizer
 decision before broad atlas expenditure. The prepared 197-second ripple/rank
 campaign remains retained and unapproved behind that decision gate. The
-four-PUB pilot has a dedicated preparation-only runner, exact-count statistical
-analysis, common-template circuit verification and native schedule validator.
-The production submission family remains gated on native schedule qualification.
-Its historical time estimate remains separate from a freshly admitted case.
+four-PUB pilot uses exact-count statistical analysis, common-template circuit
+verification and a validator for returned native schedules. The user directed
+preparation from fresh live calibration across Fez, Kingston and Marrakesh
+after the Kingston mock endpoint proved unavailable. Production admission
+therefore uses a documented finite comparison of all three systems, while
+matched-policy inference requires qualified schedules from the actual run.
+The historical time estimate remains separate from a freshly admitted case.
 
 ## Existing evidence first: zero additional QPU seconds
 
@@ -51,12 +54,13 @@ and audit schedules, including conditional latency and measurement/reset
 timing. A common initial layout alone is insufficient: the completed ladder
 used different terminal writers after routing. A zero-angle conditional can
 be optimized away, and padding needs backend timing evidence. Schedule
-matching remains a qualification requirement. The common symbolic template
+matching remains an inference qualification requirement. The common symbolic template
 compiles once; binding preserves both correction branches, including F's RZ(0).
 Separate post-binding transpilation is prohibited because optimization can
 remove that zero-angle branch. U retains classical dispatch, so the experiment
 tests dependence on the recorded value and does not test dispatch removal.
-The unavailable Kingston mock service leaves schedule qualification open.
+The returned execution schedules close that qualification after acquisition;
+missing or mismatched schedules withhold the matched-policy decision.
 
 When the recorded first bit B=1, both arms apply the same phase. When B=0,
 the arms differ in whether they apply the phase. Those strata provide
@@ -97,9 +101,11 @@ the old delay arm is a different intervention and cannot predict U.
 The power calculation enumerates every F success count k=0,...,N, finds the
 smallest U count whose exact lower bound exceeds the F upper bound by 0.01,
 and sums `BinomPMF(k;N,p_F)*BinomSF(k_U_min(k)-1;N,p_F+gain)`.
-The enumeration truncates zero probability mass. Its planning model assumes
-independent F/U binomial counts; the coverage statement above uses the weaker
-union-bound requirement. Source probabilities come from the retained raw audit.
+The enumeration evaluates all N+1 count values without deliberate support
+truncation. Float64 underflow and rounding remain unverified by interval
+arithmetic. Its planning model assumes independent F/U binomial counts; the
+coverage statement above uses the weaker union-bound requirement. Source
+probabilities come from the retained raw audit.
 
 ## Conditional timing and admission work
 
@@ -124,7 +130,9 @@ The local implementation now includes:
 - `correction_circuits.py`: one symbolic template, complete-history pair checks,
   independent ideal-law checks, and protected measurement/reset/writer identity.
   Retained archive bytes supply QPY identity; native-circuit reserialization has
-  nondeterministic layout bytes.
+  nondeterministic layout bytes. The final bound-pair check establishes pair
+  conformance and ideal output laws; the common-template compilation and source
+  archive binding supply the link to the intended algorithm.
 - `correction_statistics.py`: validated integer joint histograms, four CP bounds,
   the strict two-label decision, descriptive first-bit strata, and full-support
   hypothetical power enumeration. Rounded probabilities remain outside the
@@ -138,31 +146,45 @@ The local implementation now includes:
   vectors, dependency/source/calibration hashes, QPY archives and an optional
   mock-only request. External record digest, actual archive bytes and restored
   pair checks bind the request. Randomized mock values remain unread.
+- `correction_planning.py`: the production four-PUB family compares fresh live
+  calibration from all three systems, retaining candidate quality, cost,
+  ideal-law checks and model predictions. Hypothetical planning power remains
+  separate from those model predictions.
+- `correction_collection.py`: retained shot strings and raw integer histograms
+  bind the exact CP analysis to archived circuits, calibration and qualified
+  execution schedules. A failed evidence gate preserves the data and withholds
+  the decision.
 
-Run preparation with the pinned repository environment:
+Run production preparation with the pinned repository environment:
 
 ```sh
 PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
-  gororoba_quantum/correction_preparation.py --backend ibm_kingston \
-  --shots 8192 --model-shots 32768 --native-dry-run \
-  --out results/correction
+  gororoba_quantum/live_run.py --family folded-correction \
+  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
+  --shots 8192 --model-shots 32768 --max-replicas 1 \
+  --cost-scenario controller-stress:4.6:40 \
+  --max-execution-seconds 30 --max-total-execution-seconds 30 \
+  --out results/live
 ```
 
-The command writes `preparation.json`, `isa.qpy`, `template.qpy` and a separate
-`native-qualification.json`. Its record format cannot be passed as an approved
-production `record.json`. Every remote primitive call sets `dry_run=True`.
-The 30-second option limits the mock request; it establishes neither a physical
-execution ceiling nor an approved case. Existing raw archives remain unchanged.
+The command writes a submit-free production record and its exact circuit
+archive. The 30-second option specifies the proposed service execution ceiling;
+the written case must justify that ceiling using the fresh comparison. The
+command sends zero primitive requests. The older standalone preparation format
+remains distinct from production `record.json`; its mock-only experiment is
+historical and excluded from the accepted preparation path.
 
 Before proposing execution, close the remaining gates:
 
-1. Obtain accessible native mock scheduling and qualify the exact four PUBs.
-2. Integrate the qualified protocol into production family reconstruction,
-   exact raw-count collection, calibration withholding, written-case admission,
-   and digest-bound submission. The existing folded CLI builds sixteen PUBs.
-3. Refresh calibration, model predictions, source/QPY bytes, schedule evidence,
-   quota and a service ceiling under the integrated source closure.
+1. Validate production family reconstruction, exact raw-count collection,
+   calibration withholding, written-case admission and digest-bound submission.
+2. Compare the complete four-PUB family over a declared finite candidate set on
+   fresh live Targets and properties from all three available systems.
+3. Freeze model predictions, source/QPY bytes, fresh calibration, quota, a time
+   estimate with explicit schedule uncertainty and a service ceiling.
 4. Present the written case for explicit user approval. Submit only that case.
+5. Revalidate calibration before submission and qualify returned execution
+   schedules before admitting the matched-policy inference.
 
 The successful witness decision would establish one concrete optimization in
 its own circuit domain. Static ripple packing still needs its own practical

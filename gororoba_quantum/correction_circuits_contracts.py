@@ -24,6 +24,7 @@ from correction_circuits import (
     correction_binding,
     correction_member_metadata,
     correction_template,
+    validate_bound_correction_pair,
     validate_correction_pair,
 )
 from experiments import Member
@@ -91,6 +92,9 @@ def verify() -> dict[str, Any]:
             feedback = bind_correction_template(template, phase_label, CORRECTION_ARMS[0])
             independent = bind_correction_template(template, phase_label, CORRECTION_ARMS[1])
             reports.append(validate_correction_pair(template, feedback, independent, phase_label))
+            bound_report = validate_bound_correction_pair(feedback, independent, phase_label)
+            if bound_report["validation"] != "exact_bound_pair_history_and_ideal_law":
+                raise RuntimeError("bound artifact validator claimed a symbolic-template proof")
             for arm, circuit in zip(CORRECTION_ARMS, (feedback, independent), strict=True):
                 binding = correction_binding(phase_label, arm)
                 expected_law = np.zeros(4)
@@ -110,6 +114,8 @@ def verify() -> dict[str, Any]:
             stream.seek(0)
             restored_feedback, restored_independent = qpy.load(stream)
             validate_correction_pair(template, restored_feedback, restored_independent, phase_label)
+            if validate_bound_correction_pair(restored_feedback, restored_independent, phase_label) != bound_report:
+                raise RuntimeError("bound correction archive changed its validated history")
     if source != source_copy or routed != routed_copy or unconstrained != unconstrained_copy:
         raise RuntimeError("binding or pair validation mutated a shared template")
 
@@ -147,6 +153,9 @@ def verify() -> dict[str, Any]:
     mutations.append(changed_initial_gate)
     for mutation_circuit in mutations:
         _reject(partial(validate_correction_pair, routed, mutation_circuit, independent, 1))
+        _reject(partial(validate_bound_correction_pair, mutation_circuit, independent, 1))
+    _reject(lambda: validate_bound_correction_pair(independent, feedback, 1))
+    _reject(lambda: validate_bound_correction_pair(feedback, independent, 3))
     _reject(lambda: validate_correction_pair(routed, independent, feedback, 1))
     _reject(lambda: validate_correction_pair(routed, feedback, independent, 3))
     _reject(lambda: correction_binding(True, CORRECTION_ARMS[0]))
@@ -163,6 +172,7 @@ def verify() -> dict[str, Any]:
         "qpy_roundtrip_pairs": len(reports),
         "false_branch_semantic_controls": 2,
         "rejected_mutations": len(mutations) + 8,
+        "rejected_bound_pair_mutations": len(mutations) + 2,
         "offline_target": "bundled FakeKingston",
         "native_pair": valid,
     }

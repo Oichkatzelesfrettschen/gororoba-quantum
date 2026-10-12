@@ -71,9 +71,9 @@ The decision does not certify unknown-eigenstate QPE or general Shor.
 | Reproduce the two completed jobs | Complete retained audit: raw hashes, 16 estimates, 12 intervals, QPY writers and timing reproduce; preserve the measured figure. |
 | Decompose the finite ripple mathematics | Implemented finite certificates and interactive explorer; retain theorem/finite-check/hardware distinctions and all explicit limits. |
 | Consolidate primary sources | Source owner integrates notes, PDFs, hashes, reading limits and prior-work attribution under docs; historical ledger paths retain compatibility. |
-| Qualify the four-PUB correction experiment | Local common-template, ideal, integer-count and schedule-validator contracts pass; fresh native event schedules remain required. |
+| Qualify the four-PUB correction experiment | Local common-template, ideal, integer-count and schedule-validator contracts pass; compare fresh live calibration from Fez, Kingston and Marrakesh, then audit returned execution schedules before admitting the matched inference. |
 | Diagnose Kingston mock access | Fresh implicit and explicit-instance GETs return 404 for mock configuration while real status returns 200; service deployment/access cause remains unresolved. |
-| Prepare physical admission | After schedule qualification: production family/reconstruction, exact collector, calibration withholding, approval binding, current quota, final charge estimate and ceiling. |
+| Prepare physical admission | Production family/reconstruction, exact collector, calibration withholding, approval binding, current quota, final charge estimate and ceiling; unavailable mocks are excluded from the preparation path. |
 | Execute approved cases once | Single execution owner, consumed-approval marker, immediate job-ID retention, immutable raw archive and independent adjudication. |
 | Expand ripple/rank data | Retain held prepared cases; admit each independently against a practical accuracy question. A dynamic witness result alone cannot admit static atlas spending. |
 | Close review findings | Focused iterative commits, mandatory gates, Copilot review and honest Codex-quota status. Keep PR #36 open; source-owner integration proceeds independently. |
@@ -87,6 +87,16 @@ share repetition overhead, but the slowest schedule, routing, crosstalk and
 precision determine the cost. More qubits alone cannot establish a lower bill
 or useful scientific information. One compatible job is preferred; incompatible
 execution policies and independent admission can require separate jobs.
+
+The user's live-calibration instruction supersedes the earlier mock-scheduler
+prerequisite. The production preparation reads fresh Targets and properties
+from all three available QPUs, compares the complete four-member family over a
+declared finite placement search, and records the selection rule and rejected
+candidates. The submission path revalidates calibration against the approved
+record. Target durations and empirical overhead support an estimate with
+explicit uncertainty; neither supplies the native controller schedule.
+Collection retains the returned hardware schedule and withholds matched-policy
+inference when the schedule evidence is missing or fails qualification.
 
 ## Proof and research dependencies
 
@@ -126,6 +136,14 @@ claims" owns source organization and Koebisu/folding/Rocq synthesis. "Resolve
 #34 commit issues" supplies the instrument/statistics/proof-gap audit. Each
 owner reports results and provenance into the shared repository; concurrent
 edits and immutable evidence remain under their existing ownership.
+
+The [source-library PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/38)
+owns the canonical documentation migration and version-specific publication
+rights. The [formal follow-up PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
+owns fold-descent certificates, conditional terminal-channel exclusion and
+their remaining inference obligations. Their proposed documents supplement
+the campaign directive after reviewed integration; open PRs remain distinct
+from evidence already merged into the repository.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)

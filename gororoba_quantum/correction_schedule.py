@@ -110,8 +110,12 @@ def _pair_identity(report: dict[str, Any]) -> tuple[int, int, int, bool]:
     """Require the validated circuit report; raw QPY verification belongs to its producer."""
     _require(isinstance(report, dict), "circuit pair report must be a dictionary")
     _require(
-        report.get("validation") == "exact_common_template_history_and_ideal_law",
-        "circuit pair requires exact common-template validation",
+        report.get("validation")
+        in {
+            "exact_common_template_history_and_ideal_law",
+            "exact_bound_pair_history_and_ideal_law",
+        },
+        "circuit pair requires exact template or bound-pair validation",
     )
     _require(type(report.get("phase_label")) is int and report["phase_label"] in (1, 3), "unsupported eigenlabel")
     _require(report.get("protected_history_equal") is True, "protected circuit history is unqualified")

@@ -14,6 +14,15 @@ precedes broad atlas spending; physical execution also requires case-specific
 approval. The [completed folded-job audit](results/ripple/folded-job-review.md)
 provides measured contrasts, model discrepancies, and timing evidence.
 
+The [integrated campaign directive](gororoba_quantum/RIPPLE_CAMPAIGN.md)
+connects the mathematical, scientific, visual and execution requests with their
+evidence gates and owners. The next correction-policy pilot compares fresh
+calibration from Fez, Kingston and Marrakesh, retains four 8,192-shot PUBs in
+one dynamic job, and qualifies returned schedules before making its statistical
+decision. The [protocol](gororoba_quantum/MODEL_DISCRIMINATION.md) records the
+fixed-count rule and the separation between modeled sensitivity and measured
+improvement.
+
 ## Contents
 
 - `gororoba_quantum/cd_core.py` -- Cayley-Dickson sign table ported from

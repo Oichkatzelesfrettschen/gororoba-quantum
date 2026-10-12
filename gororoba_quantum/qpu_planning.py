@@ -273,6 +273,10 @@ def prepare(
     runtime: Any, snapshots: list[Any], args: Any, usage: dict[str, Any], trace: dict[str, Any]
 ) -> tuple[list[Any], dict[str, Any]]:
     """Compile and simulate the bounded candidate set before choosing a shot tier."""
+    if args.family == "folded-correction":
+        import correction_planning
+
+        return correction_planning.prepare(runtime, snapshots, args, usage, trace)
     candidates = family_candidates(runtime, snapshots, args, trace)
     if not candidates:
         diagnostic = runtime._scrub_instances(runtime._jsonable(trace))
@@ -411,9 +415,18 @@ def prepare(
 
 
 def measured_family(
-    record: dict[str, Any], distributions: dict[str, list[np.ndarray]], executed: dict[str, Any], runtime: Any
+    record: dict[str, Any],
+    distributions: dict[str, list[np.ndarray]],
+    executed: dict[str, Any],
+    runtime: Any,
+    *,
+    correction_evidence: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     """Raw measured contrasts with simultaneous bounded-shot intervals across jobs."""
+    if record.get("family_configuration", {}).get("name") == "folded-correction":
+        import correction_collection
+
+        return correction_collection.analyze(record, correction_evidence, executed, runtime)
     contracts = record.get("observable_contracts", [])
     if not contracts:
         return {}

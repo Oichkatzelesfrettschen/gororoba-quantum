@@ -8,6 +8,7 @@ latency and general unknown-eigenphase order finding remain outside its scope.
 
 from __future__ import annotations
 
+import copy
 import hashlib
 import json
 import math
@@ -249,12 +250,26 @@ def validate_correction_pair(
     suffix = feedback_operations[correction_index + 1 :]
     if prefix != independent_operations[:correction_index] or suffix != independent_operations[correction_index + 1 :]:
         raise ValueError("correction pair changed its complete prefix or suffix")
+    return _pair_report(feedback_history, independent_history, phase_label, correction_index, measurements, resets)
+
+
+def _pair_report(
+    feedback_history: dict[str, Any],
+    independent_history: dict[str, Any],
+    phase_label: int,
+    correction_index: int,
+    measurements: list[list[int]],
+    resets: list[list[int]],
+    *,
+    validation: str = "exact_common_template_history_and_ideal_law",
+) -> dict[str, Any]:
+    correction = feedback_history["instructions"][correction_index]
     return {
         "phase_label": phase_label,
-        "validation": "exact_common_template_history_and_ideal_law",
+        "validation": validation,
         "correction_instruction_index": correction_index,
         "correction_physical_qubit": measurements[1][1],
-        "correction_operation": feedback.data[correction_index].operation.blocks[0].data[0].operation.name,
+        "correction_operation": correction["blocks"][0]["instructions"][0]["name"],
         "dispatch_condition": {"classical_bit": 0, "equals": 1},
         "correction_branch_angles": {
             "measured_feedback": {"then": -math.pi / 2, "else": 0.0},
@@ -263,8 +278,8 @@ def validate_correction_pair(
         "measurement_writers": measurements,
         "reset_instructions": resets,
         "protected_history_equal": True,
-        "prefix_sha256": _digest(prefix),
-        "suffix_sha256": _digest(suffix),
+        "prefix_sha256": _digest(feedback_history["instructions"][:correction_index]),
+        "suffix_sha256": _digest(feedback_history["instructions"][correction_index + 1 :]),
         "feedback_history_sha256": _digest(feedback_history),
         "independent_history_sha256": _digest(independent_history),
         "classical_dispatch_retained": True,
@@ -277,3 +292,92 @@ def validate_correction_pair(
             "Both branch rotations remain mandatory in local circuit histories."
         ),
     }
+
+
+def validate_bound_correction_pair(
+    feedback: QuantumCircuit, independent: QuantumCircuit, phase_label: int
+) -> dict[str, Any]:
+    """Validate archived physical PUBs without unstable symbolic-QPY serialization.
+
+    The planner separately proves derivation from one routed template. The
+    archive check verifies both complete physical instruction histories and
+    ideal laws, permitting only the false-branch phase and its global phase
+    to differ. Classical register names remain part of the history; the four
+    PUBs of the single correction group share one register naming scheme.
+    """
+    correction_binding(phase_label, CORRECTION_ARMS[0])
+    histories = [_history(circuit) for circuit in (feedback, independent)]
+    dispatch_indices = [
+        index for index, instruction in enumerate(feedback.data) if isinstance(instruction.operation, ControlFlowOp)
+    ]
+    if len(dispatch_indices) != 1 or feedback.num_clbits != 2 or independent.num_clbits != 2:
+        raise ValueError("bound correction pair requires one dispatch and two measured bits")
+    correction_index = dispatch_indices[0]
+    for history, false_angle in zip(histories, (0.0, -math.pi / 2), strict=True):
+        if len(history["instructions"]) <= correction_index:
+            raise ValueError("bound correction pair lost its correction slot")
+        correction = history["instructions"][correction_index]
+        if (
+            correction["name"] != "if_else"
+            or correction.get("condition") != [0, 1]
+            or correction["clbits"] != [0]
+            or len(correction["qubits"]) != 1
+            or len(correction.get("blocks", [])) != 2
+        ):
+            raise ValueError("bound correction dispatch changed condition, operands, or branches")
+        for block, angle in zip(correction["blocks"], (-math.pi / 2, false_angle), strict=True):
+            if block["num_qubits"] != 1 or block["num_clbits"] != 1 or len(block["instructions"]) != 1:
+                raise ValueError("bound correction branches require one phase rotation")
+            rotation = block["instructions"][0]
+            if (
+                rotation["name"] not in ("p", "rz")
+                or rotation["qubits"] != [0]
+                or rotation["clbits"]
+                or rotation["parameters"] != [angle]
+            ):
+                raise ValueError("bound correction phase differs from its declared arm")
+            expected_phase = 0.0 if rotation["name"] == "p" else (angle / 2) % (2 * math.pi)
+            if block["global_phase"] != expected_phase:
+                raise ValueError("bound correction branch lost its full phase-gate operator")
+    normalized_independent = copy.deepcopy(histories[1])
+    normalized_false = normalized_independent["instructions"][correction_index]["blocks"][1]
+    feedback_false = histories[0]["instructions"][correction_index]["blocks"][1]
+    normalized_false["instructions"][0]["parameters"] = feedback_false["instructions"][0]["parameters"]
+    normalized_false["global_phase"] = feedback_false["global_phase"]
+    if histories[0] != normalized_independent:
+        raise ValueError("bound pair differs outside the declared false-branch correction")
+    measurements = []
+    resets = []
+    for index, instruction in enumerate(histories[0]["instructions"]):
+        if instruction["name"] == "measure":
+            if len(instruction["qubits"]) != 1 or len(instruction["clbits"]) != 1:
+                raise ValueError("bound measurement has unexpected operands")
+            measurements.append([index, instruction["qubits"][0], instruction["clbits"][0]])
+        elif instruction["name"] == "reset":
+            if len(instruction["qubits"]) != 1 or instruction["clbits"]:
+                raise ValueError("bound reset has unexpected operands")
+            resets.append([index, instruction["qubits"][0]])
+        elif index != correction_index and (instruction["clbits"] or instruction["name"] == "if_else"):
+            raise ValueError("bound pair contains another classical operation")
+    if len(measurements) != 2 or [entry[2] for entry in measurements] != [0, 1] or len(resets) != 1:
+        raise ValueError("bound pair changed its measured-bit or reset history")
+    if not measurements[0][0] < resets[0][0] < correction_index < measurements[1][0]:
+        raise ValueError("bound pair changed its measurement, reset, or dispatch order")
+    if resets[0][1] != measurements[0][1]:
+        raise ValueError("bound reset moved away from the first measurement writer")
+    if histories[0]["instructions"][correction_index]["qubits"] != [measurements[1][1]]:
+        raise ValueError("bound correction moved away from the terminal measurement writer")
+    expected_law = np.zeros(4)
+    expected_law[phase_label] = 1.0
+    for circuit in (feedback, independent):
+        if not np.allclose(ideal_compiled_probabilities(circuit), expected_law, rtol=0, atol=1e-11):
+            raise ValueError("bound correction ideal law differs from its supplied eigenlabel")
+    return _pair_report(
+        histories[0],
+        histories[1],
+        phase_label,
+        correction_index,
+        measurements,
+        resets,
+        validation="exact_bound_pair_history_and_ideal_law",
+    )

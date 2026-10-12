@@ -1,0 +1,67 @@
+{
+  "available_backend_names": [
+    "ibm_fez",
+    "ibm_kingston",
+    "ibm_marrakesh"
+  ],
+  "diagnostic_source_sha256": "3a82e0147d19c0aca77deea2dcd93199ebb00257e63c9b12b49b875976ea2998",
+  "discovery_http_events": [
+    {
+      "backend": "ibm_fez",
+      "endpoint": "configuration",
+      "method": "GET",
+      "status_code": 200
+    }
+  ],
+  "instance_sha256_12": "e3de05b6901e",
+  "observed_at": "2026-10-12T07:22:50.793631+00:00",
+  "probes": [
+    {
+      "backend": "ibm_fez",
+      "explicit_instance": true,
+      "found": true,
+      "http_events": [
+        {
+          "backend": "ibm_fez",
+          "endpoint": "status",
+          "method": "GET",
+          "status_code": 200
+        }
+      ],
+      "operational": true,
+      "status_msg": "active"
+    },
+    {
+      "backend": "mock_fez",
+      "error_type": "QiskitBackendNotFoundError",
+      "explicit_instance": false,
+      "found": false,
+      "http_events": [
+        {
+          "backend": "mock_fez",
+          "endpoint": "configuration",
+          "method": "GET",
+          "status_code": 404
+        }
+      ]
+    },
+    {
+      "backend": "mock_fez",
+      "error_type": "QiskitBackendNotFoundError",
+      "explicit_instance": true,
+      "found": false,
+      "http_events": [
+        {
+          "backend": "mock_fez",
+          "endpoint": "configuration",
+          "method": "GET",
+          "status_code": 404
+        }
+      ]
+    }
+  ],
+  "runtime_version": "0.50.0",
+  "saved_instance_explicit": false,
+  "schema": "qiskit-mock-backend-diagnosis-v1",
+  "scope": "backend discovery/configuration/status only; zero primitive submissions"
+}

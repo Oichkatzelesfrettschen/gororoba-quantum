@@ -17,13 +17,14 @@ import os
 import re
 import shlex
 import tempfile
+from functools import cache
 from pathlib import Path
 from typing import Any
 
 from qiskit import QuantumCircuit, qpy
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
-FAMILIES = {"folded-qpe", "n21-feedback", "ripple", "rank-sector"}
+FAMILIES = {"folded-qpe", "folded-correction", "n21-feedback", "ripple", "rank-sector"}
 _IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:+/-]*\Z")
 _HEX_DIGEST = re.compile(r"[a-f0-9]{64}\Z")
 _DESIGN_OPTIONS = (
@@ -243,6 +244,251 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
     )
 
 
+@cache
+def _correction_power() -> dict[str, Any]:
+    from correction_statistics import planning_certificate
+
+    return planning_certificate(8192, alpha=0.05, minimum_gain=0.01, assumed_gain=0.04, required_joint_power=0.8)
+
+
+def _correction_case_inputs(record: dict[str, Any], candidate: dict[str, Any], circuits: list[QuantumCircuit]) -> None:
+    """Independently check the fixed pilot protocol and its archived physical pairs."""
+    from correction_circuits import validate_bound_correction_pair
+    from correction_statistics import MEMBERS
+
+    configuration = record["family_configuration"]
+    policy = record["policy"]
+    design = policy["design"]
+    _require(record["shots"] == configuration.get("shots_per_pub") == 8192, "correction case requires 8192 shots")
+    _require(design["shot_tiers"] == [8192] and design["replica_tiers"] == [1], "correction tiers changed")
+    _require(design["alpha"] == 0.05 and design["power"] == 0.8, "correction statistical policy changed")
+    _require(configuration.get("member_order") == list(MEMBERS), "correction arm order changed")
+    _require(configuration.get("replica_cap") == 1, "correction case requires one replica")
+    _require(configuration.get("execution_row_count") == 4, "correction case requires four execution rows")
+    _require(policy["max_replicas"] == 1 and policy["isolated_reference"] is False, "correction placement changed")
+    _require(
+        policy["max_execution_seconds"] == design["max_total_execution_seconds"] == 30,
+        "correction pilot requires the reviewed 30-second execution ceiling and cap",
+    )
+    _require(policy["twirl"] is False and policy["dd"] is None, "correction case requires unmitigated execution")
+    _require(
+        configuration.get("native_mock_required") is False
+        and configuration.get("classical_dispatch_retained") is True
+        and configuration.get("dispatch_removal_test") is False,
+        "correction schedule or dispatch boundary changed",
+    )
+    _require(
+        configuration.get("decision_contract")
+        == {
+            "method": "four_one_sided_clopper_pearson_bounds",
+            "family_alpha": 0.05,
+            "per_bound_tail": 0.0125,
+            "minimum_gain": 0.01,
+            "require_both_labels": True,
+            "count_semantics": "raw integer counts; y=first_bit+2*terminal_bit",
+            "postexecution_schedule_gate": True,
+        },
+        "correction CP decision or post-execution schedule gate changed",
+    )
+    _require(record["observable_contracts"] == candidate["observables"] == [], "correction uses dedicated CP inference")
+    _require(
+        len(candidate["jobs"]) == 1 and len(candidate["jobs"][0]["pubs"]) == 4, "correction requires one four-PUB job"
+    )
+    _require(len(record["groups"]) == 1, "correction requires one matched group")
+    group = record["groups"][0]
+    _require(len(group["replicas"]) == 1, "correction group replica count changed")
+    _require([member["name"] for member in group["members"]] == list(MEMBERS), "correction members changed")
+    for member, phase_label in zip(group["members"], (1, 1, 3, 3), strict=True):
+        _require(
+            member["ideal"] == [float(outcome == phase_label) for outcome in range(4)], "correction ideal law changed"
+        )
+    pubs = record["execution_pubs"]
+    _require(len(pubs) == len(circuits) == 4, "correction archive requires four PUBs")
+    for pub, member in zip(pubs, MEMBERS, strict=True):
+        _require(pub["kind"] == "dynamic" and pub["backend"] == group["backend"], "correction job kind/backend changed")
+        _require(len(pub["components"]) == 1, "correction PUB contains extra components")
+        component = pub["components"][0]
+        _require(
+            component["member"] == member
+            and component["group"] == group["group"]
+            and component["reference"] is False
+            and len(component["registers_by_replica"]) == 1
+            and bool(component["registers_by_replica"][0]),
+            "correction PUB member, reference, or replica mapping changed",
+        )
+        _require(
+            pub["feed_forward_operation_count"] == pub["sequential_stage_count"] == pub["parallel_stream_count"] == 1,
+            "correction PUB must retain one classical dispatch",
+        )
+    actual_pairs = {
+        "1": validate_bound_correction_pair(circuits[0], circuits[1], 1),
+        "3": validate_bound_correction_pair(circuits[3], circuits[2], 3),
+    }
+    _require(
+        configuration.get("circuit_pairs") == actual_pairs, "correction archive differs from validated pair reports"
+    )
+    templates = configuration.get("template_pairs")
+    _require(isinstance(templates, dict) and set(templates) == {"1", "3"}, "common-template pair proofs are missing")
+    for label in ("1", "3"):
+        template = templates[label]
+        _require(
+            template.get("phase_label") == int(label)
+            and template.get("validation") == "exact_common_template_history_and_ideal_law"
+            and template.get("protected_history_equal") is True
+            and template.get("classical_dispatch_retained") is True,
+            "common-template pair proof is unqualified",
+        )
+        for key in ("prefix_sha256", "suffix_sha256", "feedback_history_sha256", "independent_history_sha256"):
+            _require(
+                isinstance(template.get(key), str) and bool(_HEX_DIGEST.fullmatch(template[key])),
+                "common-template history digest is missing",
+            )
+    _require(configuration.get("hypothetical_power") == _correction_power(), "hypothetical power certificate changed")
+    _require(_correction_power()["hypothetical_power_qualified"] is True, "hypothetical planning power failed")
+    expected_backends = {"ibm_fez", "ibm_kingston", "ibm_marrakesh"}
+    _require(set(record["system_inventory"]) == expected_backends, "correction search requires all three backends")
+    search = configuration.get("backend_search")
+    _require(isinstance(search, list) and len(search) == 3, "complete correction backend search is missing")
+    _require({row["backend"] for row in search} == expected_backends, "correction search backend set changed")
+    for row in search:
+        name = row["backend"]
+        snapshot = record["system_inventory"][name]
+        _identifier(snapshot["fetched_at"], "backend refresh time")
+        _require(row["calibration"] == snapshot["calibration"], "correction search calibration changed")
+        _require(type(row["eligible"]) is bool, "backend eligibility must be Boolean")
+        if row["eligible"]:
+            _require(
+                snapshot["eligibility"] == "eligible" and row["rejection_reason"] is None,
+                "family eligibility requires an eligible backend snapshot",
+            )
+        else:
+            _require(
+                isinstance(row["rejection_reason"], str)
+                and bool(row["rejection_reason"].strip())
+                and row["admitted_candidate_count"] == 0,
+                "excluded backend requires an explicit reason and zero admitted candidates",
+            )
+        for key in ("compiled_candidate_count", "admitted_candidate_count"):
+            _require(type(row[key]) is int and row[key] >= 0, "backend candidate counts must be nonnegative integers")
+        _require(row["admitted_candidate_count"] <= row["compiled_candidate_count"], "backend admission count changed")
+        if name == group["backend"]:
+            _require(
+                row["eligible"] and row["admitted_candidate_count"] > 0, "selected backend lacks an admitted candidate"
+            )
+            _require(
+                row["calibration"] == group["calibration"] == record["backends"][name]["calibration"],
+                "selected backend calibration differs from its group",
+            )
+    _correction_model_inputs(record)
+    _correction_cost_inputs(record, candidate)
+
+
+def _correction_model_inputs(record: dict[str, Any]) -> None:
+    from correction_statistics import MEMBERS
+
+    prediction = record["family_configuration"]["model_prediction"]
+    _require(
+        prediction["evidence_class"]
+        == "finite-shot calibration noise simulation; controller/instrument errors incomplete"
+        and prediction["prediction_frozen_before_hardware"] is True,
+        "correction noise-model evidence class or freeze changed",
+    )
+    _require(prediction["shots_per_member"] == record["policy"]["design"]["model_shots"], "model shot count changed")
+    _count(prediction["shots_per_member"], "model shots")
+    _require(prediction["seed"] == record["seed_simulator"], "model seed changed")
+    _require(set(prediction["members"]) == set(MEMBERS), "model predictions require all four members")
+    successes = {}
+    for index, name in enumerate(MEMBERS):
+        member = prediction["members"][name]
+        values = member["probabilities"]
+        _require(isinstance(values, list) and len(values) == 4, "model requires four labeled probabilities")
+        probabilities = [_number(value, "model probability") for value in values]
+        _require(
+            all(0 <= value <= 1 for value in probabilities)
+            and math.isclose(math.fsum(probabilities), 1.0, rel_tol=0, abs_tol=1e-12),
+            "invalid model law",
+        )
+        success = math.fsum(probabilities[:2] if index < 2 else probabilities[2:])
+        _require(
+            math.isclose(
+                success, _number(member["terminal_success_probability"], "model success"), rel_tol=0, abs_tol=1e-12
+            ),
+            "model terminal success disagrees with its labeled law",
+        )
+        successes[name] = success
+    gains = prediction["gain_known_minus_measured"]
+    _require(set(gains) == {"1", "3"}, "model gains require both labels")
+    for label, known, measured in (("1", MEMBERS[1], MEMBERS[0]), ("3", MEMBERS[2], MEMBERS[3])):
+        _require(
+            math.isclose(
+                _number(gains[label], "model gain"), successes[known] - successes[measured], rel_tol=0, abs_tol=1e-12
+            ),
+            "model gain disagrees with its member predictions",
+        )
+
+
+def _correction_cost_inputs(record: dict[str, Any], candidate: dict[str, Any]) -> None:
+    """Require explicit sensitivity ledgers without interpreting assumptions as bounds."""
+    design = record["policy"]["design"]
+    assumptions = design.get("cost_scenarios", [])
+    scenarios = candidate.get("cost_scenarios", [])
+    _require(bool(assumptions) and len(assumptions) == len(scenarios), "correction cost scenarios are missing")
+    by_name = {row["name"]: row for row in assumptions}
+    _require(
+        len(by_name) == len(assumptions) and {row["name"] for row in scenarios} == set(by_name),
+        "correction cost scenarios differ from policy",
+    )
+    nominal = candidate["jobs"][0]["pubs"]
+    for pub in nominal:
+        _require(pub["classical_stage_count"] == 1, "correction cost lost its retained dispatch")
+        _require(
+            math.isclose(pub["classical_latency_seconds"], design["classical_latency_us"] * 1e-6, rel_tol=1e-12),
+            "correction nominal latency differs from policy",
+        )
+    charges = [candidate["estimated_charge_seconds"]]
+    for scenario in scenarios:
+        assumption = by_name[scenario["name"]]
+        _require(scenario["feasible"] is True and len(scenario["jobs"]) == 1, "correction cost scenario is unqualified")
+        _require(
+            assumption["job_overhead_seconds"] >= design["job_overhead_seconds"]
+            and assumption["classical_latency_us"] >= design["classical_latency_us"],
+            "correction scenarios must include conservative overhead and latency",
+        )
+        scenario_record = copy.deepcopy(record)
+        scenario_record["policy"]["design"]["job_overhead_seconds"] = assumption["job_overhead_seconds"]
+        scenario_candidate = dict(
+            candidate, jobs=scenario["jobs"], estimated_charge_seconds=scenario["estimated_charge_seconds"]
+        )
+        _validate_costs(scenario_candidate, scenario_record)
+        _require(len(scenario["jobs"][0]["pubs"]) == 4, "correction scenario requires four PUBs")
+        for base, modified in zip(nominal, scenario["jobs"][0]["pubs"], strict=True):
+            _require(
+                all(
+                    base[key] == modified[key]
+                    for key in (
+                        "name",
+                        "shots",
+                        "scheduled_seconds",
+                        "repetition_delay_seconds",
+                        "reset_seconds",
+                        "classical_stage_count",
+                    )
+                ),
+                "correction scenario changed the compiled workload",
+            )
+            _require(
+                math.isclose(
+                    modified["classical_latency_seconds"], assumption["classical_latency_us"] * 1e-6, rel_tol=1e-12
+                ),
+                "correction scenario latency differs from policy",
+            )
+        charges.append(scenario["estimated_charge_seconds"])
+    _require(
+        math.isclose(candidate["worst_case_charge_seconds"], max(charges), rel_tol=1e-12),
+        "correction scenario envelope disagrees with its ledger",
+    )
+
+
 def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any], str, str]:
     record_bytes = (run_dir / "record.json").read_bytes()
     retained = json.loads(record_bytes)
@@ -285,10 +531,11 @@ def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any],
             "summed ceilings consume the declared quota reserve",
         )
     _validate_costs(candidate, record)
-    _require(
-        bool(candidate["observables"]) and all(item["feasible"] is True for item in candidate["observables"]),
-        "selected observables must all pass admission",
-    )
+    if record["family_configuration"]["name"] != "folded-correction":
+        _require(
+            bool(candidate["observables"]) and all(item["feasible"] is True for item in candidate["observables"]),
+            "selected observables must all pass admission",
+        )
     contract_names = [item["name"] for item in record["observable_contracts"]]
     _require(len(contract_names) == len(set(contract_names)), "endpoint contracts must have unique names")
     _require(
@@ -302,10 +549,112 @@ def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any],
         "QPY circuit names differ from the ordered execution-PUB manifest",
     )
     _require(bool(circuits), "the QPY archive has no execution circuits")
+    if record["family_configuration"]["name"] == "folded-correction":
+        _correction_case_inputs(record, candidate, list(circuits))
     return candidate, hashlib.sha256(record_bytes).hexdigest(), hashlib.sha256(archive_bytes).hexdigest()
 
 
+def _correction_endpoints(record: dict[str, Any]) -> list[str]:
+    """Keep exact-count inference separate from model predictions and planning power."""
+    configuration = record["family_configuration"]
+    certificate = configuration["hypothetical_power"]
+    prediction = configuration["model_prediction"]
+    lines = [
+        "## Preregistered endpoints",
+        "",
+        "The primary estimand is unconditional terminal-bit success, using every raw shot. "
+        "Outcome labels are y = first_bit + 2*terminal_bit. Success is terminal_bit=0 for s1 "
+        "and terminal_bit=1 for s3. Each F and U arm must supply exactly 8192 integer-count "
+        "observations; missing members or shots withhold the scientific decision.",
+        "",
+        "Four one-sided Clopper-Pearson bounds allocate family alpha=0.05 as 0.0125 per bound. "
+        "Select U only when both labels satisfy `lower_U - upper_F > 0.01` and the post-execution "
+        "circuit, schedule, count, and calibration checks qualify. Failure retains F and establishes "
+        "neither equivalence nor a causal mechanism. Recorded B=0/B=1 strata remain descriptive; "
+        "the decision uses zero conditional postselection.",
+        "",
+        "The observation bounds allow arbitrary dependence between PUBs through a union bound. "
+        "Independent stationary Bernoulli repetitions within each PUB remain an assumption. "
+        "Exact-binomial describes the interval construction; SciPy evaluates quantiles and tails "
+        "in floating point without interval-certified rounding.",
+        "",
+        "### Hypothetical sensitivity scenario",
+        "",
+        "The fixed reference F rates are 6433/8192 for s1 and 6241/8192 for s3. "
+        "A hypothetical U improvement of 0.04 gives the joint-power lower bound "
+        f"{_format_number(certificate['joint_power_union_lower_bound'])} against the required 0.8. "
+        "The finite-binomial sum adds independence between F and U counts within each label; "
+        "the union bound across labels requires no independence between labels. The reference "
+        "rates are scenario constants, with no stationarity or transfer claim to fresh calibration. "
+        "Hypothetical power supplies neither a current model prediction nor measured advantage.",
+        "",
+        "### Frozen calibration-model predictions",
+        "",
+        f"The selected layout uses {_count(prediction['shots_per_member'], 'model shots')} finite "
+        f"simulation shots per member and seed {_count(prediction['seed'], 'model seed')}. "
+        "The four labeled distributions and gains are frozen before hardware acquisition. "
+        "Controller and instrument errors remain incomplete in the model; sampling error and "
+        "hardware-model discrepancy remain separate from the hypothetical sensitivity calculation.",
+        "",
+        "| Member | Labeled modeled probabilities | Terminal success |",
+        "|---|---|---:|",
+    ]
+    for name in configuration["member_order"]:
+        member = prediction["members"][name]
+        lines.append(
+            f"| {_identifier(name, 'model member')} | `{json.dumps(member['probabilities'])}` | "
+            f"{_format_number(member['terminal_success_probability'])} |"
+        )
+    lines.extend(["", "| Label | Modeled U minus F |", "|---|---:|"])
+    for label in ("1", "3"):
+        lines.append(f"| s{label} | {_format_number(prediction['gain_known_minus_measured'][label])} |")
+    lines.extend(
+        ["", "The modeled gains may be small or negative; the hypothetical 0.04 gain stays separately labeled.", ""]
+    )
+    return lines
+
+
+def _correction_selection(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+    configuration = record["family_configuration"]
+    _require(
+        record["optimization"].get("objective") == "worst_arm_calibrated_quality_then_charge",
+        "correction selection objective changed",
+    )
+    proxy = candidate["proxy_metadata"]
+    quality = _number(proxy["worst_arm_quality"], "worst-arm calibration quality", positive=True)
+    _require(
+        quality == min(_number(score, "member calibration quality", positive=True) for score in proxy["member_scores"]),
+        "worst-arm quality disagrees with its arm scores",
+    )
+    _require(len(proxy["member_scores"]) == 4, "correction selection requires four arm scores")
+    lines = [
+        "## Selection objective and sensitivity assumptions",
+        "",
+        "The dedicated correction objective maximizes the weakest of four calibrated arm scores "
+        "(ESP times exp(-T*sum(1/T2))). Ties use lower Target-plus-repetition charge with zero "
+        "added controller latency, then total CZ count, seed, and backend name. "
+        "The generic objective flag remains recorded for CLI replay; the dedicated family ranker "
+        "defines selection. Calibration proxies establish neither measured fidelity nor global optimality.",
+        "",
+        f"The selected candidate's worst-arm quality proxy is {quality:.12g}. "
+        "The finite search includes fresh snapshots of Fez, Kingston, and Marrakesh; every "
+        "recorded rejection stays in the retained search trace.",
+        "",
+        "| Backend | Calibration | Family eligible | Compiled candidates | Admitted candidates |",
+        "|---|---|---|---:|---:|",
+    ]
+    for row in configuration["backend_search"]:
+        lines.append(
+            f"| {_identifier(row['backend'], 'backend')} | {_identifier(row['calibration'], 'calibration')} | "
+            f"{str(row['eligible']).lower()} | {row['compiled_candidate_count']} | {row['admitted_candidate_count']} |"
+        )
+    lines.append("")
+    return lines
+
+
 def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
+    if record["family_configuration"]["name"] == "folded-correction":
+        return _correction_endpoints(record)
     lines = [
         "## Preregistered endpoints",
         "",
@@ -406,6 +755,29 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
 
 
 def _scientific_case(family: str) -> list[str]:
+    if family == "folded-correction":
+        return [
+            "## Scientific question and interpretation",
+            "",
+            "The pilot compares measured-bit correction F with recorded-bit-independent correction U "
+            "for the known odd eigenstate labels s1 and s3. One routed symbolic template produces "
+            "four PUBs in order F1/U1/U3/F3, one replica, one dynamic job, and 8192 shots per PUB. "
+            "Every arm retains the classical dispatch, first measurement, reset, physical history, "
+            "and terminal readout. U applies -pi/2 in both dispatch branches; F applies -pi/2 only "
+            "when the recorded first bit equals 1. The archived circuit pair proof permits only "
+            "the false-branch phase and associated global-phase difference.",
+            "",
+            "The experiment tests dependence of the correction on the recorded first bit for "
+            "supplied labels. Classical dispatch removal, general unknown-eigenstate QPE, "
+            "and unique attribution to a controller or readout mechanism remain outside its scope. "
+            "The fixed arm order can retain time and drift confounds.",
+            "",
+            "Fresh Target/properties supply placement and conditional noise predictions. "
+            "A future hardware acquisition measures the terminal-success contrast and model residual. "
+            "Raw shot order, all classical registers, actual returned schedules, calibration windows, "
+            "and completed usage must be retained before the scientific decision.",
+            "",
+        ]
     if family in ("ripple", "rank-sector"):
         mechanism = (
             "The ripple family measures finite four-qubit associator prefixes and the complete signed "
@@ -489,8 +861,25 @@ def _scientific_case(family: str) -> list[str]:
     ]
 
 
-def _native_qualification(run_dir: Path, record_digest: str, qpy_digest: str) -> list[str]:
+def _native_qualification(run_dir: Path, record_digest: str, qpy_digest: str, *, family: str = "") -> list[str]:
     """Report only mock evidence bound to the exact archived workload."""
+    if family == "folded-correction":
+        return [
+            "## Post-execution schedule qualification",
+            "",
+            "The authorized preparation route skips unavailable native mock scheduling. "
+            "Fresh Target timing and explicit overhead/controller-latency scenarios supply local "
+            "planning estimates. The actual native schedule remains unknown before execution; "
+            "the estimate supplies neither native timing proof nor a final-charge guarantee.",
+            "",
+            "Returned scheduler tables must qualify each archived F/U pair's exposed protected "
+            "events, measurement/reset/dispatch history, correction slot, and timing. "
+            "Circuit validation supplies phase and condition semantics omitted by the timing table. "
+            "Missing or mismatched tables, incomplete counts, or ambiguous calibration withhold "
+            "the CP scientific decision while retaining raw and descriptive results. "
+            "Exposed schedule agreement leaves undisclosed controller behavior and per-shot timing uncertified.",
+            "",
+        ]
     lines = ["## Native server qualification", ""]
     reports = sorted((run_dir / "native-dry-run").glob("*/report.json"))
     matching = []
@@ -614,15 +1003,18 @@ def _render(
         ["", "Calibration-bound family and replica mapping:", "", "```json", json.dumps(mappings, indent=2), "```", ""]
     )
     lines.extend(_endpoints(record, candidate))
-    lines.extend(
-        [
-            "## Selection objective and sensitivity assumptions",
-            "",
-            f"The objective is `{record['policy']['design'].get('objective', 'minimum_charge')}`. "
-            "Selection compares the declared finite candidate set after statistical and cost admission.",
-            "",
-        ]
-    )
+    if family == "folded-correction":
+        lines.extend(_correction_selection(record, candidate))
+    else:
+        lines.extend(
+            [
+                "## Selection objective and sensitivity assumptions",
+                "",
+                f"The objective is `{record['policy']['design'].get('objective', 'minimum_charge')}`. "
+                "Selection compares the declared finite candidate set after statistical and cost admission.",
+                "",
+            ]
+        )
     if candidate.get("normalized_precision_radius") is not None:
         lines.extend(
             [
@@ -786,7 +1178,7 @@ def write_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
         _portable_run_path(run_dir),
         record_digest,
         qpy_digest,
-        _native_qualification(run_dir, record_digest, qpy_digest),
+        _native_qualification(run_dir, record_digest, qpy_digest, family=family),
     )
     destination = run_dir / CASE_FILENAME
     temporary: Path | None = None

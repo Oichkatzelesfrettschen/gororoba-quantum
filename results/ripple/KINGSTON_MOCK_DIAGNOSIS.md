@@ -33,6 +33,11 @@ retains backend/endpoint/status only, excludes credentials and response bodies,
 and restores the logger's original level. The report is
 `kingston-mock-diagnosis.json` beside this note.
 
+The already-completed [Fez](fez-mock-diagnosis.json) and
+[Marrakesh](marrakesh-mock-diagnosis.json) probes record the same boundary:
+physical status HTTP 200 and mock configuration HTTP 404 for both implicit and
+explicit-instance lookup. Those probes preceded the live-calibration route.
+
 Installed Runtime 0.50 source paths establish the causal chain:
 
 - `executor_sampler/sampler.py`: `Sampler.run(..., dry_run=True)` passes the
@@ -56,11 +61,17 @@ relative time after reset/control flow and assigns control flow zero duration;
 that model cannot recover the unavailable controller's event schedule.
 
 The [pilot protocol](../../gororoba_quantum/MODEL_DISCRIMINATION.md) retains its
-historical 11.242518272-second estimate for four PUBs at 8,192 shots. A fresh
-execution estimate and physical ceiling await qualified mock schedules and
-production admission. The prepared circuit archive records the exact
-intervention; successful local tests do not change the native qualification.
+historical 11.242518272-second estimate for four PUBs at 8,192 shots. The user's
+instruction to prepare against fresh live calibration from Fez, Kingston and
+Marrakesh supersedes the earlier mock-schedule prerequisite for a fresh
+execution estimate and physical ceiling. The prepared circuit archive records the exact intervention;
+successful local tests remain circuit and model evidence.
 
-The supported next action is restoring service access, replaying the diagnostic,
-and rerunning the exact preparation. Backend renaming, fabricated calibration,
-and physical execution cannot establish the missing mock evidence.
+The accepted preparation route compares the complete matched family using
+fresh live Targets and properties from all three systems, records the finite
+search and selection criterion, and revalidates calibration before an approved
+submission. The written case identifies Target-based timing uncertainty and an
+execution ceiling. Collection audits actual returned schedules before admitting
+the matched-policy inference. An absent or mismatched schedule withholds that
+inference while preserving every raw result. Restoring mock access remains an
+IBM service issue; the production route issues zero mock requests.

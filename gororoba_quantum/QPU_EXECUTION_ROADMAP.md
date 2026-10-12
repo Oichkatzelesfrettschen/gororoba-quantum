@@ -187,6 +187,15 @@ fidelity prediction and scientific adjudication. Scheduled-time estimates,
 CPU predictions, executed scheduler metadata, and final billing retain
 separate provenance. The local dry-run mode remains submit-free.
 
+For the correction-policy pilot, the user selected fresh live calibration from
+Fez, Kingston and Marrakesh as the preparation route. The planner compares the
+complete four-PUB family on each system and retains its finite search and
+selection rule. Submission revalidates the selected calibration. Collection
+qualifies the actual returned schedules before admitting the matched-policy
+decision; missing schedule evidence withholds the inference. See the
+[integrated directive](RIPPLE_CAMPAIGN.md) and
+[fixed-sample protocol](MODEL_DISCRIMINATION.md).
+
 ## Dynamic-circuit fidelity uses native mechanisms
 
 1. **Qualify `MidCircuitMeasure`.** IBM [recommends][dynamic] the `measure_2`
