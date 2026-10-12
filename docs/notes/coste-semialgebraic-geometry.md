@@ -77,3 +77,44 @@ exact local Schur reductions before attempting global decomposition. A
 candidate triangulation becomes an admitted topological model only after
 its covering, compatibility, and geometric identification certificates
 pass; agreement of a few Betti numbers supplies a weaker check.
+
+## Curve selection and realizable tangent directions
+
+The additional reading covers Section 3.2.3 and Theorem 3.13, printed p. 55
+(PDF p. 56), including its proof. The page image confirms the closure
+hypothesis and the continuity conclusion. The source bytes and external-only
+rights classification remain those recorded above.
+
+Theorem 3.13 assumes a semialgebraic set `S` and a point
+`x in closure(S) \ S`. It produces a continuous semialgebraic
+`gamma:[0,1]->R^n` with `gamma(0)=x` and `gamma((0,1])` contained in `S`.
+The proof uses compatible triangulation and a segment from a vertex to a
+simplex barycenter. The stated theorem supplies neither a Taylor-order
+lifting criterion nor a nonzero initial derivative.
+
+For the repository's same-nullity set `X`, retain the constant-norm equation
+and the Schur pivot inequation. For a center `x0`, define
+
+```text
+E={(t,v):0<t<1, x0+t*v belongs to X}.
+```
+
+The set `E` is semialgebraic, and the Bouligand definition says precisely
+that `h` belongs to the tangent cone when `(0,h)` belongs to `closure(E)`.
+Theorem 3.13 applied in this enlarged space gives a path
+`(tau(s),v(s))->(0,h)` with positive `tau(s)` and
+`x0+tau(s)*v(s)` in `X`. This realizes `h` as a real path's asymptotic
+direction. A claim about a prescribed differentiable velocity needs a
+further parametrization argument.
+
+The hard premise remains the closure membership. Linearized equations,
+compatible accelerations, or the real zero set of projected quadratics
+provide necessary conditions; curve selection alone does not turn those
+conditions into membership in `closure(E)`. An exact path or a quantified
+real-algebraic closure certificate would establish that premise. The new
+[Basu-Roy source](1803.00505.md) adds bounds and an explicit algebraic path
+representation, while [Greenberg's theorem](greenberg-henselian-lifting.md)
+specifies a different route from sufficiently accurate polynomial solutions
+to exact solutions under its local-ring hypotheses. These sources add
+proof dependencies and do not establish tangent-cone equality for the
+repository's rank locus.

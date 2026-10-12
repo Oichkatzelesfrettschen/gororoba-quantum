@@ -13,8 +13,10 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 11 licensed PDFs and two aliases;
-40 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 14 licensed PDFs and two aliases;
+56 external sources retain citations and optional ignored local reading copies.
+Four licensed original software archives retain upstream notices under
+`source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
 
@@ -54,7 +56,8 @@ sets the hardware priority before broad atlas expenditure.
 The [reality-ripple measurement design](notes/reality_ripple_measurement_design.md)
 joins the Cayley-Dickson sources to the planned atlas, walk, rank-sector, and
 joint-error views. The [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
-qualifies the correction, ripple and rank cases at source `f1b9830`; reviewed
+qualifies the correction, ripple and rank cases against one audited runtime
+source closure; reviewed
 merge, fresh live bindings and independent family execution admission remain
 gates. The completed folded-QPE archive supplies the measured evidence.
 The [de Marrais source note](notes/math-0403113.md) records
@@ -187,6 +190,25 @@ manifests bind their hashes.
 
 [FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
 analysis.
+
+
+The [proof and experiment dependency synthesis](notes/research_proof_experiment_dependencies.md)
+connects curve realization, exact matrix certificates, circuit/instrument
+semantics, tomography, stopping and full-workload allocation to primary sources.
+The [field-model opportunity map](notes/vacuum_field_run_opportunities.md)
+separates physical device-noise sensing, encoded field simulation, and calibrated
+force/radiation measurements. Its [finite CPU reference](evidence/vacuum_models/README.md)
+retains cutoff, coherence, synthesis and SPAM-identifiability checks; future
+hardware cases retain their independent admission gates.
+
+| Additional source group | Notes and application |
+| --- | --- |
+| Curve realization | [Basu--Roy](notes/1803.00505.md), [Greenberg](notes/greenberg-henselian-lifting.md), expanded [BCDI II](notes/math-0702075.md) and [Coste](notes/coste-semialgebraic-geometry.md); real-arc and lifting hypotheses |
+| Formal interfaces | [SQIR/VOQC](notes/sqir-voqc-proof-interfaces.md), [MathComp/CoqEAL](notes/mathcomp-coqeal-matrix-certificates.md), [CoqInterval](notes/coqinterval-certified-enclosures.md); checked semantics, rank witnesses and numerical enclosures |
+| Identification and resource design | [GST](notes/2009.07301.md), expanded [QILGST](notes/2103.03008.md), [optimal design](notes/quant-ph-0411093.md), [SHOALS](notes/2201.13438.md), [shadows](notes/2002.08953.md); gauge, measurement choice and complete costs |
+| Device noise | [Schoelkopf](notes/cond-mat-0210247.md), [Clerk](notes/0810.4729.md), [Jin](notes/1412.2772.md); spectral convention, residual populations and calibrated inference |
+| Encoded field models | [Digital optics](notes/1909.04408.md), [Gaussian coherence](notes/1610.03272.md), [lattice Casimir](notes/2105.02032.md), [Gaussian simulation](notes/quant-ph-0109047.md), [collision models](notes/2106.11974.md); encoding, model bias and classical baselines |
+| Physical interpretation and execution | [Physical DCE](notes/1105.4714.md), [real-material Casimir](notes/0902.4022.md), [circuit QED](notes/2005.12667.md), [IBM policy](notes/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
 
 ## Historical action items and current status
 
