@@ -24,7 +24,8 @@ The [source-grounded decision synthesis](../docs/notes/model_discrimination_opti
 prioritizes model discrimination and a measurable optimizer decision before
 broad atlas expenditure. The coordinated four-PUB feedback/correction pilot
 has a historical conditional estimate of about 11.24 seconds; fresh compilation,
-statistical admission and exact-case approval remain required. The
+statistical admission and digest-bound qualification under the recorded
+conditional user authority remain required. The
 [rank research plan](../docs/notes/koebisu_rank_stratum_research.md) assigns
 continuous classification and attachment proofs to exact classical work.
 
@@ -41,7 +42,8 @@ with 11.519211264 nominal seconds and 14.474571264 stress-scenario seconds.
 Subsequent runtime shot-allocation edits changed the source, so the
 [correction readiness note](../results/ripple/CORRECTION_PREPARATION.md)
 requires another source-bound preparation and written case. Exact-case
-approval precedes execution, and actual returned schedules must qualify
+qualification under that conditional authority precedes execution, and actual
+returned schedules must qualify
 before inference. The ripple/rank cases below stay held and unapproved while
 the optimizer decision gate is resolved.
 

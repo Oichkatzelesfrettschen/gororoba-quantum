@@ -255,9 +255,18 @@ formal plan now incorporates the principal cover, refinement-checker and
 overlap obligations. The written pivot identity extends to every stage
 `n>=2`; nonzero-nullity runtime fixtures remain dimension 32, while the
 128/256-dimensional fixtures use invertible inputs with empty kernels.
-That work remains a separate open dependency. The source integrations preserve the 41-file runtime closure;
-the earlier readout-scoring repair changes the historical pilot's closure and
-requires renewal. Physical execution remains unapproved.
+The remaining proof obligations retain their separate scope. The mathematics
+integrations preserve the acquisition source closure; the per-PUB allocation
+repair expands that closure and requires fresh cases. Conditional execution
+authority remains pending those source-bound cases and the recorded gates.
+
+The [Schur acceleration certificates](../docs/notes/schur_acceleration_certificates.md),
+merged in [PR #43](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/43),
+supply exact second-order acceleration spaces and obstruction witnesses.
+Their Bouligand tangent condition is necessary. Complete tangent-cone equality,
+rank-stratum classification and realizable curves for every compatible
+direction remain separate proof obligations. Rank-sector probe measurements
+retain their bounded norm-observation interpretation.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)

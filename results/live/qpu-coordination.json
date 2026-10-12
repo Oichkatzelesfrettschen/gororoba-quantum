@@ -61,7 +61,7 @@
       "proposed_pubs": 146,
       "proposed_ceiling_seconds": 180,
       "accepted_job_ids": [],
-      "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before exact-case approval; native mock timing remains unavailable.",
+      "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before applying the recorded conditional user authority to an exact case; native mock timing remains unavailable.",
       "case": "2026-10-12T062505.208379Z",
       "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
       "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
@@ -71,7 +71,7 @@
       "admitted_endpoints": 1138,
       "required_endpoints": 1138,
       "relative_placement_score_floor": 0.8,
-      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required.",
+      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; fresh digest-bound case qualification applies the recorded conditional user authority.",
       "proposal_scope": "historical_record_only",
       "current_admission": false,
       "physical_execution_authorized": false,
@@ -90,13 +90,13 @@
       "proposed_shots_per_pub": 4096,
       "reported_nominal_seconds": 39.93470336,
       "reported_stress_seconds": 42.23470336,
-      "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before exact-case approval; native mock timing remains unavailable.",
+      "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before applying the recorded conditional user authority to an exact case; native mock timing remains unavailable.",
       "case": "2026-10-12T062505.552988Z",
       "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
       "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
       "admitted_endpoints": 196,
       "required_endpoints": 196,
-      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required.",
+      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; fresh digest-bound case qualification applies the recorded conditional user authority.",
       "proposal_scope": "historical_record_only",
       "current_admission": false,
       "physical_execution_authorized": false,
@@ -261,7 +261,6 @@
     "user_campaign_ceiling_seconds": 180,
     "case": null,
     "record_sha256": null,
-    "per_job_ceiling_seconds": 30,
     "conditions": [
       "Reviewed and merged code with clean current-head Copilot review and required checks.",
       "A current digest-bound case whose source, dependencies, calibration, selection, layout and QPY pass submission revalidation.",
@@ -278,6 +277,7 @@
     "physical_execution_authorized": false,
     "generated_case_scope": "UNAPPROVED_CASE.md retains the planner-generated text; this separate ledger records the subsequent conditional user instruction without rewriting that case.",
     "historical_case": "2026-10-12T153635.004894Z",
-    "historical_record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207"
+    "historical_record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+    "correction_planned_job_ceiling_seconds": 30
   }
 }

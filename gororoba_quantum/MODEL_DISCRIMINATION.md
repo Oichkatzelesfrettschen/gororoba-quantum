@@ -189,7 +189,8 @@ Before proposing execution, close the remaining gates:
    fresh live Targets and properties from all three available systems.
 3. Freeze model predictions, source/QPY bytes, fresh calibration, quota, a time
    estimate with explicit schedule uncertainty and a service ceiling.
-4. Present the written case for explicit user approval. Submit only that case.
+4. Bind the fresh written case to the recorded conditional user authority,
+   verify its review/source/calibration/budget gates, and submit that case once.
 5. Revalidate calibration before submission and qualify returned execution
    schedules before admitting the matched-policy inference.
 
