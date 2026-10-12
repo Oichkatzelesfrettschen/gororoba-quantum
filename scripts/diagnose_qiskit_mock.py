@@ -76,7 +76,7 @@ def diagnose(backend_name: str) -> dict[str, Any]:
                 try:
                     backend = service.backend(name, **({"instance": instance} if explicit else {}))
                     status = backend.status()
-                    entry.update(found=True, operational=bool(status.operational), status_msg=status.status_msg)
+                    entry.update(found=True, operational=bool(status.operational))
                 except Exception as error:
                     entry.update(found=False, error_type=type(error).__name__)
                 entry["http_events"] = events[before:]

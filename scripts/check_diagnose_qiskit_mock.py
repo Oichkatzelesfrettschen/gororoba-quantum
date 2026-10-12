@@ -102,7 +102,7 @@ class _Service:
 
     def status(self) -> Any:
         self.request(REQUESTED, "status")
-        return SimpleNamespace(operational=True, status_msg="active")
+        return SimpleNamespace(operational=True, status_msg=" ".join(SECRETS))
 
 
 def _check_report(available: bool, saved_instance: bool, cli: bool) -> None:
@@ -163,7 +163,7 @@ def _check_report(available: bool, saved_instance: bool, cli: bool) -> None:
     probes = report["probes"]
     require(len(probes) == 3, "diagnostic lost a backend probe")
     require(probes[0]["found"] is True and probes[0]["operational"] is True, "physical status evidence changed")
-    require(probes[0]["status_msg"] == "active", "physical backend status changed")
+    require("status_msg" not in probes[0], "report retained free-form backend status text")
     for probe, backend, endpoint, status_code in zip(
         probes,
         (REQUESTED, "mock_kingston", "mock_kingston"),

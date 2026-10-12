@@ -12,15 +12,25 @@ time, local compilation and rendering are separate from charged QPU usage.
 | Ripple | 120 x 1024; 26 x 4096 | 64.321793536 | 68.921793536 | 40 + 40 | 47 |
 | Rank sectors | 15 x 1024; 21 x 4096 | 30.449098240 | 35.049098240 | 30 + 30 | 32 |
 
-The [independent audit](fresh-campaign-preparation-audit.json) retains the
+The [renewed independent audit](renewed-campaign-preparation-audit.json) retains the
 complete arithmetic, source hashes, endpoints, shot tiers and occupancy counts.
 All cases bind runtime digest
-`38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe`
-at committed source `f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed`.
+`38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe`.
+The static cases retain committed source `f1b9830`; correction renewal records
+`0bc7f06`. The separate [source-closure audit](../live/2026-10-12T170742.727534Z/source-closure.json)
+proves that all 42 declared runtime files and dependency pins match that
+committed source. The broad dirty flag records concurrent documentation and
+secondary-analysis edits outside the runtime manifest. The original record
+and its dirty flag retain their bytes.
+
+The [initial three-case audit](fresh-campaign-preparation-audit.json) remains
+historical evidence. Fez calibration changed to `2026-10-12T09:22:41-07:00`,
+so correction renewal supersedes the earlier correction case. The renewal
+retains the same circuits, cost estimates and 30-second ceiling.
 
 | Family | Written case | record.json SHA-256 |
 | --- | --- | --- |
-| folded-correction | [case](../live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md) | `0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a` |
+| folded-correction | [case](../live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md) | `471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8` |
 | ripple | [case](../live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) | `f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87` |
 | rank-sector | [case](../live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md) | `d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522` |
 

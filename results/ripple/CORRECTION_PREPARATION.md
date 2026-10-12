@@ -1,8 +1,10 @@
 # Correction-policy preparation and renewal
 
 The [current campaign preparation](CAMPAIGN_PREPARATION.md) renews correction,
-ripple and rank-sector at source `f1b9830`. The
-[fresh correction case](../live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md)
+ripple and rank-sector against one audited source closure. Correction was
+renewed after the Fez calibration update; the static cases retain their original
+calibration-bound records. The
+[fresh correction case](../live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
 passes independent planning checks: four 8,192-shot Fez PUBs, 11.519211264
 nominal seconds, 14.474571264 stress seconds and a 30-second ceiling. The
 three-family plan has five job ceilings totaling 170 seconds. Correction runs

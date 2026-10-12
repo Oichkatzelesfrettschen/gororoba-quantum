@@ -66,7 +66,7 @@ owns the link from literature and observations to the next intervention.
    schedule matching remain evidence gates. The [coordination ledger](../results/live/qpu-coordination.json)
    and [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
    own source-bound readiness and timing. The
-   [exact correction case](../results/live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md)
+   [exact correction case](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
    passes independent planning checks at source `f1b9830`. Clean current-head
    Copilot review, passing checks, merge and fresh live bindings remain gates
    under the user's conditional authority. Returned execution schedules qualify

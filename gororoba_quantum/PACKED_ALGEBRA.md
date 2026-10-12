@@ -79,9 +79,10 @@ zero model samples. Complete nominal and sensitivity ledgers, statistical
 contracts, and per-job and aggregate ceilings qualify each alternative.
 
 For each route, `minimum_charge` selects the feasible allocation with the
-smallest worst-case nominal/scenario charge. `precision_at_budget` selects
-the smallest worst normalized precision radius, then charge. The outer
-optimizer revalidates one retained allocation per route. The allocation audit
+smallest worst-case nominal/scenario charge. The ripple and rank-sector CLI
+requires that objective because their mixed contracts include directional
+power requirements. The outer optimizer revalidates one retained allocation
+per route. The allocation audit
 retains every alternative, its PUB counts, costs and rejection reasons.
 An explicit limit rejects searches exceeding 4096 assignments per route;
 the search stays complete inside the declared whole-tier domain. Global PUB

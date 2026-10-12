@@ -20,7 +20,7 @@
     4250420448,
     4250420522
   ],
-  "independent_scientific_review": "All37 control ranges, raw and normalized widths, strict classification thresholds, original alpha coverage and endpointwise80percent defect-power bounds reproduce. Norm units and directional-rejection wording corrected before freeze.",
+  "independent_scientific_review": "All 37 control ranges, raw and normalized widths, strict classification thresholds, original alpha coverage and endpointwise 80 percent defect-power bounds reproduce. Norm units and directional-rejection wording corrected before freeze.",
   "physical_qpu_jobs_submitted": 0,
   "remaining_gates": [
     "current-head Copilot review",

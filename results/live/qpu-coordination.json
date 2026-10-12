@@ -1,6 +1,6 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T16:45:53.894043+00:00",
+  "updated_at": "2026-10-12T17:16:04.048430+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
@@ -131,12 +131,12 @@
       "owner": "Design a single-run reality ripple",
       "backend": "ibm_fez",
       "state": "prepared_pending_review_merge_and_live_admission",
-      "case": "2026-10-12T163354.247043Z",
-      "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+      "case": "2026-10-12T170742.727534Z",
+      "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
       "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
-      "case_sha256": "4b0aa9aced98eccbb20be811aa9b4634bb4416115532953df8cca41918345726",
+      "case_sha256": "f90da9376aeac5b6551ca101ebca56e5b816f63d0f84a79f7aff372682e2b40a",
       "experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
-      "prepared_source_commit": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
+      "prepared_source_commit": "0bc7f060202f8e9270e06da0a585d5566bc2b6a5",
       "proposed_pubs": 4,
       "member_count": 4,
       "shot_allocation_histogram": {
@@ -155,7 +155,9 @@
       "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
       "qualification": "Independent source, case, QPY, endpoint and cost audit passed. Review, merge, live calibration and quota revalidation remain required.",
       "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
-      "audit": "results/ripple/fresh-campaign-preparation-audit.json"
+      "audit": "results/ripple/renewed-campaign-preparation-audit.json",
+      "source_closure_audit": "results/live/2026-10-12T170742.727534Z/source-closure.json",
+      "calibration": "2026-10-12T09:22:41-07:00"
     }
   ],
   "deduplication": {
@@ -212,8 +214,8 @@
     "service_ceiling_seconds": 30,
     "physical_execution_authorized": false,
     "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; the conditional execution gates must qualify before physical execution.",
-    "case": "2026-10-12T163354.247043Z",
-    "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+    "case": "2026-10-12T170742.727534Z",
+    "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
     "selected_backend": "ibm_fez",
     "reported_nominal_seconds": 11.519211263999999,
     "reported_stress_seconds": 14.474571264,
@@ -224,7 +226,7 @@
       "reported_nominal_seconds": 11.515410176,
       "reported_stress_seconds": 14.470770176
     },
-    "renewal_evidence": "results/ripple/fresh-campaign-preparation-audit.json",
+    "renewal_evidence": "results/ripple/renewed-campaign-preparation-audit.json",
     "historical_renewal_rejection": {
       "state": "model_discrimination_pilot_renewal_unavailable",
       "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
@@ -363,14 +365,48 @@
           "proposal_scope": "historical_record_only"
         }
       ]
+    },
+    {
+      "scope": "Superseded correction calibration preparation; original record and audit remain immutable.",
+      "family": {
+        "family": "folded-correction",
+        "owner": "Design a single-run reality ripple",
+        "backend": "ibm_fez",
+        "state": "prepared_pending_review_merge_and_live_admission",
+        "case": "2026-10-12T163354.247043Z",
+        "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+        "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+        "case_sha256": "4b0aa9aced98eccbb20be811aa9b4634bb4416115532953df8cca41918345726",
+        "experiment_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+        "prepared_source_commit": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
+        "proposed_pubs": 4,
+        "member_count": 4,
+        "shot_allocation_histogram": {
+          "8192": 4
+        },
+        "reported_nominal_seconds": 11.519211263999999,
+        "reported_stress_seconds": 14.474571264,
+        "proposed_ceiling_seconds": 30.0,
+        "job_ceilings_seconds": [
+          30.0
+        ],
+        "accepted_job_ids": [],
+        "planning_admission": true,
+        "current_admission": false,
+        "physical_execution_authorized": false,
+        "execution_authority_state": "conditional_user_authority_pending_review_merge_and_live_admission",
+        "qualification": "Independent source, case, QPY, endpoint and cost audit passed. Review, merge, live calibration and quota revalidation remain required.",
+        "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
+        "audit": "results/ripple/fresh-campaign-preparation-audit.json"
+      }
     }
   ],
   "conditional_execution_authority": {
     "state": "conditional_user_authority_pending_review_merge_and_live_admission",
     "user_authorized_subject_to_conditions": true,
     "user_campaign_ceiling_seconds": 180,
-    "case": "2026-10-12T163354.247043Z",
-    "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a",
+    "case": "2026-10-12T170742.727534Z",
+    "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8",
     "conditions": [
       "Reviewed and merged code with clean current-head Copilot review and required checks.",
       "A current digest-bound case whose source, dependencies, calibration, selection, layout and QPY pass submission revalidation.",
@@ -399,8 +435,8 @@
         "record_sha256": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522"
       },
       "folded-correction": {
-        "record": "results/live/2026-10-12T163354.247043Z",
-        "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a"
+        "record": "results/live/2026-10-12T170742.727534Z",
+        "record_sha256": "471b821d0a6fe4945fd26fccef4cfee0364dc75c729b3c4d5676db9accb9d1a8"
       }
     }
   },

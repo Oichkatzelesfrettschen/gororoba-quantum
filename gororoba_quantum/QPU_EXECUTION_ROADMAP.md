@@ -53,7 +53,7 @@ qualify before the correction inference.
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
-| [Matched correction pilot](../results/live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md) | One dynamic Fez job; 8192 shots/PUB | 4 | 11.519211264 nominal; 14.474571264 stress; ceiling 30 | Fresh preparation qualified; review, merge and live binding remain |
+| [Matched correction pilot](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md) | One dynamic Fez job; 8192 shots/PUB | 4 | 11.519211264 nominal; 14.474571264 stress; ceiling 30 | Fresh preparation qualified; review, merge and live binding remain |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
 | [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
 | [Ripple finite walk/box-kite comparison](../results/live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) | Two static Kingston jobs; 120 PUBs at 1024 shots, 26 at 4096 | 146 | 64.321793536 nominal; 68.921793536 stress; ceilings 40 + 40 | 1138 endpoints qualify locally; correction decision and independent scientific admission remain |

@@ -28,7 +28,7 @@ clean current-head Copilot review plus passing checks to authorize merges
 while hosted Codex review quota is exhausted.
 
 The [fresh campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
-passes its [independent audit](../results/ripple/fresh-campaign-preparation-audit.json)
+passes its [renewed independent audit](../results/ripple/renewed-campaign-preparation-audit.json)
 with 106.290103040 nominal seconds and 118.445463040 seconds under the declared
 stress scenarios. Five homogeneous-shot jobs have service ceilings totaling
 170 seconds: correction 30, ripple 80 and rank-sector 60. Planning retains all
@@ -117,7 +117,7 @@ or useful scientific information. One compatible job is preferred; incompatible
 execution policies and independent admission can require separate jobs.
 
 The current planned records are
-`results/live/2026-10-12T163354.247043Z` for correction,
+`results/live/2026-10-12T170742.727534Z` for correction,
 `results/live/2026-10-12T163354.310138Z` for ripple and
 `results/live/2026-10-12T163354.210407Z` for rank-sector. Their independent
 audit qualifies all three preparations together and records zero submitted

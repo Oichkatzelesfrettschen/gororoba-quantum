@@ -13,11 +13,12 @@ download identities, and the [Koebisu rank-stratum research plan](docs/notes/koe
 objectives, evidence boundaries, ownership, and ordered delivery gates.
 
 The [current campaign preparation](results/ripple/CAMPAIGN_PREPARATION.md)
-qualifies correction, ripple and rank-sector planning at source `f1b9830`:
+qualifies correction, ripple and rank-sector planning against the same audited
+source closure:
 106.290103040 nominal QPU seconds, 118.445463040 seconds under the declared
 stress scenarios, and five job ceilings totaling 170 seconds within the user's
 180-second cap. The exact written cases cover
-[correction](results/live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md),
+[correction](results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md),
 [ripple](results/live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) and
 [rank sectors](results/live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md).
 Planning preserves every original row, control and within-PUB shot vector.

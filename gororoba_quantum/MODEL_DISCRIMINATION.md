@@ -7,7 +7,7 @@ The execution priority is model discrimination and a measurable optimizer
 decision before broad atlas expenditure. The historical 197-second ripple/rank
 plans retain their original evidence and expired admission. The
 [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
-qualifies all three fresh cases at source `f1b9830`, with five job ceilings
+qualifies all three fresh cases against one audited source closure, with five job ceilings
 totaling 170 seconds. The revised
 [fixed-shot allocation](PACKED_ALGEBRA.md#fixed-shot-allocation) reprices every
 original static row under the user's 180-second campaign ceiling. The
@@ -20,7 +20,7 @@ preparation from fresh live calibration across Fez, Kingston and Marrakesh
 after the Kingston mock endpoint proved unavailable. Production admission
 therefore uses a documented finite comparison of all three systems, while
 matched-policy inference requires qualified schedules from the actual run.
-The [fresh correction case](../results/live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md)
+The [fresh correction case](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
 estimates 11.519211264 nominal seconds and 14.474571264 stress seconds under a
 30-second ceiling. The user's conditional authority retains clean current-head
 Copilot review, passing checks, merge and fresh live bindings before submission.
