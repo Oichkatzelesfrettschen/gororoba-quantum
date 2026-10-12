@@ -2335,9 +2335,17 @@ def _choice_record(
 
 
 def discover_snapshots(
-    service: QiskitRuntimeService, pinned_names: list[str] | None, max_pending: int | None
+    service: QiskitRuntimeService,
+    pinned_names: list[str] | None,
+    max_pending: int | None,
+    *,
+    retain_ineligible: bool = False,
 ) -> tuple[list[Snapshot], dict[str, Any], dict[str, Any]]:
-    """Return eligible snapshots, skipped evidence, and the requested-system inventory."""
+    """Refresh the requested inventory and filter candidates unless the caller needs every snapshot.
+
+    Complete-inventory families classify successfully refreshed excluded peers
+    independently. Failed probes supply inventory evidence without a Snapshot.
+    """
     if pinned_names is not None:
         names = list(dict.fromkeys(pinned_names))
     else:
@@ -2379,7 +2387,7 @@ def discover_snapshots(
         )
         if ineligible:
             skipped[name] = {"reason": ineligible} | state
-        else:
+        if ineligible is None or retain_ineligible:
             snapshots.append(snapshot)
     return snapshots, skipped, inventory
 
@@ -2390,7 +2398,12 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
         raise LiveRunError(f"unknown experiment groups {unknown}; known: {sorted(known)}")
-    snaps, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
+    snaps, skipped, inventory = discover_snapshots(
+        service,
+        args.backends,
+        args.max_pending,
+        retain_ineligible=getattr(args, "family", None) == "folded-correction",
+    )
     if not snaps:
         raise LiveRunError("no eligible backend")
     trace: dict[str, Any] = {}
@@ -3098,7 +3111,12 @@ def submit(
     are checkpointed before each attempt, and each returned job id is
     checkpointed before the next batch.
     """
-    fresh_snapshots, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
+    fresh_snapshots, skipped, inventory = discover_snapshots(
+        service,
+        args.backends,
+        args.max_pending,
+        retain_ineligible=getattr(args, "family", None) == "folded-correction",
+    )
     if not fresh_snapshots:
         raise LiveRunError("no eligible backend remains before submission")
     attempt_trace: dict[str, Any] = {}

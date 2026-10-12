@@ -6,7 +6,11 @@ import copy
 import hashlib
 import io
 import json
+import tempfile
+from dataclasses import replace
+from datetime import datetime, timedelta
 from functools import partial
+from pathlib import Path
 from typing import Any
 from unittest.mock import patch
 
@@ -17,6 +21,7 @@ from qiskit_ibm_runtime.fake_provider import FakeFez, FakeKingston, FakeMarrakes
 import correction_planning
 import live_run
 import packing
+import qpu_cases
 from correction_circuits import validate_bound_correction_pair
 from correction_statistics import MEMBERS
 from diagnostic_experiments import FAMILY_NAMES, family_contracts, record_groups
@@ -68,6 +73,238 @@ def _args(**overrides: Any) -> Any:
     )
     vars(arguments).update(overrides)
     return arguments
+
+
+class _DiscoveryService:
+    """Provide account reads for real local planning with synthetic snapshots."""
+
+    def usage(self) -> dict[str, Any]:
+        return {"usage_remaining_seconds": 100.0, "usage_limit_reached": False}
+
+    def active_instance(self) -> str:
+        return "fixture-correction-instance"
+
+
+def _verify_complete_discovery_frontier(snapshots: list[live_run.Snapshot]) -> dict[str, Any]:
+    """Exercise production planning and approval rejection with an excluded peer."""
+    names = ["ibm_fez", "ibm_kingston", "ibm_marrakesh"]
+    service: Any = _DiscoveryService()
+    outcomes = []
+    scenarios = (
+        ("maintenance", "maintenance", 1, True, True),
+        ("queue", "active", 26, True, True),
+        ("inactive", "active", 0, False, True),
+        ("missing-cz", "active", 0, True, False),
+        ("healthy", "active", 0, True, True),
+    )
+    for scenario, status, pending, operational, native_cz in scenarios:
+        fresh = {snapshot.name: copy.copy(snapshot) for snapshot in snapshots}
+        fresh["ibm_marrakesh"].status_msg = status
+        fresh["ibm_marrakesh"].pending_jobs = pending
+        fresh["ibm_marrakesh"].operational = operational
+        if not native_cz:
+            capabilities = fresh["ibm_marrakesh"].capabilities
+            fresh["ibm_marrakesh"].capabilities = replace(
+                capabilities, operation_names=tuple(name for name in capabilities.operation_names if name != "cz")
+            )
+        eligible_names = names if scenario == "healthy" else names[:2]
+        peer_eligibility = "eligible" if scenario == "healthy" else "ineligible"
+        arguments = _args(backends=names, max_pending=25, local_compute="cpu")
+        with patch.object(live_run, "take_snapshot", side_effect=lambda unused, name, current=fresh: current[name]):
+            generic, skipped, inventory = live_run.discover_snapshots(service, names, 25)
+            _require(
+                [snapshot.name for snapshot in generic] == eligible_names,
+                "generic discovery changed eligibility filtering",
+            )
+            _require(
+                inventory["ibm_marrakesh"]["eligibility"] == peer_eligibility
+                and ("ibm_marrakesh" in skipped) == (scenario != "healthy"),
+                "generic discovery lost excluded-peer evidence",
+            )
+            choices, record = live_run.plan(service, arguments)
+            search = {row["backend"]: row for row in record["family_configuration"]["backend_search"]}
+            _require(set(search) == set(names), "production correction planning lost the complete backend search")
+            excluded = search["ibm_marrakesh"]
+            if scenario == "healthy":
+                _require(
+                    excluded["eligible"] is True
+                    and excluded["compiled_candidate_count"] == 1
+                    and excluded["rejection_reason"] is None,
+                    "production correction planning dropped a healthy peer",
+                )
+            else:
+                _require(
+                    excluded["eligible"] is False
+                    and excluded["compiled_candidate_count"] == 0
+                    and excluded["admitted_candidate_count"] == 0
+                    and bool(excluded["rejection_reason"]),
+                    "production correction planning compiled or admitted the excluded peer",
+                )
+            _require(
+                choices[0].snap.name in eligible_names, "production correction planning selected the excluded peer"
+            )
+            _require(
+                record["system_inventory"]["ibm_marrakesh"]["eligibility"] == peer_eligibility
+                and ("ibm_marrakesh" in record["skipped_backends"]) == (scenario != "healthy"),
+                "correction planning lost exclusion evidence",
+            )
+            _require(
+                {row["proxy_metadata"]["backend"] for row in record["optimization"]["candidates"]}
+                == set(eligible_names),
+                "correction planning truncated the eligible candidate frontier",
+            )
+            pubs = live_run.execution_pubs(choices)
+            _require(len(pubs) == 4 and all(pub.backend == choices[0].snap.name for pub in pubs), "PUB owner changed")
+            record["groups"] = [
+                live_run._choice_record(
+                    choice,
+                    {entry.name: [entry.ideal] for entry in choice.entries},
+                    choice.snap.calibration,
+                    arguments.shots,
+                )
+                for choice in choices
+            ]
+            planned_record = copy.deepcopy(record)
+
+            def archive_current_pubs(current_choices: list[Any] = choices) -> str:
+                return hashlib.sha256(
+                    _archive([pub.circuit for pub in live_run.execution_pubs(current_choices)])
+                ).hexdigest()
+
+            archive = _archive([pub.circuit for pub in pubs])
+            with tempfile.TemporaryDirectory(prefix="correction-approval-") as temporary:
+                directory = Path(temporary)
+                valid_bytes = json.dumps(record, sort_keys=True).encode()
+                (directory / "record.json").write_bytes(valid_bytes)
+                (directory / "isa.qpy").write_bytes(archive)
+                restored_record = json.loads(valid_bytes)
+                written_case = qpu_cases.write_case(directory, restored_record)
+                _require(
+                    written_case is not None and written_case.is_file(),
+                    "production excluded-peer record failed written-case admission",
+                )
+                _require(
+                    (directory / "record.json").read_bytes() == valid_bytes
+                    and (directory / "isa.qpy").read_bytes() == archive,
+                    "written-case serialization changed the retained production inputs",
+                )
+                invalid = copy.deepcopy(record)
+                invalid["experiment_digest"] = "0" * 64
+                record_bytes = json.dumps(invalid, sort_keys=True).encode()
+                (directory / "record.json").write_bytes(record_bytes)
+                (directory / "isa.qpy").write_bytes(archive)
+                arguments.approved_record = directory
+                arguments.approved_record_sha256 = hashlib.sha256(record_bytes).hexdigest()
+                with patch.object(live_run, "configure_sampler", side_effect=RuntimeError("primitive prohibited")):
+                    try:
+                        live_run.submit(
+                            service,
+                            choices,
+                            arguments,
+                            record,
+                            archive_current_pubs,
+                            lambda: None,
+                        )
+                    except live_run.LiveRunError:
+                        _require(record["state"] == "approval_required", "submission failed before case comparison")
+                        _require(
+                            "experiment_digest differs" in record["approved_record"]["mismatches"],
+                            "submission skipped the invalid source approval gate",
+                        )
+                    else:
+                        raise RuntimeError("submission accepted an invalid source-bound case")
+                _require(
+                    set(record["revalidation"][0]["system_inventory"]) == set(names),
+                    "submission revalidation lost the complete snapshot inventory",
+                )
+                _require("submission" not in record, "invalid case created a submission ledger")
+                _require(not (directory / live_run.APPROVAL_CONSUMED_FILE).exists(), "invalid approval was consumed")
+            outcomes.append(
+                {"scenario": scenario, "peer_status": status, "peer_pending": pending, "selected": choices[0].snap.name}
+            )
+            if scenario == "maintenance":
+                calibration_record = copy.deepcopy(planned_record)
+                previous_calibration = fresh["ibm_marrakesh"].calibration
+                fresh["ibm_marrakesh"].calibration = (
+                    datetime.fromisoformat(previous_calibration) + timedelta(seconds=1)
+                ).isoformat()
+                selected_identity = choices[0].snap.name, choices[0].snap.calibration
+                with patch.object(live_run, "configure_sampler", side_effect=RuntimeError("primitive prohibited")):
+                    try:
+                        live_run.submit(
+                            service, choices, arguments, calibration_record, archive_current_pubs, lambda: None
+                        )
+                    except live_run.LiveRunError:
+                        _require(
+                            calibration_record["state"] == "approval_required", "peer calibration bypassed renewal"
+                        )
+                        _require(
+                            "statistical_design" in calibration_record["revalidation"][0]["reselected_groups"],
+                            "excluded peer calibration was omitted from the refreshed comparison",
+                        )
+                    else:
+                        raise RuntimeError("changed excluded peer calibration retained the old approval")
+                _require(
+                    (choices[0].snap.name, choices[0].snap.calibration) == selected_identity,
+                    "excluded-peer calibration fixture changed selected hardware",
+                )
+                _require(
+                    "submission" not in calibration_record, "excluded-peer calibration created a submission ledger"
+                )
+                fresh["ibm_marrakesh"].calibration = previous_calibration
+                fresh["ibm_marrakesh"].status_msg = "active"
+                fresh["ibm_marrakesh"].pending_jobs = 0
+                with patch.object(live_run, "configure_sampler", side_effect=RuntimeError("primitive prohibited")):
+                    try:
+                        live_run.submit(service, choices, arguments, planned_record, archive_current_pubs, lambda: None)
+                    except live_run.LiveRunError:
+                        _require(planned_record["state"] == "approval_required", "eligibility drift bypassed renewal")
+                        _require(
+                            "statistical_design" in planned_record["revalidation"][0]["reselected_groups"],
+                            "newly eligible peer was omitted from the refreshed comparison",
+                        )
+                    else:
+                        raise RuntimeError("changed peer eligibility retained the old approval")
+                _require("submission" not in planned_record, "eligibility drift created a submission ledger")
+
+    fresh = {snapshot.name: copy.copy(snapshot) for snapshot in snapshots}
+
+    def failed_refresh(unused: Any, name: str) -> live_run.Snapshot:
+        if name == "ibm_marrakesh":
+            raise live_run.LiveRunError("fixture coherent snapshot refresh failed")
+        return fresh[name]
+
+    with (
+        patch.object(live_run, "take_snapshot", side_effect=failed_refresh),
+        patch.object(live_run, "_compile", side_effect=RuntimeError("incomplete frontier reached compilation")),
+    ):
+        refresh_record = copy.deepcopy(record)
+        refresh_record["state"] = "planned"
+        for action in (
+            partial(live_run.plan, service, _args(backends=names, max_pending=25)),
+            partial(live_run.submit, service, choices, arguments, refresh_record, lambda: "0" * 64, lambda: None),
+        ):
+            try:
+                action()
+            except ValueError as error:
+                _require("missing=['ibm_marrakesh']" in str(error), "failed refresh lost exact inventory rejection")
+            else:
+                raise RuntimeError("failed peer refresh was accepted")
+    for snapshot in fresh.values():
+        snapshot.status_msg = "maintenance"
+    with (
+        patch.object(live_run, "take_snapshot", side_effect=lambda unused, name, current=fresh: current[name]),
+        patch.object(live_run, "_compile", side_effect=RuntimeError("inactive frontier reached compilation")),
+    ):
+        _reject(partial(live_run.plan, service, _args(backends=names, max_pending=25)), "all-inactive plan accepted")
+    return {
+        "discovery_scenarios": outcomes,
+        "failed_refresh_rejections": 2,
+        "all_inactive_rejections": 1,
+        "peer_eligibility_drift_rejections": 1,
+        "excluded_peer_calibration_drift_rejections": 1,
+        "serialized_production_cases": len(scenarios),
+    }
 
 
 def verify() -> dict[str, Any]:
@@ -226,6 +463,16 @@ def verify() -> dict[str, Any]:
     _reject(
         partial(correction_planning.prepare, live_run, snapshots[:2], _args(), usage, {}), "missing backend accepted"
     )
+    _reject(
+        partial(correction_planning.prepare, live_run, [*snapshots, snapshots[0]], _args(), usage, {}),
+        "duplicate backend accepted",
+    )
+    unexpected = copy.copy(snapshots[-1])
+    unexpected.name = "ibm_unexpected"
+    _reject(
+        partial(correction_planning.prepare, live_run, [*snapshots[:2], unexpected], _args(), usage, {}),
+        "unexpected backend accepted",
+    )
     with patch.object(live_run, "_compile", side_effect=ValueError("fixture compile rejection")):
         try:
             correction_planning.prepare(live_run, snapshots, _args(), usage, {})
@@ -243,7 +490,9 @@ def verify() -> dict[str, Any]:
     _require(
         correction_planning._rank(high_quality) < correction_planning._rank(low_quality), "charge displaced quality"
     )
+    discovery_frontier = _verify_complete_discovery_frontier(snapshots)
     return {
+        "production_discovery_frontier": discovery_frontier,
         "offline_backend_targets": 3,
         "routed_templates": len(compiled_templates),
         "archived_pair_roundtrips": 2,
@@ -253,7 +502,7 @@ def verify() -> dict[str, Any]:
         "finite_candidate_frontier_size": len(frontier),
         "candidate_seeds_per_backend": configuration["candidate_seeds_per_backend"],
         "selected_fake_backend": choice.snap.name,
-        "protocol_rejections": len(changed_protocols) + 1,
+        "protocol_rejections": len(changed_protocols) + 3,
         "cost_rejections": 2,
         "fresh_inventory_permutation_invariant": True,
         "family_configuration_sha256": hashlib.sha256(
