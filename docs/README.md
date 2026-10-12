@@ -53,8 +53,11 @@ sets the hardware priority before broad atlas expenditure.
 
 The [reality-ripple measurement design](notes/reality_ripple_measurement_design.md)
 joins the Cayley-Dickson sources to the planned atlas, walk, rank-sector, and
-joint-error views. The retained atlas cases require current-source renewal;
-the completed folded-QPE archive supplies the measured evidence. The [de Marrais source note](notes/math-0403113.md) records
+joint-error views. The [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+qualifies the correction, ripple and rank cases at source `f1b9830`; reviewed
+merge, fresh live bindings and independent family execution admission remain
+gates. The completed folded-QPE archive supplies the measured evidence.
+The [de Marrais source note](notes/math-0403113.md) records
 the bounded box-kite reading and the local PDF identity. A
 [version-bound open_gororoba evidence contract](sources/open_gororoba/README.md)
 retains the sister repository's algebraic corrections with its provenance

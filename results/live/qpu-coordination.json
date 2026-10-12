@@ -403,5 +403,17 @@
         "record_sha256": "0ee3146cccce74abdd580380cca3d684106036d4fdc27bdc2bb4ccf340991a8a"
       }
     }
+  },
+  "static_practical_accuracy_protocol": {
+    "state": "preregistered_before_acquisition_pending_review_and_execution_gates",
+    "document": "results/ripple/STATIC_PACKING_ACCURACY.md",
+    "endpoint_audit": "results/ripple/static-practical-accuracy-admission.json",
+    "endpoint_audit_sha256": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f",
+    "normalized_score_tolerance": 0.1,
+    "control_count": 37,
+    "controls_with_possible_equivalence": 36,
+    "controls_with_possible_practical_defect": 37,
+    "whole_family_preservation_claim": false,
+    "approval_scope": "Conditional user authority; correction decision and review, merge, source, calibration, quota and single-use case binding still gate each static submission."
   }
 }

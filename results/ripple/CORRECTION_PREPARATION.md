@@ -1,5 +1,17 @@
 # Correction-policy preparation and renewal
 
+The [current campaign preparation](CAMPAIGN_PREPARATION.md) renews correction,
+ripple and rank-sector at source `f1b9830`. The
+[fresh correction case](../live/2026-10-12T163354.247043Z/UNAPPROVED_CASE.md)
+passes independent planning checks: four 8,192-shot Fez PUBs, 11.519211264
+nominal seconds, 14.474571264 stress seconds and a 30-second ceiling. The
+three-family plan has five job ceilings totaling 170 seconds. Correction runs
+first under the user's conditional authority; clean current-head Copilot
+review, passing checks, merge and fresh source/calibration/quota/approval
+bindings remain execution gates. Returned schedules gate the matched inference.
+
+## Historical preparation at source fb13b06
+
 The [retained written case](../live/2026-10-12T153635.004894Z/UNAPPROVED_CASE.md)
 retains a successful submit-free preparation at source
 `fb13b0675530c3eb9a4d8c0225bf37cacd8b5923`. All three systems supplied six
@@ -11,8 +23,8 @@ Both arms retain measurement, reset and classical dispatch.
 
 Subsequent runtime shot-allocation edits changed the working experiment
 source. The retained case has current state `historical_renewal_required`;
-current admission and physical execution authorization are false. A fresh
-case must qualify the revised source before execution.
+current admission and physical execution authorization for that older record
+are false. The current campaign case above qualifies the revised source.
 
 The nominal charge estimate is 11.519211264 seconds. The controller-stress
 scenario estimates 14.474571264 seconds under a proposed 30-second service

@@ -12,8 +12,9 @@ model-denominator, circuit, endpoint, allocation, case and budget checks.
 Correction runs first. Planning qualification retains every original row,
 control and within-PUB shot vector; each Runtime job uses one homogeneous shot
 count. Execution still requires clean current-head Copilot review, passing
-checks, merged changes, fresh approval bindings and independent scientific
-admission for each family. The
+checks, merged changes, fresh approval bindings and independent execution
+admission for each family under the
+[practical accuracy protocol](STATIC_PACKING_ACCURACY.md). The
 [integrated campaign directive](../../gororoba_quantum/RIPPLE_CAMPAIGN.md)
 records the user's conditional execution authority and the Copilot-plus-checks
 substitution while Codex review quota is exhausted. The three completed

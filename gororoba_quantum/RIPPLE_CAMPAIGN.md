@@ -33,7 +33,8 @@ with 106.290103040 nominal seconds and 118.445463040 seconds under the declared
 stress scenarios. Five homogeneous-shot jobs have service ceilings totaling
 170 seconds: correction 30, ripple 80 and rank-sector 60. Planning retains all
 original rows, controls and within-PUB joint observations. Correction runs
-first; each static family keeps its own scientific admission. Clean
+first; each static family keeps its own execution admission under the
+[practical accuracy protocol](../results/ripple/STATIC_PACKING_ACCURACY.md). Clean
 current-head Copilot review, passing checks, merged changes and fresh
 source/calibration/approval bindings remain execution gates. The stress
 estimate expresses a sensitivity scenario rather than a guaranteed duration.
@@ -99,9 +100,9 @@ qualified schedules determine the prospective decision.
 | Consolidate primary sources | Integrated source library, notes, licensed PDFs, hashes, reading limits and prior-work attribution under docs; the literature alias preserves historical ledger paths. |
 | Qualify the four-PUB correction experiment | Fresh preparation and independent planning audit pass for four PUBs on Fez; audit returned execution schedules before admitting the matched inference. |
 | Diagnose Kingston mock access | Fresh implicit and explicit-instance GETs return 404 for mock configuration while real status returns 200; service deployment/access cause remains unresolved. |
-| Prepare physical admission | All three fresh cases pass independent planning checks within 170 seconds of service ceilings; current-head review, merge, fresh bindings, live quota and independent scientific admission remain execution gates. |
+| Prepare physical admission | All three fresh cases pass independent planning checks within 170 seconds of service ceilings; current-head review, merge, fresh bindings, live quota and independent family execution admission remain gates. |
 | Execute approved cases once | Single execution owner, consumed-approval marker, immediate job-ID retention, immutable raw archive and independent adjudication. |
-| Expand ripple/rank data | Retain held prepared cases; admit each independently against a practical accuracy question. A dynamic witness result alone cannot admit static atlas spending. |
+| Expand ripple/rank data | Retain the prepared cases and prospective practical accuracy protocol; admit each execution independently after the correction decision. A dynamic witness result alone cannot admit static atlas spending. |
 | Close review findings | Focused iterative commits, mandatory gates, Copilot review and honest Codex-quota status. Apply the user-authorized Copilot substitution while Codex quota is exhausted; source-owner integration proceeds independently. |
 | Extend mathematical proofs | Follow the bounded dependencies below; empirical outcomes remain distinct from universal mathematical certificates. |
 
@@ -281,9 +282,11 @@ overlap obligations. The written pivot identity extends to every stage
 `n>=2`; nonzero-nullity runtime fixtures remain dimension 32, while the
 128/256-dimensional fixtures use invertible inputs with empty kernels.
 The remaining proof obligations retain their separate scope. The mathematics
-integrations preserve the acquisition source closure; the per-PUB allocation
-repair expands that closure and requires fresh cases. Conditional execution
-authority remains pending those source-bound cases and the recorded gates.
+integrations preserve the acquisition source closure. The fresh campaign
+cases at source `f1b9830` include the expanded per-PUB allocation closure and
+pass independent planning checks. The user's conditional execution authority
+still requires current-head review, merge, live bindings and the recorded
+family execution gates.
 
 The [Schur acceleration certificates](../docs/notes/schur_acceleration_certificates.md),
 merged in [PR #43](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/43),
@@ -295,7 +298,8 @@ retain their bounded norm-observation interpretation.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)
-- [Current three-system pilot readiness](../results/ripple/CORRECTION_PREPARATION.md)
+- [Current three-family preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+- [Historical correction preparations](../results/ripple/CORRECTION_PREPARATION.md)
 - [Mock diagnosis](../results/ripple/KINGSTON_MOCK_DIAGNOSIS.md)
 - [Retained atlas preparation](../results/ripple/PREPARATION.md)
 - [Execution roadmap](QPU_EXECUTION_ROADMAP.md)

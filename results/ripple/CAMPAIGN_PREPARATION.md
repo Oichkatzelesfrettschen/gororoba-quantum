@@ -39,8 +39,11 @@ predicts smaller gains. Returned schedules and raw counts gate the decision.
 The pilot distinguishes an actionable correction policy for these witnesses;
 its outcomes cannot identify a unique noise mechanism or certify general QPE.
 
-Ripple and rank require separate practical accuracy admission after that
-decision. Ripple tests which interference patterns survive the calibrated
+The [preregistered practical accuracy protocol](STATIC_PACKING_ACCURACY.md)
+classifies all 37 matched static controls against ten percent of each score
+range. One weighted control cannot establish equivalence at the frozen shot
+count; its practical-defect and unresolved outcomes remain informative. Ripple
+and rank require separate execution admission after the correction decision. Ripple tests which interference patterns survive the calibrated
 implementation and how selected packed/isolated references differ. Rank tests
 dark/bright coefficient-normalized multiplication-path norms and their model
 residuals. Noisy norms cannot establish exact rank or topology. Finite model

@@ -4,14 +4,19 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
-The [historical ripple and rank-sector cases](../ripple/PREPARATION.md) link
-the retained records, source-closure reports, independent uncertainty families
-and written cases. Both families have current state
-`historical_renewal_required`: current admission and physical execution
-authorization are false. The recorded nominal estimate was 197.022 QPU seconds
-under a proposed 240-second aggregate ceiling. Source and scoring changes
-require fresh current-source preparation and new written cases before owner
-approval.
+The [current campaign preparation](../ripple/CAMPAIGN_PREPARATION.md) links
+three planning-qualified cases at source `f1b9830`: correction, ripple and
+rank-sector. Their five jobs estimate 106.290103040 nominal QPU seconds and
+118.445463040 seconds under the declared stress scenarios, with service ceilings
+totaling 170 seconds. Correction runs first. Clean current-head Copilot review,
+passing checks, merge, fresh live bindings and independent family execution admission
+remain execution gates under the user's conditional authority.
+
+The [historical ripple and rank-sector cases](../ripple/PREPARATION.md) retain
+their source-closure reports, independent uncertainty families and written
+cases under `historical_renewal_required`. Their 197.022-second nominal estimate
+and proposed 240-second aggregate ceiling describe the older preparation;
+the current campaign cases supply the renewed planning qualification.
 
 ## Completed folded-QPE hardware case
 
