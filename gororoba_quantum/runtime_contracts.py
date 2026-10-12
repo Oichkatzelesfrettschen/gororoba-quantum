@@ -23,11 +23,12 @@ from typing import Any
 import numpy as np
 import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, qpy, transpile
-from qiskit.circuit import Clbit
+from qiskit.circuit import Clbit, Parameter
 from qiskit.circuit.controlflow import IfElseOp
 from qiskit.circuit.library import RZGate
 from qiskit.primitives import StatevectorSampler
 from qiskit.primitives.containers import DataBin, PrimitiveResult, SamplerPubResult
+from qiskit.quantum_info import Operator
 from qiskit.transpiler import Target
 from qiskit_ibm_runtime.executor_sampler import Sampler
 from qiskit_ibm_runtime.fake_provider import FakeFez, FakeManilaV2
@@ -504,6 +505,78 @@ def _verify_packed_replica_split() -> None:
         fused_counts = _pub_counts(fused_pub, packing.registers(fused, prefix), prefix)
         if fused_counts.get("11", 0) < 48:
             raise RuntimeError(f"fused dynamic component {prefix} reads {fused_counts}")
+
+
+def _verify_packing_global_phase() -> None:
+    """Packing and fusion preserve full tensor-product operators, including phase."""
+    identity = np.eye(2, dtype=complex)
+
+    def fixture(
+        active: int, phase: float, angle: float, gates: bool, measured: bool
+    ) -> tuple[QuantumCircuit, np.ndarray]:
+        circuit = QuantumCircuit(4, int(measured), global_phase=phase)
+        local = QuantumCircuit(1, global_phase=phase)
+        if gates:
+            circuit.h(active)
+            circuit.rz(angle, active)
+            local.h(0)
+            local.rz(angle, 0)
+        if measured:
+            circuit.measure(active, 0)
+        return circuit, Operator(local).data
+
+    def exact_operator(circuit: QuantumCircuit, expected: np.ndarray, label: str) -> None:
+        actual = Operator(circuit.remove_final_measurements(inplace=False)).data
+        if not np.allclose(actual, expected, rtol=0, atol=1e-12):
+            error = float(np.max(np.abs(actual - expected)))
+            raise RuntimeError(f"{label}: packed full operator differs by {error}")
+        if _is_dynamic(circuit):
+            raise RuntimeError(f"{label}: terminal measurements became dynamic")
+
+    for phase in (0.3, -0.41, math.pi, 2 * math.pi + 0.19, -2 * math.pi - 0.29):
+        for gates in (False, True):
+            for measured in (False, True):
+                first, first_operator = fixture(0, phase, 0.37, gates, measured)
+                second, second_operator = fixture(2, -0.27, -0.21, gates, measured)
+                originals = (first.copy(), second.copy())
+                single = packing.pack(first, [Replica(0, {0: 0}, 1.0)], "single_phase")
+                exact_operator(single, np.kron(np.eye(8), first_operator), "single replica")
+                fused_single = packing.fuse([first], ["g0_"], "single_fused_phase")
+                exact_operator(fused_single, np.kron(np.eye(8), first_operator), "single fusion component")
+                fused_sources = packing.fuse([first, second], ["g0_", "g1_"], "source_phase_fusion")
+                exact_operator(
+                    fused_sources,
+                    np.kron(np.kron(identity, second_operator), np.kron(identity, first_operator)),
+                    "two source components",
+                )
+                packed_first = packing.pack(
+                    first, [Replica(0, {0: 0}, 1.0), Replica(1, {0: 1}, 1.0)], "first_phase_replicas"
+                )
+                packed_second = packing.pack(
+                    second, [Replica(0, {2: 2}, 1.0), Replica(1, {2: 3}, 1.0)], "second_phase_replicas"
+                )
+                first_pair = np.kron(first_operator, first_operator)
+                second_pair = np.kron(second_operator, second_operator)
+                exact_operator(packed_first, np.kron(np.eye(4), first_pair), "two first-source replicas")
+                exact_operator(packed_second, np.kron(second_pair, np.eye(4)), "two second-source replicas")
+                fused_packs = packing.fuse([packed_first, packed_second], ["g0_", "g1_"], "packed_phase_fusion")
+                exact_operator(fused_packs, np.kron(second_pair, first_pair), "two packed components")
+                exact_operator(packing.pack(first, [], "empty_phase_pack"), np.eye(16), "empty replica set")
+                if first != originals[0] or second != originals[1]:
+                    raise RuntimeError("phase-preserving composition mutated a source circuit")
+
+    phase_parameter = Parameter("replica_global_phase")
+    parameterized = QuantumCircuit(2, 1, global_phase=phase_parameter)
+    parameterized.h(0)
+    parameterized.measure(0, 0)
+    packed = packing.pack(parameterized, [Replica(0, {0: 0}, 1.0), Replica(1, {0: 1}, 1.0)], "parameterized_phase_pack")
+    fused = packing.fuse([packed], ["g0_"], "parameterized_phase_fusion")
+    for value in (0.3, -0.41):
+        local = QuantumCircuit(1, global_phase=value)
+        local.h(0)
+        expected = np.kron(Operator(local).data, Operator(local).data)
+        exact_operator(packed.assign_parameters({phase_parameter: value}), expected, "bound packed phase")
+        exact_operator(fused.assign_parameters({phase_parameter: value}), expected, "bound fused phase")
 
 
 def _verify_packed_static_stays_static() -> None:
@@ -2875,6 +2948,7 @@ def _verify() -> None:
     _verify_live_reselection()
     _verify_discovery_failure_isolation()
     _verify_packed_replica_split()
+    _verify_packing_global_phase()
     _verify_packed_static_stays_static()
     _verify_rate_keys()
     _verify_replica_floor_resolution()
