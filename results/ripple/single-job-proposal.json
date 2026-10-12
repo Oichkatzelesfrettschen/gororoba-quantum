@@ -1,18 +1,18 @@
 {
-  "status": "Implemented research design; fresh statistical and native timing admission and owner approval remain required",
+  "status": "Fresh local statistical admission passed for all 1138 endpoints; owner approval pending; native mock timing unavailable",
   "source": "gororoba_quantum/RIPPLE_DYNAMICS.md and results/ripple/evidence.json",
   "execution": {
     "jobs": 1,
     "backends": 1,
     "kind": "static",
-    "shots_per_setting": "Selected by precision and cost admission",
+    "shots_per_setting": 4096,
     "logical_tiles": {
       "zero_divisor": 7,
       "associator_core": 2,
       "walsh_ladder": 3
     },
     "logical_qubits": 55,
-    "physical_qubits": "Fresh calibration and topology-qualified joint placement must determine this value",
+    "physical_qubits": 55,
     "atlas_settings": 96,
     "atlas_construction": "12 edges per box kite times eight distinct phases; each setting samples one edge from each of seven box kites concurrently",
     "atlas_edge_phase_observations": "672 times admitted shots per PUB",
@@ -26,7 +26,7 @@
       "walsh_true_flip_omit": "Nine original members share three atlas rows"
     },
     "total_candidate_settings": 146,
-    "total_candidate_pub_shots": "146 times admitted shots per PUB",
+    "total_candidate_pub_shots": 598016,
     "control_boundary": "Isolated edge references cover one representative edge per lane. Every atlas template has readout controls on its actual compiled writer. Recorded row bundles balance walk class assignments and preserve matched atlas activity."
   },
   "time_model": {
@@ -34,7 +34,12 @@
     "historical_repetition_delay_seconds": 0.00025,
     "illustrative_shots_per_pub": 4096,
     "repetition_delay_only_seconds": 149.504,
-    "qualification": "149.504 seconds is repetition delay alone at the historical setting. Fresh admitted records determine candidate seconds; gates, initialization, readout and fixed overhead add time. The earlier approximately35-second illustration is superseded."
+    "qualification": "Local calibration-based estimate. Native mock qualification returned unavailable; physical duration and final charge await approved execution.",
+    "admitted_nominal_seconds": 157.08726656,
+    "admitted_stress_seconds": 159.38726656,
+    "service_ceiling_seconds": 180,
+    "qualified_record": "results/live/2026-10-12T062505.208379Z/record.json",
+    "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038"
   },
   "mathematical_program": {
     "common_source": "Cayley-Dickson multiplication signs",
@@ -86,7 +91,7 @@
   "before_submission": [
     "Verify all required endpoints with fresh calibration, bounded simulation uncertainty and matched physical controls",
     "Retain exact compiled QPY, sparse PUB manifests, joint registers and source/dependency identities",
-    "Qualify native server estimates and per-PUB scheduler timing through dry_run=True only",
+    "Retain the native dry-run availability report; unavailable mock timing remains an explicit limitation rather than a fabricated scheduler result",
     "Run required repository gates and current-head review",
     "Check all independently admitted family ceilings against the shared quota and retained reserve",
     "Write exact digest-bound cases and obtain explicit owner approval under AGENTS.md"

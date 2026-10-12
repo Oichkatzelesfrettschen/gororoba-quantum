@@ -170,3 +170,47 @@ Repository-specific finite deductions supply the exact chosen paths and
 circuits. Candidate new measurements concern their physical realization,
 joint error structure, and model residuals. The measured outcomes will decide
 those claims after an approved execution and analysis.
+
+## What the completed folded-QPE jobs add
+
+The two Kingston jobs supply a measured example of the distinction between a
+mathematical law, a hardware implementation, and its noise model. Their 16 PUBs
+at 8,192 shots each cost 40 QPU seconds. The [independent raw audit](../../results/ripple/folded-job-review.md)
+reproduces the measured contrasts and retains the relevant routing, readout,
+and prepared-label information differences. The [primary hardware evidence](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37)
+owns the lossless shots.
+
+The odd-label no-feedback arms have positive hardware-minus-replay terminal
+success residuals (+13.46 and +10.42 percentage points), while the other
+fourteen arms have negative residuals. A single subtractive success penalty
+cannot reproduce that pattern. A sharper explanatory-model test uses terminal
+bit-one probabilities, preserving their labels instead of converting both
+observations to success scores. For no-feedback labels one and three, the
+retained replay gives `(0.4964599609375, 0.4952392578125)`, while hardware gives
+`(0.36181640625, 0.5994873046875)`.
+
+Appending one common binary stochastic channel to two Bernoulli distributions
+maps each probability by `q = a + (b-a)*p`, where `a,b` are probabilities.
+Therefore `abs(q1-q2) <= abs(p1-p2)`. This is the standard contraction of total
+variation under a stochastic map, specialized to two outcomes; its application
+here is an explanatory-model check rather than a new mathematical theorem.
+A union bound over all 32 hardware and finite-replay terminal means, with
+`alpha=0.05` and `N=8192` per mean, gives
+`r=sqrt(log(2*32/0.05)/(2*8192))=0.020896963086`.
+The hardware separation has lower bound `0.195876972265`; the replay separation
+has upper bound `0.043014629297`. The strict separation rejects the narrow
+hypothesis of appending one common binary channel to the already-noisy replay
+marginals, conditional on independent stationary repetitions and the retained
+simulation-shot provenance. The all-32 bound covers selection of this pair.
+Replacing an existing modeled readout channel is a different hypothesis;
+controller causality and the physical noise mechanism remain unresolved.
+
+The consequence for ripple acquisition is concrete. Preserve raw outcome
+labels, complete within-PUB shot vectors, routed measurement sites, and both
+ideal and finite-model predictions. A visualization can then expose a model's
+failure through the direction and size of residuals, while matched controls
+and uncertainty delimit what the discrepancy means. Exact box-kite incidence
+and rank-sector geometry supply coordinates; measured probabilities and joint
+errors supply the empirical fields on those coordinates. A striking visual
+result becomes scientifically useful when a viewer can recover the measured
+quantity, its reference, its uncertainty, and a falsifiable explanation.

@@ -1,0 +1,118 @@
+{
+  "schema": "packed-algebra-preparation-summary-v1",
+  "status": "prepared; exact-case owner approval pending",
+  "integrated_objective": "Integrate Cayley-Dickson box-kites and zero-divisor fringes, associator interference walks, original Design C controls, and four-qubit rank-path sectors into independently qualified packed acquisition; preserve joint shot order, uncertainty, control differences and model residuals; retain source documents and prior-work boundaries; maximize useful measurements per charged second; reuse the completed folded-QPE evidence; publish one iterative PR and obtain review before separately approved execution.",
+  "source_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+  "families": [
+    {
+      "family": "ripple",
+      "record": "results/live/2026-10-12T062505.208379Z/record.json",
+      "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+      "state": "planned",
+      "shots": 4096,
+      "source": {
+        "head": "c998e4aa9a088bf58449dc320b95fff98fa31d6d",
+        "sources_modified": false
+      },
+      "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+      "required_endpoints": 1138,
+      "budget": {
+        "jobs": [
+          {
+            "backend": "ibm_kingston",
+            "kind": "static",
+            "batch_index": 1,
+            "pubs": 146,
+            "ceiling_seconds": 180
+          }
+        ],
+        "combined_ceiling_seconds": 180.0,
+        "reserve_seconds": 60.0,
+        "max_total_execution_seconds": 180.0,
+        "remaining_seconds": 551,
+        "admitted": true,
+        "reasons": [],
+        "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+      },
+      "native_reports": [
+        {
+          "path": "results/live/2026-10-12T062505.208379Z/native-dry-run/20261012T063039.174056Z-46f54595/report.json",
+          "sha256": "445622cad538d0f89a143f1941f8d42d7d9ae721f6f517733e48bacc23ac754a",
+          "status": "unavailable",
+          "qualified": false,
+          "job_ids": []
+        }
+      ],
+      "nominal_seconds": 157.08726656,
+      "stress_seconds": 159.38726656,
+      "feasible_endpoints": 1138,
+      "maximum_simultaneous_half_width": 0.07467067752937152,
+      "job_count": 1,
+      "pub_count": 146
+    },
+    {
+      "family": "rank-sector",
+      "record": "results/live/2026-10-12T062505.552988Z/record.json",
+      "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+      "state": "planned",
+      "shots": 4096,
+      "source": {
+        "head": "c998e4aa9a088bf58449dc320b95fff98fa31d6d",
+        "sources_modified": false
+      },
+      "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+      "required_endpoints": 196,
+      "budget": {
+        "jobs": [
+          {
+            "backend": "ibm_kingston",
+            "kind": "static",
+            "batch_index": 1,
+            "pubs": 36,
+            "ceiling_seconds": 60
+          }
+        ],
+        "combined_ceiling_seconds": 60.0,
+        "reserve_seconds": 60.0,
+        "max_total_execution_seconds": 60.0,
+        "remaining_seconds": 551,
+        "admitted": true,
+        "reasons": [],
+        "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+      },
+      "native_reports": [
+        {
+          "path": "results/live/2026-10-12T062505.552988Z/native-dry-run/20261012T062730.914121Z-f400b396/report.json",
+          "sha256": "780f3a41ee21b6b9af8c499d5b121110fe2a4dedffc7f0e8e0e66ab384014e80",
+          "status": "unavailable",
+          "qualified": false,
+          "job_ids": []
+        }
+      ],
+      "nominal_seconds": 39.93470336,
+      "stress_seconds": 42.23470336,
+      "feasible_endpoints": 196,
+      "maximum_simultaneous_half_width": 0.06867944282071789,
+      "job_count": 1,
+      "pub_count": 36
+    }
+  ],
+  "combined_nominal_seconds": 197.02196992,
+  "combined_stress_seconds": 201.62196992,
+  "combined_service_ceiling_seconds": 240,
+  "shared_reserve_seconds": 60,
+  "observed_remaining_seconds": 551,
+  "unallocated_after_ceilings_and_reserve_seconds": 251,
+  "physical_jobs_submitted_by_preparation": [],
+  "completed_folded_jobs_excluded_from_resubmission": [
+    "db67fqsvf2bc73d0pk4g",
+    "db67frimb58s738bci4g"
+  ],
+  "completed_folded_charge_seconds": 40,
+  "qualification_limits": [
+    "bounded candidate search; global optimality unproved",
+    "fresh calibration and quota must match before submission",
+    "mock_kingston unavailable; native scheduler timing remains unqualified",
+    "local noise simulation omits physical common disturbances and does not replace measured packing references"
+  ]
+}
