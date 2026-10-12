@@ -96,16 +96,26 @@ dimension. Four repair routes have different proof obligations:
    reflection of zero products on that embedded subalgebra. Arbitrary higher
    zero divisors need a different theorem. The unconditional kernel formula
    is `ker L_(a,0) = ker L_a direct_sum ker R_a`; identifying left and right
-   annihilators requires an additional result.
+   annihilators requires an additional result. For pure embedded inputs, the
+   [ordinary-doubling derivation](four_support_doubling.md) proves
+   `R_x=-C L_x C` and
+   `ker L_(x,0)=ker L_x direct_sum C ker L_x`. Its all-stage written
+   induction and exact implementation checks provide concrete Rocq
+   formalization targets.
 
 3. **Eliminate an invertible operator block.** For
    `M=[[A,B],[C,D]]` and invertible `A`, put `S=D-C*A^-1*B`. Prove
-   `rank M=dim(A)+rank S` and the bijective kernel lift
+   `rank M=dim(A)+rank S` and the bijective lift from `ker S` to `ker M`,
    `w -> [-A^-1*B*w; w]`. The lift retains eliminated coordinates. For a basis
    change `T`, normalized partners obey `w^T*G*w=1` with
    `G=J^T*J`, `J=T*[-A^-1*B; I]`. A chart theorem needs an invertible pivot on
    its domain. A global geometric theorem additionally needs chart coverage,
-   overlap maps, rank-drop limits and attachments.
+   overlap maps, rank-drop limits and attachments. The
+   [dimension-32 skew-Schur construction](dimension32_skew_schur_charts.md)
+   retains `S(x)w=0` across rank changes and `det A != 0` after denominator
+   clearing. The lift and metric alone do not determine kernel membership.
+   Coordinate transitions are isomorphisms on reduced kernels; different
+   center nullities permit rectangular ambient transition matrices.
 
 4. **Keep every support sector.** For support in affine XOR coset `a+H`,
    the input sector `c+H` maps into `a+c+H`. Certify the coset cover and zero
@@ -137,6 +147,21 @@ keeping `m1=0`.
 | Finite ripple dynamics | Exact operators, unitarity, return periods and signed graph obstruction | Port the execution owner's exact checker; a depth-0-to-4 hardware run cannot prove a longer operator period |
 | Common appended-channel exclusion | Binary-channel contraction plus a count-dependent incompatibility on an interval event | Retained experiment-specific arithmetic; coverage and physical applicability are separate obligations |
 | Identifiability | Equal Z laws for distinct phase states; local trace-preserving noise before unconditional reset leaves the other register unchanged | Matrix/channel semantics; these explain why additional repetitions can leave a mechanism unidentifiable |
+
+The restricted geometric port has concrete dependencies. The
+[four-support rank theorem](four_support_rank_loci.md) supplies complete
+sectors, polynomial minor identities, real positivity and complete kernel
+frames. The [incidence construction](four_support_incidence_geometry.md)
+supplies inverse continuous maps and coordinate inclusions along closures.
+The [doubling theorem](four_support_doubling.md) extends those constructions
+by structural induction. The
+[cellular homology construction](four_support_cellular_homology.md) supplies
+characteristic maps, orientations and integral unit cancellations. These
+written arguments and exact implementation certificates establish the stated
+results for the fixed first-operand support; Rocq formalization remains
+separate. Positive-degree cohomology products vanish by degree support in
+that restricted construction, so the stated ring calculation needs no
+cellular diagonal.
 
 The [terminal-channel analysis](../../results/live/2026-10-12T055624.091217Z/TERMINAL_CHANNEL_HYPOTHESIS.md)
 uses `K(p)=a*(1-p)+b*p`, `0<=a,b<=1`, and contraction of pair separation.
@@ -306,12 +331,12 @@ tomography and sequential inference retain their own designs and approvals.
 | --- | --- | --- |
 | 1 | Replay the new fold certificate and inspect its assumptions; retain source and raw logs | Formal-evidence follow-up |
 | 2 | Prove the basis-sign/scalar embedding bridge, then the full transported product and zero-product equivalence | Formal algebra, coordinated with source audit |
-| 3 | Prove generic Schur/kernel/metric lemmas; instantiate retained exact charts and full sector covers | Formal algebra and rank-geometry workstream |
+| 3 | Prove generic Schur/kernel/metric lemmas, including the residual equation and pivot inequation; instantiate retained charts and complete sector covers | Formal algebra and rank-geometry workstream |
 | 4 | Prove ideal labeled-law/decoder and deterministic terminal-channel implications; bind count fixtures | Formal-evidence follow-up with execution-owner review |
 | 5 | Certify binomial-tail enclosures and fixed-sample gate soundness before issuing prospective count certificates | Statistics/proof workstream; execution owner supplies frozen policy and records |
 | 6 | Acquire an approved pilot, retain full provenance, evaluate the frozen rule and validate predictions | Execution owner; user approves the concrete submission |
 | 7 | Design identifiable instrument tomography or a sequential protocol only when the pilot decision requires it | Execution and research owners jointly |
-| 8 | Prove geometric chart gluing or stronger complexity claims only after their independent hypotheses close | Rank-geometry or complexity workstream |
+| 8 | Formalize the restricted incidence, doubling and cellular constructions; pursue unrestricted chart coverage, attachments or stronger complexity claims after their independent hypotheses close | Rank-geometry or complexity workstream |
 
 The queue separates reusable mathematical theorems from experiment-specific
 instances. A finite census, a compilation improvement, a new formalization
