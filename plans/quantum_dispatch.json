@@ -753,7 +753,17 @@
     "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c"
    ],
    "central_children_idle_before_handoff": true,
-   "central_pre_run_work_before_handoff": "All promised production/review/integration and validation complete; only bounded receipt and final handoff remain.",
+   "central_pre_run_work_before_handoff": {
+    "requirement": "Complete all promised central production, review, integration and validation before bounded receipt/handoff work.",
+    "observed_state": "waiting_dependency",
+    "required_completed_tasks": [
+     "central-endpoint-replay-production",
+     "central-endpoint-replay-review",
+     "central-coordination-research-publication",
+     "central-coordination-research-integration"
+    ],
+    "observation": "Publication remains in_progress; integration remains waiting_dependency. Final handoff remains held."
+   },
    "integration_order": "Geometry complete finite PR first when admitted; correction/central reviews proceed in parallel; executor owns dirty-primary sync and final fresh case renewal.",
    "failed_child_recovery": {
     "parent_commit": "fb13b0675530c3eb9a4d8c0225bf37cacd8b5923",
@@ -776,7 +786,22 @@
     "post-run Rocq adjudication prerequisite",
     "producer/final-review activity states"
    ],
-   "stage": "Root fixed all four findings; independent81-task recheck reports zero remaining actionable defects."
+   "stage": "Historical81-task review retained; independent final83-task recheck is clean. Publication and integration remain pending.",
+   "final_graph_validation": {
+    "tasks": 83,
+    "task_projection_sha256": "55ce82a7f6b5ff4c5568371afaa484b6079865f384d1bce6da396c9129b98c50",
+    "serialization": "json.dumps(tasks,sort_keys=True,separators=(',',':')).encode()",
+    "partition": {
+     "complete": 28,
+     "in_progress": 7,
+     "waiting_dependency": 45,
+     "deferred": 3
+    },
+    "checks": "Unique keys/IDs, fields, owners/references, DAG, completed prerequisites, recovery ancestry, pending coordinator requirement, pre/post-run separation and QPU authority pass.",
+    "negative_mutations_rejected": 12,
+    "scope": "Independent retained-record check; live API verification remains separate.",
+    "reviewed_combined_bytes": 98404
+   }
   },
   "central_validation": {
    "full_production_source_exit": 0,
