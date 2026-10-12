@@ -57,6 +57,7 @@ The rank-sector image gate also uses the plotting-only pin
     algebra_planning.py algebra_planning_contracts.py \
     ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
     native_preflight.py native_preflight_contracts.py \
+    placement_feasibility.py placement_feasibility_contracts.py \
     aer_delay_sentinels.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
@@ -106,6 +107,8 @@ The rank-sector image gate also uses the plotting-only pin
   "$PYTHON" ripple_contracts.py
   "$PYTHON" rank_sector_contracts.py
   "$PYTHON" native_preflight_contracts.py
+  "$PYTHON" placement_feasibility_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py
   "$PYTHON" qpu_cases.py --check
   "$PYTHON" local_compute.py
   "$PYTHON" aer_delay_sentinels.py >/dev/null

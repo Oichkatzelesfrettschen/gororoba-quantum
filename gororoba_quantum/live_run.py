@@ -62,6 +62,7 @@ from qiskit_ibm_runtime.executor_sampler import Sampler
 import local_compute
 import packing
 import parallel
+import placement_feasibility
 import qpu_planning
 import variance
 from diagnostic_experiments import FAMILY_NAMES, record_groups
@@ -120,6 +121,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "order_finding.py",
     "packing.py",
     "parallel.py",
+    "placement_feasibility.py",
     "predict.py",
     "qpe_diagnostics.py",
     "qpu_cases.py",
@@ -1045,8 +1047,69 @@ class PlacementJudge:
     target: Any
     excluded_qubits: frozenset[int]
     excluded_edges: frozenset[tuple[int, int]]
+    static_checks: tuple[tuple[str, tuple[int, ...], tuple[Any, ...]], ...] | None = field(
+        default=None, init=False, repr=False
+    )
+    static_operations: tuple[tuple[str, tuple[int, ...]], ...] = field(default=(), init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        """Retain exact scalar parameter checks once across shared static templates."""
+        if not self.isas or len({isa.num_qubits for isa in self.isas}) != 1:
+            return
+        checks: list[tuple[str, tuple[int, ...], tuple[Any, ...]]] = []
+        seen: set[tuple[Any, ...]] = set()
+        for isa in self.isas:
+            if _is_dynamic(isa):
+                return
+            for instruction in isa.data:
+                operation = instruction.operation
+                if operation.name == "barrier":
+                    continue
+                parameters = tuple(operation.params)
+                if any(
+                    type(parameter) not in (bool, int, float, str)
+                    or isinstance(parameter, float)
+                    and not math.isfinite(parameter)
+                    for parameter in parameters
+                ):
+                    return
+                qubits = tuple(isa.find_bit(qubit).index for qubit in instruction.qubits)
+                key = (operation.name, qubits, tuple((type(parameter), parameter) for parameter in parameters))
+                if key not in seen:
+                    seen.add(key)
+                    checks.append((operation.name, qubits, parameters))
+        operations = tuple(dict.fromkeys(operation for isa in self.isas for operation in _ops(isa)))
+        object.__setattr__(self, "static_checks", tuple(checks))
+        object.__setattr__(self, "static_operations", operations)
+
+    def _static_score(self, mapping: dict[int, int]) -> float | None:
+        """Check the same complete remapping as relabel without cloning every arm."""
+        width = self.isas[0].num_qubits
+        targets = set(mapping.values())
+        spare_sources = [qubit for qubit in range(width) if qubit not in mapping]
+        spare_targets = [qubit for qubit in range(width) if qubit not in targets]
+        permutation = [0] * width
+        for source, target in mapping.items():
+            permutation[source] = target
+        for source, target in zip(spare_sources, spare_targets, strict=True):
+            permutation[source] = target
+        for name, original in self.static_operations:
+            moved = tuple(permutation[qubit] for qubit in original)
+            if any(qubit in self.excluded_qubits for qubit in moved):
+                return None
+            if name == "cz" and (moved in self.excluded_edges or tuple(reversed(moved)) in self.excluded_edges):
+                return None
+        if self.static_checks is None:
+            raise LiveRunError("static placement checks were not prepared")
+        for name, original, parameters in self.static_checks:
+            moved = tuple(permutation[qubit] for qubit in original)
+            if not self.target.instruction_supported(operation_name=name, qargs=moved, parameters=list(parameters)):
+                return None
+        return layout_score(packing.relabel(self.isas[0], mapping, ""), self.target)
 
     def __call__(self, mapping: dict[int, int]) -> float | None:
+        if self.static_checks is not None:
+            return self._static_score(mapping)
         moved = [packing.relabel(isa, mapping, "") for isa in self.isas]
         for isa in moved:
             if _excluded_operations(isa, self.excluded_qubits, self.excluded_edges) or target_violations(
@@ -1201,20 +1264,38 @@ def _placement_assignment(
 
     Increasing candidate indices within a pool remove permutations of the same
     replica set without removing any feasible set. The most constrained pool
-    advances first. Pool state changes only after a complete assignment exists.
+    advances first. Candidate multiplicities remain in that heuristic.
+    Equal-qubit-set branches retain only their first candidate: its earlier
+    index permits every continuation available to a later equivalent
+    candidate. A failed first branch therefore proves those branches fail.
+    Pool state changes only after a complete assignment exists.
     Placed qubits are forbidden to every pool. A placed replica's admitted
     footprint is forbidden to its own pool, so a group's replicas stay one
     hop apart on the graph routing sees; with buffer, its physical footprint
     is forbidden to every other pool, so groups stay one hop apart on the
     device's couplers, an excluded coupler included.
     """
-    qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
+    qubits = [[frozenset(candidate.qubits) for candidate in pool.candidates] for pool in pools]
     footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
     physical_footprints = [
         [_placement_footprint(pool, candidate, pool.physical_graph) for candidate in pool.candidates] for pool in pools
     ]
     chosen: list[list[int]] = [[] for _ in pools]
     blocked = [set(pool.blocked) | pool.foreign for pool in pools]
+    domains = [
+        placement_feasibility.PlacementDomain(
+            tuple(
+                placement_feasibility.PlacementFootprint(physical_set, frozenset(admitted), frozenset(physical))
+                for physical_set, admitted, physical in zip(pool_qubits, pool_footprints, pool_physical, strict=True)
+            ),
+            frozenset(pool_blocked),
+        )
+        for pool_qubits, pool_footprints, pool_physical, pool_blocked in zip(
+            qubits, footprints, physical_footprints, blocked, strict=True
+        )
+    ]
+    if placement_feasibility.certified_infeasible(domains, frozenset(occupied), replicas_per_pool, buffer):
+        return None
 
     def search(used: set[int]) -> bool:
         available: list[tuple[int, int, int, list[int]]] = []
@@ -1235,7 +1316,12 @@ def _placement_assignment(
             return True
         _, _, pool_index, indices = min(available)
         previous = [set(entry) for entry in blocked]
+        visited_qubit_sets: set[frozenset[int]] = set()
         for index in indices:
+            physical_set = qubits[pool_index][index]
+            if physical_set in visited_qubit_sets:
+                continue
+            visited_qubit_sets.add(physical_set)
             chosen[pool_index].append(index)
             blocked[pool_index] = previous[pool_index] | footprints[pool_index][index]
             if buffer:
