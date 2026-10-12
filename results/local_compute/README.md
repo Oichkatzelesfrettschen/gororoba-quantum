@@ -12,6 +12,16 @@ preserve every source byte, with a fixed compression timestamp. The
 [compute plan](../../gororoba_quantum/LOCAL_COMPUTE.md) connects these
 observations to the implemented policy and remaining gates.
 
+The separate [native CPU delay report](aer_delay_sentinels/record.json)
+qualifies isolated T1/Ramsey relaxation against analytic laws with explicit
+fault mutations and entangled reset controls. Its own
+[checksum](aer_delay_sentinels/SHA256SUMS) covers the retained report; the
+historical branching manifest above retains its original scope. Replay uses
+`gororoba_quantum/aer_delay_sentinels.py`, whose source digest appears in the
+report. The report establishes synthetic native-Aer behavior and leaves
+hardware-model accuracy unresolved. CUDA packaging and installation remain
+paused; the installed CPU Aer supplies the active simulation path.
+
 | Artifact | Role and status |
 |---|---|
 | `cpu_branching_inputs.qpy.gz` | Exact eighteen compiled circuit inputs |

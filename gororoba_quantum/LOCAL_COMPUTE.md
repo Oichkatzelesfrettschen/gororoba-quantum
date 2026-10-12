@@ -247,7 +247,7 @@ the same outputs. The observation applies a standard quantum-channel
 identity to the qualification design; it establishes no new topology or
 quantum-information theorem.
 
-Native Aer CPU/GPU qualification includes independent
+Native Aer delay qualification includes independent
 `|1> -> delay(t) -> measure` T1 sentinels and
 `H -> delay(t) -> H -> measure` Ramsey T2 sentinels. With zero-temperature
 relaxation, ideal preparation/readout, and zero detuning, their laws are
@@ -264,16 +264,96 @@ Deterministic probabilities use a declared numerical tolerance; sampled
 comparisons retain finite-shot bounds. Those sentinels expose omitted delay
 noise that the family alone cannot identify.
 
-The simulation engine remains native Qiskit Aer. Acceleration uses Aer's
-upstream CUDA capabilities through a system package built from pinned
-sources. CPU/GPU qualification covers measurement quantum noise, asymmetric
-readout, reported-bit feed-forward, reset, physical-wire mapping, explicit
-delay passes, and labeled probabilities. A successful native GPU build
-establishes capability; retained workload parity and memory checks establish
-which configurations the planner can admit. The project implements neither
-a replacement simulator nor custom CUDA kernels.
+[aer_delay_sentinels.py](aer_delay_sentinels.py) executes the independent
+CPU checks with native `RelaxationNoisePass`, `PassManager`, and deterministic
+Aer density-matrix probability saves. The default fixture contains 60 nominal
+T1/Ramsey cases, 180 deliberately changed cases, 27 Bell-pair reset tomography
+cases, and three pre-reset Bell controls. Omitting relaxation, doubling dt,
+and rotating the wire calibrations each need a detectable witness. A
+separate deterministic bit-flip readout check distinguishes saved quantum
+probabilities from classical measurement counts.
 
-## Remaining acceleration gates
+The [retained report](../results/local_compute/aer_delay_sentinels/record.json)
+binds the synthetic parameters, module and installed Aer source hashes,
+materialized SuperOp channels, versions, and result metadata. The checker
+uses a declared `1e-11` absolute tolerance. The fixtures establish isolated
+native delay semantics; they leave `NoiseModel.from_backend` installation,
+Aer's automatic custom-pass trigger, IBM calibration, scheduler placement,
+finite-shot sampling, and full dynamic-noise behavior as separate validation
+surfaces. The checker supplies a repository gate and has zero imports from
+the live runner. Replay from the repository root:
+
+```sh
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" gororoba_quantum/aer_delay_sentinels.py
+)
+```
+
+The active execution path uses the installed Qiskit Aer CPU implementation.
+Custom Aer CUDA packaging, source repairs, installation, and GPU admission
+are paused at the owner's direction. The unfinished build and provenance
+work remain on their separate branch. The CPU optimizer has zero dependencies
+on that branch. The project implements neither a replacement simulator nor
+custom CUDA kernels.
+
+## CPU planning sequence
+
+1. Run the independent native-Aer delay sentinels and retain their analytic
+   comparisons, physical-wire mappings, and mutation failures. The folded
+   family's reset control alone cannot qualify delay-noise implementation.
+2. Review the retained folded precision case and its complete controls before
+   requesting hardware approval. A renewed case uses fresh backend metadata,
+   a declared cost-sensitivity grid, and the admitted CPU policy.
+3. Rescope the N21 design from its retained statistical rejection before
+   spending more local simulation time. Keep calibration, outcome labels,
+   the score, and all proposed search bounds explicit. A changed design
+   receives fresh simultaneous simulation allowances and a fresh case.
+4. Renew the static witness case after the dynamic questions. Each family
+   retains its distinct scientific purpose and separately approved budget.
+
+The [N21 record](../results/live/2026-10-12T020459.130482Z/record.json)
+provides a useful conditional planning calculation. Its largest hardware tier,
+16384 shots, needs an effect of at least `0.07597139152766541` even with zero
+model-sampling error: that value is the sum of the detection and power radii.
+The sampled model contrast `0.05078125` lies below that threshold. More model
+shots alone therefore cannot admit the retained shot tiers **if that contrast
+stays fixed**. The true modeled contrast remains uncertain.
+
+For the retained two-PUB Hoeffding contract, the threshold has the form
+`9.724338115541173 / sqrt(hardware_shots)`. The nominal charge is
+`2.3 + 0.0007131960000000032 * hardware_shots` seconds. The following
+calculations invert those two retained formulas with zero model-sampling
+error. They supply design sensitivity, not measured effects, hardware power,
+or approval:
+
+| Assumed fixed contrast | Minimum hardware shots | Nominal charge at that count |
+|---:|---:|---:|
+| 0.05078125, the 256-shot model estimate | 36671 | 28.453611 s |
+| 0.01953125, the separate 2048-shot evaluation estimate | 247891 | 179.094870 s |
+
+The nominal 60-second job ceiling permits at most 80903 shots under those
+same cost inputs. Even holding the larger contrast fixed, its residual
+simulation allowance needs at least 214373 model shots at that ceiling.
+The formula uses the retained eight-comparison allowance and positive
+model-error margin. Such a run exceeds the retained CPU workload by orders
+of magnitude. Fresh calibration, a different contrast, more searched
+candidates, or a cost scenario changes these calculations. The estimates
+justify a design and uncertainty review before a longer CPU run; they
+establish neither physical impossibility nor a valid covariance shortcut.
+
+The folded case remains the first hardware question. Its twelve endpoint
+intervals achieve the declared precision in the retained model, while the
+hardware-model gap remains the quantity the approved experiment measures.
+Local simulator speed and sampled model resolution remain distinct from
+QPU accuracy.
+
+## Paused GPU qualification gates
+
+The following gates document prerequisites for a future owner-authorized
+resumption. The active CPU work does not execute CUDA builds or installation.
 
 1. Isolate the noisy branching discrepancy using retained inputs: individual,
    mixed, and reversed batches; one and multiple threads; noise-channel
