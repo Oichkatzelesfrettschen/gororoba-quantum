@@ -1,0 +1,22 @@
+{
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  },
+  "execution": "credential-free local CPU Aer stabilizer",
+  "job_type": "LocalRuntimeJob",
+  "pub_count": 2,
+  "shots_per_pub": 64,
+  "counts_in_submitted_order": [
+    {
+      "11": 64
+    },
+    {
+      "01": 64
+    }
+  ],
+  "twirling_gates": false,
+  "twirling_measure": false,
+  "dd": false
+}
