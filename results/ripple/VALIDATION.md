@@ -21,10 +21,16 @@ reproduced counts, intervals and timing. The measured figure and ideal rank
 figure reproduce byte for byte; the rank renderer verifies all 160 acquisition
 probabilities against exact full-dimensional matrices.
 
-Both fresh source-closure checks pass for all 36 declared files and seven
-recorded dependency versions. The prepared ripple and rank-sector cases pass
-their independent statistical admission. Their records, QPY files and native
-sidecars retain their original bytes.
+The retained source-closure reports qualify 36 declared files and seven
+dependency versions at commit `c998e4aa`. The ripple and rank-sector cases
+passed independent statistical admission at that revision. Their records,
+QPY files and native sidecars retain their original bytes.
+
+Later execution-source changes require fresh source-bound atlas cases before
+submission. The correction pilot has a separate 41-file closure at commit
+`67106bd1`, documented in [correction validation](CORRECTION_VALIDATION.md).
+The held atlas reports establish historical preparation; the pilot closure
+qualifies its own recorded experiment.
 
 The required default CLI dry run reached a bounded placement rejection after
 256 combinations. That result establishes the fail-closed path, rather than
