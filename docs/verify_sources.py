@@ -7,9 +7,10 @@ import json
 import re
 import subprocess
 from datetime import datetime, timedelta
+from html.parser import HTMLParser
 from pathlib import Path
 from typing import Any
-from urllib.parse import unquote, urlsplit
+from urllib.parse import unquote, urljoin, urlsplit
 
 
 def require(condition: bool, message: str) -> None:
@@ -70,6 +71,109 @@ def verify_license_document(registry: dict[str, Any], identifier: str) -> None:
     require_digest(document.get("sha256"), "operative license SHA-256")
     require_text(document.get("reading_scope"), "operative license reading scope")
     require_timestamp(document.get("verified_at_utc"), "operative license timestamp")
+
+
+class ArxivRightsParser(HTMLParser):
+    """Read paper-specific rights and identity fields without using footer licenses."""
+
+    VOID_TAGS = {
+        "area",
+        "base",
+        "br",
+        "col",
+        "embed",
+        "hr",
+        "img",
+        "input",
+        "link",
+        "meta",
+        "param",
+        "source",
+        "track",
+        "wbr",
+    }
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.license_sections = 0
+        self.license_urls: list[str] = []
+        self.download_urls: list[str] = []
+        self.citation_ids: list[str] = []
+        self.license_stack: list[str] = []
+        self.download_stack: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        classes = {name for key, value in attrs if key == "class" and value for name in value.split()}
+        is_license = tag == "div" and "abs-license" in classes
+        is_download = tag == "a" and "download-pdf" in classes
+        is_citation = tag == "meta" and ("name", "citation_arxiv_id") in attrs
+        if is_license or is_download or is_citation or self.license_stack or self.download_stack:
+            require(len({key for key, _ in attrs}) == len(attrs), "captured arXiv duplicate attributes")
+        attributes = dict(attrs)
+        if is_citation:
+            self.citation_ids.append(require_text(attributes.get("content"), "captured arXiv citation metadata"))
+        if is_download:
+            require(not self.download_stack, "captured arXiv download nesting")
+            self.download_urls.append(require_text(attributes.get("href"), "captured arXiv download URL"))
+            self.download_stack.append(tag)
+        elif self.download_stack and tag not in self.VOID_TAGS:
+            self.download_stack.append(tag)
+        if is_license:
+            require(not self.license_stack, "captured arXiv license nesting")
+            self.license_sections += 1
+            self.license_stack.append(tag)
+        elif self.license_stack:
+            if tag == "a":
+                require("has_license" in classes, "captured arXiv license anchor")
+                self.license_urls.append(require_text(attributes.get("href"), "captured arXiv license URL"))
+            if tag not in self.VOID_TAGS:
+                self.license_stack.append(tag)
+
+    def handle_endtag(self, tag: str) -> None:
+        for stack in (self.license_stack, self.download_stack):
+            if stack:
+                require(stack[-1] == tag, "captured arXiv evidence nesting")
+                stack.pop()
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+        if tag not in self.VOID_TAGS:
+            self.handle_endtag(tag)
+
+    def close(self) -> None:
+        super().close()
+        require(not self.license_stack and not self.download_stack, "captured arXiv unclosed evidence")
+
+
+def verify_arxiv_evidence(root: Path, rights: dict[str, Any], version: str) -> None:
+    """Bind the declared article license and version to the retained abstract page."""
+    relative = f"docs/evidence/source_rights/arxiv-{version.replace('/', '-')}.html"
+    require(rights.get("evidence_path") == relative, "captured arXiv evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured arXiv evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured arXiv retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured arXiv evidence SHA-256")
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured arXiv HTML encoding") from error
+    parser = ArxivRightsParser()
+    parser.feed(html)
+    parser.close()
+    require(parser.citation_ids == [version.rsplit("v", 1)[0]], "captured arXiv citation identity")
+    require(len(parser.download_urls) == 1, "captured arXiv download count")
+    require(
+        urljoin(rights["evidence_url"], parser.download_urls[0]) == f"https://arxiv.org/pdf/{version}",
+        "captured arXiv download version",
+    )
+    require(parser.license_sections == 1 and len(parser.license_urls) == 1, "captured arXiv license count")
+    observed = require_url(parser.license_urls[0], "captured arXiv license URL")
+    require(observed.replace("http://", "https://", 1) == rights["license_url"], "captured arXiv license identity")
+    require(observed == rights["observed_license_url"], "captured arXiv observed license identity")
 
 
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
@@ -160,6 +264,8 @@ def verify_source_rights(
         observed_url = rights.get("observed_license_url") if published else rights.get("license_url")
         observed_url = require_url(observed_url, "arXiv observed license URL")
         require(observed_url.replace("http://", "https://", 1) == LICENSE_URLS[identifier], "arXiv license identity")
+        if published:
+            verify_arxiv_evidence(root, rights, source[1])
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:
