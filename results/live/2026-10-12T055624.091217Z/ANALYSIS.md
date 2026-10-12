@@ -75,7 +75,11 @@ coherent, and even no-feed-forward labels. Odd no-feed-forward hardware
 success exceeds replay by 13.4644 and 10.4248 percentage points for s1 and s3.
 A uniform subtractive accuracy penalty cannot reproduce that signed pattern.
 A model revision must retain labels and interventions, then face an independent
-validation set. Extra CPU sampling can reduce Monte Carlo error; extra QPU
+validation set. The supplemental [binary-channel check](TERMINAL_CHANNEL_HYPOTHESIS.md)
+excludes one additional common stochastic terminal postprocessing channel as
+a complete repair, conditional on its separate sampling and multiplicity
+contract. It leaves replacement of modeled readout noise as a distinct
+hypothesis. Extra CPU sampling can reduce Monte Carlo error; extra QPU
 shots alone cannot repair systematic model error.
 
 The coherent-minus-archived difference measures the complete implementations.
