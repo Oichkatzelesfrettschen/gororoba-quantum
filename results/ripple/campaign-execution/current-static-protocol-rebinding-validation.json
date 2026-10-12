@@ -1,0 +1,34 @@
+{
+  "changed_family_fields": {
+    "rank-sector": [
+      "case_sha256",
+      "record",
+      "record_sha256",
+      "source_commit"
+    ],
+    "ripple": [
+      "case_sha256",
+      "record",
+      "record_sha256",
+      "source_commit"
+    ]
+  },
+  "classifier_protocol_validation": "passed",
+  "comparison_receipt_sha256": "15704c8ae6c5405bf7825ffef41d9bd4061c0104ddf2e3358cb5bf772f367e2e",
+  "original_protocol_sha256": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f",
+  "preparation_audit_sha256": "1ec1f77c8578dcc898888c22d2c2938290ee39df064ad270e6009e2ec5d27311",
+  "quantum_jobs_submitted": 0,
+  "renewed_protocol_sha256": "59535e0af98554e94287c62bb8ee9c74b4d82236c7b08df3ef3eadca56f7235b",
+  "schema": "static-protocol-identity-rebinding-validation-v1",
+  "service_calls": 0,
+  "status": "pass",
+  "tracked_protocol_bytes_unchanged": true,
+  "unchanged_control_count": 37,
+  "unchanged_equivalence_possible_controls": 36,
+  "unchanged_full_endpoint_counts": {
+    "rank-sector": 196,
+    "ripple": 1138
+  },
+  "unchanged_normalized_tolerance": 0.1,
+  "underresolved_equivalence_endpoint": "ripple_design_c_16_1_8_isolated_packed_difference"
+}

@@ -1,0 +1,24 @@
+{
+  "observed_at": "2026-10-12T17:54:44.201115+00:00",
+  "backends": [
+    {
+      "backend": "ibm_fez",
+      "operational": true,
+      "status_category": "active",
+      "pending_jobs": 3
+    },
+    {
+      "backend": "ibm_kingston",
+      "operational": true,
+      "status_category": "active",
+      "pending_jobs": 3
+    },
+    {
+      "backend": "ibm_marrakesh",
+      "operational": true,
+      "status_category": "maintenance",
+      "pending_jobs": 11
+    }
+  ],
+  "scope": "Read-only post-sync eligibility check; zero primitive submissions"
+}

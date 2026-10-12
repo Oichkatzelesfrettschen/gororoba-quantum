@@ -1,0 +1,53 @@
+{
+  "backend_observations": [
+    {
+      "backend": "ibm_fez",
+      "calibration": "2026-10-12T10:25:25-07:00",
+      "pending_jobs": 1,
+      "skipped_reason": null,
+      "status": "active"
+    },
+    {
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-12T10:17:10-07:00",
+      "pending_jobs": 1,
+      "skipped_reason": null,
+      "status": "active"
+    },
+    {
+      "backend": "ibm_marrakesh",
+      "calibration": "2026-10-12T09:13:58-07:00",
+      "pending_jobs": 1,
+      "skipped_reason": "status operational=True msg='maintenance'",
+      "status": "maintenance"
+    }
+  ],
+  "error": "correction planning requires all three fresh QPU snapshots; missing=['ibm_marrakesh'], unexpected=[]; inspect the live discovery skipped-backend inventory",
+  "evidence_class": "Submit-free live discovery and local planner rejection; zero quantum submissions.",
+  "exit_code": 1,
+  "new_preparation_record_created": false,
+  "older_cases": "Previous correction cases retain their own calibration identity and remain excluded from fresh-calibration execution.",
+  "physical_qpu_jobs_submitted": 0,
+  "policy": {
+    "max_pending_jobs": 25,
+    "require_operational_active_status": true,
+    "required_backends": [
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_marrakesh"
+    ]
+  },
+  "rationale": "Marrakesh reports maintenance and is skipped even though operational=True and pending=1. The reviewed correction protocol requires the complete three-backend eligible frontier. The two active backend snapshots cannot qualify a substitute reduced frontier.",
+  "schema": "correction-eligibility-renewal-rejection-v1",
+  "scope_limit": "Backend status is the retained discovery observation and can change after the call.",
+  "source_identity": {
+    "exit_marker_filename": "current-campaign-correction-renewal.exit",
+    "exit_marker_sha256": "4355a46b19d348dc2f57c046f8ef63d4538ebb936000f3c9ee954a27460dd865",
+    "log_filename": "current-campaign-correction-renewal.log",
+    "log_sha256": "4cc40b91a24f45433db19788524f4a3a18d000193d0267201b5a15b5e14009e5",
+    "script_filename": "current-campaign-correction-renewal.sh",
+    "script_sha256": "168fd7a5099c25b765ed77e1c029ef27775de948aca5671d7476d3e274a4b669"
+  },
+  "status": "renewal_rejected_before_record_creation",
+  "submission_boundary": "The script omits --submit; correction_planning.prepare raises during plan() before run-directory creation and submission."
+}
