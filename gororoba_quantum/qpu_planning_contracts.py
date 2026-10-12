@@ -25,6 +25,7 @@ from qiskit.transpiler import InstructionProperties, Target
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
 import live_run
+import local_compute
 import qpu_planning
 from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeService
 
@@ -221,7 +222,7 @@ def _verify_approval_mutations(choices: list[live_run.Choice], metadata: dict[st
     record = {
         "state": "planned",
         "shots": 8192,
-        "policy": {"design": metadata["optimizer_settings"]},
+        "policy": {"design": metadata["optimizer_settings"], "local_compute": local_compute.settings()},
         "groups": [],
         **metadata,
     }
@@ -253,6 +254,22 @@ def _verify_approval_mutations(choices: list[live_run.Choice], metadata: dict[st
         _require(
             "policy differs" in live_run.approved_record_mismatches(approved, changed_tiers, qpy_digest),
             "approval accepted a changed optimizer search policy",
+        )
+        for field, value in (
+            ("objective", "precision_at_budget"),
+            ("cost_scenarios", [{"name": "stress", "job_overhead_seconds": 4.6, "classical_latency_us": 60.0}]),
+        ):
+            changed_policy = copy.deepcopy(record)
+            changed_policy["policy"]["design"][field] = value
+            _require(
+                "policy differs" in live_run.approved_record_mismatches(approved, changed_policy, qpy_digest),
+                f"approval accepted changed {field}",
+            )
+        changed_compute = copy.deepcopy(record)
+        changed_compute["policy"]["local_compute"]["threads"] += 1
+        _require(
+            "policy differs" in live_run.approved_record_mismatches(approved, changed_compute, qpy_digest),
+            "approval accepted changed local simulation policy",
         )
         changed_repetition = copy.deepcopy(record)
         changed_repetition["execution_contract"]["backends"][0]["repetition_delay_seconds"] += 1e-6
@@ -297,6 +314,27 @@ def _verify_cli_approval_boundary() -> None:
         else:
             raise RuntimeError("submission CLI accepted a missing combined invocation ceiling")
     _require("--max-total-execution-seconds" in stderr.getvalue(), "CLI rejection did not identify the combined cap")
+
+
+def _verify_compute_boundary() -> None:
+    with tempfile.TemporaryDirectory(prefix="gororoba-compute-boundary-") as directory:
+        for mode in ("gpu", "hybrid"):
+            with redirect_stderr(io.StringIO()), redirect_stdout(io.StringIO()):
+                status = live_run.main(["--local-compute", mode, "--out", directory])
+            _require(status == 1, f"unqualified {mode} policy passed service construction boundary")
+        records = [json.loads(path.read_text()) for path in Path(directory).glob("*/record.json")]
+        _require(len(records) == 2, "capability failures lost their diagnostic records")
+        _require(all(record["state"] == "local_compute_unavailable" for record in records), "wrong failure state")
+        _require(all("submission" not in record for record in records), "capability failure reached submission")
+    parsed = live_run._cost_scenario("stress:4.6:60")
+    _require(parsed == {"name": "stress", "job_overhead_seconds": 4.6, "classical_latency_us": 60.0}, "scenario parse")
+    for malformed in ("missing", "stress:nan:1", "stress:1:-2", ":1:2", "nominal:1:2", "_stress:1:2", "-stress:1:2"):
+        try:
+            live_run._cost_scenario(malformed)
+        except argparse.ArgumentTypeError:
+            pass
+        else:
+            raise RuntimeError(f"malformed cost scenario passes: {malformed}")
 
 
 def _verify_usage_accounting() -> None:
@@ -394,6 +432,7 @@ def _verify() -> None:
         metadata = _verify_optimizer(snapshot, choices, configuration)
         _verify_approval_mutations(choices, metadata)
         _verify_cli_approval_boundary()
+        _verify_compute_boundary()
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)
     print(

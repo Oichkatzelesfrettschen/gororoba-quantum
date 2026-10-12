@@ -1070,7 +1070,7 @@ def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
     original_noise_simulator = live_run_module.noise_simulator
     original_simulate_entries = live_run_module.simulate_entries
     original_wait_for_usage = live_run_module.wait_for_usage
-    live_run_module.noise_simulator = lambda name, target, props: object()
+    live_run_module.noise_simulator = lambda name, target, props, compute_policy=None: object()
     live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
         entry.name: _zero_replica_distributions(entry) for entry in entries
     }

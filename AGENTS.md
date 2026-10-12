@@ -24,7 +24,7 @@ lint and type-check configuration only. Before any push, these exit 0:
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
     qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
-    qpu_planning.py qpu_planning_contracts.py qpu_cases.py \
+    qpu_planning.py qpu_planning_contracts.py qpu_cases.py local_compute.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
@@ -57,6 +57,7 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" experiment_optimizer.py
   "$PYTHON" qpu_planning_contracts.py
   "$PYTHON" qpu_cases.py --check
+  "$PYTHON" local_compute.py
   "$PYTHON" variance.py
   "$PYTHON" adjudicate.py --check
   "$PYTHON" cd_core.py >/dev/null

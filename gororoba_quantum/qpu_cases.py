@@ -120,6 +120,31 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         {group["backend"] for group in record["groups"]} <= set(backends), "selected backend is absent from inventory"
     )
     arguments = ["--family", family]
+    objective = design.get("objective", "minimum_charge")
+    _require(objective in ("minimum_charge", "precision_at_budget"), "unknown optimizer objective")
+    if "objective" in design:
+        arguments.extend(["--objective", objective])
+    for scenario in design.get("cost_scenarios", []):
+        scenario_name = _identifier(scenario["name"], "cost scenario")
+        overhead = _number(scenario["job_overhead_seconds"], "scenario overhead")
+        latency = _number(scenario["classical_latency_us"], "scenario latency")
+        _require(overhead >= 0 and latency >= 0, "cost scenario values must be nonnegative")
+        arguments.extend(["--cost-scenario", f"{scenario_name}:{overhead}:{latency}"])
+    compute = policy.get("local_compute")
+    if compute is not None:
+        import local_compute
+
+        local_compute.validate(compute)
+        arguments.extend(
+            [
+                "--local-compute",
+                compute["mode"],
+                "--simulation-threads",
+                str(compute["threads"]),
+                "--simulation-memory-mb",
+                str(compute["memory_mb"]),
+            ]
+        )
     if design["optimize"]:
         arguments.append("--optimize")
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
@@ -284,11 +309,20 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
     lines = [
         "## Preregistered endpoints",
         "",
-        "Every endpoint uses raw measured outcomes and the archived score coefficients. "
-        "The collection test uses the planned PUB grouping and the same one-sided detection "
-        "radius; the two-sided interval describes precision separately.",
+        "Every endpoint uses raw measured outcomes, archived score coefficients, and the planner's "
+        "PUB grouping. Two-sided intervals report measurement precision.",
         "",
     ]
+    directional = any(endpoint["minimum_effect"] is not None for endpoint in candidate["observables"])
+    lines.extend(
+        [
+            "Directional endpoints also use the planner's one-sided detection radius "
+            "for the preregistered collection test."
+            if directional
+            else "The saved endpoints preregister precision intervals.",
+            "",
+        ]
+    )
     contracts = {contract["name"]: contract for contract in record["observable_contracts"]}
     members = {member["name"]: member for group in record["groups"] for member in group["members"]}
     for endpoint in candidate["observables"]:
@@ -357,11 +391,17 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
             f"{_format_number(record['optimization']['simulation_alpha'])} "
             f"across {record['optimization']['simulation_comparisons']} scored finite-shot marginals. "
             "Hoeffding/union bounds allow arbitrary same-shot replica dependence. Independent stationary "
-            "repetitions remain an assumption. Endpoint alpha and power are conditional on the supplied "
-            "outcome model; hardware-model discrepancy remains unquantified.",
+            "repetitions remain an assumption. Hardware-model discrepancy remains unquantified.",
             "",
         ]
     )
+    if directional:
+        lines.extend(
+            [
+                "Power admission is conditional on the supplied outcome model and reported alternative effect.",
+                "",
+            ]
+        )
     return lines
 
 
@@ -384,8 +424,9 @@ def _scientific_case(family: str) -> list[str]:
             "and terminal readout sites can differ. The archived mapping below records those confounds. "
             "A contrast therefore does not establish a unique gate-level cause.",
             "",
-            "Noise simulation computes conditional predictions from Target/properties and declared "
-            "latency assumptions. Only future hardware observations measure scheduler residuals, "
+            "Noise simulation computes conditional predictions from Target/properties. The declared "
+            "classical-latency allowance contributes to the cost estimate; scheduler-latency noise remains "
+            "outside the Aer outcome model. Only future hardware observations measure scheduler residuals, "
             "correlated errors, readout disturbance, and drift omitted by that model. Raw outcomes, "
             "scheduler metadata, calibration windows, and charged usage support the comparison.",
             "",
@@ -492,6 +533,54 @@ def _render(
         ["", "Calibration-bound family and replica mapping:", "", "```json", json.dumps(mappings, indent=2), "```", ""]
     )
     lines.extend(_endpoints(record, candidate))
+    lines.extend(
+        [
+            "## Selection objective and sensitivity assumptions",
+            "",
+            f"The objective is `{record['policy']['design'].get('objective', 'minimum_charge')}`. "
+            "Selection compares the declared finite candidate set after statistical and cost admission.",
+            "",
+        ]
+    )
+    if candidate.get("normalized_precision_radius") is not None:
+        lines.extend(
+            [
+                "The worst confidence half-width divided by its declared target is "
+                f"{_format_number(candidate['normalized_precision_radius'])}. "
+                "Smaller sampling intervals quantify precision; physical-model bias remains a separate residual.",
+                "",
+            ]
+        )
+    scenarios = candidate.get("cost_scenarios", [])
+    if scenarios:
+        _require(all(scenario["feasible"] for scenario in scenarios), "selected cost sensitivity fails admission")
+        lines.extend(
+            [
+                "Every listed cost scenario passes the same per-job and aggregate ceilings. "
+                "Scenario values are explicit assumptions, with no claimed confidence coverage.",
+                "",
+                "| Scenario | Job overhead (s) | Classical latency per stage (us) | Total charge (s) |",
+                "|---|---:|---:|---:|",
+            ]
+        )
+        assumptions = {scenario["name"]: scenario for scenario in record["policy"]["design"]["cost_scenarios"]}
+        for scenario in scenarios:
+            assumption = assumptions[scenario["name"]]
+            lines.append(
+                f"| {_identifier(scenario['name'], 'cost scenario')} | "
+                f"{_format_number(assumption['job_overhead_seconds'])} | "
+                f"{_format_number(assumption['classical_latency_us'])} | "
+                f"{_format_number(scenario['estimated_charge_seconds'])} |"
+            )
+        lines.extend(
+            [
+                "",
+                "The largest nominal/scenario charge is "
+                f"{_format_number(candidate['worst_case_charge_seconds'])} seconds. "
+                "The complete scenario PUB ledgers remain in record.json.",
+                "",
+            ]
+        )
     budget = record["budget_plan"]
     lines.extend(
         [
@@ -524,12 +613,16 @@ def _render(
             "remain unsettled. External submissions can still change the shared quota. Dynamic Target "
             "duration omits classical scheduler latency; the declared addition remains a planning assumption.",
             "",
-            "| PUB | Shots | Target duration (s) | Repetition delay (s) | "
-            "Reset addition (s) | Classical latency addition (s) |",
-            "|---|---:|---:|---:|---:|---:|",
         ]
     )
     for job in candidate["jobs"]:
+        lines.extend(
+            [
+                "| PUB | Shots | Target duration (s) | Repetition delay (s) | "
+                "Reset addition (s) | Classical latency addition (s) |",
+                "|---|---:|---:|---:|---:|---:|",
+            ]
+        )
         for pub in job["pubs"]:
             lines.append(
                 f"| {_identifier(pub['name'], 'PUB')} | {_count(pub['shots'], 'PUB shots')} | "
@@ -760,6 +853,7 @@ def _verify() -> None:
         assert "--shot-tiers 2048,4096" in text
         assert "2026-10-11T12:00:00+00:00" in text and "2.5.4+local" in text
         assert "exceeds 0.06" in text and "conditional target power 0.8" in text
+        assert "one-sided detection radius" in text and "Power admission is conditional" in text
         assert str(run_dir) not in text and "crn:" not in text
         assert "--submit" not in text.split("## Approval-only submission template")[0]
         assert write_case(run_dir, record) == destination and destination.read_text() == text
@@ -792,6 +886,18 @@ def _verify() -> None:
         folded["policy"]["design"]["family"] = "folded-qpe"
         folded_endpoint = folded["optimization"]["candidates"][0]["observables"][0]
         folded_endpoint.update(minimum_effect=None, precision_half_width=0.08)
+        folded_candidate = folded["optimization"]["candidates"][0]
+        static_job = copy.deepcopy(folded_candidate["jobs"][0])
+        static_job["name"] = "ibm_fez/static/1"
+        static_job["pubs"][0]["name"] = "coherent_pub"
+        folded_candidate["jobs"].append(static_job)
+        folded_candidate["estimated_charge_seconds"] *= 2
+        folded_candidate["total_execution_ceiling_seconds"] *= 2
+        folded["policy"]["design"]["max_total_execution_seconds"] = 180.0
+        folded["budget_plan"].update(combined_ceiling_seconds=180.0, max_total_execution_seconds=180.0)
+        folded["execution_pubs"].append({"name": "coherent_pub"})
+        with (run_dir / "isa.qpy").open("wb") as handle:
+            qpy.dump([circuit, circuit.copy(name="coherent_pub")], handle)
         retain(folded)
         assert write_case(run_dir, folded) == destination
         folded_text = destination.read_text()
@@ -799,6 +905,21 @@ def _verify() -> None:
         assert "coherent routing and terminal readout sites can differ" in folded_text
         assert "--family folded-qpe" in folded_text and "requested precision is 0.08" in folded_text
         assert "Reject the directional null" not in folded_text
+        assert "one-sided detection radius" not in folded_text and "Power admission" not in folded_text
+        assert "preregister precision intervals" in folded_text
+        assert "scheduler-latency noise remains outside the Aer outcome model" in folded_text
+        cost_section = folded_text.split("## Expected charge and service ceilings", 1)[1]
+        pub_tables = re.findall(r"(?:^\|[^\n]+\n)+", cost_section, flags=re.MULTILINE)
+        assert len(pub_tables) == 3
+        for table, job in zip(pub_tables[1:], folded_candidate["jobs"], strict=True):
+            rows = table.splitlines()
+            assert rows[0].startswith("| PUB | Shots |") and rows[1].startswith("|---|")
+            assert len(rows) == len(job["pubs"]) + 2
+            assert all(
+                row.startswith("| " + pub["name"] + " |") for row, pub in zip(rows[2:], job["pubs"], strict=True)
+            )
+        with (run_dir / "isa.qpy").open("wb") as handle:
+            qpy.dump(circuit, handle)
         changed = copy.deepcopy(record)
         changed["code_commit"]["sources_modified"] = True
         retain(changed)

@@ -2,7 +2,8 @@
 
 The optimizer compares supplied plans; it neither compiles circuits nor contacts
 a service. A plan must meet every named observable contract. Signed contrasts
-remain separate objectives, and the cheapest feasible plan wins deterministically.
+retain their own admission requirements. The objective selects either minimum
+modeled charge or minimum worst normalized precision radius within the budget.
 
 Hoeffding bounds assume independent repetitions of stationary, bounded outcomes.
 Replicas and components within one PUB shot may be arbitrarily dependent. A
@@ -65,6 +66,8 @@ class PubPrediction:
     duration. reset_seconds and classical_latency_seconds add only components
     absent from that duration. duration_assumption states that accounting
     boundary, including uncertainty such as an unmeasured scheduler residual.
+    classical_stage_count supplies the explicit count needed to replace the
+    added classical latency under a cost-sensitivity scenario; static PUBs use 0.
     """
 
     name: str
@@ -75,6 +78,7 @@ class PubPrediction:
     reset_seconds: float = 0.0
     classical_latency_seconds: float = 0.0
     simulation_shots: int | None = None
+    classical_stage_count: int | None = None
 
 
 @dataclass(frozen=True)
@@ -125,6 +129,19 @@ class BudgetContract:
 
 
 @dataclass(frozen=True)
+class CostScenario:
+    """Declared per-job overhead and per-stage latency sensitivity assumptions.
+
+    Each scenario replaces both cost inputs together and applies to every job
+    and PUB. The supplied scenarios carry no uncertainty-coverage guarantee.
+    """
+
+    name: str
+    job_overhead_seconds: float
+    classical_latency_us: float
+
+
+@dataclass(frozen=True)
 class PubCost:
     name: str
     shots: int
@@ -134,6 +151,7 @@ class PubCost:
     classical_latency_seconds: float
     estimated_execution_seconds: float
     duration_assumption: str
+    classical_stage_count: int | None = None
 
 
 @dataclass(frozen=True)
@@ -144,6 +162,15 @@ class JobCost:
     estimated_charge_seconds: float
     max_execution_seconds: float
     overhead_assumption: str
+
+
+@dataclass(frozen=True)
+class CostScenarioResult:
+    name: str
+    feasible: bool
+    estimated_charge_seconds: float
+    jobs: tuple[JobCost, ...]
+    rejection_reasons: tuple[str, ...]
 
 
 @dataclass(frozen=True)
@@ -178,6 +205,9 @@ class CandidateResult:
     observables: tuple[ObservableResult, ...]
     rejection_reasons: tuple[str, ...]
     proxy_metadata: dict[str, float | str]
+    cost_scenarios: tuple[CostScenarioResult, ...] = ()
+    worst_case_charge_seconds: float | None = None
+    normalized_precision_radius: float | None = None
 
 
 @dataclass(frozen=True)
@@ -189,6 +219,9 @@ class OptimizationResult:
     simulation_alpha: float
     simulation_comparisons: int
     assumptions: tuple[str, ...]
+    objective: str = "minimum_charge"
+    selected_objective_value: float | None = None
+    cost_scenarios: tuple[CostScenario, ...] = ()
 
     def as_dict(self) -> dict[str, Any]:
         return asdict(self)
@@ -235,6 +268,7 @@ ASSUMPTIONS = (
     "hardware-model discrepancy and cost-model error remain unquantified",
     "charge estimates include every PUB, control, repetition delay, declared duration addition, and job overhead",
     "execution ceilings apply per job; their aggregate must preserve the declared reserve",
+    "explicit cost scenarios are sensitivity assumptions; their coverage of cost uncertainty is unquantified",
 )
 
 
@@ -291,6 +325,20 @@ def _validate_contracts(contracts: tuple[ObservableContract, ...], budget: Budge
     _require(budget.reserve_seconds <= budget.remaining_seconds, "budget reserve exceeds remaining seconds")
 
 
+def _validate_cost_scenarios(scenarios: tuple[CostScenario, ...]) -> None:
+    _require(len({scenario.name for scenario in scenarios}) == len(scenarios), "cost scenario names must be unique")
+    for scenario in scenarios:
+        _require(
+            bool(scenario.name.strip()) and scenario.name != "nominal",
+            "each cost scenario needs a name distinct from nominal",
+        )
+        for label, value in (
+            ("job_overhead_seconds", scenario.job_overhead_seconds),
+            ("classical_latency_us", scenario.classical_latency_us),
+        ):
+            _require(_finite(value) and value >= 0, f"{scenario.name}: {label} must be finite and nonnegative")
+
+
 def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...]) -> None:
     _require(bool(plan.name.strip()) and bool(plan.jobs), "each candidate needs a name and jobs")
     _require(len({job.name for job in plan.jobs}) == len(plan.jobs), f"{plan.name}: job names must be unique")
@@ -321,6 +369,11 @@ def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...
             _require(
                 pub.simulation_shots is None or _positive_integer(pub.simulation_shots),
                 f"{pub.name}: simulation_shots must be positive or None for exact probabilities",
+            )
+            _require(
+                pub.classical_stage_count is None
+                or (type(pub.classical_stage_count) is int and pub.classical_stage_count >= 0),
+                f"{pub.name}: classical_stage_count must be a nonnegative integer or None",
             )
             for label, value in (
                 ("scheduled_seconds", pub.scheduled_seconds),
@@ -373,6 +426,7 @@ def _costs(plan: CandidatePlan, budget: BudgetContract) -> tuple[tuple[JobCost, 
                 pub.classical_latency_seconds,
                 job.shots * _repetition_seconds(pub),
                 pub.duration_assumption,
+                pub.classical_stage_count,
             )
             for pub in job.pubs
         )
@@ -390,6 +444,46 @@ def _costs(plan: CandidatePlan, budget: BudgetContract) -> tuple[tuple[JobCost, 
     if ceiling > budget.remaining_seconds - budget.reserve_seconds:
         reasons.append("aggregate per-job ceilings consume the declared budget reserve")
     return tuple(jobs), reasons
+
+
+def _scenario_costs(plan: CandidatePlan, budget: BudgetContract, scenario: CostScenario) -> CostScenarioResult:
+    jobs = []
+    for job in plan.jobs:
+        pubs = []
+        for pub in job.pubs:
+            stage_count = pub.classical_stage_count
+            if stage_count is None:
+                raise ValueError(
+                    f"{scenario.name}/{pub.name}: cost scenarios require an explicit classical_stage_count"
+                )
+            latency = stage_count * scenario.classical_latency_us * 1e-6
+            _require(math.isfinite(latency), f"{scenario.name}/{pub.name}: classical latency overflowed")
+            _require(
+                math.fsum((pub.scheduled_seconds, pub.repetition_delay_seconds, pub.reset_seconds, latency)) > 0,
+                f"{scenario.name}/{pub.name}: total repetition duration must be positive",
+            )
+            pubs.append(
+                replace(
+                    pub,
+                    classical_latency_seconds=latency,
+                    duration_assumption=(
+                        f"{pub.duration_assumption}; scenario {scenario.name} replaces added classical latency "
+                        f"with {stage_count} stages at {scenario.classical_latency_us} us per stage"
+                    ),
+                )
+            )
+        jobs.append(
+            replace(
+                job,
+                pubs=tuple(pubs),
+                overhead_seconds=scenario.job_overhead_seconds,
+                overhead_assumption=f"declared sensitivity scenario {scenario.name}; uncertainty coverage unquantified",
+            )
+        )
+    costs, reasons = _costs(replace(plan, jobs=tuple(jobs)), budget)
+    charge = math.fsum(job.estimated_charge_seconds for job in costs)
+    _require(math.isfinite(charge), f"{scenario.name}: aggregate estimated charge overflowed")
+    return CostScenarioResult(scenario.name, not reasons, charge, costs, tuple(reasons))
 
 
 @dataclass(frozen=True)
@@ -629,6 +723,7 @@ def evaluate_candidate(
     *,
     simulation_alpha: float = 0.01,
     simulation_comparisons: int | None = None,
+    cost_scenarios: tuple[CostScenario, ...] = (),
 ) -> CandidateResult:
     """Evaluate one plan; malformed or infeasible plans produce diagnostic results.
 
@@ -637,9 +732,11 @@ def evaluate_candidate(
     """
     jobs: tuple[JobCost, ...] = ()
     observables: tuple[ObservableResult, ...] = ()
-    estimated_charge = ceiling = None
+    scenario_results: tuple[CostScenarioResult, ...] = ()
+    estimated_charge = ceiling = worst_charge = normalized_radius = None
     try:
         _validate_contracts(contracts, budget)
+        _validate_cost_scenarios(cost_scenarios)
         _validate_plan(plan, contracts)
         _require(_finite(simulation_alpha) and 0 < simulation_alpha < 1, "simulation_alpha must lie in (0, 1)")
         own_comparisons = _simulation_comparisons((plan,), contracts)
@@ -652,25 +749,52 @@ def evaluate_candidate(
         estimated_charge = math.fsum(job.estimated_charge_seconds for job in jobs)
         ceiling = math.fsum(job.max_execution_seconds for job in jobs)
         _require(math.isfinite(estimated_charge), f"{plan.name}: aggregate estimated charge overflowed")
+        scenario_results = tuple(
+            _scenario_costs(plan, budget, scenario) for scenario in sorted(cost_scenarios, key=lambda item: item.name)
+        )
+        worst_charge = max([estimated_charge, *(scenario.estimated_charge_seconds for scenario in scenario_results)])
+        reasons.extend(
+            f"cost scenario {scenario.name}: {reason}"
+            for scenario in scenario_results
+            for reason in scenario.rejection_reasons
+        )
         simulation_tail = simulation_alpha / max(comparisons, 1)
         _require(simulation_tail > 0, "simulation probability underflows at the supplied comparison count")
         observables = tuple(_evaluate_observable(plan, contract, simulation_tail) for contract in contracts)
         reasons.extend(f"{result.name}: {reason}" for result in observables for reason in result.rejection_reasons)
+        precision_ratios = [
+            result.confidence_half_width / result.precision_half_width
+            for result in observables
+            if result.precision_half_width is not None
+        ]
+        if len(precision_ratios) == len(observables):
+            _require(all(math.isfinite(ratio) for ratio in precision_ratios), "normalized precision radius overflowed")
+            normalized_radius = max(precision_ratios)
     except (ValueError, OverflowError, np.linalg.LinAlgError) as error:
         reasons = [str(error)]
     return CandidateResult(
-        plan.name, not reasons, estimated_charge, ceiling, jobs, observables, tuple(reasons), dict(plan.proxy_metadata)
+        plan.name,
+        not reasons,
+        estimated_charge,
+        ceiling,
+        jobs,
+        observables,
+        tuple(reasons),
+        dict(plan.proxy_metadata),
+        scenario_results,
+        worst_charge,
+        normalized_radius,
     )
 
 
 def _dominates(first: CandidateResult, second: CandidateResult) -> bool:
-    if first.estimated_charge_seconds is None or second.estimated_charge_seconds is None:
+    if first.worst_case_charge_seconds is None or second.worst_case_charge_seconds is None:
         return False
     if not first.observables or len(first.observables) != len(second.observables):
         return False
     # Each named endpoint retains its own precision and effect coordinate.
-    first_axes = [first.estimated_charge_seconds]
-    second_axes = [second.estimated_charge_seconds]
+    first_axes = [first.worst_case_charge_seconds]
+    second_axes = [second.worst_case_charge_seconds]
     for left, right in zip(first.observables, second.observables, strict=True):
         first_axes.append(left.confidence_half_width)
         second_axes.append(right.confidence_half_width)
@@ -688,29 +812,69 @@ def optimize(
     budget: BudgetContract,
     *,
     simulation_alpha: float = 0.01,
+    objective: str = "minimum_charge",
+    cost_scenarios: tuple[CostScenario, ...] = (),
 ) -> OptimizationResult:
-    """Choose the cheapest feasible plan; preserve every rejection and feasible Pareto point."""
+    """Rank feasible plans by charge or worst endpoint radius relative to its target.
+
+    Every candidate must pass its statistical contracts and all declared cost
+    scenarios. Charge ranking uses the largest estimate across nominal inputs
+    and explicit scenarios. Precision ranking uses the maximum normalized
+    endpoint radius, followed by that charge and the candidate name.
+    """
     try:
         _validate_contracts(contracts, budget)
+        _validate_cost_scenarios(cost_scenarios)
+        _require(objective in ("minimum_charge", "precision_at_budget"), f"unknown objective {objective!r}")
+        _require(
+            objective != "precision_at_budget"
+            or all(
+                contract.precision_half_width is not None and contract.minimum_effect is None for contract in contracts
+            ),
+            "precision_at_budget requires precision-only contracts with positive precision_half_width",
+        )
         _require(bool(plans), "at least one candidate plan is required")
         _require(len({plan.name for plan in plans}) == len(plans), "candidate plan names must be unique")
         _require(_finite(simulation_alpha) and 0 < simulation_alpha < 1, "simulation_alpha must lie in (0, 1)")
         comparisons = _simulation_comparisons(plans, contracts)
     except (ValueError, OverflowError) as error:
-        return OptimizationResult(None, (), (), (str(error),), simulation_alpha, 0, ASSUMPTIONS)
+        return OptimizationResult(
+            None, (), (), (str(error),), simulation_alpha, 0, ASSUMPTIONS, objective, None, cost_scenarios
+        )
     results = tuple(
         evaluate_candidate(
-            plan, contracts, budget, simulation_alpha=simulation_alpha, simulation_comparisons=comparisons
+            plan,
+            contracts,
+            budget,
+            simulation_alpha=simulation_alpha,
+            simulation_comparisons=comparisons,
+            cost_scenarios=cost_scenarios,
         )
         for plan in sorted(plans, key=lambda item: item.name)
     )
     feasible = [result for result in results if result.feasible]
-    selected = (
-        min(feasible, key=lambda result: (result.estimated_charge_seconds, result.name)).name if feasible else None
-    )
+
+    def rank(result: CandidateResult) -> tuple[float, float, str]:
+        charge = result.worst_case_charge_seconds
+        score = charge if objective == "minimum_charge" else result.normalized_precision_radius
+        assert charge is not None and score is not None
+        return score, charge, result.name
+
+    selected = min(feasible, key=rank) if feasible else None
     frontier = tuple(result.name for result in feasible if not any(_dominates(other, result) for other in feasible))
     reasons = () if feasible else ("every supplied candidate failed at least one contract",)
-    return OptimizationResult(selected, results, frontier, reasons, simulation_alpha, comparisons, ASSUMPTIONS)
+    return OptimizationResult(
+        selected.name if selected else None,
+        results,
+        frontier,
+        reasons,
+        simulation_alpha,
+        comparisons,
+        ASSUMPTIONS,
+        objective,
+        rank(selected)[0] if selected else None,
+        tuple(sorted(cost_scenarios, key=lambda item: item.name)),
+    )
 
 
 def _verify() -> None:
@@ -721,8 +885,22 @@ def _verify() -> None:
 
     def candidate(name: str, proxy: float = 0.9, duration: float = 0.001, shots: int = 4096) -> CandidatePlan:
         pubs = (
-            PubPrediction("signal_pub", {"signal": ((0.2, 0.8),)}, duration, 0.00025, "full scheduled duration"),
-            PubPrediction("null_pub", {"null": ((0.8, 0.2),)}, duration, 0.00025, "full scheduled duration"),
+            PubPrediction(
+                "signal_pub",
+                {"signal": ((0.2, 0.8),)},
+                duration,
+                0.00025,
+                "full scheduled duration",
+                classical_stage_count=1,
+            ),
+            PubPrediction(
+                "null_pub",
+                {"null": ((0.8, 0.2),)},
+                duration,
+                0.00025,
+                "full scheduled duration",
+                classical_stage_count=1,
+            ),
         )
         return CandidatePlan(
             name, (JobCandidate("job", pubs, shots, 2.0, 40.0, "fixed overhead model"),), (), {"esp": proxy}
@@ -753,6 +931,125 @@ def _verify() -> None:
     precision = ObservableContract("precision", (terms[0],), precision_half_width=0.03)
     assert evaluate_candidate(cheap, (precision,), budget).feasible
     assert not evaluate_candidate(candidate("imprecise", shots=64), (precision,), budget).feasible
+
+    precise = candidate("more_precise", shots=8192)
+    assert optimize((cheap, precise), (precision,), budget).selected == cheap.name
+    precision_search = optimize((cheap, precise), (precision,), budget, objective="precision_at_budget")
+    assert precision_search.selected == precise.name
+    assert precision_search.objective == "precision_at_budget"
+    assert precision_search.selected_objective_value == precision_search.candidates[1].normalized_precision_radius
+    assert precision_search == optimize((precise, cheap), (precision,), budget, objective="precision_at_budget")
+    assert precision_search.pareto_frontier == (cheap.name, precise.name)
+    limited = tuple(
+        replace(plan, jobs=(replace(plan.jobs[0], max_execution_seconds=20.0),)) for plan in (cheap, precise)
+    )
+    assert optimize(limited, (precision,), budget, objective="precision_at_budget").selected == cheap.name
+    quota_limited = replace(precise, jobs=(replace(precise.jobs[0], max_execution_seconds=80.0),))
+    assert (
+        optimize(
+            (cheap, quota_limited), (precision,), BudgetContract(70.0, 10.0, 80.0), objective="precision_at_budget"
+        ).selected
+        == cheap.name
+    )
+    for invalid_contracts in ((contract,), (precision, contract), (replace(precision, minimum_effect=0.0),)):
+        invalid = optimize((cheap,), invalid_contracts, budget, objective="precision_at_budget")
+        assert invalid.selected is None and "precision-only" in invalid.rejection_reasons[0]
+    assert optimize((cheap,), (precision,), budget, objective="unknown").selected is None
+    precision_tied = optimize(
+        (replace(cheap, name="zeta"), replace(cheap, name="alpha"), expensive),
+        (precision,),
+        budget,
+        objective="precision_at_budget",
+    )
+    assert precision_tied.selected == "alpha"
+
+    # Different endpoint targets distinguish the minimax rule from raw radii
+    # and a summed normalized radius. Explicit covariance bounds control each axis.
+    precision_endpoints = (
+        ObservableContract("wide_target", (terms[0],), precision_half_width=0.08),
+        ObservableContract("narrow_target", (replace(terms[1], sign=1),), precision_half_width=0.04),
+    )
+
+    def endpoint_candidate(name: str, radii: tuple[float, float]) -> CandidatePlan:
+        plan = candidate(name, shots=1024)
+        return replace(
+            plan,
+            jobs=(
+                replace(
+                    plan.jobs[0],
+                    pubs=tuple(
+                        replace(
+                            pub, member_distributions={member: ((1.0, 0.0),) for member in pub.member_distributions}
+                        )
+                        for pub in plan.jobs[0].pubs
+                    ),
+                ),
+            ),
+            covariance_bounds=tuple(
+                CovarianceBound(
+                    endpoint.name,
+                    pub.name,
+                    (f"{endpoint.terms[0].member}/r0",),
+                    ((radius * radius * 1024 * endpoint.alpha,),),
+                    "declared covariance upper bound for objective regression",
+                )
+                for endpoint, pub, radius in zip(precision_endpoints, plan.jobs[0].pubs, radii, strict=True)
+            ),
+        )
+
+    uneven = endpoint_candidate("smaller_sum_and_raw_radius", (0.008, 0.024))
+    balanced = endpoint_candidate("smaller_worst_normalized_radius", (0.032, 0.016))
+    normalized_search = optimize((uneven, balanced), precision_endpoints, budget, objective="precision_at_budget")
+    assert normalized_search.selected == balanced.name
+    assert math.isclose(normalized_search.selected_objective_value or 0.0, 0.4)
+
+    sensitivity = CostScenario("higher_overhead_and_latency", 4.0, 1000.0)
+    scenario_search = optimize(
+        (cheap, precise), (precision,), budget, objective="precision_at_budget", cost_scenarios=(sensitivity,)
+    )
+    assert scenario_search.selected == cheap.name
+    accepted, rejected = scenario_search.candidates
+    assert accepted.jobs[0].overhead_seconds == cheap.jobs[0].overhead_seconds
+    assert accepted.jobs[0].pubs[0].classical_latency_seconds == 0
+    assert accepted.cost_scenarios[0].jobs[0].pubs[0].classical_latency_seconds == 0.001
+    assert accepted.cost_scenarios[0].jobs[0].pubs[0].classical_stage_count == 1
+    assert math.isclose(accepted.worst_case_charge_seconds or 0.0, 4 + 2 * 4096 * 0.00225)
+    assert not rejected.cost_scenarios[0].feasible
+    assert any("cost scenario higher_overhead_and_latency" in reason for reason in rejected.rejection_reasons)
+    alternate = candidate("costlier_nominal", duration=0.0013)
+    alternate = replace(
+        alternate,
+        jobs=(
+            replace(
+                alternate.jobs[0], pubs=tuple(replace(pub, classical_stage_count=0) for pub in alternate.jobs[0].pubs)
+            ),
+        ),
+    )
+    assert optimize((cheap, alternate), (precision,), budget).selected == cheap.name
+    assert optimize((cheap, alternate), (precision,), budget, cost_scenarios=(sensitivity,)).selected == alternate.name
+    optimistic = CostScenario("zero_additions", 0.0, 0.0)
+    nominal_envelope = evaluate_candidate(cheap, (precision,), budget, cost_scenarios=(optimistic,))
+    assert nominal_envelope.worst_case_charge_seconds == nominal_envelope.estimated_charge_seconds
+    assert optimize((cheap,), (precision,), budget, cost_scenarios=(optimistic, sensitivity)) == optimize(
+        (cheap,), (precision,), budget, cost_scenarios=(sensitivity, optimistic)
+    )
+    missing_stages = replace(
+        cheap,
+        jobs=(
+            replace(
+                cheap.jobs[0], pubs=(replace(cheap.jobs[0].pubs[0], classical_stage_count=None), cheap.jobs[0].pubs[1])
+            ),
+        ),
+    )
+    assert not evaluate_candidate(missing_stages, (precision,), budget, cost_scenarios=(sensitivity,)).feasible
+    for scenarios in (
+        (sensitivity, sensitivity),
+        (replace(sensitivity, name="nominal"),),
+        (replace(sensitivity, job_overhead_seconds=-1.0),),
+        (replace(sensitivity, classical_latency_us=float("nan")),),
+    ):
+        assert optimize((cheap,), (precision,), budget, cost_scenarios=scenarios).selected is None
+    assert scenario_search.as_dict()["cost_scenarios"][0]["name"] == sensitivity.name
 
     observed_pubs = tuple(
         ObservedPub(pub.name, pub.member_distributions, job.shots) for job in cheap.jobs for pub in job.pubs

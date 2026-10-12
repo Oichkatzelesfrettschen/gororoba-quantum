@@ -59,6 +59,7 @@ from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
+import local_compute
 import packing
 import parallel
 import qpu_planning
@@ -110,6 +111,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "experiments.py",
     "factoring.py",
     "live_run.py",
+    "local_compute.py",
     "modular_arithmetic.py",
     "order_finding.py",
     "packing.py",
@@ -1772,7 +1774,7 @@ class TargetView(BackendV2):
         raise NotImplementedError("TargetView carries a Target for noise modeling only")
 
 
-def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
+def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str, Any] | None = None) -> AerSimulator:
     """AerSimulator with gate and coherence noise from this Target and readout from props.
 
     The Target's measure entries carry only the aggregate readout_error, from
@@ -1796,7 +1798,9 @@ def noise_simulator(name: str, target: Any, props: Any) -> AerSimulator:
     # selector. Aer 0.17.2 miscomputes a reset-only one-bit member following a
     # two-bit feedback member when it switches from statevector to density
     # matrix inside the batch (qpu_planning_contracts verifies the mixed case).
-    return AerSimulator.from_backend(view, noise_model=noise, method="density_matrix")
+    simulator = AerSimulator.from_backend(view, noise_model=noise, method="density_matrix")
+    local_compute.configure(simulator, local_compute.settings() if compute_policy is None else compute_policy)
+    return simulator
 
 
 def simulate(choice: Choice, noise: Any, shots: int = SHOTS) -> dict[str, list[np.ndarray]]:
@@ -1835,7 +1839,7 @@ def simulate_entries(noise: Any, entries: list[Entry], shots: int, seed: int) ->
     is deterministic for its inputs.
     """
     circuits = [replica for entry in entries for replica in entry.replicas]
-    result = noise.run(circuits, shots=shots, seed_simulator=seed, max_parallel_experiments=0).result()
+    result = local_compute.run(noise, circuits, shots, seed)
     out: dict[str, list[np.ndarray]] = {}
     position = 0
     for entry in entries:
@@ -2282,6 +2286,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
             "max_execution_seconds": getattr(args, "max_execution_seconds", None),
             "design": qpu_planning.settings(args),
+            "local_compute": local_compute.settings(args),
         },
         "shots": args.shots,
         "instance_sha256_12": _instance_hash(service),
@@ -2342,7 +2347,12 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
         key = id(choice.snap)
         if key not in sims:
             sims[key] = (
-                noise_simulator(choice.snap.name, choice.snap.backend.target, choice.snap.properties),
+                noise_simulator(
+                    choice.snap.name,
+                    choice.snap.backend.target,
+                    choice.snap.properties,
+                    record.get("policy", {}).get("local_compute", local_compute.settings()),
+                ),
                 choice.snap.calibration,
             )
         sim, cal = sims[key]
@@ -2357,6 +2367,9 @@ def evaluate(choices: list[Choice], record: dict[str, Any]) -> None:
             f"joint_score={choice.joint_score:.4f} replicas={len(choice.replicas)} scores={scores} "
             f"cz={cz} summary={summary}"
         )
+    record["evaluation_simulation_batches"] = [
+        batch for simulator, _calibration in sims.values() for batch in local_compute.batches(simulator)
+    ]
 
 
 def check_budget(name: str, usage: dict[str, Any], minimum: float) -> None:
@@ -3893,7 +3906,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             target_then = backend.target_history(datetime=start)
             at[start] = (
                 props_then,
-                noise_simulator(f"{backend.name}@{start.isoformat()}", target_then, props_then),
+                noise_simulator(
+                    f"{backend.name}@{start.isoformat()}",
+                    target_then,
+                    props_then,
+                    record.get("policy", {}).get("local_compute", local_compute.settings()),
+                ),
                 target_then,
             )
             starting = [
@@ -4102,6 +4120,28 @@ def _fraction(text: str) -> float:
     return value
 
 
+def _cost_scenario(value: str) -> dict[str, Any]:
+    """Parse an explicit sensitivity assumption; the values carry zero confidence claims."""
+    try:
+        name, overhead, latency = value.split(":")
+        values = [float(overhead), float(latency)]
+    except ValueError as error:
+        raise argparse.ArgumentTypeError("cost scenario needs NAME:OVERHEAD_SECONDS:LATENCY_US") from error
+    if (
+        not name
+        or name[0] not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
+        or any(
+            character not in "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_-" for character in name
+        )
+    ):
+        raise argparse.ArgumentTypeError("cost scenario name starts with a letter/digit and uses letters/digits/_/-")
+    if name == "nominal":
+        raise argparse.ArgumentTypeError("cost scenario name nominal is reserved for the base cost model")
+    if any(not math.isfinite(number) or number < 0 for number in values):
+        raise argparse.ArgumentTypeError("cost scenario overhead and latency must be finite and nonnegative")
+    return {"name": name, "job_overhead_seconds": values[0], "classical_latency_us": values[1]}
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--backends", type=lambda s: s.split(","), help="comma-separated pin; default all accessible")
@@ -4112,6 +4152,23 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--optimize", action="store_true", help="search bounded shot and replica tiers for the diagnostic family"
     )
+    parser.add_argument(
+        "--objective",
+        choices=("minimum_charge", "precision_at_budget"),
+        default="minimum_charge",
+        help="rank admitted designs by charge or worst normalized precision within the declared budget",
+    )
+    parser.add_argument(
+        "--cost-scenario",
+        dest="cost_scenarios",
+        action="append",
+        type=_cost_scenario,
+        default=[],
+        help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
+    )
+    parser.add_argument("--local-compute", choices=("cpu", "gpu", "hybrid"), default="cpu")
+    parser.add_argument("--simulation-threads", type=_positive_int, default=2)
+    parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
     parser.add_argument(
         "--shot-tiers",
         type=lambda value: [_positive_int(item) for item in value.split(",")],
@@ -4245,6 +4302,12 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("matched families require their complete group set and a common unmitigated execution policy")
     if args.optimize and not args.family:
         parser.error("--optimize requires --family and its explicit scientific observable contract")
+    if (args.objective != "minimum_charge" or args.cost_scenarios) and not args.family:
+        parser.error("--objective and --cost-scenario require --family scientific admission")
+    if args.objective == "precision_at_budget" and args.family != "folded-qpe":
+        parser.error("precision_at_budget requires the folded-qpe precision-only family")
+    if len({scenario["name"] for scenario in args.cost_scenarios}) != len(args.cost_scenarios):
+        parser.error("--cost-scenario names must be distinct")
     if args.family and (args.max_execution_seconds is None or args.max_total_execution_seconds is None):
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
@@ -4262,6 +4325,22 @@ def main(argv: list[str] | None = None) -> int:
         value = getattr(args, name)
         if not math.isfinite(value) or value < 0:
             parser.error(f"--{name.replace('_', '-')} must be finite and nonnegative")
+    try:
+        local_compute.validate(local_compute.settings(args))
+    except ValueError as error:
+        if args.out:
+            failed_dir = args.out / datetime.now(UTC).strftime("%Y-%m-%dT%H%M%S.%fZ")
+            failed_dir.mkdir(parents=True, exist_ok=False)
+            write_json(
+                failed_dir,
+                {
+                    "state": "local_compute_unavailable",
+                    "policy": local_compute.settings(args),
+                    "reason": str(error),
+                },
+            )
+        print(f"FAIL: {error}", file=sys.stderr)
+        return 1
     service = QiskitRuntimeService()
     try:
         if args.collect:

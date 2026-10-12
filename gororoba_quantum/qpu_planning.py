@@ -15,10 +15,12 @@ from typing import Any
 
 import numpy as np
 
+import local_compute
 from diagnostic_experiments import family_contracts, folded_group, n21_group
 from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
+    CostScenario,
     JobCandidate,
     ObservableContract,
     ObservableTerm,
@@ -38,6 +40,8 @@ def settings(args: Any) -> dict[str, Any]:
         for name, default in (
             ("family", None),
             ("optimize", False),
+            ("objective", "minimum_charge"),
+            ("cost_scenarios", []),
             ("shot_tiers", [2048, 4096, 8192, 16384]),
             ("replica_tiers", [1, 2, 4]),
             ("optimizer_candidates", 6),
@@ -256,6 +260,8 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
             for name, backend in sorted(backends.items())
         ],
         "selected_job_costs": json.loads(json.dumps(selected.get("jobs", []))),
+        "selected_cost_scenarios": json.loads(json.dumps(selected.get("cost_scenarios", []))),
+        "selected_worst_case_charge_seconds": selected.get("worst_case_charge_seconds"),
     }
 
 
@@ -284,7 +290,7 @@ def prepare(
             key = id(choice.snap)
             if key not in simulators:
                 simulators[key] = runtime.noise_simulator(
-                    choice.snap.name, choice.snap.backend.target, choice.snap.properties
+                    choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
                 )
             noisy = runtime.simulate(choice, simulators[key], args.model_shots)
             predictions.update(
@@ -313,6 +319,7 @@ def prepare(
                                     * args.classical_latency_us
                                     * 1e-6,
                                     simulation_shots=args.model_shots,
+                                    classical_stage_count=manifest["sequential_stage_count"],
                                     duration_assumption=(
                                         "Target duration includes reset; dynamic classical latency is a declared "
                                         "per-stage planning assumption"
@@ -353,7 +360,15 @@ def prepare(
         args.reserve_seconds,
         args.max_total_execution_seconds,
     )
-    result = optimize(tuple(plans), contracts, budget, simulation_alpha=args.simulation_alpha)
+    policy = settings(args)
+    result = optimize(
+        tuple(plans),
+        contracts,
+        budget,
+        simulation_alpha=args.simulation_alpha,
+        objective=policy["objective"],
+        cost_scenarios=tuple(CostScenario(**scenario) for scenario in policy["cost_scenarios"]),
+    )
     # An infeasible dry run retains a concrete candidate and every rejection;
     # its state prevents that diagnostic archive from becoming a submission.
     retained = result.selected or plans[0].name
@@ -370,6 +385,9 @@ def prepare(
         },
         "optimizer_settings": settings(args),
         "optimization_budget": asdict(budget),
+        "local_simulation_batches": [
+            batch for simulator in simulators.values() for batch in local_compute.batches(simulator)
+        ],
         "compiled_ideal_validation": {
             "method": "branch-resolved statevector on active compiled replica wires",
             "absolute_tolerance": 1e-10,
