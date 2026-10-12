@@ -115,7 +115,12 @@ rank-changing points in all 30 doubly-pure coefficient directions on each
 admitted pivot domain. Complete kernel lifts, inverse coordinates and the
 induced metric describe the local incidence. Two exact paths with the same
 initial tangent and different nearby ranks expose the limit of linearization.
-Global chart coverage and unrestricted topology remain separate obligations.
+The [principal atlas](notes/principal_skew_atlas.md) and its
+[replay](evidence/principal_skew_atlas/README.md) supply an explicit covering
+family with 15 domains in dimension 32, a conditioned initial-pivot selector,
+and verified kernel-restricted overlap identities. The same construction
+covers every higher stage. Computed smooth strata, global attachments, and
+unrestricted topology remain separate obligations.
 
 ## Verification and research navigation
 
