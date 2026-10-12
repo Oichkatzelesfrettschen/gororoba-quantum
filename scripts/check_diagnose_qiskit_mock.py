@@ -40,8 +40,9 @@ class _ProbeFailure(RuntimeError):
 
 
 class _Service:
-    def __init__(self, available: bool, saved_instance: bool) -> None:
+    def __init__(self, available: bool, saved_instance: bool, status_failure: bool = False) -> None:
         self.available = available
+        self.status_failure = status_failure
         self.saved_instance = saved_instance
         self.transport_calls: list[tuple[Any, Any, dict[str, Any], Any]] = []
         self.lookup_calls: list[tuple[str, dict[str, Any]]] = []
@@ -102,11 +103,13 @@ class _Service:
 
     def status(self) -> Any:
         self.request(REQUESTED, "status")
+        if self.status_failure:
+            raise _ProbeFailure(" ".join(SECRETS))
         return SimpleNamespace(operational=True, status_msg=" ".join(SECRETS))
 
 
-def _check_report(available: bool, saved_instance: bool, cli: bool) -> None:
-    fixture = _Service(available, saved_instance)
+def _check_report(available: bool, saved_instance: bool, cli: bool, status_failure: bool = False) -> None:
+    fixture = _Service(available, saved_instance, status_failure)
     logger = logging.getLogger("qiskit_ibm_runtime")
     previous_level = logger.level
     output = io.StringIO()
@@ -162,7 +165,14 @@ def _check_report(available: bool, saved_instance: bool, cli: bool) -> None:
     require(fixture.lookup_calls == expected_calls, "diagnostic changed explicit or implicit instance probes")
     probes = report["probes"]
     require(len(probes) == 3, "diagnostic lost a backend probe")
-    require(probes[0]["found"] is True and probes[0]["operational"] is True, "physical status evidence changed")
+    require(probes[0]["found"] is True, "status retrieval failure changed successful lookup evidence")
+    require("error_type" not in probes[0], "successful lookup retained a lookup error")
+    if status_failure:
+        require(probes[0].get("status_error_type") == "_ProbeFailure", "status failure boundary was lost")
+        require("operational" not in probes[0], "failed status retrieval invented operational evidence")
+    else:
+        require(probes[0]["operational"] is True, "physical status evidence changed")
+        require("status_error_type" not in probes[0], "successful status retrieval retained an error")
     require("status_msg" not in probes[0], "report retained free-form backend status text")
     for probe, backend, endpoint, status_code in zip(
         probes,
@@ -177,6 +187,7 @@ def _check_report(available: bool, saved_instance: bool, cli: bool) -> None:
             "diagnostic changed HTTP evidence for a requested probe",
         )
         if backend.startswith("mock_"):
+            require("status_error_type" not in probe, "lookup failure became a status failure")
             require(
                 probe["found"] is False and probe["error_type"] == "_ProbeFailure", "lookup failure evidence changed"
             )
@@ -200,8 +211,10 @@ def _check_failure_restoration() -> None:
 def main() -> None:
     for available, saved_instance, cli in ((True, True, False), (False, False, False), (True, False, True)):
         _check_report(available, saved_instance, cli)
+    _check_report(True, True, False, status_failure=True)
+    _check_report(True, False, True, status_failure=True)
     _check_failure_restoration()
-    print(json.dumps({"scoped_report_checks": 3, "failure_restoration_checks": 1, "network_calls": 0}, sort_keys=True))
+    print(json.dumps({"scoped_report_checks": 5, "failure_restoration_checks": 1, "network_calls": 0}, sort_keys=True))
 
 
 if __name__ == "__main__":

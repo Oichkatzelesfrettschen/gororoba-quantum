@@ -5,9 +5,11 @@ UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
 The [current campaign preparation](../ripple/CAMPAIGN_PREPARATION.md) links
-three planning-qualified cases at source `f1b9830`: correction, ripple and
-rank-sector. Their five jobs estimate 106.290103040 nominal QPU seconds and
-118.445463040 seconds under the declared stress scenarios, with service ceilings
+three planning-qualified cases: renewed correction at source `0bc7f06`, and
+ripple and rank-sector at source `f1b9830`. Their audited runtime source
+closures share the same experiment digest. Their five jobs estimate
+106.290103040 nominal QPU seconds and 118.445463040 seconds under the
+declared stress scenarios, with service ceilings
 totaling 170 seconds. Correction runs first. Clean current-head Copilot review,
 passing checks, merge, fresh live bindings and independent family execution admission
 remain execution gates under the user's conditional authority.
