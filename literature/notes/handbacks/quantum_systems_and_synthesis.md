@@ -9,6 +9,13 @@ source. The delegate disclosed one read-only git status call, grep, sed,
 sha256sum, and pdfinfo runs with a source directory as working directory
 (all six sha256 values match), and two numpy scripts in the scratchpad.
 
+The labels above describe the imported audit snapshot. A reproduced [V]
+claim carries the finite check stated beside it; the label supplies neither
+an all-input proof nor a continuing assertion about every later revision.
+The [hardware plan](../../../gororoba_quantum/HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
+and [QuMC note](../2102.05321.md) carry the reconciled execution policy and
+remaining checks.
+
 ## The finding that changes a retained claim
 
 - [A] The N = 15 hardware admission does not test the semiclassical inverse
@@ -64,10 +71,18 @@ sha256sum, and pdfinfo runs with a source directory as working directory
   embeddings; hard exclusion of qubits and edges; the same-job replica-0
   reference with the TOST margin; the concurrent dynamic-circuit
   measurements (187 dt); the calibration-drift gates.
-- [A] From the allocate_fusion_replicas docstring: within a group, neighbors
-  are excluded, so replicas sit outside QuMC's one-hop crosstalk window;
-  across groups only disjointness is enforced, so adjacency is allowed. The
-  count of adjacent cross-group pairs in the retained records is not run.
+- [A] The imported allocator snapshot excludes neighbors within a group
+  and enforces only disjointness across groups, permitting adjacency. The
+  retained pilot belongs to that policy: the
+  [prior-work synthesis](../prior_work_synthesis.md#what-the-device-showed-in-the-units-it-reports)
+  reports a cross-group neighbor in its packed PUB. That historical
+  placement remains part of the pilot's evidence.
+- The allocator's default `cross_group_buffer=true` excludes other groups'
+  physical CZ neighbors, including couplers excluded from routing.
+  `--no-cross-group-buffer` explicitly selects disjointness alone. The
+  policy change leaves the pilot's placements intact; the detailed
+  all-record adjacency census remains a separate check in the
+  [QuMC note](../2102.05321.md#action-items).
 
 ## Kissinger and Meijer-van de Griend 2019 (1904.00633)
 
@@ -108,13 +123,20 @@ sha256sum, and pdfinfo runs with a source directory as working directory
 
 ## Orchestrator's reading
 
-The feed-forward invariance is the one finding that rewrites a retained
-claim and is now checked in the gate: order_finding.py compares each
-circuit's ideal outcome distribution with and without its conditional
-phases, and HYBRID_SHOR.md states that the N = 15 factor yield is
-phase-insensitive, that folded QPE is the only feed-forward test the first
-hardware record contains, and that N = 21, a = 4 at two bits is the
-feed-forward-sensitive order-finding circuit. The cross-group adjacency gap
-in packing is a real optimization defect and gets its own fix. The affine
-challenger is closed by the break-even arithmetic; the uncontrolled-B
-conjugation is the one synthesis idea left open.
+The feed-forward invariance limits the retained N = 15 claim to controlled
+arithmetic and factor decoding. `order_finding.py` samples the N = 15
+circuit with and without conditional phases and checks folded-QPE
+sensitivity. Its N = 21, a = 4 two-bit check compares sorted sampled
+probabilities. A hardware case must first establish labeled probabilities
+and the register-to-phase mapping against an independent exact branch or
+coherent-QPE calculation; sorted masses alone permit label permutations.
+[HYBRID_SHOR.md](../../../gororoba_quantum/HYBRID_SHOR.md#evidence-levels)
+states the phase-insensitive factor-yield boundary and identifies folded
+QPE as the first record's feed-forward test. The
+[hardware queue](../../../gororoba_quantum/HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
+places the matched folded-QPE ladder first, the N = 21 distribution test
+second, and the written static-witness case third. The first two cases
+remain unwritten. The physical-neighbor buffer implements cross-group
+separation by default. The affine challenger's break-even arithmetic closes
+that synthesis candidate; uncontrolled-B conjugation remains a separate
+open search.

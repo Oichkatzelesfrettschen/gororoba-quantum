@@ -644,21 +644,35 @@ reference PUB. Its difference from packed replica 0 compares the global packed
 workload with the global replica-0 workload. A single-replica or
 `--no-isolated-reference` plan records the reference estimand as unavailable.
 The referenced result reports the packed-minus-reference score difference
-with its 95 percent interval, Newcombe's continuity-corrected hybrid score
-interval, which the Bhatia-Davis bound Var <= mean (1 - mean) makes
-conservative for every [0, 1]-weighted score, and a two-one-sided equivalence test whose 90 percent
-interval is read against the preregistered margin EQUIVALENCE_MARGIN = 0.03;
-the verdict is equivalent_within_0.03, packed_degradation_detected,
-packed_improvement_detected, or difference_not_resolved with the three
-interval flags beside it, and the z statistic stays as the detection
-diagnostic, reported as unavailable when both arms have zero per-shot
-variance. The interval is
-Newcombe's continuity-corrected hybrid score interval, whose false-detection
-probability for two equal Bernoulli arms stays below nominal at every
-enumerated size (variance.false_detection_rate: 0.0416 at 64 shots per arm,
-0.0482 at 1024, 0.0488 at 4096, over true rates 0.005 to 0.995); verdicts are
-withheld below EQUIVALENCE_MIN_SHOTS = 64, the smallest enumerated size. The result can reveal or bound a packing cost, but it cannot
-attribute crosstalk to one group. The noise model carries no crosstalk, so its
+with its 95 percent interval and a two-one-sided equivalence test whose
+90 percent interval is read against the preregistered margin
+EQUIVALENCE_MARGIN = 0.03. `variance.difference_interval` selects Newcombe's
+continuity-corrected hybrid score interval for Bernoulli scores, whose
+per-shot weights are 0 or 1. For other weights in [0, 1], the function uses
+Hoeffding's distribution-free bound for independent shots and arms. At n
+shots per arm, its radius at confidence 1 - alpha is
+`sqrt(log(2 / alpha) / n)`, with interval endpoints clipped to [-1, 1].
+The Bhatia-Davis variance bound alone supplies no coverage argument for
+applying the Bernoulli score interval to arbitrary weighted means.
+
+The verdict is equivalent_within_0.03, packed_degradation_detected,
+packed_improvement_detected, or difference_not_resolved, with the three
+interval flags beside it. Every comparison also reports its Hoeffding
+90 percent interval and within-margin flag; a Bernoulli equivalence verdict
+that this wider interval leaves unresolved depends on the score interval's
+coverage argument. The z statistic remains a detection diagnostic and is
+unavailable when both arms have zero per-shot variance. Newcombe's
+false-detection probability for equal Bernoulli arms stays below nominal at
+the enumerated sizes and rates (variance.false_detection_rate: 0.0416 at
+64 shots per arm, 0.0482 at 1024, 0.0488 at 4096, over true rates 0.005 to
+0.995). That finite enumeration supplies neither an all-rate theorem nor
+weighted-score coverage. Verdicts are withheld below
+EQUIVALENCE_MIN_SHOTS = 64, the smallest enumerated size. The first dynamic
+pilot's factor-yield and folded-QPE correctness scores are Bernoulli;
+its retained preregistered analysis and later adjudication remain separate
+artifacts. The comparison can reveal or bound a global packing cost, but
+it cannot attribute crosstalk to one group. The noise model carries no
+crosstalk, so its
 difference is shot noise; simulate_entries batches every replica of a choice
 in one Aer run, so each draws from its own position-derived seed, where a
 shared seed would reproduce packed replica 0 in the reference bit for bit.

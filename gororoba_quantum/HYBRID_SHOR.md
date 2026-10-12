@@ -55,18 +55,27 @@ circuit does not depend on the conditional phases at all (the control is
 entangled with orthogonal work states, so the second bit is uniform
 whatever phase is applied; Martin-Lopez et al. 2012, page 2, for r = 2^p),
 and every unit modulo 15 has order 2 or 4, so no N = 15 hybrid-Shor circuit
-tests the feed-forward. order_finding.py checks this in the gate by
-comparing each circuit's ideal outcome distribution with and without its
-conditional phases. The first hardware record therefore establishes the
+tests the feed-forward. The `order_finding.py` gate compares sampled
+outcome frequencies for N = 15, a = 2 with and without conditional phases;
+that finite check supports the stated theoretical boundary. The first
+hardware record therefore establishes the
 controlled arithmetic and the decoder on hardware and nothing about the
 semiclassical inverse QFT; folded QPE, whose eigenstate inputs make the
 second bit deterministic only under the correct conditional phase, is the
-feed-forward test that record contains. The feed-forward-sensitive
-order-finding circuit is N = 21, a = 4 at two phase bits (order 3): ideal
-distribution (3/8, 1/4, 1/8, 1/4), and (3/8, 1/8, 1/8, 3/8) without the
-feed-forward, 1/8 apart in total variation; order recovery is identically
-zero at two bits, so its observable is the four-outcome distribution
-(literature/notes/1111.4147.md, literature/notes/quant-ph-9511007.md).
+feed-forward test that record contains. For N = 21, a = 4 at two phase
+bits (order 3), the [source notes](../literature/notes/1111.4147.md) propose
+probabilities (3/8, 1/4, 1/8, 1/4) with feed-forward and
+(3/8, 1/8, 1/8, 3/8) without it, in phase-index order (0, 1, 2, 3), a total
+variation distance of 1/8. The repository gate checks sorted sampled
+probability masses, so outcome-label permutations pass that check. Before
+a hardware case, an independent exact branch or coherent-QPE calculation
+must validate all four labeled probabilities and the classical-register
+bit order that decodes into phase indices 0 through 3. Order recovery is
+zero at two bits, so the proposed observable is the labeled distribution;
+the [hardware plan](HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
+tracks that validation prerequisite. The
+[semiclassical-QFT source note](../literature/notes/quant-ph-9511007.md)
+grounds the independent coherent-QPE comparison.
 
 ## Host and QPU boundary
 
@@ -672,27 +681,37 @@ its QPY SHA-256 is
     "the run detected no difference at this resolution"; zero per-shot
     variance in both arms leaves z undefined and says so) and adds the
     difference with its 95 percent interval and a two-one-sided equivalence
-    test. The interval is Newcombe's hybrid score interval from the two
-    Wilson intervals; for the Bernoulli factor indicator it is the standard
-    proportion interval, and for any other score, a mean of weights in [0, 1],
-    the Bhatia-Davis bound Var <= mean (1 - mean) makes it conservative, so
-    no observed-variance accident collapses it. A 90 percent interval inside
+    test. For the Bernoulli factor indicator, `variance.difference_interval`
+    uses Newcombe's hybrid score interval from two continuity-corrected
+    Wilson intervals. For any other score with weights in [0, 1], the
+    function uses the Hoeffding bound for independent shots and arms; the
+    Bhatia-Davis variance bound alone establishes no score-interval coverage
+    for weighted means. At n shots per arm and confidence 1 - alpha, the
+    Hoeffding radius is `sqrt(log(2 / alpha) / n)`, with endpoints clipped
+    to [-1, 1]. A 90 percent interval inside
     the preregistered margin of 0.03 reads `equivalent_within_0.03`, a 95
     percent interval below zero reads `packed_degradation_detected`, one
     above zero reads `packed_improvement_detected`, and anything else reads
     `difference_not_resolved`; the three flags are reported beside the
     verdict, so a loss the 95 percent interval resolves inside the margin
-    stays visible. The interval is Newcombe's
-    continuity-corrected hybrid score interval: exact enumeration of two
-    equal Bernoulli arms over true rates 0.005 to 0.995 puts its 95 percent
-    false-detection probability below nominal at every enumerated size
-    (0.0416 at 64 shots per arm, 0.0482 at 1024, 0.0488 at 4096), where the
-    uncorrected interval exceeds nominal at every size (0.0555 down to
-    0.0506); no verdict is issued below 64 shots per arm
-    (`insufficient_shots`). One matched pair at 4096 shots and a yield
-    near 0.5 gives the difference a standard deviation of 0.011, so the 90
-    percent interval is about 0.036 wide and an observed difference within
-    about 0.012 of zero can establish equivalence.
+    stays visible. Every comparison also reports the Hoeffding 90 percent
+    interval and its own within-margin flag, so a Bernoulli verdict can be
+    compared with that wider distribution-free view. Exact enumeration of
+    equal Bernoulli arms over true rates 0.005 to 0.995 puts Newcombe's
+    95 percent false-detection probability below nominal at the enumerated
+    sizes (0.0416 at 64 shots per arm, 0.0482 at 1024, 0.0488 at 4096), where
+    the uncorrected interval exceeds nominal (0.0555 down to 0.0506). The
+    finite enumeration establishes neither all-rate coverage nor a result
+    for weighted scores. Verdicts are withheld below 64 shots per arm
+    (`insufficient_shots`). One matched Bernoulli pair at 4096 shots and a
+    yield near 0.5 gives the difference a standard deviation of 0.011, so
+    Newcombe's 90 percent interval is about 0.0367 wide and a difference
+    within about 0.012 of zero can establish equivalence. The Hoeffding
+    interval at the same shot count has radius about 0.0270 and requires a
+    difference within about 0.0030 of zero to fit the 0.03 margin. The
+    historical pilot's factor-yield verdict belongs to its retained
+    preregistered Bernoulli analysis; the later adjudication adds the
+    Hoeffding sensitivity view without replacing that analysis.
 
   Collection joins the two into `packing_interpretation`. The schedule side
   compares scheduler residuals, each PUB's scheduled duration above its own

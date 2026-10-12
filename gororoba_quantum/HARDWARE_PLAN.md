@@ -57,9 +57,13 @@ execution path but does not establish default-policy submission readiness.
    fails. A round-fair backtracking allocator gives every same-backend,
    same-kind group the two placements needed for its replica-0 reference.
    The search considers all required placements together before committing
-   any placement, then allocates surplus rounds. Replicas of one group stay one CZ hop
-   apart; groups that share a PUB occupy disjoint physical qubits. The record
-   retains the selected candidate indices, scores, attempted-combination
+   any placement, then allocates surplus rounds. Replicas of one group stay
+   one CZ hop apart in the admitted routing graph. The default
+   `cross_group_buffer=true` also excludes every physical CZ neighbor of a
+   different group's qubits, including couplers excluded from routing, so
+   groups that share a PUB remain disjoint and nonadjacent. An explicit
+   `--no-cross-group-buffer` changes that cross-group policy. The record
+   binds the selected policy and retains candidate indices, scores, attempted-combination
    count, and a bounded rejection sample. An explicit
    `--replica-floor` governs every group; otherwise a group's declared floor
    applies, with 0.9 as the default and 0.8 for hybrid Shor.
@@ -145,51 +149,69 @@ rate; the literature range stays its conservative bound.
 | job | groups | PUBs | shots | at 4,900/s | at 1,000/s | measured |
 |---|---|---:|---:|---:|---:|---:|
 | dynamic | folded QPE, hybrid Shor | 6 | 24,576 | 5.0 s | 25 s | 9 s |
-| static | design A, fringe, design C 8/16/32 | 14 | 57,344 | 12 s | 57 s | not run |
+| static | design A, fringe, design C 8/16/32 | 17 | 69,632 | 14 s | 70 s | not run |
 
-## Path to the first submission
+The static row uses the two-backend dry run
+`results/live/2026-10-11T203535.690679Z`. Its
+[written case](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md)
+estimates about 23 s across two jobs. The service ceiling is 90 s per job,
+so the two ceilings total 180 s; 90 s does not cap the combined invocation.
 
-1. **Default-policy refresh.** Run the schema-5 fused-PUB path without a queue
-   override when at least one system passes `--max-pending 25`. Use that record
-   as the written case's current execution evidence; retain `232219` as the
-   historical schema-4 qualification under its explicit 250-job dry-run bound.
-2. **Written case.** The case states the job split, the fused PUB count, the
-   fresh dry run's predictions, and the seconds bound from the table above,
-   and waits for approval (AGENTS.md). The `--submit` command names the dry
-   run with `--approved-record`, its record digest with
-   `--approved-record-sha256`, and the case's seconds with
-   `--max-execution-seconds`; the fresh plan must match the record in digest,
+## Submission controls
+
+1. **Default-policy refresh.** Run the schema-6 fused-PUB path under
+   `--max-pending 25`. The dry run records the selected groups, live
+   calibration, exact circuits, and per-job execution ceiling for the case.
+   Retained default and static dry runs qualify their recorded plans;
+   submission requires a fresh match to the approved record.
+2. **Written case.** The case states the job split, fused PUB count, model
+   predictions, expected seconds, and per-job ceilings with their combined
+   maximum. The `--submit` command names the dry run with `--approved-record`,
+   its digest with `--approved-record-sha256`, and the per-job ceiling with
+   `--max-execution-seconds`. The fresh plan must match the record in digest,
    shots, policy, versions, instance, groups, backends, seeds, layouts,
-   replica qubits, fused PUB manifests, calibration (at the refresh and at
-   every batch), and QPY bytes, or the run stops with an approval_required
-   record, and the first batch consumes the approval.
-3. **Dynamic job first.** It is the smaller job and carries the questions only
-   hardware answers: hybrid Shor admission, concurrent feed-forward across
-   packed replicas (the global packing comparison and the scheduled-duration
-   comparison), feed-forward latency from the scheduler timing, and the
-   project's own shot rate, measured by the job's
-   usage seconds. That rate is evidence for the dynamic workload alone: QPU
-   charge per PUB shot depends on each circuit's scheduled duration and on
-   the enabled options, and the static job holds different circuits and may
-   enable twirling or DD, so the static case keeps its own conservative
-   bound from the literature range until a static-specific measurement
-   exists.
-4. **Static job.** Submitted with --twirl and a DD sequence only when the
-   case argues that the hardware-versus-model gap with them on is the
-   question; otherwise both stay off so the first static measurement compares
-   directly with the noise model.
-5. **Done: the dynamic job** (record `results/live/2026-10-11T152922.787095Z`,
-   adjudicated in its `ADJUDICATION.md`). Hybrid Shor is admitted on
-   hardware by its factor yield, a statistic that for order 4 is the same
-   with and without the feed-forward, so only folded QPE tested the
-   semiclassical inverse QFT (HYBRID_SHOR.md, "Evidence levels"); packing
-   on one layout is equivalent within the margin under the preregistered
-   interval; the scheduled feed-forward round trip is 540
-   to 584 dt; and folded QPE reads 0.715 against the model's 0.899, a gap
-   present in both semiclassical rounds of which the scheduler table's idle
-   time explains a quarter. The next hardware question is that gap's
-   mechanism, which the ladder below is redesigned to separate; the static
-   job's case is written but ranks after it.
+   replica qubits, fused PUB manifests, calibration at refresh and every
+   batch, and QPY bytes. A mismatch writes an `approval_required` record.
+   The first batch consumes the approved record's one-attempt authorization.
+   Every hardware case requires explicit owner approval.
+
+## Hardware evidence and next cases
+
+The first dynamic job is complete (record
+`results/live/2026-10-11T152922.787095Z`, interpreted in its
+[adjudication](../results/live/2026-10-11T152922.787095Z/ADJUDICATION.md)).
+Hybrid Shor meets its factor-yield admission rule, but order 4 produces the
+same yield with and without feed-forward. Folded QPE supplies the recorded
+semiclassical inverse-QFT test. The preregistered packing interval reports
+equivalence within the margin on one layout; the scheduled feed-forward
+round trip is 540 to 584 dt. Folded QPE reads 0.715 against the model's
+0.899. Schedule-aware replay explains about a quarter of the gap, leaving
+its remaining mechanism to the matched diagnostic experiment.
+
+The hardware queue has three separate cases:
+
+1. **Folded-QPE mechanism ladder.** Implement and validate the four matched
+   controls under "Risks" below on one work register and layout. Archive a
+   submit-free dry run and write its measurement, control, and time case.
+   The case remains unwritten and requires owner approval.
+2. **N = 21, a = 4 at two phase bits.** Use the four labeled phase outcomes
+   as the observable; order recovery is zero at that resolution. Before a
+   hardware case, validate the register-to-phase bit order and each labeled
+   probability, with and without feed-forward, against an independent
+   coherent-QPE or exact branch calculation. The proposed distributions in
+   [HYBRID_SHOR.md](HYBRID_SHOR.md#evidence-levels) differ by 1/8 in total
+   variation. The `order_finding.py` gate compares sorted sampled masses,
+   which permits outcome-label permutations and therefore leaves the
+   labeled-distribution check open. Compile matched controls, retain a
+   submit-free dry run, and write the case with a preregistered distribution
+   test and time bounds. The case remains unwritten and requires owner
+   approval.
+3. **Static witnesses.** The retained case is written and awaits approval
+   after the two dynamic questions. Twirling and DD remain off in its
+   retained plan, so each static workload tests its own calibration-derived
+   model. A changed mitigation policy requires a matching dry run and case.
+   Different circuits and placements prevent the static comparison from
+   isolating the mechanism of the folded-QPE gap.
 
 ## Runtime source authority
 
@@ -224,19 +246,23 @@ rate; the literature range stays its conservative bound.
   readout error predicted folded QPE at 0.899 and hardware read 0.715, with
   the excess error in both semiclassical rounds (2.5 and 3.2 times the
   model's). Idle T1 and T2 during the scheduled measurement, round trip, and
-  reset, charged by the schedule-aware replay, explain a quarter; the rest is
-  gate-level and layout-dependent (two of six hybrid-Shor layouts carry a
-  coherent second-bit bias). The ladder that separates the remaining
-  mechanisms holds the work register and layout fixed and varies one thing
-  per rung: (a) the archived circuit; (b) the mid-circuit measurement
-  replaced by an equal-duration delay with the conditional phase applied
-  unconditionally for a prepared label; (c) the measurement kept and the
-  feed-forward removed; (d) a two-control-qubit phase estimation with no
-  mid-circuit measurement. Rung (b) minus (a) is measurement-induced
-  dephasing of the work register; (d) minus (a) is the whole
-  measure-reset-feed-forward segment; (a) against the schedule-aware replay
-  is the gate-level excess. Twelve PUBs at 4,096 shots on one layout; its
-  case needs its own approval.
+  reset, charged by the schedule-aware replay, explain a quarter. The
+  remaining discrepancy also varies with layout: two of six hybrid-Shor
+  layouts carry a coherent second-bit bias. The diagnostic ladder keeps the
+  work register and its layout fixed: (a) the archived circuit; (b) the
+  mid-circuit measurement replaced by an equal-duration delay with the
+  conditional phase applied unconditionally for a prepared label; (c) the
+  measurement kept and the feed-forward removed; (d) two-control-qubit phase
+  estimation with terminal measurements. Rung (b) against (a) probes both
+  measurement backaction and the measurement-dependent correction path,
+  including incorrect recorded bits. Rung (d) against (a) compares the
+  dynamic segment with a coherent implementation whose added control and
+  gates require separate accounting. Rung (a) against schedule-aware replay
+  measures the residual model error. The case must state these control
+  assumptions before attributing a difference to a single mechanism. The
+  proposed budget is twelve PUBs at 4,096 shots on one layout; compilation
+  and a submit-free dry run establish the actual schedule and time case
+  before owner approval.
 - **Drift during the job.** A calibration update inside a PUB's execution
   span removes its replayed and corrected views; packing shortens the job and
   so narrows that window.
