@@ -233,7 +233,8 @@ placement, operator checks, registry parsing) run through parallel.py, an
 order-preserving process pool started with spawn on every platform, so a
 parallel run returns exactly what the serial loop returns.
 `GOROROBA_WORKERS=N` caps the worker count and `GOROROBA_WORKERS=1` runs
-serially; the default is the CPUs available to the process. Aer runs batch
+serially; the default is half the CPUs available to the process
+(`parallel.default_threads()`), which also sets `--simulation-threads`. Aer runs batch
 every replica of a choice in one call and parallelize experiments itself.
 
 A change to live_run.py or experiments.py also gets a dry run,

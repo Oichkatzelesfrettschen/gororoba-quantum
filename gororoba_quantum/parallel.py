@@ -11,7 +11,7 @@ deserialization per worker. Results come back in input order, so a parallel
 run returns exactly what the serial loop returns.
 
 GOROROBA_WORKERS caps the worker count; 1 runs serially in-process. The
-default is the CPU count available to this process.
+default is half the CPU count available to this process.
 """
 
 from __future__ import annotations
@@ -47,19 +47,34 @@ CGROUP_ROOT = Path("/sys/fs/cgroup")
 
 
 def workers() -> int:
-    """The worker count: GOROROBA_WORKERS when set, else the CPUs available to this process.
-
-    The affinity mask counts the CPUs the scheduler may use; the process's
-    cgroup hierarchy can grant fewer through a CPU quota on its own cgroup or
-    any ancestor, so the smaller of the two is the count, rounded up to a
-    whole worker.
-    """
+    """The worker count: GOROROBA_WORKERS when set, else default_threads()."""
     configured = os.environ.get("GOROROBA_WORKERS")
     if configured is not None:
         count = int(configured)
         if count < 1:
             raise ValueError(f"GOROROBA_WORKERS must be a positive integer, got {configured!r}")
         return count
+    return default_threads()
+
+
+def default_threads() -> int:
+    """Half the CPUs available to this process, at least one.
+
+    Two hardware threads share one core's floating-point units, so numeric
+    work scales with physical cores; half the logical CPUs leaves the sibling
+    threads to the rest of the machine.
+    """
+    return max(1, available_cpus() // 2)
+
+
+def available_cpus() -> int:
+    """The CPUs available to this process.
+
+    The affinity mask counts the CPUs the scheduler may use; the process's
+    cgroup hierarchy can grant fewer through a CPU quota on its own cgroup or
+    any ancestor, so the smaller of the two is the count, rounded up to a
+    whole CPU.
+    """
     # sched_getaffinity honors CPU pinning where the platform provides it
     # (Linux); cpu_count covers macOS and Windows.
     if hasattr(os, "sched_getaffinity"):
