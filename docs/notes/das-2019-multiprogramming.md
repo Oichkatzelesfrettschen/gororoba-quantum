@@ -15,12 +15,21 @@ record bibliographic facts and measurements of the retrieved file.
   publication index.
 - Publisher PDF: https://dl.acm.org/doi/pdf/10.1145/3352460.3358287 returned
   HTTP 403 HTML during retrieval; the author-hosted URL returned HTTP 200 PDF.
-- Local ignored cache: `literature/pdf/das-2019-multiprogramming.pdf`.
+- Optional local ignored cache: `docs/local_source_cache/das-2019-multiprogramming.pdf`.
+- Publication status: external-only PDF. [SOURCES.json](../SOURCES.json)
+  retains its URL, digest and size; both published checksum inventories
+  exclude its bytes. The 49-PDF library count excludes this local copy.
 - File: 13 PDF pages; 2,840,791 bytes; `pdfinfo` and `pdftotext` exit 0.
 - SHA-256: `78da2c5da829b74c7564ba21e89735c8802a8e16d665c4102caf2ace2fb6950a`.
 - Rights: the first page permits personal/classroom copies under its stated
   conditions and reserves redistribution/server posting for permission. Keep
   the PDF in the local ignored cache; publish its links and citation.
+  Author-hosted download access establishes reading availability; it does
+  not grant permission to republish the file on repository servers.
+- Local verification: `docs/verify_sources.py` accepts an absent cache and
+  checks the exact PDF bytes against the external record when present.
+  The verifier rejects Git-tracked cache files and external-only content
+  in the published PDF inventory.
 - Reading scope: abstract and citation on PDF p. 1; methodology in Sec. 3
   (pp. 4-5); allocation discussion in Secs. 4.1-4.2 (pp. 5-7); Sec. 5
   scheduling text and Algorithm 2 (p. 8); Secs. 6.1-6.3 and Algorithm 3

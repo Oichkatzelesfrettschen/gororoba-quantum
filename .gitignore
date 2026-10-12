@@ -23,3 +23,6 @@ qiskit-ibm.json
 !docs/evidence/folding_proofs/homotopy_import_deprecation.log
 !docs/evidence/folding_proofs/kernel-check.log
 !docs/evidence/folding_proofs/rocq_replay.log
+
+# Personal reading copies with external-only redistribution status.
+/docs/local_source_cache/

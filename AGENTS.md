@@ -161,11 +161,13 @@ also pass these local gates before push:
 (
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
-  ruff check --no-cache docs/verify_sources.py docs/evidence
-  ruff format --check --no-cache docs/verify_sources.py docs/evidence
-  mypy docs/verify_sources.py docs/evidence
+  ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  ruff format --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  mypy docs/verify_sources.py docs/check_verify_sources.py docs/evidence
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/check_verify_sources.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/local_schur/probe.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/local_schur/probe.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json

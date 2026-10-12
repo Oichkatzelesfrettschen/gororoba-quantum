@@ -4,7 +4,7 @@ The bundle retains source identities, seven explicit assumption queries, fresh c
 
 ## Exact counterexamples
 
-From the IBMQuantum repository root, use the selected Python interpreter:
+From the repository root, use the selected Python interpreter:
 
 ```sh
 PYTHON="${PYTHON:-$(command -v python3)}"

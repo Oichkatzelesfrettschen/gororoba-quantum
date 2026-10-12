@@ -7,7 +7,9 @@ k qubits; two algebraic defects the kernel measures classically become hardware
 observables.
 
 The [source library](docs/README.md) retains primary papers, per-paper notes,
-download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md).
+download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
+[coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
+objectives, evidence boundaries, ownership, and ordered delivery gates.
 
 ## Contents
 

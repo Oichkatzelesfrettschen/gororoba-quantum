@@ -120,27 +120,35 @@ Basic packing, physical buffers, varied contexts and blocking each have
 substantial prior art. The targeted reading supports those attributions;
 it supplies neither an exhaustive novelty search nor a general optimality proof.
 
-## Retrieve and verify the source cache
+## Retrieve and verify source identities
 
 Each linked per-paper note gives the direct PDF URL, inspected version,
-SHA-256 and reading scope. PDFs remain under the existing Git-ignored
-`literature/pdf/` convention. From the repository root, verify the downloaded
-set with:
+SHA-256 and reading scope. The nine published PDFs in this comparison live
+under `docs/pdf/`; the compatibility link preserves their historical
+`literature/pdf/` paths. From the repository root, verify that set with:
 
 ```sh
-sha256sum -c literature/parallel_experiment_pdfs.sha256
+sha256sum -c docs/parallel_experiment_pdfs.sha256
 ```
 
-To retrieve an individual source, use its exact URL and filename, then verify
-the checksum before reading or extracting it. For example:
+The [Das note](das-2019-multiprogramming.md) records the ACM redistribution
+notice. Its author-hosted PDF remains an external source with an optional
+local reading copy at `docs/local_source_cache/das-2019-multiprogramming.pdf`.
+The ignored cache stays outside both published checksum inventories. The
+[source registry](../SOURCES.json) retains the URL and exact identity.
+Local download access and permission to republish are separate conditions.
+
+For an optional personal reading copy, preserve the author's notice and
+use the exact source URL. The source verifier accepts an absent cache and
+checks the original byte count and SHA-256 when the copy is present:
 
 ```sh
-mkdir -p literature/pdf
-curl --fail --location https://arxiv.org/pdf/1504.07999v2 \
-  --output literature/pdf/1504.07999v2.pdf
-sha256sum -c literature/parallel_experiment_pdfs.sha256
+mkdir -p docs/local_source_cache
+curl --fail --location https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf \
+  --output docs/local_source_cache/das-2019-multiprogramming.pdf
+PYTHON="${PYTHON:-$(command -v python3)}"
+PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
 ```
 
-The set check reports missing local PDFs until every listed source is fetched.
 The [web-source note](quantum_experiment_design_sources.md) supplies direct
 documentation links and capture hashes independently of the PDF set.

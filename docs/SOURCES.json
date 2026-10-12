@@ -496,18 +496,6 @@
       "source_parser_limitation": "Poppler reports legacy ICC profile diagnostics during extraction/render; inspected mathematical pages remain legible. Original bytes remain unmodified."
     },
     {
-      "path": "docs/pdf/das-2019-multiprogramming.pdf",
-      "source_url": "https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf",
-      "note": "docs/notes/das-2019-multiprogramming.md",
-      "audited_at_utc": "2026-10-12T06:53:09.151136+00:00",
-      "status": "retained",
-      "sha256": "78da2c5da829b74c7564ba21e89735c8802a8e16d665c4102caf2ace2fb6950a",
-      "bytes": 2840791,
-      "pages": 13,
-      "acquisition": "existing_cache",
-      "prior_note_hash_match": true
-    },
-    {
       "path": "docs/pdf/levratti-2026-active-stabilizers.pdf",
       "source_url": "https://www.informationalidentityboundary.info/public/paper5.pdf",
       "note": "docs/notes/levratti-2026-active-stabilizers.md",
@@ -664,5 +652,24 @@
       "record": "results/hw_estimate/rank_topology_verification.json",
       "scope": "Historical agent guide snapshot; later repository guide changes supersede this digest."
     }
-  ]
+  ],
+  "external_pdfs": [
+    {
+      "source_url": "https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf",
+      "note": "docs/notes/das-2019-multiprogramming.md",
+      "audited_at_utc": "2026-10-12T06:53:09.151136+00:00",
+      "status": "external_only",
+      "sha256": "78da2c5da829b74c7564ba21e89735c8802a8e16d665c4102caf2ace2fb6950a",
+      "bytes": 2840791,
+      "pages": 13,
+      "acquisition": "existing_cache",
+      "prior_note_hash_match": true,
+      "excluded_published_path": "docs/pdf/das-2019-multiprogramming.pdf",
+      "local_cache_path": "docs/local_source_cache/das-2019-multiprogramming.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "PDF page 1, ACM permission notice",
+      "rights_reason": "The notice permits personal/classroom copies under its stated conditions; republication, server posting and redistribution require prior specific permission and/or a fee. The repository retains its citation and digest and excludes the PDF from the published library."
+    }
+  ],
+  "local_cache_policy": "docs/local_source_cache/ is optional, ignored local reading storage. Its PDF bytes remain outside published inventories and Git-tracked files; the verifier checks external source identities when those local copies are present."
 }

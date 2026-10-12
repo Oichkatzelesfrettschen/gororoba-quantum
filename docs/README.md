@@ -14,8 +14,8 @@ byte count, page count, acquisition status, and owning note.
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
 
 The `literature -> docs` compatibility link preserves historical paths used
-in source comments, verification manifests, and the original ten-paper checksum
-file. Both names identify the same files. New browser links use `docs/`, since
+in source comments, verification manifests, and retained parallel-experiment checksum
+paths. Both names identify the same retained files. New browser links use `docs/`, since
 GitHub displays a directory symlink as a link blob. The two implementation-audit
 ledgers and the two mathematical guides named by their manifests retain their original
 bytes. Per-paper notes retain the scope and dates of their original readings;
@@ -27,6 +27,10 @@ from the versions of record, including the two explicitly named PDF aliases.
 HTML-only sources and their reading scopes appear in the registry and notes.
 Downloaded documents retain their authors' notices and licenses; repository
 licensing does not relabel third-party papers.
+
+The [coordinated research roadmap](RESEARCH_ROADMAP.md) consolidates the
+cumulative objectives, verified results, ownership, ordering, and remaining
+proof and hardware gates.
 
 The [rank-stratum research decomposition](notes/koebisu_rank_stratum_research.md)
 connects Koebisu's Question 4, exact rank predicates, local kernel reductions,
@@ -82,7 +86,6 @@ sets the hardware priority before broad atlas expenditure.
 | 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
 | levratti-2026-fano-css | Levratti, Fano duality, projective orthogonality and the CSS bridge (author-hosted, 2026) | none | high | none |
 | levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted manuscript, 2026) | none | low | none |
-
 | [2102.01682](notes/2102.01682.md) | Corcoles et al., Dynamic phase estimation on superconducting qubits, PRL 127, 100501 (2021) | high | indirect | limited |
 | [2608.08232](notes/2608.08232.md) | Koebisu, Dimension-32 determinant factorization and rank-stratum Question 4 (2026 preprint) | none | high | none |
 | [2608.26893](notes/2608.26893.md) | Zhilina, Doubly alternative zero divisors (2023 journal; 2026 arXiv posting) | none | high | none |
@@ -97,10 +100,12 @@ The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
 joint-shot inference, billed usage, and IQP claim boundaries. The
 [design and execution documentation note](notes/quantum_experiment_design_sources.md)
-records NIST, Qiskit and IBM sources with capture hashes. The ten-paper local
-PDF set has [replayable checksums](parallel_experiment_pdfs.sha256); direct,
+records NIST, Qiskit and IBM sources with capture hashes. The nine retained parallel-experiment
+PDFs have [replayable checksums](parallel_experiment_pdfs.sha256); direct,
 version-pinned retrieval links and reading scopes live in each paper note.
-The Das paper uses the verified author-laboratory PDF URL and a content hash.
+The Das paper remains a cited external source with a verified author-laboratory
+PDF URL and content hash. Its notice requires permission for server redistribution,
+so the tracked library excludes that PDF and retains the analysis and retrieval identity.
 
 Every note from the prior-work review labels each overlapping repository
 claim as known theorem reproduced, new proof or formalization, new
