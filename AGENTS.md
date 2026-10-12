@@ -150,8 +150,8 @@ under temporary storage so the checkout retains source files only:
 The certificate proves finite Boolean permutation action. Operator checks in
 modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 
-Changes to `proofs/FoldAverageDescent.v`, `TerminalChannelSeparation.v`,
-`TerminalChannelSeparationReal.v`, or their receipts also run
+Changes to `proofs/FoldAverageDescent.v`, `proofs/TerminalChannelSeparation.v`,
+`proofs/TerminalChannelSeparationReal.v`, or their receipts also run
 `ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh` with the
 pinned Rocq 9.1.1 toolchain. The replay compiles in temporary storage,
 treats warnings as errors, kernel-checks, and compares raw assumptions.
