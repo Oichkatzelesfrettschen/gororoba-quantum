@@ -1376,7 +1376,7 @@ def _verify_fused_collection() -> None:
         first_metrics = (raw_dir / "job_metrics.json").read_bytes()
         raw_bytes = {name: (raw_dir / name).read_bytes() for name in raw_index["files"]}
 
-        # Recollection after usage finalizes changes only the usage block.
+        # Recollection after usage finalizes changes job and invocation usage.
         probe_job._usage = {"status": "pending"}
         probe_job._charge = None
         with redirect_stdout(io.StringIO()):
@@ -1384,6 +1384,12 @@ def _verify_fused_collection() -> None:
         pending = json.loads((run_dir / "collect.json").read_text())
         if pending[0]["jobs"][job_id]["usage"]["usage_status"] != "pending":
             raise RuntimeError("pending usage does not read pending")
+        if (
+            pending[0]["invocation_usage"]["total_charge_seconds"] is not None
+            or pending[0]["invocation_usage"]["charge_complete"]
+            or pending[0]["invocation_usage"]["workload_complete"]
+        ):
+            raise RuntimeError("pending job usage appears as complete invocation billing")
         probe_job._usage = usage
         probe_job._charge = 12.5
         with redirect_stdout(io.StringIO()):
@@ -1420,8 +1426,12 @@ def _verify_fused_collection() -> None:
         if (run_dir / "collect.json").read_bytes() != first:
             raise RuntimeError("recollection after restoring the raw evidence differs")
         pending[0]["jobs"][job_id]["usage"] = json.loads(first)[0]["jobs"][job_id]["usage"]
+        final_invocation_usage = json.loads(first)[0]["invocation_usage"]
+        if final_invocation_usage["total_charge_seconds"] != "12.5" or not final_invocation_usage["workload_complete"]:
+            raise RuntimeError(f"final invocation usage reads {final_invocation_usage}")
+        pending[0]["invocation_usage"] = final_invocation_usage
         if pending != json.loads(first):
-            raise RuntimeError("pending and final collections differ outside the usage block")
+            raise RuntimeError("pending and final collections differ outside job and invocation usage")
 
         # A job that ended in ERROR keeps its usage and its reason; collection
         # continues without its results.
