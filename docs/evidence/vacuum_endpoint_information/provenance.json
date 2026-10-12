@@ -1,0 +1,32 @@
+{
+  "boundary": "Reviewed finite ideal-readout CPU acquisition mathematics; zero hardware optimum, billing or submission authority.",
+  "input_byte_budget": 260000,
+  "inputs": {
+    "inputs/previous_probe.py.txt": {
+      "bytes": 13104,
+      "sha256": "22c1c130a42440074b66aa93f990e0920ff91e08c7b04e9bb63df718d5a834a5"
+    },
+    "inputs/previous_result.json": {
+      "bytes": 9713,
+      "sha256": "6147433302a506c33f5a9c9367b7f67b6d22d2398f82577a179bb503cdf7207b"
+    },
+    "inputs/reviewed_probe.py.txt": {
+      "bytes": 12803,
+      "sha256": "88bc49cf92deadba0e2ee4360825844a7c9b561647f5a76feefde8900f431029"
+    },
+    "inputs/reviewed_result.json": {
+      "bytes": 107998,
+      "sha256": "e29459a8958cc5c8ee462d2ea023b15373602d333028219e390d00635f041028"
+    },
+    "inputs/source-note.md.txt": {
+      "bytes": 12851,
+      "sha256": "8e3b0cd1c14970bb5c3ea97ea8aaa401932471c357fd484d99a7f952e5ffbafd"
+    }
+  },
+  "normalization": "Original reviewed source/result and predecessor/note bytes remain immutable archival inputs. Typed replay adds binding, coverage, comparison and rejection gates; normalized output is a separate artifact.",
+  "output_byte_budget": 400000,
+  "output_file_budget": 12,
+  "reviewed_comparisons": 812,
+  "reviewed_max_absolute_error": 1.78e-15,
+  "schema_version": 1
+}

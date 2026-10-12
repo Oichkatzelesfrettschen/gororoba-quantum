@@ -1,0 +1,232 @@
+"""CPU checks of the user's supplied finite pair-model conventions."""
+
+import hashlib
+import itertools
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+import scipy
+from scipy.linalg import expm
+import sympy as sp
+
+
+def require(condition, description):
+    if not condition:
+        raise RuntimeError(description)
+
+
+def annihilation(cutoff):
+    matrix = np.zeros((cutoff, cutoff), dtype=complex)
+    for occupation in range(1, cutoff):
+        matrix[occupation - 1, occupation] = math.sqrt(occupation)
+    return matrix
+
+
+def reduced_pair(cutoff):
+    matrix = np.zeros((cutoff, cutoff), dtype=complex)
+    for occupation in range(1, cutoff):
+        matrix[occupation - 1, occupation] = occupation
+    return matrix
+
+
+def generator(pair, phase):
+    return 1j * (
+        np.exp(1j * phase) * pair.conj().T - np.exp(-1j * phase) * pair
+    )
+
+
+def max_residual(matrix):
+    return float(np.max(np.abs(matrix)))
+
+
+paulis = {
+    "I": np.eye(2, dtype=complex),
+    "X": np.array([[0, 1], [1, 0]], dtype=complex),
+    "Y": np.array([[0, -1j], [1j, 0]], dtype=complex),
+    "Z": np.diag([1, -1]).astype(complex),
+}
+
+
+def two_qubit_expansion(matrix):
+    coefficients = {}
+    reconstructed = np.zeros_like(matrix)
+    for left_label, right_label in itertools.product(paulis, repeat=2):
+        label = left_label + right_label
+        pauli = np.kron(paulis[left_label], paulis[right_label])
+        coefficient = np.trace(pauli @ matrix) / 4
+        if abs(coefficient) > 1e-12:
+            coefficients[label] = [float(coefficient.real), float(coefficient.imag)]
+            reconstructed += coefficient * pauli
+    require(max_residual(reconstructed - matrix) < 1e-12, "Pauli reconstruction")
+    return coefficients
+
+
+record = {
+    "boundary": "Finite CPU mathematical checks of supplied prose; hardware and source-link claims unverified",
+    "python": sys.version.split()[0],
+    "numpy": np.__version__,
+    "scipy": scipy.__version__,
+    "sympy": sp.__version__,
+    "inputs": [],
+}
+attachment_paths = sys.argv[1:]
+require(len(attachment_paths) == 2, "Supply the two proposal inputs")
+for attachment in attachment_paths:
+    source = Path(attachment).read_bytes()
+    record["inputs"].append({"sha256": hashlib.sha256(source).hexdigest(), "bytes": len(source)})
+require(sum(source["bytes"] for source in record["inputs"]) <= 60000, "Input ceiling")
+
+checks = []
+cutoff_results = []
+for cutoff in (4, 8):
+    single_annihilation = annihilation(cutoff)
+    full_pair = np.kron(single_annihilation, single_annihilation)
+    pair = reduced_pair(cutoff)
+    embedding = np.zeros((cutoff**2, cutoff), dtype=complex)
+    for occupation in range(cutoff):
+        embedding[occupation * cutoff + occupation, occupation] = 1
+    number = np.diag(np.arange(cutoff)).astype(complex)
+    number_difference = np.kron(number, np.eye(cutoff)) - np.kron(np.eye(cutoff), number)
+    expected_commutator = np.eye(cutoff)
+    expected_commutator[-1, -1] -= cutoff
+    observed_commutator = single_annihilation @ single_annihilation.conj().T - single_annihilation.conj().T @ single_annihilation
+    commutator_residual = max_residual(observed_commutator - expected_commutator)
+    require(commutator_residual < 1e-12, "Cutoff commutator")
+    cutoff_check = {"cutoff": cutoff, "commutator_residual": commutator_residual, "trace_commutator": float(np.trace(observed_commutator).real), "phases": []}
+    vacuum = np.eye(cutoff, dtype=complex)[:, 0]
+    for phase in (0.0, math.pi, 0.37):
+        full_generator = generator(full_pair, phase)
+        reduced_generator = generator(pair, phase)
+        embedding_residual = max_residual(full_generator @ embedding - embedding @ reduced_generator)
+        conservation_residual = max_residual(full_generator @ number_difference - number_difference @ full_generator)
+        evolution_residual = max_residual(expm(-0.4j * full_generator) @ embedding - embedding @ expm(-0.4j * reduced_generator))
+        require(embedding_residual < 1e-12 and conservation_residual < 1e-12 and evolution_residual < 1e-12, "Invariant-sector identity")
+        cutoff_check["phases"].append({"phase": phase, "embedding_residual": embedding_residual, "number_difference_conservation_residual": conservation_residual, "evolution_residual": evolution_residual})
+    for strength in (0.2, 0.4, 0.6):
+        state = expm(-1j * strength * generator(pair, 0.0)) @ vacuum
+        reversed_state = expm(-1j * strength * generator(pair, math.pi)) @ vacuum
+        pair_expectation = np.vdot(state, pair @ state)
+        reversed_pair = np.vdot(reversed_state, pair @ reversed_state)
+        phase_state = expm(-1j * strength * generator(pair, 0.37)) @ vacuum
+        phase_expected = np.vdot(phase_state, pair @ phase_state)
+        predicted_phase = np.exp(0.37j) * pair_expectation
+        phase_probability_residual = max_residual(np.abs(state)**2 - np.abs(reversed_state)**2)
+        phase_odd_residual = float(abs(pair_expectation + reversed_pair))
+        phase_general_residual = float(abs(phase_expected - predicted_phase))
+        diagonal_mixture = np.diag(np.abs(state)**2)
+        incoherent_pair_expectation = abs(np.trace(diagonal_mixture @ pair))
+        require(max(phase_probability_residual, phase_odd_residual, phase_general_residual, incoherent_pair_expectation) < 1e-12, "Phase/coherence controls")
+        infinite_pair = math.sinh(strength) * math.cosh(strength)
+        cutoff_results.append({"cutoff": cutoff, "r": strength, "finite_re_ab": float(pair_expectation.real), "infinite_re_ab": infinite_pair, "relative_pair_error": float(abs(pair_expectation - infinite_pair) / infinite_pair), "infinite_discarded_probability": math.tanh(strength)**(2 * cutoff), "top_probability": float(abs(state[-1])**2), "single_mode_commutator_expectation": float(1 - cutoff * abs(state[-1])**2), "phase_probability_residual": phase_probability_residual, "phase_odd_residual": phase_odd_residual, "phase_general_residual": phase_general_residual})
+    checks.append(cutoff_check)
+record["invariant_sector_checks"] = checks
+record["cutoff_results"] = cutoff_results
+
+pair = reduced_pair(4)
+hamiltonian = generator(pair, 0.0)
+real_pair = (pair + pair.conj().T) / 2
+imaginary_pair = (pair - pair.conj().T) / (2j)
+record["q1q0_paulis"] = {
+    "H_over_hbar_g": two_qubit_expansion(hamiltonian),
+    "Re_ab": two_qubit_expansion(real_pair),
+    "Im_ab": two_qubit_expansion(imaginary_pair),
+    "pair_number": two_qubit_expansion(np.diag(np.arange(4)).astype(complex)),
+    "occupation_and_real_pair_settings": ["ZZ", "ZX", "XX", "YY"],
+}
+expected_generator = {"IY": [2.0, 0.0], "XY": [-1.0, 0.0], "YX": [1.0, 0.0], "ZY": [-1.0, 0.0]}
+require(record["q1q0_paulis"]["H_over_hbar_g"] == expected_generator, "Supplied Hamiltonian Pauli expansion")
+
+first_order_results = []
+for strength in (0.2, 0.4):
+    exact_unitary = expm(-1j * strength * hamiltonian)
+    for repetitions in (1, 2, 4, 8):
+        step_unitary = np.eye(4, dtype=complex)
+        for label, coefficient in expected_generator.items():
+            pauli = np.kron(paulis[label[0]], paulis[label[1]])
+            step_unitary = expm(-1j * strength * coefficient[0] * pauli / repetitions) @ step_unitary
+        approximate_unitary = np.linalg.matrix_power(step_unitary, repetitions)
+        first_order_results.append({"r": strength, "repetitions": repetitions, "applied_first_to_last": list(expected_generator), "operator_norm_error": float(np.linalg.norm(approximate_unitary - exact_unitary, ord=2))})
+record["first_order_product_formula"] = first_order_results
+
+planck = 6.62607015e-34
+boltzmann = 1.380649e-23
+record["thermal_and_binomial_examples"] = {
+    "five_ghz_hf_over_k_kelvin": planck * 5e9 / boltzmann,
+    "five_ghz_15mk_occupation": 1 / math.expm1(planck * 5e9 / (boltzmann * 0.015)),
+    "five_ghz_50mk_occupation": 1 / math.expm1(planck * 5e9 / (boltzmann * 0.050)),
+    "one_mhz_15mk_occupation": 1 / math.expm1(planck * 1e6 / (boltzmann * 0.015)),
+    "zero_events_4096_upper_95": -math.expm1(math.log(0.05) / 4096),
+}
+
+decay_rate = 10000.0
+up_rate = 500.0
+equilibrium = up_rate / (up_rate + decay_rate)
+initial_populations = (0.03, 0.97)
+times = np.array([0.0, 1e-5, 3e-5, 7e-5, 1.5e-4, 3e-4])
+readout_zero = 0.02
+readout_one = 0.04
+response_scale = 1 - readout_zero - readout_one
+offset = 0.01
+population_scale = 0.98
+alternative_readout_zero = readout_zero - response_scale * offset / population_scale
+alternative_response_scale = response_scale / population_scale
+alternative_readout_one = 1 - alternative_readout_zero - alternative_response_scale
+alternative_equilibrium = offset + population_scale * equilibrium
+observed_residuals = []
+for initial_population in initial_populations:
+    population = equilibrium + (initial_population - equilibrium) * np.exp(-(up_rate + decay_rate) * times)
+    observed = readout_zero + response_scale * population
+    alternative_population = alternative_equilibrium + (offset + population_scale * initial_population - alternative_equilibrium) * np.exp(-(up_rate + decay_rate) * times)
+    alternative_observed = alternative_readout_zero + alternative_response_scale * alternative_population
+    observed_residuals.append(max_residual(observed - alternative_observed))
+require(max(observed_residuals) < 1e-14, "Exact SPAM population affine degeneracy")
+require(min(alternative_readout_zero, alternative_readout_one) >= 0, "Physical alternative readout probabilities")
+record["spam_identifiability_counterexample"] = {
+    "same_rate_sum": up_rate + decay_rate,
+    "original": {"equilibrium": equilibrium, "readout_zero": readout_zero, "readout_one": readout_one, "preparations": list(initial_populations)},
+    "alternative": {"equilibrium": alternative_equilibrium, "readout_zero": alternative_readout_zero, "readout_one": alternative_readout_one, "preparations": [offset + population_scale * value for value in initial_populations]},
+    "max_observed_population_residual": max(observed_residuals),
+}
+
+separation, hbar, lightspeed = sp.symbols("d hbar c", positive=True)
+energy_density = -sp.pi**2 * hbar * lightspeed / (720 * separation**3)
+expected_pressure = -sp.pi**2 * hbar * lightspeed / (240 * separation**4)
+require(sp.simplify(-sp.diff(energy_density, separation) - expected_pressure) == 0, "Ideal Casimir derivative")
+parameter, crossing, slope, regulator, reference_frequency = sp.symbols("lambda lambda_star a epsilon omega_star", real=True)
+mode_energy = hbar * reference_frequency * sp.sqrt(regulator**2 + slope**2 * (parameter - crossing)**2) / 2
+curvature = sp.simplify(sp.diff(mode_energy, parameter, 2).subs(parameter, crossing))
+positive_regulator = sp.symbols("epsilon_positive", positive=True)
+require(sp.simplify(curvature.subs(regulator, positive_regulator) - hbar * reference_frequency * slope**2 / (2 * positive_regulator)) == 0, "Regularized oscillator susceptibility")
+record["symbolic_checks"] = {"ideal_Casimir_pressure_derivative": "exact", "regularized_mode_crossing_curvature": str(curvature), "length_chain_rule": "F_d = -(d lambda/d d) partial_lambda E_0"}
+
+bath_population = 0.2
+pure_bath = np.array([math.sqrt(1 - bath_population), math.sqrt(bath_population)])
+coherent_bath = np.outer(pure_bath, pure_bath)
+thermal_bath = np.diag([1 - bath_population, bath_population])
+record["bath_mixture_correction"] = {"p": bath_population, "coherent_off_diagonal": float(coherent_bath[0, 1]), "thermal_off_diagonal": float(thermal_bath[0, 1])}
+
+exchange_angle = 0.3
+exchange_generator = (np.kron(paulis["X"], paulis["X"]) + np.kron(paulis["Y"], paulis["Y"])) / 2
+exchange_unitary = expm(-1j * exchange_angle * exchange_generator)
+collision_results = []
+for system_population in (0.0, 0.3, 1.0):
+    system_density = np.diag([1 - system_population, system_population])
+    joint_density = np.kron(system_density, thermal_bath)
+    evolved_density = exchange_unitary @ joint_density @ exchange_unitary.conj().T
+    system_after = np.trace(evolved_density.reshape(2, 2, 2, 2), axis1=1, axis2=3)
+    expected_population = system_population * math.cos(exchange_angle)**2 + bath_population * math.sin(exchange_angle)**2
+    require(abs(system_after[1, 1] - expected_population) < 1e-12, "Thermal collision population law")
+    require(abs(system_after[0, 1]) < 1e-12, "Thermal collision coherence")
+    collision_results.append({"system_population_before": system_population, "system_population_after": float(system_after[1, 1].real), "expected_population": expected_population})
+ground_system = np.diag([1, 0])
+pure_joint = np.kron(ground_system, coherent_bath)
+pure_after = exchange_unitary @ pure_joint @ exchange_unitary.conj().T
+pure_system_after = np.trace(pure_after.reshape(2, 2, 2, 2), axis1=1, axis2=3)
+record["collision_model"] = {"exchange_angle": exchange_angle, "population_law": "p_system_next = cos(theta)^2 p_system + sin(theta)^2 p_bath", "thermal_results": collision_results, "pure_bath_induced_system_coherence_magnitude": float(abs(pure_system_after[0, 1]))}
+
+record["status"] = "CPU checks passed"
+json.dump(record, sys.stdout, indent=2, sort_keys=True, allow_nan=False)
+sys.stdout.write("\n")

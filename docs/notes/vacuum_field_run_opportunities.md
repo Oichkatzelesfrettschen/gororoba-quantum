@@ -58,10 +58,18 @@ Re(ab)       = IX + (XX + YY - ZX)/2
 n            = 1.5 I - ZI - 0.5 IZ.
 ```
 
-[E] Four product settings `ZZ, ZX, XX, YY` recover the occupation distribution,
-top-cutoff population and real pair coherence. Those settings leave part of
-`Im(ab)` unmeasured; full two-qubit state tomography uses nine Pauli product
-settings. State tomography still differs from process or instrument tomography.
+[E] The [endpoint information replay](../evidence/vacuum_endpoint_information/README.md)
+compares eight ideal cutoff-four arms and 72 product-measurement laws with
+288000 shots per design. Four settings `ZZ, ZX, XX, YY` recover populations and
+real pair coherence; the recorded nine-over-four real-coherence variance ratios
+are 2.215418 at `r=0.2` and 2.160225 at `r=0.4`. Physical imaginary-coherence
+witnesses remain invisible to those four settings; adding XY alone still leaves
+YX blind. The unique product-Pauli cover for full populations and both pair
+quadratures is `ZZ, ZX, XX, YY, XY, YX, ZY`; state tomography uses all nine.
+The replay retains same-shot covariance, declares cross-arm independence, and
+keeps Neyman allocation conditional on known finite-state variances. These
+finite ideal-readout results supply zero hardware-optimum, billing or submission
+authority. State tomography differs from process or instrument tomography.
 
 [E] At cutoff four, relative real-coherence error against the infinite
 squeezed-vacuum reference is approximately 0.01367%, 0.71530% and 5.86524%

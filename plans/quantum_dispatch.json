@@ -1,0 +1,2315 @@
+{
+ "schema_version": 1,
+ "snapshot_utc": "2026-10-12T17:47:00Z",
+ "snapshot_basis": "Supplied snapshot plus authoritative same-turn central updates.",
+ "state_transition_owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+ "dispatch_owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+ "sole_qpu_executor_owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+ "execution_admission": false,
+ "document_role": "Retained operational snapshot of human-authorized scope and gates; documentation grants zero independent QPU authority.",
+ "repositories": {
+  "quantum": "gororoba-quantum",
+  "open_gororoba": "open_gororoba"
+ },
+ "owners": [
+  {
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "role": "central",
+   "title": "Coordinate quantum research and run"
+  },
+  {
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "role": "executor",
+   "title": "Design a single-run reality ripple"
+  },
+  {
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "role": "geometry",
+   "title": "Audit Heron quantum claims"
+  },
+  {
+   "owner_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "role": "sources",
+   "title": "Resolve #34 commit issues"
+  },
+  {
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "role": "port",
+   "title": "Falsify the N=21 QPU conjecture"
+  },
+  {
+   "owner_id": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+   "role": "adviser",
+   "title": "Plan Step 3 synthesis frontier"
+  },
+  {
+   "owner_id": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+   "role": "qpu_auditor",
+   "title": "Audit QPU run optimization"
+  },
+  {
+   "owner_id": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+   "role": "bridge",
+   "title": "Formalize sign kernel and zero divis"
+  }
+ ],
+ "statuses": [
+  "complete",
+  "in_progress",
+  "waiting_dependency",
+  "waiting_external_dependency",
+  "deferred"
+ ],
+ "evidence_authorities": [
+  "verified",
+  "reported",
+  "pending"
+ ],
+ "authority": {
+  "new_acquisition_cap_seconds": 180,
+  "account_reserve_seconds": 60,
+  "ordering": "correction-first",
+  "vacuum_submission_authority_from_coordination": 0,
+  "central_routes": [
+   "milestone",
+   "blocker",
+   "scope_change",
+   "resource_change",
+   "final_handback"
+  ],
+  "auxiliary_exchanges": "Technical support only; central alone accepts dispatch/state changes.",
+  "participant_completion_and_idle_required": true,
+  "relevant_pr_review_requirement": "Copilot review on the admitted head; reachable findings fixed, threads resolved, required checks passing, reviewed merge verified.",
+  "final_execution_gate_source": {
+   "thread_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "user_message_id": "01a13152-88d8-7413-929e-fd8b25f16638",
+   "authority": "Central read the direct human message in the execution chat."
+  },
+  "coordinator_idle_sequence": "All central pre-run production/review/integration work and children complete before receipt; central performs bounded receipt/handoff; executor verifies central idle after handoff before physical admission."
+ },
+ "queue_policy": {
+  "partition_by": "execution_class",
+  "ordering": [
+   "priority_ascending",
+   "unfinished_prerequisites_ascending",
+   "authorization_state_ascending",
+   "transitive_dependents_descending",
+   "downstream_height_descending",
+   "task_id_ascending"
+  ],
+  "active_excludes": [
+   "complete",
+   "deferred"
+  ],
+  "ready_is_execution_permission": false
+ },
+ "snapshot": {
+  "coordination_files": [
+   "plans/quantum_dispatch.json",
+   "plans/QUANTUM_DISPATCH.md"
+  ],
+  "central_handbacks": "All seven owner handbacks received; lane completion gates remain separate.",
+  "owners": "Named central owner registry.",
+  "authority": "180s new cap; 60s reserve; correction-first; admission=false.",
+  "historical_qpu": {
+   "done_jobs": 3,
+   "campaigns": 2,
+   "pubs": 22,
+   "pub_shots": 155648,
+   "charged_seconds": 49,
+   "authority": "Independent owner verified all jobs.",
+   "reuse_paths": [
+    "results/live/2026-10-11T152922.787095Z",
+    "results/live/2026-10-12T055624.091217Z"
+   ],
+   "pooling_gate": "Establish comparability."
+  },
+  "geometry": {
+   "pr": 45,
+   "branch": "codex/nullity-twelve-curve-certificates",
+   "review_head": "2ac08264ae7dc1baa271b96771fff442a46da828",
+   "merge": "d71be59b98a5d7b28c17a3e6357edd17a5bac576",
+   "tree": "44433977c3e2f1a0071ad3fd2b67dc97d9504161",
+   "merge_authority": "Central verified",
+   "theorem": "Selected-center Bouligand cone A15 union B17; intersection dimension 13.",
+   "research_residuals": "Human resumed exact attachments, neighborhood/global topology and all-dimensional research. New Rocq implementation deferred until intended new run-result milestone.",
+   "cleanup_receipt": "transient:nullity-twelve-integration-receipt.json",
+   "cleanup_receipt_sha256": "bf1c8918a8e715683c705c85f914bc62b4fee3f7630b85c60e10a09728def676"
+  },
+  "sources": {
+   "pr": 44,
+   "branch": "codex/research-source-coverage",
+   "review_head": "5454a6af5287db40b6424a49000feae2deacb1c9",
+   "merge": "5bd8c7a02adf4d01e7c96f40b3702c232bfb7d76",
+   "tree": "d2722ad0746ad4a0c946e2821b6689cc715f2cb0",
+   "merge_authority": "Central GitHub verified",
+   "reported_inventory": [
+    70,
+    14,
+    56,
+    4
+   ],
+   "inventory_order": [
+    "sources",
+    "hosted_pdfs",
+    "external_only",
+    "software_archives"
+   ],
+   "owner_tests": 120,
+   "owner_real_file_mutations": 97,
+   "retain_original_pdfs": 16,
+   "notes": [
+    "docs/notes/vacuum_field_run_opportunities.md",
+    "docs/notes/research_proof_experiment_dependencies.md"
+   ],
+   "vacuum_cpu": "Central verified normal/optimized/serial-parallel/lint/checksums in docs/evidence/vacuum_models.",
+   "non_claim": "Source admission validates neither physics nor vacuum jobs.",
+   "cleanup_receipt": {
+    "name": "ibmquantum-source-integration/canonical-intake.json",
+    "state": "Sixteen cache hashes verified; branch/checkouts archived and absent by root Git registry; final owner handback complete."
+   },
+   "canonical_verification": "Owner verified 70 papers, 14 hosted/56 external, 30 captures/40 manual boundaries, 4 archives/690 links; all16 new PDF hashes survive archive.",
+   "owner_goal_status": "complete",
+   "cleanup": "Managed archive complete; only merged source branches/checkouts retired."
+  },
+  "campaign": {
+   "pr": 36,
+   "branch": "codex/cayley-dickson-ripple-evidence",
+   "head": "5af63f55defac9452230f006766bac3aa3906a7a",
+   "merge": "ae51352c95c537b4ae526faaf65473514b9a966e",
+   "merge_authority": "Central GitHub verified protected head and merge.",
+   "review": "Current-head Copilot check success central verified; review 5494298780/17:53 owner reported; Codex clean 17:49:53Z owner reported.",
+   "fixed_findings": "Mock-status/README provenance; focused checks passed by owner.",
+   "protocol": "results/ripple/STATIC_PACKING_ACCURACY.md",
+   "cases": {
+    "correction": "2026-10-12T170742.727534Z",
+    "ripple_original": "2026-10-12T163354.310138Z",
+    "rank_original": "2026-10-12T163354.210407Z",
+    "ripple_renewed": "2026-10-12T174739.912595Z",
+    "rank_renewed": "2026-10-12T174740.017449Z"
+   },
+   "renewal": "Owner independent audit preserves all 1334 contracts/37 controls/QPY in renewed statics; prospective rebinding before acquisition.",
+   "decision": "Valid data qualifies adopt/retain; missing raw/schedule/calibration withholds and holds static.",
+   "family_gate": "Ripple and rank independently admitted.",
+   "retain_old_untracked_dirs": 9,
+   "static_families": {
+    "ripple": {
+     "admission_status": "waiting_dependency",
+     "acquisition_status": "waiting_dependency",
+     "case_id": "2026-10-12T174739.912595Z",
+     "admission_dependencies": [
+      "correction-qualified-decision"
+     ],
+     "admission_gate": "Own fresh source/calibration/budget/layout/protocol and exact approved case match.",
+     "acquisition_gate": "Own admission complete; one-use record/digest bind accepted IDs and ceilings."
+    },
+    "rank": {
+     "admission_status": "waiting_dependency",
+     "acquisition_status": "waiting_dependency",
+     "case_id": "2026-10-12T174740.017449Z",
+     "admission_dependencies": [
+      "correction-qualified-decision"
+     ],
+     "admission_gate": "Own fresh source/calibration/budget/layout/protocol and exact approved case match.",
+     "acquisition_gate": "Own admission complete; one-use record/digest bind accepted IDs and ceilings."
+    }
+   },
+   "execution_branch": {
+    "branch": "codex/qpu-campaign-execution-evidence",
+    "reported_local_head_prefix": "ad12c823",
+    "publication": "Unpublished; retained by execution owner."
+   },
+   "rebound_protocol_sha256": "59535e0af98554e94287c62bb8ee9c74b4d82236c7b08df3ef3eadca56f7235b",
+   "executor_goal_status": "blocked after three consecutive maintenance observations; existing authority retained",
+   "fresh_correction_case": false,
+   "execution_attempts_reported": 0
+  },
+  "budget": {
+   "ceilings_seconds": {
+    "correction": 30,
+    "ripple": 80,
+    "rank": 60
+   },
+   "jobs": 5,
+   "total_ceilings_seconds": 170,
+   "conditional_nominal_seconds": 106.29010304,
+   "conditional_stress_seconds": 118.44546304,
+   "settlement": "Measured charge; historical 49s outside new cap."
+  },
+  "canonical_sync": {
+   "status": "complete",
+   "head": "ae51352c95c537b4ae526faaf65473514b9a966e",
+   "authority": "Central verified 45/44/36 ancestry; after.json preservation receipt.",
+   "preservation_receipt": "quantum-canonical-sync-preservation/after.json",
+   "original_dirty_ledger": "results/live/local-audit-provenance/coordination-before-reviewed-sync/qpu-coordination.original.json",
+   "measured": "Ten audit-file hashes equal; tracked/index empty at receipt; renewed-case/evidence untracked dirs owner retained.",
+   "cleanup_release": "Geometry/source cleanup completed by owner handbacks; both worktrees absent from central Git registry observation.",
+   "helper": "Explicitly tested/bound to all three merge identities.",
+   "preserve": "Modified ledger, ten audit-file hashes and dirty owner work.",
+   "partial_sync": "Deferred redesign only for material continued PR36 review blocker."
+  },
+  "backend_availability": {
+   "blocker": "Marrakesh maintenance prevents three eligible fresh correction snapshots.",
+   "observed_utc": "2026-10-12T18:01:19Z",
+   "rejection_name": "current-correction-renewal-rejection.json",
+   "sha256": "d2c773d5ec9f1e5a20d9ead1e41fc48dee2f9a0e4e10f2a8a4070c142494e9d7",
+   "held": [
+    "correction-acquisition",
+    "static-acquisition"
+   ],
+   "permitted": "Independent Kingston renewals/CI/sync within existing authority.",
+   "latest_post_sync_hold_utc": "2026-10-12T18:00:09Z",
+   "status": "Marrakesh maintenance, pending 11; Fez/Kingston active. Fresh full eligibility still required.",
+   "latest_owner_report": "Submit-free live probe reports Marrakesh active with newer calibration; final fresh coherent inventory/eligible winner/case/source/budget admission remains pending."
+  },
+  "maintenance": {
+   "diagnosis": "Maintained backend intentionally ineligible; discovery filters before correction exact-three set; planner ineligible-row path exists.",
+   "scope": "Adapter change requires new review/case; guard bypass prohibited; source/execution code edits zero in diagnostic scope."
+  },
+  "port": {
+   "declarations": [
+    251,
+    224,
+    27
+   ],
+   "identities": [
+    308,
+    13,
+    295
+   ],
+   "events": 39,
+   "claims": 12,
+   "artifacts": 2,
+   "writer": "Port sole writer; declaration closed/assumed and identity checked/source-only remain separate.",
+   "pr": 206,
+   "base": "main",
+   "branch": "codex/boolean-permutation-evidence",
+   "head": "cb364ec93458b0e52ae96230d0390e72c555083b",
+   "authority": "Central live GitHub",
+   "ci_run": "38286206339",
+   "ci_status": "completed",
+   "handback": "complete; current review repair/CI remain open",
+   "scope": "Source-bound proof/assumptions/Rust mirrors; vacuum/QPU evidence separate.",
+   "active_review_findings": [
+    "documented Flocq mapping",
+    "genuine replay CI routing for Rust implementation changes"
+   ],
+   "pending_receipt_transition": {
+    "observed_events": 26,
+    "proposed_additional_events": 13,
+    "proposed_total_events": 39,
+    "stage": "Owner reports canonical replay completed; final source/view publication and review pending.",
+    "immutable_history": "All v1 events/specs/raw bytes retained; fresh v2 events bind trusted full-closure compile/object reproduction/kernel/assumptions.",
+    "fixed_counts": "308 identities; 251 declarations; 12 claims plus 2 artifacts",
+    "temporary_checked_source_only": [
+     0,
+     308
+    ],
+    "final_checked_source_only": [
+     13,
+     295
+    ]
+   },
+   "current_checks": {
+    "stage": "Previous2fabc487 checks historical; new cb364ec reviews/checks pending."
+   },
+   "canonical_receipt_transition": {
+    "authority": "Owner reported completed transition; final source/head/view/review receipts pending.",
+    "identities": 308,
+    "checked": 13,
+    "source_only": 295,
+    "legacy_events_retained": 26,
+    "new_internally_generated_v2_events": 13,
+    "total_events": 39,
+    "declarations": 251,
+    "claims": 12,
+    "artifacts": 2,
+    "reported_preservation": "Original IDs/locators/events/revisions/transitions/unrelated claims/artifacts match; temp-vs-canonical binding/spec/envelope set difference0;100historical plus114complete raw artifacts preserved."
+   },
+   "head_authority": "Central live REST observation verifies published repair head; its new reviews/checks and upward propagation remain pending.",
+   "events_authority": "Owner reports completed canonical26v1+13v2 receipt transition; final source/view/current-head review admission remains pending.",
+   "review_repair_stage": "Owner reports all three previous threads answered/resolved; new current-head Codex findings require source repair, upward propagation and fresh reviews."
+  },
+  "port_schur": {
+   "pr": 207,
+   "base": "codex/boolean-permutation-evidence",
+   "branch": "codex/schur-acceleration-evidence",
+   "head": "7bba3dd173307d28ead3f9fc9fee4b7071b525a3",
+   "authority": "Central live GitHub",
+   "ci_run": "38286687217",
+   "ci_status": "completed",
+   "reported_previous_prefix": "9135a850",
+   "reported_files": 7,
+   "handback": "pending",
+   "non_claim": "Finite Schur evidence supplies no universal geometry.",
+   "review": "Owner current-head clean at7bba3dd; lower-branch repairs require upward merge and new head-bound review.",
+   "current_checks": {
+    "success": 31,
+    "skipped": 7,
+    "open_review_threads": 0,
+    "copilot_review_on_observed_head": false
+   }
+  },
+  "endpoint_information": {
+   "artifact_name": "vacuum_endpoint_cost.OYzfep4v",
+   "audit": "CPU audit and independent review complete",
+   "scope": "Finite ideal-readout estimator-specific result; zero QPU authority/hardware optimum/billing claim",
+   "independent_comparisons": 812,
+   "max_discrepancy": 1.78e-15,
+   "total_shots_per_comparison": 288000,
+   "uniform_nine_over_four_variance_ratio": {
+    "r_0_2": 2.215418,
+    "r_0_4": 2.160225
+   },
+   "four_settings": [
+    "ZZ",
+    "ZX",
+    "XX",
+    "YY"
+   ],
+   "hidden_imaginary_coherence": "Physical states agree on every four-setting probability; adding XY alone leaves YX blind.",
+   "both_quadratures_and_populations_product_basis_minimum": [
+    "ZZ",
+    "ZX",
+    "XX",
+    "YY",
+    "XY",
+    "YX",
+    "ZY"
+   ],
+   "full_state_tomography_settings": 9,
+   "covariance": "Same-shot and cross-arm covariance retained; oracle allocations require known variances and integer/floor/calibration gates.",
+   "production": {
+    "stage": "Source-bound production complete; independent normalization review finishing.",
+    "files_with_updated_note": 12,
+    "output_bytes": 330522,
+    "investigation_input_bytes": 247803,
+    "probe_sha256": "9ffc8798096d2b1e4f6625469a122a50c43c80e089e48f8d92daf865ca75f423",
+    "result_sha256": "2feb99942f5aac6a9b65fe7122d77874e65db55454933aa20c0ff525eb3eb082",
+    "checksum_manifest_sha256": "b7db03029b8534ec4122ab20c8dfc195275932a518bd3afd0639945322934221",
+    "root_checks": "Normal/optimized --check and9 unittest groups each pass; all10 checksum entries pass; source-library verifier admits697 local links.",
+    "publication": "Copilot-reviewed integration pending."
+   },
+   "normalization_review": {
+    "stage": "Independent clean verdict accepted.",
+    "mathematical_correspondence": "Six calculation-function ASTs and the eight-arm loop match the archived reviewed source after annotations are removed.",
+    "validation": "Normal/optimized replay and9test groups pass;10private-copy CLI corruption cases reject; restored baselines pass; both modes reproduce result bytes;12allowlisted file hashes identical before/after.",
+    "supplementary_yx_probability_residual_max": 2.78e-17,
+    "scope": "Finite ideal-readout formulas and covariance/conditional-allocation contracts; hardware fidelity, optimality and billing remain separate."
+   }
+  },
+  "adviser": "Final2387-byte handback accepted; two advisory tasks and all three children completed; central wait snapshot verifies owner idle.",
+  "qpu_audit": {
+   "status": "complete",
+   "authority": "Independent read-only auditor",
+   "artifact_name": "qpu-final-allocation-audit.16Ti8u5z",
+   "scope": "Declared whole-tier promotion domain; no global per-PUB/placement/routing optimum",
+   "static_contracts": 1334,
+   "packing_controls": 37,
+   "pubs": 182,
+   "pub_shots": 330752,
+   "static_conditional_nominal_seconds": 94.770891776,
+   "static_conditional_stress_seconds": 103.970891776,
+   "static_ceiling_seconds": 140,
+   "unresolved_control": "ripple_design_c_16_1_8_isolated_packed_difference",
+   "unresolved_normalized_half_width": 0.1120060163,
+   "equivalence_tolerance": 0.1,
+   "fidelity_scope": "Static each frozen routed set evaluated after proxy placement; correction evaluates proxy winner only.",
+   "physical_gate": "Fresh source/version/record/QPY/calibration/quota/one-use approval/schedule/count evidence still mandatory."
+  },
+  "bridge": "Authority audit and three-job map complete by owner handback.",
+  "bridge_attachment": "Inspection complete. Active app record survives absent disk/Git worktree; exposed API supplies no documented metadata-only repair. Retained, deferred; no workaround.",
+  "research_frontier": {
+   "casimir": [
+    28,
+    30
+   ],
+   "exact_selected_schedule_csv": "External input gate",
+   "hypothetical_pressure_pa": 0.003,
+   "calibration": "Identity assumption",
+   "worldline_refs": [
+    "C871",
+    "E081"
+   ],
+   "worldline_limit": "Helper/scaling and worldline finiteness do not establish MC agreement.",
+   "link_refs": [
+    "E044",
+    "C740",
+    "C741"
+   ],
+   "link_limit": "Unrelated magneto-optical/transport links.",
+   "writer_hold": "Registry fixes await OG206/207 writer integration; avoid concurrent SQLite.",
+   "assignment": "Implementation unassigned; central review precedes repair/hardware expansion."
+  },
+  "geometry_resumed": {
+   "owner": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "base": "ae51352c95c537b4ae526faaf65473514b9a966e",
+   "worktree_name": "annihilator-kernel-limits/IBMQuantum",
+   "branch": "codex/annihilator-kernel-limits",
+   "authority": "Direct human resume reported by geometry owner; live worktree/active turn observed",
+   "active_question": "Can equal-center/equal-first-derivative curves have distinct limiting annihilator subspaces?",
+   "scope": "Exact rank/projector-limit/kernel-inclusion certificates for stated polynomial paths; coverage domains explicit.",
+   "rocq_boundary": "Approved campaign lossless collection plus preregistered adjudication complete, or direct human instruction; workflow gate only.",
+   "files": [
+    "gororoba_quantum/kernel_limits.py",
+    "gororoba_quantum/kernel_limit_contracts.py",
+    "docs/notes/annihilator_kernel_limits.md",
+    "docs/evidence/kernel_limits/",
+    "AGENTS.md",
+    "docs/INDEX.md",
+    "docs/RESEARCH_ROADMAP.md",
+    "gororoba_quantum/circle_kernel_attachments.py"
+   ],
+   "owner_tasks": [
+    "kernel-limit-rank-witnesses",
+    "kernel-limit-projector-removability",
+    "kernel-limit-attachment-fixtures",
+    "kernel-limit-circle-family",
+    "kernel-limit-all-stage-transport",
+    "kernel-limit-review-integration"
+   ],
+   "reported_slice_result": {
+    "domain": "Dimension-32 slice e1+e18+A e3+B e8+C e27 with arbitrary real A,B,C.",
+    "rank_partition": "Delta=A^2+B^2-C^2: rank32 off cone, rank24 on punctured cone, rank20 at origin.",
+    "attachment_image": "Reported RP1 kernel-plane family with common R4 and rotating R4; unit-partner image S3*(S1 x S3).",
+    "integral_homology_degrees": [
+     0,
+     5,
+     7,
+     8
+    ],
+    "cup_products": "Reported square-zero positive-degree cup products.",
+    "authority": "Owner report; exact coverage, quotient map, topology proof and independent review pending.",
+    "non_claim": "The affine slice does not classify the complete ambient dimension-32 space or every doubling stage."
+   },
+   "pre_run_roster": {
+    "planned_prs": 1,
+    "branch": "codex/annihilator-kernel-limits",
+    "children": [
+     "kernel_attachment_research",
+     "kernel_limit_contracts"
+    ],
+    "old_children": "Owner reports terminal/interrupted, with zero active changes.",
+    "completion": "Exact normal/optimized/source-hash replay; complete production/source gates; independent math/code and current-head Copilot reviews; resolved findings; reviewed merge; executor-authorized canonical containment; owned cleanup; idle children.",
+    "reported_incidence_result": "Full pair incidence over the named affine slice: two explicit mapping cylinders and strong deformation retract onto S11, distinct from the attachment image."
+   },
+   "independent_review": {
+    "authority": "Geometry owner reports independent math/code review with zero findings.",
+    "checks": "24 varied polynomial-matrix/radius stress probes;9cone/offcone points; recursive products/projectors through256; normal/optimized module checks.",
+    "result_sha256": "22c7dd4502407019a01231a239748e6b79f13bcf80d7e3d12855faebe149933c",
+    "stage": "Complete production/source gates, published head/Copilot review, merge and containment pending."
+   },
+   "worker_binding_repair": {
+    "authority": "Geometry owner report; independent reproducer and refreshed replay/gates pending.",
+    "finding": "Spawn callback could use foreign/cached worker modules while parent hashed target source files.",
+    "repair": "Dispatch resolved root and frozen snapshot; reject foreign/unbound/stale cache; verify actual worker imports and sources before/after.",
+    "scope": "Evidence-provenance repair in owned replay wrapper; mathematical modules/proofs unchanged."
+   }
+  },
+  "correction_inventory_repair": {
+   "stage": "Independent static reconciliation accepted; focused implementation, tests, Copilot review and reviewed integration released. Physical admission held.",
+   "branch": "codex/correction-complete-snapshot-discovery",
+   "base": "ae51352c95c537b4ae526faaf65473514b9a966e",
+   "primary_evidence": [
+    "correction_planning.py:181-211",
+    "qpu_cases.py:505-537",
+    "correction_case_contracts.py:263"
+   ],
+   "reproduction": "transient:correction-snapshot-boundary-probe.json",
+   "finding": "Generic filtering drops refreshed ineligible snapshots before exact3 inventory; planner/validator already retain explicit exclusion rows.",
+   "invariants": "Three fresh coherent named snapshots; inactive compiled0/admitted0; eligible selected backend; fail missing/probe_failed; generic filtering unchanged; final approval/calibration/budget/source gates.",
+   "non_claim": "Existing old case/launcher approval cannot transfer to new source digest.",
+   "static_staleness": "Kingston calibration changed to10:47:16-07:00; both held static cases require later renewal.",
+   "independent_reconciliation": {
+    "owner_id": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+    "base": "ae51352c95c537b4ae526faaf65473514b9a966e",
+    "result": "Exactly three successful fresh coherent refreshes, explicit rejection rows, eligible admitted winner; universal backend eligibility is outside the intended contract.",
+    "tests": [
+     "maintenance with operational true",
+     "excess queue",
+     "nonoperational active-message status",
+     "absent native CZ",
+     "refresh/properties/coherence failure",
+     "missing/duplicate/unexpected names and all ineligible",
+     "healthy-three winner/PUB/QPY parity",
+     "plan/submit changed winner/competitor/calibration/source/QPY rejection"
+    ]
+   },
+   "latest_owner_tests": "Five production-discovery scenarios, five retained JSON/QPY/write_case admissions, two failed-refresh rejects, all-ineligible/name guards, peer-eligibility and excluded-peer-only calibration renewal pass; runtime audit confirms0.50client side with zero API changes.",
+   "generic_dry_run_failure": {
+    "scope": "Bounded search exhaustion; hardware impossibility is outside the conclusion.",
+    "frontier": 4782969,
+    "attempted": 256,
+    "bound": "FUSION_MAX_ATTEMPTS",
+    "result": "Default generic family failed to admit required folded-QPE joint rounds within the sampled search; explicit failure receipt retained; intended correction-family dry run pending.",
+    "authority": "Execution owner report"
+   }
+  },
+  "final_execution_roster": {
+   "stage": "Finite owner/child/deliverable/PR roster accepted; final receipts, current-head reviews, merges and live idle observations remain pending.",
+   "participant_owner_ids": [
+    "01a130eb-8212-77e3-9f4b-cfc273001a21",
+    "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+    "01a12c8e-0e53-7792-bead-6b71282df961",
+    "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+    "01a129a2-94d7-7e70-a281-780352df62eb",
+    "01a12a07-a9e6-7621-9bbe-108086ce018b",
+    "01a130cb-cf07-7481-b85e-39cc1eb47625",
+    "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c"
+   ],
+   "known_relevant_prs": {
+    "quantum_merged": [
+     36,
+     44,
+     45
+    ],
+    "quantum_pending": [
+     "correction inventory repair PR",
+     "geometry kernel/attachment PR",
+     "central coordination/research PR"
+    ],
+    "open_gororoba_open": [
+     206,
+     207
+    ]
+   },
+   "runtime_children": {
+    "central_completed": [
+     "dispatch_ledger/dispatch_validation",
+     "vacuum_probe_review",
+     "dispatch_ledger: endpoint normalization producer",
+     "vacuum_probe_review: endpoint independent normalization review"
+    ],
+    "central_active": [],
+    "adviser_reported_completed": [
+     "frontier_implementation_status",
+     "frontier_source_reconcile",
+     "hardware_evidence_reconcile"
+    ],
+    "geometry_reported_active": [
+     "kernel_attachment_research",
+     "kernel_limit_contracts"
+    ],
+    "other_owner_rosters": "Pending bounded handbacks.",
+    "port_reported_completed": [
+     "claim_audit",
+     "proof_connections"
+    ],
+    "port_reported_terminal": {
+     "rocq_certificate": "Terminal usage error after captured passing6CLI tests/Clippy/format; parent owns remaining record-time closure.",
+     "arithmetic_methods": "Historical owner absent from current live roster; parent reports zero additional scope."
+    },
+    "executor_reported_errored": {
+     "atlas_score_repair": "Terminal error, inactive; final readiness audit scope recovered by parent and completed independent review.",
+     "placement_review": "Terminal error, inactive; final readiness audit scope recovered by parent and completed independent review."
+    }
+   },
+   "geometry_pre_run_scope": "Owner declared one finite PR: arbitrary-polynomial kernel projectors, continuous named cone rank/bundle/incidence/attachment topology, ordinary all-stage embeddings, exact replay/docs/gates, reviews, containment and cleanup.",
+   "geometry_mathematical_unknowns": "Unrestricted real rank loci, global ambient pair topology and complete all-dimensional classification remain explicitly open; the named-slice result supplies no universal classification.",
+   "post_run_only": [
+    "geometry-rocq-run-result-release",
+    "campaign acquisition/collection/adjudication/publication tasks"
+   ],
+   "receipt_invalidation": "Any newly active participant, unfinished pre-run scope, changed PR head, failed review or source/case/calibration/quota drift holds execution.",
+   "execution_owner": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "coordinator_idle_gate": "Executor confirms the coordinator has ended pre-run work after final handoff.",
+   "verified_pr_receipts": [
+    {
+     "repository": "gororoba-quantum",
+     "pr": 36,
+     "head": "5af63f55defac9452230f006766bac3aa3906a7a",
+     "copilot_review": [
+      {
+       "commit_id": "5af63f55defac9452230f006766bac3aa3906a7a",
+       "state": "COMMENTED",
+       "submitted_at": "2026-10-12T17:53:12Z",
+       "user": "copilot-pull-request-reviewer[bot]"
+      }
+     ],
+     "copilot_check": [
+      {
+       "conclusion": "success",
+       "head_sha": "5af63f55defac9452230f006766bac3aa3906a7a",
+       "name": "copilot-pull-request-reviewer",
+       "status": "completed"
+      }
+     ],
+     "checks": {
+      "success": 1
+     },
+     "open_threads": [],
+     "thread_pagination_complete": true,
+     "authority": "Central REST/GraphQL observation; publication-head repair reviews remain pending for206/207."
+    },
+    {
+     "repository": "gororoba-quantum",
+     "pr": 44,
+     "head": "5454a6af5287db40b6424a49000feae2deacb1c9",
+     "copilot_review": [
+      {
+       "commit_id": "5454a6af5287db40b6424a49000feae2deacb1c9",
+       "state": "COMMENTED",
+       "submitted_at": "2026-10-12T17:41:34Z",
+       "user": "copilot-pull-request-reviewer[bot]"
+      }
+     ],
+     "copilot_check": [
+      {
+       "conclusion": "success",
+       "head_sha": "5454a6af5287db40b6424a49000feae2deacb1c9",
+       "name": "copilot-pull-request-reviewer",
+       "status": "completed"
+      }
+     ],
+     "checks": {
+      "success": 1
+     },
+     "open_threads": [],
+     "thread_pagination_complete": true,
+     "authority": "Central REST/GraphQL observation; publication-head repair reviews remain pending for206/207."
+    },
+    {
+     "repository": "gororoba-quantum",
+     "pr": 45,
+     "head": "2ac08264ae7dc1baa271b96771fff442a46da828",
+     "copilot_review": [
+      {
+       "commit_id": "2ac08264ae7dc1baa271b96771fff442a46da828",
+       "state": "COMMENTED",
+       "submitted_at": "2026-10-12T17:44:04Z",
+       "user": "copilot-pull-request-reviewer[bot]"
+      }
+     ],
+     "copilot_check": [
+      {
+       "conclusion": "success",
+       "head_sha": "2ac08264ae7dc1baa271b96771fff442a46da828",
+       "name": "copilot-pull-request-reviewer",
+       "status": "completed"
+      }
+     ],
+     "checks": {
+      "success": 1
+     },
+     "open_threads": [],
+     "thread_pagination_complete": true,
+     "authority": "Central REST/GraphQL observation; publication-head repair reviews remain pending for206/207."
+    },
+    {
+     "repository": "open_gororoba",
+     "pr": 206,
+     "head": "2fabc48796a7a29b269faec44e8f5a7b57444213",
+     "copilot_review": [],
+     "copilot_check": [],
+     "checks": {
+      "success": 38,
+      "skipped": 4
+     },
+     "open_threads": [
+      "PRRT_kwDORJdQOs6rkV-l",
+      "PRRT_kwDORJdQOs6rkV-q",
+      "PRRT_kwDORJdQOs6rkV-z"
+     ],
+     "thread_pagination_complete": true,
+     "authority": "Central REST/GraphQL observation; publication-head repair reviews remain pending for206/207."
+    },
+    {
+     "repository": "open_gororoba",
+     "pr": 207,
+     "head": "7bba3dd173307d28ead3f9fc9fee4b7071b525a3",
+     "copilot_review": [],
+     "copilot_check": [],
+     "checks": {
+      "success": 31,
+      "skipped": 7
+     },
+     "open_threads": [],
+     "thread_pagination_complete": true,
+     "authority": "Central REST/GraphQL observation; publication-head repair reviews remain pending for206/207."
+    }
+   ],
+   "live_chat_inventory": {
+    "listed_nonpinned": 50,
+    "active_program_owner_ids": [
+     "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+     "01a129a2-94d7-7e70-a281-780352df62eb",
+     "01a130eb-8212-77e3-9f4b-cfc273001a21",
+     "01a12c8e-0e53-7792-bead-6b71282df961"
+    ],
+    "observed_idle_owner_ids": [
+     "01a12a07-a9e6-7621-9bbe-108086ce018b",
+     "01a130cb-cf07-7481-b85e-39cc1eb47625",
+     "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+     "01a12e2f-0c99-7140-9907-f6e5ef283a8e"
+    ],
+    "scope": "Central read the available 50 nonpinned chats; per-owner native-child rosters remain separately reported. The Discord contact chat has separate scope."
+   },
+   "idle_owner_ids_before_central_handoff": [
+    "01a12c8e-0e53-7792-bead-6b71282df961",
+    "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+    "01a129a2-94d7-7e70-a281-780352df62eb",
+    "01a12a07-a9e6-7621-9bbe-108086ce018b",
+    "01a130cb-cf07-7481-b85e-39cc1eb47625",
+    "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c"
+   ],
+   "central_children_idle_before_handoff": true,
+   "central_pre_run_work_before_handoff": "All promised production/review/integration and validation complete; only bounded receipt and final handoff remain.",
+   "integration_order": "Geometry complete finite PR first when admitted; correction/central reviews proceed in parallel; executor owns dirty-primary sync and final fresh case renewal.",
+   "failed_child_recovery": {
+    "parent_commit": "fb13b0675530c3eb9a4d8c0225bf37cacd8b5923",
+    "contained_merge": "ae51352c95c537b4ae526faaf65473514b9a966e",
+    "root_verified": "Both receipt hashes match; parent repair is an ancestor of the merged canonical head.",
+    "retained_receipt": "results/ripple/readiness-index-validation.json",
+    "retained_receipt_sha256": "587616dc9dd4baa2300157bf6f4b7b2de2916799bea56f9dc1cd48226e85a453",
+    "parent_probe_name": "failed-child-readiness-parent-recovery-probe.json",
+    "parent_probe_sha256": "3a0e0000cec52ee5f5ca8d6f3feb9dfcdc5f4f7855c8a83b7fb642e35318740b",
+    "independent_review": "Execution owner reports completed clean native_preflight recovery review:10artifacts,5receipts,6reconciliations; original proposal reconstruction;120code/config blobs equal baseline.",
+    "historical_limitation": "Original retained receipt/probe records the then-open review gap; fresh independent review closes that gap without rewriting historical bytes."
+   }
+  },
+  "coordination_review": {
+   "reviewer": "central child vacuum_probe_review",
+   "initial_graph_tasks": 78,
+   "actionable_findings": [
+    "coordinator own-idle order",
+    "single geometry PR complete-scope review gate",
+    "post-run Rocq adjudication prerequisite",
+    "producer/final-review activity states"
+   ],
+   "stage": "Root fixed all four findings; independent81-task recheck reports zero remaining actionable defects."
+  },
+  "central_validation": {
+   "full_production_source_exit": 0,
+   "start_utc": "2026-10-12T18:34:10Z",
+   "end_utc": "2026-10-12T18:58:06Z",
+   "log_name": "quantum-central-coordination-gates/required-gates.log",
+   "log_sha256": "374a3f1c680d76f274870aa679877b559b8ec8360c319f61a399d8341472691e",
+   "new_endpoint_gates": "Normal/optimized replay and9unittest groups each pass;10checksum entries match. The exact additions to AGENTS were executed separately.",
+   "source_library_local_links": 697,
+   "staged_patch": "Only16owned coordination/source/evidence paths; cached diff whitespace check passes.",
+   "scope": "Local CPU/source/fixture verification; hardware admission remains held."
+  }
+ },
+ "owner_handback_contract": {
+  "max_bytes": 2500,
+  "fields": [
+   "owner_id",
+   "task_ids",
+   "status_delta",
+   "verified_refs",
+   "reported_refs",
+   "blockers",
+   "next_action",
+   "completion_gate",
+   "falsifier",
+   "scope_or_resource_change",
+   "retention",
+   "handback_to_orchestrator"
+  ],
+  "recipient_owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21"
+ },
+ "tasks": [
+  {
+   "task_id": "central-owner-map",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:owners"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Maintain bounded ownership.",
+   "completion_gate": "Every active lane has an owner.",
+   "falsifier": "Auxiliary exchange changes dispatch.",
+   "execution_class": "coordination",
+   "priority": 0
+  },
+  {
+   "task_id": "central-ledger",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "central-owner-map"
+   ],
+   "artifact_refs": [
+    "snapshot:coordination_files"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Maintain accepted owner deltas and validate every queue transition.",
+   "completion_gate": "Two bounded files and DAG validate.",
+   "falsifier": "Invalid ID, owner or DAG.",
+   "execution_class": "coordination",
+   "priority": 0
+  },
+  {
+   "task_id": "central-release-control",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "in_progress",
+   "dependencies": [
+    "central-owner-map"
+   ],
+   "artifact_refs": [
+    "snapshot:authority"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Resolve central gates.",
+   "completion_gate": "Goals close or explicit gates receive disposition.",
+   "falsifier": "Preparation releases execution.",
+   "execution_class": "coordination",
+   "priority": 0
+  },
+  {
+   "task_id": "historical-qpu-inventory",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:historical_qpu"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Reuse jobs; test comparability.",
+   "completion_gate": "Independent owner verifies all three jobs.",
+   "falsifier": "Identity, totals or comparability fail.",
+   "execution_class": "read_only",
+   "priority": 0
+  },
+  {
+   "task_id": "geometry-review",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:geometry"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain clean review receipt.",
+   "completion_gate": "Named head reviewed; findings closed.",
+   "falsifier": "Wrong head or open finding.",
+   "execution_class": "read_only",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-main-merge",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "geometry-review"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain merge/tree receipt.",
+   "completion_gate": "Main contains verified merge/tree.",
+   "falsifier": "Ancestry or tree differs.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "geometry-canonical-containment",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "canonical-sync"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Verify canonical containment.",
+   "completion_gate": "Canonical merge and outputs match.",
+   "falsifier": "Merge or artifact absent.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "geometry-cleanup",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "geometry-canonical-containment"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain completed owner integration receipts.",
+   "completion_gate": "Residue merged, idle and recoverable.",
+   "falsifier": "Active or unique evidence removed.",
+   "execution_class": "retention",
+   "priority": 2
+  },
+  {
+   "task_id": "source-review",
+   "owner_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:sources"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain review/check receipts.",
+   "completion_gate": "Named head clean; checks pass.",
+   "falsifier": "Wrong head or open finding.",
+   "execution_class": "read_only",
+   "priority": 2
+  },
+  {
+   "task_id": "source-main-merge",
+   "owner_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "geometry-main-merge",
+    "source-review"
+   ],
+   "artifact_refs": [
+    "snapshot:sources"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain GitHub merge verification.",
+   "completion_gate": "Protected merge/tree match main.",
+   "falsifier": "Live merge or tree differs.",
+   "execution_class": "integration",
+   "priority": 0
+  },
+  {
+   "task_id": "source-canonical-containment",
+   "owner_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "canonical-sync",
+    "source-main-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:sources"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Verify canonical originals.",
+   "completion_gate": "Merge and sixteen originals retained.",
+   "falsifier": "Identity/checksum/original absent.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "source-cache-cleanup",
+   "owner_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "source-canonical-containment"
+   ],
+   "artifact_refs": [
+    "snapshot:sources"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain completed owner integration receipts.",
+   "completion_gate": "Safe cleanup retains sixteen originals.",
+   "falsifier": "Original or unique source removed.",
+   "execution_class": "retention",
+   "priority": 2
+  },
+  {
+   "task_id": "source-completion-handoff",
+   "owner_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "source-cache-cleanup"
+   ],
+   "artifact_refs": [
+    "snapshot:sources"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain completed owner integration receipts.",
+   "completion_gate": "Review/merge/containment/cleanup close.",
+   "falsifier": "Preparation claims final completion.",
+   "execution_class": "coordination",
+   "priority": 2
+  },
+  {
+   "task_id": "campaign-review-fixes",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain full-head fix/check receipts.",
+   "completion_gate": "Reachable findings fixed; checks pass.",
+   "falsifier": "Finding remains or checks fail.",
+   "execution_class": "cpu_validation",
+   "priority": 0
+  },
+  {
+   "task_id": "campaign-final-review",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "campaign-review-fixes"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain current-head review receipts.",
+   "completion_gate": "Selected review clean; checks/threads close.",
+   "falsifier": "Stale review or open finding.",
+   "execution_class": "read_only",
+   "priority": 0
+  },
+  {
+   "task_id": "campaign-main-integration",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "source-main-merge",
+    "geometry-main-merge",
+    "campaign-final-review"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain protected campaign merge.",
+   "completion_gate": "Main contains all reviewed merges.",
+   "falsifier": "Source merge or review absent.",
+   "execution_class": "integration",
+   "priority": 0
+  },
+  {
+   "task_id": "canonical-sync",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "campaign-main-integration"
+   ],
+   "artifact_refs": [
+    "snapshot:canonical_sync"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Run the three-merge preservation helper.",
+   "completion_gate": "Ancestry matches; owner changes survive.",
+   "falsifier": "Partial sync bypasses bound helper.",
+   "execution_class": "integration",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-backend-availability",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-inventory-reviewed-integration"
+   ],
+   "artifact_refs": [
+    "snapshot:backend_availability"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Wait for eligible fresh backend set.",
+   "completion_gate": "All three fresh coherent snapshots retained; selected backend eligible; exclusions explicit.",
+   "falsifier": "Stale/reduced set bypasses maintenance.",
+   "execution_class": "service_read",
+   "priority": 0
+  },
+  {
+   "task_id": "maintenance-eligibility-contract-diagnosis",
+   "owner_id": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:maintenance"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain authoritative contract diagnosis.",
+   "completion_gate": "Contract and rejection bind findings.",
+   "falsifier": "Code edits precede reviewed findings.",
+   "execution_class": "read_only",
+   "priority": 0
+  },
+  {
+   "task_id": "campaign-final-source-calibration-budget-admission",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "canonical-sync",
+    "correction-backend-availability",
+    "correction-inventory-case-renewal",
+    "central-final-pre-run-handoff"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Refresh closure, calibration and usage.",
+   "completion_gate": "Exact case matches; cap/reserve hold.",
+   "falsifier": "Mismatch or reservation permits submit.",
+   "execution_class": "service_read",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-acquisition",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "campaign-final-source-calibration-budget-admission"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Submit approved correction once.",
+   "completion_gate": "Accepted IDs bind one-use ceiling.",
+   "falsifier": "Admission bypass or approval reuse.",
+   "execution_class": "qpu_acquisition",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-collection",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-acquisition"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Collect immutable counts/receipts.",
+   "completion_gate": "Readers verify raw/schedule/calibration.",
+   "falsifier": "Required execution evidence missing.",
+   "execution_class": "collection",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-qualified-decision",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-collection"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Adjudicate adopt/retain/withheld.",
+   "completion_gate": "Valid data qualifies; withheld holds static.",
+   "falsifier": "Missing evidence qualifies static.",
+   "execution_class": "cpu_validation",
+   "priority": 0
+  },
+  {
+   "task_id": "static-family-admission",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-qualified-decision"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Admit each static family separately.",
+   "completion_gate": "Both keyed family states close independently; held family stays held.",
+   "falsifier": "Another family substitutes for a gate.",
+   "execution_class": "service_read",
+   "priority": 1
+  },
+  {
+   "task_id": "static-acquisition",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "static-family-admission"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Acquire released static families.",
+   "completion_gate": "Both keyed family states close independently; held family stays held.",
+   "falsifier": "Held family submits; cap/reserve fails.",
+   "execution_class": "qpu_acquisition",
+   "priority": 1
+  },
+  {
+   "task_id": "immutable-static-collection",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "static-acquisition"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Archive shot order and metadata.",
+   "completion_gate": "Readers verify job/PUB/shot identities.",
+   "falsifier": "Raw rewrites or execution IDs disappear.",
+   "execution_class": "collection",
+   "priority": 1
+  },
+  {
+   "task_id": "measured-classification-render",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "immutable-static-collection"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Render measured classifications.",
+   "completion_gate": "Frozen tests bind residuals/uncertainty.",
+   "falsifier": "Forecast or pooling becomes equivalence.",
+   "execution_class": "cpu_validation",
+   "priority": 1
+  },
+  {
+   "task_id": "campaign-charge-settlement",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-acquisition",
+    "static-acquisition"
+   ],
+   "artifact_refs": [
+    "snapshot:budget"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Reconcile every billed outcome.",
+   "completion_gate": "Charges settle before reservation release.",
+   "falsifier": "Forecast replaces charge; job omitted.",
+   "execution_class": "service_read",
+   "priority": 0
+  },
+  {
+   "task_id": "reviewed-evidence-publication",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "measured-classification-render",
+    "campaign-charge-settlement"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Publish reviewed measured evidence.",
+   "completion_gate": "Head review admits raw/analysis/charges.",
+   "falsifier": "Planning becomes physical evidence.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "campaign-final-sync",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "reviewed-evidence-publication"
+   ],
+   "artifact_refs": [
+    "snapshot:canonical_sync"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Sync reviewed evidence.",
+   "completion_gate": "Canonical ancestry/evidence match.",
+   "falsifier": "Reviewed result or owner input lost.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "campaign-retention-handoff",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "campaign-final-sync"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Hand back charges and retention.",
+   "completion_gate": "Campaign closes; nine old dirs retained.",
+   "falsifier": "Retention deleted or charge omitted.",
+   "execution_class": "coordination",
+   "priority": 1
+  },
+  {
+   "task_id": "port-final-review-publication",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "port-repair-publication"
+   ],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Wait for repair publication, then verify the new head with Copilot and required source review.",
+   "completion_gate": "Proof/Rust review and checks close.",
+   "falsifier": "Proof becomes QPU/vacuum evidence.",
+   "execution_class": "read_only",
+   "priority": 1
+  },
+  {
+   "task_id": "port-reviewed-merge",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "port-final-review-publication"
+   ],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Merge reviewed PR206.",
+   "completion_gate": "Protected main contains clean head.",
+   "falsifier": "Stale review or finding qualifies.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "port-canonical-sync",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "port-reviewed-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Verify proof/Rust containment.",
+   "completion_gate": "Canonical sources and assumptions match.",
+   "falsifier": "Formal/implementation scope conflates.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "port-cleanup-handoff",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "port-canonical-sync"
+   ],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Clean merged residue; hand back.",
+   "completion_gate": "Containment and safe cleanup close.",
+   "falsifier": "Unique evidence or obligations lost.",
+   "execution_class": "retention",
+   "priority": 2
+  },
+  {
+   "task_id": "schur-final-review-publication",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "port-repair-publication"
+   ],
+   "artifact_refs": [
+    "snapshot:port_schur"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Obtain PR207 final owner handback.",
+   "completion_gate": "Finite Schur review/checks close.",
+   "falsifier": "Finite evidence becomes universal.",
+   "execution_class": "read_only",
+   "priority": 1
+  },
+  {
+   "task_id": "schur-reviewed-merge",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "schur-final-review-publication",
+    "port-reviewed-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:port_schur"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Merge reviewed stacked PR207.",
+   "completion_gate": "Protected main contains clean head.",
+   "falsifier": "PR opening substitutes for integration.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "schur-canonical-sync",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "schur-reviewed-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:port_schur"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Verify canonical Schur outputs.",
+   "completion_gate": "Reviewed finite artifacts match.",
+   "falsifier": "Canonical output or scope differs.",
+   "execution_class": "integration",
+   "priority": 1
+  },
+  {
+   "task_id": "schur-cleanup-handoff",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "schur-canonical-sync"
+   ],
+   "artifact_refs": [
+    "snapshot:port_schur"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Close Schur retention; hand back.",
+   "completion_gate": "Safe cleanup and final receipts arrive.",
+   "falsifier": "Evidence or pending work omitted.",
+   "execution_class": "retention",
+   "priority": 2
+  },
+  {
+   "task_id": "adviser-handoff",
+   "owner_id": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:adviser"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain bounded synthesis advice.",
+   "completion_gate": "Handoff names scope/residuals.",
+   "falsifier": "Advice creates execution authority.",
+   "execution_class": "coordination",
+   "priority": 2
+  },
+  {
+   "task_id": "qpu-audit-final-case",
+   "owner_id": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "campaign-main-integration"
+   ],
+   "artifact_refs": [
+    "snapshot:qpu_audit"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain bounded cost/fidelity/protocol conclusions; renew physical gates after final repair.",
+   "completion_gate": "Bounded audit names release residuals.",
+   "falsifier": "Planning qualifies hardware inference.",
+   "execution_class": "read_only",
+   "priority": 0
+  },
+  {
+   "task_id": "bridge-authority-audit",
+   "owner_id": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+   "repository_alias": "open_gororoba",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:bridge"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain authority separation handback.",
+   "completion_gate": "Proof and executor scopes separated.",
+   "falsifier": "Bridge dispatch exceeds authority.",
+   "execution_class": "read_only",
+   "priority": 2
+  },
+  {
+   "task_id": "bridge-three-job-map",
+   "owner_id": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+   "repository_alias": "open_gororoba",
+   "status": "complete",
+   "dependencies": [
+    "historical-qpu-inventory"
+   ],
+   "artifact_refs": [
+    "snapshot:bridge"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain three-job evidence map.",
+   "completion_gate": "All job identities map to campaigns.",
+   "falsifier": "Identity differs or pooling assumed.",
+   "execution_class": "read_only",
+   "priority": 2
+  },
+  {
+   "task_id": "bridge-app-attachment-reconcile",
+   "owner_id": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+   "repository_alias": "open_gororoba",
+   "status": "deferred",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:bridge_attachment"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Inspect read-only; defer cleanup.",
+   "completion_gate": "Central authorizes bounded disposition.",
+   "falsifier": "Filesystem workaround runs unapproved.",
+   "execution_class": "retention",
+   "priority": 3
+  },
+  {
+   "task_id": "followup-worldline-oracle",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "open_gororoba",
+   "status": "deferred",
+   "dependencies": [
+    "port-reviewed-merge",
+    "schur-reviewed-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:research_frontier"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Review unassigned oracle scope.",
+   "completion_gate": "Independent MC question centrally scoped.",
+   "falsifier": "Helper/finiteness becomes MC agreement.",
+   "execution_class": "research_cpu",
+   "priority": 3
+  },
+  {
+   "task_id": "followup-experiment-claim-link",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "open_gororoba",
+   "status": "deferred",
+   "dependencies": [
+    "port-reviewed-merge",
+    "schur-reviewed-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:research_frontier"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Review unassigned E044 linkage.",
+   "completion_gate": "Source-bound repair centrally scoped.",
+   "falsifier": "Concurrent SQLite or hardware expands.",
+   "execution_class": "research_cpu",
+   "priority": 3
+  },
+  {
+   "task_id": "port-active-build-manifest",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "in_progress",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Repair active fresh-build manifest and regression fixture.",
+   "completion_gate": "A fresh build activates exactly the intended source-bound manifest.",
+   "falsifier": "Missing or stale active manifest accepts evidence.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "port-minimal-modulus-width",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "in_progress",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Repair minimal power-of-two modulus width and CLI witnesses.",
+   "completion_gate": "Supported smallest modulus uses a valid register width; focused tests pass.",
+   "falsifier": "A documented modulus produces invalid width/action.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "port-proof-object-source-correspondence",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "in_progress",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:port"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Reproduce trusted full-closure object/kernel/assumptions before v2 admission.",
+   "completion_gate": "Thirteen-target determinism/review passes before fixed-denominator mutation.",
+   "falsifier": "Wrong object/log/source is admitted or immutable v1 history changes.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "port-repair-publication",
+   "owner_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "repository_alias": "open_gororoba",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "port-active-build-manifest",
+    "port-minimal-modulus-width",
+    "port-proof-object-source-correspondence"
+   ],
+   "artifact_refs": [
+    "snapshot:port",
+    "snapshot:port_schur"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Run required gates, commit/push206 fixes and merge upward to207 without force push.",
+   "completion_gate": "New source/head/receipt identities verified; both current-head reviews requested.",
+   "falsifier": "Prior clean review qualifies changed head or registry denominator drifts.",
+   "execution_class": "publication",
+   "priority": 1
+  },
+  {
+   "task_id": "geometry-kernel-limit-design",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "in_progress",
+   "dependencies": [
+    "geometry-main-merge"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Define bounded polynomial-path/exceptional-domain witnesses.",
+   "completion_gate": "Operator/rank/projector/limit contracts and exact source ownership fixed.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-kernel-limit-certificate",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-design"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Certify rank, removable projector limits and distinct subspace attachments.",
+   "completion_gate": "Replay rejects wrong rank/limit/inclusion and preserves exact witness scope.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-kernel-limit-review",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-certificate"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Run required gates and current-head review.",
+   "completion_gate": "Independent mathematical/software review and required checks qualify current head.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-kernel-limit-integration",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-review",
+    "geometry-circle-attachment-review"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Merge reviewed certificate through owned branch.",
+   "completion_gate": "The single geometry PR merges only after kernel-limit and complete finite circle/incidence/ordinary-embedding review, passing required checks and resolved current-head Copilot findings.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "publication",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-kernel-limit-containment",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-integration"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Coordinate canonical sync and verify evidence containment.",
+   "completion_gate": "Canonical contains merge and preserves concurrent execution records.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-kernel-limit-cleanup",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-containment"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Remove only merged idle residue after retention checks.",
+   "completion_gate": "Owned evidence retained; named residue absent and final handback received.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-neighborhood-attachments",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-certificate"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Resolve actual local branches, normal links and attaching maps.",
+   "completion_gate": "Explicit real-domain coverage and exact maps/compatibility identities.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-global-topology",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-neighborhood-attachments"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Construct a globally justified model and selected invariants.",
+   "completion_gate": "Covering strata/gluing model and integral chains, not sampled graph/Betti agreement.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 3
+  },
+  {
+   "task_id": "geometry-all-dimensional-classification",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-global-topology"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Prove covering structural/classification claims under all-stage conventions.",
+   "completion_gate": "All claimed stages/domains covered or precise counterexample and restricted result.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 3
+  },
+  {
+   "task_id": "geometry-rocq-run-result-release",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-certificate",
+    "correction-collection",
+    "immutable-static-collection",
+    "campaign-preregistered-adjudication-receipt"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Identify the human's intended new run-result release milestone.",
+   "completion_gate": "Approved campaign lossless collection and preregistered adjudication complete, or direct human release; proof validity independent.",
+   "falsifier": "Uncovered domain, incorrect rank/limit/attachment, assumption drift or premature global/formal claim.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "correction-inventory-contract-reconciliation",
+   "owner_id": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "maintenance-eligibility-contract-diagnosis"
+   ],
+   "artifact_refs": [
+    "snapshot:correction_inventory_repair"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Retain the independently reconciled inventory/candidate boundary.",
+   "completion_gate": "Independent static reads reconcile planner, validator, tests and both callers; test execution belongs to the implementation owner.",
+   "falsifier": "Inactive backend admitted, failed refresh replaced, generic behavior changes, or stale source/case authority inherited.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-inventory-regression-design",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "maintenance-eligibility-contract-diagnosis"
+   ],
+   "artifact_refs": [
+    "snapshot:correction_inventory_repair"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Implement the accepted negative regression matrix.",
+   "completion_gate": "Production plan/submit, generic-family parity and rejected-refresh/eligibility regression obligations enumerated.",
+   "falsifier": "Inactive backend admitted, failed refresh replaced, generic behavior changes, or stale source/case authority inherited.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-inventory-caller-repair",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "in_progress",
+   "dependencies": [
+    "correction-inventory-contract-reconciliation",
+    "correction-inventory-regression-design"
+   ],
+   "artifact_refs": [
+    "snapshot:correction_inventory_repair"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Implement correction-only complete successful refresh retention in plan and submit; preserve generic filtering.",
+   "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+   "falsifier": "Inactive backend admitted, failed refresh replaced, generic behavior changes, or stale source/case authority inherited.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-inventory-source-gates",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-inventory-caller-repair"
+   ],
+   "artifact_refs": [
+    "snapshot:correction_inventory_repair"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Run required Qiskit/normal/optimized/dry-run/source gates with independent review.",
+   "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+   "falsifier": "Inactive backend admitted, failed refresh replaced, generic behavior changes, or stale source/case authority inherited.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-inventory-reviewed-integration",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-inventory-source-gates"
+   ],
+   "artifact_refs": [
+    "snapshot:correction_inventory_repair"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Obtain current-head clean review, protected merge and canonical sync.",
+   "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+   "falsifier": "Inactive backend admitted, failed refresh replaced, generic behavior changes, or stale source/case authority inherited.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "correction-inventory-case-renewal",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-inventory-reviewed-integration"
+   ],
+   "artifact_refs": [
+    "snapshot:correction_inventory_repair"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Renew all three cases and prospective classifier binding at new reviewed digest.",
+   "completion_gate": "Complete inventory contract/negative tests/source review/fresh case bindings at this task's boundary.",
+   "falsifier": "Inactive backend admitted, failed refresh replaced, generic behavior changes, or stale source/case authority inherited.",
+   "execution_class": "local_replay",
+   "priority": 0
+  },
+  {
+   "task_id": "pre-run-participant-pr-roster",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Replace each planned PR reference with its published number/head and collect final receipts.",
+   "completion_gate": "Eight owners, finite pre-run deliverables, named active/completed/terminal children and planned/known PRs have explicit coverage; final live idle/review/merge observations remain separately gated.",
+   "falsifier": "An active participant, PR or unresolved authorized scope falls outside the roster.",
+   "execution_class": "coordination",
+   "priority": 1
+  },
+  {
+   "task_id": "central-endpoint-replay-production",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:endpoint_information"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain the source-bound normalized replay and original audit identities.",
+   "completion_gate": "Owned replay/result/provenance/checksums pass normal and optimized checks, strict typing and lint within the declared output bound.",
+   "falsifier": "Source drift, changed law/ratio/cover, missing covariance, or hardware/billing claim inflation.",
+   "execution_class": "local_replay",
+   "priority": 1
+  },
+  {
+   "task_id": "central-endpoint-replay-review",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [
+    "central-endpoint-replay-production"
+   ],
+   "artifact_refs": [
+    "snapshot:endpoint_information"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain the independently reviewed normalized mathematics and rejection/binding receipts.",
+   "completion_gate": "Reviewer verifies normalized mathematics and preserved original audit identities; actionable findings close.",
+   "falsifier": "Normalization changes estimator law or admits corrupted results.",
+   "execution_class": "local_replay",
+   "priority": 1
+  },
+  {
+   "task_id": "central-coordination-research-publication",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "in_progress",
+   "dependencies": [
+    "pre-run-participant-pr-roster",
+    "central-endpoint-replay-review"
+   ],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "reported",
+   "next_action": "Finish full repository gates, stage only owned artifacts, commit and request current-head Copilot review.",
+   "completion_gate": "Exact source head, required gates and complete PR references are retained.",
+   "falsifier": "Unrelated owner edits enter the PR or an untested source-bound artifact is published.",
+   "execution_class": "repository_write",
+   "priority": 1
+  },
+  {
+   "task_id": "central-coordination-research-integration",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "central-coordination-research-publication"
+   ],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Resolve current-head Copilot findings, merge and verify canonical containment before owned cleanup.",
+   "completion_gate": "Copilot reviewed head, resolved threads, checks, merge, retained evidence and owned cleanup verify.",
+   "falsifier": "Historical review qualifies a changed head or cleanup loses required evidence.",
+   "execution_class": "repository_write",
+   "priority": 1
+  },
+  {
+   "task_id": "geometry-circle-attachment-real-coverage",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-design"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Certify real cone charts, rank partition, global frames, compactification and attachment image.",
+   "completion_gate": "All-real polynomial identities cover the declared affine slice and explicit quotient maps identify the attachment image.",
+   "falsifier": "Sampled points substitute for domain coverage or the quotient loses a fiber.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-circle-attachment-topology",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-circle-attachment-real-coverage"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Prove the declared join model, integral homology and cup-product claims.",
+   "completion_gate": "Explicit homeomorphism/cellular or equivalent proof supports only the named attachment-image space.",
+   "falsifier": "Slice/image topology is promoted to ambient or all-stage classification.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-circle-attachment-review",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-circle-attachment-topology",
+    "geometry-slice-incidence-topology",
+    "geometry-ordinary-all-stage-embedding"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Obtain independent mathematical review and current-head Copilot source review.",
+   "completion_gate": "Independent review verifies real coverage, sign-quotient trivialization, attachment image, full slice incidence and ordinary all-stage induction; current-head Copilot and required checks qualify the single finite PR.",
+   "falsifier": "Unreviewed homeomorphism or a historical head supplies admission.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-circle-attachment-containment",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-circle-attachment-review",
+    "geometry-kernel-limit-cleanup"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Verify reviewed merge, canonical evidence containment, owned cleanup and final handback.",
+   "completion_gate": "Merged attachment evidence survives canonical sync; owner and children finish their bounded scope.",
+   "falsifier": "Any active scope or child is silently dropped.",
+   "execution_class": "repository_write",
+   "priority": 2
+  },
+  {
+   "task_id": "participating-pr-copilot-merge-receipt",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "pre-run-participant-pr-roster",
+    "correction-inventory-reviewed-integration",
+    "port-cleanup-handoff",
+    "schur-cleanup-handoff",
+    "geometry-circle-attachment-containment",
+    "central-coordination-research-integration"
+   ],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Verify every relevant PR against its admitted head, Copilot review, threads, checks and merge.",
+   "completion_gate": "Every roster PR has a head-bound Copilot review, resolved reachable findings, passing required checks and verified reviewed merge.",
+   "falsifier": "An omitted PR, unresolved finding, changed head or unmerged review candidate remains.",
+   "execution_class": "target_read_only",
+   "priority": 0
+  },
+  {
+   "task_id": "participants-completion-idle-receipt",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "pre-run-participant-pr-roster",
+    "participating-pr-copilot-merge-receipt",
+    "execution-atlas-score-recovery",
+    "execution-placement-review-recovery"
+   ],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Collect all pre-run final handbacks and independently verify participating owner/child idle states.",
+   "completion_gate": "Every named specialist owner and every participating child completes the declared finite pre-run work and is idle. Central completes all production/review/integration first, then performs only bounded receipt/handoff work; executor verifies central idle after handoff before physical admission.",
+   "falsifier": "An active specialist/child, unfinished promised pre-run work or omitted participant remains; central starts production or review work after the final receipt.",
+   "execution_class": "target_read_only",
+   "priority": 0
+  },
+  {
+   "task_id": "central-final-pre-run-handoff",
+   "owner_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "participants-completion-idle-receipt",
+    "correction-inventory-case-renewal"
+   ],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Send the sole executor the bounded completion/PR/idle evidence receipt.",
+   "completion_gate": "Executor receives central acceptance and independently confirms coordinator/other participants idle immediately before fresh final physical admission.",
+   "falsifier": "Coordinator or another participant resumes unfinished work before execution, or physical bindings drift.",
+   "execution_class": "coordination",
+   "priority": 0
+  },
+  {
+   "task_id": "geometry-slice-incidence-topology",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-circle-attachment-real-coverage"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Prove the two mapping-cylinder model and radial strong deformation retract for full pair incidence over the named affine slice.",
+   "completion_gate": "Exact fiber identities and continuous apex/radial transport prove the declared incidence retract onto S11, independently of attachment-image topology.",
+   "falsifier": "Attachment-image invariants substitute for full incidence, or radial transport leaves an annihilator fiber.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "geometry-ordinary-all-stage-embedding",
+   "owner_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "geometry-kernel-limit-certificate"
+   ],
+   "artifact_refs": [
+    "snapshot:geometry_resumed"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Prove ordinary-embedding rank/kernel/path transport by induction and replay the declared finite stages.",
+   "completion_gate": "The induction covers every claimed ordinary higher embedding under explicit Cayley-Dickson conventions; finite replay through dimension256 corroborates only those instances.",
+   "falsifier": "Finite dimension256 checks replace induction, or ordinary embedding is promoted to arbitrary all-dimensional classification.",
+   "execution_class": "local_replay",
+   "priority": 2
+  },
+  {
+   "task_id": "campaign-preregistered-adjudication-receipt",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "waiting_dependency",
+   "dependencies": [
+    "correction-qualified-decision",
+    "measured-classification-render"
+   ],
+   "artifact_refs": [
+    "snapshot:campaign"
+   ],
+   "evidence_authority": "pending",
+   "next_action": "Verify the campaign preregistered correction/static analyses against lossless raw identities and their declared analysis digests.",
+   "completion_gate": "Approved campaign lossless collection plus preregistered adjudication is complete for the named acquired families; withheld data or missing promised acquisitions hold the workflow receipt.",
+   "falsifier": "Raw collection alone releases proof work, or a changed analysis silently replaces the preregistered digest.",
+   "execution_class": "local_replay",
+   "priority": 1
+  },
+  {
+   "task_id": "execution-atlas-score-recovery",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain terminal child lifecycle plus parent-recovered assigned-scope evidence.",
+   "completion_gate": "Original assignment/files/error boundary and retained outputs identified; every assigned deliverable closed by verified parent or resumed-child evidence; child terminal/idle status retained honestly.",
+   "falsifier": "Errored or idle lifecycle alone substitutes for completed assigned work; original responsibilities or unfinished edits are omitted.",
+   "execution_class": "coordination",
+   "priority": 0
+  },
+  {
+   "task_id": "execution-placement-review-recovery",
+   "owner_id": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
+   "repository_alias": "quantum",
+   "status": "complete",
+   "dependencies": [],
+   "artifact_refs": [
+    "snapshot:final_execution_roster"
+   ],
+   "evidence_authority": "verified",
+   "next_action": "Retain terminal child lifecycle plus parent-recovered assigned-scope evidence.",
+   "completion_gate": "Original assignment/files/error boundary and retained outputs identified; every assigned deliverable closed by verified parent or resumed-child evidence; child terminal/idle status retained honestly.",
+   "falsifier": "Errored or idle lifecycle alone substitutes for completed assigned work; original responsibilities or unfinished edits are omitted.",
+   "execution_class": "coordination",
+   "priority": 0
+  }
+ ],
+ "last_updated_utc": "2026-10-12T19:00:21.815188Z",
+ "artifact_budget": {
+  "combined_coordination_bytes": 100000,
+  "reason": "Central expanded the initial 40000-byte ceiling to retain resumed scope, verified PR receipts, native-child rosters and independently reviewed completion gates.",
+  "handback_bytes": 2500
+ }
+}
