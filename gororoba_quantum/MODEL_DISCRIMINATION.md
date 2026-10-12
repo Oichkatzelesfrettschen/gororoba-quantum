@@ -1,11 +1,15 @@
 # Measured-feedback versus known-label correction
 
+The [integrated campaign directive](RIPPLE_CAMPAIGN.md) reconciles the user's
+additive requests, cross-chat findings, ownership and evidence boundaries.
+
 The execution priority is model discrimination and a measurable optimizer
 decision before broad atlas expenditure. The prepared 197-second ripple/rank
 campaign remains retained and unapproved behind that decision gate. The
-four-PUB pilot below is a design recommendation; the runner does not yet
-implement its family, and its time estimate is historical rather than a
-freshly admitted execution case.
+four-PUB pilot has a dedicated preparation-only runner, exact-count statistical
+analysis, common-template circuit verification and native schedule validator.
+The production submission family remains gated on native schedule qualification.
+Its historical time estimate remains separate from a freshly admitted case.
 
 ## Existing evidence first: zero additional QPU seconds
 
@@ -39,7 +43,7 @@ arms, giving four PUBs:
 | Arm | Correction rule | Retained observations |
 | --- | --- | --- |
 | F | Apply P(-pi/2) when the first measured bit is one | First measurement, reset, first bit and terminal bit |
-| U | Apply P(-pi/2) unconditionally from the supplied odd label | The same first measurement, reset and two bits |
+| U | Apply P(-pi/2) in both recorded-bit branches, using the supplied odd label | The same first measurement, reset, dispatch and two bits |
 
 Both arms have the same ideal labeled law. Keep their quantum preparation,
 compiled prefix/suffix, physical mapping and terminal writer fixed. Match
@@ -47,8 +51,12 @@ and audit schedules, including conditional latency and measurement/reset
 timing. A common initial layout alone is insufficient: the completed ladder
 used different terminal writers after routing. A zero-angle conditional can
 be optimized away, and padding needs backend timing evidence. Schedule
-matching remains a qualification requirement; the unavailable Kingston mock
-service leaves that requirement open.
+matching remains a qualification requirement. The common symbolic template
+compiles once; binding preserves both correction branches, including F's RZ(0).
+Separate post-binding transpilation is prohibited because optimization can
+remove that zero-angle branch. U retains classical dispatch, so the experiment
+tests dependence on the recorded value and does not test dispatch removal.
+The unavailable Kingston mock service leaves schedule qualification open.
 
 When the recorded first bit B=1, both arms apply the same phase. When B=0,
 the arms differ in whether they apply the phase. Those strata provide
@@ -111,17 +119,50 @@ are neither an approved budget nor a service ceiling. The four-PUB design is
 the minimum comparison for the narrow optimizer decision. Forced-wrong
 controls support a stronger branch-consistency question at additional cost.
 
-Before proposing execution:
+The local implementation now includes:
 
-1. Add the explicit four-member family, independent ideal laws, contracts and
-   record reconstruction. The existing folded CLI always builds sixteen PUBs.
-2. Verify a common routed template, terminal writer, measurement/reset history
-   and the schedule contract. Reject qualification when those checks fail.
-3. Freeze model predictions and the one-percentage-point decision rule; keep
-   conditional diagnostics outside that primary inference family.
-4. Run fresh calibration-bound compilation, local model checks, timing and
-   independent admission. Record its source/QPY digests and service ceiling.
-5. Present the written case for explicit user approval. Submit only that case.
+- `correction_circuits.py`: one symbolic template, complete-history pair checks,
+  independent ideal-law checks, and protected measurement/reset/writer identity.
+  Retained archive bytes supply QPY identity; native-circuit reserialization has
+  nondeterministic layout bytes.
+- `correction_statistics.py`: validated integer joint histograms, four CP bounds,
+  the strict two-label decision, descriptive first-bit strata, and full-support
+  hypothetical power enumeration. Rounded probabilities remain outside the
+  count interface.
+- `correction_schedule.py`: fail-closed comparison of exposed native event
+  tables and the validated circuit pair. Protected events and internal times
+  must agree. U keeps both branch rotations; F may omit only its zero-duration
+  zero-phase else event. The tables do not certify undisclosed controller
+  behavior, pulse amplitudes or shot-specific timing.
+- `correction_preparation.py`: fresh compilation, frozen finite-shot model
+  vectors, dependency/source/calibration hashes, QPY archives and an optional
+  mock-only request. External record digest, actual archive bytes and restored
+  pair checks bind the request. Randomized mock values remain unread.
+
+Run preparation with the pinned repository environment:
+
+```sh
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
+  gororoba_quantum/correction_preparation.py --backend ibm_kingston \
+  --shots 8192 --model-shots 32768 --native-dry-run \
+  --out results/correction
+```
+
+The command writes `preparation.json`, `isa.qpy`, `template.qpy` and a separate
+`native-qualification.json`. Its record format cannot be passed as an approved
+production `record.json`. Every remote primitive call sets `dry_run=True`.
+The 30-second option limits the mock request; it establishes neither a physical
+execution ceiling nor an approved case. Existing raw archives remain unchanged.
+
+Before proposing execution, close the remaining gates:
+
+1. Obtain accessible native mock scheduling and qualify the exact four PUBs.
+2. Integrate the qualified protocol into production family reconstruction,
+   exact raw-count collection, calibration withholding, written-case admission,
+   and digest-bound submission. The existing folded CLI builds sixteen PUBs.
+3. Refresh calibration, model predictions, source/QPY bytes, schedule evidence,
+   quota and a service ceiling under the integrated source closure.
+4. Present the written case for explicit user approval. Submit only that case.
 
 The successful witness decision would establish one concrete optimization in
 its own circuit domain. Static ripple packing still needs its own practical

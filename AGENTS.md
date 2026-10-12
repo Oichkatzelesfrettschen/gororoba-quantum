@@ -24,7 +24,7 @@ The rank-sector image gate also uses the plotting-only pin
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
-    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
+    scripts/review_folded_jobs.py scripts/render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
     literature/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
@@ -34,7 +34,7 @@ The rank-sector image gate also uses the plotting-only pin
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
-    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
+    scripts/review_folded_jobs.py scripts/render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
     literature/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
@@ -51,7 +51,8 @@ The rank-sector image gate also uses the plotting-only pin
   PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" \
-    literature/sources/open_gororoba/check_signed_kite_switching.py >/dev/null
+    literature/sources/open_gororoba/check_signed_kite_switching.py | \
+    cmp - literature/sources/open_gororoba/signed_kite_switching.json
   (cd literature/sources/open_gororoba && sha256sum -c SHA256SUMS)
   (cd results/live
     PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest test_folded_raw_analysis
@@ -70,6 +71,10 @@ The rank-sector image gate also uses the plotting-only pin
     sha256sum -c SHA256SUMS)
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
+    correction_circuits.py correction_circuits_contracts.py \
+    correction_schedule.py correction_schedule_contracts.py \
+    correction_statistics.py correction_statistics_contracts.py \
+    correction_preparation.py correction_preparation_contracts.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
@@ -91,7 +96,7 @@ The rank-sector image gate also uses the plotting-only pin
     ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
     ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py \
     ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
-    ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py \
+    ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py \
     ../literature/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
@@ -123,6 +128,14 @@ The rank-sector image gate also uses the plotting-only pin
   "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
   "$PYTHON" runtime_contracts.py
   "$PYTHON" parameter_binding_contracts.py
+  "$PYTHON" correction_circuits_contracts.py
+  "$PYTHON" correction_statistics_contracts.py
+  "$PYTHON" correction_schedule_contracts.py
+  "$PYTHON" correction_preparation_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_circuits_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_statistics_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_schedule_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" correction_preparation_contracts.py
   "$PYTHON" qpe_diagnostics.py
   "$PYTHON" experiment_optimizer.py
   "$PYTHON" qpu_planning_contracts.py
