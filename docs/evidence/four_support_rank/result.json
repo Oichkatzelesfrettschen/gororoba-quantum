@@ -1,0 +1,803 @@
+{
+  "certificate": {
+    "arithmetic": "polynomial identities over Q[a,b,c,d] and exact rational point evaluations",
+    "dimension": 32,
+    "invalid_inputs_rejected": 11,
+    "kernel_trivialization_scope": "Each fixed vanishing pattern of Delta and all four linear forms away from the origin has the retained polynomial orthogonal frame; smoothness and attachments require separate analysis.",
+    "linear_coordinate_transform": [
+      [
+        1,
+        -1,
+        -1,
+        -1
+      ],
+      [
+        1,
+        -1,
+        1,
+        1
+      ],
+      [
+        1,
+        1,
+        -1,
+        1
+      ],
+      [
+        1,
+        1,
+        1,
+        -1
+      ]
+    ],
+    "linear_forms": [
+      "a - b - c - d",
+      "a - b + c + d",
+      "a + b - c + d",
+      "a + b + c - d"
+    ],
+    "negative_controls": [
+      "duplicate input sector rejected",
+      "CD sign mutation rejected",
+      "missing kernel columns rejected",
+      "origin evaluated separately",
+      "positive rational 1/10^40 retains nonzero rank contribution"
+    ],
+    "nonzero_nullity": "4*(number of vanishing linear forms + indicator(Delta=0))",
+    "norm_squared": "a**2 + b**2 + c**2 + d**2",
+    "origin_nullity": 32,
+    "path_specialization": {
+      "endpoint_nullities": [
+        8,
+        12,
+        16
+      ],
+      "linear_forms": [
+        "0",
+        "-2*t*(t - 2)",
+        "(t - 2)*(t - 1)",
+        "t**2 - t + 2"
+      ],
+      "quadric": "(t - 2)*(t - 1)*(t**2 - t + 2)/2"
+    },
+    "pivot_overlap": {
+      "coefficients": [
+        "1",
+        "1",
+        "1",
+        "1"
+      ],
+      "nullity": 4,
+      "pivot_chart_transition": [
+        [
+          "0",
+          "0",
+          "0",
+          "1"
+        ],
+        [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "-1",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "-1",
+          "0"
+        ]
+      ],
+      "scope": "rational overlap verification; the symbolic pivot-chart contract defines all real overlaps",
+      "support_frame_to_first_chart": [
+        [
+          "4",
+          "0",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "-1",
+          "0"
+        ],
+        [
+          "0",
+          "0",
+          "0",
+          "4"
+        ]
+      ]
+    },
+    "qpu_executed": false,
+    "quadric": "a**2 + b**2 - c**2 - d**2",
+    "quadric_in_linear_coordinates": "2*Delta=ell1*ell2+ell3*ell4",
+    "rational_points": [
+      {
+        "coefficients": [
+          "1",
+          "0",
+          "0",
+          "0"
+        ],
+        "kernel_gram_diagonal": [],
+        "linear_coordinates": [
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "nullity": 0,
+        "quadric": "1",
+        "rank": 32
+      },
+      {
+        "coefficients": [
+          "1/2",
+          "-1/2",
+          "-1/2",
+          "1/2"
+        ],
+        "kernel_gram_diagonal": [
+          "2",
+          "1",
+          "1",
+          "2"
+        ],
+        "linear_coordinates": [
+          "1",
+          "1",
+          "1",
+          "-1"
+        ],
+        "nullity": 4,
+        "quadric": "0",
+        "rank": 28
+      },
+      {
+        "coefficients": [
+          "3/4",
+          "1/4",
+          "1/4",
+          "1/4"
+        ],
+        "kernel_gram_diagonal": [
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        "linear_coordinates": [
+          "0",
+          "1",
+          "1",
+          "1"
+        ],
+        "nullity": 4,
+        "quadric": "1/2",
+        "rank": 28
+      },
+      {
+        "coefficients": [
+          "1/2",
+          "1/2",
+          "0",
+          "0"
+        ],
+        "kernel_gram_diagonal": [
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        "linear_coordinates": [
+          "0",
+          "0",
+          "1",
+          "1"
+        ],
+        "nullity": 8,
+        "quadric": "1/2",
+        "rank": 24
+      },
+      {
+        "coefficients": [
+          "1/2",
+          "0",
+          "1/2",
+          "0"
+        ],
+        "kernel_gram_diagonal": [
+          "1/2",
+          "1/2",
+          "1/2",
+          "1/2",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        "linear_coordinates": [
+          "0",
+          "1",
+          "0",
+          "1"
+        ],
+        "nullity": 12,
+        "quadric": "0",
+        "rank": 20
+      },
+      {
+        "coefficients": [
+          "1/4",
+          "1/4",
+          "1/4",
+          "-1/4"
+        ],
+        "kernel_gram_diagonal": [
+          "1/8",
+          "1/4",
+          "1/4",
+          "1/8",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4",
+          "4"
+        ],
+        "linear_coordinates": [
+          "0",
+          "0",
+          "0",
+          "1"
+        ],
+        "nullity": 16,
+        "quadric": "0",
+        "rank": 16
+      },
+      {
+        "coefficients": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "kernel_gram_diagonal": [
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1",
+          "1"
+        ],
+        "linear_coordinates": [
+          "0",
+          "0",
+          "0",
+          "0"
+        ],
+        "nullity": 32,
+        "quadric": "0",
+        "rank": 0
+      },
+      {
+        "coefficients": [
+          "30000000000000000000000000000000000000001/40000000000000000000000000000000000000000",
+          "9999999999999999999999999999999999999999/40000000000000000000000000000000000000000",
+          "9999999999999999999999999999999999999999/40000000000000000000000000000000000000000",
+          "9999999999999999999999999999999999999999/40000000000000000000000000000000000000000"
+        ],
+        "kernel_gram_diagonal": [],
+        "linear_coordinates": [
+          "1/10000000000000000000000000000000000000000",
+          "1",
+          "1",
+          "1"
+        ],
+        "nullity": 0,
+        "quadric": "10000000000000000000000000000000000000001/20000000000000000000000000000000000000000",
+        "rank": 32
+      }
+    ],
+    "real_sufficiency": "N>0 off the origin; 2*N*(N**2+Delta**2)>0 proves quadratic-sector rank at least3",
+    "schema": "cayley-dickson-four-support-real-rank-v1",
+    "scope": "Every real coefficient point on support {1,10,18,25}; global dimension-32 loci, attachments, topology and other supports remain outside this certificate.",
+    "sector_subgroup": [
+      0,
+      11,
+      19,
+      24
+    ],
+    "sectors": [
+      {
+        "cone_kernel_vector": [
+          "0",
+          "a**2 + b**2 + c**2 + d**2",
+          "2*a*d - 2*b*c",
+          "2*a*c + 2*b*d"
+        ],
+        "cone_vector_norm_squared": "(4*a**2 + 4*b**2)*(c**2 + d**2) + (a**2 + b**2 + c**2 + d**2)**2",
+        "determinant": "-(a**2 + b**2 - c**2 - d**2)*(a**2 + b**2 + c**2 + d**2)",
+        "input_columns": [
+          0,
+          11,
+          19,
+          24
+        ],
+        "kernel_residual_divided_by_delta": [
+          "-b",
+          "a",
+          "d",
+          "-c"
+        ],
+        "output_rows": [
+          1,
+          10,
+          18,
+          25
+        ],
+        "rank_nonzero": "3 if Delta=0, otherwise 4",
+        "representative": 0,
+        "sum_squared_three_minors": "2*N*(N**2+Delta**2)"
+      },
+      {
+        "cone_kernel_vector": [
+          "b",
+          "-a",
+          "-d",
+          "c"
+        ],
+        "cone_vector_norm_squared": "a**2 + b**2 + c**2 + d**2",
+        "determinant": "-(a**2 + b**2 - c**2 - d**2)*(a**2 + b**2 + c**2 + d**2)",
+        "input_columns": [
+          1,
+          10,
+          18,
+          25
+        ],
+        "kernel_residual_divided_by_delta": [
+          "0",
+          "1",
+          "0",
+          "0"
+        ],
+        "output_rows": [
+          0,
+          11,
+          19,
+          24
+        ],
+        "rank_nonzero": "3 if Delta=0, otherwise 4",
+        "representative": 1,
+        "sum_squared_three_minors": "2*N*(N**2+Delta**2)"
+      },
+      {
+        "cone_kernel_vector": [
+          "d",
+          "-c",
+          "b",
+          "-a"
+        ],
+        "cone_vector_norm_squared": "a**2 + b**2 + c**2 + d**2",
+        "determinant": "(a**2 + b**2 - c**2 - d**2)*(a**2 + b**2 + c**2 + d**2)",
+        "input_columns": [
+          2,
+          9,
+          17,
+          26
+        ],
+        "kernel_residual_divided_by_delta": [
+          "0",
+          "0",
+          "0",
+          "-1"
+        ],
+        "output_rows": [
+          3,
+          8,
+          16,
+          27
+        ],
+        "rank_nonzero": "3 if Delta=0, otherwise 4",
+        "representative": 2,
+        "sum_squared_three_minors": "2*N*(N**2+Delta**2)"
+      },
+      {
+        "cone_kernel_vector": [
+          "-2*a*d + 2*b*c",
+          "-2*a*c - 2*b*d",
+          "0",
+          "a**2 + b**2 + c**2 + d**2"
+        ],
+        "cone_vector_norm_squared": "(4*a**2 + 4*b**2)*(c**2 + d**2) + (a**2 + b**2 + c**2 + d**2)**2",
+        "determinant": "(a**2 + b**2 - c**2 - d**2)*(a**2 + b**2 + c**2 + d**2)",
+        "input_columns": [
+          3,
+          8,
+          16,
+          27
+        ],
+        "kernel_residual_divided_by_delta": [
+          "d",
+          "-c",
+          "b",
+          "-a"
+        ],
+        "output_rows": [
+          2,
+          9,
+          17,
+          26
+        ],
+        "rank_nonzero": "3 if Delta=0, otherwise 4",
+        "representative": 3,
+        "sum_squared_three_minors": "2*N*(N**2+Delta**2)"
+      },
+      {
+        "input_columns": [
+          4,
+          15,
+          23,
+          28
+        ],
+        "left_frame": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            -1,
+            -1
+          ],
+          [
+            1,
+            -1,
+            1,
+            -1
+          ],
+          [
+            -1,
+            1,
+            1,
+            -1
+          ]
+        ],
+        "output_rows": [
+          5,
+          14,
+          22,
+          29
+        ],
+        "rank": "number of nonzero linear forms",
+        "representative": 4,
+        "right_frame": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            -1,
+            -1,
+            1,
+            1
+          ],
+          [
+            -1,
+            1,
+            -1,
+            1
+          ],
+          [
+            -1,
+            1,
+            1,
+            -1
+          ]
+        ]
+      },
+      {
+        "input_columns": [
+          5,
+          14,
+          22,
+          29
+        ],
+        "left_frame": [
+          [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          [
+            1,
+            1,
+            -1,
+            -1
+          ],
+          [
+            1,
+            -1,
+            1,
+            -1
+          ],
+          [
+            1,
+            -1,
+            -1,
+            1
+          ]
+        ],
+        "output_rows": [
+          4,
+          15,
+          23,
+          28
+        ],
+        "rank": "number of nonzero linear forms",
+        "representative": 5,
+        "right_frame": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            -1,
+            -1
+          ],
+          [
+            1,
+            -1,
+            1,
+            -1
+          ],
+          [
+            -1,
+            1,
+            1,
+            -1
+          ]
+        ]
+      },
+      {
+        "input_columns": [
+          6,
+          13,
+          21,
+          30
+        ],
+        "left_frame": [
+          [
+            -1,
+            -1,
+            -1,
+            -1
+          ],
+          [
+            -1,
+            -1,
+            1,
+            1
+          ],
+          [
+            -1,
+            1,
+            -1,
+            1
+          ],
+          [
+            1,
+            -1,
+            -1,
+            1
+          ]
+        ],
+        "output_rows": [
+          7,
+          12,
+          20,
+          31
+        ],
+        "rank": "number of nonzero linear forms",
+        "representative": 6,
+        "right_frame": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            -1,
+            -1,
+            1,
+            1
+          ],
+          [
+            -1,
+            1,
+            -1,
+            1
+          ],
+          [
+            -1,
+            1,
+            1,
+            -1
+          ]
+        ]
+      },
+      {
+        "input_columns": [
+          7,
+          12,
+          20,
+          31
+        ],
+        "left_frame": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            -1,
+            -1,
+            1,
+            1
+          ],
+          [
+            -1,
+            1,
+            -1,
+            1
+          ],
+          [
+            -1,
+            1,
+            1,
+            -1
+          ]
+        ],
+        "output_rows": [
+          6,
+          13,
+          21,
+          30
+        ],
+        "rank": "number of nonzero linear forms",
+        "representative": 7,
+        "right_frame": [
+          [
+            1,
+            1,
+            1,
+            1
+          ],
+          [
+            1,
+            1,
+            -1,
+            -1
+          ],
+          [
+            1,
+            -1,
+            1,
+            -1
+          ],
+          [
+            -1,
+            1,
+            1,
+            -1
+          ]
+        ]
+      }
+    ],
+    "spectral_coefficients": {
+      "coefficient_formula": "E_j=e_j+3*N*e_(j-1)+(2*N**2+Delta**2)*e_(j-2)+N*Delta**2*e_(j-3)",
+      "degree_fourteen_factor": "E_7=N*Delta**2*product_i(ell_i)**2",
+      "elementary_definition": "e_j is elementary in ell_i**2; e_0=1, e_j=0 outside 0..4",
+      "general_evaluator_coefficients": [
+        "1",
+        "273",
+        "29509",
+        "1607749",
+        "46303059",
+        "666791203",
+        "3876547431",
+        "3254480775"
+      ],
+      "general_evaluator_point": [
+        1,
+        2,
+        3,
+        5
+      ],
+      "reduced_polynomial": "(z-N)*(z**2-2*N*z+Delta**2)*product_i(z-ell_i**2)"
+    },
+    "support": [
+      1,
+      10,
+      18,
+      25
+    ],
+    "sympy_version": "1.14.0"
+  },
+  "python_version": "3.14.7",
+  "source_sha256": {
+    "docs/evidence/four_support_rank/replay.py": "6858d8d374e2cf1047bf9201da2451b590151ee0ab31981f5f436110b13daa34",
+    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+    "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f"
+  }
+}

@@ -43,6 +43,8 @@ objectives, evidence boundaries, ownership, and ordered delivery gates.
   theorems and the source-pinned Rust and Rocq work reused by the audit.
 - `gororoba_quantum/rank_polynomials.py` and `rank_charts.py` -- exact
   spectral rank predicates and fixed-minor kernel charts for general coefficients.
+- `gororoba_quantum/four_support_rank.py` -- exact real rank classification
+  and complete kernel frames on the four-coordinate support `{1,10,18,25}`.
 - `gororoba_quantum/rank_attachments.py`, `rank_path_topology.py`, and
   `integral_homology.py` -- exact polynomial attachment certificates, a proved
   restricted pair-space model, and integral homology with torsion certificates.

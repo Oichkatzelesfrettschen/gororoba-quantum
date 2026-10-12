@@ -89,6 +89,14 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Decker and Wocjan 2007 -- Hidden quadratic and cubic polynomial function graphs (arXiv quant-ph/0703195)](notes/quant-ph-0703195.md) | [PDF](https://arxiv.org/pdf/quant-ph/0703195v3) | `quant-ph-0703195v3.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/0703195v3) |
 | [Griffiths and Niu 1996 -- Semiclassical Fourier Transform for Quantum Computation (arXiv quant-ph/9511007)](notes/quant-ph-9511007.md) | [PDF](https://arxiv.org/pdf/quant-ph/9511007v1) | `quant-ph-9511007v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/9511007v1) |
 
+## Repository research certificates
+
+The [continuous four-coordinate rank derivation](notes/four_support_rank_loci.md)
+and its [exact replay](evidence/four_support_rank/README.md) classify a
+specified real coefficient family and construct its kernel frames.
+The derivation attributes the published annihilator results and keeps
+the wider topology obligations explicit.
+
 ## Verification and research navigation
 
 Run from the repository root:
