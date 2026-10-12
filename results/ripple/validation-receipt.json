@@ -1,0 +1,105 @@
+{
+  "schema": "ripple-validation-receipt-v1",
+  "validated_checkout_commit": "9e364cc",
+  "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+  "gate_source": "AGENTS.md",
+  "warning_policy": "PYTHONWARNINGS=error",
+  "parallel_workers": 2,
+  "runtime_versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "sympy": "1.14.0",
+    "matplotlib": "3.11.2"
+  },
+  "receipts": [
+    {
+      "name": "ripple-placement-final-gates",
+      "status": "partial",
+      "detail": "Mathematical and visual gates passed before runtime_contracts detected source changes during its fixture. The overall run exited 1.",
+      "operator_log_sha256": "d9027a1b95d3dd236ad3b3454c1886f0a9918d9e8d4772920f77a4a8a90cc595",
+      "operator_script_sha256": "2ffc6f369d5c30e1a7f09e9d85fda33218fe43090cb383f57850bcb9d0437c2a"
+    },
+    {
+      "name": "ripple-frozen-final-gates",
+      "status": "passed",
+      "detail": "Frozen-source lint, types, local evidence, runtime, parameter binding, QPU planning, algebra, native, placement, source closure, variance, adjudication, sign and hybrid simulation gates passed; exit 0.",
+      "operator_log_sha256": "eacc17a61cacf5d8a65cb336c965b05336134e69428d9fefa7ca4cb976d4f5ec",
+      "operator_script_sha256": "bca9c3d19137b092f5c929210c920c78dbf933418237359ef0213c47113d75e5"
+    },
+    {
+      "name": "ripple-inherited-evidence-gates",
+      "status": "passed",
+      "detail": "Merged hardware-evidence checks passed: lint/types, 22 raw-decoder tests and four mixed-client tests under normal and optimized Python, raw checksums and shot replay; exit 0.",
+      "operator_log_sha256": "3dd8b6118784fa8b532883fc70022ae2c17418ff72b98b83479a50053aed9968",
+      "operator_script_sha256": "13b62b0aa191153520f56f993edcf104aedc3e50aa1c994b578a8d67f4c8798e"
+    }
+  ],
+  "receipt_retention": "Full operator logs remain local. Hashes identify those original logs; repository AGENTS.md carries replayable commands.",
+  "earlier_math_applicability": {
+    "reference_commit": "2145427",
+    "unchanged_entrypoints": 21,
+    "unchanged_static_local_import_closure_files": 27,
+    "status": "byte_identical"
+  },
+  "final_delta_checks": [
+    {
+      "target": "scripts/render_rank_sector_norms.py",
+      "checks": [
+        "ruff check",
+        "ruff format --check",
+        "mypy",
+        "SVG and PNG byte reproduction",
+        "160 exact acquisition values"
+      ],
+      "status": "passed"
+    },
+    {
+      "target": "scripts/render_folded_job_review.py",
+      "checks": [
+        "SVG and PNG byte reproduction",
+        "16 outcomes",
+        "12 simultaneous contrasts",
+        "16 descriptive residuals"
+      ],
+      "status": "passed"
+    },
+    {
+      "target": "scripts/review_folded_jobs.py",
+      "checks": [
+        "retained raw hashes",
+        "counts",
+        "intervals",
+        "timing",
+        "output reproduction"
+      ],
+      "status": "passed"
+    },
+    {
+      "target": "two prepared source-closure reports",
+      "checks": [
+        "36 source files per report",
+        "seven dependency versions per report",
+        "record and native hashes"
+      ],
+      "status": "passed"
+    },
+    {
+      "target": "branch diff",
+      "checks": [
+        "git diff --check",
+        "text scan for local absolute paths and credential assignments"
+      ],
+      "status": "passed",
+      "scan_boundary": "The two CRN-shaped literals in runtime_contracts.py are synthetic scrubber fixtures."
+    }
+  ],
+  "conditional_rocq_check": "inactive: proof, generator and evaluator paths have zero PR delta against main",
+  "live_preparation": {
+    "target_families": "ripple and rank-sector admitted independently",
+    "default_cli": "bounded placement rejection after 256 combinations; expected fail-closed result, not admission",
+    "native_mock": "unavailable: mock_kingston configuration HTTP 404; zero mock job identities returned",
+    "physical_submissions_by_preparation": 0
+  }
+}

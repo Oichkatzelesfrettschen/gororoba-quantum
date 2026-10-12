@@ -43,7 +43,7 @@ would require an additional task definition and full resource comparison.
 | --- | --- | --- |
 | Primitive zero divisors form seven signed octahedral graphs. De Marrais's [box-kite construction](math-0403113.md) predates this campaign; the repository independently enumerates its finite corpus. | Eight phase points on each of 84 edges, plus matched readout and representative isolated controls. | Show measured edge probabilities, uncertainty, dark leakage, and descriptive fringe fits. Color the exact edge sign separately. Determine which cancellation contrasts survive hardware execution and which differ from the noise prediction. |
 | The seven strut labels index the Fano plane `PG(2,2)`, with lines `{a,b,a XOR b}`. The [source survey](open_gororoba_survey.md) already records the projective organization. | Seven atlas outcomes within each physical shot, together with the row's kite-to-patch assignment. | Arrange residual summaries in Fano coordinates and inspect joint failure patterns or covariance. Compare algebra labels and physical patch labels. A geometric arrangement does not establish causal coupling between its points. |
-| Multiplication kernels are dark directions of `L_a^T L_a`; published [eigentheory](0905.2987.md) and [annihilator theory](math-0511691.md) constrain the spectrum. The [rank-path ledger](cayley_dickson_rank_topology_sources.md) states the path-specific deductions. | Eight four-qubit sectors, four probes per sector, five parameter values, and isolated references. | Display `p_success` and the derived norm `alpha(t)^2*p_success`, with `alpha=sum(abs(a_s))` explicit. Compare persistent darkness, exceptional suppression, and fixed versus rotating Gram frames. Finite frequencies constrain the norm predictions; exact rank and topology remain mathematical conclusions. |
+| Multiplication kernels are dark directions of `L_a^T L_a`; published [eigentheory](0905.2987.md) and [annihilator theory](math-0511691.md) constrain the spectrum. The [rank-path ledger](cayley_dickson_rank_topology_sources.md) states the path-specific deductions. | Eight four-qubit sectors, four probes per sector, five parameter values, and isolated references. | Display `p_success` and the derived normalized squared norm `alpha(t)^2*p_success`, with `alpha=sum(abs(a_s))` explicit. Compare persistent darkness, exceptional suppression, and fixed versus rotating Gram frames. Finite frequencies constrain the norm predictions; exact rank and topology remain mathematical conclusions. |
 | Associator phases arise from a sign cochain, and Walsh spectra retain more information than degree alone. [Kirshtein](1207.4230.md), [Albuquerque-Majid](math-9802116.md), and the [prior-work ledger](prior_work_synthesis.md) establish the relevant boundaries. | Original Design C spectra and the two four-qubit walk distributions at prepared depths zero through four. | Plot labeled outcomes, return probability, and the preregistered crossover. The depth-two complemented-Walsh identity connects static spectrum to the walk. Test whether the distinct distributions remain distinguishable after physical compilation and simultaneous execution. |
 | Shared measurements reveal joint error structure. [Parallel-experiment literature](quantum_experiment_parallelism.md) establishes simultaneous characterization and context effects as prior work. | The lossless shot-ordered registers, packed and isolated conditions, matched A/B exchanges, and folded-QPE controls. | Show covariance, joint failure patterns, temporal blocks, hardware-minus-model residuals, and packed-minus-isolated differences. Identify deviations that a product of marginal noise models misses, subject to drift and control limitations. |
 
@@ -51,6 +51,35 @@ Each hardware question concerns a specified compiled experiment. A repeated
 pattern across mathematically equivalent kites can reflect shared circuitry,
 readout, scheduling, or calibration error. The physical mapping and controls
 must accompany any interpretation attributed to the algebra.
+
+## Scientific value per acquired row
+
+The 84 atlas edges share a signed cosine law. Rank sectors four through seven
+share the same twenty-entry ideal selector-success vector. Their repeated
+acquisition supplies physical-context and implementation coverage, rather
+than additional algebraic discoveries. Four probes in a four-dimensional
+sector supply selected norm measurements; they do not determine its full
+Gram matrix. The most informative outcome is a reproducible model failure,
+context response, or validated intervention that changes a concrete compiler
+or placement decision.
+
+The two prepared families use separate alpha=0.05 uncertainty allocations.
+The union bound gives at least 90 percent simultaneous coverage across both
+families; each family's 95 percent statement remains local to its own
+declared endpoints. Packing contrasts target half-width 0.08 in their declared observable units
+without a practical equivalence margin, so precision admission does not establish
+preserved packed accuracy. Directional tests use a zero minimum effect;
+sign separation alone supplies no declared practically meaningful threshold.
+Normalized squared-norm intervals multiply probability intervals by the known
+alpha(t)^2: `alpha(t)^2*p = ||L_a(t)v||^2 / ||v||^2`. The change alpha=2 to
+alpha=4 makes equal probability widths four times larger in normalized
+squared-norm units. Norm intervals instead require taking square roots.
+
+A follow-up analysis can reuse the dark, bright, and intermediate-phase rows
+to test a prespecified common-channel model for each physical measurement
+writer. That analysis adds zero QPU rows. A useful report would name the
+compatible channel set, finite-shot uncertainty, rejected hypothesis, and
+the resulting placement or calibration decision before proposing more data.
 
 ## Signed-kite spectral deduction
 
@@ -172,6 +201,13 @@ joint error structure, and model residuals. The measured outcomes will decide
 those claims after an approved execution and analysis.
 
 ## What the completed folded-QPE jobs add
+
+The adaptive/nonadaptive superconducting-QPE comparison has established
+prior work: [Corcoles et al. (2021)](2102.01682.md) experimentally compares
+those implementations and studies the role of noise and latency. The
+repository's folded ladder contributes workload-specific observations,
+provenance and model tests; its comparison alone supplies no general novelty
+or quantum-advantage claim.
 
 The two Kingston jobs supply a measured example of the distinction between a
 mathematical law, a hardware implementation, and its noise model. Their 16 PUBs

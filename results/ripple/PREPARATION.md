@@ -14,11 +14,14 @@ unapproved for physical execution. They use separate static jobs because the
 combined 87-qubit candidate has only a bounded infeasibility result. Each
 family independently fits one job on Kingston.
 
-| Prepared family | Active qubits | PUBs | Shots/PUB | Qualified endpoints | Nominal QPU seconds | Stress seconds | Service ceiling |
+| Prepared family | Allocated qubit footprint | PUBs | Shots/PUB | Qualified endpoints | Nominal QPU seconds | Stress seconds | Service ceiling |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Ripple atlas, walks and Design C | 55 | 146 | 4096 | 1138 / 1138 | 157.0873 | 159.3873 | 180 s |
 | Rank-path sectors | 32 | 36 | 4096 | 196 / 196 | 39.9347 | 42.2347 | 60 s |
 | Combined campaign | separate jobs | 182 | 4096 | 1334 / 1334 | 197.0220 | 201.6220 | 240 s |
+
+The ripple job allocates 55 distinct physical qubits across its PUBs, with
+at most 47 active in a single PUB. Rank sectors use at most 32 per PUB.
 
 The estimate is about 3 minutes 17 seconds of QPU usage, excluding queue and
 local preparation time. Stress assumptions are named scenarios, rather than
@@ -26,6 +29,9 @@ confidence bounds on billing. The service ceilings bound each job through
 `max_execution_time`. A 551-second remaining-usage observation covers the
 240-second combined ceiling plus one shared 60-second reserve, leaving 251
 seconds unallocated. Concurrent jobs can change that observation.
+
+The [validation report](VALIDATION.md) records successful gates and their
+bounded coverage, alongside the default-placement and mock-timing limits.
 
 ## Exact cases
 
@@ -58,6 +64,16 @@ buffers. The quality exclusions, scientific controls, shot precision, and
 spending ceilings stayed in force. Fresh noise simulation then admitted every
 required endpoint. The largest simultaneous half-width is 0.074671 for ripple
 and 0.068680 for rank sectors, within the requested 0.08.
+
+Admission qualifies endpoint precision and specified positive-control signals.
+Packing endpoints target half-width 0.08 in their declared observable units,
+without a practical
+equivalence margin. Admission therefore does not certify preserved packed
+accuracy. Each new family allocates alpha=0.05 separately; the union bound
+provides at least 90 percent joint coverage across both families, rather than
+a campaign-wide 95 percent guarantee. Rank normalized squared-norm intervals scale by alpha(t)^2;
+alpha(t) grows from 2 to 4, multiplying an equal probability half-width by four
+at the final parameter relative to the initial parameter in those squared-norm units.
 
 Global optimality remains outside the result. Broader occupancy alone does not
 prove better throughput. The [spatial assessment](spatial-packing-assessment.md)

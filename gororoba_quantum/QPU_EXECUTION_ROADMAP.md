@@ -27,14 +27,17 @@ future layout, job allocation, duration, and admission decision.
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
 | [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
-| Ripple finite walk/box-kite comparison | Other chat owns submit-free preparation | Candidate manifest under qualification | Proposed ceiling 180 | Unapproved |
-| Rank-sector controls | Other chat owns submit-free preparation | 36 proposed | Proposed ceiling 60 | Unapproved |
+| [Ripple finite walk/box-kite comparison](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 146 | 157.0873 nominal; ceiling 180 | Locally admitted; unapproved |
+| [Rank-sector controls](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 36 | 39.9347 nominal; ceiling 60 | Locally admitted; unapproved |
 
-The completed folded case spends 40 seconds. The remaining campaign has no
-admitted total or fixed job count. Historical static witnesses can overlap
-ripple/rank-sector controls; reconcile scientific endpoints before approving
-both. N21 synthesis and static mathematical witnesses answer different
-questions and can progress independently through local qualification.
+The completed folded case spends 40 seconds. The prepared ripple/rank subset
+contains two independent jobs, totaling 197.0220 nominal seconds, 201.6220
+stress-scenario seconds, and a 240-second aggregate service ceiling. Its
+1,334 endpoint names and roles are disjoint; repeated historical Design C
+members act as fresh-patch and neighboring-workload controls. The coordinator
+excludes duplicate folded execution. Additional N21 and historical static
+cases remain outside that admitted subset and require separate qualification
+and overlap reconciliation.
 
 The [shared coordination record](../results/live/qpu-coordination.json) names
 one execution owner per family across `ibm_fez`, `ibm_kingston`, and

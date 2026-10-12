@@ -1,5 +1,9 @@
 # Finite Cayley-Dickson ripple evidence
 
+The [execution preparation summary](PREPARATION.md) binds the admitted ripple
+and rank-sector records, exact approval cases, 197.022-second nominal estimate,
+and 240-second combined ceiling. The two families require separate approval.
+
 [Open the standalone explorer](cayley-dickson-ripples.html) in a browser after
 downloading or cloning the repository. The HTML embeds all data and needs
 neither a server nor network access. Its controls explore exact walk frames
@@ -10,9 +14,9 @@ and signed box-kite fringes, with the proposed hardware depths labeled.
   phase checks and source hashes. `execution_metadata` records numerical
   residuals and dependency versions separately from the exact payload.
 - `single-job-proposal.json` records the implemented 55-logical-qubit,
-  146-row experiment. Fresh statistical admission, calibration and native
-  timing determine its execution case; the earlier 35-second illustration
-  is superseded.
+  146-row experiment. The preparation summary records its source-bound
+  statistical admission and calibration. Native timing remains separately
+  unqualified; the earlier 35-second illustration is superseded.
 - `cayley-dickson-ripples.html` is generated from the evidence and the
   repository HTML template. All displayed distributions are ideal local
   predictions. A measured rendering requires a separately approved QPU run.

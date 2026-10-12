@@ -4,6 +4,11 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+The [prepared ripple and rank-sector cases](../ripple/PREPARATION.md) link the
+two admitted records, source-closure reports, independent uncertainty families,
+and written execution cases. Their combined nominal estimate is 197.022 QPU
+seconds under a 240-second aggregate ceiling; execution remains unapproved.
+
 ## Completed folded-QPE hardware case
 
 The [hardware analysis](2026-10-12T055624.091217Z/ANALYSIS.md) records two

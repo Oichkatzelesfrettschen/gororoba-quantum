@@ -6,6 +6,12 @@ basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables.
 
+The [prepared ripple and rank-sector cases](results/ripple/PREPARATION.md)
+combine 182 PUBs and 1,334 qualified endpoints at 197.022 estimated QPU seconds
+under separate 180-second and 60-second service ceilings. Physical execution
+awaits case-specific approval. The [completed folded-job audit](results/ripple/folded-job-review.md)
+provides measured contrasts, model discrepancies, and timing evidence.
+
 ## Contents
 
 - `gororoba_quantum/cd_core.py` -- Cayley-Dickson sign table ported from
