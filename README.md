@@ -6,6 +6,12 @@ basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables.
 
+The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
+The [source library](docs/README.md) retains licensed primary PDFs, per-paper notes,
+download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
+[coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
+objectives, evidence boundaries, ownership, and ordered delivery gates.
+
 ## Contents
 
 - `gororoba_quantum/cd_core.py` -- Cayley-Dickson sign table ported from
@@ -33,7 +39,7 @@ observables.
   seven quaternion charts, SU(2) transition maps and Cayley-frame automorphisms.
 - `gororoba_quantum/annihilator_strata.py` -- exact signed two-term kernel census
   and published maximal-annihilator lift witnesses through dimension 256.
-  `literature/notes/cayley_dickson_annihilator_sources.md` records primary
+  `docs/notes/cayley_dickson_annihilator_sources.md` records primary
   theorems and the source-pinned Rust and Rocq work reused by the audit.
 - `gororoba_quantum/rank_polynomials.py` and `rank_charts.py` -- exact
   spectral rank predicates and fixed-minor kernel charts for general coefficients.

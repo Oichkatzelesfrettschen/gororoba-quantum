@@ -1,0 +1,653 @@
+"""Exercise publication and optional-cache guards in isolated temporary fixtures."""
+
+from __future__ import annotations
+
+import copy
+import hashlib
+import json
+import re
+import subprocess
+import tempfile
+import unittest
+from pathlib import Path
+from typing import Any
+
+from verify_sources import LICENSE_URLS, PUBLIC_LICENSES, verify_external_sources, verify_source_rights
+
+
+def rights_fixture(digest: str, *, external: bool = False) -> dict[str, Any]:
+    return {
+        "verified": True,
+        "pdf_sha256": digest,
+        "verified_at_utc": "2026-10-12T07:27:16+00:00",
+        "decision": "external_only" if external else "publish_under_explicit_license",
+        "license_identifier": "NOASSERTION" if external else "CC-BY-4.0",
+        "license_url": None if external else LICENSE_URLS["CC-BY-4.0"],
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/1904.00633v2",
+        "evidence_sha256": "1" * 64,
+        "evidence_locator": "Exact-version abstract license link",
+        "reading_scope": "Version metadata and operative grant",
+        "evidence_summary": "Manually inspected primary-source license evidence",
+        "copy_status": "unchanged",
+        "conditions": "Preserve attribution, original notices, source and license links.",
+    }
+
+
+def license_documents_fixture() -> dict[str, Any]:
+    return {
+        identifier: {
+            "url": url + ("legalcode.en" if identifier in PUBLIC_LICENSES else ""),
+            "sha256": "2" * 64,
+            "reading_scope": "Operative permission and recipient scope",
+            "verified_at_utc": "2026-10-12T07:27:16+00:00",
+        }
+        for identifier, url in LICENSE_URLS.items()
+    }
+
+
+class ExternalSourceChecks(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="external-source-check-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.payload = b"%PDF-1.7\nexternal-source-fixture\n"
+        self.digest = hashlib.sha256(self.payload).hexdigest()
+        self.cache = self.root / "docs/local_source_cache/external.pdf"
+        self.published = self.root / "docs/pdf/external.pdf"
+        (self.root / "docs/notes").mkdir(parents=True)
+        self.published.parent.mkdir()
+        (self.root / ".gitignore").write_text("/docs/local_source_cache/\n")
+        for manifest in ("PDF_SHA256SUMS", "parallel_experiment_pdfs.sha256"):
+            (self.root / "docs" / manifest).write_text("")
+        source_url = "https://example.org/external.pdf"
+        (self.root / "docs/notes/external.md").write_text(f"{source_url}\n{self.digest}\n")
+        self.registry: dict[str, Any] = {
+            "external_pdfs": [
+                {
+                    "rights": rights_fixture(self.digest, external=True),
+                    "status": "external_only",
+                    "redistribution": "excluded_without_permission",
+                    "rights_locator": "PDF page 1",
+                    "rights_reason": "External test fixture requires permission to redistribute.",
+                    "source_url": source_url,
+                    "sha256": self.digest,
+                    "bytes": len(self.payload),
+                    "pages": 1,
+                    "note": "docs/notes/external.md",
+                    "excluded_published_path": "docs/pdf/external.pdf",
+                    "local_cache_path": "docs/local_source_cache/external.pdf",
+                }
+            ]
+        }
+
+    def retain_cache(self) -> None:
+        self.cache.parent.mkdir()
+        self.cache.write_bytes(self.payload)
+
+    def reject(self, message: str, published_digests: set[str] | None = None) -> None:
+        with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
+            verify_external_sources(self.root, self.registry, published_digests or set())
+
+    def test_absent_cache_is_optional(self) -> None:
+        self.assertEqual(verify_external_sources(self.root, self.registry, set()), 1)
+        self.assertFalse(self.cache.exists())
+
+    def test_original_cache_is_verified(self) -> None:
+        self.retain_cache()
+        self.assertEqual(verify_external_sources(self.root, self.registry, set()), 1)
+        self.assertEqual(self.cache.read_bytes(), self.payload)
+
+    def test_modified_cache_digest_is_rejected(self) -> None:
+        self.retain_cache()
+        self.cache.write_bytes(self.payload[:-1] + b"!")
+        self.reject("external-only cached PDF digest")
+
+    def test_external_digest_in_published_inventory_is_rejected(self) -> None:
+        self.reject("external-only PDF appears in the published inventory", {self.digest})
+
+    def test_external_file_in_published_directory_is_rejected(self) -> None:
+        self.published.write_bytes(self.payload)
+        self.reject("external-only published file exists")
+
+    def test_force_tracked_cache_is_rejected(self) -> None:
+        self.retain_cache()
+        subprocess.run(["git", "init", "--quiet"], cwd=self.root, capture_output=True, check=True)
+        subprocess.run(
+            ["git", "-c", "core.fsmonitor=false", "add", "--force", "--", "docs/local_source_cache/external.pdf"],
+            cwd=self.root,
+            capture_output=True,
+            check=True,
+        )
+        self.reject("local source cache contains Git-tracked files")
+
+    def test_external_digest_in_checksum_manifest_is_rejected(self) -> None:
+        (self.root / "docs/parallel_experiment_pdfs.sha256").write_text(f"{self.digest}  docs/pdf/external.pdf\n")
+        self.reject("external-only digest in parallel_experiment_pdfs.sha256")
+
+    def test_cache_path_in_checksum_manifest_is_rejected(self) -> None:
+        (self.root / "docs/parallel_experiment_pdfs.sha256").write_text(
+            "0" * 64 + "  docs/local_source_cache/external.pdf\n"
+        )
+        self.reject("local cache path in parallel_experiment_pdfs.sha256")
+
+    def test_missing_cache_ignore_rule_is_rejected(self) -> None:
+        (self.root / ".gitignore").write_text("")
+        self.reject("local cache ignore rule")
+
+
+class SourceRightsChecks(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="source-rights-check-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.payload = b"%PDF-1.7\nrights-source-fixture\n"
+        self.digest = hashlib.sha256(self.payload).hexdigest()
+        self.registry = {"license_documents": license_documents_fixture()}
+        self.entry: dict[str, Any] = {
+            "path": "docs/pdf/1904.00633.pdf",
+            "status": "retained",
+            "redistribution": "explicit_license_verified",
+            "source_url": "https://arxiv.org/pdf/1904.00633v2",
+            "sha256": self.digest,
+            "bytes": len(self.payload),
+            "rights": rights_fixture(self.digest),
+        }
+
+        self.arxiv_path = self.root / "docs/evidence/source_rights/arxiv-1904.00633v2.html"
+        self.arxiv_path.parent.mkdir(parents=True)
+        self.entry["rights"]["evidence_path"] = self.arxiv_path.relative_to(self.root).as_posix()
+        self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-12T08:48:37+00:00"
+        self.arxiv_html = (
+            '<!DOCTYPE html><html><head><meta name="citation_arxiv_id" content="1904.00633"></head><body>'
+            '<a class="download-pdf" href="/pdf/1904.00633v2"><span>PDF</span></a>'
+            '<div class="abs-license"><div><a class="has_license" '
+            'href="http://creativecommons.org/licenses/by/4.0/"><img alt="license icon"/>'
+            "<span>view license</span></a></div></div>"
+            '<footer><a href="https://creativecommons.org/publicdomain/zero/1.0/">Site license</a></footer>'
+            "</body></html>"
+        )
+        self.write_arxiv_capture()
+
+    def write_arxiv_capture(self) -> None:
+        raw_response = self.arxiv_html.encode("utf-8")
+        self.arxiv_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
+    def verify(self, *, published: bool = True) -> None:
+        verify_source_rights(self.entry, self.registry, root=self.root, published=published, payload=self.payload)
+
+    def reject(self, message: str, *, published: bool = True) -> None:
+        with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
+            self.verify(published=published)
+
+    def use_zenodo(self) -> None:
+        self.entry["source_url"] = "https://author.example.org/paper.pdf"
+        self.entry["rights"]["evidence_url"] = "https://zenodo.org/api/records/20431754"
+        self.entry["rights"]["licensed_file"] = {
+            "url": "https://zenodo.org/api/records/20431754/files/paper%20name.pdf/content",
+            "sha256": self.digest,
+            "bytes": len(self.payload),
+            "md5": hashlib.md5(self.payload, usedforsecurity=False).hexdigest(),
+        }
+
+        self.zenodo_record: dict[str, Any] = {
+            "id": 20431754,
+            "links": {"self": self.entry["rights"]["evidence_url"]},
+            "metadata": {"license": {"id": "cc-by-4.0"}},
+            "files": [
+                {
+                    "key": "paper name.pdf",
+                    "size": len(self.payload),
+                    "checksum": "md5:" + self.entry["rights"]["licensed_file"]["md5"],
+                    "links": {"self": self.entry["rights"]["licensed_file"]["url"]},
+                }
+            ],
+        }
+        self.zenodo_path = self.root / "docs/evidence/source_rights/zenodo-record-20431754.json"
+        self.zenodo_path.parent.mkdir(parents=True, exist_ok=True)
+        self.entry["rights"]["evidence_path"] = self.zenodo_path.relative_to(self.root).as_posix()
+        self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-12T08:16:00+00:00"
+        self.write_zenodo_capture()
+
+    def write_zenodo_capture(self) -> None:
+        raw_response = json.dumps(self.zenodo_record).encode()
+        self.zenodo_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
+    def test_versioned_arxiv_source_with_versionless_local_filename_passes(self) -> None:
+        self.verify()
+
+    def test_cc0_grant_passes(self) -> None:
+        self.entry["rights"].update(
+            license_identifier="CC0-1.0",
+            license_url=LICENSE_URLS["CC0-1.0"],
+            observed_license_url=LICENSE_URLS["CC0-1.0"],
+        )
+        self.arxiv_html = self.arxiv_html.replace(
+            "http://creativecommons.org/licenses/by/4.0/", LICENSE_URLS["CC0-1.0"]
+        )
+        self.write_arxiv_capture()
+        self.verify()
+
+    def test_missing_or_nonobject_rights_are_rejected(self) -> None:
+        values: tuple[Any, ...] = (None, [], "verified")
+        for value in values:
+            with self.subTest(value=value):
+                self.entry["rights"] = value
+                self.reject("source rights object")
+
+    def test_unverified_or_truthy_rights_are_rejected(self) -> None:
+        for value in (False, None, 1, "true"):
+            with self.subTest(value=value):
+                self.entry["rights"]["verified"] = value
+                self.reject("source rights verification")
+
+    def test_pdf_identity_change_is_rejected(self) -> None:
+        self.entry["rights"]["pdf_sha256"] = "0" * 64
+        self.reject("rights PDF identity")
+
+    def test_required_evidence_metadata_is_checked(self) -> None:
+        original = copy.deepcopy(self.entry["rights"])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("pdf_sha256", "broken", "rights PDF SHA-256"),
+            ("evidence_sha256", "broken", "rights evidence SHA-256"),
+            ("evidence_url", "file:///metadata", "rights evidence URL"),
+            ("verified_at_utc", "2026-10-12", "rights verification timestamp"),
+            ("verified_at_utc", "invalid", "rights verification timestamp"),
+            ("evidence_locator", " ", "rights evidence_locator"),
+            ("reading_scope", None, "rights reading_scope"),
+            ("evidence_summary", [], "rights evidence_summary"),
+            ("license_identifier", False, "rights license_identifier"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field, value=value):
+                self.entry["rights"] = copy.deepcopy(original)
+                self.entry["rights"][field] = value
+                self.reject(message)
+
+    def test_publication_admission_mutations_are_rejected(self) -> None:
+        original = copy.deepcopy(self.entry)
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("status", "external_only", "published retention status"),
+            ("redistribution", "excluded_without_permission", "published redistribution status"),
+            ("decision", "external_only", "published rights decision"),
+            ("license_identifier", "LicenseRef-arXiv-nonexclusive-distrib-1.0", "published license allowlist"),
+            ("license_url", LICENSE_URLS["CC0-1.0"], "published license URL"),
+            ("copy_status", "modified", "published copy status"),
+            ("conditions", "", "published license conditions"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field):
+                self.entry = copy.deepcopy(original)
+                target = self.entry if field in {"status", "redistribution"} else self.entry["rights"]
+                target[field] = value
+                self.reject(message)
+
+    def test_changed_payload_is_rejected(self) -> None:
+        self.payload += b"changed"
+        self.reject("published rights payload identity")
+
+    def test_missing_payload_is_rejected(self) -> None:
+        self.payload = b""
+        self.reject("published PDF payload")
+
+    def test_missing_operative_license_document_is_rejected(self) -> None:
+        del self.registry["license_documents"]["CC-BY-4.0"]
+        self.reject("operative license document")
+
+    def test_operative_license_evidence_mutations_are_rejected(self) -> None:
+        original = copy.deepcopy(self.registry["license_documents"]["CC-BY-4.0"])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("url", "https://example.org/terms", "operative license URL"),
+            ("sha256", "broken", "operative license SHA-256"),
+            ("reading_scope", "", "operative license reading scope"),
+            ("verified_at_utc", "2026-10-12T07:00:00", "operative license timestamp"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field):
+                document = copy.deepcopy(original)
+                self.registry["license_documents"]["CC-BY-4.0"] = document
+                document[field] = value
+                self.reject(message)
+
+    def test_versionless_arxiv_retrieval_url_is_rejected(self) -> None:
+        self.entry["source_url"] = "https://arxiv.org/pdf/1904.00633"
+        self.reject("arXiv source version")
+
+    def test_different_arxiv_evidence_version_is_rejected(self) -> None:
+        self.entry["rights"]["evidence_url"] = "https://arxiv.org/abs/1904.00633v1"
+        self.reject("arXiv evidence version")
+
+    def test_arxiv_nonexclusive_grant_cannot_be_relabelled_cc_by(self) -> None:
+        self.entry["rights"]["observed_license_url"] = LICENSE_URLS["LicenseRef-arXiv-nonexclusive-distrib-1.0"]
+        self.reject("arXiv license identity")
+
+    def test_external_arxiv_grants_pass(self) -> None:
+        for identifier in set(LICENSE_URLS) - PUBLIC_LICENSES:
+            with self.subTest(identifier=identifier):
+                self.entry["rights"].update(
+                    decision="external_only", license_identifier=identifier, license_url=LICENSE_URLS[identifier]
+                )
+                self.verify(published=False)
+
+    def test_external_publication_decision_is_rejected(self) -> None:
+        self.reject("external-only rights decision", published=False)
+
+    def test_external_arxiv_grant_mismatch_is_rejected(self) -> None:
+        self.entry["rights"].update(
+            decision="external_only",
+            license_identifier="LicenseRef-arXiv-nonexclusive-distrib-1.0",
+            license_url=LICENSE_URLS["CC-BY-4.0"],
+        )
+        self.reject("arXiv license identity", published=False)
+
+    def test_legacy_arxiv_identifier_passes(self) -> None:
+        self.entry["source_url"] = "https://arxiv.org/pdf/math/0511691v1"
+        self.entry["rights"].update(
+            evidence_url="https://arxiv.org/abs/math/0511691v1",
+            decision="external_only",
+            license_identifier="LicenseRef-arXiv-assumed-1991-2003",
+            license_url=LICENSE_URLS["LicenseRef-arXiv-assumed-1991-2003"],
+        )
+        self.verify(published=False)
+
+    def test_matched_zenodo_deposit_passes(self) -> None:
+        self.use_zenodo()
+        self.verify()
+
+    def test_unsupported_public_evidence_route_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.entry["rights"]["evidence_url"] = "https://example.org/license"
+        self.reject("published license evidence route")
+
+    def test_missing_zenodo_file_is_rejected(self) -> None:
+        self.use_zenodo()
+        del self.entry["rights"]["licensed_file"]
+        self.reject("licensed deposit file")
+
+    def test_zenodo_identity_mutations_are_rejected(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.entry["rights"]["licensed_file"])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            (
+                "url",
+                "https://zenodo.org/api/records/20445734/files/paper.pdf/content",
+                "licensed deposit record identity",
+            ),
+            ("sha256", "0" * 64, "licensed deposit SHA-256"),
+            ("bytes", len(self.payload) + 1, "licensed deposit size"),
+            ("bytes", True, "licensed deposit size"),
+            ("md5", "0" * 32, "licensed deposit MD5"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field):
+                deposited_file = copy.deepcopy(original)
+                self.entry["rights"]["licensed_file"] = deposited_file
+                deposited_file[field] = value
+                self.reject(message)
+
+    def test_captured_zenodo_evidence_is_required(self) -> None:
+        self.use_zenodo()
+        del self.entry["rights"]["evidence_path"]
+        self.reject("captured Zenodo evidence path")
+
+    def test_missing_captured_zenodo_file_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.zenodo_path.unlink()
+        self.reject("captured Zenodo evidence file")
+
+    def test_captured_zenodo_symlink_is_rejected(self) -> None:
+        self.use_zenodo()
+        target = self.root / "other.json"
+        self.zenodo_path.rename(target)
+        self.zenodo_path.symlink_to(target)
+        self.reject("captured Zenodo evidence file")
+
+    def test_captured_zenodo_tampering_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.zenodo_path.write_bytes(self.zenodo_path.read_bytes() + b" ")
+        self.reject("captured Zenodo evidence SHA-256")
+
+    def test_captured_zenodo_malformed_json_is_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        raw_response = b"{invalid-json}"
+        self.zenodo_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+        self.reject("captured Zenodo JSON")
+
+    def test_zenodo_declared_license_relabeling_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.entry["rights"].update(
+            license_identifier="CC0-1.0",
+            license_url=LICENSE_URLS["CC0-1.0"],
+            observed_license_url=LICENSE_URLS["CC0-1.0"],
+        )
+        self.reject("captured Zenodo license identity")
+
+    def test_zenodo_captured_license_change_is_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        self.zenodo_record["metadata"]["license"]["id"] = "all-rights-reserved"
+        self.write_zenodo_capture()
+        self.reject("captured Zenodo license identity")
+
+    def test_captured_zenodo_record_identity_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.zenodo_record)
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("id", 20445734, "captured Zenodo record identity"),
+            ("id", "20431754", "captured Zenodo record identity"),
+            ("links", {"self": "https://zenodo.org/api/records/20445734"}, "captured Zenodo record URL"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field, value=value):
+                self.zenodo_record = copy.deepcopy(original)
+                self.zenodo_record[field] = value
+                self.write_zenodo_capture()
+                self.reject(message)
+
+    def test_captured_zenodo_file_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.zenodo_record["files"][0])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("key", "unrelated.pdf", "captured Zenodo file key"),
+            ("size", len(self.payload) + 1, "captured Zenodo file size"),
+            ("size", True, "captured Zenodo file size"),
+            ("checksum", "md5:" + "0" * 32, "captured Zenodo file checksum"),
+            ("links", {"self": "https://example.org/unrelated.pdf"}, "captured Zenodo matching file"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field):
+                deposited_file = copy.deepcopy(original)
+                self.zenodo_record["files"] = [deposited_file]
+                deposited_file[field] = value
+                self.write_zenodo_capture()
+                self.reject(message)
+
+    def test_captured_zenodo_missing_and_duplicate_files_are_rejected(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.zenodo_record["files"][0])
+        for files in ([], [original, copy.deepcopy(original)]):
+            with self.subTest(file_count=len(files)):
+                self.zenodo_record["files"] = files
+                self.write_zenodo_capture()
+                self.reject("captured Zenodo matching file")
+
+    def test_captured_zenodo_unrelated_file_is_allowed(self) -> None:
+        self.use_zenodo()
+        unrelated = copy.deepcopy(self.zenodo_record["files"][0])
+        unrelated.update(key="supplement.pdf", links={"self": "https://example.org/supplement.pdf"})
+        self.zenodo_record["files"].append(unrelated)
+        self.write_zenodo_capture()
+        self.verify()
+
+    def test_coordinated_pdf_and_registry_replacement_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.payload = self.payload[:-1] + b"!"
+        digest = hashlib.sha256(self.payload).hexdigest()
+        self.entry["sha256"] = digest
+        self.entry["rights"]["pdf_sha256"] = digest
+        self.entry["rights"]["licensed_file"].update(
+            sha256=digest, md5=hashlib.md5(self.payload, usedforsecurity=False).hexdigest()
+        )
+        self.reject("captured Zenodo file checksum")
+
+    def test_captured_arxiv_digest_must_match(self) -> None:
+        self.entry["rights"]["evidence_sha256"] = "3" * 64
+        self.reject("captured arXiv evidence SHA-256")
+
+    def test_captured_arxiv_metadata_is_required(self) -> None:
+        original = copy.deepcopy(self.entry["rights"])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("evidence_path", None, "captured arXiv evidence path"),
+            ("evidence_path", "/tmp/1904.00633v2.html", "captured arXiv evidence path"),
+            ("evidence_path", "docs/evidence/source_rights/../1904.00633v2.html", "captured arXiv evidence path"),
+            ("evidence_retrieved_at_utc", None, "captured arXiv retrieval timestamp"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field, value=value):
+                self.entry["rights"] = copy.deepcopy(original)
+                self.entry["rights"][field] = value
+                self.reject(message)
+
+    def test_missing_captured_arxiv_file_is_rejected(self) -> None:
+        self.arxiv_path.unlink()
+        self.reject("captured arXiv evidence file")
+
+    def test_captured_arxiv_symlink_is_rejected(self) -> None:
+        target = self.root / "other.html"
+        self.arxiv_path.rename(target)
+        self.arxiv_path.symlink_to(target)
+        self.reject("captured arXiv evidence file")
+
+    def test_captured_arxiv_directory_symlink_is_rejected(self) -> None:
+        directory = self.arxiv_path.parent
+        target = self.root / "other-captures"
+        directory.rename(target)
+        directory.symlink_to(target, target_is_directory=True)
+        self.reject("captured arXiv evidence file")
+
+    def test_captured_arxiv_tampering_is_rejected(self) -> None:
+        self.arxiv_path.write_bytes(self.arxiv_path.read_bytes() + b" ")
+        self.reject("captured arXiv evidence SHA-256")
+
+    def test_captured_arxiv_encoding_is_checked_after_rehash(self) -> None:
+        raw = self.arxiv_path.read_bytes() + b"\xff"
+        self.arxiv_path.write_bytes(raw)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw).hexdigest()
+        self.reject("captured arXiv HTML encoding")
+
+    def test_coordinated_arxiv_license_relabeling_is_rejected(self) -> None:
+        self.entry["rights"].update(
+            license_identifier="CC0-1.0",
+            license_url=LICENSE_URLS["CC0-1.0"],
+            observed_license_url=LICENSE_URLS["CC0-1.0"],
+        )
+        self.reject("captured arXiv license identity")
+
+    def test_captured_arxiv_https_license_passes(self) -> None:
+        self.arxiv_html = self.arxiv_html.replace("http://creativecommons.org/", "https://creativecommons.org/")
+        self.entry["rights"]["observed_license_url"] = LICENSE_URLS["CC-BY-4.0"]
+        self.write_arxiv_capture()
+        self.verify()
+
+    def test_captured_arxiv_observed_license_must_match(self) -> None:
+        self.entry["rights"]["observed_license_url"] = LICENSE_URLS["CC-BY-4.0"]
+        self.reject("captured arXiv observed license identity")
+
+    def test_captured_arxiv_absolute_download_url_passes(self) -> None:
+        self.arxiv_html = self.arxiv_html.replace('href="/pdf/', 'href="https://arxiv.org/pdf/')
+        self.write_arxiv_capture()
+        self.verify()
+
+    def test_captured_arxiv_identity_mutations_are_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        citation = '<meta name="citation_arxiv_id" content="1904.00633">'
+        download = '<a class="download-pdf" href="/pdf/1904.00633v2"><span>PDF</span></a>'
+        mutations = (
+            (citation, "", "captured arXiv citation identity"),
+            (citation, citation + citation, "captured arXiv citation identity"),
+            (citation, citation.replace("1904.00633", "1908.09855"), "captured arXiv citation identity"),
+            (citation, citation.replace(' content="1904.00633"', ""), "captured arXiv citation metadata"),
+            (download, "", "captured arXiv download count"),
+            (download, download + download, "captured arXiv download count"),
+            ("/pdf/1904.00633v2", "/pdf/1904.00633v1", "captured arXiv download version"),
+            ("/pdf/1904.00633v2", "/pdf/1904.00633", "captured arXiv download version"),
+            (' href="/pdf/1904.00633v2"', "", "captured arXiv download URL"),
+        )
+        for before, after, message in mutations:
+            with self.subTest(after=after, message=message):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject(message)
+
+    def test_captured_arxiv_license_mutations_are_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        section = original.split('<div class="abs-license">', 1)[1].split("</div></div>", 1)[0]
+        section = '<div class="abs-license">' + section + "</div></div>"
+        anchor = '<a class="has_license" href="http://creativecommons.org/licenses/by/4.0/">'
+        mutations = (
+            (section, "", "captured arXiv license count"),
+            (section, section + section, "captured arXiv license count"),
+            (anchor, '<a class="has_license">', "captured arXiv license URL"),
+            ('class="has_license"', 'class="footer-license"', "captured arXiv license anchor"),
+            (
+                "http://creativecommons.org/licenses/by/4.0/",
+                "https://example.org/license",
+                "captured arXiv license identity",
+            ),
+            ("</span></a></div></div>", "</span></div></div>", "captured arXiv evidence nesting"),
+            (
+                "</span></a></div></div>",
+                "</span></a>" + anchor + "extra</a></div></div>",
+                "captured arXiv license count",
+            ),
+        )
+        for before, after, message in mutations:
+            with self.subTest(after=after, message=message):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject(message)
+
+    def test_captured_arxiv_footer_cannot_supply_article_license(self) -> None:
+        self.arxiv_html = self.arxiv_html.replace('class="abs-license"', 'class="unrelated"')
+        self.write_arxiv_capture()
+        self.reject("captured arXiv license count")
+
+    def test_captured_arxiv_duplicate_attributes_are_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        for before, after in (
+            ('name="citation_arxiv_id"', 'name="citation_arxiv_id" name="other"'),
+            ('class="download-pdf"', 'class="download-pdf" class="other"'),
+            ('class="abs-license"', 'class="abs-license" class="other"'),
+            ('class="has_license"', 'class="has_license" href="https://example.org/license"'),
+        ):
+            with self.subTest(before=before):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject("captured arXiv duplicate attributes")
+
+    def test_captured_arxiv_unclosed_evidence_is_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        for suffix in ("<span>PDF</span>", "<span>view license</span>"):
+            with self.subTest(suffix=suffix):
+                self.arxiv_html = original.split(suffix, 1)[0] + suffix
+                self.write_arxiv_capture()
+                self.reject("captured arXiv unclosed evidence")
+
+
+class HostedArxivCaptureChecks(unittest.TestCase):
+    def test_all_registered_hosted_arxiv_captures(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        registry = json.loads((root / "docs/SOURCES.json").read_text())
+        entries = [entry for entry in registry["pdfs"] if entry["source_url"].startswith("https://arxiv.org/pdf/")]
+        self.assertTrue(entries)
+        for entry in entries:
+            with self.subTest(source=entry["source_url"]):
+                verify_source_rights(
+                    entry, registry, root=root, published=True, payload=(root / entry["path"]).read_bytes()
+                )
+
+
+if __name__ == "__main__":
+    unittest.main()

@@ -1,0 +1,105 @@
+{
+  "schema": "source-library-validation-v1",
+  "base_commit": "c4e2074f3dd2d58e2cceb9e2bff4b202dc3ec4b4",
+  "pdfs": 11,
+  "pdf_bytes": 26723547,
+  "pdf_pages": 299,
+  "pdf_aliases": 2,
+  "unchanged_production_files": 40,
+  "production_sha256": {
+    "gororoba_quantum/adjudicate.py": "73955b1d2e57888854450aa67428e509ef29aa4ccbe52878c366e514ae3f4aa1",
+    "gororoba_quantum/aer_delay_sentinels.py": "f6d1bf1f1b4bdbbcfe9c01a54ada841defb3688a53d0d271c4ac40815995cafb",
+    "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+    "gororoba_quantum/affine_residual_challenger.py": "18503f25f4d6cb11a4f99a9a662948bd70f2682a6050472bcf7b6186cf647728",
+    "gororoba_quantum/annihilator_strata.py": "af9eb133bf69d277ee0108899bc1a87abe5edc01455d43f9483d7e8f067b518c",
+    "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+    "gororoba_quantum/claim_boundaries.py": "f7d7e7a1f66b8e9148e200bf22d36ad4b8a859eba943ad97a25682b28a54f685",
+    "gororoba_quantum/compile_evidence.py": "f07e02204118623c79c6e99507f66f6320761ed704a219ee301f234547612635",
+    "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+    "gororoba_quantum/diagnostic_experiments.py": "7421211317a0907579dfa01f83257a25c634215752ddaa746307146636a74fe2",
+    "gororoba_quantum/experiment_optimizer.py": "e7b15af918bc04af19b4dde4b50ab7bfac679341bd44873335decc4475b554d0",
+    "gororoba_quantum/experiments.py": "13b07fc055d6f9132c8011b2bbdbcd038136813ab901d16074f8abf855ae8b49",
+    "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+    "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+    "gororoba_quantum/integral_homology.py": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+    "gororoba_quantum/live_run.py": "7e0d86ce85e80ab657c01854e683a45ebce53665f678a98da687d1ccc1bb6e7f",
+    "gororoba_quantum/local_compute.py": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402",
+    "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+    "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+    "gororoba_quantum/packing.py": "ea14b7b8c5eb98756fe1460aa2c3278ff1b8c92e946e6f852b846e7e1149c090",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+    "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+    "gororoba_quantum/qpu_cases.py": "da29308ada60961a98718a14a63894ec086ad90c80241cf870ff3ec9ae9b6302",
+    "gororoba_quantum/qpu_planning.py": "4ab9d78572e0f54a3cbf6262f855429141d8694f770da85749c4ed279dc00dcc",
+    "gororoba_quantum/qpu_planning_contracts.py": "0c730557d5c0f37b4f14801f78bf3c739e895f6d768c669bb95bcd7e46b1174f",
+    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+    "gororoba_quantum/rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+    "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+    "gororoba_quantum/runtime_contracts.py": "052c970cf165fcdf3b7176f1983d37622b79a4b9149d9f4b33fcf32cf7b20503",
+    "gororoba_quantum/sedenion_bundle.py": "6908c8d9a5f411875a121cf8720698234ed5c016ff203ce86ca236b67912142c",
+    "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+    "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+    "gororoba_quantum/target_flip_certificate.py": "74cba1be733585e72dd92c271bf9c01404a46fa69cfd282df55e6c2f8a3eec00",
+    "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9",
+    "gororoba_quantum/verify.py": "acc89ee46637852da82885cf7e87e8602399f04f2a89be050721553bc8c077d4",
+    "proofs/TargetFlipN21.v": "494e3e9c1a4370c46f37e26b0f9e7cb301d8acf8ac96f94e2512ad57612e0fc6",
+    "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb"
+  },
+  "commands": [
+    {
+      "command": "AGENTS.md first shell block",
+      "result": "exit 0",
+      "environment": {
+        "GOROROBA_WORKERS": "4",
+        "PYTHON": "3.14.7"
+      }
+    },
+    {
+      "command": "AGENTS.md Source library and research replay shell block",
+      "result": "exit 0"
+    },
+    {
+      "command": "sha256sum -c docs/PDF_SHA256SUMS",
+      "result": "exit 0"
+    },
+    {
+      "command": "sha256sum -c docs/parallel_experiment_pdfs.sha256",
+      "result": "exit 0"
+    },
+    {
+      "command": "Rocq 9.1.1 fresh compile and independent kernel check",
+      "result": "exit 0",
+      "receipt": "docs/evidence/folding_proofs/verification_receipt.json"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
+      "result": "exit 0; 60 publication, optional-cache, captured exact-version license and deposited-file identity tests"
+    },
+    {
+      "command": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/check_verify_sources.py",
+      "result": "exit 0; 60 publication, optional-cache, captured exact-version license and deposited-file identity tests"
+    },
+    {
+      "command": "check_compiler_gate.py under normal and optimized Python; replay_rocq.sh with Rocq 9.1.1 / OCaml 5.4.0",
+      "result": "five incompatible or incomplete version reports rejected before source checks; pinned fresh proof replay matches the retained log exactly"
+    }
+  ],
+  "dependency_versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "sympy": "1.14.0"
+  },
+  "boundary": "Source integration, exact CPU probes and copied-source proof replay. Physical QPU submissions: zero.",
+  "external_pdfs": 39,
+  "pdf_inventory_scope": "Published source-library copies; optional external-only reading caches are excluded.",
+  "external_pdf_cache_status": "All 39 external source copies preserve their registered original byte counts and SHA-256 values; the ignored cache is optional and excluded from published checksum inventories.",
+  "rights_audit_scope": "45 exact-version arXiv license links; four non-arXiv source notices or author-linked deposit licenses; previously verified Das ACM notice. Eleven source copies carry explicit CC BY 4.0 or CC0 evidence.",
+  "source_index": "docs/INDEX.md distinguishes all 11 hosted PDF records from all 39 external/local-only records and links their owning notes.",
+  "local_link_count": 365,
+  "rights_verification_boundary": "Offline guards check source bytes, captured arXiv article-license and exact-version fields, and captured Zenodo license and deposited-file identities after verifying retained response hashes. External-only records retain their manual-audit boundary. Primary-source inspection and review supply capture provenance and the rights judgment."
+}
