@@ -177,8 +177,11 @@ that the final principal block has order `rank L`; the zero residual
 certifies maximality. The proof also establishes the standard fact that
 every skew matrix has a nonsingular principal minor of every even order
 up to its rank. The algorithm avoids enumerating all principal subsets.
-The rational certificate retains the selected pairs, pivot determinants,
-and stopping residual for independent replay.
+The rational certificate retains the input coordinates, initial and final
+pivot indices, selected pairs and their nonzero entries, and final pivot
+determinant. The verifier recomputes the elimination sequence and final
+Schur residual, then checks that the residual has rank zero and the
+recomputed determinant matches the retained value.
 
 For a final pivot of order `r`, the rank-`r` locus in that domain is
 exactly `S=0`. The matrix `H` then supplies a complete kernel frame of

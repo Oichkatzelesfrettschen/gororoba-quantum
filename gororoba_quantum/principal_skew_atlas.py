@@ -743,6 +743,68 @@ def _mutated(rows: RationalMatrix) -> RationalMatrix:
     )
 
 
+def _audit_runtime_dimension(dimension: int) -> dict[str, object]:
+    element = _fixture({1: Fraction(2, 3)}, dimension)
+    selection = select_principal_cover(element)
+    smaller = selection.chart.reduce(element)
+    maximum = select_maximal_principal_pivot(element, smaller.chart.pivot_indices)
+    maximal = maximum.chart.reduce(element)
+    _require(
+        smaller.rank == maximal.rank == maximum.chart.pivot_dimension == dimension
+        and smaller.nullity == maximal.nullity == 0,
+        "generic-dimension principal cover or maximal refinement fails",
+    )
+    empty_frame = tuple(() for _ in range(dimension))
+    _require(
+        smaller.full_kernel == maximal.full_kernel == maximal.lift == empty_frame,
+        "invertible kernel or maximal lift loses zero-column shape",
+    )
+    _require(
+        maximal.schur_complement == maximal.gram_metric == maximal.kernel_metric == (),
+        "invertible residual or metric loses zero-dimensional shape",
+    )
+    _require(
+        smaller.kernel_projection == maximal.kernel_projection == (),
+        "invertible kernel projection loses zero-row shape",
+    )
+    bundle = ConstantRankChart(dimension, "left", maximum.pivot_indices, maximum.pivot_indices).certify(element)
+    _require(
+        bundle.kernel_frame == empty_frame and bundle.free_columns == (),
+        "constant-rank maximal refinement loses empty kernel shape",
+    )
+    overlap = build_overlap(smaller, maximal)
+    _require(
+        overlap.transport == overlap.kernel_transport == overlap.reverse_kernel_transport == (),
+        "invertible overlap loses zero-row transport shape",
+    )
+    _require(
+        overlap.reverse_transport == tuple(() for _ in range(smaller.chart.reduced_dimension)),
+        "invertible reverse overlap loses zero-column shape",
+    )
+    _require(
+        verify_principal_skew_point(smaller)
+        and verify_principal_skew_point(maximal)
+        and verify_principal_pivot_selection(maximum)
+        and verify_principal_overlap(overlap),
+        "generic-dimension runtime certificates fail verification",
+    )
+    return {
+        "dimension": dimension,
+        "cover_size": len(principal_cover(dimension)),
+        "rank": smaller.rank,
+        "maximal_pivot_size": maximum.chart.pivot_dimension,
+        "elimination_steps": len(maximum.steps),
+        "nullity": smaller.nullity,
+        "full_kernel_shape": [dimension, 0],
+        "maximal_lift_shape": [dimension, 0],
+        "maximal_residual_shape": [0, 0],
+        "overlap_transport_shape": [0, smaller.chart.reduced_dimension],
+        "kernel_transport_shape": [0, 0],
+        "runtime_certificates_verified": True,
+        "constant_rank_empty_frame_matches": True,
+    }
+
+
 def audit_principal_skew_atlas() -> dict[str, object]:
     fixtures = [
         ("nullity0", {1: 1, 3: 1, 10: 1}, 0),
@@ -860,19 +922,7 @@ def audit_principal_skew_atlas() -> dict[str, object]:
             rejected += 1
         else:
             raise RuntimeError("invalid or singular principal chart accepted")
-    dimension_records = []
-    for dimension in (4, 8, 16, 64):
-        element = _fixture({1: Fraction(2, 3)}, dimension)
-        selection = select_principal_cover(element)
-        smaller = selection.chart.reduce(element)
-        maximum = select_maximal_principal_pivot(element, smaller.chart.pivot_indices)
-        _require(
-            smaller.rank == dimension and maximum.chart.pivot_dimension == dimension,
-            "generic-dimension principal cover fails",
-        )
-        dimension_records.append(
-            {"dimension": dimension, "cover_size": len(principal_cover(dimension)), "rank": smaller.rank}
-        )
+    dimension_records = parallel.ordered_map(_audit_runtime_dimension, (4, 8, 16, 64, 128, 256), min_items=2)
     return {
         "schema": "principal-skew-kernel-atlas-v1",
         "qpu_executed": False,

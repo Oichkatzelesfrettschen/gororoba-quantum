@@ -1504,24 +1504,184 @@
     ],
     "generic_dimensions": [
       {
+        "constant_rank_empty_frame_matches": true,
         "cover_size": 1,
         "dimension": 4,
-        "rank": 4
+        "elimination_steps": 0,
+        "full_kernel_shape": [
+          4,
+          0
+        ],
+        "kernel_transport_shape": [
+          0,
+          0
+        ],
+        "maximal_lift_shape": [
+          4,
+          0
+        ],
+        "maximal_pivot_size": 4,
+        "maximal_residual_shape": [
+          0,
+          0
+        ],
+        "nullity": 0,
+        "overlap_transport_shape": [
+          0,
+          0
+        ],
+        "rank": 4,
+        "runtime_certificates_verified": true
       },
       {
+        "constant_rank_empty_frame_matches": true,
         "cover_size": 3,
         "dimension": 8,
-        "rank": 8
+        "elimination_steps": 2,
+        "full_kernel_shape": [
+          8,
+          0
+        ],
+        "kernel_transport_shape": [
+          0,
+          0
+        ],
+        "maximal_lift_shape": [
+          8,
+          0
+        ],
+        "maximal_pivot_size": 8,
+        "maximal_residual_shape": [
+          0,
+          0
+        ],
+        "nullity": 0,
+        "overlap_transport_shape": [
+          0,
+          4
+        ],
+        "rank": 8,
+        "runtime_certificates_verified": true
       },
       {
+        "constant_rank_empty_frame_matches": true,
         "cover_size": 7,
         "dimension": 16,
-        "rank": 16
+        "elimination_steps": 6,
+        "full_kernel_shape": [
+          16,
+          0
+        ],
+        "kernel_transport_shape": [
+          0,
+          0
+        ],
+        "maximal_lift_shape": [
+          16,
+          0
+        ],
+        "maximal_pivot_size": 16,
+        "maximal_residual_shape": [
+          0,
+          0
+        ],
+        "nullity": 0,
+        "overlap_transport_shape": [
+          0,
+          12
+        ],
+        "rank": 16,
+        "runtime_certificates_verified": true
       },
       {
+        "constant_rank_empty_frame_matches": true,
         "cover_size": 31,
         "dimension": 64,
-        "rank": 64
+        "elimination_steps": 30,
+        "full_kernel_shape": [
+          64,
+          0
+        ],
+        "kernel_transport_shape": [
+          0,
+          0
+        ],
+        "maximal_lift_shape": [
+          64,
+          0
+        ],
+        "maximal_pivot_size": 64,
+        "maximal_residual_shape": [
+          0,
+          0
+        ],
+        "nullity": 0,
+        "overlap_transport_shape": [
+          0,
+          60
+        ],
+        "rank": 64,
+        "runtime_certificates_verified": true
+      },
+      {
+        "constant_rank_empty_frame_matches": true,
+        "cover_size": 63,
+        "dimension": 128,
+        "elimination_steps": 62,
+        "full_kernel_shape": [
+          128,
+          0
+        ],
+        "kernel_transport_shape": [
+          0,
+          0
+        ],
+        "maximal_lift_shape": [
+          128,
+          0
+        ],
+        "maximal_pivot_size": 128,
+        "maximal_residual_shape": [
+          0,
+          0
+        ],
+        "nullity": 0,
+        "overlap_transport_shape": [
+          0,
+          124
+        ],
+        "rank": 128,
+        "runtime_certificates_verified": true
+      },
+      {
+        "constant_rank_empty_frame_matches": true,
+        "cover_size": 127,
+        "dimension": 256,
+        "elimination_steps": 126,
+        "full_kernel_shape": [
+          256,
+          0
+        ],
+        "kernel_transport_shape": [
+          0,
+          0
+        ],
+        "maximal_lift_shape": [
+          256,
+          0
+        ],
+        "maximal_pivot_size": 256,
+        "maximal_residual_shape": [
+          0,
+          0
+        ],
+        "nullity": 0,
+        "overlap_transport_shape": [
+          0,
+          252
+        ],
+        "rank": 256,
+        "runtime_certificates_verified": true
       }
     ],
     "invalid_inputs_rejected": 12,
@@ -1532,10 +1692,10 @@
   "schema": "principal-skew-atlas-evidence-v1",
   "source_sha256": {
     "docs/evidence/principal_skew_atlas/replay.py": "d66eec7950bdacd3cff472e501a9e6f3bd3a09717e7398138c3bc6b155506d02",
-    "docs/notes/principal_skew_atlas.md": "5ac716e58bd4c3eb0def91f2e569cc718a46f370bdcbace2000fdcd10475c899",
+    "docs/notes/principal_skew_atlas.md": "bc91826d889adfc5b6c0a2180368f1820da2a3b824a1601cc7276c356483930b",
     "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
     "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/principal_skew_atlas.py": "5209ac19267cd2300f8693c1fd3e94b2acbd36dc5a96d4098da8f1bf2100f934",
+    "gororoba_quantum/principal_skew_atlas.py": "3a96bd0d8a5e29244fdcca78cf3bf271a3f2016246a6bb3d221a575ed0be7849",
     "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
     "gororoba_quantum/skew_schur_charts.py": "b7b180911309bb7452bc56c77cb219d192ab4be381259c32b152ddbab6bac85b"
   },
