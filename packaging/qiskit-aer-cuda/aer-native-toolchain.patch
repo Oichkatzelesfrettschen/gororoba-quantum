@@ -1,0 +1,118 @@
+--- a/CMakeLists.txt
++++ b/CMakeLists.txt
+@@ -8,7 +8,7 @@
+ # For Mac, statically linking only happens with user libraries, system libraries cannot
+ # be linked statically per Apple's indications.
+ 
+-cmake_minimum_required(VERSION 3.8 FATAL_ERROR)
++cmake_minimum_required(VERSION 3.18 FATAL_ERROR)
+ file(STRINGS "qiskit_aer/VERSION.txt" VERSION_NUM)
+ 
+ # For ROCm builds we need to make sure the CXX and HIP compilers match and are clang.
+@@ -276,7 +276,9 @@
+ if(AER_THRUST_SUPPORTED)
+ 	if(AER_THRUST_BACKEND STREQUAL "CUDA")
+ 		message(STATUS "Thrust library: Looking for CUDA backend...")
+-		find_package(CUDA REQUIRED)
++		find_package(CUDAToolkit REQUIRED)
++		set(CUDA_VERSION_MAJOR "${CUDAToolkit_VERSION_MAJOR}")
++		set(CUDA_TOOLKIT_ROOT_DIR "${CUDAToolkit_LIBRARY_ROOT}")
+ 		message(STATUS "Thrust library: CUDA found!")
+ 		if(NOT DEFINED AER_CUDA_ARCH)
+ 			if(DEFINED ENV{AER_CUDA_ARCH})
+--- a/cmake/FindPybind11.cmake
++++ b/cmake/FindPybind11.cmake
+@@ -1,4 +1,6 @@
+-find_package(PythonLibs)
++find_package(Python COMPONENTS Interpreter Development REQUIRED)
++set(PYTHON_INCLUDE_DIRS "${Python_INCLUDE_DIRS}")
++set(PYTHON_LIBRARIES "${Python_LIBRARIES}")
+ 
+ message(STATUS ${PYTHON_INCLUDE_DIRS})
+ message(STATUS "PYTHON EXECUTABLE: ${PYTHON_EXECUTABLE}")
+@@ -91,7 +93,8 @@
+     set_target_properties(${target_name} PROPERTIES CXX_VISIBILITY_PRESET "hidden")
+     set_target_properties(${target_name} PROPERTIES CUDA_VISIBILITY_PRESET "hidden")
+     set_target_properties(${target_name} PROPERTIES
+-        CXX_STANDARD 14
++        CXX_STANDARD 20
++        CUDA_STANDARD 20
+         LINKER_LANGUAGE CXX)
+     # Warning: Do not merge PROPERTIES when one of the variables can be empty, it breaks
+     # the rest of the properties so they are not properly added.
+--- a/qiskit_aer/backends/wrappers/CMakeLists.txt
++++ b/qiskit_aer/backends/wrappers/CMakeLists.txt
+@@ -26,7 +26,8 @@
+ if(AER_THRUST_BACKEND STREQUAL "CUDA")
+     include(nvcc_add_compiler_options)
+     set_source_files_properties(bindings.cc PROPERTIES LANGUAGE CUDA)
+-    set_source_files_properties(bindings.cc PROPERTIES COMPILE_FLAGS "${CUDA_NVCC_FLAGS}")
++    # Python feature macros must precede NVCC's implicit CUDA runtime headers.
++    set_source_files_properties(bindings.cc PROPERTIES COMPILE_FLAGS "${CUDA_NVCC_FLAGS} -Xcompiler=-imacros,pyconfig.h")
+ 
+     if(DEFINED SIMD_SOURCE_FILE)
+        set_source_files_properties(${SIMD_SOURCE_FILE} PROPERTIES LANGUAGE CUDA)
+--- a/src/simulators/statevector/qv_avx2.cpp
++++ b/src/simulators/statevector/qv_avx2.cpp
+@@ -159,9 +159,15 @@
+   }
+ }
+ 
++// Float specialization preserves SIMD attributes without template type arguments.
+ template <typename FloatType>
+-using m256_t = typename std::conditional<std::is_same<FloatType, double>::value,
+-                                         __m256d, __m256>::type;
++struct SimdVectorType { using type = __m256; };
++
++template <>
++struct SimdVectorType<double> { using type = __m256d; };
++
++template <typename FloatType>
++using m256_t = typename SimdVectorType<FloatType>::type;
+ 
+ // These Views are helpers for encapsulate access to real and imaginary parts of
+ // the original source (QubitVector::data_). SIMD operations requires getting a
+@@ -269,11 +275,11 @@
+   return _mm256_permute_ps(vec, _MM_SHUFFLE(2, 3, 0, 1));
+ }
+ 
+-static m256_t<double> _mm256_neg(double dummy) {
++static m256_t<double> _mm256_neg(double) {
+   return _mm256_setr_pd(1.0, -1.0, 1.0, -1.0);
+ }
+ 
+-static m256_t<float> _mm256_neg(float dummy) {
++static m256_t<float> _mm256_neg(float) {
+   return _mm256_setr_ps(1.0, -1.0, 1.0, -1.0, 1.0, -1.0, 1.0, -1.0);
+ }
+ 
+--- a/MANIFEST.in
++++ b/MANIFEST.in
+@@ -1,7 +1,6 @@
+ include MANIFEST.in
+ include README.md
+ include pyproject.toml
+-recursive-include qiskit_aer *cpp
+ recursive-include qiskit_aer *hpp
+ graft src
+ graft contrib
+@@ -11,6 +10,3 @@
+ include qiskit_aer/library/instructions_table.csv
+ include CMakeLists.txt
+ include cmake/*.cmake
+-# Exclude static libraries (they are all compressed with 7z)
+-exclude src/third-party/*/lib/*.a
+-exclude src/third-party/*/lib/*.lib
+--- a/cmake/dependency_utils.cmake
++++ b/cmake/dependency_utils.cmake
+@@ -56,5 +56,9 @@
+ 	string(TOLOWER ${package} PACKAGE_LOWER) # Conan use lowercase for every lib
+ 	add_library(AER_DEPENDENCY_PKG::${PACKAGE_LOWER} INTERFACE IMPORTED)
+-	target_link_libraries(AER_DEPENDENCY_PKG::${PACKAGE_LOWER} PUBLIC INTERFACE ${package})
++	if("${package}" STREQUAL "spdlog")
++		target_link_libraries(AER_DEPENDENCY_PKG::${PACKAGE_LOWER} PUBLIC INTERFACE spdlog::spdlog)
++	else()
++		target_link_libraries(AER_DEPENDENCY_PKG::${PACKAGE_LOWER} PUBLIC INTERFACE ${package})
++	endif()
+ 	message(STATUS "Using system-provided ${PACKAGE_LOWER} library")
+ endmacro()

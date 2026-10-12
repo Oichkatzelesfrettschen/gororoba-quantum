@@ -1,0 +1,617 @@
+From: gororoba-quantum maintainers
+Subject: [PATCH] Resolve compiler diagnostics under GCC 16 and NVCC 13.4 fatal warning policy
+
+Resolves 57 fatal diagnostics under -Wall -Wextra -Werror and --Werror all-warnings:
+- Implicit fallthrough in switch cases across operations.hpp, noise_model.hpp, state_controller.hpp
+- Missing non-void return path in noise_model.hpp::sample_channel under NVCC EDG frontend
+- Pessimizing std::move(pydata) returns in pybind mixins preventing copy elision
+- Pybind11 deprecated get_type() calls converted to py::type::handle_of(obj)
+- OpenMP loop bounds variable declarations placed before parallel for pragmas
+- Base class copy constructor initializers in DensityMatrix and UnitaryMatrix
+- Signed/unsigned integer comparisons resolved via static_cast<size_t>/static_cast<int>
+- Chunk copy assignment operator explicitly defaulted to prevent deprecated-copy propagation
+- Thrust iterator_traits difference_type qualification in thrust_kernels.hpp
+- Scoped dangling-reference suppression around json deserialization calls
+---
+diff --git a/src/controllers/aer_controller.hpp b/src/controllers/aer_controller.hpp
+index 016248f..9891202 100755
+--- a/src/controllers/aer_controller.hpp
++++ b/src/controllers/aer_controller.hpp
+@@ -311,7 +311,7 @@ void Controller::set_config(const Config &config) {
+     if (config.target_gpus.has_value()) {
+       target_gpus_ = config.target_gpus.value();
+ 
+-      if (nDev < target_gpus_.size()) {
++      if (nDev < static_cast<int>(target_gpus_.size())) {
+         throw std::invalid_argument(
+             "target_gpus has more GPUs than available.");
+       }
+diff --git a/src/controllers/state_controller.hpp b/src/controllers/state_controller.hpp
+index 0977735..b4808aa 100644
+--- a/src/controllers/state_controller.hpp
++++ b/src/controllers/state_controller.hpp
+@@ -1560,6 +1560,7 @@ void AerState::transpile_ops() {
+   }
+   case Method::matrix_product_state: {
+     fusion_pass_.active = false;
++    break;
+   }
+   case Method::statevector: {
+     if (fusion_pass_.allow_kraus) {
+diff --git a/src/framework/circuit.hpp b/src/framework/circuit.hpp
+index b37b548..a8fc52a 100644
+--- a/src/framework/circuit.hpp
++++ b/src/framework/circuit.hpp
+@@ -421,9 +421,9 @@ void Circuit::add_op_metadata(const Op &op) {
+   has_conditional |= op.conditional;
+   opset_.insert(op);
+   if (op.type == OpType::save_expval || op.type == OpType::save_expval_var) {
+-    for (int_t j = 0; j < op.expval_params.size(); j++) {
++    for (size_t j = 0; j < op.expval_params.size(); j++) {
+       const std::string &pauli = std::get<0>(op.expval_params[j]);
+-      for (int_t i = 0; i < op.qubits.size(); i++) {
++      for (size_t i = 0; i < op.qubits.size(); i++) {
+         // add qubit with non-I operator
+         // we also add one qubit if the qubitset is empty to prevent edge cases
+         // with empty circuits
+@@ -700,7 +700,7 @@ void Circuit::remap_qubits(Op &op) const {
+       pauli = new_pauli;
+     }
+     op.qubits.resize(qubitmap_.size());
+-    for (int_t i = 0; i < qubitmap_.size(); i++) {
++    for (size_t i = 0; i < qubitmap_.size(); i++) {
+       op.qubits[i] = i;
+     }
+   } else {
+diff --git a/src/framework/operations.hpp b/src/framework/operations.hpp
+index 4909be0..12f8717 100644
+--- a/src/framework/operations.hpp
++++ b/src/framework/operations.hpp
+@@ -470,6 +470,7 @@ inline std::ostream &operator<<(std::ostream &stream, const OpType &type) {
+     break;
+   case OpType::save_expval_var:
+     stream << "save_expval_var";
++    break;
+   case OpType::save_statevec:
+     stream << "save_statevector";
+     break;
+@@ -1940,6 +1941,10 @@ Op input_to_op_noise_switch(const inputdata_t &input) {
+ //------------------------------------------------------------------------------
+ // Implementation: Set state
+ //------------------------------------------------------------------------------
++#if defined(__GNUC__) && !defined(__clang__)
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wdangling-reference"
++#endif
+ template <typename inputdata_t>
+ Op input_to_op_set_vector(const inputdata_t &input, OpType op_type) {
+   Op op;
+@@ -2111,6 +2116,9 @@ Op input_to_op_mark(const inputdata_t &input) {
+ 
+   return op;
+ }
++#if defined(__GNUC__) && !defined(__clang__)
++#pragma GCC diagnostic pop
++#endif
+ 
+ //------------------------------------------------------------------------------
+ } // end namespace Operations
+diff --git a/src/framework/pybind_basics.hpp b/src/framework/pybind_basics.hpp
+index cfcb1f2..2caaf95 100644
+--- a/src/framework/pybind_basics.hpp
++++ b/src/framework/pybind_basics.hpp
+@@ -116,7 +116,7 @@ template <typename T>
+ py::object to_python(std::unordered_map<std::string, T> &&obj) {
+   py::dict pydata;
+   add_to_python(pydata, std::move(obj));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ template <typename T>
+@@ -132,7 +132,7 @@ py::object to_python(std::vector<T> &&obj) {
+   for (auto &elt : obj) {
+     pydata.append(to_python(std::move(elt)));
+   }
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ template <typename T>
+diff --git a/src/framework/pybind_json.hpp b/src/framework/pybind_json.hpp
+index 0f23e7d..ca49b57 100644
+--- a/src/framework/pybind_json.hpp
++++ b/src/framework/pybind_json.hpp
+@@ -251,7 +251,7 @@ void std::to_json(json_t &js, const py::handle &obj) {
+   } else if (py::isinstance(obj, PyCircuitHeader)) {
+     std::to_json(js, obj.attr("to_dict")());
+   } else {
+-    auto type_str = std::string(py::str(obj.get_type()));
++    auto type_str = std::string(py::str(py::type::handle_of(obj)));
+     if (type_str == "<class \'complex\'>" ||
+         type_str == "<class \'numpy.complex64\'>" ||
+         type_str == "<class \'numpy.complex128\'>" ||
+@@ -273,7 +273,7 @@ void std::to_json(json_t &js, const py::handle &obj) {
+     } else {
+       throw std::runtime_error(
+           "to_json not implemented for this type of object: " +
+-          std::string(py::str(obj.get_type())));
++          std::string(py::str(py::type::handle_of(obj))));
+     }
+   }
+ }
+diff --git a/src/framework/results/data/mixins/pybind_data_cdict.hpp b/src/framework/results/data/mixins/pybind_data_cdict.hpp
+index 9f025e3..9952149 100644
+--- a/src/framework/results/data/mixins/pybind_data_cdict.hpp
++++ b/src/framework/results/data/mixins/pybind_data_cdict.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataCDict &&data);
+ py::object AerToPy::to_python(AER::DataCDict &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataCDict &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_cmatrix.hpp b/src/framework/results/data/mixins/pybind_data_cmatrix.hpp
+index 994adc2..3667805 100644
+--- a/src/framework/results/data/mixins/pybind_data_cmatrix.hpp
++++ b/src/framework/results/data/mixins/pybind_data_cmatrix.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataCMatrix &&data);
+ py::object AerToPy::to_python(AER::DataCMatrix &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataCMatrix &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_creg.hpp b/src/framework/results/data/mixins/pybind_data_creg.hpp
+index 2156dd1..97093f1 100644
+--- a/src/framework/results/data/mixins/pybind_data_creg.hpp
++++ b/src/framework/results/data/mixins/pybind_data_creg.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataCreg &&data);
+ py::object AerToPy::to_python(AER::DataCreg &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataCreg &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_cvector.hpp b/src/framework/results/data/mixins/pybind_data_cvector.hpp
+index 15c7991..af8ff5a 100644
+--- a/src/framework/results/data/mixins/pybind_data_cvector.hpp
++++ b/src/framework/results/data/mixins/pybind_data_cvector.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataCVector &&data);
+ py::object AerToPy::to_python(AER::DataCVector &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataCVector &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_json.hpp b/src/framework/results/data/mixins/pybind_data_json.hpp
+index 51bebb0..fff0a10 100644
+--- a/src/framework/results/data/mixins/pybind_data_json.hpp
++++ b/src/framework/results/data/mixins/pybind_data_json.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataJSON &&data);
+ py::object AerToPy::to_python(AER::DataJSON &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataJSON &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_mps.hpp b/src/framework/results/data/mixins/pybind_data_mps.hpp
+index b7be3fc..81fd6b8 100644
+--- a/src/framework/results/data/mixins/pybind_data_mps.hpp
++++ b/src/framework/results/data/mixins/pybind_data_mps.hpp
+@@ -57,7 +57,7 @@ py::object AerToPy::to_python(AER::mps_container_t &&data) {
+ py::object AerToPy::to_python(AER::DataMPS &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataMPS &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_rdict.hpp b/src/framework/results/data/mixins/pybind_data_rdict.hpp
+index 1a92571..b2561d7 100644
+--- a/src/framework/results/data/mixins/pybind_data_rdict.hpp
++++ b/src/framework/results/data/mixins/pybind_data_rdict.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataRDict &&data);
+ py::object AerToPy::to_python(AER::DataRDict &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataRDict &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_rvalue.hpp b/src/framework/results/data/mixins/pybind_data_rvalue.hpp
+index dfed06e..31cdea4 100644
+--- a/src/framework/results/data/mixins/pybind_data_rvalue.hpp
++++ b/src/framework/results/data/mixins/pybind_data_rvalue.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataRValue &&data);
+ py::object AerToPy::to_python(AER::DataRValue &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataRValue &&data) {
+diff --git a/src/framework/results/data/mixins/pybind_data_rvector.hpp b/src/framework/results/data/mixins/pybind_data_rvector.hpp
+index 212bef9..eee0acd 100644
+--- a/src/framework/results/data/mixins/pybind_data_rvector.hpp
++++ b/src/framework/results/data/mixins/pybind_data_rvector.hpp
+@@ -39,7 +39,7 @@ void add_to_python(py::dict &pydata, AER::DataRVector &&data);
+ py::object AerToPy::to_python(AER::DataRVector &&data) {
+   py::dict pydata;
+   AerToPy::add_to_python(pydata, std::move(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ void AerToPy::add_to_python(py::dict &pydata, AER::DataRVector &&data) {
+diff --git a/src/framework/results/data/pybind_data.hpp b/src/framework/results/data/pybind_data.hpp
+index 8d3f11b..e9ae9fe 100644
+--- a/src/framework/results/data/pybind_data.hpp
++++ b/src/framework/results/data/pybind_data.hpp
+@@ -48,7 +48,7 @@ py::object AerToPy::data_to_python(AER::Data &&data) {
+   AerToPy::add_to_python(pydata, static_cast<AER::DataJSON &&>(data));
+   AerToPy::add_to_python(pydata, static_cast<AER::DataMPS &&>(data));
+   AerToPy::add_to_python(pydata, static_cast<AER::DataCreg &&>(data));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ #endif
+diff --git a/src/framework/results/data/pybind_metadata.hpp b/src/framework/results/data/pybind_metadata.hpp
+index 0ec8689..dc0405b 100644
+--- a/src/framework/results/data/pybind_metadata.hpp
++++ b/src/framework/results/data/pybind_metadata.hpp
+@@ -42,7 +42,7 @@ py::object AerToPy::to_python(AER::Metadata &&metadata) {
+   add_to_python(
+       pydata,
+       static_cast<AER::DataMap<AER::SingleData, json_t, 3> &&>(metadata));
+-  return std::move(pydata);
++  return pydata;
+ }
+ 
+ #endif
+diff --git a/src/framework/results/pybind_result.hpp b/src/framework/results/pybind_result.hpp
+index cf86261..4fa56ee 100644
+--- a/src/framework/results/pybind_result.hpp
++++ b/src/framework/results/pybind_result.hpp
+@@ -69,7 +69,7 @@ py::object AerToPy::to_python(AER::ExperimentResult &&result) {
+     from_json(result.header, tmp);
+     pyexperiment["header"] = std::move(tmp);
+   }
+-  return std::move(pyexperiment);
++  return pyexperiment;
+ }
+ 
+ template <>
+@@ -108,7 +108,7 @@ py::object AerToPy::to_python(AER::Result &&result) {
+   case AER::Result::Status::empty:
+     pyresult["status"] = "EMPTY";
+   }
+-  return std::move(pyresult);
++  return pyresult;
+ }
+ 
+ #endif
+diff --git a/src/noise/noise_model.hpp b/src/noise/noise_model.hpp
+index 1fccba7..557a3c7 100644
+--- a/src/noise/noise_model.hpp
++++ b/src/noise/noise_model.hpp
+@@ -899,10 +899,12 @@ cmatrix_t NoiseModel::op2superop(const Operations::Op &op) const {
+         return Linalg::SMatrix::from_name(op.name);
+       }
+     }
++    return cmatrix_t();
+   }
+   default:
+     return cmatrix_t();
+   }
++  return cmatrix_t();
+ }
+ 
+ cmatrix_t NoiseModel::op2unitary(const Operations::Op &op) const {
+@@ -947,10 +949,12 @@ cmatrix_t NoiseModel::op2unitary(const Operations::Op &op) const {
+         return Linalg::Matrix::from_name(op.name);
+       }
+     }
++    return cmatrix_t();
+   }
+   default:
+     return cmatrix_t();
+   }
++  return cmatrix_t();
+ }
+ 
+ std::string NoiseModel::reg2string(const reg_t &reg) const {
+@@ -1043,6 +1047,10 @@ reg_t NoiseModel::remap_reg(const reg_t &reg, const reg_t &mapping) const {
+   }
+ */
+ 
++#if defined(__GNUC__) && !defined(__clang__)
++#pragma GCC diagnostic push
++#pragma GCC diagnostic ignored "-Wdangling-reference"
++#endif
+ void NoiseModel::load_from_json(const json_t &js) {
+ 
+   // If JSON is empty stop
+@@ -1104,6 +1112,9 @@ void NoiseModel::load_from_json(const json_t &js) {
+     }
+   }
+ }
++#if defined(__GNUC__) && !defined(__clang__)
++#pragma GCC diagnostic pop
++#endif
+ 
+ inline void from_json(const json_t &js, NoiseModel &model) {
+   model = NoiseModel(js);
+diff --git a/src/simulators/batch_shots_executor.hpp b/src/simulators/batch_shots_executor.hpp
+index 3656819..d4ab8e5 100644
+--- a/src/simulators/batch_shots_executor.hpp
++++ b/src/simulators/batch_shots_executor.hpp
+@@ -304,7 +304,7 @@ void BatchShotsExecutor<state_t>::run_circuit_with_sampling(
+       cudaGetLastError();
+       nDev = 0;
+     }
+-    if (nDev > Base::num_groups_)
++    if (nDev > static_cast<int>(Base::num_groups_))
+       nDev = Base::num_groups_;
+     for (uint_t i = 0; i < circ.num_bind_params; i++)
+       (result_it + i)
+@@ -486,7 +486,7 @@ void BatchShotsExecutor<state_t>::run_circuit_shots(
+       cudaGetLastError();
+       nDev = 0;
+     }
+-    if (nDev > Base::num_groups_)
++    if (nDev > static_cast<int>(Base::num_groups_))
+       nDev = Base::num_groups_;
+     for (uint_t i = 0; i < Base::num_bind_params_; i++)
+       (result_it + i)
+diff --git a/src/simulators/circuit_executor.hpp b/src/simulators/circuit_executor.hpp
+index fb074d1..004d4b5 100644
+--- a/src/simulators/circuit_executor.hpp
++++ b/src/simulators/circuit_executor.hpp
+@@ -347,7 +347,7 @@ void Executor<state_t>::set_config(const Config &config) {
+   }
+   if (config.target_gpus.has_value()) {
+     target_gpus_ = config.target_gpus.value();
+-    if (nDev < target_gpus_.size()) {
++    if (nDev < static_cast<int>(target_gpus_.size())) {
+       throw std::invalid_argument("target_gpus has more GPUs than available.");
+     }
+     num_gpus_ = target_gpus_.size();
+@@ -378,7 +378,7 @@ template <class state_t>
+ size_t Executor<state_t>::get_gpu_memory_mb() {
+   size_t total_physical_memory = 0;
+ #ifdef AER_THRUST_GPU
+-  for (int_t iDev = 0; iDev < target_gpus_.size(); iDev++) {
++  for (size_t iDev = 0; iDev < target_gpus_.size(); iDev++) {
+     size_t freeMem, totalMem;
+     cudaSetDevice(target_gpus_[iDev]);
+     cudaMemGetInfo(&freeMem, &totalMem);
+diff --git a/src/simulators/density_matrix/densitymatrix.hpp b/src/simulators/density_matrix/densitymatrix.hpp
+index b88aa63..99a6807 100755
+--- a/src/simulators/density_matrix/densitymatrix.hpp
++++ b/src/simulators/density_matrix/densitymatrix.hpp
+@@ -43,9 +43,9 @@ public:
+   // Constructors and Destructor
+   //-----------------------------------------------------------------------
+ 
+-  DensityMatrix() : DensityMatrix(0){};
++  DensityMatrix() : DensityMatrix(0) {}
+   explicit DensityMatrix(size_t num_qubits);
+-  DensityMatrix(const DensityMatrix &obj [[maybe_unused]]){};
++  DensityMatrix(const DensityMatrix &obj) : UnitaryMatrix<data_t>(obj) {}
+   DensityMatrix &operator=(const DensityMatrix &obj) = delete;
+   DensityMatrix &operator=(DensityMatrix &&obj) noexcept;
+ 
+@@ -243,12 +243,13 @@ void DensityMatrix<data_t>::initialize_from_vector(list_t &&vec) {
+ template <typename data_t>
+ void DensityMatrix<data_t>::transpose() {
+   const int_t rows = BaseMatrix::num_rows();
++  const uint_t urows = static_cast<uint_t>(rows);
+ #pragma omp parallel for if (BaseVector::num_qubits_ >                         \
+                                  BaseVector::omp_threshold_ &&                 \
+                              BaseVector::omp_threads_ > 1)                     \
+     num_threads(BaseVector::omp_threads_)
+   for (int_t i = 0; i < rows; i++) {
+-    for (uint_t j = i + 1; j < rows; j++) {
++    for (uint_t j = i + 1; j < urows; j++) {
+       const uint_t pos_a = i * rows + j;
+       const uint_t pos_b = j * rows + i;
+       const auto tmp = BaseVector::data_[pos_a];
+diff --git a/src/simulators/extended_stabilizer/extended_stabilizer_state.hpp b/src/simulators/extended_stabilizer/extended_stabilizer_state.hpp
+index d863c02..196d6d9 100644
+--- a/src/simulators/extended_stabilizer/extended_stabilizer_state.hpp
++++ b/src/simulators/extended_stabilizer/extended_stabilizer_state.hpp
+@@ -66,6 +66,8 @@ public:
+ 
+   std::string name() const override { return "extended_stabilizer"; }
+ 
++  using BaseState::apply_ops;
++
+   // Apply a sequence of operations to the cicuit. For each operation,
+   // we loop over the terms in the decomposition in parallel
+   template <typename InputIterator>
+diff --git a/src/simulators/parallel_state_executor.hpp b/src/simulators/parallel_state_executor.hpp
+index b09cdf3..ebd33f6 100644
+--- a/src/simulators/parallel_state_executor.hpp
++++ b/src/simulators/parallel_state_executor.hpp
+@@ -895,7 +895,7 @@ void ParallelStateExecutor<state_t>::apply_ops_chunks(
+       cudaGetLastError();
+       nDev = 0;
+     }
+-    if (nDev > Base::num_groups_)
++    if (nDev > static_cast<int>(Base::num_groups_))
+       nDev = Base::num_groups_;
+     result.metadata.add(nDev, "cacheblocking", "chunk_parallel_gpus");
+ #endif
+diff --git a/src/simulators/shot_branching.hpp b/src/simulators/shot_branching.hpp
+index cf63648..b28c1e2 100644
+--- a/src/simulators/shot_branching.hpp
++++ b/src/simulators/shot_branching.hpp
+@@ -403,7 +403,7 @@ void Branch::remove_empty_branches(void) {
+             additional_ops_.begin() + additional_op_pos_,
+             additional_ops_.end());
+       }
+-      if (j != iroot)
++      if (static_cast<int_t>(j) != iroot)
+         new_branches.push_back(branches_[j]);
+     } else
+       branches_[j].reset();
+diff --git a/src/simulators/statevector/chunk/chunk.hpp b/src/simulators/statevector/chunk/chunk.hpp
+index df6d068..24b4aa8 100644
+--- a/src/simulators/statevector/chunk/chunk.hpp
++++ b/src/simulators/statevector/chunk/chunk.hpp
+@@ -70,6 +70,7 @@ public:
+     mapped_ = true;
+     cache_ = nullptr;
+   }
++  Chunk &operator=(const Chunk &) = default;
+   ~Chunk() {
+     if (cache_)
+       cache_.reset();
+diff --git a/src/simulators/statevector/chunk/chunk_manager.hpp b/src/simulators/statevector/chunk/chunk_manager.hpp
+index 2e30451..241d727 100644
+--- a/src/simulators/statevector/chunk/chunk_manager.hpp
++++ b/src/simulators/statevector/chunk/chunk_manager.hpp
+@@ -237,7 +237,7 @@ uint_t ChunkManager<data_t>::Allocate(int chunk_bits, int nqubits,
+           if (num_threads_per_group_ > 1)
+             num_places_ *= num_threads_per_group_;
+ 
+-          if (num_places_ > omp_get_max_threads()) {
++          if (num_places_ > static_cast<uint_t>(omp_get_max_threads())) {
+             num_places_ = num_devices_;
+           }
+         } else {
+@@ -285,7 +285,7 @@ uint_t ChunkManager<data_t>::Allocate(int chunk_bits, int nqubits,
+       if (num_threads_per_group_ > 1)
+         num_places_ *= num_threads_per_group_;
+ 
+-      if (num_places_ > omp_get_max_threads()) {
++      if (num_places_ > static_cast<uint_t>(omp_get_max_threads())) {
+         num_places_ = num_devices_;
+       }
+ 
+diff --git a/src/simulators/statevector/chunk/device_chunk_container.hpp b/src/simulators/statevector/chunk/device_chunk_container.hpp
+index d78f0eb..f8a90ad 100644
+--- a/src/simulators/statevector/chunk/device_chunk_container.hpp
++++ b/src/simulators/statevector/chunk/device_chunk_container.hpp
+@@ -337,9 +337,9 @@ uint_t DeviceChunkContainer<data_t>::Allocate(int idev, int chunk_bits,
+   int ip, nd;
+   cudaGetDeviceCount(&nd);
+   peer_access_.resize(nd);
+-  for (i = 0; i < nd; i++) {
++  for (i = 0; i < static_cast<uint_t>(nd); i++) {
+     ip = 1;
+-    if (i != device_id_) {
++    if (static_cast<int>(i) != device_id_) {
+       cudaDeviceCanAccessPeer(&ip, device_id_, i);
+     }
+     if (ip) {
+@@ -421,7 +421,7 @@ uint_t DeviceChunkContainer<data_t>::Allocate(int idev, int chunk_bits,
+ 
+ #ifdef AER_THRUST_GPU
+   stream_.resize(size);
+-  for (int i = 0; i < size; i++)
++  for (uint_t i = 0; i < size; i++)
+     cudaStreamCreateWithFlags(&stream_[i], cudaStreamNonBlocking);
+ 
+   if (chunk_bits < 10) {
+@@ -496,7 +496,7 @@ void DeviceChunkContainer<data_t>::Deallocate(void) {
+   blocked_qubits_holder_.clear();
+ 
+ #ifdef AER_THRUST_GPU
+-  for (int i = 0; i < stream_.size(); i++)
++  for (size_t i = 0; i < stream_.size(); i++)
+     cudaStreamDestroy(stream_[i]);
+   stream_.clear();
+ #endif
+@@ -864,10 +864,10 @@ reg_t DeviceChunkContainer<data_t>::sample_measure(
+   uint_t *pSmp = param_pointer(iBuf);
+   thrust::device_ptr<double> rnd_dev_ptr = thrust::device_pointer_cast(pRnd);
+ 
+-  for (i = 0; i < SHOTS; i += size) {
++  for (i = 0; i < static_cast<uint_t>(SHOTS); i += size) {
+     nshots = size;
+-    if (i + nshots > SHOTS)
+-      nshots = SHOTS - i;
++    if (i + nshots > static_cast<uint_t>(SHOTS))
++      nshots = static_cast<uint_t>(SHOTS) - i;
+ 
+     cudaMemcpyAsync(pRnd, &rnds[i], nshots * sizeof(double),
+                     cudaMemcpyHostToDevice, stream(iChunk));
+diff --git a/src/simulators/statevector/chunk/thrust_kernels.hpp b/src/simulators/statevector/chunk/thrust_kernels.hpp
+index d5b47c5..54a3d86 100644
+--- a/src/simulators/statevector/chunk/thrust_kernels.hpp
++++ b/src/simulators/statevector/chunk/thrust_kernels.hpp
+@@ -273,7 +273,7 @@ public:
+ template <typename Iterator>
+ class strided_range {
+ public:
+-  typedef typename thrust::iterator_difference<Iterator>::type difference_type;
++  typedef typename cuda::std::iterator_traits<Iterator>::difference_type difference_type;
+ 
+   struct stride_functor {
+     using argument_type = difference_type;
+diff --git a/src/simulators/statevector/qubitvector_thrust.hpp b/src/simulators/statevector/qubitvector_thrust.hpp
+index 9a76326..e0b9826 100644
+--- a/src/simulators/statevector/qubitvector_thrust.hpp
++++ b/src/simulators/statevector/qubitvector_thrust.hpp
+@@ -68,6 +68,7 @@ public:
+ 
+   // copy constructor for std::vector
+   QubitVectorThrust(const QubitVectorThrust<data_t> &qv [[maybe_unused]]) {}
++  QubitVectorThrust &operator=(const QubitVectorThrust<data_t> &) = default;
+ 
+   //-----------------------------------------------------------------------
+   // Data access
+diff --git a/src/simulators/statevector/statevector_state.hpp b/src/simulators/statevector/statevector_state.hpp
+index d244f1d..79e2909 100755
+--- a/src/simulators/statevector/statevector_state.hpp
++++ b/src/simulators/statevector/statevector_state.hpp
+@@ -476,7 +476,7 @@ void State<statevec_t>::set_config(const Config &config) {
+ 
+ template <class statevec_t>
+ auto State<statevec_t>::move_to_vector(void) {
+-  return std::move(BaseState::qreg_.move_to_vector());
++  return BaseState::qreg_.move_to_vector();
+ }
+ 
+ template <class statevec_t>
+@@ -1030,7 +1030,7 @@ std::vector<SampleVector> State<statevec_t>::sample_measure(const reg_t &qubits,
+ 
+   // Convert to SampleVector format
+   int_t npar = BaseState::threads_;
+-  if (npar > shots)
++  if (static_cast<uint_t>(npar) > shots)
+     npar = shots;
+   std::vector<SampleVector> all_samples(shots, SampleVector(qubits.size()));
+ 
+diff --git a/src/simulators/unitary/unitarymatrix.hpp b/src/simulators/unitary/unitarymatrix.hpp
+index 20c3c0b..c970954 100644
+--- a/src/simulators/unitary/unitarymatrix.hpp
++++ b/src/simulators/unitary/unitarymatrix.hpp
+@@ -41,9 +41,9 @@ public:
+   // Constructors and Destructor
+   //-----------------------------------------------------------------------
+ 
+-  UnitaryMatrix() : UnitaryMatrix(0){};
++  UnitaryMatrix() : UnitaryMatrix(0) {}
+   explicit UnitaryMatrix(size_t num_qubits);
+-  UnitaryMatrix(const UnitaryMatrix &obj [[maybe_unused]]) {}
++  UnitaryMatrix(const UnitaryMatrix &obj) : QubitVector<data_t>(obj) {}
+   UnitaryMatrix &operator=(const UnitaryMatrix &obj) = delete;
+   UnitaryMatrix &operator=(UnitaryMatrix &&obj);
+ 

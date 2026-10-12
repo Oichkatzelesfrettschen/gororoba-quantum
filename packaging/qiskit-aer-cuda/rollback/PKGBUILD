@@ -1,0 +1,36 @@
+# Maintainer: gororoba-quantum contributors
+# Preserve the verified CPU payload while repairing its package dependency.
+pkgname=python-qiskit-aer
+pkgver=0.17.2
+pkgrel=4
+pkgdesc='Qiskit Aer CPU rollback with verified retained payload and OpenBLAS dependency'
+arch=('x86_64')
+url='https://github.com/Qiskit/qiskit-aer'
+license=('Apache-2.0')
+depends=(
+  'openblas'
+  'python-dateutil'
+  'python-numpy'
+  'python-psutil'
+  'python-qiskit'
+  'python-sympy'
+)
+optdepends=(
+  'openmp: parallelization with OpenMP'
+  'python-cvxpy: support convex optimization'
+  'python-dask: parallel computing with task scheduling'
+  'python-distributed: distributed task scheduler for Dask'
+)
+conflicts=('python-qiskit-aer-cuda')
+options=('!strip' '!debug' '!zipman' '!purge' 'libtool' 'staticlibs' 'emptydirs' 'docs' '!lto')
+_source_archive="python-qiskit-aer-0.17.2-3-$CARCH.pkg.tar.zst"
+source=("$_source_archive")
+noextract=("$_source_archive")
+sha256sums=('c58d8c8c22c64d924b48ba6b4b770d9c4a26f99755e907f518fa6f608f0ce123')
+
+package() {
+  # makepkg regenerates archive metadata; installed files retain their bytes,
+  # permissions, links, and source timestamps. Disabling strip preserves ELF.
+  bsdtar -xpf "$srcdir/$_source_archive" -C "$pkgdir" \
+    --exclude=.PKGINFO --exclude=.BUILDINFO --exclude=.MTREE
+}

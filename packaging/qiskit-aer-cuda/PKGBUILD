@@ -1,0 +1,337 @@
+# shellcheck shell=bash
+# Maintainer: gororoba-quantum maintainers
+pkgname=python-qiskit-aer-cuda
+pkgver=0.17.2
+pkgrel=1
+pkgdesc='Native Qiskit Aer CUDA density-matrix support for NVIDIA Ada GPUs'
+arch=('x86_64')
+url='https://github.com/Qiskit/qiskit-aer'
+license=('Apache-2.0')
+depends=(
+  'cuda>=13.4' 'cuda<14'
+  'gcc-libs' 'openblas'
+  'spdlog>=1.17' 'spdlog<1.18' 'fmt>=12.2' 'fmt<13'
+  'python>=3.14' 'python<3.15'
+  'python-dateutil' 'python-numpy' 'python-psutil' 'python-qiskit'
+  'python-scipy' 'python-sympy'
+)
+makedepends=(
+  'cmake' 'ninja' 'python-installer' 'uv'
+)
+provides=("python-qiskit-aer=$pkgver")
+conflicts=('python-qiskit-aer')
+# GCC link-time optimization and CUDA device link-time optimization use
+# different pipelines. The native Aer build uses its ordinary CUDA pipeline.
+options=('!lto' '!debug')
+_json_version=3.10.2
+source=(
+  "qiskit-aer-$pkgver.tar.gz::https://github.com/Qiskit/qiskit-aer/archive/refs/tags/$pkgver.tar.gz"
+  "nlohmann-json-$_json_version.tar.gz::https://github.com/nlohmann/json/archive/refs/tags/v$_json_version.tar.gz"
+  'check_native_aer.py'
+  'setuptools-license-expression.patch'
+  'aer-native-toolchain.patch'
+  'aer-cccl-type-traits.patch'
+  'aer-unused-parameter-annotations.patch'
+  'aer-compiler-diagnostics.patch'
+  'scikit-build-cmake-cli.patch'
+  'build-requirements.txt'
+  'https://files.pythonhosted.org/packages/ab/e5/aa1e81b21aea0ce0ba435311837a37d4cb936e7461f9fecac08580073ba9/build-1.6.0-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/12/b3/231ffd4ab1fc9d679809f356cebee130ac7daa00d6d6f3206dd4fd137e9e/distro-1.9.0-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/63/34/ba1c580383c9eada3711951fef0795c80b829a078d72188184bcab9dd527/packaging-26.3-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/33/fd/8762f7ee3e4e4be6d1d846cffb4916dd9bb02b2f800d3603718a0efe494c/pybind11-3.1.0-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/85/11/044d1ae1b4ec0d7af88ee5bc91e081be1022533032b906a7bdabdbb60977/pyproject_hooks-1.3.3-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/47/ef/53c5d9293d1d11ed4e682fdd7f32c776b79ee30f83757395db0d4d0f0276/scikit_build-0.19.1-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/95/9c/c510029fc6ef33a6275cd2c5d3cecd6613dfd6aa401d57c54f1c18852ccf/setuptools-84.0.0-py3-none-any.whl'
+  'https://files.pythonhosted.org/packages/2e/29/69cfbb602cd91690c55d38ba9fe53e6a7e76a6fa647bf38f19c138d25449/wheel-0.48.0-py3-none-any.whl'
+)
+sha256sums=(
+  '0231c74ae23d7dcaef664c39e57f800ee5174f73821a60f328ca3fe542266950'
+  '081ed0f9f89805c2d96335c3acfa993b39a0a5b4b4cef7edb68dd2210a13458c'
+  '18b7879ab0a41acf58c9c6965b6f6f092218876a5a807d2b702ee1e1ebf5c295'
+  '1e63fb8daa9df8d8e54ff177bec02fffc451908df52fd3c2c90fe1a862997c32'
+  '656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04'
+  'faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96'
+  'd6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22'
+  '82a21ae10e9bf2a41d27a4c4abd3ce2c86d2fbd7f30b46ad633729b7db925af1'
+  '663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53'
+  '10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352'
+  'f7aaf1ebbb79178a02ba248bb524f2176b256017e17e8e4bd4289c7b38cc2bad'
+  '7bffd925d65168f85027d8da9af6bddab658135b840670a223589bc0c8ef02b2'
+  'd7193f7c8e4e93f444fde0262bf90af30e16fa0ad0ad44cb553c87339b23cd1c'
+  'b8488090f8acffbcb6b5d6a85571a6827a0a2981ffb75e5a0b27b87c4a6b7dd0'
+  '5fc53fdac9f7bd63fbcdc868fb5f90b4784d78a53a3d3388cd738b807441a20b'
+  'a4fa78a7222ca40d5e8bae6700514bbf7efea4346efd9fc1f8cfca837cd1de71'
+  '51a52592b3b99e102b609654876bd65f19f999935166d1352678931132b0c670'
+  '3217dcc807155e45db462d7ef2431f5ddda0d7273b700d05a67b271ceb1287ab'
+)
+noextract=(
+  'build-1.6.0-py3-none-any.whl'
+  'distro-1.9.0-py3-none-any.whl'
+  'packaging-26.3-py3-none-any.whl'
+  'pybind11-3.1.0-py3-none-any.whl'
+  'pyproject_hooks-1.3.3-py3-none-any.whl'
+  'scikit_build-0.19.1-py3-none-any.whl'
+  'setuptools-84.0.0-py3-none-any.whl'
+  'wheel-0.48.0-py3-none-any.whl'
+)
+
+prepare() {
+  cd "qiskit-aer-$pkgver"
+  # Distribution packages supply build dependencies; Conan and pip dependency
+  # resolution would introduce an independent, unrecorded dependency set.
+  sed -i '/"conan</d; /"cmake!=/d; /"ninja",/d' pyproject.toml
+
+  # 1. setuptools-license-expression.patch:
+  #    - Issue: Setuptools >= 84 deprecates and rejects license classifiers in pyproject.toml.
+  #    - Resolution: Replace classifiers with SPDX license-expression "Apache-2.0".
+  patch -Np1 -i "$srcdir/setuptools-license-expression.patch"
+
+  # 2. aer-native-toolchain.patch:
+  #    - Issue: Modern CMake/CUDA incompatibility (FindCUDA deprecated, C++14 incompatible with CUDA 13/fmt 12).
+  #    - Resolution: Use modern CUDAToolkit and Python discovery in CMakeLists.txt; set CXX/CUDA standard to C++20;
+  #      link spdlog::spdlog; preload pyconfig.h via -Xcompiler=-imacros,pyconfig.h to avoid glibc conflict;
+  #      fix AVX2 SIMD template specialization in qv_avx2.cpp.
+  patch -Np1 -i "$srcdir/aer-native-toolchain.patch"
+
+  # 3. aer-cccl-type-traits.patch:
+  #    - Issue: CUDA 13 / CCCL 2.8 removed deprecated std::unary_function base classes from Thrust.
+  #    - Resolution: Declare explicit argument_type and result_type aliases directly in functors.
+  patch -Np1 -i "$srcdir/aer-cccl-type-traits.patch"
+
+  # 4. aer-unused-parameter-annotations.patch:
+  #    - Issue (226 diagnostics): -Werror=unused-parameter triggered under -Wall -Wextra -Werror.
+  #    - Resolution: Annotate unused arguments with [[maybe_unused]] in function headers/lambdas
+  #      and omit unnamed dummy parameters across bindings, frameworks, and simulators.
+  patch -Np1 -i "$srcdir/aer-unused-parameter-annotations.patch"
+
+  # 5. aer-compiler-diagnostics.patch:
+  #    - Issue (57 diagnostics under GCC 16.2.1 / NVCC 13.4 fatal warning flags):
+  #      * -Werror=implicit-fallthrough: 4 switch fallthrough cases in operations.hpp, noise_model.hpp, state_controller.hpp (added break / comments).
+  #      * NVCC EDG non-void return: missing return in noise_model.hpp::sample_channel (added explicit 'return cmatrix_t();').
+  #      * -Werror=pessimizing-move: 14 redundant std::move(pydata) returns in pybind mixins preventing NRVO (converted to 'return pydata;').
+  #      * -Werror=deprecated-declarations: pybind11 obj.get_type() converted to py::type::handle_of(obj) in pybind_json.hpp.
+  #      * -Werror=openmp: OpenMP parallel for loop-bound variable scope in densitymatrix.hpp.
+  #      * -Werror=extra: base class copy initialization in DensityMatrix and UnitaryMatrix copy constructors.
+  #      * -Werror=sign-compare: 20 signed/unsigned comparison mismatches resolved via explicit static_cast in circuit.hpp, aer_controller.hpp, chunk_container.hpp.
+  #      * -Werror=deprecated-copy: Chunk defaulted copy-assignment operator in chunk.hpp.
+  #      * -Werror=dangling-reference: scoped diagnostic pragmas around JSON deserializers in pybind_json.hpp.
+  #      * Thrust difference_type traits in thrust_kernels.hpp.
+  patch -Np1 -i "$srcdir/aer-compiler-diagnostics.patch"
+}
+
+build() {
+  local python_executable build_python jobs
+  jobs=$(( $(nproc) / 2 ))
+  python_executable="${PYTHON:-$(command -v python3)}"
+  export PYTHON="$python_executable"
+  export CMAKE_BUILD_PARALLEL_LEVEL="$jobs"
+  export MAKEFLAGS="-j$jobs"
+  export SKBUILD_BUILD_OPTIONS="-j$jobs -k 0"
+  export PYTHONDONTWRITEBYTECODE=1
+  export PYTHONWARNINGS=error
+  export SOURCE_DATE_EPOCH="${SOURCE_DATE_EPOCH:-$(stat -c %Y "$srcdir/qiskit-aer-$pkgver/qiskit_aer/VERSION.txt")}"
+  # An isolated, pinned PEP 517 toolchain excludes ambient setuptools plugins.
+  # Native compilation still uses the system Python ABI and CUDA toolchain.
+  "$PYTHON" -m venv --without-pip "$srcdir/build-env"
+  build_python="$srcdir/build-env/bin/python"
+  uv pip sync --python "$build_python" --offline --no-index --no-cache \
+    --find-links "$srcdir" --require-hashes "$srcdir/build-requirements.txt"
+  patch -d "$srcdir/build-env/lib/python3.14/site-packages" -Np1 \
+    -i "$srcdir/scikit-build-cmake-cli.patch"
+  "$build_python" -c 'import importlib.metadata as m; assert not m.entry_points(group="setuptools.file_finders")'
+
+  # Aer requires the older single-header JSON layout for its supported C++
+  # serialization interfaces. The private header remains build-only.
+  cmake -S "json-$_json_version" -B json-build -G Ninja \
+    -DJSON_BuildTests=OFF -DJSON_MultipleHeaders=OFF \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.10 \
+    -DCMAKE_INSTALL_PREFIX="$srcdir/json-prefix"
+  cmake --build json-build --parallel "$jobs"
+  cmake --install json-build
+
+  cd "qiskit-aer-$pkgver"
+  export DISABLE_CONAN=ON
+  export QISKIT_AER_PACKAGE_NAME=qiskit-aer
+  export QISKIT_ADD_CUDA_REQUIREMENTS=OFF
+  export CUDACXX=/opt/cuda/bin/nvcc
+  export CUDAHOSTCXX=/usr/bin/g++
+  export CMAKE_GENERATOR=Ninja
+  export CXXFLAGS="$CXXFLAGS -Wall -Wextra -Werror"
+  export LDFLAGS="$LDFLAGS -Wl,--no-as-needed"
+  export CMAKE_ARGS="-DDISABLE_CONAN=ON -DAER_THRUST_BACKEND=CUDA -DAER_CUDA_ARCH=8.9"
+  CMAKE_ARGS+=" -DAER_ENABLE_CUQUANTUM=OFF -DAER_MPI=OFF"
+  CMAKE_ARGS+=" -DCMAKE_POLICY_VERSION_MINIMUM=3.10 -Werror=author -Werror=deprecated"
+  CMAKE_ARGS+=" -DCMAKE_EXPORT_COMPILE_COMMANDS=ON"
+  CMAKE_ARGS+=" -DCUDA_TOOLKIT_ROOT_DIR=/opt/cuda -DCMAKE_CUDA_HOST_COMPILER=/usr/bin/g++"
+  CMAKE_ARGS+=" -Dnlohmann_json_DIR=$srcdir/json-prefix/lib/cmake/nlohmann_json"
+  CMAKE_ARGS+=" -DCMAKE_PREFIX_PATH=$srcdir/json-prefix"
+  # NVCC applies device diagnostics separately from the host compiler.
+  export CUDAFLAGS='--Werror all-warnings -Xcompiler=-Wall,-Wextra,-Werror'
+  "$build_python" -m build --wheel --no-isolation
+  "$PYTHON" - "$srcdir/native_cuda_build.json" "$srcdir/qiskit-aer-$pkgver" "$build_python" "$SRCDEST" <<'PY'
+import hashlib
+import json
+import os
+import platform
+import re
+import shlex
+import subprocess
+import sys
+import sysconfig
+from importlib.metadata import version
+from pathlib import Path
+
+destination, source_root, build_python, download_root = map(Path, sys.argv[1:])
+build_dependencies = json.loads(subprocess.check_output([
+    str(build_python), '-c', 'import importlib.metadata as m, json; print(json.dumps({d.metadata["Name"]: d.version for d in m.distributions()}))',
+], text=True))
+caches = list(source_root.glob('_skbuild/*/cmake-build/CMakeCache.txt'))
+if len(caches) != 1:
+    raise RuntimeError('native build requires one unambiguous CMake cache')
+cache = {}
+for line in caches[0].read_text().splitlines():
+    if not line or line.startswith(('#', '//')) or '=' not in line:
+        continue
+    key, value = line.split('=', 1)
+    cache[key.split(':', 1)[0]] = value
+expected = {
+    'AER_THRUST_BACKEND': 'CUDA', 'AER_CUDA_ARCH': '8.9',
+    'AER_ENABLE_CUQUANTUM': 'OFF', 'AER_MPI': 'OFF', 'DISABLE_CONAN': 'ON',
+}
+if any(cache.get(key) != value for key, value in expected.items()):
+    raise RuntimeError('native CMake cache differs from the pinned CUDA contract')
+commands = json.loads(caches[0].with_name('compile_commands.json').read_text())
+cuda_commands = [command for command in commands if '/opt/cuda/bin/nvcc' in command['command']]
+if len(cuda_commands) != 2:
+    raise RuntimeError('native build requires both Aer wrapper and SIMD CUDA compile commands')
+for command in cuda_commands:
+    arguments = shlex.split(command['command'])
+    warning_index = arguments.index('--Werror')
+    if arguments[warning_index + 1] != 'all-warnings':
+        raise RuntimeError('NVCC device warnings were not fatal')
+    if '-Xcompiler=-Wall,-Wextra,-Werror' not in arguments:
+        raise RuntimeError('NVCC host warnings were not fatal')
+source_checksums = {
+        'qiskit-aer-0.17.2.tar.gz': '0231c74ae23d7dcaef664c39e57f800ee5174f73821a60f328ca3fe542266950',
+        'nlohmann-json-3.10.2.tar.gz': '081ed0f9f89805c2d96335c3acfa993b39a0a5b4b4cef7edb68dd2210a13458c',
+        'setuptools-license-expression.patch': '1e63fb8daa9df8d8e54ff177bec02fffc451908df52fd3c2c90fe1a862997c32',
+        'aer-native-toolchain.patch': '656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04',
+        'aer-cccl-type-traits.patch': 'faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96',
+        'aer-unused-parameter-annotations.patch': 'd6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22',
+        'aer-compiler-diagnostics.patch': '82a21ae10e9bf2a41d27a4c4abd3ce2c86d2fbd7f30b46ad633729b7db925af1',
+        'scikit-build-cmake-cli.patch': '663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53',
+        'build-requirements.txt': '10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352',
+        'check_native_aer.py': '18b7879ab0a41acf58c9c6965b6f6f092218876a5a807d2b702ee1e1ebf5c295',
+}
+for source_name, expected_checksum in source_checksums.items():
+    source_file = source_root.parent / source_name
+    if not source_file.is_file():
+        source_file = download_root / source_name
+    if hashlib.sha256(source_file.read_bytes()).hexdigest() != expected_checksum:
+        raise RuntimeError(f'native build source checksum differs: {source_name}')
+path_tokens = [
+    (str(source_root), '${AER_SOURCE}'),
+    (str(source_root.parent), '${BUILD_ROOT}'),
+    ('/opt/cuda', '${CUDA_ROOT}'),
+    ('/usr/include', '${SYSTEM_INCLUDE}'),
+    ('/usr/bin', '${SYSTEM_BIN}'),
+]
+normalized_commands = []
+for command in cuda_commands:
+    normalized = command['command']
+    for native_path, symbolic_path in path_tokens:
+        normalized = normalized.replace(native_path, symbolic_path)
+    arguments = shlex.split(normalized)
+    if '-std=c++20' not in arguments or '-use_fast_math' not in arguments:
+        raise RuntimeError('native CUDA standard or upstream math flags differ')
+    if Path(command['file']).name == 'bindings.cc' and '-Xcompiler=-imacros,pyconfig.h' not in arguments:
+        raise RuntimeError('native Python configuration preload is absent')
+    normalized_commands.append({'source': str(Path(command['file']).relative_to(source_root)), 'arguments': arguments})
+native_dependencies = {}
+for package_name in ('cuda', 'gcc', 'glibc', 'openblas', 'spdlog', 'fmt', 'cmake', 'ninja', 'uv', 'python-installer'):
+    package_info = subprocess.check_output(['pacman', '-Q', package_name], text=True).strip()
+    native_dependencies[package_name] = package_info.split(' ', 1)[1]
+native_headers = {
+    'python-pyconfig.h': Path(sysconfig.get_path('include')) / 'pyconfig.h',
+    'spdlog-common.h': Path('/usr/include/spdlog/common.h'),
+    'fmt-base.h': Path('/usr/include/fmt/base.h'),
+}
+extensions = list(caches[0].parent.glob('qiskit_aer/backends/wrappers/controller_wrappers*.so'))
+if len(extensions) != 1:
+    raise RuntimeError('native metadata requires one compiled Aer extension')
+linkage = subprocess.check_output(['ldd', str(extensions[0])], text=True)
+if 'not found' in linkage:
+    raise RuntimeError('native Aer has an unresolved linked library')
+native_libraries = {}
+for line in linkage.splitlines():
+    match = re.match(r'\s*(\S+) => (/\S+) ', line)
+    if match:
+        name, path = match.groups()
+        native_libraries[name] = hashlib.sha256(Path(path).read_bytes()).hexdigest()
+for required_prefix in ('libopenblas.so', 'libspdlog.so', 'libfmt.so'):
+    if not any(name.startswith(required_prefix) for name in native_libraries):
+        raise RuntimeError(f'native Aer lacks its required linked library: {required_prefix}')
+metadata = {
+    'schema': 'native-aer-cuda-build-v1',
+    'distribution': 'qiskit-aer', 'version': '0.17.2',
+    'build_mode': 'upstream-aer-thrust-cuda-with-cpu-support',
+    'source_sha256': source_checksums,
+    'cuda_architecture': 'sm_89',
+    'cmake_options': expected,
+    'cuda_compiler_flags': cache.get('CMAKE_CUDA_FLAGS'),
+    'cuda_compiler_version': subprocess.check_output(['/opt/cuda/bin/nvcc', '--version'], text=True).strip(),
+    'host_compiler_version': subprocess.check_output(['/usr/bin/g++', '-dumpfullversion'], text=True).strip(),
+    'host_compiler_target': subprocess.check_output(['/usr/bin/g++', '-dumpmachine'], text=True).strip(),
+    'python_version': platform.python_version(),
+    'python_soabi': sysconfig.get_config_var('SOABI'),
+    'python_wheel_tag': 'cp314-cp314-linux_x86_64',
+    'build_dependencies': build_dependencies,
+    'build_wheel_sha256': {wheel.name: hashlib.sha256(wheel.read_bytes()).hexdigest() for wheel in source_root.parent.glob('*.whl')},
+    'numpy_version': version('numpy'),
+    'compile_jobs': int(os.environ.get('CMAKE_BUILD_PARALLEL_LEVEL', '2')),
+    'host_warning_policy': '-Wall -Wextra -Werror',
+    'device_warning_policy': '--Werror all-warnings',
+    'cuda_warning_flags_verified': True,
+    'cuda_language_standard': 'c++20',
+    'cuda_compile_commands': normalized_commands,
+    'native_dependencies': native_dependencies,
+    'native_header_sha256': {name: hashlib.sha256(path.read_bytes()).hexdigest() for name, path in native_headers.items()},
+    'native_linked_library_sha256': native_libraries,
+    'upstream_cuda_math_flags': ['-use_fast_math'],
+    'python_config_preload': {
+        'header': 'pyconfig.h',
+        'sha256': hashlib.sha256((Path(sysconfig.get_path('include')) / 'pyconfig.h').read_bytes()).hexdigest(),
+        'bindings_flag': '-Xcompiler=-imacros,pyconfig.h',
+    },
+    'cuda_source_units': sorted(str(Path(command['file']).relative_to(source_root)) for command in cuda_commands),
+}
+if source_root.as_posix() in json.dumps(metadata):
+    raise RuntimeError('native build metadata contains a local build path')
+destination.write_text(json.dumps(metadata, indent=2, sort_keys=True) + '\n')
+PY
+}
+
+check() {
+  local python_executable staged_site
+  python_executable="${PYTHON:-$(command -v python3)}"
+  export PYTHON="$python_executable"
+  export PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error
+  export QISKIT_NUM_PROCS=2 OMP_NUM_THREADS=2 OPENBLAS_NUM_THREADS=2
+  "$PYTHON" -m installer --destdir="$srcdir/check-install" \
+    "$srcdir/qiskit-aer-$pkgver/dist/"*.whl
+  staged_site="$srcdir/check-install$("$PYTHON" -c 'import sysconfig; print(sysconfig.get_path("platlib"))')"
+  install -m644 "$srcdir/native_cuda_build.json" "$staged_site/qiskit_aer/native_cuda_build.json"
+  cd "$srcdir"
+  PYTHONPATH="$staged_site" "$PYTHON" -P check_native_aer.py --package-root "$staged_site"
+}
+
+package() {
+  local python_executable installed_site
+  python_executable="${PYTHON:-$(command -v python3)}"
+  export PYTHON="$python_executable"
+  "$PYTHON" -m installer --destdir="$pkgdir" "$srcdir/qiskit-aer-$pkgver/dist/"*.whl
+  installed_site="$pkgdir$("$PYTHON" -c 'import sysconfig; print(sysconfig.get_path("platlib"))')"
+  install -m644 "$srcdir/native_cuda_build.json" "$installed_site/qiskit_aer/native_cuda_build.json"
+  install -Dm644 "$srcdir/qiskit-aer-$pkgver/LICENSE.txt" \
+    "$pkgdir/usr/share/licenses/$pkgname/LICENSE"
+}

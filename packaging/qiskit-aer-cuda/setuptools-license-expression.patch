@@ -1,0 +1,19 @@
+--- a/setup.py
++++ b/setup.py
+@@ -32,7 +32,6 @@
+ 
+ classifiers = [
+     "Environment :: Console",
+-    "License :: OSI Approved :: Apache Software License",
+     "Intended Audience :: Developers",
+     "Intended Audience :: Science/Research",
+     "Operating System :: Microsoft :: Windows",
+@@ -103,7 +102,7 @@
+     url="https://github.com/Qiskit/qiskit-aer",
+     author="AER Development Team",
+     author_email="qiskit@us.ibm.com",
+-    license="Apache 2.0",
++    license_expression="Apache-2.0",
+     classifiers=classifiers,
+     python_requires=">=3.7",
+     install_requires=requirements,
