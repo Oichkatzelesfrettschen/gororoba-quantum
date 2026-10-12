@@ -21,13 +21,15 @@ The rank-sector image gate also uses the plotting-only pin
     results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
-    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py
+    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
+    literature/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
     results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
-    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py
+    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
+    literature/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/verify_evidence.py
@@ -42,6 +44,9 @@ The rank-sector image gate also uses the plotting-only pin
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" \
+    literature/sources/open_gororoba/check_signed_kite_switching.py >/dev/null
+  (cd literature/sources/open_gororoba && sha256sum -c SHA256SUMS)
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
@@ -62,7 +67,8 @@ The rank-sector image gate also uses the plotting-only pin
     ../results/live/verify_source_closure.py ../results/local_compute/verify_evidence.py \
     ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
     ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py \
-    ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py
+    ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
+    ../literature/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null

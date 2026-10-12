@@ -10,6 +10,14 @@ The PDFs stay local under literature/pdf/, which is git-ignored. The Nature
 articles are paywalled, so their notes read the arXiv preprints, which differ
 from the version of record. Each of those notes says so at the top.
 
+The [reality-ripple measurement design](notes/reality_ripple_measurement_design.md)
+joins the Cayley-Dickson sources to the prepared atlas, walk, rank-sector, and
+joint-error views. The [de Marrais source note](notes/math-0403113.md) records
+the bounded box-kite reading and the local PDF identity. A
+[version-bound open_gororoba evidence contract](sources/open_gororoba/README.md)
+retains the sister repository's algebraic corrections with its provenance
+and license text.
+
 | note | paper | (a) | (b) | (c) |
 |---|---|---|---|---|
 | s41567-023-02340-9 | Glick et al., Covariant quantum kernels for data with group structure, Nat. Phys. 20, 479 (2024); preprint arXiv:2105.03406 | medium | low | low |

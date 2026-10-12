@@ -1,0 +1,233 @@
+{
+  "schema": "signed-kite-switching-evidence-v1",
+  "evidence_class": "exact finite graph calculation; standard signed-graph deduction",
+  "input_sha256": "fa1fe2cac2476e46f7224e2775a7d6f2e4577b77779567713f4c6fc8a89b06be",
+  "checker_sha256": "416dcd904a6282f4b9fe61c750fbe248c347c83ff1cb558b761725ab6ec0d851",
+  "graphs": [
+    {
+      "strut_constant": 1,
+      "vertex_ids": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "switching_diagonal": [
+        1,
+        -1,
+        1,
+        -1,
+        -1,
+        1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "strut_constant": 2,
+      "vertex_ids": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "switching_diagonal": [
+        1,
+        -1,
+        -1,
+        -1,
+        1,
+        1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "strut_constant": 3,
+      "vertex_ids": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        7
+      ],
+      "switching_diagonal": [
+        1,
+        -1,
+        1,
+        -1,
+        1,
+        -1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "strut_constant": 4,
+      "vertex_ids": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7
+      ],
+      "switching_diagonal": [
+        1,
+        1,
+        1,
+        -1,
+        -1,
+        -1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "strut_constant": 5,
+      "vertex_ids": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        7
+      ],
+      "switching_diagonal": [
+        1,
+        -1,
+        1,
+        -1,
+        -1,
+        1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "strut_constant": 6,
+      "vertex_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        7
+      ],
+      "switching_diagonal": [
+        1,
+        1,
+        -1,
+        -1,
+        1,
+        -1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    },
+    {
+      "strut_constant": 7,
+      "vertex_ids": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "switching_diagonal": [
+        1,
+        -1,
+        -1,
+        1,
+        1,
+        -1
+      ],
+      "integer_switching_residual": 0,
+      "characteristic_polynomial_descending": [
+        1,
+        0,
+        -12,
+        16,
+        0,
+        0,
+        0
+      ]
+    }
+  ],
+  "controls": [
+    "invalid sign rejected",
+    "single sign flip rejected",
+    "missing edge rejected",
+    "vertex switching preserved"
+  ],
+  "characteristic_polynomial": "(lambda+4)*lambda^3*(lambda-2)^2",
+  "spectrum_with_multiplicity": [
+    [
+      -4,
+      1
+    ],
+    [
+      0,
+      3
+    ],
+    [
+      2,
+      2
+    ]
+  ],
+  "hardware_claim": "Retained mathematical graphs are checked; hardware observations remain separate."
+}
