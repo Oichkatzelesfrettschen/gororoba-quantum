@@ -100,6 +100,15 @@ their closures, and constructs an explicit partner-incidence homeomorphism.
 Both derivations attribute the published annihilator results and keep
 the wider topology obligations explicit.
 
+The [ordinary-doubling proof](notes/four_support_doubling.md) extends
+the same support and complete kernel model to every higher stage. Its
+[replay](evidence/four_support_doubling/README.md) checks the finite expanded
+identities separately from the structural induction. The
+[cellular model](notes/four_support_cellular_homology.md) and
+[integral replay](evidence/four_support_homology/README.md) identify 1,200 CW
+cells, certify integral homology and zero torsion, and determine the
+cohomology ring for the restricted pair space.
+
 ## Verification and research navigation
 
 Run from the repository root:
