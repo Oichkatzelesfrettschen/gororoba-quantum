@@ -72,7 +72,7 @@ smoothness of that locus; use the component constraints.
 | project | deliverable | boundary |
 |---|---|---|
 | sedenion certificates | exact L_v matrices, kernel bases, rank bounds, partner-span checks, explicit scaling | unit-input normalization differs from block-encoding normalization |
-| A_5 geometry | one certified constant-rank chart with explicit domain and kernel frame, via the Schur complement: L_a = [[P, Q], [R, S]], det P != 0, S - R P^-1 Q = 0, K(a) = [[-P^-1 Q], [I]] | a rank jump marks a chart boundary and refutes nothing else |
+| A_5 geometry | integrate the local [rank_charts.py](../../gororoba_quantum/rank_charts.py) construction and [retained chart checks](../../results/hw_estimate/rank_charts.json) into the receiving tree: L_a = [[P, Q], [R, S]], det P != 0, S - R P^-1 Q = 0, K(a) = [[-P^-1 Q], [I]] | local charts and transitions exist; receiving-tree integration remains open, and full continuous classification follows the [local roadmap](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md#global-classification-roadmap-and-admission-gates) |
 | graph topology | one flag complex with verified boundary maps and homology certificates | no continuous-topology conclusion without a proved bridge |
 | cochains | structural proofs that the differential preserves the ANF-degree filtration (substitution of linear XOR expressions and addition never raise total degree) | F is a 2-cochain; dF is an ordinary coboundary |
 | Boolean functions | a defined family's exact metrics and counterexamples; f(u, t) = [u != 0] + t stays the permanent negative control (degree n - 1, nonlinearity 2, algebraic immunity 2, verified through n = 11 in the replay) | degree alone carries no security claim |

@@ -5,7 +5,10 @@ Final statement of the delegate that wrote 2411.18881.md, 2512.13002.md,
 [A] marks the delegate's own derivation or computation, run as scratch
 scripts against cd_core.py outside the repository and carried by no gate;
 [V] marks a claim the orchestrator re-verified in this tree; [P] marks a
-statement of the source.
+statement of the source. Those labels preserve the original review's
+evidence status. The [Reggiani note](../2411.18881.md) and
+[shared census](../cayley_dickson_sparse_census.md) own current bundle and
+finite-count interpretations.
 
 ## Reggiani 2024 (2411.18881): known theorem reproduced
 
@@ -15,11 +18,12 @@ statement of the source.
 - [P] Normalized zero-product pairs form Z(S) = G_2, a 14-manifold;
   normalized zero-divisor elements form ZD(S) = V_2(R^7), an 11-manifold,
   with the sphere in ann(u) as fiber.
-- [A] The phrase "finite assessor graph with S^3 fibers" occurs nowhere in
-  this tree and fails as a description of Z(S) over ZD(S). It survives only
-  as a finite sample: 84 base points, each with 4 orthogonal partner axes
-  giving 8 fiber points (a 16-cell). Measured rank L_v = 12 everywhere on
-  the corpus.
+- [A] A finite assessor graph samples the continuous bundle over ZD(S).
+  The sample has 84 base points, each with 4 orthogonal partner axes giving
+  8 fiber points (vertices of a 16-cell). The measured rank L_v = 12 on
+  the corpus supports its local checks; finite axes alone establish neither
+  the continuous S^3 fiber nor the global G_2 total space. The published
+  theorem establishes those continuous statements.
 
 ## Koebisu 2026 v2 (2512.13002): new implementation or measurement
 
@@ -94,6 +98,7 @@ The degree formula and the Walsh-class census stay candidate results: Bales
 states no ANF degree, and the delegate's induction proofs are unverified
 derivations that name the exact propositions a formal proof would rest on.
 The next mathematical deliverable is that formalization, not another census.
-The C1465 statement review in the handoff note stands as written; the
-"assessor graph with S^3 fibers" phrase appears in no retained document and
-is not reintroduced.
+The C1465 statement review in the handoff note remains a receiving-tree
+task. The finite graph supplies samples; the published bundle theorem and
+the [local bundle implementation](../../../gororoba_quantum/sedenion_bundle.py)
+supply separate continuous and executable evidence.

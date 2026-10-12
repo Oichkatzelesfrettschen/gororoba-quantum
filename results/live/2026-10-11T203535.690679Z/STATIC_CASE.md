@@ -1,10 +1,13 @@
 # Written case: the static job
 
-Status: written, not approved, not submitted. The program's next hardware
-question is the mechanism of the folded-QPE model-hardware gap
-(HARDWARE_PLAN.md, "Risks", the four-rung ladder), and this case ranks after
-that ladder's case; it is retained so the static submission is ready the
-moment it is the right spend.
+Status: written, not approved, not submitted. The
+[hardware queue](../../../gororoba_quantum/HARDWARE_PLAN.md#hardware-evidence-and-next-cases)
+places the matched folded-QPE mechanism ladder first, the N = 21, a = 4
+two-bit distribution test second, and this static-witness case third.
+The first two cases remain unwritten. The N = 21 case also requires an
+independent labeled-outcome calculation because its existing gate checks
+sorted sampled masses. This case retains the static plan for approval
+against a fresh matching calibration.
 
 ## What the run measures
 
@@ -34,16 +37,22 @@ a design A p1 at the mirror level refutes the Z-string.
 
 ## Why noise simulation cannot answer it
 
-The dynamic job on the same device read folded QPE at 0.715 against the
-model's 0.899 with the excess in both semiclassical rounds and only a
-quarter of it explained by scheduled idle time (record
-`2026-10-11T152922.787095Z`, ADJUDICATION.md). The static circuits carry no
-mid-circuit measurement, reset, or feed-forward, so their measured distance
-from the replay isolates the gate-level share of that gap: a static job
-that matches its replay within the replica intervals locates the dynamic
-excess in the measure-reset-feed-forward segment, and one that misses by a
-similar factor locates it in the gates. The model cannot say which; it has
-no term that distinguishes the two.
+The dynamic job on ibm_kingston reads folded QPE at 0.715 against the
+model's 0.899. Schedule-aware replay explains about a quarter of that gap
+(record `2026-10-11T152922.787095Z`,
+[ADJUDICATION.md](../2026-10-11T152922.787095Z/ADJUDICATION.md)). The static
+case asks whether the listed static witnesses agree with their own
+calibration-derived predictions on their selected replicas. Noise
+simulation supplies those predictions; hardware supplies the observations
+and any residual model error.
+
+The static circuits, layouts, and backend allocation differ from the
+dynamic pilot. Their residuals therefore measure static-workload model
+conformance and cannot isolate the gate-level share of the folded-QPE gap.
+Agreement supports the model for those static workloads; disagreement
+identifies a static residual that needs its own diagnosis. Attribution of
+the dynamic gap depends on the matched folded-QPE ladder and its control
+assumptions.
 
 ## Expected seconds
 
@@ -53,9 +62,11 @@ duration plus repetition delay plus per-job overhead; with the backends'
 3,877 dt (3.1 to 15.5 us at 4 ns per dt), execution is about 18 s, and the
 dynamic job showed 2.3 s of charge outside circuit execution per job, so the
 expectation is about 23 s across the two jobs. The literature range of 1,000
-to 4,900 shots per second bounds it between 14 s and 70 s; the ceiling named
-below, 90 s, is above the conservative bound and the service cancels either
-job past it. The window holds 591 s.
+to 4,900 shots per second gives a planning range of 14 s to 70 s. The
+`--max-execution-seconds 90` option sets a service ceiling of 90 s for each
+job, so the two job ceilings total 180 s. The option does not impose a
+90 s combined invocation cap. The dry run records 591 s remaining in the
+rolling window; the runner refreshes remaining usage before each job.
 
 ## Exact command
 
@@ -74,7 +85,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
 ```
 
 The run re-reads the live calibration, recompiles, compares the fresh plan
-with this record (digest, shots, policy with the 90 s ceiling, versions,
+with this record (digest, shots, policy with the 90 s per-job ceiling, versions,
 instance, groups, backends, seeds, layouts, replica qubits, fused PUB
 manifests, calibration, QPY bytes), stops with an approval_required record
 on any difference, consumes this record's approval at the first batch, and

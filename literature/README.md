@@ -49,10 +49,19 @@ from the version of record. Each of those notes says so at the top.
 
 Every note from the prior-work review labels each overlapping repository
 claim as known theorem reproduced, new proof or formalization, new
-implementation or measurement, or candidate new result, and the
-notes/handbacks/ directory holds one file per review cluster with the
-delegate's final statement, its disclosures, and the orchestrator's reading;
-notes/prior_work_synthesis.md is the ledger that joins them.
+implementation or measurement, or candidate new result.
+[prior_work_synthesis.md](notes/prior_work_synthesis.md) owns current status
+and experiment priority. The notes/handbacks/ directory preserves the
+delegates' original findings and disclosures with explicit current-status
+links. Its [A] labels identify the original scratch checks; later retained
+gates carry their own evidence links.
+
+The per-paper notes own current citations, hypotheses, theorem locators, and
+typographical corrections: [BDI 2005](notes/math-0511691.md),
+[BCDI 2007](notes/math-0702075.md), [BCDI 2009](notes/0905.2987.md), and
+[Reggiani 2024](notes/2411.18881.md). The
+[shared sparse census](notes/cayley_dickson_sparse_census.md) owns count
+conventions and routes the dimension-32 count to its canonical exact JSON.
 
 Two notes survey the sister repository rather than a paper:
 
@@ -70,12 +79,19 @@ defect count independently.
 
 The eight quantum and factoring papers in the table contain no Cayley-Dickson,
 octonion, sedenion, zero-divisor, or nonassociative content. The
-[Cayley-Dickson annihilator source ledger](notes/cayley_dickson_annihilator_sources.md)
-adds primary topology papers, theorem locators, constructive formulas, and the
-boundary between published results and local executable checks.
-The [rank-topology source ledger](notes/cayley_dickson_rank_topology_sources.md)
-adds the 2009 eigentheory, the 2026 trace/Newton determinant preprint,
-attachment homotopy arguments, and a scoped review of later follow-ups.
+[annihilator source ledger](notes/cayley_dickson_annihilator_sources.md) and
+[rank-topology source ledger](notes/cayley_dickson_rank_topology_sources.md)
+remain historical implementation-audit snapshots. Their source retrievals,
+theorem applications, and local derivations retain the provenance of the
+corresponding implementation. Current per-paper notes consolidate overlapping
+paper facts; the snapshots retain their original bytes because execution
+manifests bind their hashes.
+
+| Snapshot | Source revision | SHA-256 | Manifest binding |
+| --- | --- | --- | --- |
+| Annihilator ledger | `bd5d6b2e97165d560df588084098056fce5a2fd1` | `02f4cf4fb7dee46e5fd87052cf5d4c0a81087c848948bad17af246b764f080d5` | [topology verification](../results/hw_estimate/cayley_dickson_topology_verification.json), `source_sha256` |
+| Rank-topology ledger | `f4eda251822b380d695564fcf39a7a9e528f994e` | `bd478146132ddade390396b5b330f3a08091b2ebae83d9bacab1d23644756a30` | [rank verification](../results/hw_estimate/rank_topology_verification.json), `documentation_sha256` |
+
 [FACTORING_NOTES.md](../gororoba_quantum/FACTORING_NOTES.md) carries the factoring
 analysis.
 

@@ -6,7 +6,10 @@ substance. [A] marks the delegate's own derivation or computation, run as a
 scratch script outside the repository and carried by no gate; [V] marks a
 claim the orchestrator re-verified in this tree; [P] marks a statement of the
 source. Every claim below is also in the per-source note with its theorem
-number.
+number. This handback preserves the original delegate evidence. Current
+paper interpretations live in the linked per-paper notes; the
+[shared census](../cayley_dickson_sparse_census.md) records later exact
+implementation status.
 
 ## Kirshtein 2012 (1207.4230): known theorem reproduced
 
@@ -50,7 +53,7 @@ number.
 
 ## Biss, Dugger, Isaksen 2005 (math/0511691): known theorem reproduced
 
-- [P] The annihilator bound 2^n - 4n + 4 is Proposition 9.10; every multiple
+- [P] For nonzero elements, the annihilator bound 2^n - 4n + 4 is Proposition 9.10; every multiple
   of 4 occurs by Theorem 13.2 (collected as Theorem 1.2); the maximal
   stratum is Theorem 15.7 (Theorem 1.3): 2^(n-4) copies of V_2(R^7) for
   n >= 4, homeomorphic.
@@ -63,10 +66,13 @@ number.
   copies of V_2(R^7). Partial: Theorem 14.6, for pairs whose annihilators
   meet. Open: ZD_12, ZD_8, ZD_4 as spaces ("unknown even in A_5"), and Alt
   dimensions 20 and 28.
-- [A] The repository holds no nullity table for A_5; the note supplies the
-  paper-based list, fixtures with nullities 16, 12, 8, and 4, and a census
-  of two-term elements (nullity 0: 342, 4: 168, 8: 168, 12: 252, 16: none).
-- [A] Proposition 15.6's statement has i_n where its proof uses i_{n-1}.
+- [A] The original review supplies a paper-based list, fixtures with
+  nullities 16, 12, 8, and 4, and an independent floating-point SVD census
+  of 930 two-term elements. [V] The retained exact implementation now
+  agrees with that count; the [shared census](../cayley_dickson_sparse_census.md)
+  owns its denominator, histogram, replay, and certification boundary.
+- [A] The original review identifies an index typo in Proposition 15.6;
+  the [BDI note](../math-0511691.md) owns the correction and proof locator.
 - [A] Lemma 9.2 and Corollary 9.3 (left and right annihilators coincide) are
   a route to the survey's open ker L_x = ker R_x item.
 
@@ -108,6 +114,7 @@ in Boolean coordinates and is labeled so in DESIGN_NOTES.md and the sign-rank
 note; the parity-lemma proof and the Rocq formalization plan remain the
 repository's contribution, and the factor-2 gap in Kirshtein's printed bound
 is worth a line in the formalization handoff. The sedenion spectrum is a
-rescaling of BCDI 2009 and is labeled so. Two finite computations the
-delegate made deserve a gate before they are cited: the A_5 two-term nullity
-census and the A_6 Stiefel nullity (exact arithmetic).
+rescaling of BCDI 2009 and is labeled so. The A_5 two-term census now has
+retained exact evidence linked from the shared census. The A_6 Stiefel
+nullity scratch observation still requires an exact-arithmetic witness
+before the proposed negative answer supports a claim.
