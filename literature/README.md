@@ -41,11 +41,29 @@ from the version of record. Each of those notes says so at the top.
 | quant-ph-9511007 | Griffiths and Niu, Semiclassical Fourier transform for quantum computation (1996) | medium | none | high |
 | 1111.4147 | Martin-Lopez et al., Shor's algorithm with qubit recycling (2012) | medium | none | high |
 | 2102.05321 | Niu and Todri-Sanial, Multi-programming for NISQ quantum computing (QuMC) | high | none | none |
+| [das-2019-multiprogramming](notes/das-2019-multiprogramming.md) | Das et al., A Case for Multi-Programming Quantum Computers (MICRO 2019) | high | none | low |
+| [2112.07091](notes/2112.07091.md) | Ohkura, Satoh, Van Meter, Simultaneous execution of quantum circuits (palloq) | high | none | low |
+| [2109.01714](notes/2109.01714.md) | Resch et al., Accelerating Variational Quantum Algorithms Using Circuit Concurrency (CQCS) | high | none | low |
+| [2112.00387](notes/2112.00387.md) | Niu and Todri-Sanial, How Parallel Circuit Execution Can Be Useful for NISQ Computing? (QuCP) | high | none | low |
+| [1204.6308](notes/1204.6308.md) | Gambetta et al., Characterization of addressability by simultaneous randomized benchmarking (2012) | high | none | low |
+| [1810.05651](notes/1810.05651.md) | Rudinger et al., Probing Context-Dependent Errors in Quantum Processors (2019) | high | none | low |
+| [1908.09855](notes/1908.09855.md) | Sarovar et al., Detecting crosstalk errors in quantum information processors (2020) | high | none | low |
+| [1907.13608](notes/1907.13608.md) | Proctor et al., Detecting and tracking drift in quantum information processors (2020) | high | none | low |
+| [1504.07999](notes/1504.07999.md) | Bremner, Montanaro, Shepherd, Average-case complexity versus approximate simulation of commuting quantum computations (2016) | low | medium | low |
 | 1904.00633 | Kissinger and Meijer-van de Griend, CNOT circuit extraction for topologically-constrained quantum memories (2019) | medium | none | medium |
 | 1806.01838 | Gilyen, Su, Low, Wiebe, Quantum singular value transformation and beyond (2018) | low | low | none |
 | 1811.08580 | Freedman, Shokrian-Zini, Wang, Quantum computing with octonions (2018) | none | medium | none |
 | levratti-2026-fano-css | Levratti, Fano duality, projective orthogonality and the CSS bridge (author-hosted, 2026) | none | high | none |
 | levratti-2026-active-stabilizers | Levratti, Active stabilizers in Reed-Muller CSS codes from Cayley-Dickson zero-divisors (author-hosted page, 2026) | none | low | none |
+
+The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
+connects these sources to fixed and varied companions, patch/time blocking,
+joint-shot inference, billed usage, and IQP claim boundaries. The
+[design and execution documentation note](notes/quantum_experiment_design_sources.md)
+records NIST, Qiskit and IBM sources with capture hashes. The ten-paper local
+PDF set has [replayable checksums](parallel_experiment_pdfs.sha256); direct,
+version-pinned retrieval links and reading scopes live in each paper note.
+The Das paper uses the verified author-laboratory PDF URL and a content hash.
 
 Every note from the prior-work review labels each overlapping repository
 claim as known theorem reproduced, new proof or formalization, new
@@ -77,7 +95,7 @@ Two notes survey the sister repository rather than a paper:
 gororoba_quantum/FACTORING_NOTES.md re-checks the sign recursion and the
 defect count independently.
 
-The eight quantum and factoring papers in the table contain no Cayley-Dickson,
+The first eight quantum and factoring papers in the table contain no Cayley-Dickson,
 octonion, sedenion, zero-divisor, or nonassociative content. The
 [annihilator source ledger](notes/cayley_dickson_annihilator_sources.md) and
 [rank-topology source ledger](notes/cayley_dickson_rank_topology_sources.md)
