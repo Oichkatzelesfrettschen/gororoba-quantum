@@ -24,7 +24,7 @@ comparison before it receives a novelty claim.
 | [Sedenion bundle](../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md) | Published normalized pair space `G2`, with `SU(2) -> G2 -> V2(R7)`, supplies the implemented geometric benchmark | A finite graph and phase sweep establish different objects. Metric and curvature statements require the source's additional hypotheses. |
 | [Rank predicates and charts](../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md) | Exhaustive polynomial rank predicates apply to real coefficients; the evaluator accepts rational coordinates. General pivot charts provide exact frames, transitions, cocycles, and Gram data | Arbitrary-real membership formulas differ from a classification of components, smooth strata, and bundle isomorphism classes. |
 | [Restricted topology](../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md) | The certified path has generic nullity 4 and exceptional nullities 8, 12, 16, with incidence homotopy type `S7 wedge S11 wedge S15 wedge S4 wedge S4` | Its integral homology, trivial torsion, and vanishing positive-degree cup products describe that restricted space. The full pair space has additional directions and attachments. |
-| [Continuous four-coordinate rank certificate](notes/four_support_rank_loci.md) | Exact sector identities classify every real tuple on support `{1,10,18,25}`; polynomial frames trivialize every fixed vanishing-pattern kernel | Other coefficient directions, smooth refinement, complete attachments, and global invariants remain separate obligations. |
+| [Continuous four-coordinate ranks](notes/four_support_rank_loci.md) and [incidence geometry](notes/four_support_incidence_geometry.md) | Exact sector identities classify every real tuple on support `{1,10,18,25}`. The unit base has 96 connected smooth strata and 704 closure incidences including reflexive pairs. Five coordinate blocks give an explicit homeomorphism for its full partner incidence | Other coefficient directions, Whitney conditions, a verified finite triangulation, and global invariants remain separate obligations. |
 | [Local Schur evidence](evidence/local_schur/README.md) | Six rational perturbations pass rank, skew, lift, and negative-control checks. Pointwise unit-base linearized bounds equal 23, 21, 11 | Only the maximal bound matches an already known stratum dimension. A production reduced-chart API, complete germ atlas, and lower-stratum regularity proofs remain proposed. |
 | [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The pinned discrete/sign-code chain passes fresh compile and kernel checks, with seven globally closed assumption queries | C881's exhaustive quadratic rejection remains a finite Rust check. Count identities lack topology-transfer maps. A separate deprecated-import failure remains recorded. |
 | [Folded hardware evidence](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md) | Sixteen PUBs in two Kingston jobs retain shot-level evidence and 40 final charged seconds | Layout, terminal writer, measurement, reset, latency, and history confound a unique physical attribution. Existing outcomes support bounded model exclusions. |
@@ -97,10 +97,12 @@ The mathematical chain has the following acceptance gates.
 1. Preserve the exhaustive rank predicates and the published maximal base:
    dimension-32 nullity 16 has two copies of `V2(R7)`. Retain sparse and
    numerical censuses as fixtures and falsifiers for the continuous analysis.
-2. Extend the [continuous four-coordinate certificate](notes/four_support_rank_loci.md)
-   through proved smooth refinement and kernel specialization on its
-   hyperplane/cone arrangement. Use that bounded geometry to test the
-   attachment machinery before claiming coverage of other supports.
+2. Use the [certified four-coordinate geometry](notes/four_support_incidence_geometry.md)
+   as a complete restricted attachment model. Its global frame and inverse
+   reduce the partner incidence to five coordinate-block masks; its
+   608 strict closure incidences retain the exact kernel inclusions.
+   Construct a verified finite model and integral invariants for this
+   support before extending the attachment machinery to other supports.
    Build exact reduced charts from the existing pivot mechanism and the
    skew-Schur research identities. Keep the invertible pivot domain, residual
    equation, and kernel lift explicit. Derive real equations and resolve their

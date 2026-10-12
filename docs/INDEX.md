@@ -94,7 +94,10 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 The [continuous four-coordinate rank derivation](notes/four_support_rank_loci.md)
 and its [exact replay](evidence/four_support_rank/README.md) classify a
 specified real coefficient family and construct its kernel frames.
-The derivation attributes the published annihilator results and keeps
+The [incidence geometry](notes/four_support_incidence_geometry.md) refines
+the unit coefficient sphere into 96 connected smooth strata, certifies
+their closures, and constructs an explicit partner-incidence homeomorphism.
+Both derivations attribute the published annihilator results and keep
 the wider topology obligations explicit.
 
 ## Verification and research navigation
