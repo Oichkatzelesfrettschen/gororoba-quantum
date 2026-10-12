@@ -6,9 +6,11 @@ additive requests, cross-chat findings, ownership and evidence boundaries.
 The execution priority is model discrimination and a measurable optimizer
 decision before broad atlas expenditure. The historical 197-second ripple/rank
 plans retain their original evidence and expired admission. The
-[current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
-qualifies all three fresh cases against one audited source closure, with five job ceilings
-totaling 170 seconds. The revised
+[retained campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
+records three qualified cases at their original source revisions, with five
+job ceilings totaling 170 seconds. The complete-inventory discovery repair
+changes the shared runtime digest; correction, ripple and rank-sector cases
+require renewal against the reviewed repaired source before execution. The revised
 [fixed-shot allocation](PACKED_ALGEBRA.md#fixed-shot-allocation) reprices every
 original static row under the user's 180-second campaign ceiling. The
 [static practical accuracy protocol](../results/ripple/STATIC_PACKING_ACCURACY.md)
@@ -20,9 +22,19 @@ preparation from fresh live calibration across Fez, Kingston and Marrakesh
 after the Kingston mock endpoint proved unavailable. Production admission
 therefore uses a documented finite comparison of all three systems, while
 matched-policy inference requires qualified schedules from the actual run.
-The [fresh correction case](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
+
+The comparison requires coherent Target, properties and status snapshots from
+all three named systems. Production discovery retains a successfully refreshed
+excluded peer for the correction planner's independent admission decision.
+Maintenance, queue and capability rejection remain explicit search rows with
+zero compilation and zero admitted candidates; selection uses eligible
+systems. A missing or failed snapshot rejects the complete comparison. The
+planning and final submission paths apply the same inventory rule. Other
+families retain discovery's eligible-candidate filtering.
+
+The [retained correction case](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
 estimates 11.519211264 nominal seconds and 14.474571264 stress seconds under a
-30-second ceiling. The user's conditional authority retains clean current-head
+30-second ceiling at its recorded source and calibration. The user's conditional authority retains clean current-head
 Copilot review, passing checks, merge and fresh live bindings before submission.
 The [correction preparation history](../results/ripple/CORRECTION_PREPARATION.md)
 preserves earlier source-bound estimates and eligibility observations.
