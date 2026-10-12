@@ -46,6 +46,9 @@ objectives, evidence boundaries, ownership, and ordered delivery gates.
 - `gororoba_quantum/skew_schur_charts.py` -- exact dimension-32 reduced rank
   certificates, kernel lifts, sphere metrics, and polynomial pivot domains
   across all 30 doubly-pure coefficient directions.
+- `gororoba_quantum/principal_skew_atlas.py` -- an explicit finite cover of
+  every nonzero doubly-pure input, a conditioned initial pivot, exact principal
+  refinement, and kernel-restricted overlap maps across changing ranks.
 - `gororoba_quantum/four_support_rank.py` and `four_support_geometry.py` --
   exact real ranks, connected smooth strata, complete kernel frames, closure
   maps, and a partner-incidence model on support `{1,10,18,25}`.
