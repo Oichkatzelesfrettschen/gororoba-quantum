@@ -44,6 +44,8 @@ def source_snapshot(root: Path) -> dict[str, Any]:
 
 
 def main() -> None:
+    probe_path = Path(__file__).resolve(strict=True)
+    probe_sha256 = digest(probe_path)
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--source-root", type=Path, required=True)
     parser.add_argument("--output", type=Path, required=True)
@@ -165,7 +167,7 @@ def main() -> None:
     output = {
         "schema": "n21-native-qiskit-shared-predicate-audit-v1",
         "elapsed_seconds": time.monotonic() - started,
-        "probe_sha256": digest(Path(__file__)),
+        "probe_sha256": probe_sha256,
         "checkout_label": "source checkout",
         "snapshot_before": before,
         "snapshot_after": after,
@@ -200,8 +202,11 @@ def main() -> None:
         ],
         "results": results,
     }
+    serialized_output = json.dumps(output, indent=2, sort_keys=True) + "\n"
+    if digest(probe_path) != probe_sha256:
+        raise RuntimeError("probe source changes during the probe")
     with arguments.output.open("x", encoding="utf-8") as destination:
-        destination.write(json.dumps(output, indent=2, sort_keys=True) + "\n")
+        destination.write(serialized_output)
     print(json.dumps({"output": str(arguments.output), "results": results}, indent=2))
 
 

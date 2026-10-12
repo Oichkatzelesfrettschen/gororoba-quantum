@@ -6,6 +6,12 @@ remains paused. Each hardware case requires a fresh admitted dry run, a written
 case, and explicit owner approval. Local validation establishes circuit and
 planning conformance; hardware observations establish accuracy and stability.
 
+The [parallel-experiment literature synthesis](../literature/notes/quantum_experiment_parallelism.md)
+connects packing, context controls, drift, and blocking to primary research.
+Its [design-source note](../literature/notes/quantum_experiment_design_sources.md)
+links the official execution and experimental-design manuals. Those sources
+supply prior mechanisms and qualification gates for the candidate work below.
+
 The [folded preparation](../results/live/2026-10-12T024756.245948Z/record.json)
 records source `7ef9f29606df`; the
 [N21 rejection](../results/live/2026-10-12T020459.130482Z/record.json) records
