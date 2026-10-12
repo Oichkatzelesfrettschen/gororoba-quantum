@@ -23,7 +23,7 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
-FAMILIES = {"folded-qpe", "n21-feedback"}
+FAMILIES = {"folded-qpe", "n21-feedback", "ripple", "rank-sector"}
 _IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:+/-]*\Z")
 _HEX_DIGEST = re.compile(r"[a-f0-9]{64}\Z")
 _DESIGN_OPTIONS = (
@@ -406,6 +406,45 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
 
 
 def _scientific_case(family: str) -> list[str]:
+    if family in ("ripple", "rank-sector"):
+        mechanism = (
+            "The ripple family measures finite four-qubit associator prefixes and the complete signed "
+            "sedenion box-kite phase atlas. The walk classes exchange two physical lanes under matched "
+            "companion activity. Each edge's eight phases share one routed template; edge blocks rotate "
+            "between atlas lanes. Isolated representative endpoints compare a fixed witness and mapping "
+            "under changed neighboring activity. Computational-basis counts measure probabilities; "
+            "long ideal recurrences and complex amplitudes remain outside the hardware claim."
+            if family == "ripple"
+            else "The rank-sector family measures the selector-success norm of each four-dimensional "
+            "sector of the specified dimension-32 multiplication path. Two data and two selector qubits "
+            "implement each sector with coefficient-dependent LCU normalization. Fixed probe and "
+            "parameter bindings share one routed template per sector. Persistent-kernel, exceptional-point "
+            "and bright probes test bounded norm predictions. A finite noisy frequency cannot certify "
+            "an exact rank, an exact zero, or the topology of the full zero-divisor space."
+        )
+        return [
+            "## Scientific question and interpretation",
+            "",
+            mechanism,
+            "",
+            "The family retains every declared scientific member and explicit packed/isolated row. "
+            "Each lane has one physical placement, and simultaneous lanes share a shot index. "
+            "The execution PUB manifests in record.json bind the exact condition, lane, registers, "
+            "and neighboring workload. Comparisons across different physical patches retain patch "
+            "and routing confounds unless a matched crossover is explicitly recorded.",
+            "",
+            "Calibration-based simulation supplies conditional gate/readout predictions and statistical "
+            "admission. Physical crosstalk, common disturbances, initialization, drift and scheduler "
+            "effects require the future hardware observations. The simultaneous intervals allow arbitrary "
+            "within-shot dependence; independent stationary repetitions remain an assumption. "
+            "Packing-control intervals measure the observed distortion for their stated representatives, "
+            "rather than certifying every possible packed edge or condition.",
+            "",
+            "Raw outcomes and joint shot order, calibration windows, executed schedules, and final "
+            "charged usage must be retained. Model residuals and uncertainty remain visible in measured "
+            "visualizations. The family is independently admitted from the folded-QPE and N21 cases.",
+            "",
+        ]
     if family == "folded-qpe":
         return [
             "## Scientific question and interpretation",
@@ -450,8 +489,48 @@ def _scientific_case(family: str) -> list[str]:
     ]
 
 
+def _native_qualification(run_dir: Path, record_digest: str, qpy_digest: str) -> list[str]:
+    """Report only mock evidence bound to the exact archived workload."""
+    lines = ["## Native server qualification", ""]
+    reports = sorted((run_dir / "native-dry-run").glob("*/report.json"))
+    matching = []
+    for path in reports:
+        report = json.loads(path.read_text())
+        files = report.get("binding", {}).get("files", {})
+        if files.get("record.json") == record_digest and files.get("isa.qpy") == qpy_digest:
+            matching.append((path, report))
+    if not matching:
+        return lines + [
+            "Native server timing remains unqualified for these archived bytes. "
+            "The charge above is a local planning estimate.",
+            "",
+        ]
+    path, report = matching[-1]
+    relative = path.relative_to(run_dir).as_posix()
+    _identifier(relative, "native report path")
+    status = _identifier(report["status"], "native qualification status")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    lines.extend([f"The [mock timing report]({relative}) reports `{status}`; SHA-256 `{digest}`.", ""])
+    if report.get("qualified") is True and status == "complete" and report.get("dry_run") is True:
+        estimate = _number(report["estimated_quantum_seconds"], "native server seconds", positive=True)
+        lines.extend([f"The server estimates {estimate:.12g} quantum seconds for the archived workload.", ""])
+    else:
+        lines.extend(["The native attempt leaves server timing unqualified; its report retains the failure.", ""])
+    return lines + [
+        "Runtime mock execution validates a schedule without executing the QPU. Randomized mock "
+        "outcomes are excluded from scientific analysis and visuals. Server estimates, schedule durations "
+        "and future charged usage are distinct. Initialization and fixed overhead remain unseparated.",
+        "",
+    ]
+
+
 def _render(
-    record: dict[str, Any], candidate: dict[str, Any], location: Path, record_digest: str, qpy_digest: str
+    record: dict[str, Any],
+    candidate: dict[str, Any],
+    location: Path,
+    record_digest: str,
+    qpy_digest: str,
+    native_lines: list[str] | None = None,
 ) -> str:
     family = record["family_configuration"]["name"]
     source = record["code_commit"]
@@ -501,7 +580,7 @@ def _render(
             "## Archived ideal laws and placement",
             "",
             "The ideal arrays below come from the retained record. Their label order stays intact; "
-            "sorting probabilities would discard the feedback distinction.",
+            "sorting probabilities would discard the specified outcome labels.",
             "",
             "| Member | Labeled ideal probabilities |",
             "|---|---|",
@@ -613,7 +692,9 @@ def _render(
             "overhead. Those model assumptions estimate charge; the ceilings bound service execution "
             "instead. The ledger retains accepted and attempted jobs' reservations while their charges "
             "remain unsettled. External submissions can still change the shared quota. Dynamic Target "
-            "duration omits classical scheduler latency; the declared addition remains a planning assumption.",
+            "duration omits classical scheduler latency; the declared addition remains a planning assumption. "
+            "Explicit circuit resets contribute to Target duration. Runtime's implicit initialization cost "
+            "remains unseparated unless a native server timing artifact qualifies that accounting boundary.",
             "",
         ]
     )
@@ -639,6 +720,7 @@ def _render(
                 "",
             ]
         )
+    lines.extend(native_lines or [])
     lines.extend(
         [
             "The [IBM timeout guide](https://quantum.cloud.ibm.com/docs/guides/max-execution-time) "
@@ -698,7 +780,14 @@ def write_case(run_dir: Path, record: dict[str, Any]) -> Path | None:
     ):
         return None
     candidate, record_digest, qpy_digest = _case_inputs(run_dir, record)
-    text = _render(record, candidate, _portable_run_path(run_dir), record_digest, qpy_digest)
+    text = _render(
+        record,
+        candidate,
+        _portable_run_path(run_dir),
+        record_digest,
+        qpy_digest,
+        _native_qualification(run_dir, record_digest, qpy_digest),
+    )
     destination = run_dir / CASE_FILENAME
     temporary: Path | None = None
     try:
@@ -860,6 +949,38 @@ def _verify() -> None:
         assert "--submit" not in text.split("## Approval-only submission template")[0]
         assert write_case(run_dir, record) == destination and destination.read_text() == text
         assert all((run_dir / name).read_bytes() == value for name, value in originals.items())
+        for family, phrase in (("ripple", "box-kite phase atlas"), ("rank-sector", "coefficient-dependent LCU")):
+            algebra = copy.deepcopy(record)
+            algebra["policy"]["design"]["family"] = family
+            algebra["family_configuration"]["name"] = family
+            retain(algebra)
+            assert write_case(run_dir, algebra) == destination
+            assert (
+                phrase in destination.read_text()
+                and "Native server timing remains unqualified" in destination.read_text()
+            )
+        retain(record)
+        assert write_case(run_dir, record) == destination and destination.read_text() == text
+        native_run = Path(temporary) / "native-fixture"
+        native_dir = native_run / "native-dry-run" / "fixture"
+        native_dir.mkdir(parents=True)
+        record_digest = hashlib.sha256(originals["record.json"]).hexdigest()
+        qpy_digest = hashlib.sha256(originals["isa.qpy"]).hexdigest()
+        native_report = {
+            "binding": {"files": {"record.json": record_digest, "isa.qpy": qpy_digest}},
+            "status": "complete",
+            "qualified": True,
+            "dry_run": True,
+            "estimated_quantum_seconds": 7.5,
+        }
+        (native_dir / "report.json").write_text(json.dumps(native_report))
+        assert "7.5 quantum seconds" in "\n".join(_native_qualification(native_run, record_digest, qpy_digest))
+        assert "unqualified" in "\n".join(_native_qualification(native_run, "0" * 64, qpy_digest))
+        native_report.update(status="unavailable", qualified=False)
+        (native_dir / "report.json").write_text(json.dumps(native_report))
+        assert "leaves server timing unqualified" in "\n".join(
+            _native_qualification(native_run, record_digest, qpy_digest)
+        )
         for state in ("design_infeasible", "budget_infeasible", "submitted", "approval_required"):
             changed = copy.deepcopy(record)
             changed["state"] = state

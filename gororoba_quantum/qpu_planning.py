@@ -115,6 +115,10 @@ def family_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
     """Enumerate matched circuit sets; a folded family retains its exact physical mapping."""
+    if args.family in ("ripple", "rank-sector"):
+        import algebra_planning
+
+        return algebra_planning.family_candidates(runtime, snapshots, args, trace)
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
     if args.family == "n21-feedback":
         routed = runtime.select_candidates(n21_group(), snapshots, args.seeds, trace)
@@ -271,7 +275,7 @@ def prepare(
     """Compile and simulate the bounded candidate set before choosing a shot tier."""
     candidates = family_candidates(runtime, snapshots, args, trace)
     if not candidates:
-        raise runtime.LiveRunError("the diagnostic family has no admitted routed candidate")
+        raise runtime.LiveRunError("the experiment family has no admitted routed candidate")
     contracts = family_contracts(args.family, args.precision, args.alpha, args.power)
     plans: list[CandidatePlan] = []
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
@@ -339,6 +343,10 @@ def prepare(
                                 ),
                             )
                         )
+            if args.family in ("ripple", "rank-sector") and len(jobs) != 1:
+                raise runtime.LiveRunError(
+                    f"{args.family}: {shots} shots require {len(jobs)} jobs; the static family requires one job"
+                )
             name = f"candidate-{candidate_index:03d}-shots-{shots}"
             plans.append(
                 CandidatePlan(

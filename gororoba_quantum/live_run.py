@@ -102,6 +102,7 @@ ISOLATED_SUFFIX = "_isolated"
 FUSION_MAX_ATTEMPTS = 256
 
 EXPERIMENT_SOURCE_MANIFEST = (
+    "algebra_planning.py",
     "affine_residual.py",
     "boolean_anf.py",
     "cd_core.py",
@@ -110,9 +111,11 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
+    "integral_homology.py",
     "live_run.py",
     "local_compute.py",
     "modular_arithmetic.py",
+    "native_preflight.py",
     "order_finding.py",
     "packing.py",
     "parallel.py",
@@ -120,6 +123,15 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "qpe_diagnostics.py",
     "qpu_cases.py",
     "qpu_planning.py",
+    "rank_attachments.py",
+    "rank_charts.py",
+    "rank_polynomials.py",
+    "rank_path_topology.py",
+    "rank_sector_contracts.py",
+    "rank_sector_experiments.py",
+    "ripple_contracts.py",
+    "ripple_dynamics.py",
+    "ripple_experiments.py",
     "select_lcu.py",
     "target_flip.py",
     "variance.py",
@@ -1398,33 +1410,47 @@ def execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
     the same global replica-0 reference workload.
     Remaining members and mirrors retain their per-group order. A short group
     simply contributes no component to later rows.
+    Explicit group schedules instead use sparse row indices and exclude a
+    group's component wherever the schedule leaves the lane idle.
     """
     _assign_fusion_indices(choices)
-    clusters: dict[tuple[str, str], list[tuple[int, Choice, list[Entry]]]] = {}
+    clusters: dict[tuple[str, str], list[tuple[int, Choice, dict[int, Entry]]]] = {}
     for choice in choices:
         if choice.fusion_index is None:
             raise LiveRunError(f"{choice.group.name}: fusion index assignment failed")
-        ordered = _fusion_entry_order(choice)
+        if choice.group.execution_rows is None:
+            rows = dict(enumerate(_fusion_entry_order(choice)))
+        else:
+            if any(entry.reference for entry in choice.entries):
+                raise LiveRunError(f"{choice.group.name}: explicit execution rows prohibit automatic references")
+            if [entry.name for entry in choice.entries] != [member.name for member in choice.group.members]:
+                raise LiveRunError(f"{choice.group.name}: explicit execution rows require exact member entries")
+            rows = dict(zip(choice.group.execution_rows, choice.entries, strict=True))
+        ordered = list(rows.values())
         kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in ordered}
         if len(kinds) != 1:
             raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
-        clusters.setdefault((choice.snap.name, next(iter(kinds))), []).append((choice.fusion_index, choice, ordered))
+        clusters.setdefault((choice.snap.name, next(iter(kinds))), []).append((choice.fusion_index, choice, rows))
 
     pubs: list[ExecutionPub] = []
     for (backend_name, kind), cluster in clusters.items():
         snapshot = cluster[0][1].snap
         if any(choice.snap is not snapshot for _, choice, _ in cluster):
             raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
-        reference_presence = {bool([entry for entry in ordered if entry.reference]) for _, _, ordered in cluster}
+        explicit_presence = {choice.group.execution_rows is not None for _, choice, _ in cluster}
+        if len(explicit_presence) != 1:
+            raise LiveRunError(f"{backend_name} {kind}: groups mix explicit and implicit execution rows")
+        reference_presence = {any(entry.reference for entry in rows.values()) for _, _, rows in cluster}
         if len(reference_presence) != 1:
             raise LiveRunError(
                 f"{backend_name} {kind}: groups mix isolated-reference and non-reference execution surfaces"
             )
-        for row_index in range(max(len(ordered) for _, _, ordered in cluster)):
+        row_indices = sorted({row for _, _, rows in cluster for row in rows})
+        for row_index in row_indices:
             components = tuple(
-                PubComponent(choice, ordered[row_index], f"g{choice_index}_")
-                for choice_index, choice, ordered in cluster
-                if row_index < len(ordered)
+                PubComponent(choice, rows[row_index], f"g{choice_index}_")
+                for choice_index, choice, rows in cluster
+                if row_index in rows
             )
             name = f"{backend_name}_{kind}_pub_{row_index + 1:02d}"
             circuit = packing.fuse(
@@ -1555,16 +1581,16 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
         primaries.sort(key=lambda item: -item[0])
         for _, seed, isa in primaries[:JOINT_CANDIDATES]:
             layout = isa.layout.initial_index_layout(filter_ancillas=True)
-            # Members that share the primary's parametrized circuit reuse its ISA
-            # with their own parameter values: one routing, one readout qubit.
+            # Each shared circuit object compiles once per candidate. Bound
+            # phase sweeps retain identical routing and measured output sites.
             try:
-                isas = [_bind(isa, primary)] + [
-                    _bind(
-                        isa if member.circuit is primary.circuit else _compile(member.circuit, snap, seed, layout),
-                        member,
-                    )
-                    for member in group.members[1:]
-                ]
+                templates = {id(primary.circuit): isa}
+                isas = []
+                for member in group.members:
+                    key = id(member.circuit)
+                    if key not in templates:
+                        templates[key] = _compile(member.circuit, snap, seed, layout)
+                    isas.append(_bind(templates[key], member))
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
@@ -2268,7 +2294,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "state": "planned",
         "started": args.started,
         "versions": {
-            pkg: version(pkg) for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx")
+            pkg: version(pkg)
+            for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx", "sympy")
         },
         "policy": QUALITY
         | {
@@ -3734,6 +3761,9 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 packing.split(packed, prefix, qubits, member_name)
                 for prefix, qubits in zip(prefixes, member["replica_qubits"], strict=True)
             ]
+            weight_name = member_name
+            if member["reference"] and member_name not in weights:
+                weight_name = member_name.removesuffix(ISOLATED_SUFFIX)
             entries.append(
                 Entry(
                     name=member_name,
@@ -3744,7 +3774,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                     prefixes=prefixes,
                     replica_qubits=member["replica_qubits"],
                     reference=member["reference"],
-                    weights=weights.get(member_name.removesuffix(ISOLATED_SUFFIX)),
+                    weights=weights.get(weight_name),
                 )
             )
     return out
@@ -4147,10 +4177,10 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backends", type=lambda s: s.split(","), help="comma-separated pin; default all accessible")
     parser.add_argument("--groups", type=lambda s: s.split(","), help="comma-separated experiment groups")
     parser.add_argument(
-        "--family", choices=FAMILY_NAMES, help="matched diagnostic family with statistical design admission"
+        "--family", choices=FAMILY_NAMES, help="complete experiment family with statistical design admission"
     )
     parser.add_argument(
-        "--optimize", action="store_true", help="search bounded shot and replica tiers for the diagnostic family"
+        "--optimize", action="store_true", help="search bounded shot and replica tiers for the experiment family"
     )
     parser.add_argument(
         "--objective",
@@ -4185,7 +4215,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
     parser.add_argument(
-        "--precision", type=float, default=0.08, help="simultaneous terminal-contrast half-width for the folded family"
+        "--precision", type=float, default=0.08, help="simultaneous half-width for family precision endpoints"
     )
     parser.add_argument("--alpha", type=float, default=0.05)
     parser.add_argument("--power", type=float, default=0.8)
@@ -4212,6 +4242,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-pending", type=int, default=DEFAULT_MAX_PENDING)
     parser.add_argument("--out", type=Path, help="directory under which the run's audit record is written")
     parser.add_argument("--submit", action="store_true", help="submit the chosen circuits (spends QPU time)")
+    parser.add_argument(
+        "--native-dry-run",
+        action="store_true",
+        help="qualify an admitted archived plan through Runtime mock execution, with dry_run=True",
+    )
     parser.add_argument("--min-remaining-seconds", type=float, default=DEFAULT_MIN_REMAINING_S)
     parser.add_argument(
         "--shots",
@@ -4280,6 +4315,10 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     args = parser.parse_args(argv)
+    if args.native_dry_run and (args.submit or args.collect or args.preserve_raw):
+        parser.error("--native-dry-run requires a separate submit-free planning invocation")
+    if args.native_dry_run and (not args.out or not args.family):
+        parser.error("--native-dry-run needs --out and a statistically admitted --family")
     if args.submit and not args.out:
         parser.error("--submit needs --out so the job ids land in an audit record")
     if args.submit and not args.approved_record:
@@ -4312,6 +4351,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if args.family in ("ripple", "rank-sector"):
+        if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
+            parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")
     if args.family:
         args.isolated_reference = False
     for name in ("alpha", "power", "simulation_alpha"):
@@ -4361,6 +4403,11 @@ def main(argv: list[str] | None = None) -> int:
             run_dir.mkdir(parents=True, exist_ok=False)
             write_archive(run_dir, choices)
             write_json(run_dir, record)
+            if args.native_dry_run:
+                from native_preflight import qualify
+
+                native_report = qualify(sys.modules[__name__], service, choices, record, run_dir)
+                print(f"native mock qualification: {native_report['status']}")
             if args.family and not args.submit:
                 from qpu_cases import write_case
 

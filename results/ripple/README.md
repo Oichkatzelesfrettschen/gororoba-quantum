@@ -9,9 +9,10 @@ and signed box-kite fringes, with the proposed hardware depths labeled.
   recurrence certificates, signed graphs, all 336 zero-product rows, 672
   phase checks and source hashes. `execution_metadata` records numerical
   residuals and dependency versions separately from the exact payload.
-- `single-job-proposal.json` records the candidate 43-logical-qubit,
-  116-setting experiment and the assumptions behind its approximately
-  35-second QPU estimate. Live calibration and placement remain required.
+- `single-job-proposal.json` records the implemented 55-logical-qubit,
+  146-row experiment. Fresh statistical admission, calibration and native
+  timing determine its execution case; the earlier 35-second illustration
+  is superseded.
 - `cayley-dickson-ripples.html` is generated from the evidence and the
   repository HTML template. All displayed distributions are ideal local
   predictions. A measured rendering requires a separately approved QPU run.
@@ -25,7 +26,7 @@ supplies historical timing context only.
 
 Install `requirements.txt` into the intended environment and set `PYTHON`
 to its interpreter. The retained record uses the repository pins, including
-NumPy 2.5.3 and Qiskit 2.5.2. From the repository root:
+NumPy 2.5.4 and Qiskit 2.5.2. From the repository root:
 
 ```sh
 (

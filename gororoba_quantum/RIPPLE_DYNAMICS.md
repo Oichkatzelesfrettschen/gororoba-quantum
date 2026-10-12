@@ -93,58 +93,37 @@ the full quantum state retains norm one. Intermediate complex phases leave
 the real zero-product variety. A smooth fringe depicts a phase sweep, while
 the appropriate real endpoint represents the zero-product witness.
 
-## One-job proposal and timing
+## One-job implementation and timing
 
-The proposal uses seven five-qubit edge tiles and two four-qubit walk tiles:
-43 logical qubits on one backend in one static job. Physical routing,
-placement, support and crosstalk remain qualification questions.
+The [packed algebra protocol](PACKED_ALGEBRA.md) supersedes the initial
+116-row illustration. The implemented ripple family uses 55 logical qubits
+and 146 sparse execution rows: the full box-kite phase atlas, matched walk
+crossovers, the original Design C spectrum ladder, isolated representatives,
+and readout controls on every atlas template's actual physical output wire.
+The [portable proposal](../results/ripple/single-job-proposal.json) records
+the design; only a fresh runner record can qualify hardware execution.
 
-| Settings | Construction |
-| --- | --- |
-| 96 | Twelve edges times eight phases; one edge from each box kite concurrently |
-| Included in the 96 | Walk depths 0 through 4 on both tiles, then exchange A/B tile assignments |
-| 4 | Isolated walk endpoints, both classes on both tiles |
-| 14 | Isolated representative dark/bright edge endpoints, one edge per kite |
-| 2 | All-zero and all-one readout preparations |
-| 116 | Total candidate settings, each with 1,024 shots |
+A repetition delay of 250 microseconds would alone cost 149.504 seconds for
+146 rows at 4,096 shots. Fresh routing, gate duration, readout, initialization,
+statistical admission, and service scheduling determine the actual proposal.
+The earlier approximately 35-second illustration applied to fewer controls
+and fewer shots and does not price the implemented family.
 
-The candidate contains 118,784 PUB shots. Simultaneous tiles supply distinct
-observations from shared shots; covariance and shared hardware noise determine
-their statistical value. The isolated edge controls cover representative
-edges; the readout preparations characterize endpoint bias rather than a
-full correlated readout channel.
+The primary outcome is the depth-four return contrast after exchanging
+physical tiles under identical atlas neighbor activity. The contract retains
+phase-probability precision, directional bright/dark effects, ladder spectra,
+representative packing comparisons, and template-specific readout controls.
+Fringe fits and collision statistics remain descriptive unless separately
+qualified. A fully dephased model stays uniform after each mixer; that
+reference is modeled unless an actual dephasing protocol is included.
 
-The previous [hardware adjudication](../results/live/2026-10-11T152922.787095Z/ADJUDICATION.md)
-records a 9-second charge, a 250-microsecond repetition delay, mean scheduled
-circuit duration of 22.9 microseconds and 2.3 seconds outside the shot loop.
-Using 25 microseconds as an illustrative new schedule duration gives
-
-```
-118784 * (250e-6 + 25e-6) + 2.3 = 34.9656 seconds.
-```
-
-About 35 seconds is a planning estimate under those assumptions. Width can
-increase duration through routing and change errors through crosstalk. The
-schedule must be measured after live compilation, and job overhead can vary.
-Queue time and local preparation are separate from charged QPU time.
-
-The proposed primary outcome is the depth-4 return contrast after exchanging
-physical tiles. Depth-1 uniformity is a shared reference; depth-2 collisions
-and depth-3 returns are secondary. Estimate collisions with
-`sum_x n_x*(n_x-1)/(N*(N-1))`; overlapping shot pairs require appropriate
-uncertainty treatment. A fully dephased model stays uniform after each mixer;
-that reference is modeled unless an actual dephasing protocol is included.
-
-Before execution, integrate the experiment and register manifests into the
-live runner, qualify all 84 edge templates, bind exact phases, randomize and
-counterbalance settings with a recorded seed, retain joint shot ordering,
-and preregister intervals, multiplicity and model-conformance criteria.
-Follow the [parallel-experiment evidence requirements](../literature/notes/quantum_experiment_parallelism.md)
+The runner retains joint shot ordering and per-component registers. Follow the
+[parallel-experiment evidence requirements](../literature/notes/quantum_experiment_parallelism.md)
 and [design sources](../literature/notes/quantum_experiment_design_sources.md).
 A fresh calibration, submit-free dry run, digest-bound written case and
 explicit owner approval under [AGENTS.md](../AGENTS.md) precede submission.
-The proposal file and visualization provide research design evidence; they
-are outside the live runner's approval-record format.
+Native server mock timing is separate evidence and supplies randomized
+outcomes that cannot enter measured visualizations.
 
 ## Visual and philosophical interpretation
 

@@ -6622,7 +6622,7 @@
   "geometry": "Hamming shells and octahedra are schematic algebraic embeddings, not chip positions",
   "execution_metadata": {
     "dependency_versions": {
-      "numpy": "2.5.3",
+      "numpy": "2.5.4",
       "qiskit": "2.5.2"
     },
     "maximum_pair_errors": [

@@ -46,6 +46,9 @@ lint and type-check configuration only. Before any push, these exit 0:
     runtime_contracts.py variance.py target_flip.py target_flip_certificate.py \
     qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
     qpu_planning.py qpu_planning_contracts.py qpu_cases.py local_compute.py \
+    algebra_planning.py algebra_planning_contracts.py \
+    ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
+    native_preflight.py native_preflight_contracts.py \
     aer_delay_sentinels.py \
     affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
     sedenion_bundle.py annihilator_strata.py \
@@ -86,6 +89,10 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" qpe_diagnostics.py
   "$PYTHON" experiment_optimizer.py
   "$PYTHON" qpu_planning_contracts.py
+  "$PYTHON" algebra_planning_contracts.py
+  "$PYTHON" ripple_contracts.py
+  "$PYTHON" rank_sector_contracts.py
+  "$PYTHON" native_preflight_contracts.py
   "$PYTHON" qpu_cases.py --check
   "$PYTHON" local_compute.py
   "$PYTHON" aer_delay_sentinels.py >/dev/null
@@ -117,6 +124,11 @@ in [QPU_OPTIMIZATION.md](gororoba_quantum/QPU_OPTIMIZATION.md). Their local
 gates exercise exact labeled laws, bounded inference, fake-backend layouts,
 aggregate budgets, and negative dry-run records; hardware claims require
 separately approved results.
+
+The independently admitted packed ripple and rank-sector families are described
+in [PACKED_ALGEBRA.md](gororoba_quantum/PACKED_ALGEBRA.md). `--native-dry-run`
+calls Runtime with `dry_run=True` and retains mock timing in a separate sidecar.
+Mock outcomes never enter scientific analysis or measured visualizations.
 
 The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
 when its generator, witnesses, or evaluator changes. Run the checks on a copy

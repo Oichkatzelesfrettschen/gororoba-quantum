@@ -224,10 +224,12 @@ The hardware queue has three separate cases:
    record rather than manufacturing hardware readiness. A fresh admitted
    dry run, written distribution-test case, time bounds, and owner approval
    remain necessary before hardware execution.
-3. **Static witnesses.** The retained case is written and awaits approval
-   after the two dynamic questions. Twirling and DD remain off in its
-   retained plan, so each static workload tests its own calibration-derived
-   model. A changed mitigation policy requires a matching dry run and case.
+3. **Static witnesses.** Renew the packed algebraic case independently of the
+   folded-QPE diagnostic and N21 admission. Ripple and rank-sector families
+   receive complete controls, fresh calibration, statistical admission, and
+   separate written cases. Twirling and DD remain off in the matched plans,
+   so each static workload tests its own calibration-derived model.
+   A changed mitigation policy requires a matching dry run and case.
    Different circuits and placements prevent the static comparison from
    isolating the mechanism of the folded-QPE gap.
 

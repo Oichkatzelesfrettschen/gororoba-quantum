@@ -1,37 +1,40 @@
 {
-  "status": "Research proposal; live-run integration, calibration, packing, and submission approval remain required",
+  "status": "Implemented research design; fresh statistical and native timing admission and owner approval remain required",
   "source": "gororoba_quantum/RIPPLE_DYNAMICS.md and results/ripple/evidence.json",
   "execution": {
     "jobs": 1,
     "backends": 1,
     "kind": "static",
-    "shots_per_setting": 1024,
+    "shots_per_setting": "Selected by precision and cost admission",
     "logical_tiles": {
       "zero_divisor": 7,
-      "associator_core": 2
+      "associator_core": 2,
+      "walsh_ladder": 3
     },
-    "logical_qubits": 43,
+    "logical_qubits": 55,
     "physical_qubits": "Fresh calibration and topology-qualified joint placement must determine this value",
     "atlas_settings": 96,
     "atlas_construction": "12 edges per box kite times eight distinct phases; each setting samples one edge from each of seven box kites concurrently",
-    "atlas_edge_phase_observations": 688128,
-    "walk_settings": "Depths 0 through 4 on both cores, followed by exchanging class assignments between the two physical tiles; co-schedule those ten paired settings inside the 96-setting atlas",
+    "atlas_edge_phase_observations": "672 times admitted shots per PUB",
+    "walk_settings": "Ten paired settings in five matched crossover bundles: each duplicated atlas row carries identical companions and exchanged A/B walk assignments",
     "additional_controls": {
+      "matched_companion_duplicate_rows": 5,
       "isolated_walk_endpoints": 4,
       "isolated_representative_dark_bright_edges": 14,
-      "all_zero_all_one_readout_preparations": 2
+      "template_specific_readout_rows": 24,
+      "isolated_walsh_primaries": 3,
+      "walsh_true_flip_omit": "Nine original members share three atlas rows"
     },
-    "total_candidate_settings": 116,
-    "total_candidate_pub_shots": 118784,
-    "control_boundary": "Isolated edge references cover one representative edge per box kite, not every edge. Readout preparations characterize endpoint bias, not a full correlated readout channel. Randomize and counterbalance settings with a recorded seed to limit order and workload confounding."
+    "total_candidate_settings": 146,
+    "total_candidate_pub_shots": "146 times admitted shots per PUB",
+    "control_boundary": "Isolated edge references cover one representative edge per lane. Every atlas template has readout controls on its actual compiled writer. Recorded row bundles balance walk class assignments and preserve matched atlas activity."
   },
   "time_model": {
-    "formula": "job overhead + sum_settings shots * (scheduled circuit duration + repetition delay)",
-    "illustrative_repetition_delay_seconds": 0.00025,
-    "illustrative_schedule_seconds": 2.5e-05,
-    "historical_overhead_seconds": 2.3,
-    "illustrative_total_seconds": 34.9656,
-    "qualification": "About 35 seconds under explicit illustrative assumptions; live compilation, scheduler duration, and service overhead remain unqualified. Extra width can change schedule and crosstalk. Historical timing comes from results/live/2026-10-11T152922.787095Z/ADJUDICATION.md."
+    "formula": "job overhead + sum_rows shots * (scheduled circuit duration + repetition delay)",
+    "historical_repetition_delay_seconds": 0.00025,
+    "illustrative_shots_per_pub": 4096,
+    "repetition_delay_only_seconds": 149.504,
+    "qualification": "149.504 seconds is repetition delay alone at the historical setting. Fresh admitted records determine candidate seconds; gates, initialization, readout and fixed overhead add time. The earlier approximately35-second illustration is superseded."
   },
   "mathematical_program": {
     "common_source": "Cayley-Dickson multiplication signs",
@@ -81,15 +84,12 @@
     "playback_boundary": "Frames are separately prepared circuit prefixes from one job; display interpolation is artistic playback, not continuous observation of one state"
   },
   "before_submission": [
-    "Integrate the experiment families and per-edge manifests into the live runner through a reviewed change",
-    "Validate the live execution environment against requirements.txt; retained local evidence uses the pinned NumPy 2.5.3 and Qiskit 2.5.2",
-    "Read fresh backend Target, properties, service usage, and support on one backend",
-    "Qualify all circuits, exact phase bindings, physical tile maps, fusion, raw-register demultiplexing, and instance identities",
-    "Qualify all 84 edge templates, exact phase bindings, fusion, and physical layouts against fresh hardware data; the retained local statevector checks cover every edge but do not establish hardware qualification",
-    "Preregister raw observables, intervals, multiplicity handling, layout comparisons, and model-conformance criteria",
-    "Run repository gates, submit-free dry run, and current-head review",
-    "Write a case bound to the dry-run digest, exact circuits, expected seconds, and one-job execution ceiling",
-    "Obtain explicit owner approval under AGENTS.md before submitting"
+    "Verify all required endpoints with fresh calibration, bounded simulation uncertainty and matched physical controls",
+    "Retain exact compiled QPY, sparse PUB manifests, joint registers and source/dependency identities",
+    "Qualify native server estimates and per-PUB scheduler timing through dry_run=True only",
+    "Run required repository gates and current-head review",
+    "Check all independently admitted family ceilings against the shared quota and retained reserve",
+    "Write exact digest-bound cases and obtain explicit owner approval under AGENTS.md"
   ],
   "schema": "cayley-dickson-ripple-proposal-v1"
 }
