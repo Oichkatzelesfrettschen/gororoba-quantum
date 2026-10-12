@@ -61,8 +61,11 @@ owns the link from literature and observations to the next intervention.
    Labels `s1,s3` each receive measured feedback `F` and unconditional correction
    `U`: four PUBs at the proposed 8192 shots. Both arms retain measurement,
    reset, and both output bits. Routed prefix/suffix, terminal writer, and
-   schedule matching remain admission gates. The owner's preparation remains
-   unqualified until those gates pass.
+   schedule matching remain evidence gates. The [coordination ledger](../results/live/qpu-coordination.json)
+   and [current preparation](../results/ripple/CORRECTION_PREPARATION.md) own
+   source-bound readiness and timing. Local circuit, count and calibration
+   checks qualify preparation; exact-case approval precedes acquisition, and
+   returned execution schedules qualify the matched inference afterward.
 4. Apply the declared optimizer decision: both labels must satisfy
    `lower_CP(p_U)-upper_CP(p_F)>0.01`, with four one-sided tails of `0.0125`.
    Binomial assumptions support at least 95% simultaneous coverage. Independent
@@ -70,7 +73,8 @@ owns the link from literature and observations to the next intervention.
    justified tradeoff, precede policy adoption. Known labels cannot supply
    unavailable phase information to an unknown-phase algorithm.
 5. Price the complete admitted case. The historical conditional estimate for
-   the four-PUB pilot is 11.2425 seconds, rather than a fresh forecast. The
+   the four-PUB pilot is 11.2425 seconds. The current preparation linked above
+   supplies the renewed forecast and proposed ceiling. The
    executed folded case attributes most nominal cost to repetition delay;
    precision selection, qualified initialization delay, and compatible endpoint
    packing therefore receive cost attention alongside circuit fidelity.

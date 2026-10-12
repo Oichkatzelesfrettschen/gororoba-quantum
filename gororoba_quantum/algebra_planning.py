@@ -7,6 +7,7 @@ archive identity, and submission approval. Each family receives its own case.
 
 from __future__ import annotations
 
+import math
 from typing import Any
 
 from qiskit import QuantumCircuit
@@ -94,12 +95,32 @@ def family_candidates(
         try:
             routed_sets = []
             for group in groups:
-                candidates_for_group = runtime.select_candidates(group, [snapshot], args.seeds, backend_trace)[
-                    : args.optimizer_candidates
-                ]
-                for choice in candidates_for_group:
-                    _bind_readout_controls(runtime, choice, definition)
-                routed_sets.append(candidates_for_group)
+                routed_candidates = runtime.select_candidates(group, [snapshot], args.seeds, backend_trace)
+                # Readout binding changes the scored physical instructions, so
+                # the candidate limit follows binding and calibrated reranking.
+                score_trace = backend_trace[group.name][snapshot.name]
+                for row in score_trace:
+                    if "joint_score" in row:
+                        row["pre_readout_binding_joint_score"] = row.pop("joint_score")
+                candidates_for_group = []
+                for choice in routed_candidates:
+                    candidate_trace = {"seed": choice.seed, "layout": choice.layout, "stage": "readout_bound_scoring"}
+                    score_trace.append(candidate_trace)
+                    try:
+                        _bind_readout_controls(runtime, choice, definition)
+                        scores = [runtime.layout_score(isa, choice.snap.backend.target) for isa in choice.isas]
+                        joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
+                    except (runtime.LiveRunError, ValueError) as error:
+                        candidate_trace["rejected"] = f"{type(error).__name__}: {error}"
+                        continue
+                    choice.member_scores = scores
+                    choice.joint_score = joint
+                    candidate_trace.update(member_scores=scores, joint_score=joint)
+                    candidates_for_group.append(choice)
+                candidates_for_group.sort(
+                    key=lambda choice: (choice.joint_score, -choice.snap.pending_jobs), reverse=True
+                )
+                routed_sets.append(candidates_for_group[: args.optimizer_candidates])
             choices, placement = runtime.select_fusion_choices(routed_sets, policy)
             _validate_rows(runtime, choices, definition)
             pubs = runtime.execution_pubs(choices)

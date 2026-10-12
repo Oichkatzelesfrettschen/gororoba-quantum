@@ -19,8 +19,12 @@ provenance; and maximize useful observations within charged QPU time. The
 completed folded-QPE diagnostic supplies measured constraints on interpretation
 and timing. Its two jobs are excluded from duplicate execution.
 
-The two new families have completed local statistical admission. Both remain
-unapproved for physical execution. They use separate static jobs because the
+The two retained families completed local statistical admission at their
+recorded revision. Subsequent source changes require fresh preparation before
+physical execution. The scoring repair evaluates readout controls after binding
+physical writers and before candidate truncation; retained selection scores
+precede that repair. Historical QPY, precision and count evidence keep their
+original scope. Both families remain unapproved for physical execution. They use separate static jobs because the
 combined 87-qubit candidate has only a bounded infeasibility result. Each
 family independently fits one job on Kingston.
 

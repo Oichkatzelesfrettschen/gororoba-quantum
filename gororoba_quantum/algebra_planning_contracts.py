@@ -12,6 +12,7 @@ from __future__ import annotations
 import copy
 import io
 import json
+import math
 from collections import Counter
 from contextlib import redirect_stderr
 from dataclasses import replace
@@ -21,11 +22,16 @@ from unittest.mock import patch
 
 import numpy as np
 from qiskit import QuantumCircuit
+from qiskit.circuit import Measure
+from qiskit.circuit.library import XGate
+from qiskit.transpiler import InstructionProperties, QubitProperties, Target
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
 import algebra_planning
 import live_run
 import parallel
+import qpu_planning
+from experiment_optimizer import ObservableContract, ObservableTerm
 from experiments import Group, Member
 from qpe_diagnostics import ideal_compiled_probabilities
 from rank_sector_experiments import reference_probes
@@ -219,6 +225,210 @@ def _readout_controls(snapshot: live_run.Snapshot) -> int:
     return 7
 
 
+def _readout_score_target(variant: str) -> Target:
+    errors = [0.20, 0.01, 0.001, 0.40]
+    coherence_times = [80e-6, 250e-6, 200e-6, 40e-6]
+    x_errors = [0.02, 0.001, 0.001, 0.01]
+    if variant == "refreshed":
+        errors[:2] = [0.001, 0.30]
+        coherence_times[:2] = [300e-6, 30e-6]
+        x_errors[:2] = [0.0001, 0.20]
+    elif variant == "equal":
+        errors[1], coherence_times[1], x_errors[1] = errors[0], coherence_times[0], x_errors[0]
+    target = Target(
+        num_qubits=4,
+        dt=1e-9,
+        qubit_properties=[QubitProperties(t1=100e-6, t2=value) for value in coherence_times],
+    )
+    target.add_instruction(
+        Measure(),
+        {(qubit,): InstructionProperties(duration=800e-9, error=error) for qubit, error in enumerate(errors)},
+    )
+    target.add_instruction(
+        XGate(),
+        {
+            (qubit,): InstructionProperties(duration=40e-9, error=error)
+            for qubit, error in enumerate(x_errors)
+            if variant != "unsupported_x" or qubit != 1
+        },
+    )
+    return target
+
+
+def _readout_score_proxy(choices: list[live_run.Choice], configuration: dict[str, Any]) -> None:
+    """The real optimizer copies the final routed score into its candidate metadata."""
+    args = _fixture_args(family="ripple", optimize=False, max_total_execution_seconds=60.0)
+    vars(args).update(qpu_planning.settings(args))
+    contracts = (ObservableContract("source", (ObservableTerm("atlas_source", (1.0, 0.0)),), precision_half_width=0.1),)
+    predictions = {entry.name: [entry.ideal] for choice in choices for entry in choice.entries}
+    with (
+        patch.object(qpu_planning, "family_candidates", return_value=[(choices, configuration)]),
+        patch.object(qpu_planning, "family_contracts", return_value=contracts),
+        patch.object(live_run, "noise_simulator", return_value=SimpleNamespace()),
+        patch.object(live_run, "simulate", return_value=predictions),
+    ):
+        selected, metadata = qpu_planning.prepare(
+            live_run, [choices[0].snap], args, {"usage_remaining_seconds": 120.0}, {}
+        )
+    _require(selected == choices, "optimizer changed the bound candidate fixture")
+    proxy = metadata["optimization"]["candidates"][0]["proxy_metadata"]["proxy_score"]
+    _require(proxy == choices[0].joint_score, "optimizer proxy retained the pre-binding score")
+
+
+def _readout_candidate_ranking(snapshot: live_run.Snapshot) -> dict[str, Any]:
+    """Calibrated scores reverse after binding; identity placement isolates that decision.
+
+    The fixture supplies routed ISAs and a fixed identity placement. Production
+    scoring, fusion selection, entry packing, row checks and optimizer metadata
+    run unchanged. The rank-family fixture separately covers real placement.
+    """
+    logical = QuantumCircuit(1, 1)
+    logical.measure(0, 0)
+    one = QuantumCircuit(1, 1)
+    one.x(0)
+    one.measure(0, 0)
+    members = (
+        Member("atlas_source", logical, np.asarray((1.0, 0.0))),
+        Member("readout_zero", logical, np.asarray((1.0, 0.0))),
+        Member("readout_one", one, np.asarray((0.0, 1.0))),
+    )
+    group = Group("atlas_ranking_fixture", members, lambda _: {}, execution_rows=(0, 1, 2))
+    definition: dict[str, Any] = {
+        "execution_row_count": 3,
+        "members": {
+            "readout_zero": {"readout_target": "atlas_source", "readout_value": 0},
+            "readout_one": {"readout_target": "atlas_source", "readout_value": 1},
+        },
+    }
+    cases = (
+        ("original", 1, 13),
+        ("original", 2, 13),
+        ("refreshed", 1, 37),
+        ("refreshed", 2, 37),
+        ("unsupported_x", 1, 37),
+        ("unsupported_x", 2, 37),
+        ("equal", 1, 37),
+        ("equal", 2, 37),
+    )
+    for variant, cap, expected_seed in cases:
+        target = _readout_score_target(variant)
+        backend = SimpleNamespace(
+            target=target,
+            num_qubits=4,
+            configuration=lambda: SimpleNamespace(
+                dynamic_reprate_enabled=True, default_rep_delay=250e-6, rep_delay_range=(0.0, 1e-3)
+            ),
+        )
+        refreshed = replace(snapshot, name="readout_score_fixture", backend=backend)
+        active_definition = definition if variant != "equal" else {**definition, "members": {}}
+        routed: list[live_run.Choice] = []
+        initial_scores: dict[int, float] = {}
+        for writer, seed in enumerate((37, 13)):
+            source = QuantumCircuit(4, 1)
+            source.measure(writer, 0)
+            control_writer = 2 if variant == "equal" else writer + 2
+            zero = QuantumCircuit(4, 1)
+            zero.measure(control_writer, 0)
+            prepared_one = QuantumCircuit(4, 1)
+            prepared_one.x(control_writer)
+            prepared_one.measure(control_writer, 0)
+            isas = [source, zero, prepared_one]
+            scores = [live_run.layout_score(isa, target) for isa in isas]
+            joint = math.exp(sum(math.log(score) for score in scores) / len(scores))
+            initial_scores[seed] = joint
+            routed.append(live_run.Choice(group, refreshed, seed, [control_writer], isas, scores, joint))
+        _require(initial_scores[37] >= initial_scores[13], "fixture lost its original candidate ordering")
+
+        def select_fixture(
+            selected_group: Group,
+            snapshots: list[live_run.Snapshot],
+            seeds: int,
+            trace: dict[str, Any],
+            *,
+            expected_snapshot: live_run.Snapshot = refreshed,
+            compiled: list[live_run.Choice] = routed,
+        ) -> list[live_run.Choice]:
+            del seeds
+            _require(selected_group is group and snapshots == [expected_snapshot], "fixture received another snapshot")
+            trace[group.name] = {
+                expected_snapshot.name: [
+                    {"seed": choice.seed, "layout": choice.layout, "joint_score": choice.joint_score}
+                    for choice in compiled
+                ]
+            }
+            return compiled
+
+        def identity_placement(
+            choices: list[live_run.Choice], policy: live_run.ReplicaPolicy, cache: Any = None
+        ) -> dict[str, Any]:
+            del cache
+            for choice in choices:
+                used = sorted({qubit for isa in choice.isas for qubit in live_run._physical(isa)})
+                replica = live_run.Replica(0, {qubit: qubit for qubit in used}, choice.member_scores[0])
+                live_run._set_entries(choice, [replica], policy)
+            return {"allocation": "identity scoring fixture"}
+
+        args = _fixture_args(
+            family="ripple", optimize=False, optimizer_candidates=cap, replica_tiers=[1], max_replicas=1
+        )
+        trace: dict[str, Any] = {}
+        with (
+            patch.object(algebra_planning, "family_definition", return_value=([group], active_definition)),
+            patch.object(live_run, "select_candidates", side_effect=select_fixture),
+            patch.object(live_run, "allocate_fusion_replicas", side_effect=identity_placement),
+            patch.object(live_run, "select_fusion_choices", wraps=live_run.select_fusion_choices) as fusion,
+        ):
+            families = algebra_planning.family_candidates(live_run, [refreshed], args, trace)
+        _require(len(families) == 1, f"bound candidate rejected a valid backend: {variant}, cap={cap}, {trace}")
+        choices, configuration = families[0]
+        choice = choices[0]
+        _require(choice.seed == expected_seed, f"bound scores failed to rerank before cap/fusion: {variant}, cap={cap}")
+        passed = fusion.call_args.args[0][0]
+        _require(len(passed) == (1 if variant == "unsupported_x" else cap), "fusion received the wrong candidate cap")
+        _require(passed[0].seed == expected_seed, "fusion received pre-binding candidate order")
+        rows = trace["algebra_backends"][refreshed.name][group.name][refreshed.name]
+        historical = [row for row in rows if "pre_readout_binding_joint_score" in row]
+        final = [row for row in rows if row.get("stage") == "readout_bound_scoring"]
+        _require(len(historical) == len(final) == 2, "candidate trace omitted a candidate before truncation")
+        _require(
+            all(row["pre_readout_binding_joint_score"] == initial_scores[row["seed"]] for row in historical),
+            "candidate trace changed its original scoring evidence",
+        )
+        _require(all("joint_score" not in row for row in historical), "candidate trace mislabeled an old score")
+        for candidate in routed:
+            final_row = next(row for row in final if row["seed"] == candidate.seed)
+            if variant == "unsupported_x" and candidate.seed == 13:
+                _require("rejected" in final_row and "joint_score" not in final_row, "invalid bound X kept a score")
+                continue
+            expected_scores = [live_run.layout_score(isa, target) for isa in candidate.isas]
+            expected_joint = math.exp(sum(math.log(score) for score in expected_scores) / len(expected_scores))
+            _require(candidate.member_scores == final_row["member_scores"] == expected_scores, "stale member scores")
+            _require(candidate.joint_score == final_row["joint_score"] == expected_joint, "stale joint candidate score")
+            if variant != "equal":
+                writer = _writers(candidate.isas[0])[0]
+                _require(list(live_run._ops(candidate.isas[1])) == [("measure", (writer,))], "zero control writer")
+                _require(
+                    list(live_run._ops(candidate.isas[2])) == [("x", (writer,)), ("measure", (writer,))],
+                    "one control writer",
+                )
+        if variant == "original":
+            _require(routed[1].joint_score > routed[0].joint_score, "fixture lost its post-binding rank inversion")
+        if variant == "equal":
+            _require(routed[0].joint_score == routed[1].joint_score == initial_scores[37], "unbound scores changed")
+        selection = configuration["placement"]["candidate_selection"]
+        _require(selection["selected"][0]["joint_score"] == choice.joint_score, "fusion recorded stale scores")
+        _require(
+            selection["combined_log_score"] == math.log(choice.joint_score), "fusion priority retained stale score"
+        )
+        _require(
+            [live_run.layout_score(entry.packed, target) for entry in choice.entries] == choice.member_scores,
+            "execution entries differ from the scored identity-placement ISAs",
+        )
+        if variant == "original" and cap == 1:
+            _readout_score_proxy(choices, configuration)
+    return {"calibrated_ranking_cases": len(cases), "optimizer_proxy_checks": 1, "service_calls": 0}
+
+
 def _cli_boundaries() -> int:
     base = [
         "--native-dry-run",
@@ -260,6 +470,7 @@ def audit_algebra_planning() -> dict[str, Any]:
         cli_rejections = _cli_boundaries()
         snapshot = _fake_snapshot(FakeFez())
         readout_rejections = _readout_controls(snapshot)
+        readout_ranking = _readout_candidate_ranking(snapshot)
         choices, configuration, rank = _rank_family(snapshot)
         row_rejections = _row_boundaries(choices, configuration)
         _require(service.call_count == 0, "local algebra contract attempted a service constructor")
@@ -268,6 +479,7 @@ def audit_algebra_planning() -> dict[str, Any]:
         "qpu_executed": False,
         "service_constructor_calls": 0,
         "rank_family": rank,
+        "readout_candidate_ranking": readout_ranking,
         "rejected_cli_invocations": cli_rejections,
         "rejected_readout_inputs": readout_rejections,
         "rejected_schedule_inputs": row_rejections,
