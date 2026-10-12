@@ -84,6 +84,11 @@ def probabilities(value: Any, width: int, label: str, tolerance: float = 1e-9) -
     return list(map(float, value))
 
 
+def rounded_probability_tolerance(width: int) -> float:
+    """Bound the mass error when each recorded bin is rounded to six decimals."""
+    return width * 0.5e-6 + 1e-12
+
+
 class Inputs:
     """Retain relative identities and reject movement during extraction."""
 
@@ -473,7 +478,9 @@ def extract_run(run_dir: Path, *, fixture_mode: bool = False) -> dict[str, Any]:
                 counts = np.bincount(values, minlength=width)
                 distribution = counts / shots
                 ideal = probabilities(source["ideal"], width, "ideal", 1e-10)
-                model = probabilities(source["replicas"][0]["noisy"], width, "preparation model", 1e-5)
+                model = probabilities(
+                    source["replicas"][0]["noisy"], width, "preparation model", rounded_probability_tolerance(width)
+                )
                 item = family_header[name] if family_header is not None else None
                 witness = item["execution"] if item is not None else old_executed.get(name)
                 execution = _execution(witness, pub["name"], shots)
@@ -485,7 +492,12 @@ def extract_run(run_dir: Path, *, fixture_mode: bool = False) -> dict[str, Any]:
                     )
                 observed = item["replica_probabilities"] if item is not None else old_measured.get(name)
                 require(observed is not None and len(observed) == 1, "collector marginal absent")
-                retained = probabilities(list(observed or [])[0], width, "collected marginal", 1e-5)
+                retained = probabilities(
+                    list(observed or [])[0],
+                    width,
+                    "collected marginal",
+                    1e-9 if item is not None else rounded_probability_tolerance(width),
+                )
                 tolerance = 1e-12 if item is not None else 5.1e-7
                 require(
                     np.max(np.abs(distribution - retained)) <= tolerance, "collected marginal differs from raw counts"

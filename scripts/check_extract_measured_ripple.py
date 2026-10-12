@@ -272,6 +272,35 @@ def verify_result(result: dict[str, Any], family: str) -> None:
         require(len(row["shot_order_blocks"]) >= 2, "shot-order block diagnostic missing")
 
 
+def verify_rounded_model(root: Path, source: Path) -> int:
+    directory = root / "rounded-preparation-model"
+    shutil.copytree(source, directory)
+    record = extractor.decode((directory / "record.json").read_bytes())
+    member = next(member for group in record["groups"] for member in group["members"] if len(member["ideal"]) == 32)
+    rounded = [round(count / 4096, 6) for count in [25] * 31 + [3321]]
+    require(abs(sum(rounded) - 1) > 1e-5, "rounded fixture lost the fixed-tolerance counterexample")
+    member["replicas"][0]["noisy"] = rounded
+    write(directory / "record.json", record)
+    before = snapshot(directory)
+    result = extractor.extract_run(directory, fixture_mode=True)
+    row = result["members"][member["name"]]
+    require(row["preparation_model"]["probabilities"] == rounded, "rounded preparation values were normalized")
+    require(
+        row["hardware_minus_preparation_model"] == (np.asarray(row["probabilities"]) - rounded).tolist(),
+        "preparation residual changed the recorded rounded values",
+    )
+    require(snapshot(directory) == before, "rounded-model extraction changed its inputs")
+    for adjustment in (0.000002, -0.000032):
+        malformed = list(rounded)
+        malformed[-1] = round(malformed[-1] + adjustment, 6)
+        member["replicas"][0]["noisy"] = malformed
+        write(directory / "record.json", record)
+        before = snapshot(directory)
+        rejected(lambda: extractor.extract_run(directory, fixture_mode=True), "preparation model: probability mass")
+        require(snapshot(directory) == before, "rounded-model rejection changed its inputs")
+    return 2
+
+
 def main() -> int:
     rejected_mutants = 0
     with TemporaryDirectory(prefix="synthetic-measured-extractor-") as temporary:
@@ -284,6 +313,7 @@ def main() -> int:
             verify_result(result, family)
             require(snapshot(source) == before, "extraction changed an input file or identity")
             results[family] = result
+        rejected_mutants += verify_rounded_model(root, sources["ripple"])
         source = sources["rank-sector"]
         result = results["rank-sector"]
         mutations: list[tuple[str, Callable[[Path], Any]]] = [

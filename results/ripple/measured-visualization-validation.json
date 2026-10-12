@@ -1,0 +1,108 @@
+{
+  "additional_browser_observation": {
+    "depth_options": [
+      0,
+      1,
+      2,
+      3,
+      4
+    ],
+    "packed_return_points": 5
+  },
+  "browser_observations": {
+    "browser": "153.0.8010.52",
+    "desktopRank": {
+      "bodyOverflow": false,
+      "endpointRows": 196,
+      "rows": 5,
+      "syntheticPanels": true
+    },
+    "desktopRipple": {
+      "bodyOverflow": false,
+      "fringePoints": 8,
+      "returnPoints": 1
+    },
+    "errors": [],
+    "keyboardGraphLinksToPub": true,
+    "mobileRank": {
+      "bodyOverflow": false
+    },
+    "mobileRipple": {
+      "bodyOverflow": false,
+      "theme": "dark"
+    },
+    "networkRequests": [],
+    "rank-sectorSingle": true,
+    "rippleSingle": true,
+    "withheld": {
+      "billing": "Occupancy rates unavailable: synthetic final billing unavailable",
+      "bodyOverflow": false,
+      "inference": "Inference withheld: synthetic calibration mismatch",
+      "replayMarkers": 0,
+      "whiskers": 0
+    }
+  },
+  "checks": {
+    "check_preserves": [
+      "bytes",
+      "names",
+      "file identities",
+      "link counts",
+      "mtime including fixture root"
+    ],
+    "diff_check": "passed",
+    "duplicate_json_key_rejection": "passed",
+    "mypy": "passed",
+    "node_syntax": "passed",
+    "path_rejections_each_mode": 34,
+    "payload_hash_rejection": "passed",
+    "ruff_check": "passed",
+    "ruff_format": "passed",
+    "script_closing_escape": "passed",
+    "shape_rejections_each_mode": 30,
+    "six_decimal_model_mass_preserved": 1.000015,
+    "warnings_as_errors_normal": "passed",
+    "warnings_as_errors_optimized": "passed"
+  },
+  "evidence_kind": "synthetic_fixture",
+  "extractor_checks": {
+    "independent_compatibility_review": "Register order, current collector fields, calibration withholding, raw hashes, and settled usage formats checked; width-32 rounding repair verified.",
+    "normal_and_optimized": "passed",
+    "public_acquisition_cli_rejects_synthetic": true,
+    "rejected_corruptions_each_mode": 22,
+    "rounded_values_preserved": true,
+    "six_decimal_mass_envelope": "width * 0.5e-6 + 1e-12"
+  },
+  "families": {
+    "rank-sector": {
+      "members": 176,
+      "pubs": 36
+    },
+    "ripple": {
+      "members": 929,
+      "pubs": 146
+    }
+  },
+  "hardware_evidence": "absent; all generated outputs are temporary synthetic fixtures",
+  "integrated_static_checks": {
+    "exit_status": 0,
+    "log_sha256": "982e04ff36865305a35949b628d2d331aa4899e64d2434b058c9801cb886d147",
+    "mypy_targets": 100,
+    "ruff_targets": 103,
+    "script_sha256": "aaecbea96bf96dfb4d39bfbfec93769f074d6fb21968857f04e3ca18224aefe0"
+  },
+  "physical_qpu_jobs": 0,
+  "root_visual_inspection": [
+    "synthetic desktop atlas",
+    "synthetic 390-pixel atlas"
+  ],
+  "schema": "measured-algebra-visualization-validation-v1",
+  "scope": "renderer contracts, local JavaScript syntax, and offline Chromium observations",
+  "source_sha256": {
+    "gororoba_quantum/visualizations/measured_cayley_dickson_ripples.html": "9c1be160293b86237f9d35630e9ed7d95e9759251d4f5dae330f94cdfddc4e43",
+    "scripts/check_extract_measured_ripple.py": "47c268ad299c9b2ac06fbb2ff8db9956d9a407f1e610f9ca64ce89329135f2da",
+    "scripts/check_render_measured_ripple.py": "71cb5378fcae70c284277813ba70455adcc81911d1ba70c9cb9fdb9e18b5d4b5",
+    "scripts/extract_measured_ripple.py": "235403386b888e29c3379ee1c382201c1d9f2cf0bbd87eed581d12efc7b6008c",
+    "scripts/render_measured_ripple.py": "fab31ab512d69b35dab5b4691d824ef01cfc02c49ed7041c35606e58b4d05cee"
+  }
+}
