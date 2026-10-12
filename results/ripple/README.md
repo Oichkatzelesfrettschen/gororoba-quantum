@@ -139,10 +139,12 @@ binds the tested source, image hashes, regression counts and full-gate result.
 
 Report destinations must stay outside the retained run and identify separate
 JSON and Markdown files. The folded renderer requires distinct evidence, SVG
-and PNG paths; the rank renderer requires distinct SVG and PNG paths. Each
-command rejects canonical, symbolic-link and hardlink aliases before writing,
-including in `--check` mode. The output-admission checks run under normal and
-optimized Python through `scripts/check_review_folded_jobs.py`,
-`scripts/check_render_folded_job_review.py`, and
-`scripts/check_render_rank_sector_norms.py`. Their fixtures verify retained
+and PNG paths; the rank renderer requires distinct SVG and PNG paths. The
+interactive ripple renderer protects its evidence and template from aliased
+HTML output paths. Each command rejects canonical, symbolic-link and hardlink
+aliases before writing, including in `--check` mode. The output-admission
+checks run under normal and optimized Python through `scripts/check_review_folded_jobs.py`,
+`scripts/check_render_folded_job_review.py`,
+`scripts/check_render_rank_sector_norms.py`, and
+`scripts/check_render_ripple_visualization.py`. Their fixtures verify retained
 bytes after rejection and exercise supported separate destinations.

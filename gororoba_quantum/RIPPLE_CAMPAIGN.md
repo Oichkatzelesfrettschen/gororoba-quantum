@@ -141,9 +141,18 @@ The [source-library PR](https://github.com/Oichkatzelesfrettschen/gororoba-quant
 owns the canonical documentation migration and version-specific publication
 rights. The [formal follow-up PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
 owns fold-descent certificates, conditional terminal-channel exclusion and
-their remaining inference obligations. Their proposed documents supplement
-the campaign directive after reviewed integration; open PRs remain distinct
-from evidence already merged into the repository.
+their remaining inference obligations. The restricted-geometry follow-up
+[PR #40](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/40),
+recorded here as a pending dependency at source commit
+`233741f7de7959518cb7b3e9438de768330e5c19`, proposes the four-coordinate
+`{1, 10, 18, 25}` classification, kernel frames, integral attachments and
+ordinary-doubling extension. Its first operand stays on that support; its
+partner ranges over the ambient algebra. Written all-real/all-stage proofs,
+finite regression checks and Rocq kernel certification retain distinct
+statuses. Unrestricted dimension-32 topology and other coefficient directions
+remain open. These proposed documents supplement the campaign after reviewed
+integration; open PRs remain distinct from evidence already merged into the
+repository and grant zero physical-execution approval.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)

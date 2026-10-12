@@ -16,7 +16,7 @@
       "rejected_path_aliases": 25,
       "retained_audit_sha256": "ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a"
     },
-    "independent_review": "qualified pass over documented artifact interfaces; read-only inspection and independent execution of all three checkers",
+    "independent_review": "qualified read-only inspection of all four documented artifact interfaces; the complete required suite executes each checker",
     "normal_and_optimized_results_equal": true,
     "rank_renderer": {
       "distinct_path_render_and_check": true,
@@ -27,12 +27,39 @@
       "svg_sha256": "a225f541defa4e31a3d3eb874d1f59882ae038f061545bbfc3d2c1a8306e3300",
       "verified_acquisition_values": 160
     },
+    "ripple_renderer": {
+      "alias_kinds": [
+        "direct",
+        "canonical",
+        "file_symlink",
+        "directory_symlink",
+        "dangling_file_symlink",
+        "dangling_directory_symlink",
+        "hardlink"
+      ],
+      "protected_inputs": [
+        "evidence",
+        "template"
+      ],
+      "rejected_cli_aliases": 28,
+      "retained_evidence_sha256": "fa1fe2cac2476e46f7224e2775a7d6f2e4577b77779567713f4c6fc8a89b06be",
+      "retained_html_sha256": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
+      "retained_template_sha256": "4bad099ff569e36422148553d8582682f318cb65d5edf851986c1bbeb0588fa5",
+      "schema": "ripple-renderer-path-contracts-v1",
+      "successful_and_failed_checks_preserve_fixture": true,
+      "valid_html_matches_retained": true,
+      "write_and_check_modes": true
+    },
     "scope": "Direct and canonical paths, symlinks, existing hardlinks; concurrent adversarial path replacement is outside the documented CLI contract."
   },
   "artifact_sha256": {
-    "AGENTS.md": "d92e9ebb95834d22a86e05471f6b2fd41d3c4310b5c73bf9f66cac5fbe20306b",
+    "AGENTS.md": "cb871080b39416539e2881280212e382faabde41ee45497366adf8f312171c5d",
+    "gororoba_quantum/RIPPLE_CAMPAIGN.md": "50a2584c20a43d50a66fc636ca48d77f02cbe3523b14b893df5b1ed830707a11",
+    "gororoba_quantum/visualizations/cayley_dickson_ripples.html": "4bad099ff569e36422148553d8582682f318cb65d5edf851986c1bbeb0588fa5",
     "results/ripple/CORRECTION_PREPARATION.md": "652f4ac7f5e57e55292e61f9c99ea6d08d4f989c0910c3ed261af8d068441c85",
-    "results/ripple/README.md": "481c9212eb4d9bd3b13ed361c84c53500549966eccb15f587fa13b720d45a7ee",
+    "results/ripple/README.md": "554e370f45a7e6c14ebaf77390d7dc885892bb20778893cdd86db9db65d026b3",
+    "results/ripple/cayley-dickson-ripples.html": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
+    "results/ripple/evidence.json": "fa1fe2cac2476e46f7224e2775a7d6f2e4577b77779567713f4c6fc8a89b06be",
     "results/ripple/folded-job-review.json": "ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a",
     "results/ripple/folded-job-review.md": "a8305337c83265ed547ffc5ea79905bb9e30ee1b52bfb84d1256a03edbba3b27",
     "results/ripple/folded-job-review.png": "49fe833e98bce1b807223282b3e389af2cbc6476b940f88eca8836c7943e8290",
@@ -41,9 +68,11 @@
     "results/ripple/rank-sector-norms.svg": "a225f541defa4e31a3d3eb874d1f59882ae038f061545bbfc3d2c1a8306e3300",
     "scripts/check_render_folded_job_review.py": "9effcfa79d59dc609963c44e5a6da5776b1419d90dbea5e634fb9dda8f7b26aa",
     "scripts/check_render_rank_sector_norms.py": "109be9497c555ab86d3008d4942a9defcc26af933f4024f8409792baf971970e",
+    "scripts/check_render_ripple_visualization.py": "b852df7cf16a685ac33adf5dd43e72b3e51fdd7f2081b92be9a867f6c65a9e7e",
     "scripts/check_review_folded_jobs.py": "21cad00a2b8c0cc5c1374b4e2cc1d973f71e413e0460e0eeadf64bfd27318edd",
     "scripts/render_folded_job_review.py": "77a7fe450c83883d12c1aedac388d0a579d1c9925e44063a720cdf7a895416af",
     "scripts/render_rank_sector_norms.py": "2de20274ed04b0641546ab3c5d2ea58fb22f9810ae87f02ed7b06f71a66651a8",
+    "scripts/render_ripple_visualization.py": "9a820baa99caa14ae488d5d668ded23ca231180e04166b7bdcfa1a12fed77498",
     "scripts/review_folded_jobs.py": "81ea85b40eac3b1de2fcb5041eb5a92b0037e483fa03c3ca944a205f361f0256"
   },
   "derived_audit_regeneration": {
@@ -60,10 +89,10 @@
   },
   "full_repository_gates": {
     "exit_code": 0,
-    "mypy_source_files": 83,
-    "operator_log_sha256": "4b3cff51cbe7f6293a837c07af7c1149c30fbe309b098144306719e85ab791f9",
-    "operator_script_sha256": "aabcca7ba162909d6bbd916c2aeba62ec0096ad9ff0ec723e18de7ca2bb442b8",
-    "ruff_formatted_files": 86,
+    "mypy_source_files": 84,
+    "operator_log_sha256": "9e9ceb0b246b81cd37b9c37465c2dbb101aee55b24e4cba4a2334a8701455b0f",
+    "operator_script_sha256": "37cdbbb5906bdd8d9f58840dec7c311ea1bb7e92006a2b9f7c6de035282d41bc",
+    "ruff_formatted_files": 87,
     "warnings_as_errors": true
   },
   "independent_review": {
@@ -103,7 +132,7 @@
     "renderer_sha256": "77a7fe450c83883d12c1aedac388d0a579d1c9925e44063a720cdf7a895416af",
     "scope": "offline synthetic mutation review; modified fixtures are not hardware evidence"
   },
-  "observed_at": "2026-10-12T09:01:15.777102+00:00",
+  "observed_at": "2026-10-12T09:23:24.156233+00:00",
   "pilot_preservation": {
     "qpy_sha256": "2fcb598592888b8a48669df83401979692bb07900e81c07e090fa36ccdaf9aad",
     "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",

@@ -183,6 +183,13 @@ def render(evidence: Any) -> str:
     return template.replace(DATA_MARKER, data)
 
 
+def validate_output_path(evidence: Path, output: Path) -> None:
+    """Protect both renderer inputs before reading evidence or writing HTML."""
+    for source in (evidence, TEMPLATE):
+        if output.resolve() == source.resolve() or (output.exists() and source.exists() and output.samefile(source)):
+            raise ValueError("output must differ from the evidence and template paths")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
@@ -194,14 +201,13 @@ def main() -> int:
     )
     arguments = parser.parse_args()
     try:
+        validate_output_path(arguments.evidence, arguments.out)
         evidence = json.loads(arguments.evidence.read_text(encoding="utf-8"))
         html = render(evidence)
         if arguments.check:
             if arguments.out.read_text(encoding="utf-8") != html:
                 raise ValueError("HTML differs from the current evidence and template")
         else:
-            if arguments.out.resolve() in {arguments.evidence.resolve(), TEMPLATE.resolve()}:
-                raise ValueError("output must differ from the evidence and template paths")
             arguments.out.parent.mkdir(parents=True, exist_ok=True)
             arguments.out.write_text(html, encoding="utf-8")
     except (OSError, ValueError) as error:
