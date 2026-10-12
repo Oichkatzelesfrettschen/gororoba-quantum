@@ -9,6 +9,7 @@ template on the same lane, with an isolated workload as the second arm.
 from __future__ import annotations
 
 import io
+import math
 from collections import Counter, defaultdict
 from copy import copy
 from dataclasses import replace
@@ -23,7 +24,7 @@ from qiskit.quantum_info import Operator, Statevector
 from experiment_optimizer import ObservableContract, ObservableTerm
 from experiments import Group, Member
 from ripple_dynamics import PAIRS, walk_circuit
-from ripple_experiments import _definitions
+from ripple_experiments import _definitions, _logical_walk_template, _native_walk_circuit
 
 
 def _endpoints(
@@ -250,6 +251,92 @@ def _verify_archived_weights() -> None:
                 raise ValueError(f"{original.name}: archive changed the score mean or variance")
 
 
+def _verify_native_walk_synthesis() -> dict[str, Any]:
+    """Verify arbitrary phases, shared symbols, and routed operators on a fixed local Target."""
+    from qiskit_ibm_runtime.fake_provider import FakeKingston
+
+    import live_run
+    from runtime_contracts import _fake_snapshot
+
+    maximum_error = 0.0
+    monomial_checks = 0
+    for width in range(1, 5):
+        phase = Parameter(f"monomial_phase_{width}")
+        logical = QuantumCircuit(width)
+        if width == 1:
+            logical.p(phase, 0)
+        else:
+            logical.mcp(phase, list(range(width - 1)), width - 1)
+        native = _native_walk_circuit(logical)
+        if native.parameters != logical.parameters or native.count_ops().get("cz", 0) != (1 << width) - 2:
+            raise ValueError("native monomial changed its symbols or Gray-cycle CZ count")
+        for angle in (-2 * math.pi, -2.1, 0.0, 0.7, math.pi, 2 * math.pi):
+            expected = Operator(logical.assign_parameters({phase: angle})).data
+            observed = Operator(native.assign_parameters({phase: angle})).data
+            maximum_error = max(maximum_error, float(np.max(np.abs(expected - observed))))
+            if not np.allclose(expected, observed, atol=1e-12, rtol=0):
+                raise ValueError("native monomial changed the full operator including global phase")
+            monomial_checks += 1
+    unsupported = QuantumCircuit(1)
+    unsupported.h(0)
+    try:
+        _native_walk_circuit(unsupported)
+    except ValueError:
+        pass
+    else:
+        raise ValueError("native walk synthesis accepted an unsupported source operation")
+
+    logical, science, readout = _logical_walk_template()
+    native = _native_walk_circuit(logical)
+    if native.parameters != logical.parameters or len(native.parameters) != 61:
+        raise ValueError("native walk changed its 61 shared parameter identities")
+    if set(native.count_ops()) != {"rz", "sx", "cz", "barrier", "measure"}:
+        raise ValueError("native walk retains an operation requiring symbolic basis translation")
+    bindings = [*science.values(), *readout.values()]
+    generator = np.random.default_rng(20261012)
+    bindings.extend(
+        {parameter: float(generator.uniform(-math.pi, math.pi)) for parameter in logical.parameters} for _ in range(3)
+    )
+    snapshot = _fake_snapshot(FakeKingston())
+    compiled = live_run._compile(native, snapshot, live_run.SEED_TRANSPILER)
+    rejected = live_run.compiled_violations(compiled, snapshot)
+    if rejected:
+        raise ValueError(f"native walk violates the local calibration Target: {rejected}")
+    initial = compiled.layout.initial_index_layout(filter_ancillas=True)
+    final = compiled.layout.final_index_layout(filter_ancillas=True)
+    physical_to_logical = {physical: logical_bit for logical_bit, physical in enumerate(initial)}
+    compact = QuantumCircuit(4, global_phase=compiled.global_phase)
+    for instruction in compiled.data:
+        if instruction.operation.name in ("measure", "barrier"):
+            continue
+        physical = [compiled.find_bit(qubit).index for qubit in instruction.qubits]
+        if any(qubit not in physical_to_logical for qubit in physical):
+            raise ValueError("fixed local walk routing exceeds its four-wire operator contract")
+        compact.append(instruction.operation, [physical_to_logical[qubit] for qubit in physical])
+    permutation = [
+        sum(((label >> logical_bit) & 1) << physical_to_logical[final[logical_bit]] for logical_bit in range(4))
+        for label in range(16)
+    ]
+    for binding in bindings:
+        expected = Operator(logical.assign_parameters(binding).remove_final_measurements(inplace=False)).data
+        native_operator = Operator(native.assign_parameters(binding).remove_final_measurements(inplace=False)).data
+        bound = live_run._bind(compact, Member("routed_walk_operator", native, np.zeros(16), binding))
+        routed_operator = Operator(bound).data[permutation, :]
+        for observed in (native_operator, routed_operator):
+            maximum_error = max(maximum_error, float(np.max(np.abs(expected - observed))))
+            if not np.allclose(expected, observed, atol=1e-10, rtol=0):
+                raise ValueError("native or routed walk changed the full operator including global phase")
+    return {
+        "monomial_operator_checks": monomial_checks,
+        "walk_operator_checks": len(bindings),
+        "routed_operator_checks": len(bindings),
+        "maximum_operator_error": maximum_error,
+        "native_source_cz": int(native.count_ops().get("cz", 0)),
+        "fake_kingston_routed_cz": int(compiled.count_ops().get("cz", 0)),
+        "cost_boundary": "Native topology changes routed gate counts; fresh calibration and admission price each run.",
+    }
+
+
 def verify_ripple_family() -> dict[str, Any]:
     """Check every source circuit, exact matching pair, sparse row, and contract."""
     groups, configuration = _definitions()
@@ -361,6 +448,7 @@ def verify_ripple_family() -> dict[str, Any]:
         raise ValueError("explicit execution rows accepted an automatic mirror")
     _verify_sparse_runtime()
     _verify_archived_weights()
+    native_synthesis = _verify_native_walk_synthesis()
     return {
         "groups": len(groups),
         "rows": len(configuration["rows"]),
@@ -369,6 +457,7 @@ def verify_ripple_family() -> dict[str, Any]:
         "observable_endpoints": len(endpoints),
         "maximum_source_probability_error": maximum_error,
         "depth4_contrast": contrast,
+        "native_walk_synthesis": native_synthesis,
     }
 
 

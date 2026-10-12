@@ -15,7 +15,7 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit
-from qiskit.circuit import Parameter
+from qiskit.circuit import Parameter, ParameterExpression
 
 import predict
 from boolean_anf import anf_coefficients
@@ -52,7 +52,7 @@ def _walk_ideal(pair: Pair, depth: int) -> np.ndarray:
     return np.asarray(np.abs(numerator) ** 2 / 16**depth, dtype=float)
 
 
-def _walk_template() -> tuple[
+def _logical_walk_template() -> tuple[
     QuantumCircuit, dict[tuple[Pair, int], dict[Parameter, float]], dict[int, dict[Parameter, float]]
 ]:
     """One topology preserves routing and measured sites across every walk arm."""
@@ -95,6 +95,79 @@ def _walk_template() -> tuple[
             bindings[pair, depth] = binding
     readout = {value: dict(bindings[PAIRS[0], 0]) | {preparation: value * math.pi} for value in (0, 1)}
     return circuit, bindings, readout
+
+
+def _native_walk_circuit(source: QuantumCircuit) -> QuantumCircuit:
+    """Lower diagonal monomials with parity phases and one symbolic phase sum.
+
+    Basis translation repeatedly accumulates the global phases of controlled
+    rotations. Native RZ/SX/CZ synthesis bounds that symbolic work while keeping
+    every angle unbound for shared routing. A k-wire phase uses 2**k - 2 CZ
+    gates through Gray-code parity cycles. Native topology can change routed
+    gate counts, so calibration and statistical admission use a fresh compile.
+    """
+    circuit = QuantumCircuit(source.num_qubits, source.num_clbits, name=source.name)
+    quarter_turns = 0
+    phase_terms: list[ParameterExpression] = []
+
+    def hadamard(qubit: int) -> None:
+        nonlocal quarter_turns
+        circuit.rz(math.pi / 2, qubit)
+        circuit.sx(qubit)
+        circuit.rz(math.pi / 2, qubit)
+        quarter_turns += 1
+
+    def controlled_x(control: int, target: int) -> None:
+        hadamard(target)
+        circuit.cz(control, target)
+        hadamard(target)
+
+    for instruction in source.data:
+        qubits = [source.find_bit(qubit).index for qubit in instruction.qubits]
+        clbits = [source.find_bit(clbit).index for clbit in instruction.clbits]
+        operation = instruction.operation.name
+        if operation in ("p", "mcphase"):
+            angle = instruction.operation.params[0]
+            width = len(qubits)
+            # exp(i angle product((I-Z)/2)) factors into commuting parity
+            # rotations and the constant term exp(i angle / 2**width).
+            phase_terms.append(angle / (1 << width))
+            for pivot_index, pivot in enumerate(qubits):
+                previous_gray = 0
+                for index in range(1 << pivot_index):
+                    gray = index ^ (index >> 1)
+                    transition = gray ^ previous_gray
+                    if transition:
+                        controlled_x(qubits[transition.bit_length() - 1], pivot)
+                    sign = -1 if gray.bit_count() % 2 else 1
+                    circuit.rz(sign * angle / (1 << (width - 1)), pivot)
+                    previous_gray = gray
+                if previous_gray:
+                    controlled_x(qubits[previous_gray.bit_length() - 1], pivot)
+        elif operation == "rx":
+            angle = instruction.operation.params[0]
+            circuit.rz(math.pi / 2, qubits[0])
+            circuit.sx(qubits[0])
+            circuit.rz(math.pi + angle, qubits[0])
+            circuit.sx(qubits[0])
+            circuit.rz(math.pi / 2, qubits[0])
+            quarter_turns += 2
+        elif operation == "barrier":
+            circuit.barrier(qubits)
+        elif operation == "measure":
+            circuit.measure(qubits, clbits)
+        else:
+            raise ValueError(f"walk native synthesis does not support {operation}")
+    circuit.global_phase = sum(phase_terms, source.global_phase + (quarter_turns % 8) * math.pi / 4)
+    return circuit
+
+
+def _walk_template() -> tuple[
+    QuantumCircuit, dict[tuple[Pair, int], dict[Parameter, float]], dict[int, dict[Parameter, float]]
+]:
+    """Retain one native symbolic circuit and its original parameter identities."""
+    source, bindings, readout = _logical_walk_template()
+    return _native_walk_circuit(source), bindings, readout
 
 
 def _definitions() -> tuple[list[Group], dict[str, Any]]:
@@ -373,6 +446,7 @@ def _definitions() -> tuple[list[Group], dict[str, Any]]:
             "Cyclic edge-block assignment spreads each kite over seven patches; each edge stays on one patch.",
             "Matched walk rows repeat seven atlas companions and exchange algebra classes between two fixed patches.",
             "Zero-angle bindings preserve the full compiled walk topology, including its idle entangling cost.",
+            "Native parity-phase synthesis keeps exact global phase; changed routing costs require fresh admission.",
             "Each atlas template has zero/one readout controls reconstructed on its own admitted final ancilla writer.",
             "Zero/one preparations probe endpoint bias; they do not identify a correlated readout channel.",
             "Design C true/flip/omit retains its own ideals; distinct routed templates can change readout sites.",
