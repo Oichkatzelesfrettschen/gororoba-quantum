@@ -10,8 +10,9 @@ ROCQ="${ROCQ:-rocq}"
 evidence_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 repository_root=$(CDPATH='' cd -- "$evidence_dir/../../.." && pwd)
 version=$("$ROCQ" --version)
-if ! printf '%s\n' "$version" | grep -Fqx 'The Rocq Prover, version 9.1.1'; then
-    printf '%s\n' 'Set ROCQ to the recorded Rocq 9.1.1 executable.' >&2
+expected_version=$(printf '%s\n' 'The Rocq Prover, version 9.1.1' 'compiled with OCaml 5.4.0')
+if [ "$version" != "$expected_version" ]; then
+    printf '%s\n' 'Set ROCQ to the recorded Rocq 9.1.1 executable built with OCaml 5.4.0.' >&2
     exit 1
 fi
 (cd "$evidence_dir" && sha256sum --strict -c SHA256SUMS >/dev/null)

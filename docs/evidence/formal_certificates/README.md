@@ -56,7 +56,7 @@ Use Rocq 9.1.1 with OCaml 5.4.0. Set `ROCQ` to that toolchain's executable
 when another version is first on PATH, then run from the repository root:
 
 ```sh
-ROCQ=rocq sh docs/evidence/formal_certificates/replay_rocq.sh
+ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh
 ```
 
 The script verifies retained hashes, copies only the three `.v` sources into
