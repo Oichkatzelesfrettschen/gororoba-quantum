@@ -4,6 +4,7 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import json
 import re
 import subprocess
 import tempfile
@@ -137,6 +138,9 @@ class ExternalSourceChecks(unittest.TestCase):
 
 class SourceRightsChecks(unittest.TestCase):
     def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="source-rights-check-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
         self.payload = b"%PDF-1.7\nrights-source-fixture\n"
         self.digest = hashlib.sha256(self.payload).hexdigest()
         self.registry = {"license_documents": license_documents_fixture()}
@@ -151,7 +155,7 @@ class SourceRightsChecks(unittest.TestCase):
         }
 
     def verify(self, *, published: bool = True) -> None:
-        verify_source_rights(self.entry, self.registry, published=published, payload=self.payload)
+        verify_source_rights(self.entry, self.registry, root=self.root, published=published, payload=self.payload)
 
     def reject(self, message: str, *, published: bool = True) -> None:
         with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
@@ -166,6 +170,30 @@ class SourceRightsChecks(unittest.TestCase):
             "bytes": len(self.payload),
             "md5": hashlib.md5(self.payload, usedforsecurity=False).hexdigest(),
         }
+
+        self.zenodo_record: dict[str, Any] = {
+            "id": 20431754,
+            "links": {"self": self.entry["rights"]["evidence_url"]},
+            "metadata": {"license": {"id": "cc-by-4.0"}},
+            "files": [
+                {
+                    "key": "paper name.pdf",
+                    "size": len(self.payload),
+                    "checksum": "md5:" + self.entry["rights"]["licensed_file"]["md5"],
+                    "links": {"self": self.entry["rights"]["licensed_file"]["url"]},
+                }
+            ],
+        }
+        self.zenodo_path = self.root / "docs/evidence/source_rights/zenodo-record-20431754.json"
+        self.zenodo_path.parent.mkdir(parents=True)
+        self.entry["rights"]["evidence_path"] = self.zenodo_path.relative_to(self.root).as_posix()
+        self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-12T08:16:00+00:00"
+        self.write_zenodo_capture()
+
+    def write_zenodo_capture(self) -> None:
+        raw_response = json.dumps(self.zenodo_record).encode()
+        self.zenodo_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
 
     def test_versioned_arxiv_source_with_versionless_local_filename_passes(self) -> None:
         self.verify()
@@ -334,6 +362,111 @@ class SourceRightsChecks(unittest.TestCase):
                 self.entry["rights"]["licensed_file"] = deposited_file
                 deposited_file[field] = value
                 self.reject(message)
+
+    def test_captured_zenodo_evidence_is_required(self) -> None:
+        self.use_zenodo()
+        del self.entry["rights"]["evidence_path"]
+        self.reject("captured Zenodo evidence path")
+
+    def test_missing_captured_zenodo_file_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.zenodo_path.unlink()
+        self.reject("captured Zenodo evidence file")
+
+    def test_captured_zenodo_symlink_is_rejected(self) -> None:
+        self.use_zenodo()
+        target = self.root / "other.json"
+        self.zenodo_path.rename(target)
+        self.zenodo_path.symlink_to(target)
+        self.reject("captured Zenodo evidence file")
+
+    def test_captured_zenodo_tampering_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.zenodo_path.write_bytes(self.zenodo_path.read_bytes() + b" ")
+        self.reject("captured Zenodo evidence SHA-256")
+
+    def test_captured_zenodo_malformed_json_is_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        raw_response = b"{invalid-json}"
+        self.zenodo_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+        self.reject("captured Zenodo JSON")
+
+    def test_zenodo_declared_license_relabeling_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.entry["rights"].update(
+            license_identifier="CC0-1.0",
+            license_url=LICENSE_URLS["CC0-1.0"],
+            observed_license_url=LICENSE_URLS["CC0-1.0"],
+        )
+        self.reject("captured Zenodo license identity")
+
+    def test_zenodo_captured_license_change_is_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        self.zenodo_record["metadata"]["license"]["id"] = "all-rights-reserved"
+        self.write_zenodo_capture()
+        self.reject("captured Zenodo license identity")
+
+    def test_captured_zenodo_record_identity_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.zenodo_record)
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("id", 20445734, "captured Zenodo record identity"),
+            ("id", "20431754", "captured Zenodo record identity"),
+            ("links", {"self": "https://zenodo.org/api/records/20445734"}, "captured Zenodo record URL"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field, value=value):
+                self.zenodo_record = copy.deepcopy(original)
+                self.zenodo_record[field] = value
+                self.write_zenodo_capture()
+                self.reject(message)
+
+    def test_captured_zenodo_file_mutations_are_rejected_after_rehash(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.zenodo_record["files"][0])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("key", "unrelated.pdf", "captured Zenodo file key"),
+            ("size", len(self.payload) + 1, "captured Zenodo file size"),
+            ("size", True, "captured Zenodo file size"),
+            ("checksum", "md5:" + "0" * 32, "captured Zenodo file checksum"),
+            ("links", {"self": "https://example.org/unrelated.pdf"}, "captured Zenodo matching file"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field):
+                deposited_file = copy.deepcopy(original)
+                self.zenodo_record["files"] = [deposited_file]
+                deposited_file[field] = value
+                self.write_zenodo_capture()
+                self.reject(message)
+
+    def test_captured_zenodo_missing_and_duplicate_files_are_rejected(self) -> None:
+        self.use_zenodo()
+        original = copy.deepcopy(self.zenodo_record["files"][0])
+        for files in ([], [original, copy.deepcopy(original)]):
+            with self.subTest(file_count=len(files)):
+                self.zenodo_record["files"] = files
+                self.write_zenodo_capture()
+                self.reject("captured Zenodo matching file")
+
+    def test_captured_zenodo_unrelated_file_is_allowed(self) -> None:
+        self.use_zenodo()
+        unrelated = copy.deepcopy(self.zenodo_record["files"][0])
+        unrelated.update(key="supplement.pdf", links={"self": "https://example.org/supplement.pdf"})
+        self.zenodo_record["files"].append(unrelated)
+        self.write_zenodo_capture()
+        self.verify()
+
+    def test_coordinated_pdf_and_registry_replacement_is_rejected(self) -> None:
+        self.use_zenodo()
+        self.payload = self.payload[:-1] + b"!"
+        digest = hashlib.sha256(self.payload).hexdigest()
+        self.entry["sha256"] = digest
+        self.entry["rights"]["pdf_sha256"] = digest
+        self.entry["rights"]["licensed_file"].update(
+            sha256=digest, md5=hashlib.md5(self.payload, usedforsecurity=False).hexdigest()
+        )
+        self.reject("captured Zenodo file checksum")
 
 
 if __name__ == "__main__":

@@ -22,7 +22,7 @@ The script derives its repository root from its own path. Its explicit runtime c
 
 Set `GOROROBA_ROOT` to an `open_gororoba` checkout with the source bytes in `source_hashes.sha256`. The audited commit is `abbf13cada78d9b106fc610a36f6eea54567ecfc`. The script verifies all listed source hashes before copying the proof closure into a freshly created temporary directory.
 
-The retained receipt requires **Rocq 9.1.1**; the audit uses its OCaml 5.4.0 build. `ROCQ` defaults to `rocq` and accepts an executable path for a selected installation. An incompatible compiler version fails admission.
+The retained receipt requires **Rocq 9.1.1 compiled with OCaml 5.4.0**. The replay compares both version lines before checking source hashes or creating proof objects. `ROCQ` defaults to `rocq` and accepts an executable path for a selected installation. An incompatible compiler version fails admission.
 
 ```sh
 export GOROROBA_ROOT
