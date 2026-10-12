@@ -9,7 +9,7 @@ import subprocess
 from datetime import datetime, timedelta
 from pathlib import Path
 from typing import Any
-from urllib.parse import urlsplit
+from urllib.parse import unquote, urlsplit
 
 
 def require(condition: bool, message: str) -> None:
@@ -72,8 +72,54 @@ def verify_license_document(registry: dict[str, Any], identifier: str) -> None:
     require_timestamp(document.get("verified_at_utc"), "operative license timestamp")
 
 
+def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
+    """Bind the declared license and deposit identity to the retained endpoint response."""
+    relative = f"docs/evidence/source_rights/zenodo-record-{record_id}.json"
+    require(rights.get("evidence_path") == relative, "captured Zenodo evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve().is_relative_to(root.resolve()),
+        "captured Zenodo evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured Zenodo retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured Zenodo evidence SHA-256")
+    try:
+        decoded = json.loads(raw_response)
+    except (UnicodeDecodeError, json.JSONDecodeError) as error:
+        raise ValueError("captured Zenodo JSON") from error
+    captured = require_mapping(decoded, "captured Zenodo record")
+    require(type(captured.get("id")) is int and captured["id"] == int(record_id), "captured Zenodo record identity")
+    links = require_mapping(captured.get("links"), "captured Zenodo record links")
+    require(links.get("self") == rights["evidence_url"], "captured Zenodo record URL")
+    metadata = require_mapping(captured.get("metadata"), "captured Zenodo metadata")
+    license_metadata = require_mapping(metadata.get("license"), "captured Zenodo license")
+    require(
+        license_metadata.get("id") == rights["license_identifier"].lower(),
+        "captured Zenodo license identity",
+    )
+    files = captured.get("files")
+    if not isinstance(files, list):
+        raise ValueError("captured Zenodo file inventory")
+    matching_files = []
+    for candidate in files:
+        candidate = require_mapping(candidate, "captured Zenodo file")
+        candidate_links = require_mapping(candidate.get("links"), "captured Zenodo file links")
+        if candidate_links.get("self") == licensed_file["url"]:
+            matching_files.append(candidate)
+    require(len(matching_files) == 1, "captured Zenodo matching file")
+    deposited_file = matching_files[0]
+    filename = unquote(urlsplit(licensed_file["url"]).path.split("/files/", 1)[1].removesuffix("/content"))
+    require(deposited_file.get("key") == filename, "captured Zenodo file key")
+    require(
+        type(deposited_file.get("size")) is int and deposited_file["size"] == licensed_file["bytes"],
+        "captured Zenodo file size",
+    )
+    require(deposited_file.get("checksum") == f"md5:{licensed_file['md5']}", "captured Zenodo file checksum")
+
+
 def verify_source_rights(
-    entry: dict[str, Any], registry: dict[str, Any], *, published: bool, payload: bytes = b""
+    entry: dict[str, Any], registry: dict[str, Any], *, root: Path, published: bool, payload: bytes = b""
 ) -> None:
     """Check recorded rights consistency; primary-source inspection supplies the judgment."""
     rights = require_mapping(entry.get("rights"), "source rights object")
@@ -134,6 +180,7 @@ def verify_source_rights(
             licensed_file.get("md5") == hashlib.md5(payload, usedforsecurity=False).hexdigest(),
             "licensed deposit MD5",
         )
+        verify_zenodo_evidence(root, rights, licensed_file, record[1])
 
 
 def verify_external_sources(root: Path, registry: dict[str, Any], published_digests: set[str]) -> int:
@@ -163,7 +210,7 @@ def verify_external_sources(root: Path, registry: dict[str, Any], published_dige
         require(digest not in external_digests, "duplicate external-only PDF digest")
         require(digest not in published_digests, "external-only PDF appears in the published inventory")
         external_digests.add(digest)
-        verify_source_rights(entry, registry, published=False)
+        verify_source_rights(entry, registry, root=root, published=False)
         for size_field in ("bytes", "pages"):
             require(type(entry[size_field]) is int and entry[size_field] > 0, f"external-only {size_field}")
         note = root / entry["note"]
@@ -219,7 +266,7 @@ def verify() -> None:
         require(entry["pages"] > 0, f"recorded page count: {relative}")
         require(entry["source_url"].startswith(("https://", "http://")), f"retrieval URL: {relative}")
         require((root / entry["note"]).is_file(), f"owning note: {relative}")
-        verify_source_rights(entry, registry, published=True, payload=payload)
+        verify_source_rights(entry, registry, root=root, published=True, payload=payload)
         note_text = (root / entry["note"]).read_text()
         for identity in (entry["source_url"], entry["rights"]["license_url"], entry["rights"]["evidence_url"]):
             require(identity in note_text, f"published note rights links: {relative}")

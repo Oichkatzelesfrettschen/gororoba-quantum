@@ -16,8 +16,9 @@ ROCQ="${ROCQ:-rocq}"
 evidence_dir=$(CDPATH='' cd -- "$(dirname -- "$0")" && pwd)
 source_root=$(CDPATH='' cd -- "$GOROROBA_ROOT" && pwd)
 version=$("$ROCQ" --version)
-if ! printf '%s\n' "$version" | grep -Fqx 'The Rocq Prover, version 9.1.1'; then
-    printf '%s\n' 'The retained proof receipt requires Rocq 9.1.1; set ROCQ to that executable.' >&2
+expected_version=$(printf '%s\n' 'The Rocq Prover, version 9.1.1' 'compiled with OCaml 5.4.0')
+if [ "$version" != "$expected_version" ]; then
+    printf '%s\n' 'The retained proof receipt requires Rocq 9.1.1 compiled with OCaml 5.4.0; set ROCQ to that executable.' >&2
     exit 1
 fi
 (cd "$source_root" && sha256sum -c "$evidence_dir/source_hashes.sha256" >/dev/null)
