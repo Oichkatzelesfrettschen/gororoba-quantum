@@ -31,6 +31,7 @@ comparison before it receives a novelty claim.
 | [Principal kernel atlas](notes/principal_skew_atlas.md) | Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element. A largest-pair selector controls the initial inverse norm; exact refinement and overlap identities glue the full incidence across changing ranks. An all-stage proof supplies the corresponding finite cover | The resulting global semialgebraic presentation still requires computed smooth subdivisions, closure links and a compatible finite attachment model before global invariants follow. |
 | [Schur acceleration certificates](notes/schur_acceleration_certificates.md) | Exact rational certificates at admitted dimension-32 centers distinguish first-order failure, a complete affine space of compatible accelerations, and a separating obstruction witness. Written projected-Schur identities supply a necessary quadratic tangent condition; an explicit nullity-12 direction violates it despite passing all linear constraints | Formal second-order compatibility establishes neither an actual curve nor smoothness. The quadratic conditions supply an outer bound for the same-nullity tangent cone. The selected-center result below closes that cone question at one point; other centers and full neighborhood geometry remain separate obligations. |
 | [Selected-center nullity-twelve cone](notes/nullity_twelve_local_geometry.md) | At doubly-pure `e1+e18` in dimension 32 and norm squared two, exact coefficient identities and actual curves prove the Bouligand cone `A15 union B17`, with intersection dimension thirteen | Exact CPU certificates and written arguments establish the selected-center result. Neighborhood branches, links, attachments, other centers and a Rocq port remain separate obligations. |
+| [Kernel limits and cone attachments](notes/annihilator_kernel_limits.md) | Exact polynomial projectors certify persistent kernel inclusions. The complete real three-coefficient affine slice has nullities 0, 8 and 12, global cone kernel frames and actual mapping cylinders; its total incidence retracts onto `S11`, while the attachment image is `S3*(S1 x S3)` | Ordinary embedding extends the construction and invariants to every higher stage. Unrestricted rank loci, frontier coverage, ambient topology and the later Rocq port remain open. |
 | [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The pinned discrete/sign-code chain passes fresh compile and kernel checks, with seven globally closed assumption queries | C881's exhaustive quadratic rejection remains a finite Rust check. Count identities lack topology-transfer maps. A separate deprecated-import failure remains recorded. |
 | [Folded hardware evidence](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md) | Sixteen PUBs in two Kingston jobs retain shot-level evidence and 40 final charged seconds | Layout, terminal writer, measurement, reset, latency, and history confound a unique physical attribution. Existing outcomes support bounded model exclusions. |
 | [Installed local computation](../gororoba_quantum/LOCAL_COMPUTE.md) | The tested stack uses NumPy 2.5.4, Qiskit 2.5.2, Runtime 0.50.0, and CPU Aer 0.17.2 | Custom Aer/CUDA packaging stays paused. Native accelerator use requires actual installed support and equivalence evidence before activation. |
@@ -163,7 +164,13 @@ The mathematical chain has the following acceptance gates.
    smooth strata. Certify dimensions, normal links, closure incidences, and
    overlap coverage. Construct the actual
    kernel-bundle transition data, characteristic information, and equivalences.
-4. Determine limiting kernel inclusions along every frontier. Different approach
+4. Use the [projector limit and cone attachment certificates](notes/annihilator_kernel_limits.md)
+   as the complete model for their named affine slice. Preserve the distinction
+   between the attachment image and total incidence, with their different
+   integral invariants. The generic polynomial-path algorithm supplies exact
+   persistent frames and endpoint inclusions at any rational endpoint, with
+   certified punctured intervals. Determine limiting kernel inclusions along
+   every frontier. Different approach
    directions can produce different subspaces of an exceptional kernel; one
    polynomial path and a frontier adjacency matrix omit those maps.
 5. Construct a global finite model with a proved relation to the complete pair
@@ -181,7 +188,12 @@ The mathematical chain has the following acceptance gates.
    domains for every `n>=2`. That all-stage gluing construction supplies
    equations and maps; unrestricted classification still requires solving
    their geometry and attachments.
-8. Formalize chosen lemmas with explicit dependency and assumption manifests.
+8. Preserve chosen lemmas with explicit dependency and assumption manifests.
+   The [kernel attachment obligations](evidence/kernel_limits/proof_obligations.json)
+   retain the new statements and proof inputs. The human defers new Rocq
+   implementation until approved raw results and preregistered adjudication
+   are available, or supplies a new instruction. Formalize the retained lemmas
+   after that workflow milestone.
    Preserve full average/detail coordinates or all XOR sectors when information
    matters; average-only multiplication fails. Certify the proposed complex
    `16 x 16` skew representation before using Pfaffian equations as an

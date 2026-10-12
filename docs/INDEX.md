@@ -181,6 +181,13 @@ classical references, physical boundaries, costs and next admission gates.
 The [proof/experiment synthesis](notes/research_proof_experiment_dependencies.md)
 connects those results to the geometry, Rocq and inference dependencies.
 
+The [kernel attachment proof](notes/annihilator_kernel_limits.md) and its
+[replay](evidence/kernel_limits/README.md) retain complete limiting projector
+certificates, a three-coefficient real cone classification, global kernel
+frames, actual mapping cylinders and restricted integral invariants. Ordinary
+embedding extends this cone family to every higher stage. The attachment
+image differs from the total incidence; unrestricted topology remains open.
+
 ## Ripple source supplement
 
 The [De Marrais Box-Kites III note](notes/math-0403113.md) records a bounded
