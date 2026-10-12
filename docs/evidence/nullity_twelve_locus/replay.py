@@ -104,7 +104,7 @@ def quadratic_case() -> dict[str, Any]:
             quadratic += crosses[right].T * solved[left]
         coefficients.append(cokernel.T * sp.Matrix([quadratic[row, column] for row, column in residual_positions]))
     projected = sp.Matrix.hstack(*coefficients)
-    require(projected.shape == (58, 231), "quadratic coefficient denominator differs")
+    require(projected.shape == (58, 231), "quadratic coefficient matrix shape differs")
     independent_rows = tuple(projected.T.rref()[1])
     reduced, pivot_columns = projected.rref()
     rank = len(pivot_columns)
@@ -144,7 +144,7 @@ def quadratic_case() -> dict[str, Any]:
         sp.expand(polynomial.subs({variables[6]: 0, variables[16]: 0})) for polynomial in polynomials
     ]
     surviving = [polynomial for polynomial in reduced_polynomials if polynomial != 0]
-    require(len(surviving) == 4, "reduced bilinear denominator differs")
+    require(len(surviving) == 4, "reduced bilinear equation count differs")
     product = (variables[5] ** 2 + variables[13] ** 2) * sum(variables[index] ** 2 for index in (17, 18, 19, 20))
     require(
         sp.expand(sum(polynomial**2 for polynomial in surviving) - product) == 0, "second sum of squares identity fails"

@@ -8425,8 +8425,8 @@
   },
   "schema": "nullity-twelve-locus-evidence-v1",
   "source_sha256": {
-    "docs/evidence/nullity_twelve_locus/curve_proof.py": "5c0367aea124aaa8a70446ff8a49def82365d51ddc5185e09cef4865b54effab",
-    "docs/evidence/nullity_twelve_locus/replay.py": "859f86f79a6a5e310413992c26a1e5f00b5c83bda5bcec551730437538b95c1e",
+    "docs/evidence/nullity_twelve_locus/curve_proof.py": "9d8d47d3071e56aafe3fe07ae0f6e0a3507f4d7e85842e909e0435330a46abf5",
+    "docs/evidence/nullity_twelve_locus/replay.py": "e95dafc8df905c7e246370b6dc38350a9c5d57e43218303a4c7713588d6432a7",
     "docs/notes/nullity_twelve_local_geometry.md": "a6a7b2540d5a9f990f0c08cf36219cbe504c2cb4249884428e828b07bd9823fa",
     "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
     "gororoba_quantum/nullity_twelve_curves.py": "9d8a6b6994d53c7756ad445ab307b66d7172c0b5afbc244111483bcd0e311fc5",
