@@ -18,8 +18,11 @@ import numpy as np
 from qiskit import qpy
 from qiskit_aer import AerSimulator
 
+import aer_identity
 
-def settings(args: Any = None) -> dict[str, Any]:
+
+def requested_settings(args: Any = None) -> dict[str, Any]:
+    """Describe CLI policy even when native provenance cannot be established."""
     return {
         "mode": getattr(args, "local_compute", "cpu"),
         "threads": getattr(args, "simulation_threads", 2),
@@ -32,9 +35,14 @@ def settings(args: Any = None) -> dict[str, Any]:
     }
 
 
+def settings(args: Any = None) -> dict[str, Any]:
+    return requested_settings(args) | {"aer_native": aer_identity.identity()}
+
+
 def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> None:
     """Reject unavailable or unqualified execution before service construction."""
-    if set(policy) != set(settings()):
+    defaults = settings()
+    if set(policy) != set(defaults):
         raise ValueError("local compute policy fields differ from the supported contract")
     if policy["mode"] not in ("cpu", "gpu", "hybrid"):
         raise ValueError("local compute mode must be cpu, gpu, or hybrid")
@@ -46,8 +54,11 @@ def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> 
     if policy["shot_branching"]:
         raise ValueError("shot branching fails noisy folded-circuit qualification and remains disabled")
     for key in ("method", "precision", "shot_branching_sampling", "parallel_experiments"):
-        if policy[key] != settings()[key]:
+        if type(policy[key]) is not type(defaults[key]) or policy[key] != defaults[key]:
             raise ValueError(f"local compute {key} differs from the qualified configuration")
+    aer_identity.validate_contract(policy["aer_native"])
+    if policy["aer_native"] != defaults["aer_native"]:
+        raise ValueError("local compute policy identifies a different native Aer build")
     available = tuple(AerSimulator().available_devices()) if devices is None else devices
     if policy["mode"] != "cpu":
         if "GPU" not in available:
@@ -105,13 +116,16 @@ def batches(simulator: Any) -> list[dict[str, Any]]:
 
 def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     """Preserve declared order and retain actual Aer device/kernel evidence."""
+    policy = getattr(simulator, "_gororoba_compute_policy", None)
+    if policy is not None:
+        validate(policy)
     start = time.perf_counter()
     result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
     elapsed = time.perf_counter() - start
     if not result.success:
         raise RuntimeError(f"local Aer simulation failed: {result.status}")
-    policy = getattr(simulator, "_gororoba_compute_policy", None)
     if policy is not None:
+        validate(policy)
         for experiment in result.results:
             if not experiment.success:
                 raise RuntimeError(f"local Aer experiment failed: {experiment.status}")
@@ -145,7 +159,12 @@ def _verify() -> None:
 
     policy = settings()
     validate(policy, ("CPU",))
+    changed_identity = dict(policy["aer_native"])
+    changed_identity["extension"] = dict(changed_identity["extension"]) | {"sha256": "0" * 64}
     for bad in (
+        policy | {"aer_native": changed_identity},
+        policy | {"shot_branching_sampling": 0},
+        policy | {"parallel_experiments": True},
         policy | {"mode": "gpu"},
         policy | {"mode": "hybrid"},
         policy | {"threads": 0},

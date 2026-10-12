@@ -34,6 +34,17 @@ and density-matrix method. The wall time measures simulator execution
 through result retrieval; the field does not measure whole-command time,
 CPU time, or peak resident memory.
 
+The native Aer distribution version alone cannot distinguish a CPU build from
+an upstream CUDA build. `aer_identity.py` binds the imported controller
+extension SHA-256, Python ABI, and optional installed CUDA build manifest.
+Linux process mappings verify the loaded extension's device/inode against
+the file being hashed. A package replacement during an active process rejects
+provenance and requires a fresh process and dry run. The checks enumerate the
+extension and manifest; they do not establish an identity for every linked
+library or every host setting. Diagnostic records retain the requested CLI
+settings even when native identity capture fails, before IBM service
+construction.
+
 Qiskit's noise-compilation process pool and Aer's thread pool have separate
 limits. Set `QISKIT_NUM_PROCS` together with `GOROROBA_WORKERS` when running
 bounded local qualification. `parallel.py` preserves item order using spawned

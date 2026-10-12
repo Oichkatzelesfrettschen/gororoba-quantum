@@ -102,6 +102,8 @@ ISOLATED_SUFFIX = "_isolated"
 FUSION_MAX_ATTEMPTS = 256
 
 EXPERIMENT_SOURCE_MANIFEST = (
+    "aer_identity.py",
+    "aer_resources.py",
     "affine_residual.py",
     "boolean_anf.py",
     "cd_core.py",
@@ -4335,7 +4337,8 @@ def main(argv: list[str] | None = None) -> int:
                 failed_dir,
                 {
                     "state": "local_compute_unavailable",
-                    "policy": local_compute.settings(args),
+                    "policy": local_compute.requested_settings(args),
+                    "policy_scope": "requested settings; native compute admission fails",
                     "reason": str(error),
                 },
             )
