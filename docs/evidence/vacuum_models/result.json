@@ -1,0 +1,395 @@
+{
+  "bath_mixture_correction": {
+    "coherent_off_diagonal": 0.39999999999999997,
+    "p": 0.2,
+    "thermal_off_diagonal": 0.0
+  },
+  "boundary": "Finite CPU model checks; hardware, physical coupling and infinite-cutoff convergence require separate evidence",
+  "collision_model": {
+    "exchange_angle": 0.3,
+    "population_law": "p_system_next = cos(theta)^2 p_system + sin(theta)^2 p_bath",
+    "pure_bath_induced_system_coherence_magnitude": 0.11820808266453585,
+    "thermal_results": [
+      {
+        "expected_population": 0.017466438509032168,
+        "system_population_after": 0.01746643850903218,
+        "system_population_before": 0.0
+      },
+      {
+        "expected_population": 0.2912667807454839,
+        "system_population_after": 0.29126678074548384,
+        "system_population_before": 0.3
+      },
+      {
+        "expected_population": 0.9301342459638713,
+        "system_population_after": 0.9301342459638713,
+        "system_population_before": 1.0
+      }
+    ]
+  },
+  "cutoff_results": [
+    {
+      "cutoff": 4,
+      "finite_re_ab": 0.2053480893196393,
+      "infinite_discarded_probability": 2.3032590219546162e-06,
+      "infinite_re_ab": 0.20537616290140775,
+      "phase_general_residual": 3.925231146709438e-17,
+      "phase_odd_residual": 2.514788802963211e-17,
+      "phase_probability_residual": 0.0,
+      "r": 0.2,
+      "relative_pair_error": 0.00013669347684683948,
+      "single_mode_commutator_expectation": 0.9997579593068419,
+      "top_probability": 6.051017328954681e-05
+    },
+    {
+      "cutoff": 4,
+      "finite_re_ab": 0.44087669569679105,
+      "infinite_discarded_probability": 0.00043431227233158085,
+      "infinite_re_ab": 0.44405299109381147,
+      "phase_general_residual": 1.1102230246251565e-16,
+      "phase_odd_residual": 5.399182342037369e-17,
+      "phase_probability_residual": 0.0,
+      "r": 0.4,
+      "relative_pair_error": 0.007152964760346321,
+      "single_mode_commutator_expectation": 0.9869189796209696,
+      "top_probability": 0.003270255094757582
+    },
+    {
+      "cutoff": 4,
+      "finite_re_ab": 0.7104638786570528,
+      "infinite_discarded_probability": 0.006920141361576525,
+      "infinite_re_ab": 0.7547306777060862,
+      "phase_general_residual": 0.0,
+      "phase_odd_residual": 8.700673149071732e-17,
+      "phase_probability_residual": 0.0,
+      "r": 0.6,
+      "relative_pair_error": 0.05865244431772265,
+      "single_mode_commutator_expectation": 0.8879059688042718,
+      "top_probability": 0.028023507798932056
+    },
+    {
+      "cutoff": 8,
+      "finite_re_ab": 0.20537616277942203,
+      "infinite_discarded_probability": 5.305002122215335e-12,
+      "infinite_re_ab": 0.20537616290140775,
+      "phase_general_residual": 2.7755575615628914e-17,
+      "phase_odd_residual": 2.5151326036898503e-17,
+      "phase_probability_residual": 0.0,
+      "r": 0.2,
+      "relative_pair_error": 5.939624411703199e-10,
+      "single_mode_commutator_expectation": 0.9999999988779095,
+      "top_probability": 1.4026131348445248e-10
+    },
+    {
+      "cutoff": 8,
+      "finite_re_ab": 0.44405032637556896,
+      "infinite_discarded_probability": 1.8862714989782125e-07,
+      "infinite_re_ab": 0.44405299109381147,
+      "phase_general_residual": 5.551115123125783e-17,
+      "phase_odd_residual": 5.4380481085617825e-17,
+      "phase_probability_residual": 0.0,
+      "r": 0.4,
+      "relative_pair_error": 6.000901459852181e-06,
+      "single_mode_commutator_expectation": 0.9999884385803982,
+      "top_probability": 1.445177450227316e-06
+    },
+    {
+      "cutoff": 8,
+      "finite_re_ab": 0.7541288459974789,
+      "infinite_discarded_probability": 4.7888356464202204e-05,
+      "infinite_re_ab": 0.7547306777060862,
+      "phase_general_residual": 1.1102230246251565e-16,
+      "phase_odd_residual": 9.235414773954996e-17,
+      "phase_probability_residual": 0.0,
+      "r": 0.6,
+      "relative_pair_error": 0.0007974125424932729,
+      "single_mode_commutator_expectation": 0.9984268227161178,
+      "top_probability": 0.00019664716048527184
+    }
+  ],
+  "first_order_product_formula": [
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.1178395317583511,
+      "r": 0.2,
+      "repetitions": 1
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.058540502609097635,
+      "r": 0.2,
+      "repetitions": 2
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.029222931638425167,
+      "r": 0.2,
+      "repetitions": 4
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.014605553987987173,
+      "r": 0.2,
+      "repetitions": 8
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.44450582958431134,
+      "r": 0.4,
+      "repetitions": 1
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.21704832332530927,
+      "r": 0.4,
+      "repetitions": 2
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.10787040162513367,
+      "r": 0.4,
+      "repetitions": 4
+    },
+    {
+      "applied_first_to_last": [
+        "IY",
+        "XY",
+        "YX",
+        "ZY"
+      ],
+      "operator_norm_error": 0.053853487082866566,
+      "r": 0.4,
+      "repetitions": 8
+    }
+  ],
+  "historical_audit": {
+    "probe_sha256": "22c1c130a42440074b66aa93f990e0920ff91e08c7b04e9bb63df718d5a834a5",
+    "result_sha256": "6147433302a506c33f5a9c9367b7f67b6d22d2398f82577a179bb503cdf7207b"
+  },
+  "input_role": "Provenance identities of the two supplied proposals; equations are explicit in probe.py and prose bytes are not parsed",
+  "inputs": [
+    {
+      "bytes": 23807,
+      "sha256": "5359c18f4f6c1e4381dc43a657033a872ccf37309f1a55addc51f03fc7f261ee"
+    },
+    {
+      "bytes": 27194,
+      "sha256": "c090fac04fa1c40bbaa03509b7bd901e65c42d9c13d67996bab036675710924e"
+    }
+  ],
+  "invariant_sector_checks": [
+    {
+      "commutator_residual": 8.881784197001252e-16,
+      "cutoff": 4,
+      "phases": [
+        {
+          "embedding_residual": 4.440892098500626e-16,
+          "evolution_residual": 2.220446049250313e-16,
+          "number_difference_conservation_residual": 0.0,
+          "phase": 0.0
+        },
+        {
+          "embedding_residual": 4.440892098500626e-16,
+          "evolution_residual": 2.220446049250313e-16,
+          "number_difference_conservation_residual": 0.0,
+          "phase": 3.141592653589793
+        },
+        {
+          "embedding_residual": 4.577566798522237e-16,
+          "evolution_residual": 4.577566798522237e-16,
+          "number_difference_conservation_residual": 0.0,
+          "phase": 0.37
+        }
+      ],
+      "trace_commutator": 0.0
+    },
+    {
+      "commutator_residual": 1.7763568394002505e-15,
+      "cutoff": 8,
+      "phases": [
+        {
+          "embedding_residual": 8.881784197001252e-16,
+          "evolution_residual": 6.661338147750939e-16,
+          "number_difference_conservation_residual": 0.0,
+          "phase": 0.0
+        },
+        {
+          "embedding_residual": 8.881784197001252e-16,
+          "evolution_residual": 6.661338147750939e-16,
+          "number_difference_conservation_residual": 0.0,
+          "phase": 3.141592653589793
+        },
+        {
+          "embedding_residual": 9.930136612989092e-16,
+          "evolution_residual": 5.900916318210353e-16,
+          "number_difference_conservation_residual": 0.0,
+          "phase": 0.37
+        }
+      ],
+      "trace_commutator": 4.440892098500626e-16
+    }
+  ],
+  "numpy": "2.5.4",
+  "python": "3.14.7",
+  "q1q0_paulis": {
+    "H_over_hbar_g": {
+      "IY": [
+        2.0,
+        0.0
+      ],
+      "XY": [
+        -1.0,
+        0.0
+      ],
+      "YX": [
+        1.0,
+        0.0
+      ],
+      "ZY": [
+        -1.0,
+        0.0
+      ]
+    },
+    "Im_ab": {
+      "IY": [
+        1.0,
+        0.0
+      ],
+      "XY": [
+        -0.5,
+        0.0
+      ],
+      "YX": [
+        0.5,
+        0.0
+      ],
+      "ZY": [
+        -0.5,
+        0.0
+      ]
+    },
+    "Re_ab": {
+      "IX": [
+        1.0,
+        0.0
+      ],
+      "XX": [
+        0.5,
+        0.0
+      ],
+      "YY": [
+        0.5,
+        0.0
+      ],
+      "ZX": [
+        -0.5,
+        0.0
+      ]
+    },
+    "occupation_and_real_pair_settings": [
+      "ZZ",
+      "ZX",
+      "XX",
+      "YY"
+    ],
+    "pair_number": {
+      "II": [
+        1.5,
+        0.0
+      ],
+      "IZ": [
+        -0.5,
+        0.0
+      ],
+      "ZI": [
+        -1.0,
+        0.0
+      ]
+    }
+  },
+  "schema_version": 1,
+  "scipy": "1.18.1",
+  "source_sha256": {
+    "docs/evidence/vacuum_models/probe.py": "b5247adee683fba87ef1ab6d4688de76b31521e6114e3c249414f41def6b9736",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3"
+  },
+  "spam_identifiability_counterexample": {
+    "alternative": {
+      "equilibrium": 0.056666666666666664,
+      "preparations": [
+        0.0394,
+        0.9606
+      ],
+      "readout_one": 0.030408163265306154,
+      "readout_zero": 0.010408163265306122
+    },
+    "delay_seconds": [
+      0.0,
+      1e-05,
+      3e-05,
+      7e-05,
+      0.00015,
+      0.0003
+    ],
+    "max_observed_population_residual": 1.1102230246251565e-16,
+    "original": {
+      "equilibrium": 0.047619047619047616,
+      "preparations": [
+        0.03,
+        0.97
+      ],
+      "readout_one": 0.04,
+      "readout_zero": 0.02
+    },
+    "same_rate_sum": 10500.0
+  },
+  "status": "CPU checks passed",
+  "symbolic_checks": {
+    "ideal_Casimir_pressure_derivative": "exact",
+    "length_chain_rule": "F_d = -(d lambda/d d) partial_lambda E_0",
+    "regularized_mode_crossing_curvature": "a**2*hbar*omega_star/(2*Abs(epsilon))"
+  },
+  "sympy": "1.14.0",
+  "thermal_and_binomial_examples": {
+    "five_ghz_15mk_occupation": 1.128194821837117e-07,
+    "five_ghz_50mk_occupation": 0.00830437336423946,
+    "five_ghz_hf_over_k_kelvin": 0.23996215366831103,
+    "one_mhz_15mk_occupation": 312.0495534744833,
+    "zero_events_4096_upper_95": 0.0007311125564754343
+  }
+}

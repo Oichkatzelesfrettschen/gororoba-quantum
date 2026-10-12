@@ -4,15 +4,24 @@ from __future__ import annotations
 
 import copy
 import hashlib
+import io
 import json
 import re
 import subprocess
+import tarfile
 import tempfile
 import unittest
 from pathlib import Path
 from typing import Any
+from unittest.mock import patch
 
-from verify_sources import LICENSE_URLS, PUBLIC_LICENSES, verify_external_sources, verify_source_rights
+from verify_sources import (
+    LICENSE_URLS,
+    PUBLIC_LICENSES,
+    verify_external_sources,
+    verify_source_archives,
+    verify_source_rights,
+)
 
 
 def rights_fixture(digest: str, *, external: bool = False) -> dict[str, Any]:
@@ -214,6 +223,117 @@ class SourceRightsChecks(unittest.TestCase):
         raw_response = json.dumps(self.zenodo_record).encode()
         self.zenodo_path.write_bytes(raw_response)
         self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
+    def use_dagstuhl(self) -> None:
+        self.entry["source_url"] = (
+            "https://drops.dagstuhl.de/storage/00lipics/lipics-vol193-itp2021/LIPIcs.ITP.2021.21/LIPIcs.ITP.2021.21.pdf"
+        )
+        self.entry["rights"].update(
+            evidence_url="https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2021.21",
+            evidence_path="docs/evidence/source_rights/dagstuhl-LIPIcs.ITP.2021.21.html",
+            observed_license_url="https://creativecommons.org/licenses/by/4.0/legalcode",
+            publisher_title="Proving Quantum Programs Correct",
+        )
+        self.dagstuhl_path = self.root / self.entry["rights"]["evidence_path"]
+        self.dagstuhl_html = (
+            '<html><head><link rel="canonical" href="' + self.entry["rights"]["evidence_url"] + '">'
+            '<meta name="DC.Rights" content="https://creativecommons.org/licenses/by/4.0/legalcode">'
+            '<meta name="citation_doi" content="10.4230/LIPIcs.ITP.2021.21">'
+            '<meta name="citation_title" content="Proving Quantum Programs Correct">'
+            '<meta name="citation_abstract_html_url" content="' + self.entry["rights"]["evidence_url"] + '">'
+            '<meta name="citation_pdf_url" content="' + self.entry["source_url"] + '"></head>'
+            "<body><footer>CC0 site footer</footer></body></html>"
+        )
+        self.write_dagstuhl_capture()
+
+    def write_dagstuhl_capture(self) -> None:
+        payload = self.dagstuhl_html.encode()
+        self.dagstuhl_path.write_bytes(payload)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+
+    def test_dagstuhl_source_specific_grant_passes(self) -> None:
+        self.use_dagstuhl()
+        self.verify()
+
+    def test_dagstuhl_changed_capture_hash_is_rejected(self) -> None:
+        self.use_dagstuhl()
+        self.dagstuhl_path.write_text(self.dagstuhl_html + " ")
+        self.reject("captured Dagstuhl evidence SHA-256")
+
+    def test_dagstuhl_substituted_metadata_is_rejected(self) -> None:
+        substitutions = (
+            (
+                "https://creativecommons.org/licenses/by/4.0/legalcode",
+                "https://example.org/license",
+                "license identity",
+            ),
+            ('content="10.4230/LIPIcs.ITP.2021.21"', 'content="10.4230/LIPIcs.ITP.2021.22"', "DOI identity"),
+            ("Proving Quantum Programs Correct", "Different paper", "title identity"),
+            ('name="citation_pdf_url" content="https:', 'name="citation_pdf_url" content="http:', "PDF identity"),
+            ('rel="canonical" href="https:', 'rel="canonical" href="http:', "canonical identity"),
+            (
+                'name="citation_abstract_html_url" content="https:',
+                'name="citation_abstract_html_url" content="http:',
+                "abstract identity",
+            ),
+        )
+        for original, replacement, error in substitutions:
+            with self.subTest(error=error):
+                self.use_dagstuhl()
+                self.dagstuhl_html = self.dagstuhl_html.replace(original, replacement)
+                self.write_dagstuhl_capture()
+                self.reject("captured Dagstuhl " + error)
+
+    def test_dagstuhl_duplicate_or_missing_metadata_is_rejected(self) -> None:
+        for field, error in (
+            ("DC.Rights", "license"),
+            ("citation_doi", "DOI"),
+            ("citation_title", "title"),
+            ("citation_pdf_url", "PDF"),
+            ("citation_abstract_html_url", "abstract"),
+        ):
+            for copies in (0, 2):
+                with self.subTest(field=field, copies=copies):
+                    self.use_dagstuhl()
+                    pattern = r'<meta name="' + re.escape(field) + r'" content="[^"]*">'
+                    match = re.search(pattern, self.dagstuhl_html)
+                    if match is None:
+                        self.fail("missing test fixture field")
+                    self.dagstuhl_html = self.dagstuhl_html.replace(match[0], match[0] * copies)
+                    self.write_dagstuhl_capture()
+                    self.reject("captured Dagstuhl " + error + " identity")
+
+    def test_dagstuhl_duplicate_attributes_are_rejected(self) -> None:
+        self.use_dagstuhl()
+        self.dagstuhl_html = self.dagstuhl_html.replace('name="DC.Rights"', 'name="DC.Rights" name="DC.Rights"')
+        self.write_dagstuhl_capture()
+        self.reject("captured Dagstuhl duplicate attributes")
+
+    def test_dagstuhl_footer_license_cannot_replace_article_grant(self) -> None:
+        self.use_dagstuhl()
+        self.dagstuhl_html = self.dagstuhl_html.replace('name="DC.Rights"', 'name="site-license"')
+        self.write_dagstuhl_capture()
+        self.reject("captured Dagstuhl license identity")
+
+    def test_dagstuhl_other_download_host_is_rejected(self) -> None:
+        self.use_dagstuhl()
+        original = self.entry["source_url"]
+        self.entry["source_url"] = original.replace("drops.dagstuhl.de", "example.org")
+        self.dagstuhl_html = self.dagstuhl_html.replace(original, self.entry["source_url"])
+        self.write_dagstuhl_capture()
+        self.reject("captured Dagstuhl publisher download route")
+
+    def test_dagstuhl_path_traversal_is_rejected(self) -> None:
+        self.use_dagstuhl()
+        self.entry["rights"]["evidence_path"] = "docs/evidence/source_rights/../unexpected.html"
+        self.reject("captured Dagstuhl evidence path")
+
+    def test_dagstuhl_invalid_encoding_is_rejected(self) -> None:
+        self.use_dagstuhl()
+        payload = b"\xff"
+        self.dagstuhl_path.write_bytes(payload)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(payload).hexdigest()
+        self.reject("captured Dagstuhl HTML encoding")
 
     def test_versioned_arxiv_source_with_versionless_local_filename_passes(self) -> None:
         self.verify()
@@ -634,6 +754,287 @@ class SourceRightsChecks(unittest.TestCase):
                 self.arxiv_html = original.split(suffix, 1)[0] + suffix
                 self.write_arxiv_capture()
                 self.reject("captured arXiv unclosed evidence")
+
+
+class SourceArchiveChecks(unittest.TestCase):
+    def setUp(self) -> None:
+        temporary = tempfile.TemporaryDirectory(prefix="source-archive-check-")
+        self.addCleanup(temporary.cleanup)
+        self.root = Path(temporary.name)
+        self.source = self.root / "docs/source_archives/research-source.tar.gz"
+        self.source.parent.mkdir(parents=True)
+        self.note = self.root / "docs/notes/research-source.md"
+        self.note.parent.mkdir()
+        self.commit = "a" * 40
+        self.prefix = f"research-{self.commit}"
+        license_payload = (
+            b"MIT License\nCopyright (c) Research authors\n"
+            b"Permission is hereby granted, free of charge, to any person obtaining a copy\n"
+            b"of this software and associated documentation files to distribute the Software.\n"
+            b"The above copyright notice and this permission notice shall be included\n"
+            b"in all copies or substantial portions of the Software.\n"
+        )
+        source_payload = b"Theorem identity : 1 = 1. Proof. reflexivity. Qed.\n"
+        self.members: list[tuple[tarfile.TarInfo, bytes]] = []
+        for name, payload in (("LICENSE", license_payload), ("Identity.v", source_payload)):
+            info = tarfile.TarInfo(f"{self.prefix}/{name}")
+            info.size = len(payload)
+            self.members.append((info, payload))
+        self.entry: dict[str, Any] = {
+            "path": self.source.relative_to(self.root).as_posix(),
+            "source_url": f"https://codeload.github.com/author/research/tar.gz/{self.commit}",
+            "version": self.commit + " (source snapshot)",
+            "title": "Research source",
+            "authors": ["Research authors"],
+            "retrieved_at_utc": "2026-10-12T16:23:09+00:00",
+            "reading_scope": "Identity theorem and license notice",
+            "compatibility": "Source inspected; build untested",
+            "copy_status": "unchanged",
+            "conditions": "Retain original copyright and license notices.",
+            "note": self.note.relative_to(self.root).as_posix(),
+            "license_identifier": "MIT",
+            "license_member": self.members[0][0].name,
+            "license_bytes": len(license_payload),
+            "license_sha256": hashlib.sha256(license_payload).hexdigest(),
+            "inspected_files": [
+                {
+                    "file": self.members[1][0].name,
+                    "bytes": len(source_payload),
+                    "sha256": hashlib.sha256(source_payload).hexdigest(),
+                }
+            ],
+        }
+        self.registry: dict[str, Any] = {"source_archives": [self.entry]}
+        self.write_archive()
+
+    def write_note(self) -> None:
+        self.note.write_text(f"{self.entry['source_url']}\n{self.entry['sha256']}\n")
+
+    def seal_payload(self, payload: bytes) -> None:
+        self.source.write_bytes(payload)
+        self.entry.update(sha256=hashlib.sha256(payload).hexdigest(), bytes=len(payload))
+        self.write_note()
+
+    def write_archive(self) -> None:
+        buffer = io.BytesIO()
+        with tarfile.open(fileobj=buffer, mode="w:gz") as archive:
+            for member, payload in self.members:
+                archive.addfile(member, io.BytesIO(payload) if member.isfile() else None)
+        self.seal_payload(buffer.getvalue())
+
+    def reject(self, message: str) -> None:
+        with self.assertRaisesRegex(ValueError, "^" + re.escape(message) + "$"):
+            verify_source_archives(self.root, self.registry)
+
+    def test_complete_archive_passes_without_extraction(self) -> None:
+        with (
+            patch.object(tarfile.TarFile, "extract", side_effect=AssertionError("filesystem extraction")),
+            patch.object(tarfile.TarFile, "extractall", side_effect=AssertionError("filesystem extraction")),
+        ):
+            self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.assertEqual(list(self.source.parent.iterdir()), [self.source])
+
+    def test_uninspected_symlink_is_preserved_without_following_it(self) -> None:
+        member = tarfile.TarInfo(f"{self.prefix}/uninspected-link")
+        member.type = tarfile.SYMTYPE
+        member.linkname = "../../outside"
+        self.members.append((member, b""))
+        self.write_archive()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+
+    def test_empty_inventory_passes(self) -> None:
+        self.registry["source_archives"] = []
+        self.source.unlink()
+        self.source.parent.rmdir()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 0)
+
+    def test_registry_shape_is_required(self) -> None:
+        for value in (None, {"unexpected": True}, "archives"):
+            with self.subTest(value=value):
+                self.registry["source_archives"] = value
+                self.reject("source archive registry")
+
+    def test_inventory_rejects_unregistered_files_and_directories(self) -> None:
+        extra = self.source.parent / "extra"
+        extra.write_bytes(b"unregistered")
+        self.reject("source archive inventory differs from registry")
+        extra.unlink()
+        extra.mkdir()
+        self.reject("source archive inventory differs from registry")
+
+    def test_archive_path_and_file_mutations_are_rejected(self) -> None:
+        for path in ("/tmp/source.tar.gz", "docs/source_archives/../source.tar.gz", "docs/source_archives/x.zip"):
+            with self.subTest(path=path):
+                self.entry["path"] = path
+                self.reject("source archive path")
+        self.entry["path"] = self.source.relative_to(self.root).as_posix()
+        self.source.unlink()
+        self.reject("source archive file")
+
+    def test_archive_file_symlink_is_rejected(self) -> None:
+        target = self.root / "outside.tar.gz"
+        self.source.rename(target)
+        self.source.symlink_to(target)
+        self.reject("source archive file")
+
+    def test_archive_directory_symlink_is_rejected(self) -> None:
+        directory = self.source.parent
+        target = self.root / "outside"
+        directory.rename(target)
+        directory.symlink_to(target, target_is_directory=True)
+        self.reject("source archive directory symlink")
+
+    def test_ancestor_directory_symlink_is_rejected(self) -> None:
+        directory = self.root / "docs"
+        target = self.root / "outside"
+        directory.rename(target)
+        directory.symlink_to(target, target_is_directory=True)
+        self.reject("source archive directory boundary")
+
+    def test_duplicate_archive_path_and_digest_are_rejected(self) -> None:
+        duplicate = copy.deepcopy(self.entry)
+        self.registry["source_archives"].append(duplicate)
+        self.reject("duplicate source archive path")
+        duplicate["path"] = "docs/source_archives/duplicate.tar.gz"
+        (self.root / duplicate["path"]).write_bytes(self.source.read_bytes())
+        self.reject("duplicate source archive digest")
+
+    def test_archive_size_and_digest_mutations_are_rejected(self) -> None:
+        original = copy.deepcopy(self.entry)
+        for field, value, message in (
+            ("bytes", True, "source archive size"),
+            ("bytes", 0, "source archive size"),
+            ("bytes", original["bytes"] + 1, "source archive size identity"),
+            ("sha256", "broken", "source archive SHA-256"),
+            ("sha256", "0" * 64, "source archive digest identity"),
+        ):
+            with self.subTest(field=field, value=value):
+                self.entry.update(original)
+                self.entry[field] = value
+                self.reject(message)
+
+    def test_provenance_mutations_are_rejected(self) -> None:
+        original = copy.deepcopy(self.entry)
+        for field, value, message in (
+            ("title", "", "archive title"),
+            ("authors", [], "archive authors"),
+            ("authors", [""], "archive author"),
+            ("reading_scope", None, "archive reading_scope"),
+            ("compatibility", False, "archive compatibility"),
+            ("conditions", "", "archive conditions"),
+            ("retrieved_at_utc", "2026-10-12T16:00:00", "archive retrieval timestamp"),
+            ("copy_status", "modified", "archive copy status"),
+            ("version", "main", "archive pinned version"),
+            ("source_url", "https://codeload.github.com/author/research/tar.gz/main", "archive source route"),
+            ("source_url", "http://codeload.github.com/author/research/tar.gz/" + self.commit, "archive source route"),
+        ):
+            with self.subTest(field=field, value=value):
+                self.entry.update(original)
+                self.entry[field] = value
+                self.reject(message)
+
+    def test_owning_note_identity_and_boundary_are_required(self) -> None:
+        original = self.entry["note"]
+        self.entry["note"] = "docs/notes/../elsewhere.md"
+        self.reject("archive owning note path")
+        self.entry["note"] = original
+        self.note.write_text(self.entry["source_url"])
+        self.reject("archive owning note identity")
+        self.note.write_text(self.entry["sha256"])
+        self.reject("archive owning note identity")
+        self.note.unlink()
+        self.reject("archive owning note file")
+
+    def test_owning_note_symlink_is_rejected(self) -> None:
+        target = self.root / "outside.md"
+        self.note.rename(target)
+        self.note.symlink_to(target)
+        self.reject("archive owning note file")
+
+    def test_invalid_tar_is_rejected_after_rehash(self) -> None:
+        self.seal_payload(b"invalid archive")
+        self.reject("invalid source archive")
+
+    def test_member_path_and_duplicate_names_are_rejected_after_rehash(self) -> None:
+        original = self.members[1][0].name
+        for name in ("/absolute.v", "../outside.v", self.prefix + "/../outside.v", "wrong-root/Identity.v"):
+            with self.subTest(name=name):
+                self.members[1][0].name = name
+                self.write_archive()
+                self.reject("archive member path")
+        self.members[1][0].name = original
+        self.members.append(copy.deepcopy(self.members[1]))
+        self.write_archive()
+        self.reject("duplicate archive member")
+
+    def test_license_identifier_and_text_must_agree(self) -> None:
+        self.entry["license_identifier"] = "unknown"
+        self.reject("archive license allowlist")
+        self.entry["license_identifier"] = "CECILL-C"
+        self.reject("archive license text identity")
+
+    def test_license_member_identity_is_required(self) -> None:
+        original = copy.deepcopy(self.entry)
+        for field, value, message in (
+            ("license_member", self.prefix + "/MISSING", "archive member missing"),
+            ("license_bytes", True, "archive member size"),
+            ("license_bytes", self.entry["license_bytes"] + 1, "archive member size identity"),
+            ("license_sha256", "broken", "archive member SHA-256"),
+            ("license_sha256", "0" * 64, "archive member digest identity"),
+        ):
+            with self.subTest(field=field, value=value):
+                self.entry.update(original)
+                self.entry[field] = value
+                self.reject(message)
+
+    def test_linked_license_member_is_rejected(self) -> None:
+        for kind in (tarfile.SYMTYPE, tarfile.LNKTYPE):
+            with self.subTest(kind=kind):
+                self.members[0][0].type = kind
+                self.members[0][0].linkname = self.members[1][0].name
+                self.write_archive()
+                self.reject("archive inspected member must be regular")
+
+    def test_inspected_file_identity_is_required(self) -> None:
+        original = copy.deepcopy(self.entry["inspected_files"][0])
+        for field, value, message in (
+            ("file", self.prefix + "/MISSING.v", "archive member missing"),
+            ("bytes", True, "archive member size"),
+            ("bytes", original["bytes"] + 1, "archive member size identity"),
+            ("sha256", "0" * 64, "archive member digest identity"),
+        ):
+            with self.subTest(field=field, value=value):
+                record = copy.deepcopy(original)
+                record[field] = value
+                self.entry["inspected_files"] = [record]
+                self.reject(message)
+        self.entry["inspected_files"] = [original, original]
+        self.reject("duplicate archive inspected file")
+        self.entry["inspected_files"] = []
+        self.reject("archive inspected files")
+
+    def test_changed_inspected_bytes_are_rejected_after_archive_rehash(self) -> None:
+        member, payload = self.members[1]
+        replacement = payload.replace(b"1 = 1", b"1 = 2")
+        self.members[1] = (member, replacement)
+        self.write_archive()
+        self.reject("archive member digest identity")
+
+    def test_versioned_interval_route_is_bound_to_archive_root(self) -> None:
+        old_prefix = self.prefix
+        self.prefix = "interval-4.11.5"
+        self.entry.update(
+            source_url="https://coqinterval.gitlabpages.inria.fr/releases/interval-4.11.5.tar.gz",
+            version="4.11.5",
+        )
+        for member, _ in self.members:
+            member.name = member.name.replace(old_prefix, self.prefix)
+        self.entry["license_member"] = self.members[0][0].name
+        self.entry["inspected_files"][0]["file"] = self.members[1][0].name
+        self.write_archive()
+        self.assertEqual(verify_source_archives(self.root, self.registry), 1)
+        self.entry["version"] = "4.11.4"
+        self.reject("archive pinned version")
 
 
 class HostedArxivCaptureChecks(unittest.TestCase):

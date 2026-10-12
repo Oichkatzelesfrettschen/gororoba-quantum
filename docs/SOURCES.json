@@ -351,6 +351,128 @@
         "evidence_retrieved_at_utc": "2026-10-12T08:17:15.836929+00:00"
       },
       "redistribution": "explicit_license_verified"
+    },
+    {
+      "title": "Proving Quantum Programs Correct",
+      "authors": [
+        "Kesha Hietala",
+        "Robert Rand",
+        "Shih-Han Hung",
+        "Liyi Li",
+        "Michael Hicks"
+      ],
+      "version": "LIPIcs 193, ITP 2021, article 21, pages 21:1-21:19",
+      "pages": 19,
+      "sha256": "a8f9a9056c03dedbb007190fbfc187f8b69272970d63941a30a13e475e2bab44",
+      "bytes": 873276,
+      "reading_scope": "Pages 1-7 and 15-17; exact semantic and QPE boundaries, attribution and rights notice.",
+      "source_url": "https://drops.dagstuhl.de/storage/00lipics/lipics-vol193-itp2021/LIPIcs.ITP.2021.21/LIPIcs.ITP.2021.21.pdf",
+      "note": "docs/notes/sqir-voqc-proof-interfaces.md",
+      "acquisition": "download",
+      "audited_at_utc": "2026-10-12T16:23:10.240772+00:00",
+      "status": "retained",
+      "redistribution": "explicit_license_verified",
+      "rights": {
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "observed_license_url": "https://creativecommons.org/licenses/by/4.0/legalcode",
+        "evidence_locator": "Publisher DC.Rights, citation_doi, citation_title, citation_pdf_url, and original PDF page 1",
+        "decision": "publish_under_explicit_license",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original PDF notices, DOI/source and CC BY 4.0 license links.",
+        "verified": true,
+        "pdf_sha256": "a8f9a9056c03dedbb007190fbfc187f8b69272970d63941a30a13e475e2bab44",
+        "verified_at_utc": "2026-10-12T16:22:19.323677+00:00",
+        "evidence_url": "https://drops.dagstuhl.de/entities/document/10.4230/LIPIcs.ITP.2021.21",
+        "evidence_sha256": "d28d80166e09b8218d12141d5df1ce9292413178a6861e73e2237ed0ac2bc2b3",
+        "evidence_retrieved_at_utc": "2026-10-12T16:22:19.323677+00:00",
+        "reading_scope": "Article-specific metadata and PDF rights notice; source-code and mathematical inspection remain distinct.",
+        "evidence_summary": "The exact publisher article metadata and unchanged PDF page 1 supply the named grant.",
+        "publisher_title": "Proving Quantum Programs Correct",
+        "evidence_path": "docs/evidence/source_rights/dagstuhl-LIPIcs.ITP.2021.21.html"
+      },
+      "path": "docs/pdf/LIPIcs.ITP.2021.21.pdf"
+    },
+    {
+      "title": "Gate Set Tomography",
+      "authors": [
+        "Erik Nielsen",
+        "John King Gamble",
+        "Kenneth Rudinger",
+        "Travis Scholten",
+        "Kevin Young",
+        "Robin Blume-Kohout"
+      ],
+      "version": "2009.07301v2",
+      "doi": "10.22331/q-2021-10-05-557",
+      "source_url": "https://arxiv.org/pdf/2009.07301v2",
+      "note": "docs/notes/2009.07301.md",
+      "audited_at_utc": "2026-10-12T16:21:38.780110+00:00",
+      "sha256": "d49400a6635eb6fb6d1aa19f5df25e72cfadeeb60254edc039833e0d71943648",
+      "bytes": 2287579,
+      "pages": 59,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "d49400a6635eb6fb6d1aa19f5df25e72cfadeeb60254edc039833e0d71943648",
+        "verified_at_utc": "2026-10-12T16:29:06.680756+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2009.07301v2",
+        "evidence_sha256": "84f320f35a3161764f2bf49f4545c68456e572a1c837e0d4897c841f61fd0ea2",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract; licensed PDFs additionally carry explicit CC-BY 4.0 footers",
+        "reading_scope": "Exact-version abstract license link and operative license text; PDF text searched for rights statements. Mathematical reading scope recorded separately.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact version explicitly identifies CC-BY 4.0; operative license sections2(a) and3(a) permit sharing subject to attribution and notices.",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2009.07301v2.html",
+        "evidence_retrieved_at_utc": "2026-10-12T16:21:38.393657+00:00"
+      },
+      "specific_reading_scope": "Sections 2.1.4-2.2.3 pp.7-10; Section 3.1 closing and 3.2 pp.12-13; Section 6.1 pp.25-26; Section 6.3 opening p.30; rendered equation15 p.8",
+      "path": "docs/pdf/2009.07301.pdf",
+      "status": "retained",
+      "redistribution": "explicit_license_verified"
+    },
+    {
+      "title": "Latency considerations for stochastic optimizers in variational quantum algorithms",
+      "authors": [
+        "Matt Menickelly",
+        "Yunsoo Ha",
+        "Matthew Otten"
+      ],
+      "version": "2201.13438v3",
+      "doi": "10.22331/q-2023-03-16-949",
+      "source_url": "https://arxiv.org/pdf/2201.13438v3",
+      "note": "docs/notes/2201.13438.md",
+      "audited_at_utc": "2026-10-12T16:23:56.472341+00:00",
+      "sha256": "c80ac029e56b5bac4fe9d51e2f49eb96f4a01e1be9c89e3807b3b75dbb6cacec",
+      "bytes": 14284035,
+      "pages": 16,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "c80ac029e56b5bac4fe9d51e2f49eb96f4a01e1be9c89e3807b3b75dbb6cacec",
+        "verified_at_utc": "2026-10-12T16:29:06.681210+00:00",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://arxiv.org/abs/2201.13438v3",
+        "evidence_sha256": "c4d1fa6aa256a0bc82862e9c3b21f1ca3d08c71209aacdf0904265c3349c11bd",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract; licensed PDFs additionally carry explicit CC-BY 4.0 footers",
+        "reading_scope": "Exact-version abstract license link and operative license text; PDF text searched for rights statements. Mathematical reading scope recorded separately.",
+        "decision": "publish_under_explicit_license",
+        "evidence_summary": "Exact version explicitly identifies CC-BY 4.0; operative license sections2(a) and3(a) permit sharing subject to attribution and notices.",
+        "observed_license_url": "http://creativecommons.org/licenses/by/4.0/",
+        "copy_status": "unchanged",
+        "conditions": "Preserve author attribution, original notices, source and license links; identify later changes. Repository licensing does not relabel the source PDF.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2201.13438v3.html",
+        "evidence_retrieved_at_utc": "2026-10-12T16:23:50.454343+00:00"
+      },
+      "specific_reading_scope": "Introduction/cost motivation pp.1-2; Section1.3 pp.3-4; Sections2.1-2.4 pp.4-7; Theorem2.1 p.5; Table1 and Section3 setup p.7; rendered Table1/equation16 p.7",
+      "path": "docs/pdf/2201.13438.pdf",
+      "status": "retained",
+      "redistribution": "explicit_license_verified"
     }
   ],
   "aliases": [
@@ -403,6 +525,52 @@
     {
       "note": "docs/notes/quantum_experiment_design_sources.md",
       "status": "NIST, Qiskit and IBM web documentation; per-source URLs and capture hashes reside in the note"
+    },
+    {
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/fractional-gates",
+      "note": "docs/notes/ibm_fractional_execution_sources.md",
+      "sha256": "37ba7ab7171fcb8da6441992b7bcca6313f13743abd5731f8ef8faff7c6c1b9a",
+      "bytes": 480900,
+      "retrieved_at_utc": "2026-10-12T16:27:29.167074+00:00",
+      "reading_scope": "Target opt-in, supported angles, synthesis and compatibility",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/run-jobs-batch",
+      "note": "docs/notes/ibm_fractional_execution_sources.md",
+      "sha256": "486e0617277ee2de886e87e54177f1594ecb0148abfa1d8334260e4c2859e653",
+      "bytes": 404419,
+      "retrieved_at_utc": "2026-10-12T16:27:29.345631+00:00",
+      "reading_scope": "Batch scheduling, ordering and intervening calibration",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/max-execution-time",
+      "note": "docs/notes/ibm_fractional_execution_sources.md",
+      "sha256": "d35ff79aeade66e539231ed7ef9768923ed14f98ede7ba5533117d31e47ffc5d",
+      "bytes": 300905,
+      "retrieved_at_utc": "2026-10-12T16:27:29.728447+00:00",
+      "reading_scope": "QPU-usage ceiling, final metrics and rolling Open Plan window",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/changelog-quantum-compute-service",
+      "note": "docs/notes/ibm_fractional_execution_sources.md",
+      "sha256": "583b05a287531af3c957a3d557d4c9d2c2a3f5e72e66acdccd81bb049b0210b5",
+      "bytes": 635041,
+      "retrieved_at_utc": "2026-10-12T16:27:29.702192+00:00",
+      "reading_scope": "3 February 2025 pulse-control removal entry",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "url": "https://quantum.cloud.ibm.com/endpoints-docs-learning/raw/docs/en/guides/sampler-options.ipynb",
+      "page_url": "https://quantum.cloud.ibm.com/docs/en/guides/sampler-options",
+      "note": "docs/notes/ibm_fractional_execution_sources.md",
+      "sha256": "ce2611335c165e167178e718cc37ee063a3aac20de3a43ab031f4a2d59cfed17",
+      "bytes": 21431,
+      "retrieved_at_utc": "2026-10-12T16:35:33.409197+00:00",
+      "reading_scope": "Shots precedence and Feature compatibility; browser page independently inspected",
+      "retention": "external_reference; original notebook read without executing its cells"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -878,7 +1046,8 @@
       "local_cache_path": "docs/local_source_cache/2103.03008v1.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
-      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "additional_reading_scope": "QILGST construction, gauge, experimental design and model checks pp.2-4; p.3 rendered; full supplement remains outside scope."
     },
     {
       "source_url": "https://arxiv.org/pdf/2109.01714v1",
@@ -1347,15 +1516,16 @@
           "body_sha256": "345621aa8109efdda769d8536206c8267c53def97a69861db0642e0d5f6f312f",
           "response_bytes": 11956,
           "retrieved_at_utc": "2026-10-12T07:30:18.798943+00:00",
-          "notice": "Attention, ces documents viennent d\u2019un peu partout, et sans trop de source.",
-          "reading_scope": "Mirror collection identifies third-party documents and invites author removal requests. The homepage public-domain statement concerns the operator\u2019s own material; it establishes no Coste permission."
+          "notice": "Attention, ces documents viennent d’un peu partout, et sans trop de source.",
+          "reading_scope": "Mirror collection identifies third-party documents and invites author removal requests. The homepage public-domain statement concerns the operator’s own material; it establishes no Coste permission."
         }
       },
       "excluded_published_path": "docs/pdf/coste-semialgebraic-geometry-2002.pdf",
       "local_cache_path": "docs/local_source_cache/coste-semialgebraic-geometry-2002.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "Original author endpoint HTTP 403; original PDF rights-term scan and mirror collection notice",
-      "rights_reason": "The original author endpoint is unavailable. The PDF scan and third-party mirror establish access but supply no rights-holder redistribution grant."
+      "rights_reason": "The original author endpoint is unavailable. The PDF scan and third-party mirror establish access but supply no rights-holder redistribution grant.",
+      "additional_reading_scope": "Section3.2.3 and Theorem3.13 with proof, printed p55/PDF56; page visually inspected."
     },
     {
       "source_url": "https://fast.cc.gatech.edu/papers/MICRO_2019_4.pdf",
@@ -1471,7 +1641,8 @@
       "local_cache_path": "docs/local_source_cache/math-0702075v2.pdf",
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
-      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+      "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission.",
+      "additional_reading_scope": "Definition3.1 and Lemma3.5 pp7-8; Definition6.1 p14; Theorem6.12 p16; Section7 and Corollary7.4/Theorem7.5/Remark7.6 pp18-19; PDF18-19 visually inspected."
     },
     {
       "source_url": "https://arxiv.org/pdf/math/9802116v1",
@@ -1587,6 +1758,671 @@
       "redistribution": "excluded_without_permission",
       "rights_locator": "arXiv:1810.08240v9 abstract license link; https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
       "rights_reason": "The inspected license grants distribution to arXiv.org. Repository redistribution permission was not established; retain the versioned link, source hash and reading note."
+    },
+    {
+      "title": "Quantitative Curve Selection Lemma",
+      "authors": [
+        "Saugata Basu",
+        "Marie-Francoise Roy"
+      ],
+      "version": "v3, 2021-07-19",
+      "source_url": "https://arxiv.org/pdf/1803.00505v3",
+      "pages": 13,
+      "reading_scope": "Definitions 1-3 and Theorems 1-3, PDF/printed pp1-4; Theorem2 deduction p11; page3 rendered and inspected.",
+      "note": "docs/notes/1803.00505.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "184427ee1a8b6e4d770352e278343ef3293ad47975313842135a3e1a2aabe9c5",
+      "bytes": 386713,
+      "audited_at_utc": "2026-10-12T16:21:44.606386+00:00",
+      "excluded_published_path": "docs/pdf/1803.00505v3.pdf",
+      "local_cache_path": "docs/local_source_cache/1803.00505v3.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1803.00505v3",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"] on exact-version abstract page",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "verified": true,
+        "pdf_sha256": "184427ee1a8b6e4d770352e278343ef3293ad47975313842135a3e1a2aabe9c5",
+        "verified_at_utc": "2026-10-12T16:21:44.510386+00:00",
+        "evidence_sha256": "a372c00480a157145d0d470ec51ee9eb1fcb0f177b9d55c00f94122a0134e188",
+        "evidence_retrieved_at_utc": "2026-10-12T16:21:44.510386+00:00",
+        "reading_scope": "Source-specific rights statement and operative terms; mathematical reading scope is separate.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1803.00505v3.html"
+      }
+    },
+    {
+      "title": "Rational points in henselian discrete valuation rings",
+      "authors": [
+        "Marvin J. Greenberg"
+      ],
+      "version": "Publications mathematiques de l IHES 31 (1966), pp59-64; seven-page Numdam scan including cover",
+      "source_url": "https://pmihes.centre-mersenne.org/item/10.1007/BF02684802.pdf",
+      "pages": 7,
+      "reading_scope": "Theorem1 and Corollaries1-2 printed p59/PDF2; proof beginning pp59-61, separability warning p62, Section3 Newton lemmas pp63-64; theorem image PDF2 inspected.",
+      "note": "docs/notes/greenberg-henselian-lifting.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "9b8a9da2c8f4252ea3e4ba59bfa4cf00ea901129b5cb405a6714d470d1ba5887",
+      "bytes": 742229,
+      "audited_at_utc": "2026-10-12T16:21:46.346385+00:00",
+      "excluded_published_path": "docs/pdf/greenberg-1966-henselian-points.pdf",
+      "local_cache_path": "docs/local_source_cache/greenberg-1966-henselian-points.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "PDF cover states all rights reserved; Numdam conditions distinguish personal research download from third-party rehosting.",
+      "rights_reason": "Numdam authorizes individual reading and states it cannot transfer distribution permission. Its CC0 notice applies to metadata. The article cover reserves all rights; no source-specific downstream grant was found.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "NOASSERTION",
+        "license_url": null,
+        "evidence_url": "https://pmihes.centre-mersenne.org/articles/10.1007/BF02684802/",
+        "evidence_locator": "PDF cover states all rights reserved; Numdam conditions distinguish personal research download from third-party rehosting.",
+        "evidence_summary": "Numdam authorizes individual reading and states it cannot transfer distribution permission. Its CC0 notice applies to metadata. The article cover reserves all rights; no source-specific downstream grant was found.",
+        "verified": true,
+        "pdf_sha256": "9b8a9da2c8f4252ea3e4ba59bfa4cf00ea901129b5cb405a6714d470d1ba5887",
+        "verified_at_utc": "2026-10-12T16:21:46.103385+00:00",
+        "evidence_sha256": "cb29802b56d7ad0292c03c95b44406c861e6f33edfd5634859ffd67e7a47d277",
+        "evidence_retrieved_at_utc": "2026-10-12T16:21:46.103385+00:00",
+        "reading_scope": "Source-specific rights statement and operative terms; mathematical reading scope is separate.",
+        "evidence_path": "docs/evidence/source_rights/greenberg-1966-article.html"
+      },
+      "parser_limitation": "pdfinfo emits Annotation destination array is too short; pdftotext and rendered Theorem1 page are readable."
+    },
+    {
+      "title": "A Verified Optimizer for Quantum Circuits",
+      "authors": [
+        "Kesha Hietala",
+        "Robert Rand",
+        "Shih-Han Hung",
+        "Xiaodi Wu",
+        "Michael Hicks"
+      ],
+      "version": "arXiv:1912.02250v3",
+      "pages": 36,
+      "sha256": "677fecb0313df458b7b82ed0da22d80327baaa4dc001d37e4f8284a4f52d44c5",
+      "bytes": 5586016,
+      "reading_scope": "Sections 2-4 and section 6 Trusted Code paragraph; not full optimization proofs or benchmark audit.",
+      "source_url": "https://arxiv.org/pdf/1912.02250v3",
+      "note": "docs/notes/sqir-voqc-proof-interfaces.md",
+      "acquisition": "download",
+      "audited_at_utc": "2026-10-12T16:22:19.800662+00:00",
+      "status": "external_only",
+      "redistribution": "excluded_without_permission",
+      "rights": {
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_locator": "Exact-version abstract abs-license link; PDF first-page author/version identity",
+        "decision": "external_only",
+        "copy_status": "unchanged",
+        "verified": true,
+        "pdf_sha256": "677fecb0313df458b7b82ed0da22d80327baaa4dc001d37e4f8284a4f52d44c5",
+        "verified_at_utc": "2026-10-12T16:22:18.017442+00:00",
+        "evidence_url": "https://arxiv.org/abs/1912.02250v3",
+        "evidence_sha256": "7fdb1981f00dba05513113a54b52925651e2da5dd90a06f436a2fe61222df7e1",
+        "evidence_retrieved_at_utc": "2026-10-12T16:22:18.017442+00:00",
+        "reading_scope": "Article-specific metadata and PDF rights notice; source-code and mathematical inspection remain distinct.",
+        "evidence_summary": "The inspected grant authorizes arXiv distribution; this pass establishes no source-specific general rehosting grant.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1912.02250v3.html"
+      },
+      "excluded_published_path": "docs/pdf/1912.02250v3.pdf",
+      "local_cache_path": "docs/local_source_cache/1912.02250v3.pdf",
+      "rights_locator": "Exact-version abstract abs-license link; PDF first-page author/version identity",
+      "rights_reason": "The inspected grant authorizes arXiv distribution; this pass establishes no source-specific general rehosting grant."
+    },
+    {
+      "title": "Optimal Experiment Design for Quantum State and Process Tomography and Hamiltonian Parameter Estimation",
+      "authors": [
+        "Robert L. Kosut",
+        "Ian A. Walmsley",
+        "Herschel Rabitz"
+      ],
+      "version": "quant-ph/0411093v1",
+      "doi": null,
+      "source_url": "https://arxiv.org/pdf/quant-ph/0411093v1",
+      "note": "docs/notes/quant-ph-0411093.md",
+      "audited_at_utc": "2026-10-12T16:23:12.728872+00:00",
+      "sha256": "6a74e8bdb1ad2d5e1f594594a3778d035267da962a63f90aae55edd4bd417ef3",
+      "bytes": 1019401,
+      "pages": 51,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "6a74e8bdb1ad2d5e1f594594a3778d035267da962a63f90aae55edd4bd417ef3",
+        "verified_at_utc": "2026-10-12T16:29:06.680965+00:00",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "https://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/quant-ph/0411093v1",
+        "evidence_sha256": "3fc7d60885dba0da84a3e47a91aea8d5030cf8bf2c140541d17b5d63bed9ce4a",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract; licensed PDFs additionally carry explicit CC-BY 4.0 footers",
+        "reading_scope": "Exact-version abstract license link and operative license text; PDF text searched for rights statements. Mathematical reading scope recorded separately.",
+        "decision": "external_only",
+        "evidence_summary": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established.",
+        "evidence_retrieved_at_utc": "2026-10-12T16:23:12.651717+00:00",
+        "evidence_path": "docs/evidence/source_rights/arxiv-quant-ph-0411093v1.html"
+      },
+      "specific_reading_scope": "Abstract; Sections 2.1-2.3 printed pp.4-5,8-12 (PDF pp.6-7,10-14); Section2.4 printed p.17 (PDFp.19); Sections3.1-3.3 printedpp.24-25 (PDFpp.26-27); AppendixA.2 printedpp.44-45; rendered equation28 on PDFp.11",
+      "status": "external_only",
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/quant-ph-0411093v1.pdf",
+      "local_cache_path": "docs/local_source_cache/quant-ph-0411093v1.pdf",
+      "rights_locator": "https://arxiv.org/abs/quant-ph/0411093v1 article-license link; https://arxiv.org/licenses/assumed-1991-2003/",
+      "rights_reason": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established."
+    },
+    {
+      "title": "Predicting Many Properties of a Quantum System from Very Few Measurements",
+      "authors": [
+        "Hsin-Yuan Huang",
+        "Richard Kueng",
+        "John Preskill"
+      ],
+      "version": "2002.08953v2",
+      "doi": "10.1038/s41567-020-0932-7",
+      "source_url": "https://arxiv.org/pdf/2002.08953v2",
+      "note": "docs/notes/2002.08953.md",
+      "audited_at_utc": "2026-10-12T16:21:38.816397+00:00",
+      "sha256": "7d0b0d0896354d6261fa36f3e4b5ed79c5b0334c966310d5d516e53671e0eef5",
+      "bytes": 2686535,
+      "pages": 40,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "7d0b0d0896354d6261fa36f3e4b5ed79c5b0334c966310d5d516e53671e0eef5",
+        "verified_at_utc": "2026-10-12T16:29:06.681101+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/2002.08953v2",
+        "evidence_sha256": "db8cf29cec2fc107a7e72f71379f6c96b8d5504cb2096c43d05f7e7a8525c586",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract; licensed PDFs additionally carry explicit CC-BY 4.0 footers",
+        "reading_scope": "Exact-version abstract license link and operative license text; PDF text searched for rights statements. Mathematical reading scope recorded separately.",
+        "decision": "external_only",
+        "evidence_summary": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established.",
+        "evidence_retrieved_at_utc": "2026-10-12T16:21:38.389928+00:00",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2002.08953v2.html"
+      },
+      "specific_reading_scope": "Procedure, Algorithm1, informal guarantees and examples pp.3-5; SupplementaryTheorem1 and examples p.13; Proposition2 and local-measurement derivation p.25; rendered theorem page13",
+      "status": "external_only",
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/2002.08953v2.pdf",
+      "local_cache_path": "docs/local_source_cache/2002.08953v2.pdf",
+      "rights_locator": "https://arxiv.org/abs/2002.08953v2 article-license link; https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "rights_reason": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established."
+    },
+    {
+      "title": "Qubits as Spectrometers of Quantum Noise",
+      "authors": [
+        "R. J. Schoelkopf",
+        "A. A. Clerk",
+        "S. M. Girvin",
+        "K. W. Lehnert",
+        "M. H. Devoret"
+      ],
+      "version": "cond-mat/0210247v1",
+      "doi": null,
+      "source_url": "https://arxiv.org/pdf/cond-mat/0210247v1",
+      "note": "docs/notes/cond-mat-0210247.md",
+      "audited_at_utc": "2026-10-12T16:30:19.195106+00:00",
+      "sha256": "0e4ee280a2f70b1e3eaad4d66a73972f242405b943944a6a8edac5053220448f",
+      "bytes": 348362,
+      "pages": 31,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "0e4ee280a2f70b1e3eaad4d66a73972f242405b943944a6a8edac5053220448f",
+        "verified_at_utc": "2026-10-12T16:35:47.252059+00:00",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "license_url": "https://arxiv.org/licenses/assumed-1991-2003/",
+        "evidence_url": "https://arxiv.org/abs/cond-mat/0210247v1",
+        "evidence_sha256": "35f98e7401982b7c221a9772e284821da44e12bbda38cd76ca4c2e541895b671",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract",
+        "reading_scope": "Exact-version abstract license link, operative license text, and PDF text search for rights statements",
+        "decision": "external_only",
+        "evidence_summary": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established.",
+        "evidence_retrieved_at_utc": "2026-10-12T16:30:19.020222+00:00",
+        "evidence_path": "docs/evidence/source_rights/arxiv-cond-mat-0210247v1.html"
+      },
+      "specific_reading_scope": "Introduction and Section 2 pp.1-6; resistor zero-temperature discussion pp.8-9; Section5 pp.13-15; Section6 opening p.15; rendered TableI p.15",
+      "status": "external_only",
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/cond-mat-0210247v1.pdf",
+      "local_cache_path": "docs/local_source_cache/cond-mat-0210247v1.pdf",
+      "rights_locator": "https://arxiv.org/abs/cond-mat/0210247v1 article-license link; https://arxiv.org/licenses/assumed-1991-2003/",
+      "rights_reason": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established."
+    },
+    {
+      "title": "Introduction to Quantum Noise, Measurement and Amplification",
+      "authors": [
+        "A. A. Clerk",
+        "M. H. Devoret",
+        "S. M. Girvin",
+        "Florian Marquardt",
+        "R. J. Schoelkopf"
+      ],
+      "version": "0810.4729v2",
+      "doi": "10.1103/RevModPhys.82.1155",
+      "source_url": "https://arxiv.org/pdf/0810.4729v2",
+      "note": "docs/notes/0810.4729.md",
+      "audited_at_utc": "2026-10-12T16:30:19.241832+00:00",
+      "sha256": "1cce1492df1940404923b55ff20a01d862d611d8f25f5f47b73e93d0abf0583d",
+      "bytes": 1576297,
+      "pages": 96,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "1cce1492df1940404923b55ff20a01d862d611d8f25f5f47b73e93d0abf0583d",
+        "verified_at_utc": "2026-10-12T16:35:47.254587+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/0810.4729v2",
+        "evidence_sha256": "6c69e7454a92c0601b03dec3594da66d9c5e209e9e370e28d4a1700c58b1f8ed",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract",
+        "reading_scope": "Exact-version abstract license link, operative license text, and PDF text search for rights statements",
+        "decision": "external_only",
+        "evidence_summary": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established.",
+        "evidence_retrieved_at_utc": "2026-10-12T16:30:18.888204+00:00",
+        "evidence_path": "docs/evidence/source_rights/arxiv-0810.4729v2.html"
+      },
+      "specific_reading_scope": "SectionsII.A-II.B pp.6-8; AppendixB.1 and openingB.2 pp.56-58; rendered equations2.6-2.8 p.7",
+      "status": "external_only",
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/0810.4729v2.pdf",
+      "local_cache_path": "docs/local_source_cache/0810.4729v2.pdf",
+      "rights_locator": "https://arxiv.org/abs/0810.4729v2 article-license link; https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "rights_reason": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established."
+    },
+    {
+      "title": "Thermal and Residual Excited-State Population in a 3D Transmon Qubit",
+      "authors": [
+        "X. Y. Jin",
+        "A. Kamal",
+        "A. P. Sears",
+        "T. Gudmundsen",
+        "D. Hover",
+        "J. Miloshi",
+        "R. Slattery",
+        "F. Yan",
+        "J. Yoder",
+        "T. P. Orlando",
+        "S. Gustavsson",
+        "W. D. Oliver"
+      ],
+      "version": "1412.2772v3",
+      "doi": "10.1103/PhysRevLett.114.240501",
+      "source_url": "https://arxiv.org/pdf/1412.2772v3",
+      "note": "docs/notes/1412.2772.md",
+      "audited_at_utc": "2026-10-12T16:30:19.470416+00:00",
+      "sha256": "9dcc31f20b50cf39d2b0085e28ca6e0fa54b0440d07ba9cb6e38352df4c5f2e5",
+      "bytes": 563308,
+      "pages": 11,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "9dcc31f20b50cf39d2b0085e28ca6e0fa54b0440d07ba9cb6e38352df4c5f2e5",
+        "verified_at_utc": "2026-10-12T16:35:47.255404+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1412.2772v3",
+        "evidence_sha256": "1dce22d37c86141919e85e4d0f952262ce91e1895531a70171314ac79846fe22",
+        "evidence_locator": "Article license anchor on exact-version arXiv abstract",
+        "reading_scope": "Exact-version abstract license link, operative license text, and PDF text search for rights statements",
+        "decision": "external_only",
+        "evidence_summary": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established.",
+        "evidence_retrieved_at_utc": "2026-10-12T16:30:19.014464+00:00",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1412.2772v3.html"
+      },
+      "specific_reading_scope": "Main text pp.1-4; supplement setup, device, drift, repetition and estimator/error discussion printedpp.1-3 (PDFpp.7-9); renderedp.2",
+      "status": "external_only",
+      "redistribution": "excluded_without_permission",
+      "excluded_published_path": "docs/pdf/1412.2772v3.pdf",
+      "local_cache_path": "docs/local_source_cache/1412.2772v3.pdf",
+      "rights_locator": "https://arxiv.org/abs/1412.2772v3 article-license link; https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "rights_reason": "The observed distribution grant names arXiv.org; general repository redistribution permission was not established."
+    },
+    {
+      "title": "Digital quantum simulation of linear and nonlinear optical elements",
+      "authors": [
+        "Carlos Sabin"
+      ],
+      "version": "v2",
+      "source_url": "https://arxiv.org/pdf/1909.04408v2",
+      "pages": 11,
+      "reading_scope": "Sections and examples pp1-10; reference leads pp10-11; PDF6-8 rendered and PDF6-7 visually inspected.",
+      "doi": "10.3390/quantum2010013",
+      "note": "docs/notes/1909.04408.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "8854ac2fbce4b2a4e90bf450c9ee0fa711c445c99c77b3adf68389fba338e856",
+      "bytes": 367778,
+      "audited_at_utc": "2026-10-12T16:30:08.895244+00:00",
+      "excluded_published_path": "docs/pdf/1909.04408v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1909.04408v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+      "rights_reason": "The selected article grants arXiv distribution rights; the inspected license supplies no general downstream rehosting grant.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1909.04408v2",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+        "evidence_summary": "The selected article grants arXiv distribution rights; the inspected license supplies no general downstream rehosting grant.",
+        "verified": true,
+        "pdf_sha256": "8854ac2fbce4b2a4e90bf450c9ee0fa711c445c99c77b3adf68389fba338e856",
+        "verified_at_utc": "2026-10-12T16:30:08.710244+00:00",
+        "evidence_sha256": "a4f89ccff23b417ac692a05d10211b28cf50729efd2468f2a2d0ae702b7eb89d",
+        "evidence_retrieved_at_utc": "2026-10-12T16:30:08.710244+00:00",
+        "reading_scope": "Exact-version article rights metadata and operative terms",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1909.04408v2.html"
+      },
+      "licensed_alternative": {
+        "doi": "10.3390/quantum2010013",
+        "content_version": "vor",
+        "source_url": "https://www.mdpi.com/2624-960X/2/1/13/pdf",
+        "license_identifier": "CC-BY-4.0",
+        "license_url": "https://creativecommons.org/licenses/by/4.0/",
+        "evidence_url": "https://api.crossref.org/works/10.3390%2Fquantum2010013",
+        "evidence_locator": "message.license[content-version=vor] and message.link[content-version=vor]",
+        "acquisition_status": "pdf_http_403",
+        "reading_scope": "Publisher-deposited Crossref metadata only; PDF bytes and printed license uninspected.",
+        "evidence_sha256": "7a7c72e3fc532e9297b3089125441ddfd27ae7f29044c3d1c889d20c2948e2d3",
+        "evidence_retrieved_at_utc": "2026-10-12T16:39:52.641127+00:00"
+      }
+    },
+    {
+      "title": "Quantum coherence in the Dynamical Casimir Effect",
+      "authors": [
+        "D. N. Samos-Saenz de Buruaga",
+        "Carlos Sabin"
+      ],
+      "version": "v2",
+      "source_url": "https://arxiv.org/pdf/1610.03272v2",
+      "pages": 7,
+      "reading_scope": "Sections I-VI, pp1-7, focusing on map, covariance, thermal expansion, Eq41/43 and discord caveat; PDF4-6 rendered and PDF4-5 visually inspected.",
+      "doi": "10.1103/PhysRevA.95.022307",
+      "note": "docs/notes/1610.03272.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "1ce8bd3b5a665f857958a4deb28b417866588659e4d6539e873083c6ce6223dd",
+      "bytes": 604225,
+      "audited_at_utc": "2026-10-12T16:30:08.591244+00:00",
+      "excluded_published_path": "docs/pdf/1610.03272v2.pdf",
+      "local_cache_path": "docs/local_source_cache/1610.03272v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+      "rights_reason": "The selected article grants arXiv distribution rights; the inspected license supplies no general downstream rehosting grant.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1610.03272v2",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+        "evidence_summary": "The selected article grants arXiv distribution rights; the inspected license supplies no general downstream rehosting grant.",
+        "verified": true,
+        "pdf_sha256": "1ce8bd3b5a665f857958a4deb28b417866588659e4d6539e873083c6ce6223dd",
+        "verified_at_utc": "2026-10-12T16:30:08.640244+00:00",
+        "evidence_sha256": "d690e039b4a143bc83955e11baf71cca647ef9e629d18a1965eba3c3ab2c16d3",
+        "evidence_retrieved_at_utc": "2026-10-12T16:30:08.640244+00:00",
+        "reading_scope": "Exact-version article rights metadata and operative terms",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1610.03272v2.html"
+      }
+    },
+    {
+      "title": "Casimir energy with chiral fermions on a quantum computer",
+      "authors": [
+        "Juliette K. Stecenko",
+        "Yuan Feng",
+        "Michael McGuigan"
+      ],
+      "version": "v1",
+      "source_url": "https://arxiv.org/pdf/2105.02032v1",
+      "pages": 9,
+      "reading_scope": "Sections I-VII pp1-8; references pp8-9 inspected only as leads; PDF3 and PDF7 rendered and visually inspected.",
+      "doi": null,
+      "note": "docs/notes/2105.02032.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "2c2a53af9f1a0844a8a35bd10022b4053ae9ba835bdca0326a17a8e97bcff262",
+      "bytes": 459500,
+      "audited_at_utc": "2026-10-12T16:30:08.594244+00:00",
+      "excluded_published_path": "docs/pdf/2105.02032v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2105.02032v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+      "rights_reason": "The selected article grants arXiv distribution rights; the inspected license supplies no general downstream rehosting grant.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/2105.02032v1",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+        "evidence_summary": "The selected article grants arXiv distribution rights; the inspected license supplies no general downstream rehosting grant.",
+        "verified": true,
+        "pdf_sha256": "2c2a53af9f1a0844a8a35bd10022b4053ae9ba835bdca0326a17a8e97bcff262",
+        "verified_at_utc": "2026-10-12T16:30:08.513244+00:00",
+        "evidence_sha256": "e3ec37aab9b1273f76be84d8d050eec789b6de51201699a7f8ea90e3079784d7",
+        "evidence_retrieved_at_utc": "2026-10-12T16:30:08.513244+00:00",
+        "reading_scope": "Exact-version article rights metadata and operative terms",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2105.02032v1.html"
+      }
+    },
+    {
+      "title": "Efficient Classical Simulation of Continuous Variable Quantum Information Processes",
+      "authors": [
+        "Stephen D. Bartlett",
+        "Barry C. Sanders",
+        "Samuel L. Braunstein",
+        "Kae Nemoto"
+      ],
+      "version": "arXiv:quant-ph/0109047v2",
+      "pages": 5,
+      "sha256": "69b49db322eefbe4ea7ed6a0ea473466bceb82b1d6d4c54ef273dd1d12720dff",
+      "bytes": 117450,
+      "reading_scope": "Complete short PDF; detailed inspection of definitions and Theorem 2 on pages 2-4.",
+      "doi": "10.1103/PhysRevLett.88.097904",
+      "source_url": "https://arxiv.org/pdf/quant-ph/0109047v2",
+      "note": "docs/notes/quant-ph-0109047.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "audited_at_utc": "2026-10-12T16:29:22.303915+00:00",
+      "excluded_published_path": "docs/pdf/quant-ph-0109047v2.pdf",
+      "local_cache_path": "docs/local_source_cache/quant-ph-0109047v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Exact-version abstract abs-license link",
+      "rights_reason": "The inspected source-specific arXiv distribution grant names arXiv; downstream repository redistribution permission was not established.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-assumed-1991-2003",
+        "evidence_locator": "Exact-version abstract abs-license link",
+        "verified": true,
+        "pdf_sha256": "69b49db322eefbe4ea7ed6a0ea473466bceb82b1d6d4c54ef273dd1d12720dff",
+        "license_url": "https://arxiv.org/licenses/assumed-1991-2003/",
+        "observed_license_url": "http://arxiv.org/licenses/assumed-1991-2003/",
+        "verified_at_utc": "2026-10-12T16:29:22.015442+00:00",
+        "evidence_url": "https://arxiv.org/abs/quant-ph/0109047v2",
+        "evidence_sha256": "4cee827082f595da07a80c6bde7953d8284094d85b4ab48c11f0a496a9acdc68",
+        "evidence_retrieved_at_utc": "2026-10-12T16:29:22.015442+00:00",
+        "reading_scope": "Exact-version article rights metadata and PDF rights scan",
+        "evidence_summary": "The inspected source-specific arXiv distribution grant names arXiv; downstream repository redistribution permission was not established.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-quant-ph-0109047v2.html"
+      }
+    },
+    {
+      "title": "Circuit Quantum Electrodynamics",
+      "authors": [
+        "Alexandre Blais",
+        "Arne L. Grimsmo",
+        "S. M. Girvin",
+        "Andreas Wallraff"
+      ],
+      "version": "arXiv:2005.12667v1",
+      "pages": 82,
+      "sha256": "abb05ed2a9b721fd62273833d2a7bea638ddfbbbced78c082455c5263ddb6f95",
+      "bytes": 5609006,
+      "reading_scope": "Sections II.A, IV.B, IV.C, V.B phase-space and heterodyne passages; metadata and rights-term scan.",
+      "doi": "10.1103/RevModPhys.93.025005",
+      "source_url": "https://arxiv.org/pdf/2005.12667v1",
+      "note": "docs/notes/2005.12667.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "audited_at_utc": "2026-10-12T16:29:22.766560+00:00",
+      "excluded_published_path": "docs/pdf/2005.12667v1.pdf",
+      "local_cache_path": "docs/local_source_cache/2005.12667v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Exact-version abstract abs-license link",
+      "rights_reason": "The inspected source-specific arXiv distribution grant names arXiv; downstream repository redistribution permission was not established.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_locator": "Exact-version abstract abs-license link",
+        "verified": true,
+        "pdf_sha256": "abb05ed2a9b721fd62273833d2a7bea638ddfbbbced78c082455c5263ddb6f95",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "verified_at_utc": "2026-10-12T16:29:22.136010+00:00",
+        "evidence_url": "https://arxiv.org/abs/2005.12667v1",
+        "evidence_sha256": "911e1710a046e07df2f4a21ac565f31320201cbd462379ee69b8e5cd3849c8a9",
+        "evidence_retrieved_at_utc": "2026-10-12T16:29:22.136010+00:00",
+        "reading_scope": "Exact-version article rights metadata and PDF rights scan",
+        "evidence_summary": "The inspected source-specific arXiv distribution grant names arXiv; downstream repository redistribution permission was not established.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2005.12667v1.html"
+      }
+    },
+    {
+      "title": "The Casimir force between real materials: experiment and theory",
+      "authors": [
+        "G. L. Klimchitskaya",
+        "U. Mohideen",
+        "V. M. Mostepanenko"
+      ],
+      "version": "v1",
+      "source_url": "https://arxiv.org/pdf/0902.4022v1",
+      "pages": 159,
+      "reading_scope": "Intro pp5-7; Section II.A pp16-18; Section III.A.1 pp36-37; comparison discussion pp53-55; AFM apparatus/calibration pp55-58. PDF18 and56 rendered and inspected. Remaining review unaudited.",
+      "doi": "10.1103/RevModPhys.81.1827",
+      "note": "docs/notes/0902.4022.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "86a3ee1f597fa9aed81214a7b20e7d53f7b8fde849b5201ad9ff20998e6bcc0b",
+      "bytes": 2071895,
+      "audited_at_utc": "2026-10-12T16:28:11.726731+00:00",
+      "excluded_published_path": "docs/pdf/0902.4022v1.pdf",
+      "local_cache_path": "docs/local_source_cache/0902.4022v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+      "rights_reason": "Exact-version article licenses grant distribution to arXiv, without a general downstream rehosting grant.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/0902.4022v1",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+        "evidence_summary": "Exact-version article licenses grant distribution to arXiv, without a general downstream rehosting grant.",
+        "verified": true,
+        "pdf_sha256": "86a3ee1f597fa9aed81214a7b20e7d53f7b8fde849b5201ad9ff20998e6bcc0b",
+        "verified_at_utc": "2026-10-12T16:28:11.727182+00:00",
+        "evidence_sha256": "245aa2f7390c8c952bd47c442d9267706968c34530f714bb75218c7a13eee766",
+        "evidence_retrieved_at_utc": "2026-10-12T16:28:11.727182+00:00",
+        "reading_scope": "Exact-version article rights metadata and operative terms",
+        "evidence_path": "docs/evidence/source_rights/arxiv-0902.4022v1.html"
+      }
+    },
+    {
+      "title": "Observation of the Dynamical Casimir Effect in a Superconducting Circuit",
+      "authors": [
+        "C. M. Wilson",
+        "G. Johansson",
+        "A. Pourkabirian",
+        "J. R. Johansson",
+        "T. Duty",
+        "F. Nori",
+        "P. Delsing"
+      ],
+      "version": "v1",
+      "source_url": "https://arxiv.org/pdf/1105.4714v1",
+      "pages": 12,
+      "reading_scope": "Main report pp2-11 with scope/controls/phase formulas; references pp11-12 for scope only. PDF9-11 rendered and visually inspected. Measurements not independently reproduced.",
+      "doi": "10.1038/nature10561",
+      "note": "docs/notes/1105.4714.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "sha256": "a054d8e168a78298517cbfcd00148dc764863dda677a142631443fae091c27e4",
+      "bytes": 2073669,
+      "audited_at_utc": "2026-10-12T16:28:11.727560+00:00",
+      "excluded_published_path": "docs/pdf/1105.4714v1.pdf",
+      "local_cache_path": "docs/local_source_cache/1105.4714v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+      "rights_reason": "Exact-version article licenses grant distribution to arXiv, without a general downstream rehosting grant.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1105.4714v1",
+        "evidence_locator": "div.abs-license > a[title=\"Rights to this article\"]",
+        "evidence_summary": "Exact-version article licenses grant distribution to arXiv, without a general downstream rehosting grant.",
+        "verified": true,
+        "pdf_sha256": "a054d8e168a78298517cbfcd00148dc764863dda677a142631443fae091c27e4",
+        "verified_at_utc": "2026-10-12T16:28:11.727928+00:00",
+        "evidence_sha256": "d9645d6da6b4dab8250c1cb63857e741607b41491e289cee95921b28479aa84e",
+        "evidence_retrieved_at_utc": "2026-10-12T16:28:11.727928+00:00",
+        "reading_scope": "Exact-version article rights metadata and operative terms",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1105.4714v1.html"
+      }
+    },
+    {
+      "title": "Quantum collision models: open system dynamics from repeated interactions",
+      "authors": [
+        "Francesco Ciccarello",
+        "Salvatore Lorenzo",
+        "Vittorio Giovannetti",
+        "G. Massimo Palma"
+      ],
+      "version": "arXiv:2106.11974v2",
+      "pages": 159,
+      "sha256": "7da2fca5d2033519e24525d155a48a147bf80f1b451134d6a455c5e691104a92",
+      "bytes": 5829971,
+      "reading_scope": "Sections 4.1-4.5, 5.8, 8.1, 8.3, 8.4; title, contents, and physical rights page 4.",
+      "doi": "10.1016/j.physrep.2022.01.001",
+      "source_url": "https://arxiv.org/pdf/2106.11974v2",
+      "note": "docs/notes/2106.11974.md",
+      "status": "external_only",
+      "acquisition": "download",
+      "audited_at_utc": "2026-10-12T16:29:23.039608+00:00",
+      "excluded_published_path": "docs/pdf/2106.11974v2.pdf",
+      "local_cache_path": "docs/local_source_cache/2106.11974v2.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "Exact-version abstract license and original PDF physical page 4",
+      "rights_reason": "The abstract names the arXiv nonexclusive grant. PDF physical page 4 includes a CC0 dedication, but singular authorship and the kaobook-template source attribution leave its authority for the four-author review unresolved. Preserve that notice as evidence; author/publisher confirmation is required for repository rehosting.",
+      "rights": {
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_locator": "Exact-version abstract license and original PDF physical page 4",
+        "verified": true,
+        "pdf_sha256": "7da2fca5d2033519e24525d155a48a147bf80f1b451134d6a455c5e691104a92",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "observed_license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "verified_at_utc": "2026-10-12T16:29:22.004215+00:00",
+        "evidence_url": "https://arxiv.org/abs/2106.11974v2",
+        "evidence_sha256": "5c207cc3d33dfa1d70947698a4d2140f27d6eb9bae6251cb546702b99f68a92d",
+        "evidence_retrieved_at_utc": "2026-10-12T16:29:22.004215+00:00",
+        "reading_scope": "Abstract grant plus visual inspection of physical PDF page 4 and template attribution",
+        "evidence_summary": "The abstract names the arXiv nonexclusive grant. PDF physical page 4 includes a CC0 dedication, but singular authorship and the kaobook-template source attribution leave its authority for the four-author review unresolved. Preserve that notice as evidence; author/publisher confirmation is required for repository rehosting.",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2106.11974v2.html"
+      },
+      "unresolved_pdf_notice": {
+        "physical_page": 4,
+        "license_url": "http://creativecommons.org/publicdomain/zero/1.0/",
+        "scope": "Ambiguous attribution; retained notice does not qualify hosting"
+      }
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",
@@ -1616,5 +2452,202 @@
       "reading_scope": "Operative permission, recipient scope, redistribution conditions and attribution requirements.",
       "verified_at_utc": "2026-10-12T07:27:16.366698+00:00"
     }
-  }
+  },
+  "source_archives": [
+    {
+      "title": "SQIR / VOQC",
+      "authors": [
+        "inQWIRE contributors"
+      ],
+      "version": "134fb942265091baa3e3972f78f72da41827351f (package 1.3.2)",
+      "sha256": "596b8e51705ab8339af709a796bad3f41c631e52148e7a9509dfb0f56c515fec",
+      "bytes": 326133,
+      "retrieved_at_utc": "2026-10-12T16:23:09.106072+00:00",
+      "license_identifier": "MIT",
+      "reading_scope": "Named semantic definitions, optimizer and QPE statements/proofs; package/version/license metadata.",
+      "compatibility": "Source declarations inspected; build compatibility untested",
+      "inspected_files": [
+        {
+          "file": "SQIR-134fb942265091baa3e3972f78f72da41827351f/README.md",
+          "sha256": "0cb3f711bf38f4ddcaafcc70556e4361d177de67efa074f2c53f38f8ae0b79ed",
+          "bytes": 12638
+        },
+        {
+          "file": "SQIR-134fb942265091baa3e3972f78f72da41827351f/coq-sqir.opam",
+          "sha256": "5add81df82b582775b21520cb0bc3469a812c19ea2f1b8812d243516b33692b4",
+          "bytes": 772
+        },
+        {
+          "file": "SQIR-134fb942265091baa3e3972f78f72da41827351f/SQIR/UnitarySem.v",
+          "sha256": "d1140c19a0857d2117ade68a8e25680d85ab499f32984b68559d8a06504f3d85",
+          "bytes": 18063
+        },
+        {
+          "file": "SQIR-134fb942265091baa3e3972f78f72da41827351f/SQIR/DensitySem.v",
+          "sha256": "58c0708f5737b831eed9330daa24f55a65e9ce0440144daf357f05b954808b93",
+          "bytes": 4152
+        },
+        {
+          "file": "SQIR-134fb942265091baa3e3972f78f72da41827351f/VOQC/Main.v",
+          "sha256": "77f52db251035fe7bc62592cfb917bba0c5963331ca97ff60a67da109b1dd6b3",
+          "bytes": 44598
+        },
+        {
+          "file": "SQIR-134fb942265091baa3e3972f78f72da41827351f/examples/examples/QPE.v",
+          "sha256": "e0622101f5f37f6ecd5cddd9377bf53a19a9a230cea080aa7427314f303a126a",
+          "bytes": 44985
+        }
+      ],
+      "path": "docs/source_archives/sqir-134fb94.tar.gz",
+      "source_url": "https://codeload.github.com/inQWIRE/SQIR/tar.gz/134fb942265091baa3e3972f78f72da41827351f",
+      "note": "docs/notes/sqir-voqc-proof-interfaces.md",
+      "license_member": "SQIR-134fb942265091baa3e3972f78f72da41827351f/LICENSE.md",
+      "license_sha256": "0e0ccde30a761e0479cf31ad4fc2b8b8fd2e6767183d2f223008cfd4e0249e1f",
+      "license_bytes": 1107,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. Source distribution grants apply separately from paper rights."
+    },
+    {
+      "title": "CoqInterval",
+      "authors": [
+        "Guillaume Melquiond",
+        "contributors named in AUTHORS"
+      ],
+      "version": "4.11.5",
+      "sha256": "639413394d3012aaa7e78122e4abd4a4dfc459ba6052b5a1a8c98fe2a2485a69",
+      "bytes": 381281,
+      "retrieved_at_utc": "2026-10-12T16:22:11.653409+00:00",
+      "license_identifier": "CECILL-C",
+      "reading_scope": "README invocation/fine tuning, metadata/license, selected Boolean-to-real soundness lemmas and evaluator selection.",
+      "compatibility": "Source declarations inspected; build compatibility untested",
+      "inspected_files": [
+        {
+          "file": "interval-4.11.5/AUTHORS",
+          "sha256": "e41c15bc6b262959a0e961722be7a5a14abf5cf0fc70fc352a0cc34583161b41",
+          "bytes": 553
+        },
+        {
+          "file": "interval-4.11.5/README.md",
+          "sha256": "7e1acace053a152877a43288201a048c3263ce630946976242d5aabfee1e080c",
+          "bytes": 16210
+        },
+        {
+          "file": "interval-4.11.5/INSTALL.md",
+          "sha256": "32003b54b7d995d41493aae0969477008bfa5d00e578135cd183667ef767639a",
+          "bytes": 1367
+        },
+        {
+          "file": "interval-4.11.5/src/Tactic.v",
+          "sha256": "9a5c2d22d973d8a0f5034447abfed14c2daaaa89a34e1e639d26c3a8feabfbfe",
+          "bytes": 18667
+        },
+        {
+          "file": "interval-4.11.5/src/Tactics/Interval_helper.v",
+          "sha256": "55b9ea37ad882ac52b000aafe3ff23c0e6614c0a584233805c38ca210fb47e1b",
+          "bytes": 17319
+        }
+      ],
+      "path": "docs/source_archives/interval-4.11.5.tar.gz",
+      "source_url": "https://coqinterval.gitlabpages.inria.fr/releases/interval-4.11.5.tar.gz",
+      "note": "docs/notes/coqinterval-certified-enclosures.md",
+      "license_member": "interval-4.11.5/COPYING",
+      "license_sha256": "b48f5dc16f144cd79ddaadce3cc8ef183778a0b4f75ab4362e134b347ca20f3d",
+      "license_bytes": 21863,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. Source distribution grants apply separately from paper rights."
+    },
+    {
+      "title": "Mathematical Components",
+      "authors": [
+        "Mathematical Components team"
+      ],
+      "version": "9931c887da3d50ffb2a2e1b2e33b52ec9178a755 (development snapshot)",
+      "sha256": "f38e8146ff310acbf286cc50f6258f29f72a8ed92f2af788921befcd817c875e",
+      "bytes": 2350979,
+      "retrieved_at_utc": "2026-10-12T16:23:09.441438+00:00",
+      "license_identifier": "CECILL-B",
+      "reading_scope": "Named rank bounds, left/right kernel conventions, reflection, and block-rank theorem; package/license metadata.",
+      "compatibility": "Source declarations inspected; build compatibility untested",
+      "inspected_files": [
+        {
+          "file": "math-comp-9931c887da3d50ffb2a2e1b2e33b52ec9178a755/README.md",
+          "sha256": "bbe900b1f46fe5ad0e62cc78b61013045f6398b2321bac52139a3f69d7941849",
+          "bytes": 3540
+        },
+        {
+          "file": "math-comp-9931c887da3d50ffb2a2e1b2e33b52ec9178a755/rocq-mathcomp-boot.opam",
+          "sha256": "c8d8bfc4e161da730b2c135f4eacc108273d58e4369c408e2180ae4eca7f7cbc",
+          "bytes": 1504
+        },
+        {
+          "file": "math-comp-9931c887da3d50ffb2a2e1b2e33b52ec9178a755/rocq-mathcomp-algebra.opam",
+          "sha256": "f274bdce53c7dbea110831c472f4e91259adb52089cd7250fdae1bb42ac1936a",
+          "bytes": 1888
+        },
+        {
+          "file": "math-comp-9931c887da3d50ffb2a2e1b2e33b52ec9178a755/algebra/mxalgebra.v",
+          "sha256": "e7c19470d0bf88f074227299c421d04e3c55c0b5e7179faed0af5c21f0bb4fe1",
+          "bytes": 133487
+        }
+      ],
+      "path": "docs/source_archives/mathcomp-9931c88.tar.gz",
+      "source_url": "https://codeload.github.com/math-comp/math-comp/tar.gz/9931c887da3d50ffb2a2e1b2e33b52ec9178a755",
+      "note": "docs/notes/mathcomp-coqeal-matrix-certificates.md",
+      "license_member": "math-comp-9931c887da3d50ffb2a2e1b2e33b52ec9178a755/LICENCE",
+      "license_sha256": "1c01c4cbd08c205a3a44f45f3a50ba43622a8f51291bd4e2312ac3b85e3a77a2",
+      "license_bytes": 21909,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. Source distribution grants apply separately from paper rights."
+    },
+    {
+      "title": "CoqEAL",
+      "authors": [
+        "Guillaume Cano",
+        "Cyril Cohen",
+        "Maxime Dénès",
+        "Érik Martin-Dorel",
+        "Anders Mörtberg",
+        "Damien Rouhling",
+        "Pierre Roux",
+        "Vincent Siles"
+      ],
+      "version": "8fd26cf416ce0dfb5e9a9745293bdedf63b56d39 (development snapshot)",
+      "sha256": "46705ae13ab008ad6f5492c3a703f871ea12a1249c9dc92a6bd8bbcb313494fe",
+      "bytes": 228221,
+      "retrieved_at_utc": "2026-10-12T16:23:09.174712+00:00",
+      "license_identifier": "MIT",
+      "reading_scope": "Named rational and sequence-matrix refinement contexts, multiplication/equality instances; package/license metadata.",
+      "compatibility": "Source declarations inspected; build compatibility untested",
+      "inspected_files": [
+        {
+          "file": "coqeal-8fd26cf416ce0dfb5e9a9745293bdedf63b56d39/README.md",
+          "sha256": "7b002e151e0d1ab433ce1f4c9d8c8c983838b10995d139dee53766748158fec0",
+          "bytes": 7406
+        },
+        {
+          "file": "coqeal-8fd26cf416ce0dfb5e9a9745293bdedf63b56d39/rocq-coqeal.opam",
+          "sha256": "2dbd961b6a89675301a382b772f00304dd91fd581eaf8c520f246e18f493d9fd",
+          "bytes": 1767
+        },
+        {
+          "file": "coqeal-8fd26cf416ce0dfb5e9a9745293bdedf63b56d39/refinements/binrat.v",
+          "sha256": "faab5ba17404af3f855c04430a261dc01901f7977193aee460018a935115f0ce",
+          "bytes": 24029
+        },
+        {
+          "file": "coqeal-8fd26cf416ce0dfb5e9a9745293bdedf63b56d39/refinements/seqmx.v",
+          "sha256": "f5e011add827d81bf5ecaf28b88398d953d48980f8203a0b7155173dbd6bb536",
+          "bytes": 58106
+        }
+      ],
+      "path": "docs/source_archives/coqeal-8fd26cf.tar.gz",
+      "source_url": "https://codeload.github.com/coq-community/coqeal/tar.gz/8fd26cf416ce0dfb5e9a9745293bdedf63b56d39",
+      "note": "docs/notes/mathcomp-coqeal-matrix-certificates.md",
+      "license_member": "coqeal-8fd26cf416ce0dfb5e9a9745293bdedf63b56d39/LICENSE",
+      "license_sha256": "bdbbe9091f9a75bd036301aca2be8a0ab2299c61eb3cd0bf7d5c6db09f66fa36",
+      "license_bytes": 1205,
+      "copy_status": "unchanged",
+      "conditions": "Preserve the complete original source archive, including author credits, copyright and license notices; no modifications or relabeling. Source distribution grants apply separately from paper rights."
+    }
+  ]
 }

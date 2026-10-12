@@ -13,6 +13,12 @@ note owns new proof dependencies, faithful fold repairs, tomography scope,
 and sequential-inference requirements. The execution owner retains circuit
 preparation, admission, collection, and the QPU coordination ledger.
 
+The [source-to-proof dependency synthesis](research_proof_experiment_dependencies.md)
+adds exact upstream matrix/circuit APIs, curve-selection hypotheses and
+instrument-identification/shot-allocation sources. The
+[field-model map](vacuum_field_run_opportunities.md) supplies a separate
+finite-model proof queue and prospective hardware gates.
+
 ## The proof chain and its assumptions
 
 | Layer | Required object | What checking establishes | Remaining premise or bridge |
