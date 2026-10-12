@@ -15,7 +15,7 @@ assigns neither safety nor completion status.
 
 The recorded `sources_modified` flag covers the whole experiment directory,
 including documentation and unmanifested files. The verifier preserves that
-flag and every existing run artifact. Its separate `source-closure.json`
+flag and the retained record bytes. Its separate `source-closure.json`
 records the bounded comparison at audit time. Changed source or dependency
 inputs fail the audit; the verifier does not rewrite historical provenance.
 
@@ -31,12 +31,17 @@ From the repository root, select a retained record and run:
 )
 ```
 
-`--out` selects a separate JSON destination. The writer refuses to replace a
-non-audit artifact. `--check` exercises source, manifest, requirements,
-record-digest, recorded-version, and installed-version mutations in a
-temporary synthetic Git repository, including output preservation. The
-utility performs local reads and writes its separate audit artifact; it
-constructs zero IBM service or Sampler objects.
+`--out` selects a separate JSON destination. An existing audit accepts a
+refresh only when its normalized repository-relative record path and record
+SHA-256 both match the new audit. Missing identity, changed record bytes,
+and a different run each reject replacement and preserve the destination.
+The writer also refuses to replace a non-audit artifact. `--check` exercises
+source, manifest, requirements, record-digest, recorded-version, and
+installed-version mutations in a temporary synthetic Git repository. Output
+checks cover new reports, same-record refreshes, and rejection with both
+runs' records and sibling audit bytes preserved. The utility performs local
+reads and writes its separate audit artifact; it constructs zero IBM service
+or Sampler objects.
 
 ## Fresh folded case with native CPU qualification
 
