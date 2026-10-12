@@ -89,3 +89,35 @@ state return and an operator return. Serial execution with optimized Python
 and parallel execution produced identical retained payloads during
 integration. Additional mutation probes rejected changed source hashes,
 probabilities, edge counts, triangle data and invalid numerical residuals.
+
+## Measured folded-QPE evidence
+
+[The measured figure](folded-job-review.svg) and [PNG preview](folded-job-review.png)
+show the two completed Kingston jobs: 16 PUBs at 8,192 shots each, charged 40 s.
+[The independent audit](folded-job-review.md) reproduces all terminal estimates,
+measurement mappings, and simultaneous contrast intervals from lossless raw
+shots. [Its JSON table](folded-job-review.json) retains counts, predictions,
+within-shot joint errors, and source hashes. The single raw archive and its
+primary analysis belong to [hardware evidence PR #37](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37).
+
+The figure separates observed probabilities, hardware contrasts, and descriptive
+hardware-minus-replay residuals. The two odd-label no-feedback outcomes exceed
+the finite noise replay, while the other fourteen fall below it. Routing,
+readout, prepared-label information, and execution-window differences limit
+causal attribution. The contrast intervals assume independent stationary
+repetitions within each PUB. Equal shot indices across different PUBs remain
+unpaired.
+
+With the raw archive available, set `FOLDED_RUN` to its directory and replay:
+
+```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
+  scripts/review_folded_jobs.py --run-dir "$FOLDED_RUN" --check
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
+  scripts/render_folded_job_review.py --png results/ripple/folded-job-review.png --check
+```
+
+The renderer uses the same plotting pin as the rank-sector figure and embeds
+its input SHA-256. Regeneration changes derived images; the raw archive stays
+under its original evidence owner.

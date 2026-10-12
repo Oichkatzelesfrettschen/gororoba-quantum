@@ -5,7 +5,12 @@ and box-kite acquisition, the four-qubit rank-path sectors, and the complete
 4,096-shot folded-QPE diagnostic. Each family keeps its scientific controls,
 precision contract, calibration, compiled circuits, and written approval case.
 The ripple acquisition targets one static job on one backend. The folded
-diagnostic retains twelve dynamic and four coherent PUBs in two jobs.
+diagnostic retains twelve dynamic and four coherent PUBs in two jobs. The
+coordinated 8,192-shot diagnostic has completed at 40 charged seconds; the
+4,096-shot preparation is a comparison case excluded from duplicate execution.
+The [independent audit](../results/ripple/folded-job-review.md) and
+[hardware evidence PR #37](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37)
+supply the measured diagnostic results.
 
 ## Ripple acquisition
 

@@ -22,6 +22,7 @@ The rank-sector image gate also uses the plotting-only pin
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
+    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
     literature/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
@@ -29,6 +30,7 @@ The rank-sector image gate also uses the plotting-only pin
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
     scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
+    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
     literature/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
@@ -69,6 +71,7 @@ The rank-sector image gate also uses the plotting-only pin
     ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
     ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py \
     ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
+    ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py \
     ../literature/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
@@ -145,6 +148,14 @@ The independently admitted packed ripple and rank-sector families are described
 in [PACKED_ALGEBRA.md](gororoba_quantum/PACKED_ALGEBRA.md). `--native-dry-run`
 calls Runtime with `dry_run=True` and retains mock timing in a separate sidecar.
 Mock outcomes never enter scientific analysis or measured visualizations.
+
+The measured folded-job figure uses `results/ripple/folded-job-review.json`.
+After changing its renderer, run `"$PYTHON" scripts/render_folded_job_review.py
+--png results/ripple/folded-job-review.png --check` from the root. Independent
+raw replay uses `"$PYTHON" scripts/review_folded_jobs.py --run-dir "$FOLDED_RUN"
+--check`, with `FOLDED_RUN` pointing to the retained archive in hardware
+[evidence PR #37](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37).
+The raw archive remains owned by that evidence change.
 
 The N=21 target-flip certificate gets a fresh Rocq compile and kernel check
 when its generator, witnesses, or evaluator changes. Run the checks on a copy
