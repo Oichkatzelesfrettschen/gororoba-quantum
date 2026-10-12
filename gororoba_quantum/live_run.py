@@ -49,7 +49,7 @@ from typing import Any
 import numpy as np
 import rustworkx as rx
 from qiskit import QuantumCircuit, qpy, transpile
-from qiskit.circuit import ControlFlowOp
+from qiskit.circuit import ControlFlowOp, ParameterExpression
 from qiskit.converters import circuit_to_dag
 from qiskit.exceptions import QiskitError
 from qiskit.providers import BackendV2, Options
@@ -111,6 +111,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
+    "hybrid_shor.py",
     "integral_homology.py",
     "live_run.py",
     "local_compute.py",
@@ -132,6 +133,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "ripple_contracts.py",
     "ripple_dynamics.py",
     "ripple_experiments.py",
+    "runtime_contracts.py",
     "select_lcu.py",
     "target_flip.py",
     "variance.py",
@@ -869,7 +871,28 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
 
 
 def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
-    return isa.assign_parameters(member.binding) if member.binding else isa
+    """Bind the shared ISA while preserving its exact compiled global phase.
+
+    Qiskit circuit substitution can expand a compiled multi-parameter global
+    phase during successive assignments. Binding that expression simultaneously
+    avoids the expansion and retains the phase required by operator checks.
+    """
+    binding = member.binding
+    if not binding:
+        return isa
+    phase = isa.global_phase
+    if not isinstance(phase, ParameterExpression) or not phase.parameters.intersection(binding):
+        return isa.assign_parameters(binding)
+    if any(not isa.has_parameter(parameter) for parameter in binding):
+        # Preserve Qiskit's strict rejection of parameters absent from the ISA.
+        return isa.assign_parameters(binding)
+    bound = isa.copy()
+    bound_phase = phase.bind(binding, allow_unknown_parameters=True)
+    bound.global_phase = bound_phase if bound_phase.parameters else float(bound_phase)
+    gate_binding = {parameter: value for parameter, value in binding.items() if bound.has_parameter(parameter)}
+    if gate_binding:
+        bound.assign_parameters(gate_binding, inplace=True)
+    return bound
 
 
 def _gate_time_view(isa: QuantumCircuit) -> QuantumCircuit:
