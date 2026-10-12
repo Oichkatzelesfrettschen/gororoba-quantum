@@ -14,7 +14,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 11 licensed PDFs and two aliases;
-39 external sources retain citations and optional ignored local reading copies.
+40 external sources retain citations and optional ignored local reading copies.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
 repository root with `sha256sum -c docs/PDF_SHA256SUMS`.
 
@@ -60,6 +60,14 @@ the bounded box-kite reading and the local PDF identity. A
 retains the sister repository's algebraic corrections with its provenance
 and license text.
 
+The [formal-evidence dependency plan](notes/formal_evidence_dependencies.md)
+connects faithful fold repairs, checked arithmetic, prospective count
+certificates, tomography and adaptive stopping to explicit assumptions.
+Its [Rocq replay bundle](evidence/formal_certificates/README.md) retains
+the new scalar obstruction and rational/real terminal-channel certificates.
+The [migration validation](VALIDATION.json) preserves the earlier 50-source
+snapshot; the Howard note adds the 51st source and records its separate audit.
+
 | note | paper | (a) | (b) | (c) |
 |---|---|---|---|---|
 | s41567-023-02340-9 | Glick et al., Covariant quantum kernels for data with group structure, Nat. Phys. 20, 479 (2024); preprint arXiv:2105.03406 | medium | low | low |
@@ -97,6 +105,7 @@ and license text.
 | [2109.01714](notes/2109.01714.md) | Resch et al., Accelerating Variational Quantum Algorithms Using Circuit Concurrency (CQCS) | high | none | low |
 | [2112.00387](notes/2112.00387.md) | Niu and Todri-Sanial, How Parallel Circuit Execution Can Be Useful for NISQ Computing? (QuCP) | high | none | low |
 | [1204.6308](notes/1204.6308.md) | Gambetta et al., Characterization of addressability by simultaneous randomized benchmarking (2012) | high | none | low |
+| [1810.08240](notes/1810.08240.md) | Howard et al., Time-uniform confidence sequences (2021 journal; inspected v9, 2022) | high | none | low |
 | [1810.05651](notes/1810.05651.md) | Rudinger et al., Probing Context-Dependent Errors in Quantum Processors (2019) | high | none | low |
 | [1908.09855](notes/1908.09855.md) | Sarovar et al., Detecting crosstalk errors in quantum information processors (2020) | high | none | low |
 | [1907.13608](notes/1907.13608.md) | Proctor et al., Detecting and tracking drift in quantum information processors (2020) | high | none | low |

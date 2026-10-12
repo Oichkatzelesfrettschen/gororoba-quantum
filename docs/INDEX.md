@@ -8,7 +8,7 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 | Location | Contents | Git treatment |
 | --- | --- | --- |
 | `docs/pdf/` | 11 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 39 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/local_source_cache/` | 40 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
 The local cache lives inside `docs/`. A fresh checkout receives the public notes
@@ -88,6 +88,7 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Albuquerque and Majid 1998 -- Quasialgebra structure of the octonions (arXiv math/9802116)](notes/math-9802116.md) | [PDF](https://arxiv.org/pdf/math/9802116v1) | `math-9802116v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/math/9802116v1) |
 | [Decker and Wocjan 2007 -- Hidden quadratic and cubic polynomial function graphs (arXiv quant-ph/0703195)](notes/quant-ph-0703195.md) | [PDF](https://arxiv.org/pdf/quant-ph/0703195v3) | `quant-ph-0703195v3.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/0703195v3) |
 | [Griffiths and Niu 1996 -- Semiclassical Fourier Transform for Quantum Computation (arXiv quant-ph/9511007)](notes/quant-ph-9511007.md) | [PDF](https://arxiv.org/pdf/quant-ph/9511007v1) | `quant-ph-9511007v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/9511007v1) |
+| [Howard et al. -- Time-uniform confidence sequences](notes/1810.08240.md) | [PDF](https://arxiv.org/pdf/1810.08240v9) | `1810.08240v9.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1810.08240v9) |
 
 ## Repository research certificates
 
