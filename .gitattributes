@@ -1,0 +1,4 @@
+# Preserve primary-source PDF bytes and keep binary streams out of text diffs.
+docs/pdf/*.pdf binary
+# Preserve whitespace in raw compiler and kernel-check receipts.
+docs/evidence/folding_proofs/*.log -whitespace
