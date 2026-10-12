@@ -1,0 +1,111 @@
+{
+  "schema": "cooperative-qpu-campaign-coordination-v1",
+  "updated_at": "2026-10-12T06:13:42.402221+00:00",
+  "scope": "two active IBMQuantum chats; cooperative ownership supplements per-invocation runner guards",
+  "shared_quota": {
+    "last_observed_remaining_seconds": 551,
+    "folded_reserved_ceiling_seconds": 0,
+    "other_proposed_ceiling_seconds": 240,
+    "single_shared_reserve_seconds": 60,
+    "combined_requirement_seconds": 300,
+    "unallocated_at_snapshot_seconds": 251,
+    "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
+    "folded_settled_charge_seconds": 40
+  },
+  "families": [
+    {
+      "family": "folded-qpe",
+      "owner": "Audit Heron quantum claims",
+      "science": "twelve labeled delay, feed-forward and coherent-control contrasts against archived folded QPE",
+      "backend": "ibm_kingston",
+      "state": "completed_collected",
+      "case": "2026-10-12T055017.711575Z-prepared",
+      "record_sha256": "2f87de38661a484bb0e09625b25e363acdc1eed1aba408ef5c2bea1bd6a1092a",
+      "pubs": 16,
+      "shots_per_pub": 8192,
+      "job_ceilings_seconds": [
+        60,
+        60
+      ],
+      "accepted_job_ids": [
+        "db67fqsvf2bc73d0pk4g",
+        "db67frimb58s738bci4g"
+      ],
+      "run": "2026-10-12T055624.091217Z",
+      "charge_complete": true,
+      "final_charges_seconds": [
+        29,
+        11
+      ],
+      "total_charge_seconds": 40,
+      "raw_evidence": "2026-10-12T055624.091217Z/raw",
+      "collection": "2026-10-12T055624.091217Z/collect.json"
+    },
+    {
+      "family": "ripple",
+      "owner": "Design a single-run reality ripple",
+      "science": "packed finite Cayley-Dickson walk, box-kite, and Design C hardware comparison",
+      "backend": "ibm_kingston",
+      "state": "submit_free_preparation_unapproved",
+      "proposed_pubs": 146,
+      "proposed_ceiling_seconds": 180,
+      "accepted_job_ids": [],
+      "qualification": "placement search rejects tested pool combinations; source repair and remaining routed candidates pending"
+    },
+    {
+      "family": "rank-sector",
+      "owner": "Design a single-run reality ripple",
+      "science": "finite rank-sector dark, bright, and isolated control comparison",
+      "backend": "ibm_kingston",
+      "state": "submit_free_preparation_unapproved",
+      "proposed_pubs": 36,
+      "proposed_ceiling_seconds": 60,
+      "accepted_job_ids": [],
+      "proposed_shots_per_pub": 4096,
+      "reported_nominal_seconds": 39.9347,
+      "reported_stress_seconds": 42.2347,
+      "qualification": "other owner reports admitted candidate; final source refresh pending"
+    }
+  ],
+  "deduplication": {
+    "folded_4096_other_chat": "comparison preparation only; excluded from hardware campaign; reuse owner raw and collected results",
+    "static_witness_overlap": "reconcile historical static endpoints against ripple/rank-sector controls before authorizing both"
+  },
+  "backend_policy": "each complete control family stays on its independently admitted backend; alternate QPUs require their own live case and approval",
+  "other_chat_confirmation": "zero accepted or in-flight physical jobs; hold ripple and rank physical submissions until concrete cases and owner approval; preserve canonical main",
+  "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
+  "account_inventory_observation": {
+    "observed_at": "2026-10-12T06:07:45.213941+00:00",
+    "scope": "Read-only account usage, accessible backend names, pending jobs and two accepted job statuses",
+    "instance_sha256_12": "e3de05b6901e",
+    "budget": {
+      "usage_limit_seconds": 600,
+      "usage_consumed_seconds": 49,
+      "usage_remaining_seconds": 551,
+      "usage_period": {
+        "start_time": "2026-09-14T06:07:45.125Z",
+        "end_time": "2026-10-12T06:07:45.125Z"
+      }
+    },
+    "accessible_backend_names": [
+      "ibm_fez",
+      "ibm_kingston",
+      "ibm_marrakesh"
+    ],
+    "pending_account_jobs": [],
+    "accepted_jobs": [
+      {
+        "id": "db67fqsvf2bc73d0pk4g",
+        "status": "DONE",
+        "charge_seconds": 29,
+        "usage_source": "job.usage(partial=False)"
+      },
+      {
+        "id": "db67frimb58s738bci4g",
+        "status": "DONE",
+        "charge_seconds": 11,
+        "usage_source": "job.usage(partial=False)"
+      }
+    ]
+  }
+}

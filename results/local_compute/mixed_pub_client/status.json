@@ -1,0 +1,68 @@
+{
+  "captured_utc": "2026-10-12T06:13:58.530376+00:00",
+  "boundary": "credential-free local CPU Aer only; hardware service acceptance, scheduling, subjobs and billing remain separate",
+  "interpreter_version": "3.14.7",
+  "environment_overrides": {
+    "PYTHONDONTWRITEBYTECODE": "1",
+    "OMP_NUM_THREADS": "1"
+  },
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  },
+  "source_sha256_before": {
+    "probe.py": "58236e863b33c2cb6fdc73c27ef0b4de55ca00bf1c3c1fd4cf0bd2b15cbba89a",
+    "check_probe.py": "6e317a35ccee18bb909aa16ed610f41ecd9b57ce66a2796c950d1e18a4d6b474"
+  },
+  "source_sha256_after": {
+    "probe.py": "58236e863b33c2cb6fdc73c27ef0b4de55ca00bf1c3c1fd4cf0bd2b15cbba89a",
+    "check_probe.py": "6e317a35ccee18bb909aa16ed610f41ecd9b57ce66a2796c950d1e18a4d6b474"
+  },
+  "normal_and_optimized_output_bytes_equal": true,
+  "runs": [
+    {
+      "mode": "normal",
+      "working_directory": "results/local_compute/mixed_pub_client",
+      "command": [
+        "$PYTHON",
+        "-W",
+        "error",
+        "probe.py"
+      ],
+      "exit_code": 0,
+      "stdout": "result.json",
+      "stderr": "stderr.txt",
+      "stdout_sha256": "79d07d9bda4c88227cb5ca8de54c4f3f4e5cd3ae649e51fb8e85adee7de3a9b4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    },
+    {
+      "mode": "optimized",
+      "working_directory": "results/local_compute/mixed_pub_client",
+      "command": [
+        "$PYTHON",
+        "-O",
+        "-W",
+        "error",
+        "probe.py"
+      ],
+      "exit_code": 0,
+      "stdout": "result-optimized.json",
+      "stderr": "stderr-optimized.txt",
+      "stdout_sha256": "79d07d9bda4c88227cb5ca8de54c4f3f4e5cd3ae649e51fb8e85adee7de3a9b4",
+      "stderr_sha256": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+    }
+  ],
+  "sha256": {
+    "README.md": "13e387b80f56f1f5a4c73bc29f9d009147e5b7fb714f491e0089fbebffa43467",
+    "RUNTIME_AUDIT.md": "3eb1b6c2dd45a7352ba51b0bf773575c96bbdbcfd86172d9f89c613a7e085af0",
+    "check_probe.py": "6e317a35ccee18bb909aa16ed610f41ecd9b57ce66a2796c950d1e18a4d6b474",
+    "probe.py": "58236e863b33c2cb6fdc73c27ef0b4de55ca00bf1c3c1fd4cf0bd2b15cbba89a",
+    "registry_detection.json": "6ae6ce301a1948d312fccd479500f41b93b55bb75aeb3958073ba6b5a0dbd7de",
+    "result-optimized.json": "79d07d9bda4c88227cb5ca8de54c4f3f4e5cd3ae649e51fb8e85adee7de3a9b4",
+    "result.json": "79d07d9bda4c88227cb5ca8de54c4f3f4e5cd3ae649e51fb8e85adee7de3a9b4",
+    "validation.json": "86d4535f1d7a28bd6f67630a2bb263f6334e6c9fe293fd7b0c56afdb32aa6e55",
+    "stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+    "stderr-optimized.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855"
+  }
+}

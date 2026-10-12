@@ -1,0 +1,374 @@
+{
+  "skill": "migrate-qiskit-ibm-runtime",
+  "scope": [
+    "probe.py",
+    "check_probe.py"
+  ],
+  "skill_sha256": "6df18c9fca19dc2583bb149a2245df537722753c50370c12119eba7ef50cb1da",
+  "registry_sha256": "57318d11b76f9a82f6ee8a83ec0e03845a48074347be79281b93194f2884b9ff",
+  "registry_change_count": 24,
+  "target_rule": "The target is the LATEST qiskit-ibm-runtime release, reached in two layers. HOP A (documented): apply every change whose grounding is a release-note or migration-guide `url`, bringing the code up to the current public API. HOP B (client-side primitives): the eventual destination is the client-side (Executor-backed) SamplerV2/EstimatorV2 in qiskit_ibm_runtime.executor_sampler / executor_estimator, released and documented in 0.50.0 \u2014 which also DEPRECATES the server-side SamplerV2/EstimatorV2 in favor of them. It is grounded in the PUBLISHED migration guide named by the `url` on the `server-to-client` entry (and by `companion_url` on `v1-to-v2`). Always run hop A before hop B, and only attempt hop B when the INSTALLED qiskit-ibm-runtime is >= 0.50.0 (min_runtime_version). State clearly in the plan that hop B is now the recommended destination and that the server-side primitives it replaces are on a deprecation clock.\n",
+  "minimum_client_runtime": "0.50.0",
+  "installed_runtime": "0.50.0",
+  "source_runtime_evidence": "retained probe result records Runtime 0.50.0",
+  "source_sha256": {
+    "probe.py": "58236e863b33c2cb6fdc73c27ef0b4de55ca00bf1c3c1fd4cf0bd2b15cbba89a",
+    "check_probe.py": "6e317a35ccee18bb909aa16ed610f41ecd9b57ce66a2796c950d1e18a4d6b474"
+  },
+  "installed_package_source_sha256": {
+    "qiskit_ibm_runtime/executor_sampler/__init__.py": "16517437af255c76f440fd011317f6ba17570495d02155bb7405b20fc394143c",
+    "qiskit_ibm_runtime/executor_estimator/__init__.py": "0f84db24982b29f063202ab1faa09da1b8bb6882ef434a3c5dbf8e64ffdafb2e",
+    "qiskit_ibm_runtime/executor_sampler/sampler.py": "44de9f63cb2d0a2bb0c2ece0057ac315c7bf687afce11354a4f4f22b72864af7",
+    "qiskit_ibm_runtime/executor_sampler/prepare.py": "adc98a427a015cf2a0251ca1abf99c4fb5b779c93d003d512b6688f24ad0d3c7",
+    "qiskit_ibm_runtime/executor_sampler/utils.py": "cbec5733505351fe4e160a56edd651c3494d4ba5908adac893558ca7f483623a",
+    "qiskit_ibm_runtime/executor_sampler/finalize_options.py": "9ee6c3a5f9bedd9755535f5a587e8cd0c8d9a68bfda45722520df2db297f5503",
+    "qiskit_ibm_runtime/executor/executor.py": "309be44feda989fee616c753aa2d7c94a289f3a9411760e840571b361c69c8cb",
+    "qiskit_ibm_runtime/base_primitive.py": "3a10a5d079fc75fef3cfeef77a2a2f9983302ef4d4a941f3afafe62a3b0502b8",
+    "qiskit_ibm_runtime/fake_provider/executor/run_quantum_program.py": "ae29e8113b4e0ab06cdd15f7620dca18246fca064554a6de1bbf45dcfaa6c8fe",
+    "qiskit_ibm_runtime/options_models/sampler.py": "6b51eb04ec3a4ea81b3f0e454e8b97c110e170a2639bfc60f110f2cdf174e982",
+    "qiskit_ibm_runtime/options_models/twirling.py": "2e0e0b88eafaffb074c30c1ab216c30b5fc5612fdea36edc0e1f9bf3b1ab4e53",
+    "qiskit_ibm_runtime/options_models/dynamical_decoupling.py": "bf5da3a383317ea31d1a0324cc5dcbb61cb3ad6d094eaff06efb17171d4ae026",
+    "qiskit_ibm_runtime/options_models/simulator.py": "7f217c19ace9712c8cd4b464c8dd520a1aa873b0b1355118dcb56ca56a294075",
+    "qiskit_ibm_runtime/transpiler/passes/cliffordization/convert_isa_to_clifford.py": "00177b20cb3c997cb099a42433897b40e51a504884c061352ef7a394ea76e77f"
+  },
+  "changes": [
+    {
+      "id": "v1-to-v2",
+      "domain": "primitives",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.28.0",
+      "code_evidence": "code",
+      "matches": {
+        "detect_secondary": [
+          {
+            "file": "probe.py",
+            "line": 11,
+            "trigger": "import Sampler",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 9,
+            "trigger": "import Sampler",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler, SamplerV2"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 8,
+            "trigger": "import Estimator",
+            "text": "from qiskit_ibm_runtime.executor_estimator import Estimator, EstimatorV2"
+          }
+        ],
+        "already_migrated": [
+          {
+            "file": "probe.py",
+            "line": 11,
+            "trigger": "qiskit_ibm_runtime.executor_sampler",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 9,
+            "trigger": "qiskit_ibm_runtime.executor_sampler",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler, SamplerV2"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 8,
+            "trigger": "qiskit_ibm_runtime.executor_estimator",
+            "text": "from qiskit_ibm_runtime.executor_estimator import Estimator, EstimatorV2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "server-to-client",
+      "domain": "primitives",
+      "status": "active",
+      "applies_from": "0.50.0",
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {
+        "detect_primary": [
+          {
+            "file": "check_probe.py",
+            "line": 9,
+            "trigger": "SamplerV2",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler, SamplerV2"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 27,
+            "trigger": "SamplerV2",
+            "text": "        self.assertIs(Sampler, SamplerV2)"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 8,
+            "trigger": "EstimatorV2",
+            "text": "from qiskit_ibm_runtime.executor_estimator import Estimator, EstimatorV2"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 28,
+            "trigger": "EstimatorV2",
+            "text": "        self.assertIs(Estimator, EstimatorV2)"
+          }
+        ],
+        "already_migrated": [
+          {
+            "file": "probe.py",
+            "line": 11,
+            "trigger": "qiskit_ibm_runtime.executor_sampler",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 9,
+            "trigger": "qiskit_ibm_runtime.executor_sampler",
+            "text": "from qiskit_ibm_runtime.executor_sampler import Sampler, SamplerV2"
+          },
+          {
+            "file": "check_probe.py",
+            "line": 8,
+            "trigger": "qiskit_ibm_runtime.executor_estimator",
+            "text": "from qiskit_ibm_runtime.executor_estimator import Estimator, EstimatorV2"
+          }
+        ]
+      }
+    },
+    {
+      "id": "noiselearner-to-v3",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "account-channel",
+      "domain": "account-channel",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.42.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "backend-run-removed",
+      "domain": "execution",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.35.0",
+      "code_evidence": "code",
+      "matches": {
+        "detect_secondary": [
+          {
+            "file": "probe.py",
+            "line": 38,
+            "trigger": ".run(",
+            "text": "    job = sampler.run([dynamic_circuit, static_circuit], shots=64)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "streaming-removed",
+      "domain": "execution",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.38.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "custom-programs-removed",
+      "domain": "programs",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.16.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "channel-strategy-removed",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.32.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "fake-v1-backends-removed",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.33.0",
+      "code_evidence": "environment",
+      "matches": {}
+    },
+    {
+      "id": "backend-limits-removed",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.41.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "service-backend-lookup",
+      "domain": "account-channel",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.30.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "service-runtime-removed",
+      "domain": "account-channel",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.22.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "cloud-simulators-retired",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {
+        "already_migrated": [
+          {
+            "file": "probe.py",
+            "line": 10,
+            "trigger": "AerSimulator",
+            "text": "from qiskit_aer import AerSimulator"
+          },
+          {
+            "file": "probe.py",
+            "line": 22,
+            "trigger": "AerSimulator",
+            "text": "    backend = AerSimulator(method=\"stabilizer\", device=\"CPU\", max_parallel_threads=1, max_parallel_experiments=1)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "execution-mode",
+      "domain": "execution",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.34.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "session-from-id-backend",
+      "domain": "execution",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "session-open-removed",
+      "domain": "execution",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.35.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "session-backend-consistency",
+      "domain": "execution",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.34.0",
+      "code_evidence": "code",
+      "matches": {
+        "detect_secondary": [
+          {
+            "file": "probe.py",
+            "line": 33,
+            "trigger": "mode=backend",
+            "text": "    sampler = Sampler(mode=backend)"
+          }
+        ]
+      }
+    },
+    {
+      "id": "runtimejob-and-primitive-id",
+      "domain": "jobs-results",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.42.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "runtime-options-deprecated",
+      "domain": "programs",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "job-management-removed",
+      "domain": "jobs-results",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "noiselearner-result-accessors",
+      "domain": "jobs-results",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.36.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "noiselearner-post-selection",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": "0.49.0",
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "pulse-surface-removed",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": "0.41.0",
+      "code_evidence": "code",
+      "matches": {}
+    },
+    {
+      "id": "pulse-gates-unsupported",
+      "domain": "misc-deprecations",
+      "status": "active",
+      "applies_from": null,
+      "applies_to": null,
+      "code_evidence": "code",
+      "matches": {}
+    }
+  ],
+  "migration_disposition": "already client-side; preserve runtime import, options, PUBs and shots; replace assertion-only validation"
+}

@@ -1,0 +1,28 @@
+{
+  "schema": "submit-free-cpu-folded-preparation-v1",
+  "source_head": "c6b8a79e898110d64a7114eaa07fb94378daf009",
+  "exit_status": 0,
+  "simulation_policy": {
+    "mode": "cpu",
+    "threads": 2,
+    "memory_mb": 512,
+    "shot_branching": false,
+    "method": "density_matrix",
+    "precision": "double",
+    "shot_branching_sampling": false,
+    "parallel_experiments": 1
+  },
+  "qpu_submission_entries": 0,
+  "replay_script": "replay.sh",
+  "execution_boundary": "fresh IBM metadata, local compilation and installed CPU Aer simulation; submission flag absent",
+  "prior_sandbox_attempt": {
+    "exit_status": 1,
+    "root_error": "DNS resolution failed for iam.cloud.ibm.com",
+    "wrapper_error": "InvalidAccountError",
+    "network_enabled_retry_exit_status": 0
+  },
+  "native_mock_validation": {
+    "state": "permission_review_rejected_before_process_creation",
+    "reason": "review requires explicit authorization to transfer repository-derived circuits to IBM mock service"
+  }
+}
