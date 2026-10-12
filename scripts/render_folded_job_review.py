@@ -378,6 +378,9 @@ def render(evidence: Evidence, output: Path, png: Path | None) -> None:
             "Description": json.dumps(description, sort_keys=True, separators=(",", ":")),
         },
     )
+    # Matplotlib path lines carry insignificant trailing spaces that violate whitespace gates.
+    svg_lines = output.read_text(encoding="utf-8").splitlines()
+    output.write_text("\n".join(line.rstrip(" \t") for line in svg_lines) + "\n", encoding="utf-8")
     if png is not None:
         png.parent.mkdir(parents=True, exist_ok=True)
         figure.savefig(png, format="png", dpi=180, metadata={"Software": "scripts/render_folded_job_review.py"})
