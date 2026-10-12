@@ -1537,6 +1537,34 @@
       "redistribution": "excluded_without_permission",
       "rights_locator": "License-icon link on the exact-version arXiv abstract page",
       "rights_reason": "The selected grant authorizes arXiv distribution. The inspected exact-version metadata and PDF notices establish no general downstream rehosting permission."
+    },
+    {
+      "source_url": "https://arxiv.org/pdf/1810.08240v9",
+      "note": "docs/notes/1810.08240.md",
+      "audited_at_utc": "2026-10-12T07:47:08.474192+00:00",
+      "status": "external_only",
+      "sha256": "eb3efd547349adfbff25514ae0854c142cd29b96b398be38c9000d69a2f64ca8",
+      "bytes": 1494142,
+      "pages": 48,
+      "acquisition": "download",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "eb3efd547349adfbff25514ae0854c142cd29b96b398be38c9000d69a2f64ca8",
+        "verified_at_utc": "2026-10-12T07:47:08.474200+00:00",
+        "decision": "external_only",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "license_url": "https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "evidence_url": "https://arxiv.org/abs/1810.08240v9",
+        "evidence_sha256": "6718ca0e17745556bb498b6427cc46233a6fe0b304d256cef70a947c0b9bb26d",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "reading_scope": "Exact-version license link and linked grant; PDF text search for additional redistribution terms. The note records the separate mathematical reading scope.",
+        "evidence_summary": "The observed grant names arXiv.org; repository redistribution permission was not established by the inspected terms."
+      },
+      "excluded_published_path": "docs/pdf/1810.08240v9.pdf",
+      "local_cache_path": "docs/local_source_cache/1810.08240v9.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "arXiv:1810.08240v9 abstract license link; https://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+      "rights_reason": "The inspected license grants distribution to arXiv.org. Repository redistribution permission was not established; retain the versioned link, source hash and reading note."
     }
   ],
   "local_cache_policy": "docs/local_source_cache/ preserves optional personal reading copies. Published inventories and Git-tracked files exclude that cache. Missing cache files are permitted; present registered copies must match their original PDF size and SHA-256.",

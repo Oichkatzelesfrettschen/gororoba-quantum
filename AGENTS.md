@@ -150,6 +150,14 @@ under temporary storage so the checkout retains source files only:
 The certificate proves finite Boolean permutation action. Operator checks in
 modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 
+Changes to `proofs/FoldAverageDescent.v`, `TerminalChannelSeparation.v`,
+`TerminalChannelSeparationReal.v`, or their receipts also run
+`ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh` with the
+pinned Rocq 9.1.1 toolchain. The replay compiles in temporary storage,
+treats warnings as errors, kernel-checks, and compares raw assumptions.
+The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
+real foundations, deterministic interval premises and unproved coverage.
+
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
@@ -173,6 +181,9 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
   shellcheck docs/evidence/folding_proofs/replay_rocq.sh
+  shellcheck docs/evidence/formal_certificates/replay_rocq.sh
+  (cd docs/evidence/formal_certificates && sha256sum -c SHA256SUMS)
+  sha256sum -c docs/evidence/formal_certificates/source_hashes.sha256
   (cd docs/evidence/local_schur && sha256sum -c SHA256SUMS)
   (cd docs/evidence/folding_proofs && sha256sum -c SHA256SUMS)
 )

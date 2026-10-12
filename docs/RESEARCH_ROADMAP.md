@@ -134,7 +134,11 @@ average-only obstruction, plus rational and real terminal-channel exclusion
 under four radius premises. The full Cayley-Dickson scalar embedding, tower,
 and zero-product bridge remain the owner's open proof obligations. The proof
 plan separates deterministic arithmetic, probabilistic assumptions, and physical
-models. Integration follows the source migration.
+models. The [formal-evidence plan](notes/formal_evidence_dependencies.md) owns
+the detailed dependency queue, tomography scope and stopping assumptions.
+The [checked certificate bundle](evidence/formal_certificates/README.md)
+retains the proof sources, assumptions and reproducible compiler/kernel
+receipts. Statistical coverage remains an explicit obligation.
 Finite QPU frequencies supply measurement evidence; universal algebraic claims
 require mathematical proof independently of those frequencies.
 
