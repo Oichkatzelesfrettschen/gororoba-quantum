@@ -6,14 +6,20 @@ additive requests, cross-chat findings, ownership and evidence boundaries.
 The execution priority is model discrimination and a measurable optimizer
 decision before broad atlas expenditure. The historical 197-second ripple/rank
 plans require current-source renewal and remain held behind that decision gate.
-Their current admission and execution authorization are false. The
-four-PUB pilot uses exact-count statistical analysis, common-template circuit
+Their current admission and execution authorization are false. The revised
+[fixed-shot allocation](PACKED_ALGEBRA.md#fixed-shot-allocation) reprices every
+original static row under the user's 180-second campaign ceiling; fresh
+preparation must qualify that candidate before execution. The four-PUB pilot
+uses exact-count statistical analysis, common-template circuit
 verification and a validator for returned native schedules. The user directed
 preparation from fresh live calibration across Fez, Kingston and Marrakesh
 after the Kingston mock endpoint proved unavailable. Production admission
 therefore uses a documented finite comparison of all three systems, while
 matched-policy inference requires qualified schedules from the actual run.
-The historical time estimate remains separate from a freshly admitted case.
+The [correction readiness note](../results/ripple/CORRECTION_PREPARATION.md)
+records the successful source-`fb13b06` renewal and the later runtime changes
+that require another preparation. Historical time estimates remain separate
+from a freshly admitted case.
 
 ## Existing evidence first: zero additional QPU seconds
 

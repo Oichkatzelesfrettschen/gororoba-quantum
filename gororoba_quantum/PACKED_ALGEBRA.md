@@ -7,7 +7,9 @@ The retained ripple and rank-sector cases have state
 authorization false. Renewed source-bound preparation and new written cases
 must precede owner approval. Each family retains its scientific controls,
 precision contract, calibration and compiled-circuit evidence.
-The ripple acquisition targets one static job on one backend. The folded
+The uniform ripple acquisition uses one static job on one backend. The
+optional per-PUB allocation groups complete PUBs into homogeneous shot-tier jobs,
+keeping the complete family on its selected backend. The folded
 diagnostic retains twelve dynamic and four coherent PUBs in two jobs. The
 coordinated 8,192-shot diagnostic has completed at 40 charged seconds; the
 4,096-shot preparation is a comparison case excluded from duplicate execution.
@@ -57,6 +59,79 @@ Representative isolated controls measure packing residuals for their named
 conditions. Their intervals cannot certify every edge or every possible
 hardware crosstalk mechanism. The shared shot index permits joint-error
 analysis; separate physical patches do not establish statistical independence.
+
+## Fixed shot allocation
+
+`--optimize --shot-allocation per-pub --shot-tiers 1024,4096` assigns complete
+physical PUB rows to declared shot tiers before acquiring hardware data.
+For each endpoint, the allocator first finds the smallest declared uniform
+tier that passes its existing precision and conditional-power requirements.
+Every contributing PUB receives at least that minimum, and matched rows share
+the largest minimum among their companions.
+
+Endpoint minima alone can lose to a uniform allocation because each active
+tier adds job overhead. The allocator therefore groups PUBs by their resulting
+minimum tier and enumerates every whole-group promotion to a declared tier at
+or above that minimum. The search includes uniform assignments at or above
+all required minima. Every alternative retains the original simulated
+marginals and search-wide confidence allowance; deterministic repricing adds
+zero model samples. Complete nominal and sensitivity ledgers, statistical
+contracts, and per-job and aggregate ceilings qualify each alternative.
+
+For each route, `minimum_charge` selects the feasible allocation with the
+smallest worst-case nominal/scenario charge. `precision_at_budget` selects
+the smallest worst normalized precision radius, then charge. The outer
+optimizer revalidates one retained allocation per route. The allocation audit
+retains every alternative, its PUB counts, costs and rejection reasons.
+An explicit limit rejects searches exceeding 4096 assignments per route;
+the search stays complete inside the declared whole-tier domain. Global PUB
+allocation, packing and placement optimality remain unproved. A failed
+endpoint withholds family admission.
+
+The allocation preserves every science member, readout control, isolated row,
+lane and within-PUB shot vector. Matched walk companion rows receive a common
+tier and remain adjacent. Runtime 0.50 requires a separate job for each shot
+value; row order is retained within a tier and changes across tiers. The
+collector requires actual returned counts to match the approved allocation,
+and family comparisons require compatible execution calibration. The sampling
+model still assumes independent stationary repetitions within each PUB.
+
+`record.json` retains the complete `pub_shots` mapping and allocation audit.
+Its top-level `shots` is the largest allocated tier; the mapping supplies each
+PUB's count. Approval checks bind that mapping and its complete job/cost
+ledger. The raw archive retains every register in physical shot order. The
+collection header joins measured marginals and execution evidence across tier
+jobs; incomplete per-job group summaries remain labeled incomplete.
+
+Repricing the retained planning summaries at their endpoint-minimum tiers
+gives the following historical arithmetic, including two job overheads for
+each static family. Fresh consolidation and admission must determine the
+selected allocation and actual job count:
+
+| Historical planning record | Model shots | Complete PUB allocation | Stress estimate (s) |
+|---|---:|---|---:|
+| [Ripple](../results/live/2026-10-12T062505.208379Z/record.json) | 32768 | 120 x 1024; 26 x 4096 | 68.913732608 |
+| [Rank-sector](../results/live/2026-10-12T062505.552988Z/record.json) | 131072 | 15 x 1024; 21 x 4096 | 35.049098240 |
+
+The static estimates total 103.962830848 seconds. Adding the
+[corrected-source pilot](../results/ripple/CORRECTION_PREPARATION.md) stress
+estimate of 14.474571264 seconds gives 118.437402112 seconds for five jobs.
+The separate 4096-shot evaluation distributions remain distinct model evidence:
+their replay fails one ripple endpoint and four rank endpoints. Those
+distributions cannot substitute for the higher-shot planning summaries.
+The historical arithmetic supplies a candidate allocation, while current
+admission requires fresh calibration, complete endpoint checks, reviewed
+code and digest-bound written cases.
+
+Proposed service ceilings total 170 seconds: two 40-second ripple jobs, two
+30-second rank jobs and one 30-second correction job. The user permits up to
+180 seconds across the remaining acquisitions. Each family's alpha is 0.05;
+a campaign-wide 95-percent simultaneous claim remains unestablished.
+
+The grouping follows IBM's [client-side Sampler migration
+guide](https://quantum.cloud.ibm.com/docs/guides/migrate-to-client-side-primitives).
+Local CPU tests establish SDK handling and lossless decoding; future physical
+results establish service schedules and charged time.
 
 ## Four-qubit rank sectors
 

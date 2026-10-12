@@ -35,16 +35,20 @@ and its measurable known-label optimizer decision before broad atlas spending.
 The [correction preparation record](../results/ripple/CORRECTION_PREPARATION.md)
 implements that design. Its historical three-system comparison selected Fez
 at 8192 shots per PUB: 11.5154 nominal seconds, 14.4708 stress-scenario seconds
-and a proposed 30-second ceiling. Renewal after the readout-scoring repair
-stopped at backend eligibility; the current source awaits a fresh written
-case. Exact-case approval precedes execution, and actual returned schedules
-must qualify before inference. The ripple/rank cases below stay held and
-unapproved while the optimizer decision gate is resolved.
+and a proposed 30-second ceiling. A later renewal at source `fb13b06`
+admitted eighteen candidates across all three backends and selected Fez,
+with 11.519211264 nominal seconds and 14.474571264 stress-scenario seconds.
+Subsequent runtime shot-allocation edits changed the source, so the
+[correction readiness note](../results/ripple/CORRECTION_PREPARATION.md)
+requires another source-bound preparation and written case. Exact-case
+approval precedes execution, and actual returned schedules must qualify
+before inference. The ripple/rank cases below stay held and unapproved while
+the optimizer decision gate is resolved.
 
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
-| [Matched correction pilot](../results/ripple/CORRECTION_PREPARATION.md) | One historical dynamic Fez case | 4 | Historical 11.5154 nominal; 14.4708 stress; proposed ceiling 30 | Renewal stopped at backend eligibility; unapproved |
+| [Matched correction pilot](../results/ripple/CORRECTION_PREPARATION.md) | One historical dynamic Fez case | 4 | Historical 11.5154 nominal; 14.4708 stress; proposed ceiling 30 | Later renewal validated; subsequent runtime edits require a fresh case; unapproved |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
 | [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
 | [Ripple finite walk/box-kite comparison](../results/ripple/PREPARATION.md) | One historical static Kingston plan | 146 | Historical 157.0873 nominal; proposed ceiling 180 | Historical local admission; renewal required; held |
@@ -63,11 +67,18 @@ and overlap reconciliation.
 
 The [shared coordination record](../results/live/qpu-coordination.json) names
 one execution owner per family across `ibm_fez`, `ibm_kingston`, and
-`ibm_marrakesh`. The settled account read reports 551 seconds remaining with
-an empty pending-job list. The held atlas ceilings total 240 seconds and the
-correction pilot adds a proposed 30 seconds. One shared 60-second reserve
-leaves 221 seconds unallocated at that snapshot. Proposed allocations remain
-distinct from account reservations.
+`ibm_marrakesh`. The retained account snapshot records 551 seconds remaining
+and an empty pending-job list. The historical atlas ceilings total 240 seconds
+and the pilot adds a proposed 30 seconds; a shared 60-second reserve leaves
+221 seconds unallocated under that older proposal.
+
+The [integrated directive](RIPPLE_CAMPAIGN.md) records the user's replacement
+180-second combined ceiling for the remaining correction and atlas acquisitions.
+The [fixed-shot proposal](PACKED_ALGEBRA.md#fixed-shot-allocation) preserves all
+static rows and proposes 170 seconds of service ceilings across five jobs.
+Its historical planning arithmetic awaits fresh source-bound statistical,
+calibration and cost admission. Proposed allocations remain distinct from
+account reservations.
 All three backends draw on the same rolling 600-second allowance. Multiple
 QPUs can reduce queue contention; assigning duplicate experiments to them
 adds charge and changes the calibration conditions.

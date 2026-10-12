@@ -43,6 +43,7 @@ def settings(args: Any) -> dict[str, Any]:
             ("objective", "minimum_charge"),
             ("cost_scenarios", []),
             ("shot_tiers", [2048, 4096, 8192, 16384]),
+            ("shot_allocation", "uniform"),
             ("replica_tiers", [1, 2, 4]),
             ("optimizer_candidates", 6),
             ("model_shots", 32768),
@@ -62,10 +63,30 @@ def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, An
     """Reserve all ceilings before any job starts, including unsent batches."""
     ceiling = getattr(args, "max_execution_seconds", None)
     jobs = []
+    pub_shots = getattr(args, "pub_shots", None)
+    if pub_shots is not None:
+        names = [pub.name for pub in runtime.execution_pubs(choices)]
+        if (
+            not isinstance(pub_shots, dict)
+            or len(names) != len(set(names))
+            or set(pub_shots) != set(names)
+            or any(type(value) is not int or value <= 0 for value in pub_shots.values())
+        ):
+            raise runtime.LiveRunError("shot allocation must assign a positive integer to every execution PUB exactly")
     for backend in sorted({choice.snap.name for choice in choices}):
         selected = [choice for choice in choices if choice.snap.name == backend]
+        backend_shots = (
+            {pub.name: pub_shots[pub.name] for pub in runtime.execution_pubs(selected)}
+            if pub_shots is not None
+            else None
+        )
         for kind in ("dynamic", "static"):
-            for index, batch in enumerate(runtime.submission_batches(selected, kind, args.shots), 1):
+            batches = (
+                runtime.submission_batches(selected, kind, args.shots, pub_shots=backend_shots)
+                if backend_shots is not None
+                else runtime.submission_batches(selected, kind, args.shots)
+            )
+            for index, batch in enumerate(batches, 1):
                 jobs.append(
                     {
                         "backend": backend,
@@ -73,6 +94,14 @@ def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, An
                         "batch_index": index,
                         "pubs": len(batch),
                         "ceiling_seconds": ceiling,
+                        **(
+                            {
+                                "shots": runtime.batch_shots(batch, args.shots, backend_shots),
+                                "pub_names": [pub.name for pub in batch],
+                            }
+                            if pub_shots is not None
+                            else {}
+                        ),
                     }
                 )
     total = None if ceiling is None else float(ceiling) * len(jobs)
@@ -266,6 +295,7 @@ def execution_contract(choices: list[Any], record: dict[str, Any]) -> dict[str, 
         "selected_job_costs": json.loads(json.dumps(selected.get("jobs", []))),
         "selected_cost_scenarios": json.loads(json.dumps(selected.get("cost_scenarios", []))),
         "selected_worst_case_charge_seconds": selected.get("worst_case_charge_seconds"),
+        **({"pub_shots": dict(record["pub_shots"])} if "pub_shots" in record else {}),
     }
 
 
@@ -289,6 +319,11 @@ def prepare(
     ownership: dict[str, tuple[list[Any], dict[str, Any], int]] = {}
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
+    per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
+    if per_pub and (args.family not in ("ripple", "rank-sector") or not args.optimize):
+        raise runtime.LiveRunError("per-PUB shot allocation requires an optimized static algebra family")
+    if not per_pub and hasattr(args, "pub_shots"):
+        del args.pub_shots
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
         for choice in choices:
@@ -308,7 +343,7 @@ def prepare(
             predictions.update(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )
-        for shots in tiers:
+        for shots in [max(tiers)] if per_pub else tiers:
             jobs = []
             for backend_name in sorted({choice.snap.name for choice in choices}):
                 selected = [choice for choice in choices if choice.snap.name == backend_name]
@@ -377,18 +412,58 @@ def prepare(
         args.max_total_execution_seconds,
     )
     policy = settings(args)
+    scenarios = tuple(CostScenario(**scenario) for scenario in policy["cost_scenarios"])
+    allocation_audits: dict[str, dict[str, Any]] = {}
+    if per_pub:
+        from pub_shot_allocation import allocate_plans
+
+        couplings: dict[str, tuple[tuple[str, ...], ...]] = {}
+        for candidate in plans:
+            candidate_choices, configuration, _shots = ownership[candidate.name]
+            row_pubs: dict[int, str] = {}
+            metadata = configuration.get("members", {})
+            for pub in runtime.execution_pubs(candidate_choices):
+                for component in pub.components:
+                    row = metadata.get(component.entry.name, {}).get("execution_row")
+                    if row is not None:
+                        if row in row_pubs and row_pubs[row] != pub.name:
+                            raise runtime.LiveRunError("a declared execution row was split across PUBs")
+                        row_pubs[row] = pub.name
+            couplings[candidate.name] = tuple(
+                tuple(row_pubs[row] for row in rows) for rows in configuration.get("matched_walk_rows", {}).values()
+            )
+        allocated, allocation_audits = allocate_plans(
+            tuple(plans),
+            contracts,
+            tuple(tiers),
+            budget,
+            simulation_alpha=args.simulation_alpha,
+            objective=policy["objective"],
+            cost_scenarios=scenarios,
+            coupled_pubs=couplings,
+        )
+        for original, allocated_plan in zip(plans, allocated, strict=True):
+            selected_choices, selected_configuration, _shots = ownership[original.name]
+            ownership[allocated_plan.name] = (
+                selected_choices,
+                selected_configuration,
+                max(allocation_audits[allocated_plan.name]["pub_shots"].values()),
+            )
+        plans = list(allocated)
     result = optimize(
         tuple(plans),
         contracts,
         budget,
         simulation_alpha=args.simulation_alpha,
         objective=policy["objective"],
-        cost_scenarios=tuple(CostScenario(**scenario) for scenario in policy["cost_scenarios"]),
+        cost_scenarios=scenarios,
     )
     # An infeasible dry run retains a concrete candidate and every rejection;
     # its state prevents that diagnostic archive from becoming a submission.
     retained = result.selected or plans[0].name
     choices, configuration, args.shots = ownership[retained]
+    if per_pub:
+        args.pub_shots = dict(allocation_audits[retained]["pub_shots"])
     metadata = {
         "family_configuration": configuration,
         "observable_contracts": json.loads(json.dumps([asdict(contract) for contract in contracts])),
@@ -397,9 +472,15 @@ def prepare(
             "retained_candidate": retained,
             "searched_routed_sets": len(candidates),
             "shot_tiers": tiers,
-            "scope": "bounded routed candidates and uniform shot tiers; global optimality is unclaimed",
+            "scope": (
+                "bounded routed candidates with endpoint minima and costed whole-tier consolidation; "
+                "global optimality is unclaimed"
+                if per_pub
+                else "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
+            ),
         },
         "optimizer_settings": settings(args),
+        **({"pub_shots": args.pub_shots, "shot_allocation": allocation_audits[retained]} if per_pub else {}),
         "optimization_budget": asdict(budget),
         "local_simulation_batches": [
             batch for simulator in simulators.values() for batch in local_compute.batches(simulator)
@@ -454,8 +535,24 @@ def measured_family(
         by_pub.setdefault(executed[member]["pub"], {})[member] = tuple(
             tuple(map(float, distribution)) for distribution in distributions[member]
         )
-    pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
     try:
+        if "pub_shots" in record:
+            shot_map = record["pub_shots"]
+            if not isinstance(shot_map, dict) or any(
+                type(value) is not int or value <= 0 for value in shot_map.values()
+            ):
+                raise ValueError("record PUB shots must be positive integers")
+            declared_pubs = {pub["name"] for pub in record.get("execution_pubs", [])}
+            if set(shot_map) != declared_pubs:
+                raise ValueError("record PUB shot map differs from the complete execution manifest")
+            for member in required:
+                execution = executed[member]
+                actual_shots = execution.get("shots")
+                if type(actual_shots) is not int or actual_shots != shot_map.get(execution["pub"]):
+                    raise ValueError(f"{member}: validated measured shots differ from the approved PUB allocation")
+            pubs = tuple(ObservedPub(name, members, shot_map[name]) for name, members in by_pub.items())
+        else:
+            pubs = tuple(ObservedPub(name, members, int(record["shots"])) for name, members in by_pub.items())
         return analyze_observations(pubs, endpoints).as_dict()
     except ValueError as error:
         return {"withheld": f"invalid measured family data: {error}"}

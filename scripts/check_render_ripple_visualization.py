@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import errno
 import hashlib
 import json
 import os
@@ -25,7 +26,7 @@ def require(condition: bool, message: str) -> None:
 def snapshot(directory: Path) -> dict[str, tuple[object, ...]]:
     """Record fixture names, link targets, file identities, bytes, and mtimes."""
     contents: dict[str, tuple[object, ...]] = {}
-    for path in sorted(directory.rglob("*")):
+    for path in (directory, *sorted(directory.rglob("*"))):
         name = path.relative_to(directory).as_posix()
         status = path.lstat()
         identity = (status.st_dev, status.st_ino, status.st_nlink, status.st_mtime_ns)
@@ -107,6 +108,23 @@ def rejected_alias(directory: Path, protected: str, alias_kind: str) -> int:
     return 2
 
 
+def checked_outcome(
+    directory: Path, script: Path, evidence: Path, output: Path, error_fragment: str | None = None
+) -> None:
+    """Check the public CLI and preserve the complete fixture for each outcome."""
+    before_check = snapshot(directory)
+    process = invoke(script, evidence, output, True)
+    if error_fragment is None:
+        require(process.returncode == 0 and process.stderr == "", f"valid check failed: {process.stderr}")
+    else:
+        require(
+            process.returncode == 1 and error_fragment in process.stderr,
+            f"check failed to report {error_fragment!r}: {process.stderr}",
+        )
+    require(process.stdout == "", "check CLI wrote stdout")
+    require(snapshot(directory) == before_check, "check changed fixture names, identities, bytes, or mtimes")
+
+
 def accepted_output(directory: Path, evidence_bytes: bytes, template_bytes: bytes, retained_html: bytes) -> None:
     script = copied_renderer(directory)
     evidence = directory / "evidence.json"
@@ -115,27 +133,37 @@ def accepted_output(directory: Path, evidence_bytes: bytes, template_bytes: byte
     evidence.write_bytes(evidence_bytes)
     template.write_bytes(template_bytes)
     output = directory / "new-directory/explorer.html"
+    checked_outcome(directory, script, evidence, output, os.strerror(errno.ENOENT))
+    checked_outcome(directory, script, evidence, directory / "missing.html", os.strerror(errno.ENOENT))
     before_inputs = {path: (path.read_bytes(), path.stat().st_mtime_ns) for path in (evidence, template)}
     process = invoke(script, evidence, output, False)
     require(process.returncode == 0 and process.stderr == "", f"valid renderer failed: {process.stderr}")
     require(output.read_bytes() == retained_html, "valid HTML differs from the retained artifact")
     for path, original in before_inputs.items():
         require((path.read_bytes(), path.stat().st_mtime_ns) == original, "valid write changed a renderer input")
-    before_check = snapshot(directory)
-    process = invoke(script, evidence, output, True)
-    require(process.returncode == 0 and process.stderr == "", f"valid check failed: {process.stderr}")
-    require(snapshot(directory) == before_check, "successful check changed fixture")
+    checked_outcome(directory, script, evidence, output)
     output.write_bytes(b"changed HTML\n")
-    before_check = snapshot(directory)
-    process = invoke(script, evidence, output, True)
-    require(process.returncode == 1 and "HTML differs" in process.stderr, "check accepted different HTML")
-    require(snapshot(directory) == before_check, "failed check changed fixture")
+    checked_outcome(directory, script, evidence, output, "HTML differs")
+    checked_outcome(directory, script, evidence, output.parent, os.strerror(errno.EISDIR))
+
+    evidence.unlink()
+    checked_outcome(directory, script, evidence, output, os.strerror(errno.ENOENT))
+    evidence.write_bytes(b"invalid JSON\n")
+    checked_outcome(directory, script, evidence, output, "Expecting value")
+    evidence.write_bytes(b"{}\n")
+    checked_outcome(directory, script, evidence, output, "proposed_hardware_depths: expected 5 entries")
+    evidence.write_bytes(evidence_bytes)
+    template.unlink()
+    checked_outcome(directory, script, evidence, output, os.strerror(errno.ENOENT))
+    template.write_bytes(b"<html>missing evidence marker</html>\n")
+    checked_outcome(directory, script, evidence, output, "exactly one evidence marker")
 
 
 def main() -> int:
     evidence = ROOT / "results/ripple/evidence.json"
     artifact = ROOT / "results/ripple/cayley-dickson-ripples.html"
     retained = {path: path.read_bytes() for path in (evidence, renderer.TEMPLATE, artifact)}
+    retained_mtimes = {path: path.stat().st_mtime_ns for path in retained}
     kinds = (
         "direct",
         "canonical",
@@ -155,6 +183,10 @@ def main() -> int:
     require(
         all(path.read_bytes() == original for path, original in retained.items()), "repository artifact bytes changed"
     )
+    require(
+        all(path.stat().st_mtime_ns == original for path, original in retained_mtimes.items()),
+        "repository artifact mtimes changed",
+    )
     print(
         json.dumps(
             {
@@ -165,6 +197,20 @@ def main() -> int:
                 "write_and_check_modes": True,
                 "valid_html_matches_retained": True,
                 "successful_and_failed_checks_preserve_fixture": True,
+                "fixture_root_mtime_preserved": True,
+                "retained_artifact_mtimes_preserved": True,
+                "check_outcomes": [
+                    "missing_output_parent",
+                    "missing_output",
+                    "matching_html",
+                    "differing_html",
+                    "output_is_directory",
+                    "missing_evidence",
+                    "invalid_evidence_json",
+                    "invalid_evidence_shape",
+                    "missing_template",
+                    "invalid_template_marker",
+                ],
                 "retained_html_sha256": hashlib.sha256(retained[artifact]).hexdigest(),
                 "retained_evidence_sha256": hashlib.sha256(retained[evidence]).hexdigest(),
                 "retained_template_sha256": hashlib.sha256(retained[renderer.TEMPLATE]).hexdigest(),

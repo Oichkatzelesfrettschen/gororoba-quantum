@@ -210,6 +210,7 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
         args = argparse.Namespace(
             started=record["started"],
             shots=record["shots"],
+            pub_shots=record.get("pub_shots"),
             twirl=policy["twirl"],
             dd=policy["dd"],
             max_execution_seconds=policy["max_execution_seconds"],
@@ -232,9 +233,10 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
                 reasons = runtime.choice_change_reasons(owner, fresh)
                 _require(not reasons, f"{name}: compiled calibration changed: {reasons}")
             planned = plan["planned_jobs"][plan_index]
+            selected_shots = planned.get("shots", args.shots)
             tags = ["gororoba-native-dry-run", f"native-{identifier}", f"native-batch-{plan_index}"]
             sampler = runtime.configure_sampler(
-                fresh.backend, kind, args.twirl, args.dd, tags, args.shots, args.max_execution_seconds
+                fresh.backend, kind, args.twirl, args.dd, tags, selected_shots, args.max_execution_seconds
             )
             options = sampler.options.model_dump(mode="json")
             _require(
@@ -248,7 +250,7 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
                 "calibration": fresh.calibration,
                 "fetched_at": fresh.fetched_at,
                 "backend_dt_seconds": dt,
-                "shots": args.shots,
+                "shots": selected_shots,
                 "pub_names": [pub.name for pub in batch],
                 "pub_manifests_sha256": _json_digest([pub.manifest() for pub in batch]),
                 "options": options,
@@ -262,7 +264,7 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
             _check_preservation(runtime, run_dir, binding)
             _require(runtime._instance_hash(service) == binding["instance_sha256_12"], "service instance changed")
             # The archive supplies the exact circuits whose bytes the binding names.
-            job = sampler.run([circuits_by_name[pub.name] for pub in batch], shots=args.shots, dry_run=True)
+            job = sampler.run([circuits_by_name[pub.name] for pub in batch], shots=selected_shots, dry_run=True)
             job_record["job_id"] = job.job_id()
             job_record["state"] = "accepted"
             accepted.append((job, job_record))

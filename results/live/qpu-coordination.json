@@ -1,19 +1,25 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T10:34:16.000651+00:00",
+  "updated_at": "2026-10-12T15:48:20.693690+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
-    "folded_reserved_ceiling_seconds": 0,
-    "other_proposed_ceiling_seconds": 270,
+    "remaining_seconds_source": "results/live/2026-10-12T153635.004894Z/record.json#budget_plan",
+    "account_inventory_scope": "The separately retained account_inventory_observation keeps its own observation time; the preparation quota value is not a fresh pending-account-job inventory.",
+    "user_campaign_ceiling_seconds": 180,
+    "maximum_remaining_atlas_ceiling_seconds": 150,
+    "unallocated_campaign_ceiling_seconds": 150,
     "single_shared_reserve_seconds": 60,
-    "combined_requirement_seconds": 330,
-    "unallocated_at_snapshot_seconds": 221,
-    "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
+    "campaign_cap_plus_reserve_seconds": 240,
+    "unallocated_account_seconds_after_campaign_cap_and_reserve": 311,
+    "folded_reserved_ceiling_seconds": 0,
     "folded_settled_charge_seconds": 40,
-    "correction_proposed_ceiling_seconds": 30,
-    "held_atlas_proposed_ceiling_seconds": 240,
-    "proposals_are_account_reservations": false
+    "budget_scope": "The 180-second cap covers new correction and atlas executions in this campaign; the prior completed folded-QPE charge remains settled historical usage. The planned 30-second pilot and 150-second atlas allowance both require current-source cases.",
+    "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
+    "proposals_are_account_reservations": false,
+    "aggregate_enforcement": "The execution owner must reconcile accepted and attempted job ceilings, settled charges, remaining user cap and fresh account quota before each submission. The runner enforces one invocation ceiling; this ledger creates neither an atomic account reservation nor an account-wide service ceiling.",
+    "correction_planned_ceiling_seconds": 30,
+    "currently_admitted_ceiling_seconds": 0
   },
   "families": [
     {
@@ -65,7 +71,12 @@
       "admitted_endpoints": 1138,
       "required_endpoints": 1138,
       "relative_placement_score_floor": 0.8,
-      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
+      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required.",
+      "proposal_scope": "historical_record_only",
+      "current_admission": false,
+      "physical_execution_authorized": false,
+      "current_proposed_ceiling_seconds": null,
+      "budget_requalification": "Renew both atlas families within the combined 150-second allowance remaining after the 30-second pilot; the retained 240-second atlas proposal exceeds that allowance."
     },
     {
       "family": "rank-sector",
@@ -85,31 +96,39 @@
       "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
       "admitted_endpoints": 196,
       "required_endpoints": 196,
-      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
+      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required.",
+      "proposal_scope": "historical_record_only",
+      "current_admission": false,
+      "physical_execution_authorized": false,
+      "current_proposed_ceiling_seconds": null,
+      "budget_requalification": "Renew both atlas families within the combined 150-second allowance remaining after the 30-second pilot; the retained 240-second atlas proposal exceeds that allowance."
     },
     {
       "family": "folded-correction",
       "owner": "Design a single-run reality ripple",
       "science": "Fixed-sample measured-bit versus known-label correction for two odd supplied eigenlabels; retain measurement, reset and dispatch",
-      "backend": null,
-      "state": "renewal_unavailable_backend_eligibility",
-      "case": null,
-      "record_sha256": null,
-      "experiment_digest": null,
+      "backend": "ibm_fez",
+      "state": "historical_renewal_required",
+      "case": "2026-10-12T153635.004894Z",
+      "record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+      "experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881",
       "proposed_pubs": 4,
       "proposed_shots_per_pub": 8192,
       "proposed_ceiling_seconds": 30,
-      "reported_nominal_seconds": null,
-      "reported_stress_seconds": null,
+      "reported_nominal_seconds": 11.519211263999999,
+      "reported_stress_seconds": 14.474571264,
       "accepted_job_ids": [],
-      "qualified_candidates": null,
+      "qualified_candidates": 18,
       "searched_backends": [
         "ibm_fez",
         "ibm_kingston",
         "ibm_marrakesh"
       ],
-      "qualification": "Scoring repair requires source-bound renewal. Fez queue and Marrakesh maintenance prevent the required three-system snapshot set; local tests pass separately. Historical preparation remains retained.",
-      "model_gain_known_minus_measured": null,
+      "qualification": "The successful retained preparation admitted all 18 candidates at fb13b067, whose 41 runtime sources match committed merge ea8eae1. Subsequent working runtime shot-allocation changes require a fresh current-source case. Archived pair, timing and model evidence retain historical scope; actual returned schedules and raw counts gate later inference.",
+      "model_gain_known_minus_measured": {
+        "1": 0.001068115234375,
+        "3": 0.005889892578125
+      },
       "physical_execution_authorized": false,
       "historical_preparation": {
         "case": "2026-10-12T074042.840320Z",
@@ -124,9 +143,21 @@
           "3": 0.00640869140625
         }
       },
-      "renewal_evidence": "results/ripple/correction-renewal-rejection.json",
-      "current_source_commit": "efa187f30cf0604265455198ce1aa9b8addd1acd",
-      "current_experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881"
+      "renewal_evidence": "results/ripple/correction-current-source-validation.json",
+      "current_source_commit": "ea8eae17005d2226afa981cadad889241d415c47",
+      "current_experiment_digest": null,
+      "historical_renewal_rejection": {
+        "state": "renewal_unavailable_backend_eligibility",
+        "qualification": "Scoring repair requires source-bound renewal. Fez queue and Marrakesh maintenance prevent the required three-system snapshot set; local tests pass separately. Historical preparation remains retained.",
+        "renewal_evidence": "results/ripple/correction-renewal-rejection.json",
+        "current_source_commit": "efa187f30cf0604265455198ce1aa9b8addd1acd",
+        "current_experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881"
+      },
+      "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+      "current_admission": false,
+      "execution_authority_state": "conditional_user_authority_pending_source_renewal_and_execution_gates",
+      "prepared_source_commit": "fb13b0675530c3eb9a4d8c0225bf37cacd8b5923",
+      "proposal_scope": "historical_record_only"
     }
   ],
   "deduplication": {
@@ -134,7 +165,7 @@
     "static_witness_overlap": "Rank sectors measure coefficient-normalized multiplication-path norms; ripple measures associator interference and sedenion fringes. Endpoint and member names are disjoint. Historical DesignC repetitions are intentional fresh-patch/packing controls:9members share3atlas rows and3isolated reference rows measure changed neighboring workload."
   },
   "backend_policy": "each complete control family stays on its independently admitted backend; alternate QPUs require their own live case and approval",
-  "other_chat_confirmation": "Direct user priority verified: model discrimination and a measurable optimizer decision precede atlas spending; broad cases remain unapproved and their record/QPY bytes remain retained.",
+  "other_chat_confirmation": "The user retains model discrimination before atlas spending and conditionally authorizes execution after reviewed merged code, current cases and a combined new-campaign ceiling of 180 seconds. Historical atlas cases require renewal within the remaining 150-second allowance.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
     "accepted_jobs": [
@@ -171,9 +202,9 @@
     "scope": "Read-only account usage, backend names, pending account jobs and settled prior-job charges"
   },
   "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
-  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions require owner approval of the linked cases.",
+  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions follow the recorded conditional user authority and current-case execution gates.",
   "scientific_priority_gate": {
-    "state": "model_discrimination_pilot_renewal_unavailable",
+    "state": "model_discrimination_pilot_historical_renewal_required",
     "source": "Direct user instruction verified in Audit Heron quantum claims",
     "design": "gororoba_quantum/MODEL_DISCRIMINATION.md",
     "broad_atlas_spending": "held",
@@ -182,12 +213,12 @@
     "historical_conditional_seconds": 11.242518272,
     "service_ceiling_seconds": 30,
     "physical_execution_authorized": false,
-    "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; fixed-case approval precedes physical execution.",
-    "case": null,
-    "record_sha256": null,
-    "selected_backend": null,
-    "reported_nominal_seconds": null,
-    "reported_stress_seconds": null,
+    "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; the conditional execution gates must qualify before physical execution.",
+    "case": "2026-10-12T153635.004894Z",
+    "record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
+    "selected_backend": "ibm_fez",
+    "reported_nominal_seconds": 11.519211263999999,
+    "reported_stress_seconds": 14.474571264,
     "historical_preparation": {
       "case": "2026-10-12T074042.840320Z",
       "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
@@ -195,7 +226,58 @@
       "reported_nominal_seconds": 11.515410176,
       "reported_stress_seconds": 14.470770176
     },
-    "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
+    "renewal_evidence": "results/ripple/correction-current-source-validation.json",
+    "historical_renewal_rejection": {
+      "state": "model_discrimination_pilot_renewal_unavailable",
+      "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
+    },
+    "execution_authority_state": "conditional_user_authority_pending_source_renewal_and_execution_gates",
+    "case_scope": "historical_record_only; renew after runtime shot-allocation changes"
   },
-  "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission."
+  "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission.",
+  "historical_campaign_proposals": [
+    {
+      "recorded_at": "2026-10-12T10:34:16.000651+00:00",
+      "ledger_sha256": "0caf6b74ddac37a2015eba64eb350a1eb86903bdf33066315856adb0722f4fb1",
+      "scope": "Superseded 270-second pilot-plus-atlas proposal and separate 60-second reserve; the user subsequently capped the campaign at 180 seconds.",
+      "shared_quota": {
+        "last_observed_remaining_seconds": 551,
+        "folded_reserved_ceiling_seconds": 0,
+        "other_proposed_ceiling_seconds": 270,
+        "single_shared_reserve_seconds": 60,
+        "combined_requirement_seconds": 330,
+        "unallocated_at_snapshot_seconds": 221,
+        "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
+        "folded_settled_charge_seconds": 40,
+        "correction_proposed_ceiling_seconds": 30,
+        "held_atlas_proposed_ceiling_seconds": 240,
+        "proposals_are_account_reservations": false
+      }
+    }
+  ],
+  "conditional_execution_authority": {
+    "state": "conditional_user_authority_pending_source_renewal_and_execution_gates",
+    "user_authorized_subject_to_conditions": true,
+    "user_campaign_ceiling_seconds": 180,
+    "case": null,
+    "record_sha256": null,
+    "per_job_ceiling_seconds": 30,
+    "conditions": [
+      "Reviewed and merged code with clean current-head Copilot review and required checks.",
+      "A current digest-bound case whose source, dependencies, calibration, selection, layout and QPY pass submission revalidation.",
+      "The execution owner verifies the combined new correction-plus-atlas campaign remains within 180 seconds and preserves the account reserve."
+    ],
+    "verified_conditions": {
+      "reviewed_merged_code": false,
+      "combined_execution_plan_within_user_cap": false,
+      "fresh_submission_revalidation": false,
+      "retained_case_protocol_at_prepared_revision": true,
+      "current_source_case": false
+    },
+    "conditions_verified_for_submission": false,
+    "physical_execution_authorized": false,
+    "generated_case_scope": "UNAPPROVED_CASE.md retains the planner-generated text; this separate ledger records the subsequent conditional user instruction without rewriting that case.",
+    "historical_case": "2026-10-12T153635.004894Z",
+    "historical_record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207"
+  }
 }

@@ -5,7 +5,18 @@ ripple and rank-sector records, retained written cases, 197.022-second nominal
 estimate and proposed 240-second combined ceiling. Both families have current
 state `historical_renewal_required`; current admission and physical execution
 authorization are false. Source and scoring changes require fresh preparation
-and new written cases before each family can receive owner approval.
+and new written cases that satisfy the user's conditional execution authority.
+
+The [integrated campaign directive](../../gororoba_quantum/RIPPLE_CAMPAIGN.md)
+records the user's 180-second total ceiling and Copilot-plus-checks merge
+authorization while Codex review quota is exhausted. The
+[fixed shot allocation](../../gororoba_quantum/PACKED_ALGEBRA.md#fixed-shot-allocation)
+preserves all static rows and compares complete shot-tier assignments with
+eligible uniform baselines. Historical minimum-tier planning arithmetic gives
+a provisional 118.437402112-second stress estimate
+and proposed ceilings totaling 170 seconds for five jobs. Fresh source-bound
+preparation must establish current admission; the separate 4096-shot evaluation
+distributions remain distinct from the higher-shot planning model summaries.
 
 [Open the standalone explorer](cayley-dickson-ripples.html) in a browser after
 downloading or cloning the repository. The HTML embeds all data and needs
@@ -153,3 +164,46 @@ checks run under normal and optimized Python through `scripts/check_review_folde
 `scripts/check_render_rank_sector_norms.py`, and
 `scripts/check_render_ripple_visualization.py`. Their fixtures verify retained
 bytes after rejection and exercise supported separate destinations.
+
+## Measured static algebra explorer
+
+The measured extractor binds collected ripple and rank-sector data to their
+approved records, QPY bytes, immutable raw registers and retained analyses.
+The portable HTML links box-kite phase fringes, measured associator depths,
+rank-sector probe norms, full outcome distributions, same-PUB event covariance,
+shot-order blocks and provenance. Exact algebra supplies the coordinates;
+integer counts supply the measured quantities. Preparation predictions and
+execution-calibration replay appear as separately labeled residuals.
+
+After collection, set `RIPPLE_RUN` and `RANK_RUN` to the respective retained run
+directories and choose new output paths outside those directories:
+
+```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
+  scripts/extract_measured_ripple.py --run "$RIPPLE_RUN" \
+  --out results/ripple/measured-ripple.json
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
+  scripts/extract_measured_ripple.py --run "$RANK_RUN" \
+  --out results/ripple/measured-rank-sector.json
+PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error "$PYTHON" \
+  scripts/render_measured_ripple.py \
+  --evidence results/ripple/measured-ripple.json \
+  --evidence results/ripple/measured-rank-sector.json \
+  --out results/ripple/measured-cayley-dickson-ripples.html
+```
+
+The renderer accepts either family independently. Add `--check` to reproduce
+and compare an existing output without writing. Both commands install complete
+new outputs atomically and reject replacement or input aliases. The extractor's
+public acquisition command rejects synthetic fixtures. Test fixtures carry a
+visible synthetic banner and supply software validation only.
+
+Shared observations use `(job_id, PUB, shot_index)`. Stochastic outcomes support
+descriptive event covariance; deterministic expected outcomes also support
+error covariance. Different PUBs retain separate observation identities.
+Retained inference gates control interval visibility, and missing or straddled
+execution calibration withholds replay. Rank probe norms do not directly
+measure exact rank or topology. Occupancy rates use settled actual QPU charge
+and retain unavailable values until that charge is verified; they quantify
+measurement volume rather than fidelity or independent information.

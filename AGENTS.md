@@ -29,6 +29,8 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/check_diagnose_qiskit_mock.py \
     scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     scripts/check_render_ripple_visualization.py \
+    scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py \
+    scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py \
     docs/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
@@ -43,6 +45,8 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/check_diagnose_qiskit_mock.py \
     scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     scripts/check_render_ripple_visualization.py \
+    scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py \
+    scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py \
     docs/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
@@ -79,6 +83,10 @@ The rank-sector image gate also uses the plotting-only pin
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_rank_sector_norms.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_ripple_visualization.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_ripple_visualization.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_extract_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_extract_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_measured_ripple.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_measured_ripple.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/review_folded_jobs.py \
     --run-dir results/live/2026-10-12T055624.091217Z --check
   PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \
@@ -105,8 +113,10 @@ The rank-sector image gate also uses the plotting-only pin
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
     qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
-    qpu_planning.py qpu_planning_contracts.py qpu_cases.py local_compute.py \
+    qpu_planning.py qpu_planning_contracts.py qpu_cases.py \
+    qpu_case_allocation_contracts.py local_compute.py \
     algebra_planning.py algebra_planning_contracts.py \
+    pub_shot_allocation.py pub_shot_allocation_contracts.py pub_shot_runtime_contracts.py \
     ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
     native_preflight.py native_preflight_contracts.py \
     placement_feasibility.py placement_feasibility_contracts.py \
@@ -130,6 +140,8 @@ The rank-sector image gate also uses the plotting-only pin
     ../scripts/check_diagnose_qiskit_mock.py \
     ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py \
     ../scripts/check_render_ripple_visualization.py \
+    ../scripts/extract_measured_ripple.py ../scripts/check_extract_measured_ripple.py \
+    ../scripts/render_measured_ripple.py ../scripts/check_render_measured_ripple.py \
     ../docs/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
@@ -179,12 +191,18 @@ The rank-sector image gate also uses the plotting-only pin
   "$PYTHON" experiment_optimizer.py
   "$PYTHON" qpu_planning_contracts.py
   "$PYTHON" algebra_planning_contracts.py
+  "$PYTHON" pub_shot_allocation_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_allocation_contracts.py
+  "$PYTHON" pub_shot_runtime_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_runtime_contracts.py
   "$PYTHON" ripple_contracts.py
   "$PYTHON" rank_sector_contracts.py
   "$PYTHON" native_preflight_contracts.py
   "$PYTHON" placement_feasibility_contracts.py
   PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py
   "$PYTHON" qpu_cases.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error qpu_case_allocation_contracts.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error qpu_case_allocation_contracts.py
   "$PYTHON" local_compute.py
   "$PYTHON" aer_delay_sentinels.py >/dev/null
   "$PYTHON" ../results/live/verify_source_closure.py --check

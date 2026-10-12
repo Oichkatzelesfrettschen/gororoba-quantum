@@ -342,7 +342,6 @@ def _validate_cost_scenarios(scenarios: tuple[CostScenario, ...]) -> None:
 def _validate_plan(plan: CandidatePlan, contracts: tuple[ObservableContract, ...]) -> None:
     _require(bool(plan.name.strip()) and bool(plan.jobs), "each candidate needs a name and jobs")
     _require(len({job.name for job in plan.jobs}) == len(plan.jobs), f"{plan.name}: job names must be unique")
-    _require(len({job.shots for job in plan.jobs}) == 1, f"{plan.name}: jobs must share one uniform shots tier")
     pub_names: set[str] = set()
     member_names: set[str] = set()
     for job in plan.jobs:
@@ -1125,7 +1124,21 @@ def _verify() -> None:
     assert not evaluate_candidate(split, (contract,), BudgetContract(100.0, 10.0, 70.0)).feasible
     assert evaluate_candidate(split, (contract,), budget).total_execution_ceiling_seconds == 80.0
     mixed_shots = replace(split, jobs=(split.jobs[0], replace(split.jobs[1], shots=2048)))
-    assert not evaluate_candidate(mixed_shots, (contract,), budget).feasible
+    mixed_result = evaluate_candidate(mixed_shots, (contract,), budget)
+    assert mixed_result.feasible
+    assert [pub.shots for job in mixed_result.jobs for pub in job.pubs] == [4096, 2048]
+    assert math.isclose(mixed_result.estimated_charge_seconds or 0.0, 4.0 + (4096 + 2048) * 0.00125)
+    mixed_observed = analyze_observations(
+        tuple(
+            ObservedPub(pub.name, pub.member_distributions, job.shots) for job in mixed_shots.jobs for pub in job.pubs
+        ),
+        (contract,),
+    )
+    assert mixed_result.observables[0].confidence_half_width == mixed_observed.observables[0].confidence_half_width
+    assert (
+        mixed_result.observables[0].confidence_half_width
+        > evaluate_candidate(split, (contract,), budget).observables[0].confidence_half_width
+    )
     with_additions = replace(
         cheap,
         jobs=(

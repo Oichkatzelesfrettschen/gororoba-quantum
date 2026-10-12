@@ -1,18 +1,88 @@
-# Live-calibrated correction-policy preparation
+# Correction-policy preparation and renewal
 
-The scoring repair is committed at `efa187f`. Renewal stopped at backend
-admission: Fez exceeded the 25-job queue limit and Marrakesh reported
-maintenance. Kingston alone failed the required three-system snapshot
-condition. The [rejection evidence](correction-renewal-rejection.json) retains
-both discovery and a later eligibility observation. Current-source preparation
-and a fresh written approval case remain outstanding. Physical execution
-remains unapproved.
+The [retained written case](../live/2026-10-12T153635.004894Z/UNAPPROVED_CASE.md)
+retains a successful submit-free preparation at source
+`fb13b0675530c3eb9a4d8c0225bf37cacd8b5923`. All three systems supplied six
+admitted candidates. Fez seed 20261014 won the finite calibrated-quality
+ranking with layout `[24, 23, 16, 22, 3]` and weakest-arm proxy 0.588331.
+The four ordered dynamic PUBs are F(s1), U(s1), U(s3), F(s3), each at 8,192
+shots. The active qubits are 3, 16, 22, 23 and 24; each PUB contains 68 CZ gates.
+Both arms retain measurement, reset and classical dispatch.
 
-The [fresh account observation](correction-renewal-account.json) records 551
-of 600 seconds available and an empty pending-account-job list at its stated
-time. Quota availability and backend eligibility are separate conditions.
-The [scoring validation receipt](scoring-repair-validation.json) records the
-software checks; those checks grant no hardware admission.
+Subsequent runtime shot-allocation edits changed the working experiment
+source. The retained case has current state `historical_renewal_required`;
+current admission and physical execution authorization are false. A fresh
+case must qualify the revised source before execution.
+
+The nominal charge estimate is 11.519211264 seconds. The controller-stress
+scenario estimates 14.474571264 seconds under a proposed 30-second service
+ceiling. Nominal assumptions use 2.3 seconds overhead and 20 microseconds per
+classical stage; stress assumptions use 4.6 seconds and 40 microseconds.
+Those estimates exclude queue and local preparation time and carry scenario
+scope rather than billing confidence coverage.
+
+The user capped the new correction-plus-atlas campaign at 180 seconds. The
+30-second pilot leaves at most 150 seconds for renewed atlas cases. The old
+270-second combined proposal is historical; its two atlas ceilings alone
+sum to 240 seconds and exceed the new allowance. The
+[coordination ledger](../live/qpu-coordination.json) records the cap and
+separate 60-second account reserve. Local per-invocation ceilings and the
+cooperative ledger do not create an account-wide atomic reservation. The
+execution owner must reconcile accepted attempts, settled charges, remaining
+campaign allowance and fresh account quota before each submission.
+
+The user conditionally authorized execution after reviewed and merged code,
+a current digest-bound case and a combined plan within that 180-second cap.
+Those execution gates remain pending. The planner-generated
+`UNAPPROVED_CASE.md` retains its original text; the ledger records the
+subsequent conditional instruction separately. Preparation submitted zero
+physical or mock primitive jobs and recorded zero job identifiers.
+
+The frozen 32,768-shot-per-member model predicts U-minus-F gains of
+0.1068115 and 0.5889893 percentage points for s1 and s3. Both fall below the
+one-percentage-point decision margin. The hypothetical four-point planning
+gain gives joint-power lower bound 0.8806007844 and remains a separate
+sensitivity scenario. Actual raw counts, archived-pair conformance, common
+calibration and returned schedules must qualify before both labels can pass
+`lower_U - upper_F > 0.01` under the four directional bounds. Failed evidence
+gates withhold the decision; a failed gain decision retains F.
+
+## Retained artifact identities
+
+- [Record](../live/2026-10-12T153635.004894Z/record.json):
+  `315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207`.
+- [Executable QPY](../live/2026-10-12T153635.004894Z/isa.qpy):
+  `51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4`.
+- Experiment digest:
+  `6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881`.
+- [Checksums](../live/2026-10-12T153635.004894Z/SHA256SUMS) bind the original record,
+  QPY and written case.
+- [Independent validation receipt](correction-current-source-validation.json)
+  binds source equivalence across merge `ea8eae17005d2226afa981cadad889241d415c47`, all 41
+  runtime sources and seven dependency versions at those commits, candidate
+  ranking, QPY/PUB identity, case replay and cost arithmetic. Later working-source
+  changes require renewal. The receipt preserves historical validation references
+  at their own commits.
+
+Submission re-prepares all three systems and compares the fresh source,
+dependency, calibration, selection, layout and QPY evidence with the retained
+case. Changed bound inputs require renewal. Queueing separates calibration
+checks from execution; the preparation establishes no atomic observation of
+future hardware state. The [protocol](../../gororoba_quantum/MODEL_DISCRIMINATION.md)
+retains the statistical and schedule boundaries.
+
+## Historical renewal rejection
+
+The earlier scoring-repair renewal stopped when Fez exceeded the 25-job queue
+limit and Marrakesh reported maintenance. Kingston alone failed the required
+three-system snapshot condition. The
+[rejection evidence](correction-renewal-rejection.json) retains those bounded
+observations. The [account snapshot](correction-renewal-account.json) records
+551 of 600 seconds available and an empty pending-account-job list at its
+stated time. The successful retained preparation superseded that eligibility
+rejection before the later runtime edits; the prior evidence stays unchanged. The
+[scoring validation receipt](scoring-repair-validation.json) retains its
+software-check scope.
 
 ## Historical case at source revision 67106bd1
 
@@ -68,7 +138,7 @@ evidence withholds the optimizer decision while preserving the raw data.
 The [protocol](../../gororoba_quantum/MODEL_DISCRIMINATION.md) records the
 sampling and numerical assumptions.
 
-## Reproduction and identity
+## Historical reproduction and identity
 
 The [production validation](CORRECTION_VALIDATION.md) records the passing full
 repository gates, local Runtime checks and independent concrete-case audit.
@@ -85,9 +155,9 @@ repository gates, local Runtime checks and independent concrete-case audit.
 - [Account observation](../live/2026-10-12T074042.840320Z/account-inventory.json):
   read-only quota, pending jobs and the settled 29/11-second prior charges.
 
-The written case contains the exact replay and submission commands. Physical
-execution requires explicit approval of that case and fresh calibration
-revalidation. Submission preflight refreshes and reranks all three systems;
+The historical written case retains its exact replay and submission commands.
+Current execution requires a renewed case and the conditional gates above.
+Submission preflight refreshes and reranks all three systems;
 the selected backend is refreshed again immediately before its batch. Queueing
 separates those checks from physical execution, so the comparison is not an
 atomic observation at execution time. Changed selection, calibration or QPY

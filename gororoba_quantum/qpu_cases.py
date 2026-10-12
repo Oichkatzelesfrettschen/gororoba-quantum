@@ -107,6 +107,46 @@ def _numeric_mapping(value: Any) -> Any:
     return value
 
 
+def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
+    """Bind an opted-in allocation to every execution PUB and declared shot tier."""
+    design = record["policy"]["design"]
+    mode = design.get("shot_allocation", "uniform")
+    _require(mode in ("uniform", "per-pub"), "unknown shot allocation mode")
+    allocation = record.get("pub_shots")
+    if mode == "uniform":
+        _require(allocation is None, "uniform design carries a per-PUB shot allocation")
+        return None
+    _require(
+        design["family"] == record["family_configuration"]["name"]
+        and design["family"] in ("ripple", "rank-sector")
+        and design["optimize"] is True,
+        "per-PUB allocation requires an optimized static algebra family",
+    )
+    names = [_identifier(pub["name"], "execution PUB") for pub in record["execution_pubs"]]
+    _require(bool(names) and len(names) == len(set(names)), "execution PUB identities must be unique and complete")
+    if not isinstance(allocation, dict):
+        raise ValueError("per-PUB shot allocation must be a complete mapping")
+    _require(
+        set(allocation) == set(names),
+        "per-PUB shot allocation differs from the complete execution-PUB manifest",
+    )
+    tiers = design["shot_tiers"]
+    _require(isinstance(tiers, list) and bool(tiers), "shot tiers must contain positive counts")
+    tiers = [_count(tier, "shot tier") for tier in tiers]
+    _require(tiers == sorted(set(tiers)), "allocated shot tiers must be unique and increasing")
+    result = {name: _count(allocation[name], "allocated PUB shots") for name in names}
+    _require(set(result.values()) <= set(tiers), "allocated PUB shots exceed the declared tier domain")
+    _require(
+        _count(record["shots"], "recorded shots") == max(result.values()),
+        "recorded shots differ from allocation maximum",
+    )
+    _require(
+        all(pub["kind"] == "static" for pub in record["execution_pubs"]),
+        "per-PUB allocation requires static execution PUBs",
+    )
+    return result
+
+
 def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]:
     policy = record["policy"]
     design = policy["design"]
@@ -120,7 +160,10 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     _require(
         {group["backend"] for group in record["groups"]} <= set(backends), "selected backend is absent from inventory"
     )
+    _shot_allocation(record)
     arguments = ["--family", family]
+    if "shot_allocation" in design:
+        arguments.extend(["--shot-allocation", design["shot_allocation"]])
     objective = design.get("objective", "minimum_charge")
     _require(objective in ("minimum_charge", "precision_at_budget"), "unknown optimizer objective")
     if "objective" in design:
@@ -194,7 +237,8 @@ def _command(arguments: list[str]) -> str:
 def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
     """Cross-check the selected cost ledger against its declared circuit workload."""
     policy = record["policy"]
-    expected_shots = _count(record["shots"], "recorded shots")
+    uniform_shots = _count(record["shots"], "recorded shots")
+    allocation = _shot_allocation(record)
     pub_names: list[str] = []
     job_names: list[str] = []
     for job in candidate["jobs"]:
@@ -204,8 +248,20 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
         _require(overhead >= 0, "job overhead must be nonnegative")
         _require(overhead == policy["design"]["job_overhead_seconds"], "job overhead differs from the design policy")
         executions = []
+        counts = set()
         for pub in job["pubs"]:
-            pub_names.append(_identifier(pub["name"], "PUB"))
+            name = _identifier(pub["name"], "PUB")
+            pub_names.append(name)
+            if allocation is not None:
+                _require(name in allocation, "costed PUB is absent from the shot allocation")
+            expected_shots = allocation[name] if allocation is not None else uniform_shots
+            counts.add(_count(pub["shots"], "PUB shots"))
+            if allocation is not None:
+                _require(
+                    type(pub.get("classical_stage_count")) is int and pub["classical_stage_count"] == 0,
+                    "static allocated PUB costs require zero classical stages",
+                )
+                _require(pub["classical_latency_seconds"] == 0, "static allocated PUB cost includes classical latency")
             _require(_count(pub["shots"], "PUB shots") == expected_shots, "PUB shots differ from the saved plan")
             durations = [
                 _number(pub[key], key)
@@ -224,6 +280,7 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
                 "PUB estimated execution disagrees with its shots and durations",
             )
             executions.append(expected)
+        _require(len(counts) == 1, "each Runtime job must use one PUB shot count")
         charge = _number(job["estimated_charge_seconds"], "job charge", positive=True)
         _require(math.isclose(charge, math.fsum([overhead, *executions]), rel_tol=1e-12), "job charge sum disagrees")
         _require(charge <= job["max_execution_seconds"], "estimated job charge exceeds its service ceiling")
@@ -241,6 +298,106 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
             rel_tol=1e-12,
         ),
         "candidate charge differs from its job sum",
+    )
+
+
+def _validate_allocated_jobs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
+    """Match every tier job to its reserved ceiling and ordered PUB membership."""
+    budget_jobs = record["budget_plan"].get("jobs")
+    _require(
+        isinstance(budget_jobs, list) and len(budget_jobs) == len(candidate["jobs"]),
+        "allocated budget must reserve every selected job",
+    )
+    manifests = {pub["name"]: pub for pub in record["execution_pubs"]}
+    next_indices: dict[tuple[str, str], int] = {}
+    previous_tiers: dict[tuple[str, str], int] = {}
+    coordinates: list[tuple[str, str, int]] = []
+    tier_rows: dict[tuple[str, str, int], list[str]] = {}
+    selected_backends = {group["backend"] for group in record["groups"]}
+    for reserved, job in zip(budget_jobs, candidate["jobs"], strict=True):
+        backend = _identifier(reserved["backend"], "budget backend")
+        kind = _identifier(reserved["kind"], "budget kind")
+        index = _count(reserved["batch_index"], "budget batch index")
+        key = (backend, kind)
+        expected_index = next_indices.get(key, 1)
+        _require(index == expected_index, "allocated budget job identity differs from the canonical batch sequence")
+        next_indices[key] = expected_index + 1
+        coordinates.append((backend, kind, index))
+        _require(
+            backend in selected_backends and backend in record["system_inventory"],
+            "allocated budget backend is outside the selected groups or inventory",
+        )
+        _require(job["name"] == f"{backend}/{kind}/{index}", "allocated budget job identity differs from selection")
+        names = [pub["name"] for pub in job["pubs"]]
+        _require(reserved.get("pub_names") == names, "allocated budget PUB membership or order differs from selection")
+        _require(_count(reserved["pubs"], "budget PUB count") == len(names), "allocated budget PUB count differs")
+        _require(
+            all(manifests[name]["backend"] == backend and manifests[name]["kind"] == kind for name in names),
+            "allocated budget backend or kind differs from the execution manifest",
+        )
+        shots = _count(reserved["shots"], "reserved job shots")
+        _require(shots == job["pubs"][0]["shots"], "allocated budget shots differ from selection")
+        _require(shots >= previous_tiers.get(key, 0), "allocated jobs differ from ascending shot-tier order")
+        previous_tiers[key] = shots
+        tier_rows.setdefault((backend, kind, shots), []).extend(names)
+        _require(
+            _number(reserved["ceiling_seconds"], "reserved job ceiling", positive=True) == job["max_execution_seconds"],
+            "allocated budget ceiling differs from selection",
+        )
+    _require(coordinates == sorted(coordinates), "allocated jobs differ from canonical backend order")
+    for (backend, kind, shots), names in tier_rows.items():
+        expected = [
+            pub["name"]
+            for pub in record["execution_pubs"]
+            if pub["backend"] == backend and pub["kind"] == kind and record["pub_shots"][pub["name"]] == shots
+        ]
+        _require(names == expected, "allocated tier PUB order differs from the execution manifest")
+
+
+def _validate_allocated_scenarios(candidate: dict[str, Any], record: dict[str, Any]) -> None:
+    """Keep the complete allocated workload fixed under each cost assumption."""
+    design = record["policy"]["design"]
+    assumptions = design.get("cost_scenarios", [])
+    scenarios = candidate.get("cost_scenarios", [])
+    by_name = {_identifier(row["name"], "cost scenario"): row for row in assumptions}
+    _require(
+        len(by_name) == len(assumptions) == len(scenarios) and {row["name"] for row in scenarios} == set(by_name),
+        "allocated cost scenarios differ from the declared policy",
+    )
+    charges = [candidate["estimated_charge_seconds"]]
+    for scenario in scenarios:
+        assumption = by_name[scenario["name"]]
+        _require(scenario["feasible"] is True, "allocated cost scenario fails admission")
+        _require(len(scenario["jobs"]) == len(candidate["jobs"]), "allocated cost scenario changed the job count")
+        scenario_record = copy.deepcopy(record)
+        scenario_record["policy"]["design"]["job_overhead_seconds"] = assumption["job_overhead_seconds"]
+        scenario_candidate = dict(
+            candidate, jobs=scenario["jobs"], estimated_charge_seconds=scenario["estimated_charge_seconds"]
+        )
+        _validate_costs(scenario_candidate, scenario_record)
+        _validate_allocated_jobs(scenario_candidate, scenario_record)
+        for nominal_job, scenario_job in zip(candidate["jobs"], scenario["jobs"], strict=True):
+            _require(len(nominal_job["pubs"]) == len(scenario_job["pubs"]), "allocated scenario changed PUB membership")
+            for nominal, modified in zip(nominal_job["pubs"], scenario_job["pubs"], strict=True):
+                _require(
+                    all(
+                        nominal[key] == modified[key]
+                        for key in (
+                            "name",
+                            "shots",
+                            "scheduled_seconds",
+                            "repetition_delay_seconds",
+                            "reset_seconds",
+                            "classical_stage_count",
+                            "classical_latency_seconds",
+                        )
+                    ),
+                    "allocated cost scenario changed the compiled workload",
+                )
+        charges.append(scenario["estimated_charge_seconds"])
+    _require(
+        math.isclose(_number(candidate["worst_case_charge_seconds"], "scenario envelope"), max(charges), rel_tol=1e-12),
+        "allocated scenario envelope disagrees with its ledger",
     )
 
 
@@ -531,6 +688,9 @@ def _case_inputs(run_dir: Path, record: dict[str, Any]) -> tuple[dict[str, Any],
             "summed ceilings consume the declared quota reserve",
         )
     _validate_costs(candidate, record)
+    if _shot_allocation(record) is not None:
+        _validate_allocated_jobs(candidate, record)
+        _validate_allocated_scenarios(candidate, record)
     if record["family_configuration"]["name"] != "folded-correction":
         _require(
             bool(candidate["observables"]) and all(item["feasible"] is True for item in candidate["observables"]),
@@ -928,14 +1088,19 @@ def _render(
     _require(type(source["sources_modified"]) is bool, "source cleanliness is unavailable")
     _require(bool(_HEX_DIGEST.fullmatch(record["experiment_digest"])), "experiment digest is invalid")
     arguments = _reproduction_arguments(record, location)
+    allocation = _shot_allocation(record)
+    shot_description = f"at {_count(record['shots'], 'shots')} shots per PUB"
+    if allocation is not None:
+        tiers = ", ".join(map(str, sorted(set(allocation.values()))))
+        shot_description = f"with per-PUB shot allocation (used tiers: {tiers}; {len(candidate['jobs'])} jobs)"
     lines = [
         f"# Unapproved QPU case: {family}",
         "",
         "Status: UNAPPROVED. The saved record describes a feasible "
         "submit-free dry run. Writing this case supplies zero authorization and submits zero QPU jobs.",
         "",
-        f"The selected bounded-search candidate is `{_identifier(candidate['name'], 'candidate')}` at "
-        f"{_count(record['shots'], 'shots')} shots per PUB. Global optimality remains outside the claim.",
+        f"The selected bounded-search candidate is `{_identifier(candidate['name'], 'candidate')}` "
+        f"{shot_description}. Global optimality remains outside the claim.",
         "",
         "## Artifact and source binding",
         "",

@@ -129,6 +129,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "parallel.py",
     "placement_feasibility.py",
     "predict.py",
+    "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "qpu_cases.py",
     "qpu_planning.py",
@@ -2533,6 +2534,7 @@ APPROVED_RECORD_FIELDS = (
     "schema_version",
     "schema_contract",
     "shots",
+    "pub_shots",
     "policy",
     "versions",
     "instance_sha256_12",
@@ -2719,22 +2721,72 @@ def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
     return sorted(set(reasons))
 
 
-def submission_batches(choices: list[Choice], kind: str, shots: int = SHOTS) -> list[list[ExecutionPub]]:
-    """Keep one result-complete fused cluster inside the Sampler execution bound."""
+def validated_pub_shots(pub_names: list[str], allocation: Any) -> dict[str, int]:
+    """Validate a complete fixed allocation before selecting backend subsets."""
+    if len(pub_names) != len(set(pub_names)):
+        raise LiveRunError("shot allocation requires unique execution PUB names")
+    if not isinstance(allocation, dict) or set(allocation) != set(pub_names):
+        raise LiveRunError("shot allocation must cover exactly the execution PUBs")
+    if any(type(value) is not int or not 1 <= value <= MAX_JOB_EXECUTIONS for value in allocation.values()):
+        raise LiveRunError("PUB shot allocation violates the positive Sampler execution bound")
+    return dict(allocation)
+
+
+def _recorded_job_shots(record: dict[str, Any], job_entry: dict[str, Any]) -> int:
+    """Bind collected denominators to the whole record and homogeneous job."""
+    shots = job_entry.get("shots", record["shots"])
+    if type(shots) is not int or not 1 <= shots <= MAX_JOB_EXECUTIONS:
+        raise LiveRunError("recorded job shots must be positive bounded integers")
+    if "pub_shots" in record:
+        allocation = validated_pub_shots([pub["name"] for pub in record["execution_pubs"]], record["pub_shots"])
+        if "shots" not in job_entry or any(allocation.get(pub["name"]) != shots for pub in job_entry["pubs"]):
+            raise LiveRunError("job shots differ from the approved PUB allocation")
+        if record["shots"] != max(allocation.values()):
+            raise LiveRunError("recorded maximum shots differ from the PUB allocation")
+    options = job_entry.get("options", {})
+    if "default_shots" in options and options["default_shots"] != shots:
+        raise LiveRunError("job shot count differs from its retained Sampler options")
+    return shots
+
+
+def batch_shots(batch: list[ExecutionPub], shots: int, pub_shots: dict[str, int] | None = None) -> int:
+    """Resolve the one shot count accepted by the client-side Sampler job."""
+    if not batch:
+        raise LiveRunError("a submission batch must contain at least one PUB")
+    if pub_shots is None:
+        values = {shots}
+    else:
+        if any(pub.name not in pub_shots for pub in batch):
+            raise LiveRunError("shot allocation omits an execution PUB")
+        values = {pub_shots[pub.name] for pub in batch}
+    if len(values) != 1 or any(type(value) is not int or value < 1 for value in values):
+        raise LiveRunError("each Sampler job requires one positive integer shot count")
+    return next(iter(values))
+
+
+def submission_batches(
+    choices: list[Choice], kind: str, shots: int = SHOTS, pub_shots: dict[str, int] | None = None
+) -> list[list[ExecutionPub]]:
+    """Group whole PUBs by fixed shot count, preserving their relative row order."""
     if kind not in ("static", "dynamic"):
         raise LiveRunError(f"unknown submission kind {kind!r}")
-    if shots < 1 or shots > MAX_JOB_EXECUTIONS:
+    all_pubs = execution_pubs(choices)
+    if pub_shots is not None:
+        pub_shots = validated_pub_shots([pub.name for pub in all_pubs], pub_shots)
+    elif type(shots) is not int or not 1 <= shots <= MAX_JOB_EXECUTIONS:
         raise LiveRunError(f"{shots} shots cannot fit the {MAX_JOB_EXECUTIONS}-execution Sampler job limit")
-    pubs = [pub for pub in execution_pubs(choices) if pub.kind == kind]
-    if not pubs:
-        return []
-    pubs_per_job = MAX_JOB_EXECUTIONS // shots
-    if len(pubs) > pubs_per_job:
-        raise LiveRunError(
-            f"{len(pubs)} {kind} PUBs at {shots} shots exceed the {MAX_JOB_EXECUTIONS}-execution "
-            "Sampler job limit; lower --shots so every result-complete fusion cluster stays in one job"
-        )
-    return [pubs]
+    pubs = [pub for pub in all_pubs if pub.kind == kind]
+    tiers = sorted({pub_shots[pub.name] if pub_shots is not None else shots for pub in pubs})
+    batches = []
+    for tier in tiers:
+        batch = [pub for pub in pubs if (pub_shots[pub.name] if pub_shots is not None else shots) == tier]
+        if len(batch) * tier > MAX_JOB_EXECUTIONS:
+            raise LiveRunError(
+                f"{len(batch)} {kind} PUBs at {tier} shots exceed the {MAX_JOB_EXECUTIONS}-execution "
+                "Sampler job limit; lower the declared shot tier"
+            )
+        batches.append(batch)
+    return batches
 
 
 def _submission_key(entry: dict[str, Any]) -> tuple[str, str, int, int]:
@@ -2778,6 +2830,9 @@ def build_submission_plan(
     choices: list[Choice], args: argparse.Namespace, qpy_archive_sha256: str
 ) -> tuple[dict[str, Any], list[tuple[int, str, str, list[ExecutionPub]]]]:
     """Materialize the complete immutable batch identity before any job call."""
+    full_allocation = getattr(args, "pub_shots", None)
+    if full_allocation is not None:
+        full_allocation = validated_pub_shots([pub.name for pub in execution_pubs(choices)], full_allocation)
     planned_backends = sorted({choice.snap.name for choice in choices})
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
@@ -2789,8 +2844,14 @@ def build_submission_plan(
         if any(choice.snap.backend is not backend for choice in group_choices):
             raise LiveRunError(f"{name}: final groups do not share one refreshed backend snapshot")
         for kind in ("dynamic", "static"):
-            batches = submission_batches(group_choices, kind, args.shots)
+            allocation = (
+                {pub.name: full_allocation[pub.name] for pub in execution_pubs(group_choices)}
+                if full_allocation is not None
+                else None
+            )
+            batches = submission_batches(group_choices, kind, args.shots, allocation)
             for batch_index, batch in enumerate(batches, start=1):
+                selected_shots = batch_shots(batch, args.shots, allocation)
                 pub_manifests = [pub.manifest() for pub in batch]
                 members = [component.entry.name for pub in batch for component in pub.components]
                 batch_count = len(batches)
@@ -2809,7 +2870,7 @@ def build_submission_plan(
                     args.twirl,
                     args.dd,
                     recovery_tags,
-                    args.shots,
+                    selected_shots,
                     getattr(args, "max_execution_seconds", None),
                 )
                 plan_index = len(planned_jobs)
@@ -2819,6 +2880,7 @@ def build_submission_plan(
                         "kind": kind,
                         "batch_index": batch_index,
                         "batch_count": batch_count,
+                        "shots": selected_shots,
                         "members": members,
                         "pubs": pub_manifests,
                         "qpy_archive_sha256": qpy_archive_sha256,
@@ -2856,6 +2918,8 @@ def _job_record(plan_entry: dict[str, Any], job_id: str, recovered: bool = False
         "budget_before": copy.deepcopy(plan_entry["budget_before"]),
         "options": copy.deepcopy(plan_entry["options"]),
     }
+    if "shots" in plan_entry:
+        record["shots"] = plan_entry["shots"]
     if recovered:
         record["job_id_recovered"] = True
     return record
@@ -2932,7 +2996,15 @@ def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], l
             raise LiveRunError(f"submitted job id {job_id!r} appears more than once")
         submitted_job_ids.add(job_id)
         planned_job = planned_by_key[key]
-        for field_name in ("members", "pubs", "qpy_archive_sha256", "calibrations", "recovery_tags", "options"):
+        for field_name in (
+            "members",
+            "pubs",
+            "shots",
+            "qpy_archive_sha256",
+            "calibrations",
+            "recovery_tags",
+            "options",
+        ):
             if submitted_job.get(field_name) != planned_job.get(field_name):
                 raise LiveRunError(f"submitted job {key} differs from its plan in {field_name}")
         submitted_by_key[key] = submitted_job
@@ -3045,7 +3117,10 @@ def submit(
         if (
             fresh_design["optimization"]["selected"] is None
             or args.shots != record["shots"]
-            or any(fresh_design.get(key) != record.get(key) for key in ("family_configuration", "observable_contracts"))
+            or any(
+                fresh_design.get(key) != record.get(key)
+                for key in ("family_configuration", "observable_contracts", "pub_shots")
+            )
         ):
             reselected["statistical_design"] = {
                 "reasons": ["statistical admission, shot tier, or matched-family contract changed"]
@@ -3201,7 +3276,7 @@ def submit(
             args.twirl,
             args.dd,
             plan_entry["recovery_tags"],
-            args.shots,
+            int(plan_entry["shots"]),
             getattr(args, "max_execution_seconds", None),
         )
         effective_options = sampler.options.model_dump(mode="json")
@@ -3990,10 +4065,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         }
     ]
     family_measured: dict[str, list[np.ndarray]] = {}
+    family_replayed: dict[str, list[np.ndarray]] = {}
     family_executed: dict[str, Any] = {}
     correction_family = record.get("family_configuration", {}).get("name") == "folded-correction"
     correction_evidence: list[dict[str, Any]] = []
     for job_entry in record["submission"]["jobs"]:
+        shots = _recorded_job_shots(record, job_entry)
         job = service.job(job_entry["job_id"])
         pub_manifests = job_entry["pubs"]
         # Usage is read before the results and checkpointed to collect.json
@@ -4115,6 +4192,8 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 replica_counts = [
                     _pub_counts(pub_result, packing.registers(entry.packed, prefix), name) for prefix in entry.prefixes
                 ]
+                if any(sum(counts.values()) != shots for counts in replica_counts):
+                    raise LiveRunError(f"{name}: returned shot count differs from the planned {shots}")
                 if correction_family:
                     try:
                         if len(replica_counts) != 1:
@@ -4138,7 +4217,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     _distribution(counts, replica.num_clbits)
                     for counts, replica in zip(replica_counts, entry.replicas, strict=True)
                 ]
-                executed[name] = execution_records[name]
+                executed[name] = execution_records[name] | {"shots": shots}
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
@@ -4147,6 +4226,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
         family_measured.update(measured)
+        family_replayed.update(replayed)
         family_executed.update(executed)
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
@@ -4236,6 +4316,26 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
+    if record.get("pub_shots") is not None:
+        out[0]["family_measurements"] = {
+            name: {
+                "replica_probabilities": [distribution.tolist() for distribution in distributions],
+                "execution": family_executed[name],
+                "replayed_replica_probabilities": (
+                    [distribution.tolist() for distribution in family_replayed[name]]
+                    if name in family_replayed and not family_executed[name]["calibration_changed_during_shots"]
+                    else None
+                ),
+                "replay_status": (
+                    "calibration_changed_during_shots"
+                    if family_executed[name]["calibration_changed_during_shots"]
+                    else "calibration_bound"
+                    if name in family_replayed
+                    else "execution_window_unavailable"
+                ),
+            }
+            for name, distributions in family_measured.items()
+        }
     if record.get("observable_contracts") or correction_family:
         out[0]["family_analysis"] = qpu_planning.measured_family(
             record,
@@ -4335,6 +4435,12 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument(
         "--optimize", action="store_true", help="search bounded shot and replica tiers for the experiment family"
+    )
+    parser.add_argument(
+        "--shot-allocation",
+        choices=("uniform", "per-pub"),
+        default="uniform",
+        help="allocate declared shot tiers to complete static algebra PUBs before measurement",
     )
     parser.add_argument(
         "--objective",
@@ -4533,6 +4639,8 @@ def main(argv: list[str] | None = None) -> int:
         elif len(args.backends) != 3 or set(args.backends) != set(correction_backends):
             parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
         args.max_replicas = 1
+    if args.shot_allocation == "per-pub" and (args.family not in ("ripple", "rank-sector") or not args.optimize):
+        parser.error("per-PUB shot allocation requires an optimized static algebra family")
     if args.family in ("ripple", "rank-sector"):
         if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
             parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")
