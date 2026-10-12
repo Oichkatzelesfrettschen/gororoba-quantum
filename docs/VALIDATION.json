@@ -100,6 +100,6 @@
   "external_pdf_cache_status": "All 39 external source copies preserve their registered original byte counts and SHA-256 values; the ignored cache is optional and excluded from published checksum inventories.",
   "rights_audit_scope": "45 exact-version arXiv license links; four non-arXiv source notices or author-linked deposit licenses; previously verified Das ACM notice. Eleven source copies carry explicit CC BY 4.0 or CC0 evidence.",
   "source_index": "docs/INDEX.md distinguishes all 11 hosted PDF records from all 39 external/local-only records and links their owning notes.",
-  "local_link_count": 360,
+  "local_link_count": 362,
   "rights_verification_boundary": "Offline guards check recorded source bytes, exact-version metadata, licenses and deposited-file identities; the Zenodo path additionally binds the declared license and file metadata to the SHA-256-verified retained endpoint JSON. The primary-source audit supplies the rights judgment."
 }
