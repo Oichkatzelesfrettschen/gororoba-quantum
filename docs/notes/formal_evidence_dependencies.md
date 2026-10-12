@@ -109,13 +109,20 @@ dimension. Four repair routes have different proof obligations:
    `w -> [-A^-1*B*w; w]`. The lift retains eliminated coordinates. For a basis
    change `T`, normalized partners obey `w^T*G*w=1` with
    `G=J^T*J`, `J=T*[-A^-1*B; I]`. A chart theorem needs an invertible pivot on
-   its domain. A global geometric theorem additionally needs chart coverage,
-   overlap maps, rank-drop limits and attachments. The
+   its domain. A global incidence presentation needs chart coverage and
+   compatible overlap maps. Computing rank components, attachments and
+   topological invariants requires further geometry. The
    [dimension-32 skew-Schur construction](dimension32_skew_schur_charts.md)
    retains `S(x)w=0` across rank changes and `det A != 0` after denominator
    clearing. The lift and metric alone do not determine kernel membership.
    Coordinate transitions are isomorphisms on reduced kernels; different
-   center nullities permit rectangular ambient transition matrices.
+   center nullities or pivot sizes permit rectangular ambient transition
+   matrices. The [principal skew atlas](principal_skew_atlas.md) supplies an
+   explicit cover of the nonzero doubly-pure domain at every stage `n>=2`,
+   with fifteen domains in dimension 32. Its kernel-restricted overlap
+   identities give a global semialgebraic incidence presentation. The
+   all-stage written proof, finite exact replay and Rocq formalization remain
+   separate evidence surfaces.
 
 4. **Keep every support sector.** For support in affine XOR coset `a+H`,
    the input sector `c+H` maps into `a+c+H`. Certify the coset cover and zero
@@ -141,7 +148,7 @@ keeping `m1=0`.
 | --- | --- | --- |
 | Average-only obstruction | Equal averages can yield different product averages; complete average/detail coordinates have inverse maps | Newly checked scalar `Qc` certificate; full tower bridge remains open |
 | Exact zero products and rank | Sound recursive sign/product checker plus the retained 16D counterexample; certified pivot and kernel dimensions | Exact Python/Rust evidence exists; port checker soundness and witnesses to Rocq |
-| Schur and sector reduction | Block-elimination kernel bijection, rank sum, metric and full sector cover | Reusable field/matrix lemmas before point certificates or topology claims |
+| Schur and sector reduction | Block-elimination kernel bijection, rank sum, metric and full sector cover | Written principal-cover and overlap proofs and exact replay exist; port field/matrix lemmas, cover and refinement-checker soundness to Rocq |
 | Boolean sign and synthesis | Connect checked normalized sign-code results to basis recursion and controlled-phase reconstruction | Seven prior sign-code/C881 assumption queries are closed; exhaustive quadratic exclusion remains separate finite Rust evidence |
 | Labeled QPE laws | Exact Gaussian-integer amplitudes and normalized distributions; two-bit arms use `y=b0+2*b1`, while the delay arm uses only its measured terminal bit | Port `qpe_diagnostics.py`; ideal laws require zero hardware samples |
 | Finite ripple dynamics | Exact operators, unitarity, return periods and signed graph obstruction | Port the execution owner's exact checker; a depth-0-to-4 hardware run cannot prove a longer operator period |
@@ -331,12 +338,12 @@ tomography and sequential inference retain their own designs and approvals.
 | --- | --- | --- |
 | 1 | Replay the new fold certificate and inspect its assumptions; retain source and raw logs | Formal-evidence follow-up |
 | 2 | Prove the basis-sign/scalar embedding bridge, then the full transported product and zero-product equivalence | Formal algebra, coordinated with source audit |
-| 3 | Prove generic Schur/kernel/metric lemmas, including the residual equation and pivot inequation; instantiate retained charts and complete sector covers | Formal algebra and rank-geometry workstream |
+| 3 | Formalize the principal cover, Schur/kernel/metric identities with pivot inequations, maximal-refinement checker and reduced-kernel overlap maps; instantiate complete sector covers | Formal algebra and rank-geometry workstream |
 | 4 | Prove ideal labeled-law/decoder and deterministic terminal-channel implications; bind count fixtures | Formal-evidence follow-up with execution-owner review |
 | 5 | Certify binomial-tail enclosures and fixed-sample gate soundness before issuing prospective count certificates | Statistics/proof workstream; execution owner supplies frozen policy and records |
 | 6 | Acquire an approved pilot, retain full provenance, evaluate the frozen rule and validate predictions | Execution owner; user approves the concrete submission |
 | 7 | Design identifiable instrument tomography or a sequential protocol only when the pilot decision requires it | Execution and research owners jointly |
-| 8 | Formalize the restricted incidence, doubling and cellular constructions; pursue unrestricted chart coverage, attachments or stronger complexity claims after their independent hypotheses close | Rank-geometry or complexity workstream |
+| 8 | Formalize the restricted incidence, doubling and cellular constructions; pursue unrestricted rank components, attachments, invariants or stronger complexity claims after their independent hypotheses close | Rank-geometry or complexity workstream |
 
 The queue separates reusable mathematical theorems from experiment-specific
 instances. A finite census, a compilation improvement, a new formalization
