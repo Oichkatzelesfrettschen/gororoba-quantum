@@ -181,6 +181,13 @@ classical references, physical boundaries, costs and next admission gates.
 The [proof/experiment synthesis](notes/research_proof_experiment_dependencies.md)
 connects those results to the geometry, Rocq and inference dependencies.
 
+The [endpoint information replay](evidence/vacuum_endpoint_information/README.md)
+records matched-shot precision, same-shot covariance and the four/seven/nine
+product-Pauli setting distinctions. Its finite ideal-readout results leave
+hardware fidelity and charged-time gains as separate measurement gates.
+The [central dispatch ledger](../plans/QUANTUM_DISPATCH.md) records owners,
+dependencies, research scope and the human-supplied execution gates.
+
 The [kernel attachment proof](notes/annihilator_kernel_limits.md) and its
 [replay](evidence/kernel_limits/README.md) retain complete limiting projector
 certificates, a three-coefficient real cone classification, global kernel

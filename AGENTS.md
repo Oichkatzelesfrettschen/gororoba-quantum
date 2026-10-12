@@ -332,6 +332,12 @@ also pass these local gates before push:
   GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py --check
   GOROROBA_WORKERS=2 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
   (cd docs/evidence/vacuum_models && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_endpoint_information/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check
+  (cd docs/evidence/vacuum_endpoint_information
+    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest check_probe
+    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest check_probe
+    sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/nullity_twelve_locus/replay.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/nullity_twelve_locus/replay.py --check
   (cd docs/evidence/nullity_twelve_locus && sha256sum -c SHA256SUMS)

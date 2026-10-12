@@ -1,0 +1,281 @@
+"""Ideal finite-state acquisition comparison; CPU evidence only."""
+
+import hashlib
+import itertools
+import json
+import math
+import sys
+from pathlib import Path
+
+import numpy as np
+import scipy
+from scipy.linalg import expm
+
+
+def require(condition, message):
+    if not condition:
+        raise RuntimeError(message)
+
+
+def real_scalar(value):
+    require(abs(complex(value).imag) < 1e-11, "Expected a real probability/moment")
+    return float(complex(value).real)
+
+
+paulis = {
+    "I": np.eye(2, dtype=complex),
+    "X": np.array([[0, 1], [1, 0]], dtype=complex),
+    "Y": np.array([[0, -1j], [1j, 0]], dtype=complex),
+    "Z": np.diag([1, -1]).astype(complex),
+}
+all_settings = ["".join(labels) for labels in itertools.product("XYZ", repeat=2)]
+four_settings = ["ZZ", "ZX", "XX", "YY"]
+pauli_products = {
+    label: np.kron(paulis[label[0]], paulis[label[1]])
+    for label in all_settings
+}
+pair = np.zeros((4, 4), dtype=complex)
+for occupation in range(1, 4):
+    pair[occupation - 1, occupation] = occupation
+real_pair = (pair + pair.conj().T) / 2
+imaginary_pair = (pair - pair.conj().T) / (2j)
+number = np.diag(np.arange(4)).astype(complex)
+total_shots_per_arm = 36000
+
+
+def density(strength, phase):
+    generator = 1j * (
+        np.exp(1j * phase) * pair.conj().T - np.exp(-1j * phase) * pair
+    )
+    vacuum = np.eye(4, dtype=complex)[:, 0]
+    state = expm(-1j * strength * generator) @ vacuum
+    return np.outer(state, state.conj())
+
+
+def setting_moments(state_density, setting):
+    local_left = paulis[setting[0]]
+    local_right = paulis[setting[1]]
+    probabilities = []
+    outcomes = []
+    for left_result, right_result in itertools.product((-1, 1), repeat=2):
+        projector = np.kron(
+            (paulis["I"] + left_result * local_left) / 2,
+            (paulis["I"] + right_result * local_right) / 2,
+        )
+        probability = real_scalar(np.trace(projector @ state_density))
+        require(probability >= -1e-12, "Positive measurement probability")
+        probabilities.append(probability)
+        outcomes.append([left_result, right_result, left_result * right_result])
+    outcomes_array = np.array(outcomes)
+    probabilities_array = np.array(probabilities)
+    means = probabilities_array @ outcomes_array
+    centered = outcomes_array - means
+    covariance = centered.T @ (probabilities_array[:, None] * centered)
+    exact_second_moment = np.array([
+        [1, means[2], means[1]],
+        [means[2], 1, means[0]],
+        [means[1], means[0], 1],
+    ])
+    analytic_covariance = exact_second_moment - np.outer(means, means)
+    analytic_probabilities = (
+        1 + outcomes_array @ means
+    ) / 4
+    require(np.max(np.abs(covariance - analytic_covariance)) < 1e-12, "Analytic covariance formula")
+    require(np.max(np.abs(probabilities_array - analytic_probabilities)) < 1e-12, "Analytic product probability law")
+    require(abs(sum(probabilities) - 1) < 1e-12, "Normalized measurement law")
+    require(np.linalg.eigvalsh(covariance).min() > -1e-12, "Positive covariance")
+    return {
+        "outcomes_q1_q0_product": outcomes,
+        "probabilities": probabilities,
+        "means_q1_q0_product": means.tolist(),
+        "covariance_q1_q0_product": covariance.tolist(),
+    }
+
+
+four_weights = {
+    "XX": np.array([0.0, 0.5, 0.5]),
+    "ZX": np.array([0.0, 0.5, -0.5]),
+    "YY": np.array([0.0, 0.0, 0.5]),
+}
+nine_weights = {
+    "XX": np.array([0.0, 1 / 3, 0.5]),
+    "YX": np.array([0.0, 1 / 3, 0.0]),
+    "ZX": np.array([0.0, 1 / 3, -0.5]),
+    "YY": np.array([0.0, 0.0, 0.5]),
+}
+imaginary_weights_nine = {
+    "XY": np.array([0.0, 1 / 3, -0.5]),
+    "YY": np.array([0.0, 1 / 3, 0.0]),
+    "ZY": np.array([0.0, 1 / 3, -0.5]),
+    "YX": np.array([0.0, 0.0, 0.5]),
+}
+
+
+def reconstruct(weights):
+    operator = np.zeros((4, 4), dtype=complex)
+    for setting, weight in weights.items():
+        operator += (
+            weight[0] * np.kron(paulis[setting[0]], paulis["I"])
+            + weight[1] * np.kron(paulis["I"], paulis[setting[1]])
+            + weight[2] * pauli_products[setting]
+        )
+    return operator
+
+
+require(np.max(np.abs(reconstruct(four_weights) - real_pair)) < 1e-12, "Four-setting estimator operator")
+require(np.max(np.abs(reconstruct(nine_weights) - real_pair)) < 1e-12, "Nine-setting estimator operator")
+require(np.max(np.abs(reconstruct(imaginary_weights_nine) - imaginary_pair)) < 1e-12, "Imaginary estimator operator")
+
+
+def estimator_summary(moments, weights, setting_count):
+    group_variances = {}
+    group_means = {}
+    for setting, weight in weights.items():
+        means = np.array(moments[setting]["means_q1_q0_product"])
+        covariance = np.array(moments[setting]["covariance_q1_q0_product"])
+        group_variances[setting] = float(weight @ covariance @ weight)
+        group_means[setting] = float(weight @ means)
+    scaled_variance = setting_count * sum(group_variances.values())
+    return {
+        "weights_q1_q0_product": {setting: weight.tolist() for setting, weight in weights.items()},
+        "group_means": group_means,
+        "group_variances_per_shot": group_variances,
+        "N_times_estimator_variance": scaled_variance,
+        "variance_at_N_36000": scaled_variance / total_shots_per_arm,
+        "shots_per_setting": total_shots_per_arm // setting_count,
+        "mean": sum(group_means.values()),
+    }
+
+
+input_paths = sys.argv[1:]
+require(len(input_paths) == 3, "Supply original probe, original result, canonical note")
+inputs = []
+for input_path in input_paths:
+    content = Path(input_path).read_bytes()
+    inputs.append({"bytes": len(content), "sha256": hashlib.sha256(content).hexdigest()})
+require(sum(item["bytes"] for item in inputs) <= 45000, "Input ceiling")
+original_result = json.loads(Path(input_paths[1]).read_text(encoding="utf-8"))
+record = {
+    "reference_assumptions": [
+        "Exact cutoff-four Hamiltonian; q1q0 binary ordering",
+        "Independent identically prepared shots within each setting and arm",
+        "Ideal projective product measurements and ideal readout",
+        "Different settings/arms have independent shot samples",
+        "Reference-state allocation is conditional on the known ideal finite model",
+        "Every arm receives N=36000 total shots; zero controls retained separately per strength",
+        "Four settings receive N/4 each; nine settings receive N/9 each",
+        "IX is averaged equally across settings ending in X; same-shot covariance retained",
+    ],
+    "inputs": inputs,
+    "python": sys.version.split()[0],
+    "numpy": np.__version__,
+    "scipy": scipy.__version__,
+    "arms": [],
+    "hidden_imaginary_control_counterexamples": [],
+    "moments_formula": "For outcomes (s1,s0,s1*s0), mu=(m1,m0,m12); P=(1+s1*m1+s0*m0+s1*s0*m12)/4; Cov= [[1,m12,m0],[m12,1,m1],[m0,m1,1]]-mu*mu.T",
+}
+
+for strength in (0.2, 0.4):
+    positive_density = density(strength, 0.0)
+    state_candidates = [
+        ("phase_zero", positive_density),
+        ("phase_pi", density(strength, math.pi)),
+        ("diagonal_mixture", np.diag(np.diag(positive_density)).astype(complex)),
+        ("zero_interaction", density(0.0, 0.0)),
+    ]
+    for arm_name, state_density in state_candidates:
+        moments = {
+            setting: setting_moments(state_density, setting)
+            for setting in all_settings
+        }
+        four_summary = estimator_summary(moments, four_weights, 4)
+        nine_summary = estimator_summary(moments, nine_weights, 9)
+        imaginary_summary = estimator_summary(moments, imaginary_weights_nine, 9)
+        exact_real_pair = real_scalar(np.trace(real_pair @ state_density))
+        require(abs(four_summary["mean"] - exact_real_pair) < 1e-12, "Unbiased four-setting reference")
+        require(abs(nine_summary["mean"] - exact_real_pair) < 1e-12, "Unbiased nine-setting reference")
+        population = np.diag(state_density).real
+        mean_number = real_scalar(np.trace(number @ state_density))
+        variance_number = real_scalar(np.trace(number @ number @ state_density)) - mean_number**2
+        top_probability = float(population[-1])
+        sqrt_group_variances = {
+            setting: math.sqrt(max(value, 0.0))
+            for setting, value in four_summary["group_variances_per_shot"].items()
+        }
+        sum_sqrt_variances = sum(sqrt_group_variances.values())
+        require(sum_sqrt_variances > 0, "Nondegenerate coherence sampling")
+        conditional_allocation = {
+            "ZZ": 0.25,
+            **{
+                setting: 0.75 * value / sum_sqrt_variances
+                for setting, value in sqrt_group_variances.items()
+            },
+        }
+        conditional_scaled_variance = sum_sqrt_variances**2 / 0.75
+        record["arms"].append({
+            "r": strength,
+            "arm": arm_name,
+            "population": population.tolist(),
+            "exact_Re_ab": exact_real_pair,
+            "exact_Im_ab": real_scalar(np.trace(imaginary_pair @ state_density)),
+            "mean_number": mean_number,
+            "variance_number_per_ZZ_shot": variance_number,
+            "top_probability": top_probability,
+            "commutator_variance_per_ZZ_shot": 16 * top_probability * (1 - top_probability),
+            "setting_moments": moments,
+            "four_uniform_Re_ab": four_summary,
+            "nine_uniform_Re_ab": nine_summary,
+            "nine_uniform_Im_ab": imaginary_summary,
+            "fixed_shot_variance_ratio_nine_over_four": nine_summary["N_times_estimator_variance"] / four_summary["N_times_estimator_variance"],
+            "conditional_Neyman_fixed_IX_weights_ZZ_quarter": {
+                "shot_fractions": conditional_allocation,
+                "N_times_estimator_variance": conditional_scaled_variance,
+                "scope": "Oracle allocation for fixed estimator weights, known finite state, and ZZ=N/4; zero reference permits a zero-variance group only under that known-state assumption",
+            },
+        })
+        if arm_name == "phase_zero":
+            previous = next(item for item in original_result["cutoff_results"] if item["cutoff"] == 4 and item["r"] == strength)
+            require(abs(previous["finite_re_ab"] - exact_real_pair) < 1e-12, "Independent finite-reference reproduction")
+
+    populations = np.diag(positive_density).real
+    perturbation = 0.5 * min(
+        math.sqrt(populations[0] * populations[3]),
+        math.sqrt(populations[1] * populations[2]),
+    )
+    control_density = np.diag(populations).astype(complex)
+    hidden_density = control_density + perturbation * pauli_products["XY"]
+    minimum_eigenvalue = float(np.linalg.eigvalsh(hidden_density).min())
+    require(minimum_eigenvalue > 0, "Physical hidden-coherence control")
+    hidden_probability_residual = 0.0
+    for setting in four_settings:
+        original = np.array(setting_moments(control_density, setting)["probabilities"])
+        modified = np.array(setting_moments(hidden_density, setting)["probabilities"])
+        hidden_probability_residual = max(hidden_probability_residual, float(np.max(np.abs(original - modified))))
+    require(hidden_probability_residual < 1e-12, "Four-setting blind subspace")
+    record["hidden_imaginary_control_counterexamples"].append({
+        "r": strength,
+        "construction": "rho_hidden = diag(p_n) + t XY",
+        "t": perturbation,
+        "minimum_eigenvalue": minimum_eigenvalue,
+        "four_setting_probability_residual": hidden_probability_residual,
+        "Re_ab": real_scalar(np.trace(real_pair @ hidden_density)),
+        "Im_ab": real_scalar(np.trace(imaginary_pair @ hidden_density)),
+        "XY": real_scalar(np.trace(pauli_products["XY"] @ hidden_density)),
+    })
+
+record["workload"] = {
+    "strengths": 2,
+    "arms_per_strength": ["phase_zero", "phase_pi", "diagonal_mixture", "zero_interaction"],
+    "four_setting_arm_basis_variants": 32,
+    "nine_setting_arm_basis_variants": 72,
+    "shots_per_arm": total_shots_per_arm,
+    "whole_workload_shots_each_design": 8 * total_shots_per_arm,
+    "excluded_additional_costs": ["Full-encoding references", "Independent readout/preparation calibration", "Packing and patch/time controls", "Implementation variants", "Job floors and splits"],
+    "odd_contrast_variance": "For independent equal-N phase arms: Var((Re_plus-Re_minus)/2)=(Var_plus+Var_minus)/4",
+    "occupation_constraint": "n_ZZ >= Var(n)/sigma_n^2",
+    "commutator_constraint": "n_ZZ >= 16 p_top(1-p_top)/sigma_commutator^2",
+    "prospective_gate": "Compare complete-arm endpoint mean-square error/information and returned charged time, retaining occupancy/cutoff and diagnostic requirements; settings count alone is insufficient",
+}
+record["status"] = "CPU ideal finite-state acquisition comparison passed"
+json.dump(record, sys.stdout, indent=2, sort_keys=True, allow_nan=False)
+sys.stdout.write("\n")
