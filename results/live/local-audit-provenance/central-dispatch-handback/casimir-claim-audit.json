@@ -1,0 +1,40 @@
+{
+  "schema": "central-deferred-casimir-claim-audit-v1",
+  "repository_alias": "open_gororoba",
+  "observed_head": "b2fd9f624abefb63cab8b3f0056a6cf648aaef14",
+  "execution_class": "source-and-canonical-registry-read-only",
+  "canonical_queries": {
+    "claims": ["C-871", "C-740", "C-741"],
+    "experiments": ["E-081", "E-044"],
+    "claim_experiment_refs": "C-871 or experiment E-081/E-044",
+    "claim_evidence_rows_for_three_claims": 0
+  },
+  "findings": [
+    {
+      "mechanism": "worldline-empirical-proof-boundary",
+      "observed": "C-871 asserts Monte Carlo agreement with ideal plate energy, remains Verified, and names proofs/verified/C871_CasimirExact.v. The proof establishes ideal formula scaling, negativity and unit separation. E-081 names the worldline-casimir replay and stdout CSV; its output_path_refs array is empty.",
+      "required_next": "Audit retained replay outputs, estimator normalization, quadrature and loop convergence, uncertainty and empirical admission before a typed claim revision. Preserve the valid ideal-formula proof under its actual mathematical scope.",
+      "state": "scoped_source_finding; empirical_replay_pending"
+    },
+    {
+      "mechanism": "drude-plasma-claim-linkage",
+      "observed": "E-044 is casimir-drude-plasma with canonical claim references C-740/C-741. C-740 describes magneto-optical Voigt/Faraday response; C-741 describes Drude transport diagnostics. The retained corrected-experiment-replay.toml carries the same references.",
+      "required_next": "Identify matching source propositions and use typed gororoba-db experiment revision plus regenerated exports and signatures. Preserve immutable correction and transition history.",
+      "state": "canonical_linkage_mismatch_verified; typed_repair_pending"
+    },
+    {
+      "mechanism": "worldline-signed-standard-error",
+      "observed": "energy.rs defines a negative energy prefactor and returns error=prefactor*sqrt(error_sq), despite documenting error as a Monte Carlo standard error. A positive variance therefore returns a negative reported error. The CLI profile discards the error field.",
+      "required_next": "Verify the reachable numerical case and audit all uncertainty consumers before a source fix, targeted regression and reviewed isolated integration.",
+      "state": "source_expression_verified; numerical_regression_pending"
+    }
+  ],
+  "source_sha256": {
+    "proofs/verified/C871_CasimirExact.v": "00aa966aba80e83b06b98f851c0d331d1256ddf178a67772d3c16f6e22776815",
+    "crates/casimir_core/src/energy.rs": "2d208665564b9771178c939a7889bdb1b391bed5ff4ce73920ec1d59f8211f8c",
+    "crates/gororoba_cli_physics/src/bin/worldline_casimir.rs": "4d1091fee57e8f3083f4d5ab3858621f22a12dda8ad749e23de1a96a2cf69e58",
+    "data/output/audit/casimir-optics-discrimination/corrected-experiment-replay.toml": "96a643618ce7c2e76ad0cbd81357aa553b93c1a2aaad8484d6cf7f2aac51f4e5"
+  },
+  "writes": "Only this central local handback receipt; canonical open_gororoba inputs and generated mirrors receive zero edits.",
+  "priority": "Follow the immediate Ripple qualification/acquisition handoff. These findings affect Casimir claims and authorize zero QPU jobs."
+}

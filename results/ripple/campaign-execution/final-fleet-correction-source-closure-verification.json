@@ -1,0 +1,23 @@
+{
+  "checksums": [
+    "UNAPPROVED_CASE.md: OK",
+    "isa.qpy: OK",
+    "record.json: OK",
+    "source-closure.json: OK"
+  ],
+  "dependency_count": 7,
+  "discovery_calibrations": {
+    "ibm_fez": "2026-10-12T13:09:29-07:00",
+    "ibm_kingston": "2026-10-12T12:14:06-07:00",
+    "ibm_marrakesh": "2026-10-12T12:53:05-07:00"
+  },
+  "quantum_submissions": 0,
+  "record": "results/live/2026-10-12T202752.126072Z/record.json",
+  "record_sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+  "service_calls": 0,
+  "source_closure_sha256": "c0e45ebec25ab4788ceb683a499ed8273005b9dcc17ef4055ccb334b95c80a16",
+  "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+  "source_file_count": 42,
+  "sources_modified": false,
+  "status": "pass"
+}

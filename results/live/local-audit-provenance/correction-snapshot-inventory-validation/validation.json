@@ -1,0 +1,77 @@
+{
+  "base_revision": "ae51352c95c537b4ae526faaf65473514b9a966e",
+  "final_execution_gate": "central accepted completion receipt, all participating owners and children complete or independently recovered and idle, relevant reviewed merged PRs, final fresh source/calibration/QPY/quota admission",
+  "full_repository_and_source_gates": {
+    "exit_code": 0,
+    "harness_sha256": "d60596b198b1192cee1da7680864d0ca893f5ce96cf0a8311566cb6f2e8af374",
+    "log_sha256": "38617569e36e61b47b9e45014b194a40cc6eb62354b4251a1ddffa1027140733"
+  },
+  "generic_dry_run": {
+    "attempted_combinations": 256,
+    "command": "live_run.py --out ../results/live",
+    "exit_code": 1,
+    "frontier_combinations": 4782969,
+    "log_sha256": "93313bebb684a8993d2714be5ce31761ae63c36716bf536bfe93ae169f5a574b",
+    "new_record_created": false,
+    "physical_qpu_jobs_submitted": 0,
+    "runtime_path": "Generic discovery retains its default eligible-only filtering; correction-only snapshot retention is disabled.",
+    "sample_rejection": "ibm_fez dynamic: cannot satisfy 2 required joint-placement rounds for folded_qpe_mod15",
+    "schema": "generic-submit-free-bounded-search-rejection-v1",
+    "scope": "Default generic family combination. The finite search returned zero admitted combination within its256-attempt bound. The result does not establish exhaustive hardware infeasibility.",
+    "termination": "FUSION_MAX_ATTEMPTS"
+  },
+  "independent_review": "native_preflight: clean production review and clean expanded case/drift addendum; completed and idle",
+  "normal_and_optimized_contracts": {
+    "all_inactive_rejections": 1,
+    "eligibility_drift_rejections": 1,
+    "excluded_peer_calibration_drift_rejections": 1,
+    "failed_refresh_rejections": 2,
+    "production_scenarios": [
+      "maintenance",
+      "queue",
+      "inactive",
+      "missing-cz",
+      "healthy"
+    ],
+    "serialized_cases": 5,
+    "source_approval_refusal_before_primitives": true
+  },
+  "physical_submissions": 0,
+  "positive_correction_dry_run": {
+    "authority": "validation only; final committed reviewed source cases require renewal",
+    "ceiling_seconds": 30,
+    "exit_code": 0,
+    "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+    "nominal_seconds": 11.519211264,
+    "pubs": 4,
+    "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+    "record_sha256": "3a66462d5f62b8e74e1946754d38d4b2eb699dc8000a66c6419bcc3ea1a09d92",
+    "reserve_seconds": 60,
+    "run_directory": "results/live/2026-10-12T185136.764695Z",
+    "selected_backend": "ibm_fez",
+    "shots_per_pub": 8192,
+    "sources_modified": true,
+    "stress_seconds": 14.474571264
+  },
+  "regression_before_repair": "production caller dropped refreshed maintenance peer and failed exact inventory guard",
+  "runtime_audit": {
+    "api_changes": [],
+    "audit_sha256": "27ad4c1aadc651f2519c4f0d84dcf6774d1e078492e38b161cee6be9d86ddca3",
+    "client_side_destinations_resolve": true,
+    "installed_version": "0.50.0",
+    "primary_migration_triggers": 0
+  },
+  "schema": "correction-complete-snapshot-inventory-validation-v1",
+  "source_sha256": {
+    "gororoba_quantum/MODEL_DISCRIMINATION.md": "c41dfbc52c2bc18f64ffd54ce3fa1bad7f4e2a329dc8ba768621745f998140e0",
+    "gororoba_quantum/correction_planning_contracts.py": "7492da729ba69b0e2123439028b02202fde4646cf649aff465b7b4ec0a516723",
+    "gororoba_quantum/live_run.py": "4cae6f2c3aceeaefb83fc319644450ca3f0391d84dcb15f962da8fd9ba664d4f"
+  },
+  "supporting_log_sha256": {
+    "correction-discovery-case-integration.log": "ae28349edc5f82058ddbb08dc08808ef9697bf4296360ed92b0ff3d6681b86a3",
+    "correction-discovery-regression-green.log": "ab98eab3e32ace85379c8d9f278cac206f4221a77475ae9c276eea496a40574f",
+    "correction-discovery-regression-red.log": "16f5342159705fbe6f6c959fea10f109a451b07cdb76aed909a08cae5b382f25",
+    "correction-inventory-family-dry-run.log": "d9c5dd6c429dec4cfb2e898f233edd613a1e8ac4f5836eab9af4754652b67873",
+    "correction-inventory-full-gates.log": "38617569e36e61b47b9e45014b194a40cc6eb62354b4251a1ddffa1027140733"
+  }
+}

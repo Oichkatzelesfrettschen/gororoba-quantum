@@ -1,0 +1,346 @@
+{
+  "backends": {
+    "ibm_fez": {
+      "calibration": "2026-10-12T13:09:29-07:00",
+      "capabilities": {
+        "control_flow": [
+          "if_else"
+        ],
+        "dynamic_circuits": true,
+        "num_qubits": 156,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ]
+      },
+      "excluded_edges": {
+        "102-103": "cz error 0.06113462358188457",
+        "103-102": "cz error 0.06113462358188457",
+        "148-149": "cz error 0.06439104692101763",
+        "149-148": "cz error 0.06439104692101763",
+        "149-150": "cz error 0.07379921905417827",
+        "150-149": "cz error 0.07379921905417827",
+        "150-151": "cz error 0.07844971645199927",
+        "151-150": "cz error 0.07844971645199927",
+        "27-28": "cz error 1.0",
+        "28-27": "cz error 1.0",
+        "31-32": "cz error 0.05370209399764678",
+        "32-31": "cz error 0.05370209399764678",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "49-50": "cz error 0.031084782490909235",
+        "50-49": "cz error 0.031084782490909235",
+        "63-64": "cz error 0.04605299876220356",
+        "64-63": "cz error 0.04605299876220356",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0"
+      },
+      "excluded_qubits": {
+        "102": "readout error 0.118",
+        "108": "T1=124.9us T2=17.7us",
+        "126": "readout error 0.082",
+        "149": "T1=41.9us T2=4.6us",
+        "150": "T1=114.6us T2=5.6us",
+        "155": "T1=171.8us T2=19.7us",
+        "33": "T1=127.7us T2=8.8us",
+        "46": "T1=176.3us T2=15.3us",
+        "53": "T1=159.5us T2=16.6us",
+        "66": "T1=136.8us T2=18.7us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.211",
+        "87": "readout error 0.181",
+        "90": "T1=10.1us T2=113.1us",
+        "93": "sx error 0.0323"
+      },
+      "fetched_at": "2026-10-12T20:41:59+00:00",
+      "medians": {
+        "cz_error": 0.00267585872484985,
+        "readout_error": 0.009033203125,
+        "t1_us": 140.96307867508685,
+        "t2_us": 99.90506534230825
+      },
+      "operational": true,
+      "pending_jobs": 0,
+      "status_msg": "active"
+    },
+    "ibm_kingston": {
+      "calibration": "2026-10-12T12:14:06-07:00",
+      "capabilities": {
+        "control_flow": [
+          "if_else"
+        ],
+        "dynamic_circuits": true,
+        "num_qubits": 156,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ]
+      },
+      "excluded_edges": {
+        "111-112": "cz error 0.16393370368690838",
+        "112-111": "cz error 0.16393370368690838",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.034902916747519164",
+        "120-121": "cz error 0.032984158295178506",
+        "121-116": "cz error 0.034902916747519164",
+        "121-120": "cz error 0.032984158295178506",
+        "121-122": "cz error 0.033719348469989224",
+        "122-121": "cz error 0.033719348469989224",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0",
+        "84-85": "cz error 0.03231417393333538",
+        "85-84": "cz error 0.03231417393333538",
+        "85-86": "cz error 0.04544182831617796",
+        "86-85": "cz error 0.04544182831617796",
+        "86-87": "cz error 0.06156715358705758",
+        "87-86": "cz error 0.06156715358705758"
+      },
+      "excluded_qubits": {
+        "112": "sx error 0.0180",
+        "113": "readout error 0.178",
+        "115": "T1=114.5us T2=14.9us",
+        "120": "readout error 0.256",
+        "121": "T1=15.1us T2=25.6us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\"",
+        "48": "T1=247.3us T2=17.5us"
+      },
+      "fetched_at": "2026-10-12T20:42:00+00:00",
+      "medians": {
+        "cz_error": 0.0019402906314269774,
+        "readout_error": 0.00830078125,
+        "t1_us": 245.93568202532947,
+        "t2_us": 142.3123194256375
+      },
+      "operational": true,
+      "pending_jobs": 8,
+      "status_msg": "active"
+    },
+    "ibm_marrakesh": {
+      "calibration": "2026-10-12T12:53:05-07:00",
+      "capabilities": {
+        "control_flow": [
+          "if_else"
+        ],
+        "dynamic_circuits": true,
+        "num_qubits": 156,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ]
+      },
+      "excluded_edges": {
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "113-114": "cz error 1.0",
+        "113-119": "cz error 1.0",
+        "114-113": "cz error 1.0",
+        "119-113": "cz error 1.0",
+        "119-133": "cz error 0.09306347831624068",
+        "129-130": "cz error 1.0",
+        "130-129": "cz error 1.0",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "133-119": "cz error 0.09306347831624068",
+        "40-41": "cz error 0.12332102463850399",
+        "41-40": "cz error 0.12332102463850399",
+        "64-65": "cz error 0.06063385133740884",
+        "65-64": "cz error 0.06063385133740884",
+        "65-66": "cz error 0.05440915079898023",
+        "66-65": "cz error 0.05440915079898023",
+        "81-82": "cz error 0.07469783469660052",
+        "82-81": "cz error 0.07469783469660052",
+        "82-83": "cz error 1.0",
+        "83-82": "cz error 1.0",
+        "95-99": "cz error 1.0",
+        "99-95": "cz error 1.0"
+      },
+      "excluded_qubits": {
+        "108": "T1=19.5us T2=7.7us",
+        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
+        "117": "T1=27.1us T2=8.3us",
+        "119": "readout error 0.117",
+        "122": "T1=182.9us T2=19.0us",
+        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
+        "136": "T1=168.5us T2=17.5us",
+        "17": "T1=165.6us T2=13.0us",
+        "22": "T1=155.6us T2=18.5us",
+        "23": "readout error 0.081",
+        "26": "T1=6.4us T2=8.3us",
+        "37": "readout error 0.146",
+        "42": "T1=277.7us T2=7.5us",
+        "51": "T1=9.7us T2=1.2us",
+        "58": "readout error 0.160",
+        "65": "sx error 0.0119",
+        "71": "T1=152.8us T2=13.5us",
+        "72": "T1=119.7us T2=19.2us",
+        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
+        "83": "readout error 0.093",
+        "86": "T1=175.6us T2=7.3us",
+        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
+        "96": "T1=169.1us T2=15.4us"
+      },
+      "fetched_at": "2026-10-12T20:42:01+00:00",
+      "medians": {
+        "cz_error": 0.0028551404558680715,
+        "readout_error": 0.0120849609375,
+        "t1_us": 164.6706098018448,
+        "t2_us": 75.79570949841978
+      },
+      "operational": true,
+      "pending_jobs": 0,
+      "status_msg": "active"
+    }
+  },
+  "boundary": "Read-only planning observation; submission refreshes Target, properties, calibration and budget independently.",
+  "budget": {
+    "instance_sha256_12": "e3de05b6901e",
+    "usage_consumed_seconds": 49,
+    "usage_limit_seconds": 600,
+    "usage_period": {
+      "end_time": "2026-10-12T20:41:57.194Z",
+      "start_time": "2026-09-14T20:41:57.194Z"
+    },
+    "usage_remaining_seconds": 551
+  },
+  "cases": [
+    {
+      "all_saved_calibrations_match": true,
+      "family": "folded-correction",
+      "instance_matches": true,
+      "inventory": {
+        "ibm_fez": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T13:09:29-07:00",
+          "live_calibration": "2026-10-12T13:09:29-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        },
+        "ibm_kingston": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T12:14:06-07:00",
+          "live_calibration": "2026-10-12T12:14:06-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        },
+        "ibm_marrakesh": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T12:53:05-07:00",
+          "live_calibration": "2026-10-12T12:53:05-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        }
+      },
+      "record": "results/live/2026-10-12T202752.126072Z/record.json",
+      "record_sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c"
+    },
+    {
+      "all_saved_calibrations_match": true,
+      "family": "ripple",
+      "instance_matches": true,
+      "inventory": {
+        "ibm_fez": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T13:09:29-07:00",
+          "live_calibration": "2026-10-12T13:09:29-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        },
+        "ibm_kingston": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T12:14:06-07:00",
+          "live_calibration": "2026-10-12T12:14:06-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        },
+        "ibm_marrakesh": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T12:53:05-07:00",
+          "live_calibration": "2026-10-12T12:53:05-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        }
+      },
+      "record": "results/live/2026-10-12T203301.342941Z/record.json",
+      "record_sha256": "f380511031e2161632801e20b9794caabecb52e9ba33d46941530f39539e0fe9"
+    },
+    {
+      "all_saved_calibrations_match": true,
+      "family": "rank-sector",
+      "instance_matches": true,
+      "inventory": {
+        "ibm_fez": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T13:09:29-07:00",
+          "live_calibration": "2026-10-12T13:09:29-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        },
+        "ibm_kingston": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T12:14:06-07:00",
+          "live_calibration": "2026-10-12T12:14:06-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        },
+        "ibm_marrakesh": {
+          "calibration_matches": true,
+          "expected_calibration": "2026-10-12T12:53:05-07:00",
+          "live_calibration": "2026-10-12T12:53:05-07:00",
+          "live_eligibility_reason": null,
+          "recorded_eligibility": "eligible"
+        }
+      },
+      "record": "results/live/2026-10-12T202604.294879Z/record.json",
+      "record_sha256": "7159448f76a68c3e1bd71576cb9f55542f91d5dfdb437ed8a882f452fbc0722f"
+    }
+  ],
+  "new_qpu_submissions": 0,
+  "observed_at": "2026-10-12T20:42:01.856932+00:00",
+  "pending_instance_job_ids": [],
+  "pending_inventory_complete": true,
+  "schema": "live-quantum-campaign-admission-observation-v1",
+  "usage_limit_reached": false
+}

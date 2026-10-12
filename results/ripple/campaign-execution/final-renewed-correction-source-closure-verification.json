@@ -1,0 +1,74 @@
+{
+  "quantum_submissions": 0,
+  "records": [
+    {
+      "checksum_manifest_sha256": "59bbbc84439bea8ec3f6cf044ae4d320864072d6f70d5189e0953c3e2c7cd3b9",
+      "checksum_results": [
+        "UNAPPROVED_CASE.md: OK",
+        "isa.qpy: OK",
+        "record.json: OK",
+        "source-closure.json: OK"
+      ],
+      "dependency_count": 7,
+      "discovery_calibrations": {
+        "ibm_fez": "2026-10-12T11:53:19-07:00",
+        "ibm_kingston": "2026-10-12T12:14:06-07:00",
+        "ibm_marrakesh": "2026-10-12T12:53:05-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "record": "results/live/2026-10-12T200830.246684Z/record.json",
+      "record_sha256": "8dc6d11f7e8d5683bf10214b976fa76e686fafacf35562c2f8e8ffe922c8d9ae",
+      "source_closure_sha256": "140c59d87058bea657f384595c9619a1b1e7e92679d7ff7d02e488b2bad7ef18",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "source_file_count": 42,
+      "sources_modified": false,
+      "status": "pass"
+    },
+    {
+      "checksum_manifest_sha256": "dbd34b22423e12a8dd0dcf62644e4c4ed5d8b3aef318d3b445c27b0f06d4149e",
+      "checksum_results": [
+        "UNAPPROVED_CASE.md: OK",
+        "isa.qpy: OK",
+        "record.json: OK",
+        "source-closure.json: OK"
+      ],
+      "dependency_count": 7,
+      "discovery_calibrations": {
+        "ibm_kingston": "2026-10-12T12:14:06-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "record": "results/live/2026-10-12T195043.912458Z/record.json",
+      "record_sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "source_closure_sha256": "b625c48b59578ea8c325dad90bebe3dc85d7e0426d4b96267872f8baea27b9a6",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "source_file_count": 42,
+      "sources_modified": false,
+      "status": "pass"
+    },
+    {
+      "checksum_manifest_sha256": "3164177d124fa72f82856466d91d1abb33bcab014da7be1add053c2b8c82ef11",
+      "checksum_results": [
+        "UNAPPROVED_CASE.md: OK",
+        "isa.qpy: OK",
+        "record.json: OK",
+        "source-closure.json: OK"
+      ],
+      "dependency_count": 7,
+      "discovery_calibrations": {
+        "ibm_kingston": "2026-10-12T12:14:06-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "record": "results/live/2026-10-12T195828.029302Z/record.json",
+      "record_sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "source_closure_sha256": "2bde00dba5e456fffdcde012fc990f9db5b4f38b4ba8264ebd60a0f84595ac62",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "source_file_count": 42,
+      "sources_modified": false,
+      "status": "pass"
+    }
+  ],
+  "schema": "fresh-renewed-correction-source-verification-v1",
+  "scope": "Fresh declared source/dependency and saved checksum verification; discovery calibrations are retained preparation observations. Runtime physical admission remains separate.",
+  "service_calls": 0,
+  "status": "pass"
+}

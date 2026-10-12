@@ -1,0 +1,14 @@
+{
+  "all_review_threads_resolved": true,
+  "coderabbit_status": "success",
+  "codex_verdict": "clean-comment@2026-10-12T17:49:53Z",
+  "copilot_check_conclusion": "success",
+  "copilot_completed_at": "2026-10-12T17:53:12Z",
+  "copilot_open_findings": 0,
+  "copilot_review_id": 5494298780,
+  "github_mergeable_state_before_merge": "clean",
+  "head": "5af63f55defac9452230f006766bac3aa3906a7a",
+  "merge": "ae51352c95c537b4ae526faaf65473514b9a966e",
+  "physical_submissions": 0,
+  "schema": "campaign-reviewed-merge-receipt-v1"
+}

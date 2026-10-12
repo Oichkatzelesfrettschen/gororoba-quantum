@@ -1,0 +1,78 @@
+{
+  "schema": "ripple-actual-idle-calibration-renewal-v1",
+  "observed_at": "2026-10-12 21:06:26 UTC",
+  "owners": [
+    {
+      "thread": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a131b9-7f9c-7ef1-8ba1-3193f08928ec",
+      "turn_status": "completed",
+      "completed_at": 1791835635,
+      "cursor": "a21336ca-45f6-477d-9cfa-93aba1c03287:58"
+    },
+    {
+      "thread": "01a129a2-94d7-7e70-a281-780352df62eb",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a131b9-6da8-7c61-8c46-8384ec6e99ab",
+      "turn_status": "completed",
+      "completed_at": 1791835647,
+      "cursor": "bcb1562e-4f50-4e0f-b144-0a65d41bd533:29"
+    },
+    {
+      "thread": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a131b9-8ad8-7072-8df1-ba88237f091a",
+      "turn_status": "completed",
+      "completed_at": 1791835670,
+      "cursor": "e213a01a-6f83-4cca-a210-10145b6062e9:20"
+    },
+    {
+      "thread": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a131b9-9c09-7d92-9d77-3f46fc6f90ee",
+      "turn_status": "completed",
+      "completed_at": 1791835653,
+      "cursor": "4ac61577-07f3-4c96-a1db-a88808d2c3d7:5"
+    },
+    {
+      "thread": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a131b9-a703-78a1-964a-742be1ef72b4",
+      "turn_status": "completed",
+      "completed_at": 1791835739,
+      "cursor": "3fc0fbbf-ebf5-4838-876f-eafe9f834e62:17"
+    },
+    {
+      "thread": "01a12c8e-0e53-7792-bead-6b71282df961",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a131c2-73cb-71d0-925d-5b8be13ed671",
+      "turn_status": "completed",
+      "completed_at": 1791836207,
+      "cursor": "83da5c8d-b353-407e-b696-7ed156955f9b:164"
+    },
+    {
+      "thread": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+      "thread_status": {
+        "type": "idle"
+      },
+      "turn_id": "01a1314b-6a29-7971-8dd4-c12caaa45e5b",
+      "turn_status": "completed",
+      "completed_at": 1791838095,
+      "cursor": "b76a309e-24f4-4fb5-90fd-15cabe19dd00:27"
+    }
+  ],
+  "actual_idle": true,
+  "scope": "Direct user reiterated go; reviewed-source closure persists. Physical submission independently refreshes calibration and budget."
+}

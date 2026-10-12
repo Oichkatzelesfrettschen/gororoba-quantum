@@ -1,0 +1,226 @@
+diff --git a/results/live/qpu-coordination.json b/results/live/qpu-coordination.json
+index 4794839..3b70b49 100644
+--- a/results/live/qpu-coordination.json
++++ b/results/live/qpu-coordination.json
+@@ -1,16 +1,19 @@
+ {
+   "schema": "cooperative-qpu-campaign-coordination-v1",
+-  "updated_at": "2026-10-12T06:13:42.402221+00:00",
+-  "scope": "two active IBMQuantum chats; cooperative ownership supplements per-invocation runner guards",
++  "updated_at": "2026-10-12T10:34:16.000651+00:00",
++  "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
+   "shared_quota": {
+     "last_observed_remaining_seconds": 551,
+     "folded_reserved_ceiling_seconds": 0,
+-    "other_proposed_ceiling_seconds": 240,
++    "other_proposed_ceiling_seconds": 270,
+     "single_shared_reserve_seconds": 60,
+-    "combined_requirement_seconds": 300,
+-    "unallocated_at_snapshot_seconds": 251,
++    "combined_requirement_seconds": 330,
++    "unallocated_at_snapshot_seconds": 221,
+     "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
+-    "folded_settled_charge_seconds": 40
++    "folded_settled_charge_seconds": 40,
++    "correction_proposed_ceiling_seconds": 30,
++    "held_atlas_proposed_ceiling_seconds": 240,
++    "proposals_are_account_reservations": false
+   },
+   "families": [
+     {
+@@ -39,73 +42,160 @@
+       ],
+       "total_charge_seconds": 40,
+       "raw_evidence": "2026-10-12T055624.091217Z/raw",
+-      "collection": "2026-10-12T055624.091217Z/collect.json"
++      "collection": "2026-10-12T055624.091217Z/collect.json",
++      "excluded_from_new_submission": true,
++      "evidence_pull_request": "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/37"
+     },
+     {
+       "family": "ripple",
+       "owner": "Design a single-run reality ripple",
+       "science": "packed finite Cayley-Dickson walk, box-kite, and Design C hardware comparison",
+       "backend": "ibm_kingston",
+-      "state": "submit_free_preparation_unapproved",
++      "state": "historical_preparation_requires_renewal_held_for_model_discrimination",
+       "proposed_pubs": 146,
+       "proposed_ceiling_seconds": 180,
+       "accepted_job_ids": [],
+-      "qualification": "placement search rejects tested pool combinations; source repair and remaining routed candidates pending"
++      "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before exact-case approval; native mock timing remains unavailable.",
++      "case": "2026-10-12T062505.208379Z",
++      "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
++      "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
++      "proposed_shots_per_pub": 4096,
++      "reported_nominal_seconds": 157.08726656,
++      "reported_stress_seconds": 159.38726656,
++      "admitted_endpoints": 1138,
++      "required_endpoints": 1138,
++      "relative_placement_score_floor": 0.8,
++      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
+     },
+     {
+       "family": "rank-sector",
+       "owner": "Design a single-run reality ripple",
+       "science": "finite rank-sector dark, bright, and isolated control comparison",
+       "backend": "ibm_kingston",
+-      "state": "submit_free_preparation_unapproved",
++      "state": "historical_preparation_requires_renewal_held_for_model_discrimination",
+       "proposed_pubs": 36,
+       "proposed_ceiling_seconds": 60,
+       "accepted_job_ids": [],
+       "proposed_shots_per_pub": 4096,
+-      "reported_nominal_seconds": 39.9347,
+-      "reported_stress_seconds": 42.2347,
+-      "qualification": "other owner reports admitted candidate; final source refresh pending"
++      "reported_nominal_seconds": 39.93470336,
++      "reported_stress_seconds": 42.23470336,
++      "qualification": "Historical local endpoint admission retained. Shared-source and readout-scoring changes require fresh preparation before exact-case approval; native mock timing remains unavailable.",
++      "case": "2026-10-12T062505.552988Z",
++      "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
++      "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
++      "admitted_endpoints": 196,
++      "required_endpoints": 196,
++      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
++    },
++    {
++      "family": "folded-correction",
++      "owner": "Design a single-run reality ripple",
++      "science": "Fixed-sample measured-bit versus known-label correction for two odd supplied eigenlabels; retain measurement, reset and dispatch",
++      "backend": null,
++      "state": "renewal_unavailable_backend_eligibility",
++      "case": null,
++      "record_sha256": null,
++      "experiment_digest": null,
++      "proposed_pubs": 4,
++      "proposed_shots_per_pub": 8192,
++      "proposed_ceiling_seconds": 30,
++      "reported_nominal_seconds": null,
++      "reported_stress_seconds": null,
++      "accepted_job_ids": [],
++      "qualified_candidates": null,
++      "searched_backends": [
++        "ibm_fez",
++        "ibm_kingston",
++        "ibm_marrakesh"
++      ],
++      "qualification": "Scoring repair requires source-bound renewal. Fez queue and Marrakesh maintenance prevent the required three-system snapshot set; local tests pass separately. Historical preparation remains retained.",
++      "model_gain_known_minus_measured": null,
++      "physical_execution_authorized": false,
++      "historical_preparation": {
++        "case": "2026-10-12T074042.840320Z",
++        "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
++        "experiment_digest": "e29428189eac0bad0aae4e9fb0d787addd3f118b6ec1e7d10833557cce8c60b8",
++        "backend": "ibm_fez",
++        "reported_nominal_seconds": 11.515410176,
++        "reported_stress_seconds": 14.470770176,
++        "qualified_candidates": 18,
++        "model_gain_known_minus_measured": {
++          "1": 0.000823974609375,
++          "3": 0.00640869140625
++        }
++      },
++      "renewal_evidence": "results/ripple/correction-renewal-rejection.json",
++      "current_source_commit": "efa187f30cf0604265455198ce1aa9b8addd1acd",
++      "current_experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881"
+     }
+   ],
+   "deduplication": {
+     "folded_4096_other_chat": "comparison preparation only; excluded from hardware campaign; reuse owner raw and collected results",
+-    "static_witness_overlap": "reconcile historical static endpoints against ripple/rank-sector controls before authorizing both"
++    "static_witness_overlap": "Rank sectors measure coefficient-normalized multiplication-path norms; ripple measures associator interference and sedenion fringes. Endpoint and member names are disjoint. Historical DesignC repetitions are intentional fresh-patch/packing controls:9members share3atlas rows and3isolated reference rows measure changed neighboring workload."
+   },
+   "backend_policy": "each complete control family stays on its independently admitted backend; alternate QPUs require their own live case and approval",
+-  "other_chat_confirmation": "zero accepted or in-flight physical jobs; hold ripple and rank physical submissions until concrete cases and owner approval; preserve canonical main",
++  "other_chat_confirmation": "Direct user priority verified: model discrimination and a measurable optimizer decision precede atlas spending; broad cases remain unapproved and their record/QPY bytes remain retained.",
+   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
+   "account_inventory_observation": {
+-    "observed_at": "2026-10-12T06:07:45.213941+00:00",
+-    "scope": "Read-only account usage, accessible backend names, pending jobs and two accepted job statuses",
+-    "instance_sha256_12": "e3de05b6901e",
+-    "budget": {
+-      "usage_limit_seconds": 600,
+-      "usage_consumed_seconds": 49,
+-      "usage_remaining_seconds": 551,
+-      "usage_period": {
+-        "start_time": "2026-09-14T06:07:45.125Z",
+-        "end_time": "2026-10-12T06:07:45.125Z"
++    "accepted_jobs": [
++      {
++        "charge_seconds": 29,
++        "id": "db67fqsvf2bc73d0pk4g",
++        "status": "DONE",
++        "usage_source": "job.usage(partial=False)"
++      },
++      {
++        "charge_seconds": 11,
++        "id": "db67frimb58s738bci4g",
++        "status": "DONE",
++        "usage_source": "job.usage(partial=False)"
+       }
+-    },
++    ],
+     "accessible_backend_names": [
+       "ibm_fez",
+       "ibm_kingston",
+       "ibm_marrakesh"
+     ],
+-    "pending_account_jobs": [],
+-    "accepted_jobs": [
+-      {
+-        "id": "db67fqsvf2bc73d0pk4g",
+-        "status": "DONE",
+-        "charge_seconds": 29,
+-        "usage_source": "job.usage(partial=False)"
++    "budget": {
++      "usage_consumed_seconds": 49,
++      "usage_limit_seconds": 600,
++      "usage_period": {
++        "end_time": "2026-10-12T10:21:01.466Z",
++        "start_time": "2026-09-14T10:21:01.466Z"
+       },
+-      {
+-        "id": "db67frimb58s738bci4g",
+-        "status": "DONE",
+-        "charge_seconds": 11,
+-        "usage_source": "job.usage(partial=False)"
+-      }
+-    ]
+-  }
++      "usage_remaining_seconds": 551
++    },
++    "instance_sha256_12": "e3de05b6901e",
++    "observed_at": "2026-10-12T10:21:03.446011+00:00",
++    "pending_account_jobs": [],
++    "scope": "Read-only account usage, backend names, pending account jobs and settled prior-job charges"
++  },
++  "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
++  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions require owner approval of the linked cases.",
++  "scientific_priority_gate": {
++    "state": "model_discrimination_pilot_renewal_unavailable",
++    "source": "Direct user instruction verified in Audit Heron quantum claims",
++    "design": "gororoba_quantum/MODEL_DISCRIMINATION.md",
++    "broad_atlas_spending": "held",
++    "recommended_pubs": 4,
++    "recommended_shots_per_pub": 8192,
++    "historical_conditional_seconds": 11.242518272,
++    "service_ceiling_seconds": 30,
++    "physical_execution_authorized": false,
++    "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; fixed-case approval precedes physical execution.",
++    "case": null,
++    "record_sha256": null,
++    "selected_backend": null,
++    "reported_nominal_seconds": null,
++    "reported_stress_seconds": null,
++    "historical_preparation": {
++      "case": "2026-10-12T074042.840320Z",
++      "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
++      "selected_backend": "ibm_fez",
++      "reported_nominal_seconds": 11.515410176,
++      "reported_stress_seconds": 14.470770176
++    },
++    "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
++  },
++  "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission."
+ }

@@ -1,0 +1,57 @@
+{
+ "schema": "quantum-participant-pause-handback-v1",
+ "observed_utc": "2026-10-12 20:00:02 UTC",
+ "human_source_thread": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+ "human_answer": "Pause completed specialist goals and central after handoff (Recommended)",
+ "authority": "Direct human reply; unfinished persistent goals pause; execution exempt.",
+ "owner_observations": [
+  {
+   "owner": "01a12c8e-0e53-7792-bead-6b71282df961",
+   "app_state": "idle",
+   "turn": "completed",
+   "reported_goal": "paused"
+  },
+  {
+   "owner": "01a129a2-94d7-7e70-a281-780352df62eb",
+   "app_state": "idle",
+   "turn": "completed",
+   "reported_goal": null
+  },
+  {
+   "owner": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+   "app_state": "idle",
+   "turn": "completed",
+   "reported_goal": null
+  },
+  {
+   "owner": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+   "app_state": "idle",
+   "turn": "completed",
+   "reported_goal": null
+  },
+  {
+   "owner": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+   "app_state": "idle",
+   "turn": "completed",
+   "reported_goal": null
+  },
+  {
+   "owner": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+   "app_state": "idle",
+   "turn": "completed",
+   "reported_goal": null
+  }
+ ],
+ "scope": "All six finite pre-run scopes accepted complete. Goal states are owner handbacks; app/turn states are central wait observations. Historical completions retained.",
+ "children": "Owner rosters terminal/completed; recovered usage-limit errors retain error state. Central children completed; zero active.",
+ "central": {
+  "production": "complete",
+  "goal": "active until final handoff",
+  "then": "update_goal paused; report status; stop"
+ },
+ "executor": {
+  "goal": "active",
+  "remaining": "static cases,classifier binding,final idle check",
+  "policy": "180s cap,60s reserve,correction first; family ceilings30+80+60"
+ }
+}

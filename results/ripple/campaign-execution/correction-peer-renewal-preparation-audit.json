@@ -1,0 +1,197 @@
+{
+  "audit_script_sha256": "a915b1f3c62de7b97087cbe3fe79bb325d04e8505cb7361d491697092b6055cd",
+  "audited_ceiling_seconds": 30.0,
+  "campaign_and_reserve_fit_quota_snapshots": true,
+  "combined_active_qubit_shots": 163840,
+  "combined_component_shots": 32768,
+  "combined_job_count": 1,
+  "combined_nominal_seconds": 11.519211263999999,
+  "combined_stress_seconds": 14.474571264,
+  "complete_campaign": false,
+  "families": [
+    {
+      "active_qubit_definition": "Physical wires touched by gates, reset, or measurement in one PUB across any control branch; barriers and delays excluded. This counts participating wires per shot, not instantaneous pulse concurrency.",
+      "active_qubit_shots": 163840,
+      "active_qubit_shots_per_stress_second": 11319.160824299493,
+      "active_qubits_per_pub_histogram": {
+        "5": 4
+      },
+      "case_sha256": "bdd82c5e86d3b332c062c73c852369d5f5603e84c8ce9f361cbd12fc76b978aa",
+      "checks": "source closure, model denominators, QPY manifests, independent cost and endpoint arithmetic, allocations, ceilings, and exact case bytes",
+      "component_shots": 32768,
+      "component_shots_per_stress_second": 2263.8321648598985,
+      "correction_hypothetical_power": {
+        "alpha": 0.05,
+        "assumed_gain": 0.04,
+        "assumptions": [
+          "reference F rates 6433/8192 and 6241/8192 are fixed scenario values from already inspected evidence",
+          "the assumed gain is hypothetical and supplies neither a fresh model prediction nor independent validation",
+          "binomial product power adds independence between measured and known arms within each label",
+          "the joint-power union bound requires no independence between labels",
+          "prospective decision data must come from a fresh acquisition after freezing the design",
+          "hypothetical power qualification alone supplies neither complete run admission nor execution approval"
+        ],
+        "comparisons": [
+          {
+            "deliberately_truncated_terms": 0,
+            "hypothetical_known_probability": 0.8252783203125,
+            "hypothetical_measured_probability": 0.7852783203125,
+            "label": 1,
+            "pmf_mass_residual": 0.0,
+            "power": 0.9520579067241106,
+            "reference_shots": 8192,
+            "reference_successes": 6433,
+            "summed_terms": 8193,
+            "unclipped_power": 0.9520579067241106
+          },
+          {
+            "deliberately_truncated_terms": 0,
+            "hypothetical_known_probability": 0.8018408203125,
+            "hypothetical_measured_probability": 0.7618408203125,
+            "label": 3,
+            "pmf_mass_residual": 2.220446049250313e-16,
+            "power": 0.9285428776880107,
+            "reference_shots": 8192,
+            "reference_successes": 6241,
+            "summed_terms": 8193,
+            "unclipped_power": 0.9285428776880107
+          }
+        ],
+        "evidence_class": "HYPOTHETICAL planning scenario; not a modeled or measured advantage",
+        "hypothetical_power_qualified": true,
+        "joint_power_union_lower_bound": 0.8806007844121213,
+        "method": "full_finite_binomial_power_for_four_CP_bounds",
+        "minimum_decision_grid_distance_to_margin": 4.802590359599679e-08,
+        "minimum_gain": 0.01,
+        "numerical_method": "SciPy beta quantiles and binomial tails in float64; math.fsum aggregation; floating-point rounding is not interval-certified",
+        "per_bound_tail": 0.0125,
+        "power_formula": "sum_j BinPMF(j;n,p_measured) * BinSF(r(j)-1;n,p_known), j=0,...,n",
+        "pub_count": 4,
+        "rejection_reasons": [],
+        "required_joint_power": 0.8,
+        "schema": 1,
+        "shots_per_pub": 8192,
+        "threshold_formula": "r(j)=min{k: L(k,n)-U(j,n)>minimum_gain}; r=n+1 when the set is empty",
+        "versions": {
+          "numpy": "2.5.4",
+          "scipy": "1.18.1"
+        }
+      },
+      "evaluation_batch_count": 1,
+      "evaluation_model_shots": 8192,
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "family": "folded-correction",
+      "family_reserved_patch_qubits": 5,
+      "issues": [],
+      "job_costs": {
+        "controller-stress": {
+          "jobs": [
+            {
+              "ceiling_seconds": 30.0,
+              "charge_seconds": 14.474571264,
+              "name": "ibm_fez/dynamic/1",
+              "overhead_seconds": 4.6,
+              "pubs": 4,
+              "shots": 8192
+            }
+          ],
+          "total_seconds": 14.474571264
+        },
+        "nominal": {
+          "jobs": [
+            {
+              "ceiling_seconds": 30.0,
+              "charge_seconds": 11.519211263999999,
+              "name": "ibm_fez/dynamic/1",
+              "overhead_seconds": 2.3,
+              "pubs": 4,
+              "shots": 8192
+            }
+          ],
+          "total_seconds": 11.519211263999999
+        }
+      },
+      "member_count": 4,
+      "nominal_seconds": 11.519211263999999,
+      "peak_active_qubits": 5,
+      "peak_reserved_qubits": 5,
+      "physical_pub_shots": 32768,
+      "planning_batch_count": 1,
+      "planning_model_shots": 32768,
+      "pub_count": 4,
+      "qpy_circuit_widths": [
+        156
+      ],
+      "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+      "quota_snapshot_remaining_seconds": 551,
+      "record": "results/live/2026-10-12T210111.066250Z",
+      "record_sha256": "6d4de1692e84f5d8b8b9308fcd387aac59a74490133360ebad19e04b624967b7",
+      "recorded_sources_modified": false,
+      "reserve_seconds": 60.0,
+      "reserved_qubit_definition": "Union of declared component physical footprints; buffer neighbors excluded.",
+      "reserved_qubit_shots": 163840,
+      "reserved_qubits_per_pub_histogram": {
+        "5": 4
+      },
+      "shot_allocation_histogram": {
+        "8192": 4
+      },
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "source_manifest_sha256": {
+        "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+        "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+        "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+        "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+        "gororoba_quantum/correction_circuits.py": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+        "gororoba_quantum/correction_collection.py": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+        "gororoba_quantum/correction_planning.py": "b0fdb646a422df83b18d9914562a1a290aff6049aa354f0a7c7dbbad1d53c713",
+        "gororoba_quantum/correction_schedule.py": "04b1b33096b1fc303a23ee8f1a26cebddf6002fc81fdc1864c709f74f3d933a6",
+        "gororoba_quantum/correction_statistics.py": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+        "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+        "gororoba_quantum/diagnostic_experiments.py": "306131bed57e866faaa7def8f6776655f7cc4aab2221a8c1511ace9f76b83f0e",
+        "gororoba_quantum/experiment_optimizer.py": "a548562dde3622b2c0aedef7beee5e01fc9d47f52898fe0c0ba58290813a7d03",
+        "gororoba_quantum/experiments.py": "d73058084725663dc5da7e55bd90602b42b79cc1802146735c3e8a7c9a831061",
+        "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+        "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+        "gororoba_quantum/integral_homology.py": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+        "gororoba_quantum/live_run.py": "4cae6f2c3aceeaefb83fc319644450ca3f0391d84dcb15f962da8fd9ba664d4f",
+        "gororoba_quantum/local_compute.py": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402",
+        "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+        "gororoba_quantum/native_preflight.py": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a",
+        "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+        "gororoba_quantum/packing.py": "cf2fc70d2f0d339c5e67e27f013a12398b55bb7408c6de6588308b656e01142c",
+        "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+        "gororoba_quantum/placement_feasibility.py": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+        "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+        "gororoba_quantum/pub_shot_allocation.py": "5d7834df8b4e9d8b219894a5d48fd0f399c9884412cb33c76cc2631b3bd21888",
+        "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+        "gororoba_quantum/qpu_cases.py": "f3f3757f31b0708ad936365b43b628b5f031dcc91772058315fa035602a0d377",
+        "gororoba_quantum/qpu_planning.py": "3d67572320efbfb481172344aa2d6fea2091ebff5bbcc367838d8148526eaa32",
+        "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+        "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+        "gororoba_quantum/rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+        "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+        "gororoba_quantum/rank_sector_contracts.py": "701b15fa0769665100b5887e41d369b908a6f6212e6af27848e7cb7ed7e80a1a",
+        "gororoba_quantum/rank_sector_experiments.py": "d2afe9e85f1689a56475b58add137c9b063bc4ac315b874094a3dc7958be1c90",
+        "gororoba_quantum/ripple_contracts.py": "456198bcd8ba8d346a0474bfbfe0572eb42cbe80725ffe2b34a53e7b49a48276",
+        "gororoba_quantum/ripple_dynamics.py": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11",
+        "gororoba_quantum/ripple_experiments.py": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+        "gororoba_quantum/runtime_contracts.py": "669e038ecc8820706f5b5227c1b7c742c24ef26baf97f15d3abb62afee5d8771",
+        "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+        "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+        "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9"
+      },
+      "state": "planned",
+      "stress_seconds": 14.474571264,
+      "summed_service_ceiling_seconds": 30.0
+    }
+  ],
+  "minimum_quota_snapshot_remaining_seconds": 551,
+  "physical_qpu_jobs_submitted": 0,
+  "quota_boundary": "Retained preparation snapshots; live pre-submission quota checks remain required.",
+  "schema": "independent-preparation-audit-v1",
+  "shared_quota_reserve_seconds": 60.0,
+  "status": "partial-pass",
+  "unallocated_campaign_ceiling_seconds": 150.0,
+  "user_campaign_ceiling_seconds": 180
+}

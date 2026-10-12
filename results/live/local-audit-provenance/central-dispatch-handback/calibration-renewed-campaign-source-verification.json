@@ -1,0 +1,41 @@
+{
+  "schema": "central-provisional-campaign-source-verification-v1",
+  "observed_utc": "2026-10-12T20:40:30.521713+00:00",
+  "canonical_quantum_head": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+  "audit_sha256": "ca464fd1effba495b90476de1a849d1ebf995e797c7b1614aba78156a5bf8677",
+  "records": [
+    {
+      "family": "folded-correction",
+      "record": "results/live/2026-10-12T202752.126072Z",
+      "record_sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+      "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+      "source_file_count": 42,
+      "dependency_count": 7,
+      "working_source_matches_commit": true,
+      "requirements_and_versions_match": true
+    },
+    {
+      "family": "ripple",
+      "record": "results/live/2026-10-12T195043.912458Z",
+      "record_sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "source_file_count": 42,
+      "dependency_count": 7,
+      "working_source_matches_commit": true,
+      "requirements_and_versions_match": true
+    },
+    {
+      "family": "rank-sector",
+      "record": "results/live/2026-10-12T195828.029302Z",
+      "record_sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+      "source_file_count": 42,
+      "dependency_count": 7,
+      "working_source_matches_commit": true,
+      "requirements_and_versions_match": true
+    }
+  ],
+  "execution_admission": false,
+  "pending": "Final all-three-QPU static fleet comparison and actual idle recheck",
+  "boundary": "Exact provisional record, QPY, 42 declared sources, requirement bytes, seven dependency versions; live calibration is owned by Ripple."
+}

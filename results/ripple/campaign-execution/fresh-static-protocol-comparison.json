@@ -1,0 +1,1674 @@
+{
+  "comparison_script_sha256": "773991553692088d12aad04548d08a3deb95319839b9042fec81b4ac55e2e845",
+  "complete37_control_comparison": true,
+  "families": [
+    {
+      "binding_renewal_required": true,
+      "control_count": 21,
+      "controls": [
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane3_kite4_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_05",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_05",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane3_kite4_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_06",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_06",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane1_kite2_edge1_4_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_13",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_13",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane1_kite2_edge1_4_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_14",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_14",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane4_kite5_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_19",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_19",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane4_kite5_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_20",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_20",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane6_kite7_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_44",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_44",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane6_kite7_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_45",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_45",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_design_c_32_1_16_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.04200225611027148,
+          "old_terms": [
+            {
+              "member": "ripple_design_c_32_1_16",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_32_1_16_isolated",
+              "pub": "ibm_kingston_static_pub_47",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.04200225611027148,
+          "renewed_terms": [
+            {
+              "member": "ripple_design_c_32_1_16",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_32_1_16_isolated",
+              "pub": "ibm_kingston_static_pub_47",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 0.5625,
+          "score_values_sha256": "40728755a4863bca1cf07b5565560f322d8ebcb9ff28c4990b9b656855655072",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_design_c_8_1_4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_design_c_8_1_4",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_8_1_4_isolated",
+              "pub": "ibm_kingston_static_pub_48",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_design_c_8_1_4",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_8_1_4_isolated",
+              "pub": "ibm_kingston_static_pub_48",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "1e4eaede8c55a58e0566994e1966041c53fc768373725c873cd5ab64697fb378",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_walk_lane0_pair9_22_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_walk_lane0_pair9_22_depth4_packed",
+              "pub": "ibm_kingston_static_pub_89",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane0_pair9_22_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_61",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_walk_lane0_pair9_22_depth4_packed",
+              "pub": "ibm_kingston_static_pub_89",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane0_pair9_22_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_61",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane2_kite3_edge1_4_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_62",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_62",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane2_kite3_edge1_4_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_63",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_63",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_walk_lane1_pair9_22_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_walk_lane1_pair9_22_depth4_packed",
+              "pub": "ibm_kingston_static_pub_90",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane1_pair9_22_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_64",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_walk_lane1_pair9_22_depth4_packed",
+              "pub": "ibm_kingston_static_pub_90",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane1_pair9_22_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_64",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_walk_lane1_pair25_31_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_walk_lane1_pair25_31_depth4_packed",
+              "pub": "ibm_kingston_static_pub_89",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane1_pair25_31_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_66",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_walk_lane1_pair25_31_depth4_packed",
+              "pub": "ibm_kingston_static_pub_89",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane1_pair25_31_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_66",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_walk_lane0_pair25_31_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_walk_lane0_pair25_31_depth4_packed",
+              "pub": "ibm_kingston_static_pub_90",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane0_pair25_31_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_70",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_walk_lane0_pair25_31_depth4_packed",
+              "pub": "ibm_kingston_static_pub_90",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane0_pair25_31_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_70",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane5_kite6_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_104",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_104",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane5_kite6_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_105",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_105",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane0_kite1_edge2_4_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_110",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_110",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_atlas_lane0_kite1_edge2_4_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.07467067752937152,
+          "old_raw_half_width": 0.07467067752937152,
+          "old_terms": [
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_111",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.07467067752937152,
+          "renewed_raw_half_width": 0.07467067752937152,
+          "renewed_terms": [
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_111",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "strict_defect_absolute_estimate_threshold": 0.17467067752937154,
+          "strict_equivalence_absolute_estimate_threshold": 0.025329322470628482
+        },
+        {
+          "changes": [],
+          "endpoint": "ripple_design_c_16_1_8_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible": false,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.11200601629405729,
+          "old_raw_half_width": 0.028001504073514323,
+          "old_terms": [
+            {
+              "member": "ripple_design_c_16_1_8",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_16_1_8_isolated",
+              "pub": "ibm_kingston_static_pub_137",
+              "shots": 1024,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.11200601629405729,
+          "renewed_raw_half_width": 0.028001504073514323,
+          "renewed_terms": [
+            {
+              "member": "ripple_design_c_16_1_8",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_16_1_8_isolated",
+              "pub": "ibm_kingston_static_pub_137",
+              "shots": 1024,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 0.25,
+          "score_values_sha256": "1d39417d3c179de2e62abfdf694a0cff1b42b13096fbfa0b7b9a3047cbb5105b",
+          "strict_defect_absolute_estimate_threshold": 0.2120060162940573,
+          "strict_equivalence_absolute_estimate_threshold": 0.0
+        }
+      ],
+      "equivalence_possible_control_count": 20,
+      "family": "ripple",
+      "full_endpoint_denominator": 1138,
+      "full_endpoint_denominator_match": true,
+      "full_observable_contracts_identical": true,
+      "full_pub_shot_map_identical": true,
+      "identities": {
+        "experiment_digest": {
+          "old": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+          "renewed": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d"
+        },
+        "qpy_sha256": {
+          "old": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+          "renewed": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9"
+        },
+        "record_sha256": {
+          "old": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87",
+          "renewed": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1"
+        },
+        "source_commit": {
+          "old": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
+          "renewed": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+        }
+      },
+      "interpretation": "Every changed prepared-record/QPY identity needs prospective protocol rebinding before acquisition, even if mathematical controls and allocation widths are identical. Retain old protocol evidence and compare all 37 controls; zero tolerance widening is permitted.",
+      "old_protocol_classifier_would_withhold": true,
+      "required_control_count": 21,
+      "run": "results/live/2026-10-12T210043.972363Z",
+      "state": "planned",
+      "substantive_control_changes": []
+    },
+    {
+      "binding_renewal_required": true,
+      "control_count": 16,
+      "controls": [
+        {
+          "changes": [],
+          "endpoint": "rank_sector_0_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_0_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_0_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_21",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_0_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_0_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_21",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_0_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_0_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_0_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_22",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_0_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_0_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_22",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_1_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_1_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_1_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_23",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_1_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_1_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_23",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_1_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_1_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_1_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_24",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_1_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_1_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_24",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_2_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_2_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_2_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_25",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_2_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_2_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_25",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_2_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_2_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_2_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_26",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_2_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_2_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_26",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_3_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_3_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_3_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_27",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_3_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_3_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_27",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_3_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_3_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_3_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_28",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_3_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_3_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_28",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_4_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_4_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_4_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_29",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_4_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_4_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_29",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_4_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_4_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_4_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_30",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_4_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_4_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_30",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_5_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_5_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_5_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_31",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_5_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_5_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_31",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_5_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_5_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_5_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_32",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_5_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_5_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_32",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_6_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_6_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_6_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_33",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_6_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_6_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_33",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_6_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_6_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_6_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_34",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_6_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_6_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_34",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_7_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_7_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_7_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_35",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_7_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_7_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_35",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        },
+        {
+          "changes": [],
+          "endpoint": "rank_sector_7_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible": true,
+          "normalized_tolerance": 0.1,
+          "old_normalized_half_width": 0.06867944282071789,
+          "old_raw_half_width": 0.06867944282071789,
+          "old_terms": [
+            {
+              "member": "rank_sector_7_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_7_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_36",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "renewed_normalized_half_width": 0.06867944282071789,
+          "renewed_raw_half_width": 0.06867944282071789,
+          "renewed_terms": [
+            {
+              "member": "rank_sector_7_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_7_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_36",
+              "shots": 4096,
+              "sign": -1
+            }
+          ],
+          "score_range_R": 1.0,
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "strict_defect_absolute_estimate_threshold": 0.1686794428207179,
+          "strict_equivalence_absolute_estimate_threshold": 0.031320557179282116
+        }
+      ],
+      "equivalence_possible_control_count": 16,
+      "family": "rank-sector",
+      "full_endpoint_denominator": 196,
+      "full_endpoint_denominator_match": true,
+      "full_observable_contracts_identical": true,
+      "full_pub_shot_map_identical": true,
+      "identities": {
+        "experiment_digest": {
+          "old": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+          "renewed": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d"
+        },
+        "qpy_sha256": {
+          "old": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+          "renewed": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857"
+        },
+        "record_sha256": {
+          "old": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+          "renewed": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877"
+        },
+        "source_commit": {
+          "old": "f1b9830ac5ff76c7d3fdeeffab69abf9aa2f28ed",
+          "renewed": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+        }
+      },
+      "interpretation": "Every changed prepared-record/QPY identity needs prospective protocol rebinding before acquisition, even if mathematical controls and allocation widths are identical. Retain old protocol evidence and compare all 37 controls; zero tolerance widening is permitted.",
+      "old_protocol_classifier_would_withhold": true,
+      "required_control_count": 16,
+      "run": "results/live/2026-10-12T210815.657132Z",
+      "state": "planned",
+      "substantive_control_changes": []
+    }
+  ],
+  "protocol_sha256": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f",
+  "quantum_jobs_submitted": 0,
+  "schema": "prospective-static-protocol-renewal-comparison-v1",
+  "service_calls": 0,
+  "status": "control_contracts_unchanged_identity_rebinding_required"
+}

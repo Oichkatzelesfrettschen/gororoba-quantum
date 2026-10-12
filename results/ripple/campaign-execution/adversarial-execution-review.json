@@ -1,0 +1,75 @@
+{
+  "base_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+  "hosted_review_timing": "Direct owner waiver permits execution after completed local adversarial/code reviews and passing local checks; source/results publication and Copilot request follow acquisition.",
+  "new_qpu_jobs_at_review": 0,
+  "observed_at": "2026-10-12T21:31:27.618303+00:00",
+  "patch_sha256": "717a54aeba329ecff192e199333e2fdebc8e11251661582e2136d76c50061abd",
+  "remaining_execution_gates": [
+    "Finish root pinned normal and optimized planning contracts.",
+    "Commit repaired source and regenerate every source/calibration-bound case.",
+    "Audit/rebind frozen statistical protocol without rewriting historical records.",
+    "Observe every owner and reviewer idle; refresh live quota/calibration/eligibility.",
+    "Reconcile settled NEW plus unsettled attempted/accepted plus proposed ceilings within180 and preserve60 account seconds.",
+    "Collect immutable correction evidence and require qualified decision_available=true before static expenditure."
+  ],
+  "residuals": [
+    "IID stationary repetitions within each PUB remain an assumption.",
+    "C16 packing equivalence is underresolved at frozen shots; the tolerance remains0.10.",
+    "Scalar score equivalence supplies no full-distribution distance upper bound.",
+    "Float64 CP/power evaluation lacks interval-certified rounding.",
+    "Model residuals alone identify neither a unique noise mechanism nor a general fidelity.",
+    "Exact algebra, rank and topology remain classical evidence; QPU measurements concern implementations."
+  ],
+  "resolved_findings": [
+    {
+      "finding": "Tuple PUB costs differ from their otherwise identical JSON list representation",
+      "remedy": "Normalize the cost producer PUB sequence; retain the exact approval guard."
+    },
+    {
+      "finding": "Historical review/merge ordering differs from the direct owner waiver",
+      "remedy": "EXECUTION_AUTHORITY.md and the cooperative ledger record the current owner instruction."
+    }
+  ],
+  "reviews": [
+    {
+      "blocking_findings": 0,
+      "checks": [
+        "ruff, formatter and mypy1.19.1",
+        "28 cost mutations plus calibration/QPY/record drift",
+        "optimized-Python unchanged-cost acceptance and changed-cost rejection"
+      ],
+      "limitation": "Venv mypy2.3.1 encountered NumPy-stub compatibility and pre-existing typing errors; installed project mypy1.19.1 passed.",
+      "scope": "cost producer, serialized-case approval and regression",
+      "verdict": "bounded_clean"
+    },
+    {
+      "blocking_findings": 0,
+      "checks": [
+        "frozen case/QPY/record hash replay",
+        "both negative submission outcomes",
+        "normal and optimized collection contracts:13 raw rejections and21 withholding mutations",
+        "ruff and six-file mypy"
+      ],
+      "limitation": "Independent system-Python planning reached a sandbox forkserver socket restriction; root pinned escalated planning gates supply authoritative validation.",
+      "scope": "admission, single-use submission, recovery and charge attribution",
+      "verdict": "bounded_clean_with_fresh_execution_gates"
+    },
+    {
+      "blocking_findings": 0,
+      "checks": [
+        "37 frozen control score/radius/shot/PUB recomputations",
+        "independent family alpha .05 and full endpoint denominators",
+        "normal and optimized correction statistical contracts",
+        "same-job/PUB covariance scope and exact rank normalization",
+        "ruff and four-file mypy"
+      ],
+      "scope": "correction inference, packing controls, measured extraction and visual claim boundaries",
+      "verdict": "bounded_clean"
+    }
+  ],
+  "schema": "qpu-campaign-bounded-adversarial-review-v1",
+  "source_files": {
+    "gororoba_quantum/correction_planning.py": "2d9cccd94240978226703d8c1fbe6c70a1fb2d4e63601adf2feb4ba51b70fcad",
+    "gororoba_quantum/correction_planning_contracts.py": "8c1afdae47f0f3910f9547091a908c45d43d99552375797d3cd0a4037920490f"
+  }
+}

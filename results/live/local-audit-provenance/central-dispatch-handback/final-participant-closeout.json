@@ -1,0 +1,83 @@
+{
+  "schema": "central-final-participant-closeout-v1",
+  "observed_utc": "2026-10-12T20:30:58Z",
+  "participants": [
+    {
+      "role": "sources",
+      "threadId": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+      "app_state": "idle",
+      "turn_status": "completed",
+      "cursor": "a21336ca-45f6-477d-9cfa-93aba1c03287:58",
+      "reportedGoal": null
+    },
+    {
+      "role": "port",
+      "threadId": "01a129a2-94d7-7e70-a281-780352df62eb",
+      "app_state": "idle",
+      "turn_status": "completed",
+      "cursor": "bcb1562e-4f50-4e0f-b144-0a65d41bd533:29",
+      "reportedGoal": null
+    },
+    {
+      "role": "adviser",
+      "threadId": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+      "app_state": "idle",
+      "turn_status": "completed",
+      "cursor": "e213a01a-6f83-4cca-a210-10145b6062e9:20",
+      "reportedGoal": null
+    },
+    {
+      "role": "qpu_auditor",
+      "threadId": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+      "app_state": "idle",
+      "turn_status": "completed",
+      "cursor": "4ac61577-07f3-4c96-a1db-a88808d2c3d7:5",
+      "reportedGoal": null
+    },
+    {
+      "role": "bridge",
+      "threadId": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+      "app_state": "idle",
+      "turn_status": "completed",
+      "cursor": "3fc0fbbf-ebf5-4838-876f-eafe9f834e62:17",
+      "reportedGoal": null
+    },
+    {
+      "role": "geometry",
+      "threadId": "01a12c8e-0e53-7792-bead-6b71282df961",
+      "app_state": "idle",
+      "turn_status": "completed",
+      "cursor": "83da5c8d-b353-407e-b696-7ed156955f9b:164",
+      "reportedGoal": "paused"
+    }
+  ],
+  "goal_observation": "Goal fields preserve owner final handbacks; app and turn states are independently observed through wait_threads.",
+  "central_children_current_roster": [
+    {
+      "task": "dispatch_ledger",
+      "state": "completed"
+    },
+    {
+      "task": "dispatch_ledger/dispatch_validation",
+      "state": "completed"
+    },
+    {
+      "task": "vacuum_probe_review",
+      "state": "completed"
+    }
+  ],
+  "historical_child_recoveries": "Prior accepted recovery preserves terminal errors; exposed completed roster does not relabel historical errors.",
+  "production_receipt": "production.json",
+  "production_receipt_sha256": "6695bb89b44b275aaa71d5742f0d187def2f9fed96444cc412fae5a1af92a4cf",
+  "canonical_quantum_head": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+  "canonical_port_head": "b2fd9f624abefb63cab8b3f0056a6cf648aaef14",
+  "geometry_gate": "Verified Ripple correction/field/rank lossless collection, preregistered adjudication and held/missing acquisition accounting; then isolated worktree from current main.",
+  "communication": "Central communicates only with Ripple and Geometry. Other participant closeouts prohibit further peer messaging.",
+  "central_state": "Active until accepted final fleet receipt and readiness handoff; actual idle must be independently sampled by Ripple.",
+  "execution_admission": false,
+  "pending": [
+    "Fez calibration renewal and static countercomparison",
+    "Final bounded GO/NO-GO receipt",
+    "Central final readiness handoff and actual idle recheck"
+  ]
+}
