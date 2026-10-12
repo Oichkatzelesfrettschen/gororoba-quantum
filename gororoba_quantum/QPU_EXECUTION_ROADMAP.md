@@ -180,13 +180,15 @@ The present local dry-run implementation does not call this server feature.
    threefold overhead in its [mitigation guide][mitigation]. Estimator examples
    do not establish applicability to these Sampler diagnostics.
 
-## N21 needs signal improvement before more samples
+## Prioritize N21 signal improvement before more sampling
 
 The [retained N21 case](../results/live/2026-10-12T020459.130482Z/record.json)
 rejects every supplied hardware tier through 16384 shots. The two-PUB test
 requires an effect above 0.075971 even at zero model-sampling error at that
-largest tier. Retained noisy estimates lie below that threshold. More CPU
-samples alone cannot fix a fixed alternative below the hardware threshold.
+largest tier. Retained noisy estimates lie below that threshold, while the
+true modeled contrast remains uncertain. More CPU samples alone cannot admit
+the retained tiers if the contrast stays fixed. Synthesis improvement is a
+planning priority, rather than a necessity established by those estimates.
 
 The [shared-predicate challenger](../results/local_compute/n21_shared_predicate/README.md)
 reduces each controlled multiplier from 243 to 204 unrouted CX gates, a 16.0%
