@@ -1,0 +1,27 @@
+ibm_kingston: active pending=2 calibration=2026-10-11T18:14:09-07:00 capabilities={'num_qubits': 156, 'dynamic_circuits': True, 'operation_names': ['cz', 'delay', 'id', 'if_else', 'measure', 'measure_2', 'measure_reset', 'measure_reset_2', 'reset', 'reset_2', 'rz', 'sx', 'x', 'xslow'], 'control_flow': ['if_else']} medians={'t1_us': 247.61807, 't2_us': 136.00571, 'readout_error': 0.00891, 'cz_error': 0.0019} excluded qubits=8 edges=24
+n21_feedback: ibm_kingston seed=20261010 layout=[95, 91, 93, 79, 92, 73, 94] joint_score=0.0013 replicas=1 scores=[0.0017] cz=[1079, 1073] summary={'feedback_signed_contrast': 0.0103, 'no_feedback_signed_contrast': -0.0093, 'contrast_difference': 0.0195, 'labeled_tvd': 0.0166, 'feedback_tvd_to_ideal': 0.1118, 'no_feedback_tvd_to_ideal': 0.2339}
+audit record: ../results/live/2026-10-12T020459.130482Z
+	Command being timed: "$PYTHON live_run.py --family n21-feedback --optimize --backends ibm_kingston --seeds 1 --optimizer-candidates 1 --replica-tiers 1 --max-replicas 1 --model-shots 256 --shot-tiers 2048,4096,8192,16384 --local-compute cpu --simulation-threads 2 --simulation-memory-mb 512 --max-execution-seconds 60 --max-total-execution-seconds 120 --reserve-seconds 60 --out ../results/live"
+	User time (seconds): 1760.40
+	System time (seconds): 5.16
+	Percent of CPU this job got: 192%
+	Elapsed (wall clock) time (h:mm:ss or m:ss): 15:17.79
+	Average shared text size (kbytes): 0
+	Average unshared data size (kbytes): 0
+	Average stack size (kbytes): 0
+	Average total size (kbytes): 0
+	Maximum resident set size (kbytes): 718776
+	Average resident set size (kbytes): 0
+	Major (requiring I/O) page faults: 0
+	Minor (reclaiming a frame) page faults: 232164
+	Voluntary context switches: 982
+	Involuntary context switches: 87036
+	Swaps: 0
+	File system inputs: 8
+	File system outputs: 1216
+	Socket messages sent: 0
+	Socket messages received: 0
+	Signals delivered: 0
+	Page size (bytes): 4096
+	Exit status: 0
+exit=0

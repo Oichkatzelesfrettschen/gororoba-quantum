@@ -78,6 +78,12 @@ observables.
   direct pinned-system probing, approval-gated cross-system reselection, local
   noise simulation, gated client-side Sampler submission, and execution-time
   replay.
+- `gororoba_quantum/QPU_OPTIMIZATION.md` -- matched folded-QPE and N=21
+  feed-forward families, exact labeled laws, bounded statistical and charged-time
+  optimization, invocation reservations, and artifact-bound unapproved cases.
+- [Local simulation and precision](gororoba_quantum/LOCAL_COMPUTE.md) -- explicit
+  CPU policy, precision-at-budget selection, finite cost scenarios, failed
+  branching qualification, and separate CUDA/Aer capability evidence.
 - `gororoba_quantum/runtime_contracts.py` -- credential-free checks for packed
   and fused static and dynamic circuits, joint placement, exact PUB
   cardinalities, capability and routing admission, recursive Target support,
@@ -87,9 +93,9 @@ observables.
   source-manifest stability.
 - `gororoba_quantum/DESIGN_NOTES.md` -- mechanism, prediction, observable, and
   falsifier for each design, and the live-calibration policy.
-- `results/live/<UTC start>/` -- retained JSON and QPY evidence. Schema 5 adds
-  joint placement, exact fused Runtime PUBs, ordered component manifests, and
-  global packing crosstalk to the schema-4 admission and recovery path. Earlier
+- `results/live/<UTC start>/` -- retained JSON and QPY evidence. Schema 7 adds
+  observable contracts, bounded experiment selection, invocation budgets, and
+  execution-cost approval binding to the fused-PUB timing and usage records. Earlier
   schemas remain historical evidence under `results/live/README.md`.
 - `results/hw_estimate/` -- fixed ibm_fez design compiles and the replayable
   FakeFez modular-synthesis crossover capture.

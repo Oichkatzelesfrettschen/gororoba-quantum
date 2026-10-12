@@ -1,0 +1,142 @@
+{
+  "aer_probe": {
+    "available_devices": [
+      "CPU"
+    ],
+    "available_methods": [
+      "automatic",
+      "statevector",
+      "density_matrix",
+      "stabilizer",
+      "matrix_product_state",
+      "extended_stabilizer",
+      "unitary",
+      "superop"
+    ],
+    "default_precision": "double",
+    "execution_surface": "host outside sandbox"
+  },
+  "cuda_driver": {
+    "compute_capability": [
+      8,
+      9
+    ],
+    "cuInit_name": "CUDA_SUCCESS",
+    "cuInit_status": 0,
+    "cuda_visible_total_bytes": 12513574912,
+    "device_count": 1,
+    "device_name": "NVIDIA GeForce RTX 4070 Ti",
+    "loaded_library": "libcuda.so.615.78.08"
+  },
+  "cupy_probe": {
+    "dtype": "float64",
+    "elementwise_elements": 4096,
+    "elementwise_max_abs_error": 0.0,
+    "elementwise_tolerance": {
+      "atol": 1e-14,
+      "rtol": 1e-14
+    },
+    "free_bytes_during_probe": 787808256,
+    "limitation": "Tiny arithmetic verifies neither application speedup nor simulator parity; free memory is a point-in-time snapshot.",
+    "matrix_max_abs_error": 1.0658141036401503e-14,
+    "matrix_shape": [
+      32,
+      32
+    ],
+    "matrix_tolerance": {
+      "atol": 1e-12,
+      "rtol": 1e-12
+    },
+    "status": "pass",
+    "total_bytes": 12513574912
+  },
+  "module_inventory": {
+    "active_kernel": "7.2.5-1-cachyos",
+    "installed_matching_modules": [
+      {
+        "kernel": "7.2.9-2-cachyos",
+        "module_version": "615.78.08",
+        "owner": "linux-cachyos-nvidia-open 7.2.9-2"
+      },
+      {
+        "kernel": "6.18.55-2-cachyos-lts",
+        "module_version": "615.78.08",
+        "owner": "linux-cachyos-lts-nvidia-open 6.18.55-2"
+      }
+    ],
+    "loaded_module_version": "615.71.09",
+    "maintenance_prerequisite": "A scheduled boot into an installed matching kernel supplies a module matching userspace. No reboot or module operation occurs in the inventory.",
+    "nvidia_utils": "615.78.08-2",
+    "running_kernel_disk_module_owner": "pacman reports unowned",
+    "running_kernel_disk_module_version": "615.71.09"
+  },
+  "nvml_query": {
+    "command": "nvidia-smi --query-gpu=index,name,driver_version,memory.total,memory.used,memory.free,compute_mode,utilization.gpu --format=csv,noheader,nounits",
+    "execution_surface": "host outside sandbox",
+    "exit_code": 18,
+    "stderr": "Failed to initialize NVML: Driver/library version mismatch\nNVML library version: 615.78"
+  },
+  "provenance": {
+    "capture_method": "Transcription of command outputs from the current agent session; these values are not a fresh probe.",
+    "scope": "Read-only inventory, metadata queries, and small transient local CUDA allocations. No package install, driver change, or QPU operation.",
+    "source_tool_chunk_ids": [
+      "ded84c",
+      "6b09e0",
+      "1131e9",
+      "5e0f4d",
+      "04c5dc",
+      "280708",
+      "4b87b7",
+      "99bc77",
+      "78bb49",
+      "3a9f32",
+      "7b9a42",
+      "4887d2"
+    ]
+  },
+  "pypi_metadata": [
+    {
+      "http_status": 404,
+      "url": "https://pypi.org/pypi/qiskit-aer-gpu/0.17.2/json"
+    },
+    {
+      "cp314_wheel": false,
+      "latest_version": "0.15.1",
+      "url": "https://pypi.org/pypi/qiskit-aer-gpu/json",
+      "wheel_python_tags": [
+        "cp38",
+        "cp39",
+        "cp310",
+        "cp311",
+        "cp312"
+      ]
+    },
+    {
+      "cp314_linux_wheel": "qiskit_aer-0.17.2-cp314-cp314-manylinux_2_27_x86_64.manylinux_2_28_x86_64.whl",
+      "url": "https://pypi.org/pypi/qiskit-aer/0.17.2/json",
+      "version": "0.17.2"
+    }
+  ],
+  "torch_probe": {
+    "PYTHONWARNINGS": "error",
+    "error_type": "FutureWarning",
+    "gpu_arithmetic_reached": false,
+    "message": "The pynvml package is deprecated. Please install nvidia-ml-py instead. If you did not install pynvml directly, please report this to the maintainers of the package that installed pynvml for you.",
+    "stage": "import torch",
+    "status": "fails warning gate"
+  },
+  "versions": {
+    "cuda_driver_api_numeric": 13040,
+    "cuda_package": "13.4.2-1",
+    "cupy": "14.2.0",
+    "cupy_cuda_runtime_numeric": 13030,
+    "numpy": "2.5.4",
+    "nvcc": "13.4.92",
+    "python": "3.14.7",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "scipy": "1.18.1",
+    "torch": "2.14.1"
+  }
+}

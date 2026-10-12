@@ -1,0 +1,452 @@
+{
+  "case_timings": [
+    {
+      "family": "folded-qpe",
+      "seed": 2026101300,
+      "shot_branching_enable": false,
+      "shots": 256,
+      "wall_seconds": 11.614951490002568
+    },
+    {
+      "family": "folded-qpe",
+      "seed": 2026101301,
+      "shot_branching_enable": true,
+      "shots": 256,
+      "wall_seconds": 5.368597378997947
+    },
+    {
+      "family": "n21-feedback",
+      "seed": 2026101302,
+      "shot_branching_enable": false,
+      "shots": 256,
+      "wall_seconds": 102.48587196400331
+    },
+    {
+      "family": "n21-feedback",
+      "seed": 2026101303,
+      "shot_branching_enable": true,
+      "shots": 256,
+      "wall_seconds": 3.3807239569869125
+    },
+    {
+      "family": "folded-qpe",
+      "seed": 2026101311,
+      "shot_branching_enable": true,
+      "shots": 2048,
+      "wall_seconds": 4.877845050999895
+    },
+    {
+      "family": "folded-qpe",
+      "seed": 2026101310,
+      "shot_branching_enable": false,
+      "shots": 2048,
+      "wall_seconds": 56.62245279099443
+    },
+    {
+      "family": "n21-feedback",
+      "seed": 2026101313,
+      "shot_branching_enable": true,
+      "shots": 2048,
+      "wall_seconds": 2.8210695140005555
+    },
+    {
+      "family": "n21-feedback",
+      "seed": 2026101402,
+      "shot_branching_enable": true,
+      "shots": 32768,
+      "wall_seconds": 3.7318684950005263
+    }
+  ],
+  "circuit_count": 18,
+  "failed_bins": [
+    {
+      "absolute_difference": 0.21630859375,
+      "family": "folded-qpe",
+      "member": "qpe_archived_s1",
+      "outcome": 0,
+      "shots": 2048,
+      "simultaneous_radius": 0.14211860914345206
+    },
+    {
+      "absolute_difference": 0.404296875,
+      "family": "folded-qpe",
+      "member": "qpe_archived_s1",
+      "outcome": 1,
+      "shots": 2048,
+      "simultaneous_radius": 0.14211860914345206
+    },
+    {
+      "absolute_difference": 0.2373046875,
+      "family": "folded-qpe",
+      "member": "qpe_archived_s1",
+      "outcome": 2,
+      "shots": 2048,
+      "simultaneous_radius": 0.14211860914345206
+    }
+  ],
+  "familywise_alpha": 1e-06,
+  "fresh_instance_replay": {
+    "case_count": 10,
+    "cases": [
+      {
+        "distribution": [
+          0.04150390625,
+          0.8359375,
+          0.03076171875,
+          0.091796875
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 2,
+          "max_parallel_threads": 2,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": false,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "isolated",
+        "target_index": 0,
+        "wall_seconds": 7.985323907996644
+      },
+      {
+        "distribution": [
+          0.033203125,
+          0.84521484375,
+          0.0322265625,
+          0.08935546875
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 2,
+          "max_parallel_threads": 2,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "isolated",
+        "target_index": 0,
+        "wall_seconds": 1.6866467209911207
+      },
+      {
+        "distribution": [
+          0.0341796875,
+          0.84130859375,
+          0.03466796875,
+          0.08984375
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 2,
+          "max_parallel_threads": 2,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "mixed",
+        "target_index": 5,
+        "wall_seconds": 5.392587984009879
+      },
+      {
+        "distribution": [
+          0.03955078125,
+          0.8505859375,
+          0.029296875,
+          0.08056640625
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 2,
+          "max_parallel_threads": 2,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "reversed",
+        "target_index": 10,
+        "wall_seconds": 5.791664970995043
+      },
+      {
+        "distribution": [
+          0.033203125,
+          0.84521484375,
+          0.0322265625,
+          0.08935546875
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 1,
+          "max_parallel_threads": 1,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "isolated",
+        "target_index": 0,
+        "wall_seconds": 2.0052710699965246
+      },
+      {
+        "distribution": [
+          0.0341796875,
+          0.84130859375,
+          0.03466796875,
+          0.08984375
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 1,
+          "max_parallel_threads": 1,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "mixed",
+        "target_index": 5,
+        "wall_seconds": 5.976367733004736
+      },
+      {
+        "distribution": [
+          0.03955078125,
+          0.8505859375,
+          0.029296875,
+          0.08056640625
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 1,
+          "max_parallel_threads": 1,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "reversed",
+        "target_index": 10,
+        "wall_seconds": 5.690183231999981
+      },
+      {
+        "distribution": [
+          0.0341796875,
+          0.84130859375,
+          0.03466796875,
+          0.08984375
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 1,
+          "max_parallel_threads": 2,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "mixed",
+        "target_index": 5,
+        "wall_seconds": 6.385123015003046
+      },
+      {
+        "distribution": [
+          0.0341796875,
+          0.84130859375,
+          0.03466796875,
+          0.08984375
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 2,
+          "max_parallel_threads": 1,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "mixed",
+        "target_index": 5,
+        "wall_seconds": 5.515354820003267
+      },
+      {
+        "distribution": [
+          0.0341796875,
+          0.84130859375,
+          0.03466796875,
+          0.08984375
+        ],
+        "options": {
+          "device": "CPU",
+          "max_parallel_experiments": 1,
+          "max_parallel_shots": 2,
+          "max_parallel_threads": 2,
+          "method": "density_matrix",
+          "precision": "double",
+          "shot_branching_enable": true,
+          "shot_branching_sampling_enable": false
+        },
+        "selection": "mixed",
+        "target_index": 5,
+        "wall_seconds": 5.7160698199877515
+      }
+    ],
+    "interpretation": "Ten target-bin cases initially fail to reproduce the archived_s1 discrepancy. The later15-case full-family replay exposes a second-member failure and falsifies fresh-instance construction as a repair.",
+    "noise_channel_multiset_sha256": "00e71924e25692eed75800f2152e06eea89a73b7191a711fc5058c5fd09240e7",
+    "seed": 2026101311,
+    "shots": 2048,
+    "state": "completed"
+  },
+  "full_family_replay": {
+    "all_count_totals_complete": true,
+    "all_execution_modes_match": true,
+    "all_qpy_before_after_identical": true,
+    "bound_scope": "Hoeffding union bounds allocate alpha/2 to all listed bin comparisons and alpha/2 to all listed contrast comparisons. Each estimate assumes stationary independent shots; comparisons and runs need not be independent. Compatibility does not establish numerical equivalence.",
+    "case_count": 15,
+    "decisive_failed_comparisons": [
+      {
+        "compatible": false,
+        "family": "folded-qpe",
+        "kind": "fresh_vs_fresh",
+        "left_seed": 2026101600,
+        "left_shots": 32768,
+        "max_absolute_bin_difference": 0.2327880859375,
+        "right_seed": 2026101602,
+        "right_shots": 32768,
+        "simultaneous_radius": 0.036897112495406385
+      },
+      {
+        "compatible": false,
+        "family": "folded-qpe",
+        "kind": "fresh_vs_fresh",
+        "left_seed": 2026101602,
+        "left_shots": 32768,
+        "max_absolute_bin_difference": 0.23284912109375,
+        "right_seed": 2026101604,
+        "right_shots": 32768,
+        "simultaneous_radius": 0.036897112495406385
+      },
+      {
+        "compatible": false,
+        "family": "folded-qpe",
+        "kind": "retained_baseline_vs_reused",
+        "left_seed": 2026101310,
+        "left_shots": 2048,
+        "max_absolute_bin_difference": 0.23583984375,
+        "right_seed": 2026101311,
+        "right_shots": 2048,
+        "simultaneous_radius": 0.14758844998162554
+      }
+    ],
+    "execution_mode_boundary": "Every result reports CPU density_matrix. Enabled batches report shot_branching_enabled=true for dynamic members and measure_sampling=true for eligible static members.",
+    "familywise_alpha": 1e-06,
+    "production_shot_branching_qualified": false,
+    "residuals": [
+      "A fresh32768 trial fails on qpe_no_feed_forward_s3; fresh-instance construction fails as a repair.",
+      "The retained noisy folded2048 failure on qpe_archived_s1 remains unexplained.",
+      "The reuse probe starts from QPY-loaded circuits; the original used in-memory compiled circuit objects.",
+      "N21 branch-off baseline has 256 shots; a full32768 paired baseline was not measured.",
+      "Repeated branch-enabled draws test stability and do not independently validate noisy probabilities.",
+      "Nearby seeds may share pseudorandom streams; independence between repeat runs is unclaimed.",
+      "Serialized channel identity excludes delay-noise passes; fixture reconstruction supplies those passes."
+    ],
+    "state": "failed_fresh_instance_repair_falsified",
+    "total_bin_comparisons": 608,
+    "total_contrast_term_estimates": 504
+  },
+  "noise_semantic_sha256": "9f5630ccb52c1e54e7e7545b41277c1dd1ae3b5a5d0d3cb0090095ab0269d826",
+  "noiseless_oracle_check": {
+    "compatible_with_exact_laws": true,
+    "max_bin_differences": {
+      "n21_feedback": 0.000854492187501027,
+      "n21_no_feedback": 0.001556396484372502,
+      "qpe_archived_s0": 1.1102230246251565e-16,
+      "qpe_archived_s1": 1.1102230246251565e-15,
+      "qpe_archived_s2": 0.0,
+      "qpe_archived_s3": 8.881784197001252e-16,
+      "qpe_coherent_s0": 8.881784197001252e-16,
+      "qpe_coherent_s1": 1.1102230246251565e-16,
+      "qpe_coherent_s2": 4.440892098500626e-16,
+      "qpe_coherent_s3": 4.440892098500626e-16,
+      "qpe_delay_s0": 9.992007221626409e-16,
+      "qpe_delay_s1": 6.661338147750939e-16,
+      "qpe_delay_s2": 7.771561172376096e-16,
+      "qpe_delay_s3": 1.2212453270876722e-15,
+      "qpe_no_feed_forward_s0": 1.1102230246251565e-16,
+      "qpe_no_feed_forward_s1": 0.001892089843749889,
+      "qpe_no_feed_forward_s2": 0.0,
+      "qpe_no_feed_forward_s3": 0.0001220703125
+    },
+    "seed": 2026101500,
+    "shots": 32768,
+    "simultaneous_radius": 0.016877324068605606,
+    "swapped_n21_label_oracle_rejected": true
+  },
+  "options": {
+    "device": "CPU",
+    "max_parallel_experiments": 1,
+    "max_parallel_shots": 2,
+    "max_parallel_threads": 2,
+    "method": "density_matrix",
+    "precision": "double",
+    "shot_branching_sampling_enable": false
+  },
+  "paired_comparisons": [
+    {
+      "compatible": true,
+      "family": "folded-qpe",
+      "max_absolute_bin_difference": 0.09375,
+      "shots": 256,
+      "simultaneous_radius": 0.4019721290325417,
+      "speedup": 2.163498334861257
+    },
+    {
+      "compatible": true,
+      "family": "n21-feedback",
+      "max_absolute_bin_difference": 0.1328125,
+      "shots": 256,
+      "simultaneous_radius": 0.4019721290325417,
+      "speedup": 30.314770820668944
+    },
+    {
+      "compatible": false,
+      "family": "folded-qpe",
+      "max_absolute_bin_difference": 0.404296875,
+      "shots": 2048,
+      "simultaneous_radius": 0.14211860914345206,
+      "speedup": 11.608087628652239
+    }
+  ],
+  "provenance_limits": [
+    "The benchmark records a repository HEAD but omits dirty-source hashes; the capture does not establish a clean source tree. The retained benchmark script includes a later semantic-noise digest correction.",
+    "Initial raw noise digest includes generated error UUIDs. The initial semantic digest was omitted; the followup reconstructs the same pinned FakeFez fixture and verifies two independent semantic models. The corrected initial runner records the semantic digest on future replays.",
+    "The UUID-free legacy noise digest preserves error-record list order, which can vary across processes. Future semantic replay sorts complete error records, preserving internal channel instruction and probability order.",
+    "The initial benchmark is intentionally interrupted during optional N21 baseline2048; its running state is a partial historical checkpoint. The followup qualification is completed and failed.",
+    "single observation per configuration; concurrent host work is uncontrolled",
+    "Compatibility failure does not identify which configuration is incorrect.",
+    "NoiseModel.to_dict excludes custom delay RelaxationNoisePass. The serialized channels digest alone cannot replay the full delay model; pinned FakeFez fixture/code supply T1, T2, and dt for pass reconstruction.",
+    "The retained RCA script adds qualification-input digest and exact-option guards after its first completed result capture; the schedule is unchanged. The original completed JSON remains unmodified.",
+    "Retention adds exact Python/package version checks, fixture config/properties SHA guards, replay source hashing, and import sorting to the RCA script. Original captured RCA result bytes remain unchanged.",
+    "The full-family replay runner adds Python/package and fixture guards after capture; the executed runner is retained separately when available. Original probe/analysis result bytes remain unchanged."
+  ],
+  "python": "3.14.7",
+  "qpy_sha256": "9fe387171f4f00e45ce9f1225158961ba1742fe75323960d9698c2d4c08b98d6",
+  "schema_version": 1,
+  "source_commit": "0658fba455dd695c2adccc0cd88371ad8aa977c2",
+  "state": "failed",
+  "timing_boundary": "Aer run through result retrieval; compilation and simulator creation excluded",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0"
+  }
+}

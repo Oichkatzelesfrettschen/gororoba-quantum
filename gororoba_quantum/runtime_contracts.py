@@ -16,6 +16,7 @@ from contextlib import redirect_stdout
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
 from decimal import Decimal
+from functools import partial
 from pathlib import Path
 from typing import Any
 
@@ -1065,18 +1066,21 @@ def _zero_replica_distributions(entry: Entry) -> list[np.ndarray]:
 
 
 def _collect_with_zero_simulation(service: Any, run_dir: Path) -> None:
-    """collect with the noise model replaced by all-zero replica distributions."""
+    """Collect fixture results with deterministic simulation and logical polling time."""
     original_noise_simulator = live_run_module.noise_simulator
     original_simulate_entries = live_run_module.simulate_entries
-    live_run_module.noise_simulator = lambda name, target, props: object()
+    original_wait_for_usage = live_run_module.wait_for_usage
+    live_run_module.noise_simulator = lambda name, target, props, compute_policy=None: object()
     live_run_module.simulate_entries = lambda noise, entries, shots, seed: {
         entry.name: _zero_replica_distributions(entry) for entry in entries
     }
+    live_run_module.wait_for_usage = partial(original_wait_for_usage, sleep=lambda seconds: None)
     try:
         collect(service, run_dir)
     finally:
         live_run_module.noise_simulator = original_noise_simulator
         live_run_module.simulate_entries = original_simulate_entries
+        live_run_module.wait_for_usage = original_wait_for_usage
 
 
 def _verify_worker_quota() -> None:
@@ -1376,7 +1380,7 @@ def _verify_fused_collection() -> None:
         first_metrics = (raw_dir / "job_metrics.json").read_bytes()
         raw_bytes = {name: (raw_dir / name).read_bytes() for name in raw_index["files"]}
 
-        # Recollection after usage finalizes changes only the usage block.
+        # Recollection after usage finalizes changes job and invocation usage.
         probe_job._usage = {"status": "pending"}
         probe_job._charge = None
         with redirect_stdout(io.StringIO()):
@@ -1384,6 +1388,12 @@ def _verify_fused_collection() -> None:
         pending = json.loads((run_dir / "collect.json").read_text())
         if pending[0]["jobs"][job_id]["usage"]["usage_status"] != "pending":
             raise RuntimeError("pending usage does not read pending")
+        if (
+            pending[0]["invocation_usage"]["total_charge_seconds"] is not None
+            or pending[0]["invocation_usage"]["charge_complete"]
+            or pending[0]["invocation_usage"]["workload_complete"]
+        ):
+            raise RuntimeError("pending job usage appears as complete invocation billing")
         probe_job._usage = usage
         probe_job._charge = 12.5
         with redirect_stdout(io.StringIO()):
@@ -1420,8 +1430,12 @@ def _verify_fused_collection() -> None:
         if (run_dir / "collect.json").read_bytes() != first:
             raise RuntimeError("recollection after restoring the raw evidence differs")
         pending[0]["jobs"][job_id]["usage"] = json.loads(first)[0]["jobs"][job_id]["usage"]
+        final_invocation_usage = json.loads(first)[0]["invocation_usage"]
+        if final_invocation_usage["total_charge_seconds"] != "12.5" or not final_invocation_usage["workload_complete"]:
+            raise RuntimeError(f"final invocation usage reads {final_invocation_usage}")
+        pending[0]["invocation_usage"] = final_invocation_usage
         if pending != json.loads(first):
-            raise RuntimeError("pending and final collections differ outside the usage block")
+            raise RuntimeError("pending and final collections differ outside job and invocation usage")
 
         # A job that ended in ERROR keeps its usage and its reason; collection
         # continues without its results.
@@ -2594,7 +2608,7 @@ def _verify_every_job_revalidates() -> None:
         select(groups[name], snapshots, 1, {}, SINGLE_REPLICA_POLICY) for name in ("design_a", "hybrid_shor_mod15")
     ]
     args = _fixture_args(max_replicas=1, isolated_reference=False)
-    record: dict[str, Any] = {"shots": args.shots}
+    record: dict[str, Any] = {"state": "planned", "shots": args.shots}
     checkpoints: list[dict[str, Any]] = []
     run_count = 0
 
