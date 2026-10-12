@@ -68,7 +68,7 @@ lint and type-check configuration only. Before any push, these exit 0:
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
     integral_homology.py rank_path_topology.py four_support_rank.py four_support_geometry.py \
-    four_support_doubling.py four_support_homology.py skew_schur_charts.py \
+    four_support_doubling.py four_support_homology.py skew_schur_charts.py principal_skew_atlas.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
@@ -196,6 +196,9 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/dimension32_skew_schur/replay.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check
   (cd docs/evidence/dimension32_skew_schur && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/principal_skew_atlas/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/principal_skew_atlas/replay.py --check
+  (cd docs/evidence/principal_skew_atlas && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
   shellcheck docs/evidence/folding_proofs/replay_rocq.sh

@@ -163,9 +163,13 @@ The resulting near-term implementation has four explicit acceptance checks:
 
 The repository already implements general pivot Schur charts. The
 [retained finite research probe](../evidence/local_schur/README.md) implements
-the skew reduction and derivative calculation on the stated fixtures. A
-production chart API and a covering atlas of reduced germs remain proposed
-extensions. The finite probe checks the six rational
+the skew reduction and derivative calculation on the stated fixtures. The
+[production skew-Schur API](dimension32_skew_schur_charts.md) retains full
+residual equations, kernel lifts and metrics across all 30 doubly-pure
+coefficient directions. The [principal atlas](principal_skew_atlas.md)
+supplies 15 covering domains in dimension 32 and verifies the overlap maps
+on their residual kernels. Solving the reduced germs and their attachments
+remains a separate obligation. The finite probe checks the six rational
 perturbations `x_*(j)+e_i/3`, with `j=0,1,2` and `i=2,17`, where `x_*(j)`
 is the unnormalized certified path endpoint. Every pivot remains invertible;
 every reduced/full rank and lifted-residual identity agrees; all six
@@ -181,9 +185,9 @@ linearized bounds:
 The last row agrees with the published maximal-stratum dimension
 `dim V2(R7)=11`. The first two rows describe linearized constraints at two
 specific points; they establish neither the dimensions of whole lower-rank
-loci nor their smoothness. The probe supports a candidate atlas
-implementation; its finite fixture domain remains distinct from the
-all-real local identity proved above.
+loci nor their smoothness. The probe supplies finite fixtures for the
+production atlas; its fixture domain remains distinct from the all-real
+local identity proved above.
 
 A complementary global compression comes from the source structures in
 [Zhilina's doubly alternative paper](2608.26893.md), Lemmas 6.9--6.10.
