@@ -58,8 +58,9 @@ def _operator(values: Sequence[Any], indices: tuple[int, ...] = tuple(range(32))
     return sp.Matrix(
         len(indices),
         len(indices),
-        lambda row, column: cd_sign(32, indices[row] ^ indices[column], indices[column])
-        * values[indices[row] ^ indices[column]],
+        lambda row, column: (
+            cd_sign(32, indices[row] ^ indices[column], indices[column]) * values[indices[row] ^ indices[column]]
+        ),
     )
 
 
@@ -225,9 +226,9 @@ def _octonion_basis_operator(index: int, *, right: bool = False) -> sp.Matrix:
     return sp.Matrix(
         8,
         8,
-        lambda row, column: (cd_sign(8, column, index) if right else cd_sign(8, index, column))
-        if row == index ^ column
-        else 0,
+        lambda row, column: (
+            (cd_sign(8, column, index) if right else cd_sign(8, index, column)) if row == index ^ column else 0
+        ),
     )
 
 
