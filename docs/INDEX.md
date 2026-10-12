@@ -109,6 +109,14 @@ identities separately from the structural induction. The
 cells, certify integral homology and zero torsion, and determine the
 cohomology ring for the restricted pair space.
 
+The [dimension-32 skew-Schur charts](notes/dimension32_skew_schur_charts.md)
+and their [exact replay](evidence/dimension32_skew_schur/README.md) retain
+rank-changing points in all 30 doubly-pure coefficient directions on each
+admitted pivot domain. Complete kernel lifts, inverse coordinates and the
+induced metric describe the local incidence. Two exact paths with the same
+initial tangent and different nearby ranks expose the limit of linearization.
+Global chart coverage and unrestricted topology remain separate obligations.
+
 ## Verification and research navigation
 
 Run from the repository root:
