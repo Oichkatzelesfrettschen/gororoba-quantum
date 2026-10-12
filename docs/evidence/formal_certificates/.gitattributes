@@ -1,0 +1,4 @@
+# Preserve whitespace emitted by the independent Rocq kernel checker.
+FoldAverageDescent.kernel.txt -whitespace
+TerminalChannelSeparation.kernel.txt -whitespace
+TerminalChannelSeparationReal.kernel.txt -whitespace
