@@ -154,6 +154,26 @@ class SourceRightsChecks(unittest.TestCase):
             "rights": rights_fixture(self.digest),
         }
 
+        self.arxiv_path = self.root / "docs/evidence/source_rights/arxiv-1904.00633v2.html"
+        self.arxiv_path.parent.mkdir(parents=True)
+        self.entry["rights"]["evidence_path"] = self.arxiv_path.relative_to(self.root).as_posix()
+        self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-12T08:48:37+00:00"
+        self.arxiv_html = (
+            '<!DOCTYPE html><html><head><meta name="citation_arxiv_id" content="1904.00633"></head><body>'
+            '<a class="download-pdf" href="/pdf/1904.00633v2"><span>PDF</span></a>'
+            '<div class="abs-license"><div><a class="has_license" '
+            'href="http://creativecommons.org/licenses/by/4.0/"><img alt="license icon"/>'
+            "<span>view license</span></a></div></div>"
+            '<footer><a href="https://creativecommons.org/publicdomain/zero/1.0/">Site license</a></footer>'
+            "</body></html>"
+        )
+        self.write_arxiv_capture()
+
+    def write_arxiv_capture(self) -> None:
+        raw_response = self.arxiv_html.encode("utf-8")
+        self.arxiv_path.write_bytes(raw_response)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw_response).hexdigest()
+
     def verify(self, *, published: bool = True) -> None:
         verify_source_rights(self.entry, self.registry, root=self.root, published=published, payload=self.payload)
 
@@ -185,7 +205,7 @@ class SourceRightsChecks(unittest.TestCase):
             ],
         }
         self.zenodo_path = self.root / "docs/evidence/source_rights/zenodo-record-20431754.json"
-        self.zenodo_path.parent.mkdir(parents=True)
+        self.zenodo_path.parent.mkdir(parents=True, exist_ok=True)
         self.entry["rights"]["evidence_path"] = self.zenodo_path.relative_to(self.root).as_posix()
         self.entry["rights"]["evidence_retrieved_at_utc"] = "2026-10-12T08:16:00+00:00"
         self.write_zenodo_capture()
@@ -204,6 +224,10 @@ class SourceRightsChecks(unittest.TestCase):
             license_url=LICENSE_URLS["CC0-1.0"],
             observed_license_url=LICENSE_URLS["CC0-1.0"],
         )
+        self.arxiv_html = self.arxiv_html.replace(
+            "http://creativecommons.org/licenses/by/4.0/", LICENSE_URLS["CC0-1.0"]
+        )
+        self.write_arxiv_capture()
         self.verify()
 
     def test_missing_or_nonobject_rights_are_rejected(self) -> None:
@@ -467,6 +491,162 @@ class SourceRightsChecks(unittest.TestCase):
             sha256=digest, md5=hashlib.md5(self.payload, usedforsecurity=False).hexdigest()
         )
         self.reject("captured Zenodo file checksum")
+
+    def test_captured_arxiv_digest_must_match(self) -> None:
+        self.entry["rights"]["evidence_sha256"] = "3" * 64
+        self.reject("captured arXiv evidence SHA-256")
+
+    def test_captured_arxiv_metadata_is_required(self) -> None:
+        original = copy.deepcopy(self.entry["rights"])
+        mutations: tuple[tuple[str, Any, str], ...] = (
+            ("evidence_path", None, "captured arXiv evidence path"),
+            ("evidence_path", "/tmp/1904.00633v2.html", "captured arXiv evidence path"),
+            ("evidence_path", "docs/evidence/source_rights/../1904.00633v2.html", "captured arXiv evidence path"),
+            ("evidence_retrieved_at_utc", None, "captured arXiv retrieval timestamp"),
+        )
+        for field, value, message in mutations:
+            with self.subTest(field=field, value=value):
+                self.entry["rights"] = copy.deepcopy(original)
+                self.entry["rights"][field] = value
+                self.reject(message)
+
+    def test_missing_captured_arxiv_file_is_rejected(self) -> None:
+        self.arxiv_path.unlink()
+        self.reject("captured arXiv evidence file")
+
+    def test_captured_arxiv_symlink_is_rejected(self) -> None:
+        target = self.root / "other.html"
+        self.arxiv_path.rename(target)
+        self.arxiv_path.symlink_to(target)
+        self.reject("captured arXiv evidence file")
+
+    def test_captured_arxiv_directory_symlink_is_rejected(self) -> None:
+        directory = self.arxiv_path.parent
+        target = self.root / "other-captures"
+        directory.rename(target)
+        directory.symlink_to(target, target_is_directory=True)
+        self.reject("captured arXiv evidence file")
+
+    def test_captured_arxiv_tampering_is_rejected(self) -> None:
+        self.arxiv_path.write_bytes(self.arxiv_path.read_bytes() + b" ")
+        self.reject("captured arXiv evidence SHA-256")
+
+    def test_captured_arxiv_encoding_is_checked_after_rehash(self) -> None:
+        raw = self.arxiv_path.read_bytes() + b"\xff"
+        self.arxiv_path.write_bytes(raw)
+        self.entry["rights"]["evidence_sha256"] = hashlib.sha256(raw).hexdigest()
+        self.reject("captured arXiv HTML encoding")
+
+    def test_coordinated_arxiv_license_relabeling_is_rejected(self) -> None:
+        self.entry["rights"].update(
+            license_identifier="CC0-1.0",
+            license_url=LICENSE_URLS["CC0-1.0"],
+            observed_license_url=LICENSE_URLS["CC0-1.0"],
+        )
+        self.reject("captured arXiv license identity")
+
+    def test_captured_arxiv_https_license_passes(self) -> None:
+        self.arxiv_html = self.arxiv_html.replace("http://creativecommons.org/", "https://creativecommons.org/")
+        self.entry["rights"]["observed_license_url"] = LICENSE_URLS["CC-BY-4.0"]
+        self.write_arxiv_capture()
+        self.verify()
+
+    def test_captured_arxiv_observed_license_must_match(self) -> None:
+        self.entry["rights"]["observed_license_url"] = LICENSE_URLS["CC-BY-4.0"]
+        self.reject("captured arXiv observed license identity")
+
+    def test_captured_arxiv_absolute_download_url_passes(self) -> None:
+        self.arxiv_html = self.arxiv_html.replace('href="/pdf/', 'href="https://arxiv.org/pdf/')
+        self.write_arxiv_capture()
+        self.verify()
+
+    def test_captured_arxiv_identity_mutations_are_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        citation = '<meta name="citation_arxiv_id" content="1904.00633">'
+        download = '<a class="download-pdf" href="/pdf/1904.00633v2"><span>PDF</span></a>'
+        mutations = (
+            (citation, "", "captured arXiv citation identity"),
+            (citation, citation + citation, "captured arXiv citation identity"),
+            (citation, citation.replace("1904.00633", "1908.09855"), "captured arXiv citation identity"),
+            (citation, citation.replace(' content="1904.00633"', ""), "captured arXiv citation metadata"),
+            (download, "", "captured arXiv download count"),
+            (download, download + download, "captured arXiv download count"),
+            ("/pdf/1904.00633v2", "/pdf/1904.00633v1", "captured arXiv download version"),
+            ("/pdf/1904.00633v2", "/pdf/1904.00633", "captured arXiv download version"),
+            (' href="/pdf/1904.00633v2"', "", "captured arXiv download URL"),
+        )
+        for before, after, message in mutations:
+            with self.subTest(after=after, message=message):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject(message)
+
+    def test_captured_arxiv_license_mutations_are_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        section = original.split('<div class="abs-license">', 1)[1].split("</div></div>", 1)[0]
+        section = '<div class="abs-license">' + section + "</div></div>"
+        anchor = '<a class="has_license" href="http://creativecommons.org/licenses/by/4.0/">'
+        mutations = (
+            (section, "", "captured arXiv license count"),
+            (section, section + section, "captured arXiv license count"),
+            (anchor, '<a class="has_license">', "captured arXiv license URL"),
+            ('class="has_license"', 'class="footer-license"', "captured arXiv license anchor"),
+            (
+                "http://creativecommons.org/licenses/by/4.0/",
+                "https://example.org/license",
+                "captured arXiv license identity",
+            ),
+            ("</span></a></div></div>", "</span></div></div>", "captured arXiv evidence nesting"),
+            (
+                "</span></a></div></div>",
+                "</span></a>" + anchor + "extra</a></div></div>",
+                "captured arXiv license count",
+            ),
+        )
+        for before, after, message in mutations:
+            with self.subTest(after=after, message=message):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject(message)
+
+    def test_captured_arxiv_footer_cannot_supply_article_license(self) -> None:
+        self.arxiv_html = self.arxiv_html.replace('class="abs-license"', 'class="unrelated"')
+        self.write_arxiv_capture()
+        self.reject("captured arXiv license count")
+
+    def test_captured_arxiv_duplicate_attributes_are_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        for before, after in (
+            ('name="citation_arxiv_id"', 'name="citation_arxiv_id" name="other"'),
+            ('class="download-pdf"', 'class="download-pdf" class="other"'),
+            ('class="abs-license"', 'class="abs-license" class="other"'),
+            ('class="has_license"', 'class="has_license" href="https://example.org/license"'),
+        ):
+            with self.subTest(before=before):
+                self.arxiv_html = original.replace(before, after)
+                self.write_arxiv_capture()
+                self.reject("captured arXiv duplicate attributes")
+
+    def test_captured_arxiv_unclosed_evidence_is_rejected_after_rehash(self) -> None:
+        original = self.arxiv_html
+        for suffix in ("<span>PDF</span>", "<span>view license</span>"):
+            with self.subTest(suffix=suffix):
+                self.arxiv_html = original.split(suffix, 1)[0] + suffix
+                self.write_arxiv_capture()
+                self.reject("captured arXiv unclosed evidence")
+
+
+class HostedArxivCaptureChecks(unittest.TestCase):
+    def test_all_registered_hosted_arxiv_captures(self) -> None:
+        root = Path(__file__).resolve().parents[1]
+        registry = json.loads((root / "docs/SOURCES.json").read_text())
+        entries = [entry for entry in registry["pdfs"] if entry["source_url"].startswith("https://arxiv.org/pdf/")]
+        self.assertTrue(entries)
+        for entry in entries:
+            with self.subTest(source=entry["source_url"]):
+                verify_source_rights(
+                    entry, registry, root=root, published=True, payload=(root / entry["path"]).read_bytes()
+                )
 
 
 if __name__ == "__main__":
