@@ -146,8 +146,8 @@ per PUB produce 81,920 executions. The dynamic job measured 2,730.7
 submitted PUB shots per QPU charge second (record
 `results/live/2026-10-11T152922.787095Z`: 24,576 PUB shots, 9 s charge),
 inside the literature range of about 1,000 shots/s for many-twirl runs
-(literature/notes/2505.22629.md) to 4,900 shots/s derived from
-literature/notes/2507.08088.md. The job's metrics decompose the charge:
+(docs/notes/2505.22629.md) to 4,900 shots/s derived from
+docs/notes/2507.08088.md. The job's metrics decompose the charge:
 circuit execution took 272.9 us per shot, the backend's 250 us default
 repetition delay plus the 22.9 us mean scheduled circuit, and 2.3 s of the
 9 s charge lay outside circuit execution. IBM's own estimate for a job

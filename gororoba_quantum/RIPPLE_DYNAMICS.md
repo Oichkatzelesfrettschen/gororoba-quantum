@@ -79,7 +79,7 @@ The seven graphs contain 42 unsigned assessor vertices and 84 undirected
 edges. Including both compatible sign choices and both operand orders
 recovers all 336 ordered signed zero-product rows in the repository corpus.
 Direct multiplication checks every row. The counts reproduce existing
-mathematics; see the [prior-work ledger](../literature/notes/prior_work_synthesis.md).
+mathematics; see the [prior-work ledger](../docs/notes/prior_work_synthesis.md).
 
 Every one of the 56 triangular faces has edge-sign product -1. A common
 assignment of real vertex signs would give +1 around a triangle, so a face
@@ -118,8 +118,8 @@ qualified. A fully dephased model stays uniform after each mixer; that
 reference is modeled unless an actual dephasing protocol is included.
 
 The runner retains joint shot ordering and per-component registers. Follow the
-[parallel-experiment evidence requirements](../literature/notes/quantum_experiment_parallelism.md)
-and [design sources](../literature/notes/quantum_experiment_design_sources.md).
+[parallel-experiment evidence requirements](../docs/notes/quantum_experiment_parallelism.md)
+and [design sources](../docs/notes/quantum_experiment_design_sources.md).
 A fresh calibration, submit-free dry run, digest-bound written case and
 explicit owner approval under [AGENTS.md](../AGENTS.md) precede submission.
 Native server mock timing is separate evidence and supplies randomized

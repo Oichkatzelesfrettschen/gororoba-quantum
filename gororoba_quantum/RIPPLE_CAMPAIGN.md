@@ -70,7 +70,7 @@ The decision does not certify unknown-eigenstate QPE or general Shor.
 | --- | --- |
 | Reproduce the two completed jobs | Complete retained audit: raw hashes, 16 estimates, 12 intervals, QPY writers and timing reproduce; preserve the measured figure. |
 | Decompose the finite ripple mathematics | Implemented finite certificates and interactive explorer; retain theorem/finite-check/hardware distinctions and all explicit limits. |
-| Consolidate primary sources | Source owner integrates notes, PDFs, hashes, reading limits and prior-work attribution under docs; historical ledger paths retain compatibility. |
+| Consolidate primary sources | Integrated source library, notes, licensed PDFs, hashes, reading limits and prior-work attribution under docs; the literature alias preserves historical ledger paths. |
 | Qualify the four-PUB correction experiment | Local common-template, ideal, integer-count and schedule-validator contracts pass; compare fresh live calibration from Fez, Kingston and Marrakesh, then audit returned execution schedules before admitting the matched inference. |
 | Diagnose Kingston mock access | Fresh implicit and explicit-instance GETs return 404 for mock configuration while real status returns 200; service deployment/access cause remains unresolved. |
 | Prepare physical admission | Production family/reconstruction, exact collector, calibration withholding, approval binding, current quota, final charge estimate and ceiling; unavailable mocks are excluded from the preparation path. |
@@ -79,8 +79,9 @@ The decision does not certify unknown-eigenstate QPE or general Shor.
 | Close review findings | Focused iterative commits, mandatory gates, Copilot review and honest Codex-quota status. Keep PR #36 open; source-owner integration proceeds independently. |
 | Extend mathematical proofs | Follow the bounded dependencies below; empirical outcomes remain distinct from universal mathematical certificates. |
 
-The historical pilot estimate is 11.242518272 seconds for four PUBs at 8,192
-shots, excluding queue and local preparation. The two held atlas cases total
+The prepared pilot estimate is 11.515410176 seconds for four PUBs at 8,192
+shots, with a 14.470770176-second controller-stress scenario and a proposed
+30-second ceiling, excluding queue and local preparation. The two held atlas cases total
 197.02196992 nominal seconds, with separate 180/60-second proposed ceilings.
 Those older records remain historical, unapproved cases. Wider packing can
 share repetition overhead, but the slowest schedule, routing, crosstalk and
@@ -138,21 +139,28 @@ owner reports results and provenance into the shared repository; concurrent
 edits and immutable evidence remain under their existing ownership.
 
 The [source-library PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/38)
-owns the canonical documentation migration and version-specific publication
-rights. The [formal follow-up PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
-owns fold-descent certificates, conditional terminal-channel exclusion and
-their remaining inference obligations. The restricted-geometry follow-up
-[PR #40](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/40),
-recorded here as a pending dependency at source commit
-`233741f7de7959518cb7b3e9438de768330e5c19`, proposes the four-coordinate
-`{1, 10, 18, 25}` classification, kernel frames, integral attachments and
-ordinary-doubling extension. Its first operand stays on that support; its
-partner ranges over the ambient algebra. Written all-real/all-stage proofs,
-finite regression checks and Rocq kernel certification retain distinct
-statuses. Unrestricted dimension-32 topology and other coefficient directions
-remain open. These proposed documents supplement the campaign after reviewed
-integration; open PRs remain distinct from evidence already merged into the
-repository and grant zero physical-execution approval.
+merged the canonical documentation migration and version-specific publication
+rights. The restricted-geometry [PR #40](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/40)
+merged the four-coordinate `{1, 10, 18, 25}` classification, kernel frames,
+integral attachments and ordinary-doubling extension. Its first operand stays
+on that support; its partner ranges over the ambient algebra. The local-chart
+[PR #41](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/41)
+merged dimension-32 skew-Schur chart transport. The integrated source stack is
+revision `cf4e6830e36c89aea9d40f12f01e4e1e335b103f`.
+
+Written all-real/all-stage proofs, finite regression checks and Rocq kernel
+certification retain distinct statuses. The [source roadmap](../docs/RESEARCH_ROADMAP.md)
+and [chart note](../docs/notes/dimension32_skew_schur_charts.md) state their
+coverage and remaining obligations. Global chart coverage, overlaps, and
+unrestricted dimension-32 rank-stratum topology remain open. The [formal follow-up PR](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/39)
+retains its separate fold-descent, conditional terminal-channel and inference
+obligations at reviewed source revision
+`9beeb1efbedf476893769329b7436dc0baa1026b`. A further principal-kernel-chart
+cover is proposed in [PR #42](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/42)
+at revision `3e84b39a11b21e48500857aff569402f85be10d9`. Both follow-ups remain
+separate, open dependencies; their proofs and remaining certification duties
+retain their own evidence scope. Source integration preserves the correction
+pilot's 41-file experiment closure and grants zero physical-execution approval.
 
 - [Measured job audit](../results/ripple/folded-job-review.md)
 - [Pilot protocol](MODEL_DISCRIMINATION.md)

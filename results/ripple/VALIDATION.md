@@ -43,3 +43,12 @@ The Runtime skill audit exercised the installed client-side Sampler locally;
 the validated configure_sampler function remains byte-identical. The proof,
 generator and evaluator have zero PR delta, so the conditional Rocq rebuild
 does not apply. Preparation submitted zero physical QPU jobs.
+
+The [source-integration receipt](source-integration-validation.json) records the
+subsequent reconciliation with the reviewed source and topology stack at
+`cf4e6830`. Both the combined repository gates and the source-library replay
+gates pass. The pilot source closure and retained raw archive remain equal to
+their pre-merge bytes. Four manifest-bound historical guides keep their
+recorded bytes through the `literature -> docs` alias; current mutable notes
+use canonical `docs/` links. Earlier validation receipts retain their original
+revision scope and hashes. Source integration grants zero QPU authorization.

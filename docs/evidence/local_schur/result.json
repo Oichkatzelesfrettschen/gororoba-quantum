@@ -1,0 +1,108 @@
+{
+  "qpu_executed": false,
+  "records": [
+    {
+      "endpoint": 0,
+      "kernel_dimension": 8,
+      "linear_deformation_rank": 6,
+      "nonpure_matrix_rejected": true,
+      "path_direction_effective_rank": 4,
+      "perturbations": [
+        {
+          "coefficient": "1/3",
+          "coordinate": 2,
+          "damaged_lift_rejected": true,
+          "full_nullity": 0,
+          "lift_residual_identity": true,
+          "rank_identity": true,
+          "schur_nullity": 0,
+          "skew_identity": true
+        },
+        {
+          "coefficient": "1/3",
+          "coordinate": 17,
+          "damaged_lift_rejected": true,
+          "full_nullity": 0,
+          "lift_residual_identity": true,
+          "rank_identity": true,
+          "schur_nullity": 0,
+          "skew_identity": true
+        }
+      ],
+      "unit_base_linearized_dimension": 23
+    },
+    {
+      "endpoint": 1,
+      "kernel_dimension": 12,
+      "linear_deformation_rank": 8,
+      "nonpure_matrix_rejected": true,
+      "path_direction_effective_rank": 8,
+      "perturbations": [
+        {
+          "coefficient": "1/3",
+          "coordinate": 2,
+          "damaged_lift_rejected": true,
+          "full_nullity": 0,
+          "lift_residual_identity": true,
+          "rank_identity": true,
+          "schur_nullity": 0,
+          "skew_identity": true
+        },
+        {
+          "coefficient": "1/3",
+          "coordinate": 17,
+          "damaged_lift_rejected": true,
+          "full_nullity": 0,
+          "lift_residual_identity": true,
+          "rank_identity": true,
+          "schur_nullity": 0,
+          "skew_identity": true
+        }
+      ],
+      "unit_base_linearized_dimension": 21
+    },
+    {
+      "endpoint": 2,
+      "kernel_dimension": 16,
+      "linear_deformation_rank": 18,
+      "nonpure_matrix_rejected": true,
+      "path_direction_effective_rank": 12,
+      "perturbations": [
+        {
+          "coefficient": "1/3",
+          "coordinate": 2,
+          "damaged_lift_rejected": true,
+          "full_nullity": 0,
+          "lift_residual_identity": true,
+          "rank_identity": true,
+          "schur_nullity": 0,
+          "skew_identity": true
+        },
+        {
+          "coefficient": "1/3",
+          "coordinate": 17,
+          "damaged_lift_rejected": true,
+          "full_nullity": 0,
+          "lift_residual_identity": true,
+          "rank_identity": true,
+          "schur_nullity": 0,
+          "skew_identity": true
+        }
+      ],
+      "unit_base_linearized_dimension": 11
+    }
+  ],
+  "schema": "cayley-dickson-local-skew-schur-probe-v1",
+  "scope": "three rational path endpoints and six rational perturbations; global geometry remains unclassified",
+  "source_sha256": {
+    "docs/evidence/local_schur/probe.py": "2c79952bf2d55116eb6fd177eab4183d4ed5e7c76febe0b8c7d2b5041137d0a0",
+    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c"
+  },
+  "versions": {
+    "python": "3.14.7",
+    "sympy": "1.14.0"
+  }
+}

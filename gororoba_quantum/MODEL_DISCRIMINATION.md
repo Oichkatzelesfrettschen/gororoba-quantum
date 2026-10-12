@@ -35,8 +35,8 @@ All old shots have been inspected. They can train candidate models and choose
 a prospective intervention, but repartitioning them cannot create a fresh
 validation set. Freeze each candidate model's parameters and joint-outcome
 predictions before the new acquisition. The entire new pilot is prospective
-validation. The existing [source synthesis](../literature/notes/reality_ripple_measurement_design.md)
-and [Corcoles note](../literature/notes/2102.01682.md) retain prior-work limits.
+validation. The existing [source synthesis](../docs/notes/reality_ripple_measurement_design.md)
+and [Corcoles note](../docs/notes/2102.01682.md) retain prior-work limits.
 
 ## Smallest direct optimizer comparison
 

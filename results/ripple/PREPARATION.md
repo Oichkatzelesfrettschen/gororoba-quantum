@@ -119,7 +119,7 @@ control the fresh placement and neighboring workload.
 The [measured folded diagnostic](folded-job-review.md) and its
 [figure](folded-job-review.svg) already demonstrate a useful result: the two
 odd-label no-feedback residuals reverse the sign found in the other fourteen
-arms. The [interpretation and source review](../../literature/notes/reality_ripple_measurement_design.md)
+arms. The [interpretation and source review](../../docs/notes/reality_ripple_measurement_design.md)
 connect that observation to falsifiable model tests and the planned geometry.
 A reality ripple has an operational meaning here: a controlled intervention
 changes a recorded distribution relative to a specified reference. The exact

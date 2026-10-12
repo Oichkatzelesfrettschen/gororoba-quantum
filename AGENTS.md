@@ -28,7 +28,7 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
     scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     scripts/check_render_ripple_visualization.py \
-    literature/sources/open_gororoba/check_signed_kite_switching.py
+    docs/sources/open_gororoba/check_signed_kite_switching.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
     results/live/verify_source_closure.py results/live/folded_raw_analysis.py \
@@ -41,7 +41,7 @@ The rank-sector image gate also uses the plotting-only pin
     scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
     scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
     scripts/check_render_ripple_visualization.py \
-    literature/sources/open_gororoba/check_signed_kite_switching.py
+    docs/sources/open_gororoba/check_signed_kite_switching.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/verify_evidence.py
@@ -57,9 +57,9 @@ The rank-sector image gate also uses the plotting-only pin
   PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" \
-    literature/sources/open_gororoba/check_signed_kite_switching.py | \
-    cmp - literature/sources/open_gororoba/signed_kite_switching.json
-  (cd literature/sources/open_gororoba && sha256sum -c SHA256SUMS)
+    docs/sources/open_gororoba/check_signed_kite_switching.py | \
+    cmp - docs/sources/open_gororoba/signed_kite_switching.json
+  (cd docs/sources/open_gororoba && sha256sum -c SHA256SUMS)
   (cd results/live
     PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest test_folded_raw_analysis
     PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest test_folded_raw_analysis)
@@ -111,6 +111,8 @@ The rank-sector image gate also uses the plotting-only pin
     sedenion_bundle.py annihilator_strata.py \
     rank_polynomials.py rank_charts.py rank_attachments.py \
     integral_homology.py rank_path_topology.py ripple_dynamics.py \
+    four_support_rank.py four_support_geometry.py \
+    four_support_doubling.py four_support_homology.py skew_schur_charts.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
@@ -122,7 +124,7 @@ The rank-sector image gate also uses the plotting-only pin
     ../scripts/check_render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py \
     ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py \
     ../scripts/check_render_ripple_visualization.py \
-    ../literature/sources/open_gororoba/check_signed_kite_switching.py
+    ../docs/sources/open_gororoba/check_signed_kite_switching.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
   "$PYTHON" designs.py
   "$PYTHON" claim_boundaries.py >/dev/null
@@ -239,6 +241,56 @@ under temporary storage so the checkout retains source files only:
 
 The certificate proves finite Boolean permutation action. Operator checks in
 modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
+
+## Source library and research replay
+
+`docs/` owns source notes, retained PDFs, retrieval identities and research
+replays. `literature -> docs` preserves recorded paths; new Markdown links use
+`docs/`. Immutable source ledgers retain their recorded bytes. Source changes
+also pass these local gates before push:
+
+```sh
+(
+  set -eu
+  PYTHON="${PYTHON:-$(command -v python3)}"
+  ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  ruff format --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/check_verify_sources.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/local_schur/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/local_schur/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_rank/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_rank/replay.py --check
+  (cd docs/evidence/four_support_rank && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_geometry/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_geometry/replay.py --check
+  (cd docs/evidence/four_support_geometry && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_doubling/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_doubling/replay.py --check
+  (cd docs/evidence/four_support_doubling && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_homology/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_homology/replay.py --check
+  (cd docs/evidence/four_support_homology && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/dimension32_skew_schur/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check
+  (cd docs/evidence/dimension32_skew_schur && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
+  shellcheck docs/evidence/folding_proofs/replay_rocq.sh
+  (cd docs/evidence/local_schur && sha256sum -c SHA256SUMS)
+  (cd docs/evidence/folding_proofs && sha256sum -c SHA256SUMS)
+)
+```
+
+Changes to proof replay inputs also follow the pinned Rocq replay in
+`docs/evidence/folding_proofs/README.md`. Imported paper parser diagnostics
+remain source limitations in the registry; checksum admission preserves the
+original bytes and differs from a fresh mathematical proof check.
 
 ## QPU time and calibration
 

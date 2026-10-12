@@ -7,9 +7,9 @@ The runner uses installed CPU Qiskit Aer; custom CUDA work remains paused.
 The next hardware case follows the measured model discrepancy and the shared
 campaign ownership record, with separate approval for every changed design.
 
-The [parallel-experiment literature synthesis](../literature/notes/quantum_experiment_parallelism.md)
+The [parallel-experiment literature synthesis](../docs/notes/quantum_experiment_parallelism.md)
 connects packing, context controls, drift, and blocking to primary research.
-Its [design-source note](../literature/notes/quantum_experiment_design_sources.md)
+Its [design-source note](../docs/notes/quantum_experiment_design_sources.md)
 links the official execution and experimental-design manuals. Those sources
 supply prior mechanisms and qualification gates for the candidate work below.
 
@@ -19,6 +19,14 @@ static evidence remains linked below. Each record retains its dependency
 versions and source-modification flag. The tested environment uses Qiskit
 2.5.2, Runtime 0.50.0, and Aer 0.17.2. Fresh calibration can change every
 future layout, job allocation, duration, and admission decision.
+
+The [source-grounded decision synthesis](../docs/notes/model_discrimination_optimizer.md)
+prioritizes model discrimination and a measurable optimizer decision before
+broad atlas expenditure. The coordinated four-PUB feedback/correction pilot
+has a historical conditional estimate of about 11.24 seconds; fresh compilation,
+statistical admission and exact-case approval remain required. The
+[rank research plan](../docs/notes/koebisu_rank_stratum_research.md) assigns
+continuous classification and attachment proofs to exact classical work.
 
 ## Execution queue and budget
 

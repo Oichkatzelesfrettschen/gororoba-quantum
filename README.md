@@ -6,9 +6,16 @@ basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables.
 
-The [prepared ripple and rank-sector cases](results/ripple/PREPARATION.md)
-combine 182 PUBs and 1,334 qualified endpoints at 197.022 estimated QPU seconds
-under separate 180-second and 60-second service ceilings. A
+The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
+The [source library](docs/README.md) retains licensed primary PDFs, per-paper notes,
+download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
+[coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
+objectives, evidence boundaries, ownership, and ordered delivery gates.
+
+The [held ripple and rank-sector cases](results/ripple/PREPARATION.md)
+record 182 PUBs and 1,334 qualified endpoints with a historical estimate of
+197.022 QPU seconds and separate proposed 180-second and 60-second service
+ceilings. Fresh source-bound atlas cases must precede submission. A
 [model-discrimination decision](gororoba_quantum/MODEL_DISCRIMINATION.md)
 precedes broad atlas spending; physical execution also requires case-specific
 approval. The [completed folded-job audit](results/ripple/folded-job-review.md)
@@ -59,10 +66,20 @@ stress scenario and a proposed 30-second cap. The case remains unapproved.
   retains replayable evidence and a portable interactive visualization.
 - `gororoba_quantum/annihilator_strata.py` -- exact signed two-term kernel census
   and published maximal-annihilator lift witnesses through dimension 256.
-  `literature/notes/cayley_dickson_annihilator_sources.md` records primary
+  `docs/notes/cayley_dickson_annihilator_sources.md` records primary
   theorems and the source-pinned Rust and Rocq work reused by the audit.
 - `gororoba_quantum/rank_polynomials.py` and `rank_charts.py` -- exact
   spectral rank predicates and fixed-minor kernel charts for general coefficients.
+- `gororoba_quantum/skew_schur_charts.py` -- exact dimension-32 reduced rank
+  certificates, kernel lifts, sphere metrics, and polynomial pivot domains
+  across all 30 doubly-pure coefficient directions.
+- `gororoba_quantum/four_support_rank.py` and `four_support_geometry.py` --
+  exact real ranks, connected smooth strata, complete kernel frames, closure
+  maps, and a partner-incidence model on support `{1,10,18,25}`.
+- `gororoba_quantum/four_support_doubling.py` -- structural ordinary-doubling
+  frames and inverse maps for the same support at every higher stage.
+- `gororoba_quantum/four_support_homology.py` -- an explicit finite CW model,
+  integral cancellation certificates, and the restricted cohomology ring.
 - `gororoba_quantum/rank_attachments.py`, `rank_path_topology.py`, and
   `integral_homology.py` -- exact polynomial attachment certificates, a proved
   restricted pair-space model, and integral homology with torsion certificates.
