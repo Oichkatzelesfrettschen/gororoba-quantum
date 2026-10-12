@@ -38,6 +38,32 @@ temporary synthetic Git repository, including output preservation. The
 utility performs local reads and writes its separate audit artifact; it
 constructs zero IBM service or Sampler objects.
 
+## Fresh folded case with native CPU qualification
+
+The [folded dry run](2026-10-12T024756.245948Z/record.json) completes at
+source `7ef9f29606dfd6a77361580f79b89b74cfcd037c` with
+`sources_modified=false`. The [source audit](2026-10-12T024756.245948Z/source-closure.json)
+confirms all 21 declared files and installed dependency versions. The
+[written case](2026-10-12T024756.245948Z/UNAPPROVED_CASE.md) remains unapproved.
+
+Fresh Kingston metadata supports 8192 shots per PUB across twelve dynamic
+and four static PUBs. All twelve endpoint half-widths equal
+`0.040945053228709165`. Nominal modeled charge is `39.611690496` seconds;
+the declared latency-stress scenario gives `45.522410496` seconds. Two
+60-second job ceilings plus a 60-second reserve fit the recorded 591-second
+remaining quota. The record contains zero submission entries.
+
+The [preparation summary](2026-10-12T024756.245948Z/preparation.json) and
+[replay script](2026-10-12T024756.245948Z/replay.sh) retain the installed CPU
+policy and bounded search. The command exits zero in 246 seconds. The
+[validation summary](2026-10-12T024756.245948Z/validation.json) records the
+complete repository gates at the same implementation commit: exit zero,
+453 seconds, and 43 type-checked source files. Tracked-file hashes, index,
+HEAD, local refs, Aer package, and extension hash match before and after
+those gates; the concurrent jobs create only the two named untracked
+evidence directories on the measured checkout surface. The
+[checksums](2026-10-12T024756.245948Z/SHA256SUMS) bind all retained members.
+
 ## CPU-policy and precision-cost evidence
 
 The following submit-free records name commit `877f73c2bd15f242a8a5d54089347ab0bcf6d16d`

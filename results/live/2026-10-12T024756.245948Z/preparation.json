@@ -1,0 +1,20 @@
+{
+  "schema": "submit-free-cpu-folded-preparation-v1",
+  "source_head": "7ef9f29606dfd6a77361580f79b89b74cfcd037c",
+  "exit_status": 0,
+  "started_utc": "2026-10-12T02:47:52Z",
+  "finished_utc": "2026-10-12T02:51:58Z",
+  "simulation_policy": {
+    "mode": "cpu",
+    "threads": 2,
+    "memory_mb": 512,
+    "shot_branching": false,
+    "method": "density_matrix",
+    "precision": "double",
+    "shot_branching_sampling": false,
+    "parallel_experiments": 1
+  },
+  "qpu_submission_entries": 0,
+  "replay_script": "replay.sh",
+  "execution_boundary": "fresh IBM metadata, local compilation and installed CPU Aer simulation; submission flag absent"
+}

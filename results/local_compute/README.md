@@ -22,6 +22,14 @@ report. The report establishes synthetic native-Aer behavior and leaves
 hardware-model accuracy unresolved. CUDA packaging and installation remain
 paused; the installed CPU Aer supplies the active simulation path.
 
+The [N21 shared-predicate evidence](n21_shared_predicate/README.md) retains
+a separate native-Qiskit operator and unrouted-compilation probe. Each
+controlled multiplier drops from 243 to 204 CX gates while all clean-scratch
+input columns match the full-register permutation. The candidate remains
+outside production synthesis and requires routed and calibrated-noise
+qualification. Its subdirectory carries independent replay instructions and
+checksums.
+
 | Artifact | Role and status |
 |---|---|
 | `cpu_branching_inputs.qpy.gz` | Exact eighteen compiled circuit inputs |

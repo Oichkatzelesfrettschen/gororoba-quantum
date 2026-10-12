@@ -344,6 +344,17 @@ candidates, or a cost scenario changes these calculations. The estimates
 justify a design and uncertainty review before a longer CPU run; they
 establish neither physical impossibility nor a valid covariance shortcut.
 
+The [native Qiskit shared-predicate probe](../results/local_compute/n21_shared_predicate/README.md)
+provides a concrete N21 synthesis challenger. The selected inverse network
+already exploits `U4^2 = U16 = U4^-1`. Sharing compatible outer KG24 scratch
+computations instead reduces each multiplier from 243 to 204 unrouted CX
+gates. The numerical operator check covers all 32 data states, both phase
+branches, and clean scratch. Production integration, phase-sensitive mutation
+tests, matched routed compilation, and fresh CPU noise evaluation remain
+separate admission steps. The retained rejected diagnostic has 1079 CZ gates
+with feed-forward and 1073 without it; an unrouted reduction establishes no
+new modeled contrast or hardware success probability.
+
 The folded case remains the first hardware question. Its twelve endpoint
 intervals achieve the declared precision in the retained model, while the
 hardware-model gap remains the quantity the approved experiment measures.
