@@ -121,10 +121,13 @@ Run integrity and numerical recomputation from the repository root:
 )
 ```
 
-The verifier reads local files, checks every retained/source digest, binds
-QPY and noise bytes to the completed report, and independently recomputes
-the reported sampled incompatibility. The verifier performs zero simulator
-or network operations. Preserve the archives and run exploratory simulations
+The verifier checks retained digests and lengths for every manifest entry.
+For gzip entries, it also decompresses the payload and checks `source_sha256`
+and `source_bytes`. For plain files, those source fields remain provenance
+metadata; the verifier checks their retained bytes. The verifier binds QPY
+and noise bytes to the completed report and independently recomputes the
+reported sampled incompatibility. The verifier performs zero simulator or
+network operations. Preserve the archives and run exploratory simulations
 in a separate output directory; evidence files remain immutable inputs.
 
 A bounded replay uses the corrected channel-order comparison and writes into

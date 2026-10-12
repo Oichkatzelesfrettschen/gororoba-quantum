@@ -78,10 +78,10 @@
       "transformation": "Extract qualification observations and append explicit provenance limits."
     },
     {
-      "bytes": 10009,
+      "bytes": 10232,
       "path": "README.md",
       "role": "evidence-explanation",
-      "sha256": "e6a0c1af79547f11f89922325de088e7d20a8e3411fa9b464f11dc7a54e28b6f",
+      "sha256": "0580eda49af0b119c6e153c672fdd60b06c4c4c23552004cbf4fc5b6615acb91",
       "transformation": "New retention documentation or verifier."
     },
     {
