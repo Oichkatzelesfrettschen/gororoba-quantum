@@ -21,6 +21,10 @@ records retain explicit observables, conditional statistical admission,
 charged-time assumptions, and aggregate invocation ceilings. Historical
 records below retain their original schemas and evidence scope.
 
+The [execution and optimization roadmap](QPU_EXECUTION_ROADMAP.md) reconciles
+the three pending scientific cases, current job-mode semantics, retained
+QPU-second estimates, and source-grounded accuracy and runtime priorities.
+
 ## What each group claims and what refutes it
 
 | group | claim | observable | control or null | falsifier |
