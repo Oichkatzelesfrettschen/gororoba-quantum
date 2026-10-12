@@ -188,6 +188,13 @@ hardware fidelity and charged-time gains as separate measurement gates.
 The [central dispatch ledger](../plans/QUANTUM_DISPATCH.md) records owners,
 dependencies, research scope and the human-supplied execution gates.
 
+The [kernel attachment proof](notes/annihilator_kernel_limits.md) and its
+[replay](evidence/kernel_limits/README.md) retain complete limiting projector
+certificates, a three-coefficient real cone classification, global kernel
+frames, actual mapping cylinders and restricted integral invariants. Ordinary
+embedding extends this cone family to every higher stage. The attachment
+image differs from the total incidence; unrestricted topology remains open.
+
 ## Ripple source supplement
 
 The [De Marrais Box-Kites III note](notes/math-0403113.md) records a bounded

@@ -378,9 +378,9 @@
     "ZY"
    ],
    "full_state_tomography_settings": 9,
-   "covariance": "Same-shot and cross-arm covariance retained; oracle allocations require known variances and integer/floor/calibration gates.",
+   "covariance": "Within-setting same-shot covariance retained; cross-arm independence assumed. Shared drift/calibration covariance requires an expanded model; oracle allocations retain integer/floor/calibration gates.",
    "production": {
-    "stage": "Source-bound production complete; independent normalization review finishing.",
+    "stage": "Source-bound production and independent normalization review complete; clean verdict accepted.",
     "files_with_updated_note": 12,
     "output_bytes": 330522,
     "investigation_input_bytes": 247803,
@@ -800,7 +800,7 @@
     "checks": "Unique keys/IDs, fields, owners/references, DAG, completed prerequisites, recovery ancestry, pending coordinator requirement, pre/post-run separation and QPU authority pass.",
     "negative_mutations_rejected": 12,
     "scope": "Independent retained-record check; live API verification remains separate.",
-    "reviewed_combined_bytes": 98404
+    "reviewed_combined_bytes": 99195
    }
   },
   "central_validation": {
