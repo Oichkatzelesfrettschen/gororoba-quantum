@@ -1,7 +1,7 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T06:35:58.983174+00:00",
-  "scope": "Single coordinated writer for the admitted ripple/rank cases; completed folded evidence retained separately",
+  "updated_at": "2026-10-12T06:56:43.568923+00:00",
+  "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
     "folded_reserved_ceiling_seconds": 0,
@@ -48,7 +48,7 @@
       "owner": "Design a single-run reality ripple",
       "science": "packed finite Cayley-Dickson walk, box-kite, and Design C hardware comparison",
       "backend": "ibm_kingston",
-      "state": "prepared_statistically_admitted_unapproved",
+      "state": "prepared_unapproved_held_for_model_discrimination",
       "proposed_pubs": 146,
       "proposed_ceiling_seconds": 180,
       "accepted_job_ids": [],
@@ -61,14 +61,15 @@
       "reported_stress_seconds": 159.38726656,
       "admitted_endpoints": 1138,
       "required_endpoints": 1138,
-      "relative_placement_score_floor": 0.8
+      "relative_placement_score_floor": 0.8,
+      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
     },
     {
       "family": "rank-sector",
       "owner": "Design a single-run reality ripple",
       "science": "finite rank-sector dark, bright, and isolated control comparison",
       "backend": "ibm_kingston",
-      "state": "prepared_statistically_admitted_unapproved",
+      "state": "prepared_unapproved_held_for_model_discrimination",
       "proposed_pubs": 36,
       "proposed_ceiling_seconds": 60,
       "accepted_job_ids": [],
@@ -80,7 +81,8 @@
       "record_sha256": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
       "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
       "admitted_endpoints": 196,
-      "required_endpoints": 196
+      "required_endpoints": 196,
+      "execution_priority_gate": "Resolve the scoped model-discrimination/optimizer decision before considering broad atlas spending; exact-case approval remains required."
     }
   ],
   "deduplication": {
@@ -88,7 +90,7 @@
     "static_witness_overlap": "Rank sectors measure coefficient-normalized multiplication-path norms; ripple measures associator interference and sedenion fringes. Endpoint and member names are disjoint. Historical DesignC repetitions are intentional fresh-patch/packing controls:9members share3atlas rows and3isolated reference rows measure changed neighboring workload."
   },
   "backend_policy": "each complete control family stays on its independently admitted backend; alternate QPUs require their own live case and approval",
-  "other_chat_confirmation": "Folded owner completed both jobs and handed off ledger maintenance; ripple owner has submitted zero physical jobs and holds both cases for exact owner approval.",
+  "other_chat_confirmation": "Direct user priority verified: model discrimination and a measurable optimizer decision precede atlas spending; broad cases remain unapproved and their record/QPY bytes remain retained.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
     "observed_at": "2026-10-12T06:33:43.572729+00:00",
@@ -125,5 +127,17 @@
     ]
   },
   "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
-  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions require owner approval of the linked cases."
+  "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions require owner approval of the linked cases.",
+  "scientific_priority_gate": {
+    "state": "model_discrimination_design_recommended_unqualified",
+    "source": "Direct user instruction verified in Audit Heron quantum claims",
+    "design": "gororoba_quantum/MODEL_DISCRIMINATION.md",
+    "broad_atlas_spending": "held",
+    "recommended_pubs": 4,
+    "recommended_shots_per_pub": 8192,
+    "historical_conditional_seconds": 11.242518272,
+    "service_ceiling_seconds": null,
+    "physical_execution_authorized": false,
+    "decision": "Known-label correction must improve unconditional terminal success by more than 0.01 for BOTH odd labels under simultaneous 95 percent directional bounds; circuit/schedule matching and fresh admission precede any written approval case."
+  }
 }

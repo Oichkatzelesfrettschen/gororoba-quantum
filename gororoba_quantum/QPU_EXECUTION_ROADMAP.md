@@ -22,6 +22,12 @@ future layout, job allocation, duration, and admission decision.
 
 ## Execution queue and budget
 
+The user prioritizes the [four-PUB model-discrimination design](MODEL_DISCRIMINATION.md)
+and its measurable known-label optimizer decision before broad atlas spending.
+The design remains unimplemented and unqualified; historical pricing is about
+11.3 seconds at 8192 shots per PUB. The admitted ripple/rank cases below stay
+held and unapproved while that decision gate is resolved.
+
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |

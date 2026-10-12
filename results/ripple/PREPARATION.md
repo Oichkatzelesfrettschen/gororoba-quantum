@@ -1,5 +1,11 @@
 # Packed algebra execution cases
 
+The user now prioritizes [model discrimination and a measurable optimizer
+decision](../../gororoba_quantum/MODEL_DISCRIMINATION.md) before broad atlas
+spending. Both cases below remain retained and unapproved behind that gate.
+The four-PUB pilot recommendation needs new implementation and qualification;
+its approximately 11.3-second historical estimate is not an approval case.
+
 The integrated objective joins the user's mathematical, scientific, philosophical,
 and visual requests: realize exact Cayley-Dickson predictions through measured
 interference; acquire the box-kite atlas, associator walks, original Design C

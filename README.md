@@ -8,8 +8,10 @@ observables.
 
 The [prepared ripple and rank-sector cases](results/ripple/PREPARATION.md)
 combine 182 PUBs and 1,334 qualified endpoints at 197.022 estimated QPU seconds
-under separate 180-second and 60-second service ceilings. Physical execution
-awaits case-specific approval. The [completed folded-job audit](results/ripple/folded-job-review.md)
+under separate 180-second and 60-second service ceilings. A
+[model-discrimination decision](gororoba_quantum/MODEL_DISCRIMINATION.md)
+precedes broad atlas spending; physical execution also requires case-specific
+approval. The [completed folded-job audit](results/ripple/folded-job-review.md)
 provides measured contrasts, model discrepancies, and timing evidence.
 
 ## Contents
