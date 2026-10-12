@@ -4,6 +4,17 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+## Completed folded-QPE hardware case
+
+The [hardware analysis](2026-10-12T055624.091217Z/ANALYSIS.md) records two
+Kingston jobs, sixteen PUBs, 131072 preserved shots, and 40 final charged
+seconds. Its twelve simultaneous intervals retain the predefined family and
+report the routing/readout interpretation limits. The raw decoder and its
+synthetic checks support reproducible shot-order inspection. The
+[coordination snapshot](qpu-coordination.json) assigns one execution owner
+per family and records 551 remaining shared seconds at the settled read.
+Future submissions refresh that snapshot and require their own approved cases.
+
 ## Source-closure audits
 
 `verify_source_closure.py` compares every declared experiment source with the
@@ -43,7 +54,7 @@ runs' records and sibling audit bytes preserved. The utility performs local
 reads and writes its separate audit artifact; it constructs zero IBM service
 or Sampler objects.
 
-## Fresh folded case with native CPU qualification
+## Historical folded preparation with native CPU qualification
 
 The [folded dry run](2026-10-12T024756.245948Z/record.json) completes at
 source `7ef9f29606dfd6a77361580f79b89b74cfcd037c` with

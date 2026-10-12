@@ -15,12 +15,16 @@ lint and type-check configuration only. Before any push, these exit 0:
   PYTHON="${PYTHON:-$(command -v python3)}"
   ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
-    results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
+    results/live/verify_source_closure.py results/live/folded_raw_analysis.py \
+    results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client \
+    results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py
   ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
     scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
-    results/live/verify_source_closure.py results/local_compute/verify_evidence.py \
+    results/live/verify_source_closure.py results/live/folded_raw_analysis.py \
+    results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client \
+    results/local_compute/verify_evidence.py \
     results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
     results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
@@ -37,6 +41,21 @@ lint and type-check configuration only. Before any push, these exit 0:
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
   PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
+  (cd results/live
+    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest test_folded_raw_analysis
+    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest test_folded_raw_analysis)
+  (cd results/live/2026-10-12T055624.091217Z && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error results/live/folded_raw_analysis.py \
+    results/live/2026-10-12T055624.091217Z | \
+    cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error \
+    results/local_compute/mixed_pub_client/probe.py >/dev/null
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error \
+    results/local_compute/mixed_pub_client/probe.py >/dev/null
+  (cd results/local_compute/mixed_pub_client
+    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest check_probe
+    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest check_probe
+    sha256sum -c SHA256SUMS)
   cd gororoba_quantum
   mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
@@ -51,7 +70,8 @@ lint and type-check configuration only. Before any push, these exit 0:
     integral_homology.py rank_path_topology.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
-    ../results/live/verify_source_closure.py ../results/local_compute/verify_evidence.py \
+    ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
+    ../results/local_compute/verify_evidence.py \
     ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
     ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py
   "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT

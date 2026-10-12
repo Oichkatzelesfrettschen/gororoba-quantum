@@ -1,10 +1,11 @@
 # QPU execution and optimization roadmap
 
-The next hardware expenditure answers the folded-QPE model discrepancy. The
-runner uses installed Qiskit Aer on the CPU for preparation. Custom CUDA work
-remains paused. Each hardware case requires a fresh admitted dry run, a written
-case, and explicit owner approval. Local validation establishes circuit and
-planning conformance; hardware observations establish accuracy and stability.
+The approved folded-QPE ladder completes sixteen PUBs in two Kingston jobs
+for 40 final charged QPU seconds. The [hardware report](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md)
+retains the scientific intervals, raw-shot replay, and component-level timing.
+The runner uses installed CPU Qiskit Aer; custom CUDA work remains paused.
+The next hardware case follows the measured model discrepancy and the shared
+campaign ownership record, with separate approval for every changed design.
 
 The [parallel-experiment literature synthesis](../literature/notes/quantum_experiment_parallelism.md)
 connects packing, context controls, drift, and blocking to primary research.
@@ -12,59 +13,64 @@ Its [design-source note](../literature/notes/quantum_experiment_design_sources.m
 links the official execution and experimental-design manuals. Those sources
 supply prior mechanisms and qualification gates for the candidate work below.
 
-The [folded preparation](../results/live/2026-10-12T024756.245948Z/record.json)
-records source `7ef9f29606df`; the
-[N21 rejection](../results/live/2026-10-12T020459.130482Z/record.json) records
-`4d9b1ce66d0a`; the historical
-[static case](../results/live/2026-10-11T203535.690679Z/record.json) records
-`96ca09a80023`. Each record retains its dependency versions and source modification
-flag. The N21 flag remains `sources_modified=true`; its separate
-[source audit](../results/live/2026-10-12T020459.130482Z/source-closure.json)
-checks the declared source bytes. The official-manual review dates to
-2026-10-11, America/Los_Angeles. The tested environment uses Qiskit 2.5.2,
-Runtime 0.50.0, and Aer 0.17.2. Later calibration can change every layout,
-job allocation, duration, and admission decision below.
+The [executed record](../results/live/2026-10-12T055624.091217Z/record.json)
+records source `c6b8a79e8981` and the exact approved QPY. Historical N21 and
+static evidence remains linked below. Each record retains its dependency
+versions and source-modification flag. The tested environment uses Qiskit
+2.5.2, Runtime 0.50.0, and Aer 0.17.2. Fresh calibration can change every
+future layout, job allocation, duration, and admission decision.
 
 ## Execution queue and budget
 
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
-| Folded-QPE mechanism ladder | Two jobs on ibm_kingston: dynamic, then static coherent controls | 12 + 4 | 39.611690 nominal; 45.522410 stress | Retained feasible case, unapproved |
+| Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
-| Static algebraic witnesses | Historical allocation uses two jobs on two backends | 17 | Historical case estimates about 23; fresh pricing required | Case requires renewal |
+| [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
+| Ripple finite walk/box-kite comparison | Other chat owns submit-free preparation | Candidate manifest under qualification | Proposed ceiling 180 | Unapproved |
+| Rank-sector controls | Other chat owns submit-free preparation | 36 proposed | Proposed ceiling 60 | Unapproved |
 
-The outline therefore contains five jobs and 35 PUBs if the N21 design becomes
-admissible and the static allocation remains the same. Only the first two jobs
-have a fresh feasible case. The complete campaign has no admitted total yet.
-The static program remains independent of the N21 synthesis problem; a changed
-scientific priority can move its separately renewed case ahead of N21.
+The completed folded case spends 40 seconds. The remaining campaign has no
+admitted total or fixed job count. Historical static witnesses can overlap
+ripple/rank-sector controls; reconcile scientific endpoints before approving
+both. N21 synthesis and static mathematical witnesses answer different
+questions and can progress independently through local qualification.
 
-All seconds below are retained model estimates. The ledger prices explicit
-circuit resets but leaves `reset_seconds=0` for additional initialization.
-Installed client-side Runtime 0.50 defaults `init_qubits=True`; IBM's
-[usage example][usage] separately adds Target reset duration for implicit
-initialization. The nominal and stress scenarios therefore leave that
-component unseparated. Their overhead term derives from a historical residual
-and can already absorb part of unmodeled work, so blindly adding another
-reset estimate can double-count it. Renewed server timing and usage must
-resolve initialization, circuit time, and overhead before the next hardware
-case. Service ceilings and quota reservations remain separate protections.
+The [shared coordination record](../results/live/qpu-coordination.json) names
+one execution owner per family across `ibm_fez`, `ibm_kingston`, and
+`ibm_marrakesh`. The settled account read reports 551 seconds remaining with
+an empty pending-job list. The two proposed ceilings total 240 seconds;
+one shared 60-second reserve leaves 251 seconds unallocated at that snapshot.
+All three backends draw on the same rolling 600-second allowance. Multiple
+QPUs can reduce queue contention; assigning duplicate experiments to them
+adds charge and changes the calibration conditions.
 
-The [folded case](../results/live/2026-10-12T024756.245948Z/UNAPPROVED_CASE.md)
-uses 8192 shots per PUB, or 131072 submitted PUB shots:
+Before any future submission, the coordinator refreshes usage and pending
+jobs, reconciles accepted IDs, confirms the owner and question, and binds a
+complete control family to its independently admitted backend. Scientific
+identity includes endpoints, preparation, controls, precision, and the intended
+replication question; a changed transpilation hash alone does not establish a
+new question. The submitted QPY/manifests remain the exact execution identity.
+A second machine receives existing raw data or a disjoint local analysis task.
+Independent backend replication needs its own explicit scientific purpose and
+approved case. The shared JSON file is cooperative coordination, not an
+account-wide atomic lock; external submitters require the same handoff.
 
-| Job | Nominal seconds | Stress seconds | Service ceiling |
-|---|---:|---:|---:|
-| Twelve dynamic PUBs | 28.827006720 | 32.437726720 | 60 |
-| Four static PUBs | 10.784683776 | 13.084683776 | 60 |
-| Invocation | 39.611690496 | 45.522410496 | 120 |
+The [consumed folded case](../results/live/2026-10-12T055017.711575Z-prepared/APPROVAL.md)
+uses 8192 shots per PUB, or 131072 submitted PUB-shots. Each job has a 60-second
+service ceiling, and the invocation has a 120-second combined ceiling. Final
+usage is 29 seconds dynamic plus 11 seconds static. The nominal prediction is
+39.632399872 seconds; the declared latency-stress scenario is 45.543119872.
+The 60-second quota reserve remains available. Queue delay and local CPU
+preparation lie outside those QPU figures.
 
-The plan also retains 60 seconds of quota reserve. The saved quota observation
-reports 591 seconds remaining in the 600-second rolling 28-day allowance.
-Fresh execution rechecks that shared allowance. Ceilings reserve invocation
-quota capacity; owner approval authorizes spending. Ceilings differ from
-predicted charge and final billing. Queue delay and the
-246-second retained CPU preparation lie outside the QPU usage estimates.
+The service circuit-execution metrics total 35.571614464 seconds. Summed
+scheduler durations plus the declared repetition delays give 35.572154368
+seconds; the 0.000539904-second difference remains unattributed. Final charge
+exceeds the service metric by 4.428385536 seconds. Scheduler
+residuals include unseparated controller and initialization work; the aggregate
+forecast error of +0.367600128 seconds does not establish the correctness of
+every cost component. Future cases retain fresh Target and calibration reads.
 
 The runner calls `Sampler(mode=backend)`. Its internal word `batch` denotes the
 PUB list within one job; the runner creates zero IBM Runtime `Batch` contexts.
@@ -87,14 +93,14 @@ The selected folded ledger supplies these nominal components:
 
 | Component | Seconds | Share |
 |---|---:|---:|
-| 250-microsecond repetition delay | 32.768000000 | 82.72% |
+| 250-microsecond repetition delay | 32.768000000 | 82.68% |
 | Two modeled job overheads | 4.600000000 | 11.61% |
-| Target circuit duration, including explicit reset instructions | 1.588330496 | 4.01% |
+| Target circuit duration, including explicit reset instructions | 1.609039872 | 4.06% |
 | Explicit classical-latency allowance | 0.655360000 | 1.65% |
 
 The [IBM usage model][usage] includes circuit duration, repetition delay, and
 job overhead. Eliminating every Target-circuit and modeled classical-latency term would
-save only 5.66% here. Gate improvement still matters for fidelity, but shot design
+save only 5.71% here. Gate improvement still matters for fidelity, but shot design
 and initialization delay dominate this experiment's throughput opportunity.
 These percentages describe the retained modeled components. Implicit
 initialization and scheduler residuals can change the physical shares.
@@ -109,11 +115,11 @@ bias intact.
 
 | Shots/PUB | Half-width | Nominal seconds | Stress seconds | Interpretation |
 |---:|---:|---:|---:|---|
-| 2048 | 0.081890 | 13.352923 | 18.280603 | Fails the 0.08 target |
-| 2146 | 0.079998 | 13.771764 | 18.715124 | Derived minimum integer tier for 0.08 |
-| 4096 | 0.057905 | 22.105845 | 27.361205 | Retained feasible candidate |
-| 5494 | 0.049998 | 28.080741 | 33.559781 | Derived minimum integer tier for 0.05 |
-| 8192 | 0.040945 | 39.611690 | 45.522410 | Selected precision-at-budget case |
+| 2048 | 0.081890 | 13.358100 | 18.285780 | Fails the 0.08 target |
+| 2146 | 0.079998 | 13.777189 | 18.720549 | Derived minimum integer tier for 0.08 |
+| 4096 | 0.057905 | 22.116200 | 27.371560 | Retained feasible candidate |
+| 5494 | 0.049998 | 28.094630 | 33.573670 | Derived minimum integer tier for 0.05 |
+| 8192 | 0.040945 | 39.632400 | 45.543120 | Selected precision-at-budget case |
 
 The 4096-shot candidate saves 44.2% of nominal charge while meeting the existing
 hard target. A finer 5494-shot tier saves 29.1% and meets a newly declared 0.05
@@ -122,7 +128,7 @@ they are candidate designs, not fresh dry runs. Neither reduction preserves
 the selected 0.040945 precision. A new `minimum_charge` case explicitly records
 the desired precision and the chosen integer tier before approval.
 
-The CLI already accepts arbitrary positive integer `--shot-tiers`. The first
+The CLI already accepts arbitrary positive integer `--shot-tiers`. A future
 free planning action compares `minimum_charge` at 0.05 and 0.08 with the
 retained stronger-precision plan. The case preserves all sixteen PUBs and all
 twelve endpoints; the cost saving comes from declared precision, not deleted
@@ -140,8 +146,8 @@ At unchanged circuits, shots, and overheads, the cost model gives:
 
 | Hypothetical qualified delay | Nominal seconds | Stress seconds | Nominal reduction |
 |---|---:|---:|---:|
-| 100 microseconds | 19.950890 | 25.861610 | 49.63% |
-| 50 microseconds | 13.397290 | 19.308010 | 66.18% |
+| 100 microseconds | 19.971600 | 25.882320 | 49.61% |
+| 50 microseconds | 13.418000 | 19.328720 | 66.14% |
 
 These are conditional sensitivities, excluding the cost of qualification.
 They establish neither supported live ranges nor acceptable hardware fidelity.
@@ -157,23 +163,20 @@ The general design criterion becomes minimum charge subject to precision,
 reset-error, temporal-dependence, and scientific-control constraints. Extra
 shots cannot repair a violated reset-error constraint.
 
-## Native server-side dry runs can refine schedule estimates
+## Native server-side dry-run access remains unavailable
 
-Runtime 0.50 exposes [`Sampler.run(..., dry_run=True)`][native-dry-run]. IBM
-states that the server validates the job and supplies usage estimates and
-circuit timing metadata without executing the job on a QPU. The installed
-Sampler and Executor source contain that path. Account access remains to be
-checked; the API reference explicitly allows restricted access.
+Runtime 0.50 exposes [`Sampler.run(..., dry_run=True)`][native-dry-run]. The
+[retained access probe](../results/live/2026-10-12T054229.702537Z/native-validation.json)
+resolves that request through `mock_kingston` and receives
+`QiskitBackendNotFoundError` before a job ID exists. The owner then approves
+physical execution using passing local compilation/Aer checks and live guards.
+The access failure supplies neither mock results nor a server cost estimate.
 
-A separate preparation mode can use the exact admitted QPY circuits to obtain
-server scheduling information before a hardware case. Its records must label
-the returned measurements as randomized mock data and exclude them from
-fidelity prediction, scientific adjudication, and measured-hardware evidence.
-Server-side schedule estimates can constrain modeled latency and separate
-implicit initialization from explicit circuit resets and residual overhead;
-executed scheduler tables and final billing remain separate evidence. The preparation
-mode also needs tests proving that its submitted request binds `dry_run=True`.
-The present local dry-run implementation does not call this server feature.
+If access changes, native mock validation can check exact admitted QPY circuits
+without physical execution. Returned randomized mock outcomes stay outside
+fidelity prediction and scientific adjudication. Scheduled-time estimates,
+CPU predictions, executed scheduler metadata, and final billing retain
+separate provenance. The local dry-run mode remains submit-free.
 
 ## Dynamic-circuit fidelity uses native mechanisms
 
@@ -237,6 +240,26 @@ The diagnostic retains labeled outcomes and the exact feed-forward laws.
 Two phase bits still yield zero verified order recovery. The hardware claim
 concerns a distribution change, rather than successful N21 factor recovery.
 
+## Mixed-job and preparation optimization
+
+The [mixed-PUB client probe](../results/local_compute/mixed_pub_client/README.md)
+returns ordered deterministic dynamic and static outcomes through one local
+Runtime 0.50 client call with twirling and DD disabled. Removing one modeled
+2.3-second overhead gives 37.332399872 nominal seconds for the executed
+folded case, conditional on hardware compatibility and internal subdivision.
+The production runner still separates intrinsic static/dynamic PUB kinds.
+Supporting mixed jobs requires a separate job-policy identity through pricing,
+approval, manifests, recovery, and collection. CPU success alone establishes
+neither physical job subdivision nor saved charge.
+
+The rejected stale-approval record retains 132.5 seconds of Aer batch timings;
+its captured initial candidate pass adds a separate 70.7 seconds. The runner
+rejects changed calibration/layout/QPY after those evaluations. An early stale-record check and a
+prepared-process approval boundary can remove redundant host work while
+preserving source, calibration, quota, QPY, and one-use guards immediately
+before submission. That optimization addresses wall-clock preparation and
+approval churn; billed QPU savings require a physical mechanism.
+
 ## Lower-priority statistical and orchestration work
 
 Each folded archived arm supports three contrasts. Under equal per-shot cost
@@ -287,22 +310,25 @@ and reset-delay planning mechanisms.
 
 ## Ordered delivery gates
 
-1. Resolve evidence-integrity review findings, run all required gates, complete
-   review, merge, synchronize the canonical checkout, and prune merged residue.
-2. Qualify access to the native server-side dry-run path and distinguish its
-   mock outcomes from CPU simulation and hardware results. Resolve implicit
-   initialization and overhead accounting before pricing fresh folded
-   cases for explicitly chosen precision targets using the installed CPU Aer.
-   Compare modeled charge, stress charge, and ceilings; obtain owner approval
-   for one concrete plan.
-3. Execute the approved folded plan, preserve raw ordered outcomes first, then
-   adjudicate the twelve contrasts, executed schedules, drift, and final charge.
-4. Use those observations to prioritize `measure_2`, targeted echoes, or a
-   repetition-delay pilot. Each physical variant receives exact local checks,
-   a separately priced case, and approval before execution.
-5. Promote and qualify the native N21 challenger; renew the static witness
-   case independently. Recompute the campaign job count and budget from
-   admitted cases instead of adding historical or rejected estimates.
+1. Preserve and integrate the completed folded raw evidence, all twelve
+   contrasts, usage, calibration windows, and supplemental shot-order results.
+   Complete review, synchronize main, and Git-prune the merged evidence branch.
+2. Reconcile each candidate's question and ownership with the shared campaign.
+   Reuse folded data. Resolve overlap between the historical static witness
+   case and the other chat's ripple/rank-sector controls before authorizing
+   additional measurements on any of the three QPUs.
+3. Fit labeled intervention-specific model hypotheses locally, then validate
+   them independently. Hardware-minus-replay errors change sign for odd
+   no-feed-forward labels, so a uniform accuracy penalty cannot fit the data.
+   Qualify matched readout/routing crossovers before interpreting the coherent
+   advantage as one physical error mechanism.
+4. Price explicitly chosen precision, qualify repetition-delay controls, and
+   implement compatible mixed-job policy after local contracts pass. Bind each
+   new physical variant to a fresh written case and approval. Preserve all
+   complete control families and the single shared quota reserve.
+5. Promote and qualify the native N21 challenger. Fresh CPU noise admission
+   determines its next case. Renew static cases independently, with scientific
+   deduplication; recompute campaign totals from admitted cases.
 6. Keep the mathematical classification program on its classical proof path.
    Compatible semialgebraic decompositions for the remaining dimension-32
    rank loci precede full attachments, global invariants, and an unrestricted

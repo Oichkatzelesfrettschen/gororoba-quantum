@@ -1,0 +1,89 @@
+{
+  "checks": [
+    {
+      "check": "negative result validation and client aliases",
+      "mode": "normal",
+      "command": [
+        "$PYTHON",
+        "-W",
+        "error",
+        "check_probe.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.000s\n\nOK\n"
+    },
+    {
+      "check": "negative result validation and client aliases",
+      "mode": "optimized",
+      "command": [
+        "$PYTHON",
+        "-O",
+        "-W",
+        "error",
+        "check_probe.py"
+      ],
+      "exit_code": 0,
+      "stdout": "",
+      "stderr": "....\n----------------------------------------------------------------------\nRan 4 tests in 0.001s\n\nOK\n"
+    },
+    {
+      "check": "ruff",
+      "working_directory": "repository root",
+      "command": [
+        "ruff",
+        "check",
+        "--no-cache",
+        "results/local_compute/mixed_pub_client/probe.py",
+        "results/local_compute/mixed_pub_client/check_probe.py"
+      ],
+      "cache_boundary": "temporary directory removed after validation",
+      "exit_code": 0,
+      "stdout": "All checks passed!\n",
+      "stderr": ""
+    },
+    {
+      "check": "ruff",
+      "working_directory": "repository root",
+      "command": [
+        "ruff",
+        "format",
+        "--check",
+        "--no-cache",
+        "results/local_compute/mixed_pub_client/probe.py",
+        "results/local_compute/mixed_pub_client/check_probe.py"
+      ],
+      "cache_boundary": "temporary directory removed after validation",
+      "exit_code": 0,
+      "stdout": "2 files already formatted\n",
+      "stderr": ""
+    },
+    {
+      "check": "mypy",
+      "working_directory": "repository root",
+      "command": [
+        "mypy",
+        "--no-incremental",
+        "results/local_compute/mixed_pub_client/probe.py",
+        "results/local_compute/mixed_pub_client/check_probe.py"
+      ],
+      "cache_boundary": "temporary directory removed after validation",
+      "exit_code": 0,
+      "stdout": "Success: no issues found in 2 source files\n",
+      "stderr": ""
+    },
+    {
+      "check": "byte compilation",
+      "files": [
+        "probe.py",
+        "check_probe.py"
+      ],
+      "output_boundary": "temporary directory removed after compilation",
+      "exit_code": 0
+    }
+  ],
+  "source_sha256": {
+    "probe.py": "58236e863b33c2cb6fdc73c27ef0b4de55ca00bf1c3c1fd4cf0bd2b15cbba89a",
+    "check_probe.py": "6e317a35ccee18bb909aa16ed610f41ecd9b57ce66a2796c950d1e18a4d6b474"
+  }
+}
