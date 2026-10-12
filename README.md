@@ -49,6 +49,9 @@ objectives, evidence boundaries, ownership, and ordered delivery gates.
 - `gororoba_quantum/principal_skew_atlas.py` -- an explicit finite cover of
   every nonzero doubly-pure input, a conditioned initial pivot, exact principal
   refinement, and kernel-restricted overlap maps across changing ranks.
+- `gororoba_quantum/schur_acceleration.py` -- exact first-order admission,
+  complete affine acceleration certificates, and separating witnesses for
+  second-order rank obstructions at dimension-32 centers.
 - `gororoba_quantum/four_support_rank.py` and `four_support_geometry.py` --
   exact real ranks, connected smooth strata, complete kernel frames, closure
   maps, and a partner-incidence model on support `{1,10,18,25}`.

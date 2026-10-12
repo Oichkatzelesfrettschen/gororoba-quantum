@@ -69,6 +69,7 @@ lint and type-check configuration only. Before any push, these exit 0:
     rank_polynomials.py rank_charts.py rank_attachments.py \
     integral_homology.py rank_path_topology.py four_support_rank.py four_support_geometry.py \
     four_support_doubling.py four_support_homology.py skew_schur_charts.py principal_skew_atlas.py \
+    schur_acceleration.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
@@ -86,6 +87,8 @@ lint and type-check configuration only. Before any push, these exit 0:
   "$PYTHON" integral_homology.py >/dev/null
   "$PYTHON" rank_path_topology.py >/dev/null
   "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
+  "$PYTHON" -W error schur_acceleration.py >/dev/null
+  "$PYTHON" -O -W error schur_acceleration.py >/dev/null
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
@@ -199,6 +202,9 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/principal_skew_atlas/replay.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/principal_skew_atlas/replay.py --check
   (cd docs/evidence/principal_skew_atlas && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/schur_acceleration/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/schur_acceleration/replay.py --check
+  (cd docs/evidence/schur_acceleration && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
   shellcheck docs/evidence/folding_proofs/replay_rocq.sh
@@ -291,9 +297,24 @@ twirling and dynamical decoupling off.
 
 ## Reviews and merges
 
-Codex, the chatgpt-codex-connector app, reviews every pull request. It reviews
-on open, and an issue comment `@codex review` requests a review of the current
-head.
+Codex, the chatgpt-codex-connector app, supplies the default pull-request
+review. It reviews on open, and an issue comment `@codex review` requests a
+review of the current head.
+
+When the hosted Codex app reports exhausted code-review quota, request Copilot
+instead. The user authorizes that substitution. Submit a REST review request
+to `pulls/PR/requested_reviewers` with
+`{"reviewers":["copilot-pull-request-reviewer[bot]"]}` and verify that the
+`copilot-pull-request-reviewer` check starts. An empty `requested_reviewers`
+response can accompany an accepted request; the check confirms execution.
+Read the completed Copilot review and every review thread. Admission requires
+a review by that app on the current commit, zero open findings, a successful
+current-commit Copilot check, and resolved review threads. General expert-review
+cautions retain their scientific scope; concrete findings require the same
+triage and fixes below. The Codex status script reports Codex clean signals;
+Copilot admission uses its REST reviews/checks and GraphQL review threads.
+Return to the default reviewer when hosted Codex review becomes available.
+
 - *Progress.* The bot keeps one summary comment per PR, marked
   `codex-pull-request-review-summary`, which reads Running while a review is in
   progress.
@@ -312,9 +333,11 @@ head.
   PR update marker, and summary to reject a changing snapshot.
 
 **One round, per PR:**
-1. Wait until the summary comment stops reading Running. Then read every
-   unresolved thread in full from `codex_review_status.sh`. Threads can arrive
-   between rounds and attach to the newest commit, so the open-thread list,
+1. Wait until the selected review completes: the Codex summary stops reading
+   Running, or the Copilot check completes. Then read every unresolved thread
+   in full from `codex_review_status.sh` or the GraphQL thread connection.
+   Threads can arrive between rounds and attach to the newest commit, so the
+   open-thread list,
    not memory of the last round, is the work queue.
 2. Triage each thread against reachability.
    - A defect a user reaches through a documented interface (the CLI, the
@@ -337,9 +360,10 @@ head.
    those markers, and lists every other open thread as unanswered. A comment
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
-6. Comment `@codex review` and start again at step 1. A PR leaves the loop when
-   the current-head status reports `verdict=clean-comment...` or
-   `verdict=clean-reaction...` and no thread is open.
+6. Request the selected reviewer again and start at step 1. A PR leaves the
+   loop when the current-head Codex status reports `verdict=clean-comment...`
+   or `verdict=clean-reaction...`, or the authorized Copilot admission above
+   passes, and every review thread is resolved.
 
 **Stacked PRs.**
 - Each branch builds on the one below it, so a fix lands on the lowest branch
