@@ -1192,7 +1192,9 @@ def _verify_worker_quota() -> None:
     original = parallel.cgroup_cpu_quota
     parallel.cgroup_cpu_quota = lambda *args: 1.5
     try:
-        if os.environ.get("GOROROBA_WORKERS") is None and parallel.workers() != 2:
+        if parallel.available_cpus() != 2:
+            raise RuntimeError(f"a 1.5-CPU quota counts {parallel.available_cpus()} CPUs")
+        if os.environ.get("GOROROBA_WORKERS") is None and parallel.workers() != 1:
             raise RuntimeError(f"a 1.5-CPU quota sizes {parallel.workers()} workers")
     finally:
         parallel.cgroup_cpu_quota = original

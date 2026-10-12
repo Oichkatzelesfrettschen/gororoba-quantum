@@ -18,11 +18,13 @@ import numpy as np
 from qiskit import qpy
 from qiskit_aer import AerSimulator
 
+import parallel
+
 
 def settings(args: Any = None) -> dict[str, Any]:
     return {
         "mode": getattr(args, "local_compute", "cpu"),
-        "threads": getattr(args, "simulation_threads", 2),
+        "threads": getattr(args, "simulation_threads", parallel.default_threads()),
         "memory_mb": getattr(args, "simulation_memory_mb", 512),
         "shot_branching": False,
         "method": "density_matrix",

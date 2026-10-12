@@ -11,7 +11,8 @@ that bias. CPU or GPU acceleration cannot supply missing physical mechanisms.
 ## Implemented execution boundary
 
 The enabled policy uses CPU density matrices with double precision. The
-CLI accepts `--local-compute cpu`, `--simulation-threads` (default 2), and
+CLI accepts `--local-compute cpu`, `--simulation-threads` (default: half the CPUs available to the process,
+from `parallel.default_threads()`), and
 `--simulation-memory-mb` (default 512). Aer experiment parallelism is one;
 its shot-thread limit equals the declared thread limit. Both
 `shot_branching_enable` and `shot_branching_sampling_enable` remain false.

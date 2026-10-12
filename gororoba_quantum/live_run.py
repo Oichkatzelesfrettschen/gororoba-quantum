@@ -4475,7 +4475,7 @@ def main(argv: list[str] | None = None) -> int:
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "hybrid"), default="cpu")
-    parser.add_argument("--simulation-threads", type=_positive_int, default=2)
+    parser.add_argument("--simulation-threads", type=_positive_int, default=parallel.default_threads())
     parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
     parser.add_argument(
         "--shot-tiers",
