@@ -25,12 +25,21 @@ for n >= 3
 with the explicit ANF basis { x^S : S a nonempty proper subset of
 {0..n-2} } together with { x_{n-1} }. `scripts/left_mult_sign_rank.py`
 checks both containments, the rank, and the basis through n = 8
-(`_check_normalized_code`); C_2 = 0. This is a direct-sum statement about
-binary codes; it says nothing about a direct-product decomposition of the
-multiplication group. For phase synthesis, a sign-kernel operation is a
-normalized codeword plus a separate scalar-sign bit; under coherent control
-that bit is a relative phase on the control, so a controlled implementation
-must carry it.
+(`_check_normalized_code`); C_2 = 0. Addition of binary sign functions
+corresponds to multiplication of diagonal sign matrices. The direct sum
+therefore identifies the sign-kernel group as `H_n = C_n x <-I>`.
+Kirshtein's Theorem 35 and its proof identify `H_n` with
+`Inn_l(Q_n) x Z(Q_n)` and, for `n >= 3`, the full left-multiplication
+group with `(C_n x Z_2) semidirect (Z_2)^n`; the
+[source note](1207.4230.md#mapping-to-this-repository) supplies the
+convention map and explains the printed theorem's `n=2` discrepancy.
+The quaternion case has `G_2=Q8` and `C_2=0` and stays separate from
+that split-extension formula.
+
+For phase synthesis, a sign-kernel operation is a normalized codeword
+plus the scalar-sign bit from the central factor `Z(Q_n)=<-I>`.
+Coherent control turns that scalar sign into a relative phase on the
+control, so a controlled implementation must carry it.
 
 Formalization order: the characterization of H_n; P with its image, kernel,
 and direct sum; the basis and cardinality; the quaternion exception kept
