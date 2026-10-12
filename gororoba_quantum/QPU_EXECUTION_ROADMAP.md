@@ -6,9 +6,17 @@ remains paused. Each hardware case requires a fresh admitted dry run, a written
 case, and explicit owner approval. Local validation establishes circuit and
 planning conformance; hardware observations establish accuracy and stability.
 
-This roadmap reads the retained evidence at source `b3be72c` and the official
-manuals on 2026-10-11, America/Los_Angeles. The tested environment uses Qiskit
-2.5.2, Runtime 0.50.0, and Aer 0.17.2. Later calibration can change every layout,
+The [folded preparation](../results/live/2026-10-12T024756.245948Z/record.json)
+records source `7ef9f29606df`; the
+[N21 rejection](../results/live/2026-10-12T020459.130482Z/record.json) records
+`4d9b1ce66d0a`; the historical
+[static case](../results/live/2026-10-11T203535.690679Z/record.json) records
+`96ca09a80023`. Each record retains its dependency versions and source modification
+flag. The N21 flag remains `sources_modified=true`; its separate
+[source audit](../results/live/2026-10-12T020459.130482Z/source-closure.json)
+checks the declared source bytes. The official-manual review dates to
+2026-10-11, America/Los_Angeles. The tested environment uses Qiskit 2.5.2,
+Runtime 0.50.0, and Aer 0.17.2. Later calibration can change every layout,
 job allocation, duration, and admission decision below.
 
 ## Execution queue and budget
@@ -227,12 +235,36 @@ reservations, approval binding, and collection. A third folded job's overhead
 can consume most of the theoretical gain. The [Runtime 0.50 implementation][shot-source]
 takes precedence over broad per-PUB-shot wording in the manual.
 
-Packing retains arbitrary same-shot dependence until a justified covariance
-bound supports a tighter interval. Physical separation alone supplies no such
-certificate. Adaptive shot stopping also requires a valid sequential inference
-contract and job-granularity cost model; repeated fixed-sample interval checks
-would change coverage. Both ideas rank behind the existing uniform-shot and
-reset-delay mechanisms.
+Packing different required endpoints in one physical shot offers a separate
+planning opportunity: amortize repetition delay while retaining each endpoint's
+shot count and conservative precision bound. Endpoint independence is
+unnecessary for the marginal bounds and their union. The
+[family planner](qpu_planning.py) keeps folded members in separate PUBs on one
+shared patch; N21 replica tiers repeat each arm inside its own PUB. Candidate
+extensions include static witness companions to coherent controls and
+same-rung folded labels on disjoint patches. A label-to-patch crossover would
+preserve each label's complete ladder while testing layout effects; that
+design changes the shared-patch contract and needs its own interpretation.
+
+These candidates remain unimplemented. The
+[retained packing adjudication](../results/live/2026-10-11T152922.787095Z/ADJUDICATION.md)
+records extra scheduler cost and equivalence that depends on interval choice.
+Controller and readout contention can extend fused duration beyond the longest
+scheduled component. Candidate pricing therefore needs the complete fused
+schedule, repetition delay, and job overhead.
+Qualification needs isolated references, matched controls, executed schedules,
+and final charge. The pipeline must extend family selection and joint
+placement, preserve member/register identities and static/dynamic policies,
+validate routed laws, and bind revised PUB manifests, inference, cost,
+collection, and owner approval. Hardware evidence must establish any saving
+at the required precision. Repeated replicas still supply no automatic
+precision gain under arbitrary same-shot dependence; tighter bounds require
+a justified covariance contract.
+
+Adaptive shot stopping also requires a valid sequential inference contract
+and job-granularity cost model; repeated fixed-sample interval checks would
+change coverage. These extensions remain behind the existing uniform-shot
+and reset-delay planning mechanisms.
 
 ## Ordered delivery gates
 
