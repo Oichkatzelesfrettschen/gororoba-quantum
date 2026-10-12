@@ -1,32 +1,53 @@
 # Captured source-rights evidence
 
-The raw arXiv HTML and Zenodo JSON responses bind hosted PDF license decisions
-to inspectable primary-source metadata. The [source registry](../../SOURCES.json)
-records each response URL, retrieval timestamp, SHA-256 and canonical evidence
-path. The nine arXiv pages and two Zenodo records retain their original response
-bytes; their hashes match the earlier rights audit.
+The raw arXiv HTML, Dagstuhl HTML and Zenodo JSON responses bind PDF hosting
+decisions to inspectable primary-source metadata. The
+[source registry](../../SOURCES.json) records response URLs, retrieval times,
+SHA-256 values, reading scopes and canonical capture paths. The captures
+preserve original response bytes. External-only sources retain their inspected
+rights limitations and optional ignored personal reading copies.
 
-The [source verifier](../../verify_sources.py) reads the captures as data.
-For each hosted arXiv paper, its HTML parser requires one `citation_arxiv_id`,
-one `download-pdf` link to the exact version, and one balanced `div.abs-license`
-containing one `has_license` link. The parser excludes generic footer licenses
-and rejects duplicate fields, duplicate relevant attributes and malformed
-nesting. The observed license URL retains its source spelling; HTTP-to-HTTPS
-normalization checks its agreement with the registered license.
+The [source verifier](../../verify_sources.py) treats captures as data.
+For every retained arXiv capture it requires one article citation identity, one download
+link to the exact version, and one balanced article license section. It rejects
+missing or duplicate fields, duplicate relevant attributes, malformed nesting
+and generic footer substitutions. The observed URL preserves source spelling;
+HTTP-to-HTTPS normalization checks its registered license agreement.
 
-For each Zenodo paper, the verifier reads `metadata.license.id` and checks the
-record ID and self link, then identifies one matching file by its self link.
-The decoded filename, size and MD5 must agree with that deposited file and the
-retained PDF. Both evidence routes first check the capture path, retrieval
-timestamp and response hash.
+For Dagstuhl, article-specific title, DOI, abstract link, PDF link and license
+must agree with the registry and the captured canonical landing URL. The
+storage URL must identify that DOI's PDF. A footer grant cannot qualify a
+paper. For Zenodo, the record ID/self link and article license must agree;
+one matching deposited file must have the registered filename, size and MD5.
+Every retained capture has a checked canonical path, retrieval timestamp and
+SHA-256 digest, including captures supporting external-only decisions. The
+Greenberg publisher capture also binds the article DOI and PDF link. The
+capture inventory contains exactly the registered response files and this
+README; missing, unregistered or symlinked captures fail admission. Older
+external-only entries without a retained capture keep their recorded
+primary-source inspection as a manual-audit boundary. Their historical
+evidence digest identifies the inspected response; the offline verifier
+cannot recheck response bytes that the repository does not retain.
 
-The [mutation tests](../../check_verify_sources.py) exercise changed hashes,
-coordinated registry relabeling, rehashed metadata changes, missing or duplicate
-fields, malformed captures and substituted files. The tests also admit all
-registered hosted arXiv snapshots.
+The [licensed source archives](../../INDEX.md#licensed-software-source-snapshots)
+use a separate original-software route: exact inventory, pinned retrieval,
+archive bytes, regular inspected members, their hashes, and the original
+license member/text. The verifier opens archives for inspection and performs
+zero extraction or execution. Uninspected links stay opaque. Source-code
+licenses apply to the software and leave research-paper rights separate.
 
-The external-only records retain their manual-audit boundary and optional
-personal-copy cache. Offline capture checks establish byte integrity and
-metadata agreement. Primary-source inspection and review establish capture
-provenance and the rights interpretation; the response hash alone supplies
-neither.
+The [negative tests](../../check_verify_sources.py) exercise changed hashes,
+coordinated relabeling, metadata substitutions, duplicate/missing fields,
+invalid paths, altered archive/license members and selected symlink members.
+The complete captures and original notices remain available for review.
+
+The collision review's embedded CC0 notice has unresolved author attribution;
+its [note](../../notes/2106.11974.md) records the original words and template
+context. The [digital-optics note](../../notes/1909.04408.md) separately records
+a publisher-advertised CC BY edition whose PDF returned HTTP 403. Neither
+observation relabels the retained arXiv bytes. The registry keeps external-only
+status and direct retrieval links pending the missing evidence.
+
+Offline checks establish byte integrity and metadata agreement. Primary-source
+inspection and review establish provenance and rights interpretation; a
+response hash alone supplies neither.

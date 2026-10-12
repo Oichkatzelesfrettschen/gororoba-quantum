@@ -7,8 +7,9 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 11 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 40 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 14 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 56 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
 The local cache lives inside `docs/`. A fresh checkout receives the public notes
@@ -37,6 +38,10 @@ each source license in force.
 | [Levratti 2026 -- Fano Duality, Projective Orthogonality and the CSS Bridge (author-hosted manuscript)](notes/levratti-2026-fano-css.md) | [levratti-2026-fano-css.pdf](pdf/levratti-2026-fano-css.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Covariant quantum kernels for data with group structure](notes/s41567-023-02340-9.md) | [2105.03406.pdf](pdf/2105.03406.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Challenges and opportunities in quantum optimization](notes/s42254-024-00770-9.md) | [2312.02279.pdf](pdf/2312.02279.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+
+| [Proving Quantum Programs Correct](notes/sqir-voqc-proof-interfaces.md) | [LIPIcs.ITP.2021.21.pdf](pdf/LIPIcs.ITP.2021.21.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Gate Set Tomography](notes/2009.07301.md) | [2009.07301.pdf](pdf/2009.07301.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Latency considerations for stochastic optimizers in variational quantum algorithms](notes/2201.13438.md) | [2201.13438.pdf](pdf/2201.13438.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.
@@ -90,6 +95,37 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Griffiths and Niu 1996 -- Semiclassical Fourier Transform for Quantum Computation (arXiv quant-ph/9511007)](notes/quant-ph-9511007.md) | [PDF](https://arxiv.org/pdf/quant-ph/9511007v1) | `quant-ph-9511007v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/9511007v1) |
 | [Howard et al. -- Time-uniform confidence sequences](notes/1810.08240.md) | [PDF](https://arxiv.org/pdf/1810.08240v9) | `1810.08240v9.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1810.08240v9) |
 
+| [Quantitative Curve Selection Lemma](notes/1803.00505.md) | [PDF](https://arxiv.org/pdf/1803.00505v3) | `1803.00505v3.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1803.00505v3) |
+| [Rational points in henselian discrete valuation rings](notes/greenberg-henselian-lifting.md) | [PDF](https://pmihes.centre-mersenne.org/item/10.1007/BF02684802.pdf) | `greenberg-1966-henselian-points.pdf` | [Source-specific rights audit](https://pmihes.centre-mersenne.org/articles/10.1007/BF02684802/) |
+| [A Verified Optimizer for Quantum Circuits](notes/sqir-voqc-proof-interfaces.md) | [PDF](https://arxiv.org/pdf/1912.02250v3) | `1912.02250v3.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1912.02250v3) |
+| [Optimal Experiment Design for Quantum State and Process Tomography and Hamiltonian Parameter Estimation](notes/quant-ph-0411093.md) | [PDF](https://arxiv.org/pdf/quant-ph/0411093v1) | `quant-ph-0411093v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/quant-ph/0411093v1) |
+| [Predicting Many Properties of a Quantum System from Very Few Measurements](notes/2002.08953.md) | [PDF](https://arxiv.org/pdf/2002.08953v2) | `2002.08953v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2002.08953v2) |
+| [Qubits as Spectrometers of Quantum Noise](notes/cond-mat-0210247.md) | [PDF](https://arxiv.org/pdf/cond-mat/0210247v1) | `cond-mat-0210247v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/cond-mat/0210247v1) |
+| [Introduction to Quantum Noise, Measurement and Amplification](notes/0810.4729.md) | [PDF](https://arxiv.org/pdf/0810.4729v2) | `0810.4729v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/0810.4729v2) |
+| [Thermal and Residual Excited-State Population in a 3D Transmon Qubit](notes/1412.2772.md) | [PDF](https://arxiv.org/pdf/1412.2772v3) | `1412.2772v3.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1412.2772v3) |
+| [Digital quantum simulation of linear and nonlinear optical elements](notes/1909.04408.md) | [PDF](https://arxiv.org/pdf/1909.04408v2) | `1909.04408v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1909.04408v2) |
+| [Quantum coherence in the Dynamical Casimir Effect](notes/1610.03272.md) | [PDF](https://arxiv.org/pdf/1610.03272v2) | `1610.03272v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1610.03272v2) |
+| [Casimir energy with chiral fermions on a quantum computer](notes/2105.02032.md) | [PDF](https://arxiv.org/pdf/2105.02032v1) | `2105.02032v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2105.02032v1) |
+| [Efficient Classical Simulation of Continuous Variable Quantum Information Processes](notes/quant-ph-0109047.md) | [PDF](https://arxiv.org/pdf/quant-ph/0109047v2) | `quant-ph-0109047v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/quant-ph/0109047v2) |
+| [Circuit Quantum Electrodynamics](notes/2005.12667.md) | [PDF](https://arxiv.org/pdf/2005.12667v1) | `2005.12667v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2005.12667v1) |
+| [The Casimir force between real materials: experiment and theory](notes/0902.4022.md) | [PDF](https://arxiv.org/pdf/0902.4022v1) | `0902.4022v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/0902.4022v1) |
+| [Observation of the Dynamical Casimir Effect in a Superconducting Circuit](notes/1105.4714.md) | [PDF](https://arxiv.org/pdf/1105.4714v1) | `1105.4714v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1105.4714v1) |
+| [Quantum collision models: open system dynamics from repeated interactions](notes/2106.11974.md) | [PDF](https://arxiv.org/pdf/2106.11974v2) | `2106.11974v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2106.11974v2) |
+
+## Licensed software source snapshots
+
+These archives preserve the exact original upstream bytes and license notices.
+Source inspection supplies candidate proof interfaces; joint Rocq build
+compatibility remains a separate gate. Archive/member hashes and license text
+are checked by `verify_sources.py` without extraction or execution.
+
+| Source | Original archive | License |
+| --- | --- | --- |
+| [SQIR / VOQC](notes/sqir-voqc-proof-interfaces.md) | [sqir-134fb94.tar.gz](source_archives/sqir-134fb94.tar.gz) | MIT |
+| [CoqInterval](notes/coqinterval-certified-enclosures.md) | [interval-4.11.5.tar.gz](source_archives/interval-4.11.5.tar.gz) | CECILL-C |
+| [Mathematical Components](notes/mathcomp-coqeal-matrix-certificates.md) | [mathcomp-9931c88.tar.gz](source_archives/mathcomp-9931c88.tar.gz) | CECILL-B |
+| [CoqEAL](notes/mathcomp-coqeal-matrix-certificates.md) | [coqeal-8fd26cf.tar.gz](source_archives/coqeal-8fd26cf.tar.gz) | MIT |
+
 ## Repository research certificates
 
 The [continuous four-coordinate rank derivation](notes/four_support_rank_loci.md)
@@ -128,8 +164,22 @@ and their [replay](evidence/schur_acceleration/README.md) separate first-order
 admission, second-order compatibility, and exact obstruction witnesses. A
 nullity-12 example passes the linear constraints but fails a necessary
 quadratic tangent condition. Compatible acceleration certificates describe
-formal second-order solutions; actual curves and complete tangent cones
-require further analysis.
+formal second-order solutions. The
+[selected-center proof](notes/nullity_twelve_local_geometry.md) and
+[replay](evidence/nullity_twelve_locus/README.md) also construct actual curves
+and prove the complete Bouligand cone `A15 union B17`, with intersection
+dimension thirteen, at `e1+e18` on the doubly-pure dimension-32,
+norm-squared-two nullity-twelve locus. Exact CPU certificates and written
+arguments establish that result; a Rocq port, other centers, neighborhood
+branches and attachments remain separate obligations.
+
+The [finite field-model replay](evidence/vacuum_models/README.md) checks
+invariant-sector encoding, observable-specific cutoff bias, synthesis error,
+and a device-noise SPAM counterexample. The
+[opportunity map](notes/vacuum_field_run_opportunities.md) declares controls,
+classical references, physical boundaries, costs and next admission gates.
+The [proof/experiment synthesis](notes/research_proof_experiment_dependencies.md)
+connects those results to the geometry, Rocq and inference dependencies.
 
 ## Verification and research navigation
 

@@ -3,12 +3,14 @@
 from __future__ import annotations
 
 import hashlib
+import io
 import json
 import re
 import subprocess
+import tarfile
 from datetime import datetime, timedelta
 from html.parser import HTMLParser
-from pathlib import Path
+from pathlib import Path, PurePosixPath
 from typing import Any
 from urllib.parse import unquote, urljoin, urlsplit
 
@@ -124,7 +126,10 @@ class ArxivRightsParser(HTMLParser):
             self.license_stack.append(tag)
         elif self.license_stack:
             if tag == "a":
-                require("has_license" in classes, "captured arXiv license anchor")
+                require(
+                    "has_license" in classes or attributes.get("title") == "Rights to this article",
+                    "captured arXiv license anchor",
+                )
                 self.license_urls.append(require_text(attributes.get("href"), "captured arXiv license URL"))
             if tag not in self.VOID_TAGS:
                 self.license_stack.append(tag)
@@ -172,8 +177,146 @@ def verify_arxiv_evidence(root: Path, rights: dict[str, Any], version: str) -> N
     )
     require(parser.license_sections == 1 and len(parser.license_urls) == 1, "captured arXiv license count")
     observed = require_url(parser.license_urls[0], "captured arXiv license URL")
-    require(observed.replace("http://", "https://", 1) == rights["license_url"], "captured arXiv license identity")
-    require(observed == rights["observed_license_url"], "captured arXiv observed license identity")
+    require(
+        observed.replace("http://", "https://", 1) == rights["license_url"].replace("http://", "https://", 1),
+        "captured arXiv license identity",
+    )
+    if "observed_license_url" in rights:
+        require(observed == rights["observed_license_url"], "captured arXiv observed license identity")
+
+
+class ExternalArticleParser(HTMLParser):
+    """Read article identity metadata; rights interpretation remains a manual audit."""
+
+    FIELD_NAMES = {"citation_doi", "citation_title", "citation_pdf_url"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.fields: dict[str, list[str]] = {name: [] for name in self.FIELD_NAMES}
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        if tag != "meta" or not any(key == "name" and value in self.FIELD_NAMES for key, value in attrs):
+            return
+        require(len({key for key, _ in attrs}) == len(attrs), "captured external article duplicate attributes")
+        attributes = dict(attrs)
+        field = require_text(attributes.get("name"), "captured external article field name")
+        self.fields[field].append(require_text(attributes.get("content"), "captured external article field value"))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+
+
+def capture_relative_path(rights: dict[str, Any]) -> str:
+    relative = require_text(rights.get("evidence_path"), "source capture path")
+    require(
+        re.fullmatch(r"docs/evidence/source_rights/[A-Za-z0-9][A-Za-z0-9_.-]*\.(?:html|json)", relative) is not None,
+        "source capture path",
+    )
+    return relative
+
+
+def verify_external_article_evidence(root: Path, entry: dict[str, Any], rights: dict[str, Any]) -> None:
+    """Bind a retained external article capture to its bytes and publisher identity."""
+    relative = capture_relative_path(rights)
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured external evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured external retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured external evidence SHA-256")
+    article = re.fullmatch(
+        r"https://pmihes\.centre-mersenne\.org/item/(10\.1007/[A-Za-z0-9_.-]+)\.pdf", entry["source_url"]
+    )
+    if article is None:
+        raise ValueError("captured external article source route")
+    require(
+        rights["evidence_url"] == f"https://pmihes.centre-mersenne.org/articles/{article[1]}/",
+        "captured external article evidence identity",
+    )
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured external HTML encoding") from error
+    parser = ExternalArticleParser()
+    parser.feed(html)
+    parser.close()
+    require(parser.fields["citation_doi"] == [article[1]], "captured external article DOI identity")
+    require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured external article PDF identity")
+    title = require_text(entry.get("title"), "captured external article registered title")
+    require(parser.fields["citation_title"] == [title], "captured external article title identity")
+
+
+class DagstuhlRightsParser(HTMLParser):
+    """Read article-specific publisher metadata independently of footer notices."""
+
+    FIELD_NAMES = {"DC.Rights", "citation_doi", "citation_title", "citation_pdf_url", "citation_abstract_html_url"}
+
+    def __init__(self) -> None:
+        super().__init__(convert_charrefs=True)
+        self.fields: dict[str, list[str]] = {name: [] for name in self.FIELD_NAMES}
+        self.canonical_urls: list[str] = []
+
+    def handle_starttag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        names = [value for key, value in attrs if key == "name" and value in self.FIELD_NAMES]
+        canonical = tag == "link" and ("rel", "canonical") in attrs
+        if (tag == "meta" and names) or canonical:
+            require(len({key for key, _ in attrs}) == len(attrs), "captured Dagstuhl duplicate attributes")
+            attributes = dict(attrs)
+            if canonical:
+                self.canonical_urls.append(require_text(attributes.get("href"), "captured Dagstuhl canonical URL"))
+            else:
+                field = require_text(attributes.get("name"), "captured Dagstuhl field name")
+                self.fields[field].append(require_text(attributes.get("content"), "captured Dagstuhl field value"))
+
+    def handle_startendtag(self, tag: str, attrs: list[tuple[str, str | None]]) -> None:
+        self.handle_starttag(tag, attrs)
+
+
+def verify_dagstuhl_evidence(root: Path, entry: dict[str, Any], identifier: str) -> None:
+    """Bind a publisher PDF to its exact DOI, download link and article license."""
+    rights = require_mapping(entry.get("rights"), "source rights object")
+    relative = f"docs/evidence/source_rights/dagstuhl-{identifier}.html"
+    require(rights.get("evidence_path") == relative, "captured Dagstuhl evidence path")
+    source = root / relative
+    require(
+        source.is_file() and not source.is_symlink() and source.resolve() == root.resolve() / relative,
+        "captured Dagstuhl evidence file",
+    )
+    require_timestamp(rights.get("evidence_retrieved_at_utc"), "captured Dagstuhl retrieval timestamp")
+    raw_response = source.read_bytes()
+    require(hashlib.sha256(raw_response).hexdigest() == rights["evidence_sha256"], "captured Dagstuhl evidence SHA-256")
+    try:
+        html = raw_response.decode("utf-8")
+    except UnicodeDecodeError as error:
+        raise ValueError("captured Dagstuhl HTML encoding") from error
+    parser = DagstuhlRightsParser()
+    parser.feed(html)
+    parser.close()
+    require(rights.get("license_identifier") == "CC-BY-4.0", "captured Dagstuhl supported license")
+    license_url = "https://creativecommons.org/licenses/by/4.0/legalcode"
+    require(parser.fields["DC.Rights"] == [license_url], "captured Dagstuhl license identity")
+    require(rights.get("observed_license_url") == license_url, "captured Dagstuhl observed license identity")
+    require(parser.fields["citation_doi"] == [f"10.4230/{identifier}"], "captured Dagstuhl DOI identity")
+    title = require_text(rights.get("publisher_title"), "captured Dagstuhl registered title")
+    require(parser.fields["citation_title"] == [title], "captured Dagstuhl title identity")
+    require(parser.canonical_urls == [rights["evidence_url"]], "captured Dagstuhl canonical identity")
+    require(
+        parser.fields["citation_abstract_html_url"] == [rights["evidence_url"]],
+        "captured Dagstuhl abstract identity",
+    )
+    download = urlsplit(entry["source_url"])
+    require(
+        download.scheme == "https"
+        and download.netloc == "drops.dagstuhl.de"
+        and download.path.startswith("/storage/")
+        and download.path.endswith(f"/{identifier}/{identifier}.pdf")
+        and not download.query
+        and not download.fragment,
+        "captured Dagstuhl publisher download route",
+    )
+    require(parser.fields["citation_pdf_url"] == [entry["source_url"]], "captured Dagstuhl PDF identity")
 
 
 def verify_zenodo_evidence(root: Path, rights: dict[str, Any], licensed_file: dict[str, Any], record_id: str) -> None:
@@ -264,8 +407,16 @@ def verify_source_rights(
         observed_url = rights.get("observed_license_url") if published else rights.get("license_url")
         observed_url = require_url(observed_url, "arXiv observed license URL")
         require(observed_url.replace("http://", "https://", 1) == LICENSE_URLS[identifier], "arXiv license identity")
-        if published:
+        if published or "evidence_path" in rights or "evidence_retrieved_at_utc" in rights:
             verify_arxiv_evidence(root, rights, source[1])
+    elif published and urlsplit(rights["evidence_url"]).netloc == "drops.dagstuhl.de":
+        document = re.fullmatch(
+            r"https://drops\.dagstuhl\.de/entities/document/10\.4230/(LIPIcs\.[A-Za-z0-9.]+)",
+            rights["evidence_url"],
+        )
+        if document is None:
+            raise ValueError("published Dagstuhl evidence route")
+        verify_dagstuhl_evidence(root, entry, document[1])
     elif published:
         record = re.fullmatch(r"https://zenodo\.org/api/records/([1-9]\d*)", rights["evidence_url"])
         if record is None:
@@ -287,6 +438,37 @@ def verify_source_rights(
             "licensed deposit MD5",
         )
         verify_zenodo_evidence(root, rights, licensed_file, record[1])
+    elif "evidence_path" in rights or "evidence_retrieved_at_utc" in rights:
+        verify_external_article_evidence(root, entry, rights)
+
+
+def verify_capture_inventory(root: Path, registry: dict[str, Any]) -> tuple[int, int]:
+    """Close retained capture paths and count uncaptured external manual-audit records."""
+    capture_root = root / "docs/evidence/source_rights"
+    require(
+        capture_root.is_dir()
+        and not capture_root.is_symlink()
+        and capture_root.resolve() == root.resolve() / "docs/evidence/source_rights",
+        "source capture directory",
+    )
+    readme = capture_root / "README.md"
+    require(readme.is_file() and not readme.is_symlink(), "source capture README")
+    registered: set[str] = set()
+    manual_audits = 0
+    for section in ("pdfs", "external_pdfs"):
+        for entry in registry[section]:
+            rights = require_mapping(entry.get("rights"), "source rights object")
+            if section == "external_pdfs" and not {"evidence_path", "evidence_retrieved_at_utc"}.intersection(rights):
+                manual_audits += 1
+                continue
+            relative = capture_relative_path(rights)
+            require(relative not in registered, "duplicate source capture path")
+            registered.add(relative)
+            source = root / relative
+            require(source.is_file() and not source.is_symlink(), "source capture file")
+    actual = {path.relative_to(root).as_posix() for path in capture_root.iterdir() if path.name != "README.md"}
+    require(actual == registered, "source capture inventory differs from registry")
+    return len(registered), manual_audits
 
 
 def verify_external_sources(root: Path, registry: dict[str, Any], published_digests: set[str]) -> int:
@@ -349,6 +531,153 @@ def verify_external_sources(root: Path, registry: dict[str, Any], published_dige
     return len(external_digests)
 
 
+def source_archive_prefix(entry: dict[str, Any]) -> str:
+    """Bind the inspected archive root to a pinned source retrieval route."""
+    source_url = require_url(entry.get("source_url"), "archive source URL")
+    version = require_text(entry.get("version"), "archive version")
+    github = re.fullmatch(
+        r"https://codeload\.github\.com/[A-Za-z0-9_.-]+/([A-Za-z0-9_.-]+)/tar\.gz/([0-9a-f]{40})",
+        source_url,
+    )
+    if github is not None:
+        require(version.split(" ", 1)[0] == github[2], "archive pinned version")
+        return f"{github[1]}-{github[2]}"
+    interval = re.fullmatch(
+        r"https://coqinterval\.gitlabpages\.inria\.fr/releases/interval-([0-9]+\.[0-9]+\.[0-9]+)\.tar\.gz",
+        source_url,
+    )
+    if interval is None:
+        raise ValueError("archive source route")
+    require(version == interval[1], "archive pinned version")
+    return f"interval-{interval[1]}"
+
+
+def archive_member_bytes(
+    archive: tarfile.TarFile, members: dict[str, tarfile.TarInfo], name: Any, size: Any, digest: Any
+) -> bytes:
+    """Read a regular member into memory; never extract archives to the filesystem."""
+    name = require_text(name, "archive member name")
+    require(type(size) is int and size >= 0, "archive member size")
+    require_digest(digest, "archive member SHA-256")
+    require(name in members, "archive member missing")
+    member = members[name]
+    require(member.isfile(), "archive inspected member must be regular")
+    require(member.size == size, "archive member size identity")
+    stream = archive.extractfile(member)
+    if stream is None:
+        raise ValueError("archive member stream")
+    with stream:
+        payload = stream.read()
+    require(len(payload) == size, "archive member payload size")
+    require(hashlib.sha256(payload).hexdigest() == digest, "archive member digest identity")
+    return payload
+
+
+def verify_archive_members(payload: bytes, entry: dict[str, Any], prefix: str) -> None:
+    """Check inspected source and license bytes inside an unchanged archive."""
+    identifier = require_text(entry.get("license_identifier"), "archive license identifier")
+    require(identifier in {"MIT", "CECILL-B", "CECILL-C"}, "archive license allowlist")
+    inspected = entry.get("inspected_files")
+    if not isinstance(inspected, list) or not inspected:
+        raise ValueError("archive inspected files")
+    try:
+        with tarfile.open(fileobj=io.BytesIO(payload), mode="r:gz") as archive:
+            members: dict[str, tarfile.TarInfo] = {}
+            for member in archive.getmembers():
+                path = PurePosixPath(member.name)
+                require(
+                    not path.is_absolute()
+                    and ".." not in path.parts
+                    and path.as_posix() == member.name.rstrip("/")
+                    and bool(path.parts)
+                    and path.parts[0] == prefix,
+                    "archive member path",
+                )
+                require(member.name not in members, "duplicate archive member")
+                members[member.name] = member
+            license_payload = archive_member_bytes(
+                archive, members, entry.get("license_member"), entry.get("license_bytes"), entry.get("license_sha256")
+            )
+            normalized = b" ".join(license_payload.split())
+            if identifier == "MIT":
+                require(
+                    normalized.startswith((b"MIT License ", b"The MIT License (MIT) "))
+                    and b"Permission is hereby granted, free of charge" in normalized
+                    and b"The above copyright notice and this permission notice shall be included" in normalized,
+                    "archive license text identity",
+                )
+            else:
+                marker = identifier.replace("CECILL", "CeCILL").encode("ascii")
+                require(
+                    normalized.startswith(marker + b" FREE SOFTWARE LICENSE AGREEMENT"),
+                    "archive license text identity",
+                )
+            inspected_names: set[str] = set()
+            for candidate in inspected:
+                record = require_mapping(candidate, "archive inspected file record")
+                name = require_text(record.get("file"), "archive inspected file name")
+                require(name not in inspected_names, "duplicate archive inspected file")
+                inspected_names.add(name)
+                archive_member_bytes(archive, members, name, record.get("bytes"), record.get("sha256"))
+    except (tarfile.TarError, OSError, EOFError) as error:
+        raise ValueError("invalid source archive") from error
+
+
+def verify_source_archives(root: Path, registry: dict[str, Any]) -> int:
+    """Close the retained archive inventory and bind provenance to inspected bytes."""
+    entries = registry.get("source_archives")
+    if not isinstance(entries, list):
+        raise ValueError("source archive registry")
+    archive_root = root / "docs/source_archives"
+    require(not archive_root.is_symlink(), "source archive directory symlink")
+    require(not archive_root.exists() or archive_root.is_dir(), "source archive directory")
+    require(archive_root.resolve() == root.resolve() / "docs/source_archives", "source archive directory boundary")
+    registered: set[str] = set()
+    digests: set[str] = set()
+    for candidate in entries:
+        entry = require_mapping(candidate, "source archive entry")
+        relative = require_text(entry.get("path"), "source archive path")
+        require(
+            re.fullmatch(r"docs/source_archives/[A-Za-z0-9][A-Za-z0-9_.-]*\.tar\.gz", relative) is not None,
+            "source archive path",
+        )
+        require(relative not in registered, "duplicate source archive path")
+        registered.add(relative)
+        source = root / relative
+        require(source.is_file() and not source.is_symlink(), "source archive file")
+        payload = source.read_bytes()
+        require(type(entry.get("bytes")) is int and entry["bytes"] > 0, "source archive size")
+        require(len(payload) == entry["bytes"], "source archive size identity")
+        digest = require_text(entry.get("sha256"), "source archive SHA-256")
+        require_digest(digest, "source archive SHA-256")
+        require(hashlib.sha256(payload).hexdigest() == digest, "source archive digest identity")
+        require(digest not in digests, "duplicate source archive digest")
+        digests.add(digest)
+        for field in ("title", "reading_scope", "compatibility", "conditions"):
+            require_text(entry.get(field), f"archive {field}")
+        authors = entry.get("authors")
+        if not isinstance(authors, list) or not authors:
+            raise ValueError("archive authors")
+        for author in authors:
+            require_text(author, "archive author")
+        require_timestamp(entry.get("retrieved_at_utc"), "archive retrieval timestamp")
+        require(entry.get("copy_status") == "unchanged", "archive copy status")
+        prefix = source_archive_prefix(entry)
+        relative_note = require_text(entry.get("note"), "archive owning note")
+        require(re.fullmatch(r"docs/notes/[A-Za-z0-9_.-]+\.md", relative_note) is not None, "archive owning note path")
+        note = root / relative_note
+        require(
+            note.is_file() and not note.is_symlink() and note.resolve() == root.resolve() / relative_note,
+            "archive owning note file",
+        )
+        note_text = note.read_text(encoding="utf-8")
+        require(entry["source_url"] in note_text and digest in note_text, "archive owning note identity")
+        verify_archive_members(payload, entry, prefix)
+    actual = {path.relative_to(root).as_posix() for path in archive_root.iterdir()} if archive_root.exists() else set()
+    require(actual == registered, "source archive inventory differs from registry")
+    return len(registered)
+
+
 def verify() -> None:
     root = Path(__file__).resolve().parents[1]
     library = root / "docs"
@@ -383,6 +712,8 @@ def verify() -> None:
     require(actual_paths == registered_paths, "PDF inventory differs from registry")
     require((library / "PDF_SHA256SUMS").read_text() == "".join(checksum_lines), "PDF checksum inventory")
     external_count = verify_external_sources(root, registry, published_digests)
+    capture_count, manual_audit_count = verify_capture_inventory(root, registry)
+    archive_count = verify_source_archives(root, registry)
     alias_paths: set[str] = set()
     for entry in registry["aliases"] + [registry["historical_path_alias"]]:
         alias = root / entry["path"]
@@ -410,6 +741,8 @@ def verify() -> None:
             link_count += 1
     print(
         f"Verified {len(registered_paths)} published PDFs, {external_count} external-only PDFs, "
+        f"{capture_count} rights captures ({manual_audit_count} external manual-audit records without captures), "
+        f"{archive_count} source archives, "
         f"{len(alias_paths)} PDF aliases, "
         f"historical identities, and {link_count} local links"
     )

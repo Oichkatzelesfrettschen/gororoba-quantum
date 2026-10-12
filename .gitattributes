@@ -3,4 +3,8 @@ docs/pdf/*.pdf binary
 # Preserve whitespace in raw compiler and kernel-check receipts.
 docs/evidence/folding_proofs/*.log -whitespace
 # Preserve whitespace in retained exact-version source responses.
-docs/evidence/source_rights/arxiv-*.html -whitespace
+docs/evidence/source_rights/*.html -text -whitespace
+docs/evidence/source_rights/*.json -text
+
+# Preserve licensed upstream archives as original binary evidence.
+docs/source_archives/*.tar.gz binary
