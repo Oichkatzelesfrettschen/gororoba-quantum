@@ -24,13 +24,18 @@ future layout, job allocation, duration, and admission decision.
 
 The user prioritizes the [four-PUB model-discrimination design](MODEL_DISCRIMINATION.md)
 and its measurable known-label optimizer decision before broad atlas spending.
-The design remains unimplemented and unqualified; historical pricing is about
-11.3 seconds at 8192 shots per PUB. The admitted ripple/rank cases below stay
-held and unapproved while that decision gate is resolved.
+The [prepared correction case](../results/ripple/CORRECTION_PREPARATION.md)
+implements that design and qualifies all 18 candidates across fresh Fez,
+Kingston and Marrakesh Targets/properties. Fez is selected at 8192 shots per
+PUB: 11.5154 nominal seconds, 14.4708 stress-scenario seconds and a proposed
+30-second ceiling. The case awaits explicit approval; actual returned schedules
+must qualify before inference. The ripple/rank cases below stay held and
+unapproved while the optimizer decision gate is resolved.
 
 | Scientific case | Job structure | PUBs | QPU seconds | Admission state |
 |---|---|---:|---|---|
 | Folded-QPE mechanism ladder | Two completed Kingston jobs | 12 + 4 | 40 measured; 39.632400 nominal forecast | Completed, collected, reusable evidence |
+| [Matched correction pilot](../results/ripple/CORRECTION_PREPARATION.md) | One prepared dynamic Fez job | 4 | 11.5154 nominal; 14.4708 stress; ceiling 30 | Prepared across three live systems; unapproved |
 | N21 feedback diagnostic | Intended one dynamic job | 2 | New estimate follows successful redesign | Retained candidates fail statistical admission |
 | [Static algebraic witnesses](../results/live/2026-10-11T203535.690679Z/STATIC_CASE.md) | Historical allocation uses two backends | 17 historical | Historical estimate about 23; fresh pricing required | Renew and reconcile overlap with ripple/rank-sector |
 | [Ripple finite walk/box-kite comparison](../results/ripple/PREPARATION.md) | One prepared static Kingston job | 146 | 157.0873 nominal; ceiling 180 | Locally admitted; unapproved |
@@ -48,8 +53,10 @@ and overlap reconciliation.
 The [shared coordination record](../results/live/qpu-coordination.json) names
 one execution owner per family across `ibm_fez`, `ibm_kingston`, and
 `ibm_marrakesh`. The settled account read reports 551 seconds remaining with
-an empty pending-job list. The two proposed ceilings total 240 seconds;
-one shared 60-second reserve leaves 251 seconds unallocated at that snapshot.
+an empty pending-job list. The held atlas ceilings total 240 seconds and the
+correction pilot adds a proposed 30 seconds. One shared 60-second reserve
+leaves 221 seconds unallocated at that snapshot. Proposed allocations remain
+distinct from account reservations.
 All three backends draw on the same rolling 600-second allowance. Multiple
 QPUs can reduce queue contention; assigning duplicate experiments to them
 adds charge and changes the calibration conditions.

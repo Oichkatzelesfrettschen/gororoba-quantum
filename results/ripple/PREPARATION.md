@@ -3,8 +3,12 @@
 The user now prioritizes [model discrimination and a measurable optimizer
 decision](../../gororoba_quantum/MODEL_DISCRIMINATION.md) before broad atlas
 spending. Both cases below remain retained and unapproved behind that gate.
-The four-PUB pilot recommendation needs new implementation and qualification;
-its approximately 11.3-second historical estimate is not an approval case.
+The [four-PUB correction pilot](CORRECTION_PREPARATION.md) is implemented and
+qualified across 18 candidates on fresh Fez, Kingston and Marrakesh
+Targets/properties. Its prepared Fez case estimates 11.5154 nominal seconds
+and 14.4708 stress-scenario seconds, with a proposed 30-second ceiling.
+The case awaits explicit approval and returned-schedule qualification before
+any optimizer decision.
 
 The integrated objective joins the user's mathematical, scientific, philosophical,
 and visual requests: realize exact Cayley-Dickson predictions through measured
@@ -24,7 +28,7 @@ family independently fits one job on Kingston.
 | --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
 | Ripple atlas, walks and Design C | 55 | 146 | 4096 | 1138 / 1138 | 157.0873 | 159.3873 | 180 s |
 | Rank-path sectors | 32 | 36 | 4096 | 196 / 196 | 39.9347 | 42.2347 | 60 s |
-| Combined campaign | separate jobs | 182 | 4096 | 1334 / 1334 | 197.0220 | 201.6220 | 240 s |
+| Combined atlas | separate jobs | 182 | 4096 | 1334 / 1334 | 197.0220 | 201.6220 | 240 s |
 
 The ripple job allocates 55 distinct physical qubits across its PUBs, with
 at most 47 active in a single PUB. Rank sectors use at most 32 per PUB.
@@ -32,9 +36,11 @@ at most 47 active in a single PUB. Rank sectors use at most 32 per PUB.
 The estimate is about 3 minutes 17 seconds of QPU usage, excluding queue and
 local preparation time. Stress assumptions are named scenarios, rather than
 confidence bounds on billing. The service ceilings bound each job through
-`max_execution_time`. A 551-second remaining-usage observation covers the
-240-second combined ceiling plus one shared 60-second reserve, leaving 251
-seconds unallocated. Concurrent jobs can change that observation.
+`max_execution_time`. The 551-second remaining-usage observation covers the
+240-second atlas ceiling, the correction pilot's separate 30-second ceiling,
+and one shared 60-second reserve, leaving 221 seconds unallocated. The
+[coordination ledger](../live/qpu-coordination.json) records those proposals;
+concurrent jobs can change the observation.
 
 The [validation report](VALIDATION.md) records successful gates and their
 bounded coverage, alongside the default-placement and mock-timing limits.
