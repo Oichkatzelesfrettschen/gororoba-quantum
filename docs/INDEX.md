@@ -89,6 +89,26 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Decker and Wocjan 2007 -- Hidden quadratic and cubic polynomial function graphs (arXiv quant-ph/0703195)](notes/quant-ph-0703195.md) | [PDF](https://arxiv.org/pdf/quant-ph/0703195v3) | `quant-ph-0703195v3.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/0703195v3) |
 | [Griffiths and Niu 1996 -- Semiclassical Fourier Transform for Quantum Computation (arXiv quant-ph/9511007)](notes/quant-ph-9511007.md) | [PDF](https://arxiv.org/pdf/quant-ph/9511007v1) | `quant-ph-9511007v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/9511007v1) |
 
+## Repository research certificates
+
+The [continuous four-coordinate rank derivation](notes/four_support_rank_loci.md)
+and its [exact replay](evidence/four_support_rank/README.md) classify a
+specified real coefficient family and construct its kernel frames.
+The [incidence geometry](notes/four_support_incidence_geometry.md) refines
+the unit coefficient sphere into 96 connected smooth strata, certifies
+their closures, and constructs an explicit partner-incidence homeomorphism.
+Both derivations attribute the published annihilator results and keep
+the wider topology obligations explicit.
+
+The [ordinary-doubling proof](notes/four_support_doubling.md) extends
+the same support and complete kernel model to every higher stage. Its
+[replay](evidence/four_support_doubling/README.md) checks the finite expanded
+identities separately from the structural induction. The
+[cellular model](notes/four_support_cellular_homology.md) and
+[integral replay](evidence/four_support_homology/README.md) identify 1,200 CW
+cells, certify integral homology and zero torsion, and determine the
+cohomology ring for the restricted pair space.
+
 ## Verification and research navigation
 
 Run from the repository root:
