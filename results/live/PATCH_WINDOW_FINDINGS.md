@@ -32,8 +32,8 @@ sequences match. The transpiler's canonical ordering removed the source
 reordering, and the static/dynamic classifier that refused the approved case
 runs on the source-circuit groups (live_run.capability_violations). The
 experiment digests differ through the source commit and the calibration
-snapshot (11:56:54 approved, 12:57:03 submitted). Issue #76 covers dry-
-run/submit classifier parity; binding an approval to the exact record,
+snapshot (11:56:54 approved, 12:57:03 submitted). Issue #76 covers dry-run/submit
+classifier parity; binding an approval to the exact record,
 source, circuit archive, manifest and ceilings at submit is issue #77.
 
 ## Registered endpoints (collector, simultaneous Hoeffding, alpha 0.005 each)
