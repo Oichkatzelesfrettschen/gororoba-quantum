@@ -1564,6 +1564,174 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && ruff format --check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && mypy scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-195"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/reconcile_qpu_inventory.py --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-196"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error scripts/reconcile_qpu_inventory.py --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-197"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/check_reconcile_qpu_inventory.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-198"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error scripts/check_reconcile_qpu_inventory.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-199"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/review_wide_control_job.py --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-200"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error scripts/review_wide_control_job.py --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-201"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/review_wide_control_job.py --self-test",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-202"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error scripts/review_wide_control_job.py --self-test",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-203"
+  },
+  {
+   "suite": "core",
+   "cwd": "results/live/kingston-wide-control-result",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-204"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T025444.603480Z --out results/ripple/measured-ripple.json --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-205"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T032011.664435Z --out results/ripple/measured-rank-sector.json --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-206"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/render_measured_ripple.py --evidence results/ripple/measured-ripple.json --evidence results/ripple/measured-rank-sector.json --out results/ripple/measured-cayley-dickson-ripples.html --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-207"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error kernel_determinant_contracts.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-208"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -O -W error kernel_determinant_contracts.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "core-209"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/kernel_determinant/replay.py --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "sources-210"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/kernel_determinant/replay.py --check",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "sources-211"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error docs/evidence/c881_exhaustive/check_replay.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "sources-212"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/c881_exhaustive/check_replay.py",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "sources-213"
+  },
+  {
+   "suite": "sources",
+   "cwd": "docs/evidence/c881_exhaustive",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "seconds": 10.0,
+   "tier": "pr",
+   "name": "sources-214"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/validate_measured_explorer.py --check",
+   "name": "core-210",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/n21_orbit_rca.py --self-check",
    "name": "core-192",
    "seconds": 15,

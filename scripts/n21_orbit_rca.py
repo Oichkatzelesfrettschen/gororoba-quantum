@@ -236,6 +236,10 @@ def raw_pubs(run: Path) -> list[dict[str, Any]]:
 def _circuits(run: Path) -> list[Any]:
     from qiskit import qpy
 
+    submitted = json.loads((run / "record.json").read_text())["submission"]["qpy_archive_sha256"]
+    if hashlib.sha256((run / "isa.qpy").read_bytes()).hexdigest() != submitted:
+        raise RuntimeError("isa.qpy differs from the submitted circuit archive")
+
     with (run / "isa.qpy").open("rb") as handle:
         return list(qpy.load(handle))
 
@@ -267,7 +271,14 @@ _VIRTUAL = frozenset({"rz", "barrier", "delay", "if_else"})
 
 
 def _plays(payload: dict[str, Any]) -> list[tuple[int, int, str, int]]:
-    rows = [line.split(",") for line in payload["metadata"]["compilation"]["scheduler_timing"]["timing"].splitlines()]
+    """Pulse rows of the returned schedule; an absent or malformed table raises ValueError."""
+    try:
+        timing = payload["metadata"]["compilation"]["scheduler_timing"]["timing"]
+        rows = [line.split(",") for line in timing.splitlines()]
+        if not rows or any(len(row) < 6 for row in rows):
+            raise ValueError("scheduler timing table is empty or malformed")
+    except (KeyError, TypeError) as error:
+        raise ValueError(f"scheduler timing is unavailable: {error}") from error
     return [
         (int(row[3]), int(row[4]), row[1].split("_")[0], int(row[2].removeprefix("Qubit ")))
         for row in rows
@@ -325,9 +336,20 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
     roles: dict[str, dict[str, Any]] = {}
     for member, circuit, payload in zip(group["members"], _circuits(run), raw_pubs(run), strict=True):
         feed_forward = not member["name"].endswith("_no_feedback")
-        plays = _plays(payload)
         writers = [circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "measure"]
         writer = writers[0]
+        try:
+            plays = _plays(payload)
+        except ValueError as error:
+            # Counts and writers need no schedule; only window exposure does.
+            roles[member["name"]] = {
+                "control": writer,
+                "terminal": writers[-1],
+                "coupling": {},
+                "windows": {},
+                "unresolved": [str(error)],
+            }
+            continue
         opening = min(start for start, _length, name, wire in plays if wire == writer and name == "measure")
         base = np.array(ideal_compiled_probabilities(circuit))
         windows: dict[int, dict[str, Any]] = {}
