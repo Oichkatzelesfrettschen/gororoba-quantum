@@ -97,7 +97,7 @@
       "audit": "results/ripple/campaign-execution/final-fleet-correction-campaign-audit.json",
       "admitted_endpoints": 1138,
       "required_endpoints": 1138,
-      "source_closure_audit": "results/live/2026-10-12T174739.912595Z/source-closure.json",
+      "source_closure_audit": "results/live/2026-10-12T210043.972363Z/source-closure.json",
       "fleet_binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
       "calibration": "2026-10-12T13:41:56-07:00"
     },
@@ -135,7 +135,7 @@
       "audit": "results/ripple/campaign-execution/final-fleet-correction-campaign-audit.json",
       "admitted_endpoints": 196,
       "required_endpoints": 196,
-      "source_closure_audit": "results/live/2026-10-12T174740.017449Z/source-closure.json",
+      "source_closure_audit": "results/live/2026-10-12T210815.657132Z/source-closure.json",
       "fleet_binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
       "calibration": "2026-10-12T13:41:56-07:00"
     },
@@ -169,7 +169,7 @@
       "qualification": "Complete source, dependency, QPY, observable, cost and checksum audit passed. Actual participant idle states, live binding and quota remain submission gates.",
       "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
       "audit": "results/ripple/campaign-execution/final-fleet-correction-campaign-audit.json",
-      "source_closure_audit": "results/live/2026-10-12T170742.727534Z/source-closure.json",
+      "source_closure_audit": "results/live/2026-10-12T221651.485791Z/source-closure.json",
       "calibration": "2026-10-12T14:40:23-07:00",
       "renewal_rejection": "results/ripple/campaign-execution/current-correction-renewal-rejection.json",
       "fleet_binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
