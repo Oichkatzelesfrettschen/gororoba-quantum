@@ -502,13 +502,14 @@ def prepare(
         "optimizer_settings": settings(args),
         **({"pub_shots": args.pub_shots, "shot_allocation": allocation_audits[retained]} if per_pub else {}),
         "optimization_budget": asdict(budget),
-        "local_simulation_batches": [
-            batch for simulator in simulators.values() for batch in local_compute.batches(simulator)
-        ],
+        "local_simulation_batches": (
+            batches := [batch for simulator in simulators.values() for batch in local_compute.batches(simulator)]
+        ),
         "compiled_ideal_validation": {
             "method": "branch-resolved statevector on active compiled replica wires",
             "absolute_tolerance": 1e-10,
-            "noise_method": "density_matrix",
+            "noise_method": sorted({str(batch["method"]) for batch in batches}),
+            "noise_policy": local_compute.settings(args)["method"],
             "all_candidates_passed": True,
         },
     }

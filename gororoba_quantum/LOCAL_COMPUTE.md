@@ -10,7 +10,15 @@ that bias. CPU or GPU acceleration cannot supply missing physical mechanisms.
 
 ## Implemented execution boundary
 
-The policy uses density matrices with double precision. The CLI accepts
+The default method, `density_matrix_dynamic_statevector`, runs a batch that
+contains reset, control flow, or any measurement followed by later quantum
+work (`local_compute.is_dynamic`, the rule `live_run._is_dynamic` applies to
+IBM job kinds) as statevector trajectories, and every other batch as a
+density matrix, both in double precision. Aer samples a dynamic circuit shot
+by shot; a trajectory samples the same Kraus channels from a `2**n` state
+instead of evolving a `4**n` density matrix. `--local-compute-method
+density_matrix` selects the density matrix for every batch, which a record
+planned under that method needs for its replay command. The CLI accepts
 `--local-compute auto|cpu|gpu` (default `auto`, routed by width as
 described under thread scaling below), `--simulation-threads` (default: every CPU available to the process,
 from `parallel.default_threads()`), and
@@ -18,6 +26,11 @@ from `parallel.default_threads()`), and
 its shot-thread limit equals the declared thread limit. Both
 `shot_branching_enable` and `shot_branching_sampling_enable` remain false.
 The comparison described below rejects branch sharing from qualification.
+
+Under `auto`, statevector trajectories stay on CPU shot threads, where the
+qualified widths run fastest. `--local-compute gpu` routes them through GPU
+admission as well; that admission sizes density states, which bounds a
+statevector from above.
 
 `--local-compute gpu` is an explicit capability request. Without an Aer GPU
 the runner writes `state="local_compute_unavailable"` with the policy and
@@ -31,8 +44,8 @@ QPY digest, serialized-noise-channel digest, shots, seed, wall time, and each Ae
 experiment's device/method metadata. Family planning retains
 `local_simulation_batches`; subsequent evaluation retains
 `evaluation_simulation_batches`. The approval policy binds the local
-compute settings. Result metadata must identify the admitted CPU device
-and density-matrix method. The wall time measures simulator execution
+compute settings. Each batch records the method it ran, and result metadata
+must identify the admitted device and that method. The wall time measures simulator execution
 through result retrieval; the field does not measure whole-command time,
 CPU time, or peak resident memory.
 
@@ -377,8 +390,10 @@ QPU accuracy.
 ## Thread scaling and GPU measurement
 
 Dynamic circuits with mid-circuit measurement or feed-forward evolve each
-shot separately under a density-matrix noise model, so Aer splits their
-shots across `max_parallel_shots` threads. Static circuits with terminal
+shot separately, so Aer splits their shots across `max_parallel_shots`
+threads. The default method samples them as statevector trajectories; the
+density-matrix rows below record the `--local-compute-method density_matrix`
+path. Static circuits with terminal
 measurement sample once from one final state; below Aer's
 `statevector_parallel_threshold` of 14 qubits their state update stays on
 one thread, and experiment parallelism leaves counts unchanged with no
@@ -402,8 +417,12 @@ The batched density-matrix GPU kernel rejects the control-flow jump that
 feed-forward compiles to, and unbatched GPU execution launches kernels per
 shot on a 32-element state.
 
-`--local-compute auto`, the default, routes each simulation batch by its
-widest active register (`local_compute.route`). Batches below
+For the two seven-qubit N=21 feedback PUBs at 1024 shots on the same host,
+density matrices took 281 s on 12 CPU threads and 71 s on the GPU, and
+statevector trajectories took 4.8 s on 12 CPU threads and 46 s on the GPU.
+`--local-compute auto`, the default, therefore keeps trajectory batches on
+CPU threads and routes each density-matrix batch by its widest active
+register (`local_compute.route`). Batches below
 `GPU_MIN_ACTIVE_QUBITS = 11` run on CPU threads. Wider batches run on the
 GPU when Aer reports one and `aer_resources.admit_gpu` admits two density
 states against a fresh CUDA free-memory reading and the declared

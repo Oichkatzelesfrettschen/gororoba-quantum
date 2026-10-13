@@ -183,6 +183,8 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
             [
                 "--local-compute",
                 compute["mode"],
+                "--local-compute-method",
+                compute["method"],
                 "--simulation-threads",
                 str(compute["threads"]),
                 "--simulation-memory-mb",
