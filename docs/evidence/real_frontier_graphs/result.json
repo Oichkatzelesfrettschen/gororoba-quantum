@@ -1,0 +1,2247 @@
+{
+  "algebraic_graph_point": true,
+  "collapse_chain_models": [
+    {
+      "chain_contraction_verified": true,
+      "chains": [
+        {
+          "basis": [
+            "e0",
+            "b0"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "degree": 0,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1,
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "reduced_basis": [
+            "e0"
+          ],
+          "source_basis": [
+            "e0"
+          ]
+        },
+        {
+          "basis": [
+            "e_circle",
+            "a0"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "degree": 1,
+          "homotopy": {
+            "rows": [
+              [
+                1,
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [],
+              []
+            ],
+            "shape": [
+              2,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": [
+            "e_circle"
+          ]
+        },
+        {
+          "basis": [
+            "a_circle"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "degree": 2,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "b_sphere"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 3,
+          "homotopy": {
+            "rows": [
+              [
+                -1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "a_sphere"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                -1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 4,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "a_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 5,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "a_product"
+          ],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "e_sphere"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "degree": 7,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_sphere"
+          ],
+          "source_basis": [
+            "e_sphere"
+          ]
+        },
+        {
+          "basis": [
+            "e_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 8,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_product"
+          ],
+          "source_basis": [
+            "e_product"
+          ]
+        }
+      ],
+      "evaluation_map_verified": true,
+      "evaluation_pullback": {
+        "fiber_sphere_class": "v",
+        "suspended_product_class": "0",
+        "top_class": "w=u*v"
+      },
+      "fixed_dimension": 4,
+      "homology": [
+        {
+          "degree": 0,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 1,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 2,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 3,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 4,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 5,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 7,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 8,
+          "free_rank": 1,
+          "torsion": []
+        }
+      ],
+      "rotating_dimension": 4,
+      "source_cohomology_products": {
+        "generator_degrees": [
+          1,
+          7,
+          8
+        ],
+        "u_squared": 0,
+        "u_times_v": "w",
+        "v_squared": 0,
+        "v_times_u_sign": -1
+      },
+      "source_model": "S1 x S7",
+      "target_model": "S3 * (S1 x S3)",
+      "target_positive_cup_products": "zero by the suspension cone-cover argument"
+    },
+    {
+      "chain_contraction_verified": true,
+      "chains": [
+        {
+          "basis": [
+            "e0",
+            "b0"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "degree": 0,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1,
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "reduced_basis": [
+            "e0"
+          ],
+          "source_basis": [
+            "e0"
+          ]
+        },
+        {
+          "basis": [
+            "e_circle",
+            "a0"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "degree": 1,
+          "homotopy": {
+            "rows": [
+              [
+                1,
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [],
+              []
+            ],
+            "shape": [
+              2,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": [
+            "e_circle"
+          ]
+        },
+        {
+          "basis": [
+            "a_circle"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "degree": 2,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "b_sphere"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "degree": 7,
+          "homotopy": {
+            "rows": [
+              [
+                -1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "a_sphere"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                -1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 8,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "a_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 9,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "a_product"
+          ],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "e_sphere"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "degree": 15,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_sphere"
+          ],
+          "source_basis": [
+            "e_sphere"
+          ]
+        },
+        {
+          "basis": [
+            "e_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 16,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_product"
+          ],
+          "source_basis": [
+            "e_product"
+          ]
+        }
+      ],
+      "evaluation_map_verified": true,
+      "evaluation_pullback": {
+        "fiber_sphere_class": "v",
+        "suspended_product_class": "0",
+        "top_class": "w=u*v"
+      },
+      "fixed_dimension": 8,
+      "homology": [
+        {
+          "degree": 0,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 1,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 2,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 7,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 8,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 9,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 15,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 16,
+          "free_rank": 1,
+          "torsion": []
+        }
+      ],
+      "rotating_dimension": 8,
+      "source_cohomology_products": {
+        "generator_degrees": [
+          1,
+          15,
+          16
+        ],
+        "u_squared": 0,
+        "u_times_v": "w",
+        "v_squared": 0,
+        "v_times_u_sign": -1
+      },
+      "source_model": "S1 x S15",
+      "target_model": "S7 * (S1 x S7)",
+      "target_positive_cup_products": "zero by the suspension cone-cover argument"
+    },
+    {
+      "chain_contraction_verified": true,
+      "chains": [
+        {
+          "basis": [
+            "e0",
+            "b0"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "degree": 0,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              3,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1,
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "reduced_basis": [
+            "e0"
+          ],
+          "source_basis": [
+            "e0"
+          ]
+        },
+        {
+          "basis": [
+            "e_circle",
+            "b_sphere",
+            "a0"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0,
+                0,
+                1
+              ],
+              [
+                0,
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              3
+            ]
+          },
+          "degree": 1,
+          "homotopy": {
+            "rows": [
+              [
+                1,
+                0,
+                0
+              ],
+              [
+                0,
+                -1,
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              3
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [],
+              [],
+              []
+            ],
+            "shape": [
+              3,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              3
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": [
+            "e_circle"
+          ]
+        },
+        {
+          "basis": [
+            "a_circle",
+            "a_sphere"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                -1
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "shape": [
+              3,
+              2
+            ]
+          },
+          "degree": 2,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [],
+              []
+            ],
+            "shape": [
+              2,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "e_sphere",
+            "a_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "degree": 3,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1,
+                0
+              ],
+              [
+                0,
+                1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "reduced_basis": [
+            "e_sphere",
+            "a_product"
+          ],
+          "source_basis": [
+            "e_sphere"
+          ]
+        },
+        {
+          "basis": [
+            "e_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "degree": 4,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_product"
+          ],
+          "source_basis": [
+            "e_product"
+          ]
+        }
+      ],
+      "evaluation_map_verified": true,
+      "evaluation_pullback": {
+        "fiber_sphere_class": "v",
+        "suspended_product_class": "0",
+        "top_class": "w=u*v"
+      },
+      "fixed_dimension": 2,
+      "homology": [
+        {
+          "degree": 0,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 1,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 2,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 3,
+          "free_rank": 2,
+          "torsion": []
+        },
+        {
+          "degree": 4,
+          "free_rank": 1,
+          "torsion": []
+        }
+      ],
+      "rotating_dimension": 2,
+      "source_cohomology_products": {
+        "generator_degrees": [
+          1,
+          3,
+          4
+        ],
+        "u_squared": 0,
+        "u_times_v": "w",
+        "v_squared": 0,
+        "v_times_u_sign": -1
+      },
+      "source_model": "S1 x S3",
+      "target_model": "S1 * (S1 x S1)",
+      "target_positive_cup_products": "zero by the suspension cone-cover argument"
+    },
+    {
+      "chain_contraction_verified": true,
+      "chains": [
+        {
+          "basis": [
+            "e0",
+            "b0"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "degree": 0,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1,
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "reduced_basis": [
+            "e0"
+          ],
+          "source_basis": [
+            "e0"
+          ]
+        },
+        {
+          "basis": [
+            "e_circle",
+            "a0"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                -1
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "degree": 1,
+          "homotopy": {
+            "rows": [
+              [
+                0,
+                0
+              ],
+              [
+                1,
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [],
+              []
+            ],
+            "shape": [
+              2,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": [
+            "e_circle"
+          ]
+        },
+        {
+          "basis": [
+            "b_sphere",
+            "a_circle"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0,
+                1
+              ],
+              [
+                0,
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              2
+            ]
+          },
+          "degree": 2,
+          "homotopy": {
+            "rows": [
+              [
+                -1,
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              2
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [],
+              []
+            ],
+            "shape": [
+              2,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              2
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "a_sphere"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                -1
+              ],
+              [
+                0
+              ]
+            ],
+            "shape": [
+              2,
+              1
+            ]
+          },
+          "degree": 3,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [],
+            "shape": [
+              0,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "reduced_basis": [],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "a_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 4,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              []
+            ],
+            "shape": [
+              1,
+              0
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "a_product"
+          ],
+          "source_basis": []
+        },
+        {
+          "basis": [
+            "e_sphere"
+          ],
+          "boundary": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "degree": 6,
+          "homotopy": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_sphere"
+          ],
+          "source_basis": [
+            "e_sphere"
+          ]
+        },
+        {
+          "basis": [
+            "e_product"
+          ],
+          "boundary": {
+            "rows": [
+              [
+                0
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "degree": 7,
+          "homotopy": {
+            "rows": [],
+            "shape": [
+              0,
+              1
+            ]
+          },
+          "inclusion": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "induced_evaluation": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "projection": {
+            "rows": [
+              [
+                1
+              ]
+            ],
+            "shape": [
+              1,
+              1
+            ]
+          },
+          "reduced_basis": [
+            "e_product"
+          ],
+          "source_basis": [
+            "e_product"
+          ]
+        }
+      ],
+      "evaluation_map_verified": true,
+      "evaluation_pullback": {
+        "fiber_sphere_class": "v",
+        "suspended_product_class": "0",
+        "top_class": "w=u*v"
+      },
+      "fixed_dimension": 3,
+      "homology": [
+        {
+          "degree": 0,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 1,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 2,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 3,
+          "free_rank": 0,
+          "torsion": []
+        },
+        {
+          "degree": 4,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 6,
+          "free_rank": 1,
+          "torsion": []
+        },
+        {
+          "degree": 7,
+          "free_rank": 1,
+          "torsion": []
+        }
+      ],
+      "rotating_dimension": 4,
+      "source_cohomology_products": {
+        "generator_degrees": [
+          1,
+          6,
+          7
+        ],
+        "u_squared": 0,
+        "u_times_v": "w",
+        "v_squared": 0,
+        "v_times_u_sign": 1
+      },
+      "source_model": "S1 x S6",
+      "target_model": "S2 * (S1 x S3)",
+      "target_positive_cup_products": "zero by the suspension cone-cover argument"
+    }
+  ],
+  "ordinary_embedding_controls": [
+    {
+      "endpoint_rank": 12,
+      "plane_rank": 8,
+      "stage": 5
+    },
+    {
+      "endpoint_rank": 24,
+      "plane_rank": 16,
+      "stage": 6
+    },
+    {
+      "endpoint_rank": 48,
+      "plane_rank": 32,
+      "stage": 7
+    },
+    {
+      "endpoint_rank": 96,
+      "plane_rank": 64,
+      "stage": 8
+    }
+  ],
+  "physical_qpu_jobs": 0,
+  "rational_graph_points": [
+    {
+      "coefficients": [
+        1,
+        0,
+        1
+      ],
+      "independent_projector_equal": true
+    },
+    {
+      "coefficients": [
+        -1,
+        0,
+        1
+      ],
+      "independent_projector_equal": true
+    },
+    {
+      "coefficients": [
+        3,
+        4,
+        5
+      ],
+      "independent_projector_equal": true
+    },
+    {
+      "coefficients": [
+        3,
+        4,
+        -5
+      ],
+      "independent_projector_equal": true
+    },
+    {
+      "coefficients": [
+        0,
+        -1,
+        1
+      ],
+      "independent_projector_equal": true
+    }
+  ],
+  "rejected_inputs": 8,
+  "rejected_pencils": 3,
+  "schema": "real-frontier-graphs-v1",
+  "symbolic": {
+    "base": "e1+e18+s*a*e3+s*b*e8+s*e27; a**2+b**2=1",
+    "frame_and_projector_denominator_factors": [
+      "s**2 + 1"
+    ],
+    "frame_denominator": "1+s**2 > 0",
+    "identities_verified": [
+      "external_orthonormality",
+      "full_kernel_action",
+      "gram_determinant",
+      "internal_external_orthogonality",
+      "projector_action",
+      "projector_idempotence",
+      "projector_symmetry",
+      "projector_trace"
+    ],
+    "internal_frame_numerator": {
+      "nonzero_entries": [
+        [
+          1,
+          2,
+          "-b*s**3 - b*s"
+        ],
+        [
+          1,
+          3,
+          "a*b*s**2 - a*s**2"
+        ],
+        [
+          2,
+          0,
+          "-a*s**2"
+        ],
+        [
+          2,
+          1,
+          "-s**3 - s"
+        ],
+        [
+          3,
+          3,
+          "-b*s + s"
+        ],
+        [
+          8,
+          2,
+          "s**2 + 1"
+        ],
+        [
+          9,
+          0,
+          "s**2 + 1"
+        ],
+        [
+          10,
+          2,
+          "a*s**3 + a*s"
+        ],
+        [
+          10,
+          3,
+          "-a**2*s**2 - b*s**2 - 1"
+        ],
+        [
+          11,
+          0,
+          "a*s"
+        ],
+        [
+          11,
+          1,
+          "s**2 + 1"
+        ],
+        [
+          17,
+          0,
+          "-a*b*s**2 + a*s**2"
+        ],
+        [
+          17,
+          1,
+          "-b*s**3 - b*s"
+        ],
+        [
+          18,
+          2,
+          "s**3 + s"
+        ],
+        [
+          18,
+          3,
+          "-a*s**2"
+        ],
+        [
+          19,
+          0,
+          "b*s - s"
+        ],
+        [
+          24,
+          1,
+          "s**2 + 1"
+        ],
+        [
+          25,
+          3,
+          "s**2 + 1"
+        ],
+        [
+          26,
+          0,
+          "a**2*s**2 + b*s**2 + 1"
+        ],
+        [
+          26,
+          1,
+          "a*s**3 + a*s"
+        ],
+        [
+          27,
+          2,
+          "-s**2 - 1"
+        ],
+        [
+          27,
+          3,
+          "a*s"
+        ]
+      ],
+      "shape": [
+        32,
+        4
+      ]
+    },
+    "internal_gram_determinant": "16*(1+s**2)**2 > 0",
+    "real_graph_model": "R x S1; each punctured component closure is a half-cylinder",
+    "scope": "complete real graph closure on the named affine slice; ambient coverage remains open",
+    "trace_inverse": {
+      "a": "(tr(U.T*P*U)-tr(V.T*P*V))/4",
+      "amplitude": "C",
+      "b": "tr(U.T*P*V)/2"
+    },
+    "vertex_plane_fiber": "S1, with unique recovered circle coordinates"
+  },
+  "unreachable_endpoint_plane_rejected": true
+}

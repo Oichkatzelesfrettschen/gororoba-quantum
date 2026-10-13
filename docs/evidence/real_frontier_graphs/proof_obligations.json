@@ -1,0 +1,20 @@
+{
+  "schema": "real-frontier-proof-obligations-v1",
+  "status": "written real proofs and exact symbolic controls; Rocq translation open",
+  "lemmas": [
+    {"name": "circle_projector_inverse", "premises": ["orthogonal fixed projector", "two orthogonal equal-width orthonormal frames"], "conclusion": "The trace inverse and reconstruction decide the entire real circle of planes."},
+    {"name": "cone_global_frame", "premises": ["named dimension-32 slice", "real circle relation", "earlier complete cone rank proof"], "conclusion": "The complete rank-eight frame and its projector extend on R times S1 with strictly positive denominators."},
+    {"name": "cone_real_graph_closure", "premises": ["global graph frame", "trace inverse", "compact direction circle"], "conclusion": "The real closure of the punctured kernel graph is exactly the smooth cylinder; every vertex direction is reachable."},
+    {"name": "evaluation_pushout", "premises": ["global sphere frame", "unique external line away from the fixed sphere", "equatorial cofibration"], "conclusion": "Evaluation collapses precisely the circle over the fixed unit sphere and realizes the stated pushout."},
+    {"name": "integral_evaluation_map", "premises": ["geometric pushout", "equator nullhomotopy", "labelled double-mapping-cylinder chains"], "conclusion": "The verified integral contraction computes the induced maps and the retained cohomology pullbacks."},
+    {"name": "ordinary_embedding_graph_transport", "premises": ["pure multiplier", "ordinary doubling projector identity"], "conclusion": "The named graph closure and evaluation construction transport to every higher stage by induction."}
+  ],
+  "remaining": [
+    "Classify all ambient dimension-32 real rank and kernel-graph loci.",
+    "Resolve their smooth subdivisions, overlaps, normal links and attachment maps.",
+    "Analyze the normalized affine slice boundary at divergent amplitude.",
+    "Construct a certified global finite pair-space model and its integral invariants.",
+    "Prove unrestricted all-dimensional coverage and classification.",
+    "Translate retained lemmas to Rocq with fresh compiler, kernel and assumptions receipts."
+  ]
+}
