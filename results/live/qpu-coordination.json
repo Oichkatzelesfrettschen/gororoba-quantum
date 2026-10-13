@@ -1,40 +1,41 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-13T03:31:58.957019+00:00",
+  "updated_at": "2026-10-13T04:59:38.738834+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
-    "last_observed_remaining_seconds": 432,
+    "last_observed_remaining_seconds": 430,
     "remaining_seconds_source": "results/live/qpu-coordination.json#account_inventory_observation",
     "account_inventory_scope": "The separately retained account_inventory_observation keeps its own observation time; the preparation quota value is not a fresh pending-account-job inventory.",
     "user_campaign_ceiling_seconds": 180,
     "maximum_remaining_atlas_ceiling_seconds": 0,
-    "unallocated_campaign_ceiling_seconds": 61,
+    "unallocated_campaign_ceiling_seconds": 59,
     "single_shared_reserve_seconds": 60,
     "campaign_cap_plus_reserve_seconds": 240,
     "unallocated_account_seconds_after_campaign_cap_and_reserve": 311,
     "folded_reserved_ceiling_seconds": 0,
     "folded_settled_charge_seconds": 40,
-    "budget_scope": "The user 180-second cap covers new correction and static executions. Settled new-campaign charges total 119 seconds (folded-correction 2 x 11, ripple 66, rank-sector 31); no ceiling remains reserved or unsettled, leaving 61 seconds of the cap. Historical settled charges remain outside the cap.",
+    "budget_scope": "The user 180-second cap covers the new campaign. Settled charges total 121 seconds (folded-correction 2 x 11, ripple 66, rank-sector 31, recovered wide-control 2); all observed jobs are complete with finalized usage, leaving 59 seconds of the cap. Historical pilot and folded charges total 49 seconds outside the cap. The wide control is retrospective evidence with original local approval/calibration unavailable.",
     "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
     "proposals_are_account_reservations": false,
     "aggregate_enforcement": "The execution owner must reconcile accepted and attempted job ceilings, settled charges, remaining user cap and fresh account quota before each submission. The runner enforces one invocation ceiling; this ledger creates neither an atomic account reservation nor an account-wide service ceiling.",
     "correction_planned_ceiling_seconds": 0,
-    "currently_admitted_ceiling_seconds": 30,
+    "currently_admitted_ceiling_seconds": 0,
     "proposed_campaign_ceiling_seconds": 170,
     "proposed_atlas_ceiling_seconds": 0,
     "planned_campaign_plus_reserve_seconds": 0,
     "historical_settled_charge_seconds": 49,
-    "correction_attempt_reservation_seconds": 30,
+    "correction_attempt_reservation_seconds": 0,
     "remaining_static_planned_ceiling_seconds": 0,
     "reservation_boundary": "Conservative cooperative reservation during the authorized invocation; accepted/attempted job ceilings remain reserved until attributable final charges settle.",
-    "new_campaign_settled_charge_seconds": 119,
+    "new_campaign_settled_charge_seconds": 121,
     "new_campaign_unsettled_ceiling_seconds": 0,
     "planned_nominal_seconds": 0,
     "planned_stress_seconds": 0,
     "new_campaign_settled_jobs": {
       "folded-correction": 22,
       "ripple": 66,
-      "rank-sector": 31
+      "rank-sector": 31,
+      "wide-control": 2
     }
   },
   "families": [
@@ -133,6 +134,20 @@
       "settled_charge_seconds": 22,
       "decision": "retain_measured_correction",
       "finding": "Known-label correction beats measured-bit correction on s3 in both runs (gain +0.0132, +0.0209; lower bounds -0.0077, -0.0006) and not on s1; about 11 percent of shots misread the first bit, and measured-bit correction then applies the wrong phase."
+    },
+    {
+      "family": "wide-control",
+      "backend": "ibm_kingston",
+      "state": "completed_retrieved_retrospectively",
+      "accepted_job_ids": [
+        "db6qe7klf4us73c5pdc0"
+      ],
+      "settled_charge_seconds": 2,
+      "submission": "results/live/kingston-wide-control-result",
+      "retention": "results/live/kingston-wide-control-result/retention.json",
+      "analysis": "results/live/kingston-wide-control-result/analysis.json",
+      "provenance_boundary": "Decoded IBM circuits and immutable raw data were recovered retrospectively; original local approval/archive/calibration is unavailable.",
+      "excluded_from_new_submission": true
     }
   ],
   "deduplication": {
@@ -143,12 +158,14 @@
   "other_chat_confirmation": "The user authorizes execution after reviewed merged code, current cases and a combined 180-second ceiling. Reviewed merge is verified. Correction requires fresh eligible renewal and a qualified collected decision before independent static admission. Fresh static ceilings 140 plus held correction proposal 30 total 170 proposed seconds.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
-    "observed_at": "2026-10-13T03:31:58.957019+00:00",
-    "usage_consumed_seconds": 168,
+    "observed_at": "2026-10-13T04:59:38.738834+00:00",
+    "usage_consumed_seconds": 170,
     "usage_limit_seconds": 600,
-    "remaining_seconds": 432,
+    "remaining_seconds": 430,
     "pending_instance_job_ids": [],
-    "boundary": "Read-only observation; the runner performs fresh independent submission checks."
+    "inventory": "results/live/qpu-job-inventory.json",
+    "retention_audit": "results/live/qpu-job-retention-audit.json",
+    "boundary": "Read-only complete service inventory at the recorded observation time; future submissions refresh account state."
   },
   "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
   "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions follow the recorded conditional user authority and current-case execution gates.",

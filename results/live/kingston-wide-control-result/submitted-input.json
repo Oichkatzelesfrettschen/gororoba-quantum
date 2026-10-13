@@ -1,0 +1,68 @@
+{
+  "archive_boundary": "QPY serialization of circuits decoded from IBM job.inputs; original local pre-submission archive is unavailable.",
+  "circuit_archive": "submitted-circuits.qpy",
+  "circuit_archive_sha256": "814308c4c5b7c1f54487dcf1703ff2d115dc9097610bc3631e07f2883a1887c9",
+  "input_schema_version": "v2.0",
+  "items": [
+    {
+      "chunk_size": null,
+      "circuit_arguments": [],
+      "item_type": "CircuitItem",
+      "metadata": {},
+      "name": "exp1_ramsey_156q",
+      "num_clbits": 156,
+      "num_qubits": 156,
+      "operation_counts": {
+        "cz": 1,
+        "if_else": 1,
+        "measure": 157,
+        "reset": 1,
+        "rz": 10,
+        "sx": 5
+      }
+    },
+    {
+      "chunk_size": null,
+      "circuit_arguments": [],
+      "item_type": "CircuitItem",
+      "metadata": {},
+      "name": "exp2_shor_carpet_150q",
+      "num_clbits": 58,
+      "num_qubits": 156,
+      "operation_counts": {
+        "cz": 142,
+        "if_else": 29,
+        "measure": 58,
+        "reset": 29,
+        "rz": 464,
+        "sx": 372
+      }
+    }
+  ],
+  "measurement_level": "classified",
+  "options": {
+    "environment": {
+      "image": null,
+      "job_tags": [],
+      "log_level": "WARNING",
+      "max_execution_time": null,
+      "private": false
+    },
+    "execution": {
+      "init_qubits": true,
+      "rep_delay": 0.00025,
+      "scheduler_timing": false,
+      "stretch_values": false
+    },
+    "experimental": {},
+    "max_execution_time": null,
+    "simulator": {
+      "angle_decimals": 5,
+      "layer_noise_model": null,
+      "seed_simulator": null,
+      "warn_absent": true
+    }
+  },
+  "schema": "decoded-executor-program-retention-v1",
+  "shots_per_item": 512
+}
