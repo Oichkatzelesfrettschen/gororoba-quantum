@@ -57,9 +57,15 @@ def _bound_counts(run: Path) -> dict[str, Counter[str]]:
     if hashlib.sha256((run / "isa.qpy").read_bytes()).hexdigest() != submission["qpy_archive_sha256"]:
         raise RuntimeError("isa.qpy differs from the submitted circuit archive")
     ledger = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    if submission.get("complete") is not True or len(submission["jobs"]) != len(submission["planned_jobs"]):
+        raise RuntimeError("the submission is incomplete; a partial run has no patch analysis")
     planned = {job["job_id"]: job for job in submission["jobs"]}
     if set(planned) != set(ledger):
         raise RuntimeError("collected jobs differ from the submitted jobs")
+    manifests = {
+        (job["backend"], job["kind"], job["batch_index"]): [pub["name"] for pub in job["pubs"]]
+        for job in submission["planned_jobs"]
+    }
     counts: dict[str, Counter[str]] = {}
     for job_id, job in planned.items():
         directory = run / "raw" / job_id
@@ -72,8 +78,9 @@ def _bound_counts(run: Path) -> dict[str, Counter[str]]:
             if hashlib.sha256(path.read_bytes()).hexdigest() != index["files"].get(path.name):
                 raise RuntimeError(f"{path} differs from its indexed sha256")
             payload = json.loads(path.read_text())
-            if payload.get("pub_index", position) != position:
-                raise RuntimeError(f"{path} carries PUB index {payload.get('pub_index')}")
+            expected_name = manifests[(job["backend"], job["kind"], job["batch_index"])][position]
+            if payload.get("pub_index") != position or payload.get("pub_name") != expected_name:
+                raise RuntimeError(f"{path} differs from the submitted PUB manifest at position {position}")
             (register,) = payload["registers"].values()
             counts[member] = Counter(register["bitstrings"])
             _TIMING[member] = payload["metadata"]["compilation"].get("scheduler_timing", {}).get("timing", "")
@@ -110,11 +117,16 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
     shots = np.array([[point["x_shots"], point["y_shots"]] for point in points], dtype=float)
 
     def nll(params: np.ndarray, delta: float) -> float:
-        phi0, log_v0, gamma = params
+        # offset absorbs asymmetric assignment error, which shifts both
+        # quadratures of one qubit by the same P(0|1) - P(1|0).
+        phi0, log_v0, gamma, raw_offset = params
+        offset = 0.2 * math.tanh(raw_offset)
         visibility = math.exp(min(log_v0, 0.0)) * np.exp(-max(gamma, 0.0) * times)
         phase = phi0 + 2 * math.pi * delta * times
         probabilities = np.clip(
-            np.stack([(1 + visibility * np.cos(phase)) / 2, (1 + visibility * np.sin(phase)) / 2], axis=1),
+            np.stack(
+                [(1 + offset + visibility * np.cos(phase)) / 2, (1 + offset + visibility * np.sin(phase)) / 2], axis=1
+            ),
             1e-9,
             1 - 1e-9,
         )
@@ -128,7 +140,7 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
 
     # A coarse grid finds the periodic basin; a free fit refines delta, and
     # bisection on the profile likelihood finds each interval edge.
-    origin = np.array([0.0, -0.2, 0.02])
+    origin = np.array([0.0, -0.2, 0.02, 0.0])
     grid = [(profile(float(delta), origin).fun, float(delta)) for delta in DELTA_GRID_MHZ[::4]]
     coarse = min(grid)
     # Phase aliases: every local grid minimum within the 95 percent profile
@@ -141,9 +153,9 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
         and value <= grid[min(index + 1, len(grid) - 1)][0]
     ]
     free = minimize(
-        lambda v: nll(v[:3], float(v[3])), np.array([*profile(coarse[1], origin).x, coarse[1]]), method="Nelder-Mead"
+        lambda v: nll(v[:4], float(v[4])), np.array([*profile(coarse[1], origin).x, coarse[1]]), method="Nelder-Mead"
     )
-    best_delta, best_value, best_params = float(free.x[3]), float(free.fun), free.x[:3]
+    best_delta, best_value, best_params = float(free.x[4]), float(free.fun), free.x[:4]
 
     def edge(direction: float) -> float | None:
         inner, outer = best_delta, best_delta + direction * 0.05
@@ -159,9 +171,10 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
 
     low, high = edge(-1.0), edge(1.0)
     minimum = (best_value, best_delta, best_params)
-    interval = [low if low is not None else best_delta - 0.05, high if high is not None else best_delta + 0.05]
+    # An edge the profile never crosses within 0.05 MHz stays open (None).
+    interval = [low, high]
     edge_hit = low is None or high is None
-    phi0, log_v0, gamma = minimum[2]
+    phi0, log_v0, gamma, raw_offset = minimum[2]
     return {
         "delta_mhz": minimum[1],
         "delta_95_mhz": interval,
@@ -171,6 +184,7 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
         "phi0_rad": float(math.remainder(phi0, 2 * math.pi)),
         "visibility0": float(math.exp(min(log_v0, 0.0))),
         "decay_per_us": float(max(gamma, 0.0)),
+        "assignment_offset": float(0.2 * math.tanh(raw_offset)),
         "negative_log_likelihood": minimum[0],
     }
 
@@ -271,6 +285,47 @@ def analyze(run: Path) -> dict[str, Any]:
                 "se": math.sqrt(arms["feedback"][1] + arms["no_feedback"][1]),
             }
     report["orbit"] = orbit
+    contexts = {
+        "orbit_barrier_minus_nominal": ("window_barrier", "nominal"),
+        "orbit_echo_minus_barrier": ("window_echo", "window_barrier"),
+    }
+    report["orbit_between_context"] = {
+        name: {
+            "difference": orbit[first]["contrast_difference"] - orbit[second]["contrast_difference"],
+            "se": math.hypot(orbit[first]["se"], orbit[second]["se"]),
+        }
+        for name, (first, second) in contexts.items()
+        if first in orbit and second in orbit
+    }
+    middle, longest = sorted(delays)[len(delays) // 2], max(delays)
+    references = {}
+    for role, clbit in (("work_a", 0), ("work_b", 1)):
+        pairs = {
+            f"{role}_measured_minus_reset_only_y": (
+                f"window_measure_reset_c1_y_d{middle}",
+                f"window_reset_only_c1_y_d{middle}",
+                clbit + 1,
+                clbit + 1,
+            ),
+            f"{role}_paired_minus_single_y": (
+                f"ramsey_plain_y_d{longest}",
+                f"ramsey_plain_y_d{longest}_only_{role}",
+                clbit,
+                clbit,
+            ),
+        }
+        for name, (first, second, first_bit, second_bit) in pairs.items():
+            if first in counts and second in counts:
+                values = []
+                for member, bit in ((first, first_bit), (second, second_bit)):
+                    ones, shots = _ones(counts[member], bit)
+                    mean = 1 - 2 * ones / shots
+                    values.append((mean, (1 - mean * mean) / shots))
+                references[name] = {
+                    "difference": values[0][0] - values[1][0],
+                    "se": math.sqrt(values[0][1] + values[1][1]),
+                }
+    report["reference_comparisons"] = references
     return report
 
 
@@ -286,7 +341,8 @@ def self_check() -> None:
             y0 = int(rng.binomial(1024, (1 + visibility * math.sin(phase)) / 2))
             points.append({"t_us": t, "x_zero": x0, "x_shots": 1024, "y_zero": y0, "y_shots": 1024})
         fit = fit_ramsey(points)
-        covered += fit["delta_95_mhz"][0] <= truth <= fit["delta_95_mhz"][1]
+        low, high = fit["delta_95_mhz"]
+        covered += (low is None or low <= truth) and (high is None or truth <= high)
     if covered < 0.8 * trials:
         raise RuntimeError(f"planted detuning covered in {covered} of {trials} fits")
     aliased = []
@@ -334,7 +390,7 @@ def main(argv: list[str] | None = None) -> int:
         if "status" in fit:
             print(f"{key:24s} {fit['status']}")
             continue
-        interval = [round(value * 1e3, 1) for value in fit["delta_95_mhz"]]
+        interval = ["open" if value is None else round(value * 1e3, 1) for value in fit["delta_95_mhz"]]
         print(f"{key:24s} delta {fit['delta_mhz'] * 1e3:+7.1f} kHz 95% {interval} V0 {fit['visibility0']:.3f}")
     for context, entry in report["orbit"].items():
         half = Z95 * entry["se"]

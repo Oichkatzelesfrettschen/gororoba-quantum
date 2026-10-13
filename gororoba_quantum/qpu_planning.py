@@ -184,7 +184,15 @@ def patch_candidates(
             ]
             if excluded or blocked:
                 raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
-            measure_dt, half_dt, dt = window_durations(runtime, snapshot)
+            # The reset-only reference and echo halves follow the pinned
+            # control's own measure and reset durations.
+            target = snapshot.backend.target
+            granularity = max(1, int(target.granularity))
+            control_measure = float(target["measure"][(layout[0],)].duration) / float(target.dt)
+            control_reset = float(target["reset"][(layout[0],)].duration) / float(target.dt)
+            measure_dt = granularity * math.ceil(control_measure / granularity)
+            half_dt = granularity * math.ceil(0.6 * (control_measure + control_reset) / granularity)
+            dt = float(target.dt)
             choices = []
             for group in patch_groups(delays, measure_dt, half_dt):
                 isas = [
@@ -207,6 +215,10 @@ def patch_candidates(
                     )
                 )
             used = sorted({qubit for choice in choices for isa in choice.isas for qubit in runtime._physical(isa)})
+            if set(used) - set(layout):
+                raise runtime.LiveRunError(
+                    f"routing left the pinned patch through qubits {sorted(set(used) - set(layout))}"
+                )
             replica = Replica(0, {qubit: qubit for qubit in used}, min(min(choice.member_scores) for choice in choices))
             for choice in choices:
                 runtime._set_entries(choice, [replica], runtime.ReplicaPolicy(args.replica_floor, 1, False, True))

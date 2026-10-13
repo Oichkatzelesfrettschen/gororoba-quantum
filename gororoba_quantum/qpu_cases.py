@@ -208,7 +208,11 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
     if design["optimize"]:
         arguments.append("--optimize")
     if design.get("patch_qubits") is not None:
-        patch = [_count(qubit, "patch qubit") for qubit in design["patch_qubits"]]
+        patch = [qubit for qubit in design["patch_qubits"] if type(qubit) is int and qubit >= 0]
+        _require(
+            patch == design["patch_qubits"] and patch == record["family_configuration"].get("patch_qubits"),
+            "patch qubits differ between the design policy and the family configuration",
+        )
         arguments.extend(["--patch-qubits", ",".join(str(qubit) for qubit in patch)])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
@@ -277,7 +281,8 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
             counts.add(_count(pub["shots"], "PUB shots"))
             if allocation is not None:
                 stages = pub.get("classical_stage_count")
-                dynamic_allowed = policy["design"]["family"] == "patch-window"
+                # Only a dynamic job of the patch family carries dispatch stages.
+                dynamic_allowed = policy["design"]["family"] == "patch-window" and "/dynamic/" in job["name"]
                 _require(
                     type(stages) is int and (stages == 0 or (dynamic_allowed and stages > 0)),
                     "static allocated PUB costs require zero classical stages",
@@ -999,6 +1004,25 @@ def _scientific_case(family: str) -> list[str]:
             "Raw outcomes and joint shot order, calibration windows, executed schedules, and final "
             "charged usage must be retained. Model residuals and uncertainty remain visible in measured "
             "visualizations. The family is independently admitted from the folded-QPE and N21 cases.",
+            "",
+        ]
+    if family == "patch-window":
+        return [
+            "## Scientific question and interpretation",
+            "",
+            "The patch-window family characterizes the pinned qubits the N=21 orbit runs used (control, two "
+            "work qubits, spectator, two outer neighbors). Paired and single-qubit Ramsey, plain and echoed, "
+            "measure work-qubit phase and visibility against executed idle; measure-and-reset and reset-only "
+            "windows separate the explicit measurement; exchange circuits with zero-delay, unexcited and "
+            "all-one references bound population transfer; and nominal, barrier and barrier-plus-echo orbit "
+            "pairs compare scheduling contexts in one acquisition.",
+            "",
+            "Ten two-sided precision contracts on member differences admit the design; the calibration noise "
+            "model has no coherent window phase, so they price resolution, not an effect. The Y-only Ramsey "
+            "endpoints resolve phase differences only at favorable orientation, the exchange and orbit "
+            "endpoints are exploratory, and an unresolved or no-intervention outcome remains allowed. "
+            "Physical detuning is withheld wherever executed timing, alias separation or visibility does "
+            "not support it.",
             "",
         ]
     if family == "folded-qpe":

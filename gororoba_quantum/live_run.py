@@ -134,6 +134,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "predict.py",
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
+    "patch_characterization.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "rank_attachments.py",
