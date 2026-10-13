@@ -431,11 +431,12 @@ def prepare(
             "reserve_seconds": reserve,
             "max_total_execution_seconds": aggregate_cap,
         },
-        "local_simulation_batches": local_compute.batches(simulator),
+        "local_simulation_batches": (batches := local_compute.batches(simulator)),
         "compiled_ideal_validation": {
             "method": "branch-resolved statevector on native and final PUB wires",
             "absolute_tolerance": 1e-11,
-            "noise_method": "density_matrix",
+            "noise_method": sorted({str(batch["method"]) for batch in batches}),
+            "noise_policy": local_compute.settings(args)["method"],
             "all_candidates_passed": True,
         },
     }

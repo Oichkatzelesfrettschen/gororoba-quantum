@@ -1,9 +1,11 @@
 """Qualified local simulation policy and ordered batch evidence.
 
-Density matrices run on CPU threads by default. auto routes batches of
-GPU_MIN_ACTIVE_QUBITS or more active qubits to an admitted single GPU, gpu
-requires that admission, and cpu never routes. Local preparation time stays
-separate from the QPU charge ledger.
+Under the default method a batch containing a dynamic circuit runs
+statevector trajectories on CPU shot threads, and every other batch runs a
+density matrix. auto routes density-matrix batches of GPU_MIN_ACTIVE_QUBITS
+or more active qubits to an admitted single GPU and keeps trajectories on
+CPU; gpu requires admission for every batch; cpu never routes. Local
+preparation time stays separate from the QPU charge ledger.
 """
 
 from __future__ import annotations
@@ -24,6 +26,41 @@ import aer_identity
 import aer_resources
 import parallel
 
+# Under DYNAMIC_STATEVECTOR, a batch with mid-circuit measurement, reset or
+# control flow runs statevector trajectories: Aer evolves such circuits shot by
+# shot, and a 2**n statevector trajectory samples the same noise channels as a
+# 4**n density matrix at a fraction of the cost. Static batches keep the
+# density matrix, which yields their exact final distribution in one pass.
+DYNAMIC_STATEVECTOR = "density_matrix_dynamic_statevector"
+QUALIFIED_METHODS = ("density_matrix", DYNAMIC_STATEVECTOR)
+CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
+
+
+def is_dynamic(circuit: Any) -> bool:
+    """Control flow, reset, or any measurement followed by later quantum work.
+
+    The rule equals live_run._is_dynamic, which assigns IBM job kinds: a later
+    gate on any qubit counts, since Aer then samples the circuit shot by shot.
+    """
+    measurement_seen = False
+    for instruction in circuit.data:
+        name = instruction.operation.name
+        if name in CONTROL_FLOW or name == "reset":
+            return True
+        if measurement_seen and name not in ("measure", "barrier", "delay"):
+            return True
+        if name == "measure":
+            measurement_seen = True
+    return False
+
+
+def batch_method(policy: dict[str, Any], circuits: list[Any]) -> str:
+    """The Aer method one batch runs under the policy."""
+    if policy["method"] == DYNAMIC_STATEVECTOR:
+        return "statevector" if any(is_dynamic(circuit) for circuit in circuits) else "density_matrix"
+    return str(policy["method"])
+
+
 # Density matrices below this active width stay on CPU threads, where shot
 # parallelism outruns per-shot GPU kernel launches (LOCAL_COMPUTE.md).
 GPU_MIN_ACTIVE_QUBITS = 11
@@ -36,7 +73,7 @@ def requested_settings(args: Any = None) -> dict[str, Any]:
         "threads": getattr(args, "simulation_threads", parallel.default_threads()),
         "memory_mb": getattr(args, "simulation_memory_mb", 512),
         "shot_branching": False,
-        "method": "density_matrix",
+        "method": getattr(args, "local_compute_method", DYNAMIC_STATEVECTOR),
         "precision": "double",
         "shot_branching_sampling": False,
         "parallel_experiments": 1,
@@ -61,7 +98,9 @@ def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> 
         raise ValueError("shot_branching must be Boolean")
     if policy["shot_branching"]:
         raise ValueError("shot branching fails noisy folded-circuit qualification and remains disabled")
-    for key in ("method", "precision", "shot_branching_sampling", "parallel_experiments"):
+    if policy["method"] not in QUALIFIED_METHODS:
+        raise ValueError("local compute method differs from the qualified configurations")
+    for key in ("precision", "shot_branching_sampling", "parallel_experiments"):
         if type(policy[key]) is not type(defaults[key]) or policy[key] != defaults[key]:
             raise ValueError(f"local compute {key} differs from the qualified configuration")
     aer_identity.validate_contract(policy["aer_native"])
@@ -124,7 +163,7 @@ def configure(simulator: Any, policy: dict[str, Any]) -> None:
     validate(policy)
     simulator.set_options(
         device="CPU",
-        method=policy["method"],
+        method="density_matrix" if policy["method"] == DYNAMIC_STATEVECTOR else policy["method"],
         precision=policy["precision"],
         max_parallel_threads=policy["threads"],
         max_parallel_experiments=policy["parallel_experiments"],
@@ -176,10 +215,24 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
     return "GPU", admission
 
 
+def batch_route(policy: dict[str, Any], method: str, circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
+    """Device for one batch under its method.
+
+    Statevector trajectories of the qualified widths run fastest on CPU shot
+    threads, so auto keeps them there. An explicit gpu mode routes them
+    through the same admission, whose density-state sizing bounds a
+    statevector from above, and fails rather than falls back.
+    """
+    if method == "density_matrix" or policy["mode"] == "gpu":
+        return route(policy, circuits)
+    return "CPU", None
+
+
 def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     """Preserve declared order and retain actual Aer device/kernel evidence."""
     policy = getattr(simulator, "_gororoba_compute_policy", None)
     device, admission = "CPU", None
+    method = batch_method(policy, circuits) if policy is not None else None
     # GPU admission reads free device memory for one simulator, so admission
     # and the GPU run share one single-device lock; a CPU-routed batch
     # releases it before running so CPU batches stay parallel.
@@ -189,10 +242,13 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     try:
         if policy is not None:
             validate(policy)
-            device, admission = route(policy, circuits)
+            assert method is not None
+            device, admission = batch_route(policy, method, circuits)
             # One GPU shot state at a time keeps execution within the two-state
             # admission floor; CPU batches parallelize shots across threads.
-            simulator.set_options(device=device, max_parallel_shots=1 if device == "GPU" else policy["threads"])
+            simulator.set_options(
+                device=device, method=method, max_parallel_shots=1 if device == "GPU" else policy["threads"]
+            )
         if holding and device != "GPU":
             _GPU_LOCK.release()
             holding = False
@@ -210,7 +266,7 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
             if not experiment.success:
                 raise RuntimeError(f"local Aer experiment failed: {experiment.status}")
             metadata = experiment.metadata
-            if metadata.get("device") != device or metadata.get("method") != policy["method"]:
+            if metadata.get("device") != device or metadata.get("method") != method:
                 raise RuntimeError("Aer result device/method differs from the admitted local compute policy")
         buffer = io.BytesIO()
         qpy.dump(circuits, buffer)
@@ -218,6 +274,7 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
             {
                 "policy": dict(policy),
                 "device": device,
+                "method": method,
                 "gpu_admission": admission,
                 "ordered_circuit_names": [circuit.name for circuit in circuits],
                 "ordered_qpy_sha256": hashlib.sha256(buffer.getvalue()).hexdigest(),
@@ -233,6 +290,49 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
             }
         )
     return result
+
+
+def _verify_trajectory_noise(policy: dict[str, Any]) -> None:
+    """Trajectories and the density matrix sample one noisy dynamic law within shot noise.
+
+    Gate depolarizing and asymmetric readout error move the law far from the
+    noiseless one, so a trajectory kernel that dropped either channel fails.
+    """
+    from qiskit import QuantumCircuit
+    from qiskit_aer.noise import NoiseModel, ReadoutError, depolarizing_error
+
+    circuit = QuantumCircuit(2, 3, name="noisy_feed_forward")
+    circuit.h(0)
+    circuit.cx(0, 1)
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    with circuit.if_test((circuit.clbits[0], True)):
+        circuit.x(0)
+    circuit.measure(0, 1)
+    circuit.measure(1, 2)
+    noise = NoiseModel(basis_gates=["h", "cx", "x"])
+    noise.add_all_qubit_quantum_error(depolarizing_error(0.08, 1), ["h", "x"])
+    noise.add_all_qubit_quantum_error(depolarizing_error(0.15, 2), ["cx"])
+    noise.add_all_qubit_readout_error(ReadoutError([[0.95, 0.05], [0.10, 0.90]]))
+    shots = 40000
+    laws = {}
+    for label, method, model in (
+        ("trajectories", DYNAMIC_STATEVECTOR, noise),
+        ("density", "density_matrix", noise),
+        ("noiseless", DYNAMIC_STATEVECTOR, NoiseModel()),
+    ):
+        simulator = AerSimulator(noise_model=model)
+        configure(simulator, policy | {"method": method})
+        counts = run(simulator, [circuit], shots, 20261013).get_counts(0)
+        laws[label] = {key: value / shots for key, value in counts.items()}
+
+    def distance(left: dict[str, float], right: dict[str, float]) -> float:
+        return 0.5 * sum(abs(left.get(key, 0.0) - right.get(key, 0.0)) for key in set(left) | set(right))
+
+    if distance(laws["trajectories"], laws["density"]) > 0.02:
+        raise RuntimeError(f"trajectory and density-matrix noisy laws differ: {laws}")
+    if distance(laws["trajectories"], laws["noiseless"]) < 0.1:
+        raise RuntimeError("the trajectory kernel dropped the gate or readout noise channels")
 
 
 def _verify() -> None:
@@ -272,6 +372,39 @@ def _verify() -> None:
     assert result.get_counts(0) == {"11": 64}
     assert batches(simulator)[0]["ordered_circuit_names"] == [circuit.name]
     assert not batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False)
+    assert batches(simulator)[0]["method"] == "statevector", "dynamic batch did not run statevector trajectories"
+    _verify_trajectory_noise(policy)
+    static = QuantumCircuit(2, 2, name="static")
+    static.h(0)
+    static.cx(0, 1)
+    static.measure([0, 1], [0, 1])
+    static.barrier()
+    reset_only = QuantumCircuit(1, name="reset_only")
+    reset_only.reset(0)
+    branch_only = QuantumCircuit(1, 1, name="branch_only")
+    with branch_only.if_test((branch_only.clbits[0], True)):
+        branch_only.x(0)
+    later_work = QuantumCircuit(2, 1, name="later_work")
+    later_work.measure(0, 0)
+    later_work.x(1)
+    for candidate, expected in ((static, False), (reset_only, True), (branch_only, True), (later_work, True)):
+        if is_dynamic(candidate) != expected:
+            raise RuntimeError(f"{candidate.name}: dynamic classification differs from {expected}")
+    if (
+        batch_method(policy, [static]) != "density_matrix"
+        or batch_method(policy, [static, later_work]) != "statevector"
+    ):
+        raise RuntimeError("a batch with any dynamic circuit must run statevector trajectories")
+    if batch_method(policy | {"method": "density_matrix"}, [circuit]) != "density_matrix":
+        raise RuntimeError("the retained density_matrix policy changed its method")
+    from unittest.mock import patch
+
+    with patch(f"{__name__}.route", return_value=("GPU", {"admitted": True})) as admitted:
+        if batch_route(policy | {"mode": "gpu"}, "statevector", [later_work])[0] != "GPU" or not admitted.called:
+            raise RuntimeError("explicit gpu mode bypassed GPU admission for a dynamic batch")
+        admitted.reset_mock()
+        if batch_route(policy | {"mode": "auto"}, "statevector", [later_work]) != ("CPU", None) or admitted.called:
+            raise RuntimeError("auto mode left CPU routing for statevector trajectories")
     _verify_routing(policy)
     print("local compute policy, capability rejection, routing, and CPU dynamic batch checks pass")
 
