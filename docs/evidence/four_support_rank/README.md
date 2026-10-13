@@ -19,7 +19,7 @@ GOROROBA_WORKERS=4 PYTHONDONTWRITEBYTECODE=1 \
 
 The replay writes stdout only and checks source bytes before and after the
 calculation. `result.json` retains the interpreter and SymPy versions,
-source SHA-256 values, eight sector identities, positive rank witnesses,
+eight sector identities, positive rank witnesses,
 complete rational kernel comparisons, pivot transitions, path specialization,
 spectral coefficient specialization, and negative controls. The normal and
 optimized replays must match the retained JSON exactly. A changed source or

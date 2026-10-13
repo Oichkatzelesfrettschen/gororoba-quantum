@@ -287,7 +287,7 @@ metadata = {
     'python_soabi': sysconfig.get_config_var('SOABI'),
     'python_wheel_tag': 'cp314-cp314-linux_x86_64',
     'build_dependencies': build_dependencies,
-    'build_wheel_sha256': {wheel.name: hashlib.sha256(wheel.read_bytes()).hexdigest() for wheel in source_root.parent.glob('*.whl')},
+    'build_wheel_sha256': {wheel.name: hashlib.sha256(wheel.read_bytes()).hexdigest() for wheel in (source_root / 'dist').glob('*.whl')},
     'numpy_version': version('numpy'),
     'compile_jobs': int(os.environ.get('CMAKE_BUILD_PARALLEL_LEVEL', '2')),
     'host_warning_policy': '-Wall -Wextra -Werror',

@@ -103,8 +103,9 @@ def admit_gpu(circuits: list[QuantumCircuit], memory_mb: int, snapshot: dict[str
     widths = [active_support(circuit) for circuit in circuits]
     state_bytes = [16 * 4**width for width in widths]
     admission_budget = min(memory_mb * MEBIBYTE, snapshot["free_bytes"] // 2)
-    # Two simultaneous shot states supply only a lower bound; native workspace
-    # and other processes can consume additional memory after admission.
+    # local_compute.run executes GPU batches with one shot state at a time;
+    # two states supply only a lower bound, since native workspace and other
+    # processes can consume additional memory after admission.
     state_floor = 2 * max(state_bytes)
     if state_floor > admission_budget:
         raise ValueError("density states exceed the declared GPU memory admission budget")

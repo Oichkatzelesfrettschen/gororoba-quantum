@@ -32,11 +32,11 @@ dimension of the maximal stratum `V2(R7)`. The first two values remain
 pointwise linearized bounds until higher-order smoothness and coverage
 arguments establish more.
 
-The JSON includes SHA-256 digests of the executed probe and four imported
-repository source files, plus Python and SymPy versions. The program checks
-the imported module paths and rechecks those source bytes before emitting
-its result. It writes its result to stdout; `--check` compares the
-recomputed JSON bytes with the retained `result.json`. Runtime or source
+The JSON includes Python and SymPy versions. The program checks the
+imported module paths and that the probe and its three imported repository
+sources keep their bytes during the run; the digests stay out of the
+result. It writes its result to stdout; `--check` compares the recomputed
+JSON bytes with the retained `result.json`. Runtime or computed-value
 changes therefore produce an explicit mismatch rather than silently
 relabeling the evidence.
 

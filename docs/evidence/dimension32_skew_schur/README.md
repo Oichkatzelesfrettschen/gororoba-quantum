@@ -20,8 +20,8 @@ GOROROBA_WORKERS=4 PYTHONDONTWRITEBYTECODE=1 \
 
 `GOROROBA_WORKERS=1` exercises the serial implementation. The replay
 verifies imported module locations and compares source and proof-note
-hashes before and after evaluation. `result.json` binds those hashes,
-Python and SymPy versions, input coordinates, exact output matrices, and
+hashes before and after evaluation within the process; the hashes stay out
+of `result.json`. `result.json` binds Python and SymPy versions, input coordinates, exact output matrices, and
 negative controls. `SHA256SUMS` binds the retained replay and result bytes.
 Regeneration requires an explicit reviewed source or dependency change.
 

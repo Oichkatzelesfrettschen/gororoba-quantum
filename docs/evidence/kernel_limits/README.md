@@ -23,7 +23,7 @@ GOROROBA_WORKERS=4 PYTHONDONTWRITEBYTECODE=1 \
 (cd docs/evidence/kernel_limits && sha256sum -c SHA256SUMS)
 ```
 
-`result.json` binds source/proof hashes, exact rank-sized minors, complete
+`result.json` binds exact rank-sized minors, complete
 frames, rational projectors and removable limits, persistent charts,
 certified punctured radii, endpoint coordinate inclusions, continuous
 circle charts, their reciprocal transitions, and mutation controls.

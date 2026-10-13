@@ -22,7 +22,7 @@ and build-time dependency downloads stay disabled.
 `AER_THRUST_BACKEND=CUDA` selects Aer native CUDA kernels.
 `AER_CUDA_ARCH=8.9` fixes the target architecture. Optional cuQuantum,
 MPI, and CUDA wheel dependencies remain disabled; the system CUDA toolkit
-supplies the native build. The build uses two compilation jobs and treats
+supplies the native build. The build uses half the available CPUs as compilation jobs, at least one, and treats
 host and NVCC warnings as errors. Compiler failures require a recorded
 source-level diagnosis before changing warning policy.
 

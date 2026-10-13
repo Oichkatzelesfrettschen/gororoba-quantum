@@ -134,6 +134,10 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
     try:
         admission = aer_resources.admit_gpu(circuits, policy["memory_mb"], aer_resources.gpu_snapshot())
         admission["runtime"] = aer_identity.gpu_runtime_identity()
+        # Aer 0.17.2 exposes no device selector, so admission of device zero
+        # covers execution only on a host with exactly one GPU.
+        if admission["runtime"].get("device_count") != 1:
+            raise ValueError("GPU admission requires a single-GPU host")
     except ValueError as error:
         if policy["mode"] == "gpu":
             raise
@@ -148,7 +152,9 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     if policy is not None:
         validate(policy)
         device, admission = route(policy, circuits)
-        simulator.set_options(device=device)
+        # One GPU shot state at a time keeps execution within the two-state
+        # admission floor; CPU batches parallelize shots across threads.
+        simulator.set_options(device=device, max_parallel_shots=1 if device == "GPU" else policy["threads"])
     start = time.perf_counter()
     result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
     elapsed = time.perf_counter() - start
@@ -222,7 +228,52 @@ def _verify() -> None:
     assert result.get_counts(0) == {"11": 64}
     assert batches(simulator)[0]["ordered_circuit_names"] == [circuit.name]
     assert not batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False)
-    print("local compute policy, capability rejection, and CPU dynamic batch checks pass")
+    _verify_routing(policy)
+    print("local compute policy, capability rejection, routing, and CPU dynamic batch checks pass")
+
+
+def _verify_routing(policy: dict[str, Any]) -> None:
+    from unittest.mock import patch
+
+    from qiskit import QuantumCircuit
+
+    narrow, wide = QuantumCircuit(5), QuantumCircuit(GPU_MIN_ACTIVE_QUBITS)
+    narrow.h(range(5))
+    wide.h(range(GPU_MIN_ACTIVE_QUBITS))
+    snapshot = {
+        "device_ordinal": 0,
+        "free_bytes": 8 * 1024 * aer_resources.MEBIBYTE,
+        "total_bytes": 12 * 1024 * aer_resources.MEBIBYTE,
+        "runtime_version": 13040,
+        "driver_version": 13040,
+        "compute_capability_major": 8,
+        "compute_capability_minor": 9,
+    }
+    starved = snapshot | {"free_bytes": aer_resources.MINIMUM_GPU_FREE_BYTES - 1}
+
+    def routed(mode: str, circuit: Any, devices: tuple[str, ...], reading: dict[str, int], count: int) -> Any:
+        with (
+            patch.object(AerSimulator, "available_devices", return_value=devices),
+            patch.object(aer_resources, "gpu_snapshot", return_value=reading),
+            patch.object(aer_identity, "gpu_runtime_identity", return_value={"device_count": count}),
+        ):
+            return route(policy | {"mode": mode}, [circuit])
+
+    both = ("CPU", "GPU")
+    assert routed("cpu", wide, both, snapshot, 1) == ("CPU", None)
+    assert routed("auto", narrow, both, snapshot, 1) == ("CPU", None)
+    assert routed("auto", wide, ("CPU",), snapshot, 1) == ("CPU", None)
+    device, admission = routed("auto", wide, both, snapshot, 1)
+    assert device == "GPU" and admission is not None and admission["active_qubits"] == [GPU_MIN_ACTIVE_QUBITS]
+    for reading, count in ((starved, 1), (snapshot, 2)):
+        device, admission = routed("auto", wide, both, reading, count)
+        assert device == "CPU" and admission is not None and "rejected" in admission
+        try:
+            routed("gpu", wide, both, reading, count)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("gpu mode accepted a rejected admission")
 
 
 if __name__ == "__main__":
