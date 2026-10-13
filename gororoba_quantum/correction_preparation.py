@@ -15,7 +15,7 @@ import math
 from datetime import UTC, datetime
 from importlib.metadata import version
 from pathlib import Path
-from typing import Any
+from typing import Any, cast
 
 import numpy as np
 from qiskit import qpy
@@ -133,7 +133,9 @@ def build(
     correction_circuits.validate_correction_pair(restored_template, restored[0], restored[1], 1)
     correction_circuits.validate_correction_pair(restored_template, restored[3], restored[2], 3)
     delay = repetition_delay(snapshot.backend)
-    lower_seconds = 2.3 + shots * sum(delay + member["target_gate_lower_bound_seconds"] for member in members)
+    lower_seconds = 2.3 + shots * sum(
+        (delay + cast(float, member["target_gate_lower_bound_seconds"]) for member in members), 0.0
+    )
     historical_seconds = 2.3 + 4 * shots * (250e-6 + 22.904e-6)
     _require(captured_sources == source_hashes(), "preparation sources changed during compilation or simulation")
     report = {

@@ -209,8 +209,17 @@ The mathematical chain has the following acceptance gates.
    membership, and compare the resulting planes with the certified projector
    limits. The graph fiber records reachable limiting planes; full exceptional
    kernels and their unit-vector fibers require separate incidence data.
-   This route remains a construction obligation, rather than a computed
-   frontier classification.
+   The [projective-limit certificate](notes/projective_kernel_frontiers.md)
+   now recovers every admitted polynomial path's leading plane by finite
+   frame saturation. Its all-stage quotient theorem reconstructs the full
+   pair space from tautological sphere spaces over all real frontier graphs.
+   Actual graph-closure computation, smooth subdivisions, and quotient cell
+   maps remain obligations; the theorem alone supplies no homology table.
+   The [real circle-frontier certificate](notes/real_circle_frontier_graphs.md)
+   computes the named cone slice graph as a smooth cylinder with a trace
+   inverse. Labelled integral contractions certify the unit-partner evaluation
+   map and its cohomology pullbacks. Extend the real closure/inverse mechanism
+   to ambient rank domains with their own positive-domain and coverage proofs.
 5. Construct a global finite model with a proved relation to the complete pair
    space. Coste's triangulation, Hardt, and conic theorems establish existence
    frameworks; computed partitions, gluing maps, and coverage remain work.
