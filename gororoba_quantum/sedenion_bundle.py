@@ -352,9 +352,11 @@ def _numerical_fixture(case: tuple[int, list[float], list[float]]) -> dict[str, 
     first, second, quaternion_unit, projector = _base_geometry(first_values, second_values)
     patches = [index for index in range(1, 8) if np.linalg.norm(projector[:, index]) >= MIN_PATCH_NORM]
     _require(bool(patches), "atlas coverage failed")
-    _require(abs(float(np.trace(projector)) - 4) < NUMERIC_TOLERANCE, "coverage trace identity")
+    _require(bool(abs(float(np.trace(projector)) - 4) < NUMERIC_TOLERANCE), "coverage trace identity")
     _require(
-        max(float(np.linalg.norm(projector[:, index])) for index in patches) >= math.sqrt(4 / 7) - NUMERIC_TOLERANCE,
+        bool(
+            max(float(np.linalg.norm(projector[:, index])) for index in patches) >= math.sqrt(4 / 7) - NUMERIC_TOLERANCE
+        ),
         "coverage lower bound",
     )
     frames = {index: chart_frame(first, second, index) for index in patches}
@@ -442,7 +444,7 @@ def _numerical_fixture(case: tuple[int, list[float], list[float]]) -> dict[str, 
                 np.max(np.abs(transitions[source, middle] @ transitions[middle, target] - transitions[source, target]))
             ),
         )
-    _require(max(residuals.values()) < NUMERIC_TOLERANCE, f"bundle fixture {case_index}: {residuals}")
+    _require(bool(max(residuals.values()) < NUMERIC_TOLERANCE), f"bundle fixture {case_index}: {residuals}")
     return {"case": case_index, "available_charts": patches, "residuals": residuals}
 
 
@@ -464,7 +466,7 @@ def _verify_chart_admission() -> list[dict[str, object]]:
             (section, _multiply(first, section), _multiply(second, section), _multiply(quaternion_unit, section))
         )
         rejected_residuals = _chart_residuals(first, second, quaternion_unit, projector, candidate)
-        _require(rejected_residuals["frame_complement"] > NUMERIC_TOLERANCE, "unstable chart fixture changed")
+        _require(bool(rejected_residuals["frame_complement"] > NUMERIC_TOLERANCE), "unstable chart fixture changed")
         try:
             chart_frame(first, second, 1)
         except ValueError as error:
@@ -502,7 +504,7 @@ def _verify_chart_admission() -> list[dict[str, object]]:
             accepted_residuals["right_action_identity"] = max(
                 accepted_residuals["right_action_identity"], float(np.linalg.norm(moved - partner))
             )
-        _require(max(accepted_residuals.values()) <= NUMERIC_TOLERANCE, "largest-projection chart residuals")
+        _require(bool(max(accepted_residuals.values()) <= NUMERIC_TOLERANCE), "largest-projection chart residuals")
         results.append(
             {
                 "fixture": name,

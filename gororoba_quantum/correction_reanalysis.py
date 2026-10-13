@@ -18,6 +18,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import math
 from pathlib import Path
 from typing import Any
 
@@ -164,14 +165,47 @@ def analyze(run: Path) -> tuple[str, dict[str, Any]]:
 RETAINED_RUN = Path(__file__).resolve().parent.parent / "results/live/2026-10-13T020454.599853Z"
 
 
+# The analysis digest names the file and binds the sources that produced it;
+# reproduction compares the computed content, so a later source revision or a
+# different platform's last-bit floating point still reproduces a retained file.
+DIGEST_FIELDS = ("analysis_digest", "analysis_sources_sha256")
+FLOAT_TOLERANCE = 1e-12
+
+
+def _same(left: Any, right: Any) -> bool:
+    if isinstance(left, dict) and isinstance(right, dict):
+        return left.keys() == right.keys() and all(_same(left[key], right[key]) for key in left)
+    if isinstance(left, list) and isinstance(right, list):
+        return len(left) == len(right) and all(_same(a, b) for a, b in zip(left, right, strict=True))
+    if isinstance(left, float) or isinstance(right, float):
+        return (
+            isinstance(left, (int, float))
+            and isinstance(right, (int, float))
+            and not isinstance(left, bool)
+            and not isinstance(right, bool)
+            and math.isclose(left, right, rel_tol=FLOAT_TOLERANCE, abs_tol=FLOAT_TOLERANCE)
+        )
+    return bool(left == right)
+
+
+def reproduces(run: Path, result: dict[str, Any]) -> list[Path]:
+    """Retained analyses in run whose computed content matches result."""
+    fresh = {key: value for key, value in result.items() if key not in DIGEST_FIELDS}
+    matches = []
+    for path in sorted(run.glob("analysis-*.json")):
+        retained = json.loads(path.read_text())
+        if _same({key: value for key, value in retained.items() if key not in DIGEST_FIELDS}, fresh):
+            matches.append(path)
+    return matches
+
+
 def _verify() -> None:
     """Replay the retained run, reject a tampered raw shot, and keep analyses write-once."""
     import shutil
     import tempfile
 
-    name, result = analyze(RETAINED_RUN)
-    text = json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n"
-    if (RETAINED_RUN / name).read_text() != text:
+    _name, result = analyze(RETAINED_RUN)
+    if not reproduces(RETAINED_RUN, result):
         raise RuntimeError("retained second analysis does not reproduce")
     with tempfile.TemporaryDirectory(prefix="correction-reanalysis-") as directory:
         copy = Path(directory) / RETAINED_RUN.name
@@ -187,8 +221,12 @@ def _verify() -> None:
             pass
         else:
             raise RuntimeError("a tampered raw shot passed the replay")
-        if main([str(RETAINED_RUN)]) == 0:
-            raise RuntimeError("an existing analysis was overwritten")
+        clean = Path(directory) / "write-once" / RETAINED_RUN.name
+        shutil.copytree(RETAINED_RUN, clean)
+        for retained in clean.glob("analysis-*.json"):
+            retained.unlink()
+        if main([str(clean)]) != 0 or main([str(clean)]) == 0:
+            raise RuntimeError("a fresh analysis was refused or an existing analysis was overwritten")
     print("correction reanalysis: replay, raw tamper rejection, and write-once checks pass")
 
 
@@ -207,8 +245,8 @@ def main(argv: list[str] | None = None) -> int:
     text = json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n"
     target = arguments.run / name
     if arguments.check:
-        if target.read_text() != text:
-            print(f"{target} differs from the recomputed analysis")
+        if not reproduces(arguments.run, result):
+            print(f"no retained analysis in {arguments.run} matches the recomputed analysis")
             return 1
         print(f"{name}: decision {result['statistical_decision']['decision']} reproduced")
     elif target.exists():

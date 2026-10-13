@@ -124,6 +124,12 @@ PUBs (929 logical entries), 66 s against 63.967 s predicted.
   remains unresolved. Extra class-return shots can narrow sampling intervals
   but do not resolve that implementation/model discrepancy.
 
+The ripple practical-packing check qualifies 19 of 21 registered scalar
+controls within normalized +/-0.10. Kite 5 edge 1-2 phase 0 remains unresolved
+at [-0.1010378650, +0.0483034900], as does Design C16 at
+[-0.1276310163, +0.0963810163]. Each interval crosses an equivalence boundary;
+neither certifies a practical distortion.
+
 ## 6. Rank-sector: sector contrasts and pulse-difference laws
 
 Record [2026-10-13T032011.664435Z](2026-10-13T032011.664435Z/collect.json),
@@ -138,6 +144,11 @@ PUBs (176 logical entries), 31 s against 30.413 s predicted.
   at +0.111 to +0.126. The point-estimate ordering agrees across the four
   sectors. The acquisition supports these implementation contrasts; exact
   rank and polynomial laws retain their classical proof boundary.
+
+The rank-sector practical-packing check qualifies all 16 registered scalar
+controls within normalized +/-0.10. These bounded observables retain their
+selected circuits and layouts; complete distributional equivalence remains
+unestablished.
 
 ## 7. Recovered wide control: active laws, spectators and joint residuals
 
