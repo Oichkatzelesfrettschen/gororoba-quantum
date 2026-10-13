@@ -21,7 +21,15 @@ from qpe_diagnostics import (
     n21_labeled_law,
 )
 
-FAMILY_NAMES = ("folded-qpe", "folded-correction", "n21-feedback", "ripple", "rank-sector")
+FAMILY_NAMES = (
+    "folded-qpe",
+    "folded-correction",
+    "n21-feedback",
+    "ripple",
+    "rank-sector",
+    "spectator-wavefront",
+    "concurrent-shor",
+)
 
 
 def correction_group() -> Group:
@@ -110,6 +118,8 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
         from rank_sector_experiments import sector_contracts
 
         return sector_contracts(precision, alpha, power)
+    if family in ("spectator-wavefront", "concurrent-shor"):
+        return ()
     if family == "n21-feedback":
         values = (0.0, 1.0, 0.0, -1.0)
         return (
@@ -162,4 +172,12 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
         ]
     if family.get("name") == "n21-feedback":
         return [n21_group()]
+    if family.get("name") == "spectator-wavefront":
+        from maximal_experiments import spectator_wavefront_ramsey_group
+
+        return [spectator_wavefront_ramsey_group()]
+    if family.get("name") == "concurrent-shor":
+        from maximal_experiments import concurrent_shor_mod15_group
+
+        return [concurrent_shor_mod15_group()]
     return []

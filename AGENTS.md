@@ -119,6 +119,7 @@ The rank-sector image gate also uses the plotting-only pin
     algebra_planning.py algebra_planning_contracts.py \
     pub_shot_allocation.py pub_shot_allocation_contracts.py pub_shot_runtime_contracts.py \
     ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
+    maximal_experiments.py maximal_contracts.py \
     native_preflight.py native_preflight_contracts.py \
     placement_feasibility.py placement_feasibility_contracts.py \
     aer_delay_sentinels.py \
@@ -215,6 +216,8 @@ The rank-sector image gate also uses the plotting-only pin
   PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_runtime_contracts.py
   "$PYTHON" ripple_contracts.py
   "$PYTHON" rank_sector_contracts.py
+  "$PYTHON" maximal_contracts.py
+  PYTHONOPTIMIZE=1 "$PYTHON" maximal_contracts.py
   "$PYTHON" native_preflight_contracts.py
   "$PYTHON" placement_feasibility_contracts.py
   PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py

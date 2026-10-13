@@ -125,6 +125,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "integral_homology.py",
     "live_run.py",
     "local_compute.py",
+    "maximal_experiments.py",
     "modular_arithmetic.py",
     "native_preflight.py",
     "order_finding.py",

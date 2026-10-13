@@ -381,10 +381,13 @@ def _hybrid_shor_mod15() -> Group:
 
 
 def experiment_groups() -> list[Group]:
+    from maximal_experiments import maximal_groups
+
     return [
         _design_a(),
         _zero_divisor_fringe(),
         *(_associator_spectrum(dim, i, j) for dim, i, j in SPECTRUM_EXEMPLARS),
         _folded_qpe_mod15(),
         _hybrid_shor_mod15(),
+        *maximal_groups(),
     ]
