@@ -38,12 +38,14 @@ The [read-only IBM inventory](qpu-job-inventory.json) observes ten completed
 physical jobs across seven acquisitions. The [retention audit](qpu-job-retention-audit.json)
 checks all ten raw indices, data and metrics hashes, PUB order, binary register
 widths, shot denominators, submitted circuit hashes and settled charges.
-The inventory covers 214 PUBs and 552960 physical PUB shots at 170 total
-charged seconds. Historical acquisitions use 49 seconds; the new campaign
-uses 121, leaving 59 seconds under its ceiling. The account snapshot reports
-430 remaining seconds at its observation time, with a retained 60-second
-reserve. Local simulation and native mock records remain distinct from these
-physical acquisitions.
+The inventory observed at 2026-10-13T23:18:34Z covers 15 jobs, 270 PUBs and
+659456 physical PUB shots at 210 total charged seconds. Historical
+acquisitions use 49 seconds; the new campaign uses 161, leaving 19 seconds
+under its ceiling. The account snapshot reports 390 remaining seconds at its
+observation time, with a retained 60-second reserve. qpu-coordination.json
+keeps its 121-second settlement as the snapshot before the orbit (4 s),
+orbit-window (11 s) and patch-window (25 s) acquisitions. Local simulation and
+native mock records remain distinct from these physical acquisitions.
 
 The [recovered Kingston control](kingston-wide-control-result/README.md) retains
 job `db6qe7klf4us73c5pdc0` and descriptive analysis of its actual submitted
