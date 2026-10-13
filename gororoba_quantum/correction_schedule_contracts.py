@@ -102,6 +102,28 @@ def verify() -> dict[str, Any]:
             "undeclared feedback else elision",
         )
         rejected += 1
+        offset_else = independent["timing"].replace(
+            f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},40,",
+            f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},41,",
+        )
+        if not qualify(
+            feedback_value=dict(feedback, timing=offset_else), independent_value=dict(independent, timing=offset_else)
+        )["qualified"]:
+            raise RuntimeError("frame updates offset without an intervening pulse failed")
+        accepted += 1
+        separated = independent["timing"].replace(
+            f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},40,",
+            f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},44,",
+        )
+        _reject(
+            partial(
+                qualify,
+                feedback_value=dict(feedback, timing=separated),
+                independent_value=dict(independent, timing=separated),
+            ),
+            "a correction-channel pulse between the then and else frame updates",
+        )
+        rejected += 1
         mutations = {
             "equal-duration internal timing": independent["timing"].replace(",42,4,play", ",43,4,play"),
             "changed correction slot": independent["timing"].replace(",40,0,shift_phase", ",41,0,shift_phase"),

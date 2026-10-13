@@ -197,8 +197,23 @@ def _branch_events(
             and event.pulse == "shift_phase",
             "branch contains an unexpected correction event",
         )
-    starts = {event.start for event in correction_events}
-    _require(len(starts) == 1, "then and else corrections occupy different time slots")
+    # shift_phase is a zero-duration frame update that takes effect at the next
+    # pulse on its channel; the controller places the else update a few dt
+    # after the then update, so the branches agree when no pulse on the
+    # correction channel lies between them.
+    first, last = min(event.start for event in correction_events), max(event.start for event in correction_events)
+    channel = f"Qubit {correction_qubit}"
+    _require(
+        not any(
+            event.branch == "main"
+            and event.channel == channel
+            and event.duration > 0
+            and event.start < last
+            and event.end > first
+            for event in events
+        ),
+        "a pulse on the correction channel separates the then and else frame updates",
+    )
     return next(event for event in correction_events if event.branch == "then"), counts["else"] == 0
 
 
