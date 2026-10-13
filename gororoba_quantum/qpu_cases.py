@@ -152,8 +152,10 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         _count(record["shots"], "recorded shots") == max(result.values()),
         "recorded shots differ from allocation maximum",
     )
+    # The algebra families allocate static PUBs only; the patch family's
+    # dynamic window and orbit PUBs take per-PUB tiers in their own jobs.
     _require(
-        all(pub["kind"] == "static" for pub in record["execution_pubs"]),
+        design["family"] == "patch-window" or all(pub["kind"] == "static" for pub in record["execution_pubs"]),
         "per-PUB allocation requires static execution PUBs",
     )
     return result
@@ -274,11 +276,16 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
             expected_shots = allocation[name] if allocation is not None else uniform_shots
             counts.add(_count(pub["shots"], "PUB shots"))
             if allocation is not None:
+                stages = pub.get("classical_stage_count")
+                dynamic_allowed = policy["design"]["family"] == "patch-window"
                 _require(
-                    type(pub.get("classical_stage_count")) is int and pub["classical_stage_count"] == 0,
+                    type(stages) is int and (stages == 0 or (dynamic_allowed and stages > 0)),
                     "static allocated PUB costs require zero classical stages",
                 )
-                _require(pub["classical_latency_seconds"] == 0, "static allocated PUB cost includes classical latency")
+                _require(
+                    pub["classical_latency_seconds"] == 0 or (dynamic_allowed and stages > 0),
+                    "static allocated PUB cost includes classical latency",
+                )
             _require(_count(pub["shots"], "PUB shots") == expected_shots, "PUB shots differ from the saved plan")
             durations = [
                 _number(pub[key], key)

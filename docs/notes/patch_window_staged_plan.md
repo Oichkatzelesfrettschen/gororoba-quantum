@@ -65,7 +65,7 @@ explicit owner approval; an informative unresolved result ends the campaign.
 
 - [x] Source imports and notes in docs/ (registry, INDEX, README)
 - [x] 46-circuit groups with per-PUB shots and exact-law checks
-- [ ] Executed-exposure timing qualification on a dry run
+- [ ] Executed-exposure timing qualification (native dry run returned QiskitBackendNotFoundError; analyzer reads timing from the collected schedule)
 - [x] Contracts and analyzer repairs with planted-mechanism coverage
 - [ ] Priced characterization case at or below 26 s; owner approval
 - [ ] Frozen intervention and validation case at or below 14 s; owner approval
