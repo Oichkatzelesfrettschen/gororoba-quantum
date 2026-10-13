@@ -62,11 +62,19 @@ def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--shard", default="0/1", help="SHARD/COUNT, zero-based")
     parser.add_argument("--list", action="store_true", help="print this shard's gates without running them")
+    parser.add_argument(
+        "--tier",
+        choices=("pr", "full"),
+        default="full",
+        help="pr runs the gates that fit pull-request CI; full adds the long simulation contracts",
+    )
     arguments = parser.parse_args(argv)
     shard, count = (int(part) for part in arguments.shard.split("/"))
     if not 0 <= shard < count:
         parser.error("shard must satisfy 0 <= SHARD < COUNT")
     gates = json.loads((ROOT / "ci" / "gates.json").read_text())["gates"]
+    if arguments.tier == "pr":
+        gates = [gate for gate in gates if gate.get("tier", "pr") == "pr"]
     selected = assign(gates, count)[shard]
     if arguments.list:
         for gate in selected:

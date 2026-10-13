@@ -6,1330 +6,1520 @@
    "cwd": ".",
    "cmd": "ruff check ci && ruff format --check ci && mypy ci/run_gates.py ci/runner_specs.py",
    "name": "core-000",
-   "seconds": 3.0
+   "seconds": 3.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py scripts/review_folded_jobs.py scripts/render_folded_job_review.py scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py scripts/check_diagnose_qiskit_mock.py scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py scripts/check_render_ripple_visualization.py scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py docs/sources/open_gororoba/check_signed_kite_switching.py",
    "name": "core-001",
-   "seconds": 0.3
+   "seconds": 0.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py results/live/verify_source_closure.py results/live/folded_raw_analysis.py results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client results/local_compute/verify_evidence.py results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py scripts/review_folded_jobs.py scripts/render_folded_job_review.py scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py scripts/check_diagnose_qiskit_mock.py scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py scripts/check_render_ripple_visualization.py scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py docs/sources/open_gororoba/check_signed_kite_switching.py",
    "name": "core-002",
-   "seconds": 0.4
+   "seconds": 0.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" scripts/python_call_graph.py >/dev/null",
    "name": "core-003",
-   "seconds": 4.1
+   "seconds": 4.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/verify_evidence.py",
    "name": "core-004",
-   "seconds": 1.2
+   "seconds": 1.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/check_verify_evidence.py",
    "name": "core-005",
-   "seconds": 32.2
+   "seconds": 32.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/cpu_branching_reuse_analysis.py --check",
    "name": "core-006",
-   "seconds": 0.7
+   "seconds": 0.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/local_compute",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-007",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/local_compute/aer_delay_sentinels",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-008",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/local_compute/n21_shared_predicate",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-009",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/n21_shared_predicate/check_probe.py",
    "name": "core-010",
-   "seconds": 5.1
+   "seconds": 5.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" results/local_compute/n21_shared_predicate/check_probe.py",
    "name": "core-011",
-   "seconds": 14.8
+   "seconds": 14.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" docs/sources/open_gororoba/check_signed_kite_switching.py | cmp - docs/sources/open_gororoba/signed_kite_switching.json",
    "name": "core-012",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "docs/sources/open_gororoba",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-013",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/live",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest test_folded_raw_analysis",
    "name": "core-014",
-   "seconds": 1.3
+   "seconds": 1.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/live",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest test_folded_raw_analysis",
    "name": "core-015",
-   "seconds": 1.8
+   "seconds": 1.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/live/2026-10-12T055624.091217Z",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-016",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error results/live/folded_raw_analysis.py results/live/2026-10-12T055624.091217Z | cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json",
    "name": "core-017",
-   "seconds": 0.5
+   "seconds": 0.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_diagnose_qiskit_mock.py",
    "name": "core-018",
-   "seconds": 2.3
+   "seconds": 2.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_diagnose_qiskit_mock.py",
    "name": "core-019",
-   "seconds": 9.5
+   "seconds": 9.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_folded_job_review.py",
    "name": "core-020",
-   "seconds": 5.6
+   "seconds": 5.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_folded_job_review.py",
    "name": "core-021",
-   "seconds": 8.1
+   "seconds": 8.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_review_folded_jobs.py",
    "name": "core-022",
-   "seconds": 12.9
+   "seconds": 12.9,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_review_folded_jobs.py",
    "name": "core-023",
-   "seconds": 17.9
+   "seconds": 17.9,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_rank_sector_norms.py",
    "name": "core-024",
-   "seconds": 10.0
+   "seconds": 10.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_rank_sector_norms.py",
    "name": "core-025",
-   "seconds": 21.2
+   "seconds": 21.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_ripple_visualization.py",
    "name": "core-026",
-   "seconds": 4.0
+   "seconds": 4.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_ripple_visualization.py",
    "name": "core-027",
-   "seconds": 20.1
+   "seconds": 20.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_extract_measured_ripple.py",
    "name": "core-028",
-   "seconds": 24.8
+   "seconds": 24.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_extract_measured_ripple.py",
    "name": "core-029",
-   "seconds": 54.7
+   "seconds": 54.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/check_render_measured_ripple.py",
    "name": "core-030",
-   "seconds": 32.0
+   "seconds": 32.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error scripts/check_render_measured_ripple.py",
    "name": "core-031",
-   "seconds": 72.2
+   "seconds": 72.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error scripts/review_folded_jobs.py --run-dir results/live/2026-10-12T055624.091217Z --check",
    "name": "core-032",
-   "seconds": 1.0
+   "seconds": 1.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error MPLCONFIGDIR=\"${MPLCONFIGDIR:-/tmp/folded-review-mplconfig}\" \"$PYTHON\" scripts/render_folded_job_review.py --png results/ripple/folded-job-review.png --check",
    "name": "core-033",
-   "seconds": 3.0
+   "seconds": 3.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error results/local_compute/mixed_pub_client/probe.py >/dev/null",
    "name": "core-034",
-   "seconds": 2.0
+   "seconds": 2.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error results/local_compute/mixed_pub_client/probe.py >/dev/null",
    "name": "core-035",
-   "seconds": 9.8
+   "seconds": 9.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/local_compute/mixed_pub_client",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "core-036",
-   "seconds": 2.0
+   "seconds": 2.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/local_compute/mixed_pub_client",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest check_probe",
    "name": "core-037",
-   "seconds": 9.1
+   "seconds": 9.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "results/local_compute/mixed_pub_client",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "core-038",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py correction_circuits.py correction_circuits_contracts.py correction_schedule.py correction_schedule_contracts.py correction_statistics.py correction_statistics_contracts.py correction_preparation.py correction_preparation_contracts.py correction_planning.py correction_planning_contracts.py correction_collection.py correction_collection_contracts.py correction_case_contracts.py correction_reanalysis.py hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py qpu_planning.py qpu_planning_contracts.py qpu_cases.py qpu_case_allocation_contracts.py local_compute.py aer_identity.py aer_resources.py algebra_planning.py algebra_planning_contracts.py pub_shot_allocation.py pub_shot_allocation_contracts.py pub_shot_runtime_contracts.py ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py native_preflight.py native_preflight_contracts.py placement_feasibility.py placement_feasibility_contracts.py aer_delay_sentinels.py affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py sedenion_bundle.py annihilator_strata.py rank_polynomials.py rank_charts.py rank_attachments.py integral_homology.py rank_path_topology.py ripple_dynamics.py four_support_rank.py four_support_geometry.py four_support_doubling.py four_support_homology.py skew_schur_charts.py principal_skew_atlas.py schur_acceleration.py nullity_twelve_locus.py nullity_twelve_curves.py kernel_limits.py kernel_limit_contracts.py circle_kernel_attachments.py complex_skew.py complex_skew_contracts.py kernel_determinant.py kernel_determinant_contracts.py projective_kernel_limits.py projective_kernel_contracts.py ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py ../results/local_compute/verify_evidence.py ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py ../scripts/check_render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py ../scripts/check_diagnose_qiskit_mock.py ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py ../scripts/check_render_ripple_visualization.py ../scripts/extract_measured_ripple.py ../scripts/check_extract_measured_ripple.py ../scripts/render_measured_ripple.py ../scripts/check_render_measured_ripple.py ../docs/sources/open_gororoba/check_signed_kite_switching.py",
    "name": "core-039",
-   "seconds": 23.6
+   "seconds": 23.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" designs.py",
    "name": "core-040",
-   "seconds": 25.5
+   "seconds": 25.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" claim_boundaries.py >/dev/null",
    "name": "core-041",
-   "seconds": 2.3
+   "seconds": 2.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" sedenion_bundle.py >/dev/null",
    "name": "core-042",
-   "seconds": 8.7
+   "seconds": 8.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" annihilator_strata.py --max-dimension 256 >/dev/null",
    "name": "core-043",
-   "seconds": 6.8
+   "seconds": 6.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" rank_polynomials.py >/dev/null",
    "name": "core-044",
-   "seconds": 5.4
+   "seconds": 5.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" rank_charts.py >/dev/null",
    "name": "core-045",
-   "seconds": 4.4
+   "seconds": 4.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" rank_attachments.py >/dev/null",
    "name": "core-046",
-   "seconds": 4.0
+   "seconds": 4.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" integral_homology.py >/dev/null",
    "name": "core-047",
-   "seconds": 0.5
+   "seconds": 0.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" rank_path_topology.py >/dev/null",
    "name": "core-048",
-   "seconds": 3.4
+   "seconds": 3.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" rank_path_topology.py --stage 6 >/dev/null",
    "name": "core-049",
-   "seconds": 3.8
+   "seconds": 3.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ripple_dynamics.py --check ../results/ripple/evidence.json",
    "name": "core-050",
-   "seconds": 9.8
+   "seconds": 9.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../scripts/render_ripple_visualization.py --evidence ../results/ripple/evidence.json --out ../results/ripple/cayley-dickson-ripples.html --check",
    "name": "core-051",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONWARNINGS=error MPLCONFIGDIR=\"${MPLCONFIGDIR:-/tmp/rank-sector-mplconfig}\" \"$PYTHON\" ../scripts/render_rank_sector_norms.py --png ../results/ripple/rank-sector-norms.png --check",
    "name": "core-052",
-   "seconds": 6.8
+   "seconds": 6.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error schur_acceleration.py >/dev/null",
    "name": "core-053",
-   "seconds": 115.5
+   "seconds": 115.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error schur_acceleration.py >/dev/null",
    "name": "core-054",
-   "seconds": 94.3
+   "seconds": 94.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error nullity_twelve_locus.py >/dev/null",
    "name": "core-055",
-   "seconds": 55.6
+   "seconds": 55.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error nullity_twelve_locus.py >/dev/null",
    "name": "core-056",
-   "seconds": 69.2
+   "seconds": 69.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error nullity_twelve_curves.py >/dev/null",
    "name": "core-057",
-   "seconds": 42.4
+   "seconds": 42.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error nullity_twelve_curves.py >/dev/null",
    "name": "core-058",
-   "seconds": 32.2
+   "seconds": 32.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error kernel_limit_contracts.py >/dev/null",
    "name": "core-059",
-   "seconds": 65.6
+   "seconds": 65.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error kernel_limit_contracts.py >/dev/null",
    "name": "core-060",
-   "seconds": 60.6
+   "seconds": 60.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error circle_kernel_attachments.py >/dev/null",
    "name": "core-061",
-   "seconds": 12.1
+   "seconds": 12.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error circle_kernel_attachments.py >/dev/null",
    "name": "core-062",
-   "seconds": 18.6
+   "seconds": 18.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
    "name": "core-063",
-   "seconds": 314.2
+   "seconds": 314.2,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
    "name": "core-064",
-   "seconds": 210.2
+   "seconds": 210.2,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" factoring.py",
    "name": "core-065",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" target_flip.py",
    "name": "core-066",
-   "seconds": 2.9
+   "seconds": 2.9,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" target_flip_certificate.py --check",
    "name": "core-067",
-   "seconds": 1.5
+   "seconds": 1.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" affine_residual.py",
    "name": "core-068",
-   "seconds": 5.1
+   "seconds": 5.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" modular_arithmetic.py",
    "name": "core-069",
-   "seconds": 153.1
+   "seconds": 153.1,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" order_finding.py",
    "name": "core-070",
-   "seconds": 23.0
+   "seconds": 23.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" compile_evidence.py --seeds 20261010 --candidate one_clean_cycle >/dev/null",
    "name": "core-071",
-   "seconds": 8.8
+   "seconds": 8.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../scripts/mod15_signed_multiplier_census.py",
    "name": "core-072",
-   "seconds": 8.6
+   "seconds": 8.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null",
    "name": "core-073",
-   "seconds": 1.8
+   "seconds": 1.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" runtime_contracts.py",
    "name": "core-074",
-   "seconds": 679.2
+   "seconds": 679.2,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" parameter_binding_contracts.py",
    "name": "core-075",
-   "seconds": 3.1
+   "seconds": 3.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_circuits_contracts.py",
    "name": "core-076",
-   "seconds": 4.1
+   "seconds": 4.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_statistics_contracts.py",
    "name": "core-077",
-   "seconds": 2.0
+   "seconds": 2.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_schedule_contracts.py",
    "name": "core-078",
-   "seconds": 2.3
+   "seconds": 2.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_preparation_contracts.py",
    "name": "core-079",
-   "seconds": 3.6
+   "seconds": 3.6,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_planning_contracts.py",
    "name": "core-080",
-   "seconds": 697.7
+   "seconds": 697.7,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_collection_contracts.py",
    "name": "core-081",
-   "seconds": 7.0
+   "seconds": 7.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" correction_case_contracts.py",
    "name": "core-082",
-   "seconds": 4.4
+   "seconds": 4.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error correction_reanalysis.py --self-check",
    "name": "core-083",
-   "seconds": 2.5
+   "seconds": 2.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" -W error correction_reanalysis.py --self-check",
    "name": "core-084",
-   "seconds": 6.9
+   "seconds": 6.9,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_circuits_contracts.py",
    "name": "core-085",
-   "seconds": 14.0
+   "seconds": 14.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_statistics_contracts.py",
    "name": "core-086",
-   "seconds": 6.1
+   "seconds": 6.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_schedule_contracts.py",
    "name": "core-087",
-   "seconds": 10.1
+   "seconds": 10.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_preparation_contracts.py",
    "name": "core-088",
-   "seconds": 10.4
+   "seconds": 10.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_planning_contracts.py",
    "name": "core-089",
-   "seconds": 683.7
+   "seconds": 683.7,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_collection_contracts.py",
    "name": "core-090",
-   "seconds": 9.0
+   "seconds": 9.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_case_contracts.py",
    "name": "core-091",
-   "seconds": 11.5
+   "seconds": 11.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" qpe_diagnostics.py",
    "name": "core-092",
-   "seconds": 15.4
+   "seconds": 15.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" experiment_optimizer.py",
    "name": "core-093",
-   "seconds": 0.2
+   "seconds": 0.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" qpu_planning_contracts.py",
    "name": "core-094",
-   "seconds": 279.2
+   "seconds": 279.2,
+   "tier": "full"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" algebra_planning_contracts.py",
    "name": "core-095",
-   "seconds": 70.9
+   "seconds": 70.9,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" pub_shot_allocation_contracts.py",
    "name": "core-096",
-   "seconds": 2.0
+   "seconds": 2.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_allocation_contracts.py",
    "name": "core-097",
-   "seconds": 2.4
+   "seconds": 2.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" pub_shot_runtime_contracts.py",
    "name": "core-098",
-   "seconds": 87.7
+   "seconds": 87.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_runtime_contracts.py",
    "name": "core-099",
-   "seconds": 88.8
+   "seconds": 88.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ripple_contracts.py",
    "name": "core-100",
-   "seconds": 13.2
+   "seconds": 13.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" rank_sector_contracts.py",
    "name": "core-101",
-   "seconds": 50.1
+   "seconds": 50.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" native_preflight_contracts.py",
    "name": "core-102",
-   "seconds": 4.8
+   "seconds": 4.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" placement_feasibility_contracts.py",
    "name": "core-103",
-   "seconds": 2.8
+   "seconds": 2.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" placement_feasibility_contracts.py",
    "name": "core-104",
-   "seconds": 2.8
+   "seconds": 2.8,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" qpu_cases.py --check",
    "name": "core-105",
-   "seconds": 0.7
+   "seconds": 0.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error qpu_case_allocation_contracts.py",
    "name": "core-106",
-   "seconds": 2.1
+   "seconds": 2.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error qpu_case_allocation_contracts.py",
    "name": "core-107",
-   "seconds": 3.3
+   "seconds": 3.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" local_compute.py",
    "name": "core-108",
-   "seconds": 0.7
+   "seconds": 0.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" aer_identity.py",
    "name": "core-109",
-   "seconds": 1.3
+   "seconds": 1.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" aer_resources.py",
    "name": "core-110",
-   "seconds": 0.7
+   "seconds": 0.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" aer_delay_sentinels.py >/dev/null",
    "name": "core-111",
-   "seconds": 1.7
+   "seconds": 1.7,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../results/live/verify_source_closure.py --check",
    "name": "core-112",
-   "seconds": 0.4
+   "seconds": 0.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" variance.py",
    "name": "core-113",
-   "seconds": 8.4
+   "seconds": 8.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" adjudicate.py --check",
    "name": "core-114",
-   "seconds": 2.5
+   "seconds": 2.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" cd_core.py >/dev/null",
    "name": "core-115",
-   "seconds": 0.5
+   "seconds": 0.5,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 8",
    "name": "core-116",
-   "seconds": 1.4
+   "seconds": 1.4,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional",
    "name": "core-117",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return",
    "name": "core-118",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" hybrid_shor.py simulate 15 --shots 256 --seed 7",
    "name": "core-119",
-   "seconds": 2.3
+   "seconds": 2.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-120",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "ruff format --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-121",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
    "name": "sources-122",
-   "seconds": 13.5
+   "seconds": 13.5,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/verify_sources.py",
    "name": "sources-123",
-   "seconds": 0.8
+   "seconds": 0.8,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/verify_sources.py",
    "name": "sources-124",
-   "seconds": 0.8
+   "seconds": 0.8,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
    "name": "sources-125",
-   "seconds": 1.0
+   "seconds": 1.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/check_verify_sources.py",
    "name": "sources-126",
-   "seconds": 1.5
+   "seconds": 1.5,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/local_schur/probe.py --check",
    "name": "sources-127",
-   "seconds": 5.3
+   "seconds": 5.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/local_schur/probe.py --check",
    "name": "sources-128",
-   "seconds": 4.2
+   "seconds": 4.2,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
    "name": "sources-129",
-   "seconds": 0.6
+   "seconds": 0.6,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
    "name": "sources-130",
-   "seconds": 0.8
+   "seconds": 0.8,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_rank/replay.py --check",
    "name": "sources-131",
-   "seconds": 9.8
+   "seconds": 9.8,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_rank/replay.py --check",
    "name": "sources-132",
-   "seconds": 9.7
+   "seconds": 9.7,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_rank",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-133",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_geometry/replay.py --check",
    "name": "sources-134",
-   "seconds": 14.1
+   "seconds": 14.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_geometry/replay.py --check",
    "name": "sources-135",
-   "seconds": 23.1
+   "seconds": 23.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_geometry",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-136",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_doubling/replay.py --check",
    "name": "sources-137",
-   "seconds": 13.0
+   "seconds": 13.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_doubling/replay.py --check",
    "name": "sources-138",
-   "seconds": 9.0
+   "seconds": 9.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_doubling",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-139",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_homology/replay.py --check",
    "name": "sources-140",
-   "seconds": 3.3
+   "seconds": 3.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_homology/replay.py --check",
    "name": "sources-141",
-   "seconds": 14.9
+   "seconds": 14.9,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_homology",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-142",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/dimension32_skew_schur/replay.py --check",
    "name": "sources-143",
-   "seconds": 70.9
+   "seconds": 70.9,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check",
    "name": "sources-144",
-   "seconds": 68.0
+   "seconds": 68.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/dimension32_skew_schur",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-145",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/principal_skew_atlas/replay.py --check",
    "name": "sources-146",
-   "seconds": 184.3
+   "seconds": 184.3,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/principal_skew_atlas/replay.py --check",
    "name": "sources-147",
-   "seconds": 131.0
+   "seconds": 131.0,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/principal_skew_atlas",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-148",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/schur_acceleration/replay.py --check",
    "name": "sources-149",
-   "seconds": 153.0
+   "seconds": 153.0,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/schur_acceleration/replay.py --check",
    "name": "sources-150",
-   "seconds": 109.5
+   "seconds": 109.5,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/schur_acceleration",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-151",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_models/probe.py --check",
    "name": "sources-152",
-   "seconds": 2.3
+   "seconds": 2.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/vacuum_models/probe.py --check",
    "name": "sources-153",
-   "seconds": 17.1
+   "seconds": 17.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_models",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-154",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
    "name": "sources-155",
-   "seconds": 0.7
+   "seconds": 0.7,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
    "name": "sources-156",
-   "seconds": 0.8
+   "seconds": 0.8,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
    "name": "sources-157",
-   "seconds": 0.7
+   "seconds": 0.7,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest check_probe",
    "name": "sources-158",
-   "seconds": 1.1
+   "seconds": 1.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-159",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/nullity_twelve_locus/replay.py --check",
    "name": "sources-160",
-   "seconds": 87.0
+   "seconds": 87.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/nullity_twelve_locus/replay.py --check",
    "name": "sources-161",
-   "seconds": 147.9
+   "seconds": 147.9,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/nullity_twelve_locus",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-162",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/kernel_limits/replay.py --check",
    "name": "sources-163",
-   "seconds": 76.0
+   "seconds": 76.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/kernel_limits/replay.py --check",
    "name": "sources-164",
-   "seconds": 120.2
+   "seconds": 120.2,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_limits",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-165",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-166",
-   "seconds": 142.2
+   "seconds": 142.2,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/complex_skew/replay.py --check",
    "name": "sources-167",
-   "seconds": 265.1
+   "seconds": 265.1,
+   "tier": "full"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/complex_skew",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-168",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/check_compiler_gate.py",
    "name": "sources-169",
-   "seconds": 0.3
+   "seconds": 0.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py",
    "name": "sources-170",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/folding_proofs/replay_rocq.sh",
    "name": "sources-171",
-   "seconds": 1.5
+   "seconds": 1.5,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/formal_certificates/replay_rocq.sh",
    "name": "sources-172",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/formal_certificates",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-173",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "sha256sum -c docs/evidence/formal_certificates/source_hashes.sha256",
    "name": "sources-174",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/local_schur",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-175",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/folding_proofs",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-176",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error kernel_determinant_contracts.py >/dev/null",
    "name": "core-177",
-   "seconds": 35.2
+   "seconds": 35.2,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error kernel_determinant_contracts.py >/dev/null",
    "name": "core-178",
-   "seconds": 22.3
+   "seconds": 22.3,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error projective_kernel_contracts.py >/dev/null",
    "name": "core-179",
-   "seconds": 31.1
+   "seconds": 31.1,
+   "tier": "pr"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error projective_kernel_contracts.py >/dev/null",
    "name": "core-180",
-   "seconds": 33.2
+   "seconds": 33.2,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/kernel_determinant/replay.py --check",
    "name": "sources-181",
-   "seconds": 36.7
+   "seconds": 36.7,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/kernel_determinant/replay.py --check",
    "name": "sources-182",
-   "seconds": 32.3
+   "seconds": 32.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-183",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/projective_kernel_limits/replay.py --check",
    "name": "sources-184",
-   "seconds": 20.0
+   "seconds": 20.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/projective_kernel_limits/replay.py --check",
    "name": "sources-185",
-   "seconds": 40.9
+   "seconds": 40.9,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
    "cmd": "sha256sum -c SHA256SUMS",
    "name": "sources-186",
-   "seconds": 0.0
+   "seconds": 0.0,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/c881_exhaustive/replay_rocq.sh",
    "name": "sources-187",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/c881_exhaustive/check_replay.py",
    "name": "sources-188",
-   "seconds": 0.3
+   "seconds": 0.3,
+   "tier": "pr"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/c881_exhaustive/check_replay.py",
    "name": "sources-189",
-   "seconds": 0.1
+   "seconds": 0.1,
+   "tier": "pr"
   }
  ],
  "excluded": [
