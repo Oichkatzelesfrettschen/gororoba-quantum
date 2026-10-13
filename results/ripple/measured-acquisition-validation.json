@@ -1,0 +1,38 @@
+{
+  "boundary": "The measured artifacts replay retained raw counts and their inference gates. Browser tests establish rendering and control behavior; algebra, calibration replay and hardware causal attribution remain distinct.",
+  "browser_checks": {
+    "browser": "local Chromium headless",
+    "desktop_viewport": [
+      1440,
+      1050
+    ],
+    "joint_views": 728,
+    "kite_edges": 84,
+    "mobile_horizontal_overflow": false,
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "page_errors": [],
+    "rank_choices": 96,
+    "walk_depths": 24
+  },
+  "evidence_kind": "collected_hardware",
+  "extraction_and_html_byte_replay": "passed",
+  "observed_at": "2026-10-13T05:25:14.668898+00:00",
+  "physical_job_ids": [
+    "db6q2p2mb58s738c75gg",
+    "db6q2rklf4us73c5oq90",
+    "db6q9qo4qg6s73c57020",
+    "db6q9rsvf2bc73d1kpug"
+  ],
+  "schema": "measured-acquisition-visual-validation-v1",
+  "source_files": {
+    "gororoba_quantum/visualizations/measured_cayley_dickson_ripples.html": "9c1be160293b86237f9d35630e9ed7d95e9759251d4f5dae330f94cdfddc4e43",
+    "results/ripple/measured-cayley-dickson-ripples.html": "23a6b64eac1786d830331d44fdb74827d5bf91a45056dbc07ff42427164edf19",
+    "results/ripple/measured-rank-sector.json": "2acbb4bfdb7f9393092af58226f6f7f67d031fe419e480a0089517aaa10edcd9",
+    "results/ripple/measured-ripple.json": "527feaf0647ecef85c4fe8ab604d5a037877c61fd63ac2322ff07a331cb464a5",
+    "scripts/extract_measured_ripple.py": "235403386b888e29c3379ee1c382201c1d9f2cf0bbd87eed581d12efc7b6008c",
+    "scripts/render_measured_ripple.py": "fab31ab512d69b35dab5b4691d824ef01cfc02c49ed7041c35606e58b4d05cee"
+  }
+}
