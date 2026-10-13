@@ -1,0 +1,537 @@
+{
+ "executor": {
+  "chunk_timing": [
+   {
+    "parts": [
+     {
+      "idx_item": 0,
+      "size": 1
+     },
+     {
+      "idx_item": 1,
+      "size": 1
+     },
+     {
+      "idx_item": 2,
+      "size": 1
+     },
+     {
+      "idx_item": 3,
+      "size": 1
+     },
+     {
+      "idx_item": 4,
+      "size": 1
+     },
+     {
+      "idx_item": 5,
+      "size": 1
+     },
+     {
+      "idx_item": 6,
+      "size": 1
+     },
+     {
+      "idx_item": 7,
+      "size": 1
+     },
+     {
+      "idx_item": 8,
+      "size": 1
+     },
+     {
+      "idx_item": 9,
+      "size": 1
+     },
+     {
+      "idx_item": 10,
+      "size": 1
+     },
+     {
+      "idx_item": 11,
+      "size": 1
+     },
+     {
+      "idx_item": 12,
+      "size": 1
+     },
+     {
+      "idx_item": 13,
+      "size": 1
+     },
+     {
+      "idx_item": 14,
+      "size": 1
+     },
+     {
+      "idx_item": 15,
+      "size": 1
+     },
+     {
+      "idx_item": 16,
+      "size": 1
+     },
+     {
+      "idx_item": 17,
+      "size": 1
+     },
+     {
+      "idx_item": 18,
+      "size": 1
+     },
+     {
+      "idx_item": 19,
+      "size": 1
+     },
+     {
+      "idx_item": 20,
+      "size": 1
+     },
+     {
+      "idx_item": 21,
+      "size": 1
+     },
+     {
+      "idx_item": 22,
+      "size": 1
+     },
+     {
+      "idx_item": 23,
+      "size": 1
+     },
+     {
+      "idx_item": 24,
+      "size": 1
+     },
+     {
+      "idx_item": 25,
+      "size": 1
+     },
+     {
+      "idx_item": 26,
+      "size": 1
+     },
+     {
+      "idx_item": 27,
+      "size": 1
+     },
+     {
+      "idx_item": 28,
+      "size": 1
+     },
+     {
+      "idx_item": 29,
+      "size": 1
+     },
+     {
+      "idx_item": 30,
+      "size": 1
+     },
+     {
+      "idx_item": 31,
+      "size": 1
+     },
+     {
+      "idx_item": 32,
+      "size": 1
+     },
+     {
+      "idx_item": 33,
+      "size": 1
+     },
+     {
+      "idx_item": 34,
+      "size": 1
+     },
+     {
+      "idx_item": 35,
+      "size": 1
+     },
+     {
+      "idx_item": 36,
+      "size": 1
+     },
+     {
+      "idx_item": 37,
+      "size": 1
+     },
+     {
+      "idx_item": 38,
+      "size": 1
+     },
+     {
+      "idx_item": 39,
+      "size": 1
+     },
+     {
+      "idx_item": 40,
+      "size": 1
+     },
+     {
+      "idx_item": 41,
+      "size": 1
+     },
+     {
+      "idx_item": 42,
+      "size": 1
+     },
+     {
+      "idx_item": 43,
+      "size": 1
+     },
+     {
+      "idx_item": 44,
+      "size": 1
+     },
+     {
+      "idx_item": 45,
+      "size": 1
+     },
+     {
+      "idx_item": 46,
+      "size": 1
+     },
+     {
+      "idx_item": 47,
+      "size": 1
+     },
+     {
+      "idx_item": 48,
+      "size": 1
+     },
+     {
+      "idx_item": 49,
+      "size": 1
+     },
+     {
+      "idx_item": 50,
+      "size": 1
+     },
+     {
+      "idx_item": 51,
+      "size": 1
+     },
+     {
+      "idx_item": 52,
+      "size": 1
+     },
+     {
+      "idx_item": 53,
+      "size": 1
+     },
+     {
+      "idx_item": 54,
+      "size": 1
+     },
+     {
+      "idx_item": 55,
+      "size": 1
+     },
+     {
+      "idx_item": 56,
+      "size": 1
+     },
+     {
+      "idx_item": 57,
+      "size": 1
+     },
+     {
+      "idx_item": 58,
+      "size": 1
+     },
+     {
+      "idx_item": 59,
+      "size": 1
+     },
+     {
+      "idx_item": 60,
+      "size": 1
+     },
+     {
+      "idx_item": 61,
+      "size": 1
+     },
+     {
+      "idx_item": 62,
+      "size": 1
+     },
+     {
+      "idx_item": 63,
+      "size": 1
+     },
+     {
+      "idx_item": 64,
+      "size": 1
+     },
+     {
+      "idx_item": 65,
+      "size": 1
+     },
+     {
+      "idx_item": 66,
+      "size": 1
+     },
+     {
+      "idx_item": 67,
+      "size": 1
+     },
+     {
+      "idx_item": 68,
+      "size": 1
+     },
+     {
+      "idx_item": 69,
+      "size": 1
+     },
+     {
+      "idx_item": 70,
+      "size": 1
+     },
+     {
+      "idx_item": 71,
+      "size": 1
+     },
+     {
+      "idx_item": 72,
+      "size": 1
+     },
+     {
+      "idx_item": 73,
+      "size": 1
+     },
+     {
+      "idx_item": 74,
+      "size": 1
+     },
+     {
+      "idx_item": 75,
+      "size": 1
+     },
+     {
+      "idx_item": 76,
+      "size": 1
+     },
+     {
+      "idx_item": 77,
+      "size": 1
+     },
+     {
+      "idx_item": 78,
+      "size": 1
+     },
+     {
+      "idx_item": 79,
+      "size": 1
+     },
+     {
+      "idx_item": 80,
+      "size": 1
+     },
+     {
+      "idx_item": 81,
+      "size": 1
+     },
+     {
+      "idx_item": 82,
+      "size": 1
+     },
+     {
+      "idx_item": 83,
+      "size": 1
+     },
+     {
+      "idx_item": 84,
+      "size": 1
+     },
+     {
+      "idx_item": 85,
+      "size": 1
+     },
+     {
+      "idx_item": 86,
+      "size": 1
+     },
+     {
+      "idx_item": 87,
+      "size": 1
+     },
+     {
+      "idx_item": 88,
+      "size": 1
+     },
+     {
+      "idx_item": 89,
+      "size": 1
+     },
+     {
+      "idx_item": 90,
+      "size": 1
+     },
+     {
+      "idx_item": 91,
+      "size": 1
+     },
+     {
+      "idx_item": 92,
+      "size": 1
+     },
+     {
+      "idx_item": 93,
+      "size": 1
+     },
+     {
+      "idx_item": 94,
+      "size": 1
+     },
+     {
+      "idx_item": 95,
+      "size": 1
+     },
+     {
+      "idx_item": 96,
+      "size": 1
+     },
+     {
+      "idx_item": 97,
+      "size": 1
+     },
+     {
+      "idx_item": 98,
+      "size": 1
+     },
+     {
+      "idx_item": 99,
+      "size": 1
+     },
+     {
+      "idx_item": 100,
+      "size": 1
+     },
+     {
+      "idx_item": 101,
+      "size": 1
+     },
+     {
+      "idx_item": 102,
+      "size": 1
+     },
+     {
+      "idx_item": 103,
+      "size": 1
+     },
+     {
+      "idx_item": 104,
+      "size": 1
+     },
+     {
+      "idx_item": 105,
+      "size": 1
+     },
+     {
+      "idx_item": 106,
+      "size": 1
+     },
+     {
+      "idx_item": 107,
+      "size": 1
+     },
+     {
+      "idx_item": 108,
+      "size": 1
+     },
+     {
+      "idx_item": 109,
+      "size": 1
+     },
+     {
+      "idx_item": 110,
+      "size": 1
+     },
+     {
+      "idx_item": 111,
+      "size": 1
+     },
+     {
+      "idx_item": 112,
+      "size": 1
+     },
+     {
+      "idx_item": 113,
+      "size": 1
+     },
+     {
+      "idx_item": 114,
+      "size": 1
+     },
+     {
+      "idx_item": 115,
+      "size": 1
+     },
+     {
+      "idx_item": 116,
+      "size": 1
+     },
+     {
+      "idx_item": 117,
+      "size": 1
+     },
+     {
+      "idx_item": 118,
+      "size": 1
+     },
+     {
+      "idx_item": 119,
+      "size": 1
+     }
+    ],
+    "start": "2026-10-13T03:12:39.222146+00:00",
+    "stop": "2026-10-13T03:13:12.812858+00:00"
+   }
+  ]
+ },
+ "options": {
+  "default_shots": 1024,
+  "dynamical_decoupling": {
+   "enable": false,
+   "extra_slack_distribution": "middle",
+   "scheduling_method": "alap",
+   "sequence_type": "XX",
+   "skip_reset_qubits": false
+  },
+  "environment": {
+   "image": null,
+   "job_tags": [
+    "gororoba-quantum",
+    "gororoba-run-bb981910d07b0cbfde2e",
+    "gororoba-batch-59e4d795246d897dab818494"
+   ],
+   "log_level": "WARNING",
+   "max_execution_time": null,
+   "private": false
+  },
+  "execution": {
+   "init_qubits": true,
+   "meas_type": "classified",
+   "rep_delay": 0.00025,
+   "scheduler_timing": true,
+   "stretch_values": false
+  },
+  "experimental": {},
+  "max_execution_time": 40,
+  "simulator": {
+   "angle_decimals": 5,
+   "layer_noise_model": null,
+   "seed_simulator": null,
+   "warn_absent": true
+  },
+  "twirling": {
+   "enable_gates": false,
+   "enable_measure": false,
+   "group": "pauli",
+   "num_randomizations": "auto",
+   "shots_per_randomization": "auto",
+   "strategy": "active-accum"
+  }
+ },
+ "shots": 1024
+}
