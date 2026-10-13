@@ -481,10 +481,10 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/mod15_signed_multiplier_census.py \
   Reed-Muller solver in `verify.check_pathion_separator_sign_bridge` rejects
   every degree-at-most-two polynomial on the 15 labels before recovering the
   cubic witness.
-- `C881_GF2CubicMinDegree.v` proves all nonempty linear failures, six individual
-  quadratic failures, and the cubic witness. Its exhaustive quadratic claim is
-  a comment; open_gororoba's Rust search and the independent local solver close
-  that finite lower bound. The verifier hash-pins the cited Rocq source before
+- The [latest C881 proof](../docs/notes/c881_exhaustive_proof.md) rejects all
+  2048 degree-at-most-two coefficient choices, proves their completeness, and
+  checks the cubic witness. The independent local solver reconstructs that
+  finite lower bound. The verifier hash-pins the freshly audited source before
   admitting its copied labels and classes. The result excludes an exact
   Clifford-only diagonal phase oracle in the fixed binary encoding. It supplies
   neither an arbitrary classifier lower bound nor a circuit-depth lower bound.
