@@ -7,15 +7,18 @@ for whole-chip execution under the repository's strict submission gating:
    along a connected line graph of physical qubits during active core driving.
    Spectators are protected by explicit barriers and matched delay intervals,
    preventing compiler cancellation of the H...H Ramsey sequence. A matched control
-   circuit runs with the driving core held idle for the identical duration, providing
+   circuit runs with the driving core held idle for the identical scheduled duration,
+   accounting for physical single-qubit gate durations (x_duration_dt), providing
    a differential contrast delta_C = C_control - C_active that isolates hardware
    crosstalk from intrinsic T1/T2 relaxation.
 
 2. ``concurrent_shor_mod15``: Reuses the repository's verified semiclassical order-finding
-   circuit from order_finding.py for N=15, a=2 with 2 phase bits. Placing replicas
-   using live backend calibration metrics filters degraded ("bum") qubits and embeds
-   the order-finding engines across disjoint hardware patches with identical compiled
-   gate sequences.
+   circuit from order_finding.py for N=15, a=2 with 4 phase bits. With 4 phase bits, the
+   ideal factorable probability is 0.5000, which strictly exceeds the uniform random baseline
+   of 0.3750, ensuring statistical admission verifies genuine phase kickback over uniform
+   noise. Placing replicas using live backend calibration metrics filters degraded ("bum")
+   qubits and embeds the order-finding engines across disjoint hardware patches with identical
+   compiled gate sequences.
 """
 
 from __future__ import annotations
@@ -27,16 +30,18 @@ from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
 import variance
 from experiments import Group, Member, tvd
-from factoring import distribution_success
+from factoring import distribution_success, ideal_phase_distribution
 from order_finding import factor_order_finding
 
 DEFAULT_DELAY_DT = 4000
 DEFAULT_SPECTATORS = 5
+DEFAULT_X_DURATION_DT = 8
 
 
 def build_spectator_wavefront_circuits(
     spectator_count: int = DEFAULT_SPECTATORS,
     delay_dt: int = DEFAULT_DELAY_DT,
+    x_duration_dt: int = DEFAULT_X_DURATION_DT,
 ) -> tuple[QuantumCircuit, QuantumCircuit, QuantumCircuit]:
     """Construct active core, matched idle control, and readout null circuits.
 
@@ -46,12 +51,17 @@ def build_spectator_wavefront_circuits(
     combinatorial search.
 
     The active circuit drives core qubit 0 while spectators 1..N-1 idle in |+>.
-    The matched control circuit holds core qubit 0 idle for the identical duration.
+    The core driving window explicitly subtracts 2 * x_duration_dt from the core delay,
+    ensuring the active core's scheduled track duration exactly equals the spectators'
+    delay_dt and the control's delay_dt duration down to the dt cycle.
+    The matched control circuit holds core qubit 0 idle for the identical delay_dt duration.
     The null circuit measures the ground state readout baseline.
-    All three circuits are purely static and share identical timing envelopes.
+    All three circuits are purely static and share identical scheduled timing envelopes.
     """
     if spectator_count < 1:
         raise ValueError(f"spectator_count must be at least 1, got {spectator_count}")
+    if delay_dt < 2 * x_duration_dt:
+        raise ValueError(f"delay_dt ({delay_dt}) must exceed 2 * x_duration_dt ({2 * x_duration_dt})")
 
     total_qubits = 1 + spectator_count
     total_clbits = total_qubits
@@ -74,9 +84,12 @@ def build_spectator_wavefront_circuits(
         qc_active.h(s)
     qc_active.barrier()
 
-    # Ramsey exposure: core driving while spectators idle in superposition
-    half_dt = delay_dt // 2
-    rem_dt = delay_dt - half_dt
+    # Ramsey exposure: core driving while spectators idle in superposition.
+    # Subtract 2 * x_duration_dt from core delays so the scheduled duration
+    # of the core track exactly matches the spectator delay_dt duration.
+    core_net_delay = delay_dt - 2 * x_duration_dt
+    half_dt = core_net_delay // 2
+    rem_dt = core_net_delay - half_dt
     qc_active.delay(half_dt, 0, unit="dt")
     qc_active.x(0)
     qc_active.delay(rem_dt, 0, unit="dt")
@@ -150,9 +163,10 @@ def _ground_ideal_distribution(total_clbits: int) -> np.ndarray:
 def spectator_wavefront_ramsey_group(
     spectator_count: int = DEFAULT_SPECTATORS,
     delay_dt: int = DEFAULT_DELAY_DT,
+    x_duration_dt: int = DEFAULT_X_DURATION_DT,
 ) -> Group:
     """Group evaluating spectator Ramsey contrast under active drive vs idle control."""
-    qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt)
+    qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt, x_duration_dt)
     total_clbits = qc_active.num_clbits
 
     ideal_active = _ground_ideal_distribution(total_clbits)
@@ -224,24 +238,32 @@ def spectator_wavefront_ramsey_group(
     )
 
 
-def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
+def concurrent_shor_mod15_group(replica_floor: float = 0.75, phase_bits: int = 4) -> Group:
     """Group evaluating concurrent semiclassical order finding for N=15, a=2.
 
-    Reuses verified order-finding logic with 2 phase bits. Odd-phase outcomes (01, 11)
-    recover non-trivial factors 3 and 5 of 15. The replica floor filters degraded
-    qubits while placing disjoint instances across the physical device.
+    Reuses verified order-finding logic with 4 phase bits. With 4 phase bits, the ideal
+    factorable probability is 0.5000, which strictly exceeds the uniform random baseline
+    of 0.3750, providing verifiable separation against random noise. Odd-phase outcomes
+    recover non-trivial factors 3 and 5 of 15. The replica floor filters degraded qubits.
     """
-    modulus, base, phase_bits = 15, 2, 2
+    modulus, base = 15, 2
     qc_primary = factor_order_finding(modulus, base, phase_bits)
     qc_null = factor_order_finding(modulus, base, phase_bits, identity=True)
 
-    ideal_primary = np.full(4, 0.25, dtype=float)
-    ideal_null = np.zeros(4, dtype=float)
+    outcomes = 1 << phase_bits
+    r = 4  # multiplicative order of 2 mod 15
+    ideal_primary = np.asarray(ideal_phase_distribution(r, phase_bits))
+    ideal_null = np.zeros(outcomes, dtype=float)
     ideal_null[0] = 1.0
 
-    factorable_weights = np.array([0.0, 1.0, 0.0, 1.0], dtype=float)
+    factorable_weights = np.array(
+        [
+            distribution_success(np.eye(outcomes)[y], phase_bits, modulus, base)["factorable_probability"]
+            for y in range(outcomes)
+        ]
+    )
 
-    uniform_baseline = distribution_success([0.25] * 4, phase_bits, modulus, base)
+    uniform_baseline = distribution_success([1.0 / outcomes] * outcomes, phase_bits, modulus, base)
     uniform_factorable_rate = uniform_baseline["factorable_probability"]
     uniform_order_rate = uniform_baseline["order_recovery_probability"]
 
@@ -271,7 +293,7 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
             "order_recovery_margin_over_null": float(p_order - p_null_order),
             "uniform_null_factorable_probability": uniform_factorable_rate,
             "uniform_null_order_recovery_probability": uniform_order_rate,
-            "identity_null_p00": float(null[0]),
+            "identity_null_p0": float(null[0]),
             "tvd_to_ideal": tvd(primary, ideal_primary),
         }
 
@@ -284,8 +306,8 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
         admitted = bool(
             "lo" in primary_interval
             and "hi" in null_interval
+            and primary_interval["lo"] > uniform_factorable_rate
             and null_interval["hi"] < primary_interval["lo"]
-            and primary_interval["lo"] >= 0.20
         )
         return {
             "primary": primary_interval,
@@ -306,7 +328,7 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
                 "order_recovery_probability",
                 "identity_null_factorable_probability",
                 "identity_null_order_recovery_probability",
-                "identity_null_p00",
+                "identity_null_p0",
             }
         ),
     )

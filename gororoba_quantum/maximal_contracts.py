@@ -3,7 +3,9 @@
 from __future__ import annotations
 
 import numpy as np
+from qiskit import transpile
 from qiskit_aer import AerSimulator
+from qiskit_ibm_runtime.fake_provider import FakeKingston
 
 import packing
 from live_run import _ops
@@ -56,6 +58,26 @@ def _verify_spectator_wavefront_circuits() -> None:
         expected_edges = {(i, i + 1) for i in range(total_qubits - 1)}
         _require(edges == expected_edges, f"{name} edges must form connected line graph")
 
+    # Verify scheduled duration matching between active and control arms
+    backend = FakeKingston()
+    x_dur_s = backend.target["x"][(0,)].duration
+    x_dur_dt = int(round(x_dur_s / backend.target.dt))
+    qc_act, qc_ctrl, _ = build_spectator_wavefront_circuits(
+        spectator_count=2,
+        delay_dt=4000,
+        x_duration_dt=x_dur_dt,
+    )
+    import warnings
+
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        t_act = transpile(qc_act, backend, scheduling_method="asap")
+        t_ctrl = transpile(qc_ctrl, backend, scheduling_method="asap")
+        _require(
+            t_act.duration == t_ctrl.duration,
+            f"active duration ({t_act.duration}) must match control duration ({t_ctrl.duration})",
+        )
+
 
 def _verify_spectator_wavefront_summary_and_simulation() -> None:
     group = spectator_wavefront_ramsey_group(spectator_count=4, delay_dt=1000)
@@ -105,7 +127,9 @@ def _verify_spectator_wavefront_summary_and_simulation() -> None:
 
 
 def _verify_concurrent_shor_group() -> None:
-    group = concurrent_shor_mod15_group(replica_floor=0.75)
+    phase_bits = 4
+    outcomes = 1 << phase_bits
+    group = concurrent_shor_mod15_group(replica_floor=0.75, phase_bits=phase_bits)
     _require(group.name == "concurrent_shor_mod15", "group name mismatch")
     _require(len(group.members) == 2, "group must have 2 members")
     _require(group.replica_floor == 0.75, "replica floor mismatch")
@@ -125,14 +149,19 @@ def _verify_concurrent_shor_group() -> None:
 
     # In ideal distributions:
     # Primary has factorable probability = 0.50
-    # Null has factorable probability = 0.0, null_p00 = 1.0
+    # Null has factorable probability = 0.0, null_p0 = 1.0
+    # Uniform null has factorable probability = 0.375
     _require(_math_close(summary["factorable_probability"], 0.50), "ideal factorable probability must be 0.50")
     _require(
         _math_close(summary["identity_null_factorable_probability"], 0.0),
         "ideal null factorable probability must be 0.0",
     )
     _require(_math_close(summary["factorable_margin_over_null"], 0.50), "ideal margin over null must be 0.50")
-    _require(_math_close(summary["identity_null_p00"], 1.0), "ideal identity_null_p00 must be 1.0")
+    _require(
+        _math_close(summary["uniform_null_factorable_probability"], 0.375),
+        "uniform null factorable probability must be 0.375 for 4 phase bits",
+    )
+    _require(_math_close(summary["identity_null_p0"], 1.0), "ideal identity_null_p0 must be 1.0")
     _require(_math_close(summary["tvd_to_ideal"], 0.0), "ideal tvd must be 0.0")
 
     # Aer simulation
@@ -142,7 +171,7 @@ def _verify_concurrent_shor_group() -> None:
         res = sim.run(member.circuit, shots=10000, seed_simulator=20261011).result()
         counts = res.get_counts()
         total = sum(counts.values())
-        dist = np.zeros(4, dtype=float)
+        dist = np.zeros(outcomes, dtype=float)
         for bitstring, count in counts.items():
             dist[int(bitstring, 2)] = count / total
         sim_dists[member.name] = dist
@@ -156,15 +185,28 @@ def _verify_concurrent_shor_group() -> None:
         sim_summary["identity_null_factorable_probability"] == 0.0,
         "simulated identity null factorable probability must be 0.0",
     )
-    _require(sim_summary["identity_null_p00"] == 1.0, "simulated identity null p00 must be 1.0")
+    _require(sim_summary["identity_null_p0"] == 1.0, "simulated identity null p0 must be 1.0")
 
-    # Admission check
+    # Admission check on valid simulation
     admission = group.admission
     _require(admission is not None, "admission check must be defined")
     if admission is None:
         raise RuntimeError("unreachable")
     admit_result = admission([sim_summary], 10000)
     _require(admit_result["admitted"] is True, "noiseless simulation must pass admission")
+
+    # Admission check on uniform random noise: MUST FAIL admission!
+    uniform_summary = group.summarize(
+        {
+            "shor_mod15_a2": np.full(outcomes, 1.0 / outcomes),
+            "shor_mod15_a2_null": np.zeros(outcomes),
+        }
+    )
+    noise_admit = admission([uniform_summary], 10000)
+    _require(
+        noise_admit["admitted"] is False,
+        "uniform random noise must fail statistical admission",
+    )
 
 
 def _verify_maximal_groups() -> None:
