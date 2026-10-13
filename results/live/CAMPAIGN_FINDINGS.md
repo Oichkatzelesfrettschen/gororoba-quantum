@@ -32,8 +32,8 @@ job `db5qmqclf4us73c4e1ug`, ibm_kingston, six dynamic PUBs at 4096 shots.
   preregistered Newcombe equivalence test within the 0.03 margin. The
   distribution-free Hoeffding view leaves folded-QPE equivalence unresolved
   at [-0.0306, +0.0234]. Scheduler tables show identical per-qubit
-  instruction sequences on those reference qubits. Observed pairwise
-  correctness correlations have magnitude below 0.045; that descriptive
+  instruction sequences on those reference qubits. Across the fifteen
+  recorded replica pairs, correctness correlations have magnitude below 0.045; that descriptive
   result does not establish independent failures or absent crosstalk.
 - Correctness estimates per 512-shot block remain within the reported
   sampling variation; that inspection detects no drift at its resolution.
