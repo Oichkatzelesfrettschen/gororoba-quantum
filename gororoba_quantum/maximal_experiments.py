@@ -75,11 +75,12 @@ def build_spectator_wavefront_circuits(
     delay_dt and the control's delay_dt duration down to the dt cycle.
     The matched control circuit holds core qubit 0 idle for the identical delay_dt duration.
     The null circuit measures the ground state readout baseline.
-    All three circuits are purely static and share identical scheduled timing envelopes.
+    The active and control Ramsey arms are purely static and share identical scheduled
+    timing envelopes.
     """
     if spectator_count < 1:
         raise ValueError(f"spectator_count must be at least 1, got {spectator_count}")
-    if delay_dt < 2 * x_duration_dt:
+    if delay_dt <= 2 * x_duration_dt:
         raise ValueError(f"delay_dt ({delay_dt}) must exceed 2 * x_duration_dt ({2 * x_duration_dt})")
 
     total_qubits = 1 + spectator_count

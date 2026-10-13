@@ -36,6 +36,11 @@ def _math_close(a: float, b: float, tol: float = 1e-6) -> bool:
 def _verify_spectator_wavefront_circuits() -> None:
     spectator_count = 5
     delay_dt = 2500
+    try:
+        build_spectator_wavefront_circuits(spectator_count, 2 * 8, 8)
+        raise RuntimeError("delay_dt equal to two X durations must be rejected")
+    except ValueError:
+        pass
     qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt)
 
     total_qubits = 1 + spectator_count
