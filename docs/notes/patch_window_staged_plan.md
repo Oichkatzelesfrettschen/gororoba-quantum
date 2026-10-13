@@ -63,7 +63,7 @@ explicit owner approval; an informative unresolved result ends the campaign.
 
 ## Checklist
 
-- [ ] Source imports and notes in docs/ (registry, INDEX, README)
+- [x] Source imports and notes in docs/ (registry, INDEX, README)
 - [ ] 46-circuit groups with per-PUB shots and exact-law checks
 - [ ] Executed-exposure timing qualification on a dry run
 - [ ] Contracts and analyzer repairs with planted-mechanism coverage
