@@ -10,12 +10,14 @@ from __future__ import annotations
 import copy
 import json
 import math
+from concurrent.futures import ThreadPoolExecutor
 from dataclasses import asdict
 from typing import Any
 
 import numpy as np
 
 import local_compute
+import parallel
 from diagnostic_experiments import family_contracts, folded_group, n21_group
 from experiment_optimizer import (
     BudgetContract,
@@ -324,6 +326,25 @@ def prepare(
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized static algebra family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
+    for choices, _configuration in candidates:
+        for choice in choices:
+            if id(choice.snap) not in simulators:
+                simulators[id(choice.snap)] = runtime.noise_simulator(
+                    choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
+                )
+
+    # Aer releases the GIL while it simulates, so independent choices run on
+    # threads. Each task owns a simulator built from the snapshot's cached noise
+    # model; its batch evidence joins the snapshot simulator in serial order.
+    def simulate_choice(choice: Any) -> tuple[Any, dict[str, Any]]:
+        simulator = runtime.noise_simulator(
+            choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
+        )
+        return simulator, runtime.simulate(choice, simulator, args.model_shots)
+
+    ordered = [choice for choices, _configuration in candidates for choice in choices]
+    with ThreadPoolExecutor(max_workers=parallel.workers()) as pool:
+        simulated = iter(list(pool.map(simulate_choice, ordered)))
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
         for choice in choices:
@@ -334,12 +355,8 @@ def prepare(
                         raise runtime.LiveRunError(
                             f"{entry.name}: compiled labeled ideal differs from its exact oracle"
                         )
-            key = id(choice.snap)
-            if key not in simulators:
-                simulators[key] = runtime.noise_simulator(
-                    choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
-                )
-            noisy = runtime.simulate(choice, simulators[key], args.model_shots)
+            task_simulator, noisy = next(simulated)
+            simulators[id(choice.snap)]._gororoba_simulation_batches.extend(local_compute.batches(task_simulator))
             predictions.update(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )

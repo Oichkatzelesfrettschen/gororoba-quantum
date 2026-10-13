@@ -86,6 +86,31 @@ def _json_value(value: Any) -> Any:
     return value
 
 
+# NoiseModel serialization dominates planning time; a model is built once per
+# backend snapshot and never mutated afterward, so its digest is computed once.
+_NOISE_DIGESTS: dict[int, tuple[Any, str]] = {}
+
+
+def noise_digest(model: Any) -> str:
+    """UUID-free digest of a noise model's sorted serialized channels."""
+    cached = _NOISE_DIGESTS.get(id(model))
+    if cached is not None and cached[0] is model:
+        return cached[1]
+    noise = _json_value(model.to_dict())
+    # QuantumError IDs are generated UUIDs; channel instructions/probabilities
+    # carry the semantics and remain in the digest.
+    for error in noise.get("errors", []):
+        error.pop("id", None)
+    noise["errors"] = sorted(
+        noise.get("errors", []), key=lambda error: json.dumps(error, sort_keys=True, separators=(",", ":"))
+    )
+    digest = hashlib.sha256(
+        json.dumps(noise, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
+    ).hexdigest()
+    _NOISE_DIGESTS[id(model)] = (model, digest)
+    return digest
+
+
 def configure(simulator: Any, policy: dict[str, Any]) -> None:
     validate(policy)
     simulator.set_options(
@@ -99,17 +124,7 @@ def configure(simulator: Any, policy: dict[str, Any]) -> None:
         shot_branching_enable=policy["shot_branching"],
         shot_branching_sampling_enable=policy["shot_branching_sampling"],
     )
-    noise = _json_value(simulator.options.noise_model.to_dict())
-    # QuantumError IDs are generated UUIDs; channel instructions/probabilities
-    # carry the semantics and remain in the digest.
-    for error in noise.get("errors", []):
-        error.pop("id", None)
-    noise["errors"] = sorted(
-        noise.get("errors", []), key=lambda error: json.dumps(error, sort_keys=True, separators=(",", ":"))
-    )
-    simulator._gororoba_noise_digest = hashlib.sha256(
-        json.dumps(noise, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
-    ).hexdigest()
+    simulator._gororoba_noise_digest = noise_digest(simulator.options.noise_model)
     simulator._gororoba_compute_policy = dict(policy)
     simulator._gororoba_simulation_batches = []
 

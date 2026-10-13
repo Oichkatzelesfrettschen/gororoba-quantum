@@ -296,6 +296,20 @@ def identity() -> dict[str, Any]:
     """Observe actual imported Aer and reject drift from the first observation."""
     global _INITIAL
     with _LOCK:
+        # A full capture hashes the native extension and reads the process
+        # map; once the first capture exists, unchanged stat stamps (device,
+        # inode, size, mtime, ctime) on the extension and manifest establish
+        # the same bytes, and any stamp change reruns the full capture.
+        if _INITIAL is not None:
+            try:
+                unchanged = (
+                    _stamp(_INITIAL.extension_path.stat()) == _INITIAL.extension_stamp
+                    and _optional_stamp(_INITIAL.manifest_path) == _INITIAL.manifest_stamp
+                )
+            except OSError:
+                unchanged = False
+            if unchanged:
+                return copy.deepcopy(_INITIAL.record)
         try:
             observation = _capture_current()
         except (OSError, ImportError, importlib.metadata.PackageNotFoundError) as error:
