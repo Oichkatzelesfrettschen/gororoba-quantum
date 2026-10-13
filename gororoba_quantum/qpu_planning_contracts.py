@@ -548,6 +548,30 @@ def _verify_unrouted_family_diagnostics(service: _ProbeService) -> None:
     _require(supplied_traces == [trace_fixture], "diagnostic sanitization mutated the caller's selection trace")
 
 
+def _verify_control_timing() -> None:
+    """A Target missing the control's measure or reset timing, or dt, raises ValueError."""
+    from types import SimpleNamespace
+
+    class Target:
+        def __init__(self, dt: float | None, measure: float | None, reset: float | None) -> None:
+            self.dt = dt
+            self.table = {name: value for name, value in (("measure", measure), ("reset", reset)) if value is not None}
+            self.operation_names = set(self.table)
+
+        def __getitem__(self, name: str) -> dict[tuple[int], Any]:
+            return {(3,): SimpleNamespace(duration=self.table[name])}
+
+    measure, reset = qpu_planning.control_timing_dt(Target(2e-9, 1.6e-6, 0.8e-6), 3)
+    if not (math.isclose(measure, 800.0) and math.isclose(reset, 400.0)):
+        raise RuntimeError("control timing differs from duration / dt")
+    for broken in (Target(None, 1.6e-6, 0.8e-6), Target(2e-9, None, 0.8e-6), Target(2e-9, 1.6e-6, 0.0)):
+        try:
+            qpu_planning.control_timing_dt(broken, 3)
+        except ValueError:
+            continue
+        raise RuntimeError("incomplete control timing was admitted")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -570,6 +594,7 @@ def _verify() -> None:
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)
         _verify_unrouted_family_diagnostics(service)
+    _verify_control_timing()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
         "approval, infeasible archives, and unrouted rejection diagnostics checked"

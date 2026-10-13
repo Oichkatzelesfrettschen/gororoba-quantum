@@ -160,6 +160,18 @@ def window_durations(runtime: Any, snapshot: Any) -> tuple[int, int, float]:
     return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
 
 
+def control_timing_dt(target: Any, control: int) -> tuple[float, float]:
+    """Measure and reset durations of one physical qubit in units of the Target's dt."""
+    durations = []
+    for operation in ("measure", "reset"):
+        properties = target[operation].get((control,)) if operation in target.operation_names else None
+        duration = getattr(properties, "duration", None)
+        if not target.dt or not duration or duration <= 0:
+            raise ValueError(f"no Target {operation} duration or dt for control {control}")
+        durations.append(float(duration) / float(target.dt))
+    return durations[0], durations[1]
+
+
 def patch_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
@@ -194,14 +206,10 @@ def patch_candidates(
             # control's own measure and reset durations.
             target = snapshot.backend.target
             granularity = max(1, int(target.granularity))
-            control_durations = []
-            for operation in ("measure", "reset"):
-                properties = target[operation].get((layout[0],)) if operation in target.operation_names else None
-                duration = getattr(properties, "duration", None)
-                if not target.dt or not duration or duration <= 0:
-                    raise runtime.LiveRunError(f"no Target {operation} duration or dt for control {layout[0]}")
-                control_durations.append(float(duration) / float(target.dt))
-            control_measure, control_reset = control_durations
+            try:
+                control_measure, control_reset = control_timing_dt(target, layout[0])
+            except ValueError as error:
+                raise runtime.LiveRunError(str(error)) from error
             measure_dt = granularity * math.ceil(control_measure / granularity)
             half_dt = granularity * math.ceil(0.6 * (control_measure + control_reset) / granularity)
             dt = float(target.dt)
