@@ -12,7 +12,6 @@ from typing import Any
 from qiskit import QuantumCircuit
 
 MEBIBYTE = 1024 * 1024
-MAX_GPU_ACTIVE_QUBITS = 8
 MINIMUM_GPU_FREE_BYTES = 384 * MEBIBYTE
 
 
@@ -102,8 +101,6 @@ def admit_gpu(circuits: list[QuantumCircuit], memory_mb: int, snapshot: dict[str
     if not circuits:
         raise ValueError("GPU admission needs a nonempty circuit batch")
     widths = [active_support(circuit) for circuit in circuits]
-    if max(widths) > MAX_GPU_ACTIVE_QUBITS:
-        raise ValueError("GPU circuit support exceeds the qualified eight-qubit boundary")
     state_bytes = [16 * 4**width for width in widths]
     admission_budget = min(memory_mb * MEBIBYTE, snapshot["free_bytes"] // 2)
     # Two simultaneous shot states supply only a lower bound; native workspace
@@ -141,11 +138,11 @@ def _verify() -> None:
         "compute_capability_major": 8,
         "compute_capability_minor": 9,
     }
+    assert admit_gpu([wide], 512, snapshot)["active_qubits"] == [9]
     admitted = admit_gpu([narrow], 512, snapshot)
     assert admitted["density_state_bytes"] == [256]
     assert admitted["admission_budget_bytes"] == 384 * MEBIBYTE
     for circuits, memory_mb, reading in (
-        ([wide], 512, snapshot),
         ([], 512, snapshot),
         ([narrow], 0, snapshot),
         ([narrow], True, snapshot),

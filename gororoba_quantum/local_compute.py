@@ -19,13 +19,18 @@ from qiskit import qpy
 from qiskit_aer import AerSimulator
 
 import aer_identity
+import aer_resources
 import parallel
+
+# Density matrices below this active width stay on CPU threads, where shot
+# parallelism outruns per-shot GPU kernel launches (LOCAL_COMPUTE.md).
+GPU_MIN_ACTIVE_QUBITS = 11
 
 
 def requested_settings(args: Any = None) -> dict[str, Any]:
     """Describe CLI policy even when native provenance cannot be established."""
     return {
-        "mode": getattr(args, "local_compute", "cpu"),
+        "mode": getattr(args, "local_compute", "auto"),
         "threads": getattr(args, "simulation_threads", parallel.default_threads()),
         "memory_mb": getattr(args, "simulation_memory_mb", 512),
         "shot_branching": False,
@@ -45,8 +50,8 @@ def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> 
     defaults = settings()
     if set(policy) != set(defaults):
         raise ValueError("local compute policy fields differ from the supported contract")
-    if policy["mode"] not in ("cpu", "gpu", "hybrid"):
-        raise ValueError("local compute mode must be cpu, gpu, or hybrid")
+    if policy["mode"] not in ("cpu", "gpu", "auto"):
+        raise ValueError("local compute mode must be cpu, gpu, or auto")
     for key in ("threads", "memory_mb"):
         if type(policy[key]) is not int or policy[key] <= 0:
             raise ValueError(f"local compute {key} must be a positive integer")
@@ -61,10 +66,8 @@ def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> 
     if policy["aer_native"] != defaults["aer_native"]:
         raise ValueError("local compute policy identifies a different native Aer build")
     available = tuple(AerSimulator().available_devices()) if devices is None else devices
-    if policy["mode"] != "cpu":
-        if "GPU" not in available:
-            raise ValueError(f"local compute {policy['mode']} requires Aer GPU; available devices: {available}")
-        raise ValueError("GPU/hybrid requires a pinned Aer GPU build with retained workload and memory qualification")
+    if policy["mode"] == "gpu" and "GPU" not in available:
+        raise ValueError(f"local compute gpu requires Aer GPU; available devices: {available}")
     if "CPU" not in available:
         raise ValueError("the qualified CPU simulation device is unavailable")
 
@@ -115,11 +118,36 @@ def batches(simulator: Any) -> list[dict[str, Any]]:
     return list(getattr(simulator, "_gororoba_simulation_batches", []))
 
 
+def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
+    """Choose the Aer device for one batch from its widest active register.
+
+    auto sends batches of GPU_MIN_ACTIVE_QUBITS or more active qubits to the
+    GPU when Aer reports one and aer_resources admits the batch against a
+    fresh CUDA memory reading; a rejected admission keeps the batch on CPU
+    and records the reason. gpu requires admission; cpu never routes.
+    """
+    if policy["mode"] == "cpu":
+        return "CPU", None
+    width = max(aer_resources.active_support(circuit) for circuit in circuits)
+    if policy["mode"] == "auto" and (width < GPU_MIN_ACTIVE_QUBITS or "GPU" not in AerSimulator().available_devices()):
+        return "CPU", None
+    try:
+        admission = aer_resources.admit_gpu(circuits, policy["memory_mb"], aer_resources.gpu_snapshot())
+    except ValueError as error:
+        if policy["mode"] == "gpu":
+            raise
+        return "CPU", {"rejected": str(error), "active_qubits": width}
+    return "GPU", admission
+
+
 def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     """Preserve declared order and retain actual Aer device/kernel evidence."""
     policy = getattr(simulator, "_gororoba_compute_policy", None)
+    device, admission = "CPU", None
     if policy is not None:
         validate(policy)
+        device, admission = route(policy, circuits)
+        simulator.set_options(device=device)
     start = time.perf_counter()
     result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
     elapsed = time.perf_counter() - start
@@ -131,13 +159,15 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
             if not experiment.success:
                 raise RuntimeError(f"local Aer experiment failed: {experiment.status}")
             metadata = experiment.metadata
-            if metadata.get("device") != "CPU" or metadata.get("method") != policy["method"]:
+            if metadata.get("device") != device or metadata.get("method") != policy["method"]:
                 raise RuntimeError("Aer result device/method differs from the admitted local compute policy")
         buffer = io.BytesIO()
         qpy.dump(circuits, buffer)
         simulator._gororoba_simulation_batches.append(
             {
                 "policy": dict(policy),
+                "device": device,
+                "gpu_admission": admission,
                 "ordered_circuit_names": [circuit.name for circuit in circuits],
                 "ordered_qpy_sha256": hashlib.sha256(buffer.getvalue()).hexdigest(),
                 "noise_serialized_channels_sha256": simulator._gororoba_noise_digest,
@@ -166,7 +196,6 @@ def _verify() -> None:
         policy | {"aer_native": changed_identity},
         policy | {"shot_branching_sampling": 0},
         policy | {"parallel_experiments": True},
-        policy | {"mode": "gpu"},
         policy | {"mode": "hybrid"},
         policy | {"threads": 0},
         policy | {"memory_mb": True},

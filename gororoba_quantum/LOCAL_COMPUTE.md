@@ -399,9 +399,19 @@ CUDA Aer 0.17.2 build:
 
 The batched density-matrix GPU kernel rejects the control-flow jump that
 feed-forward compiles to, and unbatched GPU execution launches kernels per
-shot on a 32-element state. The CPU path stays the execution device for
-this workload; the native CUDA package in `packaging/qiskit-aer-cuda`
-remains available for wider circuits that the gates below admit.
+shot on a 32-element state.
+
+`--local-compute auto`, the default, routes each simulation batch by its
+widest active register (`local_compute.route`). Batches below
+`GPU_MIN_ACTIVE_QUBITS = 11` run on CPU threads. Wider batches run on the
+GPU when Aer reports one and `aer_resources.admit_gpu` admits two density
+states against a fresh CUDA free-memory reading and the declared
+`--simulation-memory-mb` budget; a rejected admission keeps the batch on
+CPU and the batch record retains the reason. Every batch record names its
+device and admission. `--local-compute gpu` requires admission and
+`--local-compute cpu` never routes. Widths 9 and 10 stay on CPU until a
+measurement places the crossover; the native CUDA package lives in
+`packaging/qiskit-aer-cuda`.
 
 ## Paused GPU qualification gates
 
