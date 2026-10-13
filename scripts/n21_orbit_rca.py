@@ -9,9 +9,10 @@ assignment error that reaches both the stored bit and the correction. Each
 model adds one mechanism to a two-parameter depolarizing baseline (one
 strength per multiplier round) and is fitted to the eight measured cells of
 both arms by maximum likelihood. The deviance G2 = 2 sum n log(n / N p)
-ranks the mechanisms. Eight mechanisms are compared, so a deviance reduction
-counts at family-wise alpha 0.05 only above the chi-square quantile at
-0.05 / 8 for the mechanism's added parameters (Bonferroni).
+ranks the mechanisms. Eight alternatives are compared in every pair, so a
+deviance reduction counts at family-wise alpha 0.05 only above the
+chi-square quantile at 0.05 / (8 x pairs) for the mechanism's added
+parameters (Bonferroni across alternatives and pairs).
 
 Physical roles come from the circuits that ran: the control is the writer of
 the first measurement, and a Z probe inserted where each placed qubit's
@@ -211,16 +212,24 @@ def _group(run: Path) -> dict[str, Any]:
 
 
 def raw_pubs(run: Path) -> list[dict[str, Any]]:
-    """Raw PUB payloads in member order, each checked against the collection's sha256 index."""
-    (job,) = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    """Raw PUB payloads in member order, bound to the collection ledger and checked by sha256."""
+    jobs = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    (job,) = jobs
     directory = run / "raw" / job
-    indexed = json.loads((directory / "index.json").read_text())["files"]
+    index = json.loads((directory / "index.json").read_text())
+    indexed = index["files"]
+    ledger = jobs[job].get("raw")
+    if index.get("job_id", job) != job or (ledger is not None and ledger["files"] != indexed):
+        raise RuntimeError(f"raw/{job}/index.json differs from the collection's raw ledger")
     payloads = []
     for index in range(len(_group(run)["members"])):
         path = directory / f"pub_{index:02d}.json"
         if hashlib.sha256(path.read_bytes()).hexdigest() != indexed.get(path.name):
             raise RuntimeError(f"{path.name} differs from the sha256 retained by collection")
-        payloads.append(json.loads(path.read_text()))
+        payload = json.loads(path.read_text())
+        if payload.get("pub_index", index) != index:
+            raise RuntimeError(f"{path.name} carries PUB index {payload.get('pub_index')}")
+        payloads.append(payload)
     return payloads
 
 
@@ -342,6 +351,18 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
                     if max(before) <= start < min(after) and name == "x"
                 ],
             }
+            # The probe counts circuit instructions while the schedule lists
+            # pulses; the two align only where every instruction on the wire
+            # plays one pulse (sx, x, cz), which the comparison requires.
+            instructions = [
+                instruction.operation.name
+                for instruction in circuit.data
+                if instruction.operation.name not in _VIRTUAL
+                and qubit in [circuit.find_bit(bit).index for bit in instruction.qubits]
+            ]
+            if len(instructions) != len(pulses) or not set(instructions) <= {"sx", "x", "cz"}:
+                unresolved.append(f"qubit {qubit} holds instructions that do not map one-to-one onto pulses")
+                continue
             positions[qubit] = sum(1 for start, length, _name in pulses if start + length <= max(before))
             shift = _probed(circuit, positions, {qubit: probe})
             if np.allclose(shift, base, atol=1e-9):
@@ -471,13 +492,20 @@ def joint_quasistatic_fit(
 
     # Multi-microsecond exposures wrap the mean phase, so the mean rates have
     # many basins; a grid over both means seeds the local searches.
+    import heapq
     import itertools
 
-    grid = np.linspace(-4.5, 4.5, 19)
-    seeds = sorted(
-        (objective(np.array([0.12, 0.0, *means, *([0.0] * len(qubits))])), means)
-        for means in itertools.product(grid, repeat=len(qubits))
-    )[:4]
+    # About 400 grid evaluations bound the seed search for any qubit count.
+    points = max(3, round(400 ** (1 / len(qubits))))
+    grid = np.linspace(-4.5, 4.5, points)
+    seeds = heapq.nsmallest(
+        4,
+        (
+            (objective(np.array([0.12, 0.0, *means, *([0.0] * len(qubits))])), means)
+            for means in itertools.product(grid, repeat=len(qubits))
+        ),
+        key=lambda item: item[0],
+    )
     best: Any = None
     for _value, means in seeds:
         for spread in (0.0, 0.2):
@@ -536,12 +564,20 @@ def phase_interval(
     return segments
 
 
+def _with_excess(readout: dict[str, float], params: dict[str, float]) -> dict[str, float]:
+    combined = readout | params
+    for key in ("mid_e01", "mid_e10", "end_e01", "end_e10"):
+        combined[key] = readout[key] + params.get(f"{key}_excess", 0.0)
+    return combined
+
+
 def deviance(counts: dict[str, np.ndarray], params: dict[str, float], readouts: dict[str, dict[str, float]]) -> float:
     """Deviance of both arms; each arm's readout applies unless params fits it."""
     total = 0.0
     for arm, feed_forward in (("feedback", True), ("no_feedback", False)):
         observed = counts[arm]
-        expected = np.clip(distribution(readouts[arm] | params, feed_forward), 1e-12, None) * observed.sum()
+        expected = np.clip(distribution(_with_excess(readouts[arm], params), feed_forward), 1e-12, None)
+        expected = expected * observed.sum()
         positive = observed > 0
         total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
     return total
@@ -560,10 +596,16 @@ def _assignment(group: dict[str, Any], qubit: int, properties: Any) -> tuple[flo
     retained = group.get("placed_qubit_calibration", {}).get(str(qubit))
     if retained and {"prob_meas1_prep0", "prob_meas0_prep1"} <= retained.keys():
         return float(retained["prob_meas1_prep0"]), float(retained["prob_meas0_prep1"])
+    # live_run.readout_flips uses the aggregate error for both directions
+    # when a backend omits the asymmetric fields.
+    if retained and "readout_error" in retained:
+        return float(retained["readout_error"]), float(retained["readout_error"])
     if properties is None:
         raise RuntimeError(f"no retained calibration for qubit {qubit}; pass --readout")
     values = {item.name: float(item.value) for item in properties.qubits[qubit]}
-    return values["prob_meas1_prep0"], values["prob_meas0_prep1"]
+    if "prob_meas1_prep0" in values and "prob_meas0_prep1" in values:
+        return values["prob_meas1_prep0"], values["prob_meas0_prep1"]
+    return values["readout_error"], values["readout_error"]
 
 
 def member_readouts(run: Path, roles: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -617,8 +659,10 @@ MECHANISMS: dict[str, tuple[tuple[str, float, float], ...]] = {
     "window_dephasing": (("window_t2", 0.0, 1.0),),
     "reset_failure": (("reset_failure", 0.0, 1.0),),
     "control_phase": (("control_phase", -math.pi, math.pi),),
-    "mid_readout_assignment": (("mid_e01", 0.0, 0.5), ("mid_e10", 0.0, 0.5)),
-    "terminal_readout_assignment": (("end_e01", 0.0, 0.5), ("end_e10", 0.0, 0.5)),
+    # Assignment alternatives add an excess shared by both arms to each arm's
+    # calibrated rate, so a zero excess recovers the baseline (nested models).
+    "mid_readout_assignment": (("mid_e01_excess", 0.0, 0.5), ("mid_e10_excess", 0.0, 0.5)),
+    "terminal_readout_assignment": (("end_e01_excess", 0.0, 0.5), ("end_e10_excess", 0.0, 0.5)),
 }
 NUISANCE = (("round1", 0.0, 1.0), ("round2", 0.0, 1.0))
 
@@ -646,8 +690,8 @@ def fit(
         "parameters": params,
         "deviance": float(best.fun),
         "added_parameters": len(extra),
-        "feedback_law": distribution(readouts["feedback"] | params, True).tolist(),
-        "no_feedback_law": distribution(readouts["no_feedback"] | params, False).tolist(),
+        "feedback_law": distribution(_with_excess(readouts["feedback"], params), True).tolist(),
+        "no_feedback_law": distribution(_with_excess(readouts["no_feedback"], params), False).tolist(),
     }
 
 
@@ -667,9 +711,9 @@ def self_check() -> None:
         arm: np.round(distribution(truth, feed_forward) * 4096)
         for arm, feed_forward in (("feedback", True), ("no_feedback", False))
     }
-    both = {"feedback": readout, "no_feedback": readout}
-    phase = fit(counts, both, MECHANISMS["work_phase_one"])
-    baseline = fit(counts, both, MECHANISMS["baseline_depolarizing"])
+    arms = {"feedback": readout, "no_feedback": readout}
+    phase = fit(counts, arms, MECHANISMS["work_phase_one"])
+    baseline = fit(counts, arms, MECHANISMS["baseline_depolarizing"])
     if abs(phase["parameters"]["phase_one"] - 0.5) > 0.02 or phase["deviance"] > 0.05:
         raise RuntimeError(f"work-phase fit missed the planted phase: {phase['parameters']}")
     if baseline["deviance"] - phase["deviance"] < 3.84:
@@ -706,6 +750,9 @@ def main(argv: list[str] | None = None) -> int:
     pairs = measured_pairs(arguments.run)
     roles = window_roles(arguments.run)
     if arguments.readout:
+        writers = {qubit for role in roles.values() for qubit in (role["control"], role["terminal"])}
+        if len(writers) != 1:
+            parser.error(f"--readout supplies one qubit's rates, but the members measure on {sorted(writers)}")
         fixed = _readout(*arguments.readout)
         sources: dict[str, dict[str, Any]] = {name: fixed | {"source": "--readout"} for name in roles}
     else:
@@ -725,7 +772,7 @@ def main(argv: list[str] | None = None) -> int:
             "work_phase_95_interval": interval,
         }
         baseline = models["baseline_depolarizing"]["deviance"]
-        comparisons = len(MECHANISMS) - 1
+        comparisons = (len(MECHANISMS) - 1) * len(pairs)
         for model in models.values():
             threshold = float(chi2.ppf(1 - FAMILY_ALPHA / comparisons, max(1, model["added_parameters"])))
             model["family_wise_threshold"] = threshold
