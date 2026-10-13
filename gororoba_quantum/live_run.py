@@ -2036,7 +2036,7 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetr
     for inst in isa.data:
         if inst.operation.name == "measure":
             writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
-    inverse = np.ones((1, 1))
+    inverse: np.ndarray = np.ones((1, 1))
     for clbit in reversed(range(isa.num_clbits)):
         e10, e01 = readout_flips(props, writer[clbit])
         if symmetric:

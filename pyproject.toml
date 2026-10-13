@@ -3,14 +3,16 @@
 
 [tool.ruff]
 line-length = 120
-target-version = "py311"
+target-version = "py314"
 src = ["gororoba_quantum"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]
+# PEP 695 `type` aliases evaluate lazily and change runtime use of the aliases.
+ignore = ["UP040"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.14"
 mypy_path = "gororoba_quantum"
 ignore_missing_imports = true
 warn_unused_ignores = true

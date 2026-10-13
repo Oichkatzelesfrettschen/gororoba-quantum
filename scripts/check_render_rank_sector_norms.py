@@ -125,7 +125,7 @@ def main() -> int:
             (output, renderer.ROOT / "results/ripple/rank-sector-norms.svg"),
             (png, renderer.ROOT / "results/ripple/rank-sector-norms.png"),
         ):
-            require(generated.read_bytes() == retained.read_bytes(), f"{retained.name}: renderer output changed")
+            require(renderer.same_image(retained, generated), f"{retained.name}: renderer output changed")
         report = {
             "rejected_cli_aliases": rejected_cli,
             "rejected_direct_aliases": rejected_direct,

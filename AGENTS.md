@@ -7,243 +7,23 @@ supplies what it leaves unstated. CLAUDE.md loads it.
 
 The modules run as scripts from gororoba_quantum/ and form no installable
 package; requirements.txt pins the tested runtime and pyproject.toml carries
-lint and type-check configuration only. Before any push, these exit 0:
+lint and type-check configuration only.
 
-The rank-sector image gate also uses the plotting-only pin
-`matplotlib==3.11.2`, documented in [results/ripple/README.md](results/ripple/README.md).
+GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
+[ci/gates.json](ci/gates.json) lists each gate as one command with its
+working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
+a thread pool sized to the runner's CPUs and keeps going past failures, so a
+red shard lists every failing gate. Each gate records its measured seconds;
+shards are assigned longest-first. Pull requests run the `pr` tier, every
+gate that measured under two minutes, on six shards; pushes to main, the
+nightly schedule and manual runs add the `full` tier's long simulation
+contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
+with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
+the plotting-only `matplotlib==3.11.2`). A pull request merges when every
+shard is green and its review threads are resolved; a red main or nightly
+run is fixed in the next change. A new module, evidence
+replay or contract joins the gate list in ci/gates.json in the same change.
 
-```sh
-(
-  set -eu
-  PYTHON="${PYTHON:-$(command -v python3)}"
-  ruff check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
-    results/live/verify_source_closure.py results/live/folded_raw_analysis.py \
-    results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client \
-    results/local_compute/verify_evidence.py \
-    results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
-    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
-    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
-    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
-    scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
-    scripts/check_diagnose_qiskit_mock.py \
-    scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
-    scripts/check_render_ripple_visualization.py \
-    scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py \
-    scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py \
-    docs/sources/open_gororoba/check_signed_kite_switching.py
-  ruff format --check gororoba_quantum scripts/python_call_graph.py scripts/left_mult_sign_rank.py \
-    scripts/mod15_signed_multiplier_census.py scripts/associator_walsh_classes.py \
-    results/live/verify_source_closure.py results/live/folded_raw_analysis.py \
-    results/live/test_folded_raw_analysis.py results/local_compute/mixed_pub_client \
-    results/local_compute/verify_evidence.py \
-    results/local_compute/check_verify_evidence.py results/local_compute/cpu_branching_reuse_analysis.py \
-    results/local_compute/n21_shared_predicate/probe.py results/local_compute/n21_shared_predicate/check_probe.py \
-    scripts/render_ripple_visualization.py scripts/render_rank_sector_norms.py \
-    scripts/review_folded_jobs.py scripts/render_folded_job_review.py \
-    scripts/check_render_folded_job_review.py scripts/diagnose_qiskit_mock.py \
-    scripts/check_diagnose_qiskit_mock.py \
-    scripts/check_review_folded_jobs.py scripts/check_render_rank_sector_norms.py \
-    scripts/check_render_ripple_visualization.py \
-    scripts/extract_measured_ripple.py scripts/check_extract_measured_ripple.py \
-    scripts/render_measured_ripple.py scripts/check_render_measured_ripple.py \
-    docs/sources/open_gororoba/check_signed_kite_switching.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/python_call_graph.py >/dev/null
-  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
-    "$PYTHON" results/local_compute/verify_evidence.py
-  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
-    "$PYTHON" results/local_compute/check_verify_evidence.py
-  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
-    "$PYTHON" results/local_compute/cpu_branching_reuse_analysis.py --check
-  (cd results/local_compute && sha256sum -c SHA256SUMS)
-  (cd results/local_compute/aer_delay_sentinels && sha256sum -c SHA256SUMS)
-  (cd results/local_compute/n21_shared_predicate && sha256sum -c SHA256SUMS)
-  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
-    "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
-  PYTHONOPTIMIZE=1 PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
-    "$PYTHON" results/local_compute/n21_shared_predicate/check_probe.py
-  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 "$PYTHON" \
-    docs/sources/open_gororoba/check_signed_kite_switching.py | \
-    cmp - docs/sources/open_gororoba/signed_kite_switching.json
-  (cd docs/sources/open_gororoba && sha256sum -c SHA256SUMS)
-  (cd results/live
-    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest test_folded_raw_analysis
-    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest test_folded_raw_analysis)
-  (cd results/live/2026-10-12T055624.091217Z && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error results/live/folded_raw_analysis.py \
-    results/live/2026-10-12T055624.091217Z | \
-    cmp - results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_diagnose_qiskit_mock.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_diagnose_qiskit_mock.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_folded_job_review.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_folded_job_review.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_review_folded_jobs.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_review_folded_jobs.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_rank_sector_norms.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_rank_sector_norms.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_ripple_visualization.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_ripple_visualization.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_extract_measured_ripple.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_extract_measured_ripple.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/check_render_measured_ripple.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error scripts/check_render_measured_ripple.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error scripts/review_folded_jobs.py \
-    --run-dir results/live/2026-10-12T055624.091217Z --check
-  PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \
-    MPLCONFIGDIR="${MPLCONFIGDIR:-/tmp/folded-review-mplconfig}" \
-    "$PYTHON" scripts/render_folded_job_review.py \
-    --png results/ripple/folded-job-review.png --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error \
-    results/local_compute/mixed_pub_client/probe.py >/dev/null
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error \
-    results/local_compute/mixed_pub_client/probe.py >/dev/null
-  (cd results/local_compute/mixed_pub_client
-    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest check_probe
-    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest check_probe
-    sha256sum -c SHA256SUMS)
-  cd gororoba_quantum
-  mypy boolean_anf.py cd_core.py verify.py designs.py factoring.py \
-    correction_circuits.py correction_circuits_contracts.py \
-    correction_schedule.py correction_schedule_contracts.py \
-    correction_statistics.py correction_statistics_contracts.py \
-    correction_preparation.py correction_preparation_contracts.py \
-    correction_planning.py correction_planning_contracts.py \
-    correction_collection.py correction_collection_contracts.py correction_case_contracts.py \
-    correction_reanalysis.py \
-    hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
-    parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
-    runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
-    qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
-    qpu_planning.py qpu_planning_contracts.py qpu_cases.py \
-    qpu_case_allocation_contracts.py local_compute.py aer_identity.py aer_resources.py \
-    algebra_planning.py algebra_planning_contracts.py \
-    pub_shot_allocation.py pub_shot_allocation_contracts.py pub_shot_runtime_contracts.py \
-    ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
-    native_preflight.py native_preflight_contracts.py \
-    placement_feasibility.py placement_feasibility_contracts.py \
-    aer_delay_sentinels.py \
-    affine_residual.py affine_residual_challenger.py adjudicate.py claim_boundaries.py \
-    sedenion_bundle.py annihilator_strata.py \
-    rank_polynomials.py rank_charts.py rank_attachments.py \
-    integral_homology.py rank_path_topology.py ripple_dynamics.py \
-    four_support_rank.py four_support_geometry.py \
-    four_support_doubling.py four_support_homology.py skew_schur_charts.py \
-    principal_skew_atlas.py \
-    schur_acceleration.py nullity_twelve_locus.py nullity_twelve_curves.py \
-    kernel_limits.py kernel_limit_contracts.py circle_kernel_attachments.py \
-    complex_skew.py complex_skew_contracts.py \
-    kernel_determinant.py kernel_determinant_contracts.py \
-    projective_kernel_limits.py projective_kernel_contracts.py \
-    real_frontier_graphs.py real_frontier_contracts.py \
-    ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
-    ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
-    ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
-    ../results/local_compute/verify_evidence.py \
-    ../results/local_compute/check_verify_evidence.py ../results/local_compute/cpu_branching_reuse_analysis.py \
-    ../results/local_compute/n21_shared_predicate/probe.py ../results/local_compute/n21_shared_predicate/check_probe.py \
-    ../scripts/render_ripple_visualization.py ../scripts/render_rank_sector_norms.py \
-    ../scripts/review_folded_jobs.py ../scripts/render_folded_job_review.py \
-    ../scripts/check_render_folded_job_review.py ../scripts/diagnose_qiskit_mock.py \
-    ../scripts/check_diagnose_qiskit_mock.py \
-    ../scripts/check_review_folded_jobs.py ../scripts/check_render_rank_sector_norms.py \
-    ../scripts/check_render_ripple_visualization.py \
-    ../scripts/extract_measured_ripple.py ../scripts/check_extract_measured_ripple.py \
-    ../scripts/render_measured_ripple.py ../scripts/check_render_measured_ripple.py \
-    ../docs/sources/open_gororoba/check_signed_kite_switching.py
-  "$PYTHON" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT
-  "$PYTHON" designs.py
-  "$PYTHON" claim_boundaries.py >/dev/null
-  "$PYTHON" sedenion_bundle.py >/dev/null
-  "$PYTHON" annihilator_strata.py --max-dimension 256 >/dev/null
-  "$PYTHON" rank_polynomials.py >/dev/null
-  "$PYTHON" rank_charts.py >/dev/null
-  "$PYTHON" rank_attachments.py >/dev/null
-  "$PYTHON" integral_homology.py >/dev/null
-  "$PYTHON" rank_path_topology.py >/dev/null
-  "$PYTHON" rank_path_topology.py --stage 6 >/dev/null
-  "$PYTHON" ripple_dynamics.py --check ../results/ripple/evidence.json
-  "$PYTHON" ../scripts/render_ripple_visualization.py \
-    --evidence ../results/ripple/evidence.json \
-    --out ../results/ripple/cayley-dickson-ripples.html --check
-  PYTHONWARNINGS=error MPLCONFIGDIR="${MPLCONFIGDIR:-/tmp/rank-sector-mplconfig}" \
-    "$PYTHON" ../scripts/render_rank_sector_norms.py \
-    --png ../results/ripple/rank-sector-norms.png --check
-  "$PYTHON" -W error schur_acceleration.py >/dev/null
-  "$PYTHON" -O -W error schur_acceleration.py >/dev/null
-  "$PYTHON" -W error nullity_twelve_locus.py >/dev/null
-  "$PYTHON" -O -W error nullity_twelve_locus.py >/dev/null
-  "$PYTHON" -W error nullity_twelve_curves.py >/dev/null
-  "$PYTHON" -O -W error nullity_twelve_curves.py >/dev/null
-  "$PYTHON" -W error kernel_limit_contracts.py >/dev/null
-  "$PYTHON" -O -W error kernel_limit_contracts.py >/dev/null
-  "$PYTHON" -W error circle_kernel_attachments.py >/dev/null
-  "$PYTHON" -O -W error circle_kernel_attachments.py >/dev/null
-  "$PYTHON" -W error complex_skew_contracts.py >/dev/null
-  "$PYTHON" -O -W error complex_skew_contracts.py >/dev/null
-  "$PYTHON" -W error kernel_determinant_contracts.py >/dev/null
-  "$PYTHON" -O -W error kernel_determinant_contracts.py >/dev/null
-  "$PYTHON" -W error projective_kernel_contracts.py >/dev/null
-  "$PYTHON" -O -W error projective_kernel_contracts.py >/dev/null
-  "$PYTHON" -W error real_frontier_contracts.py >/dev/null
-  "$PYTHON" -O -W error real_frontier_contracts.py >/dev/null
-  "$PYTHON" factoring.py
-  "$PYTHON" target_flip.py
-  "$PYTHON" target_flip_certificate.py --check
-  "$PYTHON" affine_residual.py
-  "$PYTHON" modular_arithmetic.py
-  "$PYTHON" order_finding.py
-  "$PYTHON" compile_evidence.py --seeds 20261010 \
-    --candidate one_clean_cycle >/dev/null
-  "$PYTHON" ../scripts/mod15_signed_multiplier_census.py
-  "$PYTHON" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null
-  "$PYTHON" runtime_contracts.py
-  "$PYTHON" parameter_binding_contracts.py
-  "$PYTHON" correction_circuits_contracts.py
-  "$PYTHON" correction_statistics_contracts.py
-  "$PYTHON" correction_schedule_contracts.py
-  "$PYTHON" correction_preparation_contracts.py
-  "$PYTHON" correction_planning_contracts.py
-  "$PYTHON" correction_collection_contracts.py
-  "$PYTHON" correction_case_contracts.py
-  "$PYTHON" -W error correction_reanalysis.py --self-check
-  PYTHONOPTIMIZE=1 "$PYTHON" -W error correction_reanalysis.py --self-check
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_circuits_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_statistics_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_schedule_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_preparation_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_planning_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_collection_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" correction_case_contracts.py
-  "$PYTHON" qpe_diagnostics.py
-  "$PYTHON" experiment_optimizer.py
-  "$PYTHON" qpu_planning_contracts.py
-  "$PYTHON" algebra_planning_contracts.py
-  "$PYTHON" pub_shot_allocation_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_allocation_contracts.py
-  "$PYTHON" pub_shot_runtime_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" pub_shot_runtime_contracts.py
-  "$PYTHON" ripple_contracts.py
-  "$PYTHON" rank_sector_contracts.py
-  "$PYTHON" native_preflight_contracts.py
-  "$PYTHON" placement_feasibility_contracts.py
-  PYTHONOPTIMIZE=1 "$PYTHON" placement_feasibility_contracts.py
-  "$PYTHON" qpu_cases.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error qpu_case_allocation_contracts.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error qpu_case_allocation_contracts.py
-  "$PYTHON" local_compute.py
-  "$PYTHON" aer_identity.py
-  "$PYTHON" aer_resources.py
-  "$PYTHON" aer_delay_sentinels.py >/dev/null
-  "$PYTHON" ../results/live/verify_source_closure.py --check
-  "$PYTHON" variance.py
-  "$PYTHON" adjudicate.py --check
-  "$PYTHON" cd_core.py >/dev/null
-  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 8
-  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional
-  "$PYTHON" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return
-  "$PYTHON" hybrid_shor.py simulate 15 --shots 256 --seed 7
-)
-```
 
 CPU-bound loops over independent items (embedding scores in replica
 placement, operator checks, registry parsing) run through parallel.py, an
@@ -308,86 +88,10 @@ real foundations, deterministic interval premises and unproved coverage.
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
 replays. `literature -> docs` preserves recorded paths; new Markdown links use
-`docs/`. Immutable source ledgers retain their recorded bytes. Source changes
-also pass these local gates before push:
+`docs/`. Immutable source ledgers retain their recorded bytes. The
+`sources` suite in ci/gates.json covers the source registry, the evidence
+replays (normal and optimized modes) and their checksum ledgers.
 
-```sh
-(
-  set -eu
-  PYTHON="${PYTHON:-$(command -v python3)}"
-  ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
-  ruff format --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence
-  MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/verify_sources.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/verify_sources.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/check_verify_sources.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/check_verify_sources.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/local_schur/probe.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/local_schur/probe.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_rank/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_rank/replay.py --check
-  (cd docs/evidence/four_support_rank && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_geometry/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_geometry/replay.py --check
-  (cd docs/evidence/four_support_geometry && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_doubling/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_doubling/replay.py --check
-  (cd docs/evidence/four_support_doubling && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/four_support_homology/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/four_support_homology/replay.py --check
-  (cd docs/evidence/four_support_homology && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/dimension32_skew_schur/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check
-  (cd docs/evidence/dimension32_skew_schur && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/principal_skew_atlas/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/principal_skew_atlas/replay.py --check
-  (cd docs/evidence/principal_skew_atlas && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/schur_acceleration/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/schur_acceleration/replay.py --check
-  (cd docs/evidence/schur_acceleration && sha256sum -c SHA256SUMS)
-  GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
-  (cd docs/evidence/vacuum_models && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_endpoint_information/probe.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check
-  (cd docs/evidence/vacuum_endpoint_information
-    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error -m unittest check_probe
-    PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error -m unittest check_probe
-    sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/nullity_twelve_locus/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/nullity_twelve_locus/replay.py --check
-  (cd docs/evidence/nullity_twelve_locus && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/kernel_limits/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/kernel_limits/replay.py --check
-  (cd docs/evidence/kernel_limits && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/complex_skew/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/complex_skew/replay.py --check
-  (cd docs/evidence/complex_skew && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/kernel_determinant/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/kernel_determinant/replay.py --check
-  (cd docs/evidence/kernel_determinant && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/projective_kernel_limits/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/projective_kernel_limits/replay.py --check
-  (cd docs/evidence/projective_kernel_limits && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/real_frontier_graphs/replay.py --check
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/real_frontier_graphs/replay.py --check
-  (cd docs/evidence/real_frontier_graphs && sha256sum -c SHA256SUMS)
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
-  shellcheck docs/evidence/folding_proofs/replay_rocq.sh
-  shellcheck docs/evidence/formal_certificates/replay_rocq.sh
-  shellcheck docs/evidence/c881_exhaustive/replay_rocq.sh
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/c881_exhaustive/check_replay.py
-  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/c881_exhaustive/check_replay.py
-  ROCQ="${ROCQ:-rocq}" sh docs/evidence/c881_exhaustive/replay_rocq.sh
-  (cd docs/evidence/formal_certificates && sha256sum -c SHA256SUMS)
-  sha256sum -c docs/evidence/formal_certificates/source_hashes.sha256
-  (cd docs/evidence/local_schur && sha256sum -c SHA256SUMS)
-  (cd docs/evidence/folding_proofs && sha256sum -c SHA256SUMS)
-)
-```
 
 Changes to proof replay inputs also follow the pinned Rocq replay in
 `docs/evidence/folding_proofs/README.md`. Imported paper parser diagnostics
@@ -518,8 +222,8 @@ Return to the default reviewer when hosted Codex review becomes available.
    - A claim the source refutes gets the refuting line in the reply.
    - Malformed or adversarial input outside the documented domain gets a reply
      naming the boundary and a follow-up issue.
-3. Fix every reachable thread on the PR's own branch in one commit, and run the
-   gates. A change to live_run.py or experiments.py also gets a live dry run,
+3. Fix every reachable thread on the PR's own branch in one commit; CI runs the
+   gates on the push. A change to live_run.py or experiments.py also gets a live dry run,
    and a change to qiskit-ibm-runtime usage also gets `/migrate-qiskit-ibm-runtime`.
    Then push.
 4. Reply to each thread's root comment with
@@ -544,7 +248,7 @@ Return to the default reviewer when hosted Codex review becomes available.
   `git merge --no-ff`.
 - Rebasing is out because the permission harness denies force-push.
 - When one file conflicts heavily, take the lower branch's reviewed version and
-  re-apply the upper branch's own changes on top. Then rerun the gates and a dry
+  re-apply the upper branch's own changes on top. CI reruns every gate; run a dry
   run on every branch the merge touched.
 
 **Merging.** A PR merges when its latest review is clean, every thread is
