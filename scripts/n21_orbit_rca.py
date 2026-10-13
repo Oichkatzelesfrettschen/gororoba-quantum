@@ -194,6 +194,102 @@ def measured_pairs(run: Path) -> dict[str, dict[str, np.ndarray]]:
     return pairs
 
 
+def signed_exposure(run: Path) -> dict[str, dict[str, float]]:
+    """Signed idle time, in dt, of the work qubits for 1 and 16 in each PUB's hardware schedule.
+
+    A quasi-static detuning on a work qubit adds phase in proportion to its
+    idle time from the end of its last round-1 pulse to its first round-2
+    pulse; each X pulse inside that window reverses the sign of later idle
+    time. The window opens at the control's first measure; it closes at the
+    work qubit's first non-X pulse after that, which precedes the end of the
+    control's reset when the second round starts on the work qubits first.
+    """
+    record = json.loads((run / "record.json").read_text())
+    group = record["groups"][0]
+    (replica,) = group["replicas"]
+    layout = [int(qubit) for qubit in replica["initial_layout"]]
+    control, wires = layout[CONTROL], {"one": layout[ONE], "sixteen": layout[SIXTEEN]}
+    (job,) = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    exposure = {}
+    for index, member in enumerate(group["members"]):
+        payload = json.loads((run / "raw" / job / f"pub_{index:02d}.json").read_text())
+        rows = [
+            line.split(",") for line in payload["metadata"]["compilation"]["scheduler_timing"]["timing"].splitlines()
+        ]
+        plays = [
+            (int(row[3]), int(row[4]), row[1].split("_")[0], row[2])
+            for row in rows
+            if row[5] == "play" and not row[1].startswith(("INIT", "FINI"))
+        ]
+        opening = min(start for start, _length, name, wire in plays if wire == f"Qubit {control}" and name == "measure")
+        member_exposure = {}
+        for label, qubit in wires.items():
+            pulses = sorted((start, length, name) for start, length, name, wire in plays if wire == f"Qubit {qubit}")
+            before = max(start + length for start, length, name in pulses if start + length <= opening)
+            after = min(start for start, _length, name in pulses if start >= opening and name != "x")
+            sign, cursor, total = 1.0, before, 0.0
+            for start, length, name in pulses:
+                if before <= start < after and name == "x":
+                    total += sign * (start - cursor)
+                    sign, cursor = -sign, start + length
+            member_exposure[label] = total + sign * (after - cursor)
+        exposure[member["name"]] = member_exposure
+    return exposure
+
+
+def joint_quasistatic_fit(
+    run: Path, pairs: dict[str, dict[str, np.ndarray]], readout: dict[str, float]
+) -> dict[str, Any]:
+    """Fit a per-shot Gaussian detuning on each work qubit across every pair at once.
+
+    The kickback phase is mean_one * s_one - mean_sixteen * s_sixteen and the
+    coherence factor is exp(-(sd_one^2 s_one^2 + sd_sixteen^2 s_sixteen^2) / 2),
+    with s the signed exposure of each member and rates in radians per
+    microsecond; the two depolarizing nuisances are shared by all arms.
+    """
+    exposure = signed_exposure(run)
+    dt_us = 4e-3
+    names = ["round1", "round2", "mean_one", "mean_sixteen", "sd_one", "sd_sixteen"]
+    bounds = [(0.0, 1.0), (0.0, 1.0), (-5.0, 5.0), (-5.0, 5.0), (0.0, 5.0), (0.0, 5.0)]
+
+    def member_params(vector: np.ndarray, member: str) -> dict[str, float]:
+        values = dict(zip(names, map(float, vector), strict=True))
+        one, sixteen = (exposure[member][key] * dt_us for key in ("one", "sixteen"))
+        coherence = math.exp(-((values["sd_one"] * one) ** 2 + (values["sd_sixteen"] * sixteen) ** 2) / 2)
+        return readout | {
+            "round1": values["round1"],
+            "round2": values["round2"],
+            "phase_one": values["mean_one"] * one - values["mean_sixteen"] * sixteen,
+            "window_t2": 1.0 - coherence,
+        }
+
+    def objective(vector: np.ndarray) -> float:
+        total = 0.0
+        for pair, counts in pairs.items():
+            for arm, feed_forward in (("feedback", True), ("no_feedback", False)):
+                observed = counts[arm]
+                law = distribution(member_params(vector, f"{pair}_{arm}"), feed_forward)
+                expected = np.clip(law, 1e-12, None) * observed.sum()
+                positive = observed > 0
+                total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
+        return total
+
+    best: Any = None
+    for start in ([0.1, 0.0, 0.1, 0.0, 0.1, 0.1], [0.1, 0.0, 0.0, -0.1, 0.1, 0.1], [0.1, 0.0, 0.1, 0.1, 0.3, 0.0]):
+        result = minimize(objective, np.array(start), method="L-BFGS-B", bounds=bounds)
+        if best is None or result.fun < best.fun:
+            best = result
+    static = minimize(objective, best.x, method="L-BFGS-B", bounds=bounds[:4] + [(0.0, 0.0), (0.0, 0.0)])
+    cells = sum(len(counts) * 3 for counts in pairs.values())
+    return {
+        "parameters_rad_per_us": dict(zip(names, map(float, best.x), strict=True)),
+        "deviance": float(best.fun),
+        "degrees_of_freedom": cells - len(names),
+        "static_detuning_only_deviance": float(static.fun),
+        "signed_exposure_dt": exposure,
+    }
+
+
 def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], best: dict[str, Any]) -> list[float]:
     """Profile-likelihood 95 percent interval of the work phase: deviance within 3.84 of its minimum."""
     names = [name for name, _low, _high in NUISANCE]
@@ -384,6 +480,13 @@ def main(argv: list[str] | None = None) -> int:
             params = ", ".join(f"{key}={value:.4f}" for key, value in model["parameters"].items())
             gain = baseline - model["deviance"]
             print(f"  {name:30s} G2={model['deviance']:8.2f} gain={gain:7.2f} k+{model['added_parameters']}  {params}")
+    if len(pairs) > 1:
+        joint = joint_quasistatic_fit(arguments.run, pairs, readout)
+        report["joint_quasistatic_detuning"] = joint
+        print(
+            f"joint quasi-static detuning: G2={joint['deviance']:.2f} on {joint['degrees_of_freedom']} dof; "
+            f"static-only G2={joint['static_detuning_only_deviance']:.2f}; {joint['parameters_rad_per_us']}"
+        )
     if arguments.out:
         arguments.out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     return 0
