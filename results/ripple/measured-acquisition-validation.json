@@ -59,7 +59,7 @@
     }
   },
   "evidence_kind": "collected_hardware",
-  "observed_at": "2026-10-13T16:50:57.892784+00:00",
+  "observed_at": "2026-10-13T16:59:43.281398+00:00",
   "physical_job_ids": [
     "db6q2p2mb58s738c75gg",
     "db6q2rklf4us73c5oq90",
@@ -72,7 +72,7 @@
     "results/ripple/measured-cayley-dickson-ripples.html": "0ec2b7c4ddb0a15bf17e2d8b787f923e9b6e18b2b527f196ff7141135692b1e2",
     "results/ripple/measured-rank-sector.json": "5f1ba2c0b0d25ec068a4ecbac98f984f32aaabe024dd8aca0ec180edd117e802",
     "results/ripple/measured-ripple.json": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7",
-    "scripts/extract_measured_ripple.py": "235403386b888e29c3379ee1c382201c1d9f2cf0bbd87eed581d12efc7b6008c",
+    "scripts/extract_measured_ripple.py": "da928aaf6fe5eda9c6bcd5202b054b574b131805b6158d681ebee6acb65a6d06",
     "scripts/render_measured_ripple.py": "fab31ab512d69b35dab5b4691d824ef01cfc02c49ed7041c35606e58b4d05cee",
     "scripts/validate_measured_explorer.py": "7a5e9f945f5f4cd2eca435948bcb085dabeb67ef89053d5726570f73cea8a972"
   }

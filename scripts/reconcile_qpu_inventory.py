@@ -122,10 +122,13 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             require(entry["backend"] == job["backend"], "collection backend differs")
             require(entry["usage"]["usage_status"] == "final", "collection usage is unsettled")
             require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
-            if "raw" in entry:
+            # Newer collections carry the raw ledger in collect.json; the pilot
+            # preserved its ledger in raw/preserved.json.
+            preserved = run / "raw/preserved.json"
+            ledger = entry.get("raw") or (read(preserved)["jobs"].get(identity) if preserved.exists() else None)
+            if ledger is not None:
                 require(
-                    entry["raw"]["directory"] == str(directory.relative_to(run))
-                    and entry["raw"]["files"] == index["files"],
+                    ledger["directory"] == str(directory.relative_to(run)) and ledger["files"] == index["files"],
                     "collection raw ledger differs from the retained index",
                 )
             submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
