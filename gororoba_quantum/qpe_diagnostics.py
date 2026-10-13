@@ -148,6 +148,9 @@ N21_ORBIT_BITS = (0, 2, 4)
 # keeps the ideal labeled law and changes one exposure of the work superposition
 # |1> +/- |16> while the control is measured and reset.
 N21_ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
+# window_barrier completes the first round before the first measurement, which
+# window_echo also does, without the echo pulses.
+N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, "window_barrier")
 
 
 def n21_orbit_diagnostic(
@@ -175,7 +178,7 @@ def n21_orbit_diagnostic(
     the measurement and reset; a static frequency offset on those qubits
     accumulates opposite phases in the two halves and cancels.
     """
-    if variant not in N21_ORBIT_VARIANTS:
+    if variant not in N21_ORBIT_BUILDABLE:
         raise ValueError(f"unknown N=21 orbit variant {variant!r}")
     if variant == "window_delay" and (type(window_delay_dt) is not int or window_delay_dt <= 0):
         raise ValueError("window_delay requires a positive integer window_delay_dt from calibration")
@@ -197,6 +200,8 @@ def n21_orbit_diagnostic(
         for _half in range(2):
             circuit.delay(echo_half_dt, [one, sixteen], unit="dt")
             circuit.x([one, sixteen])
+    if variant == "window_barrier":
+        circuit.barrier()
     circuit.measure(0, phase[0])
     if variant == "extra_readout":
         circuit.measure(0, phase[0])
@@ -367,7 +372,7 @@ def _verify() -> None:
             raise RuntimeError(f"N=21 exact branch law changed: {expected}")
         circuits.append(n21_diagnostic(feed_forward))
         expected_laws.append(expected)
-        for variant in N21_ORBIT_VARIANTS:
+        for variant in N21_ORBIT_BUILDABLE:
             circuits.append(n21_orbit_diagnostic(feed_forward, variant, window_delay_dt=416, echo_half_dt=512))
             expected_laws.append(expected)
     for circuit, expected in zip(circuits, expected_laws, strict=True):
@@ -408,7 +413,7 @@ def _verify() -> None:
         except ValueError:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
-    print("QPE diagnostics: 16 folded laws and ten N=21 laws match exact circuit branches and sampled labels")
+    print("QPE diagnostics: 16 folded laws and twelve N=21 laws match exact circuit branches and sampled labels")
 
 
 if __name__ == "__main__":

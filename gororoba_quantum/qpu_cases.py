@@ -30,6 +30,7 @@ FAMILIES = {
     "n21-feedback",
     "n21-orbit-feedback",
     "n21-orbit-rca",
+    "patch-window",
     "ripple",
     "rank-sector",
 }

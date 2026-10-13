@@ -58,6 +58,7 @@ def settings(args: Any) -> dict[str, Any]:
             ("classical_latency_us", 20.0),
             ("reserve_seconds", 0.0),
             ("max_total_execution_seconds", None),
+            ("patch_qubits", None),
         )
     }
 
@@ -159,6 +160,75 @@ def window_durations(runtime: Any, snapshot: Any) -> tuple[int, int, float]:
     return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
 
 
+def patch_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Compile the characterization groups on the pinned patch of every snapshot that admits it.
+
+    The patch is fixed, so a snapshot whose fresh calibration excludes a patch
+    qubit or exercised coupler is refused rather than re-placed.
+    """
+    from patch_characterization import PATCH_DELAYS_DT, PATCH_EDGES, PATCH_ROLES, patch_groups
+
+    layout = [int(qubit) for qubit in args.patch_qubits]
+    if len(layout) != len(PATCH_ROLES) or len(set(layout)) != len(layout):
+        raise runtime.LiveRunError(f"--patch-qubits names {len(PATCH_ROLES)} distinct qubits: {PATCH_ROLES}")
+    delays = list(PATCH_DELAYS_DT)
+    candidates: list[tuple[list[Any], dict[str, Any]]] = []
+    for snapshot in snapshots:
+        try:
+            excluded = sorted(set(layout) & set(snapshot.excluded_qubits))
+            edges = [(layout[a], layout[b]) for a, b in PATCH_EDGES]
+            blocked = [
+                edge for edge in edges if edge in snapshot.excluded_edges or edge[::-1] in snapshot.excluded_edges
+            ]
+            if excluded or blocked:
+                raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
+            choices = []
+            for group in patch_groups(delays):
+                isas = [
+                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, layout)
+                    for member in group.members
+                ]
+                violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, snapshot)]
+                if violations:
+                    raise runtime.LiveRunError(str(violations))
+                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+                choices.append(
+                    runtime.Choice(
+                        group,
+                        snapshot,
+                        runtime.SEED_TRANSPILER,
+                        layout,
+                        isas,
+                        scores,
+                        math.exp(sum(math.log(score) for score in scores) / len(scores)),
+                    )
+                )
+            used = sorted({qubit for choice in choices for isa in choice.isas for qubit in runtime._physical(isa)})
+            replica = Replica(0, {qubit: qubit for qubit in used}, min(min(choice.member_scores) for choice in choices))
+            for choice in choices:
+                runtime._set_entries(choice, [replica], runtime.ReplicaPolicy(args.replica_floor, 1, False, True))
+            runtime.execution_pubs(choices)
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
+            continue
+        candidates.append(
+            (
+                choices,
+                {
+                    "name": args.family,
+                    "patch_qubits": layout,
+                    "patch_roles": list(PATCH_ROLES),
+                    "delays_dt": delays,
+                    "dt_seconds": float(snapshot.backend.target.dt),
+                    "placement_contract": "one pinned patch; static and dynamic jobs",
+                },
+            )
+        )
+    return candidates
+
+
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     """Round the actual measurement writer's fresh duration to timing granularity."""
     target = snapshot.backend.target
@@ -223,6 +293,8 @@ def family_candidates(
                         ([trial], {"name": args.family, "replica_cap": cap, **windows.get(candidate.snap.name, {})})
                     )
         return candidates
+    if args.family == "patch-window":
+        return patch_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
     coherent = runtime.select_candidates(folded_group(("coherent",)), snapshots, args.seeds, trace)

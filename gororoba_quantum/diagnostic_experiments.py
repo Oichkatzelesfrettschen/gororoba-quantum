@@ -29,6 +29,7 @@ FAMILY_NAMES = (
     "n21-feedback",
     "n21-orbit-feedback",
     "n21-orbit-rca",
+    "patch-window",
     "ripple",
     "rank-sector",
 )
@@ -163,6 +164,10 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
         from rank_sector_experiments import sector_contracts
 
         return sector_contracts(precision, alpha, power)
+    if family == "patch-window":
+        from patch_characterization import PATCH_DELAYS_DT, patch_contracts
+
+        return patch_contracts(list(PATCH_DELAYS_DT), alpha, power)
     if family == "n21-orbit-rca":
         # Four directional endpoints share the requested family-wise alpha.
         return tuple(
@@ -232,6 +237,10 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 {int(label): duration for label, duration in family["measurement_delay_dt"].items()},
             ),
         ]
+    if family.get("name") == "patch-window":
+        from patch_characterization import patch_groups
+
+        return patch_groups([int(delay) for delay in family["delays_dt"]])
     if family.get("name") == "n21-orbit-rca":
         return [n21_orbit_rca_group(int(family["window_delay_dt"]), int(family["echo_half_dt"]))]
     if family.get("name") in N21_FAMILIES:

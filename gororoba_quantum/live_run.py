@@ -4577,6 +4577,11 @@ def main(argv: list[str] | None = None) -> int:
         default=[],
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
+    parser.add_argument(
+        "--patch-qubits",
+        type=lambda value: [int(item) for item in value.split(",")],
+        help="physical qubits of the pinned patch, in patch_characterization.PATCH_ROLES order",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -4738,6 +4743,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if (args.family == "patch-window") != (args.patch_qubits is not None):
+        parser.error("--patch-qubits applies to, and is required by, --family patch-window")
+    if args.family == "patch-window" and args.max_replicas not in (None, 1):
+        parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
