@@ -1189,15 +1189,100 @@ def _verify_worker_quota() -> None:
             raise RuntimeError("the cgroup v1 cpu controller path is not resolved")
         if parallel.cgroup_cpu_quota(root / "absent", v1) is not None:
             raise RuntimeError("a missing /proc/self/cgroup reports a quota")
-    original = parallel.cgroup_cpu_quota
-    parallel.cgroup_cpu_quota = lambda *args: 1.5
-    try:
+    with (
+        patch("parallel.os.sched_getaffinity", return_value={0, 1, 2, 3}, create=True),
+        patch("parallel.cgroup_cpu_quota", return_value=1.5),
+        patch.dict(os.environ),
+    ):
+        os.environ.pop("GOROROBA_WORKERS", None)
         if parallel.available_cpus() != 2:
             raise RuntimeError(f"a 1.5-CPU quota counts {parallel.available_cpus()} CPUs")
-        if os.environ.get("GOROROBA_WORKERS") is None and parallel.workers() != 2:
+        if parallel.workers() != 1:
             raise RuntimeError(f"a 1.5-CPU quota sizes {parallel.workers()} workers")
-    finally:
-        parallel.cgroup_cpu_quota = original
+
+
+def _verify_worker_defaults() -> None:
+    """Half the available CPU budget sizes workers and Aer unless an explicit override supplies the count."""
+    cases = (
+        (12, None, 12, 6),
+        (7, None, 7, 3),
+        (1, None, 1, 1),
+        (0, None, 1, 1),
+        (12, 5.0, 5, 2),
+        (12, 1.5, 2, 1),
+        (3, 12.0, 3, 1),
+        (12, 0.5, 1, 1),
+    )
+    with patch.dict(os.environ):
+        os.environ.pop("GOROROBA_WORKERS", None)
+        for affinity_count, quota, expected_available, expected_threads in cases:
+            with (
+                patch("parallel.os.sched_getaffinity", return_value=set(range(affinity_count)), create=True),
+                patch("parallel.cgroup_cpu_quota", return_value=quota),
+            ):
+                actual_available = parallel.available_cpus()
+                actual_threads = parallel.default_threads()
+                actual_workers = parallel.workers()
+                actual_simulation = live_run_module.local_compute.requested_settings()["threads"]
+                if (actual_available, actual_threads, actual_workers, actual_simulation) != (
+                    expected_available,
+                    expected_threads,
+                    expected_threads,
+                    expected_threads,
+                ):
+                    raise RuntimeError(
+                        f"CPU budget affinity={affinity_count}, quota={quota} produces "
+                        f"available={actual_available}, default={actual_threads}, workers={actual_workers}, "
+                        f"simulation={actual_simulation}; expected available={expected_available}, "
+                        f"threads={expected_threads}"
+                    )
+                for configured in ("1", "9"):
+                    os.environ["GOROROBA_WORKERS"] = configured
+                    if parallel.workers() != int(configured):
+                        raise RuntimeError(f"explicit worker count {configured} loses its override")
+                    if parallel.default_threads() != expected_threads:
+                        raise RuntimeError("the worker override changes the Aer default")
+                os.environ.pop("GOROROBA_WORKERS")
+                for configured in ("0", "-1", "invalid"):
+                    os.environ["GOROROBA_WORKERS"] = configured
+                    try:
+                        parallel.workers()
+                    except ValueError:
+                        pass
+                    else:
+                        raise RuntimeError(f"invalid worker override {configured!r} passes")
+                os.environ.pop("GOROROBA_WORKERS")
+        for cpu_count, expected_threads in ((7, 3), (1, 1), (None, 1)):
+            with (
+                patch.object(parallel, "os", argparse.Namespace(cpu_count=lambda count=cpu_count: count, environ={})),
+                patch("parallel.cgroup_cpu_quota", return_value=None),
+            ):
+                if parallel.default_threads() != expected_threads:
+                    raise RuntimeError(f"CPU-count fallback {cpu_count} fails its half-budget default")
+
+    class ParsedCLI(Exception):
+        def __init__(self, args: argparse.Namespace) -> None:
+            self.args_namespace = args
+
+    original_parse_args = argparse.ArgumentParser.parse_args
+
+    def capture_cli(parser: argparse.ArgumentParser, args: list[str] | None = None) -> argparse.Namespace:
+        raise ParsedCLI(original_parse_args(parser, args))
+
+    with (
+        patch("parallel.os.sched_getaffinity", return_value=set(range(12)), create=True),
+        patch("parallel.cgroup_cpu_quota", return_value=None),
+        patch.object(argparse.ArgumentParser, "parse_args", capture_cli),
+    ):
+        for argv, expected_threads in (([], 6), (["--simulation-threads", "9"], 9)):
+            try:
+                live_run_module.main(argv)
+            except ParsedCLI as parsed:
+                requested_threads = live_run_module.local_compute.requested_settings(parsed.args_namespace)["threads"]
+                if requested_threads != expected_threads:
+                    raise RuntimeError(f"simulation CLI {argv} requests {requested_threads} threads") from None
+            else:
+                raise RuntimeError("simulation CLI bypasses the argument capture boundary")
 
 
 def _verify_replay_seed_independence() -> None:
@@ -3049,6 +3134,7 @@ def _verify() -> None:
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
     _verify_worker_quota()
+    _verify_worker_defaults()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()

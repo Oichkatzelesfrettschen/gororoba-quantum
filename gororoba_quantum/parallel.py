@@ -11,7 +11,8 @@ deserialization per worker. Results come back in input order, so a parallel
 run returns exactly what the serial loop returns.
 
 GOROROBA_WORKERS caps the worker count; 1 runs serially in-process. The
-default is the CPU count available to this process.
+default is half the logical CPUs available to this process, rounded down
+with a minimum of one.
 """
 
 from __future__ import annotations
@@ -58,14 +59,14 @@ def workers() -> int:
 
 
 def default_threads() -> int:
-    """Every CPU available to this process.
+    """Half the available logical CPU budget, rounded down with a minimum of one.
 
-    Noisy density-matrix simulation of dynamic circuits evolves each shot
-    separately, so Aer's shot parallelism scales with logical CPUs: the
-    simultaneous-multithreading sibling threads add throughput over physical
-    cores alone (LOCAL_COMPUTE.md carries the measurement).
+    Affinity and cgroup quotas bound available_cpus(). Sharing that budget
+    between local quantum preparation and other workstation work keeps the
+    process-pool and Aer defaults consistent. Explicit worker and simulation
+    thread counts retain their independent overrides.
     """
-    return available_cpus()
+    return max(1, available_cpus() // 2)
 
 
 def available_cpus() -> int:
