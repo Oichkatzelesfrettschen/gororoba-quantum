@@ -412,7 +412,7 @@ index b88aa63..99a6807 100755
 +  DensityMatrix() : DensityMatrix(0) {}
    explicit DensityMatrix(size_t num_qubits);
 -  DensityMatrix(const DensityMatrix &obj [[maybe_unused]]){};
-+  DensityMatrix(const DensityMatrix &obj) : UnitaryMatrix<data_t>(obj) {}
++  DensityMatrix(const DensityMatrix &obj [[maybe_unused]]) : UnitaryMatrix<data_t>() {}
    DensityMatrix &operator=(const DensityMatrix &obj) = delete;
    DensityMatrix &operator=(DensityMatrix &&obj) noexcept;
  
@@ -611,7 +611,7 @@ index 20c3c0b..c970954 100644
 +  UnitaryMatrix() : UnitaryMatrix(0) {}
    explicit UnitaryMatrix(size_t num_qubits);
 -  UnitaryMatrix(const UnitaryMatrix &obj [[maybe_unused]]) {}
-+  UnitaryMatrix(const UnitaryMatrix &obj) : QubitVector<data_t>(obj) {}
++  UnitaryMatrix(const UnitaryMatrix &obj [[maybe_unused]]) : QubitVector<data_t>() {}
    UnitaryMatrix &operator=(const UnitaryMatrix &obj) = delete;
    UnitaryMatrix &operator=(UnitaryMatrix &&obj);
  

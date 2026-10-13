@@ -242,6 +242,8 @@ def _capture(
             build = json.loads(contents, object_pairs_hook=_unique_object)
         except (UnicodeError, json.JSONDecodeError) as error:
             raise ValueError("native Aer build manifest is invalid JSON") from error
+        if not isinstance(build, dict):
+            raise ValueError("native Aer build manifest must be a JSON object")
         manifest = {"basename": manifest_path.name, "sha256": manifest_checksum, "contract": build}
     _require(verified == _verify_mapping(extension, extension_stamp, maps()), "native Aer mapping verification changes")
     record = {

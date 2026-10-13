@@ -137,7 +137,7 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
         if policy["mode"] == "gpu":
             raise
         return "CPU", {"rejected": str(error), "active_qubits": width}
-    return "GPU", admission
+    return "GPU", admission | {"runtime": aer_identity.gpu_runtime_identity()}
 
 
 def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:

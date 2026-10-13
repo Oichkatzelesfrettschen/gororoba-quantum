@@ -14,7 +14,7 @@ measure the LCU ancilla; a dark fringe represents cancellation in that
 postselected branch, while the full state retains norm one.
 
 Default execution emits JSON to stdout. --out writes an explicit evidence
-file; --check recomputes its scientific payload and verifies its source hashes.
+file; --check recomputes its scientific payload and compares it with the retained bytes.
 Dependency versions and floating-point residuals accompany the exact payload
 as execution metadata. These local checks use core Qiskit without a backend.
 """
@@ -474,7 +474,7 @@ def _canonical_payload(evidence: dict[str, Any]) -> str:
 
 
 def check_evidence(record: object, expected: dict[str, Any]) -> None:
-    """Require exact science/source agreement and bounded retained residuals."""
+    """Require exact scientific-payload agreement and bounded retained residuals."""
     _require(isinstance(record, dict), "evidence must be a JSON object")
     if not isinstance(record, dict):
         return
@@ -503,7 +503,7 @@ def check_evidence(record: object, expected: dict[str, Any]) -> None:
             type(residual) in (int, float) and math.isfinite(residual) and 0 <= residual < TOLERANCE,
             "retained numerical residual",
         )
-    _require(_canonical_payload(record) == _canonical_payload(expected), "scientific payload or source hashes differ")
+    _require(_canonical_payload(record) == _canonical_payload(expected), "scientific payload differs")
 
 
 def main() -> int:
@@ -516,7 +516,7 @@ def main() -> int:
     if arguments.check is not None:
         record = json.loads(arguments.check.read_text(encoding="utf-8"))
         check_evidence(record, evidence)
-        print("ripple evidence: scientific payload, source hashes, and numerical bounds verified")
+        print("ripple evidence: scientific payload and numerical bounds verified")
     elif arguments.out is not None:
         arguments.out.write_text(json.dumps(evidence, indent=2, allow_nan=False) + "\n", encoding="utf-8")
     else:

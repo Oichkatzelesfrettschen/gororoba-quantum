@@ -52,7 +52,7 @@ sha256sums=(
   '656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04'
   'faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96'
   'd6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22'
-  '82a21ae10e9bf2a41d27a4c4abd3ce2c86d2fbd7f30b46ad633729b7db925af1'
+  '8135f1b382cf704e0f4db67c29765fad4be245c9bc1040ab1d2f13f00f1b2543'
   '663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53'
   '10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352'
   'f7aaf1ebbb79178a02ba248bb524f2176b256017e17e8e4bd4289c7b38cc2bad'
@@ -122,6 +122,7 @@ prepare() {
 build() {
   local python_executable build_python jobs
   jobs=$(( $(nproc) / 2 ))
+  [ "$jobs" -ge 1 ] || jobs=1
   python_executable="${PYTHON:-$(command -v python3)}"
   export PYTHON="$python_executable"
   export CMAKE_BUILD_PARALLEL_LEVEL="$jobs"
@@ -218,7 +219,7 @@ source_checksums = {
         'aer-native-toolchain.patch': '656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04',
         'aer-cccl-type-traits.patch': 'faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96',
         'aer-unused-parameter-annotations.patch': 'd6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22',
-        'aer-compiler-diagnostics.patch': '82a21ae10e9bf2a41d27a4c4abd3ce2c86d2fbd7f30b46ad633729b7db925af1',
+        'aer-compiler-diagnostics.patch': '8135f1b382cf704e0f4db67c29765fad4be245c9bc1040ab1d2f13f00f1b2543',
         'scikit-build-cmake-cli.patch': '663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53',
         'build-requirements.txt': '10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352',
         'check_native_aer.py': '18b7879ab0a41acf58c9c6965b6f6f092218876a5a807d2b702ee1e1ebf5c295',
