@@ -9,9 +9,15 @@ assignment error that reaches both the stored bit and the correction. Each
 model adds one mechanism to a two-parameter depolarizing baseline (one
 strength per multiplier round) and is fitted to the eight measured cells of
 both arms by maximum likelihood. The deviance G2 = 2 sum n log(n / N p)
-ranks the mechanisms; with six degrees of freedom in the data, a mechanism
-that lowers G2 by more than 3.84 per added parameter improves the fit at
-alpha 0.05.
+ranks the mechanisms. Eight mechanisms are compared, so a deviance reduction
+counts at family-wise alpha 0.05 only above the chi-square quantile at
+0.05 / 8 for the mechanism's added parameters (Bonferroni).
+
+Physical roles come from the circuits that ran: the control is the writer of
+the first measurement, and a Z probe inserted where each placed qubit's
+scheduled window idle begins identifies, through exact branch probabilities
+of the archived ISA, which qubit holds the work bit for 1 and which for 16.
+Routing can move logical qubits away from their initial layout.
 
 Usage: "$PYTHON" scripts/n21_orbit_rca.py RUN_DIR [--out FILE]
 """
@@ -19,14 +25,21 @@ Usage: "$PYTHON" scripts/n21_orbit_rca.py RUN_DIR [--out FILE]
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
+import sys
 from collections import Counter
 from pathlib import Path
 from typing import Any
 
 import numpy as np
 from scipy.optimize import minimize
+from scipy.stats import chi2
+
+sys.path.insert(0, str(Path(__file__).resolve().parents[1] / "gororoba_quantum"))
+
+FAMILY_ALPHA = 0.05
 
 CONTROL, ONE, FOUR, SIXTEEN, RECORD = range(5)
 WORK = (ONE, FOUR, SIXTEEN)
@@ -86,6 +99,25 @@ class Evolution:
     def channel(self, kraus: list[np.ndarray], qubit: int) -> None:
         full = [_embed(operator, (qubit,)) for operator in kraus]
         self.rho = sum(operator @ self.rho @ operator.conj().T for operator in full)
+
+    def branch_window(self, branch: int, angle: float, loss: float) -> None:
+        """Phase and dephase the work bit for 1 only where the recorded first bit equals branch.
+
+        loss scales the coherence of that bit by 1 - loss inside the branch.
+        """
+        selected = np.diag([1.0, 0.0] if branch == 0 else [0.0, 1.0]).astype(complex)
+        other = np.eye(2, dtype=complex) - selected
+        phase = np.diag([1.0, np.exp(1j * angle)]).astype(complex)
+        # Local operators act on (ONE, RECORD) with ONE as the low bit.
+        self.unitary(np.kron(selected, phase) + np.kron(other, _I), (ONE, RECORD))
+        weight = min(max(loss, 0.0), 1.0) / 2
+        if weight:
+            kraus = [
+                np.kron(other, _I) + np.kron(selected, math.sqrt(1 - weight) * _I),
+                np.kron(selected, math.sqrt(weight) * _Z),
+            ]
+            full = [_embed(operator, (ONE, RECORD)) for operator in kraus]
+            self.rho = sum(operator @ self.rho @ operator.conj().T for operator in full)
 
     def depolarize(self, strength: float, qubits: tuple[int, ...]) -> None:
         weight = max(0.0, min(1.0, strength))
@@ -147,6 +179,10 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     for qubit, key in ((ONE, "phase_one"), (SIXTEEN, "phase_sixteen")):
         if params.get(key):
             state.unitary(np.diag([1, np.exp(1j * params[key])]).astype(complex), (qubit,))
+    for branch in (0, 1):
+        angle, loss = params.get(f"phase_b{branch}", 0.0), params.get(f"loss_b{branch}", 0.0)
+        if angle or loss:
+            state.branch_window(branch, angle, loss)
     state.unitary(_H, (CONTROL,))
     state.unitary(_cswap(), (CONTROL, FOUR, SIXTEEN))
     state.unitary(_cswap(), (CONTROL, ONE, FOUR))
@@ -165,27 +201,49 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     return law / law.sum()
 
 
+def _group(run: Path) -> dict[str, Any]:
+    group: dict[str, Any] = json.loads((run / "record.json").read_text())["groups"][0]
+    if len(group["replicas"]) != 1:
+        raise RuntimeError("the RCA fit reads one replica; the n21-orbit-rca family plans one")
+    return group
+
+
+def raw_pubs(run: Path) -> list[dict[str, Any]]:
+    """Raw PUB payloads in member order, each checked against the collection's sha256 index."""
+    (job,) = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    directory = run / "raw" / job
+    indexed = json.loads((directory / "index.json").read_text())["files"]
+    payloads = []
+    for index in range(len(_group(run)["members"])):
+        path = directory / f"pub_{index:02d}.json"
+        if hashlib.sha256(path.read_bytes()).hexdigest() != indexed.get(path.name):
+            raise RuntimeError(f"{path.name} differs from the sha256 retained by collection")
+        payloads.append(json.loads(path.read_text()))
+    return payloads
+
+
+def _circuits(run: Path) -> list[Any]:
+    from qiskit import qpy
+
+    with (run / "isa.qpy").open("rb") as handle:
+        return list(qpy.load(handle))
+
+
 def measured_pairs(run: Path) -> dict[str, dict[str, np.ndarray]]:
     """Counts per feed-forward pair, keyed by the member name without its arm suffix.
 
     PUB i carries the record's member i; the archived ISA confirms the order,
     since only the feed-forward member contains an if_else.
     """
-    from qiskit import qpy
-
-    collected = json.loads((run / "collect.json").read_text())
-    (job,) = collected[0]["jobs"]
-    members = [member["name"] for member in json.loads((run / "record.json").read_text())["groups"][0]["members"]]
-    with (run / "isa.qpy").open("rb") as handle:
-        circuits = qpy.load(handle)
+    members = [member["name"] for member in _group(run)["members"]]
+    circuits = _circuits(run)
     if len(circuits) != len(members):
         raise RuntimeError("archived circuits and record members differ in number")
     pairs: dict[str, dict[str, np.ndarray]] = {}
-    for index, (name, circuit) in enumerate(zip(members, circuits, strict=True)):
+    for index, (name, circuit, payload) in enumerate(zip(members, circuits, raw_pubs(run), strict=True)):
         arm = "no_feedback" if name.endswith("_no_feedback") else "feedback"
         if ("if_else" in circuit.count_ops()) != (arm == "feedback"):
             raise RuntimeError(f"PUB {index} feed-forward structure differs from member {name}")
-        payload = json.loads((run / "raw" / job / f"pub_{index:02d}.json").read_text())
         bits = payload["registers"][REGISTER]["bitstrings"]
         tally = Counter(int(value[1]) + 2 * int(value[0]) for value in bits)
         pairs.setdefault(name.removesuffix("_" + arm), {})[arm] = np.array(
@@ -194,74 +252,197 @@ def measured_pairs(run: Path) -> dict[str, dict[str, np.ndarray]]:
     return pairs
 
 
-def signed_exposure(run: Path) -> dict[str, dict[str, float]]:
-    """Signed idle time, in dt, of the work qubits for 1 and 16 in each PUB's hardware schedule.
+_VIRTUAL = frozenset({"rz", "barrier", "delay", "if_else"})
 
-    A quasi-static detuning on a work qubit adds phase in proportion to its
-    idle time from the end of its last round-1 pulse to its first round-2
-    pulse; each X pulse inside that window reverses the sign of later idle
-    time. The window opens at the control's first measure; it closes at the
-    work qubit's first non-X pulse after that, which precedes the end of the
-    control's reset when the second round starts on the work qubits first.
+
+def _plays(payload: dict[str, Any]) -> list[tuple[int, int, str, int]]:
+    rows = [line.split(",") for line in payload["metadata"]["compilation"]["scheduler_timing"]["timing"].splitlines()]
+    return [
+        (int(row[3]), int(row[4]), row[1].split("_")[0], int(row[2].removeprefix("Qubit ")))
+        for row in rows
+        if row[5] == "play" and row[2].startswith("Qubit ") and not row[1].startswith(("INIT", "FINI"))
+    ]
+
+
+def _probed(circuit: Any, positions: dict[int, int], angles: dict[int, float]) -> np.ndarray:
+    """Exact compiled branch law with rz(angle) after the positions[q]-th physical pulse on each probed wire."""
+    from qiskit import QuantumCircuit
+
+    from qpe_diagnostics import ideal_compiled_probabilities
+
+    probed = QuantumCircuit(*circuit.qregs, *circuit.cregs)
+    seen = dict.fromkeys(angles, 0)
+    for instruction in circuit.data:
+        probed.append(instruction)
+        if instruction.operation.name in _VIRTUAL:
+            continue
+        for bit in instruction.qubits:
+            qubit = circuit.find_bit(bit).index
+            if qubit in angles:
+                seen[qubit] += 1
+                if seen[qubit] == positions[qubit]:
+                    probed.rz(angles[qubit], qubit)
+    return np.array(ideal_compiled_probabilities(probed))
+
+
+def _branch_law(feed_forward: bool, phases: dict[int, float]) -> np.ndarray:
+    return np.array(
+        distribution(_readout(0.0, 0.0) | {f"phase_b{b}": phase for b, phase in phases.items()}, feed_forward)
+    )
+
+
+def window_roles(run: Path) -> dict[str, dict[str, Any]]:
+    """Physical control, branch couplings, and scheduled windows of each member.
+
+    The window of a placed qubit runs from the end of its last pulse before
+    the control's first measurement to its first non-X pulse after it; X
+    pulses inside it are echo pulses. Work-only gates commute with the
+    control's measurement, so the compiler can finish a multiplier after it,
+    and which qubit holds the work superposition then depends on the member
+    and on the recorded first bit. A Z rotation at the start of a qubit's
+    window changes the exact compiled branch law as a phase of +/- the
+    rotation on the work bit for 1 in branch 0, branch 1, or both; that
+    match is the qubit's coupling. Without feed-forward the law is even in
+    the phase, so a joint probe of two qubits fixes their relative sign.
     """
-    record = json.loads((run / "record.json").read_text())
-    group = record["groups"][0]
-    (replica,) = group["replicas"]
-    layout = [int(qubit) for qubit in replica["initial_layout"]]
-    control, wires = layout[CONTROL], {"one": layout[ONE], "sixteen": layout[SIXTEEN]}
-    (job,) = json.loads((run / "collect.json").read_text())[0]["jobs"]
-    exposure = {}
-    for index, member in enumerate(group["members"]):
-        payload = json.loads((run / "raw" / job / f"pub_{index:02d}.json").read_text())
-        rows = [
-            line.split(",") for line in payload["metadata"]["compilation"]["scheduler_timing"]["timing"].splitlines()
-        ]
-        plays = [
-            (int(row[3]), int(row[4]), row[1].split("_")[0], row[2])
-            for row in rows
-            if row[5] == "play" and not row[1].startswith(("INIT", "FINI"))
-        ]
-        opening = min(start for start, _length, name, wire in plays if wire == f"Qubit {control}" and name == "measure")
-        member_exposure = {}
-        for label, qubit in wires.items():
-            pulses = sorted((start, length, name) for start, length, name, wire in plays if wire == f"Qubit {qubit}")
-            before = max(start + length for start, length, name in pulses if start + length <= opening)
-            after = min(start for start, _length, name in pulses if start >= opening and name != "x")
-            sign, cursor, total = 1.0, before, 0.0
-            for start, length, name in pulses:
-                if before <= start < after and name == "x":
-                    total += sign * (start - cursor)
-                    sign, cursor = -sign, start + length
-            member_exposure[label] = total + sign * (after - cursor)
-        exposure[member["name"]] = member_exposure
+    from qpe_diagnostics import ideal_compiled_probabilities
+
+    probe = 0.7
+    branch_sets = ((0,), (1,), (0, 1))
+    group = _group(run)
+    placed = sorted(int(qubit) for qubit in group["replicas"][0]["physical_qubits"])
+    roles: dict[str, dict[str, Any]] = {}
+    for member, circuit, payload in zip(group["members"], _circuits(run), raw_pubs(run), strict=True):
+        feed_forward = not member["name"].endswith("_no_feedback")
+        plays = _plays(payload)
+        writer = next(circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "measure")
+        opening = min(start for start, _length, name, wire in plays if wire == writer and name == "measure")
+        base = np.array(ideal_compiled_probabilities(circuit))
+        windows: dict[int, dict[str, Any]] = {}
+        positions: dict[int, int] = {}
+        coupling: dict[int, dict[int, int]] = {}
+        unresolved: list[str] = []
+        for qubit in placed:
+            if qubit == writer:
+                continue
+            pulses = sorted((start, length, name) for start, length, name, wire in plays if wire == qubit)
+            before = [start + length for start, length, _name in pulses if start + length <= opening]
+            after = [start for start, _length, name in pulses if start >= opening and name != "x"]
+            if not before or not after:
+                continue
+            windows[qubit] = {
+                "before": max(before),
+                "after": min(after),
+                "x": [start for start, _length, name in pulses if max(before) <= start < min(after) and name == "x"],
+            }
+            positions[qubit] = sum(1 for start, length, _name in pulses if start + length <= max(before))
+            shift = _probed(circuit, positions, {qubit: probe})
+            if np.allclose(shift, base, atol=1e-9):
+                continue
+            matches = [
+                (sign, branches)
+                for sign in (1, -1)
+                for branches in branch_sets
+                if np.allclose(shift, _branch_law(feed_forward, dict.fromkeys(branches, sign * probe)), atol=1e-9)
+            ]
+            if not matches or len({branches for _sign, branches in matches}) != 1:
+                unresolved.append(f"a Z probe on qubit {qubit} matches no single window phase")
+                continue
+            signs = {sign for sign, _branches in matches}
+            coupling[qubit] = {branch: (next(iter(signs)) if len(signs) == 1 else 0) for branch in matches[0][1]}
+        if not coupling and not unresolved:
+            unresolved.append("no placed qubit carries the work superposition in the window")
+        ambiguous = [q for q, branches in coupling.items() if 0 in branches.values()]
+        if ambiguous:
+            anchor = ambiguous[0]
+            coupling[anchor] = dict.fromkeys(coupling[anchor], 1)
+            for qubit in ambiguous[1:]:
+                joint = _probed(circuit, positions, {anchor: probe, qubit: probe})
+                for sign in (1, -1):
+                    trial = {**coupling, qubit: dict.fromkeys(coupling[qubit], sign)}
+                    phases = {
+                        b: sum(
+                            probe * branches[b]
+                            for q, branches in trial.items()
+                            if q in (anchor, qubit) and b in branches
+                        )
+                        for b in (0, 1)
+                    }
+                    if np.allclose(joint, _branch_law(feed_forward, phases), atol=1e-9):
+                        coupling[qubit] = trial[qubit]
+                        break
+                else:
+                    unresolved.append(f"a joint probe with qubit {anchor} fits neither relative sign of qubit {qubit}")
+        roles[member["name"]] = {"control": writer, "coupling": coupling, "windows": windows, "unresolved": unresolved}
+    return roles
+
+
+def signed_exposure(
+    run: Path, roles: dict[str, dict[str, Any]] | None = None
+) -> dict[str, dict[int, dict[int, float]]]:
+    """Per member and branch, the coupling-weighted signed idle time in dt of each window qubit.
+
+    A quasi-static detuning adds phase in proportion to idle time inside the
+    window; each echo X pulse reverses the sign of later idle time, and the
+    probe coupling maps the qubit's phase onto the phase of the work bit for 1
+    in the branches where the qubit holds the superposition.
+    """
+    roles = window_roles(run) if roles is None else roles
+    exposure: dict[str, dict[int, dict[int, float]]] = {}
+    for name, role in roles.items():
+        member_exposure: dict[int, dict[int, float]] = {0: {}, 1: {}}
+        for qubit, branches in role["coupling"].items():
+            window = role["windows"][qubit]
+            sign, cursor, total = 1.0, window["before"], 0.0
+            for start in window["x"]:
+                total += sign * (start - cursor)
+                sign, cursor = -sign, start
+            idle = total + sign * (window["after"] - cursor)
+            for branch, coupling_sign in branches.items():
+                member_exposure[branch][qubit] = coupling_sign * idle
+        exposure[name] = member_exposure
     return exposure
+
+
+def dt_seconds(run: Path) -> float:
+    """The backend sample time: the family configuration's value, else the backend Target's."""
+    record = json.loads((run / "record.json").read_text())
+    retained = record.get("family_configuration", {}).get("dt_seconds")
+    if retained:
+        return float(retained)
+    from qiskit_ibm_runtime import QiskitRuntimeService
+
+    return float(QiskitRuntimeService().backend(record["groups"][0]["backend"]).target.dt)
 
 
 def joint_quasistatic_fit(
     run: Path, pairs: dict[str, dict[str, np.ndarray]], readout: dict[str, float]
 ) -> dict[str, Any]:
-    """Fit a per-shot Gaussian detuning on each work qubit across every pair at once.
+    """Fit a per-shot Gaussian detuning on each window qubit across every pair at once.
 
-    The kickback phase is mean_one * s_one - mean_sixteen * s_sixteen and the
-    coherence factor is exp(-(sd_one^2 s_one^2 + sd_sixteen^2 s_sixteen^2) / 2),
-    with s the signed exposure of each member and rates in radians per
-    microsecond; the two depolarizing nuisances are shared by all arms.
+    For each member the phase of the work bit for 1 is sum_q mean_q s_q and
+    the relative coherence is exp(-sum_q sd_q^2 s_q^2 / 2), with s_q the
+    coupling-weighted signed exposure of physical qubit q and rates in
+    radians per microsecond; the two depolarizing nuisances are shared.
     """
-    exposure = signed_exposure(run)
-    dt_us = 4e-3
-    names = ["round1", "round2", "mean_one", "mean_sixteen", "sd_one", "sd_sixteen"]
-    bounds = [(0.0, 1.0), (0.0, 1.0), (-5.0, 5.0), (-5.0, 5.0), (0.0, 5.0), (0.0, 5.0)]
+    roles = window_roles(run)
+    unresolved = {name: role["unresolved"] for name, role in roles.items() if role["unresolved"]}
+    if unresolved:
+        return {"skipped": "window state is not a branch phase on the work bit for 1", "unresolved": unresolved}
+    exposure = signed_exposure(run, roles)
+    dt_us = dt_seconds(run) * 1e6
+    qubits = sorted({qubit for member in exposure.values() for branch in member.values() for qubit in branch})
+    names = ["round1", "round2", *(f"mean_{q}" for q in qubits), *(f"sd_{q}" for q in qubits)]
+    bounds = [(0.0, 1.0), (0.0, 1.0), *([(-5.0, 5.0)] * len(qubits)), *([(0.0, 5.0)] * len(qubits))]
 
     def member_params(vector: np.ndarray, member: str) -> dict[str, float]:
         values = dict(zip(names, map(float, vector), strict=True))
-        one, sixteen = (exposure[member][key] * dt_us for key in ("one", "sixteen"))
-        coherence = math.exp(-((values["sd_one"] * one) ** 2 + (values["sd_sixteen"] * sixteen) ** 2) / 2)
-        return readout | {
-            "round1": values["round1"],
-            "round2": values["round2"],
-            "phase_one": values["mean_one"] * one - values["mean_sixteen"] * sixteen,
-            "window_t2": 1.0 - coherence,
-        }
+        params = readout | {"round1": values["round1"], "round2": values["round2"]}
+        for branch, entries in exposure[member].items():
+            times = {qubit: value * dt_us for qubit, value in entries.items()}
+            params[f"phase_b{branch}"] = sum(values[f"mean_{q}"] * t for q, t in times.items())
+            params[f"loss_b{branch}"] = 1.0 - math.exp(-sum((values[f"sd_{q}"] * t) ** 2 for q, t in times.items()) / 2)
+        return params
 
     def objective(vector: np.ndarray) -> float:
         total = 0.0
@@ -274,36 +455,69 @@ def joint_quasistatic_fit(
                 total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
         return total
 
+    # Multi-microsecond exposures wrap the mean phase, so the mean rates have
+    # many basins; a grid over both means seeds the local searches.
+    import itertools
+
+    grid = np.linspace(-4.5, 4.5, 19)
+    seeds = sorted(
+        (objective(np.array([0.12, 0.0, *means, *([0.0] * len(qubits))])), means)
+        for means in itertools.product(grid, repeat=len(qubits))
+    )[:4]
     best: Any = None
-    for start in ([0.1, 0.0, 0.1, 0.0, 0.1, 0.1], [0.1, 0.0, 0.0, -0.1, 0.1, 0.1], [0.1, 0.0, 0.1, 0.1, 0.3, 0.0]):
-        result = minimize(objective, np.array(start), method="L-BFGS-B", bounds=bounds)
-        if best is None or result.fun < best.fun:
-            best = result
-    static = minimize(objective, best.x, method="L-BFGS-B", bounds=bounds[:4] + [(0.0, 0.0), (0.0, 0.0)])
+    for _value, means in seeds:
+        for spread in (0.0, 0.2):
+            start = np.array([0.12, 0.0, *means, *([spread] * len(qubits))])
+            result = minimize(objective, start, method="L-BFGS-B", bounds=bounds)
+            if best is None or result.fun < best.fun:
+                best = result
+    static = minimize(
+        objective,
+        np.concatenate([best.x[: 2 + len(qubits)], np.zeros(len(qubits))]),
+        method="L-BFGS-B",
+        bounds=bounds[: 2 + len(qubits)] + [(0.0, 0.0)] * len(qubits),
+    )
     cells = sum(len(counts) * 3 for counts in pairs.values())
     return {
         "parameters_rad_per_us": dict(zip(names, map(float, best.x), strict=True)),
         "deviance": float(best.fun),
         "degrees_of_freedom": cells - len(names),
         "static_detuning_only_deviance": float(static.fun),
-        "signed_exposure_dt": exposure,
+        "signed_exposure_dt": {
+            member: {str(branch): {str(q): t for q, t in entries.items()} for branch, entries in values.items()}
+            for member, values in exposure.items()
+        },
     }
 
 
-def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], best: dict[str, Any]) -> list[float]:
-    """Profile-likelihood 95 percent interval of the work phase: deviance within 3.84 of its minimum."""
+def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], best: dict[str, Any]) -> list[list[float]]:
+    """Profile-likelihood 95 percent confidence set of the work phase as wrapped segments.
+
+    Grid phases whose profiled deviance lies within 3.84 of the minimum form
+    the set; contiguous runs become segments, and a run touching both -pi and
+    pi joins into one segment across the wrap.
+    """
     names = [name for name, _low, _high in NUISANCE]
     bounds = [(low, high) for _name, low, high in NUISANCE]
     start = np.array([best["parameters"][name] for name in names])
-    inside = []
+    inside: list[bool] = []
     for phase in np.linspace(-math.pi, math.pi, 121):
 
         def objective(vector: np.ndarray, phase: float = float(phase)) -> float:
             return deviance(counts, readout | dict(zip(names, map(float, vector), strict=True)) | {"phase_one": phase})
 
-        if minimize(objective, start, method="L-BFGS-B", bounds=bounds).fun <= best["deviance"] + 3.84:
-            inside.append(float(phase))
-    return [min(inside), max(inside)] if inside else []
+        inside.append(minimize(objective, start, method="L-BFGS-B", bounds=bounds).fun <= best["deviance"] + 3.84)
+    grid = np.linspace(-math.pi, math.pi, 121)
+    segments: list[list[float]] = []
+    for index, accepted in enumerate(inside):
+        if accepted and (index == 0 or not inside[index - 1]):
+            segments.append([float(grid[index]), float(grid[index])])
+        elif accepted:
+            segments[-1][1] = float(grid[index])
+    if len(segments) > 1 and inside[0] and inside[-1]:
+        first = segments.pop(0)
+        segments[-1][1] = first[1] + 2 * math.pi
+    return segments
 
 
 def deviance(counts: dict[str, np.ndarray], params: dict[str, float]) -> float:
@@ -328,18 +542,17 @@ def _readout(read_one_given_zero: float, read_zero_given_one: float) -> dict[str
 def calibrated_readout(run: Path) -> dict[str, Any]:
     """Control-qubit assignment rates at the record's calibration.
 
-    The physical control qubit is the first entry of the replica's initial
-    layout. A record that retains placed_qubit_calibration supplies P(1|0) and
-    P(0|1) directly; an older record falls back to IBM properties at its
+    The physical control qubit is the writer of the first measurement. A
+    record that retains placed_qubit_calibration supplies P(1|0) and P(0|1)
+    directly; an older record falls back to IBM properties at its
     calibration timestamp.
     """
     from datetime import datetime, timedelta
 
     from qiskit_ibm_runtime import QiskitRuntimeService
 
-    group = json.loads((run / "record.json").read_text())["groups"][0]
-    (replica,) = group["replicas"]
-    qubit = int(replica["initial_layout"][0])
+    group = _group(run)
+    qubit = next(iter(window_roles(run).values()))["control"]
     retained = group.get("placed_qubit_calibration", {}).get(str(qubit))
     if retained and {"prob_meas1_prep0", "prob_meas0_prep1"} <= retained.keys():
         return {
@@ -433,7 +646,14 @@ def self_check() -> None:
         raise RuntimeError(f"work-phase fit missed the planted phase: {phase['parameters']}")
     if baseline["deviance"] - phase["deviance"] < 3.84:
         raise RuntimeError("the depolarizing baseline fits a planted coherent phase")
-    print("N=21 orbit RCA: exact laws, planted-phase recovery, and baseline rejection checks pass")
+    for feed_forward in (True, False):
+        both = distribution(readout | {"phase_b0": 0.4, "phase_b1": 0.4}, feed_forward)
+        if not np.allclose(both, distribution(readout | {"phase_one": 0.4}, feed_forward), atol=1e-12):
+            raise RuntimeError("a phase in both recorded branches differs from an unconditional phase")
+    half = distribution(readout | {"loss_b1": 0.5}, False)
+    if np.allclose(half, distribution(readout, False), atol=1e-6):
+        raise RuntimeError("branch dephasing leaves the no-feedback law unchanged")
+    print("N=21 orbit RCA: exact laws, planted-phase recovery, branch-window, and baseline rejection checks pass")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -475,18 +695,30 @@ def main(argv: list[str] | None = None) -> int:
             "work_phase_95_interval": interval,
         }
         baseline = models["baseline_depolarizing"]["deviance"]
+        comparisons = len(MECHANISMS) - 1
+        for model in models.values():
+            threshold = float(chi2.ppf(1 - FAMILY_ALPHA / comparisons, max(1, model["added_parameters"])))
+            model["family_wise_threshold"] = threshold
+            model["improves_at_family_alpha"] = baseline - model["deviance"] > threshold
         print(f"{pair}: work phase {models['work_phase_one']['parameters']['phase_one']:+.3f} rad, 95% {interval}")
         for name, model in sorted(models.items(), key=lambda item: item[1]["deviance"])[:4]:
             params = ", ".join(f"{key}={value:.4f}" for key, value in model["parameters"].items())
             gain = baseline - model["deviance"]
-            print(f"  {name:30s} G2={model['deviance']:8.2f} gain={gain:7.2f} k+{model['added_parameters']}  {params}")
+            flag = "*" if model["improves_at_family_alpha"] else " "
+            print(
+                f"  {name:30s} G2={model['deviance']:8.2f} gain={gain:7.2f}{flag} "
+                f"k+{model['added_parameters']}  {params}"
+            )
     if len(pairs) > 1:
         joint = joint_quasistatic_fit(arguments.run, pairs, readout)
         report["joint_quasistatic_detuning"] = joint
-        print(
-            f"joint quasi-static detuning: G2={joint['deviance']:.2f} on {joint['degrees_of_freedom']} dof; "
-            f"static-only G2={joint['static_detuning_only_deviance']:.2f}; {joint['parameters_rad_per_us']}"
-        )
+        if "skipped" in joint:
+            print(f"joint quasi-static detuning skipped: {joint['skipped']}; {joint['unresolved']}")
+        else:
+            print(
+                f"joint quasi-static detuning: G2={joint['deviance']:.2f} on {joint['degrees_of_freedom']} dof; "
+                f"static-only G2={joint['static_detuning_only_deviance']:.2f}; {joint['parameters_rad_per_us']}"
+            )
     if arguments.out:
         arguments.out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     return 0

@@ -131,14 +131,16 @@ owns the link from literature and observations to the next intervention.
    share at the qubit's T1 rate; readout-calibration circuits on the first
    writer give an assignment matrix whose label asymmetry matches the strata.
    Falsifier: a single symmetric assignment model reproduces both labels'
-   strata within their binomial intervals. The N=21 orbit run on ibm_fez
-   (job db6ub8svf2bc73d1rc50) adds a competing explanation for a recorded-1
-   stratum shift: its eight cells fit a coherent phase of about 0.59 rad on
-   the second-round kickback (deviance 2.5) and reject mid-circuit assignment
-   as the cause (deviance 63.8 against 65.4 for the baseline). Refitting the
-   two correction runs with a coherent-phase term precedes any correction-arm
-   spend; the `n21-orbit-rca` window arms test delay, extra readout and echo
-   directly. The design reuses the four-PUB
+   strata within their binomial intervals. Two N=21 orbit runs on ibm_fez add a
+   competing explanation for a recorded-1 stratum shift: a coherent phase on
+   the second-round kickback, with mid-circuit assignment explaining none of
+   it. Their compiled feed-forward and omitted-correction members also leave
+   different physical qubits holding the work superposition during the
+   window, because work-only gates commute with the control's measurement;
+   the omitted-correction member exposes an extra qubit only in its recorded-1
+   branch. A barrier before the first measurement equalizes the arms, and
+   refitting the correction runs with a coherent-phase term precedes any
+   correction-arm spend. The design reuses the four-PUB
    correction template, adds the repeated-readout and delayed arms, and costs
    one dynamic job near 11 seconds per arm set at 8192 shots.
 

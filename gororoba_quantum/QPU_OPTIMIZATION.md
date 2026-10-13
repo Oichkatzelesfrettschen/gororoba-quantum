@@ -99,28 +99,30 @@ and performs no order finding or factoring (Smolin, Smith and Vargo, Nature
 model the contrast is about 0.22 for the orbit circuits and about 0.02 for
 the full-register circuits, against the ideal 1/4.
 
-`--family n21-orbit-rca` runs four orbit pairs in one dynamic job to locate
-a coherent phase on the second-round kickback. The first ibm_fez orbit run
-(job db6ub8svf2bc73d1rc50) measured a contrast of 0.197 against a modeled
-0.207, while each arm's signed contrast sat about 0.09 above the model in
-the recorded-1 stratum. `scripts/n21_orbit_rca.py` fits mechanisms to the
-eight cells: a coherent phase of about 0.59 rad on the work superposition
-or the control reduces the deviance from 65.4 to 2.5 with one parameter;
-mid-circuit assignment, reset failure, window T1 and window dephasing leave
-it unchanged. The work superposition `|1> +/- |16>` idles for 3.9 to 5.7 us
-while the control is measured and reset, so the phase corresponds to a
-relative detuning near 21 kHz. Backend properties carry no frequency for
-these qubits, so the noise model has no term for it at any calibration age.
+`--family n21-orbit-rca` runs four orbit pairs in one dynamic job to locate a
+coherent phase on the second-round kickback, which a calibration noise model
+omits because backend properties carry no qubit frequency.
+`scripts/n21_orbit_rca.py` fits error mechanisms to each pair's eight cells
+with an exact density-matrix model and a Bonferroni threshold across the
+mechanisms. Work-only gates commute with the control's measurement, so the
+compiler can finish a multiplier after it, and the physical qubits holding the
+work superposition during the window then differ between the feed-forward and
+omitted-correction members and between recorded branches. The script
+identifies each qubit's role with Z probes on the archived ISA and reads
+exposure from the returned schedule. A barrier before the first measurement
+fixes the window structure; the echo arm carries one.
 
 | Arm | Change to the window | Detuning on work qubits | Readout-induced shift | Residual control photons |
 |---|---|---|---|---|
-| nominal | none; repeats the first run | reference | reference | reference |
+| nominal | none | reference | reference | reference |
 | window_delay | control idles one readout length after reset | phase grows with the idle | phase unchanged | phase shrinks |
 | extra_readout | control read twice into the first bit | phase grows as for window_delay | phase grows beyond window_delay | phase unchanged |
-| window_echo | X on the 1 and 16 work bits at each echo half | phase near zero | partial cancellation | phase unchanged |
+| window_echo | barrier, then X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
 
 The window durations come from the backend's longest measure and reset in
-dt and are recorded in the family configuration. The planning contract
+dt and are recorded in the family configuration with the backend dt. Four
+directional endpoints share the requested alpha, and the family plans one
+replica. The planning contract
 requires the extra readout, the delay and the per-wire delay-X-delay-X echo
 to survive transpilation.
 

@@ -58,6 +58,8 @@ _MAPPING_FIELDS = (
     "measurement_seconds",
     "measurement_sites",
     "dt_seconds",
+    "window_delay_dt",
+    "echo_half_dt",
 )
 
 
@@ -1021,6 +1023,19 @@ def _scientific_case(family: str) -> list[str]:
         "provide a feedback diagnostic; they do not establish successful general order recovery, "
         "factoring advantage, or an asymptotic speedup.",
         "",
+        *(
+            [
+                "The orbit families compile each controlled multiplier only on the orbit 1, 4, 16 of the "
+                "work register, which supplies the order 3 to the circuit. They measure feed-forward in a "
+                "two-round semiclassical QPE and perform no order finding or factoring (Smolin, Smith and "
+                "Vargo, Nature 499, 163 (2013)). The window arms of n21-orbit-rca idle the control, read it "
+                "a second time, or echo the work qubits during the first measurement and reset; the family "
+                "configuration records their durations in dt.",
+                "",
+            ]
+            if family in ("n21-orbit-feedback", "n21-orbit-rca")
+            else []
+        ),
         "Gate noise, measurement/reset disturbance, conditional-control latency, routing changes, "
         "replica correlations, and calibration drift can change the contrast. Calibration-based Aer "
         "simulation supplies a conditional model and power admission. Future hardware observations "
