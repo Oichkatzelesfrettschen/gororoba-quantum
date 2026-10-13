@@ -237,6 +237,7 @@ class Snapshot:
             "calibration": self.calibration,
             "fetched_at": self.fetched_at,
             "capabilities": self.capabilities.summary(),
+            "repetition_delay": _optional_repetition_delay(self.backend),
             "medians": self.medians,
             "excluded_qubits": {str(q): r for q, r in sorted(self.excluded_qubits.items())},
             "excluded_edges": {f"{a}-{b}": r for (a, b), r in sorted(self.excluded_edges.items())},
@@ -2733,37 +2734,49 @@ def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     return sorted(set(reasons))
 
 
+def _optional_repetition_delay(backend: Any) -> float | None:
+    """The backend's configured repetition delay in seconds, or None for a fixed repetition rate."""
+    try:
+        return qpu_planning.repetition_delay(backend)
+    except (ValueError, AttributeError):
+        return None
+
+
 def unchanged_since_planning(
-    record: dict[str, Any], inventory: dict[str, Any], choices: list[Choice], fresh: list[Snapshot]
+    record: dict[str, Any],
+    inventory: dict[str, Any],
+    choices: list[Choice],
+    fresh: list[Snapshot],
+    remaining_seconds: Any,
 ) -> bool:
     """Whether a pre-submission refresh would rebuild exactly the planned choices.
 
-    Selection reads every backend, so every backend's eligibility, calibration
-    timestamp, queue length and capabilities must match the planning
-    inventory, and every
-    chosen backend's compiled instructions must keep their capabilities,
-    calibration fingerprint and configured repetition delay.
+    Selection reads every backend's inventory entry (eligibility, status,
+    queue, calibration, capabilities, repetition delay, medians and
+    exclusions) and the optimizer reads the account's remaining quota, so
+    each must match its planning value; the entries are captured when the
+    snapshot is taken, so a cached backend object refreshed in place still
+    compares its planning value. Every chosen backend's compiled instructions
+    must also keep their capabilities and calibration fingerprint.
     """
     planned = record.get("system_inventory")
     if not isinstance(planned, dict) or set(planned) != set(inventory):
+        return False
+    planned_remaining = record.get("budget_plan", {}).get("remaining_seconds")
+    if planned_remaining is None or remaining_seconds != planned_remaining:
         return False
     for name, entry in inventory.items():
         before = planned[name]
         if not isinstance(before, dict) or not isinstance(entry, dict):
             return False
-        # Selection admits every backend by its capabilities and breaks
-        # equal-score ties by queue length, so both join eligibility and
-        # calibration in the equivalence.
-        fields = ("eligibility", "calibration", "pending_jobs", "capabilities")
-        if tuple(before.get(field) for field in fields) != tuple(entry.get(field) for field in fields):
+        if {k: v for k, v in before.items() if k != "fetched_at"} != {
+            k: v for k, v in entry.items() if k != "fetched_at"
+        }:
             return False
     by_name = {snapshot.name: snapshot for snapshot in fresh}
     for choice in choices:
         current = by_name.get(choice.snap.name)
         if current is None or choice_change_reasons(choice, current):
-            return False
-        # Sampler options read the backend's configured repetition delay.
-        if qpu_planning.repetition_delay(choice.snap.backend) != qpu_planning.repetition_delay(current.backend):
             return False
     return True
 
@@ -3183,7 +3196,9 @@ def submit(
             f"submission requires an admitted plan, received {record.get('state')!r}: {'; '.join(reasons)}"
         )
     fresh_design: dict[str, Any] = {}
-    unchanged = unchanged_since_planning(record, inventory, choices, fresh_snapshots)
+    unchanged = unchanged_since_planning(
+        record, inventory, choices, fresh_snapshots, service.usage().get("usage_remaining_seconds")
+    )
     if unchanged:
         # plan() ran in this process against the same calibrations, so a
         # rebuild reproduces its choices exactly; the approved-record
