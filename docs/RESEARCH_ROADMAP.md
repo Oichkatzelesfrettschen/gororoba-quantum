@@ -113,7 +113,7 @@ owns the link from literature and observations to the next intervention.
    admission follows the correction decision and remaining campaign gates.
 9. Separate first-measurement assignment error from true state error with the
    feed-forward contrast. Two Kingston correction runs
-   ([db6p55clf4us73c5nd9g](../results/live/2026-10-13T020454.599853Z/analysis-d7a774882d98.json),
+   ([db6p55clf4us73c5nd9g](../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json),
    [db6pepklf4us73c5nqcg](../results/live/2026-10-13T022433.333775Z/collect.json))
    record the first bit as 0 in about 11 percent of shots for both odd labels.
    Within that stratum the arms reverse by label: for s3 the known-label arm
@@ -252,7 +252,7 @@ owner are unnecessary. Existing result directories and approvals retain their
 original provenance. Consumed approvals apply only to their recorded cases.
 The resumption audit observes `submitted` in `2026-10-13T020454.599853Z`.
 [Evidence PR #53](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/53)
-subsequently retains raw collection and a revised correction-schedule analysis.
+now merges as `ee6608b` with raw collection and a revised correction-schedule analysis.
 Reviewed lossless collection and preregistered adjudication remain the workflow
 milestone for new Rocq work. The operator verifies that milestone from retained
 artifacts; a changed analysis rule requires its own admission. Mathematical
