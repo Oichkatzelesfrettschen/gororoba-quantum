@@ -25,7 +25,7 @@ from qiskit import qpy
 
 import correction_circuits
 import correction_schedule
-from correction_collection import MEMBERS, SHOTS
+from correction_collection import MEMBERS, SHOTS, integer_counts
 from correction_statistics import analyze_counts
 
 SCHEMA = "folded-correction-second-analysis-v1"
@@ -88,6 +88,20 @@ def _counts(family: dict[str, Any], collected: Any) -> dict[str, list[int]]:
     return counts
 
 
+def _raw_counts(payload: dict[str, Any]) -> list[int]:
+    """Histogram the single two-bit classical register of one raw PUB."""
+    registers = payload["registers"]
+    if len(registers) != 1:
+        raise ValueError("a correction PUB retains exactly one classical register")
+    (register,) = registers.values()
+    if register["num_bits"] != 2 or register["num_shots"] != SHOTS:
+        raise ValueError("raw register shape differs from the correction protocol")
+    histogram: dict[str, int] = {}
+    for bits in register["bitstrings"]:
+        histogram[bits] = histogram.get(bits, 0) + 1
+    return integer_counts(histogram)
+
+
 def analyze(run: Path) -> tuple[str, dict[str, Any]]:
     collect_path, qpy_path, record_path = run / "collect.json", run / "isa.qpy", run / "record.json"
     collected = json.loads(collect_path.read_text())
@@ -100,12 +114,16 @@ def analyze(run: Path) -> tuple[str, dict[str, Any]]:
     (job_id,) = jobs
     raw = run / "raw" / job_id
     pubs = [raw / f"pub_{index:02d}.json" for index in range(len(MEMBERS))]
+    retained = json.loads((raw / "index.json").read_text())["files"]
+    if any(_sha256(path) != retained.get(path.name) for path in pubs):
+        raise ValueError("a raw PUB differs from the sha256 retained by collection")
     record = json.loads(record_path.read_text())
     backend = record["submission"]["jobs"][0]["backend"]
     dt_seconds = record["family_configuration"]["dt_seconds"]
     with qpy_path.open("rb") as handle:
         circuits = qpy.load(handle)
-    found = [_scheduler_timing(json.loads(path.read_text())) for path in pubs]
+    payloads = [json.loads(path.read_text()) for path in pubs]
+    found = [_scheduler_timing(payload) for payload in payloads]
     timings = [timing for timing in found if timing is not None]
     if len(timings) != len(MEMBERS) or len(circuits) != len(MEMBERS):
         raise ValueError("raw scheduler timing or archived circuits are incomplete")
@@ -115,7 +133,9 @@ def analyze(run: Path) -> tuple[str, dict[str, Any]]:
         pairs[str(label)] = correction_schedule.qualify_pair(
             timings[feedback], timings[independent], dt_seconds=dt_seconds, circuit_pair_report=report
         )
-    counts = _counts(family, collected)
+    counts = {name: _raw_counts(payload) for name, payload in zip(MEMBERS, payloads, strict=True)}
+    if counts != _counts(family, collected):
+        raise ValueError("raw shot histograms differ from the counts collect.json retained")
     here = Path(__file__).resolve().parent
     inputs = {
         "collect.json": _sha256(collect_path),
@@ -141,20 +161,59 @@ def analyze(run: Path) -> tuple[str, dict[str, Any]]:
     return f"analysis-{digest[:12]}.json", result
 
 
-def main() -> int:
+RETAINED_RUN = Path(__file__).resolve().parent.parent / "results/live/2026-10-13T020454.599853Z"
+
+
+def _verify() -> None:
+    """Replay the retained run, reject a tampered raw shot, and keep analyses write-once."""
+    import shutil
+    import tempfile
+
+    name, result = analyze(RETAINED_RUN)
+    text = json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n"
+    if (RETAINED_RUN / name).read_text() != text:
+        raise RuntimeError("retained second analysis does not reproduce")
+    with tempfile.TemporaryDirectory(prefix="correction-reanalysis-") as directory:
+        copy = Path(directory) / RETAINED_RUN.name
+        shutil.copytree(RETAINED_RUN, copy)
+        (pub,) = (copy / "raw").glob("*/pub_00.json")
+        payload = json.loads(pub.read_text())
+        (register,) = payload["registers"].values()
+        register["bitstrings"][0] = "00" if register["bitstrings"][0] != "00" else "11"
+        pub.write_text(json.dumps(payload))
+        try:
+            analyze(copy)
+        except ValueError:
+            pass
+        else:
+            raise RuntimeError("a tampered raw shot passed the replay")
+        if main([str(RETAINED_RUN)]) == 0:
+            raise RuntimeError("an existing analysis was overwritten")
+    print("correction reanalysis: replay, raw tamper rejection, and write-once checks pass")
+
+
+def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("run", type=Path, help="collected folded-correction run directory")
+    parser.add_argument("run", type=Path, nargs="?", help="collected folded-correction run directory")
     parser.add_argument("--check", action="store_true", help="compare recomputed bytes with the retained analysis")
-    arguments = parser.parse_args()
+    parser.add_argument("--self-check", action="store_true", help="verify the replay against the retained run")
+    arguments = parser.parse_args(argv)
+    if arguments.self_check:
+        _verify()
+        return 0
+    if arguments.run is None:
+        parser.error("a run directory is required")
     name, result = analyze(arguments.run)
     text = json.dumps(result, indent=2, sort_keys=True, allow_nan=False) + "\n"
     target = arguments.run / name
     if arguments.check:
         if target.read_text() != text:
-            raise SystemExit(f"{target} differs from the recomputed analysis")
+            print(f"{target} differs from the recomputed analysis")
+            return 1
         print(f"{name}: decision {result['statistical_decision']['decision']} reproduced")
     elif target.exists():
-        raise SystemExit(f"{target} exists; analyses are write-once")
+        print(f"{target} exists; analyses are write-once")
+        return 1
     else:
         target.write_text(text)
         print(f"{name}: decision {result['statistical_decision']['decision']}")

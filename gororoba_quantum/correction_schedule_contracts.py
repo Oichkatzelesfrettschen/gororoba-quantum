@@ -124,6 +124,19 @@ def verify() -> dict[str, Any]:
             "a correction-channel pulse between the then and else frame updates",
         )
         rejected += 1
+        boundary_else = independent["timing"].replace(
+            f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},40,",
+            f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},42,",
+        )
+        _reject(
+            partial(
+                qualify,
+                feedback_value=dict(feedback, timing=boundary_else),
+                independent_value=dict(independent, timing=boundary_else),
+            ),
+            "a correction-channel pulse starting at the later frame update",
+        )
+        rejected += 1
         early_else = independent["timing"].replace(
             f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},40,",
             f"else,rz_{report['measurement_writers'][1][1]},Qubit {report['measurement_writers'][1][1]},23,",

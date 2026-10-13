@@ -208,7 +208,7 @@ def _branch_events(
             event.branch == "main"
             and event.channel == channel
             and event.duration > 0
-            and event.start < last
+            and event.start <= last
             and event.end > first
             for event in events
         ),

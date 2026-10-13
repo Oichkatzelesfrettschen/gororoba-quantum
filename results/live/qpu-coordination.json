@@ -152,8 +152,8 @@
           "backend": "ibm_kingston",
           "charge_seconds": 11,
           "decision": "retain_measured_correction",
-          "decision_evidence": "results/live/2026-10-13T020454.599853Z/analysis-d7a774882d98.json",
-          "decision_evidence_sha256": "d5a39fe7776a232558709668ced98e4e41417e8c2f6058ab6cb4226079864fbf"
+          "decision_evidence": "results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json",
+          "decision_evidence_sha256": "4fcd04f18528349b52ea6de68d46e12621d553ddfbd0b0a0b0a8d2dde9054b9b"
         },
         {
           "approved_record": "results/live/2026-10-13T022211.257292Z",
@@ -203,13 +203,13 @@
     "recommended_shots_per_pub": 8192,
     "historical_conditional_seconds": 11.242518272,
     "service_ceiling_seconds": 30,
-    "physical_execution_authorized": false,
+    "physical_execution_authorized": true,
     "decision": "retain_measured_correction",
     "case": "2026-10-13T022211.257292Z",
     "record_sha256": "78d17752b78b7e11424b9a92bdff201cda6afa319ed6717b0c83f308b5e5467b",
-    "selected_backend": "ibm_fez",
-    "reported_nominal_seconds": 11.519211263999999,
-    "reported_stress_seconds": 14.474571264,
+    "selected_backend": "ibm_kingston",
+    "reported_nominal_seconds": 11.588024064,
+    "reported_stress_seconds": 14.543384064,
     "historical_preparation": {
       "case": "2026-10-12T074042.840320Z",
       "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
@@ -222,9 +222,10 @@
       "state": "model_discrimination_pilot_renewal_unavailable",
       "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
     },
-    "execution_authority_state": "conditional_user_authority_pending_fresh_eligible_case_and_live_admission",
+    "execution_authority_state": "consumed_by_bounded_owner_approval",
     "case_scope": "Reviewed-main source-clean complete-inventory correction preparation; physical submission remains gated by actual idle state and fresh binding.",
-    "decision_available": true
+    "decision_available": true,
+    "settled_charge_seconds": 22
   },
   "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission.",
   "historical_campaign_proposals": [
