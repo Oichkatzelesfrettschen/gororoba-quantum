@@ -121,6 +121,12 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             require(entry["backend"] == job["backend"], "collection backend differs")
             require(entry["usage"]["usage_status"] == "final", "collection usage is unsettled")
             require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
+            if "raw" in entry:
+                require(
+                    entry["raw"]["directory"] == str(directory.relative_to(run))
+                    and entry["raw"]["files"] == index["files"],
+                    "collection raw ledger differs from the retained index",
+                )
             evidence_names = ["record.json", "collect.json", "isa.qpy"]
             provenance = "registered_collection"
         else:
@@ -153,6 +159,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             }
         )
     total = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows)
+    require(total == Decimal(consumed), "summed final job charges differ from the account's consumed seconds")
     historical = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows if row["job_id"] in HISTORICAL_JOBS)
     campaign = total - historical
     require(campaign <= 180, "new campaign exceeds authorized 180-second ceiling")

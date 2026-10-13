@@ -424,7 +424,9 @@ def report(run: Path) -> dict[str, Any]:
                     "ideal_probabilities_exact": {
                         label: str(probability) for label, probability in zip(labels, probabilities, strict=True)
                     },
-                    "ideal_reference_max_abs_error": discrepancy,
+                    # The require above bounds the Statevector cross-check; the
+                    # bound, not the platform's last-bit round-off, enters the replay.
+                    "ideal_reference_max_abs_error_below": 1e-12,
                     "classical_bit_one": [
                         {
                             "classical_bit": bit,

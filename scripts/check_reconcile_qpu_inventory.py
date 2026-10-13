@@ -49,8 +49,8 @@ def main() -> None:
             "observed_at": "synthetic",
             "account_usage": {
                 "usage_limit_seconds": 600,
-                "usage_consumed_seconds": 170,
-                "usage_remaining_seconds": 430,
+                "usage_consumed_seconds": 1,
+                "usage_remaining_seconds": 599,
             },
             "jobs": [
                 {
@@ -97,9 +97,10 @@ def main() -> None:
             mutants.append(mutant)
             for usage in (
                 {},
-                {"usage_limit_seconds": 600, "usage_consumed_seconds": 170, "usage_remaining_seconds": 431},
+                {"usage_limit_seconds": 600, "usage_consumed_seconds": 1, "usage_remaining_seconds": 600},
                 {"usage_limit_seconds": 600, "usage_consumed_seconds": 550, "usage_remaining_seconds": 50},
-                {"usage_limit_seconds": 600, "usage_consumed_seconds": 170.5, "usage_remaining_seconds": 429.5},
+                {"usage_limit_seconds": 600, "usage_consumed_seconds": 1.5, "usage_remaining_seconds": 598.5},
+                {"usage_limit_seconds": 600, "usage_consumed_seconds": 2, "usage_remaining_seconds": 598},
             ):
                 mutant = copy.deepcopy(snapshot)
                 mutant["account_usage"] = usage
@@ -126,7 +127,7 @@ def main() -> None:
                 pass
             else:
                 raise RuntimeError("raw digest mutation admitted")
-    print("Synthetic inventory contract: 14 inventory mutations and raw corruption rejected; replay preserves bytes")
+    print("Synthetic inventory contract: 15 inventory mutations and raw corruption rejected; replay preserves bytes")
 
 
 if __name__ == "__main__":

@@ -114,7 +114,7 @@
             "10": "1/4",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.942890293094024e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 0,
             "probability": 0.0,
@@ -2288,7 +2288,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 113,
             "probability": 0.220703125,
@@ -2464,7 +2464,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 8,
             "probability": 0.015625,
@@ -2640,7 +2640,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 19,
             "probability": 0.037109375,
@@ -2816,7 +2816,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 22,
             "probability": 0.04296875,
@@ -2992,7 +2992,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 9,
             "probability": 0.017578125,
@@ -3168,7 +3168,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 77,
             "probability": 0.150390625,
@@ -3344,7 +3344,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 27,
             "probability": 0.052734375,
@@ -3520,7 +3520,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 35,
             "probability": 0.068359375,
@@ -3696,7 +3696,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 15,
             "probability": 0.029296875,
@@ -3872,7 +3872,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 24,
             "probability": 0.046875,
@@ -4048,7 +4048,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 25,
             "probability": 0.048828125,
@@ -4224,7 +4224,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 11,
             "probability": 0.021484375,
@@ -4400,7 +4400,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 27,
             "probability": 0.052734375,
@@ -4576,7 +4576,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 15,
             "probability": 0.029296875,
@@ -4752,7 +4752,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 31,
             "probability": 0.060546875,
@@ -4928,7 +4928,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 8,
             "probability": 0.015625,
@@ -5104,7 +5104,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 22,
             "probability": 0.04296875,
@@ -5280,7 +5280,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.1102230246251565e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 117,
             "probability": 0.228515625,
@@ -5456,7 +5456,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 29,
             "probability": 0.056640625,
@@ -5632,7 +5632,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 3.885780586188048e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 13,
             "probability": 0.025390625,
@@ -5808,7 +5808,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 3,
             "probability": 0.005859375,
@@ -5984,7 +5984,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 5,
             "probability": 0.009765625,
@@ -6160,7 +6160,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 3.885780586188048e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 7,
             "probability": 0.013671875,
@@ -6336,7 +6336,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 7,
             "probability": 0.013671875,
@@ -6512,7 +6512,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 3,
             "probability": 0.005859375,
@@ -6688,7 +6688,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 2.220446049250313e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 2,
             "probability": 0.00390625,
@@ -6864,7 +6864,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 17,
             "probability": 0.033203125,
@@ -7040,7 +7040,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 2,
             "probability": 0.00390625,
@@ -7216,7 +7216,7 @@
             "10": "0",
             "11": "1/4"
           },
-          "ideal_reference_max_abs_error": 1.6653345369377348e-16,
+          "ideal_reference_max_abs_error_below": 1e-12,
           "ideal_support_violations": {
             "count": 2,
             "probability": 0.00390625,
@@ -14481,7 +14481,7 @@
       }
     }
   ],
-  "replay_source_sha256": "fa44d762f58dc95b21232e1dd5caa97ba32dd0dbdfb94792df844cd3b453cde4",
+  "replay_source_sha256": "4b07b746665b6ca11cf2d584ab02fb09dce984a1b50b78bd2392d9c53b67c372",
   "schema": "retrospective-wide-control-analysis-v1",
   "shots_per_pub": 512,
   "statistical_scope": "Wilson 95% intervals are marginal binomial descriptions under independent identical shot sampling. They are neither simultaneous nor preregistered. Shot drift and shared-resource dependence remain unmodeled; pairwise statistics describe same-PUB shot vectors. PUB shot indices are not paired across PUBs.",
