@@ -71,10 +71,14 @@ round-1 pulses end 248 dt before the window opens.
 - Adding 415 dt to the window, by idling or by a second readout, cuts the
   contrast difference to 0.111 and 0.098 against model values near 0.21.
   Reported T2 of 89 to 235 us predicts a loss of a few percent.
-- One quasi-static Gaussian detuning per work qubit, fitted jointly to all
-  32 cells with the exposures above, gives G2 = 49.9 on 18 dof against 22.7
-  for free per-arm phases and 83.6 for static detuning alone. No single
-  idle-proportional mechanism reproduces all four arms.
+- Superseded: an earlier analysis revision fitted one quasi-static Gaussian
+  detuning per work qubit jointly to all 32 cells (G2 = 49.9 on 18 dof
+  against 22.7 for free per-arm phases and 83.6 for static detuning alone).
+  The retained [rca-mechanism-fit.json](2026-10-13T083417.634585Z/rca-mechanism-fit.json)
+  records that fit as skipped, because the window state is not a branch
+  phase on the work bit for residue 1 and joint probes leave the relative
+  sign of qubits 136 and 144 unresolved. The three deviances carry no
+  current evidence until a qualified joint fit is rerun.
 - The extra-readout arm misfits the single-phase model (G2 9.3 on 3 dof),
   so its fitted phase does not support a conclusion; the delay arm is
   borderline (5.6). The preregistered ordering assumed the window preserves

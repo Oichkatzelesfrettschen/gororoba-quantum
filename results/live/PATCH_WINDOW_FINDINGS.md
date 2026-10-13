@@ -95,6 +95,16 @@ Signed score s = P(01) - P(11) per arm; ideal contrast 1/4.
 The calibration-bound replay reproduces the nominal contrast, while both
 arms shift together by about +0.05; the contrast cancels that common shift.
 
+Per-arm counts (01 / 11 of 4096): nominal feedback 1092 / 841, no feedback
+716 / 1290; barrier 1038 / 937 and 684 / 1235; barrier plus echo 1083 / 906
+and 688 / 1265. The no-feedback signed score stays between -0.135 and
+-0.141 across contexts while the feedback score moves from +0.061 to +0.025
+to +0.043, so the context sensitivity sits in the feedback arm. The
+barrier-minus-nominal contrast change, -0.042 with a normal-approximation
+standard error near 0.021, is about two standard errors from zero and
+descriptive only; the registered Hoeffding criterion governs and selects no
+intervention.
+
 Exploratory refit (orbit_refit.py; not preregistered): exact orbit law with
 round-1 and round-2 kickback phases (phi1, phi2), depolarization lam, and
 1 -> 0 report flips e0, e1 on b0 and b1, fitted per context across both arms.
