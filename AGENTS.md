@@ -235,7 +235,7 @@ placement, operator checks, registry parsing) run through parallel.py, an
 order-preserving process pool started with spawn on every platform, so a
 parallel run returns exactly what the serial loop returns.
 `GOROROBA_WORKERS=N` caps the worker count and `GOROROBA_WORKERS=1` runs
-serially; the default is half the CPUs available to the process
+serially; the default is every CPU available to the process
 (`parallel.default_threads()`), which also sets `--simulation-threads`. Aer runs batch
 every replica of a choice in one call and parallelize experiments itself.
 
@@ -333,7 +333,7 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/schur_acceleration/replay.py --check
   (cd docs/evidence/schur_acceleration && sha256sum -c SHA256SUMS)
   GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py --check
-  GOROROBA_WORKERS=2 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
   (cd docs/evidence/vacuum_models && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_endpoint_information/probe.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check

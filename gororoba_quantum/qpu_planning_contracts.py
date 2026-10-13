@@ -2,7 +2,7 @@
 
 FakeFez supplies calibration and routing fixtures. Every service constructor is
 replaced by a failing sentinel, so the checks cannot discover saved credentials
-or submit quantum work. Run the module directly with GOROROBA_WORKERS=2.
+or submit quantum work. Run the module directly; GOROROBA_WORKERS overrides the detected CPU count.
 """
 
 from __future__ import annotations

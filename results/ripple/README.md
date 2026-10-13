@@ -72,7 +72,7 @@ NumPy 2.5.4 and Qiskit 2.5.2. From the repository root:
 (
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
-  export PYTHONDONTWRITEBYTECODE=1 GOROROBA_WORKERS=4
+  export PYTHONDONTWRITEBYTECODE=1
   "$PYTHON" gororoba_quantum/ripple_dynamics.py \
     --check results/ripple/evidence.json
   "$PYTHON" scripts/render_ripple_visualization.py \

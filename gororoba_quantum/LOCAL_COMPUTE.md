@@ -11,7 +11,7 @@ that bias. CPU or GPU acceleration cannot supply missing physical mechanisms.
 ## Implemented execution boundary
 
 The enabled policy uses CPU density matrices with double precision. The
-CLI accepts `--local-compute cpu`, `--simulation-threads` (default: half the CPUs available to the process,
+CLI accepts `--local-compute cpu`, `--simulation-threads` (default: every CPU available to the process,
 from `parallel.default_threads()`), and
 `--simulation-memory-mb` (default 512). Aer experiment parallelism is one;
 its shot-thread limit equals the declared thread limit. Both
@@ -372,6 +372,36 @@ intervals achieve the declared precision in the retained model, while the
 hardware-model gap remains the quantity the approved experiment measures.
 Local simulator speed and sampled model resolution remain distinct from
 QPU accuracy.
+
+## Thread scaling and GPU measurement
+
+Dynamic circuits with mid-circuit measurement or feed-forward evolve each
+shot separately under a density-matrix noise model, so Aer splits their
+shots across `max_parallel_shots` threads. Static circuits with terminal
+measurement sample once from one final state; below Aer's
+`statevector_parallel_threshold` of 14 qubits their state update stays on
+one thread, and experiment parallelism leaves counts unchanged with no
+measured speedup. The default thread count is therefore every CPU the
+process may use, from `parallel.default_threads()`.
+
+The measurement used the two dynamic ibm_fez PUBs of the retained
+correction case, the FakeFez noise model, 4096 shots, and seed 5 on a
+six-core, twelve-thread Ryzen 5 5600X3D host with an RTX 4070 Ti and the native
+CUDA Aer 0.17.2 build:
+
+| Device and options | Wall seconds |
+|---|---|
+| CPU, 2 threads | 14.75 |
+| CPU, 6 threads | 7.03 |
+| CPU, 12 threads | 6.20 |
+| GPU, unbatched | 37.31 |
+| GPU, `batched_shots_gpu` | fails: `invalid instruction 'jump'` |
+
+The batched density-matrix GPU kernel rejects the control-flow jump that
+feed-forward compiles to, and unbatched GPU execution launches kernels per
+shot on a 32-element state. The CPU path stays the execution device for
+this workload; the native CUDA package in `packaging/qiskit-aer-cuda`
+remains available for wider circuits that the gates below admit.
 
 ## Paused GPU qualification gates
 

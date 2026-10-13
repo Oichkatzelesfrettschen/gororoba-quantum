@@ -281,7 +281,7 @@ the fresh record supplies the actual estimate and admission result.
 | `--objective` | `minimum_charge`; `precision_at_budget` accepts folded precision-only contracts |
 | `--cost-scenario` | Repeatable `NAME:OVERHEAD_SECONDS:LATENCY_US`; every supplied scenario must pass the same budget gates |
 | `--local-compute` | `cpu`; GPU and hybrid requests fail capability admission before IBM service construction |
-| `--simulation-threads`, `--simulation-memory-mb` | half the available CPUs and 512 MB; density matrices and double precision remain fixed |
+| `--simulation-threads`, `--simulation-memory-mb` | every available CPU and 512 MB; density matrices and double precision remain fixed |
 | `--max-pending` | 25, unchanged backend queue admission |
 | `--reserve-seconds` | 0; set an explicit reserve when the case requires one |
 
