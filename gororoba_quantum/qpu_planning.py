@@ -184,6 +184,12 @@ def patch_candidates(
             ]
             if excluded or blocked:
                 raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
+            # Exchange circuits use no two-qubit gate, so the declared couplers
+            # must exist in the Target for neighbors to be physical neighbors.
+            couplers = set(snapshot.backend.target["cz"]) if "cz" in snapshot.backend.target.operation_names else set()
+            missing = [edge for edge in edges if edge not in couplers and edge[::-1] not in couplers]
+            if missing:
+                raise runtime.LiveRunError(f"the backend has no coupler for patch edges {missing}")
             # The reset-only reference and echo halves follow the pinned
             # control's own measure and reset durations.
             target = snapshot.backend.target
