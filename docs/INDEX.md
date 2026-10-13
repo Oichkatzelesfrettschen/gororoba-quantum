@@ -19,6 +19,20 @@ in a clean checkout. All retained originals preserve their registered SHA-256.
 Historical Git commits can retain previously tracked PDF blobs; the folder split
 changes the branch tip and performs no history rewrite.
 
+The [annihilator determinant-line proof](notes/annihilator_determinant_line.md)
+and [exact replay](evidence/kernel_determinant/README.md) apply the complex
+skew framework to global determinant trivializations on each rank locus.
+They retain full bundle and attachment classification as open obligations.
+The [latest C881 audit](notes/c881_exhaustive_proof.md) and
+[Rocq replay](evidence/c881_exhaustive/README.md) refresh the finite
+separating-degree proof against the latest audited `open_gororoba` HEAD.
+
+The [projective kernel-frontier construction](notes/projective_kernel_frontiers.md)
+and [exact replay](evidence/projective_kernel_limits/README.md) recover leading
+kernel planes through polynomial saturation and describe the full pair space
+as a quotient of tautological sphere spaces over real frontier graphs.
+Computing those graph closures and the global invariants remains open.
+
 ## Hosted papers
 
 The notes attribute each source and link its exact-version license evidence.

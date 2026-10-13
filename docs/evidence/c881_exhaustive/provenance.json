@@ -1,0 +1,8 @@
+{
+  "source_repository": "https://github.com/Oichkatzelesfrettschen/open_gororoba",
+  "source_commit": "b977e43f71e8ec22a2eabc83197b649056e63a67",
+  "proof_change_commit": "85a8ec3c",
+  "assumption_queries": 6,
+  "quadratic_candidates": 2048,
+  "scope": "Fixed fifteen-label partition; no continuous rank-stratum topology claim."
+}

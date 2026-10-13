@@ -1,0 +1,47 @@
+{
+  "schema": "kernel-determinant-proof-obligations-v1",
+  "rocq_status": "written-proof-and-exact-controls; kernel-checked-port-remains-open",
+  "workflow": "Verify reviewed lossless raw collection and admitted adjudication before new Rocq implementation; mathematical validity remains independent of frequencies.",
+  "lemmas": [
+    {
+      "name": "constant_rank_kernel_determinant",
+      "premises": [
+        "continuous complex skew family in a fixed finite-dimensional space",
+        "constant rank"
+      ],
+      "conclusion": "The quotient symplectic top form and fixed ambient volume trivialize the kernel determinant line, including nonsmooth bases."
+    },
+    {
+      "name": "pfaffian_volume_transition",
+      "premises": [
+        "intact complete principal kernel charts",
+        "same coefficient point"
+      ],
+      "conclusion": "sigma_I=sign(I,J)/Pf(K_I), det(T_target_source)=sigma_source/sigma_target; positive-rank normalized frames have determinant-one transitions."
+    },
+    {
+      "name": "complementary_pfaffian_section",
+      "premises": [
+        "complex skew family",
+        "even rank r",
+        "fixed ordered ambient basis"
+      ],
+      "conclusion": "Order-r complementary Pfaffians give a nonzero decomposable section of det(ker K) on rank r and vanish on every lower-rank locus."
+    },
+    {
+      "name": "annihilator_orientation_and_first_chern",
+      "premises": [
+        "all-stage Cayley-Dickson complex intertwiner",
+        "constant-rank determinant trivialization"
+      ],
+      "conclusion": "Real kernel transitions have positive determinant; the complex kernel has zero first integral Chern class."
+    }
+  ],
+  "remaining": [
+    "Classify full kernel bundles and higher characteristic classes.",
+    "Compute actual local branches, links, and every frontier kernel inclusion.",
+    "Construct the complete global attachment model and integral invariants.",
+    "Prove unrestricted all-dimensional pair-space classification.",
+    "Formalize retained lemmas in Rocq with explicit assumptions."
+  ]
+}

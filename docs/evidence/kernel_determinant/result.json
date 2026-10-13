@@ -1,0 +1,157 @@
+{
+  "negative_controls": {
+    "complex_real_determinant_counterexamples": 1,
+    "rejected_inputs": 6
+  },
+  "points": [
+    {
+      "complete_plucker_coordinates": 1,
+      "dimension": 4,
+      "overlap_pairs": 9,
+      "real_nullity": 4,
+      "transition_determinants": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 1,
+      "dimension": 4,
+      "overlap_pairs": 9,
+      "real_nullity": 0,
+      "transition_determinants": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 28,
+      "dimension": 16,
+      "overlap_pairs": 9,
+      "real_nullity": 4,
+      "transition_determinants": [
+        "1",
+        "-1",
+        "1",
+        "-1",
+        "1",
+        "-1",
+        "1",
+        "-1",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 120,
+      "dimension": 32,
+      "overlap_pairs": 9,
+      "real_nullity": 4,
+      "transition_determinants": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 0,
+      "dimension": 32,
+      "overlap_pairs": 9,
+      "real_nullity": 8,
+      "transition_determinants": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 0,
+      "dimension": 32,
+      "overlap_pairs": 9,
+      "real_nullity": 12,
+      "transition_determinants": [
+        "1",
+        "-1",
+        "1",
+        "-1",
+        "1",
+        "-1",
+        "1",
+        "-1",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 0,
+      "dimension": 32,
+      "overlap_pairs": 9,
+      "real_nullity": 16,
+      "transition_determinants": [
+        "1",
+        "I",
+        "1",
+        "-I",
+        "1",
+        "-I",
+        "1",
+        "I",
+        "1"
+      ]
+    },
+    {
+      "complete_plucker_coordinates": 1,
+      "dimension": 32,
+      "overlap_pairs": 9,
+      "real_nullity": 32,
+      "transition_determinants": [
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1",
+        "1"
+      ]
+    }
+  ],
+  "qpu_executed": false,
+  "schema": "kernel-determinant-certificate-v1",
+  "scope": "Written all-stage determinant-line trivialization; exact controls do not classify full bundles or attachments.",
+  "symbolic": {
+    "ambient_complex_dimension": 4,
+    "complete_plucker_coordinates": 6,
+    "complex_rank": 2,
+    "distinct_kernel_planes_at_same_endpoint": true,
+    "domain": "p != 0",
+    "independent_complex_parameters": 5,
+    "rank_drop_vanishes": true,
+    "symbolic_overlap_determinant": "-a/p"
+  }
+}
