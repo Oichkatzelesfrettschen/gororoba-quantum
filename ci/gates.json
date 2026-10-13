@@ -1492,7 +1492,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/projective_kernel_limits",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS.resource-policy-replay",
    "name": "sources-186",
    "seconds": 0.0,
    "tier": "pr"
@@ -1556,7 +1556,7 @@
   {
    "suite": "sources",
    "cwd": "docs/evidence/real_frontier_graphs",
-   "cmd": "sha256sum -c SHA256SUMS",
+   "cmd": "sha256sum -c SHA256SUMS.resource-policy-replay",
    "seconds": 10.0,
    "tier": "pr",
    "name": "sources-194"

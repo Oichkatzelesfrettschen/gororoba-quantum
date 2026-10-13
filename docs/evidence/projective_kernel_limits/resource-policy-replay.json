@@ -1,0 +1,13 @@
+{
+  "original_manifest_sha256": "5b26874ce26403c2ac5c2e51ba528c69669564f4328ccae3c6624f953e0211b2",
+  "original_parallel_sha256": "f0d18ed619f99a1ea6f58a7c4d3b2be7450f82b9ac99831552281a5526b737d2",
+  "replays": [
+    "\"$PYTHON\" -B -W error docs/evidence/projective_kernel_limits/replay.py --check",
+    "\"$PYTHON\" -B -O -W error docs/evidence/projective_kernel_limits/replay.py --check"
+  ],
+  "resource_policy_commit": "5af15e2",
+  "resource_policy_source": "gororoba_quantum/parallel.py",
+  "resource_policy_source_sha256": "911394df2a4d60807bef3f9a0e2181f37049659d1dc3105657c616f50b7995bc",
+  "schema": "projective-kernel-limits-resource-policy-replay-v1",
+  "scope": "The original source ledger retains its bytes. Separate checksums bind the half-CPU resource policy after normal and optimized exact finite-result replay. Every other artifact identity remains unchanged. Configuration evidence is separate from runtime speedup and QPU measurement."
+}
