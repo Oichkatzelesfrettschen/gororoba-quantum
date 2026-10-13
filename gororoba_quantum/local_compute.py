@@ -1,9 +1,9 @@
 """Qualified local simulation policy and ordered batch evidence.
 
-CPU density matrices provide the qualified execution path. GPU and hybrid requests
-remain explicit capability errors until a pinned Aer GPU build passes the
-same circuit, noise, numerical, and memory qualification. Local preparation
-time stays separate from the QPU charge ledger.
+Density matrices run on CPU threads by default. auto routes batches of
+GPU_MIN_ACTIVE_QUBITS or more active qubits to an admitted single GPU, gpu
+requires that admission, and cpu never routes. Local preparation time stays
+separate from the QPU charge ledger.
 """
 
 from __future__ import annotations

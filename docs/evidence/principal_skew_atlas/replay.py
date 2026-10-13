@@ -335,7 +335,7 @@ def main() -> int:
             result.encode() == (bundle / "result.json").read_bytes(),
             "principal-atlas replay differs from retained bytes",
         )
-        print("Principal cover, rank refinement, restricted overlap identities, mutations, and source hashes pass")
+        print("Principal cover, rank refinement, restricted overlap identities, mutations, and source stability pass")
     else:
         print(result, end="")
     return 0

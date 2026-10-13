@@ -51,7 +51,7 @@ def main() -> int:
     result = json.dumps(audit(bundle.parents[2]), indent=2, sort_keys=True, allow_nan=False) + "\n"
     if arguments.check:
         _require(result.encode() == (bundle / "result.json").read_bytes(), "replay differs from retained result bytes")
-        print("Four-support real-rank identities, complete rational frames, source hashes and negative controls pass")
+        print("Four-support real-rank identities, rational frames, source stability and negative controls pass")
     else:
         print(result, end="")
     return 0

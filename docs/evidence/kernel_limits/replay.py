@@ -257,7 +257,7 @@ def main() -> int:
             result.encode() == (bundle / "result.json").read_bytes(),
             "kernel attachment replay differs from retained bytes",
         )
-        print("Kernel limits, cone ranks/bundles, attachment image, doubling and source hashes pass")
+        print("Kernel limits, cone ranks/bundles, attachment image, doubling and source stability pass")
     else:
         print(result, end="")
     return 0

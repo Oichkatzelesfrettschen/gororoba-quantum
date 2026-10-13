@@ -412,7 +412,7 @@ def main() -> int:
             result.encode() == (bundle / "result.json").read_bytes(),
             "skew-Schur replay differs from retained bytes",
         )
-        print("Skew-Schur congruence, rank, metric transport, nonlinear fixture, mutations, and source hashes pass")
+        print("Skew-Schur congruence, rank, metric transport, nonlinear fixture, mutations, and source stability pass")
     else:
         print(result, end="")
     return 0

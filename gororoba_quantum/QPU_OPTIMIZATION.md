@@ -280,7 +280,7 @@ the fresh record supplies the actual estimate and admission result.
 | `--simulation-alpha` | 0.01 over the supplied finite search |
 | `--objective` | `minimum_charge`; `precision_at_budget` accepts folded precision-only contracts |
 | `--cost-scenario` | Repeatable `NAME:OVERHEAD_SECONDS:LATENCY_US`; every supplied scenario must pass the same budget gates |
-| `--local-compute` | `cpu`; GPU and hybrid requests fail capability admission before IBM service construction |
+| `--local-compute` | `auto`: batches of 11 or more active qubits run on an admitted single GPU, others on CPU; `cpu` never routes; `gpu` requires admission and fails before IBM service construction without an Aer GPU |
 | `--simulation-threads`, `--simulation-memory-mb` | every available CPU and 512 MB; density matrices and double precision remain fixed |
 | `--max-pending` | 25, unchanged backend queue admission |
 | `--reserve-seconds` | 0; set an explicit reserve when the case requires one |
