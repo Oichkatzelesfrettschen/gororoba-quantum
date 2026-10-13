@@ -1,6 +1,6 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-12T22:21:57.501077+00:00",
+  "updated_at": "2026-10-13T02:35:00+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
@@ -141,39 +141,39 @@
     },
     {
       "family": "folded-correction",
-      "owner": "Design a single-run reality ripple",
-      "backend": "ibm_fez",
-      "state": "authorized_runtime_revalidation_in_progress",
-      "case": "2026-10-12T221651.485791Z",
-      "record_sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
-      "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
-      "case_sha256": "1912fb13e4ae8b1198bcdcb773f2ab7a43c68f01cca239529a1a4a321dc84ec7",
-      "experiment_digest": "8f7de1ed0888f66142eafafc099a0d19a54ad791f7e298807646466d20eec36c",
-      "prepared_source_commit": "9b7080c47efa61c24c4c2722c70f3593eb98848a",
-      "proposed_pubs": 4,
-      "member_count": 4,
-      "shot_allocation_histogram": {
-        "8192": 4
-      },
-      "reported_nominal_seconds": 11.519211263999999,
-      "reported_stress_seconds": 14.474571264,
-      "proposed_ceiling_seconds": 30.0,
-      "job_ceilings_seconds": [
-        30.0
+      "backend": "ibm_kingston",
+      "state": "completed_collected",
+      "acquisitions": [
+        {
+          "approved_record": "results/live/2026-10-13T020255.180301Z",
+          "approved_record_sha256": "f90f9715f6938d4ece1b58221e18ff912f92f715777b30dd382001ac4e6a252e",
+          "submission": "results/live/2026-10-13T020454.599853Z",
+          "job_id": "db6p55clf4us73c5nd9g",
+          "backend": "ibm_kingston",
+          "charge_seconds": 11,
+          "decision": "retain_measured_correction",
+          "decision_evidence": "results/live/2026-10-13T020454.599853Z/analysis-d7a774882d98.json",
+          "decision_evidence_sha256": "d5a39fe7776a232558709668ced98e4e41417e8c2f6058ab6cb4226079864fbf"
+        },
+        {
+          "approved_record": "results/live/2026-10-13T022211.257292Z",
+          "approved_record_sha256": "78d17752b78b7e11424b9a92bdff201cda6afa319ed6717b0c83f308b5e5467b",
+          "submission": "results/live/2026-10-13T022433.333775Z",
+          "job_id": "db6pepklf4us73c5nqcg",
+          "backend": "ibm_kingston",
+          "charge_seconds": 11,
+          "decision": "retain_measured_correction",
+          "decision_evidence": "results/live/2026-10-13T022433.333775Z/collect.json",
+          "decision_evidence_sha256": "083b27fa0f8200021a553aff7c4df85ef57c4a345b3005708f349a7edd35c66b"
+        }
       ],
-      "accepted_job_ids": [],
-      "planning_admission": true,
-      "current_admission": true,
-      "physical_execution_authorized": true,
-      "execution_authority_state": "direct_user_authorized_after_completed_reviews_and_fresh_case_audit",
-      "qualification": "Complete source, dependency, QPY, observable, cost and checksum audit passed. Actual participant idle states, live binding and quota remain submission gates.",
-      "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
-      "audit": "results/ripple/campaign-execution/correction-direct-calibration-case-audit.json",
-      "source_closure_audit": "results/live/2026-10-12T221651.485791Z/source-closure.json",
-      "calibration": "2026-10-12T14:40:23-07:00",
-      "renewal_rejection": "results/ripple/campaign-execution/current-correction-renewal-rejection.json",
-      "fleet_binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
-      "runtime_invocation_log": "fleet-qualified-correction-submit"
+      "accepted_job_ids": [
+        "db6p55clf4us73c5nd9g",
+        "db6pepklf4us73c5nqcg"
+      ],
+      "settled_charge_seconds": 22,
+      "decision": "retain_measured_correction",
+      "finding": "Known-label correction beats measured-bit correction on s3 in both runs (gain +0.0132, +0.0209; lower bounds -0.0077, -0.0006) and not on s1; about 11 percent of shots misread the first bit, and measured-bit correction then applies the wrong phase."
     }
   ],
   "deduplication": {
@@ -184,28 +184,29 @@
   "other_chat_confirmation": "The user authorizes execution after reviewed merged code, current cases and a combined 180-second ceiling. Reviewed merge is verified. Correction requires fresh eligible renewal and a qualified collected decision before independent static admission. Fresh static ceilings 140 plus held correction proposal 30 total 170 proposed seconds.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
-    "record": "results/ripple/campaign-execution/fleet-final-live-admission.json",
-    "sha256": "dd464ac807c344ed99a2eb3e5ea295181727991bc2aa55e93a580b81f0bde449",
-    "observed_at": "2026-10-12T20:42:01.856932+00:00",
+    "observed_at": "2026-10-13T02:35:00.040086+00:00",
+    "usage_consumed_seconds": 71,
+    "usage_limit_seconds": 600,
+    "remaining_seconds": 529,
+    "usage_period_end": "2026-10-13T02:34:59.969Z",
     "pending_instance_job_ids": [],
-    "remaining_seconds": 551,
     "boundary": "Read-only observation; the runner performs fresh independent submission checks."
   },
   "coordination_owner_thread": "01a12e3f-d8ab-79d1-a8e8-71a741fa0e7f",
   "ownership_handoff": "Folded evidence owner handed ledger and execution coordination to the ripple preparation chat after reviewed PR37 merged; further submissions follow the recorded conditional user authority and current-case execution gates.",
   "scientific_priority_gate": {
-    "state": "correction_serialization_repair_pending_review_and_case_renewal",
+    "state": "qualified_correction_decision_available",
     "source": "Direct user instruction verified in Audit Heron quantum claims",
     "design": "gororoba_quantum/MODEL_DISCRIMINATION.md",
-    "broad_atlas_spending": "held_pending_qualified_collected_correction_decision",
+    "broad_atlas_spending": "released_by_qualified_correction_decision",
     "recommended_pubs": 4,
     "recommended_shots_per_pub": 8192,
     "historical_conditional_seconds": 11.242518272,
     "service_ceiling_seconds": 30,
     "physical_execution_authorized": false,
-    "decision": "Select known-label correction only when unconditional terminal success improves by more than 0.01 for both odd labels under simultaneous 95 percent directional bounds and archived-circuit/calibration/returned-schedule checks qualify. Failed evidence gates withhold the decision; the conditional execution gates must qualify before physical execution.",
-    "case": "2026-10-12T221651.485791Z",
-    "record_sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
+    "decision": "retain_measured_correction",
+    "case": "2026-10-13T022211.257292Z",
+    "record_sha256": "78d17752b78b7e11424b9a92bdff201cda6afa319ed6717b0c83f308b5e5467b",
     "selected_backend": "ibm_fez",
     "reported_nominal_seconds": 11.519211263999999,
     "reported_stress_seconds": 14.474571264,
@@ -222,7 +223,8 @@
       "renewal_evidence": "results/ripple/correction-renewal-rejection.json"
     },
     "execution_authority_state": "conditional_user_authority_pending_fresh_eligible_case_and_live_admission",
-    "case_scope": "Reviewed-main source-clean complete-inventory correction preparation; physical submission remains gated by actual idle state and fresh binding."
+    "case_scope": "Reviewed-main source-clean complete-inventory correction preparation; physical submission remains gated by actual idle state and fresh binding.",
+    "decision_available": true
   },
   "live_calibration_policy": "Prepare the complete correction family on fresh Fez, Kingston and Marrakesh Targets/properties; select by declared finite calibrated-quality ranker; bypass unavailable mocks; revalidate calibration before any approved submission.",
   "historical_campaign_proposals": [
@@ -670,60 +672,12 @@
     }
   ],
   "conditional_execution_authority": {
-    "state": "authorized_correction_runtime_revalidation",
-    "user_authorized_subject_to_conditions": true,
-    "user_campaign_ceiling_seconds": 180,
-    "case": "2026-10-12T221651.485791Z",
-    "record_sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
-    "conditions": [
-      "A current digest-bound case whose source, dependencies, calibration, selection, layout and QPY pass submission revalidation.",
-      "The execution owner verifies the combined new correction-plus-atlas campaign remains within 180 seconds and preserves the account reserve.",
-      "The direct user authorizes execution from locally committed source after completed adversarial and code reviews and passing local gates; all review agents and prior external participants must be idle before physical submission."
-    ],
-    "verified_conditions": {
-      "reviewed_merged_code": "Locally committed producer repair independently reviewed; owner explicitly waives pre-acquisition hosted review and merge.",
-      "combined_execution_plan_within_user_cap": true,
-      "fresh_submission_revalidation": false,
-      "retained_case_protocol_at_prepared_revision": true,
-      "current_source_case": true,
-      "source_digest_matches": true,
-      "fresh_eligible_correction_case": true,
-      "all_other_agents_complete_and_idle": true,
-      "all_relevant_prs_copilot_reviewed_resolved_and_merged": true,
-      "adversarial_reviews_complete": true,
-      "source_repair_committed": true,
-      "normal_and_optimized_planning_contracts_passed": true,
-      "source_repair_commit": "9b7080c47efa61c24c4c2722c70f3593eb98848a"
-    },
-    "conditions_verified_for_submission": true,
-    "physical_execution_authorized": true,
-    "generated_case_scope": "UNAPPROVED_CASE.md retains the planner-generated text; this separate ledger records the subsequent conditional user instruction without rewriting that case.",
-    "historical_case": "2026-10-12T153635.004894Z",
-    "historical_record_sha256": "315bac0dd8fa61ed2ee0c91506d58b2f6efc76cab534b37fa5f0d0181f8c0207",
-    "correction_planned_job_ceiling_seconds": 30,
-    "cases": {
-      "folded-correction": {
-        "record": "results/live/2026-10-12T221651.485791Z",
-        "record_sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450"
-      },
-      "ripple": {
-        "record": "results/live/2026-10-12T210043.972363Z",
-        "record_sha256": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1"
-      },
-      "rank-sector": {
-        "record": "results/live/2026-10-12T210815.657132Z",
-        "record_sha256": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877"
-      }
-    },
-    "execution_review_policy": {
-      "source": "Direct user instruction in Ripple at the latest turn",
-      "rule": "Complete adversarial and code reviews plus passing local gates; refresh source-bound cases and live calibration; execute once; commit results and publish the combined PR afterward. Waiting for Copilot and a pre-execution remote merge are explicitly waived.",
-      "copilot_required_before_execution": false,
-      "remote_merge_required_before_execution": false,
-      "copilot_requested_for_result_publication": true,
-      "adversarial_reviews_required_before_execution": true,
-      "passing_local_gates_required_before_execution": true
-    }
+    "state": "consumed_by_bounded_owner_approval",
+    "authority": "Owner bounded approval: fresh dry run, bounds check, immediate submit with that record's sha256; folded-correction ceiling 30 s, ripple 2x40 s, rank-sector 2x30 s, campaign cap 180 s.",
+    "consumed_by": [
+      "results/live/2026-10-13T020255.180301Z",
+      "results/live/2026-10-13T022211.257292Z"
+    ]
   },
   "static_practical_accuracy_protocol": {
     "record": "results/ripple/campaign-execution/final-fleet-static-practical-accuracy-admission.json",

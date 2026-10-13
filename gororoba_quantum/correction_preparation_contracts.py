@@ -157,7 +157,7 @@ class _Fixture:
             raise ValueError("unsupported schedule metadata")
         if "fixture_member" not in feedback or "fixture_member" not in known:
             raise ValueError("unsupported schedule schema")
-        return {"schema": "folded-correction-exposed-schedule-pair-v1", "qualified": self.schedule_qualified}
+        return {"schema": "folded-correction-exposed-schedule-pair-v2", "qualified": self.schedule_qualified}
 
     def validate_pair(
         self, _template: Any, measured: QuantumCircuit, known: QuantumCircuit, label: int

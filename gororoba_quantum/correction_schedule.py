@@ -181,7 +181,7 @@ def _pair_identity(report: dict[str, Any]) -> tuple[int, int, int, bool]:
 
 def _branch_events(
     events: tuple[ScheduleEvent, ...], correction_qubit: int, *, independent: bool, allow_elision: bool
-) -> tuple[ScheduleEvent, bool]:
+) -> tuple[ScheduleEvent, bool, dict[str, int | None]]:
     correction_events = [event for event in events if event.branch != "main"]
     counts = Counter(event.branch for event in correction_events)
     _require(counts["then"] == 1, "one explicit then correction event is required")
@@ -214,7 +214,18 @@ def _branch_events(
         ),
         "a pulse on the correction channel separates the then and else frame updates",
     )
-    return next(event for event in correction_events if event.branch == "then"), counts["else"] == 0
+    receives = [event for event in events if event.branch == "main" and event.instruction == "receive"]
+    _require(bool(receives), "dispatch receive is missing")
+    # Each branch's condition exists only after the receive completes.
+    _require(
+        all(event.start >= max(receive.end for receive in receives) for event in correction_events),
+        "a branch frame update precedes dispatch completion",
+    )
+    starts: dict[str, int | None] = {
+        branch: next((event.start for event in correction_events if event.branch == branch), None)
+        for branch in ("then", "else")
+    }
+    return next(event for event in correction_events if event.branch == "then"), counts["else"] == 0, starts
 
 
 def _event_history(events: tuple[ScheduleEvent, ...], first_writer: int, terminal_writer: int, correction: int) -> None:
@@ -285,10 +296,12 @@ def qualify_pair(
     first_writer, terminal_writer, correction_qubit, allow_elision = _pair_identity(circuit_pair_report)
     feedback_duration, feedback = parse_timing(feedback_timing)
     independent_duration, independent = parse_timing(unconditional_timing)
-    feedback_correction, feedback_elided = _branch_events(
+    feedback_correction, feedback_elided, feedback_starts = _branch_events(
         feedback, correction_qubit, independent=False, allow_elision=allow_elision
     )
-    independent_correction, _ = _branch_events(independent, correction_qubit, independent=True, allow_elision=False)
+    independent_correction, _, independent_starts = _branch_events(
+        independent, correction_qubit, independent=True, allow_elision=False
+    )
     _require(feedback_duration == independent_duration, "pair circuit durations differ")
     _require(feedback_correction == independent_correction, "pair then correction events differ")
     for events in (feedback, independent):
@@ -297,7 +310,7 @@ def qualify_pair(
     protected_independent = sorted(event for event in independent if event.branch == "main")
     _require(protected_feedback == protected_independent, "protected event histories or internal times differ")
     return {
-        "schema": "folded-correction-exposed-schedule-pair-v1",
+        "schema": "folded-correction-exposed-schedule-pair-v2",
         "qualified": True,
         "evidence_scope": (
             "exposed native event CSV and validated circuit pair; undisclosed controller behavior excluded"
@@ -312,6 +325,7 @@ def qualify_pair(
         "dt_seconds": float(dt_seconds),
         "circuit_duration_seconds": feedback_duration * dt_seconds,
         "correction_start_dt": feedback_correction.start,
+        "correction_branch_start_dt": {"feedback": feedback_starts, "independent": independent_starts},
         "feedback_zero_phase_else_elided": feedback_elided,
         "phase_value_evidence": "validated circuit pair; scheduler CSV omits phase values",
         "per_shot_timing_certified": False,
