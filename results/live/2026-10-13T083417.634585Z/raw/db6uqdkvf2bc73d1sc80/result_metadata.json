@@ -1,0 +1,89 @@
+{
+ "executor": {
+  "chunk_timing": [
+   {
+    "parts": [
+     {
+      "idx_item": 0,
+      "size": 1
+     },
+     {
+      "idx_item": 1,
+      "size": 1
+     },
+     {
+      "idx_item": 2,
+      "size": 1
+     },
+     {
+      "idx_item": 3,
+      "size": 1
+     },
+     {
+      "idx_item": 4,
+      "size": 1
+     },
+     {
+      "idx_item": 5,
+      "size": 1
+     },
+     {
+      "idx_item": 6,
+      "size": 1
+     },
+     {
+      "idx_item": 7,
+      "size": 1
+     }
+    ],
+    "start": "2026-10-13T08:35:34.497704+00:00",
+    "stop": "2026-10-13T08:35:44.264928+00:00"
+   }
+  ]
+ },
+ "options": {
+  "default_shots": 4096,
+  "dynamical_decoupling": {
+   "enable": false,
+   "extra_slack_distribution": "middle",
+   "scheduling_method": "alap",
+   "sequence_type": "XX",
+   "skip_reset_qubits": false
+  },
+  "environment": {
+   "image": null,
+   "job_tags": [
+    "gororoba-quantum",
+    "gororoba-run-07a3664bb7678953ffb6",
+    "gororoba-batch-8bec9b46a8a80fd21122df81"
+   ],
+   "log_level": "WARNING",
+   "max_execution_time": null,
+   "private": false
+  },
+  "execution": {
+   "init_qubits": true,
+   "meas_type": "classified",
+   "rep_delay": 0.00025,
+   "scheduler_timing": true,
+   "stretch_values": false
+  },
+  "experimental": {},
+  "max_execution_time": 30,
+  "simulator": {
+   "angle_decimals": 5,
+   "layer_noise_model": null,
+   "seed_simulator": null,
+   "warn_absent": true
+  },
+  "twirling": {
+   "enable_gates": false,
+   "enable_measure": false,
+   "group": "pauli",
+   "num_randomizations": "auto",
+   "shots_per_randomization": "auto",
+   "strategy": "active-accum"
+  }
+ },
+ "shots": 4096
+}

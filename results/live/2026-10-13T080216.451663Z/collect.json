@@ -1,0 +1,238 @@
+[
+  {
+    "submission_complete": true,
+    "backends_without_recorded_job_id": [],
+    "members_without_recorded_job_id": [],
+    "jobs_without_recorded_id": [],
+    "jobs": {
+      "db6ub8svf2bc73d1rc50": {
+        "backend": "ibm_fez",
+        "kind": "dynamic",
+        "usage": {
+          "job_status": "DONE",
+          "usage_status": "final",
+          "usage_source": "job.usage(partial=False)",
+          "submitted_pub_shots": 8192,
+          "qpu_charge_time_seconds": "4",
+          "pub_shots_per_qpu_second": "2048.000",
+          "throughput_unavailable_reason": null,
+          "raw_usage_metadata": {
+            "qpu_charge_time_seconds": 4,
+            "value": 0.0647,
+            "unit": "resource_units",
+            "status": "complete",
+            "details": [
+              {
+                "value": 0.0647,
+                "unit": "resource_units",
+                "metric": {
+                  "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+                  "value": 4
+                }
+              }
+            ]
+          }
+        },
+        "pub_timing": {
+          "ibm_fez_dynamic_pub_01": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:02:46.740425+00:00",
+            "execution_window_stop": "2026-10-13T08:02:49.992592+00:00",
+            "planned_target_gate_lower_bound_dt": 2255,
+            "target_gate_lower_bound_dt": 2255,
+            "scheduled_circuit_duration_dt": 4128,
+            "scheduler_residual_dt": 1873,
+            "feed_forward_operation_count": 1,
+            "sequential_stage_count": 1,
+            "parallel_stream_count": 1,
+            "groups": [
+              "n21_orbit_feedback"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_02": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:02:46.740425+00:00",
+            "execution_window_stop": "2026-10-13T08:02:49.992592+00:00",
+            "planned_target_gate_lower_bound_dt": 2249,
+            "target_gate_lower_bound_dt": 2249,
+            "scheduled_circuit_duration_dt": 3973,
+            "scheduler_residual_dt": 1724,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "groups": [
+              "n21_orbit_feedback"
+            ],
+            "timing_unavailable_reason": null
+          }
+        },
+        "raw": {
+          "directory": "raw/db6ub8svf2bc73d1rc50",
+          "files": {
+            "pub_00.json": "9dc82c17ed8b039ecd314094d41643f3922fbb05fc374f644ada1e2ebbefd760",
+            "pub_01.json": "4bf087306d837beb7bcd7070c5c23c58eb2d3fc01e982f6349b9c1a2e90623d5",
+            "result_metadata.json": "a1611da5a359d3fa822c0eec2d366cc77cada8984d13518e25c66a201bc6e00d"
+          }
+        }
+      }
+    },
+    "family_analysis": {
+      "observables": [
+        {
+          "name": "n21_orbit_feedback_contrast",
+          "estimate": 0.197265625,
+          "lo": 0.10475267579370011,
+          "hi": 0.2897785742062999,
+          "confidence_half_width": 0.09251294920629989,
+          "alpha": 0.05,
+          "null_value": 0.0,
+          "detection_radius": 0.08488134473378872,
+          "reject_null": true,
+          "bound_methods": [
+            "hoeffding_arbitrary_within_shot",
+            "hoeffding_arbitrary_within_shot"
+          ]
+        }
+      ],
+      "method": "shared planning/collection Hoeffding bounds grouped by immutable PUB identity",
+      "assumptions": [
+        "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot",
+        "union bounds across PUBs; no independence assumption between PUBs or jobs",
+        "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius"
+      ]
+    },
+    "invocation_usage": {
+      "known_final_charge_seconds": "4",
+      "total_charge_seconds": "4",
+      "charge_complete": true,
+      "workload_complete": true,
+      "predicted_charge_seconds": 4.503713535999999,
+      "charge_prediction_residual_seconds": -0.5037135359999994,
+      "charge_prediction_residual_withheld": null,
+      "jobs_without_final_charge": []
+    }
+  },
+  {
+    "group": "n21_orbit_feedback",
+    "backend": "ibm_fez",
+    "job_id": "db6ub8svf2bc73d1rc50",
+    "executed": {
+      "n21_orbit_feedback": {
+        "pub": "ibm_fez_dynamic_pub_01",
+        "start": "2026-10-13T08:02:46.740425+00:00",
+        "stop": "2026-10-13T08:02:49.992592+00:00",
+        "calibration": "2026-10-12T23:27:11-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_no_feedback": {
+        "pub": "ibm_fez_dynamic_pub_02",
+        "start": "2026-10-13T08:02:46.740425+00:00",
+        "stop": "2026-10-13T08:02:49.992592+00:00",
+        "calibration": "2026-10-12T23:27:11-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      }
+    },
+    "packing_schedule": null,
+    "measured": {
+      "n21_orbit_feedback": [
+        [
+          0.340576,
+          0.291016,
+          0.167236,
+          0.201172
+        ]
+      ],
+      "n21_orbit_no_feedback": [
+        [
+          0.347656,
+          0.190186,
+          0.164551,
+          0.297607
+        ]
+      ]
+    },
+    "measured_statistics": {
+      "summary": {
+        "feedback_signed_contrast": 0.08984375,
+        "no_feedback_signed_contrast": -0.107421875,
+        "contrast_difference": 0.197265625,
+        "labeled_tvd": 0.103515625,
+        "feedback_tvd_to_ideal": 0.083251953125,
+        "no_feedback_tvd_to_ideal": 0.104736328125
+      },
+      "summary_per_replica": [
+        {
+          "feedback_signed_contrast": 0.08984375,
+          "no_feedback_signed_contrast": -0.107421875,
+          "contrast_difference": 0.197265625,
+          "labeled_tvd": 0.103515625,
+          "feedback_tvd_to_ideal": 0.083251953125,
+          "no_feedback_tvd_to_ideal": 0.104736328125
+        }
+      ],
+      "variance": {
+        "n21_orbit_feedback": {
+          "replicas": 1.0,
+          "mean": 0.544921875,
+          "shot_variance": 2.9548071324825287e-05
+        },
+        "n21_orbit_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4462890625,
+          "shot_variance": 2.906820736825466e-05
+        }
+      }
+    },
+    "packing_interpretation": null,
+    "measured_summary_readout_corrected": {
+      "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
+    },
+    "replayed_statistics": {
+      "summary": {
+        "feedback_signed_contrast": 0.0,
+        "no_feedback_signed_contrast": -0.207275390625,
+        "contrast_difference": 0.207275390625,
+        "labeled_tvd": 0.11572265625,
+        "feedback_tvd_to_ideal": 0.0205078125,
+        "no_feedback_tvd_to_ideal": 0.02978515625
+      },
+      "summary_per_replica": [
+        {
+          "feedback_signed_contrast": 0.0,
+          "no_feedback_signed_contrast": -0.207275390625,
+          "contrast_difference": 0.207275390625,
+          "labeled_tvd": 0.11572265625,
+          "feedback_tvd_to_ideal": 0.0205078125,
+          "no_feedback_tvd_to_ideal": 0.02978515625
+        }
+      ],
+      "variance": {
+        "n21_orbit_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5,
+          "shot_variance": 3.0517578125e-05
+        },
+        "n21_orbit_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.3963623046875,
+          "shot_variance": 2.794002284645103e-05
+        }
+      }
+    },
+    "tvd_measured_to_replayed": {
+      "n21_orbit_feedback": [
+        0.062744140625
+      ],
+      "n21_orbit_no_feedback": [
+        0.074951171875
+      ]
+    }
+  }
+]
