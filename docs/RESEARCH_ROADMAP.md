@@ -113,7 +113,7 @@ owns the link from literature and observations to the next intervention.
    admission follows the correction decision and remaining campaign gates.
 9. Separate first-measurement assignment error from true state error with the
    feed-forward contrast. Two Kingston correction runs
-   ([db6p55clf4us73c5nd9g](../results/live/2026-10-13T020454.599853Z/analysis-d7a774882d98.json),
+   ([db6p55clf4us73c5nd9g](../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json),
    [db6pepklf4us73c5nqcg](../results/live/2026-10-13T022433.333775Z/collect.json))
    record the first bit as 0 in about 11 percent of shots for both odd labels.
    Within that stratum the arms reverse by label: for s3 the known-label arm
@@ -218,9 +218,13 @@ The mathematical chain has the following acceptance gates.
    are available, or supplies a new instruction. Formalize the retained lemmas
    after that workflow milestone.
    Preserve full average/detail coordinates or all XOR sectors when information
-   matters; average-only multiplication fails. Certify the proposed complex
-   `16 x 16` skew representation before using Pfaffian equations as an
-   implemented replacement. General support compilation also remains proposed.
+   matters; average-only multiplication fails. The
+   [complex skew certificate](notes/complex_skew_rank_geometry.md) supplies
+   fifteen coefficient-pair domains, exhaustive Pfaffian equations and
+   conjugated kernel maps in dimension 32. The selected nullity-12 center
+   has a six-coordinate complex residual. Solve its real branches and normal
+   links before claiming a neighborhood classification. General support
+   compilation remains proposed.
    Kernel transport, algebra homomorphisms, and
    homotopy equivalences each require their own maps and identities.
 
@@ -241,24 +245,22 @@ require mathematical proof independently of those frequencies.
 
 ## Ownership, approval, review, and cleanup
 
-The [coordination ledger](../results/live/qpu-coordination.json) records family
-ownership, accepted jobs, shared reservations, and observation times. The ledger
-is cooperative coordination rather than an account-wide atomic lock. The
-execution owner skips the unavailable mock backend and refreshes live
-calibration on `ibm_fez`, `ibm_kingston`, and `ibm_marrakesh` immediately before
-run preparation. The complete matched family competes across admitted systems
-for the best accuracy/charge decision. Fresh usage, pending-job reconciliation,
-compilation, and source/QPY identities determine the proposed case. Every changed physical
-case requires its exact written approval; prior consumed approvals authorize
-only their recorded execution.
-
-The source integration workstream owns the source-library migration, registry
-and provenance, and the retained source-audit/replay bundles. The experiment owner owns PR #36 and the prospective pilot;
-that PR remains open under its separate instruction. The proof-planning
-workstream owns the new dependency/tomography plan and average/detail
-certificate. Each branch reconciles shared AGENTS gates when it integrates.
-Concurrent ledger edits, retained results, and the paused CUDA branch keep their
-owners. Scope changes update these dependencies before implementation.
+The current operator owns the topology work and any later approved hardware
+case. The retained [coordination ledger](../results/live/qpu-coordination.json)
+records historical assignments; a central coordinator and separate execution
+owner are unnecessary. Existing result directories and approvals retain their
+original provenance. Consumed approvals apply only to their recorded cases.
+The resumption audit observes `submitted` in `2026-10-13T020454.599853Z`.
+[Evidence PR #53](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/53)
+now merges as `ee6608b` with raw collection and a revised correction-schedule analysis.
+Reviewed lossless collection and preregistered adjudication remain the workflow
+milestone for new Rocq work. The operator verifies that milestone from retained
+artifacts; a changed analysis rule requires its own admission. Mathematical
+proofs remain independent of measured frequencies.
+Hardware preparation refreshes live calibration, usage, pending jobs, layouts,
+source identities and QPY bytes. Complete matched families compete across
+admitted backends for accuracy and charge; every changed physical case
+requires its exact written approval under `AGENTS.md`.
 
 Every integration uses a focused branch, local gates, current-head review,
 resolved reachable findings, and clean GitHub mergeability. Copilot supplies the

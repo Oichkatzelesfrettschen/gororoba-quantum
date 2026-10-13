@@ -1,0 +1,64 @@
+{
+  "schema": "complex-skew-proof-obligations-v1",
+  "rocq_status": "deferred-until-lossless-raw-collection-and-preregistered-adjudication",
+  "workflow_owner": "The current operator verifies the retained campaign evidence; a separate coordination owner is unnecessary.",
+  "lemmas": [
+    {
+      "name": "complex_intertwiner_all_stages",
+      "premises": [
+        "positive-definite real Cayley-Dickson convention",
+        "pure halves a,b"
+      ],
+      "conclusion": "Phi(L_x y)=(L_a-i R_b) conjugate(Phi(y)); K^T=-K; real rank equals twice complex rank."
+    },
+    {
+      "name": "pfaffian_rank_coverage",
+      "premises": [
+        "complex skew matrix",
+        "characteristic zero"
+      ],
+      "conclusion": "All next-order principal Pfaffians vanish exactly on the stated rank upper-bound locus."
+    },
+    {
+      "name": "coefficient_pair_cover",
+      "premises": [
+        "nonzero doubly-pure coefficient vector"
+      ],
+      "conclusion": "The m-1 domains a_j^2+b_j^2>0 cover the coefficient space and q_j S_j has quadratic Pfaffian entries."
+    },
+    {
+      "name": "kernel_chart_transport",
+      "premises": [
+        "nonzero maximal principal Pfaffian",
+        "zero Schur residual"
+      ],
+      "conclusion": "The conjugated complex frame gives the full real annihilator; overlap maps obey inverse, cocycle and metric identities."
+    },
+    {
+      "name": "pfaffian_newton_factor_bridge",
+      "premises": [
+        "positive-definite real doubly-pure coefficient space",
+        "even complex dimension",
+        "published nonnegative Newton determinant factorization"
+      ],
+      "conclusion": "The squared complex Pfaffian norm equals N times the last reduced elementary spectral coefficient; in dimension 32 that coefficient is E7."
+    },
+    {
+      "name": "selected_center_complex_obstruction",
+      "premises": [
+        "center e1+e18",
+        "all thirty doubly-pure coefficient directions",
+        "fixed-norm tangent coordinates",
+        "exact complex principal complement and kernel frame"
+      ],
+      "conclusion": "The 30-by-30 linear system has rank eight and the same tangent frame as the real system; the 22-by-231 quadratic obstruction has exactly the existing eight-generator row space and real locus A15 union B17."
+    }
+  ],
+  "remaining": [
+    "Solve unrestricted real rank components and smooth strata.",
+    "Determine actual local branches and normal links at e1+e18.",
+    "Prove complete frontier kernel and attachment coverage.",
+    "Construct a certified global finite model and compute integral homology, torsion and cohomology products.",
+    "Prove unrestricted all-dimensional classification."
+  ]
+}
