@@ -1248,6 +1248,12 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error ci/check_run_gates.py && \"$PYTHON\" -B -O -W error ci/check_run_gates.py",
    "name": "ci-resource-launch-contract"
+  },
+  {
+   "suite": "core",
+   "name": "retained-evidence-channel-inventory",
+   "cwd": ".",
+   "cmd": "ruff check scripts/inventory_retained_runs.py && ruff format --check scripts/inventory_retained_runs.py && mypy scripts/inventory_retained_runs.py && \"$PYTHON\" -B -W error scripts/inventory_retained_runs.py --check && \"$PYTHON\" -B -O -W error scripts/inventory_retained_runs.py --check"
   }
  ],
  "excluded": [

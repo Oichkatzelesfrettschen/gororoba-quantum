@@ -32,6 +32,26 @@ cases under `historical_renewal_required`. Their 197.022-second nominal estimate
 and proposed 240-second aggregate ceiling describe the older preparation;
 the current campaign cases supply the renewed planning qualification.
 
+## Retained evidence channels
+
+The [channel inventory](retained-run-channel-inventory.json) records 99 runner
+records: 76 planned, six submitted, three approval-required, one infeasible
+and thirteen with legacy unspecified state. The same inventory lists three
+native mock reports, three mock diagnostics, seventeen local-compute JSON
+artifacts, one native Aer preparation report and twenty-four local
+compile/algebra/simulation JSON artifacts. These are retained evidence objects;
+a single acquisition can have several records and analyses. The physical
+service observation identifies ten QPU jobs, nine registered and one recovered
+retrospectively. Local and mock outputs supply implementation evidence and
+retain their separate interpretation.
+
+The recorded local `running` field belongs to an interrupted checkpoint whose
+later qualification failed. Retained state labels establish artifact provenance;
+current process status requires a live handle. Replay the table with
+`"$PYTHON" -B -W error scripts/inventory_retained_runs.py --check`; optimized
+Python and serial/parallel parsing reproduce the same table. The script reads
+existing records and writes only a separate new inventory when requested.
+
 ## Completed-job coverage and recovered wide control
 
 The [read-only IBM inventory](qpu-job-inventory.json) observes ten completed
