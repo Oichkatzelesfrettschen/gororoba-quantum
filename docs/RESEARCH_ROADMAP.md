@@ -201,6 +201,16 @@ The mathematical chain has the following acceptance gates.
    every frontier. Different approach
    directions can produce different subspaces of an exceptional kernel; one
    polynomial path and a frontier adjacency matrix omit those maps.
+   Use the complementary-Pfaffian vector's projective class to retain the
+   kernel plane when its unnormalized volume tends to zero. Construct the
+   graph over an exact rank locus and certify its real closure at a frontier;
+   equations at the zero-volume endpoint alone admit extra candidate planes.
+   Apply [real curve selection](notes/1803.00505.md) only after proving closure
+   membership, and compare the resulting planes with the certified projector
+   limits. The graph fiber records reachable limiting planes; full exceptional
+   kernels and their unit-vector fibers require separate incidence data.
+   This route remains a construction obligation, rather than a computed
+   frontier classification.
 5. Construct a global finite model with a proved relation to the complete pair
    space. Coste's triangulation, Hardt, and conic theorems establish existence
    frameworks; computed partitions, gluing maps, and coverage remain work.
