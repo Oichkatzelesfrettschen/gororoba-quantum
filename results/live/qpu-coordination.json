@@ -3,18 +3,18 @@
   "updated_at": "2026-10-13T03:31:58.957019+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
-    "last_observed_remaining_seconds": 551,
-    "remaining_seconds_source": "results/ripple/campaign-execution/correction-direct-calibration-live-admission.json#budget",
+    "last_observed_remaining_seconds": 432,
+    "remaining_seconds_source": "results/live/qpu-coordination.json#account_inventory_observation",
     "account_inventory_scope": "The separately retained account_inventory_observation keeps its own observation time; the preparation quota value is not a fresh pending-account-job inventory.",
     "user_campaign_ceiling_seconds": 180,
-    "maximum_remaining_atlas_ceiling_seconds": 150,
-    "unallocated_campaign_ceiling_seconds": 10,
+    "maximum_remaining_atlas_ceiling_seconds": 0,
+    "unallocated_campaign_ceiling_seconds": 61,
     "single_shared_reserve_seconds": 60,
     "campaign_cap_plus_reserve_seconds": 240,
     "unallocated_account_seconds_after_campaign_cap_and_reserve": 311,
     "folded_reserved_ceiling_seconds": 0,
     "folded_settled_charge_seconds": 40,
-    "budget_scope": "The user 180-second cap covers new correction and static executions. Four freshly prepared static job ceilings total 140 seconds; the held correction proposal adds 30, giving 170 proposed seconds. Historical 49 seconds are settled. Planned ceilings become reservations only on attempted submission.",
+    "budget_scope": "The user 180-second cap covers new correction and static executions. Settled new-campaign charges total 119 seconds (folded-correction 2 x 11, ripple 66, rank-sector 31); no ceiling remains reserved or unsettled, leaving 61 seconds of the cap. Historical settled charges remain outside the cap.",
     "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
     "proposals_are_account_reservations": false,
     "aggregate_enforcement": "The execution owner must reconcile accepted and attempted job ceilings, settled charges, remaining user cap and fresh account quota before each submission. The runner enforces one invocation ceiling; this ledger creates neither an atomic account reservation nor an account-wide service ceiling.",
@@ -27,10 +27,17 @@
     "correction_attempt_reservation_seconds": 30,
     "remaining_static_planned_ceiling_seconds": 140,
     "reservation_boundary": "Conservative cooperative reservation during the authorized invocation; accepted/attempted job ceilings remain reserved until attributable final charges settle.",
-    "new_campaign_settled_charge_seconds": 0,
+    "new_campaign_settled_charge_seconds": 119,
     "new_campaign_unsettled_ceiling_seconds": 30,
     "planned_nominal_seconds": 106.29010304,
-    "planned_stress_seconds": 118.44546303999999
+    "planned_stress_seconds": 118.44546303999999,
+    "new_campaign_settled_jobs": {
+      "folded-correction": 22,
+      "ripple": 66,
+      "rank-sector": 31
+    },
+    "planned_static_ceiling_seconds": 0,
+    "unsettled_ceiling_seconds": 0
   },
   "families": [
     {
@@ -76,7 +83,7 @@
       ],
       "settled_charge_seconds": 66,
       "collect_sha256": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13",
-      "finding": "84 of 85 bright-minus-dark contrasts reject the null under family-wise Hoeffding bounds; the largest is +0.731 [0.582, 0.881]"
+      "finding": "All 84 registered box-kite bright-minus-dark contrasts reject the null under family-wise Hoeffding bounds (estimates +0.282 to +0.731). The separately registered depth-4 class-return contrast does not reject: -0.0101 [-0.0848, +0.0645]."
     },
     {
       "family": "rank-sector",
@@ -91,7 +98,7 @@
       ],
       "settled_charge_seconds": 31,
       "collect_sha256": "a0a4e59162ea9837322842a7e9094ef46761164b8a47a2917081338ec4b7c963",
-      "finding": "20 of 20 sector bright-minus-dark contrasts reject the null; estimates +0.82 to +0.87"
+      "finding": "All 8 sector bright-minus-dark-at-one contrasts reject the null (estimates +0.612 to +0.868), and all 12 pulse-difference laws in sectors 4-7 reject it: t1d2-t0d1 zero-two pulse +0.435 to +0.486, t3d2-t2d1 zero-two pulse +0.249 to +0.276, t1d2-t1d1 one-two pulse +0.111 to +0.126."
     },
     {
       "family": "folded-correction",
