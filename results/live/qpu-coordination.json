@@ -18,26 +18,24 @@
     "release_rule": "retain accepted/attempted job ceilings until attributable final charges settle",
     "proposals_are_account_reservations": false,
     "aggregate_enforcement": "The execution owner must reconcile accepted and attempted job ceilings, settled charges, remaining user cap and fresh account quota before each submission. The runner enforces one invocation ceiling; this ledger creates neither an atomic account reservation nor an account-wide service ceiling.",
-    "correction_planned_ceiling_seconds": 30,
+    "correction_planned_ceiling_seconds": 0,
     "currently_admitted_ceiling_seconds": 30,
     "proposed_campaign_ceiling_seconds": 170,
-    "proposed_atlas_ceiling_seconds": 140,
-    "planned_campaign_plus_reserve_seconds": 230,
+    "proposed_atlas_ceiling_seconds": 0,
+    "planned_campaign_plus_reserve_seconds": 0,
     "historical_settled_charge_seconds": 49,
     "correction_attempt_reservation_seconds": 30,
-    "remaining_static_planned_ceiling_seconds": 140,
+    "remaining_static_planned_ceiling_seconds": 0,
     "reservation_boundary": "Conservative cooperative reservation during the authorized invocation; accepted/attempted job ceilings remain reserved until attributable final charges settle.",
     "new_campaign_settled_charge_seconds": 119,
-    "new_campaign_unsettled_ceiling_seconds": 30,
-    "planned_nominal_seconds": 106.29010304,
-    "planned_stress_seconds": 118.44546303999999,
+    "new_campaign_unsettled_ceiling_seconds": 0,
+    "planned_nominal_seconds": 0,
+    "planned_stress_seconds": 0,
     "new_campaign_settled_jobs": {
       "folded-correction": 22,
       "ripple": 66,
       "rank-sector": 31
-    },
-    "planned_static_ceiling_seconds": 0,
-    "unsettled_ceiling_seconds": 0
+    }
   },
   "families": [
     {
