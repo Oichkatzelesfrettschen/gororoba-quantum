@@ -2738,10 +2738,10 @@ def unchanged_since_planning(
 ) -> bool:
     """Whether a pre-submission refresh would rebuild exactly the planned choices.
 
-    Selection reads every backend, so every backend's eligibility and
-    calibration timestamp must match the planning inventory, and every chosen
-    backend's compiled instructions must keep their capabilities and
-    calibration fingerprint.
+    Selection reads every backend, so every backend's eligibility, calibration
+    timestamp and queue length must match the planning inventory, and every
+    chosen backend's compiled instructions must keep their capabilities,
+    calibration fingerprint and configured repetition delay.
     """
     planned = record.get("system_inventory")
     if not isinstance(planned, dict) or set(planned) != set(inventory):
@@ -2750,16 +2750,20 @@ def unchanged_since_planning(
         before = planned[name]
         if not isinstance(before, dict) or not isinstance(entry, dict):
             return False
-        if (before.get("eligibility"), before.get("calibration")) != (
-            entry.get("eligibility"),
-            entry.get("calibration"),
-        ):
+        # Selection breaks equal-score ties by queue length, so pending_jobs
+        # joins eligibility and calibration in the equivalence.
+        fields = ("eligibility", "calibration", "pending_jobs")
+        if tuple(before.get(field) for field in fields) != tuple(entry.get(field) for field in fields):
             return False
     by_name = {snapshot.name: snapshot for snapshot in fresh}
-    return all(
-        choice.snap.name in by_name and not choice_change_reasons(choice, by_name[choice.snap.name])
-        for choice in choices
-    )
+    for choice in choices:
+        current = by_name.get(choice.snap.name)
+        if current is None or choice_change_reasons(choice, current):
+            return False
+        # Sampler options read the backend's configured repetition delay.
+        if qpu_planning.repetition_delay(choice.snap.backend) != qpu_planning.repetition_delay(current.backend):
+            return False
+    return True
 
 
 def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
@@ -3184,7 +3188,7 @@ def submit(
         # comparison below still checks this plan in full.
         fresh_choices = list(choices)
         fresh_fusion_placement = record.get("fusion_placement", {})
-        print("pre-submit refresh: every backend's calibration and eligibility match planning; reusing the plan")
+        print("pre-submit refresh: every backend's calibration, eligibility and queue match planning; reusing the plan")
     elif getattr(args, "family", None):
         fresh_choices, fresh_design = qpu_planning.prepare(
             sys.modules[__name__], fresh_snapshots, args, service.usage(), attempt_trace

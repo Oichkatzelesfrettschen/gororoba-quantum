@@ -2382,6 +2382,9 @@ def _verify_schema_lifecycle() -> None:
         run_dir = Path(directory)
         live_run_module.select_candidates = changed_select_candidates
         live_run_module.configure_sampler = forbidden_configure_sampler
+        # A planning inventory unlike the refresh takes the rebuild path this
+        # fixture exercises.
+        approval_record["system_inventory"] = {"planning-only-backend": {}}
         try:
             try:
                 live_run_module.submit(
@@ -3051,8 +3054,8 @@ def _verify_unchanged_since_planning() -> None:
         raise RuntimeError("a new backend in the refresh inventory reused the plan")
     queue_only = copy.deepcopy(inventory)
     queue_only["ibm_a"]["pending_jobs"] = 9
-    if not live_run_module.unchanged_since_planning(record, queue_only, [], []):
-        raise RuntimeError("a queue-length change alone rebuilt the plan")
+    if live_run_module.unchanged_since_planning(record, queue_only, [], []):
+        raise RuntimeError("a queue-length change, which breaks selection ties, reused the plan")
 
 
 def _verify() -> None:
