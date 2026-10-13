@@ -15,10 +15,11 @@ from dataclasses import asdict
 from typing import Any
 
 import numpy as np
+from qiskit.exceptions import QiskitError
 
 import local_compute
 import parallel
-from diagnostic_experiments import family_contracts, folded_group, n21_group
+from diagnostic_experiments import N21_FAMILIES, family_contracts, folded_group, n21_group, n21_orbit_rca_group
 from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
@@ -132,6 +133,32 @@ def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, An
     }
 
 
+def window_durations(runtime: Any, snapshot: Any) -> tuple[int, int, float]:
+    """Readout length and echo half-window in dt from the backend's slowest measure and reset.
+
+    The delay arm idles one readout length. The echo halves together cover
+    1.2 times the longest measure plus reset, so the second X precedes the
+    second round and no tail of the window stays unechoed.
+    """
+    target = snapshot.backend.target
+    granularity = max(1, int(target.granularity))
+    longest = {}
+    for name in ("measure", "reset"):
+        durations = [
+            float(properties.duration)
+            for properties in target[name].values()
+            if properties is not None and properties.duration is not None
+        ]
+        if not durations or target.dt is None or target.dt <= 0:
+            raise runtime.LiveRunError(f"the N=21 window arms need a calibrated {name} duration and dt")
+        longest[name] = max(durations) / float(target.dt)
+
+    def rounded(value: float) -> int:
+        return granularity * math.ceil(value / granularity)
+
+    return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
+
+
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     """Round the actual measurement writer's fresh duration to timing granularity."""
     target = snapshot.backend.target
@@ -151,9 +178,38 @@ def family_candidates(
 
         return algebra_planning.family_candidates(runtime, snapshots, args, trace)
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
-    if args.family == "n21-feedback":
-        routed = runtime.select_candidates(n21_group(), snapshots, args.seeds, trace)
+    if args.family in (*N21_FAMILIES, "n21-orbit-rca"):
+        routed = []
+        windows: dict[str, dict[str, float]] = {}
+        if args.family == "n21-orbit-rca":
+            # Window durations come from each backend's calibration, so each
+            # snapshot routes its own group; per-snapshot traces merge by group.
+            # A backend that lacks calibrated durations or rejects the group
+            # leaves the others in the search; the trace records its reason.
+            for snapshot in snapshots:
+                local: dict[str, Any] = {}
+                try:
+                    window_dt, half_dt, dt = window_durations(runtime, snapshot)
+                    group = n21_orbit_rca_group(window_dt, half_dt)
+                    routed += runtime.select_candidates(group, [snapshot], args.seeds, local)
+                except (runtime.LiveRunError, QiskitError, ValueError) as error:
+                    trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
+                    continue
+                windows[snapshot.name] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
+                trace.setdefault(group.name, {}).update(local.get(group.name, {}))
+            if not routed:
+                raise runtime.LiveRunError(
+                    f"no backend routes the N=21 window family: {trace.get('family_rejections')}"
+                )
+            routed.sort(key=lambda choice: -choice.joint_score)
+        else:
+            routed = runtime.select_candidates(
+                n21_group(orbit=args.family == "n21-orbit-feedback"), snapshots, args.seeds, trace
+            )
         tiers = args.replica_tiers if args.optimize else [args.max_replicas or 1]
+        if args.family == "n21-orbit-rca":
+            # The window analysis reads one replica's schedule and wires.
+            tiers = [1]
         if args.max_replicas is not None:
             tiers = [tier for tier in tiers if tier <= args.max_replicas]
         if not tiers:
@@ -163,7 +219,9 @@ def family_candidates(
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
                 if runtime._prepare_individual_candidate(trial, trace, policy):
-                    candidates.append(([trial], {"name": args.family, "replica_cap": cap}))
+                    candidates.append(
+                        ([trial], {"name": args.family, "replica_cap": cap, **windows.get(candidate.snap.name, {})})
+                    )
         return candidates
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")

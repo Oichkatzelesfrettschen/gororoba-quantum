@@ -2352,8 +2352,31 @@ def _choice_record(
         ],
         **replica_statistics(choice.group, choice.entries, noisy, shots, _reference_scope(choice, scopes)),
         "summary_readout_corrected": corrected_summary(choice.group, choice.entries, noisy, choice.snap.properties),
+        "placed_qubit_calibration": placed_qubit_calibration(
+            choice.snap.properties, sorted({qubit for replica in choice.replicas for qubit in replica.qubits})
+        ),
         "members": members,
     }
+
+
+PLACED_QUBIT_FIELDS = ("T1", "T2", "readout_error", "prob_meas1_prep0", "prob_meas0_prep1", "frequency")
+
+
+def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, dict[str, float]]:
+    """The snapshot's per-qubit coherence and assignment values for every executing qubit.
+
+    Backend properties report T1 and T2 in microseconds and assignment rates as
+    probabilities; a field the backend omits stays absent.
+    """
+    if properties is None:
+        return {}
+    placed = {}
+    for qubit in qubits:
+        values = {item.name: item.value for item in properties.qubits[qubit]}
+        placed[str(qubit)] = {
+            name: float(values[name]) for name in PLACED_QUBIT_FIELDS if isinstance(values.get(name), (int, float))
+        }
+    return placed
 
 
 def discover_snapshots(

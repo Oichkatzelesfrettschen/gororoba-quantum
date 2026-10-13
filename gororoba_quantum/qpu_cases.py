@@ -24,7 +24,15 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
-FAMILIES = {"folded-qpe", "folded-correction", "n21-feedback", "ripple", "rank-sector"}
+FAMILIES = {
+    "folded-qpe",
+    "folded-correction",
+    "n21-feedback",
+    "n21-orbit-feedback",
+    "n21-orbit-rca",
+    "ripple",
+    "rank-sector",
+}
 _IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:+/-]*\Z")
 _HEX_DIGEST = re.compile(r"[a-f0-9]{64}\Z")
 _DESIGN_OPTIONS = (
@@ -50,6 +58,8 @@ _MAPPING_FIELDS = (
     "measurement_seconds",
     "measurement_sites",
     "dt_seconds",
+    "window_delay_dt",
+    "echo_half_dt",
 )
 
 
@@ -1013,6 +1023,19 @@ def _scientific_case(family: str) -> list[str]:
         "provide a feedback diagnostic; they do not establish successful general order recovery, "
         "factoring advantage, or an asymptotic speedup.",
         "",
+        *(
+            [
+                "The orbit families compile each controlled multiplier only on the orbit 1, 4, 16 of the "
+                "work register, which supplies the order 3 to the circuit. They measure feed-forward in a "
+                "two-round semiclassical QPE and perform no order finding or factoring (Smolin, Smith and "
+                "Vargo, Nature 499, 163 (2013)). The window arms of n21-orbit-rca idle the control, read it "
+                "a second time, or echo the work qubits during the first measurement and reset; the family "
+                "configuration records their durations in dt.",
+                "",
+            ]
+            if family in ("n21-orbit-feedback", "n21-orbit-rca")
+            else []
+        ),
         "Gate noise, measurement/reset disturbance, conditional-control latency, routing changes, "
         "replica correlations, and calibration drift can change the contrast. Calibration-based Aer "
         "simulation supplies a conditional model and power admission. Future hardware observations "
@@ -1151,13 +1174,23 @@ def _render(
                 "invalid ideal law",
             )
             lines.append(f"| {name} | `{json.dumps(ideal)}` |")
-    lines.extend(["", "| Group | Backend | Calibration | Transpiler seed | Initial layout |", "|---|---|---|---:|---|"])
+    # The transpiler routes a template layout; replica placement then maps each
+    # replica onto the physical qubits that execute, which the last column names.
+    lines.extend(
+        [
+            "",
+            "| Group | Backend | Calibration | Transpiler seed | Template layout | Executed physical layouts |",
+            "|---|---|---|---:|---|---|",
+        ]
+    )
     for group in record["groups"]:
         calibration = _identifier(group["calibration"], "calibration")
+        template = _numeric_mapping(group["initial_layout"])
+        placed = [[replica["mapping"][str(qubit)] for qubit in template] for replica in group["replicas"]]
         lines.append(
             f"| {_identifier(group['group'], 'group')} | {_identifier(group['backend'], 'backend')} | "
             f"{calibration} | {_count(group['seed_transpiler'], 'transpiler seed')} | "
-            f"`{json.dumps(_numeric_mapping(group['initial_layout']))}` |"
+            f"`{json.dumps(_numeric_mapping(group['initial_layout']))}` | `{json.dumps(placed)}` |"
         )
     mappings = {
         key: _numeric_mapping(value) for key, value in record["family_configuration"].items() if key in _MAPPING_FIELDS

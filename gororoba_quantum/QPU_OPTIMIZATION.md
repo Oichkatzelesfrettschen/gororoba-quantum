@@ -85,6 +85,47 @@ for this experiment and do not establish factor recovery. The two arms
 share a routed group and replica mappings, remain dynamic, and occupy two
 PUBs in one job. `--replica-tiers` bounds the placements considered.
 
+`--family n21-orbit-feedback` runs the same comparison with multipliers
+compiled on the orbit of `|1>`. Bits 0, 2 and 4 of the binary work register
+hold the orbit 1, 4, 16 one-hot, so multiplication by 4 is a three-cycle of
+those bits, two controlled swaps, and multiplication by 16 is its inverse.
+The circuit uses four qubits and routes to about 43 CZ per arm on a heavy-hex
+device, against about 1000 for the full-register target-flip multipliers. The
+labeled law, weights and contrast equal the full-register family's. The
+multipliers act correctly only on the orbit, so building them supplies the
+order 3: this family measures feed-forward in a two-round semiclassical QPE
+and performs no order finding or factoring (Smolin, Smith and Vargo, Nature
+499, 163 (2013), doi:10.1038/nature12290). Under the FakeKingston noise
+model the contrast is about 0.22 for the orbit circuits and about 0.02 for
+the full-register circuits, against the ideal 1/4.
+
+`--family n21-orbit-rca` runs four orbit pairs in one dynamic job to locate a
+coherent phase on the second-round kickback, which a calibration noise model
+omits because backend properties carry no qubit frequency.
+`scripts/n21_orbit_rca.py` fits error mechanisms to each pair's eight cells
+with an exact density-matrix model and a Bonferroni threshold across the
+mechanisms. Work-only gates commute with the control's measurement, so the
+compiler can finish a multiplier after it, and the physical qubits holding the
+work superposition during the window then differ between the feed-forward and
+omitted-correction members and between recorded branches. The script
+identifies each qubit's role with Z probes on the archived ISA and reads
+exposure from the returned schedule. A barrier before the first measurement
+fixes the window structure; the echo arm carries one.
+
+| Arm | Change to the window | Detuning on work qubits | Readout-induced shift | Residual control photons |
+|---|---|---|---|---|
+| nominal | none | reference | reference | reference |
+| window_delay | control idles one readout length after reset | phase grows with the idle | phase unchanged | phase shrinks |
+| extra_readout | control read twice into the first bit | phase grows as for window_delay | phase grows beyond window_delay | phase unchanged |
+| window_echo | barrier, then X on the work bits for 1 and 16 at each echo half | phase near zero | partial cancellation | phase unchanged |
+
+The window durations come from the backend's longest measure and reset in
+dt and are recorded in the family configuration with the backend dt. Four
+directional endpoints share the requested alpha, and the family plans one
+replica. The planning contract
+requires the extra readout, the delay and the per-wire delay-X-delay-X echo
+to survive transpilation.
+
 `qpe_diagnostics.py` derives both families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
 compares those labels with exact circuit branches and seeded Aer sampling.
