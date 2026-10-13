@@ -14,7 +14,7 @@ The canonical source library lives under `docs/`: paper descriptions in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
 license evidence. The library publishes 15 licensed PDFs and two aliases;
-62 external sources retain citations and optional ignored local reading copies.
+64 external sources retain citations and optional ignored local reading copies.
 Four licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
@@ -216,6 +216,9 @@ hardware cases retain their independent admission gates.
 | [1207.1655](notes/1207.1655.md) | Granade et al., Robust online Hamiltonian learning, NJP 14, 103013 (2012) | medium | none | none |
 | [1502.02677](notes/1502.02677.md) | Kimmel, Low and Yoder, Robust calibration via robust phase estimation, PRA 92, 062315 (2015); erratum PRA 104, 069901 (2021) | medium | none | none |
 | [1301.7007](notes/1301.7007.md) | Smolin, Smith and Vargo, Oversimplifying quantum factoring, Nature 499, 163 (2013) | low | none | high |
+| [0907.3740](notes/0907.3740.md) | Maurer and Pontil, Empirical Bernstein bounds and sample variance penalization, COLT 2009 | medium | none | none |
+| [2010.09686](notes/2010.09686.md) | Waudby-Smith and Ramdas, Estimating means of bounded random variables by betting, JRSSB 86, 1 (2024) | medium | none | none |
+| [hoeffding-1963](notes/hoeffding-1963.md) | Hoeffding, Probability inequalities for sums of bounded random variables, JASA 58, 13 (1963) | high | none | none |
 
 ## Historical action items and current status
 

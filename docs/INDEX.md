@@ -120,6 +120,8 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Granade et al. 2012 -- Robust online Hamiltonian learning](notes/1207.1655.md) | [PDF](https://arxiv.org/pdf/1207.1655v2) | `1207.1655v2.pdf` | [CC-BY-NC-SA-3.0](https://arxiv.org/abs/1207.1655v2) |
 | [Kimmel, Low and Yoder 2015 -- Robust calibration of a universal single-qubit gate set via robust phase estimation](notes/1502.02677.md) | [PDF](https://arxiv.org/pdf/1502.02677v3) | `1502.02677v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1502.02677v3) |
 | [Smolin, Smith and Vargo 2013 -- Oversimplifying quantum factoring](notes/1301.7007.md) | [PDF](https://arxiv.org/pdf/1301.7007v1) | `1301.7007v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1301.7007v1) |
+| [Maurer and Pontil 2009 -- Empirical Bernstein bounds and sample variance penalization](notes/0907.3740.md) | [PDF](https://arxiv.org/pdf/0907.3740v1) | `0907.3740v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0907.3740v1) |
+| [Waudby-Smith and Ramdas 2024 -- Estimating means of bounded random variables by betting](notes/2010.09686.md) | [PDF](https://arxiv.org/pdf/2010.09686v7) | `2010.09686v7.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2010.09686v7) |
 
 | [Quantitative Curve Selection Lemma](notes/1803.00505.md) | [PDF](https://arxiv.org/pdf/1803.00505v3) | `1803.00505v3.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1803.00505v3) |
 | [Rational points in henselian discrete valuation rings](notes/greenberg-henselian-lifting.md) | [PDF](https://pmihes.centre-mersenne.org/item/10.1007/BF02684802.pdf) | `greenberg-1966-henselian-points.pdf` | [Source-specific rights audit](https://pmihes.centre-mersenne.org/articles/10.1007/BF02684802/) |
@@ -261,3 +263,5 @@ broad atlas expenditure. Each new physical case requires its own approval.
 The [execution-guide note](notes/ibm-runtime-execution-guides.md) records six IBM Quantum documentation pages
 (workload usage, stretch, Sampler options, Sampler inputs and outputs, run-time minimization,
 and the client-side Sampler API) with retrieval SHA-256 and the use each page is cited for.
+
+The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.

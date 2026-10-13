@@ -11,9 +11,9 @@ choice, and an independent validation on new observations.
 
 | Stage | Aggregate ceiling |
 |---|---|
-| Characterization | 26 s |
+| Characterization | 27 s (3 jobs x 9 s ceiling; 24.05 s predicted) |
 | Validation of one frozen intervention | 14 s |
-| Campaign buffer | 6 s |
+| Campaign buffer | 5 s |
 
 The usable budget is min(campaign remaining, account remaining - reserve -
 unsettled ceilings). Each stage submits only after a fresh priced case and
@@ -46,8 +46,9 @@ explicit owner approval; an informative unresolved result ends the campaign.
   while g^2 t / Delta over 5.6 us is 0.56 rad.
 - Phase fits use executed exposure from the returned schedule, piecewise
   across carrier changes, echo pulses, measurement, reset and dispatch.
-- The barrier-only and barrier-plus-echo orbit members match state-bearing
-  duration or carry duration as an explicit factor.
+- The barrier-only and barrier-plus-echo orbit members match requested idle
+  halves; their elapsed exposure and pulse differences come from the returned
+  schedules, so their comparison is not described as refocusing alone.
 
 ## Admission and analysis
 
@@ -60,6 +61,36 @@ explicit owner approval; an informative unresolved result ends the campaign.
   coverage checks.
 - Every analyzed row binds job id, PUB identity, shots, register order,
   compiled-circuit hash, physical mapping, raw hash and timing.
+
+## Decision usefulness at the registered precision
+
+Half-widths are the simultaneous Hoeffding radii of the final dry run. For two
+Ramsey responses of visibility R separated by phase dphi, the X/Y distance is
+2 R |sin(dphi / 2)|, so detectability depends on visibility as well as phase.
+
+| Endpoint (units) | Half-width | Role | Resolves |
+|---|---:|---|---|
+| work A/B echo minus plain, Y expectation at 7.6 us | 0.229 | decisive | phase differences above about 0.27 rad at R near 0.87 (5.6 kHz static detuning) |
+| work A/B measurement window minus plain, Y at 5.6 us | 0.229 | decisive | a window-associated phase above about 0.27 rad at R near 0.87 |
+| work A control 1 minus 0, Y at 5.6 us | 0.229 | decisive | control-state-dependent phase of the same size |
+| work A measured minus reset-only, Y at 5.6 us | 0.229 | decisive | explicit-measurement contribution of the same size |
+| work A paired minus single, Y at 7.6 us | 0.229 | exploratory | only a large paired-preparation ZZ effect |
+| spectator excess from work A (population) | 0.114 | exploratory | transfer above about 11 percent; weak transfer stays possible |
+| orbit barrier minus nominal (contrast difference) | 0.240 | exploratory | gains above about 0.24; adoption needs validation power |
+| orbit echo minus barrier (contrast difference) | 0.240 | exploratory | as above |
+
+The run is decision-useful for the window-phase hypotheses and exploratory for
+the orbit interventions; "no intervention selected" stays an allowed outcome.
+
+## Execution limits
+
+- The orbit job is predicted at 8.9 s under a 9 s ceiling (1 percent
+  headroom); a cancellation is recorded and never retried automatically.
+- IBM's server-side dry run returned QiskitBackendNotFoundError, so executed
+  timing is qualified only from the collected schedules; physical detuning
+  is withheld wherever executed timing is unavailable or collapsed.
+- The runner submits the three jobs in one invocation; a dynamic-first staged
+  release needs a runner change and stays a follow-up.
 
 ## Checklist
 

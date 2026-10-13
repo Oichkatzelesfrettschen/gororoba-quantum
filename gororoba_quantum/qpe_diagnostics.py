@@ -149,8 +149,8 @@ N21_ORBIT_BITS = (0, 2, 4)
 # |1> +/- |16> while the control is measured and reset.
 N21_ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
 # window_barrier completes the first round before the first measurement and idles
-# the work bits for the same two echo halves as window_echo, without the pulses,
-# so the two differ only by refocusing.
+# the work bits for the same requested echo halves as window_echo, without the
+# pulses; elapsed exposure and pulse differences come from the returned schedule.
 N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, "window_barrier")
 
 

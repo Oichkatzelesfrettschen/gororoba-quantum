@@ -30,6 +30,8 @@ import numpy as np
 from scipy.optimize import minimize
 
 Z95 = 1.959963984540054
+# X and Y circuits of one point must execute the same idle within this many microseconds.
+TIMING_TOLERANCE_US = 0.02
 DELTA_GRID_MHZ = np.linspace(-0.5, 0.5, 201)
 CONDITIONS = {
     "ramsey_plain": ("ramsey_plain_{q}_d{d}", 0),
@@ -127,7 +129,17 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
     # A coarse grid finds the periodic basin; a free fit refines delta, and
     # bisection on the profile likelihood finds each interval edge.
     origin = np.array([0.0, -0.2, 0.02])
-    coarse = min((profile(float(delta), origin).fun, float(delta)) for delta in DELTA_GRID_MHZ[::4])
+    grid = [(profile(float(delta), origin).fun, float(delta)) for delta in DELTA_GRID_MHZ[::4]]
+    coarse = min(grid)
+    # Phase aliases: every local grid minimum within the 95 percent profile
+    # threshold of the best one stays a compatible detuning.
+    aliases = [
+        delta
+        for index, (value, delta) in enumerate(grid)
+        if 2 * (value - coarse[0]) <= Z95**2
+        and value <= grid[max(index - 1, 0)][0]
+        and value <= grid[min(index + 1, len(grid) - 1)][0]
+    ]
     free = minimize(
         lambda v: nll(v[:3], float(v[3])), np.array([*profile(coarse[1], origin).x, coarse[1]]), method="Nelder-Mead"
     )
@@ -153,7 +165,9 @@ def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
     return {
         "delta_mhz": minimum[1],
         "delta_95_mhz": interval,
-        "delta_resolved": not edge_hit,
+        "delta_resolved": not edge_hit and len(aliases) <= 1,
+        "compatible_alias_deltas_mhz": aliases,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
         "phi0_rad": float(math.remainder(phi0, 2 * math.pi)),
         "visibility0": float(math.exp(min(log_v0, 0.0))),
         "decay_per_us": float(max(gamma, 0.0)),
@@ -177,7 +191,8 @@ def ramsey_points(
             continue
         x_ones, x_shots = _ones(counts[x_name], offset + qubit_clbit)
         y_ones, y_shots = _ones(counts[y_name], offset + qubit_clbit)
-        executed = executed_idle_us(x_name, qubit, dt)
+        executed_x = executed_idle_us(x_name, qubit, dt)
+        executed_y = executed_idle_us(y_name, qubit, dt)
         x = 1 - 2 * x_ones / x_shots
         y = 1 - 2 * y_ones / y_shots
         radius = math.hypot(x, y)
@@ -186,8 +201,11 @@ def ramsey_points(
             {
                 "member": x_name,
                 "requested_dt": delay,
-                "t_us": executed if executed is not None else delay * dt * 1e6,
-                "timing": "executed schedule" if executed is not None else "requested delay",
+                "t_us": executed_x,
+                "t_us_y": executed_y,
+                "timing_qualified": executed_x is not None
+                and executed_y is not None
+                and abs(executed_x - executed_y) <= TIMING_TOLERANCE_US,
                 "x_zero": x_shots - x_ones,
                 "x_shots": x_shots,
                 "y_zero": y_shots - y_ones,
@@ -212,8 +230,20 @@ def analyze(run: Path) -> dict[str, Any]:
             points = ramsey_points(
                 counts, pattern, offset, clbit, [0, *delays] if condition == "ramsey_plain" else delays, qubit, dt
             )
-            if len(points) >= 2:
-                report["conditions"][f"{condition}/{role}"] = {"points": points, "fit": fit_ramsey(points)}
+            if not points:
+                continue
+            # Physical fits use only points whose X and Y circuits executed the
+            # same idle; requested delays never stand in for executed timing.
+            qualified = [point for point in points if point["timing_qualified"]]
+            distinct = sorted({round(point["t_us"], 2) for point in qualified})
+            entry: dict[str, Any] = {"points": points}
+            if len(distinct) >= 2 and len(qualified) >= 3:
+                entry["fit"] = fit_ramsey(qualified)
+            else:
+                entry["fit"] = {"status": "unresolved: executed timing unavailable or collapsed", "times_us": distinct}
+            if condition == "ramsey_echo":
+                entry["exposure"] = "unsigned idle; the fit is an effective response descriptor, not a static detuning"
+            report["conditions"][f"{condition}/{role}"] = entry
     populations = {}
     for name, histogram in counts.items():
         if name.startswith("exchange_"):
@@ -259,6 +289,20 @@ def self_check() -> None:
         covered += fit["delta_95_mhz"][0] <= truth <= fit["delta_95_mhz"][1]
     if covered < 0.8 * trials:
         raise RuntimeError(f"planted detuning covered in {covered} of {trials} fits")
+    aliased = []
+    for t in (3.6, 5.6, 7.6):
+        phase = 0.3 + 2 * math.pi * truth * t
+        aliased.append(
+            {
+                "t_us": t,
+                "x_zero": round(1024 * (1 + 0.9 * math.cos(phase)) / 2),
+                "x_shots": 1024,
+                "y_zero": round(1024 * (1 + 0.9 * math.sin(phase)) / 2),
+                "y_shots": 1024,
+            }
+        )
+    if fit_ramsey(aliased)["delta_resolved"]:
+        raise RuntimeError("2 us-spaced times without a zero-idle point resolved delta despite 500 kHz aliases")
     flat = Counter({"0": 512, "1": 512})
     x_ones, x_shots = _ones(flat, 0)
     x, y = 1 - 2 * x_ones / x_shots, 0.0
@@ -267,7 +311,10 @@ def self_check() -> None:
     p, low, high = wilson(0, 1024)
     if not (p == 0 and low == 0 and high > 0):
         raise RuntimeError("a zero-count Wilson interval collapsed")
-    print(f"patch window analysis: planted detuning covered in {covered} of {trials} fits; boundary intervals finite")
+    print(
+        f"patch window analysis: planted detuning covered in {covered} of {trials} fits; "
+        "aliases kept; boundary intervals finite"
+    )
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -284,6 +331,9 @@ def main(argv: list[str] | None = None) -> int:
     report = analyze(arguments.run)
     for key, entry in report["conditions"].items():
         fit = entry["fit"]
+        if "status" in fit:
+            print(f"{key:24s} {fit['status']}")
+            continue
         interval = [round(value * 1e3, 1) for value in fit["delta_95_mhz"]]
         print(f"{key:24s} delta {fit['delta_mhz'] * 1e3:+7.1f} kHz 95% {interval} V0 {fit['visibility0']:.3f}")
     for context, entry in report["orbit"].items():

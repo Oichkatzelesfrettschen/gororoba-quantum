@@ -640,6 +640,11 @@
       "note": "docs/notes/ibm-runtime-execution-guides.md",
       "url": "https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/executor-sampler-sampler",
       "status": "HTML documentation retrieved 2026-10-13; the note records the cited use and retrieval SHA-256"
+    },
+    {
+      "note": "docs/notes/hoeffding-1963.md",
+      "url": "https://doi.org/10.1080/01621459.1963.10500830",
+      "status": "Journal article cited by DOI; publisher full text is outside the retained library"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -2724,6 +2729,78 @@
         "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
         "evidence_path": "docs/evidence/source_rights/arxiv-1301.7007v1.html",
         "evidence_retrieved_at_utc": "2026-10-13T18:47:41.079947+00:00",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Empirical Bernstein Bounds and Sample Variance Penalization",
+      "authors": [
+        "Maurer, Andreas",
+        "Pontil, Massimiliano"
+      ],
+      "version": "v1, 2009/07/21",
+      "source_url": "https://arxiv.org/pdf/0907.3740v1",
+      "note": "docs/notes/0907.3740.md",
+      "audited_at_utc": "2026-10-13T19:19:07.133215+00:00",
+      "sha256": "2edbfd8e9a97e60dacd6cf9286fc951bd3f710e27e07e0b03ca92822b4d03e41",
+      "bytes": 187186,
+      "pages": 9,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/0907.3740v1.pdf",
+      "local_cache_path": "docs/local_source_cache/0907.3740v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "2edbfd8e9a97e60dacd6cf9286fc951bd3f710e27e07e0b03ca92822b4d03e41",
+        "verified_at_utc": "2026-10-13T19:19:07.133215+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_url": "https://arxiv.org/abs/0907.3740v1",
+        "evidence_sha256": "701926d77e9994ec7682995d7d711baa12184b1e3a7309d0524bee1cadccda14",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-0907.3740v1.html",
+        "evidence_retrieved_at_utc": "2026-10-13T19:19:07.133215+00:00",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Estimating means of bounded random variables by betting",
+      "authors": [
+        "Waudby-Smith, Ian",
+        "Ramdas, Aaditya"
+      ],
+      "version": "v7, 2020/10/19",
+      "source_url": "https://arxiv.org/pdf/2010.09686v7",
+      "note": "docs/notes/2010.09686.md",
+      "audited_at_utc": "2026-10-13T19:19:07.473099+00:00",
+      "sha256": "d783b1200025fbdf89b0edf718c19712c1e7acfec263a4b07a68609b4d7ac4ef",
+      "bytes": 2875040,
+      "pages": 70,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/2010.09686v7.pdf",
+      "local_cache_path": "docs/local_source_cache/2010.09686v7.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "d783b1200025fbdf89b0edf718c19712c1e7acfec263a4b07a68609b4d7ac4ef",
+        "verified_at_utc": "2026-10-13T19:19:07.473099+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_url": "https://arxiv.org/abs/2010.09686v7",
+        "evidence_sha256": "813d274bd4c1c2fcbe7590dda7c1ddc332aa23ca14a9f615f13a239ab2e3e6e3",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-2010.09686v7.html",
+        "evidence_retrieved_at_utc": "2026-10-13T19:19:07.473099+00:00",
         "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
         "decision": "external_only",
         "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",

@@ -20,9 +20,10 @@ circuits follow docs/notes/patch_window_staged_plan.md:
   idle; the unexcited long idle and the all-one immediate readout bound the
   population and readout background. Weak transfer leaves dispersive phase
   possible, so these circuits test population exchange only.
-- Orbit pairs run the original scheduling freedom, a barrier with matched idle,
-  and a barrier with matched echo, each with and without feed-forward, in the
-  same acquisition.
+- Orbit pairs run the original scheduling freedom, a barrier with matched
+  requested idle halves, and a barrier with an echo across the same halves,
+  each with and without feed-forward, in the same acquisition; the returned
+  schedules qualify their elapsed exposure and pulse-related differences.
 """
 
 from __future__ import annotations
