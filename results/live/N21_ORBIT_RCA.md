@@ -6,11 +6,12 @@ Runs on ibm_fez, physical qubits 142 (control), 136 (work 1), 143 (work 4),
 Status: the phases below are model-dependent fit parameters from these runs'
 calibrations, not measured rotations. PATCH_WINDOW_FINDINGS.md adds a
 same-calibration characterization: product-state Ramsey probes show no
-resolved window phase, while a refit of that run's orbit distributions needs
-a phase-like term in the nominal context and none with the window echo. The
-window attribution below stands as a state-dependent candidate, and the
-echo-contrast comparison (0.17 rad fitted, contrast nearly unchanged) shows
-why contrast alone cannot settle orbit phase.
+resolved window phase, and that run's orbit distributions change with the
+window context while a no-phase arm-dependent loss model fits them as well as
+the phase model. The window attribution below is one candidate, not an
+established mechanism, and the echo-contrast comparison (0.17 rad fitted,
+contrast nearly unchanged) shows why contrast alone cannot settle orbit
+phase.
 
 | Run | Job | Charge | Record |
 |---|---|---|---|

@@ -30,11 +30,11 @@ The compiled payload is byte-identical: both records' isa.qpy have sha256
 cd45b6993fa4540a..., and all 46 per-circuit QPY dumps and instruction
 sequences match. The transpiler's canonical ordering removed the source
 reordering, and the static/dynamic classifier that refused the approved case
-ran on the source circuits. The experiment digests differ through the source
-commit and the calibration snapshot (11:56:54 approved, 12:57:03 submitted).
-Issue #76 covers dry-run/submit classifier parity; binding an approval to the
-exact record, source, circuit archive, manifest and ceilings at submit is a
-separate guard.
+runs on the source-circuit groups (live_run.capability_violations). The
+experiment digests differ through the source commit and the calibration
+snapshot (11:56:54 approved, 12:57:03 submitted). Issue #76 covers dry-
+run/submit classifier parity; binding an approval to the exact record,
+source, circuit archive, manifest and ceilings at submit is issue #77.
 
 ## Registered endpoints (collector, simultaneous Hoeffding, alpha 0.005 each)
 
@@ -95,36 +95,43 @@ Signed score s = P(01) - P(11) per arm; ideal contrast 1/4.
 The calibration-bound replay reproduces the nominal contrast, while both
 arms shift together by about +0.05; the contrast cancels that common shift.
 
-Exploratory nested refit (orbit_refit.py; not preregistered): exact orbit law
-with round-1 and round-2 kickback phases (phi1, phi2), depolarization, and
-1 -> 0 report flips on b0 and b1, fitted per context across both arms.
-(phi1, phi2) and (phi1 + pi, phi2 + pi) give the identical law, so only the
-near-zero basin is reported.
+Exploratory refit (orbit_refit.py; not preregistered): exact orbit law with
+round-1 and round-2 kickback phases (phi1, phi2), depolarization lam, and
+1 -> 0 report flips e0, e1 on b0 and b1, fitted per context across both arms.
+(phi1, phi2) and (phi1 + pi, phi2 + pi) give the identical law. The arm-bias
+model has no phase and the phase model's parameter count (lam and e1 per
+arm, shared e0).
 
-| Context | Bias-only deviance / dof | Phase + bias deviance / dof | LR (2 dof), p | Phases (rad) |
-|---|---|---|---|---|
-| nominal | 16.5 / 3 | 4.5 / 1 | 12.0, 0.0025 | phi1 +0.73, phi2 -1.00 |
-| barrier | 8.4 / 3 | 4.0 / 1 | 4.4, 0.11 | -- |
-| barrier + echo | 2.0 / 3 | 1.8 / 1 | 0.2, 0.92 | -- |
+| Context | Bias deviance / 3 dof | Phase + bias deviance / 1 dof | Arm bias deviance / 1 dof | Phase LR (2 dof), p |
+|---|---:|---:|---:|---|
+| nominal | 16.5 | 4.5 | 2.6 | 12.0, 0.0025 |
+| barrier | 8.4 | 4.0 | 1.5 | 4.4, 0.11 |
+| barrier + echo | 2.0 | 1.8 | 0.6 | 0.2, 0.92 |
 
-Under one calibration, the nominal orbit needs a phase-like term and the
-barrier-plus-echo context does not. The b1 report-flip parameter (0.04-0.10)
-absorbs the common-mode shift. The nominal phase model still leaves
-deviance 4.5 on 1 dof, so neither model fully describes that context, and
-the phases remain model parameters rather than measured rotations.
+- The no-phase arm-bias model fits every context at least as well as the
+  phase model, so these distributions do not identify a kickback phase; the
+  phase parameters absorb arm-dependent loss as readily as rotation.
+- One shared (phi1, phi2) with per-context nuisances is rejected against
+  per-context phases (LR 16.1 on 4 dof, p = 0.0028), and the echo context's
+  profile deviance at the nominal optimum is 8.6 (95% threshold 5.99): the
+  distributions change with context in a way one common phase cannot carry.
+- The echo context's 95% phase region contains zero; that is nondetection,
+  not absence.
 
 ## Interpretation
 
-The tested idle and measurement/reset windows do not reproduce a large phase
-on the product-state probes under this calibration, and the registered
-comparisons select no mitigation. The same-calibration orbit refit points the
-other way for the entangled orbit state: a phase-like term appears in the
-nominal context and is absent with the window echo. The candidate mechanism
-is therefore state-dependent and associated with the window in the orbit
-state (qubit 143 carries orbit amplitude for residue 4 there, while it is a
-spectator in the Ramsey probes), with gate-associated error still open. The
-earlier window attribution in N21_ORBIT_RCA.md and this record agree on the
-window; the product-state nondetection limits which simple mechanisms remain.
+- The tested idle and measurement/reset windows do not reproduce a large
+  phase on the product-state probes under this calibration, and the
+  registered comparisons select no mitigation.
+- The same-calibration orbit distributions depend on the window context, but
+  a phase model and an arm-dependent loss model explain them comparably, so
+  the run does not localize a phase to the gates or to the window. The
+  earlier inference that the phase arises in the gate sequence is withdrawn
+  without replacement.
+- State dependence stays open: qubit 143 carries orbit amplitude for residue
+  4 during the orbit, while it is a spectator in the Ramsey probes.
+- T1 and readout values come from the execution-time calibration 13:41:52
+  PDT (136: T1 94 us; 144: T1 157 us).
 
 ## Qubit 144 population
 
@@ -152,8 +159,9 @@ approved.
 
 ## Next analysis before any acquisition
 
-- Branch-conditioned orbit refit with executed schedules, asymmetric
-  relaxation and report error, retaining every compatible basin.
+- A discriminating measurement only where phase and arm-dependent loss
+  predict different outcomes: selected work-state coherences (below) separate
+  them, while the four-outcome orbit law does not.
 - A candidate selected-coherence measurement on the native round-1 prefix
   (immediate, matched idle, measurement/reset contexts; XX, XY, YX, YY and Z
   settings on the verified carriers including 143), written as a case only if
