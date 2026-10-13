@@ -1266,7 +1266,7 @@
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
    "cwd": ".",
-   "reason": "Fresh pinned Rocq 9.1.1 replay when proof sources or receipts change; docs/evidence/c881_exhaustive/README.md"
+   "reason": "Fresh replay with the toolchain pinned in docs/evidence/c881_exhaustive/toolchain.txt when proof sources or receipts change; docs/evidence/c881_exhaustive/README.md"
   }
  ]
 }
