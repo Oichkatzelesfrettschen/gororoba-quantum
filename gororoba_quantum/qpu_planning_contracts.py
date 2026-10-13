@@ -151,6 +151,35 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         {pub.kind for pub in live_run.execution_pubs(orbit_candidates[0][0])} == {"dynamic"},
         "N=21 orbit controls crossed execution kinds",
     )
+    rca_trace: dict[str, Any] = {}
+    rca_candidates = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca"), rca_trace)
+    _require(bool(rca_candidates), f"FakeFez rejects every N=21 window family: {rca_trace}")
+    (rca_choice,), rca_configuration = rca_candidates[0]
+    _require(
+        rca_configuration["window_delay_dt"] > 0 and rca_configuration["echo_half_dt"] > 0,
+        f"window durations missing from the family configuration: {rca_configuration}",
+    )
+    _require(len(rca_choice.isas) == 8, "N=21 window family lost an arm")
+    arms = dict(zip((member.name for member in rca_choice.group.members), rca_choice.isas, strict=True))
+
+    def ops(name: str) -> dict[str, int]:
+        return dict(arms[name].count_ops())
+
+    nominal = ops("n21_orbit_nominal_feedback")
+    _require(ops("n21_orbit_extra_readout_feedback")["measure"] == nominal["measure"] + 1, "extra readout was removed")
+    _require(ops("n21_orbit_window_delay_feedback").get("delay", 0) >= 1, "window delay was removed")
+    echo_isa = arms["n21_orbit_window_echo_feedback"]
+    wires: dict[int, list[str]] = {}
+    for instruction in echo_isa.data:
+        for qubit in instruction.qubits:
+            wires.setdefault(echo_isa.find_bit(qubit).index, []).append(instruction.operation.name)
+    echoed = [
+        wire
+        for wire, names in wires.items()
+        if ["barrier", "delay", "x", "delay", "x", "barrier"]
+        in [names[index : index + 6] for index in range(len(names))]
+    ]
+    _require(len(echoed) == 2, f"window echo lost its delay-X-delay-X sequence on the two work wires: {echoed}")
     return choices, configuration
 
 

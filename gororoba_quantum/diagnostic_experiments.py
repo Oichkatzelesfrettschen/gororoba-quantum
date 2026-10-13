@@ -14,6 +14,7 @@ import numpy as np
 from experiment_optimizer import ObservableContract, ObservableTerm
 from experiments import Group, Member, tvd
 from qpe_diagnostics import (
+    N21_ORBIT_VARIANTS,
     folded_diagnostic,
     folded_ideal,
     folded_terminal_weights,
@@ -22,7 +23,15 @@ from qpe_diagnostics import (
     n21_orbit_diagnostic,
 )
 
-FAMILY_NAMES = ("folded-qpe", "folded-correction", "n21-feedback", "n21-orbit-feedback", "ripple", "rank-sector")
+FAMILY_NAMES = (
+    "folded-qpe",
+    "folded-correction",
+    "n21-feedback",
+    "n21-orbit-feedback",
+    "n21-orbit-rca",
+    "ripple",
+    "rank-sector",
+)
 N21_FAMILIES = ("n21-feedback", "n21-orbit-feedback")
 
 
@@ -105,6 +114,41 @@ def n21_group(orbit: bool = False) -> Group:
     return Group(f"{prefix}_feedback", members, summarize)
 
 
+_SIGNED = (0.0, 1.0, 0.0, -1.0)
+
+
+def n21_orbit_rca_group(window_delay_dt: int, echo_half_dt: int) -> Group:
+    """Pair feed-forward with its omitted-correction control in each window variant.
+
+    The nominal pair repeats n21-orbit-feedback; window_delay and extra_readout
+    lengthen the measurement window by one readout duration through idling or
+    through a second readout; window_echo refocuses static work-qubit
+    detuning. Every member keeps the exact labeled law.
+    """
+    members = tuple(
+        Member(
+            f"n21_orbit_{variant}_{'feedback' if feedback else 'no_feedback'}",
+            n21_orbit_diagnostic(feedback, variant, window_delay_dt=window_delay_dt, echo_half_dt=echo_half_dt),
+            np.asarray(n21_labeled_law(feedback), dtype=float),
+            weights=np.asarray((0.5, 1.0, 0.5, 0.0)),
+        )
+        for variant in N21_ORBIT_VARIANTS
+        for feedback in (True, False)
+    )
+
+    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
+        result = {}
+        for variant in N21_ORBIT_VARIANTS:
+            primary = distributions[f"n21_orbit_{variant}_feedback"]
+            control = distributions[f"n21_orbit_{variant}_no_feedback"]
+            result[f"{variant}_feedback_signed_contrast"] = float(primary[1] - primary[3])
+            result[f"{variant}_no_feedback_signed_contrast"] = float(control[1] - control[3])
+            result[f"{variant}_contrast_difference"] = float(primary[1] - primary[3] - control[1] + control[3])
+        return result
+
+    return Group("n21_orbit_rca", members, summarize)
+
+
 def family_contracts(family: str, precision: float, alpha: float, power: float) -> tuple[ObservableContract, ...]:
     """Simultaneous raw terminal-bit intervals or a directional labeled contrast."""
     if family == "folded-correction":
@@ -119,8 +163,22 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
         from rank_sector_experiments import sector_contracts
 
         return sector_contracts(precision, alpha, power)
+    if family == "n21-orbit-rca":
+        return tuple(
+            ObservableContract(
+                f"n21_orbit_{variant}_feedback_contrast",
+                (
+                    ObservableTerm(f"n21_orbit_{variant}_feedback", _SIGNED),
+                    ObservableTerm(f"n21_orbit_{variant}_no_feedback", _SIGNED, sign=-1),
+                ),
+                minimum_effect=0.0,
+                alpha=alpha,
+                power=power,
+            )
+            for variant in N21_ORBIT_VARIANTS
+        )
     if family in N21_FAMILIES:
-        values = (0.0, 1.0, 0.0, -1.0)
+        values = _SIGNED
         prefix = "n21_orbit" if family == "n21-orbit-feedback" else "n21"
         return (
             ObservableContract(
@@ -173,6 +231,8 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 {int(label): duration for label, duration in family["measurement_delay_dt"].items()},
             ),
         ]
+    if family.get("name") == "n21-orbit-rca":
+        return [n21_orbit_rca_group(int(family["window_delay_dt"]), int(family["echo_half_dt"]))]
     if family.get("name") in N21_FAMILIES:
         return [n21_group(orbit=family["name"] == "n21-orbit-feedback")]
     return []

@@ -24,7 +24,15 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
-FAMILIES = {"folded-qpe", "folded-correction", "n21-feedback", "n21-orbit-feedback", "ripple", "rank-sector"}
+FAMILIES = {
+    "folded-qpe",
+    "folded-correction",
+    "n21-feedback",
+    "n21-orbit-feedback",
+    "n21-orbit-rca",
+    "ripple",
+    "rank-sector",
+}
 _IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:+/-]*\Z")
 _HEX_DIGEST = re.compile(r"[a-f0-9]{64}\Z")
 _DESIGN_OPTIONS = (
@@ -1149,13 +1157,22 @@ def _render(
                 "invalid ideal law",
             )
             lines.append(f"| {name} | `{json.dumps(ideal)}` |")
-    lines.extend(["", "| Group | Backend | Calibration | Transpiler seed | Initial layout |", "|---|---|---|---:|---|"])
+    # The transpiler routes a template layout; replica placement then maps each
+    # replica onto the physical qubits that execute, which the last column names.
+    lines.extend(
+        [
+            "",
+            "| Group | Backend | Calibration | Transpiler seed | Template layout | Executed physical layouts |",
+            "|---|---|---|---:|---|---|",
+        ]
+    )
     for group in record["groups"]:
         calibration = _identifier(group["calibration"], "calibration")
+        placed = [_numeric_mapping(replica["initial_layout"]) for replica in group["replicas"]]
         lines.append(
             f"| {_identifier(group['group'], 'group')} | {_identifier(group['backend'], 'backend')} | "
             f"{calibration} | {_count(group['seed_transpiler'], 'transpiler seed')} | "
-            f"`{json.dumps(_numeric_mapping(group['initial_layout']))}` |"
+            f"`{json.dumps(_numeric_mapping(group['initial_layout']))}` | `{json.dumps(placed)}` |"
         )
     mappings = {
         key: _numeric_mapping(value) for key, value in record["family_configuration"].items() if key in _MAPPING_FIELDS

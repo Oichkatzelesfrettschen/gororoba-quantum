@@ -144,7 +144,19 @@ def n21_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
 N21_ORBIT_BITS = (0, 2, 4)
 
 
-def n21_orbit_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
+# Window variants between the first measurement and the second round. Each
+# keeps the ideal labeled law and changes one exposure of the work superposition
+# |1> +/- |16> while the control is measured and reset.
+N21_ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
+
+
+def n21_orbit_diagnostic(
+    feed_forward: bool = True,
+    variant: str = "nominal",
+    *,
+    window_delay_dt: int | None = None,
+    echo_half_dt: int | None = None,
+) -> QuantumCircuit:
     """Build the N=21 two-bit diagnostic with multipliers compiled on the orbit of |1>.
 
     On the orbit, multiplication by 4 cycles the one-hot bits 0 -> 2 -> 4 -> 0,
@@ -153,7 +165,22 @@ def n21_orbit_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
     the order 3; the circuit measures feed-forward in two-round semiclassical
     QPE with the labeled law of n21_labeled_law and performs no order finding
     (Smolin, Smith and Vargo, Nature 499, 163 (2013), doi:10.1038/nature12290).
+
+    window_delay idles the control for window_delay_dt after its reset, so the
+    work superposition waits that much longer before the second round.
+    extra_readout measures the control a second time into the first bit, which
+    adds one readout of the same duration and leaves the last write as the
+    feed-forward bit. window_echo applies X to the work bits for 1 and 16 after
+    echo_half_dt and again after a second echo_half_dt, both concurrent with
+    the measurement and reset; a static frequency offset on those qubits
+    accumulates opposite phases in the two halves and cancels.
     """
+    if variant not in N21_ORBIT_VARIANTS:
+        raise ValueError(f"unknown N=21 orbit variant {variant!r}")
+    if variant == "window_delay" and (type(window_delay_dt) is not int or window_delay_dt <= 0):
+        raise ValueError("window_delay requires a positive integer window_delay_dt from calibration")
+    if variant == "window_echo" and (type(echo_half_dt) is not int or echo_half_dt <= 0):
+        raise ValueError("window_echo requires a positive integer echo_half_dt from calibration")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")
@@ -164,8 +191,21 @@ def n21_orbit_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
     circuit.cswap(0, one, four)
     circuit.cswap(0, four, sixteen)
     circuit.h(0)
+    if variant == "window_echo":
+        assert echo_half_dt is not None
+        circuit.barrier()
+        for _half in range(2):
+            circuit.delay(echo_half_dt, [one, sixteen], unit="dt")
+            circuit.x([one, sixteen])
     circuit.measure(0, phase[0])
+    if variant == "extra_readout":
+        circuit.measure(0, phase[0])
     circuit.reset(0)
+    if variant == "window_delay":
+        assert window_delay_dt is not None
+        circuit.delay(window_delay_dt, 0, unit="dt")
+    if variant == "window_echo":
+        circuit.barrier()
     circuit.h(0)
     circuit.cswap(0, four, sixteen)
     circuit.cswap(0, one, four)
@@ -174,7 +214,8 @@ def n21_orbit_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
             circuit.p(-math.pi / 2, 0)
     circuit.h(0)
     circuit.measure(0, phase[1])
-    circuit.name = "n21_orbit_a4_two_bit_" + ("feed_forward" if feed_forward else "no_feed_forward")
+    suffix = "" if variant == "nominal" else f"_{variant}"
+    circuit.name = "n21_orbit_a4_two_bit_" + ("feed_forward" if feed_forward else "no_feed_forward") + suffix
     return circuit
 
 
@@ -324,8 +365,11 @@ def _verify() -> None:
         numerators = (3, 2, 1, 2) if feed_forward else (3, 1, 1, 3)
         if expected != tuple(Fraction(numerator, 8) for numerator in numerators):
             raise RuntimeError(f"N=21 exact branch law changed: {expected}")
-        circuits.extend((n21_diagnostic(feed_forward), n21_orbit_diagnostic(feed_forward)))
-        expected_laws.extend((expected, expected))
+        circuits.append(n21_diagnostic(feed_forward))
+        expected_laws.append(expected)
+        for variant in N21_ORBIT_VARIANTS:
+            circuits.append(n21_orbit_diagnostic(feed_forward, variant, window_delay_dt=416, echo_half_dt=512))
+            expected_laws.append(expected)
     for circuit, expected in zip(circuits, expected_laws, strict=True):
         observed = ideal_branch_probabilities(circuit)
         if not np.allclose(observed, [float(value) for value in expected], atol=1e-11, rtol=0):
@@ -364,7 +408,7 @@ def _verify() -> None:
         except ValueError:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
-    print("QPE diagnostics: 16 folded laws and four N=21 laws match exact circuit branches and sampled labels")
+    print("QPE diagnostics: 16 folded laws and ten N=21 laws match exact circuit branches and sampled labels")
 
 
 if __name__ == "__main__":
