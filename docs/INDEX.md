@@ -185,7 +185,7 @@ The [endpoint information replay](evidence/vacuum_endpoint_information/README.md
 records matched-shot precision, same-shot covariance and the four/seven/nine
 product-Pauli setting distinctions. Its finite ideal-readout results leave
 hardware fidelity and charged-time gains as separate measurement gates.
-The [central dispatch ledger](../plans/QUANTUM_DISPATCH.md) records owners,
+The [historical dispatch ledger](../plans/QUANTUM_DISPATCH.md) records owners,
 dependencies, research scope and the human-supplied execution gates.
 
 The [kernel attachment proof](notes/annihilator_kernel_limits.md) and its
@@ -194,6 +194,13 @@ certificates, a three-coefficient real cone classification, global kernel
 frames, actual mapping cylinders and restricted integral invariants. Ordinary
 embedding extends this cone family to every higher stage. The attachment
 image differs from the total incidence; unrestricted topology remains open.
+
+The [complex skew rank geometry](notes/complex_skew_rank_geometry.md) and its
+[exact replay](evidence/complex_skew/README.md) certify the all-stage
+conjugate-linear representation, exhaustive Pfaffian predicates, coefficient
+pair cover and metric-preserving kernel transitions. In dimension 32 the
+cover uses fifteen domains and 16-by-16 complex matrices. Real components,
+strata and unrestricted attachments remain open.
 
 ## Ripple source supplement
 

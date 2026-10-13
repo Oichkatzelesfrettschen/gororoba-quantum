@@ -130,6 +130,7 @@ The rank-sector image gate also uses the plotting-only pin
     principal_skew_atlas.py \
     schur_acceleration.py nullity_twelve_locus.py nullity_twelve_curves.py \
     kernel_limits.py kernel_limit_contracts.py circle_kernel_attachments.py \
+    complex_skew.py complex_skew_contracts.py \
     ../scripts/python_call_graph.py ../scripts/left_mult_sign_rank.py \
     ../scripts/mod15_signed_multiplier_census.py ../scripts/associator_walsh_classes.py \
     ../results/live/verify_source_closure.py ../results/live/folded_raw_analysis.py \
@@ -173,6 +174,8 @@ The rank-sector image gate also uses the plotting-only pin
   "$PYTHON" -O -W error kernel_limit_contracts.py >/dev/null
   "$PYTHON" -W error circle_kernel_attachments.py >/dev/null
   "$PYTHON" -O -W error circle_kernel_attachments.py >/dev/null
+  "$PYTHON" -W error complex_skew_contracts.py >/dev/null
+  "$PYTHON" -O -W error complex_skew_contracts.py >/dev/null
   "$PYTHON" factoring.py
   "$PYTHON" target_flip.py
   "$PYTHON" target_flip_certificate.py --check
@@ -347,6 +350,9 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/kernel_limits/replay.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/kernel_limits/replay.py --check
   (cd docs/evidence/kernel_limits && sha256sum -c SHA256SUMS)
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/complex_skew/replay.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/complex_skew/replay.py --check
+  (cd docs/evidence/complex_skew && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/folding_proofs/check_compiler_gate.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py
   shellcheck docs/evidence/folding_proofs/replay_rocq.sh
