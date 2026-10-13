@@ -133,11 +133,12 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
         return "CPU", None
     try:
         admission = aer_resources.admit_gpu(circuits, policy["memory_mb"], aer_resources.gpu_snapshot())
+        admission["runtime"] = aer_identity.gpu_runtime_identity()
     except ValueError as error:
         if policy["mode"] == "gpu":
             raise
         return "CPU", {"rejected": str(error), "active_qubits": width}
-    return "GPU", admission | {"runtime": aer_identity.gpu_runtime_identity()}
+    return "GPU", admission
 
 
 def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:

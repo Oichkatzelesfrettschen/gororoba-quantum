@@ -10,20 +10,21 @@ that bias. CPU or GPU acceleration cannot supply missing physical mechanisms.
 
 ## Implemented execution boundary
 
-The enabled policy uses CPU density matrices with double precision. The
-CLI accepts `--local-compute cpu`, `--simulation-threads` (default: every CPU available to the process,
+The policy uses density matrices with double precision. The CLI accepts
+`--local-compute auto|cpu|gpu` (default `auto`, routed by width as
+described under thread scaling below), `--simulation-threads` (default: every CPU available to the process,
 from `parallel.default_threads()`), and
 `--simulation-memory-mb` (default 512). Aer experiment parallelism is one;
 its shot-thread limit equals the declared thread limit. Both
 `shot_branching_enable` and `shot_branching_sampling_enable` remain false.
 The comparison described below rejects branch sharing from qualification.
 
-`--local-compute gpu` and `--local-compute hybrid` name explicit capability
-requests. The runner checks those requests before constructing the IBM
-service, writes `state="local_compute_unavailable"` with the policy and
-reason, and exits with an error. Even an installed Aer GPU device requires
-separate workload and memory qualification before admission. CPU retries
-must not replace an explicitly requested GPU or hybrid policy.
+`--local-compute gpu` is an explicit capability request. Without an Aer GPU
+the runner writes `state="local_compute_unavailable"` with the policy and
+reason before constructing the IBM service, and exits with an error; a
+rejected GPU admission under `gpu` fails the batch rather than retrying on
+CPU. Under `auto`, an unavailable GPU, a failed admission, or a failed GPU
+identity read keeps the batch on CPU with the reason recorded.
 
 Every executed simulation batch records its policy, ordered circuit names,
 QPY digest, serialized-noise-channel digest, shots, seed, wall time, and each Aer
