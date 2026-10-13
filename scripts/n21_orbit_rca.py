@@ -9,9 +9,10 @@ assignment error that reaches both the stored bit and the correction. Each
 model adds one mechanism to a two-parameter depolarizing baseline (one
 strength per multiplier round) and is fitted to the eight measured cells of
 both arms by maximum likelihood. The deviance G2 = 2 sum n log(n / N p)
-ranks the mechanisms. Eight mechanisms are compared, so a deviance reduction
-counts at family-wise alpha 0.05 only above the chi-square quantile at
-0.05 / 8 for the mechanism's added parameters (Bonferroni).
+ranks the mechanisms. Eight alternatives are compared in every pair, so a
+deviance reduction counts at family-wise alpha 0.05 only above the
+chi-square quantile at 0.05 / (8 x pairs) for the mechanism's added
+parameters (Bonferroni across alternatives and pairs).
 
 Physical roles come from the circuits that ran: the control is the writer of
 the first measurement, and a Z probe inserted where each placed qubit's
@@ -211,16 +212,24 @@ def _group(run: Path) -> dict[str, Any]:
 
 
 def raw_pubs(run: Path) -> list[dict[str, Any]]:
-    """Raw PUB payloads in member order, each checked against the collection's sha256 index."""
-    (job,) = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    """Raw PUB payloads in member order, bound to the collection ledger and checked by sha256."""
+    jobs = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    (job,) = jobs
     directory = run / "raw" / job
-    indexed = json.loads((directory / "index.json").read_text())["files"]
+    index = json.loads((directory / "index.json").read_text())
+    indexed = index["files"]
+    ledger = jobs[job].get("raw")
+    if index.get("job_id", job) != job or (ledger is not None and ledger["files"] != indexed):
+        raise RuntimeError(f"raw/{job}/index.json differs from the collection's raw ledger")
     payloads = []
     for index in range(len(_group(run)["members"])):
         path = directory / f"pub_{index:02d}.json"
         if hashlib.sha256(path.read_bytes()).hexdigest() != indexed.get(path.name):
             raise RuntimeError(f"{path.name} differs from the sha256 retained by collection")
-        payloads.append(json.loads(path.read_text()))
+        payload = json.loads(path.read_text())
+        if payload.get("pub_index", index) != index:
+            raise RuntimeError(f"{path.name} carries PUB index {payload.get('pub_index')}")
+        payloads.append(payload)
     return payloads
 
 
@@ -342,6 +351,18 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
                     if max(before) <= start < min(after) and name == "x"
                 ],
             }
+            # The probe counts circuit instructions while the schedule lists
+            # pulses; the two align only where every instruction on the wire
+            # plays one pulse (sx, x, cz), which the comparison requires.
+            instructions = [
+                instruction.operation.name
+                for instruction in circuit.data
+                if instruction.operation.name not in _VIRTUAL
+                and qubit in [circuit.find_bit(bit).index for bit in instruction.qubits]
+            ]
+            if len(instructions) != len(pulses) or not set(instructions) <= {"sx", "x", "cz"}:
+                unresolved.append(f"qubit {qubit} holds instructions that do not map one-to-one onto pulses")
+                continue
             positions[qubit] = sum(1 for start, length, _name in pulses if start + length <= max(before))
             shift = _probed(circuit, positions, {qubit: probe})
             if np.allclose(shift, base, atol=1e-9):
@@ -471,13 +492,20 @@ def joint_quasistatic_fit(
 
     # Multi-microsecond exposures wrap the mean phase, so the mean rates have
     # many basins; a grid over both means seeds the local searches.
+    import heapq
     import itertools
 
-    grid = np.linspace(-4.5, 4.5, 19)
-    seeds = sorted(
-        (objective(np.array([0.12, 0.0, *means, *([0.0] * len(qubits))])), means)
-        for means in itertools.product(grid, repeat=len(qubits))
-    )[:4]
+    # About 400 grid evaluations bound the seed search for any qubit count.
+    points = max(3, round(400 ** (1 / len(qubits))))
+    grid = np.linspace(-4.5, 4.5, points)
+    seeds = heapq.nsmallest(
+        4,
+        (
+            (objective(np.array([0.12, 0.0, *means, *([0.0] * len(qubits))])), means)
+            for means in itertools.product(grid, repeat=len(qubits))
+        ),
+        key=lambda item: item[0],
+    )
     best: Any = None
     for _value, means in seeds:
         for spread in (0.0, 0.2):
@@ -744,7 +772,7 @@ def main(argv: list[str] | None = None) -> int:
             "work_phase_95_interval": interval,
         }
         baseline = models["baseline_depolarizing"]["deviance"]
-        comparisons = len(MECHANISMS) - 1
+        comparisons = (len(MECHANISMS) - 1) * len(pairs)
         for model in models.values():
             threshold = float(chi2.ppf(1 - FAMILY_ALPHA / comparisons, max(1, model["added_parameters"])))
             model["family_wise_threshold"] = threshold
