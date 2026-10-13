@@ -26,6 +26,8 @@ from qiskit_ibm_runtime.fake_provider import FakeFez
 
 import live_run
 import local_compute
+import native_preflight
+import qpu_cases
 import qpu_planning
 from runtime_contracts import _fixture_args, _ProbeBackend, _ProbeService
 
@@ -424,6 +426,80 @@ def _verify_infeasible_archive(
         _require("submission" not in record, "infeasible dry run contains a submission ledger")
 
 
+def _verify_unrouted_family_diagnostics(service: _ProbeService) -> None:
+    trace_fixture = {
+        "family_rejections": [
+            {
+                "backend": "planning_fixture",
+                "reason": "joint placement exhausted; groups={lane0: 21, lane1: 32}",
+            }
+        ],
+        "algebra_backends": {
+            "planning_fixture": {
+                "lane0": {"planning_fixture": [{"seed": 20261010, "layout": [1, 2], "score": 0.91}]},
+                "lane1": {
+                    "planning_fixture": [
+                        {"seed": 20261010, "layout": [3, 4], "rejected": ["physical buffer conflict"]},
+                        {"seed": 20261011, "compile_error": "fixture crn:private:instance"},
+                    ]
+                },
+            }
+        },
+    }
+    supplied_traces: list[dict[str, Any]] = []
+
+    def reject_family(
+        runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+    ) -> list[tuple[list[Any], dict[str, Any]]]:
+        del runtime, snapshots, args
+        trace.update(copy.deepcopy(trace_fixture))
+        supplied_traces.append(trace)
+        return []
+
+    stderr = io.StringIO()
+    with (
+        tempfile.TemporaryDirectory(prefix="gororoba-planning-unrouted-") as directory,
+        patch.object(qpu_planning, "family_candidates", side_effect=reject_family),
+        patch.object(live_run, "QiskitRuntimeService", return_value=service),
+        patch.object(live_run, "evaluate", side_effect=_forbid_service) as evaluate,
+        patch.object(live_run, "write_archive", side_effect=_forbid_service) as write_archive,
+        patch.object(live_run, "submit", side_effect=_forbid_service) as submit,
+        patch.object(qpu_cases, "write_case", side_effect=_forbid_service) as write_case,
+        patch.object(native_preflight, "qualify", side_effect=_forbid_service) as qualify,
+        redirect_stdout(io.StringIO()),
+        redirect_stderr(stderr),
+    ):
+        status = live_run.main(
+            [
+                "--family",
+                "ripple",
+                "--max-replicas",
+                "1",
+                "--replica-tiers",
+                "1",
+                "--max-execution-seconds",
+                "60",
+                "--max-total-execution-seconds",
+                "60",
+                "--native-dry-run",
+                "--out",
+                directory,
+            ]
+        )
+        _require(status == 1, f"unrouted family changed the failing CLI status to {status}")
+        _require(not list(Path(directory).iterdir()), "unrouted family created a synthetic run or approval case")
+        for operation in (evaluate, write_archive, submit, write_case, qualify):
+            _require(operation.call_count == 0, f"unrouted family reached {operation._mock_name}")
+    prefix = "FAIL: the experiment family has no admitted routed candidate; family='ripple'; selection_trace="
+    failure = stderr.getvalue()
+    _require(failure.startswith(prefix), "unrouted family lost its family and failure boundary")
+    retained_trace = json.loads(failure.removeprefix(prefix))
+    expected_trace = live_run._scrub_instances(live_run._jsonable(trace_fixture))
+    _require(retained_trace == expected_trace, "unrouted family omitted or changed nested rejection evidence")
+    _require("crn:private:instance" not in failure, "unrouted diagnostics exposed an IBM Cloud instance")
+    _require(supplied_traces == [trace_fixture], "diagnostic sanitization mutated the caller's selection trace")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -445,9 +521,10 @@ def _verify() -> None:
         _verify_compute_boundary()
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)
+        _verify_unrouted_family_diagnostics(service)
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
-        "approval, and infeasible archives checked"
+        "approval, infeasible archives, and unrouted rejection diagnostics checked"
     )
 
 

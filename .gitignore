@@ -16,5 +16,13 @@ qiskit-ibm.json
 *.key
 *apikey*
 
-# Downloaded papers stay local; notes under literature/notes are tracked
-literature/pdf/
+# Primary-source PDFs and notes are tracked under docs/.
+
+# Retained proof receipts override workstation-wide *.log ignores.
+!docs/evidence/folding_proofs/assumptions.log
+!docs/evidence/folding_proofs/homotopy_import_deprecation.log
+!docs/evidence/folding_proofs/kernel-check.log
+!docs/evidence/folding_proofs/rocq_replay.log
+
+# Personal reading copies with external-only redistribution status.
+/docs/local_source_cache/

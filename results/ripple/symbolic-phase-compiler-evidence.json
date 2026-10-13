@@ -1,0 +1,297 @@
+{
+  "schema": "ripple-symbolic-phase-compiler-evidence-v1",
+  "consolidated_at_utc": "2026-10-12T05:55:49.659506+00:00",
+  "scope": "Classical operator checks and local Qiskit compilation; live calls read backend metadata only.",
+  "primitive_calls": 0,
+  "qpu_submissions": 0,
+  "versions": {
+    "qiskit": "2.5.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "qiskit-aer": "0.17.2",
+    "numpy": "2.5.4",
+    "sympy": "1.14.0"
+  },
+  "python": "3.14.7",
+  "optimization_level": 3,
+  "seeds": [
+    20261010,
+    20261011
+  ],
+  "source_circuit": {
+    "name": "ripple_walk_template",
+    "qubits": 4,
+    "parameters": 61,
+    "gates": {
+      "mcphase": 40,
+      "rx": 20,
+      "p": 16,
+      "barrier": 8,
+      "measure": 4
+    }
+  },
+  "lowering": {
+    "mechanism": "Gray-code parity expansion of parameterized phase monomials into RZ/SX/CZ; accumulate exact constant quarter turns modulo eight and add all symbolic global-phase terms once.",
+    "native_cz_before_routing": 144,
+    "parameters_bound_before_routing": false,
+    "shared_template_preserved": true,
+    "global_phase_preserved": true
+  },
+  "live_target": {
+    "source_snapshot": {
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-11T22:36:25-07:00",
+      "excluded_qubits": 7,
+      "excluded_edges": 24
+    },
+    "gray_snapshot": {
+      "backend": "ibm_kingston",
+      "calibration": "2026-10-11T22:36:25-07:00",
+      "excluded_qubits": 7,
+      "excluded_edges": 24
+    },
+    "source_completed_primary_compiles": 24,
+    "gray_completed_primary_compiles": 24,
+    "source_walk_compiles": [
+      {
+        "finished": "ripple_walk_lane0",
+        "seed": 20261010,
+        "elapsed": 7.275862075010082,
+        "ops": {
+          "rz": 582,
+          "sx": 506,
+          "cz": 237,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      },
+      {
+        "finished": "ripple_walk_lane0",
+        "seed": 20261011,
+        "elapsed": 7.399620533004054,
+        "ops": {
+          "rz": 582,
+          "sx": 506,
+          "cz": 237,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      },
+      {
+        "finished": "ripple_walk_lane1",
+        "seed": 20261010,
+        "elapsed": 7.112583294001524,
+        "ops": {
+          "rz": 582,
+          "sx": 506,
+          "cz": 237,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      },
+      {
+        "finished": "ripple_walk_lane1",
+        "seed": 20261011,
+        "elapsed": 7.191213793004863,
+        "ops": {
+          "rz": 582,
+          "sx": 506,
+          "cz": 237,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      }
+    ],
+    "gray_walk_compiles": [
+      {
+        "finished": "ripple_walk_lane0",
+        "seed": 20261010,
+        "elapsed": 0.025962975996662863,
+        "ops": {
+          "rz": 512,
+          "sx": 491,
+          "cz": 252,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      },
+      {
+        "finished": "ripple_walk_lane0",
+        "seed": 20261011,
+        "elapsed": 0.024377826994168572,
+        "ops": {
+          "rz": 512,
+          "sx": 491,
+          "cz": 252,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      },
+      {
+        "finished": "ripple_walk_lane1",
+        "seed": 20261010,
+        "elapsed": 0.02368782999110408,
+        "ops": {
+          "rz": 512,
+          "sx": 491,
+          "cz": 252,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      },
+      {
+        "finished": "ripple_walk_lane1",
+        "seed": 20261011,
+        "elapsed": 0.02526368100370746,
+        "ops": {
+          "rz": 512,
+          "sx": 491,
+          "cz": 252,
+          "x": 8,
+          "barrier": 8,
+          "measure": 4
+        },
+        "target_violations": []
+      }
+    ],
+    "all_completed_compiles_satisfy_filtered_target": true
+  },
+  "unrestricted_basis_source": {
+    "finished_seconds": 15.208565553999506,
+    "ops": {
+      "rz": 557,
+      "sx": 328,
+      "cz": 144,
+      "barrier": 8,
+      "measure": 4
+    }
+  },
+  "fake_kingston_filtered_target": {
+    "finished_seconds": 0.20893851200526115,
+    "ops": {
+      "rz": 512,
+      "sx": 491,
+      "cz": 252,
+      "barrier": 8,
+      "measure": 4
+    },
+    "target_violations": [],
+    "layout": [
+      3,
+      16,
+      2,
+      23
+    ],
+    "final_layout": [
+      2,
+      23,
+      3,
+      16
+    ]
+  },
+  "full_routed_operator_check": {
+    "routed_operator_checks": 15,
+    "max_operator_error": 2.610194776194339e-13,
+    "seconds": 1.270226463995641,
+    "binding_scope": "Ten science depth/pair bindings, two readout bindings, three seeded arbitrary assignments of all 61 parameters.",
+    "comparison": "Entrywise complex operator equality after mapping initial/final physical layouts; includes global phase.",
+    "tolerance": 1e-10
+  },
+  "fresh_template_archive_repeatability": {
+    "bindings": [
+      {
+        "binding": 0,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 1,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 2,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 3,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 4,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 5,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 6,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 7,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 8,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      },
+      {
+        "binding": 9,
+        "raw_hash_count": 2,
+        "fused_hash_count": 1,
+        "gate_diffs": []
+      }
+    ],
+    "fused_all_identical": true
+  },
+  "limits": [
+    "The long original process profile establishes recursive symbolic phase normalization inside BasisTranslator; the active group name was unavailable from py-spy object addresses.",
+    "The greater-than-fourteen-minute original stall was not reproduced in the bounded source walk probes. Symbol ordering dependence remains a hypothesis.",
+    "The representative routed walk increases from 237 to 252 CZ gates; fresh cost and noise admission remains required.",
+    "Fake-backend and live-Target compilation establish compiler behavior, not QPU measurement, scheduler charge, or hardware performance.",
+    "The initial source probe did not capture an exact source-file hash at invocation; the circuit counts, native stack, commands, version pins, and prototype source are retained."
+  ],
+  "artifacts": {
+    "ripple-live-target-primary-probe.py": "f449158c080b838933713b9f59c8044f98f94ef3cc3b3aa9fe4df578865b87d0",
+    "ripple-live-target-primary-gray-probe.py": "b5e344056150582014189487ee0abaacbe2f664b4afbbc9dfb4196faebb03743",
+    "ripple-live-target-primary-source.log": "d7846b232fed165d0637e5f0aae38777b9e2410ccbdcf60e2cf2e6d016754008",
+    "ripple-live-target-primary-gray.log": "d24c9615f7231ef5d6af648796c5e85a37f4cbb19e258485a045ec0547dae9f9",
+    "ripple_native_gray_phase_lowering.py": "6bce4ca1d47b13649f312a88b27b89dc36639a30c250a3bdb1bd56817d475457",
+    "ripple-gray-routed-operator-probe.py": "d8ef3c9ff029dcb2412df30f2ee78af60b807662de0ffd774f5eaf3f26709c4b",
+    "ripple-kingston-gray-compile-probe.py": "a52177a17e624981510459a1d5a6c94e02b13852d79020248f86c85d249f343e",
+    "ripple-gray-routed-operator-probe.log": "f7cec2ea3e92f9ba9e7ef99e6a9c0c4bb7006dd49bb8ed2a31d28966dcba995d",
+    "ripple-native-qpy-determinism-summary.json": "32bcff9af169d09db415d7745da681cf10f10722af3038aa91bd1a0149bbd2fd",
+    "ripple-basis-translator-native-stack.json": "950e06e9d1c0003d77ac5b0cfe953dfad630ed29daba03df0a5488f721823d5d"
+  }
+}

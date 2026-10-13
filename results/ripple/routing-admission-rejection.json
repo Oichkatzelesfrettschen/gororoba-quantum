@@ -1,0 +1,685 @@
+{
+  "schema": "ripple-routing-rejection-v1",
+  "source_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+  "backend": "ibm_kingston",
+  "replica_floor": 0.9,
+  "seeds": 2,
+  "candidate_limit_per_group": 2,
+  "exit_code": 1,
+  "trace": {
+    "algebra_backends": {
+      "ibm_kingston": {
+        "ripple_atlas_lane0": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 43,
+              "primary_score": 0.7436008314430474,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 43,
+              "primary_score": 0.7436008314430474,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.782766821806069,
+              "layout": [
+                93,
+                79,
+                94,
+                92,
+                73
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.782766821806069,
+              "layout": [
+                93,
+                79,
+                94,
+                92,
+                73
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_atlas_lane1": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 36,
+              "primary_score": 0.7776324219662896,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 36,
+              "primary_score": 0.7776324219662896,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.7964418225743228,
+              "layout": [
+                58,
+                71,
+                72,
+                70,
+                51
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.7964418225743228,
+              "layout": [
+                58,
+                71,
+                72,
+                70,
+                51
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_atlas_lane2": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 42,
+              "primary_score": 0.7607351108282864,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 46,
+              "primary_score": 0.7344020116112472,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.7989032253927211,
+              "layout": [
+                71,
+                58,
+                72,
+                70,
+                51
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.7447695697329434,
+              "layout": [
+                93,
+                94,
+                79,
+                73,
+                92
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_atlas_lane3": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 51,
+              "primary_score": 0.7224092128787483,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 64,
+              "primary_score": 0.6991833769112515,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.7476556744293911,
+              "layout": [
+                93,
+                94,
+                79,
+                73,
+                92
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.7269526908357293,
+              "layout": [
+                79,
+                73,
+                93,
+                92,
+                94
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_atlas_lane4": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 37,
+              "primary_score": 0.7649986821616387,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 37,
+              "primary_score": 0.7649986821616387,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.7879088817014186,
+              "layout": [
+                93,
+                79,
+                94,
+                92,
+                73
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.7879088817014186,
+              "layout": [
+                93,
+                79,
+                94,
+                92,
+                73
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_atlas_lane5": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 33,
+              "primary_score": 0.7771993749701455,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 33,
+              "primary_score": 0.7771993749701455,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.7852220174514826,
+              "layout": [
+                79,
+                93,
+                94,
+                92,
+                73
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.7852220174514826,
+              "layout": [
+                79,
+                93,
+                94,
+                92,
+                73
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_atlas_lane6": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 1,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 127,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 42,
+              "primary_score": 0.7641575702669569,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 42,
+              "primary_score": 0.7641575702669569,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.8004597265949999,
+              "layout": [
+                71,
+                58,
+                72,
+                70,
+                51
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.8004597265949999,
+              "layout": [
+                71,
+                58,
+                72,
+                70,
+                51
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_design_c_16_1_8": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 4,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 4,
+                "static_circuits": 4,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 47,
+              "primary_score": 0.7106907761935419,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 47,
+              "primary_score": 0.7106633482026191,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.7142458299370649,
+              "layout": [
+                93,
+                94,
+                92,
+                79
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.7147513483059875,
+              "layout": [
+                93,
+                94,
+                92,
+                79
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_design_c_32_1_16": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 5,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 5,
+                "static_circuits": 4,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 101,
+              "primary_score": 0.54547504671501,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 101,
+              "primary_score": 0.54547504671501,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.544263249354803,
+              "layout": [
+                94,
+                79,
+                92,
+                93,
+                95
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.5454828726466999,
+              "layout": [
+                94,
+                79,
+                92,
+                93,
+                95
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_design_c_8_1_4": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 3,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 3,
+                "static_circuits": 4,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 18,
+              "primary_score": 0.8584627645858676,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 18,
+              "primary_score": 0.8584627645858676,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.8570148542618024,
+              "layout": [
+                93,
+                94,
+                79
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.8570148542618024,
+              "layout": [
+                93,
+                94,
+                79
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_walk_lane0": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 4,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 4,
+                "static_circuits": 14,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 252,
+              "primary_score": 0.3798492603289241,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 252,
+              "primary_score": 0.3798492603289241,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.3798492603289241,
+              "layout": [
+                1,
+                2,
+                0,
+                3
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.3798492603289241,
+              "layout": [
+                1,
+                2,
+                0,
+                3
+              ],
+              "seed": 20261011
+            }
+          ]
+        },
+        "ripple_walk_lane1": {
+          "ibm_kingston": [
+            {
+              "rejected": [],
+              "requirements": {
+                "classical_bits": 4,
+                "control_flow": [],
+                "dynamic_circuits": 0,
+                "qubits": 4,
+                "static_circuits": 14,
+                "target_operations": [
+                  "measure"
+                ]
+              },
+              "stage": "capability_admission"
+            },
+            {
+              "rejected": [],
+              "stage": "routing_admission"
+            },
+            {
+              "cz": 252,
+              "primary_score": 0.3798492603289241,
+              "rejected": [],
+              "seed": 20261010
+            },
+            {
+              "cz": 252,
+              "primary_score": 0.3798492603289241,
+              "rejected": [],
+              "seed": 20261011
+            },
+            {
+              "joint_score": 0.3798492603289241,
+              "layout": [
+                1,
+                2,
+                0,
+                3
+              ],
+              "seed": 20261010
+            },
+            {
+              "joint_score": 0.3798492603289241,
+              "layout": [
+                1,
+                2,
+                0,
+                3
+              ],
+              "seed": 20261011
+            }
+          ]
+        }
+      }
+    },
+    "family_rejections": [
+      {
+        "backend": "ibm_kingston",
+        "reason": "no jointly placeable fused candidate combination (search stopped at FUSION_MAX_ATTEMPTS); groups=['ripple_atlas_lane0', 'ripple_atlas_lane1', 'ripple_atlas_lane2', 'ripple_atlas_lane3', 'ripple_atlas_lane4', 'ripple_atlas_lane5', 'ripple_atlas_lane6', 'ripple_walk_lane0', 'ripple_walk_lane1', 'ripple_design_c_8_1_4', 'ripple_design_c_16_1_8', 'ripple_design_c_32_1_16'], frontier=4096, attempted=256, rejected_sample=[{\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 0, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 0, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 0, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 1, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 1, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 0, 1, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 0, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 0, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 0, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 0, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 1, 0, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 1, 0, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 1, 1, 0, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}, {\"candidate_indices\": [0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 0, 0], \"reason\": \"LiveRunError: ibm_kingston static: cannot satisfy 1 required joint-placement rounds; groups={\\\"ripple_atlas_lane0\\\": {\\\"floor_candidates\\\": 42, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane1\\\": {\\\"floor_candidates\\\": 53, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane2\\\": {\\\"floor_candidates\\\": 45, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane3\\\": {\\\"floor_candidates\\\": 37, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane4\\\": {\\\"floor_candidates\\\": 54, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane5\\\": {\\\"floor_candidates\\\": 59, \\\"pattern_width\\\": 5}, \\\"ripple_atlas_lane6\\\": {\\\"floor_candidates\\\": 48, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_16_1_8\\\": {\\\"floor_candidates\\\": 55, \\\"pattern_width\\\": 4}, \\\"ripple_design_c_32_1_16\\\": {\\\"floor_candidates\\\": 13, \\\"pattern_width\\\": 5}, \\\"ripple_design_c_8_1_4\\\": {\\\"floor_candidates\\\": 231, \\\"pattern_width\\\": 3}, \\\"ripple_walk_lane0\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}, \\\"ripple_walk_lane1\\\": {\\\"floor_candidates\\\": 20, \\\"pattern_width\\\": 4}}\"}]"
+      }
+    ]
+  },
+  "boundary": "The best-first search rejected 256 of 4096 candidate combinations. The remaining combinations and other policies were outside this attempt. This is not global infeasibility.",
+  "log_sha256": "7d1132829b0cff3b05fc617f09a03709457c15544ad65be9e205a253567b5472"
+}

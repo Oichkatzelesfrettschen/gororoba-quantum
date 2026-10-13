@@ -17,7 +17,7 @@ The directory contains compiler and local-simulation records. Every record sets
   hashes, versions, and byte-identical serial/four-worker outputs. Reproduce
   from `gororoba_quantum/` with `"$PYTHON" -W error sedenion_bundle.py` and
   `"$PYTHON" -W error annihilator_strata.py --max-dimension 256`.
-  The [source ledger](../../literature/notes/cayley_dickson_annihilator_sources.md)
+  The [source ledger](../../docs/notes/cayley_dickson_annihilator_sources.md)
   attributes the general theorems and distinguishes their domains from the
   finite implementation checks.
 - `rank_polynomials.json` and `rank_charts.json` retain exact rank-predicate,

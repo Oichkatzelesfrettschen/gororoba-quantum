@@ -1,0 +1,2178 @@
+{
+  "analysis_kind": "supplemental exploratory folded-ladder shot-order diagnostics",
+  "scientific_boundary": [
+    "Descriptive summaries carry neither p-values nor causal or stationarity claims.",
+    "Shot indices remain local to each PUB; separate PUBs are neither paired nor assumed simultaneous.",
+    "Block indices describe shot order, without reconstructing physical shot times.",
+    "The complete preregistered family analysis remains authoritative for its declared contrasts and intervals."
+  ],
+  "block_shots": 512,
+  "half_difference_direction": "late minus early; an odd final shot belongs to the late half",
+  "lag_one_definition": "Pearson correlation between scores[:-1] and scores[1:], separately centered",
+  "record_sha256": "91145c3456e8670a19eea258416412d020ca5e3fa71aa37b91ce7a5cb7f74670",
+  "experiment_digest": "f288c2024bee220acbaa088901bf9e31663740208700460f6a7a01bfd1302265",
+  "qpy_archive_sha256": "84b5c3c7703db74fdbd6eb477d131f5353a14d63befb7d3f5375c63a85acf6a1",
+  "source_sha256": "6d11a26f8751d6c4ee7bf1bc8f74cfea58e8c959c58bd3bad64c146dc26a2402",
+  "jobs": {
+    "db67fqsvf2bc73d0pk4g": {
+      "index_sha256": "a0208a96859cf149a0aad8a1151cfd7ab8affd490d318822708aff199bff8434",
+      "verified_files_sha256": {
+        "pub_00.json": "03814a661286b0b8bead2949f216fb8ba22193bc5caa7bc9da415af22149f964",
+        "pub_01.json": "8c270b65fd0bb1e09d92c6cd5aea478c17df57c6524bc614b2e2bbedb5cd88f0",
+        "pub_02.json": "479448c8ab214e7a97d1ed24f2105c8d434bb8c273ebe55417159854948dfa90",
+        "pub_03.json": "bf1f1462cbef31125b7c6ff6fa8e1ab81dea6963d90edd2fe5a64250a39957cc",
+        "pub_04.json": "0410eddebbdbc760070b2876f4982360976139ebecba27724ec84d08e4eaa844",
+        "pub_05.json": "6e8c3f67e867d181b17fa9b916cb973ba2236f8d8e86d52140ec471a4dc2eabc",
+        "pub_06.json": "b4cf8ffdcf164740daf8039e3e00b3c53ea91db8ad2197c944576ba3851f0ff3",
+        "pub_07.json": "2155f30ec66bd243d24d7b9b30cfe353643deb2f97642d37d197c45b7ca5767d",
+        "pub_08.json": "f9b8de6a8d522404849da2fa9a271a26530041288751b93c1fcc1d3b55f3e7cb",
+        "pub_09.json": "3783ac103bd19477773423f5b41c9dadcd1ff918d0becd6dfdf6b820e2bb5f22",
+        "pub_10.json": "6a1c284e5c3d9aa57ece00eb79dcd39d30d28185392efab4a9a130a6f38d56d9",
+        "pub_11.json": "8082620396bb823b86bfcb8083e5f30bd5802a774d0a7c3b39159cfa82f8b7d1",
+        "result_metadata.json": "82af9409329e7e0478b01deae095d3f6927c4a4bf2ea464b06f4a6380faa0429",
+        "job_metrics.json": "462b01d998f6b8a7830e213246bb293543e4e64c3ce1e5fc407117da061f413f"
+      }
+    },
+    "db67frimb58s738bci4g": {
+      "index_sha256": "97f4d3143d560296f3ab68f8ba16ba7f4ec7048c334205bddcdd546c177ad648",
+      "verified_files_sha256": {
+        "pub_00.json": "f0d2e5417456592966318bfde33d3ae050929204a4837444145ad62b133b5572",
+        "pub_01.json": "0f021cc4ce3f2fc172375863d11c531b98a8341e7b830c6af91d6d7c1e12f286",
+        "pub_02.json": "7e859289c7ebdba1825d17125abb706fe003425e1732664528d64f697f6ce40d",
+        "pub_03.json": "c9cee8c742967e839d669c957e3c0bb8fe71c85548f4691765ef551eb14797b3",
+        "result_metadata.json": "c32eff1e4aef7270dc46071406373f80ce3539ecb604b4dfecba58e21f186307",
+        "job_metrics.json": "4360fe0beb4734e525e68c94e93452b550d5c38f16c84bb36b3d12a153cf92db"
+      }
+    }
+  },
+  "members": [
+    {
+      "member": "qpe_archived_s0",
+      "rung": "archived",
+      "label": 0,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        6359,
+        305,
+        1201,
+        327
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.7762451171875,
+        0.0372314453125,
+        0.1466064453125,
+        0.0399169921875
+      ],
+      "terminal_correct_count": 6664,
+      "terminal_correct_mean": 0.8134765625,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.806640625
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.783203125
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.814453125
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.81640625
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.822265625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.80859375
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.7734375
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.783203125
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.82421875
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.783203125
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.841796875
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.80859375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.841796875
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.810546875
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.869140625
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.828125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.801025390625,
+        "late_mean": 0.825927734375,
+        "late_minus_early": 0.02490234375
+      },
+      "lag_one_pearson": 0.019274508047488925,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_01",
+      "pub_index_within_job": 0,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_archived_s1",
+      "rung": "archived",
+      "label": 1,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        420,
+        6013,
+        313,
+        1446
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.05126953125,
+        0.7340087890625,
+        0.0382080078125,
+        0.176513671875
+      ],
+      "terminal_correct_count": 6433,
+      "terminal_correct_mean": 0.7852783203125,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.78515625
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.787109375
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.787109375
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.806640625
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.787109375
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.763671875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.771484375
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.787109375
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.779296875
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.798828125
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.810546875
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.76171875
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.765625
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.791015625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.796875
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.78515625
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.784423828125,
+        "late_mean": 0.7861328125,
+        "late_minus_early": 0.001708984375
+      },
+      "lag_one_pearson": -0.009070993198888405,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_02",
+      "pub_index_within_job": 1,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_archived_s2",
+      "rung": "archived",
+      "label": 2,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        1705,
+        337,
+        5841,
+        309
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.2081298828125,
+        0.0411376953125,
+        0.7130126953125,
+        0.0377197265625
+      ],
+      "terminal_correct_count": 6150,
+      "terminal_correct_mean": 0.750732421875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.7578125
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.7578125
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.76171875
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.75
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.728515625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.7421875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.7421875
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.751953125
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.7421875
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.75390625
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.771484375
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.751953125
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.763671875
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.75390625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.740234375
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.7421875
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.7490234375,
+        "late_mean": 0.75244140625,
+        "late_minus_early": 0.00341796875
+      },
+      "lag_one_pearson": 0.010722784542887082,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_03",
+      "pub_index_within_job": 2,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_archived_s3",
+      "rung": "archived",
+      "label": 3,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        444,
+        1507,
+        328,
+        5913
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.05419921875,
+        0.1839599609375,
+        0.0400390625,
+        0.7218017578125
+      ],
+      "terminal_correct_count": 6241,
+      "terminal_correct_mean": 0.7618408203125,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.736328125
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.76171875
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.76953125
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.779296875
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.765625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.7734375
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.765625
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.75390625
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.7578125
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.744140625
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.771484375
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.796875
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.76953125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.759765625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.732421875
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.751953125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.76318359375,
+        "late_mean": 0.760498046875,
+        "late_minus_early": -0.002685546875
+      },
+      "lag_one_pearson": -0.0024929687602675814,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_04",
+      "pub_index_within_job": 3,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_delay_s0",
+      "rung": "delay",
+      "label": 0,
+      "register_width": 1,
+      "terminal_bit_index": 0,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        6821,
+        1371
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.8326416015625,
+        0.1673583984375
+      ],
+      "terminal_correct_count": 6821,
+      "terminal_correct_mean": 0.8326416015625,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.86328125
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.818359375
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.841796875
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.84375
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.841796875
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.83984375
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.81640625
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.8515625
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.849609375
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.826171875
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.837890625
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.806640625
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.830078125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.822265625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.81640625
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.81640625
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.839599609375,
+        "late_mean": 0.82568359375,
+        "late_minus_early": -0.013916015625
+      },
+      "lag_one_pearson": -0.005673449394773598,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_05",
+      "pub_index_within_job": 4,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_delay_s1",
+      "rung": "delay",
+      "label": 1,
+      "register_width": 1,
+      "terminal_bit_index": 0,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        6406,
+        1786
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.781982421875,
+        0.218017578125
+      ],
+      "terminal_correct_count": 6406,
+      "terminal_correct_mean": 0.781982421875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.779296875
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.759765625
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.77734375
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.802734375
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.755859375
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.794921875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.806640625
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.810546875
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.791015625
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.7734375
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.8203125
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.7578125
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.76953125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.765625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.77734375
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.76953125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.785888671875,
+        "late_mean": 0.778076171875,
+        "late_minus_early": -0.0078125
+      },
+      "lag_one_pearson": 0.016879222821616274,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_06",
+      "pub_index_within_job": 5,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_delay_s2",
+      "rung": "delay",
+      "label": 2,
+      "register_width": 1,
+      "terminal_bit_index": 0,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        2009,
+        6183
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.2452392578125,
+        0.7547607421875
+      ],
+      "terminal_correct_count": 6183,
+      "terminal_correct_mean": 0.7547607421875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.744140625
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.76171875
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.755859375
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.73828125
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.7734375
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.76953125
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.767578125
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.76953125
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.740234375
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.755859375
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.75
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.771484375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.73828125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.744140625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.728515625
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.767578125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.760009765625,
+        "late_mean": 0.74951171875,
+        "late_minus_early": -0.010498046875
+      },
+      "lag_one_pearson": 0.0014866777920580236,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_07",
+      "pub_index_within_job": 6,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_delay_s3",
+      "rung": "delay",
+      "label": 3,
+      "register_width": 1,
+      "terminal_bit_index": 0,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        1828,
+        6364
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.22314453125,
+        0.77685546875
+      ],
+      "terminal_correct_count": 6364,
+      "terminal_correct_mean": 0.77685546875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.767578125
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.763671875
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.791015625
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.79296875
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.75390625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.794921875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.77734375
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.78515625
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.759765625
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.767578125
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.78125
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.81640625
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.74609375
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.765625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.78515625
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.78125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.7783203125,
+        "late_mean": 0.775390625,
+        "late_minus_early": -0.0029296875
+      },
+      "lag_one_pearson": -0.014054515798563288,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_08",
+      "pub_index_within_job": 7,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_no_feed_forward_s0",
+      "rung": "no_feed_forward",
+      "label": 0,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        6349,
+        393,
+        1167,
+        283
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.7750244140625,
+        0.0479736328125,
+        0.1424560546875,
+        0.0345458984375
+      ],
+      "terminal_correct_count": 6742,
+      "terminal_correct_mean": 0.822998046875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.826171875
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.796875
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.84765625
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.80859375
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.84765625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.818359375
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.833984375
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.783203125
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.818359375
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.8203125
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.845703125
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.818359375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.830078125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.84765625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.837890625
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.787109375
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.8203125,
+        "late_mean": 0.82568359375,
+        "late_minus_early": 0.00537109375
+      },
+      "lag_one_pearson": 0.014510688580943197,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_09",
+      "pub_index_within_job": 8,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_no_feed_forward_s1",
+      "rung": "no_feed_forward",
+      "label": 1,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        474,
+        4754,
+        324,
+        2640
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.057861328125,
+        0.580322265625,
+        0.03955078125,
+        0.322265625
+      ],
+      "terminal_correct_count": 5228,
+      "terminal_correct_mean": 0.63818359375,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.626953125
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.60546875
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.654296875
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.650390625
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.6015625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.63671875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.62890625
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.68359375
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.654296875
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.623046875
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.646484375
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.6484375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.609375
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.669921875
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.64453125
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.626953125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.635986328125,
+        "late_mean": 0.640380859375,
+        "late_minus_early": 0.00439453125
+      },
+      "lag_one_pearson": 0.001484214514755823,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_10",
+      "pub_index_within_job": 9,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_no_feed_forward_s2",
+      "rung": "no_feed_forward",
+      "label": 2,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        1688,
+        309,
+        5863,
+        332
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.2060546875,
+        0.0377197265625,
+        0.7156982421875,
+        0.04052734375
+      ],
+      "terminal_correct_count": 6195,
+      "terminal_correct_mean": 0.7562255859375,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.748046875
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.755859375
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.763671875
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.755859375
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.7421875
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.76171875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.740234375
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.759765625
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.759765625
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.798828125
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.73828125
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.74609375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.728515625
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.755859375
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.78515625
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.759765625
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.75341796875,
+        "late_mean": 0.759033203125,
+        "late_minus_early": 0.005615234375
+      },
+      "lag_one_pearson": -0.0005807063840836943,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_11",
+      "pub_index_within_job": 10,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_no_feed_forward_s3",
+      "rung": "no_feed_forward",
+      "label": 3,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        411,
+        2870,
+        330,
+        4581
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.0501708984375,
+        0.350341796875,
+        0.040283203125,
+        0.5592041015625
+      ],
+      "terminal_correct_count": 4911,
+      "terminal_correct_mean": 0.5994873046875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.58984375
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.59375
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.58984375
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.56640625
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.6015625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.6171875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.619140625
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.5859375
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.603515625
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.560546875
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.578125
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.625
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.568359375
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.6171875
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.6484375
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.626953125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.595458984375,
+        "late_mean": 0.603515625,
+        "late_minus_early": 0.008056640625
+      },
+      "lag_one_pearson": -0.0046994017893555754,
+      "lag_one_withheld": null,
+      "job_id": "db67fqsvf2bc73d0pk4g",
+      "pub_name": "ibm_kingston_dynamic_pub_12",
+      "pub_index_within_job": 11,
+      "register_name": "g1_r0_c"
+    },
+    {
+      "member": "qpe_coherent_s0",
+      "rung": "coherent",
+      "label": 0,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        6869,
+        301,
+        693,
+        329
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.8385009765625,
+        0.0367431640625,
+        0.0845947265625,
+        0.0401611328125
+      ],
+      "terminal_correct_count": 7170,
+      "terminal_correct_mean": 0.875244140625,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.884765625
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.87890625
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.896484375
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.86328125
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.865234375
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.86328125
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.833984375
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.876953125
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.890625
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.890625
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.865234375
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.880859375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.869140625
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.859375
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.89453125
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.890625
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.870361328125,
+        "late_mean": 0.880126953125,
+        "late_minus_early": 0.009765625
+      },
+      "lag_one_pearson": -0.006166744782588873,
+      "lag_one_withheld": null,
+      "job_id": "db67frimb58s738bci4g",
+      "pub_name": "ibm_kingston_static_pub_01",
+      "pub_index_within_job": 0,
+      "register_name": "g0_r0_c"
+    },
+    {
+      "member": "qpe_coherent_s1",
+      "rung": "coherent",
+      "label": 1,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 0,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        591,
+        6319,
+        423,
+        859
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.0721435546875,
+        0.7713623046875,
+        0.0516357421875,
+        0.1048583984375
+      ],
+      "terminal_correct_count": 6910,
+      "terminal_correct_mean": 0.843505859375,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.84375
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.84375
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.849609375
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.814453125
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.837890625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.85546875
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.837890625
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.8359375
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.8671875
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.85546875
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.853515625
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.83984375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.8203125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.8515625
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.857421875
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.83203125
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.83984375,
+        "late_mean": 0.84716796875,
+        "late_minus_early": 0.00732421875
+      },
+      "lag_one_pearson": -0.005081809284421097,
+      "lag_one_withheld": null,
+      "job_id": "db67frimb58s738bci4g",
+      "pub_name": "ibm_kingston_static_pub_02",
+      "pub_index_within_job": 1,
+      "register_name": "g0_r0_c"
+    },
+    {
+      "member": "qpe_coherent_s2",
+      "rung": "coherent",
+      "label": 2,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        857,
+        289,
+        6772,
+        274
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.1046142578125,
+        0.0352783203125,
+        0.82666015625,
+        0.033447265625
+      ],
+      "terminal_correct_count": 7046,
+      "terminal_correct_mean": 0.860107421875,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.876953125
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.873046875
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.853515625
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.873046875
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.853515625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.884765625
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.828125
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.865234375
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.86328125
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.859375
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.8671875
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.853515625
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.865234375
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.841796875
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.833984375
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.869140625
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.863525390625,
+        "late_mean": 0.856689453125,
+        "late_minus_early": -0.0068359375
+      },
+      "lag_one_pearson": 0.006760454173308712,
+      "lag_one_withheld": null,
+      "job_id": "db67frimb58s738bci4g",
+      "pub_name": "ibm_kingston_static_pub_03",
+      "pub_index_within_job": 2,
+      "register_name": "g0_r0_c"
+    },
+    {
+      "member": "qpe_coherent_s3",
+      "rung": "coherent",
+      "label": 3,
+      "register_width": 2,
+      "terminal_bit_index": 1,
+      "expected_terminal_bit": 1,
+      "shots": 8192,
+      "outcome_counts_by_integer_index": [
+        450,
+        860,
+        504,
+        6378
+      ],
+      "outcome_probabilities_by_integer_index": [
+        0.054931640625,
+        0.10498046875,
+        0.0615234375,
+        0.778564453125
+      ],
+      "terminal_correct_count": 6882,
+      "terminal_correct_mean": 0.840087890625,
+      "blocks": [
+        {
+          "start_shot_inclusive": 0,
+          "stop_shot_exclusive": 512,
+          "shots": 512,
+          "terminal_correct_mean": 0.822265625
+        },
+        {
+          "start_shot_inclusive": 512,
+          "stop_shot_exclusive": 1024,
+          "shots": 512,
+          "terminal_correct_mean": 0.853515625
+        },
+        {
+          "start_shot_inclusive": 1024,
+          "stop_shot_exclusive": 1536,
+          "shots": 512,
+          "terminal_correct_mean": 0.84765625
+        },
+        {
+          "start_shot_inclusive": 1536,
+          "stop_shot_exclusive": 2048,
+          "shots": 512,
+          "terminal_correct_mean": 0.833984375
+        },
+        {
+          "start_shot_inclusive": 2048,
+          "stop_shot_exclusive": 2560,
+          "shots": 512,
+          "terminal_correct_mean": 0.837890625
+        },
+        {
+          "start_shot_inclusive": 2560,
+          "stop_shot_exclusive": 3072,
+          "shots": 512,
+          "terminal_correct_mean": 0.865234375
+        },
+        {
+          "start_shot_inclusive": 3072,
+          "stop_shot_exclusive": 3584,
+          "shots": 512,
+          "terminal_correct_mean": 0.83203125
+        },
+        {
+          "start_shot_inclusive": 3584,
+          "stop_shot_exclusive": 4096,
+          "shots": 512,
+          "terminal_correct_mean": 0.802734375
+        },
+        {
+          "start_shot_inclusive": 4096,
+          "stop_shot_exclusive": 4608,
+          "shots": 512,
+          "terminal_correct_mean": 0.830078125
+        },
+        {
+          "start_shot_inclusive": 4608,
+          "stop_shot_exclusive": 5120,
+          "shots": 512,
+          "terminal_correct_mean": 0.869140625
+        },
+        {
+          "start_shot_inclusive": 5120,
+          "stop_shot_exclusive": 5632,
+          "shots": 512,
+          "terminal_correct_mean": 0.80859375
+        },
+        {
+          "start_shot_inclusive": 5632,
+          "stop_shot_exclusive": 6144,
+          "shots": 512,
+          "terminal_correct_mean": 0.83984375
+        },
+        {
+          "start_shot_inclusive": 6144,
+          "stop_shot_exclusive": 6656,
+          "shots": 512,
+          "terminal_correct_mean": 0.861328125
+        },
+        {
+          "start_shot_inclusive": 6656,
+          "stop_shot_exclusive": 7168,
+          "shots": 512,
+          "terminal_correct_mean": 0.841796875
+        },
+        {
+          "start_shot_inclusive": 7168,
+          "stop_shot_exclusive": 7680,
+          "shots": 512,
+          "terminal_correct_mean": 0.845703125
+        },
+        {
+          "start_shot_inclusive": 7680,
+          "stop_shot_exclusive": 8192,
+          "shots": 512,
+          "terminal_correct_mean": 0.849609375
+        }
+      ],
+      "half_comparison": {
+        "early_shots": 4096,
+        "late_shots": 4096,
+        "early_mean": 0.8369140625,
+        "late_mean": 0.84326171875,
+        "late_minus_early": 0.00634765625
+      },
+      "lag_one_pearson": 0.0040796040873696815,
+      "lag_one_withheld": null,
+      "job_id": "db67frimb58s738bci4g",
+      "pub_name": "ibm_kingston_static_pub_04",
+      "pub_index_within_job": 3,
+      "register_name": "g0_r0_c"
+    }
+  ]
+}

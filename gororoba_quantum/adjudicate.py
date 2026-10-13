@@ -343,7 +343,6 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
     jobs = record.get("submission", {}).get("jobs") or []
     if not jobs:
         raise AdjudicationError(f"{run_dir} records no submitted jobs")
-    shots = int(record["shots"])
     out: dict[str, Any] = {
         "run": run_dir.name,
         "analysis_digest": analysis_digest(),
@@ -355,6 +354,10 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
     replicas_by_group = {group["group"]: group["replicas"] for group in record["groups"]}
     for job_entry in jobs:
         job_id = job_entry["job_id"]
+        try:
+            shots = live_run._recorded_job_shots(record, job_entry)
+        except live_run.LiveRunError as error:
+            raise AdjudicationError(f"job {job_id}: {error}") from error
         raw_dir = run_dir / live_run.RAW_DIRECTORY / job_id
         if not (raw_dir / "index.json").exists():
             raise AdjudicationError(f"{raw_dir} holds no preserved raw result; run live_run.py --preserve-raw first")
@@ -585,6 +588,160 @@ def adjudicate(service: Any, run_dir: Path, seed: int = ANALYSIS_SEED) -> dict[s
 # --- self-check ------------------------------------------------------------------
 
 
+def _check_job_shots() -> None:
+    from tempfile import TemporaryDirectory
+    from types import SimpleNamespace
+    from unittest.mock import patch
+
+    from qiskit import ClassicalRegister
+
+    import live_run
+
+    calibration_date = datetime.fromisoformat("2026-10-11T00:00:00+00:00")
+    properties = SimpleNamespace(last_update_date=calibration_date, t1=lambda _qubit: 0.0001, t2=lambda _qubit: 0.0001)
+    target = SimpleNamespace(dt=1e-9)
+    backend = SimpleNamespace(
+        name="synthetic-shot-fixture",
+        properties=lambda **_kwargs: properties,
+        target_history=lambda **_kwargs: target,
+        target=target,
+        configuration=lambda: SimpleNamespace(default_rep_delay=0.0001),
+    )
+    service = SimpleNamespace(backend=lambda _name: backend)
+    for legacy, shot_tiers in ((False, (64, 128)), (True, (128, 128))):
+        with TemporaryDirectory(prefix="adjudication-shot-check-") as directory:
+            run_dir = Path(directory)
+            circuits = []
+            jobs = []
+            allocation = {}
+            replay_shots: list[int] = []
+            for job_index, shots in enumerate(shot_tiers):
+                manifests = []
+                raw_dir = run_dir / live_run.RAW_DIRECTORY / f"job-{job_index}"
+                raw_dir.mkdir(parents=True)
+                payloads: dict[str, Any] = {}
+                for pub_index in range(job_index + 1):
+                    name = f"pub-{job_index}-{pub_index}"
+                    circuit = QuantumCircuit(2, name=name)
+                    registers = [ClassicalRegister(1, f"lane_{replica}") for replica in range(2)]
+                    for replica, register in enumerate(registers):
+                        circuit.add_register(register)
+                        circuit.measure(replica, register[0])
+                    circuits.append(circuit)
+                    allocation[name] = shots
+                    manifests.append(
+                        {
+                            "name": name,
+                            "components": [
+                                {
+                                    "group": "shot-fixture",
+                                    "member": "ripple_fixture",
+                                    "reference": False,
+                                    "registers_by_replica": [[register.name] for register in registers],
+                                }
+                            ],
+                        }
+                    )
+                    payloads[f"pub_{pub_index:02d}.json"] = {
+                        "metadata": {
+                            "compilation": {
+                                "scheduler_timing": {
+                                    "timing": "main,measure_0,channel,0,1,capture\nmain,measure_1,channel,0,1,capture",
+                                    "circuit_duration": 1,
+                                }
+                            }
+                        },
+                        "registers": {
+                            register.name: {"num_bits": 1, "bitstrings": [str(index % 2) for index in range(shots)]}
+                            for register in registers
+                        },
+                    }
+                jobs.append(
+                    {
+                        "job_id": raw_dir.name,
+                        "backend": backend.name,
+                        "pubs": manifests,
+                        "options": {"default_shots": shots},
+                        **({} if legacy else {"shots": shots}),
+                    }
+                )
+                payloads["result_metadata.json"] = {
+                    "executor": {
+                        "chunk_timing": [
+                            {
+                                "start": "2026-10-11T01:00:00+00:00",
+                                "stop": "2026-10-11T01:00:01+00:00",
+                                "parts": [{"idx_item": index, "size": 1} for index in range(len(manifests))],
+                            }
+                        ]
+                    }
+                }
+                payloads["job_metrics.json"] = {
+                    "usage": {"qpu_charge_time_seconds": 1.0},
+                    "circuits_execution_time_ns": 1000 * shots * len(manifests),
+                }
+                hashes = {}
+                for name, payload in payloads.items():
+                    data = json.dumps(payload).encode()
+                    (raw_dir / name).write_bytes(data)
+                    hashes[name] = hashlib.sha256(data).hexdigest()
+                (raw_dir / "index.json").write_text(
+                    json.dumps({"files": hashes, "metrics_sha256": [hashes["job_metrics.json"]]})
+                )
+            archive = io.BytesIO()
+            qpy.dump(circuits, archive)
+            (run_dir / "isa.qpy").write_bytes(archive.getvalue())
+            record = {
+                "shots": max(shot_tiers),
+                "groups": [{"group": "shot-fixture", "replicas": [{"physical_qubits": [0]}, {"physical_qubits": [1]}]}],
+                "execution_pubs": [manifest for job in jobs for manifest in job["pubs"]],
+                "submission": {"jobs": jobs, "qpy_archive_sha256": hashlib.sha256(archive.getvalue()).hexdigest()},
+                **({} if legacy else {"pub_shots": allocation}),
+            }
+            (run_dir / "record.json").write_text(json.dumps(record))
+
+            def simulate(
+                _simulator: Any,
+                circuit: QuantumCircuit,
+                shots: int,
+                _seed: int,
+                *,
+                captured_shots: list[int] = replay_shots,
+            ) -> dict[str, np.ndarray]:
+                captured_shots.append(shots)
+                return {register.name: np.arange(shots, dtype=np.int64) % 2 for register in circuit.cregs}
+
+            with (
+                patch.object(live_run, "check_target_matches_properties"),
+                patch.object(live_run, "noise_simulator", return_value=object()),
+                patch.object(sys.modules[__name__], "_simulate", side_effect=simulate),
+            ):
+                result = adjudicate(service, run_dir)
+                expected_replays = [shots for index, shots in enumerate(shot_tiers) for _ in range(4 * (index + 1))]
+                if replay_shots != expected_replays:
+                    raise AdjudicationError(f"job replay shots read {replay_shots}, expected {expected_replays}")
+                for job, shots in zip(jobs, shot_tiers, strict=True):
+                    job_result = result["jobs"][job["job_id"]]
+                    throughput = job_result["throughput"]
+                    if throughput["submitted_pub_shots"] != shots * len(job["pubs"]) or not math.isclose(
+                        throughput["execution_seconds_per_shot"], 1e-6
+                    ):
+                        raise AdjudicationError(f"job shot throughput reads {throughput}")
+                    for pub_result in job_result["pubs"].values():
+                        if not math.isclose(pub_result["shotwise_correlation_null_sd"], 1 / math.sqrt(shots)):
+                            raise AdjudicationError("shotwise correlation null SD uses a different job's denominator")
+                if not legacy:
+                    jobs[0].pop("shots")
+                    (run_dir / "record.json").write_text(json.dumps(record))
+                    try:
+                        adjudicate(service, run_dir)
+                    except AdjudicationError as error:
+                        if "job shots differ from the approved PUB allocation" not in str(error):
+                            raise
+                    else:
+                        raise AdjudicationError("allocated adjudication accepted a missing job shot count")
+
+
 def _check() -> None:
     timing = "\n".join(
         [
@@ -697,6 +854,7 @@ def _check() -> None:
         raise AdjudicationError(f"PUB chunk windows read {windows}")
     if not analysis_versions() or analysis_digest() != analysis_digest():
         raise AdjudicationError("the analysis digest does not bind the package versions deterministically")
+    _check_job_shots()
     print("adjudicate self-check passed")
 
 

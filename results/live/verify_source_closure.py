@@ -198,14 +198,28 @@ def audit(
     }
 
 
+def _record_identity(report: dict[str, Any]) -> tuple[str, str]:
+    relative_record = report.get("record")
+    record_digest = report.get("record_sha256")
+    if not isinstance(relative_record, str) or not relative_record:
+        raise ValueError("audit report must identify its retained record")
+    normalized_record = Path(relative_record)
+    if normalized_record.is_absolute() or not normalized_record.parts or ".." in normalized_record.parts:
+        raise ValueError("audit record identity must be a repository-relative path")
+    if not isinstance(record_digest, str) or re.fullmatch(r"[0-9a-f]{64}", record_digest) is None:
+        raise ValueError("audit report must identify its retained record digest")
+    return normalized_record.as_posix(), record_digest
+
+
 def write_report(destination: Path, report: dict[str, Any], record_path: Path) -> None:
-    """Write a separate audit artifact and preserve every existing run artifact."""
+    """Create an audit or refresh an audit for the identical retained record."""
     destination = destination.resolve()
     record_path = record_path.resolve()
     if destination.suffix != ".json":
         raise ValueError("audit output must have a .json suffix")
     if destination == record_path:
         raise ValueError("audit output must differ from the retained record")
+    record_identity = _record_identity(report)
     if destination.exists():
         try:
             existing = json.loads(destination.read_bytes())
@@ -213,6 +227,8 @@ def write_report(destination: Path, report: dict[str, Any], record_path: Path) -
             raise ValueError("audit output refuses to replace an existing non-audit artifact") from error
         if not isinstance(existing, dict) or existing.get("audit_contract") != AUDIT_CONTRACT:
             raise ValueError("audit output refuses to replace an existing non-audit artifact")
+        if _record_identity(existing) != record_identity:
+            raise ValueError("audit output refuses to replace an audit for a different retained record")
     destination.parent.mkdir(parents=True, exist_ok=True)
     temporary_path: Path | None = None
     try:
@@ -276,6 +292,64 @@ def _verify() -> None:
         write_report(output, report, record_path)
         assert record_path.read_bytes() == before
         assert json.loads(output.read_bytes()) == report
+        refreshed_report = report | {"observed_directory_status": []}
+        write_report(output, refreshed_report, record_path)
+        assert json.loads(output.read_bytes()) == refreshed_report
+        assert record_path.read_bytes() == before
+
+        sibling_record = repo / "results" / "sibling-run" / "record.json"
+        sibling_record.parent.mkdir()
+        sibling_record.write_bytes(before)
+        sibling_report = audit(repo, sibling_record, installed_version=version)
+        assert sibling_report["record_sha256"] == report["record_sha256"]
+        sibling_output = sibling_record.parent / "source-closure.json"
+        write_report(sibling_output, sibling_report, sibling_record)
+        sibling_output_before = sibling_output.read_bytes()
+        output_before = output.read_bytes()
+        try:
+            write_report(sibling_output, refreshed_report, record_path)
+        except ValueError:
+            pass
+        else:
+            raise AssertionError("audit output replaces another run's audit")
+        assert sibling_output.read_bytes() == sibling_output_before
+        assert output.read_bytes() == output_before
+        assert record_path.read_bytes() == sibling_record.read_bytes() == before
+
+        for invalid_existing in (
+            {key: value for key, value in report.items() if key != "record"},
+            {key: value for key, value in report.items() if key != "record_sha256"},
+            report | {"record_sha256": "0" * 64},
+            report | {"record": "../record.json"},
+            report | {"record": str(record_path)},
+        ):
+            output.write_text(json.dumps(invalid_existing))
+            invalid_before = output.read_bytes()
+            try:
+                write_report(output, refreshed_report, record_path)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("audit output replaces an unidentified or changed-record audit")
+            assert output.read_bytes() == invalid_before
+            assert sibling_output.read_bytes() == sibling_output_before
+            assert record_path.read_bytes() == sibling_record.read_bytes() == before
+
+        output.write_text(json.dumps(report | {"record": "./" + report["record"]}))
+        write_report(output, refreshed_report, record_path)
+        assert json.loads(output.read_bytes()) == refreshed_report
+        output_before = output.read_bytes()
+        for missing_key in ("record", "record_sha256"):
+            unidentified_report = {key: value for key, value in report.items() if key != missing_key}
+            try:
+                write_report(output, unidentified_report, record_path)
+            except ValueError:
+                pass
+            else:
+                raise AssertionError("audit output accepts a report with missing record identity")
+            assert output.read_bytes() == output_before
+            assert sibling_output.read_bytes() == sibling_output_before
+            assert record_path.read_bytes() == sibling_record.read_bytes() == before
 
         for path, mutation in (
             (source / "model.py", b"VALUE = 3\n"),

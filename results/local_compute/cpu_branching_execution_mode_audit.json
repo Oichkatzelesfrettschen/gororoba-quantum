@@ -1,0 +1,141 @@
+{
+  "analysis_source": "cpu_branching_reuse_analysis.py",
+  "analysis_source_sha256": "f30e07fbb30f0460e880328a0dba8b4cef2856ca513dae6382010d9400a9352c",
+  "execution_mode_audit": {
+    "all_modes_match": true,
+    "case_count": 15,
+    "contract": "retained-qpy-density-matrix-execution-modes-v1",
+    "member_result_count": 142,
+    "members": [
+      {
+        "archive_index": 0,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_coherent_s0"
+      },
+      {
+        "archive_index": 1,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_coherent_s1"
+      },
+      {
+        "archive_index": 2,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_coherent_s2"
+      },
+      {
+        "archive_index": 3,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_coherent_s3"
+      },
+      {
+        "archive_index": 4,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_archived_s0"
+      },
+      {
+        "archive_index": 5,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_archived_s1"
+      },
+      {
+        "archive_index": 6,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_archived_s2"
+      },
+      {
+        "archive_index": 7,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_archived_s3"
+      },
+      {
+        "archive_index": 8,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_delay_s0"
+      },
+      {
+        "archive_index": 9,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_delay_s1"
+      },
+      {
+        "archive_index": 10,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_delay_s2"
+      },
+      {
+        "archive_index": 11,
+        "enabled_execution_mode": "measurement_sampling",
+        "family": "folded-qpe",
+        "member": "qpe_delay_s3"
+      },
+      {
+        "archive_index": 12,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_no_feed_forward_s0"
+      },
+      {
+        "archive_index": 13,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_no_feed_forward_s1"
+      },
+      {
+        "archive_index": 14,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_no_feed_forward_s2"
+      },
+      {
+        "archive_index": 15,
+        "enabled_execution_mode": "shot_branching",
+        "family": "folded-qpe",
+        "member": "qpe_no_feed_forward_s3"
+      },
+      {
+        "archive_index": 16,
+        "enabled_execution_mode": "shot_branching",
+        "family": "n21-feedback",
+        "member": "n21_feedback"
+      },
+      {
+        "archive_index": 17,
+        "enabled_execution_mode": "shot_branching",
+        "family": "n21-feedback",
+        "member": "n21_no_feedback"
+      }
+    ],
+    "metadata_order": "qualification circuit order, filtered by case family, as submitted by the reuse probe",
+    "mismatches": []
+  },
+  "execution_mode_boundary": "QPY member order binds every CPU density_matrix result. Enabled cases require branching for operations on measured qubits or classical control, and measurement sampling for deferrable readout, including reset/delay channels before readout. Disabled cases require branching absent or false. Runtime's broader dynamic classification does not determine Aer sampling eligibility.",
+  "historical_analysis_uncompressed_sha256": "a733693409c8291966a174748aa90d519f21f3e6bf8bb9e484622bc8aea84752",
+  "historical_archive_bytes_identical": true,
+  "immutable_archive_sha256": {
+    "cpu_branching_inputs.qpy.gz": "68b13f7cec9ca389f4752309ee25078aa0441f47ec7522eab886a761a5f201d1",
+    "cpu_branching_qualification.json.gz": "11a92e7870540ad4cad53ca1fdc8dd3e719b896d53b2bca0e88084942f6f9b02",
+    "cpu_branching_reuse_analysis.json.gz": "7749c07886cda6d5653519eda2c2b827ac633da853db6ab7b82aeb3a6129cf53",
+    "cpu_branching_reuse_probe.json.gz": "0de6143f1656e335cb0fe6453fc50e5f9c51a24adda7705e8a262fa779cdbdbc"
+  },
+  "production_shot_branching_qualified": false,
+  "qpy_sha256": "9fe387171f4f00e45ce9f1225158961ba1742fe75323960d9698c2d4c08b98d6",
+  "scientific_fields_identical": true,
+  "source_input_sha256": {
+    "cpu_branching_qualification.json": "45690cc3f408ffd52bb51b36eb84dbc038a83542d585e9a4b0711feb1fef14ba",
+    "cpu_branching_reuse_probe.json": "59f22c8fe331ec6500875044496ff8b5a0dfcef47877134657e0ac48b6629d32"
+  },
+  "state": "failed_fresh_instance_repair_falsified",
+  "total_bin_comparisons": 608,
+  "total_contrast_term_estimates": 504
+}

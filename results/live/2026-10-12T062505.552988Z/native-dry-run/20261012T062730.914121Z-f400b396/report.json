@@ -1,0 +1,143 @@
+{
+  "binding": {
+    "execution_contract_sha256": "4f6f79742ba237230c2c262fc226da733b8a5413cd87dba91129c175e22d44f0",
+    "execution_pubs_sha256": "37ce27ebd06d0bdf844153cb0609f190ab37f816a0bcbfa52f9965851c57d1b1",
+    "experiment_digest": "493d6d39d1197221d1d4a9610d5b542036e67e24a1323246ba14b828bfbbe085",
+    "files": {
+      "approval-consumed.json": null,
+      "isa.qpy": "8270326960c2339de5c7e5aefb50f98f5498810fc0ebc3db9a0b30e2ed7bee99",
+      "record.json": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d"
+    },
+    "instance_sha256_12": "e3de05b6901e",
+    "preflight_source_sha256": "4e59029338e56705a36b38b9db28e6a951f2297a92e446a3c55073827f3a3098",
+    "shots": 4096,
+    "versions": {
+      "numpy": "2.5.4",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0",
+      "rustworkx": "0.18.1",
+      "scipy": "1.18.1",
+      "sympy": "1.14.0"
+    }
+  },
+  "component_accounting": "initialization, repetition delay, circuit time, and overhead remain unseparated",
+  "dry_run": true,
+  "estimate_semantics": "server system-time estimate, distinct from executed QPU usage and final billing",
+  "evidence_kind": "server_mock_timing",
+  "finished_at": "2026-10-12T06:27:39.027511+00:00",
+  "jobs": [
+    {
+      "backend": "ibm_kingston",
+      "backend_dt_seconds": 4e-09,
+      "calibration": "2026-10-11T22:36:25-07:00",
+      "fetched_at": "2026-10-12T06:27:37+00:00",
+      "kind": "static",
+      "modeled_options_sha256": "42276a93ef8f0133e3d1e74dc26286f343f1f5060bcc6bc98f5ad41845e561bb",
+      "options": {
+        "default_shots": 4096,
+        "dynamical_decoupling": {
+          "enable": false,
+          "extra_slack_distribution": "middle",
+          "scheduling_method": "alap",
+          "sequence_type": "XX",
+          "skip_reset_qubits": false
+        },
+        "environment": {
+          "image": null,
+          "job_tags": [
+            "gororoba-native-dry-run",
+            "native-20261012T062730.914121Z-f400b396",
+            "native-batch-0"
+          ],
+          "log_level": "WARNING",
+          "max_execution_time": null,
+          "private": false
+        },
+        "execution": {
+          "init_qubits": true,
+          "meas_type": "classified",
+          "rep_delay": 0.00025,
+          "scheduler_timing": true,
+          "stretch_values": false
+        },
+        "experimental": {},
+        "max_execution_time": 60,
+        "simulator": {
+          "angle_decimals": 5,
+          "layer_noise_model": null,
+          "seed_simulator": null,
+          "warn_absent": true
+        },
+        "twirling": {
+          "enable_gates": null,
+          "enable_measure": null,
+          "group": "pauli",
+          "num_randomizations": "auto",
+          "shots_per_randomization": "auto",
+          "strategy": "active-accum"
+        }
+      },
+      "options_difference": "environment.job_tags only; native tags isolate mock recovery identity",
+      "options_sha256": "e3610e17c5ebf0b87700825f1f9c1a654f52db4e5d3f186c0453df73c6a6e19e",
+      "pub_manifests_sha256": "37ce27ebd06d0bdf844153cb0609f190ab37f816a0bcbfa52f9965851c57d1b1",
+      "pub_names": [
+        "ibm_kingston_static_pub_01",
+        "ibm_kingston_static_pub_02",
+        "ibm_kingston_static_pub_03",
+        "ibm_kingston_static_pub_04",
+        "ibm_kingston_static_pub_05",
+        "ibm_kingston_static_pub_06",
+        "ibm_kingston_static_pub_07",
+        "ibm_kingston_static_pub_08",
+        "ibm_kingston_static_pub_09",
+        "ibm_kingston_static_pub_10",
+        "ibm_kingston_static_pub_11",
+        "ibm_kingston_static_pub_12",
+        "ibm_kingston_static_pub_13",
+        "ibm_kingston_static_pub_14",
+        "ibm_kingston_static_pub_15",
+        "ibm_kingston_static_pub_16",
+        "ibm_kingston_static_pub_17",
+        "ibm_kingston_static_pub_18",
+        "ibm_kingston_static_pub_19",
+        "ibm_kingston_static_pub_20",
+        "ibm_kingston_static_pub_21",
+        "ibm_kingston_static_pub_22",
+        "ibm_kingston_static_pub_23",
+        "ibm_kingston_static_pub_24",
+        "ibm_kingston_static_pub_25",
+        "ibm_kingston_static_pub_26",
+        "ibm_kingston_static_pub_27",
+        "ibm_kingston_static_pub_28",
+        "ibm_kingston_static_pub_29",
+        "ibm_kingston_static_pub_30",
+        "ibm_kingston_static_pub_31",
+        "ibm_kingston_static_pub_32",
+        "ibm_kingston_static_pub_33",
+        "ibm_kingston_static_pub_34",
+        "ibm_kingston_static_pub_35",
+        "ibm_kingston_static_pub_36"
+      ],
+      "reason": "QiskitBackendNotFoundError",
+      "shots": 4096,
+      "state": "unavailable"
+    }
+  ],
+  "measurement_data": "randomized mock data omitted; excluded from scientific analysis and visuals",
+  "planned_jobs": 1,
+  "preserved_files": {
+    "approval-consumed.json": null,
+    "isa.qpy": "8270326960c2339de5c7e5aefb50f98f5498810fc0ebc3db9a0b30e2ed7bee99",
+    "record.json": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d"
+  },
+  "qualified": false,
+  "reasons": [
+    "QiskitBackendNotFoundError"
+  ],
+  "report_path": "native-dry-run/20261012T062730.914121Z-f400b396/report.json",
+  "schema_version": 1,
+  "status": "unavailable",
+  "timing_qualified": false,
+  "within_execution_ceilings": false
+}

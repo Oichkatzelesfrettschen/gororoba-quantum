@@ -1,0 +1,111 @@
+{
+  "checks": {
+    "alias_kinds": [
+      "direct",
+      "canonical",
+      "file_symlink",
+      "directory_symlink",
+      "dangling_file_symlink",
+      "dangling_directory_symlink",
+      "hardlink"
+    ],
+    "check_outcomes": [
+      "missing_output_parent",
+      "missing_output",
+      "matching_html",
+      "differing_html",
+      "output_is_directory",
+      "missing_evidence",
+      "invalid_evidence_json",
+      "invalid_evidence_shape",
+      "missing_template",
+      "invalid_template_marker"
+    ],
+    "fixture_root_mtime_preserved": true,
+    "protected_inputs": [
+      "evidence",
+      "template"
+    ],
+    "rejected_cli_aliases": 28,
+    "retained_artifact_mtimes_preserved": true,
+    "retained_evidence_sha256": "fa1fe2cac2476e46f7224e2775a7d6f2e4577b77779567713f4c6fc8a89b06be",
+    "retained_html_sha256": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
+    "retained_template_sha256": "4bad099ff569e36422148553d8582682f318cb65d5edf851986c1bbeb0588fa5",
+    "schema": "ripple-renderer-path-contracts-v1",
+    "successful_and_failed_checks_preserve_fixture": true,
+    "valid_html_matches_retained": true,
+    "write_and_check_modes": true
+  },
+  "mutation_failure_message": "check changed fixture names, identities, bytes, or mtimes",
+  "mutation_method": "Insert each operation at the start of the check branch in an isolated renderer copy, then invoke the complete checker in normal and optimized modes. Each process exits 1 at the fixture-preservation comparison.",
+  "mutation_operations": {
+    "create_and_remove_fixture_root_entry": "Write and unlink .unexpected-renderer-write in arguments.evidence.parent.",
+    "create_missing_output_parent": "arguments.out.parent.mkdir(parents=True, exist_ok=True)",
+    "touch_matching_output": "If arguments.out.is_file(), call arguments.out.touch()."
+  },
+  "normal_and_optimized_outputs_equal": true,
+  "observed_at": "2026-10-12T15:48:34.968530+00:00",
+  "production_renderer_matches_tested_head": true,
+  "schema": "ripple-renderer-check-validation-v1",
+  "scope": "Offline renderer CLI regression checks using copied inputs; measurements cover fixture names, symlink targets, identities, bytes, and modification times. The checks produce zero hardware evidence.",
+  "source_sha256": {
+    "gororoba_quantum/visualizations/cayley_dickson_ripples.html": "4bad099ff569e36422148553d8582682f318cb65d5edf851986c1bbeb0588fa5",
+    "results/ripple/cayley-dickson-ripples.html": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
+    "results/ripple/evidence.json": "fa1fe2cac2476e46f7224e2775a7d6f2e4577b77779567713f4c6fc8a89b06be",
+    "scripts/check_render_ripple_visualization.py": "1327f5a92336af09abdf83634e3dd3172777ed610664a9b47a62ecd82a78f650",
+    "scripts/render_ripple_visualization.py": "9a820baa99caa14ae488d5d668ded23ca231180e04166b7bdcfa1a12fed77498"
+  },
+  "temporary_copy_mutation_checks": [
+    {
+      "detected": true,
+      "mode": "normal",
+      "mutation": "create_missing_output_parent"
+    },
+    {
+      "detected": true,
+      "mode": "optimized",
+      "mutation": "create_missing_output_parent"
+    },
+    {
+      "detected": true,
+      "mode": "normal",
+      "mutation": "touch_matching_output"
+    },
+    {
+      "detected": true,
+      "mode": "optimized",
+      "mutation": "touch_matching_output"
+    },
+    {
+      "detected": true,
+      "mode": "normal",
+      "mutation": "create_and_remove_fixture_root_entry"
+    },
+    {
+      "detected": true,
+      "mode": "optimized",
+      "mutation": "create_and_remove_fixture_root_entry"
+    }
+  ],
+  "tested_git_head": "ea8eae17005d2226afa981cadad889241d415c47",
+  "tool_versions": {
+    "mypy": "mypy 1.19.1 (compiled: yes)",
+    "python": "3.14.7",
+    "ruff": "ruff 0.14.11"
+  },
+  "validation_commands": [
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \"$PYTHON\" -W error scripts/check_render_ripple_visualization.py",
+    "PYTHONDONTWRITEBYTECODE=1 PYTHONWARNINGS=error \"$PYTHON\" -O -W error scripts/check_render_ripple_visualization.py",
+    "ruff check --no-cache scripts/check_render_ripple_visualization.py",
+    "ruff format --check --no-cache scripts/check_render_ripple_visualization.py",
+    "mypy scripts/check_render_ripple_visualization.py scripts/render_ripple_visualization.py"
+  ],
+  "validation_exit_codes": [
+    0,
+    0,
+    0,
+    0,
+    0
+  ],
+  "warnings_as_errors_in_parent_and_child_processes": true
+}

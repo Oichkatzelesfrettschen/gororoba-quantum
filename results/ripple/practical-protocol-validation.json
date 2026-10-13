@@ -1,0 +1,40 @@
+{
+  "artifact_sha256": {
+    "README.md": "59cdc7efe479402267460dc73a1636fd3714fd8eabb33f333d437010fb1d57a7",
+    "docs/README.md": "bb01a92ff39e18db701b3bb18d04e77acd4c6faa92f18fe35026e0bb12ce0023",
+    "docs/RESEARCH_ROADMAP.md": "7e26c02c12054a6b1e9fd1a82bb4016efcee2f44e40b273aa6d34f887199406c",
+    "gororoba_quantum/MODEL_DISCRIMINATION.md": "fc16ceef005a33df196428f92505ab9ea0bf98ac8664ec8fdf96648468b2596f",
+    "gororoba_quantum/RIPPLE_CAMPAIGN.md": "8d421f82ee35c117aa10ce4e5685eeb1c852bffb9768f6eb59a71b4587d167fe",
+    "results/live/README.md": "8eafad7d5383fc693dade51ba877a38fc24cd08862936de814bea19be07f1939",
+    "results/live/qpu-coordination.json": "410efc091773b0aa4faae45eb336cfc340b2ee6fbaf4dc7fb7117d47c7c48baa",
+    "results/ripple/CAMPAIGN_PREPARATION.md": "0468d2e24b3e13d3c13f40d618b83339cba6b5106bc96ecefddf7bc8cf96b7b7",
+    "results/ripple/CORRECTION_PREPARATION.md": "37b575019f65060b6c6698df646cb3fa7b913b36308c281e4f634416745017c0",
+    "results/ripple/README.md": "4db1b889e45d2850b6e4fba13424e12087ca102554adcdaf16cffbcb98898676",
+    "results/ripple/STATIC_PACKING_ACCURACY.md": "881b0bbfc5f9f40aa02181578f7a505f297349637ad24cde31ecc5d255c0dd65",
+    "results/ripple/static-practical-accuracy-admission.json": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f"
+  },
+  "base_commit": "409ce959847c8c3a2f953cc971695daebbec772e",
+  "changed_document_local_links": 191,
+  "copilot_comment_ids": [
+    4250420365,
+    4250420448,
+    4250420522
+  ],
+  "independent_scientific_review": "All 37 control ranges, raw and normalized widths, strict classification thresholds, original alpha coverage and endpointwise 80 percent defect-power bounds reproduce. Norm units and directional-rejection wording corrected before freeze.",
+  "physical_qpu_jobs_submitted": 0,
+  "remaining_gates": [
+    "current-head Copilot review",
+    "merge",
+    "live source/calibration/QPY/quota binding",
+    "correction decision before independent static execution admission"
+  ],
+  "runtime_and_case_hashes_match_fresh_audit": true,
+  "schema": "campaign-practical-protocol-validation-v1",
+  "scope": "Mutable readiness documentation and prospective practical-accuracy interpretation; runtime sources and three original cases retain audited bytes.",
+  "source_verifier_local_links": 526,
+  "source_verifier_modes": [
+    "normal",
+    "optimized"
+  ],
+  "status": "pass"
+}

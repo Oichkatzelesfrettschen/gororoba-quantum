@@ -1,0 +1,26 @@
+{
+  "schema": "local-repository-gate-summary-v1",
+  "source_head": "7ef9f29606dfd6a77361580f79b89b74cfcd037c",
+  "exit_status": 0,
+  "started_utc": "2026-10-12T02:47:52Z",
+  "finished_utc": "2026-10-12T02:55:25Z",
+  "wall_seconds": 453,
+  "command_source": "AGENTS.md first shell block, executed in order with warnings as errors",
+  "required_gate_script_sha256": "e1f66f019205f9515c04dfe5369cacab417a78c24de3bc07c423bbbac22bfd76",
+  "raw_gate_log_sha256": "2f661b69b6a40261cc4bab5b60869ca8c9cdccd01453bfc74351562d326e6165",
+  "raw_gate_log_retention": "local temporary validation directory; summary retains its digest without local paths",
+  "mypy_source_files": 43,
+  "unchanged_measured_surfaces": [
+    "head.txt",
+    "index.txt",
+    "tracked-sha256.txt",
+    "local-refs.txt",
+    "aer-package.txt",
+    "aer-extension-sha256.txt"
+  ],
+  "status_before": "",
+  "status_after": "?? results/live/2026-10-12T024756.245948Z/\n?? results/local_compute/n21_shared_predicate/\n",
+  "status_change_scope": "the concurrent folded dry run and N21 operator probe create their named evidence directories",
+  "aer_package": "python-qiskit-aer 0.17.2-3",
+  "aer_extension_sha256": "758db4f3d2d81902f938d15605bd63e206e3fa3404fea8564c71b81100457a32"
+}

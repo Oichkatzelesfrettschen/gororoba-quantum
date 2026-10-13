@@ -1,0 +1,9 @@
+From OpenGororoba Require Import SignCodeProjection SchreierSignCode SignCodeCardinality BooleanCochainFiltration.
+From OpenGororobaVerified Require Import C881_GF2CubicMinDegree.
+Print Assumptions controlled_projection_exact.
+Print Assumptions normalized_schreier_characterization.
+Print Assumptions normalized_anf_basis_cardinality.
+Print Assumptions normalized_code_cardinality.
+Print Assumptions xor_group_differential_preserves_degree.
+Print Assumptions cubic_witness_separates.
+Print Assumptions cubic_witness_max_degree.

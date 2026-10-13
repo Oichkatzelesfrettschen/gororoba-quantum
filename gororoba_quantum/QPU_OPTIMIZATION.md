@@ -8,7 +8,7 @@ optimizer ranks admitted designs by minimum estimated charge or strongest
 worst-endpoint precision within the declared budget. ESP and coherence screen routed candidates;
 they do not define statistical power or useful information per second.
 
-The implementation has seven parts:
+The core implementation uses the following modules:
 
 | Module | Responsibility |
 |---|---|
@@ -16,8 +16,10 @@ The implementation has seven parts:
 | `diagnostic_experiments.py` | Complete experiment families and signed observable contracts |
 | `experiment_optimizer.py` | Bounded statistical and cost admission, deterministic choice, and Pareto frontier |
 | `qpu_planning.py` | Fresh-calibration compilation, finite-shot predictions, matched layouts, and invocation accounting |
+| `pub_shot_allocation.py` | Endpoint minima and bounded, cost-aware whole-tier promotions for complete static PUBs |
 | `qpu_planning_contracts.py` | Credential-free integration checks against fake backend fixtures |
 | `qpu_cases.py` | Unapproved written cases bound to feasible saved records and their QPY evidence |
+| `qpu_case_allocation_contracts.py` | Allocated-case identity, budget, scenario, reproduction and artifact-preservation checks |
 | `local_compute.py` | Explicit CPU execution policy, ordered simulation evidence, and GPU/hybrid capability rejection |
 
 ## Measured quantities and exact laws
@@ -124,9 +126,21 @@ stationary repetitions remain an explicit assumption; calibration checks
 and shot-order diagnostics supply evidence about that assumption but cannot
 prove it from layout separation.
 
-For `B` contributing PUBs with ranges `R_b` and `S` shots each, the
-two-sided Hoeffding union bound uses half-width
-`sum_b R_b * sqrt(log(2 * B / alpha) / (2 * S))`.
+For `B` contributing PUBs with ranges `R_b` and respective shot counts `S_b`,
+the two-sided Hoeffding union bound uses half-width
+`sum_b R_b * sqrt(log(2 * B / alpha) / (2 * S_b))`.
+Uniform designs set every `S_b = S`. The
+[fixed allocation](PACKED_ALGEBRA.md#fixed-shot-allocation) selects complete
+PUB rows from declared tiers before hardware acquisition. Endpoint minima
+and matched-row closure seed a complete whole-tier upward search, including
+eligible uniform baselines. Full job overhead and cost scenarios enter the
+existing objective ranking; the original model comparison count stays fixed.
+The allocator retains one assignment per route for outer validation; a route
+with every alternative infeasible retains a rejected diagnostic candidate.
+Domains above 4096 assignments per route fail admission. Every endpoint retains its
+precision or conditional-power target and its model allowance. The bounded
+search establishes neither a global PUB allocation nor a packing or placement
+optimum.
 The one-sided bound replaces `2 * B` with `B`. The implementation clips a
 bound to the possible score range. The union bound requires no independence
 between PUBs or jobs. The standalone API also accepts a documented positive
@@ -169,7 +183,7 @@ estimated charge = job overhead
                                     + declared classical latency)
 ```
 
-The Target circuit duration includes its reset instructions. Dynamic
+The Target circuit duration includes its explicit reset instructions. Dynamic
 Target duration omits classical feed-forward latency, so the planner adds
 `--classical-latency-us` times the deepest sequential feed-forward stage
 count. The default 20 microseconds per stage is an explicit unmeasured
@@ -179,6 +193,18 @@ from the retained dynamic job's non-circuit charge; a different job can
 have different overhead. Sensitivity runs must name changes to either
 assumption. Such runs qualify the declared cost model rather than the
 physical charge.
+
+The family planner leaves the additional `reset_seconds` term at zero.
+Installed client-side Runtime 0.50 enables `init_qubits` by default, so the
+service can insert implicit initialization before the supplied circuit.
+IBM's [local usage-estimation example](https://quantum.cloud.ibm.com/docs/en/guides/estimate-job-run-time)
+adds Target reset duration for that initialization separately. The retained
+nominal and stress ledgers leave the implicit term unseparated; neither
+scenario supplies a bound for it. The historical overhead residual can also
+absorb unmodeled work, so an extra reset proxy requires a reconciled accounting
+boundary. A renewed hardware case needs server timing and usage estimates
+that distinguish implicit initialization, explicit resets, and overhead.
+The service ceilings and invocation reservations enforce their separate limits.
 
 The planner reads `backend.configuration().default_rep_delay` in seconds,
 validates the backend's repetition-delay support and range, and binds the
@@ -245,7 +271,8 @@ the fresh record supplies the actual estimate and admission result.
 |---|---|
 | `--seeds` | Eight transpiler seeds per group/backend; existing routing retains at most three per backend |
 | `--optimizer-candidates` | Six ranked routed family candidates before replica and shot expansion |
-| `--shot-tiers` | `2048,4096,8192,16384`; one chosen tier applies uniformly to the invocation |
+| `--shot-tiers` | `2048,4096,8192,16384`; allowed fixed counts for the selected allocation mode |
+| `--shot-allocation` | `uniform`; `per-pub` requires an optimized static algebra family and groups complete PUBs into homogeneous shot-tier jobs |
 | `--replica-tiers` | `1,2,4`; N=21 only, with actual floor-qualified placement counts recorded |
 | `--model-shots` | 32768 samples for each prediction |
 | `--precision` | 0.08, folded terminal-contrast half-width |
@@ -254,7 +281,7 @@ the fresh record supplies the actual estimate and admission result.
 | `--objective` | `minimum_charge`; `precision_at_budget` accepts folded precision-only contracts |
 | `--cost-scenario` | Repeatable `NAME:OVERHEAD_SECONDS:LATENCY_US`; every supplied scenario must pass the same budget gates |
 | `--local-compute` | `cpu`; GPU and hybrid requests fail capability admission before IBM service construction |
-| `--simulation-threads`, `--simulation-memory-mb` | 2 threads and 512 MB; density matrices and double precision remain fixed |
+| `--simulation-threads`, `--simulation-memory-mb` | half the available CPUs and 512 MB; density matrices and double precision remain fixed |
 | `--max-pending` | 25, unchanged backend queue admission |
 | `--reserve-seconds` | 0; set an explicit reserve when the case requires one |
 
@@ -314,7 +341,13 @@ writer from the repository root:
 
 The writer declines nonfamily, infeasible, or submitted records and checks
 saved-record equality, selected cost accounting, and ordered QPY circuit
-names before recording the artifact hashes. A written case still requires
+names before recording the artifact hashes. An allocated case requires one
+strictly positive shot count for every execution PUB, membership in the
+declared tiers, homogeneous counts within each job, and matching ordered
+budget membership and cost-scenario workloads. The top-level `shots` equals
+the largest allocated count; the full PUB ledger supplies each actual count.
+Reproduction includes `--shot-allocation` only when the saved design records
+that option, preserving historical uniform commands. A written case still requires
 owner approval. Fresh selection and calibration must match the approved
 experiment, observable contracts, shots, policy, dependencies, layouts,
 replica maps, execution contract, and QPY bytes. A changed plan requires a
@@ -345,8 +378,14 @@ QPE checks, standalone optimizer checks, and fake-backend planning
 contracts. The planning checks cover the shared initial mapping,
 per-phase calibrated delay sites, complete static/dynamic job accounting, shot-tier
 admission, approval mismatches, and negative-record persistence. Those
-checks consume zero QPU jobs. A fresh live-calibration dry run remains a
-separate admission surface.
+checks consume zero QPU jobs. The allocated-case contracts run in normal
+and optimized Python modes, reject inconsistent mappings and ledgers, preserve
+retained artifact bytes on rejection, and parse reproduction commands with the
+live CLI before any service call. A fresh live-calibration dry run remains a
+separate admission surface. Historical allocation arithmetic and separate
+4096-shot evaluation distributions remain outside current admission; the
+[allocation note](PACKED_ALGEBRA.md#fixed-shot-allocation) identifies their
+model-shot counts and limits.
 
 - Wassily Hoeffding, ["Probability Inequalities for Sums of Bounded Random Variables"](https://doi.org/10.1080/01621459.1963.10500830),
   *Journal of the American Statistical Association* 58(301), 13-30 (1963),

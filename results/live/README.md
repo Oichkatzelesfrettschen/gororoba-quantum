@@ -4,6 +4,33 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
+The [current campaign preparation](../ripple/CAMPAIGN_PREPARATION.md) links
+three planning-qualified cases: renewed correction at source `0bc7f06`, and
+ripple and rank-sector at source `f1b9830`. Their audited runtime source
+closures share the same experiment digest. Their five jobs estimate
+106.290103040 nominal QPU seconds and 118.445463040 seconds under the
+declared stress scenarios, with service ceilings
+totaling 170 seconds. Correction runs first. Clean current-head Copilot review,
+passing checks, merge, fresh live bindings and independent family execution admission
+remain execution gates under the user's conditional authority.
+
+The [historical ripple and rank-sector cases](../ripple/PREPARATION.md) retain
+their source-closure reports, independent uncertainty families and written
+cases under `historical_renewal_required`. Their 197.022-second nominal estimate
+and proposed 240-second aggregate ceiling describe the older preparation;
+the current campaign cases supply the renewed planning qualification.
+
+## Completed folded-QPE hardware case
+
+The [hardware analysis](2026-10-12T055624.091217Z/ANALYSIS.md) records two
+Kingston jobs, sixteen PUBs, 131072 preserved shots, and 40 final charged
+seconds. Its twelve simultaneous intervals retain the predefined family and
+report the routing/readout interpretation limits. The raw decoder and its
+synthetic checks support reproducible shot-order inspection. The
+[coordination snapshot](qpu-coordination.json) assigns one execution owner
+per family and records 551 remaining shared seconds at the settled read.
+Future submissions refresh that snapshot and require their own approved cases.
+
 ## Source-closure audits
 
 `verify_source_closure.py` compares every declared experiment source with the
@@ -15,7 +42,7 @@ assigns neither safety nor completion status.
 
 The recorded `sources_modified` flag covers the whole experiment directory,
 including documentation and unmanifested files. The verifier preserves that
-flag and every existing run artifact. Its separate `source-closure.json`
+flag and the retained record bytes. Its separate `source-closure.json`
 records the bounded comparison at audit time. Changed source or dependency
 inputs fail the audit; the verifier does not rewrite historical provenance.
 
@@ -31,12 +58,43 @@ From the repository root, select a retained record and run:
 )
 ```
 
-`--out` selects a separate JSON destination. The writer refuses to replace a
-non-audit artifact. `--check` exercises source, manifest, requirements,
-record-digest, recorded-version, and installed-version mutations in a
-temporary synthetic Git repository, including output preservation. The
-utility performs local reads and writes its separate audit artifact; it
-constructs zero IBM service or Sampler objects.
+`--out` selects a separate JSON destination. An existing audit accepts a
+refresh only when its normalized repository-relative record path and record
+SHA-256 both match the new audit. Missing identity, changed record bytes,
+and a different run each reject replacement and preserve the destination.
+The writer also refuses to replace a non-audit artifact. `--check` exercises
+source, manifest, requirements, record-digest, recorded-version, and
+installed-version mutations in a temporary synthetic Git repository. Output
+checks cover new reports, same-record refreshes, and rejection with both
+runs' records and sibling audit bytes preserved. The utility performs local
+reads and writes its separate audit artifact; it constructs zero IBM service
+or Sampler objects.
+
+## Historical folded preparation with native CPU qualification
+
+The [folded dry run](2026-10-12T024756.245948Z/record.json) completes at
+source `7ef9f29606dfd6a77361580f79b89b74cfcd037c` with
+`sources_modified=false`. The [source audit](2026-10-12T024756.245948Z/source-closure.json)
+confirms all 21 declared files and installed dependency versions. The
+[written case](2026-10-12T024756.245948Z/UNAPPROVED_CASE.md) remains unapproved.
+
+Fresh Kingston metadata supports 8192 shots per PUB across twelve dynamic
+and four static PUBs. All twelve endpoint half-widths equal
+`0.040945053228709165`. Nominal modeled charge is `39.611690496` seconds;
+the declared latency-stress scenario gives `45.522410496` seconds. Two
+60-second job ceilings plus a 60-second reserve fit the recorded 591-second
+remaining quota. The record contains zero submission entries.
+
+The [preparation summary](2026-10-12T024756.245948Z/preparation.json) and
+[replay script](2026-10-12T024756.245948Z/replay.sh) retain the installed CPU
+policy and bounded search. The command exits zero in 246 seconds. The
+[validation summary](2026-10-12T024756.245948Z/validation.json) records the
+complete repository gates at the same implementation commit: exit zero,
+453 seconds, and 43 type-checked source files. Tracked-file hashes, index,
+HEAD, local refs, Aer package, and extension hash match before and after
+those gates; the concurrent jobs create only the two named untracked
+evidence directories on the measured checkout surface. The
+[checksums](2026-10-12T024756.245948Z/SHA256SUMS) bind all retained members.
 
 ## CPU-policy and precision-cost evidence
 

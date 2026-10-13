@@ -1,0 +1,134 @@
+{
+  "artifact_sha256": {
+    "AGENTS.md": "d15ea5a2991991795ed947f292c4ec825c64b027fa8722612d1a4a66ebf27a0c",
+    "README.md": "ddaa1fa7d0148c9889cf3ec2619cbb931dcb9f0c5ef2c34d357c38f27d0900c6",
+    "docs/INDEX.md": "f9f5ec9258734e86a48ab1051461b200c2d09bec0628868f145e52d26188f43b",
+    "docs/README.md": "f4db1a28d42fde18946d7e99e3bc863954af3ced2f60dc97320ddd4ebddcc765",
+    "docs/SOURCES.json": "691c1336d5b07ef124089a6cf83ace99a27db772becc38226175f12456be5b04",
+    "docs/notes/2102.01682.md": "b168200a84c0766b8ec19e51b10b4a60e4f63cef8c5cc54a1d4a5ccb688f0818",
+    "docs/notes/math-0403113.md": "3d90cdb6f225f34fb1d057d8d274a0980668676aa19b3649cf1a62cd12033788",
+    "docs/notes/reality_ripple_measurement_design.md": "65fab68a426ffdc1d3c88de934abf71a7ac5af1657afe9932ef37c541b51f933",
+    "docs/sources/open_gororoba/LICENSE.GPL-2.0": "edaef632cbb643e4e7a221717a6c441a4c1a7c918e6e4d56debc3d8739b233f6",
+    "docs/sources/open_gororoba/README.md": "2b4cfa67436262fc94c3c89dd6c8e7dc32496892e23f90474857639fc527a00c",
+    "docs/sources/open_gororoba/SHA256SUMS": "7fe442e40c6df4d66f79e960da3dff7bd5f6eac586d605616c1905c0ca9b3146",
+    "docs/sources/open_gororoba/cayley_dickson_evidence_contracts.txt": "b93abfbbbbf06d36e479914605605a821c63f5a390a99c428e4e57696f0fb2ef",
+    "docs/sources/open_gororoba/check_signed_kite_switching.py": "416dcd904a6282f4b9fe61c750fbe248c347c83ff1cb558b761725ab6ec0d851",
+    "docs/sources/open_gororoba/manifest.json": "c7c1df2e32e90ab199b379902ec056c6a73ce7567fbf1b93c84966e361a03213",
+    "docs/sources/open_gororoba/signed_kite_switching.json": "3954471019778443ae924e890b83115863bbc290dd7e554ac2561da281374478",
+    "gororoba_quantum/MODEL_DISCRIMINATION.md": "f36e61c2835015ca509f89d6bc6c257f21d4bf19cc67792d0ee6a53078e0e9cb",
+    "gororoba_quantum/RIPPLE_CAMPAIGN.md": "2fb114beac81ab6469b46e84f1c1e74e26a47b14c0f31279d86e9ec5b8edb172",
+    "gororoba_quantum/RIPPLE_DYNAMICS.md": "386de5b4efe64097831b937d3b8a9553e29dbe341b7c3f1c09fed052705b7b34",
+    "gororoba_quantum/four_support_doubling.py": "3bc5f5bf3ca83bc18a13459c8a5b78ad67d3f8963d73f0ac7c6b95b37a754b06",
+    "gororoba_quantum/four_support_geometry.py": "61c533fbb57ec2c16fbc9e308f21c44b5590a7f05967b9838086147595e97059",
+    "gororoba_quantum/four_support_homology.py": "20f7f1e1a4eab4097ce32500cb65d3691a0a486c674a1b8a012200a56326efa5",
+    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
+    "gororoba_quantum/skew_schur_charts.py": "b7b180911309bb7452bc56c77cb219d192ab4be381259c32b152ddbab6bac85b",
+    "gororoba_quantum/visualizations/cayley_dickson_ripples.html": "4bad099ff569e36422148553d8582682f318cb65d5edf851986c1bbeb0588fa5",
+    "results/ripple/CORRECTION_PREPARATION.md": "652f4ac7f5e57e55292e61f9c99ea6d08d4f989c0910c3ed261af8d068441c85",
+    "results/ripple/PREPARATION.md": "7171bcbb4dfbb2620606bed7791fd01c85af96a9ba462eb246d39eb55697a8d6",
+    "results/ripple/README.md": "554e370f45a7e6c14ebaf77390d7dc885892bb20778893cdd86db9db65d026b3",
+    "results/ripple/VALIDATION.md": "13f3bfd3db165c0f5bc9be689d6d1582991d73439ddf64123dd54740233533ef",
+    "results/ripple/cayley-dickson-ripples.html": "d1c50c172351cdc5cd3a616e64b92319650262aec726b72a5d0d80f16d16c96f",
+    "results/ripple/evidence.json": "fa1fe2cac2476e46f7224e2775a7d6f2e4577b77779567713f4c6fc8a89b06be",
+    "results/ripple/folded-job-review.json": "ad9a7110fea029d5f0e4b773db82fa697399dffe6b8261aba4d585651bee4e2a",
+    "results/ripple/folded-job-review.md": "a8305337c83265ed547ffc5ea79905bb9e30ee1b52bfb84d1256a03edbba3b27",
+    "results/ripple/folded-job-review.png": "49fe833e98bce1b807223282b3e389af2cbc6476b940f88eca8836c7943e8290",
+    "results/ripple/folded-job-review.svg": "268c097f4d95f64fb0bda5a100549c3dd36a1b8b539c2d4b894a1492fa2cdf9a",
+    "results/ripple/rank-sector-norms.png": "510f581a78e2058ed64be66fb94196c2781091dad5c6ba7a089cd28e28b64274",
+    "results/ripple/rank-sector-norms.svg": "a225f541defa4e31a3d3eb874d1f59882ae038f061545bbfc3d2c1a8306e3300",
+    "scripts/check_render_folded_job_review.py": "9effcfa79d59dc609963c44e5a6da5776b1419d90dbea5e634fb9dda8f7b26aa",
+    "scripts/check_render_rank_sector_norms.py": "109be9497c555ab86d3008d4942a9defcc26af933f4024f8409792baf971970e",
+    "scripts/check_render_ripple_visualization.py": "b852df7cf16a685ac33adf5dd43e72b3e51fdd7f2081b92be9a867f6c65a9e7e",
+    "scripts/check_review_folded_jobs.py": "21cad00a2b8c0cc5c1374b4e2cc1d973f71e413e0460e0eeadf64bfd27318edd",
+    "scripts/render_folded_job_review.py": "77a7fe450c83883d12c1aedac388d0a579d1c9925e44063a720cdf7a895416af",
+    "scripts/render_rank_sector_norms.py": "2de20274ed04b0641546ab3c5d2ea58fb22f9810ae87f02ed7b06f71a66651a8",
+    "scripts/render_ripple_visualization.py": "9a820baa99caa14ae488d5d668ded23ca231180e04166b7bdcfa1a12fed77498",
+    "scripts/review_folded_jobs.py": "81ea85b40eac3b1de2fcb5041eb5a92b0037e483fa03c3ca944a205f361f0256"
+  },
+  "full_repository_and_source_gates": {
+    "current_first_and_source_blocks_equal_executed": true,
+    "exit_code": 0,
+    "mypy_source_file_counts": [
+      89,
+      10
+    ],
+    "operator_log_sha256": "04c5ce5a787fcabc5fa6aee57d4299fbe84ec18b9ba73c1711bbd583625e448d",
+    "operator_script_sha256": "a0a08e7054c718378f57ccee986c9f200f18a6a0398ed94ba5748d536ef9e039",
+    "ruff_formatted_file_counts": [
+      92,
+      10
+    ],
+    "warnings_as_errors": true
+  },
+  "historical_validation": {
+    "matched_historical_artifacts": 21,
+    "receipt": "results/ripple/folded-renderer-validation.json",
+    "receipt_sha256": "139609f913433f8bd78083f2cd8fc1bdc37b53ad7d65a98f1a0e5eca9b491aa1",
+    "reconciled_documentation_artifacts": [
+      "AGENTS.md",
+      "gororoba_quantum/RIPPLE_CAMPAIGN.md"
+    ],
+    "revision": "b0cbfb8883434c1a742f394fd28c8f0cdb88af27",
+    "unchanged_working_artifacts": 19
+  },
+  "independent_review": "Source-layout, combined guide scope, PDF identities, manifest-bound document preservation, campaign coverage, and unchanged pilot closure reviewed independently; both reconciliation findings addressed.",
+  "observed_at": "2026-10-12T10:10:24.477301+00:00",
+  "parents": {
+    "integrated_source_prs": [
+      38,
+      40,
+      41
+    ],
+    "ripple": "b0cbfb8883434c1a742f394fd28c8f0cdb88af27",
+    "source_stack": "cf4e6830e36c89aea9d40f12f01e4e1e335b103f"
+  },
+  "pilot_preservation": {
+    "archive_checksums": [
+      {
+        "directory": "results/live/2026-10-12T074042.840320Z",
+        "entry_count": 5,
+        "exit_code": 0,
+        "manifest_sha256": "19c3241d4665cc0fc2d9f17d7e883e67227476347fba62106e05b06dfaa07d58"
+      },
+      {
+        "directory": "results/live/2026-10-12T055624.091217Z",
+        "entry_count": 33,
+        "exit_code": 0,
+        "manifest_sha256": "8fb5d532cdf4a0e2f7228a1a23366e28454a533264faefc0062565b4e4d8b632"
+      }
+    ],
+    "audited_file_count": 82,
+    "declared_source_files": 41,
+    "observed_changed_paths": [],
+    "operator_audit_sha256": "a637cb50b9a1d418e908ac2d0fb1c216a76e66e0e4434994a8a608fa2e7217fa",
+    "qpy_sha256": "2fcb598592888b8a48669df83401979692bb07900e81c07e090fa36ccdaf9aad",
+    "record_sha256": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+    "source_and_requirements_equal": true
+  },
+  "schema": "ripple-source-integration-validation-v1",
+  "scope": "Source-library reconciliation, required local gates, historical artifact identities, and pilot preservation; zero physical or mock QPU primitive submissions.",
+  "source_layout": {
+    "de_marrais_admission": "Unversioned reading copy remains outside the version-qualified PDF registry and tracked publication inventory; owning note retains its hash and bounded reading.",
+    "historical_alias": {
+      "literature": "docs"
+    },
+    "immutable_guide_count": 4,
+    "immutable_guide_hashes_equal": true,
+    "local_reading_copies": [
+      {
+        "bytes": 5380205,
+        "git_ignored": true,
+        "path": "docs/local_source_cache/2102.01682.pdf",
+        "sha256": "c2caa7e7d3c8863ff01b643e8aed6de2f931a4c56c2f53f2d344617ed898fe7e"
+      },
+      {
+        "bytes": 206494,
+        "git_ignored": true,
+        "path": "docs/local_source_cache/de_marrais_2004_math0403113_boxkites_III.pdf",
+        "sha256": "3ebb75f053d225d8602fa0e70157fcbae40a8d42ef807c75501ecc704ed10872"
+      }
+    ],
+    "published_pdf_count": 11,
+    "version_qualified_external_entry_count": 39
+  }
+}

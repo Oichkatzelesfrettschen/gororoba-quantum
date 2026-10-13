@@ -6,6 +6,44 @@ basis unit is a signed permutation of the 2^k basis states, so it is unitary on
 k qubits; two algebraic defects the kernel measures classically become hardware
 observables.
 
+The [source index](docs/INDEX.md) separates hosted papers from ignored local copies.
+The [source library](docs/README.md) retains licensed primary PDFs, per-paper notes,
+download identities, and the [Koebisu rank-stratum research plan](docs/notes/koebisu_rank_stratum_research.md). The
+[coordinated research roadmap](docs/RESEARCH_ROADMAP.md) records the cumulative
+objectives, evidence boundaries, ownership, and ordered delivery gates.
+
+The [current campaign preparation](results/ripple/CAMPAIGN_PREPARATION.md)
+qualifies correction, ripple and rank-sector planning against the same audited
+source closure:
+106.290103040 nominal QPU seconds, 118.445463040 seconds under the declared
+stress scenarios, and five job ceilings totaling 170 seconds within the user's
+180-second cap. The exact written cases cover
+[correction](results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md),
+[ripple](results/live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) and
+[rank sectors](results/live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md).
+Planning preserves every original row, control and within-PUB shot vector.
+
+The [integrated campaign directive](gororoba_quantum/RIPPLE_CAMPAIGN.md)
+connects the mathematical, scientific, visual and execution requests with their
+evidence gates and owners. Correction runs first; ripple and rank retain
+independent execution admission under the
+[practical accuracy protocol](results/ripple/STATIC_PACKING_ACCURACY.md).
+The user conditionally authorizes execution
+after clean current-head Copilot review, passing checks, merged changes and
+fresh source/calibration/QPY/dependency, quota and approval bindings. The
+prepared correction pilot compared all three available systems and selected
+Fez for four 8,192-shot PUBs in one dynamic job. Returned schedules still gate
+its statistical decision. The [protocol](gororoba_quantum/MODEL_DISCRIMINATION.md)
+separates modeled sensitivity from measured improvement.
+
+The [historical atlas preparations](results/ripple/PREPARATION.md) retain the
+197.022-second estimate and proposed 240-second combined ceiling. The
+[correction preparation history](results/ripple/CORRECTION_PREPARATION.md)
+preserves earlier renewals and the superseded backend-eligibility rejection.
+The [completed folded-job audit](results/ripple/folded-job-review.md) provides
+measured contrasts, model discrepancies and timing evidence. Historical
+preparations and completed measurements remain distinct from the fresh cases.
+
 ## Contents
 
 - `gororoba_quantum/cd_core.py` -- Cayley-Dickson sign table ported from
@@ -31,12 +69,40 @@ observables.
   Jordan mechanics, and global zero-divisor topology.
 - `gororoba_quantum/sedenion_bundle.py` -- real normalized zero-product pairs,
   seven quaternion charts, SU(2) transition maps and Cayley-frame automorphisms.
+- `gororoba_quantum/ripple_dynamics.py` -- exact finite associator recurrences,
+  all seven signed box-kite graphs, and 672 local phase-circuit checks.
+  [RIPPLE_DYNAMICS.md](gororoba_quantum/RIPPLE_DYNAMICS.md) derives the
+  protocol and a single-job hardware proposal; [results/ripple](results/ripple/README.md)
+  retains replayable evidence and a portable interactive visualization.
 - `gororoba_quantum/annihilator_strata.py` -- exact signed two-term kernel census
   and published maximal-annihilator lift witnesses through dimension 256.
-  `literature/notes/cayley_dickson_annihilator_sources.md` records primary
+  `docs/notes/cayley_dickson_annihilator_sources.md` records primary
   theorems and the source-pinned Rust and Rocq work reused by the audit.
 - `gororoba_quantum/rank_polynomials.py` and `rank_charts.py` -- exact
   spectral rank predicates and fixed-minor kernel charts for general coefficients.
+- `gororoba_quantum/skew_schur_charts.py` -- exact dimension-32 reduced rank
+  certificates, kernel lifts, sphere metrics, and polynomial pivot domains
+  across all 30 doubly-pure coefficient directions.
+- `gororoba_quantum/principal_skew_atlas.py` -- an explicit finite cover of
+  every nonzero doubly-pure input, a conditioned initial pivot, exact principal
+  refinement, and kernel-restricted overlap maps across changing ranks.
+- `gororoba_quantum/schur_acceleration.py` -- exact first-order admission,
+  complete affine acceleration certificates, and separating witnesses for
+  second-order rank obstructions at dimension-32 centers.
+- `gororoba_quantum/nullity_twelve_locus.py` -- the complete real quadratic-compatible
+  velocity set at `e1+e18`, exact equation reconstruction and a certified
+  decomposition into two linear pieces of dimensions 15 and 17.
+- `gororoba_quantum/nullity_twelve_curves.py` -- an exact rational slice,
+  rank-preserving symmetries and automorphism flows that realize every `A15`
+  direction. The proof in `docs/` combines those witnesses with the published
+  `B17` family to establish the complete selected-center tangent cone.
+- `gororoba_quantum/four_support_rank.py` and `four_support_geometry.py` --
+  exact real ranks, connected smooth strata, complete kernel frames, closure
+  maps, and a partner-incidence model on support `{1,10,18,25}`.
+- `gororoba_quantum/four_support_doubling.py` -- structural ordinary-doubling
+  frames and inverse maps for the same support at every higher stage.
+- `gororoba_quantum/four_support_homology.py` -- an explicit finite CW model,
+  integral cancellation certificates, and the restricted cohomology ring.
 - `gororoba_quantum/rank_attachments.py`, `rank_path_topology.py`, and
   `integral_homology.py` -- exact polynomial attachment certificates, a proved
   restricted pair-space model, and integral homology with torsion certificates.
@@ -134,8 +200,9 @@ cd gororoba_quantum
 
 The final command reads live calibration and performs local compilation and
 noise simulation. It omits `--submit` and sends zero quantum jobs. Every
-`live_run.py --submit` invocation requires the written case and immediate user
-approval specified in `AGENTS.md`.
+`live_run.py --submit` invocation binds a written case to the user's authority
+under `AGENTS.md`. The current campaign uses the recorded conditional authority
+and retains the review, merge and live-binding gates above.
 
 requirements.txt pins the tested numpy, qiskit, qiskit-aer, and
 qiskit-ibm-runtime versions. The modules run as scripts from gororoba_quantum/,

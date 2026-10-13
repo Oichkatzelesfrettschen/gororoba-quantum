@@ -1,0 +1,282 @@
+{
+  "checkout_label": "source checkout",
+  "compile_options": {
+    "backend_target": null,
+    "basis_gates": [
+      "cx",
+      "rz",
+      "sx",
+      "x"
+    ],
+    "coupling_map": null,
+    "optimization_level": 3,
+    "seed_transpiler": 20261010
+  },
+  "elapsed_seconds": 1.465170448005665,
+  "limitations": [
+    "Exploratory in-memory construction; the probe preserves production source modules.",
+    "The bounded floating-point matrix check supplies numerical evidence, not a formal proof.",
+    "The check covers all data states with clean scratch; dirty scratch lies outside the contract.",
+    "Native KG24 endpoint structure is checked at replay and may change with upstream versions.",
+    "Reported costs precede physical connectivity, routing, scheduling, and calibrated noise.",
+    "The probe does not establish N21 statistical admission, hardware accuracy, or QPU readiness.",
+    "The probe performs no Aer shot simulation, IBM service construction, package build, or QPU submission."
+  ],
+  "loaded_qiskit": {
+    "module": "qiskit.__init__",
+    "sha256": "37b202f1b5be8fcd45e319c7499e17d8d6ecdfc55b1c58960984ff92ea401e5b"
+  },
+  "operator_check": {
+    "comparison": "complex amplitudes including relative phases, against independently constructed permutation",
+    "input_domain": "all 32 data states and both phase-control values, scratch initially zero",
+    "matrix_shape": [
+      128,
+      64
+    ],
+    "tolerance": 1e-12
+  },
+  "probe_sha256": "84d4b4839e62f4310cfc574254d04e2f96a4e87706bbe4dbe9411ac93ef3e5e9",
+  "results": [
+    {
+      "clean_subspace_operator_error": 0.0,
+      "full_controlled_permutation_error": 0.0,
+      "multiplier": 4,
+      "pivots": [
+        [
+          4,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          4,
+          true
+        ],
+        null,
+        null,
+        [
+          3,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          4,
+          false
+        ]
+      ],
+      "scratch_leakage": 0.0,
+      "shared_boundaries": 8,
+      "source_operations_after": {
+        "ccx": 17,
+        "rccx": 34,
+        "x": 52
+      },
+      "source_operations_before": {
+        "ccx": 17,
+        "rccx": 50,
+        "x": 68
+      },
+      "unrouted": {
+        "baseline": {
+          "cx": 243,
+          "depth": 528,
+          "operations": {
+            "cx": 243,
+            "rz": 335,
+            "sx": 94,
+            "x": 20
+          }
+        },
+        "shared": {
+          "cx": 204,
+          "depth": 425,
+          "operations": {
+            "cx": 204,
+            "rz": 275,
+            "sx": 72,
+            "x": 20
+          }
+        }
+      }
+    },
+    {
+      "clean_subspace_operator_error": 0.0,
+      "full_controlled_permutation_error": 0.0,
+      "multiplier": 16,
+      "pivots": [
+        [
+          4,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          4,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        null,
+        null,
+        [
+          4,
+          true
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          3,
+          false
+        ],
+        [
+          4,
+          false
+        ]
+      ],
+      "scratch_leakage": 0.0,
+      "shared_boundaries": 8,
+      "source_operations_after": {
+        "ccx": 17,
+        "rccx": 34,
+        "x": 52
+      },
+      "source_operations_before": {
+        "ccx": 17,
+        "rccx": 50,
+        "x": 68
+      },
+      "unrouted": {
+        "baseline": {
+          "cx": 243,
+          "depth": 531,
+          "operations": {
+            "cx": 243,
+            "rz": 335,
+            "sx": 92,
+            "x": 21
+          }
+        },
+        "shared": {
+          "cx": 204,
+          "depth": 412,
+          "operations": {
+            "cx": 204,
+            "rz": 274,
+            "sx": 70,
+            "x": 20
+          }
+        }
+      }
+    }
+  ],
+  "schema": "n21-native-qiskit-shared-predicate-audit-v1",
+  "snapshot_after": {
+    "head": "7ef9f29606dfd6a77361580f79b89b74cfcd037c",
+    "source_sha256": {
+      "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+      "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+      "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+      "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+      "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+      "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+      "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+      "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb"
+    },
+    "status": "M gororoba_quantum/LOCAL_COMPUTE.md\n M results/live/README.md\n M results/local_compute/README.md\n?? results/live/2026-10-12T024756.245948Z/SHA256SUMS\n?? results/live/2026-10-12T024756.245948Z/UNAPPROVED_CASE.md\n?? results/live/2026-10-12T024756.245948Z/isa.qpy\n?? results/live/2026-10-12T024756.245948Z/preparation.json\n?? results/live/2026-10-12T024756.245948Z/record.json\n?? results/live/2026-10-12T024756.245948Z/replay.sh\n?? results/live/2026-10-12T024756.245948Z/source-closure.json\n?? results/live/2026-10-12T024756.245948Z/validation.json\n?? results/local_compute/n21_shared_predicate/README.md\n?? results/local_compute/n21_shared_predicate/SHA256SUMS\n?? results/local_compute/n21_shared_predicate/probe.py\n?? results/local_compute/n21_shared_predicate/result.json"
+  },
+  "snapshot_before": {
+    "head": "7ef9f29606dfd6a77361580f79b89b74cfcd037c",
+    "source_sha256": {
+      "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+      "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+      "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+      "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+      "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+      "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+      "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+      "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb"
+    },
+    "status": "M gororoba_quantum/LOCAL_COMPUTE.md\n M results/live/README.md\n M results/local_compute/README.md\n?? results/live/2026-10-12T024756.245948Z/SHA256SUMS\n?? results/live/2026-10-12T024756.245948Z/UNAPPROVED_CASE.md\n?? results/live/2026-10-12T024756.245948Z/isa.qpy\n?? results/live/2026-10-12T024756.245948Z/preparation.json\n?? results/live/2026-10-12T024756.245948Z/record.json\n?? results/live/2026-10-12T024756.245948Z/replay.sh\n?? results/live/2026-10-12T024756.245948Z/source-closure.json\n?? results/live/2026-10-12T024756.245948Z/validation.json\n?? results/local_compute/n21_shared_predicate/README.md\n?? results/local_compute/n21_shared_predicate/SHA256SUMS\n?? results/local_compute/n21_shared_predicate/probe.py\n?? results/local_compute/n21_shared_predicate/result.json"
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "python": "3.14.7",
+    "qiskit": "2.5.2",
+    "qiskit_aer_distribution": "0.17.2"
+  }
+}

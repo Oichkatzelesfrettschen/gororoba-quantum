@@ -21,7 +21,14 @@ from qpe_diagnostics import (
     n21_labeled_law,
 )
 
-FAMILY_NAMES = ("folded-qpe", "n21-feedback")
+FAMILY_NAMES = ("folded-qpe", "folded-correction", "n21-feedback", "ripple", "rank-sector")
+
+
+def correction_group() -> Group:
+    """Reconstruct the finite odd-label correction family and its raw summaries."""
+    from correction_planning import correction_group as build_correction_group
+
+    return build_correction_group()
 
 
 def folded_group(rungs: tuple[str, ...], measurement_delay_dt: int | dict[int, int] | None = None) -> Group:
@@ -91,6 +98,18 @@ def n21_group() -> Group:
 
 def family_contracts(family: str, precision: float, alpha: float, power: float) -> tuple[ObservableContract, ...]:
     """Simultaneous raw terminal-bit intervals or a directional labeled contrast."""
+    if family == "folded-correction":
+        # The correction collector evaluates four exact-binomial directional
+        # bounds on integer counts; bounded-score optimizer inference differs.
+        return ()
+    if family == "ripple":
+        from ripple_contracts import ripple_contracts
+
+        return ripple_contracts(precision, alpha, power)
+    if family == "rank-sector":
+        from rank_sector_experiments import sector_contracts
+
+        return sector_contracts(precision, alpha, power)
     if family == "n21-feedback":
         values = (0.0, 1.0, 0.0, -1.0)
         return (
@@ -123,6 +142,16 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
 def record_groups(record: dict[str, Any]) -> list[Group]:
     """Reconstruct summaries from the calibration-bound circuit configuration."""
     family = record.get("family_configuration", {})
+    if family.get("name") == "folded-correction":
+        return [correction_group()]
+    if family.get("name") == "ripple":
+        from ripple_experiments import ripple_groups
+
+        return ripple_groups()
+    if family.get("name") == "rank-sector":
+        from rank_sector_experiments import sector_groups
+
+        return sector_groups()
     if family.get("name") == "folded-qpe":
         return [
             folded_group(("coherent",)),

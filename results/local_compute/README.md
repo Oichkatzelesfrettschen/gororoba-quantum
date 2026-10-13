@@ -12,6 +12,24 @@ preserve every source byte, with a fixed compression timestamp. The
 [compute plan](../../gororoba_quantum/LOCAL_COMPUTE.md) connects these
 observations to the implemented policy and remaining gates.
 
+The separate [native CPU delay report](aer_delay_sentinels/record.json)
+qualifies isolated T1/Ramsey relaxation against analytic laws with explicit
+fault mutations and entangled reset controls. Its own
+[checksum](aer_delay_sentinels/SHA256SUMS) covers the retained report; the
+historical branching manifest above retains its original scope. Replay uses
+`gororoba_quantum/aer_delay_sentinels.py`, whose source digest appears in the
+report. The report establishes synthetic native-Aer behavior and leaves
+hardware-model accuracy unresolved. CUDA packaging and installation remain
+paused; the installed CPU Aer supplies the active simulation path.
+
+The [N21 shared-predicate evidence](n21_shared_predicate/README.md) retains
+a separate native-Qiskit operator and unrouted-compilation probe. Each
+controlled multiplier drops from 243 to 204 CX gates while all clean-scratch
+input columns match the full-register permutation. The candidate remains
+outside production synthesis and requires routed and calibrated-noise
+qualification. Its subdirectory carries independent replay instructions and
+checksums.
+
 | Artifact | Role and status |
 |---|---|
 | `cpu_branching_inputs.qpy.gz` | Exact eighteen compiled circuit inputs |
@@ -23,8 +41,10 @@ observations to the implemented policy and remaining gates.
 | `cpu_branching_rca.py`, `cpu_branching_rca.json.gz` | Canonical-channel replay and completed fresh-instance non-reproduction across ten thread/batch cases |
 | `cpu_branching_reuse_probe.py`, `cpu_branching_reuse_probe.json.gz` | Fifteen local replay cases: original simulator-reuse prefix and three fresh 32768-shot trials per family |
 | `cpu_branching_reuse_analysis.py`, `cpu_branching_reuse_analysis.json.gz` | All-bin/contrast analysis that falsifies fresh-instance construction as a repair |
+| `cpu_branching_execution_mode_audit.json` | Post-capture circuit-to-metadata audit; preserves the original scientific verdict and archive bytes |
 | `GPU_INVENTORY_OBSERVATIONS.json` | Transcription of command observations; loaded-library path reduced to basename |
 | `verify_evidence.py` | Standard-library integrity and result-recomputation verifier |
+| `check_verify_evidence.py` | Corruption and contract regressions across normal and optimized Python modes |
 
 The benchmark reports NumPy 2.5.4, Qiskit 2.5.2, Aer 0.17.2, and Runtime
 0.50.0. The source HEAD appears in each raw report; dirty-source hashes are
@@ -62,8 +82,20 @@ branch-off baseline by `0.23583984375`, above radius
 The analysis allocates familywise alpha `1e-6` across all 608 bin comparisons
 and 504 contrast-term estimates. Complete shot totals and unchanged QPY
 before/after hashes rule out truncated draws and serialized-circuit mutation
-on those measured surfaces. Dynamic members report branching; eligible
-static members report measurement sampling. The internal cause remains open.
+on those measured surfaces. Enabled members with intermediate measurement
+or classical control report branching. Coherent members and reset-only
+delay members report terminal measurement sampling. Reset evolves as a
+deterministic density-matrix channel before terminal readout, so IBM
+Runtime's broader dynamic-circuit policy does not classify Aer execution
+paths. The internal cause of the sampled disagreement remains open.
+The separate [execution-mode audit](cpu_branching_execution_mode_audit.json)
+binds all 142 member-results across fifteen cases to eighteen QPY members.
+The audit records the revised analyzer digest and original archive digests;
+the historical analysis archive retains its captured bytes and verdict.
+Aer 0.17.2 accepts density matrices before its reset exclusion for other
+methods in [`check_measure_sampling_opt`][aer-sampling]. Its
+[circuit eligibility][aer-eligibility], [measurement deferral][aer-deferral],
+and [result ancestry][aer-ancestry] checks ground the retained-corpus classifier.
 The portable reuse runner includes post-capture version/fixture guards;
 `cpu_branching_reuse_probe_executed.py.gz` preserves the executed source bytes.
 
@@ -99,14 +131,26 @@ Run integrity and numerical recomputation from the repository root:
   PYTHON="${PYTHON:-$(command -v python3)}"
   PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
     "$PYTHON" results/local_compute/verify_evidence.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/check_verify_evidence.py
+  PYTHONWARNINGS=error PYTHONDONTWRITEBYTECODE=1 \
+    "$PYTHON" results/local_compute/cpu_branching_reuse_analysis.py --check
   (cd results/local_compute && sha256sum -c SHA256SUMS)
 )
 ```
 
-The verifier reads local files, checks every retained/source digest, binds
-QPY and noise bytes to the completed report, and independently recomputes
-the reported sampled incompatibility. The verifier performs zero simulator
-or network operations. Preserve the archives and run exploratory simulations
+The verifier checks retained digests and lengths for every manifest entry.
+For gzip entries, it also decompresses the payload and checks `source_sha256`
+and `source_bytes`. For plain files, those source fields remain provenance
+metadata; the verifier checks their retained bytes. Explicit validation
+remains active under `-O`, `-OO`, and `PYTHONOPTIMIZE`. The regression checker
+tests valid evidence, corruption, and missing contracts in temporary copies.
+The execution-mode check binds metadata positions to retained QPY members
+and distinguishes terminal sampling from intermediate-measurement branching.
+The verifier binds QPY
+and noise bytes to the completed report and independently recomputes the
+reported sampled incompatibility. The verifier performs zero simulator or
+network operations. Preserve the archives and run exploratory simulations
 in a separate output directory; evidence files remain immutable inputs.
 
 A bounded replay uses the corrected channel-order comparison and writes into
@@ -155,3 +199,8 @@ A repeated noisy reuse probe also needs the decompressed serialized-channel
 file and the bounded environment shown above, then invokes
 `cpu_branching_reuse_probe.py` with the same `--repo` and `--out` arguments.
 The probe writes a separate result; it grants zero QPU authorization.
+
+[aer-sampling]: https://github.com/Qiskit/qiskit-aer/blob/0.17.2/src/simulators/circuit_executor.hpp#L1290-L1328
+[aer-eligibility]: https://github.com/Qiskit/qiskit-aer/blob/0.17.2/src/framework/circuit.hpp#L529-L585
+[aer-deferral]: https://github.com/Qiskit/qiskit-aer/blob/0.17.2/src/framework/circuit.hpp#L650-L674
+[aer-ancestry]: https://github.com/Qiskit/qiskit-aer/blob/0.17.2/src/framework/circuit.hpp#L715-L757

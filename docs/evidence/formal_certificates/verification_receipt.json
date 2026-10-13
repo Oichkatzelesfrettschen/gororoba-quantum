@@ -1,0 +1,77 @@
+{
+  "schema": "formal-certificate-verification-v1",
+  "compiler": {
+    "rocq": "9.1.1",
+    "ocaml": "5.4.0",
+    "flags": [
+      "-q",
+      "-w",
+      "@all"
+    ]
+  },
+  "kernel_flags": [
+    "-silent",
+    "-o"
+  ],
+  "sources": [
+    {
+      "source": "proofs/FoldAverageDescent.v",
+      "compile_exit_code": 0,
+      "kernel_exit_code": 0,
+      "closed_assumption_queries": 8,
+      "theorem_axioms": [],
+      "kernel_context_axioms": []
+    },
+    {
+      "source": "proofs/TerminalChannelSeparation.v",
+      "compile_exit_code": 0,
+      "kernel_exit_code": 0,
+      "closed_assumption_queries": 3,
+      "theorem_axioms": [],
+      "kernel_context_axioms": []
+    },
+    {
+      "source": "proofs/TerminalChannelSeparationReal.v",
+      "compile_exit_code": 0,
+      "kernel_exit_code": 0,
+      "assumption_queries": 4,
+      "theorem_axioms": [
+        "ClassicalDedekindReals.sig_forall_dec",
+        "FunctionalExtensionality.functional_extensionality_dep"
+      ],
+      "kernel_context_axioms": [
+        "Stdlib.Logic.FunctionalExtensionality.functional_extensionality_dep",
+        "Stdlib.Reals.ClassicalDedekindReals.sig_not_dec",
+        "Stdlib.Reals.ClassicalDedekindReals.sig_forall_dec",
+        "Stdlib.Logic.Classical_Prop.classic"
+      ]
+    }
+  ],
+  "source_hash_manifest": "source_hashes.sha256",
+  "count_fixture": {
+    "source": "results/live/2026-10-12T055624.091217Z/terminal-channel-check.json",
+    "shots_per_mean": 8192,
+    "hardware_numerators": [
+      2964,
+      4911
+    ],
+    "replay_numerators": [
+      4067,
+      4057
+    ],
+    "radius": "21/1000",
+    "exact_separation_margin": "156109/1024000",
+    "binding": "Python Fraction conversion of retained binary-fraction means; original shot decoder remains a separate gate"
+  },
+  "statistical_coverage": "unproved; four deterministic radius premises are explicit",
+  "qpu_submissions": 0,
+  "warnings_in_compilation": 0,
+  "raw_receipts": [
+    "FoldAverageDescent.compile.txt",
+    "FoldAverageDescent.kernel.txt",
+    "TerminalChannelSeparation.compile.txt",
+    "TerminalChannelSeparation.kernel.txt",
+    "TerminalChannelSeparationReal.compile.txt",
+    "TerminalChannelSeparationReal.kernel.txt"
+  ]
+}

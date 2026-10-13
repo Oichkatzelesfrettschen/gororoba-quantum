@@ -1,0 +1,403 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="light dark">
+  <title>Cayley–Dickson ripples — exact ideal predictions</title>
+  <style>
+    :root {
+      color-scheme: light dark;
+      --background: #ffffff;
+      --foreground: #20242b;
+      --muted: #eef0f3;
+      --muted-foreground: #58616e;
+      --border: #cbd1d9;
+      --primary: #252b35;
+      --primary-foreground: #ffffff;
+      --viz-series-1: #1769b5;
+      --viz-series-2: #a3438e;
+      --font-size-base: 14px;
+    }
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --background: #1b2027;
+        --foreground: #f0f2f6;
+        --muted: #303844;
+        --muted-foreground: #bbc3ce;
+        --border: #5a6574;
+        --primary: #e7ebf0;
+        --primary-foreground: #20242b;
+        --viz-series-1: #70b7f5;
+        --viz-series-2: #e498d0;
+      }
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0;
+      padding: 24px 16px;
+      background: var(--background);
+      color: var(--foreground);
+      font-family: system-ui, sans-serif;
+      font-size: var(--font-size-base);
+      line-height: 1.5;
+    }
+    main { max-width: 900px; margin: auto; }
+    h2 { font-size: 1.5rem; font-weight: 500; margin: 0 0 4px; }
+    button, select, input { font: inherit; }
+    button, select { min-height: 36px; }
+    button, select {
+      border: 1px solid var(--border);
+      border-radius: 6px;
+      background: var(--background);
+      color: var(--foreground);
+      padding: 6px 10px;
+    }
+    button { cursor: pointer; }
+    select, input { width: 100%; max-width: 100%; }
+    .nav { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+    .nav-link[aria-selected="true"] { background: var(--primary); color: var(--primary-foreground); }
+    .viz-controls { display: flex; flex-wrap: wrap; gap: 12px 24px; margin-bottom: 8px; }
+    .form-label { display: flex; flex: 1 1 240px; flex-direction: column; gap: 4px; min-width: 0; }
+    .form-range { min-height: 36px; margin: 0; accent-color: var(--viz-series-1); }
+    .text-small { font-size: 12px; }
+    .text-muted { color: var(--muted-foreground); }
+    .tabular-nums { font-variant-numeric: tabular-nums; }
+    .cursor-interaction { cursor: pointer; }
+    [hidden] { display: none !important; }
+    @media (pointer: coarse) { button, select, input { min-height: 44px; } select { font-size: 16px; } }
+  </style>
+</head>
+<body>
+<main id="cd-ripple-explorer">
+  <style>
+    #cd-ripple-explorer { width: 100%; color: var(--foreground); }
+    #cd-ripple-explorer .ripple-panel { padding-top: 12px; }
+    #cd-ripple-explorer .ripple-plot { display: block; width: 100%; overflow: visible; }
+    #cd-ripple-explorer .ripple-plot text { fill: var(--foreground); font-size: var(--font-size-base); font-weight: 400; }
+    #cd-ripple-explorer .ripple-plot .plot-note { fill: var(--muted-foreground); font-size: 12px; }
+    #cd-ripple-explorer .ripple-plot .shell { fill: none; stroke: var(--border); stroke-width: 1; }
+    #cd-ripple-explorer .ripple-plot .topology { fill: none; stroke: var(--border); stroke-width: 1; opacity: .6; }
+    #cd-ripple-explorer .ripple-plot .probability { fill: var(--viz-series-1); }
+    #cd-ripple-explorer .ripple-plot .state-origin { fill: var(--muted-foreground); opacity: .4; }
+    #cd-ripple-explorer .ripple-plot .state-selection { fill: none; stroke: var(--foreground); stroke-width: 1.5; }
+    #cd-ripple-explorer .ripple-plot .strut { stroke: var(--border); stroke-width: 1; stroke-dasharray: 3 5; }
+    #cd-ripple-explorer .ripple-plot .kite-vertex { fill: var(--muted); stroke: var(--border); stroke-width: 1; }
+    #cd-ripple-explorer .ripple-plot .kite-edge { fill: none; stroke: var(--viz-series-1); }
+    #cd-ripple-explorer .ripple-plot .kite-edge-negative { stroke: var(--viz-series-2); stroke-dasharray: 7 4; }
+    #cd-ripple-explorer .ripple-plot .edge-selected { stroke: var(--foreground); stroke-width: 1; fill: none; }
+    #cd-ripple-explorer .ripple-detail { min-height: 24px; margin-top: 4px; }
+    #cd-ripple-explorer .ripple-foot { margin-top: 8px; }
+    #cd-ripple-explorer .ripple-legend { display: flex; flex-wrap: wrap; gap: 6px 18px; align-items: center; }
+    #cd-ripple-explorer .ripple-key { display: inline-flex; align-items: center; gap: 7px; }
+    #cd-ripple-explorer .ripple-swatch { display: inline-block; width: 22px; height: 3px; background: var(--viz-series-1); }
+    #cd-ripple-explorer .ripple-swatch.negative { background: repeating-linear-gradient(to right, var(--viz-series-2) 0 6px, transparent 6px 9px); }
+    #cd-ripple-explorer .ripple-swatch.strut-key { background: repeating-linear-gradient(to right, var(--muted-foreground) 0 3px, transparent 3px 7px); height: 1px; }
+    #cd-ripple-explorer .motion-ready .probability { transition: r 240ms ease; }
+    #cd-ripple-explorer .motion-ready .kite-edge { transition: stroke-width 240ms ease, opacity 240ms ease; }
+    @media (prefers-reduced-motion: reduce) {
+      #cd-ripple-explorer .motion-ready .probability,
+      #cd-ripple-explorer .motion-ready .kite-edge { transition: none; }
+    }
+  </style>
+  <div class="ripple-top">
+    <h2>Cayley–Dickson ripples</h2>
+    <div class="text-small text-muted">Exact ideal predictions · Proposed single-run views · Hardware depths 0–4</div>
+  </div>
+  <div class="nav nav-pills" role="tablist" aria-label="Cayley–Dickson view">
+    <button type="button" id="cd-dynamics-tab" class="nav-link active" role="tab" aria-controls="cd-dynamics-panel" aria-selected="true">Associator dynamics</button>
+    <button type="button" id="cd-kites-tab" class="nav-link" role="tab" aria-controls="cd-kites-panel" aria-selected="false">Box kites</button>
+  </div>
+  <section id="cd-dynamics-panel" class="ripple-panel" role="tabpanel" aria-labelledby="cd-dynamics-tab">
+    <div class="viz-controls">
+      <label class="form-label" for="cd-pair">Cayley–Dickson pair
+        <select id="cd-pair" class="form-select"></select>
+      </label>
+      <label class="form-label" for="cd-depth"><span>Depth <span id="cd-depth-value" class="tabular-nums">3</span></span>
+        <input id="cd-depth" class="form-range" type="range" min="0" max="30" step="1" value="3">
+      </label>
+    </div>
+    <div id="cd-dynamics-metrics" class="text-small tabular-nums" aria-live="polite"></div>
+    <div id="cd-prefix-label" class="text-small text-muted"></div>
+    <svg id="cd-dynamics-svg" class="ripple-plot" role="img" aria-label="Sixteen basis states on five shells. Node area represents ideal measurement probability."></svg>
+    <div class="viz-controls ripple-state-controls">
+      <label class="form-label" for="cd-state">Inspect basis state
+        <select id="cd-state" class="form-select"></select>
+      </label>
+    </div>
+    <div id="cd-state-detail" class="ripple-detail text-small tabular-nums" aria-live="polite"></div>
+    <div class="ripple-foot text-small text-muted">Shells = Hamming distance from 0000 · Area = probability · Basis space, not chip position</div>
+  </section>
+  <section id="cd-kites-panel" class="ripple-panel" role="tabpanel" aria-labelledby="cd-kites-tab" hidden>
+    <div class="viz-controls">
+      <label class="form-label" for="cd-kite">Sedenion box kite
+        <select id="cd-kite" class="form-select"></select>
+      </label>
+      <label class="form-label" for="cd-phase"><span>Relative phase <span id="cd-phase-value" class="tabular-nums">0π</span></span>
+        <input id="cd-phase" class="form-range" type="range" min="0" max="200" step="1" value="0">
+      </label>
+    </div>
+    <div class="ripple-legend text-small">
+      <span class="ripple-key"><span class="ripple-swatch"></span>r = +1</span>
+      <span class="ripple-key"><span class="ripple-swatch negative"></span>r = −1</span>
+      <span class="ripple-key"><span class="ripple-swatch strut-key"></span>Strut</span>
+      <span class="text-muted">Edge width = ancilla-0 probability</span>
+    </div>
+    <svg id="cd-kites-svg" class="ripple-plot" role="img" aria-label="Six zero-divisor assessors form an octahedron. Twelve edges show ancilla-0 probabilities from separate phase-sensitive product experiments; three dashed struts join opposite vertices."></svg>
+    <div class="viz-controls ripple-state-controls">
+      <label class="form-label" for="cd-edge">Inspect zero-product edge
+        <select id="cd-edge" class="form-select"></select>
+      </label>
+    </div>
+    <div id="cd-edge-detail" class="ripple-detail text-small tabular-nums" aria-live="polite"></div>
+    <div class="text-small text-muted">Phase sweep in the complex extension</div>
+    <div class="ripple-foot text-small text-muted">Ideal probabilities · Geometry schematic · Each edge is a separate experiment</div>
+    <div class="text-small text-muted">All edges cannot share one globally dark sign assignment.</div>
+  </section>
+  <script type="application/json" id="cd-ripple-data">{"box_kites":[{"edges":[{"sign":-1,"source":0,"target":2},{"sign":1,"source":0,"target":3},{"sign":1,"source":0,"target":4},{"sign":-1,"source":0,"target":5},{"sign":1,"source":1,"target":2},{"sign":-1,"source":1,"target":3},{"sign":-1,"source":1,"target":4},{"sign":1,"source":1,"target":5},{"sign":1,"source":2,"target":4},{"sign":-1,"source":2,"target":5},{"sign":-1,"source":3,"target":4},{"sign":1,"source":3,"target":5}],"label":"Strut constant 1","struts":[[0,1],[2,3],[4,5]],"vertices":[{"high":11,"id":2,"low":2},{"high":10,"id":3,"low":3},{"high":13,"id":4,"low":4},{"high":12,"id":5,"low":5},{"high":15,"id":6,"low":6},{"high":14,"id":7,"low":7}]},{"edges":[{"sign":1,"source":0,"target":2},{"sign":1,"source":0,"target":3},{"sign":-1,"source":0,"target":4},{"sign":-1,"source":0,"target":5},{"sign":-1,"source":1,"target":2},{"sign":-1,"source":1,"target":3},{"sign":1,"source":1,"target":4},{"sign":1,"source":1,"target":5},{"sign":-1,"source":2,"target":3},{"sign":1,"source":2,"target":5},{"sign":1,"source":3,"target":4},{"sign":-1,"source":4,"target":5}],"label":"Strut constant 2","struts":[[0,1],[2,4],[3,5]],"vertices":[{"high":11,"id":1,"low":1},{"high":9,"id":3,"low":3},{"high":14,"id":4,"low":4},{"high":15,"id":5,"low":5},{"high":12,"id":6,"low":6},{"high":13,"id":7,"low":7}]},{"edges":[{"sign":-1,"source":0,"target":2},{"sign":1,"source":0,"target":3},{"sign":-1,"source":0,"target":4},{"sign":1,"source":0,"target":5},{"sign":1,"source":1,"target":2},{"sign":-1,"source":1,"target":3},{"sign":1,"source":1,"target":4},{"sign":-1,"source":1,"target":5},{"sign":1,"source":2,"target":3},{"sign":-1,"source":2,"target":4},{"sign":-1,"source":3,"target":5},{"sign":1,"source":4,"target":5}],"label":"Strut constant 3","struts":[[0,1],[2,5],[3,4]],"vertices":[{"high":10,"id":1,"low":1},{"high":9,"id":2,"low":2},{"high":15,"id":4,"low":4},{"high":14,"id":5,"low":5},{"high":13,"id":6,"low":6},{"high":12,"id":7,"low":7}]},{"edges":[{"sign":-1,"source":0,"target":1},{"sign":-1,"source":0,"target":2},{"sign":1,"source":0,"target":4},{"sign":1,"source":0,"target":5},{"sign":-1,"source":1,"target":2},{"sign":1,"source":1,"target":3},{"sign":1,"source":1,"target":5},{"sign":1,"source":2,"target":3},{"sign":1,"source":2,"target":4},{"sign":-1,"source":3,"target":4},{"sign":-1,"source":3,"target":5},{"sign":-1,"source":4,"target":5}],"label":"Strut constant 4","struts":[[0,3],[1,4],[2,5]],"vertices":[{"high":13,"id":1,"low":1},{"high":14,"id":2,"low":2},{"high":15,"id":3,"low":3},{"high":9,"id":5,"low":5},{"high":10,"id":6,"low":6},{"high":11,"id":7,"low":7}]},{"edges":[{"sign":1,"source":0,"target":1},{"sign":-1,"source":0,"target":2},{"sign":1,"source":0,"target":4},{"sign":-1,"source":0,"target":5},{"sign":1,"source":1,"target":2},{"sign":-1,"source":1,"target":3},{"sign":-1,"source":1,"target":4},{"sign":1,"source":2,"target":3},{"sign":-1,"source":2,"target":5},{"sign":-1,"source":3,"target":4},{"sign":1,"source":3,"target":5},{"sign":1,"source":4,"target":5}],"label":"Strut constant 5","struts":[[0,3],[1,5],[2,4]],"vertices":[{"high":12,"id":1,"low":1},{"high":15,"id":2,"low":2},{"high":14,"id":3,"low":3},{"high":9,"id":4,"low":4},{"high":11,"id":6,"low":6},{"high":10,"id":7,"low":7}]},{"edges":[{"sign":-1,"source":0,"target":1},{"sign":1,"source":0,"target":2},{"sign":1,"source":0,"target":3},{"sign":-1,"source":0,"target":4},{"sign":1,"source":1,"target":2},{"sign":-1,"source":1,"target":4},{"sign":1,"source":1,"target":5},{"sign":-1,"source":2,"target":3},{"sign":-1,"source":2,"target":5},{"sign":1,"source":3,"target":4},{"sign":-1,"source":3,"target":5},{"sign":1,"source":4,"target":5}],"label":"Strut constant 6","struts":[[0,5],[1,3],[2,4]],"vertices":[{"high":15,"id":1,"low":1},{"high":12,"id":2,"low":2},{"high":13,"id":3,"low":3},{"high":10,"id":4,"low":4},{"high":11,"id":5,"low":5},{"high":9,"id":7,"low":7}]},{"edges":[{"sign":1,"source":0,"target":1},{"sign":1,"source":0,"target":2},{"sign":-1,"source":0,"target":3},{"sign":-1,"source":0,"target":4},{"sign":-1,"source":1,"target":2},{"sign":1,"source":1,"target":3},{"sign":-1,"source":1,"target":5},{"sign":1,"source":2,"target":4},{"sign":-1,"source":2,"target":5},{"sign":-1,"source":3,"target":4},{"sign":1,"source":3,"target":5},{"sign":1,"source":4,"target":5}],"label":"Strut constant 7","struts":[[0,5],[1,4],[2,3]],"vertices":[{"high":14,"id":1,"low":1},{"high":13,"id":2,"low":2},{"high":12,"id":3,"low":3},{"high":11,"id":4,"low":4},{"high":10,"id":5,"low":5},{"high":9,"id":6,"low":6}]}],"dynamics":[{"depths":[{"collision_K":1.0,"collision_exact":"1","depth":0,"exact_probabilities":["1","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],"probabilities":[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1","return_probability":1.0},{"collision_K":0.0625,"collision_exact":"1/16","depth":1,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":2,"exact_probabilities":["1/16","9/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.5625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":3,"exact_probabilities":["1/4","0","1/16","1/16","1/16","1/16","1/4","0","0","0","1/16","1/16","1/16","1/16","0","0"],"probabilities":[0.25,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.34375,"collision_exact":"11/32","depth":4,"exact_probabilities":["9/16","1/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.5625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.0625,"collision_exact":"1/16","depth":5,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.25,"collision_exact":"1/4","depth":6,"exact_probabilities":["1/4","1/4","0","0","0","0","1/4","1/4","0","0","0","0","0","0","0","0"],"probabilities":[0.25,0.25,0.0,0.0,0.0,0.0,0.25,0.25,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.0625,"collision_exact":"1/16","depth":7,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":8,"exact_probabilities":["1/16","1/16","0","0","0","0","9/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0,0.0,0.0,0.0,0.5625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":9,"exact_probabilities":["1/4","0","1/16","1/16","1/16","1/16","1/4","0","0","0","1/16","1/16","1/16","1/16","0","0"],"probabilities":[0.25,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.34375,"collision_exact":"11/32","depth":10,"exact_probabilities":["1/16","1/16","0","0","0","0","1/16","9/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.5625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.0625,"collision_exact":"1/16","depth":11,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":1.0,"collision_exact":"1","depth":12,"exact_probabilities":["0","0","0","0","0","0","1","0","0","0","0","0","0","0","0","0"],"probabilities":[0.0,0.0,0.0,0.0,0.0,0.0,1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.0625,"collision_exact":"1/16","depth":13,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":14,"exact_probabilities":["1/16","1/16","0","0","0","0","1/16","9/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.5625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":15,"exact_probabilities":["1/4","0","1/16","1/16","1/16","1/16","1/4","0","0","0","1/16","1/16","1/16","1/16","0","0"],"probabilities":[0.25,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.34375,"collision_exact":"11/32","depth":16,"exact_probabilities":["1/16","1/16","0","0","0","0","9/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0,0.0,0.0,0.0,0.5625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.0625,"collision_exact":"1/16","depth":17,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.25,"collision_exact":"1/4","depth":18,"exact_probabilities":["1/4","1/4","0","0","0","0","1/4","1/4","0","0","0","0","0","0","0","0"],"probabilities":[0.25,0.25,0.0,0.0,0.0,0.0,0.25,0.25,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.0625,"collision_exact":"1/16","depth":19,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":20,"exact_probabilities":["9/16","1/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.5625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.15625,"collision_exact":"5/32","depth":21,"exact_probabilities":["1/4","0","1/16","1/16","1/16","1/16","1/4","0","0","0","1/16","1/16","1/16","1/16","0","0"],"probabilities":[0.25,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.34375,"collision_exact":"11/32","depth":22,"exact_probabilities":["1/16","9/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.5625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.0625,"collision_exact":"1/16","depth":23,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":1.0,"collision_exact":"1","depth":24,"exact_probabilities":["1","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],"probabilities":[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1","return_probability":1.0},{"collision_K":0.0625,"collision_exact":"1/16","depth":25,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":26,"exact_probabilities":["1/16","9/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.0625,0.5625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":27,"exact_probabilities":["1/4","0","1/16","1/16","1/16","1/16","1/4","0","0","0","1/16","1/16","1/16","1/16","0","0"],"probabilities":[0.25,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.34375,"collision_exact":"11/32","depth":28,"exact_probabilities":["9/16","1/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.5625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.0625,"collision_exact":"1/16","depth":29,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.25,"collision_exact":"1/4","depth":30,"exact_probabilities":["1/4","1/4","0","0","0","0","1/4","1/4","0","0","0","0","0","0","0","0"],"probabilities":[0.25,0.25,0.0,0.0,0.0,0.0,0.25,0.25,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1/4","return_probability":0.25}],"label":"(25, 31)"},{"depths":[{"collision_K":1.0,"collision_exact":"1","depth":0,"exact_probabilities":["1","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],"probabilities":[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1","return_probability":1.0},{"collision_K":0.0625,"collision_exact":"1/16","depth":1,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":2,"exact_probabilities":["1/16","1/4","1/16","0","1/16","0","1/16","1/4","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.0625,0.25,0.0625,0.0,0.0625,0.0,0.0625,0.25,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":3,"exact_probabilities":["0","1/16","1/16","1/4","1/16","1/4","0","1/16","1/16","0","0","1/16","0","1/16","1/16","0"],"probabilities":[0.0,0.0625,0.0625,0.25,0.0625,0.25,0.0,0.0625,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0625,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.15625,"collision_exact":"5/32","depth":4,"exact_probabilities":["1/4","1/16","1/16","0","1/16","0","1/4","1/16","1/16","0","0","1/16","0","1/16","1/16","0"],"probabilities":[0.25,0.0625,0.0625,0.0,0.0625,0.0,0.25,0.0625,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0625,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.15625,"collision_exact":"5/32","depth":5,"exact_probabilities":["1/4","1/16","0","1/16","0","1/16","0","1/16","1/16","1/4","1/16","0","1/16","0","1/16","0"],"probabilities":[0.25,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0625,0.25,0.0625,0.0,0.0625,0.0,0.0625,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.34375,"collision_exact":"11/32","depth":6,"exact_probabilities":["9/16","0","1/16","0","1/16","0","1/16","0","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.5625,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.15625,"collision_exact":"5/32","depth":7,"exact_probabilities":["0","0","1/16","1/16","1/16","1/16","0","1/4","0","0","1/16","1/16","1/16","1/16","1/4","0"],"probabilities":[0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.25,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.15625,"collision_exact":"5/32","depth":8,"exact_probabilities":["1/16","1/4","1/16","0","1/16","0","1/16","1/4","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.0625,0.25,0.0625,0.0,0.0625,0.0,0.0625,0.25,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":9,"exact_probabilities":["1/16","0","1/16","1/4","1/16","1/4","1/16","0","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.0625,0.0,0.0625,0.25,0.0625,0.25,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":10,"exact_probabilities":["9/16","1/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.5625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.0625,"collision_exact":"1/16","depth":11,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":12,"exact_probabilities":["1/4","1/16","1/16","0","1/16","0","0","1/16","1/16","1/4","0","1/16","0","1/16","1/16","0"],"probabilities":[0.25,0.0625,0.0625,0.0,0.0625,0.0,0.0,0.0625,0.0625,0.25,0.0,0.0625,0.0,0.0625,0.0625,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.15625,"collision_exact":"5/32","depth":13,"exact_probabilities":["0","0","1/16","1/16","1/16","1/16","0","1/4","0","0","1/16","1/16","1/16","1/16","1/4","0"],"probabilities":[0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.25,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.15625,"collision_exact":"5/32","depth":14,"exact_probabilities":["1/4","1/16","1/16","0","1/16","0","0","1/16","1/16","0","0","1/16","0","1/16","1/16","1/4"],"probabilities":[0.25,0.0625,0.0625,0.0,0.0625,0.0,0.0,0.0625,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0625,0.25],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.25,"collision_exact":"1/4","depth":15,"exact_probabilities":["1/4","0","0","1/4","0","1/4","0","0","0","1/4","0","0","0","0","0","0"],"probabilities":[0.25,0.0,0.0,0.25,0.0,0.25,0.0,0.0,0.0,0.25,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.15625,"collision_exact":"5/32","depth":16,"exact_probabilities":["1/4","1/16","1/16","0","1/16","0","0","1/16","1/16","0","0","1/16","0","1/16","1/16","1/4"],"probabilities":[0.25,0.0625,0.0625,0.0,0.0625,0.0,0.0,0.0625,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0625,0.25],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.15625,"collision_exact":"5/32","depth":17,"exact_probabilities":["0","0","1/16","1/16","1/16","1/16","0","1/4","0","0","1/16","1/16","1/16","1/16","1/4","0"],"probabilities":[0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.25,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.15625,"collision_exact":"5/32","depth":18,"exact_probabilities":["1/4","1/16","1/16","0","1/16","0","0","1/16","1/16","1/4","0","1/16","0","1/16","1/16","0"],"probabilities":[0.25,0.0625,0.0625,0.0,0.0625,0.0,0.0,0.0625,0.0625,0.25,0.0,0.0625,0.0,0.0625,0.0625,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.0625,"collision_exact":"1/16","depth":19,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.34375,"collision_exact":"11/32","depth":20,"exact_probabilities":["9/16","1/16","0","0","0","0","1/16","1/16","1/16","1/16","0","0","0","0","1/16","1/16"],"probabilities":[0.5625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.0,0.0,0.0,0.0625,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.15625,"collision_exact":"5/32","depth":21,"exact_probabilities":["1/16","0","1/16","1/4","1/16","1/4","1/16","0","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.0625,0.0,0.0625,0.25,0.0625,0.25,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":22,"exact_probabilities":["1/16","1/4","1/16","0","1/16","0","1/16","1/4","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.0625,0.25,0.0625,0.0,0.0625,0.0,0.0625,0.25,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.15625,"collision_exact":"5/32","depth":23,"exact_probabilities":["0","0","1/16","1/16","1/16","1/16","0","1/4","0","0","1/16","1/16","1/16","1/16","1/4","0"],"probabilities":[0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.0,0.25,0.0,0.0,0.0625,0.0625,0.0625,0.0625,0.25,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.34375,"collision_exact":"11/32","depth":24,"exact_probabilities":["9/16","0","1/16","0","1/16","0","1/16","0","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.5625,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"9/16","return_probability":0.5625},{"collision_K":0.15625,"collision_exact":"5/32","depth":25,"exact_probabilities":["1/4","1/16","0","1/16","0","1/16","0","1/16","1/16","1/4","1/16","0","1/16","0","1/16","0"],"probabilities":[0.25,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0625,0.25,0.0625,0.0,0.0625,0.0,0.0625,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.15625,"collision_exact":"5/32","depth":26,"exact_probabilities":["1/4","1/16","1/16","0","1/16","0","1/4","1/16","1/16","0","0","1/16","0","1/16","1/16","0"],"probabilities":[0.25,0.0625,0.0625,0.0,0.0625,0.0,0.25,0.0625,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0625,0.0],"return_exact":"1/4","return_probability":0.25},{"collision_K":0.15625,"collision_exact":"5/32","depth":27,"exact_probabilities":["0","1/16","1/16","1/4","1/16","1/4","0","1/16","1/16","0","0","1/16","0","1/16","1/16","0"],"probabilities":[0.0,0.0625,0.0625,0.25,0.0625,0.25,0.0,0.0625,0.0625,0.0,0.0,0.0625,0.0,0.0625,0.0625,0.0],"return_exact":"0","return_probability":0.0},{"collision_K":0.15625,"collision_exact":"5/32","depth":28,"exact_probabilities":["1/16","1/4","1/16","0","1/16","0","1/16","1/4","0","1/16","0","1/16","0","1/16","0","1/16"],"probabilities":[0.0625,0.25,0.0625,0.0,0.0625,0.0,0.0625,0.25,0.0,0.0625,0.0,0.0625,0.0,0.0625,0.0,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":0.0625,"collision_exact":"1/16","depth":29,"exact_probabilities":["1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16","1/16"],"probabilities":[0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625,0.0625],"return_exact":"1/16","return_probability":0.0625},{"collision_K":1.0,"collision_exact":"1","depth":30,"exact_probabilities":["1","0","0","0","0","0","0","0","0","0","0","0","0","0","0","0"],"probabilities":[1.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0],"return_exact":"1","return_probability":1.0}],"label":"(9, 22)"}],"proposed_hardware_depths":[0,1,2,3,4]}</script>
+  <script>
+  (() => {
+    const root = document.getElementById('cd-ripple-explorer');
+    const evidence = JSON.parse(document.getElementById('cd-ripple-data').textContent);
+    if (!evidence) return;
+    const namespace = 'http://www.w3.org/2000/svg';
+    const query = selector => root.querySelector(selector);
+    const pairControl = query('#cd-pair');
+    const depthControl = query('#cd-depth');
+    const stateControl = query('#cd-state');
+    const kiteControl = query('#cd-kite');
+    const phaseControl = query('#cd-phase');
+    const edgeControl = query('#cd-edge');
+    const dynamicsSvg = query('#cd-dynamics-svg');
+    const kiteSvg = query('#cd-kites-svg');
+    const pairs = evidence.dynamics;
+    const kites = evidence.box_kites;
+    const state = { tab: 'dynamics', pair: 0, depth: 3, basis: 0, kite: 0, phase: 0, edge: 0 };
+    let dynamicsGeometry = null;
+    let kiteGeometry = null;
+    const percentage = probability => `${(100 * probability).toFixed(2)}%`;
+    const bitString = basis => basis.toString(2).padStart(4, '0');
+    const bitCount = basis => bitString(basis).split('').filter(bit => bit === '1').length;
+    const element = (name, attributes = {}, text) => {
+      const node = document.createElementNS(namespace, name);
+      Object.entries(attributes).forEach(([key, value]) => node.setAttribute(key, String(value)));
+      if (text !== undefined) node.textContent = text;
+      return node;
+    };
+    const option = (value, label) => {
+      const node = document.createElement('option');
+      node.value = String(value);
+      node.textContent = label;
+      return node;
+    };
+    function showTab() {
+      [['dynamics', '#cd-dynamics'], ['kites', '#cd-kites']].forEach(([name, prefix]) => {
+        const active = state.tab === name;
+        const tab = query(`${prefix}-tab`);
+        tab.setAttribute('aria-selected', String(active));
+        tab.classList.toggle('active', active);
+        query(`${prefix}-panel`).hidden = !active;
+      });
+    }
+    function drawDynamics() {
+      const width = Math.round(dynamicsSvg.getBoundingClientRect().width);
+      if (!width) return;
+      const outerRadius = Math.min(176, width / 2 - 28);
+      const height = 2 * outerRadius + 96;
+      const centerX = width / 2;
+      const centerY = outerRadius + 48;
+      const points = [];
+      dynamicsSvg.replaceChildren();
+      dynamicsSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      dynamicsSvg.style.height = `${height}px`;
+      dynamicsSvg.append(element('desc', {}, 'The four-qubit core has sixteen basis states. Position shows Hamming distance from 0000; circle area shows ideal probability.'));
+      for (let distance = 1; distance <= 4; distance += 1) {
+        dynamicsSvg.append(element('circle', { cx: centerX, cy: centerY, r: outerRadius * distance / 4, class: 'shell' }));
+      }
+      for (let distance = 0; distance <= 4; distance += 1) {
+        const shell = Array.from({ length: 16 }, (_, basis) => basis).filter(basis => bitCount(basis) === distance);
+        shell.forEach((basis, index) => {
+          const angle = distance === 4 ? Math.PI / 2 : (2 * Math.PI * index / shell.length) - Math.PI / 2 + distance * .22;
+          const radius = outerRadius * distance / 4;
+          points[basis] = { x: centerX + Math.cos(angle) * radius, y: centerY + Math.sin(angle) * radius };
+        });
+      }
+      const topology = element('g');
+      points.forEach((point, basis) => {
+        for (let bit = 0; bit < 4; bit += 1) {
+          const neighbor = basis ^ (1 << bit);
+          if (neighbor > basis) topology.append(element('line', { x1: point.x, y1: point.y, x2: points[neighbor].x, y2: points[neighbor].y, class: 'topology' }));
+        }
+      });
+      dynamicsSvg.append(topology);
+      points.forEach((point, basis) => {
+        const group = element('g', { 'data-basis': basis, class: 'cursor-interaction' });
+        group.append(element('circle', { cx: point.x, cy: point.y, r: 2.5, class: 'state-origin' }));
+        group.append(element('circle', { cx: point.x, cy: point.y, r: 0, class: 'probability' }));
+        group.append(element('circle', { cx: point.x, cy: point.y, r: 12, fill: 'transparent', 'data-tooltip': bitString(basis) }));
+        group.append(element('title', {}, bitString(basis)));
+        group.addEventListener('click', () => { state.basis = basis; stateControl.value = String(basis); updateDynamics(); });
+        dynamicsSvg.append(group);
+      });
+      dynamicsSvg.append(element('circle', { class: 'state-selection', r: 0 }));
+      dynamicsSvg.append(element('text', { id: 'cd-basis-label', 'text-anchor': 'middle', class: 'plot-note' }));
+      dynamicsGeometry = { points, width, height, maximumRadius: Math.min(38, outerRadius / 4 - 5) };
+      updateDynamics();
+      requestAnimationFrame(() => dynamicsSvg.classList.add('motion-ready'));
+    }
+    function updateDynamics() {
+      const result = pairs[state.pair].depths[state.depth];
+      depthControl.value = String(state.depth);
+      query('#cd-depth-value').textContent = String(state.depth);
+      query('#cd-dynamics-metrics').textContent = `Return ${percentage(result.return_probability)} · Collision K ${result.collision_K.toFixed(4)}`;
+      query('#cd-prefix-label').textContent = !evidence.proposed_hardware_depths.includes(state.depth) ? 'Beyond proposed hardware depths 0–4 · Exact ideal evolution' : 'Within proposed hardware depths 0–4 · Exact ideal evolution';
+      query('#cd-state-detail').textContent = `|${bitString(state.basis)}⟩ · Probability ${percentage(result.probabilities[state.basis])} (${result.exact_probabilities[state.basis]}) · Distance ${bitCount(state.basis)}`;
+      stateControl.querySelectorAll('option').forEach((node, basis) => { node.textContent = `${bitString(basis)} · ${percentage(result.probabilities[basis])}`; });
+      if (!dynamicsGeometry) return;
+      dynamicsGeometry.points.forEach((point, basis) => {
+        const probability = result.probabilities[basis];
+        const group = dynamicsSvg.querySelector(`[data-basis="${basis}"]`);
+        group.querySelector('.probability').setAttribute('r', String(dynamicsGeometry.maximumRadius * Math.sqrt(probability)));
+        group.querySelector('[data-tooltip]').setAttribute('data-tooltip', `${bitString(basis)}: ${percentage(probability)}`);
+        group.querySelector('title').textContent = `${bitString(basis)}: ${percentage(probability)}`;
+      });
+      const selectedPoint = dynamicsGeometry.points[state.basis];
+      const selectedRadius = dynamicsGeometry.maximumRadius * Math.sqrt(result.probabilities[state.basis]);
+      const ring = dynamicsSvg.querySelector('.state-selection');
+      ring.setAttribute('cx', selectedPoint.x);
+      ring.setAttribute('cy', selectedPoint.y);
+      ring.setAttribute('r', Math.max(6, selectedRadius + 4));
+      const label = query('#cd-basis-label');
+      label.setAttribute('x', dynamicsGeometry.width / 2);
+      label.setAttribute('y', dynamicsGeometry.height - 12);
+      label.textContent = `Selected basis ${bitString(state.basis)}`;
+    }
+    function edgeLabel(kite, edge) {
+      const left = kite.vertices[edge.source];
+      const right = kite.vertices[edge.target];
+      return `${left.low},${left.high} ↔ ${right.low},${right.high}`;
+    }
+    function fillEdges() {
+      edgeControl.replaceChildren();
+      const kite = kites[state.kite];
+      kite.edges.forEach((edge, index) => edgeControl.append(option(index, edgeLabel(kite, edge))));
+      edgeControl.value = String(state.edge);
+    }
+    function drawKite() {
+      const width = Math.round(kiteSvg.getBoundingClientRect().width);
+      if (!width) return;
+      const height = Math.min(380, width * .8 + 80);
+      const centerX = width / 2;
+      const centerY = height / 2;
+      const horizontalRadius = Math.min(190, width * .31);
+      const verticalRadius = height * .36;
+      const kite = kites[state.kite];
+      const coordinates = [
+        { x: centerX, y: centerY - verticalRadius },
+        { x: centerX, y: centerY + verticalRadius },
+        { x: centerX - horizontalRadius, y: centerY - verticalRadius * .23 },
+        { x: centerX + horizontalRadius, y: centerY + verticalRadius * .23 },
+        { x: centerX + horizontalRadius, y: centerY - verticalRadius * .23 },
+        { x: centerX - horizontalRadius, y: centerY + verticalRadius * .23 }
+      ];
+      const points = [];
+      kite.struts.forEach((strut, index) => {
+        points[strut[0]] = coordinates[2 * index];
+        points[strut[1]] = coordinates[2 * index + 1];
+      });
+      kiteSvg.replaceChildren();
+      kiteSvg.setAttribute('viewBox', `0 0 ${width} ${height}`);
+      kiteSvg.style.height = `${height}px`;
+      kiteSvg.append(element('desc', {}, 'The octahedron joins compatible zero-divisor assessors. A solid edge has sign plus one; a dashed colored edge has sign minus one. Width encodes a separate experiment’s ideal ancilla-0 probability at the selected phase. Gray dashed struts are opposite pairs.'));
+      kite.struts.forEach(strut => kiteSvg.append(element('line', { x1: points[strut[0]].x, y1: points[strut[0]].y, x2: points[strut[1]].x, y2: points[strut[1]].y, class: 'strut' })));
+      kite.edges.forEach((edge, index) => {
+        const start = points[edge.source];
+        const end = points[edge.target];
+        const line = element('line', { x1: start.x, y1: start.y, x2: end.x, y2: end.y, 'data-edge': index, class: `kite-edge${edge.sign === -1 ? ' kite-edge-negative' : ''}` });
+        kiteSvg.append(line);
+        const hit = element('line', { x1: start.x, y1: start.y, x2: end.x, y2: end.y, stroke: 'transparent', 'stroke-width': 12, class: 'cursor-interaction', 'data-edge-hit': index, 'data-tooltip': edgeLabel(kite, edge) });
+        hit.append(element('title', {}, edgeLabel(kite, edge)));
+        hit.addEventListener('click', () => { state.edge = index; edgeControl.value = String(index); updateKite(); });
+        kiteSvg.append(hit);
+      });
+      kiteSvg.append(element('circle', { class: 'edge-selected', r: 8 }));
+      kite.vertices.forEach((vertex, index) => {
+        const point = points[index];
+        kiteSvg.append(element('circle', { cx: point.x, cy: point.y, r: 5, class: 'kite-vertex' }));
+        const atTop = point.y === centerY - verticalRadius;
+        const atBottom = point.y === centerY + verticalRadius;
+        const offsetY = atTop ? -14 : atBottom ? 24 : point.y < centerY ? -16 : 23;
+        const label = element('text', { x: point.x, y: point.y + offsetY, 'text-anchor': 'middle', class: 'plot-note' });
+        label.textContent = `e${vertex.low} ± e${vertex.high}`;
+        kiteSvg.append(label);
+      });
+      kiteGeometry = { points };
+      updateKite();
+      requestAnimationFrame(() => kiteSvg.classList.add('motion-ready'));
+    }
+    function updateKite() {
+      const phase = state.phase * Math.PI / 100;
+      const kite = kites[state.kite];
+      phaseControl.value = String(state.phase);
+      query('#cd-phase-value').textContent = `${(state.phase / 100).toFixed(2)}π`;
+      const selected = kite.edges[state.edge];
+      const probability = (1 - selected.sign * Math.cos(phase)) / 2;
+      const left = kite.vertices[selected.source];
+      const right = kite.vertices[selected.target];
+      query('#cd-edge-detail').textContent = `(${left.low},${left.high}) × (${right.low},${right.high}) · r = ${selected.sign > 0 ? '+1' : '−1'} · P(ancilla=0) ${percentage(probability)}`;
+      if (!kiteGeometry) return;
+      kite.edges.forEach((edge, index) => {
+        const success = (1 - edge.sign * Math.cos(phase)) / 2;
+        const line = kiteSvg.querySelector(`[data-edge="${index}"]`);
+        line.setAttribute('stroke-width', String(.75 + 6 * success));
+        line.setAttribute('opacity', String(.14 + .86 * success));
+        kiteSvg.querySelector(`[data-edge-hit="${index}"]`).setAttribute('data-tooltip', `${edgeLabel(kite, edge)}: P(ancilla=0) ${percentage(success)}`);
+        kiteSvg.querySelector(`[data-edge-hit="${index}"] title`).textContent = `${edgeLabel(kite, edge)}: P(ancilla=0) ${percentage(success)}`;
+      });
+      const start = kiteGeometry.points[selected.source];
+      const end = kiteGeometry.points[selected.target];
+      const marker = kiteSvg.querySelector('.edge-selected');
+      marker.setAttribute('cx', (start.x + end.x) / 2);
+      marker.setAttribute('cy', (start.y + end.y) / 2);
+    }
+    pairs.forEach((pair, index) => pairControl.append(option(index, pair.label)));
+    for (let basis = 0; basis < 16; basis += 1) stateControl.append(option(basis, bitString(basis)));
+    kites.forEach((kite, index) => kiteControl.append(option(index, kite.label)));
+    function initialize() {
+      pairControl.value = String(state.pair);
+      stateControl.value = String(state.basis);
+      kiteControl.value = String(state.kite);
+      showTab();
+      fillEdges();
+      drawDynamics();
+      drawKite();
+      updateDynamics();
+      updateKite();
+    }
+    pairControl.addEventListener('change', () => { state.pair = Number(pairControl.value); updateDynamics(); });
+    depthControl.addEventListener('input', () => { state.depth = Number(depthControl.value); updateDynamics(); });
+    stateControl.addEventListener('change', () => { state.basis = Number(stateControl.value); updateDynamics(); });
+    kiteControl.addEventListener('change', () => { state.kite = Number(kiteControl.value); state.edge = 0; fillEdges(); drawKite(); });
+    phaseControl.addEventListener('input', () => { state.phase = Number(phaseControl.value); updateKite(); });
+    edgeControl.addEventListener('change', () => { state.edge = Number(edgeControl.value); updateKite(); });
+    [['#cd-dynamics-tab', 'dynamics'], ['#cd-kites-tab', 'kites']].forEach(([selector, name]) => query(selector).addEventListener('click', () => {
+      state.tab = name;
+      showTab();
+      requestAnimationFrame(() => { if (name === 'kites') drawKite(); else drawDynamics(); });
+    }));
+    const tabs = Array.from(root.querySelectorAll('[role="tab"]'));
+    tabs.forEach((tab, index) => tab.addEventListener('keydown', event => {
+      const targets = { ArrowRight: (index + 1) % tabs.length, ArrowLeft: (index + tabs.length - 1) % tabs.length, Home: 0, End: tabs.length - 1 };
+      if (!(event.key in targets)) return;
+      event.preventDefault();
+      tabs[targets[event.key]].focus();
+      tabs[targets[event.key]].click();
+    }));
+    initialize();
+    const resizeObserver = new ResizeObserver(() => { drawDynamics(); drawKite(); });
+    resizeObserver.observe(root);
+  })();
+  </script>
+</main>
+</body>
+</html>

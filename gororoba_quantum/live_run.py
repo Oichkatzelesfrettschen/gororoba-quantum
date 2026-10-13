@@ -49,7 +49,7 @@ from typing import Any
 import numpy as np
 import rustworkx as rx
 from qiskit import QuantumCircuit, qpy, transpile
-from qiskit.circuit import ControlFlowOp
+from qiskit.circuit import ControlFlowOp, ParameterExpression
 from qiskit.converters import circuit_to_dag
 from qiskit.exceptions import QiskitError
 from qiskit.providers import BackendV2, Options
@@ -59,9 +59,11 @@ from qiskit_aer.noise import NoiseModel, ReadoutError
 from qiskit_ibm_runtime import QiskitRuntimeService
 from qiskit_ibm_runtime.executor_sampler import Sampler
 
+import correction_collection
 import local_compute
 import packing
 import parallel
+import placement_feasibility
 import qpu_planning
 import variance
 from diagnostic_experiments import FAMILY_NAMES, record_groups
@@ -104,24 +106,45 @@ FUSION_MAX_ATTEMPTS = 256
 EXPERIMENT_SOURCE_MANIFEST = (
     "aer_identity.py",
     "aer_resources.py",
+    "algebra_planning.py",
     "affine_residual.py",
     "boolean_anf.py",
     "cd_core.py",
+    "correction_circuits.py",
+    "correction_collection.py",
+    "correction_planning.py",
+    "correction_schedule.py",
+    "correction_statistics.py",
     "designs.py",
     "diagnostic_experiments.py",
     "experiment_optimizer.py",
     "experiments.py",
     "factoring.py",
+    "hybrid_shor.py",
+    "integral_homology.py",
     "live_run.py",
     "local_compute.py",
     "modular_arithmetic.py",
+    "native_preflight.py",
     "order_finding.py",
     "packing.py",
     "parallel.py",
+    "placement_feasibility.py",
     "predict.py",
+    "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "qpu_cases.py",
     "qpu_planning.py",
+    "rank_attachments.py",
+    "rank_charts.py",
+    "rank_polynomials.py",
+    "rank_path_topology.py",
+    "rank_sector_contracts.py",
+    "rank_sector_experiments.py",
+    "ripple_contracts.py",
+    "ripple_dynamics.py",
+    "ripple_experiments.py",
+    "runtime_contracts.py",
     "select_lcu.py",
     "target_flip.py",
     "variance.py",
@@ -859,7 +882,28 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
 
 
 def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
-    return isa.assign_parameters(member.binding) if member.binding else isa
+    """Bind the shared ISA while preserving its exact compiled global phase.
+
+    Qiskit circuit substitution can expand a compiled multi-parameter global
+    phase during successive assignments. Binding that expression simultaneously
+    avoids the expansion and retains the phase required by operator checks.
+    """
+    binding = member.binding
+    if not binding:
+        return isa
+    phase = isa.global_phase
+    if not isinstance(phase, ParameterExpression) or not phase.parameters.intersection(binding):
+        return isa.assign_parameters(binding)
+    if any(not isa.has_parameter(parameter) for parameter in binding):
+        # Preserve Qiskit's strict rejection of parameters absent from the ISA.
+        return isa.assign_parameters(binding)
+    bound = isa.copy()
+    bound_phase = phase.bind(binding, allow_unknown_parameters=True)
+    bound.global_phase = bound_phase if bound_phase.parameters else float(bound_phase)
+    gate_binding = {parameter: value for parameter, value in binding.items() if bound.has_parameter(parameter)}
+    if gate_binding:
+        bound.assign_parameters(gate_binding, inplace=True)
+    return bound
 
 
 def _gate_time_view(isa: QuantumCircuit) -> QuantumCircuit:
@@ -1012,8 +1056,69 @@ class PlacementJudge:
     target: Any
     excluded_qubits: frozenset[int]
     excluded_edges: frozenset[tuple[int, int]]
+    static_checks: tuple[tuple[str, tuple[int, ...], tuple[Any, ...]], ...] | None = field(
+        default=None, init=False, repr=False
+    )
+    static_operations: tuple[tuple[str, tuple[int, ...]], ...] = field(default=(), init=False, repr=False)
+
+    def __post_init__(self) -> None:
+        """Retain exact scalar parameter checks once across shared static templates."""
+        if not self.isas or len({isa.num_qubits for isa in self.isas}) != 1:
+            return
+        checks: list[tuple[str, tuple[int, ...], tuple[Any, ...]]] = []
+        seen: set[tuple[Any, ...]] = set()
+        for isa in self.isas:
+            if _is_dynamic(isa):
+                return
+            for instruction in isa.data:
+                operation = instruction.operation
+                if operation.name == "barrier":
+                    continue
+                parameters = tuple(operation.params)
+                if any(
+                    type(parameter) not in (bool, int, float, str)
+                    or isinstance(parameter, float)
+                    and not math.isfinite(parameter)
+                    for parameter in parameters
+                ):
+                    return
+                qubits = tuple(isa.find_bit(qubit).index for qubit in instruction.qubits)
+                key = (operation.name, qubits, tuple((type(parameter), parameter) for parameter in parameters))
+                if key not in seen:
+                    seen.add(key)
+                    checks.append((operation.name, qubits, parameters))
+        operations = tuple(dict.fromkeys(operation for isa in self.isas for operation in _ops(isa)))
+        object.__setattr__(self, "static_checks", tuple(checks))
+        object.__setattr__(self, "static_operations", operations)
+
+    def _static_score(self, mapping: dict[int, int]) -> float | None:
+        """Check the same complete remapping as relabel without cloning every arm."""
+        width = self.isas[0].num_qubits
+        targets = set(mapping.values())
+        spare_sources = [qubit for qubit in range(width) if qubit not in mapping]
+        spare_targets = [qubit for qubit in range(width) if qubit not in targets]
+        permutation = [0] * width
+        for source, target in mapping.items():
+            permutation[source] = target
+        for source, target in zip(spare_sources, spare_targets, strict=True):
+            permutation[source] = target
+        for name, original in self.static_operations:
+            moved = tuple(permutation[qubit] for qubit in original)
+            if any(qubit in self.excluded_qubits for qubit in moved):
+                return None
+            if name == "cz" and (moved in self.excluded_edges or tuple(reversed(moved)) in self.excluded_edges):
+                return None
+        if self.static_checks is None:
+            raise LiveRunError("static placement checks were not prepared")
+        for name, original, parameters in self.static_checks:
+            moved = tuple(permutation[qubit] for qubit in original)
+            if not self.target.instruction_supported(operation_name=name, qargs=moved, parameters=list(parameters)):
+                return None
+        return layout_score(packing.relabel(self.isas[0], mapping, ""), self.target)
 
     def __call__(self, mapping: dict[int, int]) -> float | None:
+        if self.static_checks is not None:
+            return self._static_score(mapping)
         moved = [packing.relabel(isa, mapping, "") for isa in self.isas]
         for isa in moved:
             if _excluded_operations(isa, self.excluded_qubits, self.excluded_edges) or target_violations(
@@ -1168,20 +1273,38 @@ def _placement_assignment(
 
     Increasing candidate indices within a pool remove permutations of the same
     replica set without removing any feasible set. The most constrained pool
-    advances first. Pool state changes only after a complete assignment exists.
+    advances first. Candidate multiplicities remain in that heuristic.
+    Equal-qubit-set branches retain only their first candidate: its earlier
+    index permits every continuation available to a later equivalent
+    candidate. A failed first branch therefore proves those branches fail.
+    Pool state changes only after a complete assignment exists.
     Placed qubits are forbidden to every pool. A placed replica's admitted
     footprint is forbidden to its own pool, so a group's replicas stay one
     hop apart on the graph routing sees; with buffer, its physical footprint
     is forbidden to every other pool, so groups stay one hop apart on the
     device's couplers, an excluded coupler included.
     """
-    qubits = [[set(candidate.qubits) for candidate in pool.candidates] for pool in pools]
+    qubits = [[frozenset(candidate.qubits) for candidate in pool.candidates] for pool in pools]
     footprints = [[_placement_footprint(pool, candidate) for candidate in pool.candidates] for pool in pools]
     physical_footprints = [
         [_placement_footprint(pool, candidate, pool.physical_graph) for candidate in pool.candidates] for pool in pools
     ]
     chosen: list[list[int]] = [[] for _ in pools]
     blocked = [set(pool.blocked) | pool.foreign for pool in pools]
+    domains = [
+        placement_feasibility.PlacementDomain(
+            tuple(
+                placement_feasibility.PlacementFootprint(physical_set, frozenset(admitted), frozenset(physical))
+                for physical_set, admitted, physical in zip(pool_qubits, pool_footprints, pool_physical, strict=True)
+            ),
+            frozenset(pool_blocked),
+        )
+        for pool_qubits, pool_footprints, pool_physical, pool_blocked in zip(
+            qubits, footprints, physical_footprints, blocked, strict=True
+        )
+    ]
+    if placement_feasibility.certified_infeasible(domains, frozenset(occupied), replicas_per_pool, buffer):
+        return None
 
     def search(used: set[int]) -> bool:
         available: list[tuple[int, int, int, list[int]]] = []
@@ -1202,7 +1325,12 @@ def _placement_assignment(
             return True
         _, _, pool_index, indices = min(available)
         previous = [set(entry) for entry in blocked]
+        visited_qubit_sets: set[frozenset[int]] = set()
         for index in indices:
+            physical_set = qubits[pool_index][index]
+            if physical_set in visited_qubit_sets:
+                continue
+            visited_qubit_sets.add(physical_set)
             chosen[pool_index].append(index)
             blocked[pool_index] = previous[pool_index] | footprints[pool_index][index]
             if buffer:
@@ -1400,33 +1528,47 @@ def execution_pubs(choices: list[Choice]) -> list[ExecutionPub]:
     the same global replica-0 reference workload.
     Remaining members and mirrors retain their per-group order. A short group
     simply contributes no component to later rows.
+    Explicit group schedules instead use sparse row indices and exclude a
+    group's component wherever the schedule leaves the lane idle.
     """
     _assign_fusion_indices(choices)
-    clusters: dict[tuple[str, str], list[tuple[int, Choice, list[Entry]]]] = {}
+    clusters: dict[tuple[str, str], list[tuple[int, Choice, dict[int, Entry]]]] = {}
     for choice in choices:
         if choice.fusion_index is None:
             raise LiveRunError(f"{choice.group.name}: fusion index assignment failed")
-        ordered = _fusion_entry_order(choice)
+        if choice.group.execution_rows is None:
+            rows = dict(enumerate(_fusion_entry_order(choice)))
+        else:
+            if any(entry.reference for entry in choice.entries):
+                raise LiveRunError(f"{choice.group.name}: explicit execution rows prohibit automatic references")
+            if [entry.name for entry in choice.entries] != [member.name for member in choice.group.members]:
+                raise LiveRunError(f"{choice.group.name}: explicit execution rows require exact member entries")
+            rows = dict(zip(choice.group.execution_rows, choice.entries, strict=True))
+        ordered = list(rows.values())
         kinds = {"dynamic" if _is_dynamic(entry.packed) else "static" for entry in ordered}
         if len(kinds) != 1:
             raise LiveRunError(f"{choice.group.name}: one result group mixes static and dynamic circuits")
-        clusters.setdefault((choice.snap.name, next(iter(kinds))), []).append((choice.fusion_index, choice, ordered))
+        clusters.setdefault((choice.snap.name, next(iter(kinds))), []).append((choice.fusion_index, choice, rows))
 
     pubs: list[ExecutionPub] = []
     for (backend_name, kind), cluster in clusters.items():
         snapshot = cluster[0][1].snap
         if any(choice.snap is not snapshot for _, choice, _ in cluster):
             raise LiveRunError(f"{backend_name} {kind}: fusion groups do not share one refreshed snapshot object")
-        reference_presence = {bool([entry for entry in ordered if entry.reference]) for _, _, ordered in cluster}
+        explicit_presence = {choice.group.execution_rows is not None for _, choice, _ in cluster}
+        if len(explicit_presence) != 1:
+            raise LiveRunError(f"{backend_name} {kind}: groups mix explicit and implicit execution rows")
+        reference_presence = {any(entry.reference for entry in rows.values()) for _, _, rows in cluster}
         if len(reference_presence) != 1:
             raise LiveRunError(
                 f"{backend_name} {kind}: groups mix isolated-reference and non-reference execution surfaces"
             )
-        for row_index in range(max(len(ordered) for _, _, ordered in cluster)):
+        row_indices = sorted({row for _, _, rows in cluster for row in rows})
+        for row_index in row_indices:
             components = tuple(
-                PubComponent(choice, ordered[row_index], f"g{choice_index}_")
-                for choice_index, choice, ordered in cluster
-                if row_index < len(ordered)
+                PubComponent(choice, rows[row_index], f"g{choice_index}_")
+                for choice_index, choice, rows in cluster
+                if row_index in rows
             )
             name = f"{backend_name}_{kind}_pub_{row_index + 1:02d}"
             circuit = packing.fuse(
@@ -1557,16 +1699,16 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
         primaries.sort(key=lambda item: -item[0])
         for _, seed, isa in primaries[:JOINT_CANDIDATES]:
             layout = isa.layout.initial_index_layout(filter_ancillas=True)
-            # Members that share the primary's parametrized circuit reuse its ISA
-            # with their own parameter values: one routing, one readout qubit.
+            # Each shared circuit object compiles once per candidate. Bound
+            # phase sweeps retain identical routing and measured output sites.
             try:
-                isas = [_bind(isa, primary)] + [
-                    _bind(
-                        isa if member.circuit is primary.circuit else _compile(member.circuit, snap, seed, layout),
-                        member,
-                    )
-                    for member in group.members[1:]
-                ]
+                templates = {id(primary.circuit): isa}
+                isas = []
+                for member in group.members:
+                    key = id(member.circuit)
+                    if key not in templates:
+                        templates[key] = _compile(member.circuit, snap, seed, layout)
+                    isas.append(_bind(templates[key], member))
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
@@ -2195,9 +2337,17 @@ def _choice_record(
 
 
 def discover_snapshots(
-    service: QiskitRuntimeService, pinned_names: list[str] | None, max_pending: int | None
+    service: QiskitRuntimeService,
+    pinned_names: list[str] | None,
+    max_pending: int | None,
+    *,
+    retain_ineligible: bool = False,
 ) -> tuple[list[Snapshot], dict[str, Any], dict[str, Any]]:
-    """Return eligible snapshots, skipped evidence, and the requested-system inventory."""
+    """Refresh the requested inventory and filter candidates unless the caller needs every snapshot.
+
+    Complete-inventory families classify successfully refreshed excluded peers
+    independently. Failed probes supply inventory evidence without a Snapshot.
+    """
     if pinned_names is not None:
         names = list(dict.fromkeys(pinned_names))
     else:
@@ -2239,7 +2389,7 @@ def discover_snapshots(
         )
         if ineligible:
             skipped[name] = {"reason": ineligible} | state
-        else:
+        if ineligible is None or retain_ineligible:
             snapshots.append(snapshot)
     return snapshots, skipped, inventory
 
@@ -2250,7 +2400,12 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
         raise LiveRunError(f"unknown experiment groups {unknown}; known: {sorted(known)}")
-    snaps, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
+    snaps, skipped, inventory = discover_snapshots(
+        service,
+        args.backends,
+        args.max_pending,
+        retain_ineligible=getattr(args, "family", None) == "folded-correction",
+    )
     if not snaps:
         raise LiveRunError("no eligible backend")
     trace: dict[str, Any] = {}
@@ -2270,7 +2425,8 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         "state": "planned",
         "started": args.started,
         "versions": {
-            pkg: version(pkg) for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx")
+            pkg: version(pkg)
+            for pkg in ("numpy", "qiskit", "qiskit-aer", "qiskit-ibm-runtime", "scipy", "rustworkx", "sympy")
         },
         "policy": QUALITY
         | {
@@ -2393,6 +2549,7 @@ APPROVED_RECORD_FIELDS = (
     "schema_version",
     "schema_contract",
     "shots",
+    "pub_shots",
     "policy",
     "versions",
     "instance_sha256_12",
@@ -2579,22 +2736,72 @@ def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
     return sorted(set(reasons))
 
 
-def submission_batches(choices: list[Choice], kind: str, shots: int = SHOTS) -> list[list[ExecutionPub]]:
-    """Keep one result-complete fused cluster inside the Sampler execution bound."""
+def validated_pub_shots(pub_names: list[str], allocation: Any) -> dict[str, int]:
+    """Validate a complete fixed allocation before selecting backend subsets."""
+    if len(pub_names) != len(set(pub_names)):
+        raise LiveRunError("shot allocation requires unique execution PUB names")
+    if not isinstance(allocation, dict) or set(allocation) != set(pub_names):
+        raise LiveRunError("shot allocation must cover exactly the execution PUBs")
+    if any(type(value) is not int or not 1 <= value <= MAX_JOB_EXECUTIONS for value in allocation.values()):
+        raise LiveRunError("PUB shot allocation violates the positive Sampler execution bound")
+    return dict(allocation)
+
+
+def _recorded_job_shots(record: dict[str, Any], job_entry: dict[str, Any]) -> int:
+    """Bind collected denominators to the whole record and homogeneous job."""
+    shots = job_entry.get("shots", record["shots"])
+    if type(shots) is not int or not 1 <= shots <= MAX_JOB_EXECUTIONS:
+        raise LiveRunError("recorded job shots must be positive bounded integers")
+    if "pub_shots" in record:
+        allocation = validated_pub_shots([pub["name"] for pub in record["execution_pubs"]], record["pub_shots"])
+        if "shots" not in job_entry or any(allocation.get(pub["name"]) != shots for pub in job_entry["pubs"]):
+            raise LiveRunError("job shots differ from the approved PUB allocation")
+        if record["shots"] != max(allocation.values()):
+            raise LiveRunError("recorded maximum shots differ from the PUB allocation")
+    options = job_entry.get("options", {})
+    if "default_shots" in options and options["default_shots"] != shots:
+        raise LiveRunError("job shot count differs from its retained Sampler options")
+    return shots
+
+
+def batch_shots(batch: list[ExecutionPub], shots: int, pub_shots: dict[str, int] | None = None) -> int:
+    """Resolve the one shot count accepted by the client-side Sampler job."""
+    if not batch:
+        raise LiveRunError("a submission batch must contain at least one PUB")
+    if pub_shots is None:
+        values = {shots}
+    else:
+        if any(pub.name not in pub_shots for pub in batch):
+            raise LiveRunError("shot allocation omits an execution PUB")
+        values = {pub_shots[pub.name] for pub in batch}
+    if len(values) != 1 or any(type(value) is not int or value < 1 for value in values):
+        raise LiveRunError("each Sampler job requires one positive integer shot count")
+    return next(iter(values))
+
+
+def submission_batches(
+    choices: list[Choice], kind: str, shots: int = SHOTS, pub_shots: dict[str, int] | None = None
+) -> list[list[ExecutionPub]]:
+    """Group whole PUBs by fixed shot count, preserving their relative row order."""
     if kind not in ("static", "dynamic"):
         raise LiveRunError(f"unknown submission kind {kind!r}")
-    if shots < 1 or shots > MAX_JOB_EXECUTIONS:
+    all_pubs = execution_pubs(choices)
+    if pub_shots is not None:
+        pub_shots = validated_pub_shots([pub.name for pub in all_pubs], pub_shots)
+    elif type(shots) is not int or not 1 <= shots <= MAX_JOB_EXECUTIONS:
         raise LiveRunError(f"{shots} shots cannot fit the {MAX_JOB_EXECUTIONS}-execution Sampler job limit")
-    pubs = [pub for pub in execution_pubs(choices) if pub.kind == kind]
-    if not pubs:
-        return []
-    pubs_per_job = MAX_JOB_EXECUTIONS // shots
-    if len(pubs) > pubs_per_job:
-        raise LiveRunError(
-            f"{len(pubs)} {kind} PUBs at {shots} shots exceed the {MAX_JOB_EXECUTIONS}-execution "
-            "Sampler job limit; lower --shots so every result-complete fusion cluster stays in one job"
-        )
-    return [pubs]
+    pubs = [pub for pub in all_pubs if pub.kind == kind]
+    tiers = sorted({pub_shots[pub.name] if pub_shots is not None else shots for pub in pubs})
+    batches = []
+    for tier in tiers:
+        batch = [pub for pub in pubs if (pub_shots[pub.name] if pub_shots is not None else shots) == tier]
+        if len(batch) * tier > MAX_JOB_EXECUTIONS:
+            raise LiveRunError(
+                f"{len(batch)} {kind} PUBs at {tier} shots exceed the {MAX_JOB_EXECUTIONS}-execution "
+                "Sampler job limit; lower the declared shot tier"
+            )
+        batches.append(batch)
+    return batches
 
 
 def _submission_key(entry: dict[str, Any]) -> tuple[str, str, int, int]:
@@ -2638,6 +2845,9 @@ def build_submission_plan(
     choices: list[Choice], args: argparse.Namespace, qpy_archive_sha256: str
 ) -> tuple[dict[str, Any], list[tuple[int, str, str, list[ExecutionPub]]]]:
     """Materialize the complete immutable batch identity before any job call."""
+    full_allocation = getattr(args, "pub_shots", None)
+    if full_allocation is not None:
+        full_allocation = validated_pub_shots([pub.name for pub in execution_pubs(choices)], full_allocation)
     planned_backends = sorted({choice.snap.name for choice in choices})
     by_backend: dict[str, list[Choice]] = {}
     for choice in choices:
@@ -2649,8 +2859,14 @@ def build_submission_plan(
         if any(choice.snap.backend is not backend for choice in group_choices):
             raise LiveRunError(f"{name}: final groups do not share one refreshed backend snapshot")
         for kind in ("dynamic", "static"):
-            batches = submission_batches(group_choices, kind, args.shots)
+            allocation = (
+                {pub.name: full_allocation[pub.name] for pub in execution_pubs(group_choices)}
+                if full_allocation is not None
+                else None
+            )
+            batches = submission_batches(group_choices, kind, args.shots, allocation)
             for batch_index, batch in enumerate(batches, start=1):
+                selected_shots = batch_shots(batch, args.shots, allocation)
                 pub_manifests = [pub.manifest() for pub in batch]
                 members = [component.entry.name for pub in batch for component in pub.components]
                 batch_count = len(batches)
@@ -2669,7 +2885,7 @@ def build_submission_plan(
                     args.twirl,
                     args.dd,
                     recovery_tags,
-                    args.shots,
+                    selected_shots,
                     getattr(args, "max_execution_seconds", None),
                 )
                 plan_index = len(planned_jobs)
@@ -2679,6 +2895,7 @@ def build_submission_plan(
                         "kind": kind,
                         "batch_index": batch_index,
                         "batch_count": batch_count,
+                        "shots": selected_shots,
                         "members": members,
                         "pubs": pub_manifests,
                         "qpy_archive_sha256": qpy_archive_sha256,
@@ -2716,6 +2933,8 @@ def _job_record(plan_entry: dict[str, Any], job_id: str, recovered: bool = False
         "budget_before": copy.deepcopy(plan_entry["budget_before"]),
         "options": copy.deepcopy(plan_entry["options"]),
     }
+    if "shots" in plan_entry:
+        record["shots"] = plan_entry["shots"]
     if recovered:
         record["job_id_recovered"] = True
     return record
@@ -2792,7 +3011,15 @@ def submission_gaps(submission: dict[str, Any]) -> tuple[list[dict[str, Any]], l
             raise LiveRunError(f"submitted job id {job_id!r} appears more than once")
         submitted_job_ids.add(job_id)
         planned_job = planned_by_key[key]
-        for field_name in ("members", "pubs", "qpy_archive_sha256", "calibrations", "recovery_tags", "options"):
+        for field_name in (
+            "members",
+            "pubs",
+            "shots",
+            "qpy_archive_sha256",
+            "calibrations",
+            "recovery_tags",
+            "options",
+        ):
             if submitted_job.get(field_name) != planned_job.get(field_name):
                 raise LiveRunError(f"submitted job {key} differs from its plan in {field_name}")
         submitted_by_key[key] = submitted_job
@@ -2886,7 +3113,12 @@ def submit(
     are checkpointed before each attempt, and each returned job id is
     checkpointed before the next batch.
     """
-    fresh_snapshots, skipped, inventory = discover_snapshots(service, args.backends, args.max_pending)
+    fresh_snapshots, skipped, inventory = discover_snapshots(
+        service,
+        args.backends,
+        args.max_pending,
+        retain_ineligible=getattr(args, "family", None) == "folded-correction",
+    )
     if not fresh_snapshots:
         raise LiveRunError("no eligible backend remains before submission")
     attempt_trace: dict[str, Any] = {}
@@ -2905,7 +3137,10 @@ def submit(
         if (
             fresh_design["optimization"]["selected"] is None
             or args.shots != record["shots"]
-            or any(fresh_design.get(key) != record.get(key) for key in ("family_configuration", "observable_contracts"))
+            or any(
+                fresh_design.get(key) != record.get(key)
+                for key in ("family_configuration", "observable_contracts", "pub_shots")
+            )
         ):
             reselected["statistical_design"] = {
                 "reasons": ["statistical admission, shot tier, or matched-family contract changed"]
@@ -3061,7 +3296,7 @@ def submit(
             args.twirl,
             args.dd,
             plan_entry["recovery_tags"],
-            args.shots,
+            int(plan_entry["shots"]),
             getattr(args, "max_execution_seconds", None),
         )
         effective_options = sampler.options.model_dump(mode="json")
@@ -3736,6 +3971,9 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                 packing.split(packed, prefix, qubits, member_name)
                 for prefix, qubits in zip(prefixes, member["replica_qubits"], strict=True)
             ]
+            weight_name = member_name
+            if member["reference"] and member_name not in weights:
+                weight_name = member_name.removesuffix(ISOLATED_SUFFIX)
             entries.append(
                 Entry(
                     name=member_name,
@@ -3746,7 +3984,7 @@ def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -
                     prefixes=prefixes,
                     replica_qubits=member["replica_qubits"],
                     reference=member["reference"],
-                    weights=weights.get(member_name.removesuffix(ISOLATED_SUFFIX)),
+                    weights=weights.get(weight_name),
                 )
             )
     return out
@@ -3847,8 +4085,12 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         }
     ]
     family_measured: dict[str, list[np.ndarray]] = {}
+    family_replayed: dict[str, list[np.ndarray]] = {}
     family_executed: dict[str, Any] = {}
+    correction_family = record.get("family_configuration", {}).get("name") == "folded-correction"
+    correction_evidence: list[dict[str, Any]] = []
     for job_entry in record["submission"]["jobs"]:
+        shots = _recorded_job_shots(record, job_entry)
         job = service.job(job_entry["job_id"])
         pub_manifests = job_entry["pubs"]
         # Usage is read before the results and checkpointed to collect.json
@@ -3947,7 +4189,9 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
         # otherwise repeat packed replica 0 shot for shot.
         replay_batches: dict[datetime, list[Entry]] = {}
         sims_by_calibration: dict[datetime, Any] = {}
-        for pub_manifest, pub_result, window in zip(pub_manifests, result, spans.windows, strict=True):
+        for pub_index, (pub_manifest, pub_result, window) in enumerate(
+            zip(pub_manifests, result, spans.windows, strict=True)
+        ):
             if window is None:
                 execution_records = component_execution_records(
                     pub_manifest, None, None, None, timing[pub_manifest["name"]]["timing_unavailable_reason"]
@@ -3965,14 +4209,35 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
             for component in pub_manifest["components"]:
                 name = component["member"]
                 entry = by_name[name]
-                measured[name] = [
-                    _distribution(
-                        _pub_counts(pub_result, packing.registers(entry.packed, prefix), name),
-                        replica.num_clbits,
-                    )
-                    for prefix, replica in zip(entry.prefixes, entry.replicas, strict=True)
+                replica_counts = [
+                    _pub_counts(pub_result, packing.registers(entry.packed, prefix), name) for prefix in entry.prefixes
                 ]
-                executed[name] = execution_records[name]
+                if any(sum(counts.values()) != shots for counts in replica_counts):
+                    raise LiveRunError(f"{name}: returned shot count differs from the planned {shots}")
+                if correction_family:
+                    try:
+                        if len(replica_counts) != 1:
+                            raise ValueError("correction collection requires exactly one replica")
+                        correction_evidence.append(
+                            correction_collection.retained_member(
+                                run_dir,
+                                job_out["raw"],
+                                job_id=job_entry["job_id"],
+                                pub_index=pub_index,
+                                pub_manifest=pub_manifest,
+                                member=name,
+                                circuit=isas[pub_manifest["name"]],
+                                histogram=replica_counts[0],
+                                dt_seconds=float(at[window[0]][2].dt) if window else None,
+                            )
+                        )
+                    except (ValueError, KeyError, TypeError, IndexError, AttributeError, OSError) as error:
+                        correction_evidence.append({"name": name, "error": str(error)})
+                measured[name] = [
+                    _distribution(counts, replica.num_clbits)
+                    for counts, replica in zip(replica_counts, entry.replicas, strict=True)
+                ]
+                executed[name] = execution_records[name] | {"shots": shots}
                 if window is not None:
                     props_then = at[window[0]][0]
                     props_by_name[name] = props_then
@@ -3981,6 +4246,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     replay_batches.setdefault(calibration, []).append(entry)
         replayed = replay_entries(sims_by_calibration, replay_batches, shots, seed)
         family_measured.update(measured)
+        family_replayed.update(replayed)
         family_executed.update(executed)
         for gname, entries in by_group.items():
             required = [e.name for e in entries]
@@ -4000,6 +4266,18 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                     n: [[round(float(p), 6) for p in dist] for dist in measured[n]] for n in required if n in measured
                 },
             }
+            if correction_family:
+                out_entry["integer_counts"] = {
+                    row["name"]: row["counts"]
+                    for row in correction_evidence
+                    if row["name"] in required and "counts" in row
+                }
+                comparison_reason = _comparisons_withheld(required, executed)
+                if missing or comparison_reason:
+                    out_entry["comparisons_withheld"] = comparison_reason or f"missing {missing}"
+                out_entry["inference"] = "the header family_analysis gates the sole exact-binomial optimizer decision"
+                out.append(out_entry)
+                continue
             # A circuit whose shots straddle a calibration update, or whose
             # window is unknown, has no single calibration to correct or replay
             # against; its group keeps the raw measurement and states why the
@@ -4058,9 +4336,33 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
                 n: [tvd(m, r) for m, r in zip(measured[n], replayed[n], strict=True)] for n in required
             }
             out.append(out_entry)
-    if record.get("observable_contracts"):
+    if record.get("pub_shots") is not None:
+        out[0]["family_measurements"] = {
+            name: {
+                "replica_probabilities": [distribution.tolist() for distribution in distributions],
+                "execution": family_executed[name],
+                "replayed_replica_probabilities": (
+                    [distribution.tolist() for distribution in family_replayed[name]]
+                    if name in family_replayed and not family_executed[name]["calibration_changed_during_shots"]
+                    else None
+                ),
+                "replay_status": (
+                    "calibration_changed_during_shots"
+                    if family_executed[name]["calibration_changed_during_shots"]
+                    else "calibration_bound"
+                    if name in family_replayed
+                    else "execution_window_unavailable"
+                ),
+            }
+            for name, distributions in family_measured.items()
+        }
+    if record.get("observable_contracts") or correction_family:
         out[0]["family_analysis"] = qpu_planning.measured_family(
-            record, family_measured, family_executed, sys.modules[__name__]
+            record,
+            family_measured,
+            family_executed,
+            sys.modules[__name__],
+            correction_evidence=correction_evidence if correction_family else None,
         )
     out[0]["invocation_usage"] = invocation_usage(record, jobs_out)
     checkpoint(out, final=True)
@@ -4149,10 +4451,16 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backends", type=lambda s: s.split(","), help="comma-separated pin; default all accessible")
     parser.add_argument("--groups", type=lambda s: s.split(","), help="comma-separated experiment groups")
     parser.add_argument(
-        "--family", choices=FAMILY_NAMES, help="matched diagnostic family with statistical design admission"
+        "--family", choices=FAMILY_NAMES, help="complete experiment family with statistical design admission"
     )
     parser.add_argument(
-        "--optimize", action="store_true", help="search bounded shot and replica tiers for the diagnostic family"
+        "--optimize", action="store_true", help="search bounded shot and replica tiers for the experiment family"
+    )
+    parser.add_argument(
+        "--shot-allocation",
+        choices=("uniform", "per-pub"),
+        default="uniform",
+        help="allocate declared shot tiers to complete static algebra PUBs before measurement",
     )
     parser.add_argument(
         "--objective",
@@ -4169,7 +4477,7 @@ def main(argv: list[str] | None = None) -> int:
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "hybrid"), default="cpu")
-    parser.add_argument("--simulation-threads", type=_positive_int, default=2)
+    parser.add_argument("--simulation-threads", type=_positive_int, default=parallel.default_threads())
     parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
     parser.add_argument(
         "--shot-tiers",
@@ -4187,7 +4495,7 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
     parser.add_argument(
-        "--precision", type=float, default=0.08, help="simultaneous terminal-contrast half-width for the folded family"
+        "--precision", type=float, default=0.08, help="simultaneous half-width for family precision endpoints"
     )
     parser.add_argument("--alpha", type=float, default=0.05)
     parser.add_argument("--power", type=float, default=0.8)
@@ -4214,6 +4522,11 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--max-pending", type=int, default=DEFAULT_MAX_PENDING)
     parser.add_argument("--out", type=Path, help="directory under which the run's audit record is written")
     parser.add_argument("--submit", action="store_true", help="submit the chosen circuits (spends QPU time)")
+    parser.add_argument(
+        "--native-dry-run",
+        action="store_true",
+        help="qualify an admitted archived plan through Runtime mock execution, with dry_run=True",
+    )
     parser.add_argument("--min-remaining-seconds", type=float, default=DEFAULT_MIN_REMAINING_S)
     parser.add_argument(
         "--shots",
@@ -4282,6 +4595,10 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     args = parser.parse_args(argv)
+    if args.native_dry_run and (args.submit or args.collect or args.preserve_raw):
+        parser.error("--native-dry-run requires a separate submit-free planning invocation")
+    if args.native_dry_run and (not args.out or not args.family):
+        parser.error("--native-dry-run needs --out and a statistically admitted --family")
     if args.submit and not args.out:
         parser.error("--submit needs --out so the job ids land in an audit record")
     if args.submit and not args.approved_record:
@@ -4314,6 +4631,39 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if args.family == "folded-correction":
+        if args.native_dry_run:
+            parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
+        if args.max_execution_seconds != 30 or args.max_total_execution_seconds != 30:
+            parser.error("folded-correction requires a 30-second per-job ceiling and aggregate cap")
+        if not args.cost_scenarios or any(
+            scenario["job_overhead_seconds"] < args.job_overhead_seconds
+            or scenario["classical_latency_us"] < args.classical_latency_us
+            for scenario in args.cost_scenarios
+        ):
+            parser.error(
+                "folded-correction requires explicit cost scenarios with overhead and latency at least nominal"
+            )
+        if args.shots != 8192 or args.alpha != 0.05 or args.power != 0.8:
+            parser.error("folded-correction requires --shots 8192, --alpha 0.05 and --power 0.8")
+        if args.max_replicas not in (None, 1):
+            parser.error("folded-correction requires exactly one replica")
+        if args.optimize and (args.shot_tiers != [8192] or args.replica_tiers != [1]):
+            parser.error("folded-correction optimization requires --shot-tiers 8192 --replica-tiers 1")
+        if not args.optimize:
+            args.shot_tiers = [8192]
+            args.replica_tiers = [1]
+        correction_backends = ["ibm_fez", "ibm_kingston", "ibm_marrakesh"]
+        if args.backends is None:
+            args.backends = correction_backends
+        elif len(args.backends) != 3 or set(args.backends) != set(correction_backends):
+            parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
+        args.max_replicas = 1
+    if args.shot_allocation == "per-pub" and (args.family not in ("ripple", "rank-sector") or not args.optimize):
+        parser.error("per-PUB shot allocation requires an optimized static algebra family")
+    if args.family in ("ripple", "rank-sector"):
+        if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
+            parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")
     if args.family:
         args.isolated_reference = False
     for name in ("alpha", "power", "simulation_alpha"):
@@ -4364,6 +4714,11 @@ def main(argv: list[str] | None = None) -> int:
             run_dir.mkdir(parents=True, exist_ok=False)
             write_archive(run_dir, choices)
             write_json(run_dir, record)
+            if args.native_dry_run:
+                from native_preflight import qualify
+
+                native_report = qualify(sys.modules[__name__], service, choices, record, run_dir)
+                print(f"native mock qualification: {native_report['status']}")
             if args.family and not args.submit:
                 from qpu_cases import write_case
 

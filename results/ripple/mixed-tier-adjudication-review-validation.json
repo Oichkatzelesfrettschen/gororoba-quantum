@@ -1,0 +1,63 @@
+{
+  "artifact_sha256": {
+    "README.md": "c6840ef59d799b5ef8c0ec75dd3cf5e6a77dfbad9d9ddcf4bb304167cd2ca123",
+    "docs/RESEARCH_ROADMAP.md": "991abc91d70aa0a621b815da4a1d03fe8b1bdae695a3a4e686338c5375938990",
+    "gororoba_quantum/MODEL_DISCRIMINATION.md": "13717baddf20c8140d7192be029bd37bf2493f08e53743cc4c056070c625e51a",
+    "gororoba_quantum/PACKED_ALGEBRA.md": "8a911308242d56ad747ba26e877756fb552b5d786193db7040505f2865fc39e9",
+    "gororoba_quantum/QPU_EXECUTION_ROADMAP.md": "d2e1bdac6af743cfcd51d40a9c636b963cfd075ca3b0495ea2b1b2605e37350e",
+    "gororoba_quantum/RIPPLE_CAMPAIGN.md": "ed2f0fc55022bc052eec49ca5ba8f6a3a8646fbdea6ffa6c213c0859d98daca3",
+    "gororoba_quantum/adjudicate.py": "3a168fa3e159180b78c40507c8b75ecd7505b09d0a25475d8725f75736199825",
+    "results/live/qpu-coordination.json": "072a3e28b06f13fce7e50687800618a57440b7d82e7667d4b796243b00c578d1",
+    "results/ripple/CAMPAIGN_PREPARATION.md": "fff6b41aba6af13cb6e06eb8227dfdf50629cb0e455ae33cf2bc51769458b20f",
+    "results/ripple/CORRECTION_PREPARATION.md": "3b42157f4e6c65a6e57a5c82f06e0b019da4a427cfb0c41e44479bffc303fcbe",
+    "results/ripple/correction-calibration-renewal-audit.json": "1c553607bc597b40aaed361f97329f38c26d508a95f18234ecc1479192de8e66",
+    "results/ripple/practical-protocol-validation.json": "6ee33d7b80ab2bc43bb0680547145fb5ac837ab5882a934ad57ea4b01705260d",
+    "results/ripple/renewed-campaign-preparation-audit.json": "e70f7035e3396186ab590d32eb711e306461d4a1191bc957304f686beca17904",
+    "scripts/check_diagnose_qiskit_mock.py": "8422a942d4f2ec2c0a1b22a8a743c3c82c79a624e820bb8d8d1ea1005656b63e",
+    "scripts/diagnose_qiskit_mock.py": "d17769a2a4d10f5281851251c032a2a2cddd2236865e09c4dea02c5bb4b609da"
+  },
+  "base_commit": "0bc7f060202f8e9270e06da0a585d5566bc2b6a5",
+  "calibration_case": "results/live/2026-10-12T170742.727534Z",
+  "physical_qpu_jobs_submitted": 0,
+  "qiskit_runtime_audit": "Runtime 0.50.0 destination remains unchanged. The diagnostic removes a free-form output field; imports and service calls retain their existing API paths. In-memory transport verifies read-only probes and privacy in normal and optimized modes.",
+  "regressions": {
+    "adjudication_modes": [
+      "normal",
+      "optimized"
+    ],
+    "diagnostic_modes": [
+      "normal",
+      "optimized"
+    ],
+    "diagnostic_privacy_checks_per_mode": 3,
+    "independent_denominator_mutations_rejected": 3,
+    "legacy_tier": 128,
+    "mixed_tiers": [
+      64,
+      128
+    ],
+    "source_verifier_links": 526
+  },
+  "remaining_gates": [
+    "current-head review and merge",
+    "fresh submission binding and account reconciliation",
+    "correction decision before independent static execution admission"
+  ],
+  "review_comment_ids": [
+    4250509492,
+    4250509501,
+    4250528416,
+    4250528475
+  ],
+  "runtime_digest": "38487fe3aecb92eb237ef0c803d11df35198bbaec829a770b513b603a9a711fe",
+  "schema": "mixed-tier-adjudication-review-validation-v1",
+  "scope": "Per-job adjudication, diagnostic output privacy, accurate CLI documentation and calibration renewal. QPU runtime manifest remains byte-identical.",
+  "static_checks": {
+    "mypy_targets": 100,
+    "mypy_version": "1.19.1",
+    "ruff_targets": 103,
+    "warnings": "error"
+  },
+  "status": "pass",
+  "validation_log_sha256": "ca616801c9dfddf008ccd0ddc3e471bf7486eccfd6e5e2c6fe8f80f49a2765e7"
+}

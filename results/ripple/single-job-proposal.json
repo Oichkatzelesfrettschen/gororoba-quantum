@@ -1,0 +1,110 @@
+{
+  "status": "historical_renewal_required",
+  "source": "gororoba_quantum/RIPPLE_DYNAMICS.md and results/ripple/evidence.json",
+  "execution": {
+    "jobs": 1,
+    "backends": 1,
+    "kind": "static",
+    "shots_per_setting": 4096,
+    "logical_tiles": {
+      "zero_divisor": 7,
+      "associator_core": 2,
+      "walsh_ladder": 3
+    },
+    "logical_qubits": 55,
+    "physical_qubits": 55,
+    "atlas_settings": 96,
+    "atlas_construction": "12 edges per box kite times eight distinct phases; each setting samples one edge from each of seven box kites concurrently",
+    "atlas_edge_phase_observations": "672 times admitted shots per PUB",
+    "walk_settings": "Ten paired settings in five matched crossover bundles: each duplicated atlas row carries identical companions and exchanged A/B walk assignments",
+    "additional_controls": {
+      "matched_companion_duplicate_rows": 5,
+      "isolated_walk_endpoints": 4,
+      "isolated_representative_dark_bright_edges": 14,
+      "template_specific_readout_rows": 24,
+      "isolated_walsh_primaries": 3,
+      "walsh_true_flip_omit": "Nine original members share three atlas rows"
+    },
+    "total_candidate_settings": 146,
+    "total_candidate_pub_shots": 598016,
+    "control_boundary": "Isolated edge references cover one representative edge per lane. Every atlas template has readout controls on its actual compiled writer. Recorded row bundles balance walk class assignments and preserve matched atlas activity."
+  },
+  "time_model": {
+    "formula": "job overhead + sum_rows shots * (scheduled circuit duration + repetition delay)",
+    "historical_repetition_delay_seconds": 0.00025,
+    "illustrative_shots_per_pub": 4096,
+    "repetition_delay_only_seconds": 149.504,
+    "qualification": "Historical calibration-based estimate at the retained record revision. The retained native mock attempt returned unavailable. Current-source preparation and a new written case must precede owner approval; physical duration and final charge require approved execution.",
+    "admitted_nominal_seconds": 157.08726656,
+    "admitted_stress_seconds": 159.38726656,
+    "service_ceiling_seconds": 180,
+    "qualified_record": "results/live/2026-10-12T062505.208379Z/record.json",
+    "record_sha256": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+    "inputs_scope": "historical_record_only"
+  },
+  "mathematical_program": {
+    "common_source": "Cayley-Dickson multiplication signs",
+    "walk": "U=M W, M=Rx(pi/2) tensor four, W is the four-bit core of the dimension-32 associator phase",
+    "pairs": [
+      [
+        25,
+        31
+      ],
+      [
+        9,
+        22
+      ]
+    ],
+    "factored_qubit": "Both full five-bit oracles have form diag(D,-D), equivalent to an independent Z on bit 4 multiplying D on bits 0 through 3; the protocol omits that independent factor",
+    "oracle_terms_per_core": {
+      "Z": 2,
+      "CZ": 3,
+      "CCZ": 2
+    },
+    "primary_observable": "Return probability at depth 4, compared between classes after exchanging physical tiles",
+    "ideal_primary_contrast": "9/16 - 1/4 = 5/16",
+    "secondary_observable": "Depth-2 collision probabilities 11/32 and 5/32; depth-3 return probabilities 1/4 and 0",
+    "collision_estimator": "sum_x count_x*(count_x-1)/(N*(N-1)); uncertainty must account for dependent collision pairs",
+    "nulls": "Depth 1 is uniform and identical for both classes. A fully dephased model stays uniform after each mixer; this is a modeled reference unless an actual dephasing protocol is included.",
+    "periods": {
+      "first_state_returns": [
+        24,
+        30
+      ],
+      "first_projective_operator_returns": [
+        24,
+        120
+      ]
+    },
+    "period_boundary": "Exact Gaussian-integer checks establish these finite ideal periods for the specified protocol. Early hardware prefixes cannot verify the long periods, literature novelty, or computational advantage.",
+    "box_kites": "Seven assessor octahedra with 42 unsigned vertices, 84 edges, and 336 ordered signed zero-product witnesses",
+    "fringe": "P(ancilla=0)=(1-r*cos(phi))/2 for an edge sign r; only the appropriate real-phase endpoint is a real zero product",
+    "frustration": "All 56 triangular faces have edge-sign product -1; separate edge experiments cannot be reinterpreted as one globally dark assignment"
+  },
+  "rendering": {
+    "associator_motion": "Fixed Hamming-distance geometry, node area from measured probabilities, theoretical exact frames kept explicitly labeled",
+    "box_kites": "Fixed assessor geometry, edge darkness from measured ancilla-0 probability with uncertainty, continuous curves labeled fits",
+    "timing_art": "Actual retained scheduler event times with physical-qubit labels and separate initialization, gates, readout, and finalization",
+    "residuals": "Hardware-minus-model differences shown separately; preserve imperfections instead of painting over them",
+    "phase_color_boundary": "Computational-basis counts alone do not measure complex amplitudes or phase",
+    "playback_boundary": "Frames are separately prepared circuit prefixes from one job; display interpolation is artistic playback, not continuous observation of one state"
+  },
+  "before_submission": [
+    "Verify all required endpoints with fresh calibration, bounded simulation uncertainty and matched physical controls",
+    "Retain exact compiled QPY, sparse PUB manifests, joint registers and source/dependency identities",
+    "Retain the native dry-run availability report; unavailable mock timing remains an explicit limitation rather than a fabricated scheduler result",
+    "Run required repository gates and current-head review",
+    "Check all independently admitted family ceilings against the shared quota and retained reserve",
+    "Write exact digest-bound cases and obtain explicit owner approval under AGENTS.md"
+  ],
+  "schema": "cayley-dickson-ripple-proposal-v1",
+  "admitted": false,
+  "physical_execution_authorized": false,
+  "evidence_scope": "Execution settings, endpoint admission, timing estimates and calibration describe the retained record at its original source revision. Source and scoring changes require fresh preparation and a new written case before owner approval.",
+  "historical": {
+    "proposal_revision": "c31c15152176341a6e34aad4a0453d4f0d0bb227",
+    "proposal_sha256": "b9ece46d3d4ce09f0b9727b3f2e8a3e964b1be87c355e09b7278543600885cea",
+    "status": "Fresh local statistical admission passed for all 1138 endpoints; owner approval pending; native mock timing unavailable",
+    "time_model_qualification": "Local calibration-based estimate. Native mock qualification returned unavailable; physical duration and final charge await approved execution."
+  }
+}

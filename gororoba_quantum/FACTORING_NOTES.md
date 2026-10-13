@@ -23,7 +23,7 @@ a 2048-bit modulus. The numbers coincide and the scales do not.
 The algebra connects to the hidden-subgroup family over F_2^n, where design C
 at dim 8 already is Bernstein-Vazirani, and to certified non-Clifford benchmarks of the
 gate class that dominates factoring cost. The checks behind each claim are
-named inline; literature notes live under literature/notes/.
+named inline; literature notes live under docs/notes/.
 
 `HYBRID_SHOR.md` carries the implemented host/QPU architecture, Boolean
 coefficient derivation, exact bounded synthesis, compiler evidence, admission
@@ -31,7 +31,7 @@ falsifiers, and roadmap.
 
 ## Reference baseline
 
-Gidney 2025 (arXiv:2505.15917, note literature/notes/2505.15917.md) is the
+Gidney 2025 (arXiv:2505.15917, note docs/notes/2505.15917.md) is the
 reference construction. It proves no lower bound; its costs are those of one
 construction. At n = 2048 with 0.1% uniform gate error, a 1 us surface-code
 cycle and a 10 us reaction time, it needs:
@@ -202,7 +202,7 @@ so standard Shor post-processing rejects the odd order. The full counterfamily
 refutes a universal exponential displacement claim without weakening the
 base-two theorem. The detailed carry-mask derivation, source witnesses,
 exclusion argument, and overlap count live in
-`literature/notes/open_gororoba_survey_deep_notes.md`.
+`docs/notes/open_gororoba_survey_deep_notes.md`.
 
 **Signed Mersenne powers also have a direct circuit boundary.** For every
 `1 <= x < 2^n-1`, multiplication by `-2^k` is a cyclic rotation followed by
@@ -546,7 +546,7 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/mod15_signed_multiplier_census.py \
 
 ## What open_gororoba supplies
 
-A survey of open_gororoba at fe668020 (literature/notes/open_gororoba_survey.md,
+A survey of open_gororoba at fe668020 (docs/notes/open_gororoba_survey.md,
 with derivations and replay scripts in open_gororoba_survey_deep_notes.md)
 separates proven, tested, and asserted content.
 

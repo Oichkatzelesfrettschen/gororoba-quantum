@@ -1,0 +1,68 @@
+{
+  "scope": "completed folded hardware evidence and offline analysis integration",
+  "source_commit": "c6b8a79e898110d64a7114eaa07fb94378daf009",
+  "checks": [
+    {
+      "name": "complete original AGENTS first shell block",
+      "source": "c6b8a79e898110d64a7114eaa07fb94378daf009:AGENTS.md",
+      "exit_code": 0,
+      "warnings": "errors",
+      "environment": {
+        "GOROROBA_WORKERS": "1",
+        "QISKIT_NUM_PROCS": "2",
+        "OMP_NUM_THREADS": "2",
+        "OPENBLAS_NUM_THREADS": "2",
+        "MKL_NUM_THREADS": "2"
+      },
+      "script_sha256": "ecb39c332ec4e9291cb4812e9207d3c626276b25e655ea64c2ec2ba3418b638a",
+      "log_sha256": "c63420767f860a9d3cce51f0d15bf89e0801bdb8392ac8648fbcb24d10d86bff"
+    },
+    {
+      "name": "folded decoder synthetic checks",
+      "tests_per_mode": 22,
+      "modes": [
+        "normal",
+        "optimized"
+      ],
+      "exit_code": 0
+    },
+    {
+      "name": "folded decoder strict mypy",
+      "exit_code": 0
+    },
+    {
+      "name": "new source Ruff and formatting",
+      "exit_code": 0
+    },
+    {
+      "name": "mixed-PUB CPU probes, four tests per mode, mypy and byte compilation",
+      "record": "../../local_compute/mixed_pub_client/validation.json",
+      "exit_code": 0
+    },
+    {
+      "name": "four retained source-closure audits",
+      "declared_files_per_record": 21,
+      "exit_code": 0
+    },
+    {
+      "name": "supplemental replay equals retained JSON bytes",
+      "exit_code": 0
+    },
+    {
+      "name": "all evidence manifest entries match retained bytes and Git inclusion",
+      "exit_code": 0
+    },
+    {
+      "name": "Git diff whitespace",
+      "exit_code": 0
+    }
+  ],
+  "production_runner_source_changed": false,
+  "physical_execution": "two previously approved job IDs only; verification adds zero QPU jobs",
+  "new_source_sha256": {
+    "results/live/folded_raw_analysis.py": "6d11a26f8751d6c4ee7bf1bc8f74cfea58e8c959c58bd3bad64c146dc26a2402",
+    "results/live/test_folded_raw_analysis.py": "482ded725f4eee41678f2c139b8901a0b9cfad9a1b06b542ba72c254492e181f",
+    "results/local_compute/mixed_pub_client/probe.py": "58236e863b33c2cb6fdc73c27ef0b4de55ca00bf1c3c1fd4cf0bd2b15cbba89a",
+    "results/local_compute/mixed_pub_client/check_probe.py": "6e317a35ccee18bb909aa16ed610f41ecd9b57ce66a2796c950d1e18a4d6b474"
+  }
+}
