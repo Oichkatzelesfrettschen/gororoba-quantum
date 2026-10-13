@@ -1,0 +1,458 @@
+{
+  "audit_contract": "declared-experiment-source-closure-v1",
+  "audit_python_version": "3.14.7",
+  "audit_script": "verify_source_closure.py",
+  "audit_script_sha256": "4fc425ac7758f52fdc4c64a1a7dbc5c1a7e6db88e3e05f9703cdb311b9e91990",
+  "computed_commit_closure_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+  "dependencies": [
+    {
+      "installed": "2.5.4",
+      "package": "numpy",
+      "pin_matches_installed": true,
+      "pinned": "2.5.4",
+      "recorded": "2.5.4",
+      "recorded_matches_installed": true
+    },
+    {
+      "installed": "2.5.2",
+      "package": "qiskit",
+      "pin_matches_installed": true,
+      "pinned": "2.5.2",
+      "recorded": "2.5.2",
+      "recorded_matches_installed": true
+    },
+    {
+      "installed": "0.17.2",
+      "package": "qiskit-aer",
+      "pin_matches_installed": true,
+      "pinned": "0.17.2",
+      "recorded": "0.17.2",
+      "recorded_matches_installed": true
+    },
+    {
+      "installed": "0.50.0",
+      "package": "qiskit-ibm-runtime",
+      "pin_matches_installed": true,
+      "pinned": "0.50.0",
+      "recorded": "0.50.0",
+      "recorded_matches_installed": true
+    },
+    {
+      "installed": "0.18.1",
+      "package": "rustworkx",
+      "pin_matches_installed": true,
+      "pinned": "0.18.1",
+      "recorded": "0.18.1",
+      "recorded_matches_installed": true
+    },
+    {
+      "installed": "1.18.1",
+      "package": "scipy",
+      "pin_matches_installed": true,
+      "pinned": "1.18.1",
+      "recorded": "1.18.1",
+      "recorded_matches_installed": true
+    },
+    {
+      "installed": "1.14.0",
+      "package": "sympy",
+      "pin_matches_installed": true,
+      "pinned": "1.14.0",
+      "recorded": "1.14.0",
+      "recorded_matches_installed": true
+    }
+  ],
+  "observed_directory_status": [],
+  "record": "results/live/2026-10-12T210815.657132Z/record.json",
+  "record_bytes_unchanged": true,
+  "record_sha256": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877",
+  "recorded_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+  "recorded_experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+  "recorded_sources_modified": false,
+  "requirements": {
+    "commit_sha256": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb",
+    "equal": true,
+    "working_sha256": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb"
+  },
+  "scope": "Declared experiment-source bytes, requirements pins, installed dependency metadata, and retained record. Broader directory dirt and unmanifested Python files remain separate. Source equality grants no QPU approval.",
+  "source_file_count": 42,
+  "source_files": [
+    {
+      "commit_bytes": 8139,
+      "commit_sha256": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+      "equal": true,
+      "path": "gororoba_quantum/algebra_planning.py",
+      "working_bytes": 8139,
+      "working_sha256": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d"
+    },
+    {
+      "commit_bytes": 18388,
+      "commit_sha256": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+      "equal": true,
+      "path": "gororoba_quantum/affine_residual.py",
+      "working_bytes": 18388,
+      "working_sha256": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec"
+    },
+    {
+      "commit_bytes": 8299,
+      "commit_sha256": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+      "equal": true,
+      "path": "gororoba_quantum/boolean_anf.py",
+      "working_bytes": 8299,
+      "working_sha256": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a"
+    },
+    {
+      "commit_bytes": 9240,
+      "commit_sha256": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+      "equal": true,
+      "path": "gororoba_quantum/cd_core.py",
+      "working_bytes": 9240,
+      "working_sha256": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa"
+    },
+    {
+      "commit_bytes": 19791,
+      "commit_sha256": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+      "equal": true,
+      "path": "gororoba_quantum/correction_circuits.py",
+      "working_bytes": 19791,
+      "working_sha256": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3"
+    },
+    {
+      "commit_bytes": 9809,
+      "commit_sha256": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+      "equal": true,
+      "path": "gororoba_quantum/correction_collection.py",
+      "working_bytes": 9809,
+      "working_sha256": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8"
+    },
+    {
+      "commit_bytes": 21503,
+      "commit_sha256": "b0fdb646a422df83b18d9914562a1a290aff6049aa354f0a7c7dbbad1d53c713",
+      "equal": true,
+      "path": "gororoba_quantum/correction_planning.py",
+      "working_bytes": 21503,
+      "working_sha256": "b0fdb646a422df83b18d9914562a1a290aff6049aa354f0a7c7dbbad1d53c713"
+    },
+    {
+      "commit_bytes": 15424,
+      "commit_sha256": "04b1b33096b1fc303a23ee8f1a26cebddf6002fc81fdc1864c709f74f3d933a6",
+      "equal": true,
+      "path": "gororoba_quantum/correction_schedule.py",
+      "working_bytes": 15424,
+      "working_sha256": "04b1b33096b1fc303a23ee8f1a26cebddf6002fc81fdc1864c709f74f3d933a6"
+    },
+    {
+      "commit_bytes": 13847,
+      "commit_sha256": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+      "equal": true,
+      "path": "gororoba_quantum/correction_statistics.py",
+      "working_bytes": 13847,
+      "working_sha256": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e"
+    },
+    {
+      "commit_bytes": 21414,
+      "commit_sha256": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+      "equal": true,
+      "path": "gororoba_quantum/designs.py",
+      "working_bytes": 21414,
+      "working_sha256": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52"
+    },
+    {
+      "commit_bytes": 6355,
+      "commit_sha256": "306131bed57e866faaa7def8f6776655f7cc4aab2221a8c1511ace9f76b83f0e",
+      "equal": true,
+      "path": "gororoba_quantum/diagnostic_experiments.py",
+      "working_bytes": 6355,
+      "working_sha256": "306131bed57e866faaa7def8f6776655f7cc4aab2221a8c1511ace9f76b83f0e"
+    },
+    {
+      "commit_bytes": 56484,
+      "commit_sha256": "a548562dde3622b2c0aedef7beee5e01fc9d47f52898fe0c0ba58290813a7d03",
+      "equal": true,
+      "path": "gororoba_quantum/experiment_optimizer.py",
+      "working_bytes": 56484,
+      "working_sha256": "a548562dde3622b2c0aedef7beee5e01fc9d47f52898fe0c0ba58290813a7d03"
+    },
+    {
+      "commit_bytes": 16968,
+      "commit_sha256": "d73058084725663dc5da7e55bd90602b42b79cc1802146735c3e8a7c9a831061",
+      "equal": true,
+      "path": "gororoba_quantum/experiments.py",
+      "working_bytes": 16968,
+      "working_sha256": "d73058084725663dc5da7e55bd90602b42b79cc1802146735c3e8a7c9a831061"
+    },
+    {
+      "commit_bytes": 19341,
+      "commit_sha256": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+      "equal": true,
+      "path": "gororoba_quantum/factoring.py",
+      "working_bytes": 19341,
+      "working_sha256": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c"
+    },
+    {
+      "commit_bytes": 7869,
+      "commit_sha256": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+      "equal": true,
+      "path": "gororoba_quantum/hybrid_shor.py",
+      "working_bytes": 7869,
+      "working_sha256": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8"
+    },
+    {
+      "commit_bytes": 8384,
+      "commit_sha256": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+      "equal": true,
+      "path": "gororoba_quantum/integral_homology.py",
+      "working_bytes": 8384,
+      "working_sha256": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629"
+    },
+    {
+      "commit_bytes": 239593,
+      "commit_sha256": "4cae6f2c3aceeaefb83fc319644450ca3f0391d84dcb15f962da8fd9ba664d4f",
+      "equal": true,
+      "path": "gororoba_quantum/live_run.py",
+      "working_bytes": 239593,
+      "working_sha256": "4cae6f2c3aceeaefb83fc319644450ca3f0391d84dcb15f962da8fd9ba664d4f"
+    },
+    {
+      "commit_bytes": 7623,
+      "commit_sha256": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402",
+      "equal": true,
+      "path": "gororoba_quantum/local_compute.py",
+      "working_bytes": 7623,
+      "working_sha256": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402"
+    },
+    {
+      "commit_bytes": 38761,
+      "commit_sha256": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+      "equal": true,
+      "path": "gororoba_quantum/modular_arithmetic.py",
+      "working_bytes": 38761,
+      "working_sha256": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15"
+    },
+    {
+      "commit_bytes": 16679,
+      "commit_sha256": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a",
+      "equal": true,
+      "path": "gororoba_quantum/native_preflight.py",
+      "working_bytes": 16679,
+      "working_sha256": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a"
+    },
+    {
+      "commit_bytes": 19463,
+      "commit_sha256": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+      "equal": true,
+      "path": "gororoba_quantum/order_finding.py",
+      "working_bytes": 19463,
+      "working_sha256": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f"
+    },
+    {
+      "commit_bytes": 13774,
+      "commit_sha256": "cf2fc70d2f0d339c5e67e27f013a12398b55bb7408c6de6588308b656e01142c",
+      "equal": true,
+      "path": "gororoba_quantum/packing.py",
+      "working_bytes": 13774,
+      "working_sha256": "cf2fc70d2f0d339c5e67e27f013a12398b55bb7408c6de6588308b656e01142c"
+    },
+    {
+      "commit_bytes": 7302,
+      "commit_sha256": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+      "equal": true,
+      "path": "gororoba_quantum/parallel.py",
+      "working_bytes": 7302,
+      "working_sha256": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3"
+    },
+    {
+      "commit_bytes": 5556,
+      "commit_sha256": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+      "equal": true,
+      "path": "gororoba_quantum/placement_feasibility.py",
+      "working_bytes": 5556,
+      "working_sha256": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf"
+    },
+    {
+      "commit_bytes": 3209,
+      "commit_sha256": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+      "equal": true,
+      "path": "gororoba_quantum/predict.py",
+      "working_bytes": 3209,
+      "working_sha256": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c"
+    },
+    {
+      "commit_bytes": 9936,
+      "commit_sha256": "5d7834df8b4e9d8b219894a5d48fd0f399c9884412cb33c76cc2631b3bd21888",
+      "equal": true,
+      "path": "gororoba_quantum/pub_shot_allocation.py",
+      "working_bytes": 9936,
+      "working_sha256": "5d7834df8b4e9d8b219894a5d48fd0f399c9884412cb33c76cc2631b3bd21888"
+    },
+    {
+      "commit_bytes": 16093,
+      "commit_sha256": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+      "equal": true,
+      "path": "gororoba_quantum/qpe_diagnostics.py",
+      "working_bytes": 16093,
+      "working_sha256": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1"
+    },
+    {
+      "commit_bytes": 85799,
+      "commit_sha256": "f3f3757f31b0708ad936365b43b628b5f031dcc91772058315fa035602a0d377",
+      "equal": true,
+      "path": "gororoba_quantum/qpu_cases.py",
+      "working_bytes": 85799,
+      "working_sha256": "f3f3757f31b0708ad936365b43b628b5f031dcc91772058315fa035602a0d377"
+    },
+    {
+      "commit_bytes": 26716,
+      "commit_sha256": "3d67572320efbfb481172344aa2d6fea2091ebff5bbcc367838d8148526eaa32",
+      "equal": true,
+      "path": "gororoba_quantum/qpu_planning.py",
+      "working_bytes": 26716,
+      "working_sha256": "3d67572320efbfb481172344aa2d6fea2091ebff5bbcc367838d8148526eaa32"
+    },
+    {
+      "commit_bytes": 12284,
+      "commit_sha256": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+      "equal": true,
+      "path": "gororoba_quantum/rank_attachments.py",
+      "working_bytes": 12284,
+      "working_sha256": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390"
+    },
+    {
+      "commit_bytes": 18568,
+      "commit_sha256": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+      "equal": true,
+      "path": "gororoba_quantum/rank_charts.py",
+      "working_bytes": 18568,
+      "working_sha256": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c"
+    },
+    {
+      "commit_bytes": 24626,
+      "commit_sha256": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+      "equal": true,
+      "path": "gororoba_quantum/rank_polynomials.py",
+      "working_bytes": 24626,
+      "working_sha256": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f"
+    },
+    {
+      "commit_bytes": 13227,
+      "commit_sha256": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+      "equal": true,
+      "path": "gororoba_quantum/rank_path_topology.py",
+      "working_bytes": 13227,
+      "working_sha256": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe"
+    },
+    {
+      "commit_bytes": 14095,
+      "commit_sha256": "701b15fa0769665100b5887e41d369b908a6f6212e6af27848e7cb7ed7e80a1a",
+      "equal": true,
+      "path": "gororoba_quantum/rank_sector_contracts.py",
+      "working_bytes": 14095,
+      "working_sha256": "701b15fa0769665100b5887e41d369b908a6f6212e6af27848e7cb7ed7e80a1a"
+    },
+    {
+      "commit_bytes": 18506,
+      "commit_sha256": "d2afe9e85f1689a56475b58add137c9b063bc4ac315b874094a3dc7958be1c90",
+      "equal": true,
+      "path": "gororoba_quantum/rank_sector_experiments.py",
+      "working_bytes": 18506,
+      "working_sha256": "d2afe9e85f1689a56475b58add137c9b063bc4ac315b874094a3dc7958be1c90"
+    },
+    {
+      "commit_bytes": 22228,
+      "commit_sha256": "456198bcd8ba8d346a0474bfbfe0572eb42cbe80725ffe2b34a53e7b49a48276",
+      "equal": true,
+      "path": "gororoba_quantum/ripple_contracts.py",
+      "working_bytes": 22228,
+      "working_sha256": "456198bcd8ba8d346a0474bfbfe0572eb42cbe80725ffe2b34a53e7b49a48276"
+    },
+    {
+      "commit_bytes": 24684,
+      "commit_sha256": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11",
+      "equal": true,
+      "path": "gororoba_quantum/ripple_dynamics.py",
+      "working_bytes": 24684,
+      "working_sha256": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11"
+    },
+    {
+      "commit_bytes": 21466,
+      "commit_sha256": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+      "equal": true,
+      "path": "gororoba_quantum/ripple_experiments.py",
+      "working_bytes": 21466,
+      "working_sha256": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602"
+    },
+    {
+      "commit_bytes": 155215,
+      "commit_sha256": "669e038ecc8820706f5b5227c1b7c742c24ef26baf97f15d3abb62afee5d8771",
+      "equal": true,
+      "path": "gororoba_quantum/runtime_contracts.py",
+      "working_bytes": 155215,
+      "working_sha256": "669e038ecc8820706f5b5227c1b7c742c24ef26baf97f15d3abb62afee5d8771"
+    },
+    {
+      "commit_bytes": 6188,
+      "commit_sha256": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+      "equal": true,
+      "path": "gororoba_quantum/select_lcu.py",
+      "working_bytes": 6188,
+      "working_sha256": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354"
+    },
+    {
+      "commit_bytes": 12633,
+      "commit_sha256": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+      "equal": true,
+      "path": "gororoba_quantum/target_flip.py",
+      "working_bytes": 12633,
+      "working_sha256": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6"
+    },
+    {
+      "commit_bytes": 20875,
+      "commit_sha256": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9",
+      "equal": true,
+      "path": "gororoba_quantum/variance.py",
+      "working_bytes": 20875,
+      "working_sha256": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9"
+    }
+  ],
+  "unmanifested_python_files": [
+    "gororoba_quantum/adjudicate.py",
+    "gororoba_quantum/aer_delay_sentinels.py",
+    "gororoba_quantum/affine_residual_challenger.py",
+    "gororoba_quantum/algebra_planning_contracts.py",
+    "gororoba_quantum/annihilator_strata.py",
+    "gororoba_quantum/circle_kernel_attachments.py",
+    "gororoba_quantum/claim_boundaries.py",
+    "gororoba_quantum/compile_evidence.py",
+    "gororoba_quantum/correction_case_contracts.py",
+    "gororoba_quantum/correction_circuits_contracts.py",
+    "gororoba_quantum/correction_collection_contracts.py",
+    "gororoba_quantum/correction_planning_contracts.py",
+    "gororoba_quantum/correction_preparation.py",
+    "gororoba_quantum/correction_preparation_contracts.py",
+    "gororoba_quantum/correction_schedule_contracts.py",
+    "gororoba_quantum/correction_statistics_contracts.py",
+    "gororoba_quantum/four_support_doubling.py",
+    "gororoba_quantum/four_support_geometry.py",
+    "gororoba_quantum/four_support_homology.py",
+    "gororoba_quantum/four_support_rank.py",
+    "gororoba_quantum/kernel_limit_contracts.py",
+    "gororoba_quantum/kernel_limits.py",
+    "gororoba_quantum/native_preflight_contracts.py",
+    "gororoba_quantum/nullity_twelve_curves.py",
+    "gororoba_quantum/nullity_twelve_locus.py",
+    "gororoba_quantum/parameter_binding_contracts.py",
+    "gororoba_quantum/placement_feasibility_contracts.py",
+    "gororoba_quantum/principal_skew_atlas.py",
+    "gororoba_quantum/pub_shot_allocation_contracts.py",
+    "gororoba_quantum/pub_shot_runtime_contracts.py",
+    "gororoba_quantum/qpu_case_allocation_contracts.py",
+    "gororoba_quantum/qpu_planning_contracts.py",
+    "gororoba_quantum/schur_acceleration.py",
+    "gororoba_quantum/sedenion_bundle.py",
+    "gororoba_quantum/skew_schur_charts.py",
+    "gororoba_quantum/target_flip_certificate.py",
+    "gororoba_quantum/verify.py"
+  ],
+  "unmanifested_scope": "Closure exclusion alone assigns no safety or completion status.",
+  "verdict": "declared_source_closure_and_dependency_versions_match"
+}

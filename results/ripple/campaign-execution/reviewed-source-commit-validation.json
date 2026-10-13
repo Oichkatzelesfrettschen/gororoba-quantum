@@ -1,0 +1,33 @@
+{
+  "adversarial_review_sha256": "4e8f5c2c0176d43880705b8a2f94155b4f5d93a29d0c649f35b6f75be15703f4",
+  "approval_guard_source_unchanged": true,
+  "changed_paths": [
+    "gororoba_quantum/correction_planning.py",
+    "gororoba_quantum/correction_planning_contracts.py"
+  ],
+  "experiment_digest": "8f7de1ed0888f66142eafafc099a0d19a54ad791f7e298807646466d20eec36c",
+  "full_planning_contracts_normal_and_optimized": "passed",
+  "new_quantum_jobs": 0,
+  "observed_at": "2026-10-12T21:35:32.985521+00:00",
+  "regression_logs": {
+    "green": {
+      "bytes": 23849,
+      "result": "passed",
+      "sha256": "1fa28d3f21af4d07c535c5fd015273c3bba90cf77fd12d490f623166bbe55eec"
+    },
+    "optimized": {
+      "bytes": 23849,
+      "result": "passed",
+      "sha256": "1fa28d3f21af4d07c535c5fd015273c3bba90cf77fd12d490f623166bbe55eec"
+    },
+    "red": {
+      "bytes": 3221,
+      "result": "expected unchanged-case failure",
+      "sha256": "6be56b8082645ed9d9823871a69b545c091c7057385c7a48347b25aae63ebb30"
+    }
+  },
+  "remote_review_merge_timing": "waived before acquisition by direct owner; combined source/results PR follows",
+  "reviewed_source_files_match_commit": true,
+  "schema": "reviewed-correction-source-commit-validation-v1",
+  "source_commit": "9b7080c47efa61c24c4c2722c70f3593eb98848a"
+}

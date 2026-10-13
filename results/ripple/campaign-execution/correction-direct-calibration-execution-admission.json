@@ -1,0 +1,16 @@
+{
+  "account_reserve_seconds": 60,
+  "authority": "Direct human authorizes calibrated execution after completed adversarial reviews and local checks; single-use Runtime guard remains authoritative.",
+  "case": "results/live/2026-10-12T221651.485791Z",
+  "new_campaign_cap_seconds": 180,
+  "observed_account_remaining_seconds": 551,
+  "observed_at": "2026-10-12T22:21:57.501077+00:00",
+  "prior_unsettled_seconds": 0,
+  "quiescence_observation": "2026-10-12T21:56:35.729Z",
+  "record_sha256": "58bd3573f173bc6b1ee6835c1809af05e9013bd6cfe6da26ff2b4b71afd00450",
+  "remaining_static_proposed_seconds": 140,
+  "reserved_attempt_seconds": 30,
+  "schema": "single-correction-execution-admission-v1",
+  "settled_new_seconds": 0,
+  "source_commit": "9b7080c47efa61c24c4c2722c70f3593eb98848a"
+}

@@ -1,0 +1,105 @@
+{
+  "audit_script_sha256": "37b017564f818a094127631f14a1165ef7b75c03e3cf291d078c5102a918181c",
+  "complete_campaign_inventory": false,
+  "complete_static_fleet": false,
+  "correction_inventory": null,
+  "quantum_jobs_submitted": 0,
+  "records": [
+    {
+      "calibrations": {
+        "ibm_fez": "2026-10-12T13:09:29-07:00",
+        "ibm_kingston": "2026-10-12T13:41:56-07:00",
+        "ibm_marrakesh": "2026-10-12T13:46:44-07:00"
+      },
+      "candidate_count": 2,
+      "candidates": [
+        {
+          "backend": "ibm_fez",
+          "candidate": "candidate-000-shots-4096-per-pub",
+          "failed_endpoints": [
+            {
+              "criteria": [
+                "effect_and_power"
+              ],
+              "detection_plus_power": 0.10589963037917756,
+              "effect_used_for_power": 0.1022417696622613,
+              "endpoint": "ripple_depth4_class_return_contrast",
+              "modeled_lower_effect": 0.1022417696622613,
+              "predicted_value": 0.1305389404296875,
+              "recorded_reasons": [
+                "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+              ],
+              "simulation_error_radius": 0.028297170767426206
+            }
+          ],
+          "feasible": false,
+          "nominal_seconds": 64.029924864,
+          "proxy_score": 0.6899169176847616,
+          "stress_seconds": 68.629924864
+        },
+        {
+          "backend": "ibm_kingston",
+          "candidate": "candidate-001-shots-4096-per-pub",
+          "failed_endpoints": [],
+          "feasible": true,
+          "nominal_seconds": 64.321793536,
+          "proxy_score": 0.6973284115696762,
+          "stress_seconds": 68.921793536
+        }
+      ],
+      "family": "ripple",
+      "family_search_rejections": [
+        {
+          "attempted": 256,
+          "backend": "ibm_marrakesh",
+          "bounded_search_stopped": true,
+          "frontier": 4096,
+          "interpretation": "The retained search exhausted its attempt limit before finding an admissible routed family; physical impossibility remains unproved.",
+          "reason_sha256": "188f026f69631958707914f68eec5e17a9b71ba5fca6c0521aaa7f3014ee05a4"
+        }
+      ],
+      "limit": "Candidate predictions and reported measurement radii are retained model evidence. The audit recomputes model uncertainty, bound decisions, and cost arithmetic; independent alternative-circuit simulation remains outside its scope.",
+      "model_shots": 32768,
+      "operational_changes": {
+        "backend_after": [
+          "ibm_kingston"
+        ],
+        "backend_before": [
+          "ibm_kingston"
+        ],
+        "calibrations_after": [
+          "2026-10-12T13:41:56-07:00"
+        ],
+        "calibrations_before": [
+          "2026-10-12T12:14:06-07:00"
+        ],
+        "physical_groups_changed": true,
+        "qpy_changed": false
+      },
+      "proxy_winner": "ibm_kingston",
+      "record": "results/live/2026-10-12T210043.972363Z/record.json",
+      "record_sha256": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1",
+      "renewal_boundary": "New physical layouts, calibration and forecasts require their own case and runtime guard; frozen science, labeled ideal laws, shot partition and allocations remain exact.",
+      "scope": "bounded routed candidates with endpoint minima and costed whole-tier consolidation; global optimality is unclaimed",
+      "searched_routed_sets": 2,
+      "selected_backend": "ibm_kingston",
+      "selected_baseline": "results/live/2026-10-12T195043.912458Z",
+      "selected_candidate": "candidate-001-shots-4096-per-pub",
+      "selected_qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "selected_unchanged_fields": [
+        "observable_contracts",
+        "code_commit",
+        "versions",
+        "experiment_digest",
+        "policy"
+      ],
+      "simulation_alpha": 0.01,
+      "simulation_comparisons": 2492,
+      "status": "pass"
+    }
+  ],
+  "schema": "bounded-three-backend-fleet-selection-audit-v1",
+  "scope": "Finite retained candidates and declared cost scenarios; global layout, backend, and physical optimality remain outside the evidence.",
+  "service_calls": 0,
+  "status": "pass"
+}

@@ -1,0 +1,44 @@
+{
+  "correction": {
+    "mode_decision": "Job mode fits one request; IBM documents zero batch advantage for a single job.",
+    "planned_jobs": 1,
+    "pubs": 4
+  },
+  "fully_scheduling_optimized": false,
+  "global_optimality_claim": false,
+  "mode": "job",
+  "observed_at": "2026-10-12T21:14:17.766145+00:00",
+  "production_constructor": "Sampler(mode=backend)",
+  "production_source": "gororoba_quantum/live_run.py",
+  "production_source_sha256": "4cae6f2c3aceeaefb83fc319644450ca3f0391d84dcb15f962da8fd9ba664d4f",
+  "runtime_version": "0.50.0",
+  "schema": "qpu-campaign-execution-mode-audit-v1",
+  "scope": "Read-only installed-source and current official-documentation verification; no Runtime source edits, mode changes or remote submissions by the audit.",
+  "session_decision": "Exclude active-session wall-clock billing and classical-analysis gaps from the 180-second campaign.",
+  "source_documents": [
+    {
+      "retrieved_markdown_sha256": "70618a07f29dcb020a98ae0c5840bd900dbb0f1d95a0e8ed5bc178e91ffad837",
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/execution-modes"
+    },
+    {
+      "retrieved_markdown_sha256": "763c568069deccd0a0aa953dcb7832160f14020ac7eeb235193506dece21da03",
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/execution-modes-faq"
+    },
+    {
+      "retrieved_markdown_sha256": "a0db02f7ce6d825e55c32d9f35b81172ea6ee454ebdd836ba2ac59f3d667d7fe",
+      "url": "https://quantum.cloud.ibm.com/docs/api/qiskit-ibm-runtime/executor-sampler-sampler"
+    }
+  ],
+  "static": {
+    "billing_boundary": "Batch changes scheduling; reduced billed QPU seconds have not been established for these circuits.",
+    "current_execution_choice": "Preserve the authorized case-bound job-mode campaign under the existing urgent go instruction.",
+    "families": [
+      "ripple",
+      "rank-sector"
+    ],
+    "mode_scheduling_opportunity": "Batch mode can group independently ready jobs after correction qualifies; the reviewed runner has no batch path.",
+    "planned_jobs": 4,
+    "science_boundary": "Batch does not guarantee execution order, exclusive access or an unchanged calibration between jobs."
+  },
+  "supported_client_signature": "Sampler(mode: BackendV2 | Session | Batch | None, options=None)"
+}

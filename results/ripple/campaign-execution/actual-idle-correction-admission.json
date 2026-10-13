@@ -1,0 +1,81 @@
+{
+  "schema": "ripple-actual-idle-and-correction-attempt-admission-v1",
+  "observed_utc": "2026-10-12 20:50:07 UTC",
+  "owners": [
+    {
+      "threadId": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "a21336ca-45f6-477d-9cfa-93aba1c03287:58"
+    },
+    {
+      "threadId": "01a129a2-94d7-7e70-a281-780352df62eb",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "bcb1562e-4f50-4e0f-b144-0a65d41bd533:29"
+    },
+    {
+      "threadId": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "e213a01a-6f83-4cca-a210-10145b6062e9:20"
+    },
+    {
+      "threadId": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "4ac61577-07f3-4c96-a1db-a88808d2c3d7:5"
+    },
+    {
+      "threadId": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "3fc0fbbf-ebf5-4838-876f-eafe9f834e62:17"
+    },
+    {
+      "threadId": "01a12c8e-0e53-7792-bead-6b71282df961",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "83da5c8d-b353-407e-b696-7ed156955f9b:164"
+    },
+    {
+      "threadId": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+      "status": "idle",
+      "turn": "completed",
+      "cursor": "b76a309e-24f4-4fb5-90fd-15cabe19dd00:27"
+    }
+  ],
+  "central_acceptance": {
+    "record": "results/live/local-audit-provenance/central-dispatch-handback/acquisition-readiness.json",
+    "sha256": "72aeb088561a0d9c42cc2d3cca6f8da0ddeb913cbb71d48c41ba2da68a51bf23"
+  },
+  "own_exposed_children": {
+    "completed": [
+      "budget_qualification",
+      "budget_qualification/classifier_review",
+      "native_preflight"
+    ],
+    "terminal_errors": [
+      "atlas_score_repair",
+      "placement_review"
+    ],
+    "error_disposition": "Historical errors retain accepted reviewed parent recovery; their lifecycle states remain errors."
+  },
+  "next_action": {
+    "family": "folded-correction",
+    "record": "results/live/2026-10-12T202752.126072Z",
+    "record_sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+    "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+    "launcher_sha256": "809f148ee10c481845cfb9ea95322edd52b73447b928c4a707ae2f75448827dd",
+    "service_ceiling_seconds": 30
+  },
+  "campaign": {
+    "remaining_static_ceiling_seconds": 140,
+    "total_planned_ceiling_seconds": 170,
+    "user_cap_seconds": 180,
+    "reserve_seconds": 60,
+    "new_accepted_jobs": 0
+  },
+  "boundary": "Actual owner runtime states and own child roster were sampled before the authorized attempt; Runtime independently refreshes source/calibration/QPY/policy/quota bindings before any physical submission.",
+  "static_admission": "held_pending_qualified_lossless_correction_collection_and_preregistered_decision"
+}

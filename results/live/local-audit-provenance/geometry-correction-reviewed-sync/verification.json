@@ -1,0 +1,46 @@
+{
+  "after_observation_sha256": "9904eb1024a603c33645683dd42c5798466cb2bc1e0649c187dcf33ad247ffd5",
+  "before_observation_sha256": "54bd23fac420b71c1f9d092f1e06afbee2b58eaebb896d150c4def73a6739edd",
+  "correction_merge": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+  "geometry_merge": "9ff5e4c6fbeca61a83f7c76b00f2845dedd954b5",
+  "head": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+  "index_has_staged_differences": false,
+  "ledger_sha256": "cf106b4926eeda9276a3d1e6223fd9ffd26265ce250848b646e85abbda620e76",
+  "refs_observed_changed": {
+    "refs/heads/main": {
+      "after": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+      "before": "ae51352c95c537b4ae526faaf65473514b9a966e"
+    },
+    "refs/remotes/origin/HEAD": {
+      "after": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+      "before": "ae51352c95c537b4ae526faaf65473514b9a966e"
+    },
+    "refs/remotes/origin/main": {
+      "after": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+      "before": "ae51352c95c537b4ae526faaf65473514b9a966e"
+    }
+  },
+  "retained_path_count": 37,
+  "retained_paths_byte_or_link_equal": true,
+  "reviewed_changed_paths": [
+    "AGENTS.md",
+    "docs/INDEX.md",
+    "docs/RESEARCH_ROADMAP.md",
+    "docs/evidence/kernel_limits/README.md",
+    "docs/evidence/kernel_limits/SHA256SUMS",
+    "docs/evidence/kernel_limits/proof_obligations.json",
+    "docs/evidence/kernel_limits/replay.py",
+    "docs/evidence/kernel_limits/result.json",
+    "docs/notes/annihilator_kernel_limits.md",
+    "gororoba_quantum/MODEL_DISCRIMINATION.md",
+    "gororoba_quantum/circle_kernel_attachments.py",
+    "gororoba_quantum/correction_planning_contracts.py",
+    "gororoba_quantum/kernel_limit_contracts.py",
+    "gororoba_quantum/kernel_limits.py",
+    "gororoba_quantum/live_run.py"
+  ],
+  "schema": "admitted-geometry-correction-canonical-sync-v1",
+  "scope": "Primary canonical tracked files, index entries, observed refs and37 retained local paths. Other writers and unmeasured files are outside the observation boundary.",
+  "unchanged_tracked_paths": 734,
+  "unchanged_tracked_paths_equal": true
+}

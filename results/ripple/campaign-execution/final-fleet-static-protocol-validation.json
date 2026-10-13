@@ -1,0 +1,40 @@
+{
+  "changed_family_fields": {
+    "rank-sector": [
+      "case_sha256",
+      "experiment_digest",
+      "record",
+      "record_sha256",
+      "source_commit"
+    ],
+    "ripple": [
+      "case_sha256",
+      "experiment_digest",
+      "record",
+      "record_sha256",
+      "source_commit"
+    ]
+  },
+  "classifier_protocol_validation": "passed",
+  "classifier_sha256": "78725725634f2c0682e7b39e0893a3dd4f6da58bf38fd82934f9388efde5547b",
+  "comparison_receipt_sha256": "edf1b64e8969facdf26defb27e8c79ab5fc7e7a61df0baf1bbec7ae26fe15cfe",
+  "complete_campaign_audit_status": "pass",
+  "complete_campaign_ceiling_seconds": 170.0,
+  "complete_campaign_shared_reserve_seconds": 60.0,
+  "original_protocol_sha256": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f",
+  "preparation_audit_sha256": "ca464fd1effba495b90476de1a849d1ebf995e797c7b1614aba78156a5bf8677",
+  "quantum_jobs_submitted": 0,
+  "renewed_protocol_sha256": "eae3d02dec5b994899a383ff72a929d9d238f6a87404c5e9128bdf59c0007eaf",
+  "schema": "static-protocol-identity-rebinding-validation-v1",
+  "service_calls": 0,
+  "status": "pass",
+  "tracked_protocol_bytes_unchanged": true,
+  "unchanged_control_count": 37,
+  "unchanged_equivalence_possible_controls": 36,
+  "unchanged_full_endpoint_counts": {
+    "rank-sector": 196,
+    "ripple": 1138
+  },
+  "unchanged_normalized_tolerance": 0.1,
+  "underresolved_equivalence_endpoint": "ripple_design_c_16_1_8_isolated_packed_difference"
+}

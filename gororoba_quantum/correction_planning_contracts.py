@@ -188,6 +188,18 @@ def _verify_complete_discovery_frontier(snapshots: list[live_run.Snapshot]) -> d
                     and (directory / "isa.qpy").read_bytes() == archive,
                     "written-case serialization changed the retained production inputs",
                 )
+                fresh_view = live_run.refreshed_plan_view(record, choices, pubs)
+                mismatches = live_run.approved_record_mismatches(
+                    directory, fresh_view, archive_current_pubs(), hashlib.sha256(valid_bytes).hexdigest()
+                )
+                _require(not mismatches, f"unchanged correction plan fails its serialized case: {mismatches}")
+                changed_cost = copy.deepcopy(fresh_view)
+                changed_cost["family_configuration"]["finite_candidate_frontier"][0]["jobs"][0]["pubs"][0]["shots"] += 1
+                _require(
+                    "family_configuration differs"
+                    in live_run.approved_record_mismatches(directory, changed_cost, archive_current_pubs()),
+                    "changed correction candidate cost passes the serialized case gate",
+                )
                 invalid = copy.deepcopy(record)
                 invalid["experiment_digest"] = "0" * 64
                 record_bytes = json.dumps(invalid, sort_keys=True).encode()

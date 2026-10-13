@@ -1,0 +1,20 @@
+{
+  "accepted_job_ids": [],
+  "approval_consumed": false,
+  "approved_record_sha256": "6d4de1692e84f5d8b8b9308fcd387aac59a74490133360ebad19e04b624967b7",
+  "charge_seconds": 0,
+  "diagnosis": "The correction cost producer uses dataclasses.asdict on JobCost with tuple PUBs. The JSON writer retains those PUBs as lists. The fresh in-memory finite_candidate_frontier can fail exact equality against its otherwise identical JSON-bound case.",
+  "new_physical_jobs": 0,
+  "observed_at": "2026-10-12T21:21:49.550446+00:00",
+  "qpy_matches_approved": true,
+  "record_sha256": "76c1f472a1bcd71bd2e1660355f14c119e47b5ccfb5143e6ca0d9503a998241d",
+  "released_reservation_seconds": 30,
+  "reported_mismatches": [
+    "family_configuration differs"
+  ],
+  "run": "results/live/2026-10-12T210733.761428Z",
+  "saved_family_configurations_equal": true,
+  "schema": "correction-case-serialization-stopped-invocation-v1",
+  "state": "approval_required",
+  "submission_field_present": false
+}

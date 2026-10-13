@@ -1,0 +1,1924 @@
+{
+  "classification": {
+    "action_defect": "Flag the tested packing context for exclusion from subsequent accuracy-qualified placement until the context difference is understood; retain source identity and isolated evidence.",
+    "action_equivalent": "Mark only the tested patch/template/observable/context as within the coarse packing tolerance under the observed calibration.",
+    "action_unresolved": "Retain the interval and withhold a packing-preservation conclusion. The protocol authorizes zero automatic repeat acquisitions.",
+    "equivalent_within_tolerance": "L/R > -0.10 and U/R < 0.10",
+    "input": "Use the existing measured family endpoint interval [L,U] divided by R; keep original alpha and sample denominators.",
+    "practically_different": "L/R > 0.10 or U/R < -0.10",
+    "unresolved": "Every other qualified interval, including equality at a boundary. Failure to detect a defect establishes neither equivalence nor preservation.",
+    "withheld": "The production collector withholds the family, source/QPY/count/provenance checks fail, or calibrated comparison context is unqualified."
+  },
+  "evidence_class": "Deterministic analysis of frozen submit-free plans; zero measured static acquisitions and zero newly launched jobs.",
+  "families": [
+    {
+      "all_frozen_endpoint_count": 1138,
+      "case_sha256": "907089c75d57702aa4b98e29ab2700c47af50c6685d1daa156337a7e897ee165",
+      "controls": [
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane3_kite4_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_05",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane3_kite4_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane3_kite4_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_06",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane1_kite2_edge1_4_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_13",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane1_kite2_edge1_4_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane1_kite2_edge1_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_14",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane4_kite5_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_19",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane4_kite5_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane4_kite5_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_20",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane6_kite7_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_44",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane6_kite7_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane6_kite7_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_45",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_design_c_32_1_16_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.05625,
+          "raw_half_width": 0.04200225611027148,
+          "score_maximum": 0.5625,
+          "score_minimum": 0.0,
+          "score_range_R": 0.5625,
+          "score_range_R_exact": "9/16",
+          "score_values_sha256": "40728755a4863bca1cf07b5565560f322d8ebcb9ff28c4990b9b656855655072",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_design_c_32_1_16",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_32_1_16_isolated",
+              "pub": "ibm_kingston_static_pub_47",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_design_c_8_1_4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "1e4eaede8c55a58e0566994e1966041c53fc768373725c873cd5ab64697fb378",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_design_c_8_1_4",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_8_1_4_isolated",
+              "pub": "ibm_kingston_static_pub_48",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_walk_lane0_pair9_22_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_walk_lane0_pair9_22_depth4_packed",
+              "pub": "ibm_kingston_static_pub_89",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane0_pair9_22_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_61",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane2_kite3_edge1_4_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_62",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane2_kite3_edge1_4_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane2_kite3_edge1_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_63",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_walk_lane1_pair9_22_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_walk_lane1_pair9_22_depth4_packed",
+              "pub": "ibm_kingston_static_pub_90",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane1_pair9_22_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_64",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_walk_lane1_pair25_31_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_walk_lane1_pair25_31_depth4_packed",
+              "pub": "ibm_kingston_static_pub_89",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane1_pair25_31_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_66",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_walk_lane0_pair25_31_depth4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "fe5e030f0c8e9548f84963fc99cbeac0d4c85a3a95d55b87bd9bdcd5dc9e0ef0",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_walk_lane0_pair25_31_depth4_packed",
+              "pub": "ibm_kingston_static_pub_90",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_walk_lane0_pair25_31_depth4_isolated",
+              "pub": "ibm_kingston_static_pub_70",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane5_kite6_edge1_2_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_104",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane5_kite6_edge1_2_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane5_kite6_edge1_2_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_105",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane0_kite1_edge2_4_phase4_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase4_atlas",
+              "pub": "ibm_kingston_static_pub_108",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase4_isolated",
+              "pub": "ibm_kingston_static_pub_110",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "ripple_atlas_lane0_kite1_edge2_4_phase0_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.025329322470628482,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1753293224706285,
+            0.3246706775293715
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.07467067752937152,
+            0.07467067752937152
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.07467067752937152,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.17467067752937154,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.07467067752937152,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "7467a8ae07d88dd0bd7b8a528b0aece36e11f49563ca8b1092409bb1a67e5344",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.2082013966901426,
+          "terms": [
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase0_atlas",
+              "pub": "ibm_kingston_static_pub_106",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_atlas_lane0_kite1_edge2_4_phase0_isolated",
+              "pub": "ibm_kingston_static_pub_111",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "unresolved",
+          "endpoint": "ripple_design_c_16_1_8_isolated_packed_difference",
+          "endpoint_alpha": 4.393673110720563e-05,
+          "equivalence_possible_at_frozen_width": false,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": null,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1379939837059427,
+            0.36200601629405726
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.11200601629405729,
+            0.11200601629405729
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.11200601629405729,
+          "power_error_radius_at_beta_0p2": 0.050296078741156575,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.2120060162940573,
+          "raw_equivalence_tolerance": 0.025,
+          "raw_half_width": 0.028001504073514323,
+          "score_maximum": 0.25,
+          "score_minimum": 0.0,
+          "score_range_R": 0.25,
+          "score_range_R_exact": "1/4",
+          "score_values_sha256": "1d39417d3c179de2e62abfdf694a0cff1b42b13096fbfa0b7b9a3047cbb5105b",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.26230209503521384,
+          "terms": [
+            {
+              "member": "ripple_design_c_16_1_8",
+              "pub": "ibm_kingston_static_pub_74",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "ripple_design_c_16_1_8_isolated",
+              "pub": "ibm_kingston_static_pub_137",
+              "shots": 1024,
+              "sign": -1
+            }
+          ]
+        }
+      ],
+      "equivalence_possible_endpoint_count": 20,
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "family": "ripple",
+      "family_alpha": 0.05,
+      "nominal_seconds": 64.321793536,
+      "practical_defect_possible_endpoint_count": 21,
+      "practical_packing_endpoint_count": 21,
+      "qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "record": "results/live/2026-10-12T195043.912458Z/record.json",
+      "record_sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "selected_candidate": "candidate-000-shots-4096-per-pub",
+      "service_ceiling_seconds": 80.0,
+      "simultaneous_interval_method": "Existing collector two-sided Hoeffding intervals with immutable PUB grouping and original per-endpoint alpha; reuse these intervals for every practical label.",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "stress_seconds": 68.921793536
+    },
+    {
+      "all_frozen_endpoint_count": 196,
+      "case_sha256": "61d27f4ea3eb6e870c9c318e2c25dc42a8d67b8aa7c10c52d0a82ae5d4319064",
+      "controls": [
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_0_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_0_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_0_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_21",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_0_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_0_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_0_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_22",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_1_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_1_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_1_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_23",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_1_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_1_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_1_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_24",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_2_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_2_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_2_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_25",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_2_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_2_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_2_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_26",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_3_kernel_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_3_kernel_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_08",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_3_kernel_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_27",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_3_bright_at_one_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_3_bright_at_one_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_3_bright_at_one_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_28",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_4_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_4_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_4_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_29",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_4_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_4_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_4_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_30",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_5_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_5_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_5_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_31",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_5_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_5_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_5_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_32",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_6_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_6_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_6_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_33",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_6_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_6_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_6_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_34",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_7_persistent_kernel_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_7_persistent_kernel_t1d1",
+              "pub": "ibm_kingston_static_pub_03",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_7_persistent_kernel_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_35",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        },
+        {
+          "decision_for_example_defect_estimate": "practically_different",
+          "decision_for_example_zero_estimate": "equivalent_within_tolerance",
+          "endpoint": "rank_sector_7_bright_t1d1_packed_minus_reference",
+          "endpoint_alpha": 0.00025510204081632655,
+          "equivalence_possible_at_frozen_width": true,
+          "equivalence_requires_abs_normalized_estimate_strictly_below": 0.031320557179282116,
+          "example_normalized_defect_estimate": 0.25,
+          "example_normalized_defect_interval": [
+            0.1813205571792821,
+            0.3186794428207179
+          ],
+          "example_normalized_zero_estimate_interval": [
+            -0.06867944282071789,
+            0.06867944282071789
+          ],
+          "interpretation": "same-patch observable context difference; causal mechanism, other outcomes and untested contexts remain outside the claim",
+          "normalized_equivalence_tolerance": 0.1,
+          "normalized_half_width": 0.06867944282071789,
+          "power_error_radius_at_beta_0p2": 0.03353071916077105,
+          "practical_defect_requires_abs_normalized_estimate_strictly_above": 0.1686794428207179,
+          "raw_equivalence_tolerance": 0.1,
+          "raw_half_width": 0.06867944282071789,
+          "score_maximum": 1.0,
+          "score_minimum": 0.0,
+          "score_range_R": 1.0,
+          "score_range_R_exact": "1",
+          "score_values_sha256": "81bb5e08a5d12308ad54e054f8618ce84e5422261c8f46ae2dd89c3a33acbf93",
+          "sufficient_abs_true_normalized_effect_for_endpointwise_80_percent_defect_power": 0.20221016198148895,
+          "terms": [
+            {
+              "member": "rank_sector_7_bright_t1d1",
+              "pub": "ibm_kingston_static_pub_18",
+              "shots": 4096,
+              "sign": 1
+            },
+            {
+              "member": "rank_sector_7_bright_t1d1_reference",
+              "pub": "ibm_kingston_static_pub_36",
+              "shots": 4096,
+              "sign": -1
+            }
+          ]
+        }
+      ],
+      "equivalence_possible_endpoint_count": 16,
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "family": "rank-sector",
+      "family_alpha": 0.05,
+      "nominal_seconds": 30.44909824,
+      "practical_defect_possible_endpoint_count": 16,
+      "practical_packing_endpoint_count": 16,
+      "qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+      "record": "results/live/2026-10-12T195828.029302Z/record.json",
+      "record_sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "selected_candidate": "candidate-000-shots-4096-per-pub",
+      "service_ceiling_seconds": 60.0,
+      "simultaneous_interval_method": "Existing collector two-sided Hoeffding intervals with immutable PUB grouping and original per-endpoint alpha; reuse these intervals for every practical label.",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "stress_seconds": 35.04909824
+    }
+  ],
+  "geometry_and_contrast_scope": "Recommend the practical packing audit as the primary new admission protocol. Retain class-return, edge visibility, dark leakage and rank-norm estimates with their original intervals and interpretation limits. Introduce zero additional application-specific visibility/dark/norm acceptance thresholds; original zero-null rejection establishes sign only, and this protocol establishes neither exact zeros nor rank/topology nor calibrated amplitudes.",
+  "incremental_budget": {
+    "new_quantum_rows_beyond_frozen_cases": 0,
+    "new_shots_beyond_frozen_cases": 0,
+    "nominal_seconds": 94.770891776,
+    "parent_campaign_service_ceiling_seconds": 170,
+    "service_ceiling_seconds": 140.0,
+    "shared_account_reserve_seconds": 60,
+    "static_pub_count": 182,
+    "stress_seconds": 103.970891776,
+    "user_campaign_cap_seconds": 180
+  },
+  "incremental_purpose": "The existing dynamic folded and correction jobs interrogate recorded-bit feedback on different physical histories. They contain zero same-patch packed-versus-isolated static box-kite, walk, Design C or rank-sector controls, so they cannot answer these context-accuracy questions. The retained static acquisition supplies 37 scored context controls plus complete labeled geometric coverage; repeated ideal laws are implementation/context coverage rather than additional algebraic discoveries.",
+  "normalization": "For each paired control with identical score w, R=max(w)-min(w), Delta=E[w]_packed-E[w]_isolated, d=Delta/R. Constant offsets cancel. Bernoulli controls have R=1; weighted Design C controls retain their own R.",
+  "objective": "Identify practical same-patch packing defects and classify tolerable context changes for the exact retained controls; supply measured geometric maps with explicit unresolved outcomes.",
+  "operational_effect_interpretation": "For g=(w-min(w))/R in [0,1], |E_p[g]-E_q[g]| <= TV(p,q). A certified normalized packing defect greater than 0.10 therefore lower-bounds total-variation distance between the two labeled measured outcome distributions by greater than 0.10. Scalar equivalence gives no upper bound on total-variation distance or quantum-state/channel distance.",
+  "prospective_identity_renewal": {
+    "all37_controls_preserved": true,
+    "changed_family_fields": {
+      "rank-sector": [
+        "case_sha256",
+        "experiment_digest",
+        "record",
+        "record_sha256",
+        "source_commit"
+      ],
+      "ripple": [
+        "case_sha256",
+        "experiment_digest",
+        "record",
+        "record_sha256",
+        "source_commit"
+      ]
+    },
+    "comparison_receipt": "final-static-protocol-comparison.json",
+    "comparison_receipt_sha256": "edf1b64e8969facdf26defb27e8c79ab5fc7e7a61df0baf1bbec7ae26fe15cfe",
+    "generator_sha256": "4f4b1b347cb43de0301fef349a420232d8d5f4d26c58a58106308f83cdf5bc03",
+    "historical_verification_scope": "The unchanged read_only_verification object retains the original generator observations for the original prepared records. The renewal receipts identify the new source- and calibration-bound cases separately.",
+    "normalized_tolerance": 0.1,
+    "original_protocol": "results/ripple/static-practical-accuracy-admission.json",
+    "original_protocol_sha256": "fc98fa81e71499bbdbf8ac4589a55e20cb6d35e75e485ea05aead506ede9490f",
+    "physical_quantum_jobs_submitted": 0,
+    "preparation_audit": "final-fleet-correction-campaign-audit.json",
+    "preparation_audit_sha256": "ca464fd1effba495b90476de1a849d1ebf995e797c7b1614aba78156a5bf8677",
+    "prepared_at": "2026-10-12T20:35:32.667102+00:00",
+    "schema": "static-protocol-case-identity-rebinding-v1",
+    "source_closures": [
+      {
+        "calibrations": [
+          "2026-10-12T12:14:06-07:00"
+        ],
+        "record": "results/live/2026-10-12T195043.912458Z/record.json",
+        "source_closure": "results/live/2026-10-12T195043.912458Z/source-closure.json",
+        "source_closure_sha256": "b625c48b59578ea8c325dad90bebe3dc85d7e0426d4b96267872f8baea27b9a6"
+      },
+      {
+        "calibrations": [
+          "2026-10-12T12:14:06-07:00"
+        ],
+        "record": "results/live/2026-10-12T195828.029302Z/record.json",
+        "source_closure": "results/live/2026-10-12T195828.029302Z/source-closure.json",
+        "source_closure_sha256": "2bde00dba5e456fffdcde012fc990f9db5b4f38b4ba8264ebd60a0f84595ac62"
+      }
+    ],
+    "statistical_rules_unchanged": true,
+    "status": "prospective_identity_rebinding_before_acquisition",
+    "submission_authority": "The artifact supplies prospective analysis binding only. The correction decision, reviewed merged code, fresh case revalidation, campaign accounting and user-authorized execution conditions remain required."
+  },
+  "rank_units": {
+    "conversion_rows": [
+      {
+        "alpha_squared": "4",
+        "illustrative_q_error_for_probability_error_0p1": 0.4,
+        "t": "0"
+      },
+      {
+        "alpha_squared": "4",
+        "illustrative_q_error_for_probability_error_0p1": 0.4,
+        "t": "1/2"
+      },
+      {
+        "alpha_squared": "4",
+        "illustrative_q_error_for_probability_error_0p1": 0.4,
+        "t": "1"
+      },
+      {
+        "alpha_squared": "121/16",
+        "illustrative_q_error_for_probability_error_0p1": 0.75625,
+        "t": "3/2"
+      },
+      {
+        "alpha_squared": "16",
+        "illustrative_q_error_for_probability_error_0p1": 1.6,
+        "t": "2"
+      }
+    ],
+    "limit": "The probability tolerance does not become a uniform path-wide norm or norm-squared tolerance. Transform a single probability interval monotonically for display; taking the square root of a contrast interval does not produce a norm-difference interval.",
+    "normalized_squared_norm": "q(t)=||L_a(t)v||^2/||v||^2=alpha(t)^2*p(t)",
+    "packing_alpha_squared": 4,
+    "packing_controls_parameter": "t=1",
+    "packing_normalized_squared_norm_half_width": 0.27471777128287156,
+    "packing_normalized_squared_norm_tolerance": 0.4,
+    "packing_probability_tolerance": 0.1
+  },
+  "read_only_verification": {
+    "generator_imports": [
+      "hashlib",
+      "json",
+      "math",
+      "fractions",
+      "pathlib"
+    ],
+    "generator_sha256": "9c4aac4d3cf48e3aaf739992dd766cc0b8956ec3960d3612999bb56ad995cb52",
+    "measured_boundary": "All files in the frozen experiment source manifest, requirements.txt, and both prepared record.json files. Other checkout surfaces were outside this observation.",
+    "observed_source_path_count": 43,
+    "record_bytes_equal_before_after": true,
+    "record_sha256_after": {
+      "rank-sector": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+      "ripple": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87"
+    },
+    "record_sha256_before": {
+      "rank-sector": "d6e778473789716b423d0941ec83b8920046a07db4f75143ab08b2576ab8f522",
+      "ripple": "f0cdf8b3e69e6294878ac35a3a82e2ad3563e09e5aab3b6ba9667e79251cab87"
+    },
+    "source_bytes_equal_before_after": true,
+    "source_sha256_after": {
+      "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+      "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+      "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+      "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+      "gororoba_quantum/correction_circuits.py": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+      "gororoba_quantum/correction_collection.py": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+      "gororoba_quantum/correction_planning.py": "b0fdb646a422df83b18d9914562a1a290aff6049aa354f0a7c7dbbad1d53c713",
+      "gororoba_quantum/correction_schedule.py": "04b1b33096b1fc303a23ee8f1a26cebddf6002fc81fdc1864c709f74f3d933a6",
+      "gororoba_quantum/correction_statistics.py": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+      "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+      "gororoba_quantum/diagnostic_experiments.py": "306131bed57e866faaa7def8f6776655f7cc4aab2221a8c1511ace9f76b83f0e",
+      "gororoba_quantum/experiment_optimizer.py": "a548562dde3622b2c0aedef7beee5e01fc9d47f52898fe0c0ba58290813a7d03",
+      "gororoba_quantum/experiments.py": "d73058084725663dc5da7e55bd90602b42b79cc1802146735c3e8a7c9a831061",
+      "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+      "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+      "gororoba_quantum/integral_homology.py": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+      "gororoba_quantum/live_run.py": "9645bcf88eb2e88a368e492ec3bb3018c96f0230e550c099930d031820a45fcd",
+      "gororoba_quantum/local_compute.py": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402",
+      "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+      "gororoba_quantum/native_preflight.py": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a",
+      "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+      "gororoba_quantum/packing.py": "cf2fc70d2f0d339c5e67e27f013a12398b55bb7408c6de6588308b656e01142c",
+      "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+      "gororoba_quantum/placement_feasibility.py": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+      "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+      "gororoba_quantum/pub_shot_allocation.py": "5d7834df8b4e9d8b219894a5d48fd0f399c9884412cb33c76cc2631b3bd21888",
+      "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+      "gororoba_quantum/qpu_cases.py": "f3f3757f31b0708ad936365b43b628b5f031dcc91772058315fa035602a0d377",
+      "gororoba_quantum/qpu_planning.py": "3d67572320efbfb481172344aa2d6fea2091ebff5bbcc367838d8148526eaa32",
+      "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+      "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+      "gororoba_quantum/rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+      "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+      "gororoba_quantum/rank_sector_contracts.py": "701b15fa0769665100b5887e41d369b908a6f6212e6af27848e7cb7ed7e80a1a",
+      "gororoba_quantum/rank_sector_experiments.py": "d2afe9e85f1689a56475b58add137c9b063bc4ac315b874094a3dc7958be1c90",
+      "gororoba_quantum/ripple_contracts.py": "456198bcd8ba8d346a0474bfbfe0572eb42cbe80725ffe2b34a53e7b49a48276",
+      "gororoba_quantum/ripple_dynamics.py": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11",
+      "gororoba_quantum/ripple_experiments.py": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+      "gororoba_quantum/runtime_contracts.py": "669e038ecc8820706f5b5227c1b7c742c24ef26baf97f15d3abb62afee5d8771",
+      "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+      "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+      "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9",
+      "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb"
+    },
+    "source_sha256_before": {
+      "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+      "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+      "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+      "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+      "gororoba_quantum/correction_circuits.py": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+      "gororoba_quantum/correction_collection.py": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+      "gororoba_quantum/correction_planning.py": "b0fdb646a422df83b18d9914562a1a290aff6049aa354f0a7c7dbbad1d53c713",
+      "gororoba_quantum/correction_schedule.py": "04b1b33096b1fc303a23ee8f1a26cebddf6002fc81fdc1864c709f74f3d933a6",
+      "gororoba_quantum/correction_statistics.py": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+      "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+      "gororoba_quantum/diagnostic_experiments.py": "306131bed57e866faaa7def8f6776655f7cc4aab2221a8c1511ace9f76b83f0e",
+      "gororoba_quantum/experiment_optimizer.py": "a548562dde3622b2c0aedef7beee5e01fc9d47f52898fe0c0ba58290813a7d03",
+      "gororoba_quantum/experiments.py": "d73058084725663dc5da7e55bd90602b42b79cc1802146735c3e8a7c9a831061",
+      "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+      "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+      "gororoba_quantum/integral_homology.py": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+      "gororoba_quantum/live_run.py": "9645bcf88eb2e88a368e492ec3bb3018c96f0230e550c099930d031820a45fcd",
+      "gororoba_quantum/local_compute.py": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402",
+      "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+      "gororoba_quantum/native_preflight.py": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a",
+      "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+      "gororoba_quantum/packing.py": "cf2fc70d2f0d339c5e67e27f013a12398b55bb7408c6de6588308b656e01142c",
+      "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+      "gororoba_quantum/placement_feasibility.py": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+      "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+      "gororoba_quantum/pub_shot_allocation.py": "5d7834df8b4e9d8b219894a5d48fd0f399c9884412cb33c76cc2631b3bd21888",
+      "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+      "gororoba_quantum/qpu_cases.py": "f3f3757f31b0708ad936365b43b628b5f031dcc91772058315fa035602a0d377",
+      "gororoba_quantum/qpu_planning.py": "3d67572320efbfb481172344aa2d6fea2091ebff5bbcc367838d8148526eaa32",
+      "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+      "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+      "gororoba_quantum/rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+      "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+      "gororoba_quantum/rank_sector_contracts.py": "701b15fa0769665100b5887e41d369b908a6f6212e6af27848e7cb7ed7e80a1a",
+      "gororoba_quantum/rank_sector_experiments.py": "d2afe9e85f1689a56475b58add137c9b063bc4ac315b874094a3dc7958be1c90",
+      "gororoba_quantum/ripple_contracts.py": "456198bcd8ba8d346a0474bfbfe0572eb42cbe80725ffe2b34a53e7b49a48276",
+      "gororoba_quantum/ripple_dynamics.py": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11",
+      "gororoba_quantum/ripple_experiments.py": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+      "gororoba_quantum/runtime_contracts.py": "669e038ecc8820706f5b5227c1b7c742c24ef26baf97f15d3abb62afee5d8771",
+      "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+      "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+      "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9",
+      "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb"
+    }
+  },
+  "schema": "prospective-static-practical-packing-accuracy-v1",
+  "statistical_scope": {
+    "assumptions": [
+      "independent stationary bounded observations within each PUB repetition stream",
+      "arbitrary dependence across components within a physical shot",
+      "union bounds across separate PUBs without a cross-PUB independence assumption",
+      "common qualified calibration and comparison context as enforced by collection"
+    ],
+    "claim": "Every practical label is a deterministic statement implied by the existing simultaneous two-sided intervals. No additional hypothesis tests, alpha redistribution or selected-subset recalculation is used.",
+    "existing_one_sided_reject_null_fields_used_for_practical_labels": false,
+    "model_predictions_used_for_decisions": false,
+    "power_proof": "For positive d, missed positive classification requires a downward score error of at least |d|-0.10-h. Allocate beta/2 to each one-sided mean deviation and apply Hoeffding plus a union bound. Reverse signs for negative d. The result uses score-range normalization and requires no independence across the two PUBs.",
+    "power_statement": "Endpointwise conservative detection guarantee only. Let h be normalized interval half-width and n1,n2 the two PUB counts. For beta=0.2, r=sum_i sqrt(log(2/beta)/(2*n_i)); true |d| >= 0.10+h+r suffices for at least 80 percent probability of the correct practical-defect label. Equivalence power and joint detection power are unclaimed.",
+    "two_static_family_joint_coverage_union_lower_bound": 0.9,
+    "within_family_coverage_lower_bound": 0.95
+  },
+  "status": "proposal_for_owner_preregistration_before_acquisition",
+  "tolerance_rationale": "The owner-selected coarse engineering tolerance allows at most one tenth of a declared single-arm score range. This is a prospective acceptance specification, not a theorem, literature-derived hardware guarantee, or a tolerance widened to make every control pass.",
+  "underresolution_interpretation": "The dimension-16 Design C weighted control has normalized half-width 0.11200601629405729, exceeding tolerance 0.10. Every future interval under the frozen allocation is too wide for equivalence, but sufficiently large practical defects remain detectable. Its tolerance and 1024/4096 allocation remain unchanged.",
+  "underresolved_equivalence_endpoints": [
+    "ripple_design_c_16_1_8_isolated_packed_difference"
+  ],
+  "whole_family_packing_preservation_certified": false
+}

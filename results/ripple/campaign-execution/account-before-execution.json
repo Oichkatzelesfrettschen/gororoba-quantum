@@ -1,0 +1,34 @@
+{
+  "accepted_jobs": [
+    {
+      "charge_seconds": 29,
+      "id": "db67fqsvf2bc73d0pk4g",
+      "status": "DONE",
+      "usage_source": "job.usage(partial=False)"
+    },
+    {
+      "charge_seconds": 11,
+      "id": "db67frimb58s738bci4g",
+      "status": "DONE",
+      "usage_source": "job.usage(partial=False)"
+    }
+  ],
+  "accessible_backend_names": [
+    "ibm_fez",
+    "ibm_kingston",
+    "ibm_marrakesh"
+  ],
+  "budget": {
+    "usage_consumed_seconds": 49,
+    "usage_limit_seconds": 600,
+    "usage_period": {
+      "end_time": "2026-10-12T17:46:55.110Z",
+      "start_time": "2026-09-14T17:46:55.110Z"
+    },
+    "usage_remaining_seconds": 551
+  },
+  "instance_sha256_12": "e3de05b6901e",
+  "observed_at": "2026-10-12T17:46:57.581703+00:00",
+  "pending_account_jobs": [],
+  "scope": "Read-only account usage, backend names, pending account jobs and settled prior-job charges"
+}

@@ -1,0 +1,105 @@
+{
+  "best_by_backend": [
+    {
+      "backend": "ibm_fez",
+      "best_candidate": "ibm_fez-seed-20261014-shots-8192",
+      "proxy": {
+        "backend": "ibm_fez",
+        "charge_lower_scenario_seconds": 10.863851264000001,
+        "member_scores": [
+          0.5883306353009188,
+          0.5883306353009188,
+          0.5883306353009188,
+          0.5883306353009188
+        ],
+        "replicas": 1,
+        "seed": 20261014,
+        "shots": 8192,
+        "total_cz_count": 272,
+        "worst_arm_quality": 0.5883306353009188
+      },
+      "qualified_candidates": 6
+    },
+    {
+      "backend": "ibm_kingston",
+      "best_candidate": "ibm_kingston-seed-20261010-shots-8192",
+      "proxy": {
+        "backend": "ibm_kingston",
+        "charge_lower_scenario_seconds": 10.932664064,
+        "member_scores": [
+          0.5574436029214824,
+          0.5574436029214824,
+          0.5574436029214824,
+          0.5574436029214824
+        ],
+        "replicas": 1,
+        "seed": 20261010,
+        "shots": 8192,
+        "total_cz_count": 280,
+        "worst_arm_quality": 0.5574436029214824
+      },
+      "qualified_candidates": 6
+    },
+    {
+      "backend": "ibm_marrakesh",
+      "best_candidate": "ibm_marrakesh-seed-20261012-shots-8192",
+      "proxy": {
+        "backend": "ibm_marrakesh",
+        "charge_lower_scenario_seconds": 10.997544704,
+        "member_scores": [
+          0.481458313575902,
+          0.481458313575902,
+          0.481458313575902,
+          0.481458313575902
+        ],
+        "replicas": 1,
+        "seed": 20261012,
+        "shots": 8192,
+        "total_cz_count": 296,
+        "worst_arm_quality": 0.481458313575902
+      },
+      "qualified_candidates": 6
+    }
+  ],
+  "boundaries": [
+    "Finite retained calibrated frontier; global optimality remains unproved.",
+    "Proxy quality differs from measured fidelity; acquisition supplies terminal success and hardware-minus-model residuals."
+  ],
+  "calibrations": {
+    "ibm_fez": "2026-10-12T13:09:29-07:00",
+    "ibm_kingston": "2026-10-12T13:41:56-07:00",
+    "ibm_marrakesh": "2026-10-12T13:46:44-07:00"
+  },
+  "candidate_count": 18,
+  "declared_objective": "worst_arm_calibrated_quality_then_charge",
+  "physical_submissions": 0,
+  "qualified_candidate_count": 18,
+  "record": "results/live/2026-10-12T210111.066250Z/record.json",
+  "record_sha256": "6d4de1692e84f5d8b8b9308fcd387aac59a74490133360ebad19e04b624967b7",
+  "schema": "bounded-correction-calibration-quality-selection-audit-v1",
+  "selected_candidate": "ibm_fez-seed-20261014-shots-8192",
+  "selected_proxy": {
+    "backend": "ibm_fez",
+    "charge_lower_scenario_seconds": 10.863851264000001,
+    "member_scores": [
+      0.5883306353009188,
+      0.5883306353009188,
+      0.5883306353009188,
+      0.5883306353009188
+    ],
+    "replicas": 1,
+    "seed": 20261014,
+    "shots": 8192,
+    "total_cz_count": 272,
+    "worst_arm_quality": 0.5883306353009188
+  },
+  "selection_key": [
+    "negative worst_arm_quality",
+    "charge_lower_scenario_seconds",
+    "total_cz_count",
+    "seed",
+    "backend"
+  ],
+  "service_calls": 0,
+  "status": "pass"
+}

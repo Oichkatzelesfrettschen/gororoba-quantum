@@ -1,0 +1,15 @@
+{
+  "accepted_job_ids": [],
+  "approved_case_consumed": false,
+  "invocation_record": "results/live/2026-10-12T205014.933900Z/record.json",
+  "ledger_before_sha256": "65578ab897d6b8a6a35423a8ef172520618f02871f30f895f3ec8f577599d24a",
+  "observed_at": "2026-10-12T21:06:26.831798+00:00",
+  "previous_reservation_seconds": 30,
+  "reason": "Full-family metadata comparison detected peer calibration drift before the submission surface; the record contains neither submission attempts nor accepted jobs.",
+  "record_sha256": "d8ee86531c7317e62505730f9487bde056d4ed64d3e1153dbdd44bfecb5278b3",
+  "released_reservation_seconds": 30,
+  "schema": "ripple-stopped-before-attempt-reservation-reconciliation-v1",
+  "settled_charge_seconds": 0,
+  "state": "approval_required",
+  "submission_field_present": false
+}
