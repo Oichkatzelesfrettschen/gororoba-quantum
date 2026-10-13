@@ -2,7 +2,7 @@
 
 Each gate is one shell command with a repository-relative working directory.
 A shard runs every gate whose index modulo the shard count equals its shard
-number, on a thread pool sized to the CPUs available to the process; every
+number, on a thread pool sized to half the CPUs available to the process; every
 gate runs regardless of earlier failures, and the exit status is nonzero when
 any gate fails, listing each failure with its output tail.
 """
@@ -24,20 +24,27 @@ TAIL_LINES = 40
 
 
 def _cpus() -> int:
-    return len(os.sched_getaffinity(0)) if hasattr(os, "sched_getaffinity") else os.cpu_count() or 1
+    # The standalone runner uses the same affinity/quota policy as local preparation.
+    sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+    from parallel import default_threads
+
+    return default_threads()
 
 
 def _run(gate: dict[str, Any], environment: dict[str, str]) -> tuple[dict[str, Any], int, float, str]:
     start = time.monotonic()
-    completed = subprocess.run(
-        ["sh", "-c", f"set -eu\n{gate['cmd']}"],
-        cwd=ROOT / gate["cwd"],
-        env=environment,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            ["sh", "-c", f"set -eu\n{gate['cmd']}"],
+            cwd=ROOT / gate["cwd"],
+            env=environment,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    except OSError as error:
+        return gate, 126, time.monotonic() - start, f"Gate launch failed: {error}"
     return gate, completed.returncode, time.monotonic() - start, completed.stdout
 
 
@@ -57,6 +64,9 @@ def main(argv: list[str] | None = None) -> int:
         return 0
     environment = dict(os.environ)
     environment.setdefault("PYTHON", sys.executable)
+    environment.setdefault("GOROROBA_WORKERS", "1")
+    for variable in ("OMP_NUM_THREADS", "OPENBLAS_NUM_THREADS", "MKL_NUM_THREADS"):
+        environment.setdefault(variable, "1")
     failures = []
     with ThreadPoolExecutor(max_workers=_cpus()) as pool:
         for gate, status, seconds, output in pool.map(lambda gate: _run(gate, environment), selected):

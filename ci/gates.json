@@ -1241,7 +1241,13 @@
    "suite": "sources",
    "name": "kernel-resource-policy-receipt",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/check_kernel_resource_policy_receipt.py"
+   "cmd": "ruff check scripts/check_kernel_resource_policy_receipt.py && ruff format --check scripts/check_kernel_resource_policy_receipt.py && mypy scripts/check_kernel_resource_policy_receipt.py && \"$PYTHON\" -B -W error scripts/check_kernel_resource_policy_receipt.py && \"$PYTHON\" -B -O -W error scripts/check_kernel_resource_policy_receipt.py"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error ci/check_run_gates.py && \"$PYTHON\" -B -O -W error ci/check_run_gates.py",
+   "name": "ci-resource-launch-contract"
   }
  ],
  "excluded": [

@@ -12,8 +12,10 @@ lint and type-check configuration only.
 GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.yml)).
 [ci/gates.json](ci/gates.json) lists each gate as one command with its
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
-a thread pool sized to the runner's CPUs and keeps going past failures, so a
-red shard lists every failing gate. Six shards run in parallel on Python 3.14
+a thread pool using the shared half-CPU default and keeps going past failures, so a
+red shard lists every failing gate, including launch errors. Child process
+pools and BLAS/OpenMP threads default to one while the outer pool schedules
+independent gates; explicit environment overrides retain their authority. Six shards run in parallel on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
 shard is green and its review threads are resolved. A new module, evidence
