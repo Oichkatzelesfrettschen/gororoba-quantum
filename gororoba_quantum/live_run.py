@@ -2733,6 +2733,35 @@ def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     return sorted(set(reasons))
 
 
+def unchanged_since_planning(
+    record: dict[str, Any], inventory: dict[str, Any], choices: list[Choice], fresh: list[Snapshot]
+) -> bool:
+    """Whether a pre-submission refresh would rebuild exactly the planned choices.
+
+    Selection reads every backend, so every backend's eligibility and
+    calibration timestamp must match the planning inventory, and every chosen
+    backend's compiled instructions must keep their capabilities and
+    calibration fingerprint.
+    """
+    planned = record.get("system_inventory")
+    if not isinstance(planned, dict) or set(planned) != set(inventory):
+        return False
+    for name, entry in inventory.items():
+        before = planned[name]
+        if not isinstance(before, dict) or not isinstance(entry, dict):
+            return False
+        if (before.get("eligibility"), before.get("calibration")) != (
+            entry.get("eligibility"),
+            entry.get("calibration"),
+        ):
+            return False
+    by_name = {snapshot.name: snapshot for snapshot in fresh}
+    return all(
+        choice.snap.name in by_name and not choice_change_reasons(choice, by_name[choice.snap.name])
+        for choice in choices
+    )
+
+
 def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
     """Reasons full fresh selection changes an existing executable choice."""
     reasons = choice_change_reasons(current, fresh.snap)
@@ -3148,7 +3177,15 @@ def submit(
             f"submission requires an admitted plan, received {record.get('state')!r}: {'; '.join(reasons)}"
         )
     fresh_design: dict[str, Any] = {}
-    if getattr(args, "family", None):
+    unchanged = unchanged_since_planning(record, inventory, choices, fresh_snapshots)
+    if unchanged:
+        # plan() ran in this process against the same calibrations, so a
+        # rebuild reproduces its choices exactly; the approved-record
+        # comparison below still checks this plan in full.
+        fresh_choices = list(choices)
+        fresh_fusion_placement = record.get("fusion_placement", {})
+        print("pre-submit refresh: every backend's calibration and eligibility match planning; reusing the plan")
+    elif getattr(args, "family", None):
         fresh_choices, fresh_design = qpu_planning.prepare(
             sys.modules[__name__], fresh_snapshots, args, service.usage(), attempt_trace
         )
@@ -3196,6 +3233,7 @@ def submit(
             "system_inventory": inventory,
             "skipped_backends": skipped,
             "reselected_groups": reselected,
+            "rebuilt": not unchanged,
             "fusion_placement": fresh_fusion_placement,
             "selection_trace": attempt_trace,
         }

@@ -3029,6 +3029,32 @@ def _verify_static_placement_judge() -> None:
         compare(recursive, {0: 0, 1: 1})
 
 
+def _verify_unchanged_since_planning() -> None:
+    """The pre-submit fast path reuses a plan only when every backend matches planning."""
+    inventory = {
+        "ibm_a": {"eligibility": "eligible", "calibration": "2026-01-01T00:00:00Z", "pending_jobs": 1},
+        "ibm_b": {"eligibility": "eligible", "calibration": "2026-01-01T01:00:00Z", "pending_jobs": 4},
+    }
+    record = {"system_inventory": copy.deepcopy(inventory)}
+    if not live_run_module.unchanged_since_planning(record, copy.deepcopy(inventory), [], []):
+        raise RuntimeError("identical planning and refresh inventories rebuilt the plan")
+    for name, field, value in (
+        ("ibm_b", "calibration", "2026-01-01T02:00:00Z"),
+        ("ibm_a", "eligibility", "maintenance"),
+    ):
+        changed = copy.deepcopy(inventory)
+        changed[name][field] = value
+        if live_run_module.unchanged_since_planning(record, changed, [], []):
+            raise RuntimeError(f"a changed {field} on {name} reused the plan")
+    added = copy.deepcopy(inventory) | {"ibm_c": {"eligibility": "eligible", "calibration": "x"}}
+    if live_run_module.unchanged_since_planning(record, added, [], []):
+        raise RuntimeError("a new backend in the refresh inventory reused the plan")
+    queue_only = copy.deepcopy(inventory)
+    queue_only["ibm_a"]["pending_jobs"] = 9
+    if not live_run_module.unchanged_since_planning(record, queue_only, [], []):
+        raise RuntimeError("a queue-length change alone rebuilt the plan")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
@@ -3049,6 +3075,7 @@ def _verify() -> None:
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
     _verify_worker_quota()
+    _verify_unchanged_since_planning()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()
