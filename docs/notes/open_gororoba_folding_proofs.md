@@ -1,5 +1,10 @@
 # Folding, exact rank geometry, and Rocq proof audit
 
+The audit below records commit `abbf13c` and its historical receipts.
+The [latest C881 audit](c881_exhaustive_proof.md) supersedes the C881
+exhaustive-lower-bound limitation with fresh Rocq 9.2 evidence from HEAD
+`b977e43f`. Other claims below retain their explicitly named source scope.
+
 The audit identifies an exact route from existing algebra to smaller operator blocks. The route preserves every block and its kernel information. Fold-average projection alone loses zero-divisor information. The sister repository proves useful all-order Boolean sign-code statements, while its formal rank-geometry coverage remains substantially narrower than Koebisu's dimension-32 question.
 
 The [Koebisu research note](koebisu_rank_stratum_research.md) connects the primary sources to the geometric program. The [portable replay bundle](../evidence/folding_proofs/README.md) retains the exact counterexamples and fresh proof receipts. Sister-repository locators below use [open_gororoba at the audited commit](https://github.com/Oichkatzelesfrettschen/open_gororoba/tree/abbf13cada78d9b106fc610a36f6eea54567ecfc).
