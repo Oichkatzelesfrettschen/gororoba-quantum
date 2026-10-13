@@ -111,6 +111,29 @@ owns the link from literature and observations to the next intervention.
    [rank case](../results/live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md)
    preserve their controls and joint shot vectors; independent execution
    admission follows the correction decision and remaining campaign gates.
+9. Separate first-measurement assignment error from true state error with the
+   feed-forward contrast. Two Kingston correction runs
+   ([db6p55clf4us73c5nd9g](../results/live/2026-10-13T020454.599853Z/analysis-d7a774882d98.json),
+   [db6pepklf4us73c5nqcg](../results/live/2026-10-13T022433.333775Z/collect.json))
+   record the first bit as 0 in about 11 percent of shots for both odd labels.
+   Within that stratum the arms reverse by label: for s3 the known-label arm
+   succeeds more often (0.567 and 0.553 against 0.451 and 0.429), while for s1
+   the measured-bit arm succeeds more often (0.573 and 0.553 against 0.540 and
+   0.512). An assignment error leaves the qubit in its prepared state, so
+   following the recorded bit applies the wrong phase and the known label
+   wins; a true state change before readout makes the recorded bit correct and
+   the measured-bit arm wins. The stratified contrast estimates, per label,
+   the mixture of the two error types. The recorded-0 stratum contributes
+   +0.016 of the aggregate s3 gain of +0.013 in the first run and +0.013 of
+   +0.021 in the second. Predictions: repeated first
+   readout with a majority vote shrinks the s3 stratum gap and leaves the s1
+   reversal; a delay inserted before the first readout grows the s1 true-error
+   share at the qubit's T1 rate; readout-calibration circuits on the first
+   writer give an assignment matrix whose label asymmetry matches the strata.
+   Falsifier: a single symmetric assignment model reproduces both labels'
+   strata within their binomial intervals. The design reuses the four-PUB
+   correction template, adds the repeated-readout and delayed arms, and costs
+   one dynamic job near 11 seconds per arm set at 8192 shots.
 
 The installed runner creates separate static and dynamic jobs and uses no
 Runtime Batch context. A future Batch wrapper changes orchestration; measured
