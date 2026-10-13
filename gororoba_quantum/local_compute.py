@@ -13,6 +13,7 @@ import io
 import json
 import threading
 import time
+from collections import OrderedDict
 from typing import Any
 
 import numpy as np
@@ -91,7 +92,10 @@ _GPU_LOCK = threading.Lock()
 
 # NoiseModel serialization dominates planning time; a model is built once per
 # backend snapshot and never mutated afterward, so its digest is computed once.
-_NOISE_DIGESTS: dict[int, tuple[Any, str]] = {}
+_NOISE_DIGESTS: OrderedDict[int, tuple[Any, str]] = OrderedDict()
+# A planning or collection phase touches a few snapshots at a time; the bound
+# keeps a long replay from retaining every historical noise model.
+CACHE_ENTRIES = 8
 
 
 def noise_digest(model: Any) -> str:
@@ -111,6 +115,8 @@ def noise_digest(model: Any) -> str:
         json.dumps(noise, sort_keys=True, separators=(",", ":"), allow_nan=False).encode()
     ).hexdigest()
     _NOISE_DIGESTS[id(model)] = (model, digest)
+    while len(_NOISE_DIGESTS) > CACHE_ENTRIES:
+        _NOISE_DIGESTS.popitem(last=False)
     return digest
 
 
@@ -174,21 +180,28 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     """Preserve declared order and retain actual Aer device/kernel evidence."""
     policy = getattr(simulator, "_gororoba_compute_policy", None)
     device, admission = "CPU", None
-    if policy is not None:
-        validate(policy)
-        device, admission = route(policy, circuits)
-        # One GPU shot state at a time keeps execution within the two-state
-        # admission floor; CPU batches parallelize shots across threads.
-        simulator.set_options(device=device, max_parallel_shots=1 if device == "GPU" else policy["threads"])
-    start = time.perf_counter()
-    if device == "GPU":
-        # GPU admission reserves memory for one simulator on the single
-        # admitted device, so concurrent planner threads take turns there.
-        with _GPU_LOCK:
-            result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
-    else:
+    # GPU admission reads free device memory for one simulator, so admission
+    # and the GPU run share one single-device lock; a CPU-routed batch
+    # releases it before running so CPU batches stay parallel.
+    holding = policy is not None and policy["mode"] != "cpu"
+    if holding:
+        _GPU_LOCK.acquire()
+    try:
+        if policy is not None:
+            validate(policy)
+            device, admission = route(policy, circuits)
+            # One GPU shot state at a time keeps execution within the two-state
+            # admission floor; CPU batches parallelize shots across threads.
+            simulator.set_options(device=device, max_parallel_shots=1 if device == "GPU" else policy["threads"])
+        if holding and device != "GPU":
+            _GPU_LOCK.release()
+            holding = False
+        start = time.perf_counter()
         result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
-    elapsed = time.perf_counter() - start
+        elapsed = time.perf_counter() - start
+    finally:
+        if holding:
+            _GPU_LOCK.release()
     if not result.success:
         raise RuntimeError(f"local Aer simulation failed: {result.status}")
     if policy is not None:

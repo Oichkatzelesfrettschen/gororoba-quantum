@@ -38,6 +38,7 @@ import os
 import subprocess
 import sys
 import time
+from collections import OrderedDict
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -1921,7 +1922,7 @@ class TargetView(BackendV2):
 # A snapshot's Target and properties stay fixed for the process, and Aer reads a
 # NoiseModel without mutating it, so one model serves every simulator built
 # from the same snapshot objects.
-_NOISE_MODELS: dict[tuple[str, int, int], tuple[Any, Any, NoiseModel]] = {}
+_NOISE_MODELS: OrderedDict[tuple[str, int, int], tuple[Any, Any, NoiseModel]] = OrderedDict()
 
 
 def _noise_model(name: str, view: Any, target: Any, props: Any) -> NoiseModel:
@@ -1937,6 +1938,8 @@ def _noise_model(name: str, view: Any, target: Any, props: Any) -> NoiseModel:
             continue
         noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
     _NOISE_MODELS[key] = (target, props, noise)
+    while len(_NOISE_MODELS) > local_compute.CACHE_ENTRIES:
+        _NOISE_MODELS.popitem(last=False)
     return noise
 
 
