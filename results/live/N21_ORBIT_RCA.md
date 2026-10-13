@@ -3,6 +3,15 @@
 Runs on ibm_fez, physical qubits 142 (control), 136 (work 1), 143 (work 4),
 144 (work 16), 4096 shots per PUB.
 
+Status: the phases below are model-dependent fit parameters from these runs'
+calibrations, not measured rotations. PATCH_WINDOW_FINDINGS.md adds a
+same-calibration characterization: product-state Ramsey probes show no
+resolved window phase, while a refit of that run's orbit distributions needs
+a phase-like term in the nominal context and none with the window echo. The
+window attribution below stands as a state-dependent candidate, and the
+echo-contrast comparison (0.17 rad fitted, contrast nearly unchanged) shows
+why contrast alone cannot settle orbit phase.
+
 | Run | Job | Charge | Record |
 |---|---|---|---|
 | Orbit feed-forward | db6ub8svf2bc73d1rc50 | 4 s | 2026-10-13T080216.451663Z |

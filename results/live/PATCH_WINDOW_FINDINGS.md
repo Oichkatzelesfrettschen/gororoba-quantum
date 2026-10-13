@@ -1,85 +1,160 @@
 # Patch-window characterization findings (ibm_fez, 2026-10-13)
 
-Jobs db794cmil99s73fnjlk0, db794dor1c5c738k1a50, db794hmr6oqs73871tbg; record
-2026-10-13T201757.782152Z; commit 9b86a13; charge 25 s (7 + 9 + 9) under 27 s.
-All three jobs ran 21:22:00-21:22:58Z under one calibration (13:41:52 PDT), so
-cross-job comparisons share calibration. Analysis: patch-analysis.json.
+Record 2026-10-13T201757.782152Z; jobs db794cmil99s73fnjlk0 (16 window
+circuits), db794dor1c5c738k1a50 (6 orbit circuits), db794hmr6oqs73871tbg (24
+static circuits); 25 s charged (7 + 9 + 9) under 3 x 9 s ceilings. All three
+jobs ran 21:22:00-21:22:58Z under calibration 13:41:52 PDT. Analyses:
+patch-analysis.json (analyzer), collect.json family_analysis (registered
+contracts), orbit-refit.json (exploratory refit, orbit_refit.py beside it).
 
-| Quantity | Work A (136) | Work B (144) |
-|---|---|---|
-| Plain Ramsey detuning (profile 95%, model-dependent) | +3.0 kHz [0.7, 4.8] | +1.0 kHz [-0.8, 2.7] |
-| Plain phase at 7.6 us | 0.09 rad | 0.02 rad |
-| Measure+reset window phases (control 0 or 1), 3.6-7.6 us | within 0.08 rad | within 0.08 rad |
-| Measured minus reset-only, Y | -0.008 +/- 0.087 | +0.055 +/- 0.086 |
-| Paired minus single, Y | -0.025 +/- 0.086 | -0.006 +/- 0.087 |
-| Plain visibility at 7.6 us | 0.884 | 0.924 |
-| Excited population after 7.6 us | 0.918 (T1 94 us predicts 0.922) | 0.891 (T1 157 us predicts 0.953) |
-| Spectator / neighbor population after excitation | at background (<= 0.012) | at background |
+## Execution status: approval and review-gate deviation
 
-Echo and window fits with phases near zero carry 500 kHz aliases (1 / 2 us
-spacing) and stay unresolved; their per-point phases are all within 0.08 rad.
+| Stage | Source | Record | Experiment digest |
+|---|---|---|---|
+| Approved case | 4aaea17 | 2026-10-13T195251.183877Z, sha256 50d512b5...3a70 | a8d281df7ce6 |
+| Submitted case | 9b86a13 | 2026-10-13T201720.224397Z, sha256 ec6e8662...cc2f | 7283f357a681 |
+| Collected acquisition | 9b86a13 | 2026-10-13T201757.782152Z | 7283f357a681 |
 
-Orbit contrast differences (normal 95% half-width 0.042; registered Hoeffding
-0.24): nominal 0.201, barrier 0.159, barrier+echo 0.184; barrier - nominal
--0.042 +/- 0.042, echo - barrier +0.025 +/- 0.042. No intervention selected.
+The approval named the 4aaea17 record. Submission of that record was refused
+three times (2026-10-13T201059.920197Z, T201314.868415Z, T201529.748272Z),
+each for one reason: "one result group mixes static and dynamic circuits",
+because the source-level ramsey() builder measured work A before work B's
+basis change. Commit 9b86a13 moves every basis change ahead of every
+measurement in that shared builder, which reorders paired Ramsey circuits as
+well as the single-work-qubit references. The submitted case was built and
+sent before CI or review ran on 9b86a13, and its record digest differs from
+the approved one, so the acquisition ran outside the digest-bound approval;
+later CI success does not change that.
+
+The compiled payload is byte-identical: both records' isa.qpy have sha256
+cd45b6993fa4540a..., and all 46 per-circuit QPY dumps and instruction
+sequences match. The transpiler's canonical ordering removed the source
+reordering, and the static/dynamic classifier that refused the approved case
+ran on the source circuits. The experiment digests differ through the source
+commit and the calibration snapshot (11:56:54 approved, 12:57:03 submitted).
+Issue #76 covers dry-run/submit classifier parity; binding an approval to the
+exact record, source, circuit archive, manifest and ceilings at submit is a
+separate guard.
+
+## Registered endpoints (collector, simultaneous Hoeffding, alpha 0.005 each)
+
+Precision contracts; the collector records reject_null as null.
+
+| Endpoint | Estimate | Interval |
+|---|---:|---|
+| work A echo - plain, Y | -0.0820 | [-0.311, +0.146] |
+| work B echo - plain, Y | -0.0098 | [-0.238, +0.219] |
+| work A window (control 1) - plain, Y | -0.0879 | [-0.316, +0.141] |
+| work B window (control 1) - plain, Y | -0.0332 | [-0.262, +0.195] |
+| work A control 1 - control 0, Y | +0.0547 | [-0.174, +0.283] |
+| work A measured - reset-only, Y | -0.0078 | [-0.236, +0.221] |
+| work A paired - single, Y | -0.0254 | [-0.254, +0.203] |
+| spectator excess from work A | 0.0000 | [-0.114, +0.114] |
+| orbit barrier - nominal, contrast | -0.0422 | [-0.282, +0.198] |
+| orbit echo - barrier, contrast | +0.0249 | [-0.215, +0.265] |
+
+Every registered interval contains zero, and every interval also contains
+effects large enough to matter: at visibility 0.9 a pure Y change of 0.22
+corresponds to roughly a quarter radian. The registered outcome is
+nondetection at the declared precision; it establishes neither equivalence
+nor absence of a mechanism. No intervention is selected.
+
+Descriptive, outside the registered family: work B measured - reset-only
++0.055, work B paired - single -0.006, window (control 0) - plain -0.143
+(A) and -0.021 (B).
+
+## Local Ramsey coordinates
+
+X = 2 k_X / N_X - 1 and Y = 2 k_Y / N_Y - 1 are uncorrected local
+measurement coordinates of the product-state probes, not a reconstruction of
+the orbit state.
+
+| Condition at 7.604 us | Qubit | R | Principal phase (rad) |
+|---|---|---:|---:|
+| plain | 136 | 0.884 | +0.091 |
+| plain | 144 | 0.924 | +0.023 |
+
+Plain Ramsey on 136 fits +3.02 kHz (profile interval [0.67, 4.77] kHz,
+model-dependent), which maps to 0.03-0.23 rad over 7.6 us; producing
+0.59-0.70 rad over the same exposure with one constant detuning needs
+12.4-14.7 kHz. Echo and window fits carry 500 kHz aliases from the 2 us
+sampling step and stay unresolved; near-zero sampled phases do not bound the
+unwrapped phase between samples. The executed work-qubit idle is read from
+the returned schedules; the control's measure and reset fit inside it.
+
+## Orbit distributions under one calibration
+
+Signed score s = P(01) - P(11) per arm; ideal contrast 1/4.
+
+| Context | Feedback hw - replay | No-feedback hw - replay | Contrast hw / replay |
+|---|---:|---:|---|
+| nominal | +0.0520 | +0.0588 | 0.201 / 0.208 |
+| barrier | +0.0291 | +0.0554 | 0.159 / 0.186 |
+| barrier + echo | +0.0454 | +0.0337 | 0.184 / 0.172 |
+
+The calibration-bound replay reproduces the nominal contrast, while both
+arms shift together by about +0.05; the contrast cancels that common shift.
+
+Exploratory nested refit (orbit_refit.py; not preregistered): exact orbit law
+with round-1 and round-2 kickback phases (phi1, phi2), depolarization, and
+1 -> 0 report flips on b0 and b1, fitted per context across both arms.
+(phi1, phi2) and (phi1 + pi, phi2 + pi) give the identical law, so only the
+near-zero basin is reported.
+
+| Context | Bias-only deviance / dof | Phase + bias deviance / dof | LR (2 dof), p | Phases (rad) |
+|---|---|---|---|---|
+| nominal | 16.5 / 3 | 4.5 / 1 | 12.0, 0.0025 | phi1 +0.73, phi2 -1.00 |
+| barrier | 8.4 / 3 | 4.0 / 1 | 4.4, 0.11 | -- |
+| barrier + echo | 2.0 / 3 | 1.8 / 1 | 0.2, 0.92 | -- |
+
+Under one calibration, the nominal orbit needs a phase-like term and the
+barrier-plus-echo context does not. The b1 report-flip parameter (0.04-0.10)
+absorbs the common-mode shift. The nominal phase model still leaves
+deviance 4.5 on 1 dof, so neither model fully describes that context, and
+the phases remain model parameters rather than measured rotations.
 
 ## Interpretation
 
-- The idle work qubits accumulate at most about 0.1 rad over the orbit window
-  length, with or without a control measurement and reset, in either control
-  state. Static detuning, measurement-associated
-  phase, control-state dependence, paired-preparation ZZ and population
-  exchange cannot produce the 0.59-0.70 rad kickback phase of the orbit runs.
-  The fitted 3.0 kHz detuning on 136 accumulates 2 pi x 3.0 kHz x 7.6 us =
-  0.14 rad; the measured plain phase at 7.6 us is 0.09 rad.
-- Inference (moderate confidence): the orbit phase arises inside the orbit circuit's own gate
-  sequence: coherent error in the compiled controlled-swap decompositions
-  (CZ conditional phase or single-qubit frame errors) or in the deferred
-  work-only gates, rather than in idle or measurement windows.
-- Work B shows excess population loss at 7.6 us beyond its reported T1.
-- Next diagnostic: phase tomography of the round-1 multiplier block alone
-  (orbit prefix with and without the control measurement), not more window
-  idle characterization.
-- The inference weakens if the orbit window's executed duration or carrier
-  qubits differ from the characterized 3.6-7.6 us idle on 136/144, or if the
-  entangled orbit state couples to a mechanism a product-state Ramsey misses;
-  the returned orbit schedules and round-1 block tomography test both.
-- T1 and readout values come from the execution-time calibration 13:41:52 PDT
-  (136: T1 94 us; 144: T1 157 us).
+The tested idle and measurement/reset windows do not reproduce a large phase
+on the product-state probes under this calibration, and the registered
+comparisons select no mitigation. The same-calibration orbit refit points the
+other way for the entangled orbit state: a phase-like term appears in the
+nominal context and is absent with the window echo. The candidate mechanism
+is therefore state-dependent and associated with the window in the orbit
+state (qubit 143 carries orbit amplitude for residue 4 there, while it is a
+spectator in the Ramsey probes), with gate-associated error still open. The
+earlier window attribution in N21_ORBIT_RCA.md and this record agree on the
+window; the product-state nondetection limits which simple mechanisms remain.
 
-## Registered endpoints (simultaneous Hoeffding half-widths)
+## Qubit 144 population
 
-| Endpoint | Difference | Half-width | Verdict |
-|---|---:|---:|---|
-| work A echo - plain, Y at 1900 dt | -0.082 | 0.229 | no effect resolved |
-| work B echo - plain, Y at 1900 dt | -0.010 | 0.229 | no effect resolved |
-| work A window(c0) - plain, Y at 1400 dt | -0.143 | 0.229 | no effect resolved |
-| work B window(c0) - plain, Y at 1400 dt | -0.021 | 0.229 | no effect resolved |
-| work A control 1 - control 0, Y at 1400 dt | +0.055 | 0.229 | no effect resolved |
-| work A / B measured - reset-only, Y | -0.008 / +0.055 | 0.229 | no effect resolved |
-| work A / B paired - single, Y | -0.025 / -0.006 | 0.229 | no effect resolved |
-| orbit barrier - nominal, contrast | -0.042 | 0.240 | no intervention selected |
-| orbit echo - barrier, contrast | +0.025 | 0.240 | no intervention selected |
+Normalized retention S = (p(t) - p_bg) / (p(0) - p_bg) at 7.6 us, Jeffreys
+95% intervals from independent counts:
 
-All measured phases lie near zero, so the cos((phi1 + phi2) / 2) factor of the
-Y-only endpoints is near 1 and the favorable-orientation condition holds in
-the data. The work-qubit idle of the window circuits is read from the returned
-schedule; the control's measure and reset fit inside it (3.604 us at 900 dt).
+| Qubit | S | Interval | exp(-t/T1), calibration T1 |
+|---|---:|---|---:|
+| 136 | 0.927 | [0.909, 0.945] | 0.922 (94 us) |
+| 144 | 0.894 | [0.874, 0.913] | 0.953 (157 us) |
 
-## Comparison scope
+Qubit 144 falls below its calibration T1 prediction; one delay does not
+identify a decay curve, and relaxation, leakage and preparation/readout
+context remain unseparated. Orbit models carry asymmetric work-qubit loss as
+a nuisance.
 
-This run measures window phase and orbit contrast; it does not measure orbit
-kickback phase. The 0.59-0.70 rad figure comes from window job
-db6uqdkvf2bc73d1sc80 under an earlier calibration, so the interpretation
-compares across calibrations (the cross-job calibration issue tracks this).
+## Budget
 
-## Provenance
+Campaign scope (180 s): 121 s before the orbit work, then 4 s (orbit), 11 s
+(window) and 25 s (this run): 161 s consumed, 19 s remaining. The earlier
+46 s handoff understated the two orbit charges by 2 s. Account window on
+2026-10-13T22:47Z: 210 s consumed, 390 s remaining of 600 s. The validation
+allocation has no frozen intervention to validate, and no further QPU case is
+approved.
 
-The approved record 2026-10-13T195251.183877Z (4aaea17, experiment digest
-a8d281df7ce6) was refused at submit three times for one cause: the
-single-work-qubit references measured work A before work B's basis change, so
-the static group held a dynamic circuit. Commit 9b86a13 reordered the basis
-changes; the executed case is 2026-10-13T201720.224397Z (record sha256
-ec6e86629948407640b5e7a66a2306cca8bd7d1004227f66de50aedee898cc2f, experiment
-digest 7283f357a681). It was submitted on the owner's "go" before CI or review
-ran on 9b86a13; CI later passed on all six shards.
+## Next analysis before any acquisition
+
+- Branch-conditioned orbit refit with executed schedules, asymmetric
+  relaxation and report error, retaining every compatible basin.
+- A candidate selected-coherence measurement on the native round-1 prefix
+  (immediate, matched idle, measurement/reset contexts; XX, XY, YX, YY and Z
+  settings on the verified carriers including 143), written as a case only if
+  the refit leaves the question open.
