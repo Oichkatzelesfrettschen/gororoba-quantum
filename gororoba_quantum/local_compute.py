@@ -1,9 +1,11 @@
 """Qualified local simulation policy and ordered batch evidence.
 
-Density matrices run on CPU threads by default. auto routes batches of
-GPU_MIN_ACTIVE_QUBITS or more active qubits to an admitted single GPU, gpu
-requires that admission, and cpu never routes. Local preparation time stays
-separate from the QPU charge ledger.
+Under the default method a batch containing a dynamic circuit runs
+statevector trajectories on CPU shot threads, and every other batch runs a
+density matrix. auto routes density-matrix batches of GPU_MIN_ACTIVE_QUBITS
+or more active qubits to an admitted single GPU and keeps trajectories on
+CPU; gpu requires admission for every batch; cpu never routes. Local
+preparation time stays separate from the QPU charge ledger.
 """
 
 from __future__ import annotations
@@ -290,6 +292,49 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     return result
 
 
+def _verify_trajectory_noise(policy: dict[str, Any]) -> None:
+    """Trajectories and the density matrix sample one noisy dynamic law within shot noise.
+
+    Gate depolarizing and asymmetric readout error move the law far from the
+    noiseless one, so a trajectory kernel that dropped either channel fails.
+    """
+    from qiskit import QuantumCircuit
+    from qiskit_aer.noise import NoiseModel, ReadoutError, depolarizing_error
+
+    circuit = QuantumCircuit(2, 3, name="noisy_feed_forward")
+    circuit.h(0)
+    circuit.cx(0, 1)
+    circuit.measure(0, 0)
+    circuit.reset(0)
+    with circuit.if_test((circuit.clbits[0], True)):
+        circuit.x(0)
+    circuit.measure(0, 1)
+    circuit.measure(1, 2)
+    noise = NoiseModel(basis_gates=["h", "cx", "x"])
+    noise.add_all_qubit_quantum_error(depolarizing_error(0.08, 1), ["h", "x"])
+    noise.add_all_qubit_quantum_error(depolarizing_error(0.15, 2), ["cx"])
+    noise.add_all_qubit_readout_error(ReadoutError([[0.95, 0.05], [0.10, 0.90]]))
+    shots = 40000
+    laws = {}
+    for label, method, model in (
+        ("trajectories", DYNAMIC_STATEVECTOR, noise),
+        ("density", "density_matrix", noise),
+        ("noiseless", DYNAMIC_STATEVECTOR, NoiseModel()),
+    ):
+        simulator = AerSimulator(noise_model=model)
+        configure(simulator, policy | {"method": method})
+        counts = run(simulator, [circuit], shots, 20261013).get_counts(0)
+        laws[label] = {key: value / shots for key, value in counts.items()}
+
+    def distance(left: dict[str, float], right: dict[str, float]) -> float:
+        return 0.5 * sum(abs(left.get(key, 0.0) - right.get(key, 0.0)) for key in set(left) | set(right))
+
+    if distance(laws["trajectories"], laws["density"]) > 0.02:
+        raise RuntimeError(f"trajectory and density-matrix noisy laws differ: {laws}")
+    if distance(laws["trajectories"], laws["noiseless"]) < 0.1:
+        raise RuntimeError("the trajectory kernel dropped the gate or readout noise channels")
+
+
 def _verify() -> None:
     from qiskit import QuantumCircuit
     from qiskit_aer.noise import NoiseModel
@@ -328,6 +373,7 @@ def _verify() -> None:
     assert batches(simulator)[0]["ordered_circuit_names"] == [circuit.name]
     assert not batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False)
     assert batches(simulator)[0]["method"] == "statevector", "dynamic batch did not run statevector trajectories"
+    _verify_trajectory_noise(policy)
     static = QuantumCircuit(2, 2, name="static")
     static.h(0)
     static.cx(0, 1)

@@ -390,8 +390,10 @@ QPU accuracy.
 ## Thread scaling and GPU measurement
 
 Dynamic circuits with mid-circuit measurement or feed-forward evolve each
-shot separately under a density-matrix noise model, so Aer splits their
-shots across `max_parallel_shots` threads. Static circuits with terminal
+shot separately, so Aer splits their shots across `max_parallel_shots`
+threads. The default method samples them as statevector trajectories; the
+density-matrix rows below record the `--local-compute-method density_matrix`
+path. Static circuits with terminal
 measurement sample once from one final state; below Aer's
 `statevector_parallel_threshold` of 14 qubits their state update stays on
 one thread, and experiment parallelism leaves counts unchanged with no
@@ -415,8 +417,12 @@ The batched density-matrix GPU kernel rejects the control-flow jump that
 feed-forward compiles to, and unbatched GPU execution launches kernels per
 shot on a 32-element state.
 
-`--local-compute auto`, the default, routes each simulation batch by its
-widest active register (`local_compute.route`). Batches below
+For the two seven-qubit N=21 feedback PUBs at 1024 shots on the same host,
+density matrices took 281 s on 12 CPU threads and 71 s on the GPU, and
+statevector trajectories took 4.8 s on 12 CPU threads and 46 s on the GPU.
+`--local-compute auto`, the default, therefore keeps trajectory batches on
+CPU threads and routes each density-matrix batch by its widest active
+register (`local_compute.route`). Batches below
 `GPU_MIN_ACTIVE_QUBITS = 11` run on CPU threads. Wider batches run on the
 GPU when Aer reports one and `aer_resources.admit_gpu` admits two density
 states against a fresh CUDA free-memory reading and the declared
