@@ -334,8 +334,10 @@ def prepare(
                 )
 
     # Aer releases the GIL while it simulates, so independent choices run on
-    # threads. Each task owns a simulator built from the snapshot's cached noise
-    # model; its batch evidence joins the snapshot simulator in serial order.
+    # threads. Each simulator already uses the policy's thread count, so the
+    # pool runs only as many simulators as fit in the available CPUs. Each task
+    # owns a simulator built from the snapshot's cached noise model; its batch
+    # evidence joins the snapshot simulator in serial order.
     def simulate_choice(choice: Any) -> tuple[Any, dict[str, Any]]:
         simulator = runtime.noise_simulator(
             choice.snap.name, choice.snap.backend.target, choice.snap.properties, local_compute.settings(args)
@@ -343,7 +345,8 @@ def prepare(
         return simulator, runtime.simulate(choice, simulator, args.model_shots)
 
     ordered = [choice for choices, _configuration in candidates for choice in choices]
-    with ThreadPoolExecutor(max_workers=parallel.workers()) as pool:
+    concurrent = max(1, parallel.workers() // local_compute.settings(args)["threads"])
+    with ThreadPoolExecutor(max_workers=concurrent) as pool:
         simulated = iter(list(pool.map(simulate_choice, ordered)))
     for candidate_index, (choices, configuration) in enumerate(candidates):
         predictions: dict[str, tuple[tuple[float, ...], ...]] = {}
@@ -356,7 +359,7 @@ def prepare(
                             f"{entry.name}: compiled labeled ideal differs from its exact oracle"
                         )
             task_simulator, noisy = next(simulated)
-            simulators[id(choice.snap)]._gororoba_simulation_batches.extend(local_compute.batches(task_simulator))
+            local_compute.merge_batches(simulators[id(choice.snap)], task_simulator)
             predictions.update(
                 {name: tuple(tuple(map(float, dist)) for dist in replicas) for name, replicas in noisy.items()}
             )

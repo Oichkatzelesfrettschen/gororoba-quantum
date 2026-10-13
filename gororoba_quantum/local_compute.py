@@ -133,6 +133,13 @@ def batches(simulator: Any) -> list[dict[str, Any]]:
     return list(getattr(simulator, "_gororoba_simulation_batches", []))
 
 
+def merge_batches(target: Any, source: Any) -> None:
+    """Append source's batch evidence to target's, in order; a simulator without evidence contributes nothing."""
+    evidence = batches(source)
+    if evidence:
+        target._gororoba_simulation_batches = batches(target) + evidence
+
+
 def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
     """Choose the Aer device for one batch from its widest active register.
 
