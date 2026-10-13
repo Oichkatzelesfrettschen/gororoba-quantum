@@ -103,6 +103,7 @@ the orbit interventions; "no intervention selected" stays an allowed outcome.
 - [x] 46-circuit groups with per-PUB shots and exact-law checks
 - [ ] Executed-exposure timing qualification (native dry run returned QiskitBackendNotFoundError; analyzer reads timing from the collected schedule)
 - [x] Contracts and analyzer repairs with planted-mechanism coverage
-- [x] Priced characterization case (27 s ceiling, 25 s charged); owner approval
+- [x] Priced characterization case (4aaea17, record 50d512b5...3a70); owner approval
+- [x] Characterization executed as an amended case outside that approval (9b86a13, record ec6e8662...cc2f, byte-identical isa.qpy; 25 s charged); results/live/PATCH_WINDOW_FINDINGS.md records the deviation
 - [ ] Validation stage: no intervention selected, so no frozen intervention exists to validate
 - [ ] Frozen intervention and validation case at or below 14 s; owner approval

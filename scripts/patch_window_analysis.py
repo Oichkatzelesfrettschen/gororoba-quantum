@@ -247,12 +247,16 @@ def analyze(run: Path) -> dict[str, Any]:
             if not points:
                 continue
             # Physical fits use only points whose X and Y circuits executed the
-            # same idle; requested delays never stand in for executed timing.
-            qualified = [point for point in points if point["timing_qualified"]]
+            # same idle and whose coherence is resolved from zero; requested
+            # delays never stand in for executed timing.
+            timed = [point for point in points if point["timing_qualified"]]
+            qualified = [point for point in timed if point["phase_rad"] is not None]
             distinct = sorted({round(point["t_us"], 2) for point in qualified})
             entry: dict[str, Any] = {"points": points}
             if len(distinct) >= 2 and len(qualified) >= 3:
                 entry["fit"] = fit_ramsey(qualified)
+            elif len(timed) > len(qualified):
+                entry["fit"] = {"status": "unresolved: visibility not resolved from zero", "times_us": distinct}
             else:
                 entry["fit"] = {"status": "unresolved: executed timing unavailable or collapsed", "times_us": distinct}
             if condition == "ramsey_echo":
@@ -326,7 +330,29 @@ def analyze(run: Path) -> dict[str, Any]:
                     "se": math.sqrt(values[0][1] + values[1][1]),
                 }
     report["reference_comparisons"] = references
+    report["registered_endpoints"] = registered_endpoints(run, record)
     return report
+
+
+def registered_endpoints(run: Path, record: dict[str, Any]) -> dict[str, Any]:
+    """The collector's preregistered contract results for this record.
+
+    collect.json evaluates every registered contract with the planner's
+    grouped Hoeffding bounds on the same raw members; the analyzer reports
+    those rows unchanged so the registered family and its intervals have one
+    source.
+    """
+    path = run / "collect.json"
+    if not path.exists():
+        return {"withheld": "collect.json absent; run live_run.py --collect first"}
+    analysis = json.loads(path.read_text())[0].get("family_analysis", {})
+    if "observables" not in analysis:
+        return {"withheld": analysis.get("withheld", "the collector produced no registered analysis")}
+    names = [contract["name"] for contract in record.get("observable_contracts", [])]
+    rows = {row["name"]: row for row in analysis["observables"]}
+    if sorted(rows) != sorted(names):
+        return {"withheld": "collector endpoints differ from the record's registered contracts"}
+    return {"method": analysis.get("method"), "endpoints": [rows[name] for name in names]}
 
 
 def self_check() -> None:

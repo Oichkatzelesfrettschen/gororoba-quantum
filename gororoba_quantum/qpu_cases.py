@@ -291,6 +291,15 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
                     pub["classical_latency_seconds"] == 0 or (dynamic_allowed and stages > 0),
                     "static allocated PUB cost includes classical latency",
                 )
+                _require(
+                    math.isclose(
+                        pub["classical_latency_seconds"],
+                        stages * policy["design"]["classical_latency_us"] * 1e-6,
+                        rel_tol=1e-12,
+                        abs_tol=1e-15,
+                    ),
+                    "allocated PUB latency differs from its stages at the declared classical latency",
+                )
             _require(_count(pub["shots"], "PUB shots") == expected_shots, "PUB shots differ from the saved plan")
             durations = [
                 _number(pub[key], key)
