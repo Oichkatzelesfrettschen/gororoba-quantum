@@ -165,16 +165,49 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     return law / law.sum()
 
 
-def measured_counts(run: Path) -> dict[str, np.ndarray]:
+def measured_pairs(run: Path) -> dict[str, dict[str, np.ndarray]]:
+    """Counts per feed-forward pair, keyed by the member name without its arm suffix.
+
+    PUB i carries the record's member i; the archived ISA confirms the order,
+    since only the feed-forward member contains an if_else.
+    """
+    from qiskit import qpy
+
     collected = json.loads((run / "collect.json").read_text())
     (job,) = collected[0]["jobs"]
-    counts = {}
-    for index, arm in enumerate(("feedback", "no_feedback")):
+    members = [member["name"] for member in json.loads((run / "record.json").read_text())["groups"][0]["members"]]
+    with (run / "isa.qpy").open("rb") as handle:
+        circuits = qpy.load(handle)
+    if len(circuits) != len(members):
+        raise RuntimeError("archived circuits and record members differ in number")
+    pairs: dict[str, dict[str, np.ndarray]] = {}
+    for index, (name, circuit) in enumerate(zip(members, circuits, strict=True)):
+        arm = "no_feedback" if name.endswith("_no_feedback") else "feedback"
+        if ("if_else" in circuit.count_ops()) != (arm == "feedback"):
+            raise RuntimeError(f"PUB {index} feed-forward structure differs from member {name}")
         payload = json.loads((run / "raw" / job / f"pub_{index:02d}.json").read_text())
         bits = payload["registers"][REGISTER]["bitstrings"]
         tally = Counter(int(value[1]) + 2 * int(value[0]) for value in bits)
-        counts[arm] = np.array([tally[label] for label in range(4)], dtype=float)
-    return counts
+        pairs.setdefault(name.removesuffix("_" + arm), {})[arm] = np.array(
+            [tally[label] for label in range(4)], dtype=float
+        )
+    return pairs
+
+
+def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], best: dict[str, Any]) -> list[float]:
+    """Profile-likelihood 95 percent interval of the work phase: deviance within 3.84 of its minimum."""
+    names = [name for name, _low, _high in NUISANCE]
+    bounds = [(low, high) for _name, low, high in NUISANCE]
+    start = np.array([best["parameters"][name] for name in names])
+    inside = []
+    for phase in np.linspace(-math.pi, math.pi, 121):
+
+        def objective(vector: np.ndarray, phase: float = float(phase)) -> float:
+            return deviance(counts, readout | dict(zip(names, map(float, vector), strict=True)) | {"phase_one": phase})
+
+        if minimize(objective, start, method="L-BFGS-B", bounds=bounds).fun <= best["deviance"] + 3.84:
+            inside.append(float(phase))
+    return [min(inside), max(inside)] if inside else []
 
 
 def deviance(counts: dict[str, np.ndarray], params: dict[str, float]) -> float:
@@ -326,7 +359,7 @@ def main(argv: list[str] | None = None) -> int:
     if arguments.run is None:
         parser.error("a run directory is required")
     _check_exact_laws()
-    counts = measured_counts(arguments.run)
+    pairs = measured_pairs(arguments.run)
     if arguments.readout:
         source: dict[str, Any] = {
             "prob_meas1_prep0": arguments.readout[0],
@@ -336,16 +369,21 @@ def main(argv: list[str] | None = None) -> int:
     else:
         source = calibrated_readout(arguments.run) | {"source": "backend properties at the record calibration"}
     readout = _readout(source["prob_meas1_prep0"], source["prob_meas0_prep1"])
-    report = {
-        "measured_counts": {arm: values.astype(int).tolist() for arm, values in counts.items()},
-        "control_readout": source,
-        "models": {name: fit(counts, readout, extra) for name, extra in MECHANISMS.items()},
-    }
-    baseline = report["models"]["baseline_depolarizing"]["deviance"]
-    for name, model in sorted(report["models"].items(), key=lambda item: item[1]["deviance"]):
-        gain = baseline - model["deviance"]
-        params = ", ".join(f"{key}={value:.4f}" for key, value in model["parameters"].items())
-        print(f"{name:30s} G2={model['deviance']:8.2f} gain={gain:7.2f} k+{model['added_parameters']}  {params}")
+    report: dict[str, Any] = {"control_readout": source, "pairs": {}}
+    for pair, counts in pairs.items():
+        models = {name: fit(counts, readout, extra) for name, extra in MECHANISMS.items()}
+        interval = phase_interval(counts, readout, models["work_phase_one"])
+        report["pairs"][pair] = {
+            "measured_counts": {arm: values.astype(int).tolist() for arm, values in counts.items()},
+            "models": models,
+            "work_phase_95_interval": interval,
+        }
+        baseline = models["baseline_depolarizing"]["deviance"]
+        print(f"{pair}: work phase {models['work_phase_one']['parameters']['phase_one']:+.3f} rad, 95% {interval}")
+        for name, model in sorted(models.items(), key=lambda item: item[1]["deviance"])[:4]:
+            params = ", ".join(f"{key}={value:.4f}" for key, value in model["parameters"].items())
+            gain = baseline - model["deviance"]
+            print(f"  {name:30s} G2={model['deviance']:8.2f} gain={gain:7.2f} k+{model['added_parameters']}  {params}")
     if arguments.out:
         arguments.out.write_text(json.dumps(report, indent=2, sort_keys=True) + "\n")
     return 0
