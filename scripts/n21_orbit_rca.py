@@ -536,12 +536,20 @@ def phase_interval(
     return segments
 
 
+def _with_excess(readout: dict[str, float], params: dict[str, float]) -> dict[str, float]:
+    combined = readout | params
+    for key in ("mid_e01", "mid_e10", "end_e01", "end_e10"):
+        combined[key] = readout[key] + params.get(f"{key}_excess", 0.0)
+    return combined
+
+
 def deviance(counts: dict[str, np.ndarray], params: dict[str, float], readouts: dict[str, dict[str, float]]) -> float:
     """Deviance of both arms; each arm's readout applies unless params fits it."""
     total = 0.0
     for arm, feed_forward in (("feedback", True), ("no_feedback", False)):
         observed = counts[arm]
-        expected = np.clip(distribution(readouts[arm] | params, feed_forward), 1e-12, None) * observed.sum()
+        expected = np.clip(distribution(_with_excess(readouts[arm], params), feed_forward), 1e-12, None)
+        expected = expected * observed.sum()
         positive = observed > 0
         total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
     return total
@@ -560,10 +568,16 @@ def _assignment(group: dict[str, Any], qubit: int, properties: Any) -> tuple[flo
     retained = group.get("placed_qubit_calibration", {}).get(str(qubit))
     if retained and {"prob_meas1_prep0", "prob_meas0_prep1"} <= retained.keys():
         return float(retained["prob_meas1_prep0"]), float(retained["prob_meas0_prep1"])
+    # live_run.readout_flips uses the aggregate error for both directions
+    # when a backend omits the asymmetric fields.
+    if retained and "readout_error" in retained:
+        return float(retained["readout_error"]), float(retained["readout_error"])
     if properties is None:
         raise RuntimeError(f"no retained calibration for qubit {qubit}; pass --readout")
     values = {item.name: float(item.value) for item in properties.qubits[qubit]}
-    return values["prob_meas1_prep0"], values["prob_meas0_prep1"]
+    if "prob_meas1_prep0" in values and "prob_meas0_prep1" in values:
+        return values["prob_meas1_prep0"], values["prob_meas0_prep1"]
+    return values["readout_error"], values["readout_error"]
 
 
 def member_readouts(run: Path, roles: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
@@ -617,8 +631,10 @@ MECHANISMS: dict[str, tuple[tuple[str, float, float], ...]] = {
     "window_dephasing": (("window_t2", 0.0, 1.0),),
     "reset_failure": (("reset_failure", 0.0, 1.0),),
     "control_phase": (("control_phase", -math.pi, math.pi),),
-    "mid_readout_assignment": (("mid_e01", 0.0, 0.5), ("mid_e10", 0.0, 0.5)),
-    "terminal_readout_assignment": (("end_e01", 0.0, 0.5), ("end_e10", 0.0, 0.5)),
+    # Assignment alternatives add an excess shared by both arms to each arm's
+    # calibrated rate, so a zero excess recovers the baseline (nested models).
+    "mid_readout_assignment": (("mid_e01_excess", 0.0, 0.5), ("mid_e10_excess", 0.0, 0.5)),
+    "terminal_readout_assignment": (("end_e01_excess", 0.0, 0.5), ("end_e10_excess", 0.0, 0.5)),
 }
 NUISANCE = (("round1", 0.0, 1.0), ("round2", 0.0, 1.0))
 
@@ -646,8 +662,8 @@ def fit(
         "parameters": params,
         "deviance": float(best.fun),
         "added_parameters": len(extra),
-        "feedback_law": distribution(readouts["feedback"] | params, True).tolist(),
-        "no_feedback_law": distribution(readouts["no_feedback"] | params, False).tolist(),
+        "feedback_law": distribution(_with_excess(readouts["feedback"], params), True).tolist(),
+        "no_feedback_law": distribution(_with_excess(readouts["no_feedback"], params), False).tolist(),
     }
 
 
@@ -667,9 +683,9 @@ def self_check() -> None:
         arm: np.round(distribution(truth, feed_forward) * 4096)
         for arm, feed_forward in (("feedback", True), ("no_feedback", False))
     }
-    both = {"feedback": readout, "no_feedback": readout}
-    phase = fit(counts, both, MECHANISMS["work_phase_one"])
-    baseline = fit(counts, both, MECHANISMS["baseline_depolarizing"])
+    arms = {"feedback": readout, "no_feedback": readout}
+    phase = fit(counts, arms, MECHANISMS["work_phase_one"])
+    baseline = fit(counts, arms, MECHANISMS["baseline_depolarizing"])
     if abs(phase["parameters"]["phase_one"] - 0.5) > 0.02 or phase["deviance"] > 0.05:
         raise RuntimeError(f"work-phase fit missed the planted phase: {phase['parameters']}")
     if baseline["deviance"] - phase["deviance"] < 3.84:

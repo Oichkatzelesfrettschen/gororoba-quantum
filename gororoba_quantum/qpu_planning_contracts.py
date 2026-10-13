@@ -165,21 +165,25 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
     def ops(name: str) -> dict[str, int]:
         return dict(arms[name].count_ops())
 
-    nominal = ops("n21_orbit_nominal_feedback")
-    _require(ops("n21_orbit_extra_readout_feedback")["measure"] == nominal["measure"] + 1, "extra readout was removed")
-    _require(ops("n21_orbit_window_delay_feedback").get("delay", 0) >= 1, "window delay was removed")
-    echo_isa = arms["n21_orbit_window_echo_feedback"]
-    wires: dict[int, list[str]] = {}
-    for instruction in echo_isa.data:
-        for qubit in instruction.qubits:
-            wires.setdefault(echo_isa.find_bit(qubit).index, []).append(instruction.operation.name)
-    echoed = [
-        wire
-        for wire, names in wires.items()
-        if ["barrier", "delay", "x", "delay", "x", "barrier"]
-        in [names[index : index + 6] for index in range(len(names))]
-    ]
-    _require(len(echoed) == 2, f"window echo lost its delay-X-delay-X sequence on the two work wires: {echoed}")
+    # The interventions preserve the ideal law, so only these structural
+    # checks show they survived transpilation, in both arms of every pair.
+    for arm in ("feedback", "no_feedback"):
+        nominal = ops(f"n21_orbit_nominal_{arm}")
+        extra = ops(f"n21_orbit_extra_readout_{arm}")
+        _require(extra["measure"] == nominal["measure"] + 1, f"extra readout was removed from the {arm} arm")
+        _require(ops(f"n21_orbit_window_delay_{arm}").get("delay", 0) >= 1, f"window delay left the {arm} arm")
+        echo_isa = arms[f"n21_orbit_window_echo_{arm}"]
+        wires: dict[int, list[str]] = {}
+        for instruction in echo_isa.data:
+            for qubit in instruction.qubits:
+                wires.setdefault(echo_isa.find_bit(qubit).index, []).append(instruction.operation.name)
+        echoed = [
+            wire
+            for wire, names in wires.items()
+            if ["barrier", "delay", "x", "delay", "x", "barrier"]
+            in [names[index : index + 6] for index in range(len(names))]
+        ]
+        _require(len(echoed) == 2, f"the {arm} echo lost its delay-X-delay-X sequence on the work wires: {echoed}")
     return choices, configuration
 
 
