@@ -1,0 +1,65 @@
+{
+  "schema": "qpu-participant-quiescence-after-adversarial-review-v1",
+  "observed_at": "2026-10-12 21:44:05 UTC",
+  "owners": [
+    {
+      "thread": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+      "observed_status": "idle",
+      "latest_turn_status": "completed",
+      "completed_at": 1791835635,
+      "cursor": "a21336ca-45f6-477d-9cfa-93aba1c03287:58"
+    },
+    {
+      "thread": "01a129a2-94d7-7e70-a281-780352df62eb",
+      "observed_status": "idle",
+      "latest_turn_status": "completed",
+      "completed_at": 1791835647,
+      "cursor": "bcb1562e-4f50-4e0f-b144-0a65d41bd533:29"
+    },
+    {
+      "thread": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+      "observed_status": "idle",
+      "latest_turn_status": "completed",
+      "completed_at": 1791835670,
+      "cursor": "e213a01a-6f83-4cca-a210-10145b6062e9:20"
+    },
+    {
+      "thread": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+      "observed_status": "idle",
+      "latest_turn_status": "completed",
+      "completed_at": 1791835653,
+      "cursor": "4ac61577-07f3-4c96-a1db-a88808d2c3d7:5"
+    },
+    {
+      "thread": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+      "observed_status": "idle",
+      "latest_turn_status": "completed",
+      "completed_at": 1791835739,
+      "cursor": "3fc0fbbf-ebf5-4838-876f-eafe9f834e62:17"
+    },
+    {
+      "thread": "01a12c8e-0e53-7792-bead-6b71282df961",
+      "observed_status": "idle",
+      "latest_turn_status": "completed",
+      "completed_at": 1791836207,
+      "cursor": "83da5c8d-b353-407e-b696-7ed156955f9b:164"
+    },
+    {
+      "thread": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+      "observed_status": "notLoaded",
+      "latest_turn_status": "completed",
+      "completed_at": 1791838095,
+      "cursor": "b76a309e-24f4-4fb5-90fd-15cabe19dd00:28"
+    }
+  ],
+  "all_turns_completed": true,
+  "all_participants_quiescent": true,
+  "not_loaded_scope": "Central retains its completed turn and verified handback, and the app reports notLoaded rather than an active turn. The receipt preserves that exact status.",
+  "local_reviewers": [
+    "correction_serialization_review",
+    "campaign_admission_review",
+    "scientific_inference_review"
+  ],
+  "local_reviewers_completed": true,
+  "historical_terminal_error_scope": "Earlier atlas and placement child errors remain errors; previously accepted independent parent recovery discharged their readiness scope."
+}

@@ -1,0 +1,82 @@
+{
+  "schema": "actual-participant-quiescence-v1",
+  "observed_at": "2026-10-12T21:56:35.729Z",
+  "participants": [
+    {
+      "thread_id": "01a12e2f-0c99-7140-9907-f6e5ef283a8e",
+      "status": "idle",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a131b9-7f9c-7ef1-8ba1-3193f08928ec",
+      "cursor": "a21336ca-45f6-477d-9cfa-93aba1c03287:58"
+    },
+    {
+      "thread_id": "01a129a2-94d7-7e70-a281-780352df62eb",
+      "status": "idle",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a131b9-6da8-7c61-8c46-8384ec6e99ab",
+      "cursor": "bcb1562e-4f50-4e0f-b144-0a65d41bd533:29"
+    },
+    {
+      "thread_id": "01a12a07-a9e6-7621-9bbe-108086ce018b",
+      "status": "idle",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a131b9-8ad8-7072-8df1-ba88237f091a",
+      "cursor": "e213a01a-6f83-4cca-a210-10145b6062e9:20"
+    },
+    {
+      "thread_id": "01a130cb-cf07-7481-b85e-39cc1eb47625",
+      "status": "idle",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a131b9-9c09-7d92-9d77-3f46fc6f90ee",
+      "cursor": "4ac61577-07f3-4c96-a1db-a88808d2c3d7:5"
+    },
+    {
+      "thread_id": "01a12c2a-d0a3-7253-ba47-edcbf5c06c1c",
+      "status": "idle",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a131b9-a703-78a1-964a-742be1ef72b4",
+      "cursor": "3fc0fbbf-ebf5-4838-876f-eafe9f834e62:17"
+    },
+    {
+      "thread_id": "01a12c8e-0e53-7792-bead-6b71282df961",
+      "status": "idle",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a131c2-73cb-71d0-925d-5b8be13ed671",
+      "cursor": "83da5c8d-b353-407e-b696-7ed156955f9b:164"
+    },
+    {
+      "thread_id": "01a130eb-8212-77e3-9f4b-cfc273001a21",
+      "status": "notLoaded",
+      "latest_turn_status": "completed",
+      "latest_turn_id": "01a1314b-6a29-7971-8dd4-c12caaa45e5b",
+      "cursor": "b76a309e-24f4-4fb5-90fd-15cabe19dd00:28"
+    }
+  ],
+  "external_participants_quiescent": true,
+  "local_reviewers": [
+    {
+      "name": "campaign_admission_review",
+      "status": "completed"
+    },
+    {
+      "name": "correction_serialization_review",
+      "status": "completed"
+    },
+    {
+      "name": "scientific_inference_review",
+      "status": "completed"
+    }
+  ],
+  "historical_children": [
+    {
+      "name": "atlas_score_repair",
+      "status": "errored_quota",
+      "scope_discharged_by_parent": true
+    },
+    {
+      "name": "placement_review",
+      "status": "errored_quota",
+      "scope_discharged_by_parent": true
+    }
+  ]
+}

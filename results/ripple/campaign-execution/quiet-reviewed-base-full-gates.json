@@ -1,0 +1,8 @@
+{
+  "exit_code": 0,
+  "log_sha256": "23c8523ff5925fd76e9a410dc0c091f1f093cb37845dbb9a6a271ef850f02ce7",
+  "schema": "quiet-reviewed-base-full-gates-v1",
+  "scope": "Complete repository publication gate suite on reviewed base. Two-file repair has separate normal and optimized affected-contract evidence; current-source broad gates run separately.",
+  "script_sha256": "b9785e469cd22228168454fbbeab5e642290400a35fac65784a8fbc4cfe29fa0",
+  "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+}

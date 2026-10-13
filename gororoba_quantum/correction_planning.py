@@ -108,7 +108,7 @@ def _priced_job(
             )
         )
     charge = math.fsum([overhead, *(pub.estimated_execution_seconds for pub in costs)])
-    return asdict(
+    job = asdict(
         JobCost(
             f"{choice.snap.name}/dynamic/1",
             tuple(costs),
@@ -118,6 +118,9 @@ def _priced_job(
             "declared overhead; retained historical charge supplies no backend guarantee",
         )
     )
+    # Approval compares fresh metadata with JSON archives, which encode PUB sequences as lists.
+    job["pubs"] = list(job["pubs"])
+    return job
 
 
 def _rank(row: dict[str, Any]) -> tuple[float, float, int, int, str]:

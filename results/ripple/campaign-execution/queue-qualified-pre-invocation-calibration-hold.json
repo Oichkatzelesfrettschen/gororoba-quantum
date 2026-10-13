@@ -1,0 +1,34 @@
+{
+  "held_cases": [
+    {
+      "accepted_job_ids": [],
+      "approval_consumed": false,
+      "family": "ripple",
+      "record_sha256": "2807a634ff3fbdac979e3092d0a1b5a802aa0483ccaaa19af6ecdfcffa50da1f",
+      "run": "results/live/2026-10-12T215030.995079Z",
+      "state": "planned"
+    },
+    {
+      "accepted_job_ids": [],
+      "approval_consumed": false,
+      "family": "rank-sector",
+      "record_sha256": "8b7832967064aa55bdd00d5cc376653611dd809a9ab7241a71795abc610205c2",
+      "run": "results/live/2026-10-12T215030.944608Z",
+      "state": "planned"
+    },
+    {
+      "accepted_job_ids": [],
+      "approval_consumed": false,
+      "family": "folded-correction",
+      "record_sha256": "b0a647ea218dd907988f6046a11b7163aa853e23591f8e263bf9c67017a5858a",
+      "run": "results/live/2026-10-12T215031.046514Z",
+      "state": "planned"
+    }
+  ],
+  "new_charge_seconds": 0,
+  "observation": "results/ripple/campaign-execution/queue-qualified-live-admission.json",
+  "reason": "Fez and Marrakesh calibration updates changed the complete discovery inventory before invocation. Kingston calibration remained identical.",
+  "released_reservation_seconds": 0,
+  "schema": "pre-invocation-calibration-renewal-hold-v1",
+  "scope": "Preparation evidence; zero submission invocations for these held cases."
+}

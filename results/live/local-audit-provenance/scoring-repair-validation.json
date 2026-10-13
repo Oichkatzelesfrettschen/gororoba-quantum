@@ -1,0 +1,204 @@
+{
+  "algebra_contracts": {
+    "qpu_executed": false,
+    "rank_family": {
+      "backend_fixture": "fake_fez",
+      "compiled_templates": 8,
+      "maximum_compiled_ideal_error": 1.5543122344752192e-15,
+      "members": 176,
+      "occupied_physical_qubits": 32,
+      "pubs": 36,
+      "quality_floor_scope": "zero fixture floor tests routing and bookkeeping; live fidelity admission remains separate"
+    },
+    "readout_candidate_ranking": {
+      "calibrated_ranking_cases": 8,
+      "optimizer_proxy_checks": 1,
+      "service_calls": 0
+    },
+    "rejected_cli_invocations": 9,
+    "rejected_readout_inputs": 7,
+    "rejected_schedule_inputs": 13,
+    "schema": "static-algebra-planning-contracts-v1",
+    "service_constructor_calls": 0
+  },
+  "artifact_sha256": {
+    "AGENTS.md": "d15ea5a2991991795ed947f292c4ec825c64b027fa8722612d1a4a66ebf27a0c",
+    "README.md": "e4cb2fa9308f6b70ce3e20be28e1ff7fcf434b8137b354c32bb30d9efbd3b237",
+    "docs/RESEARCH_ROADMAP.md": "af671e9d8634221e1f2196061d5a03e1f9026ff40865a022148154859236dcd7",
+    "gororoba_quantum/QPU_EXECUTION_ROADMAP.md": "4ec615a3e0f9ca8920d3c7afabad897bd5b127f50c652d2e00da738336fc4a4d",
+    "gororoba_quantum/RIPPLE_CAMPAIGN.md": "7f67b922ec6ca76a2fdeaafde175640b954225cc5c5231d3a5f1d16cd2e4ab79",
+    "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+    "gororoba_quantum/algebra_planning_contracts.py": "54d2726800fbeb30ef1f9f7fe3fdcd7c570b02c76426c34e1340614e9fbc9200",
+    "results/live/qpu-coordination.json": "0caf6b74ddac37a2015eba64eb350a1eb86903bdf33066315856adb0722f4fb1",
+    "results/ripple/CORRECTION_PREPARATION.md": "615f4c2230dcb5e1f67e5b6cff0b4d31756a8943b869f930c48df9f7990548b1",
+    "results/ripple/CORRECTION_VALIDATION.md": "e0fcf12b9e326ea04d938016d599195fc83dbcacdc67abea78dcba6dcb1bf3a3",
+    "results/ripple/PREPARATION.md": "fc2b718978e945f1d43db7ff13825643878455ddf6d54936d1f69671d75b6e93",
+    "results/ripple/correction-renewal-account.json": "448605227af1289f71da74468db3aaee59d4e657a64c4cc534deedb0e594c999",
+    "results/ripple/correction-renewal-rejection.json": "915ec442f576c64acf4e059e07c04b4a3e9d97141c7a9bec6f0004902bb943b4"
+  },
+  "experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881",
+  "historical_file_preservation": {
+    "changed_paths": [],
+    "file_count": 50,
+    "sha256": {
+      "results/live/2026-10-12T055624.091217Z/ANALYSIS.md": "3b1f3308ee50d3c101ef1a8aeeb381d4013a2a78a613d4c210bae808a4b3668d",
+      "results/live/2026-10-12T055624.091217Z/SHA256SUMS": "8fb5d532cdf4a0e2f7228a1a23366e28454a533264faefc0062565b4e4d8b632",
+      "results/live/2026-10-12T055624.091217Z/TERMINAL_CHANNEL_HYPOTHESIS.md": "321e7e12cbdced3aaff8dbfd95fce6db6b2466e6651564da7e9fab1621b9df44",
+      "results/live/2026-10-12T055624.091217Z/collect.json": "6de820a83905e778e7c11b2e75d729ee6a40311003716e47eff9834d2199aed9",
+      "results/live/2026-10-12T055624.091217Z/isa.qpy": "84b5c3c7703db74fdbd6eb477d131f5353a14d63befb7d3f5375c63a85acf6a1",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/index.json": "a0208a96859cf149a0aad8a1151cfd7ab8affd490d318822708aff199bff8434",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/job_metrics.json": "462b01d998f6b8a7830e213246bb293543e4e64c3ce1e5fc407117da061f413f",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_00.json": "03814a661286b0b8bead2949f216fb8ba22193bc5caa7bc9da415af22149f964",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_01.json": "8c270b65fd0bb1e09d92c6cd5aea478c17df57c6524bc614b2e2bbedb5cd88f0",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_02.json": "479448c8ab214e7a97d1ed24f2105c8d434bb8c273ebe55417159854948dfa90",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_03.json": "bf1f1462cbef31125b7c6ff6fa8e1ab81dea6963d90edd2fe5a64250a39957cc",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_04.json": "0410eddebbdbc760070b2876f4982360976139ebecba27724ec84d08e4eaa844",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_05.json": "6e8c3f67e867d181b17fa9b916cb973ba2236f8d8e86d52140ec471a4dc2eabc",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_06.json": "b4cf8ffdcf164740daf8039e3e00b3c53ea91db8ad2197c944576ba3851f0ff3",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_07.json": "2155f30ec66bd243d24d7b9b30cfe353643deb2f97642d37d197c45b7ca5767d",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_08.json": "f9b8de6a8d522404849da2fa9a271a26530041288751b93c1fcc1d3b55f3e7cb",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_09.json": "3783ac103bd19477773423f5b41c9dadcd1ff918d0becd6dfdf6b820e2bb5f22",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_10.json": "6a1c284e5c3d9aa57ece00eb79dcd39d30d28185392efab4a9a130a6f38d56d9",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/pub_11.json": "8082620396bb823b86bfcb8083e5f30bd5802a774d0a7c3b39159cfa82f8b7d1",
+      "results/live/2026-10-12T055624.091217Z/raw/db67fqsvf2bc73d0pk4g/result_metadata.json": "82af9409329e7e0478b01deae095d3f6927c4a4bf2ea464b06f4a6380faa0429",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/index.json": "97f4d3143d560296f3ab68f8ba16ba7f4ec7048c334205bddcdd546c177ad648",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/job_metrics.json": "4360fe0beb4734e525e68c94e93452b550d5c38f16c84bb36b3d12a153cf92db",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/pub_00.json": "f0d2e5417456592966318bfde33d3ae050929204a4837444145ad62b133b5572",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/pub_01.json": "0f021cc4ce3f2fc172375863d11c531b98a8341e7b830c6af91d6d7c1e12f286",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/pub_02.json": "7e859289c7ebdba1825d17125abb706fe003425e1732664528d64f697f6ce40d",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/pub_03.json": "c9cee8c742967e839d669c957e3c0bb8fe71c85548f4691765ef551eb14797b3",
+      "results/live/2026-10-12T055624.091217Z/raw/db67frimb58s738bci4g/result_metadata.json": "c32eff1e4aef7270dc46071406373f80ce3539ecb604b4dfecba58e21f186307",
+      "results/live/2026-10-12T055624.091217Z/record.json": "91145c3456e8670a19eea258416412d020ca5e3fa71aa37b91ce7a5cb7f74670",
+      "results/live/2026-10-12T055624.091217Z/settled-account-usage.json": "4dc963474fbe30efac61ca7d7728b7e0ae2ee82c10a31151ce84ff326caa1977",
+      "results/live/2026-10-12T055624.091217Z/source-closure.json": "4efa72e2776b79b57d013f7883e48437f191cee12d4451ebabd292b41ea6b889",
+      "results/live/2026-10-12T055624.091217Z/submission.log": "b59d5b1dc54631b1e063af4006cabfa8f963fd5683a38b122d6ac4c422f08807",
+      "results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json": "d49cedd47f6b8423580de053e8768f80016c246ab47a080ca88ffad42a180b0c",
+      "results/live/2026-10-12T055624.091217Z/terminal-channel-check.json": "3046cd65adb23bbf78d84c5aaa2371e52ba0a8b024963731edbcd7d071dbbb57",
+      "results/live/2026-10-12T055624.091217Z/validation.json": "ff42d9f7bc76eaffa73c208ddd8546d698aee26544d5f79e4c64ce0550b24c5d",
+      "results/live/2026-10-12T062505.208379Z/UNAPPROVED_CASE.md": "320ca6c4232bc7e826823bfd4748e406f55858f4f34691c0c1bddeab6d656aec",
+      "results/live/2026-10-12T062505.208379Z/isa.qpy": "0c6ece3dfdccd6239179284be4e33be13d033160a61b30a71f2012d95596fe92",
+      "results/live/2026-10-12T062505.208379Z/native-dry-run/20261012T063039.174056Z-46f54595/report.json": "445622cad538d0f89a143f1941f8d42d7d9ae721f6f517733e48bacc23ac754a",
+      "results/live/2026-10-12T062505.208379Z/record.json": "bbf5f4341151e62dbd5304f54baffa840c41414e6f12762ad84c5924e787a038",
+      "results/live/2026-10-12T062505.208379Z/source-closure.json": "62e6c818a5274f6e740978b73a4a2540725c8b63ee14855af576d0c06aa076aa",
+      "results/live/2026-10-12T062505.552988Z/UNAPPROVED_CASE.md": "e4886fd05783f2f55012e2eeee9189ad692e55ac9350795b8d124c17e12d54d8",
+      "results/live/2026-10-12T062505.552988Z/isa.qpy": "8270326960c2339de5c7e5aefb50f98f5498810fc0ebc3db9a0b30e2ed7bee99",
+      "results/live/2026-10-12T062505.552988Z/native-dry-run/20261012T062730.914121Z-f400b396/report.json": "780f3a41ee21b6b9af8c499d5b121110fe2a4dedffc7f0e8e0e66ab384014e80",
+      "results/live/2026-10-12T062505.552988Z/record.json": "f38dfe635415d264eea754e4d699080092ca7272f65e42304fac08f5b4f5fe7d",
+      "results/live/2026-10-12T062505.552988Z/source-closure.json": "31d0c8f84258b21736ee390876bec7e90aeceb3c4c50da9e7d9430f9a3032f5e",
+      "results/live/2026-10-12T074042.840320Z/SHA256SUMS": "19c3241d4665cc0fc2d9f17d7e883e67227476347fba62106e05b06dfaa07d58",
+      "results/live/2026-10-12T074042.840320Z/UNAPPROVED_CASE.md": "bbc9ce045710766eb597b7a7d9e669bf9663df07f32445cab8245d329efdec08",
+      "results/live/2026-10-12T074042.840320Z/account-inventory.json": "ee9efe96edf063b3cd4d29268fdc425a6faf0703dda44fe9cec4b02b4e6122f5",
+      "results/live/2026-10-12T074042.840320Z/isa.qpy": "2fcb598592888b8a48669df83401979692bb07900e81c07e090fa36ccdaf9aad",
+      "results/live/2026-10-12T074042.840320Z/record.json": "eff6beaf2c25c7c8ac4b243edf08f13d6467797399fb6714453935e16cd7da69",
+      "results/live/2026-10-12T074042.840320Z/source-closure.json": "1b41f676f5500cdb5a9dad81ebe617b278a2628f150baacc33c5aebf86420983"
+    }
+  },
+  "independent_review": "Read-only review found no actionable defect within the bounded static algebra path; primary placement score and finite routing frontier retain their original scopes.",
+  "normal_and_optimized_reports_equal": true,
+  "observed_at": "2026-10-12T10:34:16.023487+00:00",
+  "preparation": {
+    "current_approval_case": null,
+    "evidence": "results/ripple/correction-renewal-rejection.json",
+    "physical_or_mock_jobs_submitted": 0,
+    "state": "three_backend_preparation_ineligible"
+  },
+  "rejected_scoring_mutations": {
+    "backend_wide_rejection": {
+      "detected": true,
+      "error": "bound candidate rejected a valid backend: unsupported_x, cap=1, {'family_rejections': [{'backend': 'readout_score_fixture', 'reason': \"readout_one: physical readout control violates the Target: ['target lacks x(1,)']\"}],"
+    },
+    "early_candidate_cap": {
+      "detected": true,
+      "error": "bound scores failed to rerank before cap/fusion: original, cap=1"
+    },
+    "missing_final_trace": {
+      "detected": true,
+      "error": "'member_scores'"
+    },
+    "missing_resort": {
+      "detected": true,
+      "error": "bound scores failed to rerank before cap/fusion: original, cap=1"
+    },
+    "published_implementation": {
+      "detected": true,
+      "error": "bound scores failed to rerank before cap/fusion: original, cap=1"
+    },
+    "stale_joint_score": {
+      "detected": true,
+      "error": "bound scores failed to rerank before cap/fusion: original, cap=1"
+    },
+    "stale_member_scores": {
+      "detected": true,
+      "error": "stale member scores"
+    }
+  },
+  "required_gates": {
+    "both_current_gate_blocks_executed": true,
+    "exit_code": 0,
+    "mypy_source_file_counts": [
+      89,
+      10
+    ],
+    "operator_log_sha256": "19d47b91f836b6ce37a80526fa2a94d67287bbf8db20f35e9e186b4206f865c1",
+    "operator_script_sha256": "f91b86b5582f3a7bac03e502d7f199ec50d5bc28a611f3c95feaa77a49322ea8",
+    "ruff_formatted_file_counts": [
+      92,
+      10
+    ],
+    "warnings_as_errors": true
+  },
+  "schema": "algebra-readout-scoring-validation-v1",
+  "source_commit": "efa187f30cf0604265455198ce1aa9b8addd1acd",
+  "source_files": {
+    "gororoba_quantum/affine_residual.py": "b17a8d9f75c4380c9205e9edd493117c3c2cbda535cb85ffd8795fd34fe823ec",
+    "gororoba_quantum/algebra_planning.py": "52ea1188fbb774f08327e092abc8b7ab85706ff61a5a2c88e52855d26f7d6a2d",
+    "gororoba_quantum/boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
+    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
+    "gororoba_quantum/correction_circuits.py": "1df4b0a7b0681ee680122cd527494ee1323fb73c0524e570d495f572743da0f3",
+    "gororoba_quantum/correction_collection.py": "21a2c164a8b0c975812f477eacd27fa324a5313e3cd01d09747f19bcb15e6fd8",
+    "gororoba_quantum/correction_planning.py": "b0fdb646a422df83b18d9914562a1a290aff6049aa354f0a7c7dbbad1d53c713",
+    "gororoba_quantum/correction_schedule.py": "04b1b33096b1fc303a23ee8f1a26cebddf6002fc81fdc1864c709f74f3d933a6",
+    "gororoba_quantum/correction_statistics.py": "0dcacbc5eab491e9cce6ab811a5c20a3e5c9a88f09a9f047c5342be84423223e",
+    "gororoba_quantum/designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
+    "gororoba_quantum/diagnostic_experiments.py": "306131bed57e866faaa7def8f6776655f7cc4aab2221a8c1511ace9f76b83f0e",
+    "gororoba_quantum/experiment_optimizer.py": "e7b15af918bc04af19b4dde4b50ab7bfac679341bd44873335decc4475b554d0",
+    "gororoba_quantum/experiments.py": "d73058084725663dc5da7e55bd90602b42b79cc1802146735c3e8a7c9a831061",
+    "gororoba_quantum/factoring.py": "c61d83d581e37ce12b9092ee668a3f76e93a7a8b809aa05c7ad8308fde80b78c",
+    "gororoba_quantum/hybrid_shor.py": "da50722c8167ab80df1df0d840663657e37c2d7fd7783dda3e6876e256ca24f8",
+    "gororoba_quantum/integral_homology.py": "408e311026adeceb5041a10d74438c0599c863746cf9304952e2278aac022629",
+    "gororoba_quantum/live_run.py": "6ae0fa461f18fe8b9ceab13de0860d5e7a7f117be401fe5367509e03268b0330",
+    "gororoba_quantum/local_compute.py": "e31a12d834d7f4817035b7b8d48749cee379c486dcb08c5ce091f3a21b1b7402",
+    "gororoba_quantum/modular_arithmetic.py": "558f003be83509c56094c720a73618c1017111a6475a52855564b7182f3ffe15",
+    "gororoba_quantum/native_preflight.py": "4e59029338e56705a36b38b9db28e6a951f2297a92e446a3c55073827f3a3098",
+    "gororoba_quantum/order_finding.py": "f7c9a3d78eb89f511928cc19493ddb9d33276dfaf5347a8385076042ba52563f",
+    "gororoba_quantum/packing.py": "cf2fc70d2f0d339c5e67e27f013a12398b55bb7408c6de6588308b656e01142c",
+    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
+    "gororoba_quantum/placement_feasibility.py": "d86898b86460db166f258ced88c9da79f77b26b77a7e83fffd82055dbd2d5edf",
+    "gororoba_quantum/predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
+    "gororoba_quantum/qpe_diagnostics.py": "f4bfee8312e3a7005864206e90229c39af9c74a28060c8addc6f701f138ff4d1",
+    "gororoba_quantum/qpu_cases.py": "0af170dfd88c2f75c6159ea28f2903147adc44ec6d81ef59a4c1777b8decb50f",
+    "gororoba_quantum/qpu_planning.py": "f7ce3bb4843afca0ff6102f41776d338d1911dc3cacd0c7eed4a39a80fa3e206",
+    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
+    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
+    "gororoba_quantum/rank_path_topology.py": "92813b23a3ebee1a1b4643bdc5b70a1d9258f0fd732828bea6cca572f981dffe",
+    "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f",
+    "gororoba_quantum/rank_sector_contracts.py": "701b15fa0769665100b5887e41d369b908a6f6212e6af27848e7cb7ed7e80a1a",
+    "gororoba_quantum/rank_sector_experiments.py": "d2afe9e85f1689a56475b58add137c9b063bc4ac315b874094a3dc7958be1c90",
+    "gororoba_quantum/ripple_contracts.py": "456198bcd8ba8d346a0474bfbfe0572eb42cbe80725ffe2b34a53e7b49a48276",
+    "gororoba_quantum/ripple_dynamics.py": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11",
+    "gororoba_quantum/ripple_experiments.py": "aa0cf6e365f3747a2f43b9a93a3e6b74513488f65184c4ec4b201774faba9602",
+    "gororoba_quantum/runtime_contracts.py": "669e038ecc8820706f5b5227c1b7c742c24ef26baf97f15d3abb62afee5d8771",
+    "gororoba_quantum/select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354",
+    "gororoba_quantum/target_flip.py": "09ee85e602f48942d39d3c7210cdffcbaa75de61cd0c46cc87bbb20151f042a6",
+    "gororoba_quantum/variance.py": "87a6eb18295d46beeed5c65be7472a45b1f8212c57b072d6e28a468c97859bb9"
+  },
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "rustworkx": "0.18.1",
+    "scipy": "1.18.1",
+    "sympy": "1.14.0"
+  }
+}

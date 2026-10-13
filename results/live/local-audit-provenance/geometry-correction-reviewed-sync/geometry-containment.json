@@ -1,0 +1,24 @@
+{
+  "canonical_head": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+  "canonical_sync_receipt_sha256": "73da31077f581fba6ea58d54b11294b77f7527489e6cf1a08f6a1d77612b2284",
+  "current_sha256": {
+    "AGENTS.md": "77184bd73e8df726f4e6dc1494fe49d0b0003c8e67bed3e285b0ee466f505c84",
+    "docs/INDEX.md": "e054436b48d06277f5f637573632a32f0594153cc0ca5f7fb3d276d96216722f",
+    "docs/RESEARCH_ROADMAP.md": "3ca4260b416801e7d55bf9afdf0c72a52cf90fc47790396d8962ba8f0d8d5b1d",
+    "docs/evidence/kernel_limits/README.md": "aea682dd2d9a6b3462eb30a50a491aa6cf972ec2f71eac0c0ece943f003a784a",
+    "docs/evidence/kernel_limits/SHA256SUMS": "ecea2ab9b98281b2435477d553fa86ae4bd0fb7119a2d4340233fbc67208c475",
+    "docs/evidence/kernel_limits/proof_obligations.json": "a784249addfcb19d657880a380152ac678146e5c8a40839ae3225b4a2a9a1c62",
+    "docs/evidence/kernel_limits/replay.py": "ed72e29f1ffe9182fad8c5d25d69f50af03ca90061e3d25b683c85a53c85e14f",
+    "docs/evidence/kernel_limits/result.json": "b1a569bb0da70a6e7bcaeeff32f18ecc8d24fbd4b4e29a3737e6b4befcc35396",
+    "docs/notes/annihilator_kernel_limits.md": "cf0641c90a23d6f599a7d4f1852520bdb6ffa69351972f2a2ffdcc39a23d8289",
+    "gororoba_quantum/circle_kernel_attachments.py": "fdf2ceee199eeb98dee32d6aa2397adc16ad1fec2233c8b6acb8b40c9fef1eea",
+    "gororoba_quantum/kernel_limit_contracts.py": "8f6ab9b457d42a94ab59646fe1b3731d2d407e4ac92549bd4d60ef07657c2586",
+    "gororoba_quantum/kernel_limits.py": "a8ac465ec449e6a6d45c9a7de01301fb8404d3e77458678e989c0b97bb82d5f2"
+  },
+  "exact_admitted_file_count": 12,
+  "expert_review_receipt_sha256": "00396ef16c5205a65967f8d8912daabfb101c891a48c0b7480e803c8b746068f",
+  "geometry_files_equal_reviewed_commit": true,
+  "geometry_merge": "9ff5e4c6fbeca61a83f7c76b00f2845dedd954b5",
+  "reviewed_geometry_head": "256f8f1f6e86a191120e3e17313d954e81af9768",
+  "schema": "geometry-reviewed-head-canonical-containment-v1"
+}

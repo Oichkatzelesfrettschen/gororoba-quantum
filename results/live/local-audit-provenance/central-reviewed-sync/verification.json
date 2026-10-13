@@ -1,0 +1,44 @@
+{
+  "after_observation_sha256": "077a2d8937e4dbd562fba8f25da6e46d3b35b5579937634b1fbc0cecfd756d56",
+  "before_observation_sha256": "53a0535cbf4c3fb517485727b2d8b58e7c9b69a6c2725a9550e53b15e1bd47c3",
+  "canonical_head": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+  "central_file_count": 16,
+  "central_file_sha256": {
+    "AGENTS.md": "8b29ac89802e59f57db0ca575e4ba0288f1c5421b3369ce2990ef135e584e30a",
+    "docs/INDEX.md": "1973830d1fc61c7e037299c66cfd01e6d83ceaf2f7c318db554ddaaf46fb6968",
+    "docs/evidence/vacuum_endpoint_information/README.md": "36ce3e6b7226c058d6095ef6342074b1486c99cfaa2b93f0de4aad29ec541b84",
+    "docs/evidence/vacuum_endpoint_information/SHA256SUMS": "b7db03029b8534ec4122ab20c8dfc195275932a518bd3afd0639945322934221",
+    "docs/evidence/vacuum_endpoint_information/check_probe.py": "657573ca817be327a9dc961f24719efb47be957ebcaa2e281ee371db68cf622c",
+    "docs/evidence/vacuum_endpoint_information/inputs/previous_probe.py.txt": "22c1c130a42440074b66aa93f990e0920ff91e08c7b04e9bb63df718d5a834a5",
+    "docs/evidence/vacuum_endpoint_information/inputs/previous_result.json": "6147433302a506c33f5a9c9367b7f67b6d22d2398f82577a179bb503cdf7207b",
+    "docs/evidence/vacuum_endpoint_information/inputs/reviewed_probe.py.txt": "88bc49cf92deadba0e2ee4360825844a7c9b561647f5a76feefde8900f431029",
+    "docs/evidence/vacuum_endpoint_information/inputs/reviewed_result.json": "e29459a8958cc5c8ee462d2ea023b15373602d333028219e390d00635f041028",
+    "docs/evidence/vacuum_endpoint_information/inputs/source-note.md.txt": "8e3b0cd1c14970bb5c3ea97ea8aaa401932471c357fd484d99a7f952e5ffbafd",
+    "docs/evidence/vacuum_endpoint_information/probe.py": "9ffc8798096d2b1e4f6625469a122a50c43c80e089e48f8d92daf865ca75f423",
+    "docs/evidence/vacuum_endpoint_information/provenance.json": "641a776c31686d12caaee35a25d498971df0cbf102b8a9d1f719d449e2b5cd47",
+    "docs/evidence/vacuum_endpoint_information/result.json": "2feb99942f5aac6a9b65fe7122d77874e65db55454933aa20c0ff525eb3eb082",
+    "docs/notes/vacuum_field_run_opportunities.md": "2fff534b6c74a5b29a6f43670bcb262566ad174ec97057e775d36761904af6c4",
+    "plans/QUANTUM_DISPATCH.md": "5e5a11d806029ca63fd3829cc931253970955717d682f4e0fed6ce8aa5e50c6c",
+    "plans/quantum_dispatch.json": "193b4d180c21cabb6d0da0ad6a2ff76d590301da1b1667d8288fe15ed7163d51"
+  },
+  "ledger_sha256": "cf106b4926eeda9276a3d1e6223fd9ffd26265ce250848b646e85abbda620e76",
+  "refs_observed_changed": {
+    "refs/heads/main": {
+      "after": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "before": "a5aa18855bd71889f9a30ecc45d8a14452279770"
+    },
+    "refs/remotes/origin/HEAD": {
+      "after": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "before": "a5aa18855bd71889f9a30ecc45d8a14452279770"
+    },
+    "refs/remotes/origin/main": {
+      "after": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "before": "a5aa18855bd71889f9a30ecc45d8a14452279770"
+    }
+  },
+  "retained_paths_equal": 41,
+  "reviewed_central_head": "29df975138918a6258aafec2bce0999caa302cf1",
+  "schema": "central-reviewed-source-canonical-sync-v1",
+  "scope": "Named canonical tracked, index/ref and41 retained-input observations; the sync leaves the cooperative campaign ledger dirty with identical bytes.",
+  "unchanged_tracked_paths_equal": 746
+}

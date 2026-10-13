@@ -1,0 +1,171 @@
+{
+  "artifacts": {
+    "all_five_source_closures": {
+      "file": "final-complete-fleet-source-closure-verification.json",
+      "sha256": "378a40f170965644bc5d569c990fa1d1b97c1507fbd9fcbd3dc2b0fe671e9edc"
+    },
+    "fleet_choices": {
+      "file": "final-complete-fleet-choice-audit.json",
+      "sha256": "e0cecbf1dbb9eb393adb4d33f1df6d0d4cc256311e4a6747230809a4fd196e1b"
+    },
+    "fleet_selected_plans": {
+      "file": "final-complete-fleet-selected-plan-audit.json",
+      "sha256": "c73492b2715f2d69ff0c4fe38563672dec4ac49f920306429a81e099f4d3db32"
+    },
+    "frozen_execution_campaign": {
+      "file": "final-fleet-correction-campaign-audit.json",
+      "sha256": "ca464fd1effba495b90476de1a849d1ebf995e797c7b1614aba78156a5bf8677"
+    },
+    "prospective_protocol_validation": {
+      "file": "final-fleet-static-protocol-validation.json",
+      "sha256": "3805259433e5326970b7a2b309762b43cafcb980032b8206a96b10de4523fd7e"
+    },
+    "prospective_static_protocol": {
+      "file": "final-fleet-static-practical-accuracy-admission.json",
+      "sha256": "eae3d02dec5b994899a383ff72a929d9d238f6a87404c5e9128bdf59c0007eaf"
+    }
+  },
+  "execution": {
+    "campaign_service_ceiling_seconds": 170,
+    "job_count": 5,
+    "nominal_seconds": 106.29010304,
+    "shared_reserve_seconds": 60,
+    "stress_seconds": 118.44546303999999,
+    "user_ceiling_seconds": 180
+  },
+  "finite_selection": [
+    {
+      "family": "ripple",
+      "model_shots": 32768,
+      "record": "results/live/2026-10-12T203301.342941Z/record.json",
+      "record_sha256": "f380511031e2161632801e20b9794caabecb52e9ba33d46941530f39539e0fe9",
+      "scope": "bounded routed candidates with endpoint minima and costed whole-tier consolidation; global optimality is unclaimed",
+      "searched_routed_sets": 2,
+      "selected_backend": "ibm_kingston",
+      "selected_baseline": "results/live/2026-10-12T195043.912458Z",
+      "selected_candidate": "candidate-001-shots-4096-per-pub",
+      "selected_qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "selected_unchanged_fields": [
+        "groups",
+        "execution_pubs",
+        "observable_contracts",
+        "pub_shots",
+        "family_configuration",
+        "code_commit",
+        "versions",
+        "experiment_digest"
+      ],
+      "simulation_alpha": 0.01,
+      "simulation_comparisons": 2492
+    },
+    {
+      "family": "rank-sector",
+      "model_shots": 131072,
+      "record": "results/live/2026-10-12T202604.294879Z/record.json",
+      "record_sha256": "7159448f76a68c3e1bd71576cb9f55542f91d5dfdb437ed8a882f452fbc0722f",
+      "scope": "bounded routed candidates with endpoint minima and costed whole-tier consolidation; global optimality is unclaimed",
+      "searched_routed_sets": 3,
+      "selected_backend": "ibm_kingston",
+      "selected_baseline": "results/live/2026-10-12T195828.029302Z",
+      "selected_candidate": "candidate-001-shots-4096-per-pub",
+      "selected_qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+      "selected_unchanged_fields": [
+        "groups",
+        "execution_pubs",
+        "observable_contracts",
+        "pub_shots",
+        "family_configuration",
+        "code_commit",
+        "versions",
+        "experiment_digest"
+      ],
+      "simulation_alpha": 0.01,
+      "simulation_comparisons": 696
+    }
+  ],
+  "interpretation": [
+    "The full fleet comparison uses one simultaneous model allowance across every modeled candidate in each family: 2492 ripple marginals and 696 rank marginals, each with simulation alpha 0.01.",
+    "Kingston remains feasible under those broader fleet allowances; frozen single-backend execution records retain their original contracts and exact QPY bytes.",
+    "The selected plans minimize the declared worst-case charge among feasible retained candidates. Fez and Marrakesh model or bounded-search failures establish finite admission outcomes.",
+    "Global layout optimality, physical impossibility, and coverage of all hardware-model discrepancies remain outside the evidence.",
+    "The correction decision, actual-idle gate, fresh runtime calibration/account checks, single-use approvals and cumulative charged-or-unsettled campaign accounting remain execution requirements."
+  ],
+  "quantum_jobs_submitted": 0,
+  "records": [
+    {
+      "case_sha256": "d262a23510106dd9c5e91fd107ebfee0d9076083e9145fa5094e5496ebb753e1",
+      "discovery_calibrations": {
+        "ibm_fez": "2026-10-12T13:09:29-07:00",
+        "ibm_kingston": "2026-10-12T12:14:06-07:00",
+        "ibm_marrakesh": "2026-10-12T12:53:05-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "qpy_sha256": "51db305d47a0cff4664e1135390ee1cd807bde2cc105439669ea795108bd83b4",
+      "record": "results/live/2026-10-12T202752.126072Z/record.json",
+      "record_sha256": "66546b751fadf5d2a5917a9c006e3460b0ede0caae8226b4f235841c5f42954c",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+    },
+    {
+      "case_sha256": "907089c75d57702aa4b98e29ab2700c47af50c6685d1daa156337a7e897ee165",
+      "discovery_calibrations": {
+        "ibm_kingston": "2026-10-12T12:14:06-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "record": "results/live/2026-10-12T195043.912458Z/record.json",
+      "record_sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+    },
+    {
+      "case_sha256": "61d27f4ea3eb6e870c9c318e2c25dc42a8d67b8aa7c10c52d0a82ae5d4319064",
+      "discovery_calibrations": {
+        "ibm_kingston": "2026-10-12T12:14:06-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+      "record": "results/live/2026-10-12T195828.029302Z/record.json",
+      "record_sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+    },
+    {
+      "case_sha256": "1f646ec083c608df0ed77dc683eb165e05e7e844f96e6afceefbb0373b927f30",
+      "discovery_calibrations": {
+        "ibm_fez": "2026-10-12T13:09:29-07:00",
+        "ibm_kingston": "2026-10-12T12:14:06-07:00",
+        "ibm_marrakesh": "2026-10-12T12:53:05-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
+      "record": "results/live/2026-10-12T203301.342941Z/record.json",
+      "record_sha256": "f380511031e2161632801e20b9794caabecb52e9ba33d46941530f39539e0fe9",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+    },
+    {
+      "case_sha256": "63f75b319234ffc58a8f72e668edd5d737588ccf73484d116dd445e4fd5719f7",
+      "discovery_calibrations": {
+        "ibm_fez": "2026-10-12T13:09:29-07:00",
+        "ibm_kingston": "2026-10-12T12:14:06-07:00",
+        "ibm_marrakesh": "2026-10-12T12:53:05-07:00"
+      },
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
+      "record": "results/live/2026-10-12T202604.294879Z/record.json",
+      "record_sha256": "7159448f76a68c3e1bd71576cb9f55542f91d5dfdb437ed8a882f452fbc0722f",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d"
+    }
+  ],
+  "schema": "complete-fleet-preparation-and-protocol-binding-v1",
+  "service_calls": 0,
+  "statistical_protocol": {
+    "controls": 37,
+    "equivalence_possible_controls": 36,
+    "full_endpoint_counts": {
+      "rank-sector": 196,
+      "ripple": 1138
+    },
+    "normalized_tolerance": 0.1,
+    "total_endpoints": 1334,
+    "underresolved_equivalence_endpoint": "ripple_design_c_16_1_8_isolated_packed_difference"
+  },
+  "status": "pass"
+}

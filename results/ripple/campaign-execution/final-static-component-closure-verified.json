@@ -1,0 +1,43 @@
+{
+  "audit_script_sha256": "288920b5b4d121815c42fd5480ce4e7b19983affef3d7352acdf24b8aaa808f9",
+  "boundary": "Saved planning representation consistency only; the existing QPY archive audit verifies actual circuit/register ownership. Fresh runtime calibration and quota admission remain separate.",
+  "checks": [
+    "unique group and member identities",
+    "injective replica physical mapping and mapped initial layouts",
+    "matching group/member reserved replica footprints and prefixes",
+    "matching QPY/member active footprints contained in the reserved footprint",
+    "one-to-one member coverage in fused PUB components",
+    "matching backend and reference identities",
+    "disjoint physical footprints and classical register ownership within each PUB"
+  ],
+  "records": [
+    {
+      "classical_registers": 929,
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "family": "ripple",
+      "groups": 12,
+      "members": 929,
+      "members_with_active_footprint_below_reserved": 168,
+      "pubs": 146,
+      "record": "results/live/2026-10-12T195043.912458Z",
+      "record_sha256": "7bb6ace345f10c0c45b0ce8cea4a5b8959d629a85e34e0842d0961a91cf8e0c7",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "status": "pass"
+    },
+    {
+      "classical_registers": 176,
+      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
+      "family": "rank-sector",
+      "groups": 8,
+      "members": 176,
+      "members_with_active_footprint_below_reserved": 0,
+      "pubs": 36,
+      "record": "results/live/2026-10-12T195828.029302Z",
+      "record_sha256": "74ac892864d222180125f1050e148293e264b194f0b66d0bd892d6f05d6284b2",
+      "source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
+      "status": "pass"
+    }
+  ],
+  "schema": "static-group-member-pub-closure-v1",
+  "status": "pass"
+}

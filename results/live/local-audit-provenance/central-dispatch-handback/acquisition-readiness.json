@@ -1,0 +1,42 @@
+{
+  "schema": "central-final-acquisition-readiness-v1",
+  "observed_utc": "2026-10-12T20:47:23.529661+00:00",
+  "decision": "planning_go; physical admission waits actual idle and Runtime fresh checks",
+  "binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
+  "binding_sha256": "561b6c32716dc65a5ec31942627f1738b79d4c4d2346297a69528d0df98c5c76",
+  "artifacts_verified": 6,
+  "records_verified": 5,
+  "record_qpy_case_hashes_verified": true,
+  "current_declared_sources_verified": 42,
+  "dependency_versions_verified_per_record": 7,
+  "selected_static_plans_equal_frozen_execution_plans": true,
+  "saved_approval_consumptions_observed": 0,
+  "live_admission_observation": "results/ripple/campaign-execution/fleet-final-live-admission.json",
+  "live_admission_observation_sha256": "dd464ac807c344ed99a2eb3e5ea295181727991bc2aa55e93a580b81f0bde449",
+  "participant_closeout": "final-participant-closeout.json",
+  "participant_closeout_sha256": "5481b9b1c8c3fa07d4038a90e8b146d1d74e95b5d7c949e1f6ba981c175583b6",
+  "execution": {
+    "campaign_service_ceiling_seconds": 170,
+    "job_count": 5,
+    "nominal_seconds": 106.29010304,
+    "shared_reserve_seconds": 60,
+    "stress_seconds": 118.44546303999999,
+    "user_ceiling_seconds": 180
+  },
+  "statistical_protocol": {
+    "controls": 37,
+    "equivalence_possible_controls": 36,
+    "full_endpoint_counts": {
+      "rank-sector": 196,
+      "ripple": 1138
+    },
+    "normalized_tolerance": 0.1,
+    "total_endpoints": 1334,
+    "underresolved_equivalence_endpoint": "ripple_design_c_16_1_8_isolated_packed_difference"
+  },
+  "authority": "Direct human conditional campaign authority, reaffirmed by the final go/no-go instruction; this receipt grants zero independent vacuum-run authority.",
+  "ordering": "Ripple alone samples actual idle, refreshes native source/calibration/account checks, executes correction once, and qualifies lossless collection plus preregistered decision before independent static admission.",
+  "result_handback": "Return immutable raw identities, preregistered adjudications, held/missing acquisitions and settled or reserved charges centrally; Geometry resumes isolated current-main work after verified results.",
+  "central_goal": "Pause after this accepted readiness handoff under the direct human request; overall program remains unfinished.",
+  "scope": "Finite retained candidates and declared cost scenarios; statistical and model uncertainty remain explicit."
+}

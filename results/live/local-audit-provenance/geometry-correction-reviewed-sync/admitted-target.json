@@ -1,0 +1,22 @@
+{
+  "target": "a5aa18855bd71889f9a30ecc45d8a14452279770",
+  "changed_paths": [
+    "AGENTS.md",
+    "docs/INDEX.md",
+    "docs/RESEARCH_ROADMAP.md",
+    "docs/evidence/kernel_limits/README.md",
+    "docs/evidence/kernel_limits/SHA256SUMS",
+    "docs/evidence/kernel_limits/proof_obligations.json",
+    "docs/evidence/kernel_limits/replay.py",
+    "docs/evidence/kernel_limits/result.json",
+    "docs/notes/annihilator_kernel_limits.md",
+    "gororoba_quantum/MODEL_DISCRIMINATION.md",
+    "gororoba_quantum/circle_kernel_attachments.py",
+    "gororoba_quantum/correction_planning_contracts.py",
+    "gororoba_quantum/kernel_limit_contracts.py",
+    "gororoba_quantum/kernel_limits.py",
+    "gororoba_quantum/live_run.py"
+  ],
+  "geometry_merge": "9ff5e4c6fbeca61a83f7c76b00f2845dedd954b5",
+  "correction_merge": "a5aa18855bd71889f9a30ecc45d8a14452279770"
+}

@@ -1,0 +1,52 @@
+{
+  "backend_observations": [
+    "ibm_fez: active pending=32 calibration=2026-10-12T02:48:13-07:00 capabilities={'num_qubits': 156, 'dynamic_circuits': True, 'operation_names': ['cz', 'delay', 'id', 'if_else', 'measure', 'measure_2', 'measure_reset', 'measure_reset_2', 'reset', 'reset_2', 'rz', 'sx', 'x', 'xslow'], 'control_flow': ['if_else']} medians={'t1_us': 140.61969, 't2_us': 101.72587, 'readout_error': 0.00989, 'cz_error': 0.00268} excluded qubits=17 edges=22 -> skipped: 32 pending jobs exceeds --max-pending 25",
+    "ibm_kingston: active pending=3 calibration=2026-10-12T02:53:42-07:00 capabilities={'num_qubits': 156, 'dynamic_circuits': True, 'operation_names': ['cz', 'delay', 'id', 'if_else', 'measure', 'measure_2', 'measure_reset', 'measure_reset_2', 'reset', 'reset_2', 'rz', 'sx', 'x', 'xslow'], 'control_flow': ['if_else']} medians={'t1_us': 245.93568, 't2_us': 141.11983, 'readout_error': 0.00818, 'cz_error': 0.00194} excluded qubits=7 edges=22",
+    "ibm_marrakesh: maintenance pending=12 calibration=2026-10-12T03:02:25-07:00 capabilities={'num_qubits': 156, 'dynamic_circuits': True, 'operation_names': ['cz', 'delay', 'id', 'if_else', 'measure', 'measure_2', 'measure_reset', 'measure_reset_2', 'reset', 'reset_2', 'rz', 'sx', 'x', 'xslow'], 'control_flow': ['if_else']} medians={'t1_us': 165.92061, 't2_us': 76.18263, 'readout_error': 0.01257, 'cz_error': 0.00286} excluded qubits=26 edges=24 -> skipped: status operational=True msg='maintenance'"
+  ],
+  "exit_code": 1,
+  "experiment_digest": "6944868a3886e3bdee33e1babfb145f6b234497bdc642baf0d434dbea0bc8881",
+  "failure": "ValueError: correction planning requires all three fresh QPU snapshots; missing=['ibm_fez', 'ibm_marrakesh'], unexpected=[]; inspect the live discovery skipped-backend inventory",
+  "max_pending": 25,
+  "observed_start": "2026-10-12T10:20:37Z",
+  "operator_log_sha256": "2e42ecc388dbf1bea39ece5bf05f528d37f6d58c5fd44f64ce803e31d5367a99",
+  "operator_script_sha256": "dd4718abe183440b7674de8005742ce63e59d9913f346802640dfb364b067518",
+  "physical_execution_authorized": false,
+  "physical_or_mock_jobs_submitted": 0,
+  "schema": "correction-live-preparation-rejection-v1",
+  "scope": "Fresh discovery rejects required systems before candidate compilation. The retained earlier pilot remains historical; the corrected source has no renewed case.",
+  "source_commit": "efa187f30cf0604265455198ce1aa9b8addd1acd",
+  "state": "three_backend_preparation_ineligible",
+  "subsequent_eligibility_observation": {
+    "all_eligible": false,
+    "backends": [
+      {
+        "backend": "ibm_fez",
+        "eligible": false,
+        "operational": true,
+        "pending_jobs": 35,
+        "reason": "35 pending jobs exceeds --max-pending 25",
+        "status_msg": "active"
+      },
+      {
+        "backend": "ibm_kingston",
+        "eligible": true,
+        "operational": true,
+        "pending_jobs": 3,
+        "reason": null,
+        "status_msg": "active"
+      },
+      {
+        "backend": "ibm_marrakesh",
+        "eligible": false,
+        "operational": true,
+        "pending_jobs": 12,
+        "reason": "status operational=True msg='maintenance'",
+        "status_msg": "maintenance"
+      }
+    ],
+    "max_pending": 25,
+    "observed_at": "2026-10-12T10:27:36.808862+00:00",
+    "scope": "Read-only backend eligibility refresh; calibration and candidate compilation require a new production preparation"
+  }
+}
