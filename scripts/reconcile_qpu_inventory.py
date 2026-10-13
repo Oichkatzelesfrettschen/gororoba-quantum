@@ -18,6 +18,9 @@ ROOT = Path(__file__).resolve().parent.parent
 HISTORICAL_JOBS = {"db5qmqclf4us73c4e1ug", "db67fqsvf2bc73d0pk4g", "db67frimb58s738bci4g"}
 
 
+ACCOUNT_RESERVE_SECONDS = 60
+
+
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise ValueError(message)
@@ -37,6 +40,12 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     require(snapshot["complete_service_inventory"] is True, "inventory observation is partial")
     require(snapshot["new_qpu_submissions"] == 0, "inventory contains submissions")
     require(bool(re.fullmatch(r"[0-9a-f]{12}", snapshot["instance_crn_hash"])), "instance hash differs")
+    usage = snapshot["account_usage"]
+    quota = [usage.get(key) for key in ("usage_limit_seconds", "usage_consumed_seconds", "usage_remaining_seconds")]
+    require(all(type(value) is int and value >= 0 for value in quota), "account usage fields are not whole seconds")
+    limit, consumed, remaining = quota
+    require(consumed + remaining == limit, "account usage consumed and remaining seconds do not sum to the limit")
+    require(remaining >= ACCOUNT_RESERVE_SECONDS, "account remaining seconds fall below the retained reserve")
     jobs = snapshot["jobs"]
     identities = [job["job_id"] for job in jobs]
     require(len(identities) == len(set(identities)), "duplicate service job identity")
@@ -60,6 +69,10 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         run = directory.parent.parent
         index = read(index_path)
         sources = {str(index_path.relative_to(ROOT)): digest(index_path)}
+        require("result_metadata.json" in index["files"], "indexed result metadata is missing")
+        indexed = set(index["files"]) | set(index["metrics"]) | {"index.json"}
+        present = {path.name for path in directory.iterdir() if path.is_file()}
+        require(present == indexed, f"raw files and index differ: {sorted(present ^ indexed)}")
         for name, expected in index["files"].items():
             require(
                 name in {"result_metadata.json"} or bool(re.fullmatch(r"pub_[0-9]+\.json", name)),
@@ -164,7 +177,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "new_campaign_charge_seconds": str(campaign),
         "new_campaign_ceiling_seconds": 180,
         "unallocated_campaign_seconds": str(Decimal(180) - campaign),
-        "account_reserve_seconds": 60,
+        "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
         "account_usage_observation": snapshot["account_usage"],
         "jobs": rows,
     }

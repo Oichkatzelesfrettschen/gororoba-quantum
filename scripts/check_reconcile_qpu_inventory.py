@@ -47,7 +47,11 @@ def main() -> None:
             "new_qpu_submissions": 0,
             "instance_crn_hash": "a" * 12,
             "observed_at": "synthetic",
-            "account_usage": {},
+            "account_usage": {
+                "usage_limit_seconds": 600,
+                "usage_consumed_seconds": 170,
+                "usage_remaining_seconds": 430,
+            },
             "jobs": [
                 {
                     "job_id": "synthetic-job",
@@ -91,6 +95,15 @@ def main() -> None:
             mutant = copy.deepcopy(snapshot)
             mutant["complete_service_inventory"] = False
             mutants.append(mutant)
+            for usage in (
+                {},
+                {"usage_limit_seconds": 600, "usage_consumed_seconds": 170, "usage_remaining_seconds": 431},
+                {"usage_limit_seconds": 600, "usage_consumed_seconds": 550, "usage_remaining_seconds": 50},
+                {"usage_limit_seconds": 600, "usage_consumed_seconds": 170.5, "usage_remaining_seconds": 429.5},
+            ):
+                mutant = copy.deepcopy(snapshot)
+                mutant["account_usage"] = usage
+                mutants.append(mutant)
             for number, mutant in enumerate(mutants):
                 write(source, mutant)
                 try:
@@ -113,7 +126,7 @@ def main() -> None:
                 pass
             else:
                 raise RuntimeError("raw digest mutation admitted")
-    print("Synthetic inventory contract: 10 inventory mutations and raw corruption rejected; replay preserves bytes")
+    print("Synthetic inventory contract: 14 inventory mutations and raw corruption rejected; replay preserves bytes")
 
 
 if __name__ == "__main__":
