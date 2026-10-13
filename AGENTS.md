@@ -109,6 +109,7 @@ The rank-sector image gate also uses the plotting-only pin
     correction_preparation.py correction_preparation_contracts.py \
     correction_planning.py correction_planning_contracts.py \
     correction_collection.py correction_collection_contracts.py correction_case_contracts.py \
+    correction_reanalysis.py \
     hybrid_shor.py modular_arithmetic.py compile_evidence.py packing.py \
     parallel.py predict.py select_lcu.py experiments.py live_run.py order_finding.py \
     runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
@@ -195,6 +196,8 @@ The rank-sector image gate also uses the plotting-only pin
   "$PYTHON" correction_planning_contracts.py
   "$PYTHON" correction_collection_contracts.py
   "$PYTHON" correction_case_contracts.py
+  "$PYTHON" -W error correction_reanalysis.py --self-check
+  PYTHONOPTIMIZE=1 "$PYTHON" -W error correction_reanalysis.py --self-check
   PYTHONOPTIMIZE=1 "$PYTHON" correction_circuits_contracts.py
   PYTHONOPTIMIZE=1 "$PYTHON" correction_statistics_contracts.py
   PYTHONOPTIMIZE=1 "$PYTHON" correction_schedule_contracts.py
