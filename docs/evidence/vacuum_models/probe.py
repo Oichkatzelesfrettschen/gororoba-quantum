@@ -105,7 +105,7 @@ def check_cutoff(cutoff: int) -> tuple[Record, list[Record]]:
     }
     vacuum = np.eye(cutoff, dtype=complex)[:, 0]
     for phase in (0.0, math.pi, 0.37):
-        full_generator = generator(full_pair, phase)
+        full_generator = generator(np.asarray(full_pair, dtype=np.complex128), phase)
         reduced_generator = generator(np.asarray(pair, dtype=np.complex128), phase)
         embedding_residual = max_residual(full_generator @ embedding - embedding @ reduced_generator)
         conservation_residual = max_residual(full_generator @ number_difference - number_difference @ full_generator)

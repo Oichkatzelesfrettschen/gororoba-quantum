@@ -4,6 +4,9 @@ on:
   pull_request:
   push:
     branches: [main]
+  schedule:
+    - cron: "17 9 * * *"
+  workflow_dispatch:
 
 concurrency:
   group: ci-${{ github.ref }}
@@ -11,13 +14,13 @@ concurrency:
 
 jobs:
   gates:
-    name: gates ${{ matrix.shard }}/6
+    name: gates ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5]
+        shard: ${{ fromJSON(github.event_name == 'pull_request' && '[0,1,2,3,4,5]' || '[0,1,2,3,4,5,6,7,8,9,10,11]') }}
     env:
       PYTHONHASHSEED: "0"
       MPLBACKEND: Agg
@@ -36,9 +39,16 @@ jobs:
           # The retained SymPy evidence ran on mpmath 1.4.1 beside sympy 1.14.0,
           # whose metadata caps mpmath below 1.4; --no-deps reproduces that pair.
           python -m pip install --no-deps mpmath==1.4.1
-      - name: Check out open_gororoba for verify.py
-        run: git clone --depth 1 https://github.com/Oichkatzelesfrettschen/open_gororoba "$RUNNER_TEMP/open_gororoba"
+          # sympy 1.14.0 on PyPI still calls mpmath APIs that 1.4 deprecates or
+          # renames; the distribution patch the evidence ran with replaces them.
+          patch -s -p1 -d "$(python -c 'import pathlib, sympy; print(pathlib.Path(sympy.__file__).parents[1])')" \
+            < ci/patches/sympy-1.14.0-mpmath-1.4.patch
+      - name: Runner specs
+        run: python ci/runner_specs.py
       - name: Run shard
-        env:
-          GOROROBA_ROOT: ${{ runner.temp }}/open_gororoba
-        run: python ci/run_gates.py --shard ${{ matrix.shard }}/6
+        # Pull requests run the fast tier on six shards; pushes to main, the
+        # nightly schedule and manual runs add the long simulation contracts.
+        run: >-
+          python ci/run_gates.py
+          --tier ${{ github.event_name == 'pull_request' && 'pr' || 'full' }}
+          --shard ${{ matrix.shard }}/${{ github.event_name == 'pull_request' && 6 || 12 }}

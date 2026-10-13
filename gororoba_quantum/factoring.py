@@ -10,6 +10,10 @@ from __future__ import annotations
 import math
 from collections.abc import Mapping, Sequence
 from dataclasses import dataclass
+from typing import TYPE_CHECKING
+
+if TYPE_CHECKING:
+    import numpy as np
 
 MAX_EXACT_PRECHECK_MODULUS = 1 << 64
 
@@ -342,7 +346,9 @@ def ideal_phase_distribution(order: int, phase_bits: int) -> tuple[float, ...]:
     return tuple(probability / normalization for probability in probabilities)
 
 
-def distribution_success(distribution: Sequence[float], phase_bits: int, modulus: int, base: int) -> dict[str, float]:
+def distribution_success(
+    distribution: Sequence[float] | np.ndarray, phase_bits: int, modulus: int, base: int
+) -> dict[str, float]:
     """Measure exact-order and verified-factor yield in a phase distribution."""
     if len(distribution) != 1 << phase_bits:
         raise ValueError(f"distribution has {len(distribution)} outcomes, expected {1 << phase_bits}")

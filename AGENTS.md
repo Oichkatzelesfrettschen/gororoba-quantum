@@ -13,12 +13,15 @@ GitHub Actions runs every gate ([.github/workflows/ci.yml](.github/workflows/ci.
 [ci/gates.json](ci/gates.json) lists each gate as one command with its
 working directory; [ci/run_gates.py](ci/run_gates.py) runs a shard of them on
 a thread pool using the shared half-CPU default and keeps going past failures, so a
-red shard lists every failing gate, including launch errors. Child process
-pools and BLAS/OpenMP threads default to one while the outer pool schedules
-independent gates; explicit environment overrides retain their authority. Six shards run in parallel on Python 3.14
+red shard lists every failing gate. Each gate records its measured seconds;
+shards are assigned longest-first. Pull requests run the `pr` tier, every
+gate that measured under two minutes, on six shards; pushes to main, the
+nightly schedule and manual runs add the `full` tier's long simulation
+contracts on twelve shards. Runners are 2-vCPU, 8 GB machines on Python 3.14
 with the pins in requirements.txt and ci/requirements-ci.txt (mypy, ruff and
 the plotting-only `matplotlib==3.11.2`). A pull request merges when every
-shard is green and its review threads are resolved. A new module, evidence
+shard is green and its review threads are resolved; a red main or nightly
+run is fixed in the next change. A new module, evidence
 replay or contract joins the gate list in ci/gates.json in the same change.
 
 
@@ -30,8 +33,7 @@ parallel run returns exactly what the serial loop returns.
 serially; the default is half the available logical CPU budget, rounded down with a
 minimum of one (`parallel.default_threads()`), which also sets
 `--simulation-threads`. Affinity and cgroup quotas bound the available count.
-Explicit `GOROROBA_WORKERS` and `--simulation-threads` values override their
-respective defaults. Aer runs batch
+Explicit worker and simulation-thread overrides remain independent. Aer runs batch
 every replica of a choice in one call and parallelize experiments itself.
 
 A change to live_run.py or experiments.py also gets a dry run,
