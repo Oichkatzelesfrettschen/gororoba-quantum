@@ -1,0 +1,72 @@
+--- a/src/simulators/statevector/chunk/thrust_kernels.hpp
++++ b/src/simulators/statevector/chunk/thrust_kernels.hpp
+@@ -275,8 +275,9 @@
+ public:
+   typedef typename thrust::iterator_difference<Iterator>::type difference_type;
+ 
+-  struct stride_functor
+-      : public thrust::unary_function<difference_type, difference_type> {
++  struct stride_functor {
++    using argument_type = difference_type;
++    using result_type = difference_type;
+     difference_type stride;
+ 
+     stride_functor(difference_type _stride) : stride(_stride) {}
+@@ -327,9 +328,9 @@
+ };
+ 
+ template <typename data_t>
+-struct complex_dot_scan
+-    : public thrust::unary_function<thrust::complex<data_t>,
+-                                    thrust::complex<data_t>> {
++struct complex_dot_scan {
++  using argument_type = thrust::complex<data_t>;
++  using result_type = thrust::complex<data_t>;
+   __host__ __device__ thrust::complex<data_t>
+   operator()(thrust::complex<data_t> x) {
+     return thrust::complex<data_t>(x.real() * x.real() + x.imag() * x.imag(),
+@@ -338,8 +339,9 @@
+ };
+ 
+ template <typename data_t>
+-struct complex_norm : public thrust::unary_function<thrust::complex<data_t>,
+-                                                    thrust::complex<data_t>> {
++struct complex_norm {
++  using argument_type = thrust::complex<data_t>;
++  using result_type = thrust::complex<data_t>;
+   __host__ __device__ thrust::complex<double>
+   operator()(thrust::complex<data_t> x) {
+     return thrust::complex<double>((double)x.real() * (double)x.real(),
+--- a/src/framework/operations.hpp
++++ b/src/framework/operations.hpp
+@@ -733,7 +733,7 @@
+ // Raise an exception if qubits list contains duplications
+ inline void check_duplicate_qubits(const Op &op) {
+   auto cpy = op.qubits;
+-  std::unique(cpy.begin(), cpy.end());
++  static_cast<void>(std::unique(cpy.begin(), cpy.end()));
+   if (cpy != op.qubits)
+     throw std::invalid_argument(R"(Invalid operation ")" + op.name +
+                                 R"(" ("qubits" are not unique).)");
+--- a/src/simulators/matrix_product_state/svd.cpp
++++ b/src/simulators/matrix_product_state/svd.cpp
+@@ -622,7 +622,7 @@
+                               2 * m * n + 2 * min_dim * min_dim + min_dim);
+ 
+     double *rwork = (double *)calloc(rwork_size, sizeof(double));
+-    lwork = -1;
++    lwork = static_cast<size_t>(-1);
+     zgesdd_("A", &m, &n, lapackA, &m, lapackS, lapackU, &m, lapackV, &n, work,
+             &lwork, rwork, iwork, &info);
+ 
+--- a/src/simulators/matrix_product_state/matrix_product_state_tensor.hpp
++++ b/src/simulators/matrix_product_state/matrix_product_state_tensor.hpp
+@@ -548,7 +548,7 @@
+     throw std::runtime_error("left_size != right_size");
+   result.resize(left_rows, right_columns);
+ 
+-  uint_t omp_limit = left_rows * right_columns;
++  [[maybe_unused]] uint_t omp_limit = left_rows * right_columns;
+ 
+ #ifdef _WIN32
+ #pragma omp parallel for if ((omp_limit > MATRIX_OMP_THRESHOLD) &&             \

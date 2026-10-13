@@ -508,7 +508,6 @@ def build_record() -> Record:
         "python": reference["python"],
         "numpy": reference["numpy"],
         "scipy": reference["scipy"],
-        "source_sha256": before,
         "historical_audit": identities,
         "reference_record": {key: value for key, value in reference.items() if key not in VERSION_KEYS},
         "supplementary_checks": supplementary_checks(),

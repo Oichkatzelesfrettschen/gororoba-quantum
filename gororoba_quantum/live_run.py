@@ -104,6 +104,8 @@ ISOLATED_SUFFIX = "_isolated"
 FUSION_MAX_ATTEMPTS = 256
 
 EXPERIMENT_SOURCE_MANIFEST = (
+    "aer_identity.py",
+    "aer_resources.py",
     "algebra_planning.py",
     "affine_residual.py",
     "boolean_anf.py",
@@ -4474,7 +4476,7 @@ def main(argv: list[str] | None = None) -> int:
         default=[],
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
-    parser.add_argument("--local-compute", choices=("cpu", "gpu", "hybrid"), default="cpu")
+    parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument("--simulation-threads", type=_positive_int, default=parallel.default_threads())
     parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
     parser.add_argument(
@@ -4685,7 +4687,8 @@ def main(argv: list[str] | None = None) -> int:
                 failed_dir,
                 {
                     "state": "local_compute_unavailable",
-                    "policy": local_compute.settings(args),
+                    "policy": local_compute.requested_settings(args),
+                    "policy_scope": "requested settings; native compute admission fails",
                     "reason": str(error),
                 },
             )

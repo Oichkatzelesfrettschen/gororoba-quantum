@@ -930,17 +930,5 @@
     "sympy_version": "1.14.0",
     "theorem_domain": "every integer stage>=5; ordinary zero padding of support {1,10,18,25}"
   },
-  "python_version": "3.14.7",
-  "source_sha256": {
-    "docs/evidence/four_support_doubling/replay.py": "6632c8c8fc426fcdd5bf3534ce32282bf45e5a28a67a90b8c7531b56d0b5c93c",
-    "docs/notes/four_support_doubling.md": "2fba9c8d81de37b3ca620c89339b767849865132543180084332c3b2652cffdb",
-    "docs/notes/four_support_incidence_geometry.md": "12cd601490c9bb1990afcfb9a127bb76c625589c14b4071c1fc5d31470aa5f86",
-    "docs/notes/four_support_rank_loci.md": "e34ca16c3719b2051489419e8f345c10c0fb2e92a5afb5985d7ac60907825004",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/four_support_doubling.py": "3bc5f5bf3ca83bc18a13459c8a5b78ad67d3f8963d73f0ac7c6b95b37a754b06",
-    "gororoba_quantum/four_support_geometry.py": "61c533fbb57ec2c16fbc9e308f21c44b5590a7f05967b9838086147595e97059",
-    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c"
-  }
+  "python_version": "3.14.7"
 }

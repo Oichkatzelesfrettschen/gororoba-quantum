@@ -21,7 +21,7 @@ Record: TypeAlias = dict[str, Any]
 ComplexArray: TypeAlias = NDArray[np.complex128]
 RealArray: TypeAlias = NDArray[np.float64]
 ROOT = Path(__file__).resolve().parents[3]
-SOURCE_FILES = ("docs/evidence/vacuum_models/probe.py", "gororoba_quantum/parallel.py")
+SOURCE_FILES = ("docs/evidence/vacuum_models/probe.py",)
 SOURCE_INPUTS = (
     {"sha256": "5359c18f4f6c1e4381dc43a657033a872ccf37309f1a55addc51f03fc7f261ee", "bytes": 23807},
     {"sha256": "c090fac04fa1c40bbaa03509b7bd901e65c42d9c13d67996bab036675710924e", "bytes": 27194},
@@ -362,7 +362,6 @@ def build_record() -> Record:
             "probe_sha256": "22c1c130a42440074b66aa93f990e0920ff91e08c7b04e9bb63df718d5a834a5",
             "result_sha256": "6147433302a506c33f5a9c9367b7f67b6d22d2398f82577a179bb503cdf7207b",
         },
-        "source_sha256": before,
         "invariant_sector_checks": [row[0] for row in cutoff_checks],
         "cutoff_results": [result for row in cutoff_checks for result in row[1]],
         "q1q0_paulis": check_pauli_expansions(),

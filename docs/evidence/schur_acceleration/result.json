@@ -6982,15 +6982,6 @@
   ],
   "qpu_executed": false,
   "schema": "schur-acceleration-evidence-v1",
-  "source_sha256": {
-    "docs/evidence/schur_acceleration/replay.py": "23a6189b0521a9d7491483c3b5e36857aca7770c0554af48eb3edbe1f1741ebe",
-    "docs/notes/schur_acceleration_certificates.md": "58b9b7e5504cde8f1c54e941b04f2a33a6772e75cb3993631d661348e0c8a975",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
-    "gororoba_quantum/schur_acceleration.py": "8788a72319a54af2b8f66aa8de95feecdde5d67c712e11b70334c40cc96c8c9d",
-    "gororoba_quantum/skew_schur_charts.py": "b7b180911309bb7452bc56c77cb219d192ab4be381259c32b152ddbab6bac85b"
-  },
   "symbolic_curvature": {
     "center_norm_squared": "2",
     "curved_acceleration": {

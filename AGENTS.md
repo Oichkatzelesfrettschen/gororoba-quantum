@@ -114,7 +114,7 @@ The rank-sector image gate also uses the plotting-only pin
     runtime_contracts.py parameter_binding_contracts.py variance.py target_flip.py target_flip_certificate.py \
     qpe_diagnostics.py experiment_optimizer.py diagnostic_experiments.py \
     qpu_planning.py qpu_planning_contracts.py qpu_cases.py \
-    qpu_case_allocation_contracts.py local_compute.py \
+    qpu_case_allocation_contracts.py local_compute.py aer_identity.py aer_resources.py \
     algebra_planning.py algebra_planning_contracts.py \
     pub_shot_allocation.py pub_shot_allocation_contracts.py pub_shot_runtime_contracts.py \
     ripple_experiments.py ripple_contracts.py rank_sector_experiments.py rank_sector_contracts.py \
@@ -216,6 +216,8 @@ The rank-sector image gate also uses the plotting-only pin
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error qpu_case_allocation_contracts.py
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error qpu_case_allocation_contracts.py
   "$PYTHON" local_compute.py
+  "$PYTHON" aer_identity.py
+  "$PYTHON" aer_resources.py
   "$PYTHON" aer_delay_sentinels.py >/dev/null
   "$PYTHON" ../results/live/verify_source_closure.py --check
   "$PYTHON" variance.py
@@ -233,7 +235,7 @@ placement, operator checks, registry parsing) run through parallel.py, an
 order-preserving process pool started with spawn on every platform, so a
 parallel run returns exactly what the serial loop returns.
 `GOROROBA_WORKERS=N` caps the worker count and `GOROROBA_WORKERS=1` runs
-serially; the default is half the CPUs available to the process
+serially; the default is every CPU available to the process
 (`parallel.default_threads()`), which also sets `--simulation-threads`. Aer runs batch
 every replica of a choice in one call and parallelize experiments itself.
 
@@ -331,7 +333,7 @@ also pass these local gates before push:
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/schur_acceleration/replay.py --check
   (cd docs/evidence/schur_acceleration && sha256sum -c SHA256SUMS)
   GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_models/probe.py --check
-  GOROROBA_WORKERS=2 PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
+  PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_models/probe.py --check
   (cd docs/evidence/vacuum_models && sha256sum -c SHA256SUMS)
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -W error docs/evidence/vacuum_endpoint_information/probe.py --check
   PYTHONDONTWRITEBYTECODE=1 "$PYTHON" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check

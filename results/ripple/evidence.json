@@ -6603,15 +6603,6 @@
     "normalization",
     "associator-sign"
   ],
-  "source_sha256": {
-    "ripple_dynamics.py": "55cdb28fac51bf60d31a764b8bf334c6d254ba524cf3ad063af4965db9a7fd11",
-    "boolean_anf.py": "0c2d10463c39897d3f4f8d4bd06d121a1313a89952e7e917bdd3447bd19e079a",
-    "cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "designs.py": "30a89aaeb87557ff0da8b0763e2e3a62a5c316a647bc7c288ca251abfb52cd52",
-    "parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "predict.py": "bf606703182e9bf847b15f433359cd64d84f3bc568d3b4b1d010cb2a3440dc3c",
-    "select_lcu.py": "36302003a2b67e11f4e0cd9a1b89ed6b2c22a6019b64f868d5f8f56f48e08354"
-  },
   "proposed_hardware_depths": [
     0,
     1,

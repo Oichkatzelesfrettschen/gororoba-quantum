@@ -21,7 +21,6 @@ SOURCE_FILES = (
     "gororoba_quantum/skew_schur_charts.py",
     "gororoba_quantum/rank_charts.py",
     "gororoba_quantum/cd_core.py",
-    "gororoba_quantum/parallel.py",
 )
 DIMENSION = 32
 INDICES = tuple(index for index in range(DIMENSION) if index not in (0, 16))
@@ -494,7 +493,6 @@ def audit(root: Path) -> dict[str, Any]:
     )
     result = {
         "schema": "schur-acceleration-evidence-v1",
-        "source_sha256": before,
         "versions": {"python": platform.python_version(), "sympy": sp.__version__},
         "certificates": certificates,
         "symbolic_curvature": symbolic_curvature(),

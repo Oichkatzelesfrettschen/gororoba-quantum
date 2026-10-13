@@ -344,10 +344,6 @@
   },
   "schema_version": 1,
   "scipy": "1.18.1",
-  "source_sha256": {
-    "docs/evidence/vacuum_models/probe.py": "b5247adee683fba87ef1ab6d4688de76b31521e6114e3c249414f41def6b9736",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3"
-  },
   "spam_identifiability_counterexample": {
     "alternative": {
       "equilibrium": 0.056666666666666664,

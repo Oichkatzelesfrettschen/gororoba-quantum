@@ -41,7 +41,7 @@ and signed box-kite fringes, with the proposed hardware depths labeled.
 
 - `evidence.json` contains exact probabilities through depth 30, finite
   recurrence certificates, signed graphs, all 336 zero-product rows, 672
-  phase checks and source hashes. `execution_metadata` records numerical
+  phase checks. `execution_metadata` records numerical
   residuals and dependency versions separately from the exact payload.
 - `single-job-proposal.json` retains the 55-logical-qubit, 146-row design
   with current state `historical_renewal_required`. The preparation summary
@@ -72,7 +72,7 @@ NumPy 2.5.4 and Qiskit 2.5.2. From the repository root:
 (
   set -eu
   PYTHON="${PYTHON:-$(command -v python3)}"
-  export PYTHONDONTWRITEBYTECODE=1 GOROROBA_WORKERS=4
+  export PYTHONDONTWRITEBYTECODE=1
   "$PYTHON" gororoba_quantum/ripple_dynamics.py \
     --check results/ripple/evidence.json
   "$PYTHON" scripts/render_ripple_visualization.py \
@@ -83,7 +83,7 @@ NumPy 2.5.4 and Qiskit 2.5.2. From the repository root:
 
 To regenerate after reviewing a scientific-source change, replace the
 verifier's `--check` with `--out` and remove the renderer's `--check`.
-The verifier compares the complete scientific payload and source hashes;
+The verifier compares the complete scientific payload;
 retained numerical residuals must be finite and below the fixed tolerance.
 Dependency versions record provenance and can differ on a replay. The
 renderer checks data consistency and exact HTML reproduction; it relies on

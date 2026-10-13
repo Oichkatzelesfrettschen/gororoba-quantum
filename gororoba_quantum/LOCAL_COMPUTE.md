@@ -10,20 +10,21 @@ that bias. CPU or GPU acceleration cannot supply missing physical mechanisms.
 
 ## Implemented execution boundary
 
-The enabled policy uses CPU density matrices with double precision. The
-CLI accepts `--local-compute cpu`, `--simulation-threads` (default: half the CPUs available to the process,
+The policy uses density matrices with double precision. The CLI accepts
+`--local-compute auto|cpu|gpu` (default `auto`, routed by width as
+described under thread scaling below), `--simulation-threads` (default: every CPU available to the process,
 from `parallel.default_threads()`), and
 `--simulation-memory-mb` (default 512). Aer experiment parallelism is one;
 its shot-thread limit equals the declared thread limit. Both
 `shot_branching_enable` and `shot_branching_sampling_enable` remain false.
 The comparison described below rejects branch sharing from qualification.
 
-`--local-compute gpu` and `--local-compute hybrid` name explicit capability
-requests. The runner checks those requests before constructing the IBM
-service, writes `state="local_compute_unavailable"` with the policy and
-reason, and exits with an error. Even an installed Aer GPU device requires
-separate workload and memory qualification before admission. CPU retries
-must not replace an explicitly requested GPU or hybrid policy.
+`--local-compute gpu` is an explicit capability request. Without an Aer GPU
+the runner writes `state="local_compute_unavailable"` with the policy and
+reason before constructing the IBM service, and exits with an error; a
+rejected GPU admission under `gpu` fails the batch rather than retrying on
+CPU. Under `auto`, an unavailable GPU, a failed admission, or a failed GPU
+identity read keeps the batch on CPU with the reason recorded.
 
 Every executed simulation batch records its policy, ordered circuit names,
 QPY digest, serialized-noise-channel digest, shots, seed, wall time, and each Aer
@@ -34,6 +35,17 @@ compute settings. Result metadata must identify the admitted CPU device
 and density-matrix method. The wall time measures simulator execution
 through result retrieval; the field does not measure whole-command time,
 CPU time, or peak resident memory.
+
+The native Aer distribution version alone cannot distinguish a CPU build from
+an upstream CUDA build. `aer_identity.py` binds the imported controller
+extension SHA-256, Python ABI, and optional installed CUDA build manifest.
+Linux process mappings verify the loaded extension's device/inode against
+the file being hashed. A package replacement during an active process rejects
+provenance and requires a fresh process and dry run. The checks enumerate the
+extension and manifest; they do not establish an identity for every linked
+library or every host setting. Diagnostic records retain the requested CLI
+settings even when native identity capture fails, before IBM service
+construction.
 
 Qiskit's noise-compilation process pool and Aer's thread pool have separate
 limits. Set `QISKIT_NUM_PROCS` together with `GOROROBA_WORKERS` when running
@@ -361,6 +373,46 @@ intervals achieve the declared precision in the retained model, while the
 hardware-model gap remains the quantity the approved experiment measures.
 Local simulator speed and sampled model resolution remain distinct from
 QPU accuracy.
+
+## Thread scaling and GPU measurement
+
+Dynamic circuits with mid-circuit measurement or feed-forward evolve each
+shot separately under a density-matrix noise model, so Aer splits their
+shots across `max_parallel_shots` threads. Static circuits with terminal
+measurement sample once from one final state; below Aer's
+`statevector_parallel_threshold` of 14 qubits their state update stays on
+one thread, and experiment parallelism leaves counts unchanged with no
+measured speedup. The default thread count is therefore every CPU the
+process may use, from `parallel.default_threads()`.
+
+The measurement used the two dynamic ibm_fez PUBs of the retained
+correction case, the FakeFez noise model, 4096 shots, and seed 5 on a
+six-core, twelve-thread Ryzen 5 5600X3D host with an RTX 4070 Ti and the native
+CUDA Aer 0.17.2 build:
+
+| Device and options | Wall seconds |
+|---|---|
+| CPU, 2 threads | 14.75 |
+| CPU, 6 threads | 7.03 |
+| CPU, 12 threads | 6.20 |
+| GPU, unbatched | 37.31 |
+| GPU, `batched_shots_gpu` | fails: `invalid instruction 'jump'` |
+
+The batched density-matrix GPU kernel rejects the control-flow jump that
+feed-forward compiles to, and unbatched GPU execution launches kernels per
+shot on a 32-element state.
+
+`--local-compute auto`, the default, routes each simulation batch by its
+widest active register (`local_compute.route`). Batches below
+`GPU_MIN_ACTIVE_QUBITS = 11` run on CPU threads. Wider batches run on the
+GPU when Aer reports one and `aer_resources.admit_gpu` admits two density
+states against a fresh CUDA free-memory reading and the declared
+`--simulation-memory-mb` budget; a rejected admission keeps the batch on
+CPU and the batch record retains the reason. Every batch record names its
+device and admission. `--local-compute gpu` requires admission and
+`--local-compute cpu` never routes. Widths 9 and 10 stay on CPU until a
+measurement places the crossover; the native CUDA package lives in
+`packaging/qiskit-aer-cuda`.
 
 ## Paused GPU qualification gates
 

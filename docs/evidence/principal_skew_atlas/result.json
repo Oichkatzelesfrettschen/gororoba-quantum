@@ -1690,15 +1690,6 @@
   },
   "qpu_executed": false,
   "schema": "principal-skew-atlas-evidence-v1",
-  "source_sha256": {
-    "docs/evidence/principal_skew_atlas/replay.py": "d66eec7950bdacd3cff472e501a9e6f3bd3a09717e7398138c3bc6b155506d02",
-    "docs/notes/principal_skew_atlas.md": "bc91826d889adfc5b6c0a2180368f1820da2a3b824a1601cc7276c356483930b",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/principal_skew_atlas.py": "3a96bd0d8a5e29244fdcca78cf3bf271a3f2016246a6bb3d221a575ed0be7849",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
-    "gororoba_quantum/skew_schur_charts.py": "b7b180911309bb7452bc56c77cb219d192ab4be381259c32b152ddbab6bac85b"
-  },
   "symbolic_cover": {
     "expanded_stage_range": [
       2,

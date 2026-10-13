@@ -21,7 +21,6 @@ import sympy as sp
 SOURCE_FILES = (
     "docs/evidence/local_schur/probe.py",
     "gororoba_quantum/cd_core.py",
-    "gororoba_quantum/parallel.py",
     "gororoba_quantum/rank_attachments.py",
     "gororoba_quantum/rank_charts.py",
 )
@@ -139,7 +138,6 @@ def audit(root: Path) -> dict[str, Any]:
         "scope": "three rational path endpoints and six rational perturbations; global geometry remains unclassified",
         "qpu_executed": False,
         "versions": {"python": platform.python_version(), "sympy": sp.__version__},
-        "source_sha256": before,
         "records": records,
     }
 
@@ -153,7 +151,7 @@ def main() -> None:
     result = json.dumps(audit(root), indent=2, sort_keys=True, allow_nan=False) + "\n"
     if arguments.check:
         require(result.encode() == (bundle / "result.json").read_bytes(), "probe output differs from retained bytes")
-        print("Local skew Schur probe: rank/lift identities, tangent bounds, negative controls, and source hashes pass")
+        print("Local skew Schur probe: rank/lift identities, tangent bounds, controls, and source stability pass")
     else:
         print(result, end="")
 

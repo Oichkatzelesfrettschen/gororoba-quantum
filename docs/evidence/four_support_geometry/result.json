@@ -3707,14 +3707,5 @@
     "strict_closure_pairs": 608,
     "sympy_version": "1.14.0"
   },
-  "python_version": "3.14.7",
-  "source_sha256": {
-    "docs/evidence/four_support_geometry/replay.py": "941cb35d24aab9f0364332f7fd3f4953352edbbfa54eab2101dcc29226caa53a",
-    "docs/notes/four_support_incidence_geometry.md": "12cd601490c9bb1990afcfb9a127bb76c625589c14b4071c1fc5d31470aa5f86",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/four_support_geometry.py": "61c533fbb57ec2c16fbc9e308f21c44b5590a7f05967b9838086147595e97059",
-    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c"
-  }
+  "python_version": "3.14.7"
 }

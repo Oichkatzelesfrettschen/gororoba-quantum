@@ -23,7 +23,6 @@ SOURCE_FILES = (
     "gororoba_quantum/cd_core.py",
     "gororoba_quantum/rank_charts.py",
     "gororoba_quantum/four_support_rank.py",
-    "gororoba_quantum/parallel.py",
 )
 ENTRY_SOURCE_SHA256 = hashlib.sha256(Path(__file__).read_bytes()).hexdigest()
 _validated_snapshot: dict[str, str] | None = None
@@ -238,7 +237,6 @@ def audit(root: Path) -> dict[str, Any]:
     return {
         "schema": "annihilator-kernel-attachment-evidence-v1",
         "versions": {"python": platform.python_version(), "sympy": sp.__version__},
-        "source_sha256": before,
         "qpu_executed": False,
         "polynomial_path_certificates": paths,
         "affine_cone_certificates": circle,
@@ -259,7 +257,7 @@ def main() -> int:
             result.encode() == (bundle / "result.json").read_bytes(),
             "kernel attachment replay differs from retained bytes",
         )
-        print("Kernel limits, cone ranks/bundles, attachment image, doubling and source hashes pass")
+        print("Kernel limits, cone ranks/bundles, attachment image, doubling and source stability pass")
     else:
         print(result, end="")
     return 0

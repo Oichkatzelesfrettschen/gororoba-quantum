@@ -53,8 +53,8 @@ inputs to source hashes, verifies imported module locations, and checks
 those hashes again after execution.
 
 `result.json` stores sparse exact matrices, monomial order, symbolic forms,
-rank witnesses, real-locus identities, curve identities, runtime versions
-and source hashes. Sparse records specify their matrix shape and encode
+rank witnesses, real-locus identities, curve identities, and runtime
+versions. Sparse records specify their matrix shape and encode
 every omitted entry as zero. `SHA256SUMS` binds the README, replay, independent curve proof and result.
 Source or dependency changes require reviewed regeneration.
 

@@ -11,7 +11,7 @@ deserialization per worker. Results come back in input order, so a parallel
 run returns exactly what the serial loop returns.
 
 GOROROBA_WORKERS caps the worker count; 1 runs serially in-process. The
-default is half the CPU count available to this process.
+default is the CPU count available to this process.
 """
 
 from __future__ import annotations
@@ -58,13 +58,14 @@ def workers() -> int:
 
 
 def default_threads() -> int:
-    """Half the CPUs available to this process, at least one.
+    """Every CPU available to this process.
 
-    Two hardware threads share one core's floating-point units, so numeric
-    work scales with physical cores; half the logical CPUs leaves the sibling
-    threads to the rest of the machine.
+    Noisy density-matrix simulation of dynamic circuits evolves each shot
+    separately, so Aer's shot parallelism scales with logical CPUs: the
+    simultaneous-multithreading sibling threads add throughput over physical
+    cores alone (LOCAL_COMPUTE.md carries the measurement).
     """
-    return max(1, available_cpus() // 2)
+    return available_cpus()
 
 
 def available_cpus() -> int:

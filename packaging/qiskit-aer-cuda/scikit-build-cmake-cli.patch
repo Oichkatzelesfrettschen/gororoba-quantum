@@ -1,0 +1,11 @@
+--- a/skbuild/cmaker.py
++++ b/skbuild/cmaker.py
+@@ -273,7 +273,7 @@
+             "-G",
+             generator.name,
+             *generator.args,
+-            "--no-warn-unused-cli",
++            "-Wno-unused-cli",
+             f"-DCMAKE_INSTALL_PREFIX:PATH={cmake_install_prefix}",
+             f"-DPYTHON_VERSION_STRING:STRING={python_version_string}",
+             "-DSKBUILD:INTERNAL=TRUE",

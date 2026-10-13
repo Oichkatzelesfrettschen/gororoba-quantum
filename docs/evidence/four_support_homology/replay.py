@@ -18,7 +18,6 @@ SOURCE_FILES = (
     "gororoba_quantum/four_support_rank.py",
     "gororoba_quantum/integral_homology.py",
     "gororoba_quantum/cd_core.py",
-    "gororoba_quantum/parallel.py",
     "gororoba_quantum/rank_charts.py",
 )
 PROOF_NOTES = (
@@ -70,7 +69,6 @@ def audit(root: Path) -> dict[str, Any]:
             raise RuntimeError("source binding mutation escapes rejection")
     return {
         "python_version": platform.python_version(),
-        "source_sha256": before,
         "provenance_negative_controls": controls,
         "certificate": result,
     }

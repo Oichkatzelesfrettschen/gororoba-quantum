@@ -2,7 +2,7 @@
 
 FakeFez supplies calibration and routing fixtures. Every service constructor is
 replaced by a failing sentinel, so the checks cannot discover saved credentials
-or submit quantum work. Run the module directly with GOROROBA_WORKERS=2.
+or submit quantum work. Run the module directly; GOROROBA_WORKERS overrides the detected CPU count.
 """
 
 from __future__ import annotations
@@ -320,14 +320,27 @@ def _verify_cli_approval_boundary() -> None:
 
 def _verify_compute_boundary() -> None:
     with tempfile.TemporaryDirectory(prefix="gororoba-compute-boundary-") as directory:
-        for mode in ("gpu", "hybrid"):
-            with redirect_stderr(io.StringIO()), redirect_stdout(io.StringIO()):
-                status = live_run.main(["--local-compute", mode, "--out", directory])
-            _require(status == 1, f"unqualified {mode} policy passed service construction boundary")
+        with (
+            patch.object(local_compute.AerSimulator, "available_devices", return_value=("CPU",)),
+            redirect_stderr(io.StringIO()),
+            redirect_stdout(io.StringIO()),
+        ):
+            status = live_run.main(["--local-compute", "gpu", "--out", directory])
+        _require(status == 1, "gpu policy without an Aer GPU passed service construction boundary")
+        with (
+            patch.object(local_compute.aer_identity, "identity", side_effect=ValueError("native binary replaced")),
+            redirect_stderr(io.StringIO()),
+            redirect_stdout(io.StringIO()),
+        ):
+            status = live_run.main(["--local-compute", "cpu", "--out", directory])
+        _require(status == 1, "failed binary provenance escaped the diagnostic-record boundary")
         records = [json.loads(path.read_text()) for path in Path(directory).glob("*/record.json")]
-        _require(len(records) == 2, "capability failures lost their diagnostic records")
+        _require(len(records) == 2, "compute failures lost their diagnostic records")
         _require(all(record["state"] == "local_compute_unavailable" for record in records), "wrong failure state")
         _require(all("submission" not in record for record in records), "capability failure reached submission")
+        _require(
+            any(record["reason"] == "native binary replaced" for record in records), "binary failure lost its cause"
+        )
     parsed = live_run._cost_scenario("stress:4.6:60")
     _require(parsed == {"name": "stress", "job_overhead_seconds": 4.6, "classical_latency_us": 60.0}, "scenario parse")
     for malformed in ("missing", "stress:nan:1", "stress:1:-2", ":1:2", "nominal:1:2", "_stress:1:2", "-stress:1:2"):
