@@ -1,0 +1,29 @@
+# Journal and documentation sources without an arXiv copy: Casimir, dark sector, statistics, IBM execution
+
+## Pages and retrieval
+
+Retrieved 2026-10-13T23:27Z. Each SHA-256 identifies the bytes served at
+retrieval. The Cawagas and ASA records are Crossref DOI metadata, because
+the journal site failed TLS verification and the publisher page refused
+scripted retrieval; the Inacio record is the PubMed E-utilities summary.
+No PDF of these works is retained.
+
+| Source | URL | SHA-256 of retrieved bytes | Cited for |
+|---|---|---|---|
+| Cawagas 2004, Discuss. Math. Gen. Algebra Appl. 24(2), 251-265, DOI 10.7151/dmgaa.1088 | https://api.crossref.org/works/10.7151/dmgaa.1088 | `1371435eb38b42f4bd276219a73237945f0b1e6574af236bcbcf7381711ac9a1` | [P] The sedenions have subalgebras isomorphic to R, C, H, O and a quasi-octonion algebra that contains the sedenion zero divisors (the journal abstract, read through a search summary and not retained; the full text was not read). |
+| Yin et al. 2025, Nature Astronomy 9, 598-607, DOI 10.1038/s41550-024-02465-8 | https://www.nature.com/articles/s41550-024-02465-8 | `76889d55cd104ac7baab705196ab1d457ccdae63c0ba457c98df298ad78a70f0` | [P] A magnetically levitated force sensor searches for the symmetron fifth force at the submillimetre scale with reduced screening and tightens the model's limits by more than six orders of magnitude within its three-dimensional parameter space. |
+| Inacio, Panja, Munday, Woods and Bostrom 2026, Nano Letters 26(34), 11398-11405, DOI 10.1021/acs.nanolett.6c02620 | https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=42444133&retmode=json | `1446582e80b3739860f9ee89af7c2d62cf7efb4028d0bed897a089fcbf53d5bd` | [P] A metallic sphere and a polystyrene plate in a magnetic fluid: the plasma model predicts a force-sign reversal over a broad separation range that the Drude model does not (title and search abstract; published 2026-09-02). |
+| Wasserstein and Lazar 2016, The American Statistician 70(2), 129-133, DOI 10.1080/00031305.2016.1154108 | https://api.crossref.org/works/10.1080/00031305.2016.1154108 | `5712f92e97c7f9b64fa0b0b692cfeb3e80510b48eb2d44398c124b2c94343ba3` | [P] The ASA statement on p-values, its context, process and purpose. |
+| IBM Quantum, execution modes guide | https://quantum.cloud.ibm.com/docs/en/guides/execution-modes | `c074a1e488274bd98170784bc8d5501afd14d0ec50d222a3e789979292b7f142` | [P] Batched jobs are not guaranteed to run in submission order, and QPU calibration jobs can run between batched jobs; session mode excludes calibration jobs during its window. |
+
+## Mapping to this repository
+
+- [I] The census in [cd_associator_defect_census.md](cd_associator_defect_census.md) splits the 15 three-dimensional index subspaces of the sedenions 8 to 7, matching the octonion and quasi-octonion subalgebra counts reported by Cawagas and [Wilmot](2505.11747.md).
+- [I] The symmetron and atom-interferometer ([2511.09750](2511.09750.md)) sources fix what a laboratory scalar-force claim must include: a screening model, a source geometry, and an independent calibration of Newtonian gravity.
+- [I] Inacio et al. and [Ma et al.](2601.00483.md) supply a conventional-electrodynamics discriminator (Drude against plasma) that precedes attributing any Casimir residual to a new interaction; [0902.4022](0902.4022.md) carries the real-material baseline.
+- [I] The registered patch-window endpoints report nondetection, not equivalence; the ASA statement is the general reference for not reading a non-rejected null as evidence of absence.
+- [I] The execution-modes guide is why the patch-window record checks each job's start-time calibration stamp rather than assuming one calibration across jobs submitted together.
+
+## Boundaries
+
+[I] Abstract- or metadata-level reading for every row; none of these sources was read in full.

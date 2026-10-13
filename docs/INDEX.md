@@ -61,6 +61,10 @@ each source license in force.
 | [Proving Quantum Programs Correct](notes/sqir-voqc-proof-interfaces.md) | [LIPIcs.ITP.2021.21.pdf](pdf/LIPIcs.ITP.2021.21.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Gate Set Tomography](notes/2009.07301.md) | [2009.07301.pdf](pdf/2009.07301.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Latency considerations for stochastic optimizers in variational quantum algorithms](notes/2201.13438.md) | [2201.13438.pdf](pdf/2201.13438.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Brotherton et al. 2025 -- Any Light Particle Searches with ALPS II: first science results](notes/2512.14110.md) | [2512.14110v3.pdf](pdf/2512.14110v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Wei et al. 2026 -- New Constraints on Dark Photon Dark Matter with a Millimeter-Wave Dielectric Haloscope](notes/2503.23354.md) | [2503.23354v2.pdf](pdf/2503.23354v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Fosco and Guntsche 2026 -- Dynamical Casimir effect in the worldline formulation](notes/2604.13237.md) | [2604.13237v3.pdf](pdf/2604.13237v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Ma et al. 2026 -- Prediction of a measurable sign change in the Casimir force using a magnetic fluid](notes/2601.00483.md) | [2601.00483v1.pdf](pdf/2601.00483v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.
@@ -129,6 +133,14 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Circuit Quantum Electrodynamics](notes/2005.12667.md) | [PDF](https://arxiv.org/pdf/2005.12667v1) | `2005.12667v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2005.12667v1) |
 | [The Casimir force between real materials: experiment and theory](notes/0902.4022.md) | [PDF](https://arxiv.org/pdf/0902.4022v1) | `0902.4022v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/0902.4022v1) |
 | [Observation of the Dynamical Casimir Effect in a Superconducting Circuit](notes/1105.4714.md) | [PDF](https://arxiv.org/pdf/1105.4714v1) | `1105.4714v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1105.4714v1) |
+| [Kalia et al. 2026 -- Improved Dark Photon Sensitivity from the Dark SRF Experiment](notes/2510.02427.md) | [PDF](https://arxiv.org/pdf/2510.02427v2) | `2510.02427v2.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2510.02427v2) |
+| [Banks et al. 2025 -- Searching for screened scalar forces with long-baseline atom interferometers](notes/2511.09750.md) | [PDF](https://arxiv.org/pdf/2511.09750v1) | `2511.09750v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2511.09750v1) |
+| [Ikeda 2023 -- Demonstration of Quantum Energy Teleportation on Superconducting Quantum Hardware](notes/2301.02666.md) | [PDF](https://arxiv.org/pdf/2301.02666v5) | `2301.02666v5.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2301.02666v5) |
+| [Hotta 2010 -- Energy-Entanglement Relation for Quantum Energy Teleportation](notes/1002.0200.md) | [PDF](https://arxiv.org/pdf/1002.0200v2) | `1002.0200v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1002.0200v2) |
+| [Ford and Roman 1997 -- Restrictions on Negative Energy Density in Flat Spacetime](notes/gr-qc-9607003.md) | [PDF](https://arxiv.org/pdf/gr-qc/9607003v2) | `gr-qc-9607003v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/gr-qc/9607003v2) |
+| [Wilmot 2025 -- Structure of the Cayley-Dickson algebras](notes/2505.11747.md) | [PDF](https://arxiv.org/pdf/2505.11747v3) | `2505.11747v3.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.11747v3) |
+| [LZ Collaboration 2026 -- Search for dark matter particle interactions in an extended nuclear recoil energy window with the LUX-ZEPLIN (LZ) experiment](notes/2609.02823.md) | [PDF](https://arxiv.org/pdf/2609.02823v1) | `2609.02823v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2609.02823v1) |
+| [DES Collaboration 2026 -- Dark Energy Survey Year 6 Results: Cosmological Constraints from Galaxy Clustering and Weak Lensing](notes/2601.14559.md) | [PDF](https://arxiv.org/pdf/2601.14559v2) | `2601.14559v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2601.14559v2) |
 | [Quantum collision models: open system dynamics from repeated interactions](notes/2106.11974.md) | [PDF](https://arxiv.org/pdf/2106.11974v2) | `2106.11974v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2106.11974v2) |
 
 ## Licensed software source snapshots
