@@ -1,5 +1,12 @@
 # Finite Cayley-Dickson ripple evidence
 
+The [measured explorer](measured-cayley-dickson-ripples.html) now contains
+the completed ripple and rank-sector counts: 66 and 31 final charged QPU
+seconds, respectively. The [campaign findings](../live/CAMPAIGN_FINDINGS.md)
+separate registered contrast signs, unresolved packing comparisons and the
+large walk-control/model discrepancy. The original ideal explorer and
+preparation cases below retain their historical interpretation.
+
 The [fresh campaign preparation](CAMPAIGN_PREPARATION.md) qualifies a
 106.290103040-second nominal QPU estimate and a 118.445463040-second declared
 stress scenario. Five jobs have service ceilings totaling 170 seconds:

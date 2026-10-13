@@ -1,0 +1,79 @@
+{
+  "boundary": "The measured artifacts replay retained raw counts and their inference gates. Browser checks establish rendering and control behavior; algebra, calibration replay and hardware causal attribution remain distinct.",
+  "browser_checks": {
+    "browser": "Chromium 153.0.8010.52 headless",
+    "desktop_viewport": [
+      1440,
+      1050
+    ],
+    "families": [
+      "rank-sector",
+      "ripple"
+    ],
+    "missing_controls": {
+      "rank-sector": [],
+      "ripple": []
+    },
+    "mobile_horizontal_overflow": {
+      "rank-sector": false,
+      "ripple": false
+    },
+    "mobile_viewport": [
+      390,
+      844
+    ],
+    "page_errors": [],
+    "select_option_counts": {
+      "rank-sector": {
+        "depth": 0,
+        "edge": 0,
+        "event": 2,
+        "family": 2,
+        "graphMetric": 4,
+        "kite": 0,
+        "matrixMetric": 2,
+        "member": 8,
+        "norm": 3,
+        "phase": 0,
+        "probe": 4,
+        "pub": 36,
+        "sector": 8,
+        "walk": 0
+      },
+      "ripple": {
+        "depth": 5,
+        "edge": 12,
+        "event": 2,
+        "family": 2,
+        "graphMetric": 4,
+        "kite": 7,
+        "matrixMetric": 2,
+        "member": 7,
+        "norm": 3,
+        "phase": 8,
+        "probe": 4,
+        "pub": 146,
+        "sector": 8,
+        "walk": 8
+      }
+    }
+  },
+  "evidence_kind": "collected_hardware",
+  "observed_at": "2026-10-13T16:59:43.281398+00:00",
+  "physical_job_ids": [
+    "db6q2p2mb58s738c75gg",
+    "db6q2rklf4us73c5oq90",
+    "db6q9qo4qg6s73c57020",
+    "db6q9rsvf2bc73d1kpug"
+  ],
+  "schema": "measured-acquisition-visual-validation-v2",
+  "source_files": {
+    "gororoba_quantum/visualizations/measured_cayley_dickson_ripples.html": "9c1be160293b86237f9d35630e9ed7d95e9759251d4f5dae330f94cdfddc4e43",
+    "results/ripple/measured-cayley-dickson-ripples.html": "0ec2b7c4ddb0a15bf17e2d8b787f923e9b6e18b2b527f196ff7141135692b1e2",
+    "results/ripple/measured-rank-sector.json": "5f1ba2c0b0d25ec068a4ecbac98f984f32aaabe024dd8aca0ec180edd117e802",
+    "results/ripple/measured-ripple.json": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7",
+    "scripts/extract_measured_ripple.py": "da928aaf6fe5eda9c6bcd5202b054b574b131805b6158d681ebee6acb65a6d06",
+    "scripts/render_measured_ripple.py": "fab31ab512d69b35dab5b4691d824ef01cfc02c49ed7041c35606e58b4d05cee",
+    "scripts/validate_measured_explorer.py": "7a5e9f945f5f4cd2eca435948bcb085dabeb67ef89053d5726570f73cea8a972"
+  }
+}

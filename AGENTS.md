@@ -84,6 +84,19 @@ treats warnings as errors, kernel-checks, and compares raw assumptions.
 The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
 
+The recovered wide-control acquisition uses
+`scripts/review_wide_control_job.py --check` and `--self-test`, each in
+normal and optimized Python. `scripts/reconcile_qpu_inventory.py --check`
+binds the complete recorded service inventory to every raw job archive;
+its synthetic contract rejects missing/duplicate jobs, altered denominators
+and raw corruption. These replays and measured extraction/render checks
+join `ci/gates.json`.
+
+Changes to the C881 proof sources or receipts also run the pinned Rocq
+procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt
+check verifies retained hashes; a fresh kernel replay remains the proof-change
+procedure because hosted CI supplies no pinned Rocq toolchain.
+
 ## Source library and research replay
 
 `docs/` owns source notes, retained PDFs, retrieval identities and research
