@@ -1,6 +1,6 @@
 {
   "schema": "cooperative-qpu-campaign-coordination-v1",
-  "updated_at": "2026-10-13T02:35:00+00:00",
+  "updated_at": "2026-10-13T03:31:58.957019+00:00",
   "scope": "Single execution owner; model-discrimination decision precedes broad ripple/rank expenditure",
   "shared_quota": {
     "last_observed_remaining_seconds": 551,
@@ -65,79 +65,33 @@
     },
     {
       "family": "ripple",
-      "owner": "Design a single-run reality ripple",
-      "backend": "ibm_kingston",
-      "state": "fresh_qualified_case_held_for_correction_decision",
-      "case": "2026-10-12T210043.972363Z",
-      "record_sha256": "bc709f774aecd68fdfaa1612ea05db6a0326217df9ef1da2f0535c17371846e1",
-      "qpy_sha256": "b0ec7e6cffce4ec6713551634acffd517231d6eebb46b8cc5e6f75accfe5d2f9",
-      "case_sha256": "d53642043153279f937b3813e1b6a4eca09227289154fbe0d55d241e4e74a694",
-      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
-      "prepared_source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
-      "proposed_pubs": 146,
-      "member_count": 929,
-      "shot_allocation_histogram": {
-        "1024": 120,
-        "4096": 26
-      },
-      "reported_nominal_seconds": 64.321793536,
-      "reported_stress_seconds": 68.921793536,
-      "proposed_ceiling_seconds": 80,
-      "job_ceilings_seconds": [
-        40,
-        40
+      "backend": "ibm_fez",
+      "state": "completed_collected",
+      "approved_record": "results/live/2026-10-13T024407.448597Z",
+      "approved_record_sha256": "8c9bd292a6d6f976f2e7014fe49fd99ed7327ad79a982bdfb8ae641a64877c4d",
+      "submission": "results/live/2026-10-13T025444.603480Z",
+      "accepted_job_ids": [
+        "db6q2p2mb58s738c75gg",
+        "db6q2rklf4us73c5oq90"
       ],
-      "accepted_job_ids": [],
-      "planning_admission": true,
-      "current_admission": false,
-      "physical_execution_authorized": false,
-      "execution_authority_state": "direct_user_go_pending_qualified_correction_and_runtime_guard",
-      "qualification": "Complete source, dependency, QPY, observable, cost and checksum audit passed. Actual participant idle states, live binding and quota remain submission gates.",
-      "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
-      "audit": "results/ripple/campaign-execution/final-fleet-correction-campaign-audit.json",
-      "admitted_endpoints": 1138,
-      "required_endpoints": 1138,
-      "source_closure_audit": "results/live/2026-10-12T210043.972363Z/source-closure.json",
-      "fleet_binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
-      "calibration": "2026-10-12T13:41:56-07:00"
+      "settled_charge_seconds": 66,
+      "collect_sha256": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13",
+      "finding": "84 of 85 bright-minus-dark contrasts reject the null under family-wise Hoeffding bounds; the largest is +0.731 [0.582, 0.881]"
     },
     {
       "family": "rank-sector",
-      "owner": "Design a single-run reality ripple",
-      "backend": "ibm_kingston",
-      "state": "fresh_qualified_case_held_for_correction_decision",
-      "case": "2026-10-12T210815.657132Z",
-      "record_sha256": "9ddec6264db827947babe29967f68690814d7510cc01f2af5e0aff55334ec877",
-      "qpy_sha256": "fbf129f9edd014a60a326243c7e7200818b4282d67c1a5b43e19cae1328ca857",
-      "case_sha256": "6efe37ac91e53c868ad4c1ddd0a2a0a43b54bdf18c3e2904ba649a68160a11c9",
-      "experiment_digest": "91e64dab6f8a5db8a41ac88c33f3e4860b82d33e5719fee30160bb7de63def9d",
-      "prepared_source_commit": "f9bdbbe814c28d335ea2d0a3423be8218c0f5e7d",
-      "proposed_pubs": 36,
-      "member_count": 176,
-      "shot_allocation_histogram": {
-        "1024": 15,
-        "4096": 21
-      },
-      "reported_nominal_seconds": 30.44909824,
-      "reported_stress_seconds": 35.04909824,
-      "proposed_ceiling_seconds": 60,
-      "job_ceilings_seconds": [
-        30,
-        30
+      "backend": "ibm_fez",
+      "state": "completed_collected",
+      "approved_record": "results/live/2026-10-13T031726.380783Z",
+      "approved_record_sha256": "5563c7e59b7e3a90d49cecefed223d354afcbbbacc121d7d2f3899455c6e37f6",
+      "submission": "results/live/2026-10-13T032011.664435Z",
+      "accepted_job_ids": [
+        "db6q9qo4qg6s73c57020",
+        "db6q9rsvf2bc73d1kpug"
       ],
-      "accepted_job_ids": [],
-      "planning_admission": true,
-      "current_admission": false,
-      "physical_execution_authorized": false,
-      "execution_authority_state": "direct_user_go_pending_qualified_correction_and_runtime_guard",
-      "qualification": "Complete source, dependency, QPY, observable, cost and checksum audit passed. Actual participant idle states, live binding and quota remain submission gates.",
-      "execution_priority_gate": "Collect and adjudicate correction first; each static family then requires its own practical accuracy admission.",
-      "audit": "results/ripple/campaign-execution/final-fleet-correction-campaign-audit.json",
-      "admitted_endpoints": 196,
-      "required_endpoints": 196,
-      "source_closure_audit": "results/live/2026-10-12T210815.657132Z/source-closure.json",
-      "fleet_binding": "results/ripple/campaign-execution/final-complete-fleet-binding.json",
-      "calibration": "2026-10-12T13:41:56-07:00"
+      "settled_charge_seconds": 31,
+      "collect_sha256": "a0a4e59162ea9837322842a7e9094ef46761164b8a47a2917081338ec4b7c963",
+      "finding": "20 of 20 sector bright-minus-dark contrasts reject the null; estimates +0.82 to +0.87"
     },
     {
       "family": "folded-correction",
@@ -184,11 +138,10 @@
   "other_chat_confirmation": "The user authorizes execution after reviewed merged code, current cases and a combined 180-second ceiling. Reviewed merge is verified. Correction requires fresh eligible renewal and a qualified collected decision before independent static admission. Fresh static ceilings 140 plus held correction proposal 30 total 170 proposed seconds.",
   "limits": "this cooperative manifest does not create an account-wide atomic reservation; shared quota and accepted jobs require fresh reconciliation before every submission",
   "account_inventory_observation": {
-    "observed_at": "2026-10-13T02:35:00.040086+00:00",
-    "usage_consumed_seconds": 71,
+    "observed_at": "2026-10-13T03:31:58.957019+00:00",
+    "usage_consumed_seconds": 168,
     "usage_limit_seconds": 600,
-    "remaining_seconds": 529,
-    "usage_period_end": "2026-10-13T02:34:59.969Z",
+    "remaining_seconds": 432,
     "pending_instance_job_ids": [],
     "boundary": "Read-only observation; the runner performs fresh independent submission checks."
   },
