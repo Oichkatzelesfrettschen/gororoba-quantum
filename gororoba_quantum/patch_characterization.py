@@ -101,11 +101,14 @@ def ramsey(
             circuit.delay(delay_dt // 2, [WORK_A, WORK_B], unit="dt")
             circuit.x(list(prepared))
     circuit.barrier()
+    # Every basis change precedes every measurement, so no gate follows a
+    # measurement and the circuit stays static (local_compute.is_dynamic).
+    for qubit in prepared:
+        if quadrature == "y":
+            circuit.sdg(qubit)
+        circuit.h(qubit)
     for qubit in (WORK_A, WORK_B):
-        if qubit in prepared:
-            _read(circuit, (qubit,), quadrature, WORK_CLBIT[qubit])
-        else:
-            circuit.measure(qubit, WORK_CLBIT[qubit])
+        circuit.measure(qubit, WORK_CLBIT[qubit])
     return circuit
 
 
@@ -348,8 +351,10 @@ def _verify() -> None:
             observed = _exact_law(member.circuit)
             if not np.allclose(observed, member.ideal, atol=1e-12):
                 raise RuntimeError(f"{member.name}: exact circuit law {observed} differs from {member.ideal}")
-    if any(op in ("reset", "if_else") for circuit in static for op in circuit.count_ops()):
-        raise RuntimeError("a static patch circuit carries a dynamic operation")
+    from local_compute import is_dynamic
+
+    if any(is_dynamic(circuit) for circuit in static):
+        raise RuntimeError("a static patch circuit measures before later quantum work")
     if not all({"reset", "if_else"} & set(circuit.count_ops()) for circuit in dynamic):
         raise RuntimeError("a dynamic patch circuit lost its reset or feed-forward")
     for contract in patch_contracts(delays, 0.05, 0.8):
