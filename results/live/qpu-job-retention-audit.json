@@ -41,6 +41,7 @@
         "results/live/2026-10-11T152922.787095Z/raw/db5qmqclf4us73c4e1ug/pub_04.json": "13b8ad418704af7f0f195584c96767ccce0cb5f03e0137abf6417e27a11e65de",
         "results/live/2026-10-11T152922.787095Z/raw/db5qmqclf4us73c4e1ug/pub_05.json": "b0e12c4894dd41f3a61fbd2e28334d6e4f147a31617899413368fe94dc081893",
         "results/live/2026-10-11T152922.787095Z/raw/db5qmqclf4us73c4e1ug/result_metadata.json": "b8d6f7f17b0f4889732a0307706bbbb8ad386036c98c4c51848c9723a11faca8",
+        "results/live/2026-10-11T152922.787095Z/raw/preserved.json": "a1064b23130195c7eebca7bd765938990d8e7b09eb1626393203a9745e763091",
         "results/live/2026-10-11T152922.787095Z/record.json": "3b81e5b3ba59bf5041daeaae911d9c5b62063fe4186544c5ed79e9ef709c1e59"
       },
       "status": "DONE",
@@ -526,7 +527,7 @@
   "new_campaign_charge_seconds": "121",
   "observed_at": "2026-10-13T04:59:38.738834+00:00",
   "pub_count": 214,
-  "replay_source_sha256": "abe05bf3af1fb23f900afa45ed46b24ff300266deb2e0a60dc68efb255de26c6",
+  "replay_source_sha256": "b4c73251340d7f252e2231af3d1720231652388422dc4ebdbc3c8907de6f37fc",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All jobs in the retained service inventory have lossless raw archives. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
   "submitted_pub_shots": 552960,

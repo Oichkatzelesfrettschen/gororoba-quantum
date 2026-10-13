@@ -123,14 +123,19 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             require(entry["usage"]["usage_status"] == "final", "collection usage is unsettled")
             require(Decimal(str(entry["usage"]["qpu_charge_time_seconds"])) == charge, "collection charge differs")
             # Newer collections carry the raw ledger in collect.json; the pilot
-            # preserved its ledger in raw/preserved.json.
-            preserved = run / "raw/preserved.json"
-            ledger = entry.get("raw") or (read(preserved)["jobs"].get(identity) if preserved.exists() else None)
-            if ledger is not None:
-                require(
-                    ledger["directory"] == str(directory.relative_to(run)) and ledger["files"] == index["files"],
-                    "collection raw ledger differs from the retained index",
-                )
+            # preserved its ledger in raw/preserved.json, which then must exist
+            # and joins the audit's source files.
+            if "raw" in entry:
+                ledger = entry["raw"]
+            else:
+                preserved = run / "raw/preserved.json"
+                require(preserved.exists(), "collection without an inline raw ledger lacks raw/preserved.json")
+                ledger = read(preserved)["jobs"][identity]
+                sources[str(preserved.relative_to(ROOT))] = digest(preserved)
+            require(
+                ledger["directory"] == str(directory.relative_to(run)) and ledger["files"] == index["files"],
+                "collection raw ledger differs from the retained index",
+            )
             submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
             require(digest(run / "isa.qpy") == submitted, "isa.qpy differs from the submitted circuit archive")
             evidence_names = ["record.json", "collect.json", "isa.qpy"]
