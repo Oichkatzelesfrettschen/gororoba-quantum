@@ -33,6 +33,11 @@ kernel planes through polynomial saturation and describe the full pair space
 as a quotient of tautological sphere spaces over real frontier graphs.
 Computing those graph closures and the global invariants remains open.
 
+The [real circle-frontier graph](notes/real_circle_frontier_graphs.md) and
+[replay](evidence/real_frontier_graphs/README.md) compute the complete named
+cone slice closure, its trace inverse, and integral evaluation maps. Ambient
+coverage and unrestricted topology remain open.
+
 ## Hosted papers
 
 The notes attribute each source and link its exact-version license evidence.
