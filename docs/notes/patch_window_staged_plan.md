@@ -64,22 +64,27 @@ explicit owner approval; an informative unresolved result ends the campaign.
 
 ## Decision usefulness at the registered precision
 
-Half-widths are the simultaneous Hoeffding radii of the final dry run. For two
-Ramsey responses of visibility R separated by phase dphi, the X/Y distance is
-2 R |sin(dphi / 2)|, so detectability depends on visibility as well as phase.
+Half-widths are the simultaneous Hoeffding radii of the final dry run. The
+registered Ramsey endpoints score Y expectations only. For two responses of
+equal visibility R at phases phi1 and phi2,
+|dY| = 2 R |cos((phi1 + phi2) / 2) sin((phi2 - phi1) / 2)|, so the cosine
+factor can vanish; the full X/Y distance 2 R |sin(dphi / 2)| bounds |dY| from
+above. The phase figures below are favorable-orientation sensitivities at the
+stated visibility, not phase-independent resolution limits or power
+certificates, and a joint X/Y decision would need its own simultaneous rule.
 
 | Endpoint (units) | Half-width | Role | Resolves |
 |---|---:|---|---|
-| work A/B echo minus plain, Y expectation at 7.6 us | 0.229 | decisive | phase differences above about 0.27 rad at R near 0.87 (5.6 kHz static detuning) |
-| work A/B measurement window minus plain, Y at 5.6 us | 0.229 | decisive | a window-associated phase above about 0.27 rad at R near 0.87 |
-| work A control 1 minus 0, Y at 5.6 us | 0.229 | decisive | control-state-dependent phase of the same size |
-| work A measured minus reset-only, Y at 5.6 us | 0.229 | decisive | explicit-measurement contribution of the same size |
+| work A/B echo minus plain, Y expectation at 7.6 us | 0.229 | primary | at favorable orientation, phase differences above about 0.27 rad at R near 0.87 (5.6 kHz static detuning) |
+| work A/B measurement window minus plain, Y at 5.6 us | 0.229 | primary | at favorable orientation, a window-associated phase above about 0.27 rad at R near 0.87 |
+| work A control 1 minus 0, Y at 5.6 us | 0.229 | primary | control-state-dependent phase of the same size, same orientation caveat |
+| work A measured minus reset-only, Y at 5.6 us | 0.229 | primary | explicit-measurement contribution of the same size, same orientation caveat |
 | work A paired minus single, Y at 7.6 us | 0.229 | exploratory | only a large paired-preparation ZZ effect |
 | spectator excess from work A (population) | 0.114 | exploratory | transfer above about 11 percent; weak transfer stays possible |
 | orbit barrier minus nominal (contrast difference) | 0.240 | exploratory | gains above about 0.24; adoption needs validation power |
 | orbit echo minus barrier (contrast difference) | 0.240 | exploratory | as above |
 
-The run is decision-useful for the window-phase hypotheses and exploratory for
+The run is primarily informative for the window-phase hypotheses and exploratory for
 the orbit interventions; "no intervention selected" stays an allowed outcome.
 
 ## Execution limits

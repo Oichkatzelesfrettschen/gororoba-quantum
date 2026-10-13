@@ -200,7 +200,7 @@ def verify() -> dict[str, Any]:
             (("shots",), 1024, "allocation maximum"),
             ((*design, "shot_allocation"), "uniform", "uniform design carries"),
             ((*design, "shot_allocation"), "unknown", "unknown shot allocation"),
-            ((*design, "optimize"), False, "optimized static algebra"),
+            ((*design, "optimize"), False, "optimized algebra or patch family"),
             ((*design, "shot_tiers"), [4096, 1024], "unique and increasing"),
             (("execution_pubs", 0, "kind"), "dynamic", "static execution PUBs"),
             (("execution_pubs", 1, "name"), "low_pub", "identities must be unique"),
