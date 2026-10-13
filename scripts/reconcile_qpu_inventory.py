@@ -84,6 +84,7 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         names = index["metrics"]
         hashes = index["metrics_sha256"]
         require(len(names) == len(hashes) and bool(names), "metrics index cardinality differs")
+        require(len(set(names)) == len(names), "metrics index repeats a snapshot")
         for name, expected in zip(names, hashes, strict=True):
             require(bool(re.fullmatch(r"job_metrics(?:\.[0-9]+)?\.json", name)), "metrics filename differs")
             path = directory / name

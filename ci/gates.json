@@ -1564,7 +1564,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py && ruff format --check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py && mypy scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py",
+   "cmd": "ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && ruff format --check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py && mypy scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py scripts/validate_measured_explorer.py",
    "seconds": 10.0,
    "tier": "pr",
    "name": "core-195"
@@ -1720,6 +1720,14 @@
    "seconds": 10.0,
    "tier": "pr",
    "name": "sources-214"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/validate_measured_explorer.py --check",
+   "name": "core-210",
+   "seconds": 1.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

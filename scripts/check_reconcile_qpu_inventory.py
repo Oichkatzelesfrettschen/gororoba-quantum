@@ -28,7 +28,7 @@ def main() -> None:
         write(raw / "result_metadata.json", {})
         metrics = {"usage": {"status": "complete", "qpu_charge_time_seconds": 1}}
         write(raw / "job_metrics.json", metrics)
-        index = {
+        index: dict[str, Any] = {
             "job_id": "synthetic-job",
             "files": {name: audit.digest(raw / name) for name in ("pub_00.json", "result_metadata.json")},
             "metrics": ["job_metrics.json"],
@@ -120,6 +120,18 @@ def main() -> None:
                 if path.is_file()
             }
             audit.require(before == after, "replay altered retained inputs")
+            duplicated = copy.deepcopy(index)
+            duplicated["metrics"] = ["job_metrics.json", "job_metrics.json"]
+            duplicated["metrics_sha256"] = [index["metrics_sha256"][0]] * 2
+            duplicated["metrics_latest"] = "job_metrics.json"
+            write(raw / "index.json", duplicated)
+            try:
+                audit.reconcile(source)
+            except ValueError:
+                pass
+            else:
+                raise RuntimeError("a repeated metrics snapshot was admitted")
+            write(raw / "index.json", index)
             (raw / "pub_00.json").write_bytes(b"corrupted raw fixture")
             try:
                 audit.reconcile(source)
@@ -127,7 +139,10 @@ def main() -> None:
                 pass
             else:
                 raise RuntimeError("raw digest mutation admitted")
-    print("Synthetic inventory contract: 15 inventory mutations and raw corruption rejected; replay preserves bytes")
+    print(
+        "Synthetic inventory contract: 15 inventory mutations, a repeated metrics snapshot "
+        "and raw corruption rejected; replay preserves bytes"
+    )
 
 
 if __name__ == "__main__":
