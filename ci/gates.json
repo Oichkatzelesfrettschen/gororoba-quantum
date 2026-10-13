@@ -1067,127 +1067,133 @@
    "suite": "core",
    "cwd": ".",
    "cmd": "ruff check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py && ruff format --check scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py && mypy scripts/reconcile_qpu_inventory.py scripts/check_reconcile_qpu_inventory.py scripts/review_wide_control_job.py",
-   "name": "qpu-evidence-lint"
+   "name": "core-177"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/reconcile_qpu_inventory.py --check",
-   "name": "qpu-evidence-coverage"
+   "name": "core-178"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -O -W error scripts/reconcile_qpu_inventory.py --check",
-   "name": "qpu-evidence-coverage-optimized"
+   "name": "core-179"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/check_reconcile_qpu_inventory.py",
-   "name": "qpu-evidence-inventory-falsifiers"
+   "name": "core-180"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -O -W error scripts/check_reconcile_qpu_inventory.py",
-   "name": "qpu-evidence-inventory-falsifiers-optimized"
+   "name": "core-181"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/review_wide_control_job.py --check",
-   "name": "qpu-evidence-wide-replay"
+   "name": "core-182"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -O -W error scripts/review_wide_control_job.py --check",
-   "name": "qpu-evidence-wide-replay-optimized"
+   "name": "core-183"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/review_wide_control_job.py --self-test",
-   "name": "qpu-evidence-wide-falsifiers"
+   "name": "core-184"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -O -W error scripts/review_wide_control_job.py --self-test",
-   "name": "qpu-evidence-wide-falsifiers-optimized"
+   "name": "core-185"
   },
   {
    "suite": "core",
    "cwd": "results/live/kingston-wide-control-result",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "qpu-evidence-wide-hashes"
+   "name": "core-186"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T025444.603480Z --out results/ripple/measured-ripple.json --check",
-   "name": "qpu-evidence-measured-ripple"
+   "name": "core-187"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/extract_measured_ripple.py --run results/live/2026-10-13T032011.664435Z --out results/ripple/measured-rank-sector.json --check",
-   "name": "qpu-evidence-measured-rank"
+   "name": "core-188"
   },
   {
    "suite": "core",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/render_measured_ripple.py --evidence results/ripple/measured-ripple.json --evidence results/ripple/measured-rank-sector.json --out results/ripple/measured-cayley-dickson-ripples.html --check",
-   "name": "qpu-evidence-measured-html"
+   "name": "core-189"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error kernel_determinant_contracts.py",
-   "name": "kernel-determinant-contract"
+   "name": "core-190"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -O -W error kernel_determinant_contracts.py",
-   "name": "kernel-determinant-contract-optimized"
+   "name": "core-191"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/kernel_determinant/replay.py --check",
-   "name": "kernel-determinant-replay"
+   "name": "sources-192"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/kernel_determinant/replay.py --check",
-   "name": "kernel-determinant-replay-optimized"
+   "name": "sources-193"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_determinant",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "kernel-determinant-hashes"
+   "name": "sources-194"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/c881_exhaustive/replay_rocq.sh",
-   "name": "c881-replay-shell"
+   "name": "sources-195"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error docs/evidence/c881_exhaustive/check_replay.py",
-   "name": "c881-receipt"
+   "name": "sources-196"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -O -W error docs/evidence/c881_exhaustive/check_replay.py",
-   "name": "c881-receipt-optimized"
+   "name": "sources-197"
+  },
+  {
+   "suite": "sources",
+   "cwd": "docs/evidence/c881_exhaustive",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "name": "sources-198"
   }
  ],
  "excluded": [
