@@ -1037,12 +1037,15 @@ def assigned_alias_shadow():
                 f"expected {sorted(expected_callees)}"
             )
 
-    try:
-        _direct_call_graph({"newer_syntax": "def identity[Value](value: Value) -> Value:\n    return value\n"})
-    except SyntaxError:
-        pass
-    else:
-        raise RuntimeError(f"call mapper accepted syntax newer than configured Python {SOURCE_FEATURE_VERSION}")
+    # PEP 695 type parameters arrived in Python 3.12; below that target the
+    # mapper rejects them as newer syntax.
+    if SOURCE_FEATURE_VERSION < (3, 12):
+        try:
+            _direct_call_graph({"newer_syntax": "def identity[Value](value: Value) -> Value:\n    return value\n"})
+        except SyntaxError:
+            pass
+        else:
+            raise RuntimeError(f"call mapper accepted syntax newer than configured Python {SOURCE_FEATURE_VERSION}")
 
 
 def main() -> int:

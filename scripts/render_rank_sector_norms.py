@@ -312,6 +312,23 @@ def render(traces: tuple[NormTrace, ...], output: Path, png: Path | None) -> Non
     plt.close(figure)
 
 
+# PNG rasterization depends on the FreeType build matplotlib links; an RMS
+# tolerance on 0-255 pixel values accepts glyph antialiasing differences
+# between builds while SVG and data outputs stay byte-exact.
+PNG_RMS_TOLERANCE = 2.0
+
+
+def same_image(retained: Path, generated: Path) -> bool:
+    """Whether generated reproduces retained: bytes for SVG, tolerance-bounded pixels for PNG."""
+    if not retained.is_file():
+        return False
+    if retained.suffix.lower() != ".png":
+        return retained.read_bytes() == generated.read_bytes()
+    from matplotlib.testing.compare import compare_images
+
+    return compare_images(str(retained), str(generated), tol=PNG_RMS_TOLERANCE) is None
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--out", type=Path, default=ROOT / "results/ripple/rank-sector-norms.svg")
@@ -332,7 +349,7 @@ def main() -> int:
             if args.png is not None and generated_png is not None:
                 comparisons.append((args.png, generated_png))
             for retained, generated in comparisons:
-                if not retained.is_file() or retained.read_bytes() != generated.read_bytes():
+                if not same_image(retained, generated):
                     raise RuntimeError(f"retained {retained.name} differs from the verified exact-model render")
     else:
         render(traces, args.out, args.png)

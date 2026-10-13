@@ -20,7 +20,7 @@ from typing import Any
 from unittest.mock import patch
 from urllib.parse import urlsplit
 
-import requests  # type: ignore[import-untyped]
+import requests  # type: ignore[import-untyped, unused-ignore]
 from qiskit_ibm_runtime import QiskitRuntimeService
 
 
