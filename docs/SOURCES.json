@@ -645,6 +645,16 @@
       "note": "docs/notes/hoeffding-1963.md",
       "url": "https://doi.org/10.1080/01621459.1963.10500830",
       "status": "Journal article cited by DOI; publisher full text is outside the retained library"
+    },
+    {
+      "note": "docs/notes/ibm-runtime-execution-guides.md",
+      "url": "https://quantum.cloud.ibm.com/docs/en/tutorials/refresh-backend-properties-with-real-time-benchmarking",
+      "status": "HTML documentation retrieved 2026-10-13; the note records the cited use and retrieval SHA-256"
+    },
+    {
+      "note": "docs/notes/ibm-runtime-execution-guides.md",
+      "url": "https://quantum.cloud.ibm.com/docs/en/guides/qiskit-runtime-circuit-timing",
+      "status": "HTML documentation retrieved 2026-10-13; the note records the cited use and retrieval SHA-256"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",
@@ -2801,6 +2811,46 @@
         "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
         "evidence_path": "docs/evidence/source_rights/arxiv-2010.09686v7.html",
         "evidence_retrieved_at_utc": "2026-10-13T19:19:07.473099+00:00",
+        "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
+        "decision": "external_only",
+        "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+        "reading_scope": "Source-specific rights statement and operative terms; the note carries the content reading scope."
+      }
+    },
+    {
+      "title": "Characterizing errors on qubit operations via iterative randomized benchmarking",
+      "authors": [
+        "Sheldon, Sarah",
+        "Bishop, Lev S.",
+        "Magesan, Easwar",
+        "Filipp, Stefan",
+        "Chow, Jerry M.",
+        "Gambetta, Jay M."
+      ],
+      "version": "v1, 2015-04-24",
+      "source_url": "https://arxiv.org/pdf/1504.06597v1",
+      "note": "docs/notes/1504.06597.md",
+      "audited_at_utc": "2026-10-13T22:56:10.341775+00:00",
+      "sha256": "609232d9fc4f3066aec0bc520174e88107ed4444e70dcfec3e05e164f589f7c9",
+      "bytes": 577924,
+      "pages": 5,
+      "acquisition": "download",
+      "status": "external_only",
+      "excluded_published_path": "docs/pdf/1504.06597v1.pdf",
+      "local_cache_path": "docs/local_source_cache/1504.06597v1.pdf",
+      "redistribution": "excluded_without_permission",
+      "rights_locator": "License-icon link on the exact-version arXiv abstract page",
+      "rights_reason": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
+      "rights": {
+        "verified": true,
+        "pdf_sha256": "609232d9fc4f3066aec0bc520174e88107ed4444e70dcfec3e05e164f589f7c9",
+        "verified_at_utc": "2026-10-13T22:56:10.341775+00:00",
+        "license_identifier": "LicenseRef-arXiv-nonexclusive-distrib-1.0",
+        "evidence_url": "https://arxiv.org/abs/1504.06597v1",
+        "evidence_sha256": "9eef9aa3da369131d0eb929727c2a899597ce3f67f24f27021df8b3439936069",
+        "evidence_locator": "License-icon link on the exact-version arXiv abstract page",
+        "evidence_path": "docs/evidence/source_rights/arxiv-1504.06597v1.html",
+        "evidence_retrieved_at_utc": "2026-10-13T22:56:10.341775+00:00",
         "license_url": "http://arxiv.org/licenses/nonexclusive-distrib/1.0/",
         "decision": "external_only",
         "evidence_summary": "The source-specific grant permits arXiv to distribute the article. The inspected grant supplies no general downstream rehosting permission.",
