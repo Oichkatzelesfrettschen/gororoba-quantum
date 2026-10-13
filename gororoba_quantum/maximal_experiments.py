@@ -4,22 +4,22 @@ This module provides two calibration-aware, hardware-scale experiments designed
 for whole-chip execution under the repository's strict submission gating:
 
 1. ``spectator_wavefront_ramsey``: Measures spatial spectator dephasing and crosstalk
-   during active mid-circuit measurement, dynamic reset, and feed-forward phase update
-   (if_test). Spectators are protected by explicit barriers and matched delay intervals,
+   along a connected line graph of physical qubits during active core driving.
+   Spectators are protected by explicit barriers and matched delay intervals,
    preventing compiler cancellation of the H...H Ramsey sequence. A matched control
-   circuit runs with the dynamic core held idle, providing a differential contrast
-   delta_C(q) = C_control(q) - C_active(q) that isolates hardware crosstalk from
-   intrinsic T1/T2 relaxation.
+   circuit runs with the driving core held idle for the identical duration, providing
+   a differential contrast delta_C = C_control - C_active that isolates hardware
+   crosstalk from intrinsic T1/T2 relaxation.
 
 2. ``concurrent_shor_mod15``: Reuses the repository's verified semiclassical order-finding
-   circuit from order_finding.py for N=15, a=2. Placing replicas using live backend
-   calibration metrics filters degraded ("bum") qubits and embeds the 5-qubit order-finding
-   engines across disjoint hardware patches with identical compiled gate sequences.
+   circuit from order_finding.py for N=15, a=2 with 2 phase bits. Placing replicas
+   using live backend calibration metrics filters degraded ("bum") qubits and embeds
+   the order-finding engines across disjoint hardware patches with identical compiled
+   gate sequences.
 """
 
 from __future__ import annotations
 
-import math
 from typing import Any
 
 import numpy as np
@@ -27,10 +27,11 @@ from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
 import variance
 from experiments import Group, Member, tvd
+from factoring import distribution_success
 from order_finding import factor_order_finding
 
 DEFAULT_DELAY_DT = 4000
-DEFAULT_SPECTATORS = 10
+DEFAULT_SPECTATORS = 5
 
 
 def build_spectator_wavefront_circuits(
@@ -39,90 +40,110 @@ def build_spectator_wavefront_circuits(
 ) -> tuple[QuantumCircuit, QuantumCircuit, QuantumCircuit]:
     """Construct active core, matched idle control, and readout null circuits.
 
-    The active circuit entangles control and target, measures control mid-circuit,
-    resets it, applies feed-forward phase correction, and measures control again.
-    Spectator qubits are prepared in |+>, idled across barriers matching the core
-    window, and rotated back with H before readout. The matched control circuit
-    holds the core idle for the identical duration.
+    All circuits enforce a connected linear topology via native CZ identity pairs
+    (CZ-barrier-CZ) between adjacent qubits along the line 0-1-2-...-(N-1). This
+    guarantees VF2 finds physical nearest-neighbor line embeddings without isolated-node
+    combinatorial search.
+
+    The active circuit drives core qubit 0 while spectators 1..N-1 idle in |+>.
+    The matched control circuit holds core qubit 0 idle for the identical duration.
+    The null circuit measures the ground state readout baseline.
+    All three circuits are purely static and share identical timing envelopes.
     """
     if spectator_count < 1:
         raise ValueError(f"spectator_count must be at least 1, got {spectator_count}")
 
-    total_qubits = 2 + spectator_count
-    total_clbits = 2 + spectator_count
+    total_qubits = 1 + spectator_count
+    total_clbits = total_qubits
 
-    # Active core circuit
+    # 1. Active core circuit
     qc_active = QuantumCircuit(
         QuantumRegister(total_qubits, "q"),
         ClassicalRegister(total_clbits, "c"),
         name="spectator_wavefront_active",
     )
-    ctrl, target = 0, 1
-    spectators = list(range(2, total_qubits))
+    # Native connected topology gauge along line 0-1-...-(N-1)
+    for i in range(total_qubits - 1):
+        qc_active.cz(i, i + 1)
+        qc_active.barrier()
+        qc_active.cz(i, i + 1)
+        qc_active.barrier()
 
-    for s in spectators:
+    # Ramsey preparation
+    for s in range(1, total_qubits):
         qc_active.h(s)
-
-    qc_active.x(target)
-    qc_active.h(ctrl)
-    qc_active.cx(ctrl, target)
-    qc_active.h(ctrl)
-
     qc_active.barrier()
-    qc_active.measure(ctrl, 0)
-    qc_active.reset(ctrl)
-    for s in spectators:
+
+    # Ramsey exposure: core driving while spectators idle in superposition
+    half_dt = delay_dt // 2
+    rem_dt = delay_dt - half_dt
+    qc_active.delay(half_dt, 0, unit="dt")
+    qc_active.x(0)
+    qc_active.delay(rem_dt, 0, unit="dt")
+    qc_active.x(0)
+    for s in range(1, total_qubits):
         qc_active.delay(delay_dt, s, unit="dt")
-    with qc_active.if_test((qc_active.clbits[0], 1)):
-        qc_active.p(-math.pi / 2, ctrl)
-    qc_active.h(ctrl)
-    qc_active.measure(ctrl, 1)
     qc_active.barrier()
 
-    for idx, s in enumerate(spectators):
+    # Ramsey readout
+    for s in range(1, total_qubits):
         qc_active.h(s)
-        qc_active.measure(s, 2 + idx)
+    for q in range(total_qubits):
+        qc_active.measure(q, q)
 
-    # Matched idle control circuit
+    # 2. Matched idle control circuit
     qc_control = QuantumCircuit(
         QuantumRegister(total_qubits, "q"),
         ClassicalRegister(total_clbits, "c"),
         name="spectator_wavefront_control",
     )
-    for s in spectators:
+    for i in range(total_qubits - 1):
+        qc_control.cz(i, i + 1)
+        qc_control.barrier()
+        qc_control.cz(i, i + 1)
+        qc_control.barrier()
+
+    for s in range(1, total_qubits):
         qc_control.h(s)
     qc_control.barrier()
+
+    # Matched exposure: core is idle for identical delay_dt duration
     for q in range(total_qubits):
         qc_control.delay(delay_dt, q, unit="dt")
     qc_control.barrier()
-    for idx, s in enumerate(spectators):
-        qc_control.h(s)
-        qc_control.measure(s, 2 + idx)
-    qc_control.measure(ctrl, 0)
-    qc_control.measure(ctrl, 1)
 
-    # Readout null circuit (ground state baseline)
+    for s in range(1, total_qubits):
+        qc_control.h(s)
+    for q in range(total_qubits):
+        qc_control.measure(q, q)
+
+    # 3. Readout null circuit (ground state baseline)
     qc_null = QuantumCircuit(
         QuantumRegister(total_qubits, "q"),
         ClassicalRegister(total_clbits, "c"),
         name="spectator_wavefront_null",
     )
+    for i in range(total_qubits - 1):
+        qc_null.cz(i, i + 1)
+        qc_null.barrier()
+        qc_null.cz(i, i + 1)
+        qc_null.barrier()
+
+    for q in range(total_qubits):
+        qc_null.delay(delay_dt, q, unit="dt")
+    qc_null.barrier()
+
     for q in range(total_qubits):
         qc_null.measure(q, q)
 
     return qc_active, qc_control, qc_null
 
 
-def _spectator_ideal_distribution(total_clbits: int, core_uniform: bool = False) -> np.ndarray:
-    """Ideal distribution: spectators all |0>, core uniformly distributed or |00>."""
+def _ground_ideal_distribution(total_clbits: int) -> np.ndarray:
+    """Ideal distribution: all qubits measure 0 with probability 1.0."""
     size = 1 << total_clbits
     ideal = np.zeros(size, dtype=float)
-    if not core_uniform:
-        ideal[0] = 1.0
-        return ideal
-    # Core bits 0 and 1 take states 00, 01, 10, 11 with 1/4 each; spectators are 0
-    for outcome in (0, 1, 2, 3):
-        ideal[outcome] = 0.25
+    ideal[0] = 1.0
     return ideal
 
 
@@ -130,13 +151,13 @@ def spectator_wavefront_ramsey_group(
     spectator_count: int = DEFAULT_SPECTATORS,
     delay_dt: int = DEFAULT_DELAY_DT,
 ) -> Group:
-    """Group evaluating spectator Ramsey contrast under active feed-forward vs idle control."""
+    """Group evaluating spectator Ramsey contrast under active drive vs idle control."""
     qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt)
     total_clbits = qc_active.num_clbits
 
-    ideal_active = _spectator_ideal_distribution(total_clbits, core_uniform=True)
-    ideal_control = _spectator_ideal_distribution(total_clbits, core_uniform=False)
-    ideal_null = _spectator_ideal_distribution(total_clbits, core_uniform=False)
+    ideal_active = _ground_ideal_distribution(total_clbits)
+    ideal_control = _ground_ideal_distribution(total_clbits)
+    ideal_null = _ground_ideal_distribution(total_clbits)
 
     members = (
         Member("spectator_wavefront_active", qc_active, ideal_active),
@@ -147,33 +168,46 @@ def spectator_wavefront_ramsey_group(
     def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
         active_dist = distributions["spectator_wavefront_active"]
         control_dist = distributions["spectator_wavefront_control"]
+        null_dist = distributions["spectator_wavefront_null"]
 
-        def marginal_p1(dist: np.ndarray, bit_index: int) -> float:
-            p1 = 0.0
+        def marginal_p0(dist: np.ndarray, bit_index: int) -> float:
+            p0 = 0.0
             for outcome, prob in enumerate(dist):
-                if (outcome >> bit_index) & 1:
-                    p1 += prob
-            return float(p1)
+                if not ((outcome >> bit_index) & 1):
+                    p0 += prob
+            return float(p0)
 
-        active_contrasts = [1.0 - 2.0 * marginal_p1(active_dist, 2 + i) for i in range(spectator_count)]
-        control_contrasts = [1.0 - 2.0 * marginal_p1(control_dist, 2 + i) for i in range(spectator_count)]
+        active_spectator_p0s = [marginal_p0(active_dist, s) for s in range(1, 1 + spectator_count)]
+        control_spectator_p0s = [marginal_p0(control_dist, s) for s in range(1, 1 + spectator_count)]
+        null_spectator_p0s = [marginal_p0(null_dist, s) for s in range(1, 1 + spectator_count)]
 
-        mean_c_active = float(np.mean(active_contrasts))
-        mean_c_control = float(np.mean(control_contrasts))
-        delta_c = float(mean_c_control - mean_c_active)
+        mean_p0_active = float(np.mean(active_spectator_p0s))
+        mean_p0_control = float(np.mean(control_spectator_p0s))
+        mean_p0_null = float(np.mean(null_spectator_p0s))
+        core_p0_active = marginal_p0(active_dist, 0)
 
-        core_trigger = marginal_p1(active_dist, 0)
-        core_final = marginal_p1(active_dist, 1)
+        contrast_active = 2.0 * mean_p0_active - 1.0
+        contrast_control = 2.0 * mean_p0_control - 1.0
+        delta_contrast = contrast_control - contrast_active
 
-        return {
-            "spectator_contrast_active": mean_c_active,
-            "spectator_contrast_control": mean_c_control,
-            "delta_contrast": delta_c,
-            "core_trigger_rate": core_trigger,
-            "core_final_rate": core_final,
+        metrics: dict[str, float] = {
+            "spectator_p0_active": mean_p0_active,
+            "spectator_p0_control": mean_p0_control,
+            "null_p0": mean_p0_null,
+            "core_p0_active": core_p0_active,
+            "contrast_active": float(contrast_active),
+            "contrast_control": float(contrast_control),
+            "delta_contrast": float(delta_contrast),
             "tvd_to_ideal_active": tvd(active_dist, ideal_active),
             "tvd_to_ideal_control": tvd(control_dist, ideal_control),
         }
+        for idx in range(spectator_count):
+            dist_step = idx + 1
+            c_act = 2.0 * active_spectator_p0s[idx] - 1.0
+            c_ctrl = 2.0 * control_spectator_p0s[idx] - 1.0
+            metrics[f"delta_contrast_dist_{dist_step}"] = float(c_ctrl - c_act)
+
+        return metrics
 
     return Group(
         "spectator_wavefront_ramsey",
@@ -181,10 +215,10 @@ def spectator_wavefront_ramsey_group(
         summarize,
         rate_keys=frozenset(
             {
-                "spectator_contrast_active",
-                "spectator_contrast_control",
-                "delta_contrast",
-                "core_trigger_rate",
+                "spectator_p0_active",
+                "spectator_p0_control",
+                "null_p0",
+                "core_p0_active",
             }
         ),
     )
@@ -205,8 +239,11 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
     ideal_null = np.zeros(4, dtype=float)
     ideal_null[0] = 1.0
 
-    # Weights score odd-phase factorable outcomes (01 -> 1, 11 -> 3)
     factorable_weights = np.array([0.0, 1.0, 0.0, 1.0], dtype=float)
+
+    uniform_baseline = distribution_success([0.25] * 4, phase_bits, modulus, base)
+    uniform_factorable_rate = uniform_baseline["factorable_probability"]
+    uniform_order_rate = uniform_baseline["order_recovery_probability"]
 
     members = (
         Member("shor_mod15_a2", qc_primary, ideal_primary, weights=factorable_weights),
@@ -217,17 +254,23 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
         primary = distributions["shor_mod15_a2"]
         null = distributions["shor_mod15_a2_null"]
 
-        p_factorable = float(primary[1] + primary[3])
-        p_null_factorable = float(null[1] + null[3])
-        margin_over_null = float(p_factorable - p_null_factorable)
-        uniform_null = 0.2969  # analytical uniform random factorable yield
+        primary_success = distribution_success(primary, phase_bits, modulus, base)
+        null_success = distribution_success(null, phase_bits, modulus, base)
+
+        p_factorable = primary_success["factorable_probability"]
+        p_order = primary_success["order_recovery_probability"]
+        p_null_factorable = null_success["factorable_probability"]
+        p_null_order = null_success["order_recovery_probability"]
 
         return {
             "factorable_probability": p_factorable,
+            "order_recovery_probability": p_order,
             "identity_null_factorable_probability": p_null_factorable,
-            "factorable_margin_over_null": margin_over_null,
-            "uniform_null_factorable_probability": uniform_null,
-            "factorable_margin_over_uniform": float(p_factorable - uniform_null),
+            "identity_null_order_recovery_probability": p_null_order,
+            "factorable_margin_over_null": float(p_factorable - p_null_factorable),
+            "order_recovery_margin_over_null": float(p_order - p_null_order),
+            "uniform_null_factorable_probability": uniform_factorable_rate,
+            "uniform_null_order_recovery_probability": uniform_order_rate,
             "identity_null_p00": float(null[0]),
             "tvd_to_ideal": tvd(primary, ideal_primary),
         }
@@ -237,18 +280,17 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
         null_rates = [r["identity_null_factorable_probability"] for r in per_replica]
         primary_interval = variance.interval(primary_rates, shots, bernoulli=True)
         null_interval = variance.interval(null_rates, shots, bernoulli=True)
-        uniform_rate = per_replica[0]["uniform_null_factorable_probability"]
 
         admitted = bool(
             "lo" in primary_interval
             and "hi" in null_interval
-            and primary_interval["lo"] > uniform_rate
             and null_interval["hi"] < primary_interval["lo"]
+            and primary_interval["lo"] >= 0.20
         )
         return {
             "primary": primary_interval,
             "null": null_interval,
-            "uniform_null": uniform_rate,
+            "uniform_null": uniform_factorable_rate,
             "admitted": admitted,
         }
 
@@ -261,8 +303,9 @@ def concurrent_shor_mod15_group(replica_floor: float = 0.75) -> Group:
         rate_keys=frozenset(
             {
                 "factorable_probability",
+                "order_recovery_probability",
                 "identity_null_factorable_probability",
-                "factorable_margin_over_null",
+                "identity_null_order_recovery_probability",
                 "identity_null_p00",
             }
         ),

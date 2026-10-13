@@ -5,6 +5,8 @@ from __future__ import annotations
 import numpy as np
 from qiskit_aer import AerSimulator
 
+import packing
+from live_run import _ops
 from maximal_experiments import (
     build_spectator_wavefront_circuits,
     concurrent_shor_mod15_group,
@@ -13,51 +15,78 @@ from maximal_experiments import (
 )
 
 
+def _require(condition: bool, message: str) -> None:
+    if not condition:
+        raise RuntimeError(message)
+
+
+def _math_close(a: float, b: float, tol: float = 1e-6) -> bool:
+    return abs(a - b) <= tol
+
+
 def _verify_spectator_wavefront_circuits() -> None:
-    spectator_count = 6
+    spectator_count = 5
     delay_dt = 2500
     qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt)
 
-    assert qc_active.num_qubits == 2 + spectator_count
-    assert qc_active.num_clbits == 2 + spectator_count
-    assert qc_control.num_qubits == 2 + spectator_count
-    assert qc_control.num_clbits == 2 + spectator_count
-    assert qc_null.num_qubits == 2 + spectator_count
-    assert qc_null.num_clbits == 2 + spectator_count
+    total_qubits = 1 + spectator_count
+    _require(qc_active.num_qubits == total_qubits, "active qubit count mismatch")
+    _require(qc_active.num_clbits == total_qubits, "active clbit count mismatch")
+    _require(qc_control.num_qubits == total_qubits, "control qubit count mismatch")
+    _require(qc_control.num_clbits == total_qubits, "control clbit count mismatch")
+    _require(qc_null.num_qubits == total_qubits, "null qubit count mismatch")
+    _require(qc_null.num_clbits == total_qubits, "null clbit count mismatch")
 
-    active_ops = qc_active.count_ops()
-    assert "barrier" in active_ops
-    assert "delay" in active_ops
-    assert "if_else" in active_ops
-    assert "reset" in active_ops
-    assert "measure" in active_ops
+    # All circuits are purely static: no mid-circuit measurement, no dynamic control flow
+    for qc, name in ((qc_active, "active"), (qc_control, "control"), (qc_null, "null")):
+        ops = qc.count_ops()
+        _require("barrier" in ops, f"{name} must have barriers")
+        _require("delay" in ops, f"{name} must have delays")
+        _require("measure" in ops, f"{name} must have terminal measures")
+        _require("cz" in ops, f"{name} must have native cz gauge pairs")
+        _require("if_else" not in ops, f"{name} must not contain dynamic control flow")
+        _require("reset" not in ops, f"{name} must not contain reset")
 
-    control_ops = qc_control.count_ops()
-    assert "barrier" in control_ops
-    assert "delay" in control_ops
-    assert "measure" in control_ops
-    assert "if_else" not in control_ops  # core is silent/idle in control
+    # Verify connected line pattern: packing.pattern must find zero isolated nodes
+    for qc, name in ((qc_active, "active"), (qc_control, "control"), (qc_null, "null")):
+        base_ops = set(_ops(qc))
+        used, edges = packing.pattern(base_ops)
+        _require(used == list(range(total_qubits)), f"{name} used qubits must be 0..{total_qubits - 1}")
+        _require(len(edges) == total_qubits - 1, f"{name} must have {total_qubits - 1} edges for line topology")
+        expected_edges = {(i, i + 1) for i in range(total_qubits - 1)}
+        _require(edges == expected_edges, f"{name} edges must form connected line graph")
 
 
 def _verify_spectator_wavefront_summary_and_simulation() -> None:
     group = spectator_wavefront_ramsey_group(spectator_count=4, delay_dt=1000)
-    assert group.name == "spectator_wavefront_ramsey"
-    assert len(group.members) == 3
+    _require(group.name == "spectator_wavefront_ramsey", "group name mismatch")
+    _require(len(group.members) == 3, "group must have 3 members")
 
-    # Check that rate keys are a subset of summary keys
+    # Rate keys must be actual probabilities, not unbounded contrasts or differences
+    _require(
+        "delta_contrast" not in group.rate_keys,
+        "delta_contrast is a contrast difference, not a Bernoulli rate key",
+    )
+    _require(
+        "contrast_active" not in group.rate_keys,
+        "contrast_active is a transformed contrast, not a Bernoulli rate key",
+    )
+
+    # Check that all rate keys exist in summary
     ideals = {member.name: member.ideal for member in group.members}
     summary = group.summarize(ideals)
     for rate_key in group.rate_keys:
-        assert rate_key in summary, f"rate key {rate_key} missing from summary"
+        _require(rate_key in summary, f"rate key {rate_key} missing from summary")
+        _require(0.0 <= summary[rate_key] <= 1.0, f"rate key {rate_key} must be in [0, 1]")
 
-    # In ideal noiseless distributions:
-    # Spectator contrast is exactly 1.0 for both active and control
-    assert math_close(summary["spectator_contrast_active"], 1.0)
-    assert math_close(summary["spectator_contrast_control"], 1.0)
-    assert math_close(summary["delta_contrast"], 0.0)
-    assert math_close(summary["core_trigger_rate"], 0.5)
+    # Ideal noiseless values:
+    _require(_math_close(summary["spectator_p0_active"], 1.0), "ideal spectator_p0_active must be 1.0")
+    _require(_math_close(summary["spectator_p0_control"], 1.0), "ideal spectator_p0_control must be 1.0")
+    _require(_math_close(summary["contrast_active"], 1.0), "ideal contrast_active must be 1.0")
+    _require(_math_close(summary["contrast_control"], 1.0), "ideal contrast_control must be 1.0")
+    _require(_math_close(summary["delta_contrast"], 0.0), "ideal delta_contrast must be 0.0")
 
-    # Run Aer simulation on the active and control circuits
+    # Aer simulation
     sim = AerSimulator()
     sim_dists: dict[str, np.ndarray] = {}
     for member in group.members:
@@ -70,32 +99,41 @@ def _verify_spectator_wavefront_summary_and_simulation() -> None:
         sim_dists[member.name] = dist
 
     sim_summary = group.summarize(sim_dists)
-    # Spectator contrast should be close to 1.0 under noiseless simulation
-    assert sim_summary["spectator_contrast_active"] > 0.95
-    assert sim_summary["spectator_contrast_control"] > 0.95
-    assert abs(sim_summary["delta_contrast"]) < 0.05
+    _require(sim_summary["spectator_p0_active"] > 0.95, "noiseless active spectator p0 must exceed 0.95")
+    _require(sim_summary["spectator_p0_control"] > 0.95, "noiseless control spectator p0 must exceed 0.95")
+    _require(abs(sim_summary["delta_contrast"]) < 0.05, "noiseless delta contrast must be near zero")
 
 
 def _verify_concurrent_shor_group() -> None:
     group = concurrent_shor_mod15_group(replica_floor=0.75)
-    assert group.name == "concurrent_shor_mod15"
-    assert len(group.members) == 2
-    assert group.replica_floor == 0.75
+    _require(group.name == "concurrent_shor_mod15", "group name mismatch")
+    _require(len(group.members) == 2, "group must have 2 members")
+    _require(group.replica_floor == 0.75, "replica floor mismatch")
+
+    # Rate keys must not contain differences or margins
+    _require(
+        "factorable_margin_over_null" not in group.rate_keys,
+        "factorable_margin_over_null is a difference, not a Bernoulli rate key",
+    )
 
     # Check rate keys
     ideals = {member.name: member.ideal for member in group.members}
     summary = group.summarize(ideals)
     for rate_key in group.rate_keys:
-        assert rate_key in summary, f"rate key {rate_key} missing from summary"
+        _require(rate_key in summary, f"rate key {rate_key} missing from summary")
+        _require(0.0 <= summary[rate_key] <= 1.0, f"rate key {rate_key} must be in [0, 1]")
 
     # In ideal distributions:
     # Primary has factorable probability = 0.50
     # Null has factorable probability = 0.0, null_p00 = 1.0
-    assert math_close(summary["factorable_probability"], 0.50)
-    assert math_close(summary["identity_null_factorable_probability"], 0.0)
-    assert math_close(summary["factorable_margin_over_null"], 0.50)
-    assert math_close(summary["identity_null_p00"], 1.0)
-    assert math_close(summary["tvd_to_ideal"], 0.0)
+    _require(_math_close(summary["factorable_probability"], 0.50), "ideal factorable probability must be 0.50")
+    _require(
+        _math_close(summary["identity_null_factorable_probability"], 0.0),
+        "ideal null factorable probability must be 0.0",
+    )
+    _require(_math_close(summary["factorable_margin_over_null"], 0.50), "ideal margin over null must be 0.50")
+    _require(_math_close(summary["identity_null_p00"], 1.0), "ideal identity_null_p00 must be 1.0")
+    _require(_math_close(summary["tvd_to_ideal"], 0.0), "ideal tvd must be 0.0")
 
     # Aer simulation
     sim = AerSimulator()
@@ -110,26 +148,31 @@ def _verify_concurrent_shor_group() -> None:
         sim_dists[member.name] = dist
 
     sim_summary = group.summarize(sim_dists)
-    assert abs(sim_summary["factorable_probability"] - 0.50) < 0.03
-    assert sim_summary["identity_null_factorable_probability"] == 0.0
-    assert sim_summary["identity_null_p00"] == 1.0
+    _require(
+        abs(sim_summary["factorable_probability"] - 0.50) < 0.03,
+        "simulated factorable probability must be near 0.50",
+    )
+    _require(
+        sim_summary["identity_null_factorable_probability"] == 0.0,
+        "simulated identity null factorable probability must be 0.0",
+    )
+    _require(sim_summary["identity_null_p00"] == 1.0, "simulated identity null p00 must be 1.0")
 
     # Admission check
-    assert group.admission is not None
-    admit_result = group.admission([sim_summary], 10000)
-    assert admit_result["admitted"] is True
+    admission = group.admission
+    _require(admission is not None, "admission check must be defined")
+    if admission is None:
+        raise RuntimeError("unreachable")
+    admit_result = admission([sim_summary], 10000)
+    _require(admit_result["admitted"] is True, "noiseless simulation must pass admission")
 
 
 def _verify_maximal_groups() -> None:
     groups = maximal_groups()
-    assert len(groups) == 2
+    _require(len(groups) == 2, "maximal_groups must return 2 groups")
     names = {g.name for g in groups}
-    assert "spectator_wavefront_ramsey" in names
-    assert "concurrent_shor_mod15" in names
-
-
-def math_close(a: float, b: float, tol: float = 1e-6) -> bool:
-    return abs(a - b) <= tol
+    _require("spectator_wavefront_ramsey" in names, "missing spectator_wavefront_ramsey group")
+    _require("concurrent_shor_mod15" in names, "missing concurrent_shor_mod15 group")
 
 
 if __name__ == "__main__":
