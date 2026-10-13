@@ -39,8 +39,8 @@ def _verify_spectator_wavefront_circuits() -> None:
     _require(qc_null.num_qubits == total_qubits, "null qubit count mismatch")
     _require(qc_null.num_clbits == total_qubits, "null clbit count mismatch")
 
-    # All circuits are purely static: no mid-circuit measurement, no dynamic control flow
-    for qc, name in ((qc_active, "active"), (qc_control, "control"), (qc_null, "null")):
+    # Active and control circuits are purely static with connected line topology
+    for qc, name in ((qc_active, "active"), (qc_control, "control")):
         ops = qc.count_ops()
         _require("barrier" in ops, f"{name} must have barriers")
         _require("delay" in ops, f"{name} must have delays")
@@ -49,14 +49,16 @@ def _verify_spectator_wavefront_circuits() -> None:
         _require("if_else" not in ops, f"{name} must not contain dynamic control flow")
         _require("reset" not in ops, f"{name} must not contain reset")
 
-    # Verify connected line pattern: packing.pattern must find zero isolated nodes
-    for qc, name in ((qc_active, "active"), (qc_control, "control"), (qc_null, "null")):
         base_ops = set(_ops(qc))
         used, edges = packing.pattern(base_ops)
         _require(used == list(range(total_qubits)), f"{name} used qubits must be 0..{total_qubits - 1}")
         _require(len(edges) == total_qubits - 1, f"{name} must have {total_qubits - 1} edges for line topology")
         expected_edges = {(i, i + 1) for i in range(total_qubits - 1)}
         _require(edges == expected_edges, f"{name} edges must form connected line graph")
+
+    # Readout null is a bare ground-state measurement free of gauge operations
+    null_ops = qc_null.count_ops()
+    _require(dict(null_ops) == {"measure": total_qubits}, "null circuit must contain only terminal measurements")
 
     # Verify scheduled duration matching between active and control arms
     backend = FakeKingston()

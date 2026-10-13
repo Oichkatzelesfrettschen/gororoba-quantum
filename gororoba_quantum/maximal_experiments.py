@@ -130,22 +130,12 @@ def build_spectator_wavefront_circuits(
     for q in range(total_qubits):
         qc_control.measure(q, q)
 
-    # 3. Readout null circuit (ground state baseline)
+    # 3. Readout null circuit (bare ground state readout baseline)
     qc_null = QuantumCircuit(
         QuantumRegister(total_qubits, "q"),
         ClassicalRegister(total_clbits, "c"),
         name="spectator_wavefront_null",
     )
-    for i in range(total_qubits - 1):
-        qc_null.cz(i, i + 1)
-        qc_null.barrier()
-        qc_null.cz(i, i + 1)
-        qc_null.barrier()
-
-    for q in range(total_qubits):
-        qc_null.delay(delay_dt, q, unit="dt")
-    qc_null.barrier()
-
     for q in range(total_qubits):
         qc_null.measure(q, q)
 
