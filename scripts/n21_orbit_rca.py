@@ -153,6 +153,12 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     state.unitary(_cx(), (CONTROL, RECORD))
     state.channel(_dephase(), CONTROL)
     state.channel(_dephase(), RECORD)
+    # The window acts on the branch the measurement projected; an assignment
+    # error then changes only the stored bit and the feed-forward decision.
+    for branch in (0, 1):
+        angle, loss = params.get(f"phase_b{branch}", 0.0), params.get(f"loss_b{branch}", 0.0)
+        if angle or loss:
+            state.branch_window(branch, angle, loss)
     state.channel(_flip(params["mid_e01"], params["mid_e10"]), RECORD)
     failure = min(max(params.get("reset_failure", 0.0), 0.0), 1.0)
     state.channel(
@@ -179,10 +185,6 @@ def distribution(params: dict[str, float], feed_forward: bool) -> np.ndarray:
     for qubit, key in ((ONE, "phase_one"), (SIXTEEN, "phase_sixteen")):
         if params.get(key):
             state.unitary(np.diag([1, np.exp(1j * params[key])]).astype(complex), (qubit,))
-    for branch in (0, 1):
-        angle, loss = params.get(f"phase_b{branch}", 0.0), params.get(f"loss_b{branch}", 0.0)
-        if angle or loss:
-            state.branch_window(branch, angle, loss)
     state.unitary(_H, (CONTROL,))
     state.unitary(_cswap(), (CONTROL, FOUR, SIXTEEN))
     state.unitary(_cswap(), (CONTROL, ONE, FOUR))
@@ -315,7 +317,8 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
     for member, circuit, payload in zip(group["members"], _circuits(run), raw_pubs(run), strict=True):
         feed_forward = not member["name"].endswith("_no_feedback")
         plays = _plays(payload)
-        writer = next(circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "measure")
+        writers = [circuit.find_bit(i.qubits[0]).index for i in circuit.data if i.operation.name == "measure"]
+        writer = writers[0]
         opening = min(start for start, _length, name, wire in plays if wire == writer and name == "measure")
         base = np.array(ideal_compiled_probabilities(circuit))
         windows: dict[int, dict[str, Any]] = {}
@@ -333,7 +336,11 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
             windows[qubit] = {
                 "before": max(before),
                 "after": min(after),
-                "x": [start for start, _length, name in pulses if max(before) <= start < min(after) and name == "x"],
+                "x": [
+                    [start, length]
+                    for start, length, name in pulses
+                    if max(before) <= start < min(after) and name == "x"
+                ],
             }
             positions[qubit] = sum(1 for start, length, _name in pulses if start + length <= max(before))
             shift = _probed(circuit, positions, {qubit: probe})
@@ -373,7 +380,13 @@ def window_roles(run: Path) -> dict[str, dict[str, Any]]:
                         break
                 else:
                     unresolved.append(f"a joint probe with qubit {anchor} fits neither relative sign of qubit {qubit}")
-        roles[member["name"]] = {"control": writer, "coupling": coupling, "windows": windows, "unresolved": unresolved}
+        roles[member["name"]] = {
+            "control": writer,
+            "terminal": writers[-1],
+            "coupling": coupling,
+            "windows": windows,
+            "unresolved": unresolved,
+        }
     return roles
 
 
@@ -394,9 +407,10 @@ def signed_exposure(
         for qubit, branches in role["coupling"].items():
             window = role["windows"][qubit]
             sign, cursor, total = 1.0, window["before"], 0.0
-            for start in window["x"]:
+            # Idle time excludes each driven echo pulse; the sign flips after it.
+            for start, length in window["x"]:
                 total += sign * (start - cursor)
-                sign, cursor = -sign, start
+                sign, cursor = -sign, start + length
             idle = total + sign * (window["after"] - cursor)
             for branch, coupling_sign in branches.items():
                 member_exposure[branch][qubit] = coupling_sign * idle
@@ -416,7 +430,7 @@ def dt_seconds(run: Path) -> float:
 
 
 def joint_quasistatic_fit(
-    run: Path, pairs: dict[str, dict[str, np.ndarray]], readout: dict[str, float]
+    run: Path, pairs: dict[str, dict[str, np.ndarray]], readouts: dict[str, dict[str, float]]
 ) -> dict[str, Any]:
     """Fit a per-shot Gaussian detuning on each window qubit across every pair at once.
 
@@ -437,7 +451,7 @@ def joint_quasistatic_fit(
 
     def member_params(vector: np.ndarray, member: str) -> dict[str, float]:
         values = dict(zip(names, map(float, vector), strict=True))
-        params = readout | {"round1": values["round1"], "round2": values["round2"]}
+        params = readouts[member] | {"round1": values["round1"], "round2": values["round2"]}
         for branch, entries in exposure[member].items():
             times = {qubit: value * dt_us for qubit, value in entries.items()}
             params[f"phase_b{branch}"] = sum(values[f"mean_{q}"] * t for q, t in times.items())
@@ -490,7 +504,9 @@ def joint_quasistatic_fit(
     }
 
 
-def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], best: dict[str, Any]) -> list[list[float]]:
+def phase_interval(
+    counts: dict[str, np.ndarray], readouts: dict[str, dict[str, float]], best: dict[str, Any]
+) -> list[list[float]]:
     """Profile-likelihood 95 percent confidence set of the work phase as wrapped segments.
 
     Grid phases whose profiled deviance lies within 3.84 of the minimum form
@@ -504,7 +520,7 @@ def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], bes
     for phase in np.linspace(-math.pi, math.pi, 121):
 
         def objective(vector: np.ndarray, phase: float = float(phase)) -> float:
-            return deviance(counts, readout | dict(zip(names, map(float, vector), strict=True)) | {"phase_one": phase})
+            return deviance(counts, dict(zip(names, map(float, vector), strict=True)) | {"phase_one": phase}, readouts)
 
         inside.append(minimize(objective, start, method="L-BFGS-B", bounds=bounds).fun <= best["deviance"] + 3.84)
     grid = np.linspace(-math.pi, math.pi, 121)
@@ -520,11 +536,12 @@ def phase_interval(counts: dict[str, np.ndarray], readout: dict[str, float], bes
     return segments
 
 
-def deviance(counts: dict[str, np.ndarray], params: dict[str, float]) -> float:
+def deviance(counts: dict[str, np.ndarray], params: dict[str, float], readouts: dict[str, dict[str, float]]) -> float:
+    """Deviance of both arms; each arm's readout applies unless params fits it."""
     total = 0.0
     for arm, feed_forward in (("feedback", True), ("no_feedback", False)):
         observed = counts[arm]
-        expected = np.clip(distribution(params, feed_forward), 1e-12, None) * observed.sum()
+        expected = np.clip(distribution(readouts[arm] | params, feed_forward), 1e-12, None) * observed.sum()
         positive = observed > 0
         total += 2 * float(np.sum(observed[positive] * np.log(observed[positive] / expected[positive])))
     return total
@@ -539,46 +556,57 @@ def _readout(read_one_given_zero: float, read_zero_given_one: float) -> dict[str
     }
 
 
-def calibrated_readout(run: Path) -> dict[str, Any]:
-    """Control-qubit assignment rates at the record's calibration.
+def _assignment(group: dict[str, Any], qubit: int, properties: Any) -> tuple[float, float]:
+    retained = group.get("placed_qubit_calibration", {}).get(str(qubit))
+    if retained and {"prob_meas1_prep0", "prob_meas0_prep1"} <= retained.keys():
+        return float(retained["prob_meas1_prep0"]), float(retained["prob_meas0_prep1"])
+    if properties is None:
+        raise RuntimeError(f"no retained calibration for qubit {qubit}; pass --readout")
+    values = {item.name: float(item.value) for item in properties.qubits[qubit]}
+    return values["prob_meas1_prep0"], values["prob_meas0_prep1"]
 
-    The physical control qubit is the writer of the first measurement. A
-    record that retains placed_qubit_calibration supplies P(1|0) and P(0|1)
+
+def member_readouts(run: Path, roles: dict[str, dict[str, Any]]) -> dict[str, dict[str, Any]]:
+    """Assignment rates of each member's first and last measurement writers at the record's calibration.
+
+    A record that retains placed_qubit_calibration supplies P(1|0) and P(0|1)
     directly; an older record falls back to IBM properties at its
     calibration timestamp.
     """
-    from datetime import datetime, timedelta
-
-    from qiskit_ibm_runtime import QiskitRuntimeService
-
     group = _group(run)
-    qubit = next(iter(window_roles(run).values()))["control"]
-    retained = group.get("placed_qubit_calibration", {}).get(str(qubit))
-    if retained and {"prob_meas1_prep0", "prob_meas0_prep1"} <= retained.keys():
-        return {
-            "backend": group["backend"],
-            "calibration": group["calibration"],
-            "control_qubit": qubit,
-            "prob_meas1_prep0": retained["prob_meas1_prep0"],
-            "prob_meas0_prep1": retained["prob_meas0_prep1"],
+    properties = None
+    writers = {qubit for role in roles.values() for qubit in (role["control"], role["terminal"])}
+    if not all(str(qubit) in group.get("placed_qubit_calibration", {}) for qubit in writers):
+        from datetime import datetime, timedelta
+
+        from qiskit_ibm_runtime import QiskitRuntimeService
+
+        stamp = datetime.fromisoformat(group["calibration"])
+        backend = QiskitRuntimeService().backend(group["backend"])
+        # A historical query returns the newest snapshot strictly before its
+        # datetime, so the query asks one second past the recorded stamp; the
+        # current snapshot serves when no later calibration has landed.
+        candidates = (backend.properties(datetime=stamp + timedelta(seconds=1)), backend.properties())
+        properties = next((item for item in candidates if item is not None and item.last_update_date == stamp), None)
+        if properties is None:
+            raise RuntimeError(f"{group['backend']} properties at {stamp} are unavailable; pass --readout")
+    readouts = {}
+    for name, role in roles.items():
+        mid = _assignment(group, role["control"], properties)
+        end = _assignment(group, role["terminal"], properties)
+        readouts[name] = {
+            "control_qubit": role["control"],
+            "terminal_qubit": role["terminal"],
+            "mid_e01": mid[0],
+            "mid_e10": mid[1],
+            "end_e01": end[0],
+            "end_e10": end[1],
         }
-    stamp = datetime.fromisoformat(group["calibration"])
-    backend = QiskitRuntimeService().backend(group["backend"])
-    # A historical query returns the newest snapshot strictly before its
-    # datetime, so the query asks one second past the recorded stamp; the
-    # current snapshot serves when no later calibration has landed.
-    candidates = (backend.properties(datetime=stamp + timedelta(seconds=1)), backend.properties())
-    properties = next((item for item in candidates if item is not None and item.last_update_date == stamp), None)
-    if properties is None:
-        raise RuntimeError(f"{group['backend']} properties at {stamp} are unavailable; pass --readout")
-    values = {item.name: float(item.value) for item in properties.qubits[qubit]}
-    return {
-        "backend": group["backend"],
-        "calibration": group["calibration"],
-        "control_qubit": qubit,
-        "prob_meas1_prep0": values["prob_meas1_prep0"],
-        "prob_meas0_prep1": values["prob_meas0_prep1"],
-    }
+    return readouts
+
+
+def _model_readout(entry: dict[str, Any]) -> dict[str, float]:
+    return {key: float(entry[key]) for key in ("mid_e01", "mid_e10", "end_e01", "end_e10")}
 
 
 MECHANISMS: dict[str, tuple[tuple[str, float, float], ...]] = {
@@ -596,15 +624,15 @@ NUISANCE = (("round1", 0.0, 1.0), ("round2", 0.0, 1.0))
 
 
 def fit(
-    counts: dict[str, np.ndarray], readout: dict[str, float], extra: tuple[tuple[str, float, float], ...]
+    counts: dict[str, np.ndarray],
+    readouts: dict[str, dict[str, float]],
+    extra: tuple[tuple[str, float, float], ...],
 ) -> dict[str, Any]:
     names = [name for name, _low, _high in NUISANCE + extra]
     bounds = [(low, high) for _name, low, high in NUISANCE + extra]
 
     def objective(vector: np.ndarray) -> float:
-        params = dict(readout)
-        params.update(zip(names, (float(value) for value in vector), strict=True))
-        return deviance(counts, params)
+        return deviance(counts, dict(zip(names, (float(value) for value in vector), strict=True)), readouts)
 
     best: Any = None
     starts = [[0.1, 0.1] + [(low + high) / 2 for _name, low, high in extra]]
@@ -614,13 +642,12 @@ def fit(
         if best is None or result.fun < best.fun:
             best = result
     params = dict(zip(names, (float(value) for value in best.x), strict=True))
-    full = dict(readout) | params
     return {
         "parameters": params,
         "deviance": float(best.fun),
         "added_parameters": len(extra),
-        "feedback_law": distribution(full, True).tolist(),
-        "no_feedback_law": distribution(full, False).tolist(),
+        "feedback_law": distribution(readouts["feedback"] | params, True).tolist(),
+        "no_feedback_law": distribution(readouts["no_feedback"] | params, False).tolist(),
     }
 
 
@@ -640,8 +667,9 @@ def self_check() -> None:
         arm: np.round(distribution(truth, feed_forward) * 4096)
         for arm, feed_forward in (("feedback", True), ("no_feedback", False))
     }
-    phase = fit(counts, readout, MECHANISMS["work_phase_one"])
-    baseline = fit(counts, readout, MECHANISMS["baseline_depolarizing"])
+    both = {"feedback": readout, "no_feedback": readout}
+    phase = fit(counts, both, MECHANISMS["work_phase_one"])
+    baseline = fit(counts, both, MECHANISMS["baseline_depolarizing"])
     if abs(phase["parameters"]["phase_one"] - 0.5) > 0.02 or phase["deviance"] > 0.05:
         raise RuntimeError(f"work-phase fit missed the planted phase: {phase['parameters']}")
     if baseline["deviance"] - phase["deviance"] < 3.84:
@@ -676,19 +704,21 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("a run directory is required")
     _check_exact_laws()
     pairs = measured_pairs(arguments.run)
+    roles = window_roles(arguments.run)
     if arguments.readout:
-        source: dict[str, Any] = {
-            "prob_meas1_prep0": arguments.readout[0],
-            "prob_meas0_prep1": arguments.readout[1],
-            "source": "--readout",
-        }
+        fixed = _readout(*arguments.readout)
+        sources: dict[str, dict[str, Any]] = {name: fixed | {"source": "--readout"} for name in roles}
     else:
-        source = calibrated_readout(arguments.run) | {"source": "backend properties at the record calibration"}
-    readout = _readout(source["prob_meas1_prep0"], source["prob_meas0_prep1"])
-    report: dict[str, Any] = {"control_readout": source, "pairs": {}}
+        sources = {
+            name: entry | {"source": "retained placed-qubit calibration or properties at the record calibration"}
+            for name, entry in member_readouts(arguments.run, roles).items()
+        }
+    readouts = {name: _model_readout(entry) for name, entry in sources.items()}
+    report: dict[str, Any] = {"member_readout": sources, "pairs": {}}
     for pair, counts in pairs.items():
-        models = {name: fit(counts, readout, extra) for name, extra in MECHANISMS.items()}
-        interval = phase_interval(counts, readout, models["work_phase_one"])
+        arms = {arm: readouts[f"{pair}_{arm}"] for arm in ("feedback", "no_feedback")}
+        models = {name: fit(counts, arms, extra) for name, extra in MECHANISMS.items()}
+        interval = phase_interval(counts, arms, models["work_phase_one"])
         report["pairs"][pair] = {
             "measured_counts": {arm: values.astype(int).tolist() for arm, values in counts.items()},
             "models": models,
@@ -710,7 +740,7 @@ def main(argv: list[str] | None = None) -> int:
                 f"k+{model['added_parameters']}  {params}"
             )
     if len(pairs) > 1:
-        joint = joint_quasistatic_fit(arguments.run, pairs, readout)
+        joint = joint_quasistatic_fit(arguments.run, pairs, readouts)
         report["joint_quasistatic_detuning"] = joint
         if "skipped" in joint:
             print(f"joint quasi-static detuning skipped: {joint['skipped']}; {joint['unresolved']}")

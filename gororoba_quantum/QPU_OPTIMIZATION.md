@@ -136,13 +136,14 @@ Before each candidate's noise prediction, a branch-resolved statevector
 check validates every compiled replica's labeled ideal law against the exact
 oracle on its active wires, with absolute tolerance `1e-10`. A mismatch
 rejects the planning run. The record's `compiled_ideal_validation` carries
-the method, tolerance, `all_candidates_passed`, and
-`noise_method="density_matrix"`. The fixed Aer kernel supports reproducible
-mixed dynamic batches: a local Aer 0.17.2 reproducer exposed batch-order
-sensitivity when automatic selection switched between statevector and
-density-matrix methods for two-bit feedback and one-bit reset-only members.
-The explicit density-matrix method retains the gate, coherence, and readout
-noise channels. Exact compiled validation checks circuit conformance;
+the method, tolerance, `all_candidates_passed`, `noise_policy` (the
+local-compute method selector) and `noise_method`, the sorted Aer methods the
+planning batches ran. Each batch fixes one explicit method: a local Aer
+0.17.2 reproducer exposed batch-order sensitivity when Aer's automatic
+selection switched between statevector and density-matrix methods for
+two-bit feedback and one-bit reset-only members. Statevector trajectories and
+the density matrix both apply the gate, coherence, and readout noise
+channels; the local_compute self-check compares their noisy dynamic laws. Exact compiled validation checks circuit conformance;
 agreement with a noise model remains a separate empirical question.
 
 The [local compute plan](LOCAL_COMPUTE.md) records the execution policy,
