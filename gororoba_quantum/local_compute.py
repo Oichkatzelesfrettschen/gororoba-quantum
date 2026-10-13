@@ -35,19 +35,20 @@ CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
 
 
 def is_dynamic(circuit: Any) -> bool:
-    """Whether a circuit resets, branches, or acts on a qubit after measuring it."""
-    measured: set[int] = set()
+    """Control flow, reset, or any measurement followed by later quantum work.
+
+    The rule equals live_run._is_dynamic, which assigns IBM job kinds: a later
+    gate on any qubit counts, since Aer then samples the circuit shot by shot.
+    """
+    measurement_seen = False
     for instruction in circuit.data:
         name = instruction.operation.name
         if name in CONTROL_FLOW or name == "reset":
             return True
-        if name == "barrier":
-            continue
-        qubits = {circuit.find_bit(qubit).index for qubit in instruction.qubits}
-        if name == "measure":
-            measured |= qubits
-        elif qubits & measured:
+        if measurement_seen and name not in ("measure", "barrier", "delay"):
             return True
+        if name == "measure":
+            measurement_seen = True
     return False
 
 
@@ -70,7 +71,7 @@ def requested_settings(args: Any = None) -> dict[str, Any]:
         "threads": getattr(args, "simulation_threads", parallel.default_threads()),
         "memory_mb": getattr(args, "simulation_memory_mb", 512),
         "shot_branching": False,
-        "method": DYNAMIC_STATEVECTOR,
+        "method": getattr(args, "local_compute_method", DYNAMIC_STATEVECTOR),
         "precision": "double",
         "shot_branching_sampling": False,
         "parallel_experiments": 1,
@@ -212,6 +213,19 @@ def route(policy: dict[str, Any], circuits: list[Any]) -> tuple[str, dict[str, A
     return "GPU", admission
 
 
+def batch_route(policy: dict[str, Any], method: str, circuits: list[Any]) -> tuple[str, dict[str, Any] | None]:
+    """Device for one batch under its method.
+
+    Statevector trajectories of the qualified widths run fastest on CPU shot
+    threads, so auto keeps them there. An explicit gpu mode routes them
+    through the same admission, whose density-state sizing bounds a
+    statevector from above, and fails rather than falls back.
+    """
+    if method == "density_matrix" or policy["mode"] == "gpu":
+        return route(policy, circuits)
+    return "CPU", None
+
+
 def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     """Preserve declared order and retain actual Aer device/kernel evidence."""
     policy = getattr(simulator, "_gororoba_compute_policy", None)
@@ -226,9 +240,8 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     try:
         if policy is not None:
             validate(policy)
-            # GPU admission sizes density states; statevector trajectories of
-            # the qualified widths run fastest on CPU shot threads.
-            device, admission = route(policy, circuits) if method == "density_matrix" else ("CPU", None)
+            assert method is not None
+            device, admission = batch_route(policy, method, circuits)
             # One GPU shot state at a time keeps execution within the two-state
             # admission floor; CPU batches parallelize shots across threads.
             simulator.set_options(
@@ -319,9 +332,33 @@ def _verify() -> None:
     static.h(0)
     static.cx(0, 1)
     static.measure([0, 1], [0, 1])
-    assert not is_dynamic(static) and is_dynamic(circuit), "dynamic-circuit classification changed"
-    assert batch_method(policy, [static]) == "density_matrix"
-    assert batch_method(policy | {"method": "density_matrix"}, [circuit]) == "density_matrix"
+    static.barrier()
+    reset_only = QuantumCircuit(1, name="reset_only")
+    reset_only.reset(0)
+    branch_only = QuantumCircuit(1, 1, name="branch_only")
+    with branch_only.if_test((branch_only.clbits[0], True)):
+        branch_only.x(0)
+    later_work = QuantumCircuit(2, 1, name="later_work")
+    later_work.measure(0, 0)
+    later_work.x(1)
+    for candidate, expected in ((static, False), (reset_only, True), (branch_only, True), (later_work, True)):
+        if is_dynamic(candidate) != expected:
+            raise RuntimeError(f"{candidate.name}: dynamic classification differs from {expected}")
+    if (
+        batch_method(policy, [static]) != "density_matrix"
+        or batch_method(policy, [static, later_work]) != "statevector"
+    ):
+        raise RuntimeError("a batch with any dynamic circuit must run statevector trajectories")
+    if batch_method(policy | {"method": "density_matrix"}, [circuit]) != "density_matrix":
+        raise RuntimeError("the retained density_matrix policy changed its method")
+    from unittest.mock import patch
+
+    with patch(f"{__name__}.route", return_value=("GPU", {"admitted": True})) as admitted:
+        if batch_route(policy | {"mode": "gpu"}, "statevector", [later_work])[0] != "GPU" or not admitted.called:
+            raise RuntimeError("explicit gpu mode bypassed GPU admission for a dynamic batch")
+        admitted.reset_mock()
+        if batch_route(policy | {"mode": "auto"}, "statevector", [later_work]) != ("CPU", None) or admitted.called:
+            raise RuntimeError("auto mode left CPU routing for statevector trajectories")
     _verify_routing(policy)
     print("local compute policy, capability rejection, routing, and CPU dynamic batch checks pass")
 

@@ -4578,6 +4578,12 @@ def main(argv: list[str] | None = None) -> int:
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
+    parser.add_argument(
+        "--local-compute-method",
+        choices=local_compute.QUALIFIED_METHODS,
+        default=local_compute.DYNAMIC_STATEVECTOR,
+        help="density_matrix replays records planned before dynamic batches ran statevector trajectories",
+    )
     parser.add_argument("--simulation-threads", type=_positive_int, default=parallel.default_threads())
     parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
     parser.add_argument(
