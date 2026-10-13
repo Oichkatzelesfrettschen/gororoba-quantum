@@ -1,6 +1,4 @@
-# Tools and transitive pins the CI gates need beyond requirements.txt; mpmath
-# matches the version the retained SymPy evidence was produced with.
+# Tools the CI gates invoke beyond the runtime pins in requirements.txt.
 mypy==1.19.1
 ruff==0.14.11
 matplotlib==3.11.2
-mpmath==1.4.1
