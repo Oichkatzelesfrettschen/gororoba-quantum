@@ -64,20 +64,20 @@
  },
  "subspaces": {
   "16": {
-   "octonion_type": 8,
-   "quasi_octonion_type": 7
+   "type_168": 8,
+   "type_72": 7
   },
   "32": {
-   "octonion_type": 50,
-   "quasi_octonion_type": 105
+   "type_168": 50,
+   "type_72": 105
   },
   "64": {
-   "octonion_type": 310,
-   "quasi_octonion_type": 1085
+   "type_168": 310,
+   "type_72": 1085
   },
   "128": {
-   "octonion_type": 2046,
-   "quasi_octonion_type": 9765
+   "type_168": 2046,
+   "type_72": 9765
   }
  },
  "pairs": {

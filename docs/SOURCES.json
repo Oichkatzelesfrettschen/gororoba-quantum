@@ -782,11 +782,11 @@
     },
     {
       "note": "docs/notes/casimir-dark-sector-web-sources.md",
-      "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/esummary.fcgi?db=pubmed&id=42444133&retmode=json",
+      "url": "https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=42444133&retmode=xml",
       "retrieved_at_utc": "2026-10-13T23:27:30Z",
-      "sha256": "1446582e80b3739860f9ee89af7c2d62cf7efb4028d0bed897a089fcbf53d5bd",
-      "bytes": 1846,
-      "reading_scope": "PubMed summary: title, authors, journal, volume, issue, pages, DOI",
+      "sha256": "b918efd8a394bea0d314a18ba8698880246e494c661ed2c57ff140ec4c369fba",
+      "bytes": 5643,
+      "reading_scope": "PubMed full record: title, authors, journal, history dates, DOI and abstract",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
     },
     {
@@ -805,6 +805,15 @@
       "sha256": "c074a1e488274bd98170784bc8d5501afd14d0ec50d222a3e789979292b7f142",
       "bytes": 289045,
       "reading_scope": "Guide text on batch ordering, calibration jobs and session exclusivity",
+      "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/casimir-dark-sector-web-sources.md",
+      "url": "https://www.darkenergysurvey.org/des-y6-cosmology-results-papers/",
+      "retrieved_at_utc": "2026-10-13T23:58:00Z",
+      "sha256": "b3f36e2f315f24b0bd784714d4462159735896b3c64844cd0ea9f700085ca21e",
+      "bytes": 122939,
+      "reading_scope": "Results page summaries of the Y6 dark-energy multi-probe analysis",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
     }
   ],

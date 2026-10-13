@@ -1,11 +1,12 @@
 """Census of non-associating basis triples along the Cayley-Dickson ladder.
 
 For the algebra of dimension D = 2^n (cd_core.cd_sign) the basis associator
-sign of an ordered triple of imaginary units is
-omega(a, b, c) = s(a, b) s(a^b, c) s(b, c) s(a, b^c), the value
-predict.associator_phase(D, a, b)[c]; -1 marks a triple whose two
-bracketings differ. Kirshtein (docs/notes/1207.4230.md, Lemma 3) gives the
-loop-level criterion. This census counts the triples and checks closed forms
+sign of an ordered triple of imaginary units is omega(a, b, c) = s(a, b)
+s(a^b, c) s(b, c) s(a, b^c), the value predict.associator_phase(D, a, b)[c];
+-1 marks a triple whose two bracketings differ. Kirshtein
+(docs/notes/1207.4230.md, Lemma 3) gives the loop-level sufficient
+conditions (associating inside H_8, non-associating when the triple
+generates O_16). This census counts the triples and checks closed forms
 against exact enumeration:
 
 - every linearly dependent triple (c = a^b) associates, and the ordered
@@ -13,8 +14,7 @@ against exact enumeration:
   N(D) = (D - 2)(D - 4)(D + 6) / 2, so among the (D - 1)(D - 2)(D - 4)
   independent triples the fraction is (D/2 + 3) / (D - 1), tending to 1/2;
 - each 3-dimensional index subspace carries either 168 non-associating
-  ordered triples (octonion type) or 72 (quasi-octonion type), and
-  O(D) = (D - 2)(D - 4)(D + 48) / 1344 subspaces are of octonion type;
+  ordered triples or 72, and O(D) = (D - 2)(D - 4)(D + 48) / 1344 carry 168;
 - for D >= 16 an independent ordered pair (a, b) has no associating
   completion c exactly when {a, b, a^b} contains D/2, and otherwise exactly
   D/2 - 4;
@@ -192,8 +192,8 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
     while dim <= subspace_max:
         types = subspace_types(dim)
         require(set(types) == {72, 168}, f"{dim}: subspace types {sorted(types)}")
-        require(types[168] == (dim - 2) * (dim - 4) * (dim + 48) // 1344, f"{dim}: octonion-type count")
-        subspaces[str(dim)] = {"octonion_type": types[168], "quasi_octonion_type": types[72]}
+        require(types[168] == (dim - 2) * (dim - 4) * (dim + 48) // 1344, f"{dim}: count of 168-type subspaces")
+        subspaces[str(dim)] = {"type_168": types[168], "type_72": types[72]}
         dim *= 2
     pairs = out["pairs"]
     assert isinstance(pairs, dict)

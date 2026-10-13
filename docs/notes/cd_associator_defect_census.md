@@ -16,7 +16,7 @@ evidence, [T] proved here, [I] interpretation.
 |---|---|---|
 | Every linearly dependent triple (c = a^b) associates | exhaustive 8 to 512 | [T] from Kirshtein Lemma 3: such a triple generates a subloop of order at most 8, a subgroup of H_8 ([1207.4230](1207.4230.md)) |
 | Non-associating ordered triples of distinct units: N(D) = (D-2)(D-4)(D+6)/2; among the (D-1)(D-2)(D-4) independent triples the fraction is (D/2+3)/(D-1), and among all distinct triples (D-4)(D+6)/(2(D-1)(D-3)) | exhaustive 8 to 512; sampled 1024 to 4096 within 4 standard errors | [E] |
-| Each 3-dimensional index subspace carries 168 non-associating ordered triples (octonion type) or 72 (quasi-octonion type); O(D) = (D-2)(D-4)(D+48)/1344 are of octonion type: 8, 50, 310, 2046 at D = 16, 32, 64, 128 | exhaustive 16 to 128 | [E]; the 8 to 7 split at D = 16 matches the octonion and quasi-octonion (power-associative) subalgebra counts of Cawagas ([web-source note](casimir-dark-sector-web-sources.md)) and [Wilmot](2505.11747.md) |
+| Each 3-dimensional index subspace carries 168 non-associating ordered triples or 72; O(D) = (D-2)(D-4)(D+48)/1344 carry 168: 8, 50, 310, 2046 at D = 16, 32, 64, 128 | exhaustive 16 to 128 | [E]; the 8 to 7 split at D = 16 matches the eight octonion and seven power-associative sedenion subalgebras of [Wilmot](2505.11747.md); [I] the 168 type is the octonion type and the 72 type corresponds to Cawagas's quasi-octonions ([web-source note](casimir-dark-sector-web-sources.md)), an identification not checked subspace by subspace |
 | An independent ordered pair (a, b) has no associating completion exactly when {a, b, a^b} contains D/2, and otherwise D/2 - 4: (D-2)(D-4) pairs of the second kind and 3(D-2) of the first | exhaustive 16 to 256 | [E]; summing over pairs reproduces N(D) |
 | omega(1, 6, k) = (-1)^popcount((D-2) & k), one Walsh character at mask D-2 | 16 to 4096 | [E]; the degree-1 case of the associator degree formula max(1, bitlen(j) - 2), whose proof is open (task M1, [prior_work_synthesis.md](prior_work_synthesis.md)) |
 | The pair (D/2+1, D/4+3) has Walsh support 5D/16 and largest normalized amplitude 1 - 16/D | 32 to 4096 (fails at 16) | [E] |
@@ -25,7 +25,7 @@ evidence, [T] proved here, [I] interpretation.
 ## Relation to known results
 
 - [P] Kirshtein Lemma 3 gives sufficient conditions for each associator
-  value; the census measures what it leaves open. Quasi-octonion
+  value; the census measures what it leaves open. The 72-type
   3-subspaces generate order-16 subloops other than O_16, and 72 of their
   168 independent ordered triples fail to associate.
 - [I] The asymptotic defect fraction 1/2 follows from the per-pair

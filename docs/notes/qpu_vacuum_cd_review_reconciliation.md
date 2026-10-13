@@ -34,9 +34,12 @@ this repository lacks).
 | omega(1, 6, k) is one parity character at mask D-2, an unexpectedly simple law | refined | the degree-1 case of the repository's associator degree formula (open proof, task M1) |
 | The cross-scale pair's Walsh support grows while its leading mode dominates | refined | support exactly 5D/16 and peak 1 - 16/D for D >= 32 |
 | Dark-dark products return to the 24-index block in 24D - 704 ordered pairs | verified and proved | XOR count proof in the census note |
-| The associator defect satisfies a cocycle identity and so may carry topological meaning | corrected | omega is the coboundary of the sign cochain; its cocycle identity holds by construction |
+| The associator defect is the coboundary of the sign cochain, so its cocycle identity carries no nontrivial class | verified | the identity holds by construction; the census note records it |
 | Kirshtein Lemma 3 characterizes non-association exactly by the O_16 subloop | corrected | the lemma gives sufficient conditions; [1207.4230.md](1207.4230.md) now quotes them; quasi-octonion subspaces carry 72 non-associating triples |
-| The sedenions have 8 octonion and 7 other 8-dimensional basis subalgebras | verified | census subspace split at D = 16; [Wilmot](2505.11747.md) and Cawagas ([web-source note](casimir-dark-sector-web-sources.md)) |
+| The sedenions have 8 octonion and 7 other 8-dimensional basis subalgebras | verified | census subspace split at D = 16 and the eight octonion and seven power-associative subalgebras of [Wilmot](2505.11747.md); Cawagas names the quasi-octonion type, and no count from Cawagas was read |
+| The N=21 orbit laws are (3/8, 1/4, 1/8, 1/4) with feedback and (3/8, 1/8, 1/8, 3/8) without, contrast difference 1/4 | verified | `law` in results/live/2026-10-13T201757.782152Z/orbit_refit.py and `qpe_diagnostics.n21_labeled_law` |
+| A first-swap prefix has zero control coherence on the full-cycle eigenstate chi+ = (e1 + w^2 e4 + w e16)/sqrt(3), while the full multiplier gives exp(2 pi i/3) | verified | direct evaluation: <chi+|S_41|chi+> = 0, <chi+|U|chi+> = -1/2 + i sqrt(3)/2; a prefix-phase design needs probes with nonzero overlap |
+| rho_{01,10} = (<XX> + <YY> + i(<XY> - <YX>))/4 for |ab> ordering | verified | checked on a random two-qubit density matrix; the conjugate convention fails, so a selected-coherence case fixes the register order before acquisition |
 | The two-qubit QET protocol injects h^2/r and lets Bob extract sqrt(h^2+4k^2) - (h^2+2k^2)/r | verified | scripts/qet_two_qubit_reference.py at machine precision; the supplied grid search sat about 4e-8 below the optimum at k = 0.1; the model matches [Hotta](1002.0200.md) under sigma^z -> -sigma^z |
 
 ## Sister project (open_gororoba, read-only here)
@@ -62,12 +65,14 @@ this repository lacks).
 | A worldline dynamical-Casimir paper treats imperfect time-dependent boundaries (July 2026) | verified | [2604.13237](2604.13237.md), v3 dated 2026-07-22 with journal DOI 10.1103/vn2g-ryw1 |
 | QET has been demonstrated on superconducting hardware | verified | [2301.02666](2301.02666.md) |
 | LZ reported one high-energy recoil at 2.6 sigma global (September 2026) | verified | [2609.02823](2609.02823.md) |
-| DES Y6 shows a 2.3 to 3.2 sigma preference for evolving dark energy | corrected | the registered Y6 3x2pt abstract ([2601.14559](2601.14559.md)) states LambdaCDM parameter differences from the CMB (1.8, 2.3, 2.8 sigma) and w consistent with -1; the (w0, wa) analysis is in unregistered companion papers |
-| A July 2026 Nano Letters paper proposes a magnetic-fluid Drude-plasma discriminator | refined | published 2026-09-02, Nano Lett. 26, 11398 (web-source note); companion prediction [2601.00483](2601.00483.md) |
+| DES Y6 shows a 2.3 to 3.2 sigma preference for evolving dark energy | verified | the DES Y6 results page states 2.2 to 3.0 sigma by data combination and 2.3 to 3.2 sigma when one probe is left out (web-source note); the 3x2pt paper ([2601.14559](2601.14559.md)) alone reports w consistent with -1 |
+| A July 2026 Nano Letters paper proposes a magnetic-fluid Drude-plasma discriminator | verified | accepted 2026-07-08, PubMed entry 2026-07-14, issue 26(34) dated 2026-09-02 (web-source note); companion prediction [2601.00483](2601.00483.md) |
 | Ford and Roman bound negative energy density | verified | [gr-qc/9607003](gr-qc-9607003.md) |
 | The ASA statement warns against reading nondetection as absence | verified | web-source note |
 | IBM batch jobs may run out of order with calibrations between them | verified | web-source note |
 | The dynamical Casimir effect is experimentally demonstrated | verified | [1105.4714](1105.4714.md), already registered |
+
+| Ideal Casimir pressures and energy densities (50 to 1000 nm), the 10 mV electrostatic pressures, sphere-plane forces for R = 50 um, the Yukawa pressure -2.11e-16 alpha Pa and the 100 nm mass equivalent -4.82e-17 kg/m^3 | verified | recomputed from hbar, c, epsilon_0 and G; ideal-conductor benchmarks only |
 
 ## Out of scope for this repository
 
