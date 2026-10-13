@@ -164,6 +164,7 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
 
         return sector_contracts(precision, alpha, power)
     if family == "n21-orbit-rca":
+        # Four directional endpoints share the requested family-wise alpha.
         return tuple(
             ObservableContract(
                 f"n21_orbit_{variant}_feedback_contrast",
@@ -172,7 +173,7 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
                     ObservableTerm(f"n21_orbit_{variant}_no_feedback", _SIGNED, sign=-1),
                 ),
                 minimum_effect=0.0,
-                alpha=alpha,
+                alpha=alpha / len(N21_ORBIT_VARIANTS),
                 power=power,
             )
             for variant in N21_ORBIT_VARIANTS
