@@ -508,7 +508,7 @@ def prepare(
         "compiled_ideal_validation": {
             "method": "branch-resolved statevector on active compiled replica wires",
             "absolute_tolerance": 1e-10,
-            "noise_method": "density_matrix",
+            "noise_method": local_compute.settings(args)["method"],
             "all_candidates_passed": True,
         },
     }
