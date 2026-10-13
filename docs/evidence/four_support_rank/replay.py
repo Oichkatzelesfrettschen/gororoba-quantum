@@ -14,7 +14,6 @@ SOURCE_FILES = (
     "docs/evidence/four_support_rank/replay.py",
     "gororoba_quantum/four_support_rank.py",
     "gororoba_quantum/cd_core.py",
-    "gororoba_quantum/parallel.py",
     "gororoba_quantum/rank_charts.py",
     "gororoba_quantum/rank_polynomials.py",
     "gororoba_quantum/rank_attachments.py",
@@ -41,7 +40,7 @@ def audit(root: Path) -> dict[str, Any]:
         loaded = Path(str(sys.modules[name].__file__)).resolve()
         _require(loaded == (root / source).resolve(), "imported source differs from the declared checkout")
     _require(source_digests(root) == before, "source bytes change during the replay")
-    return {"python_version": platform.python_version(), "source_sha256": before, "certificate": result}
+    return {"python_version": platform.python_version(), "certificate": result}
 
 
 def main() -> int:

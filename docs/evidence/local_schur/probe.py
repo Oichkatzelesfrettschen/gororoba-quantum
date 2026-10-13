@@ -21,7 +21,6 @@ import sympy as sp
 SOURCE_FILES = (
     "docs/evidence/local_schur/probe.py",
     "gororoba_quantum/cd_core.py",
-    "gororoba_quantum/parallel.py",
     "gororoba_quantum/rank_attachments.py",
     "gororoba_quantum/rank_charts.py",
 )
@@ -139,7 +138,6 @@ def audit(root: Path) -> dict[str, Any]:
         "scope": "three rational path endpoints and six rational perturbations; global geometry remains unclassified",
         "qpu_executed": False,
         "versions": {"python": platform.python_version(), "sympy": sp.__version__},
-        "source_sha256": before,
         "records": records,
     }
 

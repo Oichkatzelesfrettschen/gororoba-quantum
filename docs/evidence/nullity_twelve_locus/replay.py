@@ -24,7 +24,6 @@ SOURCE_FILES = (
     "gororoba_quantum/cd_core.py",
     "gororoba_quantum/rank_charts.py",
     "gororoba_quantum/skew_schur_charts.py",
-    "gororoba_quantum/parallel.py",
 )
 
 
@@ -370,7 +369,6 @@ def audit(root: Path) -> dict[str, Any]:
     require(callable(parallel.ordered_map), "parallel API import fails")
     result = {
         "schema": "nullity-twelve-locus-evidence-v1",
-        "source_sha256": before,
         "versions": {"python": platform.python_version(), "sympy": sp.__version__},
         "quadratic_locus": quadratic_case(),
         "explicit_e8_curve": explicit_curve(),

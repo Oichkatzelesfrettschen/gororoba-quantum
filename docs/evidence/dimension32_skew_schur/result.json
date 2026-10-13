@@ -16816,14 +16816,6 @@
     }
   ],
   "schema": "dimension32-skew-schur-evidence-v1",
-  "source_sha256": {
-    "docs/evidence/dimension32_skew_schur/replay.py": "b5140dc445c3b55d27f7972db6b77cdff0b02006232cee27276a5c1593b37c70",
-    "docs/notes/dimension32_skew_schur_charts.md": "4e5786a66259b9cf818313d75aecfb464e70ad994b3b0d85c01fa52c86a750a2",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
-    "gororoba_quantum/skew_schur_charts.py": "b7b180911309bb7452bc56c77cb219d192ab4be381259c32b152ddbab6bac85b"
-  },
   "symbolic_same_tangent_fixture": {
     "all_real_domain_argument": "t^2+2>0 and t^2+4>0 for every real t",
     "center": {

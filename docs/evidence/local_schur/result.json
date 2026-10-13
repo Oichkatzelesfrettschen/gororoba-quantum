@@ -94,13 +94,6 @@
   ],
   "schema": "cayley-dickson-local-skew-schur-probe-v1",
   "scope": "three rational path endpoints and six rational perturbations; global geometry remains unclassified",
-  "source_sha256": {
-    "docs/evidence/local_schur/probe.py": "2c79952bf2d55116eb6fd177eab4183d4ed5e7c76febe0b8c7d2b5041137d0a0",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/parallel.py": "f0d18ed619f99a1ea6f58a7c4d3b2be7450f82b9ac99831552281a5526b737d2",
-    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c"
-  },
   "versions": {
     "python": "3.14.7",
     "sympy": "1.14.0"

@@ -60,7 +60,6 @@ SOURCE_FILES = (
     "boolean_anf.py",
     "cd_core.py",
     "designs.py",
-    "parallel.py",
     "predict.py",
     "select_lcu.py",
 )
@@ -458,7 +457,6 @@ def audit_ripples() -> dict[str, Any]:
         "boxkite_phase_radians": "phase_index*pi/4",
         "boxkite_ancilla_zero_probability": "(1-sign*cos(phase))/2",
         "self_checks": self_checks,
-        "source_sha256": initial_hashes,
         "proposed_hardware_depths": [0, 1, 2, 3, 4],
         "geometry": "Hamming shells and octahedra are schematic algebraic embeddings, not chip positions",
         "execution_metadata": {

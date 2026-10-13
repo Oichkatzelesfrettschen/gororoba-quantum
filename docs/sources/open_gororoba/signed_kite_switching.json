@@ -1,7 +1,7 @@
 {
   "schema": "signed-kite-switching-evidence-v1",
   "evidence_class": "exact finite graph calculation; standard signed-graph deduction",
-  "input_sha256": "ad4b4cd66752be2a0c7843e307e403c3c85f3b123a0dc38358a5556250610461",
+  "input_sha256": "4ef748439bf6e3acc9490f4ae8e89f6723923ce7dd01975193512d5fef92b4f7",
   "checker_sha256": "416dcd904a6282f4b9fe61c750fbe248c347c83ff1cb558b761725ab6ec0d851",
   "graphs": [
     {

@@ -790,14 +790,5 @@
     ],
     "sympy_version": "1.14.0"
   },
-  "python_version": "3.14.7",
-  "source_sha256": {
-    "docs/evidence/four_support_rank/replay.py": "6858d8d374e2cf1047bf9201da2451b590151ee0ab31981f5f436110b13daa34",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/rank_attachments.py": "c722117b385314198e1771b50a7290d88e9f6ed5561067174d8fb4bd21652390",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c",
-    "gororoba_quantum/rank_polynomials.py": "1ad2e22e6d6457c95a7c1b0d11076bb4f9cd53f8dae838dbc07948f581d3c44f"
-  }
+  "python_version": "3.14.7"
 }

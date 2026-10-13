@@ -20,7 +20,6 @@ SOURCE_FILES = (
     "gororoba_quantum/skew_schur_charts.py",
     "gororoba_quantum/rank_charts.py",
     "gororoba_quantum/cd_core.py",
-    "gororoba_quantum/parallel.py",
 )
 PROOF_NOTE = "docs/notes/principal_skew_atlas.md"
 
@@ -318,7 +317,6 @@ def audit(root: Path) -> dict[str, Any]:
     return {
         "schema": "principal-skew-atlas-evidence-v1",
         "versions": {"python": platform.python_version(), "sympy": sp.__version__},
-        "source_sha256": before,
         "qpu_executed": False,
         "production_certificate": production,
         "symbolic_cover": symbolic,

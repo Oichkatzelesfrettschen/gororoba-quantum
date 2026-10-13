@@ -18412,18 +18412,6 @@
   },
   "qpu_executed": false,
   "schema": "annihilator-kernel-attachment-evidence-v1",
-  "source_sha256": {
-    "docs/evidence/kernel_limits/proof_obligations.json": "a784249addfcb19d657880a380152ac678146e5c8a40839ae3225b4a2a9a1c62",
-    "docs/evidence/kernel_limits/replay.py": "ed72e29f1ffe9182fad8c5d25d69f50af03ca90061e3d25b683c85a53c85e14f",
-    "docs/notes/annihilator_kernel_limits.md": "cf0641c90a23d6f599a7d4f1852520bdb6ffa69351972f2a2ffdcc39a23d8289",
-    "gororoba_quantum/cd_core.py": "80edfb2588f03f11c5b02bebbd8df5b373e0d322c0f8e08158b130b447bba9fa",
-    "gororoba_quantum/circle_kernel_attachments.py": "fdf2ceee199eeb98dee32d6aa2397adc16ad1fec2233c8b6acb8b40c9fef1eea",
-    "gororoba_quantum/four_support_rank.py": "a6573541854fb2139df6d4670b3b0dd187998a96da2f733b4a2b9a52f3e6c693",
-    "gororoba_quantum/kernel_limit_contracts.py": "8f6ab9b457d42a94ab59646fe1b3731d2d407e4ac92549bd4d60ef07657c2586",
-    "gororoba_quantum/kernel_limits.py": "a8ac465ec449e6a6d45c9a7de01301fb8404d3e77458678e989c0b97bb82d5f2",
-    "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
-    "gororoba_quantum/rank_charts.py": "f2174f0e9d5d176b27765d4f3b9df62da4480cbba4570bc8cd6e12db7aa7a29c"
-  },
   "topological_model": {
     "cell_boundaries": {
       "0": [],
