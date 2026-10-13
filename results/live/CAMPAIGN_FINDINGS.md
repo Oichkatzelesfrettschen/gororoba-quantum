@@ -4,9 +4,10 @@ This note interprets every retained hardware acquisition: nine Runtime jobs
 in six acquisitions on ibm_kingston and ibm_fez, 2026-10-11 to 2026-10-13.
 Each section names its retained record, the measured quantity, the result,
 and what the result does and does not establish. Numbers come from the named
-`collect.json`, adjudication or analysis files; the coordination ledger
+`collect.json`, adjudication or analysis files. The coordination ledger
 [qpu-coordination.json](qpu-coordination.json) carries the job ids and
-settled charges.
+settled charges of sections 2-6; the pilot's record and adjudication carry its
+own job and 9-second charge.
 
 ## 1. Pilot: hybrid Shor and folded QPE, mod 15
 
@@ -18,11 +19,13 @@ job `db5qmqclf4us73c4e1ug`, ibm_kingston, six dynamic PUBs at 4096 shots.
   outcome law is the same with and without the conditional phases, so the
   yield validates the controlled arithmetic and the decoder on hardware and
   leaves the feed-forward untested.
-- Packed replicas match their isolated reference on identical qubits within
-  the 0.03 equivalence margin (+0.0020 and -0.0037), the scheduler tables show
-  identical per-qubit instruction sequences, and shot-wise failure
-  correlation between replica pairs stays below 0.045. Packing many replicas
-  into one PUB costs no measured accuracy.
+- Packed replica 0 against its isolated reference on identical qubits gives
+  +0.0020 (hybrid Shor) and -0.0037 (folded QPE), inside the 0.03 margin
+  under the preregistered Newcombe interval; the distribution-free 90 percent
+  interval for folded QPE, [-0.0306, +0.0234], crosses that margin. The
+  scheduler tables show identical per-qubit instruction sequences, and
+  shot-wise failure correlation across the fifteen replica pairs of the
+  packed PUB stays below 0.045.
 - Correctness per 512-shot block stays within sampling error: no drift
   inside a job.
 - Execution takes 272.9 us per shot against a 250 us default repetition delay
@@ -38,9 +41,10 @@ coherent two-control arm for each eigenstate label.
 - Coherent minus archived terminal accuracy is +5.8 to +10.9 percentage
   points with every simultaneous interval above zero. The two-control circuit
   outperforms the measurement-and-feed-forward circuit on this device.
-- Delay minus archived intervals all contain zero (-0.3 to +1.9 points):
-  replacing the mid-circuit measurement with a calibrated delay changes
-  nothing measurable, so the measurement itself is not the dominant loss.
+- Delay minus archived intervals all contain zero (estimates -0.3 to +1.9
+  points). The run detects no difference and establishes no equivalence: the
+  s0 interval still allows a +6.0-point gain, comparable to the smallest
+  coherent-arm gain, so the measurement's share of the loss stays open.
 - Odd-label no-feed-forward intervals fall below zero, as the exact law
   predicts: the correction carries real information on hardware.
 - The coherent arm also changes routing, the terminal readout qubit and the
@@ -52,11 +56,12 @@ coherent two-control arm for each eigenstate label.
 Records [2026-10-13T020454.599853Z](2026-10-13T020454.599853Z/analysis-1fdb68508f14.json)
 (job `db6p55clf4us73c5nd9g`) and
 [2026-10-13T022433.333775Z](2026-10-13T022433.333775Z/collect.json)
-(job `db6pepklf4us73c5nqcg`), ibm_kingston, four dynamic PUBs at 8192 shots,
-11 s each against 11.59 s predicted.
+(job `db6pepklf4us73c5nqcg`), ibm_kingston, four dynamic PUBs at 8192 shots
+per run (eight in total), 11 s each against 11.59 s predicted.
 
-- Both runs reach `retain_measured_correction`: known-label correction never
-  clears the preregistered +0.01 gain on both odd labels (gain lower bounds
+- Both runs reach `retain_measured_correction`: known-label correction does
+  not clear the preregistered +0.01 gain on both odd labels; the one-sided
+  rule establishes neither equivalence nor absence of improvement (gain lower bounds
   -0.021 and -0.0077 in the first run, -0.0346 and -0.0006 in the second).
 - Known-label correction beats measured-bit correction on s3 in both runs
   (+0.013, +0.021) and not on s1.
@@ -66,9 +71,9 @@ Records [2026-10-13T020454.599853Z](2026-10-13T020454.599853Z/analysis-1fdb68508
   and 0.512). An assignment error favors the known label; a true state change
   favors the recorded bit. [Roadmap item 9](../../docs/RESEARCH_ROADMAP.md)
   turns this into a repeated-readout and delayed-readout experiment.
-- The controller schedules the else-branch frame update 4 dt after the
-  then-branch update in every PUB; the pulse-window schedule rule qualifies
-  both runs.
+- The exposed scheduler table places the else-branch frame update 4 dt after
+  the then-branch update in every PUB, and the pulse-window schedule rule
+  qualifies both runs; per-shot controller timing remains uncertified.
 
 ## 5. Ripple: box-kite contrasts and depth-4 class return
 
@@ -77,8 +82,10 @@ jobs `db6q2p2mb58s738c75gg` and `db6q2rklf4us73c5oq90`, ibm_fez, 146 static
 PUBs (929 logical entries), 66 s against 63.97 s predicted.
 
 - All 84 registered box-kite bright-minus-dark contrasts reject the null under
-  family-wise Hoeffding bounds, with estimates +0.282 to +0.731. The
-  zero-divisor box-kite structure appears on hardware edge by edge.
+  family-wise Hoeffding bounds, with estimates +0.282 to +0.731: every
+  configured contrast has its predicted sign on hardware. The rejections
+  establish those signs; exact zeros, rank and topology stay outside them,
+  since the circuits encode the selected edges.
 - The separately registered depth-4 class-return contrast is null:
   -0.0101 [-0.0848, +0.0645], against a detection radius of 0.072. The run
   rules out a class return larger than about 0.085 in either direction and
@@ -101,21 +108,25 @@ PUBs (176 logical entries), 31 s against 30.41 s predicted.
 
 ## Findings across runs
 
-- **The charge model holds.** Every settled charge lands within 3 percent of
-  its prediction (11 against 11.59, 66 against 63.97, 31 against 30.41
-  seconds), so planned ceilings can sit close to nominal charge.
+- **The charge model holds to about 5 percent.** Settled charges differ from
+  prediction by -5.1 percent (11 against 11.59 s, twice), +3.2 percent (66
+  against 63.97 s) and +1.9 percent (31 against 30.41 s), so ceilings near
+  1.1 times nominal charge cover every observed run.
 - **Repetition delay is the largest cost.** Shots are short compared with the
   250 us default delay; a tuned delay is the largest available per-second
   saving and needs its own accuracy check, because it trades relaxation time
   for throughput.
-- **Packing is free.** Packed replicas match isolated ones and fail
-  independently, so filling idle qubits raises shots per billed second.
-- **The first-measurement record is wrong in about 11 percent of correction
-  shots,** an effect larger than the correction choice itself.
-- **Open tension.** On the ladder, removing the mid-circuit measurement (the
-  delay arm) changes nothing measurable, while coherent control gains 6 to 11
-  points; on the correction pilot, measured and known-label correction tie
-  overall. Readout assignment error alone therefore does not explain the
-  coherent advantage. Roadmap item 9 separates assignment from true state
-  error; the coherent arm's routing and readout-qubit changes remain the
-  other candidate explanation.
+- **Packing showed no measured loss in the pilot's layouts.** Packed and
+  isolated replica 0 agree under the preregistered statistic, and replica
+  failures were uncorrelated; that evidence covers the pilot PUB's layouts
+  and statistic, so each new packed family keeps its own reference check.
+- **The recorded first bit disagrees with the prepared label in about 11
+  percent of correction shots,** an effect larger than the measured
+  correction contrast; assignment error and a true state change both remain
+  candidate explanations.
+- **Open question.** Coherent control gains 6 to 11 points on the ladder,
+  while the delay arm detects no difference and the correction arms show no
+  preregistered gain. Neither result rules out the mid-circuit measurement as
+  a contributor. Roadmap item 9 separates assignment from true state error,
+  and the coherent arm's routing and readout-qubit changes remain a separate
+  candidate explanation.
