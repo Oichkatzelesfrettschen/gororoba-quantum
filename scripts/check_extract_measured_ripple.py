@@ -250,7 +250,7 @@ def verify_result(result: dict[str, Any], family: str) -> None:
     for pub in result["pubs"]:
         matrix = np.asarray(pub["event_zero"]["covariance"])
         require(matrix.shape == (len(pub["event_zero"]["members"]),) * 2, "joint matrix dimension differs")
-        require(np.all(np.diag(matrix) == 0.25), "known synthetic event variance differs")
+        require(bool(np.all(np.diag(matrix) == 0.25)), "known synthetic event variance differs")
         require(np.allclose(matrix, matrix.T), "joint matrix is asymmetric")
         require(matrix.shape[0] <= 10, "extractor built a cross-PUB all-member matrix")
     totals = result["throughput"]

@@ -397,7 +397,14 @@ def verify() -> dict[str, Any]:
             len(rebuilt_entry.replicas) == 1
             and rebuilt_entry.replica_qubits == original.replica_qubits
             and np.array_equal(rebuilt_entry.ideal, original.ideal)
-            and np.array_equal(rebuilt_entry.weights, original.weights)
+            and (
+                rebuilt_entry.weights is original.weights
+                or (
+                    rebuilt_entry.weights is not None
+                    and original.weights is not None
+                    and np.array_equal(rebuilt_entry.weights, original.weights)
+                )
+            )
             and rebuilt_entry.replicas[0] == expected_replica,
             "collector changed final replica circuit, physical wires, ideal law, or terminal weights",
         )

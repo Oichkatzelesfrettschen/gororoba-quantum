@@ -11,13 +11,13 @@ concurrency:
 
 jobs:
   gates:
-    name: gates ${{ matrix.shard }}/6
+    name: gates ${{ matrix.shard }}/12
     runs-on: ubuntu-latest
     timeout-minutes: 60
     strategy:
       fail-fast: false
       matrix:
-        shard: [0, 1, 2, 3, 4, 5]
+        shard: [0, 1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11]
     env:
       PYTHONHASHSEED: "0"
       MPLBACKEND: Agg
@@ -36,9 +36,7 @@ jobs:
           # The retained SymPy evidence ran on mpmath 1.4.1 beside sympy 1.14.0,
           # whose metadata caps mpmath below 1.4; --no-deps reproduces that pair.
           python -m pip install --no-deps mpmath==1.4.1
-      - name: Check out open_gororoba for verify.py
-        run: git clone --depth 1 https://github.com/Oichkatzelesfrettschen/open_gororoba "$RUNNER_TEMP/open_gororoba"
+      - name: Runner specs
+        run: python ci/runner_specs.py
       - name: Run shard
-        env:
-          GOROROBA_ROOT: ${{ runner.temp }}/open_gororoba
-        run: python ci/run_gates.py --shard ${{ matrix.shard }}/6
+        run: python ci/run_gates.py --shard ${{ matrix.shard }}/12

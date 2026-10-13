@@ -14,7 +14,7 @@ from dataclasses import dataclass
 from fractions import Fraction
 from pathlib import Path
 from tempfile import TemporaryDirectory
-from typing import TYPE_CHECKING
+from typing import TYPE_CHECKING, Any
 
 import numpy as np
 from numpy.typing import NDArray
@@ -41,7 +41,7 @@ COEFFICIENT_POLYNOMIALS = (
     (Fraction(0), Fraction(1, 2), Fraction(-1, 2)),
 )
 COLORS = ("#276B9C", "#C36332", "#8656A1", "#277F68")
-STYLES = ("-", (0, (5, 2)), (0, (1, 2)), (0, (5, 2, 1, 2)))
+STYLES: tuple[Any, ...] = ("-", (0, (5, 2)), (0, (1, 2)), (0, (5, 2, 1, 2)))
 MARKERS = ("o", "^", "s", "D")
 INK = "#23323B"
 MUTED = "#596A75"

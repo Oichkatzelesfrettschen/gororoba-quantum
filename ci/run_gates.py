@@ -1,10 +1,13 @@
 """Run the repository gates listed in ci/gates.json, sharded and keep-going.
 
-Each gate is one shell command with a repository-relative working directory.
-A shard runs every gate whose index modulo the shard count equals its shard
-number, on a thread pool sized to the CPUs available to the process; every
-gate runs regardless of earlier failures, and the exit status is nonzero when
-any gate fails, listing each failure with its output tail.
+Each gate is one shell command with a repository-relative working directory
+and the seconds it took on the last measured CI run. Shards come from a
+longest-first assignment of those durations, so the slowest gates land on
+separate shards. A shard runs its gates on a thread pool sized to the CPUs
+available to the process, each gate's own process pool limited to one worker
+so the two levels never oversubscribe the runner; every gate runs regardless
+of earlier failures, and the exit status is nonzero when any gate fails,
+listing each failure with its output tail.
 """
 
 from __future__ import annotations
@@ -29,16 +32,30 @@ def _cpus() -> int:
 
 def _run(gate: dict[str, Any], environment: dict[str, str]) -> tuple[dict[str, Any], int, float, str]:
     start = time.monotonic()
-    completed = subprocess.run(
-        ["sh", "-c", f"set -eu\n{gate['cmd']}"],
-        cwd=ROOT / gate["cwd"],
-        env=environment,
-        stdout=subprocess.PIPE,
-        stderr=subprocess.STDOUT,
-        text=True,
-        check=False,
-    )
+    try:
+        completed = subprocess.run(
+            ["sh", "-c", f"set -eu\n{gate['cmd']}"],
+            cwd=ROOT / gate["cwd"],
+            env=environment,
+            stdout=subprocess.PIPE,
+            stderr=subprocess.STDOUT,
+            text=True,
+            check=False,
+        )
+    except OSError as error:
+        return gate, 127, time.monotonic() - start, f"gate could not start: {error}"
     return gate, completed.returncode, time.monotonic() - start, completed.stdout
+
+
+def assign(gates: list[dict[str, Any]], count: int) -> list[list[dict[str, Any]]]:
+    """Longest-first assignment: each gate joins the shard with the least total seconds."""
+    shards: list[list[dict[str, Any]]] = [[] for _ in range(count)]
+    loads = [0.0] * count
+    for gate in sorted(gates, key=lambda gate: (-float(gate.get("seconds", 10.0)), gate["name"])):
+        target = min(range(count), key=lambda index: (loads[index], index))
+        shards[target].append(gate)
+        loads[target] += float(gate.get("seconds", 10.0))
+    return shards
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -50,13 +67,14 @@ def main(argv: list[str] | None = None) -> int:
     if not 0 <= shard < count:
         parser.error("shard must satisfy 0 <= SHARD < COUNT")
     gates = json.loads((ROOT / "ci" / "gates.json").read_text())["gates"]
-    selected = [gate for index, gate in enumerate(gates) if index % count == shard]
+    selected = assign(gates, count)[shard]
     if arguments.list:
         for gate in selected:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")
         return 0
     environment = dict(os.environ)
     environment.setdefault("PYTHON", sys.executable)
+    environment.setdefault("GOROROBA_WORKERS", "1")
     failures = []
     with ThreadPoolExecutor(max_workers=_cpus()) as pool:
         for gate, status, seconds, output in pool.map(lambda gate: _run(gate, environment), selected):

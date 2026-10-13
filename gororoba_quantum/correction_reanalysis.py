@@ -188,13 +188,28 @@ def _same(left: Any, right: Any) -> bool:
     return bool(left == right)
 
 
+def _provenance_holds(path: Path, retained: dict[str, Any], result: dict[str, Any]) -> bool:
+    """The retained digest recomputes from its input and source hashes, names its file, and its inputs are current."""
+    inputs, sources = retained.get("inputs_sha256"), retained.get("analysis_sources_sha256")
+    if not isinstance(inputs, dict) or not isinstance(sources, dict):
+        return False
+    digest = hashlib.sha256(json.dumps({"inputs": inputs, "sources": sources}, sort_keys=True).encode()).hexdigest()
+    return (
+        retained.get("analysis_digest") == digest
+        and path.name == f"analysis-{digest[:12]}.json"
+        and inputs == result["inputs_sha256"]
+    )
+
+
 def reproduces(run: Path, result: dict[str, Any]) -> list[Path]:
-    """Retained analyses in run whose computed content matches result."""
+    """Retained analyses in run whose provenance holds and whose computed content matches result."""
     fresh = {key: value for key, value in result.items() if key not in DIGEST_FIELDS}
     matches = []
     for path in sorted(run.glob("analysis-*.json")):
         retained = json.loads(path.read_text())
-        if _same({key: value for key, value in retained.items() if key not in DIGEST_FIELDS}, fresh):
+        if _provenance_holds(path, retained, result) and _same(
+            {key: value for key, value in retained.items() if key not in DIGEST_FIELDS}, fresh
+        ):
             matches.append(path)
     return matches
 
