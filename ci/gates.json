@@ -1752,6 +1752,14 @@
    "name": "core-194",
    "seconds": 20,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "PYTHONWARNINGS=error \"$PYTHON\" scripts/patch_window_analysis.py --self-check",
+   "name": "core-211",
+   "seconds": 45,
+   "tier": "pr"
   }
  ],
  "excluded": [
