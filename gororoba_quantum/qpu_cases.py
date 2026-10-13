@@ -1168,7 +1168,8 @@ def _render(
     )
     for group in record["groups"]:
         calibration = _identifier(group["calibration"], "calibration")
-        placed = [_numeric_mapping(replica["initial_layout"]) for replica in group["replicas"]]
+        template = _numeric_mapping(group["initial_layout"])
+        placed = [[replica["mapping"][str(qubit)] for qubit in template] for replica in group["replicas"]]
         lines.append(
             f"| {_identifier(group['group'], 'group')} | {_identifier(group['backend'], 'backend')} | "
             f"{calibration} | {_count(group['seed_transpiler'], 'transpiler seed')} | "
