@@ -381,7 +381,7 @@ def _hybrid_shor_mod15() -> Group:
 
 
 def experiment_groups() -> list[Group]:
-    from maximal_experiments import maximal_groups
+    from maximal_experiments import concurrent_shor_mod15_group
 
     return [
         _design_a(),
@@ -389,5 +389,17 @@ def experiment_groups() -> list[Group]:
         *(_associator_spectrum(dim, i, j) for dim, i, j in SPECTRUM_EXEMPLARS),
         _folded_qpe_mod15(),
         _hybrid_shor_mod15(),
-        *maximal_groups(),
+        concurrent_shor_mod15_group(),
     ]
+
+
+def standalone_campaign_groups() -> list[Group]:
+    """Isolated campaign groups that must not co-run or fuse with other static groups."""
+    from maximal_experiments import spectator_wavefront_ramsey_group
+
+    return [spectator_wavefront_ramsey_group()]
+
+
+def all_experiment_groups() -> list[Group]:
+    """All registered experiment groups across default suites and standalone campaigns."""
+    return [*experiment_groups(), *standalone_campaign_groups()]

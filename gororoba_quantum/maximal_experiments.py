@@ -38,6 +38,25 @@ DEFAULT_SPECTATORS = 5
 DEFAULT_X_DURATION_DT = 8
 
 
+def core_x_duration_dt(target: Any, core_qubit: int = 0) -> int:
+    """Derive physical single-qubit X duration in dt from a Target and physical core qubit."""
+    if target is None:
+        return DEFAULT_X_DURATION_DT
+    dt = getattr(target, "dt", None)
+    if dt is None or dt <= 0:
+        return DEFAULT_X_DURATION_DT
+    duration = None
+    if "x" in target and (core_qubit,) in target["x"]:
+        duration = target["x"][(core_qubit,)].duration
+    elif "sx" in target and (core_qubit,) in target["sx"]:
+        sx_dur = target["sx"][(core_qubit,)].duration
+        if sx_dur is not None:
+            duration = 2.0 * sx_dur
+    if duration is None or duration <= 0:
+        return DEFAULT_X_DURATION_DT
+    return max(1, int(round(duration / dt)))
+
+
 def build_spectator_wavefront_circuits(
     spectator_count: int = DEFAULT_SPECTATORS,
     delay_dt: int = DEFAULT_DELAY_DT,
@@ -153,10 +172,26 @@ def _ground_ideal_distribution(total_clbits: int) -> np.ndarray:
 def spectator_wavefront_ramsey_group(
     spectator_count: int = DEFAULT_SPECTATORS,
     delay_dt: int = DEFAULT_DELAY_DT,
-    x_duration_dt: int = DEFAULT_X_DURATION_DT,
+    target: Any | None = None,
+    core_qubit: int = 0,
+    x_duration_dt: int | None = None,
+    replica_floor: float = 0.75,
 ) -> Group:
-    """Group evaluating spectator Ramsey contrast under active drive vs idle control."""
-    qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt, x_duration_dt)
+    """Group evaluating spectator Ramsey contrast under active drive vs idle control.
+
+    When target is provided, x_duration_dt is derived dynamically from target calibrations
+    for core_qubit (target['x'][(core_qubit,)].duration / target.dt), ensuring active and
+    control arm timing envelopes match down to the exact dt cycle.
+    """
+    if x_duration_dt is None:
+        if target is not None:
+            effective_x_dt = core_x_duration_dt(target, core_qubit)
+        else:
+            effective_x_dt = DEFAULT_X_DURATION_DT
+    else:
+        effective_x_dt = x_duration_dt
+
+    qc_active, qc_control, qc_null = build_spectator_wavefront_circuits(spectator_count, delay_dt, effective_x_dt)
     total_clbits = qc_active.num_clbits
 
     ideal_active = _ground_ideal_distribution(total_clbits)
@@ -217,6 +252,7 @@ def spectator_wavefront_ramsey_group(
         "spectator_wavefront_ramsey",
         members,
         summarize,
+        replica_floor=replica_floor,
         rate_keys=frozenset(
             {
                 "spectator_p0_active",

@@ -68,7 +68,7 @@ import placement_feasibility
 import qpu_planning
 import variance
 from diagnostic_experiments import FAMILY_NAMES, record_groups
-from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
+from experiments import MIRROR_SUFFIX, Group, Member, all_experiment_groups, experiment_groups, tvd
 from packing import Replica
 
 SHOTS = 4096
@@ -1706,11 +1706,40 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
             try:
                 templates = {id(primary.circuit): isa}
                 isas = []
-                for member in group.members:
-                    key = id(member.circuit)
-                    if key not in templates:
-                        templates[key] = _compile(member.circuit, snap, seed, layout)
-                    isas.append(_bind(templates[key], member))
+                if group.name == "spectator_wavefront_ramsey":
+                    from maximal_experiments import (
+                        build_spectator_wavefront_circuits,
+                        core_x_duration_dt,
+                    )
+
+                    target = snap.admission_target or snap.backend.target
+                    routed_core = layout[0]
+                    cal_x_dt = core_x_duration_dt(target, routed_core)
+                    qc_act, qc_ctrl, qc_null = build_spectator_wavefront_circuits(
+                        spectator_count=len(group.members[0].circuit.qubits) - 1,
+                        x_duration_dt=cal_x_dt,
+                    )
+                    isa_act = _compile(qc_act, snap, seed, layout)
+                    isa_ctrl = _compile(qc_ctrl, snap, seed, layout)
+                    isa_null = _compile(qc_null, snap, seed, layout)
+                    dur_act = target_duration_dt(isa_act, target)
+                    dur_ctrl = target_duration_dt(isa_ctrl, target)
+                    if dur_act != dur_ctrl:
+                        trace.append(
+                            {
+                                "seed": seed,
+                                "layout": layout,
+                                "duration_mismatch": f"active={dur_act} ctrl={dur_ctrl}",
+                            }
+                        )
+                        continue
+                    isas = [isa_act, isa_ctrl, isa_null]
+                else:
+                    for member in group.members:
+                        key = id(member.circuit)
+                        if key not in templates:
+                            templates[key] = _compile(member.circuit, snap, seed, layout)
+                        isas.append(_bind(templates[key], member))
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
@@ -2415,7 +2444,7 @@ def discover_snapshots(
 
 
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
-    available_groups = experiment_groups()
+    available_groups = all_experiment_groups()
     known = {group.name for group in available_groups}
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
@@ -2435,7 +2464,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         groups = [choice.group for choice in choices]
         fusion_placement = {"allocation": "matched-family", "configuration": design["family_configuration"]}
     else:
-        groups = [group for group in available_groups if not args.groups or group.name in args.groups]
+        if not args.groups:
+            groups = experiment_groups()
+        else:
+            groups = [group for group in available_groups if group.name in args.groups]
+            if "spectator_wavefront_ramsey" in (g.name for g in groups) and len(groups) > 1:
+                raise LiveRunError(
+                    "spectator_wavefront_ramsey requires an isolated campaign; cannot co-run with other groups"
+                )
         candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
         choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
     pubs = execution_pubs(choices)
@@ -3950,7 +3986,7 @@ def _validate_archived_pub(pub_manifest: dict[str, Any], circuit: QuantumCircuit
 
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
     """Rebuild logical entries from archived fused PUBs and their component map."""
-    weights = {m.name: m.weights for g in [*experiment_groups(), *record_groups(record)] for m in g.members}
+    weights = {m.name: m.weights for g in [*all_experiment_groups(), *record_groups(record)] for m in g.members}
     planned_jobs = record.get("submission", {}).get("planned_jobs")
     if planned_jobs is None:
         raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
@@ -4014,7 +4050,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
-    groups = {g.name: g for g in [*experiment_groups(), *record_groups(record)]}
+    groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
     if (
         record.get("experiment_digest") != experiment_digest()
         or record.get("schema_version") != RECORD_SCHEMA_VERSION

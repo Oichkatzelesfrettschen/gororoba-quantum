@@ -2,19 +2,26 @@
 
 from __future__ import annotations
 
+import copy
+import warnings
+from typing import Any
+
 import numpy as np
 from qiskit import transpile
 from qiskit_aer import AerSimulator
 from qiskit_ibm_runtime.fake_provider import FakeKingston
 
 import packing
-from live_run import _ops
+from experiments import all_experiment_groups, experiment_groups, standalone_campaign_groups
+from live_run import LiveRunError, _ops, plan, select_candidates, target_duration_dt
 from maximal_experiments import (
     build_spectator_wavefront_circuits,
     concurrent_shor_mod15_group,
+    core_x_duration_dt,
     maximal_groups,
     spectator_wavefront_ramsey_group,
 )
+from runtime_contracts import _fake_snapshot, _fixture_args, _ProbeBackend, _ProbeService
 
 
 def _require(condition: bool, message: str) -> None:
@@ -60,17 +67,15 @@ def _verify_spectator_wavefront_circuits() -> None:
     null_ops = qc_null.count_ops()
     _require(dict(null_ops) == {"measure": total_qubits}, "null circuit must contain only terminal measurements")
 
-    # Verify scheduled duration matching between active and control arms
+    # Verify core_x_duration_dt helper
     backend = FakeKingston()
-    x_dur_s = backend.target["x"][(0,)].duration
-    x_dur_dt = int(round(x_dur_s / backend.target.dt))
-    qc_act, qc_ctrl, _ = build_spectator_wavefront_circuits(
-        spectator_count=2,
-        delay_dt=4000,
-        x_duration_dt=x_dur_dt,
-    )
-    import warnings
+    _require(core_x_duration_dt(None) == 8, "default x_duration_dt must be 8")
+    _require(core_x_duration_dt(backend.target, 0) == 8, "FakeKingston qubit 0 x_duration_dt must be 8")
 
+    # Verify scheduled duration matching when derived dynamically from target
+    group_cal = spectator_wavefront_ramsey_group(spectator_count=2, delay_dt=4000, target=backend.target, core_qubit=0)
+    qc_act = group_cal.members[0].circuit
+    qc_ctrl = group_cal.members[1].circuit
     with warnings.catch_warnings():
         warnings.simplefilter("ignore", DeprecationWarning)
         t_act = transpile(qc_act, backend, scheduling_method="asap")
@@ -78,6 +83,25 @@ def _verify_spectator_wavefront_circuits() -> None:
         _require(
             t_act.duration == t_ctrl.duration,
             f"active duration ({t_act.duration}) must match control duration ({t_ctrl.duration})",
+        )
+
+    # Test non-default target single-qubit duration (e.g. 16 dt at 4 ns dt)
+    target_mod = copy.deepcopy(backend.target)
+    for q in range(target_mod.num_qubits):
+        if (q,) in target_mod["x"]:
+            target_mod["x"][(q,)].duration = 6.4e-8
+    derived_mod_dt = core_x_duration_dt(target_mod, 0)
+    _require(derived_mod_dt == 16, f"expected 16 dt on modified target, got {derived_mod_dt}")
+    group_mod = spectator_wavefront_ramsey_group(spectator_count=2, delay_dt=4000, target=target_mod, core_qubit=0)
+    qc_act_mod = group_mod.members[0].circuit
+    qc_ctrl_mod = group_mod.members[1].circuit
+    with warnings.catch_warnings():
+        warnings.simplefilter("ignore", DeprecationWarning)
+        t_act_mod = transpile(qc_act_mod, target=target_mod, scheduling_method="asap")
+        t_ctrl_mod = transpile(qc_ctrl_mod, target=target_mod, scheduling_method="asap")
+        _require(
+            t_act_mod.duration == t_ctrl_mod.duration,
+            f"modified target active duration ({t_act_mod.duration}) must match control ({t_ctrl_mod.duration})",
         )
 
 
@@ -219,9 +243,66 @@ def _verify_maximal_groups() -> None:
     _require("concurrent_shor_mod15" in names, "missing concurrent_shor_mod15 group")
 
 
+def _verify_isolation_contract() -> None:
+    all_names = {g.name for g in all_experiment_groups()}
+    default_names = {g.name for g in experiment_groups()}
+    standalone_names = {g.name for g in standalone_campaign_groups()}
+
+    _require(
+        "spectator_wavefront_ramsey" in all_names,
+        "all_experiment_groups must contain spectator_wavefront_ramsey",
+    )
+    _require(
+        "spectator_wavefront_ramsey" not in default_names,
+        "default experiment_groups must NOT contain spectator_wavefront_ramsey",
+    )
+    _require(
+        "spectator_wavefront_ramsey" in standalone_names,
+        "standalone_campaign_groups must contain spectator_wavefront_ramsey",
+    )
+    _require(
+        "concurrent_shor_mod15" in default_names,
+        "default experiment_groups must contain concurrent_shor_mod15",
+    )
+
+    # Verify select_candidates on spectator_wavefront_ramsey produces duration-matched ISAs
+    backend = FakeKingston()
+    snap = _fake_snapshot(backend)
+    group = spectator_wavefront_ramsey_group(spectator_count=3, delay_dt=3000)
+    log: dict[str, Any] = {}
+    candidates = select_candidates(group, [snap], seeds=1, log=log)
+    _require(
+        len(candidates) > 0,
+        "select_candidates must produce at least one candidate for spectator_wavefront_ramsey",
+    )
+    best = candidates[0]
+    dur_act = target_duration_dt(best.isas[0], backend.target)
+    dur_ctrl = target_duration_dt(best.isas[1], backend.target)
+    _require(
+        dur_act == dur_ctrl,
+        f"candidate ISAs must have identical duration: active={dur_act} ctrl={dur_ctrl}",
+    )
+
+    # Verify plan rejects co-running spectator_wavefront_ramsey with other groups
+    probe_backend = _ProbeBackend("viable", backend)
+    service = _ProbeService([probe_backend])
+    try:
+        plan(
+            service,
+            _fixture_args(groups=["spectator_wavefront_ramsey", "concurrent_shor_mod15"]),
+        )
+        raise RuntimeError("plan must reject co-running spectator_wavefront_ramsey with other groups")
+    except LiveRunError as err:
+        _require(
+            "isolated campaign" in str(err),
+            f"unexpected error message: {err}",
+        )
+
+
 if __name__ == "__main__":
     _verify_spectator_wavefront_circuits()
     _verify_spectator_wavefront_summary_and_simulation()
     _verify_concurrent_shor_group()
     _verify_maximal_groups()
+    _verify_isolation_contract()
     print("maximal contracts: spectator wavefront, idle control, concurrent Shor, and admission pass")
