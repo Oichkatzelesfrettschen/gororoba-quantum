@@ -19,7 +19,16 @@ def main() -> int:
     bundle = Path(__file__).resolve().parent
     root = bundle.parents[2]
     source = root / "gororoba_quantum"
-    names = ("complex_skew", "complex_skew_contracts", "rank_charts", "rank_polynomials", "cd_core", "parallel")
+    names = (
+        "complex_skew",
+        "complex_skew_contracts",
+        "rank_charts",
+        "rank_polynomials",
+        "nullity_twelve_locus",
+        "skew_schur_charts",
+        "cd_core",
+        "parallel",
+    )
     paths = [source / f"{name}.py" for name in names] + [
         Path(__file__).resolve(),
         root / "docs/notes/complex_skew_rank_geometry.md",

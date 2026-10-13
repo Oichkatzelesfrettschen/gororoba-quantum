@@ -42,6 +42,16 @@
         "published nonnegative Newton determinant factorization"
       ],
       "conclusion": "The squared complex Pfaffian norm equals N times the last reduced elementary spectral coefficient; in dimension 32 that coefficient is E7."
+    },
+    {
+      "name": "selected_center_complex_obstruction",
+      "premises": [
+        "center e1+e18",
+        "all thirty doubly-pure coefficient directions",
+        "fixed-norm tangent coordinates",
+        "exact complex principal complement and kernel frame"
+      ],
+      "conclusion": "The 30-by-30 linear system has rank eight and the same tangent frame as the real system; the 22-by-231 quadratic obstruction has exactly the existing eight-generator row space and real locus A15 union B17."
     }
   ],
   "remaining": [

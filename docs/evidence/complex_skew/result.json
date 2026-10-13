@@ -26,6 +26,40 @@
       "dimension": 64
     }
   ],
+  "local_obstruction_controls": {
+    "center": "e1+e18",
+    "complex_residual_dimension": 6,
+    "linear_rank": 8,
+    "linear_shape": [
+      30,
+      30
+    ],
+    "quadratic_rank": 8,
+    "quadratic_shape": [
+      22,
+      231
+    ],
+    "real_linear_shape": [
+      66,
+      30
+    ],
+    "real_quadratic_shape": [
+      58,
+      231
+    ],
+    "rref_generators": [
+      "-z16**2 + z6**2",
+      "-z13*z16 + z5*z6",
+      "z13*z6 + z16*z5",
+      "-z13*z20 + z16*z17 + z17*z5 + z20*z6",
+      "z13*z19 + z16*z18 + z18*z5 - z19*z6",
+      "-z13*z18 + z16*z19 + z18*z6 + z19*z5",
+      "z13*z17 + z16*z20 - z17*z6 + z20*z5",
+      "z16*z6"
+    ],
+    "scope": "The complete quadratic obstruction and its tangent-cone model agree; actual local branches remain open.",
+    "tangent_dimension": 21
+  },
   "negative_controls": {
     "chart_mutations_rejected": 6,
     "invalid_inputs_rejected": 12

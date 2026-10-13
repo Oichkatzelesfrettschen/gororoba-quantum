@@ -24,6 +24,7 @@ from complex_skew import (
     symbolic_operator,
     verify_kernel_chart,
 )
+from nullity_twelve_locus import certify_nullity_twelve_locus
 from parallel import ordered_map
 from rank_charts import multiplication_matrix
 from rank_polynomials import evaluate_rank_polynomials
@@ -188,6 +189,63 @@ def negative_controls() -> dict[str, int]:
     return {"chart_mutations_rejected": len(mutations), "invalid_inputs_rejected": rejected}
 
 
+def local_obstruction_controls() -> dict[str, Any]:
+    """Recover the complete selected-center obstruction with fewer equations."""
+    existing = certify_nullity_twelve_locus()
+    values = tuple(int(index in (1, 18)) for index in range(32))
+    chart = kernel_chart(values)
+    frame = chart.frame
+    complement = sp.eye(16)[:, list(chart.pivot_indices)]
+    inverse = (complement.T * complex_operator(values) * complement).inv()
+    coordinates = existing.coordinate_indices
+    operators = [complex_operator(tuple(int(index == coordinate) for index in range(32))) for coordinate in coordinates]
+    upper = tuple(combinations(range(6), 2))
+
+    def split_upper(matrix: sp.MatrixBase) -> sp.Matrix:
+        entries = [sp.expand(matrix[row, column]) for row, column in upper]
+        return sp.Matrix([part for value in entries for part in value.as_real_imag()])
+
+    linear = sp.Matrix.hstack(*[split_upper(frame.T * operator * frame) for operator in operators])
+    real_linear = sp.Matrix(existing.derivative_matrix)
+    require(linear.rref()[0][:8, :] == real_linear.rref()[0][:8, :], "real/complex linear row spaces differ")
+    require(len(linear.to_DM().to_field().rref()[1]) == 8, "complex derivative rank differs")
+    normalized = linear.col_join(sp.Matrix([[values[index] for index in coordinates]]))
+    tangent = sp.Matrix.hstack(*normalized.nullspace())
+    require(tangent == sp.Matrix(existing.tangent_frame.basis), "tangent coordinate conventions differ")
+    blocks = []
+    for column in range(tangent.cols):
+        direction = sum((operator * tangent[index, column] for index, operator in enumerate(operators)), sp.zeros(16))
+        blocks.append(complement.T * direction * frame)
+    quadratic = []
+    for first, second in existing.monomial_pairs:
+        value = blocks[first].T * inverse * blocks[second]
+        if first != second:
+            value += blocks[second].T * inverse * blocks[first]
+        quadratic.append(split_upper(value))
+    cokernel = sp.Matrix.hstack(*linear.T.nullspace())
+    obstruction = cokernel.T * sp.Matrix.hstack(*quadratic)
+    reduced, pivots = obstruction.rref()
+    require(len(pivots) == 8, "complex quadratic obstruction rank differs")
+    require(reduced[:8, :] == sp.Matrix(existing.generator_matrix), "complete quadratic equation spans differ")
+    variables = sp.symbols("z0:21", real=True)
+    monomials = sp.Matrix([variables[first] * variables[second] for first, second in existing.monomial_pairs])
+    return {
+        "center": "e1+e18",
+        "complex_residual_dimension": 6,
+        "linear_shape": list(linear.shape),
+        "real_linear_shape": list(real_linear.shape),
+        "linear_rank": 8,
+        "tangent_dimension": tangent.cols,
+        "quadratic_shape": list(obstruction.shape),
+        "real_quadratic_shape": list(sp.Matrix(existing.coefficient_matrix).shape),
+        "quadratic_rank": len(pivots),
+        "rref_generators": [str(sp.expand(value)) for value in reduced[:8, :] * monomials],
+        "scope": (
+            "The complete quadratic obstruction and its tangent-cone model agree; actual local branches remain open."
+        ),
+    }
+
+
 def audit() -> dict[str, Any]:
     coefficient_checks = ordered_map(coefficient_control, [4, 8, 16, 32, 64], min_items=2)
     tasks: list[tuple[str, dict[int, Fraction | int], int]] = [
@@ -204,6 +262,7 @@ def audit() -> dict[str, Any]:
         "point_checks": ordered_map(point_control, tasks, min_items=2),
         "polynomial_checks": polynomial_controls(),
         "negative_controls": negative_controls(),
+        "local_obstruction_controls": local_obstruction_controls(),
         "qpu_executed": False,
         "scope": (
             "All-stage written coordinate and chart identities; executable exact point API through dimension 256; "

@@ -21,6 +21,8 @@ check mode. The pinned runtime uses SymPy 1.14.0.
 
 The controls cover 114 coefficient operators, six dimension-32 coefficient
 points, all 1365 quadratic cover identities, generic order-six Pfaffians,
-chart corruptions and invalid inputs. Finite checks test implementation;
+chart corruptions and invalid inputs. The selected-center replay reproduces
+the full existing eight-generator obstruction in a 22-by-231 array instead
+of a 58-by-231 array, using identical tangent coordinates. Finite checks test implementation;
 the proof note supplies universal statements. New Rocq formalization retains
 the raw-collection/adjudication prerequisite. The replay submits zero QPU jobs.

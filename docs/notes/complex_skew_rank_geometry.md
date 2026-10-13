@@ -136,6 +136,29 @@ rank ten and a six-coordinate residual, in place of a twelve-coordinate real
 residual. Solving its real equations, radicals, branches and links remains
 an explicit research obligation.
 
+## Complete selected-center quadratic reduction
+
+At x0=e1+e18, let F be the six-column complex kernel frame and U the
+ten-column principal complement. Set A0=U^T K_x0 U. For each of the thirty
+real coefficient directions h, form D(h)=F^T K_h F and B(h)=U^T K_h F.
+Taking real and imaginary parts of the fifteen upper entries of D produces
+a 30-by-30 real derivative matrix. Its row space equals the row space of
+the established 66-by-30 real derivative matrix, and both have rank eight.
+The added norm row leaves the same canonical 21-coordinate tangent frame.
+
+The cokernel now has dimension 22. Polarizing B(h)^T A0^(-1) B(h) on the
+21 tangent variables gives a 22-by-231 coefficient matrix. Its reduced row
+space equals the existing 58-by-231 matrix's eight-dimensional row space,
+with identical monomial and tangent-coordinate conventions. The replay
+constructs both matrices from multiplication and verifies their complete
+row-space equality against `certify_nullity_twelve_locus()`.
+
+Consequently the [eight quadratic generators and their real decomposition](nullity_twelve_local_geometry.md)
+remain exactly A15 union B17, intersecting in dimension thirteen. The complex
+representation removes redundant equations without discarding tangent
+information. Equality of these quadratic obstructions does not promote them
+to actual branch equations; higher-order local geometry remains open.
+
 ## Kernel bundles and overlap maps
 
 On a principal pivot of complex order k, require det(A)!=0 and S=0.
