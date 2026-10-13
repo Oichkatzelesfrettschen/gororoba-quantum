@@ -16,6 +16,8 @@ ibm_fez, and rank-sector
 [collected](2026-10-13T032011.664435Z/collect.json)) settled 31 seconds.
 The [coordination ledger](qpu-coordination.json) carries each family's
 findings and the settled 119 seconds against the 180-second cap.
+[CAMPAIGN_FINDINGS.md](CAMPAIGN_FINDINGS.md) interprets every retained
+acquisition and the findings that hold across them.
 
 The [historical ripple and rank-sector cases](../ripple/PREPARATION.md) retain
 their source-closure reports, independent uncertainty families and written
