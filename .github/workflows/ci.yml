@@ -39,6 +39,10 @@ jobs:
           # The retained SymPy evidence ran on mpmath 1.4.1 beside sympy 1.14.0,
           # whose metadata caps mpmath below 1.4; --no-deps reproduces that pair.
           python -m pip install --no-deps mpmath==1.4.1
+          # sympy 1.14.0 on PyPI still calls mpmath APIs that 1.4 deprecates or
+          # renames; the distribution patch the evidence ran with replaces them.
+          patch -s -p1 -d "$(python -c 'import pathlib, sympy; print(pathlib.Path(sympy.__file__).parents[1])')" \
+            < ci/patches/sympy-1.14.0-mpmath-1.4.patch
       - name: Runner specs
         run: python ci/runner_specs.py
       - name: Run shard
