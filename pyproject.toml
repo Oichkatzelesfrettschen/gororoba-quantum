@@ -10,7 +10,7 @@ src = ["gororoba_quantum"]
 select = ["E", "W", "F", "I", "B", "UP"]
 
 [tool.mypy]
-python_version = "3.11"
+python_version = "3.14"
 mypy_path = "gororoba_quantum"
 ignore_missing_imports = true
 warn_unused_ignores = true

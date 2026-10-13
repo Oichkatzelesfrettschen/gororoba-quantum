@@ -244,830 +244,831 @@
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" verify.py       # needs the open_gororoba checkout at GOROROBA_ROOT",
+   "cmd": "\"$PYTHON\" designs.py",
    "name": "core-040"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" designs.py",
+   "cmd": "\"$PYTHON\" claim_boundaries.py >/dev/null",
    "name": "core-041"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" claim_boundaries.py >/dev/null",
+   "cmd": "\"$PYTHON\" sedenion_bundle.py >/dev/null",
    "name": "core-042"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" sedenion_bundle.py >/dev/null",
+   "cmd": "\"$PYTHON\" annihilator_strata.py --max-dimension 256 >/dev/null",
    "name": "core-043"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" annihilator_strata.py --max-dimension 256 >/dev/null",
+   "cmd": "\"$PYTHON\" rank_polynomials.py >/dev/null",
    "name": "core-044"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" rank_polynomials.py >/dev/null",
+   "cmd": "\"$PYTHON\" rank_charts.py >/dev/null",
    "name": "core-045"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" rank_charts.py >/dev/null",
+   "cmd": "\"$PYTHON\" rank_attachments.py >/dev/null",
    "name": "core-046"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" rank_attachments.py >/dev/null",
+   "cmd": "\"$PYTHON\" integral_homology.py >/dev/null",
    "name": "core-047"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" integral_homology.py >/dev/null",
+   "cmd": "\"$PYTHON\" rank_path_topology.py >/dev/null",
    "name": "core-048"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" rank_path_topology.py >/dev/null",
+   "cmd": "\"$PYTHON\" rank_path_topology.py --stage 6 >/dev/null",
    "name": "core-049"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" rank_path_topology.py --stage 6 >/dev/null",
+   "cmd": "\"$PYTHON\" ripple_dynamics.py --check ../results/ripple/evidence.json",
    "name": "core-050"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ripple_dynamics.py --check ../results/ripple/evidence.json",
+   "cmd": "\"$PYTHON\" ../scripts/render_ripple_visualization.py --evidence ../results/ripple/evidence.json --out ../results/ripple/cayley-dickson-ripples.html --check",
    "name": "core-051"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../scripts/render_ripple_visualization.py --evidence ../results/ripple/evidence.json --out ../results/ripple/cayley-dickson-ripples.html --check",
+   "cmd": "PYTHONWARNINGS=error MPLCONFIGDIR=\"${MPLCONFIGDIR:-/tmp/rank-sector-mplconfig}\" \"$PYTHON\" ../scripts/render_rank_sector_norms.py --png ../results/ripple/rank-sector-norms.png --check",
    "name": "core-052"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONWARNINGS=error MPLCONFIGDIR=\"${MPLCONFIGDIR:-/tmp/rank-sector-mplconfig}\" \"$PYTHON\" ../scripts/render_rank_sector_norms.py --png ../results/ripple/rank-sector-norms.png --check",
+   "cmd": "\"$PYTHON\" -W error schur_acceleration.py >/dev/null",
    "name": "core-053"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error schur_acceleration.py >/dev/null",
+   "cmd": "\"$PYTHON\" -O -W error schur_acceleration.py >/dev/null",
    "name": "core-054"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error schur_acceleration.py >/dev/null",
+   "cmd": "\"$PYTHON\" -W error nullity_twelve_locus.py >/dev/null",
    "name": "core-055"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error nullity_twelve_locus.py >/dev/null",
+   "cmd": "\"$PYTHON\" -O -W error nullity_twelve_locus.py >/dev/null",
    "name": "core-056"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error nullity_twelve_locus.py >/dev/null",
+   "cmd": "\"$PYTHON\" -W error nullity_twelve_curves.py >/dev/null",
    "name": "core-057"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error nullity_twelve_curves.py >/dev/null",
+   "cmd": "\"$PYTHON\" -O -W error nullity_twelve_curves.py >/dev/null",
    "name": "core-058"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error nullity_twelve_curves.py >/dev/null",
+   "cmd": "\"$PYTHON\" -W error kernel_limit_contracts.py >/dev/null",
    "name": "core-059"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error kernel_limit_contracts.py >/dev/null",
+   "cmd": "\"$PYTHON\" -O -W error kernel_limit_contracts.py >/dev/null",
    "name": "core-060"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error kernel_limit_contracts.py >/dev/null",
+   "cmd": "\"$PYTHON\" -W error circle_kernel_attachments.py >/dev/null",
    "name": "core-061"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error circle_kernel_attachments.py >/dev/null",
+   "cmd": "\"$PYTHON\" -O -W error circle_kernel_attachments.py >/dev/null",
    "name": "core-062"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error circle_kernel_attachments.py >/dev/null",
+   "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
    "name": "core-063"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error complex_skew_contracts.py >/dev/null",
+   "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
    "name": "core-064"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -O -W error complex_skew_contracts.py >/dev/null",
+   "cmd": "\"$PYTHON\" factoring.py",
    "name": "core-065"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" factoring.py",
+   "cmd": "\"$PYTHON\" target_flip.py",
    "name": "core-066"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" target_flip.py",
+   "cmd": "\"$PYTHON\" target_flip_certificate.py --check",
    "name": "core-067"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" target_flip_certificate.py --check",
+   "cmd": "\"$PYTHON\" affine_residual.py",
    "name": "core-068"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" affine_residual.py",
+   "cmd": "\"$PYTHON\" modular_arithmetic.py",
    "name": "core-069"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" modular_arithmetic.py",
+   "cmd": "\"$PYTHON\" order_finding.py",
    "name": "core-070"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" order_finding.py",
+   "cmd": "\"$PYTHON\" compile_evidence.py --seeds 20261010 --candidate one_clean_cycle >/dev/null",
    "name": "core-071"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" compile_evidence.py --seeds 20261010 --candidate one_clean_cycle >/dev/null",
+   "cmd": "\"$PYTHON\" ../scripts/mod15_signed_multiplier_census.py",
    "name": "core-072"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../scripts/mod15_signed_multiplier_census.py",
+   "cmd": "\"$PYTHON\" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null",
    "name": "core-073"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../scripts/associator_walsh_classes.py --max-dim 64 >/dev/null",
+   "cmd": "\"$PYTHON\" runtime_contracts.py",
    "name": "core-074"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" runtime_contracts.py",
+   "cmd": "\"$PYTHON\" parameter_binding_contracts.py",
    "name": "core-075"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" parameter_binding_contracts.py",
+   "cmd": "\"$PYTHON\" correction_circuits_contracts.py",
    "name": "core-076"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_circuits_contracts.py",
+   "cmd": "\"$PYTHON\" correction_statistics_contracts.py",
    "name": "core-077"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_statistics_contracts.py",
+   "cmd": "\"$PYTHON\" correction_schedule_contracts.py",
    "name": "core-078"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_schedule_contracts.py",
+   "cmd": "\"$PYTHON\" correction_preparation_contracts.py",
    "name": "core-079"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_preparation_contracts.py",
+   "cmd": "\"$PYTHON\" correction_planning_contracts.py",
    "name": "core-080"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_planning_contracts.py",
+   "cmd": "\"$PYTHON\" correction_collection_contracts.py",
    "name": "core-081"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_collection_contracts.py",
+   "cmd": "\"$PYTHON\" correction_case_contracts.py",
    "name": "core-082"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" correction_case_contracts.py",
+   "cmd": "\"$PYTHON\" -W error correction_reanalysis.py --self-check",
    "name": "core-083"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -W error correction_reanalysis.py --self-check",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" -W error correction_reanalysis.py --self-check",
    "name": "core-084"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" -W error correction_reanalysis.py --self-check",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_circuits_contracts.py",
    "name": "core-085"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_circuits_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_statistics_contracts.py",
    "name": "core-086"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_statistics_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_schedule_contracts.py",
    "name": "core-087"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_schedule_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_preparation_contracts.py",
    "name": "core-088"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_preparation_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_planning_contracts.py",
    "name": "core-089"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_planning_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_collection_contracts.py",
    "name": "core-090"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_collection_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_case_contracts.py",
    "name": "core-091"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" correction_case_contracts.py",
+   "cmd": "\"$PYTHON\" qpe_diagnostics.py",
    "name": "core-092"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" qpe_diagnostics.py",
+   "cmd": "\"$PYTHON\" experiment_optimizer.py",
    "name": "core-093"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" experiment_optimizer.py",
+   "cmd": "\"$PYTHON\" qpu_planning_contracts.py",
    "name": "core-094"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" qpu_planning_contracts.py",
+   "cmd": "\"$PYTHON\" algebra_planning_contracts.py",
    "name": "core-095"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" algebra_planning_contracts.py",
+   "cmd": "\"$PYTHON\" pub_shot_allocation_contracts.py",
    "name": "core-096"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" pub_shot_allocation_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_allocation_contracts.py",
    "name": "core-097"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_allocation_contracts.py",
+   "cmd": "\"$PYTHON\" pub_shot_runtime_contracts.py",
    "name": "core-098"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" pub_shot_runtime_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_runtime_contracts.py",
    "name": "core-099"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" pub_shot_runtime_contracts.py",
+   "cmd": "\"$PYTHON\" ripple_contracts.py",
    "name": "core-100"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ripple_contracts.py",
+   "cmd": "\"$PYTHON\" rank_sector_contracts.py",
    "name": "core-101"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" rank_sector_contracts.py",
+   "cmd": "\"$PYTHON\" native_preflight_contracts.py",
    "name": "core-102"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" native_preflight_contracts.py",
+   "cmd": "\"$PYTHON\" placement_feasibility_contracts.py",
    "name": "core-103"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" placement_feasibility_contracts.py",
+   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" placement_feasibility_contracts.py",
    "name": "core-104"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONOPTIMIZE=1 \"$PYTHON\" placement_feasibility_contracts.py",
+   "cmd": "\"$PYTHON\" qpu_cases.py --check",
    "name": "core-105"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" qpu_cases.py --check",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error qpu_case_allocation_contracts.py",
    "name": "core-106"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error qpu_case_allocation_contracts.py",
+   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error qpu_case_allocation_contracts.py",
    "name": "core-107"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error qpu_case_allocation_contracts.py",
+   "cmd": "\"$PYTHON\" local_compute.py",
    "name": "core-108"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" local_compute.py",
+   "cmd": "\"$PYTHON\" aer_identity.py",
    "name": "core-109"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" aer_identity.py",
+   "cmd": "\"$PYTHON\" aer_resources.py",
    "name": "core-110"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" aer_resources.py",
+   "cmd": "\"$PYTHON\" aer_delay_sentinels.py >/dev/null",
    "name": "core-111"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" aer_delay_sentinels.py >/dev/null",
+   "cmd": "\"$PYTHON\" ../results/live/verify_source_closure.py --check",
    "name": "core-112"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../results/live/verify_source_closure.py --check",
+   "cmd": "\"$PYTHON\" variance.py",
    "name": "core-113"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" variance.py",
+   "cmd": "\"$PYTHON\" adjudicate.py --check",
    "name": "core-114"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" adjudicate.py --check",
+   "cmd": "\"$PYTHON\" cd_core.py >/dev/null",
    "name": "core-115"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" cd_core.py >/dev/null",
+   "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 8",
    "name": "core-116"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 8",
+   "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional",
    "name": "core-117"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-low-unconditional",
+   "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return",
    "name": "core-118"
   },
   {
    "suite": "core",
    "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" ../scripts/left_mult_sign_rank.py --max-n 5 --mutate high-high-no-early-return",
-   "name": "core-119"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" hybrid_shor.py simulate 15 --shots 256 --seed 7",
-   "name": "core-120"
+   "name": "core-119"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "ruff check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
-   "name": "sources-121"
+   "name": "sources-120"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "ruff format --check --no-cache docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
-   "name": "sources-122"
+   "name": "sources-121"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "MYPYPATH=docs mypy --explicit-package-bases docs/verify_sources.py docs/check_verify_sources.py docs/evidence",
-   "name": "sources-123"
+   "name": "sources-122"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/verify_sources.py",
-   "name": "sources-124"
+   "name": "sources-123"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/verify_sources.py",
-   "name": "sources-125"
+   "name": "sources-124"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/check_verify_sources.py",
-   "name": "sources-126"
+   "name": "sources-125"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/check_verify_sources.py",
-   "name": "sources-127"
+   "name": "sources-126"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/local_schur/probe.py --check",
-   "name": "sources-128"
+   "name": "sources-127"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/local_schur/probe.py --check",
-   "name": "sources-129"
+   "name": "sources-128"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
-   "name": "sources-130"
+   "name": "sources-129"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/folding_proofs/fold_projection_counterexamples.py | cmp - docs/evidence/folding_proofs/fold_projection_counterexamples.json",
-   "name": "sources-131"
+   "name": "sources-130"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_rank/replay.py --check",
-   "name": "sources-132"
+   "name": "sources-131"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_rank/replay.py --check",
-   "name": "sources-133"
+   "name": "sources-132"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_rank",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-134"
+   "name": "sources-133"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_geometry/replay.py --check",
-   "name": "sources-135"
+   "name": "sources-134"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_geometry/replay.py --check",
-   "name": "sources-136"
+   "name": "sources-135"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_geometry",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-137"
+   "name": "sources-136"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_doubling/replay.py --check",
-   "name": "sources-138"
+   "name": "sources-137"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_doubling/replay.py --check",
-   "name": "sources-139"
+   "name": "sources-138"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_doubling",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-140"
+   "name": "sources-139"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/four_support_homology/replay.py --check",
-   "name": "sources-141"
+   "name": "sources-140"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/four_support_homology/replay.py --check",
-   "name": "sources-142"
+   "name": "sources-141"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/four_support_homology",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-143"
+   "name": "sources-142"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/dimension32_skew_schur/replay.py --check",
-   "name": "sources-144"
+   "name": "sources-143"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/dimension32_skew_schur/replay.py --check",
-   "name": "sources-145"
+   "name": "sources-144"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/dimension32_skew_schur",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-146"
+   "name": "sources-145"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/principal_skew_atlas/replay.py --check",
-   "name": "sources-147"
+   "name": "sources-146"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/principal_skew_atlas/replay.py --check",
-   "name": "sources-148"
+   "name": "sources-147"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/principal_skew_atlas",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-149"
+   "name": "sources-148"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/schur_acceleration/replay.py --check",
-   "name": "sources-150"
+   "name": "sources-149"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/schur_acceleration/replay.py --check",
-   "name": "sources-151"
+   "name": "sources-150"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/schur_acceleration",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-152"
+   "name": "sources-151"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "GOROROBA_WORKERS=1 PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_models/probe.py --check",
-   "name": "sources-153"
+   "name": "sources-152"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/vacuum_models/probe.py --check",
-   "name": "sources-154"
+   "name": "sources-153"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_models",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-155"
+   "name": "sources-154"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
-   "name": "sources-156"
+   "name": "sources-155"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/vacuum_endpoint_information/probe.py --check",
-   "name": "sources-157"
+   "name": "sources-156"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error -m unittest check_probe",
-   "name": "sources-158"
+   "name": "sources-157"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error -m unittest check_probe",
-   "name": "sources-159"
+   "name": "sources-158"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/vacuum_endpoint_information",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-160"
+   "name": "sources-159"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/nullity_twelve_locus/replay.py --check",
-   "name": "sources-161"
+   "name": "sources-160"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/nullity_twelve_locus/replay.py --check",
-   "name": "sources-162"
+   "name": "sources-161"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/nullity_twelve_locus",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-163"
+   "name": "sources-162"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/kernel_limits/replay.py --check",
-   "name": "sources-164"
+   "name": "sources-163"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/kernel_limits/replay.py --check",
-   "name": "sources-165"
+   "name": "sources-164"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/kernel_limits",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-166"
+   "name": "sources-165"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/complex_skew/replay.py --check",
-   "name": "sources-167"
+   "name": "sources-166"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/complex_skew/replay.py --check",
-   "name": "sources-168"
+   "name": "sources-167"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/complex_skew",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-169"
+   "name": "sources-168"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -W error docs/evidence/folding_proofs/check_compiler_gate.py",
-   "name": "sources-170"
+   "name": "sources-169"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "PYTHONDONTWRITEBYTECODE=1 \"$PYTHON\" -O -W error docs/evidence/folding_proofs/check_compiler_gate.py",
-   "name": "sources-171"
+   "name": "sources-170"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/folding_proofs/replay_rocq.sh",
-   "name": "sources-172"
+   "name": "sources-171"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "shellcheck docs/evidence/formal_certificates/replay_rocq.sh",
-   "name": "sources-173"
+   "name": "sources-172"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/formal_certificates",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-174"
+   "name": "sources-173"
   },
   {
    "suite": "sources",
    "cwd": ".",
    "cmd": "sha256sum -c docs/evidence/formal_certificates/source_hashes.sha256",
-   "name": "sources-175"
+   "name": "sources-174"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/local_schur",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-176"
+   "name": "sources-175"
   },
   {
    "suite": "sources",
    "cwd": "docs/evidence/folding_proofs",
    "cmd": "sha256sum -c SHA256SUMS",
-   "name": "sources-177"
+   "name": "sources-176"
+  }
+ ],
+ "excluded": [
+  {
+   "cmd": "\"$PYTHON\" verify.py",
+   "cwd": "gororoba_quantum",
+   "reason": "needs the git-ignored open_gororoba data/csv build; issue #62"
   }
  ]
 }
