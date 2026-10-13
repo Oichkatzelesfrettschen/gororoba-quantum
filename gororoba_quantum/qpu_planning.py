@@ -184,8 +184,9 @@ def patch_candidates(
             ]
             if excluded or blocked:
                 raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
+            measure_dt, half_dt, dt = window_durations(runtime, snapshot)
             choices = []
-            for group in patch_groups(delays):
+            for group in patch_groups(delays, measure_dt, half_dt):
                 isas = [
                     runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, layout)
                     for member in group.members
@@ -221,7 +222,9 @@ def patch_candidates(
                     "patch_qubits": layout,
                     "patch_roles": list(PATCH_ROLES),
                     "delays_dt": delays,
-                    "dt_seconds": float(snapshot.backend.target.dt),
+                    "measure_dt": measure_dt,
+                    "echo_half_dt": half_dt,
+                    "dt_seconds": dt,
                     "placement_contract": "one pinned patch; static and dynamic jobs",
                 },
             )
@@ -452,8 +455,8 @@ def prepare(
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
-    if per_pub and (args.family not in ("ripple", "rank-sector") or not args.optimize):
-        raise runtime.LiveRunError("per-PUB shot allocation requires an optimized static algebra family")
+    if per_pub and (args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize):
+        raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
     for choices, _configuration in candidates:
@@ -591,6 +594,7 @@ def prepare(
             objective=policy["objective"],
             cost_scenarios=scenarios,
             coupled_pubs=couplings,
+            unscored_tier="smallest" if args.family == "patch-window" else "largest",
         )
         for original, allocated_plan in zip(plans, allocated, strict=True):
             selected_choices, selected_configuration, _shots = ownership[original.name]

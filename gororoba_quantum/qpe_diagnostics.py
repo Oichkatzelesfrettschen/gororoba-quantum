@@ -148,8 +148,9 @@ N21_ORBIT_BITS = (0, 2, 4)
 # keeps the ideal labeled law and changes one exposure of the work superposition
 # |1> +/- |16> while the control is measured and reset.
 N21_ORBIT_VARIANTS = ("nominal", "window_delay", "extra_readout", "window_echo")
-# window_barrier completes the first round before the first measurement, which
-# window_echo also does, without the echo pulses.
+# window_barrier completes the first round before the first measurement and idles
+# the work bits for the same two echo halves as window_echo, without the pulses,
+# so the two differ only by refocusing.
 N21_ORBIT_BUILDABLE = (*N21_ORBIT_VARIANTS, "window_barrier")
 
 
@@ -182,7 +183,7 @@ def n21_orbit_diagnostic(
         raise ValueError(f"unknown N=21 orbit variant {variant!r}")
     if variant == "window_delay" and (type(window_delay_dt) is not int or window_delay_dt <= 0):
         raise ValueError("window_delay requires a positive integer window_delay_dt from calibration")
-    if variant == "window_echo" and (type(echo_half_dt) is not int or echo_half_dt <= 0):
+    if variant in ("window_echo", "window_barrier") and (type(echo_half_dt) is not int or echo_half_dt <= 0):
         raise ValueError("window_echo requires a positive integer echo_half_dt from calibration")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
@@ -201,7 +202,9 @@ def n21_orbit_diagnostic(
             circuit.delay(echo_half_dt, [one, sixteen], unit="dt")
             circuit.x([one, sixteen])
     if variant == "window_barrier":
+        assert echo_half_dt is not None
         circuit.barrier()
+        circuit.delay(2 * echo_half_dt, [one, sixteen], unit="dt")
     circuit.measure(0, phase[0])
     if variant == "extra_readout":
         circuit.measure(0, phase[0])
@@ -209,7 +212,7 @@ def n21_orbit_diagnostic(
     if variant == "window_delay":
         assert window_delay_dt is not None
         circuit.delay(window_delay_dt, 0, unit="dt")
-    if variant == "window_echo":
+    if variant in ("window_echo", "window_barrier"):
         circuit.barrier()
     circuit.h(0)
     circuit.cswap(0, four, sixteen)

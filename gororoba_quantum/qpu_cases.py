@@ -61,6 +61,7 @@ _MAPPING_FIELDS = (
     "dt_seconds",
     "window_delay_dt",
     "echo_half_dt",
+    "measure_dt",
 )
 
 
@@ -129,9 +130,9 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         return None
     _require(
         design["family"] == record["family_configuration"]["name"]
-        and design["family"] in ("ripple", "rank-sector")
+        and design["family"] in ("ripple", "rank-sector", "patch-window")
         and design["optimize"] is True,
-        "per-PUB allocation requires an optimized static algebra family",
+        "per-PUB allocation requires an optimized algebra or patch family",
     )
     names = [_identifier(pub["name"], "execution PUB") for pub in record["execution_pubs"]]
     _require(bool(names) and len(names) == len(set(names)), "execution PUB identities must be unique and complete")
@@ -204,6 +205,9 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         )
     if design["optimize"]:
         arguments.append("--optimize")
+    if design.get("patch_qubits") is not None:
+        patch = [_count(qubit, "patch qubit") for qubit in design["patch_qubits"]]
+        arguments.extend(["--patch-qubits", ",".join(str(qubit) for qubit in patch)])
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
         value = policy[name]

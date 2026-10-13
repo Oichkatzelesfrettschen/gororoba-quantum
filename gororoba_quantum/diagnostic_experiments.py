@@ -240,7 +240,9 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
     if family.get("name") == "patch-window":
         from patch_characterization import patch_groups
 
-        return patch_groups([int(delay) for delay in family["delays_dt"]])
+        return patch_groups(
+            [int(delay) for delay in family["delays_dt"]], int(family["measure_dt"]), int(family["echo_half_dt"])
+        )
     if family.get("name") == "n21-orbit-rca":
         return [n21_orbit_rca_group(int(family["window_delay_dt"]), int(family["echo_half_dt"]))]
     if family.get("name") in N21_FAMILIES:

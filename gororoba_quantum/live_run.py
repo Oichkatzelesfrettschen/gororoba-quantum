@@ -4775,8 +4775,10 @@ def main(argv: list[str] | None = None) -> int:
         elif len(args.backends) != 3 or set(args.backends) != set(correction_backends):
             parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
         args.max_replicas = 1
-    if args.shot_allocation == "per-pub" and (args.family not in ("ripple", "rank-sector") or not args.optimize):
-        parser.error("per-PUB shot allocation requires an optimized static algebra family")
+    if args.shot_allocation == "per-pub" and (
+        args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize
+    ):
+        parser.error("per-PUB shot allocation requires an optimized algebra or patch family")
     if args.family in ("ripple", "rank-sector"):
         if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
             parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")
