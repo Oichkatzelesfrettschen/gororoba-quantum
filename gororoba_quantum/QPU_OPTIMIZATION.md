@@ -85,6 +85,20 @@ for this experiment and do not establish factor recovery. The two arms
 share a routed group and replica mappings, remain dynamic, and occupy two
 PUBs in one job. `--replica-tiers` bounds the placements considered.
 
+`--family n21-orbit-feedback` runs the same comparison with multipliers
+compiled on the orbit of `|1>`. Bits 0, 2 and 4 of the binary work register
+hold the orbit 1, 4, 16 one-hot, so multiplication by 4 is a three-cycle of
+those bits, two controlled swaps, and multiplication by 16 is its inverse.
+The circuit uses four qubits and routes to about 43 CZ per arm on a heavy-hex
+device, against about 1000 for the full-register target-flip multipliers. The
+labeled law, weights and contrast equal the full-register family's. The
+multipliers act correctly only on the orbit, so building them supplies the
+order 3: this family measures feed-forward in a two-round semiclassical QPE
+and performs no order finding or factoring (Smolin, Smith and Vargo, Nature
+499, 163 (2013), doi:10.1038/nature12290). Under the FakeKingston noise
+model the contrast is about 0.22 for the orbit circuits and about 0.02 for
+the full-register circuits, against the ideal 1/4.
+
 `qpe_diagnostics.py` derives both families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
 compares those labels with exact circuit branches and seeded Aer sampling.

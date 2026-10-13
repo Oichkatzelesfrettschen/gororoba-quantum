@@ -19,9 +19,11 @@ from qpe_diagnostics import (
     folded_terminal_weights,
     n21_diagnostic,
     n21_labeled_law,
+    n21_orbit_diagnostic,
 )
 
-FAMILY_NAMES = ("folded-qpe", "folded-correction", "n21-feedback", "ripple", "rank-sector")
+FAMILY_NAMES = ("folded-qpe", "folded-correction", "n21-feedback", "n21-orbit-feedback", "ripple", "rank-sector")
+N21_FAMILIES = ("n21-feedback", "n21-orbit-feedback")
 
 
 def correction_group() -> Group:
@@ -71,11 +73,18 @@ def folded_group(rungs: tuple[str, ...], measurement_delay_dt: int | dict[int, i
     )
 
 
-def n21_group() -> Group:
+def n21_group(orbit: bool = False) -> Group:
+    """Pair the feed-forward arm with its omitted-correction control.
+
+    orbit selects the multipliers compiled on the orbit of |1>; both variants
+    share the exact labeled law, weights, and contrast.
+    """
+    prefix = "n21_orbit" if orbit else "n21"
+    build = n21_orbit_diagnostic if orbit else n21_diagnostic
     members = tuple(
         Member(
-            "n21_feedback" if feedback else "n21_no_feedback",
-            n21_diagnostic(feedback),
+            f"{prefix}_feedback" if feedback else f"{prefix}_no_feedback",
+            build(feedback),
             np.asarray(n21_labeled_law(feedback), dtype=float),
             weights=np.asarray((0.5, 1.0, 0.5, 0.0)),
         )
@@ -93,7 +102,7 @@ def n21_group() -> Group:
             "no_feedback_tvd_to_ideal": tvd(control, members[1].ideal),
         }
 
-    return Group("n21_feedback", members, summarize)
+    return Group(f"{prefix}_feedback", members, summarize)
 
 
 def family_contracts(family: str, precision: float, alpha: float, power: float) -> tuple[ObservableContract, ...]:
@@ -110,12 +119,16 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
         from rank_sector_experiments import sector_contracts
 
         return sector_contracts(precision, alpha, power)
-    if family == "n21-feedback":
+    if family in N21_FAMILIES:
         values = (0.0, 1.0, 0.0, -1.0)
+        prefix = "n21_orbit" if family == "n21-orbit-feedback" else "n21"
         return (
             ObservableContract(
-                "n21_feedback_contrast",
-                (ObservableTerm("n21_feedback", values), ObservableTerm("n21_no_feedback", values, sign=-1)),
+                f"{prefix}_feedback_contrast",
+                (
+                    ObservableTerm(f"{prefix}_feedback", values),
+                    ObservableTerm(f"{prefix}_no_feedback", values, sign=-1),
+                ),
                 minimum_effect=0.0,
                 alpha=alpha,
                 power=power,
@@ -160,6 +173,6 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
                 {int(label): duration for label, duration in family["measurement_delay_dt"].items()},
             ),
         ]
-    if family.get("name") == "n21-feedback":
-        return [n21_group()]
+    if family.get("name") in N21_FAMILIES:
+        return [n21_group(orbit=family["name"] == "n21-orbit-feedback")]
     return []

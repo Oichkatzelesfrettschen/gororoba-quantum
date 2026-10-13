@@ -18,7 +18,7 @@ import numpy as np
 
 import local_compute
 import parallel
-from diagnostic_experiments import family_contracts, folded_group, n21_group
+from diagnostic_experiments import N21_FAMILIES, family_contracts, folded_group, n21_group
 from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
@@ -151,8 +151,10 @@ def family_candidates(
 
         return algebra_planning.family_candidates(runtime, snapshots, args, trace)
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
-    if args.family == "n21-feedback":
-        routed = runtime.select_candidates(n21_group(), snapshots, args.seeds, trace)
+    if args.family in N21_FAMILIES:
+        routed = runtime.select_candidates(
+            n21_group(orbit=args.family == "n21-orbit-feedback"), snapshots, args.seeds, trace
+        )
         tiers = args.replica_tiers if args.optimize else [args.max_replicas or 1]
         if args.max_replicas is not None:
             tiers = [tier for tier in tiers if tier <= args.max_replicas]

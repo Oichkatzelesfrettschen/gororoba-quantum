@@ -139,6 +139,18 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         {pub.kind for pub in live_run.execution_pubs(n21_choices)} == {"dynamic"},
         "N=21 feedback controls crossed execution kinds",
     )
+    orbit_trace: dict[str, Any] = {}
+    orbit_candidates = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-feedback"), orbit_trace)
+    _require(bool(orbit_candidates), f"FakeFez rejects every N=21 orbit family: {orbit_trace}")
+    (orbit_choice,) = orbit_candidates[0][0]
+    _require(len(orbit_choice.isas) == 2, "N=21 orbit comparison lost an arm")
+    orbit_cz = max(isa.count_ops().get("cz", 0) for isa in orbit_choice.isas)
+    full_cz = max(isa.count_ops().get("cz", 0) for isa in n21_choice.isas)
+    _require(orbit_cz * 10 < full_cz, f"orbit multipliers use {orbit_cz} CZ against {full_cz} for the full register")
+    _require(
+        {pub.kind for pub in live_run.execution_pubs(orbit_candidates[0][0])} == {"dynamic"},
+        "N=21 orbit controls crossed execution kinds",
+    )
     return choices, configuration
 
 

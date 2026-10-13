@@ -24,7 +24,7 @@ from typing import Any
 from qiskit import QuantumCircuit, qpy
 
 CASE_FILENAME = "UNAPPROVED_CASE.md"
-FAMILIES = {"folded-qpe", "folded-correction", "n21-feedback", "ripple", "rank-sector"}
+FAMILIES = {"folded-qpe", "folded-correction", "n21-feedback", "n21-orbit-feedback", "ripple", "rank-sector"}
 _IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:+/-]*\Z")
 _HEX_DIGEST = re.compile(r"[a-f0-9]{64}\Z")
 _DESIGN_OPTIONS = (

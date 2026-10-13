@@ -139,6 +139,45 @@ def n21_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
     return circuit
 
 
+# Bits 0, 2 and 4 of the binary work register hold the orbit 1, 4, 16 of
+# multiplication by 4 modulo 21 one-hot; bits 1 and 3 stay zero on the orbit.
+N21_ORBIT_BITS = (0, 2, 4)
+
+
+def n21_orbit_diagnostic(feed_forward: bool = True) -> QuantumCircuit:
+    """Build the N=21 two-bit diagnostic with multipliers compiled on the orbit of |1>.
+
+    On the orbit, multiplication by 4 cycles the one-hot bits 0 -> 2 -> 4 -> 0,
+    two controlled swaps, and multiplication by 16 is its inverse. The
+    multipliers act correctly only on the orbit, so constructing them supplies
+    the order 3; the circuit measures feed-forward in two-round semiclassical
+    QPE with the labeled law of n21_labeled_law and performs no order finding
+    (Smolin, Smith and Vargo, Nature 499, 163 (2013), doi:10.1038/nature12290).
+    """
+    control = QuantumRegister(1, "ctrl")
+    work = QuantumRegister(len(N21_ORBIT_BITS), "w")
+    phase = ClassicalRegister(2, "phase")
+    circuit = QuantumCircuit(control, work, phase)
+    one, four, sixteen = 1, 2, 3
+    circuit.x(one)
+    circuit.h(0)
+    circuit.cswap(0, one, four)
+    circuit.cswap(0, four, sixteen)
+    circuit.h(0)
+    circuit.measure(0, phase[0])
+    circuit.reset(0)
+    circuit.h(0)
+    circuit.cswap(0, four, sixteen)
+    circuit.cswap(0, one, four)
+    if feed_forward:
+        with circuit.if_test((phase[0], 1)):
+            circuit.p(-math.pi / 2, 0)
+    circuit.h(0)
+    circuit.measure(0, phase[1])
+    circuit.name = "n21_orbit_a4_two_bit_" + ("feed_forward" if feed_forward else "no_feed_forward")
+    return circuit
+
+
 def _orbit_branch(
     vector: tuple[GaussianInteger, ...], power: int, sign_phase: GaussianInteger
 ) -> tuple[GaussianInteger, ...]:
@@ -285,8 +324,8 @@ def _verify() -> None:
         numerators = (3, 2, 1, 2) if feed_forward else (3, 1, 1, 3)
         if expected != tuple(Fraction(numerator, 8) for numerator in numerators):
             raise RuntimeError(f"N=21 exact branch law changed: {expected}")
-        circuits.append(n21_diagnostic(feed_forward))
-        expected_laws.append(expected)
+        circuits.extend((n21_diagnostic(feed_forward), n21_orbit_diagnostic(feed_forward)))
+        expected_laws.extend((expected, expected))
     for circuit, expected in zip(circuits, expected_laws, strict=True):
         observed = ideal_branch_probabilities(circuit)
         if not np.allclose(observed, [float(value) for value in expected], atol=1e-11, rtol=0):
@@ -296,11 +335,20 @@ def _verify() -> None:
         padded.barrier(*padded.qubits)
         if not np.allclose(ideal_compiled_probabilities(padded), observed, atol=1e-11, rtol=0):
             raise RuntimeError(f"{circuit.name}: removing idle physical wires changed the labeled law")
-    original = n21_diagnostic()
-    permuted = QuantumCircuit(original.num_qubits, 2)
-    permuted.compose(original, clbits=[1, 0], inplace=True)
-    if np.allclose(ideal_branch_probabilities(permuted), [float(value) for value in n21_labeled_law()]):
-        raise RuntimeError("N=21 labeled gate accepted swapped classical bits")
+    for original in (n21_diagnostic(), n21_orbit_diagnostic()):
+        permuted = QuantumCircuit(original.num_qubits, 2)
+        permuted.compose(original, clbits=[1, 0], inplace=True)
+        if np.allclose(ideal_branch_probabilities(permuted), [float(value) for value in n21_labeled_law()]):
+            raise RuntimeError(f"{original.name}: labeled gate accepted swapped classical bits")
+    transposition = n21_orbit_diagnostic()
+    sixteen = transposition.qubits[3]
+    transposition.data = [
+        instruction
+        for instruction in transposition.data
+        if instruction.operation.name != "cswap" or sixteen not in instruction.qubits
+    ]
+    if np.allclose(ideal_branch_probabilities(transposition), [float(value) for value in n21_labeled_law()]):
+        raise RuntimeError("N=21 orbit gate accepted an order-2 multiplier")
     simulator = AerSimulator()
     compiled = transpile(circuits, simulator, optimization_level=0)
     sampled = simulator.run(compiled, shots=8192, seed_simulator=20261011).result()
@@ -316,7 +364,7 @@ def _verify() -> None:
         except ValueError:
             continue
         raise RuntimeError(f"delay arm accepted invalid duration {invalid_delay}")
-    print("QPE diagnostics: 16 folded laws and two N=21 laws match exact circuit branches and sampled labels")
+    print("QPE diagnostics: 16 folded laws and four N=21 laws match exact circuit branches and sampled labels")
 
 
 if __name__ == "__main__":
