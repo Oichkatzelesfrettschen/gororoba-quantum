@@ -8,6 +8,9 @@ the page, the two measured evidence files, the page template, and the two
 scripts that produce them. --check recomputes the hashes without a browser,
 so a regenerated artifact fails until the browser validation reruns.
 
+The browser run needs ci/requirements-browser.txt and a Chromium binary,
+CHROMIUM or /usr/bin/chromium, falling back to Playwright's own download.
+
 Usage: "$PYTHON" scripts/validate_measured_explorer.py [--check]
 """
 
@@ -16,6 +19,7 @@ from __future__ import annotations
 import argparse
 import hashlib
 import json
+import os
 from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
@@ -32,12 +36,33 @@ SOURCES = (
     "scripts/render_measured_ripple.py",
     "scripts/validate_measured_explorer.py",
 )
+# Controls each family must populate; an empty one marks a rendering regression.
+REQUIRED_CONTROLS = {
+    "ripple": ("kite", "edge", "phase", "walk", "depth", "pub", "member"),
+    "rank-sector": ("sector", "probe", "pub", "member"),
+}
 DESKTOP = (1440, 1050)
 MOBILE = (390, 844)
 
 
 def digests() -> dict[str, str]:
     return {name: hashlib.sha256((ROOT / name).read_bytes()).hexdigest() for name in SOURCES}
+
+
+def expected_families() -> list[str]:
+    names = ("results/ripple/measured-ripple.json", "results/ripple/measured-rank-sector.json")
+    return sorted(str(json.loads((ROOT / name).read_text())["family"]) for name in names)
+
+
+def _failures(checks: dict[str, Any]) -> list[str]:
+    failures = [f"page error: {error}" for error in checks["page_errors"]]
+    if sorted(checks["families"]) != expected_families():
+        failures.append(f"families {checks['families']} differ from the evidence {expected_families()}")
+    failures += [
+        f"{family} overflows a phone viewport" for family, wide in checks["mobile_horizontal_overflow"].items() if wide
+    ]
+    failures += [f"{family} leaves {names} empty" for family, names in checks["missing_controls"].items() if names]
+    return failures
 
 
 def physical_jobs() -> list[str]:
@@ -54,7 +79,10 @@ def browse() -> dict[str, Any]:
 
     errors: list[str] = []
     with sync_playwright() as playwright:
-        browser = playwright.chromium.launch(executable_path="/usr/bin/chromium", headless=True)
+        executable = os.environ.get("CHROMIUM", "/usr/bin/chromium")
+        browser = playwright.chromium.launch(
+            executable_path=executable if Path(executable).exists() else None, headless=True
+        )
         page = browser.new_page(viewport={"width": DESKTOP[0], "height": DESKTOP[1]})
         page.on("pageerror", lambda error: errors.append(str(error)))
         page.goto(PAGE.as_uri())
@@ -67,7 +95,12 @@ def browse() -> dict[str, Any]:
                 "select", "selects => Object.fromEntries(selects.map(s => [s.id, s.options.length]))"
             )
         page.set_viewport_size({"width": MOBILE[0], "height": MOBILE[1]})
-        overflow = page.evaluate("document.documentElement.scrollWidth > document.documentElement.clientWidth")
+        overflow = {}
+        for family in families:
+            page.select_option("#family", family)
+            overflow[family] = page.evaluate(
+                "document.documentElement.scrollWidth > document.documentElement.clientWidth"
+            )
         version = browser.version
         browser.close()
     return {
@@ -77,6 +110,10 @@ def browse() -> dict[str, Any]:
         "families": families,
         "select_option_counts": controls,
         "mobile_horizontal_overflow": overflow,
+        "missing_controls": {
+            family: [name for name in REQUIRED_CONTROLS.get(family, ()) if not controls[family].get(name)]
+            for family in families
+        },
         "page_errors": errors,
     }
 
@@ -89,10 +126,9 @@ def main(argv: list[str] | None = None) -> int:
         receipt = json.loads(RECEIPT.read_text())
         current = digests()
         stale = sorted(name for name, value in current.items() if receipt["source_files"].get(name) != value)
-        checks = receipt["browser_checks"]
-        failing = checks["page_errors"] or checks["mobile_horizontal_overflow"]
+        failing = _failures(receipt["browser_checks"])
         if stale or failing or receipt["physical_job_ids"] != physical_jobs():
-            print(f"explorer receipt is stale or failing: {stale}")
+            print(f"explorer receipt is stale or failing: {stale} {failing}")
             return 1
         print("explorer receipt binds the shipped page, evidence, and producers")
         return 0
@@ -111,9 +147,9 @@ def main(argv: list[str] | None = None) -> int:
         "source_files": digests(),
     }
     RECEIPT.write_text(json.dumps(receipt, indent=2, sort_keys=True) + "\n")
-    failed = checks["page_errors"] or checks["mobile_horizontal_overflow"]
-    print(f"explorer validated: {len(checks['families'])} families, errors {checks['page_errors']}")
-    return 1 if failed else 0
+    failures = _failures(checks)
+    print(f"explorer validated: {len(checks['families'])} families, failures {failures}")
+    return 1 if failures else 0
 
 
 if __name__ == "__main__":

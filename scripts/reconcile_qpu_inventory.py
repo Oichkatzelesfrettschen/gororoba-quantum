@@ -128,6 +128,8 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
                     and entry["raw"]["files"] == index["files"],
                     "collection raw ledger differs from the retained index",
                 )
+            submitted = read(run / "record.json")["submission"]["qpy_archive_sha256"]
+            require(digest(run / "isa.qpy") == submitted, "isa.qpy differs from the submitted circuit archive")
             evidence_names = ["record.json", "collect.json", "isa.qpy"]
             provenance = "registered_collection"
         else:

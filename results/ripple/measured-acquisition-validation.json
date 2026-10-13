@@ -10,7 +10,14 @@
       "rank-sector",
       "ripple"
     ],
-    "mobile_horizontal_overflow": false,
+    "missing_controls": {
+      "rank-sector": [],
+      "ripple": []
+    },
+    "mobile_horizontal_overflow": {
+      "rank-sector": false,
+      "ripple": false
+    },
     "mobile_viewport": [
       390,
       844
@@ -52,7 +59,7 @@
     }
   },
   "evidence_kind": "collected_hardware",
-  "observed_at": "2026-10-13T16:36:24.160587+00:00",
+  "observed_at": "2026-10-13T16:50:57.892784+00:00",
   "physical_job_ids": [
     "db6q2p2mb58s738c75gg",
     "db6q2rklf4us73c5oq90",
@@ -67,6 +74,6 @@
     "results/ripple/measured-ripple.json": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7",
     "scripts/extract_measured_ripple.py": "235403386b888e29c3379ee1c382201c1d9f2cf0bbd87eed581d12efc7b6008c",
     "scripts/render_measured_ripple.py": "fab31ab512d69b35dab5b4691d824ef01cfc02c49ed7041c35606e58b4d05cee",
-    "scripts/validate_measured_explorer.py": "9d8337cfede69c2e18cdb011133ee077c0b26af6af4e6a84f6d133a5d244ff7c"
+    "scripts/validate_measured_explorer.py": "7a5e9f945f5f4cd2eca435948bcb085dabeb67ef89053d5726570f73cea8a972"
   }
 }
