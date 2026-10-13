@@ -38,6 +38,7 @@ import os
 import subprocess
 import sys
 import time
+from collections import OrderedDict
 from collections.abc import Callable
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
@@ -1918,6 +1919,30 @@ class TargetView(BackendV2):
         raise NotImplementedError("TargetView carries a Target for noise modeling only")
 
 
+# A snapshot's Target and properties stay fixed for the process, and Aer reads a
+# NoiseModel without mutating it, so one model serves every simulator built
+# from the same snapshot objects.
+_NOISE_MODELS: OrderedDict[tuple[str, int, int], tuple[Any, Any, NoiseModel]] = OrderedDict()
+
+
+def _noise_model(name: str, view: Any, target: Any, props: Any) -> NoiseModel:
+    key = (name, id(target), id(props))
+    cached = _NOISE_MODELS.get(key)
+    if cached is not None and cached[0] is target and cached[1] is props:
+        return cached[2]
+    noise = NoiseModel.from_backend(view, readout_error=False)
+    for q in range(target.num_qubits):
+        try:
+            e10, e01 = readout_flips(props, q)
+        except Exception:  # BackendPropertyError: no readout calibration at all
+            continue
+        noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
+    _NOISE_MODELS[key] = (target, props, noise)
+    while len(_NOISE_MODELS) > local_compute.CACHE_ENTRIES:
+        _NOISE_MODELS.popitem(last=False)
+    return noise
+
+
 def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str, Any] | None = None) -> AerSimulator:
     """AerSimulator with gate and coherence noise from this Target and readout from props.
 
@@ -1931,13 +1956,7 @@ def noise_simulator(name: str, target: Any, props: Any, compute_policy: dict[str
     correction does. Planning and --collect both use it.
     """
     view = TargetView(name, target)
-    noise = NoiseModel.from_backend(view, readout_error=False)
-    for q in range(target.num_qubits):
-        try:
-            e10, e01 = readout_flips(props, q)
-        except Exception:  # BackendPropertyError: no readout calibration at all
-            continue
-        noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
+    noise = _noise_model(name, view, target, props)
     # A fixed kernel makes noisy batches independent of the automatic method
     # selector. Aer 0.17.2 miscomputes a reset-only one-bit member following a
     # two-bit feedback member when it switches from statevector to density

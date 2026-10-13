@@ -4,15 +4,18 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
-The [current campaign preparation](../ripple/CAMPAIGN_PREPARATION.md) links
-three planning-qualified cases: renewed correction at source `0bc7f06`, and
-ripple and rank-sector at source `f1b9830`. Their audited runtime source
-closures share the same experiment digest. Their five jobs estimate
-106.290103040 nominal QPU seconds and 118.445463040 seconds under the
-declared stress scenarios, with service ceilings
-totaling 170 seconds. Correction runs first. Clean current-head Copilot review,
-passing checks, merge, fresh live bindings and independent family execution admission
-remain execution gates under the user's conditional authority.
+The completed campaign ran under the owner's bounded approval. Two
+folded-correction acquisitions on ibm_kingston
+([first](2026-10-13T020454.599853Z/analysis-1fdb68508f14.json),
+[second](2026-10-13T022433.333775Z/collect.json)) settled 11 seconds each and
+reach `retain_measured_correction`. Ripple
+([approved](2026-10-13T024407.448597Z/record.json),
+[collected](2026-10-13T025444.603480Z/collect.json)) settled 66 seconds on
+ibm_fez, and rank-sector
+([approved](2026-10-13T031726.380783Z/record.json),
+[collected](2026-10-13T032011.664435Z/collect.json)) settled 31 seconds.
+The [coordination ledger](qpu-coordination.json) carries each family's
+findings and the settled 119 seconds against the 180-second cap.
 
 The [historical ripple and rank-sector cases](../ripple/PREPARATION.md) retain
 their source-closure reports, independent uncertainty families and written
