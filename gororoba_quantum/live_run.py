@@ -1040,7 +1040,21 @@ def _replica_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float
     used, edges = packing.pattern(base_ops)
     graph = packing.coupling_graph(snap.admission_target, snap.backend.num_qubits)
 
-    judge = PlacementJudge(tuple(isas), target, frozenset(snap.excluded_qubits), frozenset(snap.excluded_edges))
+    matched_x: tuple[int, int] | None = None
+    if any(isa.name.startswith("spectator_wavefront_") for isa in isas):
+        from maximal_experiments import core_x_duration_dt
+
+        act_isa = next(isa for isa in isas if isa.name == "spectator_wavefront_active")
+        core_q = next(act_isa.find_bit(inst.qubits[0]).index for inst in act_isa.data if inst.operation.name == "x")
+        matched_x = (core_q, core_x_duration_dt(target, core_q))
+
+    judge = PlacementJudge(
+        tuple(isas),
+        target,
+        frozenset(snap.excluded_qubits),
+        frozenset(snap.excluded_edges),
+        matched_x_duration=matched_x,
+    )
     candidates = packing.candidate_replicas(used, edges, graph, judge, floor, parallel.ordered_map)
     return graph, candidates, len(used)
 
@@ -1058,6 +1072,7 @@ class PlacementJudge:
     target: Any
     excluded_qubits: frozenset[int]
     excluded_edges: frozenset[tuple[int, int]]
+    matched_x_duration: tuple[int, int] | None = None
     static_checks: tuple[tuple[str, tuple[int, ...], tuple[Any, ...]], ...] | None = field(
         default=None, init=False, repr=False
     )
@@ -1110,6 +1125,14 @@ class PlacementJudge:
                 return None
             if name == "cz" and (moved in self.excluded_edges or tuple(reversed(moved)) in self.excluded_edges):
                 return None
+        if self.matched_x_duration is not None:
+            from maximal_experiments import core_x_duration_dt
+
+            src_core, exp_dt = self.matched_x_duration
+            if src_core in mapping:
+                replica_core = mapping[src_core]
+                if core_x_duration_dt(self.target, replica_core) != exp_dt:
+                    return None
         if self.static_checks is None:
             raise LiveRunError("static placement checks were not prepared")
         for name, original, parameters in self.static_checks:
@@ -1119,6 +1142,14 @@ class PlacementJudge:
         return layout_score(packing.relabel(self.isas[0], mapping, ""), self.target)
 
     def __call__(self, mapping: dict[int, int]) -> float | None:
+        if self.matched_x_duration is not None:
+            from maximal_experiments import core_x_duration_dt
+
+            src_core, exp_dt = self.matched_x_duration
+            if src_core in mapping:
+                replica_core = mapping[src_core]
+                if core_x_duration_dt(self.target, replica_core) != exp_dt:
+                    return None
         if self.static_checks is not None:
             return self._static_score(mapping)
         moved = [packing.relabel(isa, mapping, "") for isa in self.isas]
@@ -1715,8 +1746,14 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
                     target = snap.admission_target or snap.backend.target
                     routed_core = layout[0]
                     cal_x_dt = core_x_duration_dt(target, routed_core)
+                    delay_dt = next(
+                        int(instruction.operation.duration)
+                        for instruction in group.members[1].circuit.data
+                        if instruction.operation.name == "delay"
+                    )
                     qc_act, qc_ctrl, qc_null = build_spectator_wavefront_circuits(
                         spectator_count=len(group.members[0].circuit.qubits) - 1,
+                        delay_dt=delay_dt,
                         x_duration_dt=cal_x_dt,
                     )
                     isa_act = _compile(qc_act, snap, seed, layout)

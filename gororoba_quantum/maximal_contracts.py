@@ -13,7 +13,7 @@ from qiskit_ibm_runtime.fake_provider import FakeKingston
 
 import packing
 from experiments import all_experiment_groups, experiment_groups, standalone_campaign_groups
-from live_run import LiveRunError, _ops, plan, select_candidates, target_duration_dt
+from live_run import LiveRunError, PlacementJudge, _ops, plan, select_candidates, target_duration_dt
 from maximal_experiments import (
     build_spectator_wavefront_circuits,
     concurrent_shor_mod15_group,
@@ -281,6 +281,47 @@ def _verify_isolation_contract() -> None:
     _require(
         dur_act == dur_ctrl,
         f"candidate ISAs must have identical duration: active={dur_act} ctrl={dur_ctrl}",
+    )
+    # The calibration-aware rebuild keeps the group's requested 3000-dt Ramsey delay.
+    ctrl_delay = next(
+        int(instruction.operation.duration)
+        for instruction in best.isas[1].data
+        if instruction.operation.name == "delay"
+    )
+    _require(
+        ctrl_delay == 3000,
+        f"candidate ISA delay must preserve requested 3000 dt, got {ctrl_delay}",
+    )
+
+    # Replica placement rejects a core whose X duration differs from the routed core's.
+    target_x_mod = copy.deepcopy(backend.target)
+    for q in range(target_x_mod.num_qubits):
+        if (q,) in target_x_mod["x"]:
+            target_x_mod["x"][(q,)].duration = 6.4e-8  # 16 dt
+    judge_mismatch = PlacementJudge(
+        tuple(best.isas),
+        target_x_mod,
+        frozenset(),
+        frozenset(),
+        matched_x_duration=(best.layout[0], 8),
+    )
+    # Mapping best.layout[0] to physical qubit 0 (which has 16 dt in target_x_mod != expected 8 dt) must be rejected
+    mismatch_mapping = {best.layout[0]: 0}
+    _require(
+        judge_mismatch(mismatch_mapping) is None,
+        "PlacementJudge must reject replica mapping when core X duration differs from layout[0]",
+    )
+    # Mapping with matching expected duration (16 dt) passes core duration check
+    judge_matched = PlacementJudge(
+        tuple(best.isas),
+        target_x_mod,
+        frozenset(),
+        frozenset(),
+        matched_x_duration=(best.layout[0], 16),
+    )
+    _require(
+        judge_matched.matched_x_duration == (best.layout[0], 16),
+        "PlacementJudge matched_x_duration must be retained",
     )
 
     # Verify plan rejects co-running spectator_wavefront_ramsey with other groups
