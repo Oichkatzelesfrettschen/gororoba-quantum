@@ -26,7 +26,10 @@ def main() -> None:
         pub = {"pub_index": 0, "registers": {"c": {"num_bits": 2, "num_shots": 2, "bitstrings": ["00", "11"]}}}
         write(raw / "pub_00.json", pub)
         write(raw / "result_metadata.json", {})
-        metrics = {"usage": {"status": "complete", "qpu_charge_time_seconds": 1}}
+        metrics = {
+            "usage": {"status": "complete", "qpu_charge_time_seconds": 1},
+            "timestamps": {"running": "2026-10-12T00:00:00Z", "finished": "2026-10-12T00:00:01Z"},
+        }
         write(raw / "job_metrics.json", metrics)
         index = {
             "job_id": "synthetic-job",
@@ -49,8 +52,9 @@ def main() -> None:
             "observed_at": "synthetic",
             "account_usage": {
                 "usage_limit_seconds": 600,
-                "usage_consumed_seconds": 170,
-                "usage_remaining_seconds": 430,
+                "usage_consumed_seconds": 1,
+                "usage_remaining_seconds": 599,
+                "usage_period": {"start_time": "2026-09-15T00:00:00Z", "end_time": "2026-10-13T00:00:00Z"},
             },
             "jobs": [
                 {
@@ -61,6 +65,7 @@ def main() -> None:
                     "final_qpu_charge_seconds": 1,
                     "pub_count": 1,
                     "shots_per_pub": 2,
+                    "timestamps": {"running": "2026-10-12T00:00:00Z", "finished": "2026-10-12T00:00:01Z"},
                 }
             ],
         }
@@ -104,6 +109,21 @@ def main() -> None:
                 mutant = copy.deepcopy(snapshot)
                 mutant["account_usage"] = usage
                 mutants.append(mutant)
+            for consumed, remaining in ((0, 600), (2, 598)):
+                mutant = copy.deepcopy(snapshot)
+                mutant["account_usage"].update(usage_consumed_seconds=consumed, usage_remaining_seconds=remaining)
+                mutants.append(mutant)
+            for running, finished in (
+                ("2026-09-14T00:00:00Z", "2026-09-16T00:00:00Z"),
+                ("2026-10-14T00:00:00Z", "2026-10-14T00:00:01Z"),
+            ):
+                mutant = copy.deepcopy(snapshot)
+                mutant["jobs"][0]["timestamps"].update(running=running, finished=finished)
+                mutants.append(mutant)
+            mutant = copy.deepcopy(snapshot)
+            mutant["jobs"][0]["timestamps"].update(running="2026-09-14T00:00:00Z", finished="2026-09-14T00:00:01Z")
+            mutant["account_usage"].update(usage_consumed_seconds=0, usage_remaining_seconds=600)
+            mutants.append(mutant)
             for number, mutant in enumerate(mutants):
                 write(source, mutant)
                 try:
@@ -113,6 +133,25 @@ def main() -> None:
                 else:
                     raise RuntimeError(f"inventory mutant {number} admitted")
             write(source, snapshot)
+            usage = snapshot["account_usage"]
+            audit.require(audit.window_charge(snapshot["jobs"], usage) == 1, "current window charge differs")
+            old_job = copy.deepcopy(snapshot["jobs"][0])
+            old_job["timestamps"].update(running="2026-09-14T00:00:00Z", finished="2026-09-14T00:00:01Z")
+            audit.require(audit.window_charge([old_job], usage) == 0, "expired job contributes a rolling charge")
+            for running, finished in (
+                ("2026-09-14T00:00:00Z", "2026-09-16T00:00:00Z"),
+                ("2026-10-14T00:00:00Z", "2026-10-14T00:00:01Z"),
+                ("2026-10-12T00:00:01Z", "2026-10-12T00:00:00Z"),
+                ("2026-10-12T00:00:00", "2026-10-12T00:00:01Z"),
+            ):
+                invalid_job = copy.deepcopy(snapshot["jobs"][0])
+                invalid_job["timestamps"].update(running=running, finished=finished)
+                try:
+                    audit.window_charge([invalid_job], usage)
+                except ValueError:
+                    pass
+                else:
+                    raise RuntimeError("invalid usage-window chronology admitted")
             after = {
                 str(path.relative_to(run)): hashlib.sha256(path.read_bytes()).hexdigest()
                 for path in run.rglob("*")
@@ -126,7 +165,10 @@ def main() -> None:
                 pass
             else:
                 raise RuntimeError("raw digest mutation admitted")
-    print("Synthetic inventory contract: 14 inventory mutations and raw corruption rejected; replay preserves bytes")
+    print(
+        "Synthetic inventory contract: 19 inventory mutations, four chronology mutations and raw corruption rejected; "
+        "replay preserves bytes"
+    )
 
 
 if __name__ == "__main__":

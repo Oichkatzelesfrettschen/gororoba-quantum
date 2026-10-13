@@ -10,6 +10,7 @@ import argparse
 import hashlib
 import json
 import re
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
@@ -32,6 +33,33 @@ def digest(path: Path) -> str:
 
 def read(path: Path) -> Any:
     return json.loads(path.read_text())
+
+
+def timestamp(value: Any) -> datetime:
+    require(isinstance(value, str), "Usage-window timestamp requires text")
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    require(parsed.utcoffset() is not None, "Usage-window timestamp requires a timezone")
+    return parsed
+
+
+def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
+    period = usage.get("usage_period")
+    if not isinstance(period, dict):
+        raise ValueError("Account usage period is missing")
+    start, end = timestamp(period.get("start_time")), timestamp(period.get("end_time"))
+    require(start < end, "Account usage period is reversed or empty")
+    total = Decimal(0)
+    for job in jobs:
+        times = job.get("timestamps")
+        if not isinstance(times, dict):
+            raise ValueError("Job timestamps are missing")
+        running, finished = timestamp(times.get("running")), timestamp(times.get("finished"))
+        require(running <= finished <= end, "Job execution chronology differs from the account observation")
+        if finished < start:
+            continue
+        require(running >= start, "A job straddles the usage boundary; its rolling charge requires finer evidence")
+        total += Decimal(str(job["final_qpu_charge_seconds"]))
+    return total
 
 
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
@@ -97,6 +125,11 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         final_metrics = read(directory / latest)
         require(final_metrics["usage"]["status"] == "complete", "retained usage is unsettled")
         require(Decimal(str(final_metrics["usage"]["qpu_charge_time_seconds"])) == charge, "retained charge differs")
+        for field in ("running", "finished"):
+            require(
+                timestamp(job["timestamps"][field]) == timestamp(final_metrics["timestamps"][field]),
+                f"Inventory {field} timestamp differs from retained finalized metrics",
+            )
         pub_paths = sorted(directory.glob("pub_*.json"), key=lambda path: int(path.stem.split("_")[1]))
         require(len(pub_paths) == job["pub_count"], "decoded service PUB count differs from raw count")
         require(job["shots_per_pub"] > 0 and job["pub_count"] > 0, "empty physical acquisition")
@@ -155,6 +188,8 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     total = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows)
     historical = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows if row["job_id"] in HISTORICAL_JOBS)
     campaign = total - historical
+    rolling_charge = window_charge(rows, usage)
+    require(rolling_charge == consumed, "Account consumed seconds differ from reconciled usage-window job charges")
     require(campaign <= 180, "new campaign exceeds authorized 180-second ceiling")
     return {
         "schema": "qpu-job-retention-audit-v1",
@@ -178,6 +213,11 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "new_campaign_ceiling_seconds": 180,
         "unallocated_campaign_seconds": str(Decimal(180) - campaign),
         "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
+        "usage_window_charge_seconds": str(rolling_charge),
+        "account_seconds_after_reserve": remaining - ACCOUNT_RESERVE_SECONDS,
+        "available_for_remaining_campaign_seconds": str(
+            min(Decimal(remaining - ACCOUNT_RESERVE_SECONDS), Decimal(180) - campaign)
+        ),
         "account_usage_observation": snapshot["account_usage"],
         "jobs": rows,
     }
