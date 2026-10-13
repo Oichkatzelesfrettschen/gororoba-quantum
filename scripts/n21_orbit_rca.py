@@ -722,6 +722,9 @@ def main(argv: list[str] | None = None) -> int:
     pairs = measured_pairs(arguments.run)
     roles = window_roles(arguments.run)
     if arguments.readout:
+        writers = {qubit for role in roles.values() for qubit in (role["control"], role["terminal"])}
+        if len(writers) != 1:
+            parser.error(f"--readout supplies one qubit's rates, but the members measure on {sorted(writers)}")
         fixed = _readout(*arguments.readout)
         sources: dict[str, dict[str, Any]] = {name: fixed | {"source": "--readout"} for name in roles}
     else:
