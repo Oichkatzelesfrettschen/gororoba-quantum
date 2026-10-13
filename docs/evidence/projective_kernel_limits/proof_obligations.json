@@ -1,0 +1,18 @@
+{
+  "schema": "projective-kernel-proof-obligations-v1",
+  "status": "written-proofs-and-exact-controls; Rocq translation remains open",
+  "lemmas": [
+    {"name": "polynomial_frame_saturation", "premises": ["finite polynomial matrix over C", "generic kernel frame", "nonzero maximal frame minor"], "conclusion": "Exact endpoint-factor divisions terminate within the retained minor order and recover the complete limiting kernel plane."},
+    {"name": "leading_complementary_pfaffian", "premises": ["polynomial complex skew matrix", "regular saturated kernel frame", "rational executable endpoint or arbitrary real written-proof endpoint"], "conclusion": "One complementary Pfaffian and the endpoint frame determine the first nonzero exterior coefficient and its projective kernel plane."},
+    {"name": "real_frontier_graph_incidence", "premises": ["compact normalized coefficient base", "exact real rank locus", "closure of its kernel graph in the complex Grassmannian"], "conclusion": "The tautological unit sphere maps onto exactly the closure of the rank-locus pair incidence."},
+    {"name": "all_stage_pair_space_quotient", "premises": ["certified Cayley-Dickson complex intertwiner", "all nonzero zero divisors are doubly pure", "all real frontier graphs"], "conclusion": "The finite disjoint union of tautological sphere spaces, identified by equal coefficient point and partner, is homeomorphic to the full normalized zero-product pair space."}
+  ],
+  "remaining": [
+    "Compute the real frontier graph closures for all dimension-32 rank loci.",
+    "Represent and certify algebraic arcs with real branch selection beyond Q(i)[t].",
+    "Determine smooth strata, normal links, and all quotient identifications.",
+    "Construct computable global cell and cochain maps; calculate integral invariants.",
+    "Prove an unrestricted all-dimensional classification of those closures.",
+    "Formalize the retained statements and their dependencies in Rocq."
+  ]
+}

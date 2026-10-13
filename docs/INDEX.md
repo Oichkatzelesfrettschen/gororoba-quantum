@@ -27,6 +27,12 @@ The [latest C881 audit](notes/c881_exhaustive_proof.md) and
 [Rocq replay](evidence/c881_exhaustive/README.md) refresh the finite
 separating-degree proof against the latest audited `open_gororoba` HEAD.
 
+The [projective kernel-frontier construction](notes/projective_kernel_frontiers.md)
+and [exact replay](evidence/projective_kernel_limits/README.md) recover leading
+kernel planes through polynomial saturation and describe the full pair space
+as a quotient of tautological sphere spaces over real frontier graphs.
+Computing those graph closures and the global invariants remains open.
+
 ## Hosted papers
 
 The notes attribute each source and link its exact-version license evidence.
