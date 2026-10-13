@@ -24,6 +24,40 @@ import aer_identity
 import aer_resources
 import parallel
 
+# Under DYNAMIC_STATEVECTOR, a batch with mid-circuit measurement, reset or
+# control flow runs statevector trajectories: Aer evolves such circuits shot by
+# shot, and a 2**n statevector trajectory samples the same noise channels as a
+# 4**n density matrix at a fraction of the cost. Static batches keep the
+# density matrix, which yields their exact final distribution in one pass.
+DYNAMIC_STATEVECTOR = "density_matrix_dynamic_statevector"
+QUALIFIED_METHODS = ("density_matrix", DYNAMIC_STATEVECTOR)
+CONTROL_FLOW = frozenset({"if_else", "while_loop", "for_loop", "switch_case"})
+
+
+def is_dynamic(circuit: Any) -> bool:
+    """Whether a circuit resets, branches, or acts on a qubit after measuring it."""
+    measured: set[int] = set()
+    for instruction in circuit.data:
+        name = instruction.operation.name
+        if name in CONTROL_FLOW or name == "reset":
+            return True
+        if name == "barrier":
+            continue
+        qubits = {circuit.find_bit(qubit).index for qubit in instruction.qubits}
+        if name == "measure":
+            measured |= qubits
+        elif qubits & measured:
+            return True
+    return False
+
+
+def batch_method(policy: dict[str, Any], circuits: list[Any]) -> str:
+    """The Aer method one batch runs under the policy."""
+    if policy["method"] == DYNAMIC_STATEVECTOR:
+        return "statevector" if any(is_dynamic(circuit) for circuit in circuits) else "density_matrix"
+    return str(policy["method"])
+
+
 # Density matrices below this active width stay on CPU threads, where shot
 # parallelism outruns per-shot GPU kernel launches (LOCAL_COMPUTE.md).
 GPU_MIN_ACTIVE_QUBITS = 11
@@ -36,7 +70,7 @@ def requested_settings(args: Any = None) -> dict[str, Any]:
         "threads": getattr(args, "simulation_threads", parallel.default_threads()),
         "memory_mb": getattr(args, "simulation_memory_mb", 512),
         "shot_branching": False,
-        "method": "density_matrix",
+        "method": DYNAMIC_STATEVECTOR,
         "precision": "double",
         "shot_branching_sampling": False,
         "parallel_experiments": 1,
@@ -61,7 +95,9 @@ def validate(policy: dict[str, Any], devices: tuple[str, ...] | None = None) -> 
         raise ValueError("shot_branching must be Boolean")
     if policy["shot_branching"]:
         raise ValueError("shot branching fails noisy folded-circuit qualification and remains disabled")
-    for key in ("method", "precision", "shot_branching_sampling", "parallel_experiments"):
+    if policy["method"] not in QUALIFIED_METHODS:
+        raise ValueError("local compute method differs from the qualified configurations")
+    for key in ("precision", "shot_branching_sampling", "parallel_experiments"):
         if type(policy[key]) is not type(defaults[key]) or policy[key] != defaults[key]:
             raise ValueError(f"local compute {key} differs from the qualified configuration")
     aer_identity.validate_contract(policy["aer_native"])
@@ -124,7 +160,7 @@ def configure(simulator: Any, policy: dict[str, Any]) -> None:
     validate(policy)
     simulator.set_options(
         device="CPU",
-        method=policy["method"],
+        method="density_matrix" if policy["method"] == DYNAMIC_STATEVECTOR else policy["method"],
         precision=policy["precision"],
         max_parallel_threads=policy["threads"],
         max_parallel_experiments=policy["parallel_experiments"],
@@ -180,6 +216,7 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     """Preserve declared order and retain actual Aer device/kernel evidence."""
     policy = getattr(simulator, "_gororoba_compute_policy", None)
     device, admission = "CPU", None
+    method = batch_method(policy, circuits) if policy is not None else None
     # GPU admission reads free device memory for one simulator, so admission
     # and the GPU run share one single-device lock; a CPU-routed batch
     # releases it before running so CPU batches stay parallel.
@@ -189,10 +226,14 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
     try:
         if policy is not None:
             validate(policy)
-            device, admission = route(policy, circuits)
+            # GPU admission sizes density states; statevector trajectories of
+            # the qualified widths run fastest on CPU shot threads.
+            device, admission = route(policy, circuits) if method == "density_matrix" else ("CPU", None)
             # One GPU shot state at a time keeps execution within the two-state
             # admission floor; CPU batches parallelize shots across threads.
-            simulator.set_options(device=device, max_parallel_shots=1 if device == "GPU" else policy["threads"])
+            simulator.set_options(
+                device=device, method=method, max_parallel_shots=1 if device == "GPU" else policy["threads"]
+            )
         if holding and device != "GPU":
             _GPU_LOCK.release()
             holding = False
@@ -210,7 +251,7 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
             if not experiment.success:
                 raise RuntimeError(f"local Aer experiment failed: {experiment.status}")
             metadata = experiment.metadata
-            if metadata.get("device") != device or metadata.get("method") != policy["method"]:
+            if metadata.get("device") != device or metadata.get("method") != method:
                 raise RuntimeError("Aer result device/method differs from the admitted local compute policy")
         buffer = io.BytesIO()
         qpy.dump(circuits, buffer)
@@ -218,6 +259,7 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
             {
                 "policy": dict(policy),
                 "device": device,
+                "method": method,
                 "gpu_admission": admission,
                 "ordered_circuit_names": [circuit.name for circuit in circuits],
                 "ordered_qpy_sha256": hashlib.sha256(buffer.getvalue()).hexdigest(),
@@ -272,6 +314,14 @@ def _verify() -> None:
     assert result.get_counts(0) == {"11": 64}
     assert batches(simulator)[0]["ordered_circuit_names"] == [circuit.name]
     assert not batches(simulator)[0]["experiment_metadata"][0].get("shot_branching_enabled", False)
+    assert batches(simulator)[0]["method"] == "statevector", "dynamic batch did not run statevector trajectories"
+    static = QuantumCircuit(2, 2, name="static")
+    static.h(0)
+    static.cx(0, 1)
+    static.measure([0, 1], [0, 1])
+    assert not is_dynamic(static) and is_dynamic(circuit), "dynamic-circuit classification changed"
+    assert batch_method(policy, [static]) == "density_matrix"
+    assert batch_method(policy | {"method": "density_matrix"}, [circuit]) == "density_matrix"
     _verify_routing(policy)
     print("local compute policy, capability rejection, routing, and CPU dynamic batch checks pass")
 
