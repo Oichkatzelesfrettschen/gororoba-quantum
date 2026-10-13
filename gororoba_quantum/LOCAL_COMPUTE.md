@@ -12,9 +12,8 @@ that bias. CPU or GPU acceleration cannot supply missing physical mechanisms.
 
 The policy uses density matrices with double precision. The CLI accepts
 `--local-compute auto|cpu|gpu` (default `auto`, routed by width as
-described under thread scaling below), `--simulation-threads` (default: half
-the available logical CPU budget, rounded down with a minimum of one, from
-`parallel.default_threads()`), and
+described under thread scaling below), `--simulation-threads` (default: every CPU available to the process,
+from `parallel.default_threads()`), and
 `--simulation-memory-mb` (default 512). Aer experiment parallelism is one;
 its shot-thread limit equals the declared thread limit. Both
 `shot_branching_enable` and `shot_branching_sampling_enable` remain false.
@@ -383,12 +382,8 @@ shots across `max_parallel_shots` threads. Static circuits with terminal
 measurement sample once from one final state; below Aer's
 `statevector_parallel_threshold` of 14 qubits their state update stays on
 one thread, and experiment parallelism leaves counts unchanged with no
-measured speedup. `parallel.default_threads()` sets each default worker or
-simulation pool to half the available logical CPU budget. Affinity and the tightest cgroup
-quota bound the available count before floor division by two, with a minimum
-of one thread. Twelve available logical CPUs yield six threads; seven yield
-three; one yields one. `GOROROBA_WORKERS` overrides the process-pool count,
-and `--simulation-threads` independently overrides the Aer count.
+measured speedup. The default thread count is therefore every CPU the
+process may use, from `parallel.default_threads()`.
 
 The measurement used the two dynamic ibm_fez PUBs of the retained
 correction case, the FakeFez noise model, 4096 shots, and seed 5 on a
