@@ -105,13 +105,13 @@ The result rules out a Clifford-only exact diagonal phase oracle in this fixed
 binary encoding and shows that one CCZ suffices. The result does not establish
 a lower bound for arbitrary classification protocols or circuit depth.
 
-The current `C881_GF2CubicMinDegree.v` theorems check every nonempty linear
-combination, six individual quadratic monomials, the cubic witness, and its
-degree. Its exhaustive quadratic conclusion appears only in a comment.
-open_gororoba's Rust search and the independent solver in `verify.py` establish
-the finite lower bound; the Rocq source establishes the cubic upper-bound
-witness. The verifier also requires the Rocq source bytes to match the reviewed
-sha256 before admitting the copied labels and classes.
+The [latest audited C881 proof](../docs/notes/c881_exhaustive_proof.md) checks
+all 2048 degree-at-most-two coefficient choices, including the constant,
+and proves completeness for every 11-entry Boolean coefficient vector.
+The source also proves the cubic witness and its degree. The independent
+solver in `verify.py` reconstructs the finite lower bound. The verifier
+requires the refreshed source hash before admitting the copied labels and
+classes; retained earlier receipts describe their own historical source.
 
 ## Design A: octonion associator as a Fano Z-string
 

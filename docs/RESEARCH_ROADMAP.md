@@ -32,7 +32,7 @@ comparison before it receives a novelty claim.
 | [Schur acceleration certificates](notes/schur_acceleration_certificates.md) | Exact rational certificates at admitted dimension-32 centers distinguish first-order failure, a complete affine space of compatible accelerations, and a separating obstruction witness. Written projected-Schur identities supply a necessary quadratic tangent condition; an explicit nullity-12 direction violates it despite passing all linear constraints | Formal second-order compatibility establishes neither an actual curve nor smoothness. The quadratic conditions supply an outer bound for the same-nullity tangent cone. The selected-center result below closes that cone question at one point; other centers and full neighborhood geometry remain separate obligations. |
 | [Selected-center nullity-twelve cone](notes/nullity_twelve_local_geometry.md) | At doubly-pure `e1+e18` in dimension 32 and norm squared two, exact coefficient identities and actual curves prove the Bouligand cone `A15 union B17`, with intersection dimension thirteen | Exact CPU certificates and written arguments establish the selected-center result. Neighborhood branches, links, attachments, other centers and a Rocq port remain separate obligations. |
 | [Kernel limits and cone attachments](notes/annihilator_kernel_limits.md) | Exact polynomial projectors certify persistent kernel inclusions. The complete real three-coefficient affine slice has nullities 0, 8 and 12, global cone kernel frames and actual mapping cylinders; its total incidence retracts onto `S11`, while the attachment image is `S3*(S1 x S3)` | Ordinary embedding extends the construction and invariants to every higher stage. Unrestricted rank loci, frontier coverage, ambient topology and the later Rocq port remain open. |
-| [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The pinned discrete/sign-code chain passes fresh compile and kernel checks, with seven globally closed assumption queries | C881's exhaustive quadratic rejection remains a finite Rust check. Count identities lack topology-transfer maps. A separate deprecated-import failure remains recorded. |
+| [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The historical sign-code receipts retain seven closed assumption queries; the [latest C881 audit](notes/c881_exhaustive_proof.md) adds a fresh Rocq 9.2 check of exhaustive quadratic rejection with six closed queries | The C881 theorem covers the fixed fifteen-label partition. Count identities lack topology-transfer maps. Earlier compiler and import receipts retain their historical scope. |
 | [Folded hardware evidence](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md) | Sixteen PUBs in two Kingston jobs retain shot-level evidence and 40 final charged seconds | Layout, terminal writer, measurement, reset, latency, and history confound a unique physical attribution. Existing outcomes support bounded model exclusions. |
 | [Installed local computation](../gororoba_quantum/LOCAL_COMPUTE.md) | The tested stack uses NumPy 2.5.4, Qiskit 2.5.2, Runtime 0.50.0, and CPU Aer 0.17.2 | Custom Aer/CUDA packaging stays paused. Native accelerator use requires actual installed support and equivalence evidence before activation. |
 
@@ -187,6 +187,11 @@ The mathematical chain has the following acceptance gates.
    smooth strata. Certify dimensions, normal links, closure incidences, and
    overlap coverage. Construct the actual
    kernel-bundle transition data, characteristic information, and equivalences.
+   The [determinant-line certificate](notes/annihilator_determinant_line.md)
+   trivializes the top exterior power over every full constant-rank locus
+   at every stage. Pfaffian volume factors give determinant-one normalized
+   transitions and zero first integral Chern class. Higher characteristic
+   classes and full bundle isomorphism types remain separate work.
 4. Use the [projector limit and cone attachment certificates](notes/annihilator_kernel_limits.md)
    as the complete model for their named affine slice. Preserve the distinction
    between the attachment image and total incidence, with their different
@@ -216,7 +221,15 @@ The mathematical chain has the following acceptance gates.
    retain the new statements and proof inputs. The human defers new Rocq
    implementation until approved raw results and preregistered adjudication
    are available, or supplies a new instruction. Formalize the retained lemmas
-   after that workflow milestone.
+   after that workflow milestone. The retained second Kingston correction run
+   `2026-10-13T022433.333775Z` now supplies an available decision. Independent
+   replay verifies all five indexed raw files, both archived-circuit schedule
+   pairs, and exact equality of the raw-derived statistical decision with
+   `collect.json`: `retain_measured_correction`. The reviewed acquisition in
+   PR #53 satisfies the results-availability milestone. New proof work still
+   requires its own compiler/kernel receipts. The latest C881 closure now has
+   fresh Rocq 9.2/OCaml 5.5.0 receipts; the other retained proof bundles still
+   record their own Rocq 9.1.1 toolchain and require separate refreshes.
    Preserve full average/detail coordinates or all XOR sectors when information
    matters; average-only multiplication fails. The
    [complex skew certificate](notes/complex_skew_rank_geometry.md) supplies
