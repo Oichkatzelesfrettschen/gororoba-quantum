@@ -11,6 +11,7 @@ from __future__ import annotations
 import hashlib
 import io
 import json
+import threading
 import time
 from typing import Any
 
@@ -85,6 +86,8 @@ def _json_value(value: Any) -> Any:
         return [_json_value(item) for item in value]
     return value
 
+
+_GPU_LOCK = threading.Lock()
 
 # NoiseModel serialization dominates planning time; a model is built once per
 # backend snapshot and never mutated afterward, so its digest is computed once.
@@ -178,7 +181,13 @@ def run(simulator: Any, circuits: list[Any], shots: int, seed: int) -> Any:
         # admission floor; CPU batches parallelize shots across threads.
         simulator.set_options(device=device, max_parallel_shots=1 if device == "GPU" else policy["threads"])
     start = time.perf_counter()
-    result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
+    if device == "GPU":
+        # GPU admission reserves memory for one simulator on the single
+        # admitted device, so concurrent planner threads take turns there.
+        with _GPU_LOCK:
+            result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
+    else:
+        result = simulator.run(circuits, shots=shots, seed_simulator=seed).result()
     elapsed = time.perf_counter() - start
     if not result.success:
         raise RuntimeError(f"local Aer simulation failed: {result.status}")

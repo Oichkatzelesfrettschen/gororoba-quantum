@@ -55,6 +55,9 @@ class _Observation:
 
 
 _INITIAL: _Observation | None = None
+# Distribution metadata file and its stamp at the first capture, beside the
+# loaded package version; a change in either reruns the full capture.
+_INITIAL_METADATA: tuple[Path, _FileStamp, str] | None = None
 _LOCK = threading.RLock()
 
 
@@ -294,17 +297,22 @@ def _check_unchanged(before: _Observation, after: _Observation) -> None:
 
 def identity() -> dict[str, Any]:
     """Observe actual imported Aer and reject drift from the first observation."""
-    global _INITIAL
+    global _INITIAL, _INITIAL_METADATA
     with _LOCK:
         # A full capture hashes the native extension and reads the process
         # map; once the first capture exists, unchanged stat stamps (device,
         # inode, size, mtime, ctime) on the extension and manifest establish
         # the same bytes, and any stamp change reruns the full capture.
-        if _INITIAL is not None:
+        if _INITIAL is not None and _INITIAL_METADATA is not None:
+            import qiskit_aer
+
+            metadata_path, metadata_stamp, loaded_version = _INITIAL_METADATA
             try:
                 unchanged = (
                     _stamp(_INITIAL.extension_path.stat()) == _INITIAL.extension_stamp
                     and _optional_stamp(_INITIAL.manifest_path) == _INITIAL.manifest_stamp
+                    and _optional_stamp(metadata_path) == metadata_stamp
+                    and qiskit_aer.__version__ == loaded_version
                 )
             except OSError:
                 unchanged = False
@@ -315,7 +323,17 @@ def identity() -> dict[str, Any]:
         except (OSError, ImportError, importlib.metadata.PackageNotFoundError) as error:
             raise ValueError("native Aer provenance inputs are unavailable") from error
         if _INITIAL is None:
+            import qiskit_aer
+
             _INITIAL = observation
+            distribution = importlib.metadata.distribution("qiskit-aer")
+            metadata_path = Path(str(distribution.locate_file(""))) / "METADATA"
+            for candidate in distribution.files or []:
+                if candidate.name == "METADATA" and candidate.parent.name.endswith(".dist-info"):
+                    metadata_path = Path(str(distribution.locate_file(candidate)))
+                    break
+            stamp = _optional_stamp(metadata_path)
+            _INITIAL_METADATA = (metadata_path, stamp, qiskit_aer.__version__) if stamp is not None else None
         else:
             _check_unchanged(_INITIAL, observation)
         return copy.deepcopy(observation.record)
