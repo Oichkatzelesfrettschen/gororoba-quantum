@@ -1,0 +1,65 @@
+{
+  "written_before_submission": true,
+  "written_at_utc": "2026-10-13T20:12:59.183793+00:00",
+  "record": "2026-10-13T201228.119505Z",
+  "source_commit": "4aaea17",
+  "detectability_xy_distance_2R_sin_half_dphi": {
+    "R=0.2": {
+      "dphi=0.1": 0.02,
+      "dphi=0.27": 0.054,
+      "dphi=0.5": 0.099,
+      "dphi=0.7": 0.137,
+      "dphi=1.4": 0.258
+    },
+    "R=0.5": {
+      "dphi=0.1": 0.05,
+      "dphi=0.27": 0.135,
+      "dphi=0.5": 0.247,
+      "dphi=0.7": 0.343,
+      "dphi=1.4": 0.644
+    },
+    "R=0.87": {
+      "dphi=0.1": 0.087,
+      "dphi=0.27": 0.234,
+      "dphi=0.5": 0.43,
+      "dphi=0.7": 0.597,
+      "dphi=1.4": 1.121
+    }
+  },
+  "registered_half_widths": {
+    "ramsey_window_y_differences": 0.229,
+    "spectator_excess": 0.114,
+    "orbit_contrast_differences": 0.24
+  },
+  "hypotheses": {
+    "static_detuning_on_work_A": {
+      "basis": "orbit fits: about 0.18 rad/us on qubit 136 (29 kHz)",
+      "ramsey_plain_phase_slope_khz": "near 29 on work A, alias set reported",
+      "echo_minus_plain_Y_7.6us": "magnitude about 0.85 at R 0.87; resolved",
+      "window_minus_plain_Y": "near zero beyond the plain idle phase"
+    },
+    "measurement_associated_phase": {
+      "window_minus_plain_Y_5.6us": "resolved when the window adds more than about 0.27 rad at R 0.87",
+      "control_one_minus_zero_Y": "nonzero if the phase depends on the control state",
+      "measured_minus_reset_only_Y": "nonzero if the explicit measurement carries it"
+    },
+    "unechoed_dephasing": {
+      "plain_visibility_decay": "faster than echo visibility beyond T1 and T2E",
+      "phase": "may stay near zero"
+    },
+    "exchange_with_spectator_or_neighbors": {
+      "spectator_excess": "resolved only above about 11 percent; weak transfer leaves dispersive phase possible"
+    },
+    "compiler_window_structure": {
+      "orbit_barrier_minus_nominal": "exploratory at +/-0.24; adoption needs the validation stage"
+    }
+  },
+  "unresolved_outcomes": [
+    "visibility below about 0.27 makes even a 0.7 rad phase unresolvable at +/-0.229",
+    "executed idles that collapse or lack timing withhold physical detuning",
+    "multiple compatible detuning aliases leave delta unresolved",
+    "orbit endpoints inside +/-0.24 select no intervention"
+  ],
+  "decision_rule": "characterization selects at most one candidate intervention; validation on new observations decides adoption when its lower confidence bound on the orbit gain exceeds the prospectively chosen minimum useful effect",
+  "y_only_orientation_caveat": "|dY| = 2R|cos((phi1+phi2)/2) sin(dphi/2)|; phase sensitivities hold at favorable orientation only"
+}

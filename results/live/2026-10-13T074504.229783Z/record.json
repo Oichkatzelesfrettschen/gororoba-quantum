@@ -1,0 +1,2073 @@
+{
+  "schema_version": 7,
+  "schema_contract": "live-target-statistical-design-invocation-budget-v1",
+  "state": "planned",
+  "started": "2026-10-13T07:45:04.229783+00:00",
+  "versions": {
+    "numpy": "2.5.4",
+    "qiskit": "2.5.2",
+    "qiskit-aer": "0.17.2",
+    "qiskit-ibm-runtime": "0.50.0",
+    "scipy": "1.18.1",
+    "rustworkx": "0.18.1",
+    "sympy": "1.14.0"
+  },
+  "policy": {
+    "max_readout_error": 0.08,
+    "max_cz_error": 0.03,
+    "max_sx_error": 0.01,
+    "min_t1_us": 20.0,
+    "min_t2_us": 20.0,
+    "max_pending": 25,
+    "seeds": 2,
+    "joint_candidates": 3,
+    "replica_floor": null,
+    "max_replicas": 1,
+    "isolated_reference": false,
+    "cross_group_buffer": true,
+    "twirl": false,
+    "dd": null,
+    "min_remaining_seconds": 60.0,
+    "max_execution_seconds": 60,
+    "design": {
+      "family": "n21-orbit-feedback",
+      "optimize": true,
+      "objective": "minimum_charge",
+      "cost_scenarios": [],
+      "shot_tiers": [
+        2048,
+        4096,
+        8192
+      ],
+      "shot_allocation": "uniform",
+      "replica_tiers": [
+        1
+      ],
+      "optimizer_candidates": 1,
+      "model_shots": 65536,
+      "precision": 0.08,
+      "alpha": 0.05,
+      "power": 0.8,
+      "simulation_alpha": 0.01,
+      "job_overhead_seconds": 2.3,
+      "classical_latency_us": 20.0,
+      "reserve_seconds": 60.0,
+      "max_total_execution_seconds": 60.0
+    },
+    "local_compute": {
+      "mode": "auto",
+      "threads": 12,
+      "memory_mb": 2048,
+      "shot_branching": false,
+      "method": "density_matrix_dynamic_statevector",
+      "precision": "double",
+      "shot_branching_sampling": false,
+      "parallel_experiments": 1,
+      "aer_native": {
+        "schema": "native-aer-identity-v1",
+        "distribution": "qiskit-aer",
+        "version": "0.17.2",
+        "python_soabi": "cpython-314-x86_64-linux-gnu",
+        "extension": {
+          "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+          "sha256": "be2dfe9c9f1a3546c21c5064724a1a5c54686f14f78c36d9e324cfa15c35a23e"
+        },
+        "native_cuda_build": {
+          "basename": "native_cuda_build.json",
+          "sha256": "232e1db26ba1f0b6de63e4c96edddca372e86d11113904bf2bd7ba1efbe0225c",
+          "contract": {
+            "build_dependencies": {
+              "build": "1.6.0",
+              "distro": "1.9.0",
+              "packaging": "26.3",
+              "pybind11": "3.1.0",
+              "pyproject_hooks": "1.3.3",
+              "qiskit-aer": "0.17.2",
+              "scikit-build": "0.19.1",
+              "setuptools": "84.0.0",
+              "wheel": "0.48.0"
+            },
+            "build_mode": "upstream-aer-thrust-cuda-with-cpu-support",
+            "build_wheel_sha256": {
+              "qiskit_aer-0.17.2-cp314-cp314-linux_x86_64.whl": "2fe488f842a6e9a644f137ce62d7ab913664f47d68a0773618ee444b559532a6"
+            },
+            "cmake_options": {
+              "AER_CUDA_ARCH": "8.9",
+              "AER_ENABLE_CUQUANTUM": "OFF",
+              "AER_MPI": "OFF",
+              "AER_THRUST_BACKEND": "CUDA",
+              "DISABLE_CONAN": "ON"
+            },
+            "compile_jobs": 6,
+            "cuda_architecture": "sm_89",
+            "cuda_compile_commands": [
+              {
+                "arguments": [
+                  "${CUDA_ROOT}/bin/nvcc",
+                  "-forward-unknown-to-host-compiler",
+                  "-ccbin=${SYSTEM_BIN}/g++",
+                  "-DAER_THRUST_SUPPORTED=TRUE",
+                  "-DFMT_SHARED",
+                  "-DJSON_DIAGNOSTICS=0",
+                  "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+                  "-DSPDLOG_COMPILED_LIB",
+                  "-DSPDLOG_FMT_EXTERNAL",
+                  "-DSPDLOG_SHARED_LIB",
+                  "-DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA",
+                  "-Dcontroller_wrappers_EXPORTS",
+                  "-I${SYSTEM_INCLUDE}/python3.14",
+                  "-I${BUILD_ROOT}/build-env/lib/python3.14/site-packages/pybind11/include",
+                  "-I${AER_SOURCE}/src",
+                  "-isystem",
+                  "${BUILD_ROOT}/json-prefix/include",
+                  "--Werror",
+                  "all-warnings",
+                  "-Xcompiler=-Wall,-Wextra,-Werror",
+                  "-O3",
+                  "-DNDEBUG",
+                  "-std=c++20",
+                  "--generate-code=arch=compute_89,code=[compute_89,sm_89]",
+                  "-Xcompiler=-fPIC",
+                  "-Xcompiler=-fvisibility=hidden",
+                  "--compiler-options",
+                  "-fopenmp",
+                  "-gencode",
+                  "arch=compute_89,code=sm_89",
+                  "-DAER_THRUST_GPU",
+                  "-DAER_THRUST_CUDA",
+                  "-I${AER_SOURCE}/src",
+                  "-isystem",
+                  "${AER_SOURCE}/src/third-party/headers",
+                  "-use_fast_math",
+                  "--expt-extended-lambda",
+                  "-Xcompiler=-imacros,pyconfig.h",
+                  "-x",
+                  "cu",
+                  "-c",
+                  "${AER_SOURCE}/qiskit_aer/backends/wrappers/bindings.cc",
+                  "-o",
+                  "qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/bindings.cc.o"
+                ],
+                "source": "qiskit_aer/backends/wrappers/bindings.cc"
+              },
+              {
+                "arguments": [
+                  "${CUDA_ROOT}/bin/nvcc",
+                  "-forward-unknown-to-host-compiler",
+                  "-ccbin=${SYSTEM_BIN}/g++",
+                  "-DAER_THRUST_SUPPORTED=TRUE",
+                  "-DFMT_SHARED",
+                  "-DJSON_DIAGNOSTICS=0",
+                  "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+                  "-DSPDLOG_COMPILED_LIB",
+                  "-DSPDLOG_FMT_EXTERNAL",
+                  "-DSPDLOG_SHARED_LIB",
+                  "-DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA",
+                  "-Dcontroller_wrappers_EXPORTS",
+                  "-I${SYSTEM_INCLUDE}/python3.14",
+                  "-I${BUILD_ROOT}/build-env/lib/python3.14/site-packages/pybind11/include",
+                  "-I${AER_SOURCE}/src",
+                  "-isystem",
+                  "${BUILD_ROOT}/json-prefix/include",
+                  "--Werror",
+                  "all-warnings",
+                  "-Xcompiler=-Wall,-Wextra,-Werror",
+                  "-O3",
+                  "-DNDEBUG",
+                  "-std=c++20",
+                  "--generate-code=arch=compute_89,code=[compute_89,sm_89]",
+                  "-Xcompiler=-fPIC",
+                  "-Xcompiler=-fvisibility=hidden",
+                  "--compiler-options",
+                  "-fopenmp",
+                  "-gencode",
+                  "arch=compute_89,code=sm_89",
+                  "-DAER_THRUST_GPU",
+                  "-DAER_THRUST_CUDA",
+                  "-I${AER_SOURCE}/src",
+                  "-isystem",
+                  "${AER_SOURCE}/src/third-party/headers",
+                  "-use_fast_math",
+                  "--expt-extended-lambda",
+                  "--compiler-options",
+                  "-mfma",
+                  "--compiler-options",
+                  "-mavx2",
+                  "-x",
+                  "cu",
+                  "-c",
+                  "${AER_SOURCE}/src/simulators/statevector/qv_avx2.cpp",
+                  "-o",
+                  "qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/__/__/__/src/simulators/statevector/qv_avx2.cpp.o"
+                ],
+                "source": "src/simulators/statevector/qv_avx2.cpp"
+              }
+            ],
+            "cuda_compiler_flags": "--Werror all-warnings -Xcompiler=-Wall,-Wextra,-Werror",
+            "cuda_compiler_version": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Sep_01_08:45:21_PDT_2026\nCuda compilation tools, release 13.4, V13.4.92\nBuild cuda_13.4.r13.4/compiler.38855100_0",
+            "cuda_language_standard": "c++20",
+            "cuda_source_units": [
+              "qiskit_aer/backends/wrappers/bindings.cc",
+              "src/simulators/statevector/qv_avx2.cpp"
+            ],
+            "cuda_warning_flags_verified": true,
+            "device_warning_policy": "--Werror all-warnings",
+            "distribution": "qiskit-aer",
+            "host_compiler_target": "x86_64-pc-linux-gnu",
+            "host_compiler_version": "16.2.1",
+            "host_warning_policy": "-Wall -Wextra -Werror",
+            "native_dependencies": {
+              "cmake": "4.4.4-1.1",
+              "cuda": "13.4.2-1",
+              "fmt": "12.2.0-1.1",
+              "gcc": "16.2.1+r23+gd564253eb6c8-1",
+              "glibc": "2.44+r50+g1848099f063e-3",
+              "ninja": "1.13.2-3.1",
+              "openblas": "0.3.34-1",
+              "python-installer": "1.0.1-1",
+              "spdlog": "1.17.0-2.1",
+              "uv": "0.13.0-1.1"
+            },
+            "native_header_sha256": {
+              "fmt-base.h": "888315df369b34360880a89998ce24191e7c1b2b0606666ec8fddb31f0cae2fb",
+              "python-pyconfig.h": "82e7fa7be7bb2e49bcfb18d56aac4d10ca56d886219c90a95d2972efb1868c31",
+              "spdlog-common.h": "ddf4fa8ee4687f364086c3f3bca3b9113df3622916c67776594d231418102143"
+            },
+            "native_linked_library_sha256": {
+              "libc.so.6": "071e34179e645b25f8a8c2e7108894dc665caa9f5f8c939cd579a75b6638bc3f",
+              "libfmt.so.12": "6287216319c94ac38b15bc4f8bef43d8c98deac4ae8823d05c3fc27f0734082c",
+              "libgcc_s.so.1": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+              "libgfortran.so.5": "2ab102295ffad3934f37b6aab4a1b99b00a68fcc22ae3e5c7ac1edcf2c3fbd7e",
+              "libgomp.so.1": "843e95ac19bdc9c450e8b090204cf01aafaf680ab9ca64bf1ec5e3674c3a776f",
+              "libm.so.6": "58b6b82e39d59d7810d402ba4ec34359fde058204fdb7cd5a269fda256a35421",
+              "libopenblas.so.0": "de853d97cff751afff66470bd01ff249902d057bbe4242d484a7e16a05e09dff",
+              "libspdlog.so.1.17": "2e39866a38f27ca6f316f18157812c1199c51d6586d5590c23f0c61f49d47fb8",
+              "libstdc++.so.6": "412e0fc561a10581aaff2d101206939a31fa12c696590d8d4a5ec3655953ffe0"
+            },
+            "numpy_version": "2.5.4",
+            "python_config_preload": {
+              "bindings_flag": "-Xcompiler=-imacros,pyconfig.h",
+              "header": "pyconfig.h",
+              "sha256": "82e7fa7be7bb2e49bcfb18d56aac4d10ca56d886219c90a95d2972efb1868c31"
+            },
+            "python_soabi": "cpython-314-x86_64-linux-gnu",
+            "python_version": "3.14.7",
+            "python_wheel_tag": "cp314-cp314-linux_x86_64",
+            "schema": "native-aer-cuda-build-v1",
+            "source_sha256": {
+              "aer-cccl-type-traits.patch": "faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96",
+              "aer-compiler-diagnostics.patch": "8135f1b382cf704e0f4db67c29765fad4be245c9bc1040ab1d2f13f00f1b2543",
+              "aer-native-toolchain.patch": "656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04",
+              "aer-unused-parameter-annotations.patch": "d6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22",
+              "build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
+              "check_native_aer.py": "18b7879ab0a41acf58c9c6965b6f6f092218876a5a807d2b702ee1e1ebf5c295",
+              "nlohmann-json-3.10.2.tar.gz": "081ed0f9f89805c2d96335c3acfa993b39a0a5b4b4cef7edb68dd2210a13458c",
+              "qiskit-aer-0.17.2.tar.gz": "0231c74ae23d7dcaef664c39e57f800ee5174f73821a60f328ca3fe542266950",
+              "scikit-build-cmake-cli.patch": "663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53",
+              "setuptools-license-expression.patch": "1e63fb8daa9df8d8e54ff177bec02fffc451908df52fd3c2c90fe1a862997c32"
+            },
+            "upstream_cuda_math_flags": [
+              "-use_fast_math"
+            ],
+            "version": "0.17.2"
+          }
+        },
+        "loaded_mapping_verified": true,
+        "loaded_mapping_scope": "linux-process-map-device-inode"
+      }
+    }
+  },
+  "shots": 4096,
+  "instance_sha256_12": "e3de05b6901e",
+  "seed_simulator": 20261011,
+  "experiment_digest": "a8fca2f05f0439844d17e515e4f5362ad381cb157ba6d4d618c766284af9f685",
+  "code_commit": {
+    "head": "abd432b5f90a88e7703a0a057d87c6b51c7202a7",
+    "sources_modified": false
+  },
+  "system_inventory": {
+    "ibm_kingston": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 2,
+      "calibration": "2026-10-12T23:25:48-07:00",
+      "fetched_at": "2026-10-13T07:45:06+00:00",
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 244.34294993366694,
+        "t2_us": 141.34053144495516,
+        "readout_error": 0.00927734375,
+        "cz_error": 0.0019402906314269774
+      },
+      "excluded_qubits": {
+        "20": "T1=227.0us T2=10.7us",
+        "88": "T1=209.1us T2=19.3us",
+        "112": "sx error 0.0180",
+        "113": "readout error 0.260",
+        "115": "T1=271.5us T2=14.5us",
+        "120": "readout error 0.294",
+        "121": "T1=15.1us T2=25.6us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "84-85": "cz error 0.03231417393333538",
+        "85-84": "cz error 0.03231417393333538",
+        "85-86": "cz error 0.04544182831617796",
+        "86-85": "cz error 0.04544182831617796",
+        "86-87": "cz error 0.06156715358705758",
+        "87-86": "cz error 0.06156715358705758",
+        "111-112": "cz error 0.16393370368690838",
+        "112-111": "cz error 0.16393370368690838",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.034902916747519164",
+        "120-121": "cz error 0.032984158295178506",
+        "121-116": "cz error 0.034902916747519164",
+        "121-120": "cz error 0.032984158295178506",
+        "121-122": "cz error 0.033719348469989224",
+        "122-121": "cz error 0.033719348469989224",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    },
+    "ibm_fez": {
+      "eligibility": "eligible",
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-12T23:27:11-07:00",
+      "fetched_at": "2026-10-13T07:45:07+00:00",
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 124.4722086391195,
+        "t2_us": 89.9288431180972,
+        "readout_error": 0.01025390625,
+        "cz_error": 0.00267585872484985
+      },
+      "excluded_qubits": {
+        "1": "readout error 0.094",
+        "11": "T1=75.3us T2=9.1us",
+        "46": "T1=176.3us T2=13.8us",
+        "53": "T1=167.3us T2=19.8us",
+        "65": "readout error 0.106",
+        "66": "T1=105.0us T2=17.2us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.136",
+        "100": "readout error 0.081",
+        "102": "readout error 0.094",
+        "113": "readout error 0.096",
+        "146": "T1=168.0us T2=11.8us",
+        "148": "readout error 0.202",
+        "149": "T1=67.7us T2=5.5us",
+        "150": "T1=29.8us T2=5.0us"
+      },
+      "excluded_edges": {
+        "27-28": "cz error 1.0",
+        "28-27": "cz error 1.0",
+        "31-32": "cz error 0.05370209399764678",
+        "32-31": "cz error 0.05370209399764678",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "49-50": "cz error 0.031084782490909235",
+        "50-49": "cz error 0.031084782490909235",
+        "63-64": "cz error 0.04605299876220356",
+        "64-63": "cz error 0.04605299876220356",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.06113462358188457",
+        "103-102": "cz error 0.06113462358188457",
+        "148-149": "cz error 0.06439104692101763",
+        "149-148": "cz error 0.06439104692101763",
+        "149-150": "cz error 0.07379921905417827",
+        "150-149": "cz error 0.07379921905417827",
+        "150-151": "cz error 0.07844971645199927",
+        "151-150": "cz error 0.07844971645199927"
+      }
+    }
+  },
+  "backends": {
+    "ibm_kingston": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 2,
+      "calibration": "2026-10-12T23:25:48-07:00",
+      "fetched_at": "2026-10-13T07:45:06+00:00",
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 244.34294993366694,
+        "t2_us": 141.34053144495516,
+        "readout_error": 0.00927734375,
+        "cz_error": 0.0019402906314269774
+      },
+      "excluded_qubits": {
+        "20": "T1=227.0us T2=10.7us",
+        "88": "T1=209.1us T2=19.3us",
+        "112": "sx error 0.0180",
+        "113": "readout error 0.260",
+        "115": "T1=271.5us T2=14.5us",
+        "120": "readout error 0.294",
+        "121": "T1=15.1us T2=25.6us",
+        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
+      },
+      "excluded_edges": {
+        "84-85": "cz error 0.03231417393333538",
+        "85-84": "cz error 0.03231417393333538",
+        "85-86": "cz error 0.04544182831617796",
+        "86-85": "cz error 0.04544182831617796",
+        "86-87": "cz error 0.06156715358705758",
+        "87-86": "cz error 0.06156715358705758",
+        "111-112": "cz error 0.16393370368690838",
+        "112-111": "cz error 0.16393370368690838",
+        "112-113": "cz error 1.0",
+        "113-112": "cz error 1.0",
+        "116-121": "cz error 0.034902916747519164",
+        "120-121": "cz error 0.032984158295178506",
+        "121-116": "cz error 0.034902916747519164",
+        "121-120": "cz error 0.032984158295178506",
+        "121-122": "cz error 0.033719348469989224",
+        "122-121": "cz error 0.033719348469989224",
+        "130-131": "cz error 1.0",
+        "131-130": "cz error 1.0",
+        "145-146": "cz error 1.0",
+        "146-145": "cz error 1.0",
+        "146-147": "cz error 1.0",
+        "147-146": "cz error 1.0"
+      }
+    },
+    "ibm_fez": {
+      "operational": true,
+      "status_msg": "active",
+      "pending_jobs": 3,
+      "calibration": "2026-10-12T23:27:11-07:00",
+      "fetched_at": "2026-10-13T07:45:07+00:00",
+      "capabilities": {
+        "num_qubits": 156,
+        "dynamic_circuits": true,
+        "operation_names": [
+          "cz",
+          "delay",
+          "id",
+          "if_else",
+          "measure",
+          "measure_2",
+          "measure_reset",
+          "measure_reset_2",
+          "reset",
+          "reset_2",
+          "rz",
+          "sx",
+          "x",
+          "xslow"
+        ],
+        "control_flow": [
+          "if_else"
+        ]
+      },
+      "repetition_delay": 0.00025,
+      "medians": {
+        "t1_us": 124.4722086391195,
+        "t2_us": 89.9288431180972,
+        "readout_error": 0.01025390625,
+        "cz_error": 0.00267585872484985
+      },
+      "excluded_qubits": {
+        "1": "readout error 0.094",
+        "11": "T1=75.3us T2=9.1us",
+        "46": "T1=176.3us T2=13.8us",
+        "53": "T1=167.3us T2=19.8us",
+        "65": "readout error 0.106",
+        "66": "T1=105.0us T2=17.2us",
+        "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
+        "83": "readout error 0.136",
+        "100": "readout error 0.081",
+        "102": "readout error 0.094",
+        "113": "readout error 0.096",
+        "146": "T1=168.0us T2=11.8us",
+        "148": "readout error 0.202",
+        "149": "T1=67.7us T2=5.5us",
+        "150": "T1=29.8us T2=5.0us"
+      },
+      "excluded_edges": {
+        "27-28": "cz error 1.0",
+        "28-27": "cz error 1.0",
+        "31-32": "cz error 0.05370209399764678",
+        "32-31": "cz error 0.05370209399764678",
+        "32-33": "cz error 1.0",
+        "33-32": "cz error 1.0",
+        "49-50": "cz error 0.031084782490909235",
+        "50-49": "cz error 0.031084782490909235",
+        "63-64": "cz error 0.04605299876220356",
+        "64-63": "cz error 0.04605299876220356",
+        "71-72": "cz error 1.0",
+        "72-71": "cz error 1.0",
+        "72-73": "cz error 1.0",
+        "73-72": "cz error 1.0",
+        "102-103": "cz error 0.06113462358188457",
+        "103-102": "cz error 0.06113462358188457",
+        "148-149": "cz error 0.06439104692101763",
+        "149-148": "cz error 0.06439104692101763",
+        "149-150": "cz error 0.07379921905417827",
+        "150-149": "cz error 0.07379921905417827",
+        "150-151": "cz error 0.07844971645199927",
+        "151-150": "cz error 0.07844971645199927"
+      }
+    }
+  },
+  "skipped_backends": {},
+  "circuit_requirements": {
+    "n21_orbit_feedback": {
+      "qubits": 4,
+      "classical_bits": 2,
+      "static_circuits": 0,
+      "dynamic_circuits": 2,
+      "target_operations": [
+        "if_else",
+        "measure",
+        "reset"
+      ],
+      "control_flow": [
+        "if_else"
+      ]
+    }
+  },
+  "execution_requirements": {
+    "n21_orbit_feedback": {
+      "entries": 2,
+      "entry_names": [
+        "n21_orbit_feedback",
+        "n21_orbit_no_feedback"
+      ],
+      "static_circuits": 0,
+      "dynamic_circuits": 2,
+      "max_classical_bits": 2,
+      "physical_qubits": [
+        136,
+        142,
+        143,
+        144
+      ],
+      "operation_names": [
+        "cz",
+        "measure",
+        "reset",
+        "rz",
+        "sx",
+        "x"
+      ],
+      "replicas": 1,
+      "isolated_references": 0,
+      "target_validated": true
+    }
+  },
+  "fusion_placement": {
+    "allocation": "matched-family",
+    "configuration": {
+      "name": "n21-orbit-feedback",
+      "replica_cap": 1
+    }
+  },
+  "fusion_summary": {
+    "strategy": "aligned_members_without_reference",
+    "reference_estimand": null,
+    "reference_estimand_by_kind": {
+      "static": null,
+      "dynamic": null
+    },
+    "logical_entries": {
+      "static": 0,
+      "dynamic": 2
+    },
+    "execution_pubs": {
+      "static": 0,
+      "dynamic": 2
+    },
+    "reference_components": {
+      "static": 0,
+      "dynamic": 0
+    }
+  },
+  "execution_pubs": [
+    {
+      "name": "ibm_fez_dynamic_pub_01",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 2255,
+      "feed_forward_operation_count": 1,
+      "sequential_stage_count": 1,
+      "parallel_stream_count": 1,
+      "components": [
+        {
+          "group": "n21_orbit_feedback",
+          "member": "n21_orbit_feedback",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase"
+            ]
+          ]
+        }
+      ]
+    },
+    {
+      "name": "ibm_fez_dynamic_pub_02",
+      "backend": "ibm_fez",
+      "kind": "dynamic",
+      "target_gate_lower_bound_dt": 2249,
+      "feed_forward_operation_count": 0,
+      "sequential_stage_count": 0,
+      "parallel_stream_count": 0,
+      "components": [
+        {
+          "group": "n21_orbit_feedback",
+          "member": "n21_orbit_no_feedback",
+          "reference": false,
+          "register_prefix": "g0_",
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "registers_by_replica": [
+            [
+              "g0_r0_phase"
+            ]
+          ]
+        }
+      ]
+    }
+  ],
+  "selection_trace": {
+    "n21_orbit_feedback": {
+      "ibm_kingston": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 4,
+            "classical_bits": 2,
+            "static_circuits": 0,
+            "dynamic_circuits": 2,
+            "target_operations": [
+              "if_else",
+              "measure",
+              "reset"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 47,
+          "rejected": [],
+          "primary_score": 0.6330304112731937
+        },
+        {
+          "seed": 20261011,
+          "cz": 43,
+          "rejected": [],
+          "primary_score": 0.6133852839511681
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.6336178173822465,
+          "layout": [
+            73,
+            93,
+            79,
+            94
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.6123642714904128,
+          "layout": [
+            79,
+            94,
+            93,
+            92
+          ]
+        }
+      ],
+      "ibm_fez": [
+        {
+          "stage": "capability_admission",
+          "requirements": {
+            "qubits": 4,
+            "classical_bits": 2,
+            "static_circuits": 0,
+            "dynamic_circuits": 2,
+            "target_operations": [
+              "if_else",
+              "measure",
+              "reset"
+            ],
+            "control_flow": [
+              "if_else"
+            ]
+          },
+          "rejected": []
+        },
+        {
+          "stage": "routing_admission",
+          "rejected": []
+        },
+        {
+          "seed": 20261010,
+          "cz": 43,
+          "rejected": [],
+          "primary_score": 0.6530329089673247
+        },
+        {
+          "seed": 20261011,
+          "cz": 43,
+          "rejected": [],
+          "primary_score": 0.6530329089673247
+        },
+        {
+          "seed": 20261010,
+          "joint_score": 0.6541839723610101,
+          "layout": [
+            2,
+            16,
+            3,
+            4
+          ]
+        },
+        {
+          "seed": 20261011,
+          "joint_score": 0.6541839723610101,
+          "layout": [
+            2,
+            16,
+            3,
+            4
+          ]
+        }
+      ]
+    }
+  },
+  "family_configuration": {
+    "name": "n21-orbit-feedback",
+    "replica_cap": 1
+  },
+  "observable_contracts": [
+    {
+      "name": "n21_orbit_feedback_contrast",
+      "terms": [
+        {
+          "member": "n21_orbit_feedback",
+          "values": [
+            0.0,
+            1.0,
+            0.0,
+            -1.0
+          ],
+          "sign": 1
+        },
+        {
+          "member": "n21_orbit_no_feedback",
+          "values": [
+            0.0,
+            1.0,
+            0.0,
+            -1.0
+          ],
+          "sign": -1
+        }
+      ],
+      "null_value": 0.0,
+      "minimum_effect": 0.0,
+      "alpha": 0.05,
+      "power": 0.8,
+      "precision_half_width": null
+    }
+  ],
+  "optimization": {
+    "selected": "candidate-000-shots-4096",
+    "candidates": [
+      {
+        "name": "candidate-000-shots-2048",
+        "feasible": false,
+        "estimated_charge_seconds": 3.401856768,
+        "total_execution_ceiling_seconds": 60.0,
+        "jobs": [
+          {
+            "name": "ibm_fez/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_fez_dynamic_pub_01",
+                "shots": 2048,
+                "scheduled_seconds": 9.020000000000003e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 0.57143296,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_02",
+                "shots": 2048,
+                "scheduled_seconds": 8.996000000000003e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 0.530423808,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 3.401856768,
+            "max_execution_seconds": 60,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_orbit_feedback_contrast",
+            "predicted_value": 0.2146759033203125,
+            "simulation_error_radius": 0.029419175634136974,
+            "modeled_value_lower_bound": 0.18525672768617552,
+            "modeled_value_upper_bound": 0.24409507895444948,
+            "confidence_half_width": 0.13083306746268256,
+            "detection_radius": 0.12004034891499009,
+            "power_radius": 0.09483919558657165,
+            "effect_used_for_power": 0.18525672768617552,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": false,
+            "rejection_reasons": [
+              "shot tier cannot detect the reported alternative effect at the declared alpha and power"
+            ]
+          }
+        ],
+        "rejection_reasons": [
+          "n21_orbit_feedback_contrast: shot tier cannot detect the reported alternative effect at the declared alpha and power"
+        ],
+        "proxy_metadata": {
+          "backend": "ibm_fez",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 2048,
+          "proxy_score": 0.6541839723610101
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 3.401856768,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-4096",
+        "feasible": true,
+        "estimated_charge_seconds": 4.503713535999999,
+        "total_execution_ceiling_seconds": 60.0,
+        "jobs": [
+          {
+            "name": "ibm_fez/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_fez_dynamic_pub_01",
+                "shots": 4096,
+                "scheduled_seconds": 9.020000000000003e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 1.14286592,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_02",
+                "shots": 4096,
+                "scheduled_seconds": 8.996000000000003e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 1.060847616,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 4.503713535999999,
+            "max_execution_seconds": 60,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_orbit_feedback_contrast",
+            "predicted_value": 0.2146759033203125,
+            "simulation_error_radius": 0.029419175634136974,
+            "modeled_value_lower_bound": 0.18525672768617552,
+            "modeled_value_upper_bound": 0.24409507895444948,
+            "confidence_half_width": 0.09251294920629989,
+            "detection_radius": 0.08488134473378872,
+            "power_radius": 0.0670614383215421,
+            "effect_used_for_power": 0.18525672768617552,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_fez",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 4096,
+          "proxy_score": 0.6541839723610101
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 4.503713535999999,
+        "normalized_precision_radius": null
+      },
+      {
+        "name": "candidate-000-shots-8192",
+        "feasible": true,
+        "estimated_charge_seconds": 6.707427072,
+        "total_execution_ceiling_seconds": 60.0,
+        "jobs": [
+          {
+            "name": "ibm_fez/dynamic/1",
+            "pubs": [
+              {
+                "name": "ibm_fez_dynamic_pub_01",
+                "shots": 8192,
+                "scheduled_seconds": 9.020000000000003e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 1.9999999999999998e-05,
+                "estimated_execution_seconds": 2.28573184,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 1
+              },
+              {
+                "name": "ibm_fez_dynamic_pub_02",
+                "shots": 8192,
+                "scheduled_seconds": 8.996000000000003e-06,
+                "repetition_delay_seconds": 0.00025,
+                "reset_seconds": 0.0,
+                "classical_latency_seconds": 0.0,
+                "estimated_execution_seconds": 2.121695232,
+                "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+                "classical_stage_count": 0
+              }
+            ],
+            "overhead_seconds": 2.3,
+            "estimated_charge_seconds": 6.707427072,
+            "max_execution_seconds": 60,
+            "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+          }
+        ],
+        "observables": [
+          {
+            "name": "n21_orbit_feedback_contrast",
+            "predicted_value": 0.2146759033203125,
+            "simulation_error_radius": 0.029419175634136974,
+            "modeled_value_lower_bound": 0.18525672768617552,
+            "modeled_value_upper_bound": 0.24409507895444948,
+            "confidence_half_width": 0.06541653373134128,
+            "detection_radius": 0.060020174457495044,
+            "power_radius": 0.04741959779328583,
+            "effect_used_for_power": 0.18525672768617552,
+            "minimum_effect": 0.0,
+            "precision_half_width": null,
+            "alpha": 0.05,
+            "power": 0.8,
+            "null_value": 0.0,
+            "bound_methods": [
+              "hoeffding_arbitrary_within_shot",
+              "hoeffding_arbitrary_within_shot"
+            ],
+            "covariance_assumptions": [],
+            "feasible": true,
+            "rejection_reasons": []
+          }
+        ],
+        "rejection_reasons": [],
+        "proxy_metadata": {
+          "backend": "ibm_fez",
+          "seed": 20261010,
+          "replicas": 1,
+          "shots": 8192,
+          "proxy_score": 0.6541839723610101
+        },
+        "cost_scenarios": [],
+        "worst_case_charge_seconds": 6.707427072,
+        "normalized_precision_radius": null
+      }
+    ],
+    "pareto_frontier": [
+      "candidate-000-shots-4096",
+      "candidate-000-shots-8192"
+    ],
+    "rejection_reasons": [],
+    "simulation_alpha": 0.01,
+    "simulation_comparisons": 6,
+    "assumptions": [
+      "independent stationary repetitions; arbitrary dependence within each PUB shot unless explicitly bounded",
+      "union bounds across PUBs; no independence assumption between PUBs",
+      "observable alpha and power are per endpoint, conditional on the supplied outcome model",
+      "finite simulation error is controlled simultaneously across all supplied candidate-observable marginals",
+      "hardware-model discrepancy and cost-model error remain unquantified",
+      "charge estimates include every PUB, control, repetition delay, declared duration addition, and job overhead",
+      "execution ceilings apply per job; their aggregate must preserve the declared reserve",
+      "explicit cost scenarios are sensitivity assumptions; their coverage of cost uncertainty is unquantified"
+    ],
+    "objective": "minimum_charge",
+    "selected_objective_value": 4.503713535999999,
+    "cost_scenarios": [],
+    "retained_candidate": "candidate-000-shots-4096",
+    "searched_routed_sets": 1,
+    "shot_tiers": [
+      2048,
+      4096,
+      8192
+    ],
+    "scope": "bounded routed candidates and uniform shot tiers; global optimality is unclaimed"
+  },
+  "optimizer_settings": {
+    "family": "n21-orbit-feedback",
+    "optimize": true,
+    "objective": "minimum_charge",
+    "cost_scenarios": [],
+    "shot_tiers": [
+      2048,
+      4096,
+      8192
+    ],
+    "shot_allocation": "uniform",
+    "replica_tiers": [
+      1
+    ],
+    "optimizer_candidates": 1,
+    "model_shots": 65536,
+    "precision": 0.08,
+    "alpha": 0.05,
+    "power": 0.8,
+    "simulation_alpha": 0.01,
+    "job_overhead_seconds": 2.3,
+    "classical_latency_us": 20.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 60.0
+  },
+  "optimization_budget": {
+    "remaining_seconds": 430.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 60.0
+  },
+  "local_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 2048,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "be2dfe9c9f1a3546c21c5064724a1a5c54686f14f78c36d9e324cfa15c35a23e"
+          },
+          "native_cuda_build": {
+            "basename": "native_cuda_build.json",
+            "sha256": "232e1db26ba1f0b6de63e4c96edddca372e86d11113904bf2bd7ba1efbe0225c",
+            "contract": {
+              "build_dependencies": {
+                "build": "1.6.0",
+                "distro": "1.9.0",
+                "packaging": "26.3",
+                "pybind11": "3.1.0",
+                "pyproject_hooks": "1.3.3",
+                "qiskit-aer": "0.17.2",
+                "scikit-build": "0.19.1",
+                "setuptools": "84.0.0",
+                "wheel": "0.48.0"
+              },
+              "build_mode": "upstream-aer-thrust-cuda-with-cpu-support",
+              "build_wheel_sha256": {
+                "qiskit_aer-0.17.2-cp314-cp314-linux_x86_64.whl": "2fe488f842a6e9a644f137ce62d7ab913664f47d68a0773618ee444b559532a6"
+              },
+              "cmake_options": {
+                "AER_CUDA_ARCH": "8.9",
+                "AER_ENABLE_CUQUANTUM": "OFF",
+                "AER_MPI": "OFF",
+                "AER_THRUST_BACKEND": "CUDA",
+                "DISABLE_CONAN": "ON"
+              },
+              "compile_jobs": 6,
+              "cuda_architecture": "sm_89",
+              "cuda_compile_commands": [
+                {
+                  "arguments": [
+                    "${CUDA_ROOT}/bin/nvcc",
+                    "-forward-unknown-to-host-compiler",
+                    "-ccbin=${SYSTEM_BIN}/g++",
+                    "-DAER_THRUST_SUPPORTED=TRUE",
+                    "-DFMT_SHARED",
+                    "-DJSON_DIAGNOSTICS=0",
+                    "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+                    "-DSPDLOG_COMPILED_LIB",
+                    "-DSPDLOG_FMT_EXTERNAL",
+                    "-DSPDLOG_SHARED_LIB",
+                    "-DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA",
+                    "-Dcontroller_wrappers_EXPORTS",
+                    "-I${SYSTEM_INCLUDE}/python3.14",
+                    "-I${BUILD_ROOT}/build-env/lib/python3.14/site-packages/pybind11/include",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${BUILD_ROOT}/json-prefix/include",
+                    "--Werror",
+                    "all-warnings",
+                    "-Xcompiler=-Wall,-Wextra,-Werror",
+                    "-O3",
+                    "-DNDEBUG",
+                    "-std=c++20",
+                    "--generate-code=arch=compute_89,code=[compute_89,sm_89]",
+                    "-Xcompiler=-fPIC",
+                    "-Xcompiler=-fvisibility=hidden",
+                    "--compiler-options",
+                    "-fopenmp",
+                    "-gencode",
+                    "arch=compute_89,code=sm_89",
+                    "-DAER_THRUST_GPU",
+                    "-DAER_THRUST_CUDA",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${AER_SOURCE}/src/third-party/headers",
+                    "-use_fast_math",
+                    "--expt-extended-lambda",
+                    "-Xcompiler=-imacros,pyconfig.h",
+                    "-x",
+                    "cu",
+                    "-c",
+                    "${AER_SOURCE}/qiskit_aer/backends/wrappers/bindings.cc",
+                    "-o",
+                    "qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/bindings.cc.o"
+                  ],
+                  "source": "qiskit_aer/backends/wrappers/bindings.cc"
+                },
+                {
+                  "arguments": [
+                    "${CUDA_ROOT}/bin/nvcc",
+                    "-forward-unknown-to-host-compiler",
+                    "-ccbin=${SYSTEM_BIN}/g++",
+                    "-DAER_THRUST_SUPPORTED=TRUE",
+                    "-DFMT_SHARED",
+                    "-DJSON_DIAGNOSTICS=0",
+                    "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+                    "-DSPDLOG_COMPILED_LIB",
+                    "-DSPDLOG_FMT_EXTERNAL",
+                    "-DSPDLOG_SHARED_LIB",
+                    "-DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA",
+                    "-Dcontroller_wrappers_EXPORTS",
+                    "-I${SYSTEM_INCLUDE}/python3.14",
+                    "-I${BUILD_ROOT}/build-env/lib/python3.14/site-packages/pybind11/include",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${BUILD_ROOT}/json-prefix/include",
+                    "--Werror",
+                    "all-warnings",
+                    "-Xcompiler=-Wall,-Wextra,-Werror",
+                    "-O3",
+                    "-DNDEBUG",
+                    "-std=c++20",
+                    "--generate-code=arch=compute_89,code=[compute_89,sm_89]",
+                    "-Xcompiler=-fPIC",
+                    "-Xcompiler=-fvisibility=hidden",
+                    "--compiler-options",
+                    "-fopenmp",
+                    "-gencode",
+                    "arch=compute_89,code=sm_89",
+                    "-DAER_THRUST_GPU",
+                    "-DAER_THRUST_CUDA",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${AER_SOURCE}/src/third-party/headers",
+                    "-use_fast_math",
+                    "--expt-extended-lambda",
+                    "--compiler-options",
+                    "-mfma",
+                    "--compiler-options",
+                    "-mavx2",
+                    "-x",
+                    "cu",
+                    "-c",
+                    "${AER_SOURCE}/src/simulators/statevector/qv_avx2.cpp",
+                    "-o",
+                    "qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/__/__/__/src/simulators/statevector/qv_avx2.cpp.o"
+                  ],
+                  "source": "src/simulators/statevector/qv_avx2.cpp"
+                }
+              ],
+              "cuda_compiler_flags": "--Werror all-warnings -Xcompiler=-Wall,-Wextra,-Werror",
+              "cuda_compiler_version": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Sep_01_08:45:21_PDT_2026\nCuda compilation tools, release 13.4, V13.4.92\nBuild cuda_13.4.r13.4/compiler.38855100_0",
+              "cuda_language_standard": "c++20",
+              "cuda_source_units": [
+                "qiskit_aer/backends/wrappers/bindings.cc",
+                "src/simulators/statevector/qv_avx2.cpp"
+              ],
+              "cuda_warning_flags_verified": true,
+              "device_warning_policy": "--Werror all-warnings",
+              "distribution": "qiskit-aer",
+              "host_compiler_target": "x86_64-pc-linux-gnu",
+              "host_compiler_version": "16.2.1",
+              "host_warning_policy": "-Wall -Wextra -Werror",
+              "native_dependencies": {
+                "cmake": "4.4.4-1.1",
+                "cuda": "13.4.2-1",
+                "fmt": "12.2.0-1.1",
+                "gcc": "16.2.1+r23+gd564253eb6c8-1",
+                "glibc": "2.44+r50+g1848099f063e-3",
+                "ninja": "1.13.2-3.1",
+                "openblas": "0.3.34-1",
+                "python-installer": "1.0.1-1",
+                "spdlog": "1.17.0-2.1",
+                "uv": "0.13.0-1.1"
+              },
+              "native_header_sha256": {
+                "fmt-base.h": "888315df369b34360880a89998ce24191e7c1b2b0606666ec8fddb31f0cae2fb",
+                "python-pyconfig.h": "82e7fa7be7bb2e49bcfb18d56aac4d10ca56d886219c90a95d2972efb1868c31",
+                "spdlog-common.h": "ddf4fa8ee4687f364086c3f3bca3b9113df3622916c67776594d231418102143"
+              },
+              "native_linked_library_sha256": {
+                "libc.so.6": "071e34179e645b25f8a8c2e7108894dc665caa9f5f8c939cd579a75b6638bc3f",
+                "libfmt.so.12": "6287216319c94ac38b15bc4f8bef43d8c98deac4ae8823d05c3fc27f0734082c",
+                "libgcc_s.so.1": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+                "libgfortran.so.5": "2ab102295ffad3934f37b6aab4a1b99b00a68fcc22ae3e5c7ac1edcf2c3fbd7e",
+                "libgomp.so.1": "843e95ac19bdc9c450e8b090204cf01aafaf680ab9ca64bf1ec5e3674c3a776f",
+                "libm.so.6": "58b6b82e39d59d7810d402ba4ec34359fde058204fdb7cd5a269fda256a35421",
+                "libopenblas.so.0": "de853d97cff751afff66470bd01ff249902d057bbe4242d484a7e16a05e09dff",
+                "libspdlog.so.1.17": "2e39866a38f27ca6f316f18157812c1199c51d6586d5590c23f0c61f49d47fb8",
+                "libstdc++.so.6": "412e0fc561a10581aaff2d101206939a31fa12c696590d8d4a5ec3655953ffe0"
+              },
+              "numpy_version": "2.5.4",
+              "python_config_preload": {
+                "bindings_flag": "-Xcompiler=-imacros,pyconfig.h",
+                "header": "pyconfig.h",
+                "sha256": "82e7fa7be7bb2e49bcfb18d56aac4d10ca56d886219c90a95d2972efb1868c31"
+              },
+              "python_soabi": "cpython-314-x86_64-linux-gnu",
+              "python_version": "3.14.7",
+              "python_wheel_tag": "cp314-cp314-linux_x86_64",
+              "schema": "native-aer-cuda-build-v1",
+              "source_sha256": {
+                "aer-cccl-type-traits.patch": "faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96",
+                "aer-compiler-diagnostics.patch": "8135f1b382cf704e0f4db67c29765fad4be245c9bc1040ab1d2f13f00f1b2543",
+                "aer-native-toolchain.patch": "656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04",
+                "aer-unused-parameter-annotations.patch": "d6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22",
+                "build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
+                "check_native_aer.py": "18b7879ab0a41acf58c9c6965b6f6f092218876a5a807d2b702ee1e1ebf5c295",
+                "nlohmann-json-3.10.2.tar.gz": "081ed0f9f89805c2d96335c3acfa993b39a0a5b4b4cef7edb68dd2210a13458c",
+                "qiskit-aer-0.17.2.tar.gz": "0231c74ae23d7dcaef664c39e57f800ee5174f73821a60f328ca3fe542266950",
+                "scikit-build-cmake-cli.patch": "663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53",
+                "setuptools-license-expression.patch": "1e63fb8daa9df8d8e54ff177bec02fffc451908df52fd3c2c90fe1a862997c32"
+              },
+              "upstream_cuda_math_flags": [
+                "-use_fast_math"
+              ],
+              "version": "0.17.2"
+            }
+          },
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_orbit_feedback",
+        "n21_orbit_no_feedback"
+      ],
+      "ordered_qpy_sha256": "5362871940487a8a9830cfed0f8475a18db4fbd55d96a7ee33087f9563e25a80",
+      "noise_serialized_channels_sha256": "9dad57a6e1eff63c1abe6569aaed016e3a80f2fb7b782a42555ab13d55f17f74",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 65536,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.82717449699976,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.599167958,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 2048,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.586247273,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 2048,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ],
+  "compiled_ideal_validation": {
+    "method": "branch-resolved statevector on active compiled replica wires",
+    "absolute_tolerance": 1e-10,
+    "noise_method": "density_matrix",
+    "all_candidates_passed": true
+  },
+  "budget_plan": {
+    "jobs": [
+      {
+        "backend": "ibm_fez",
+        "kind": "dynamic",
+        "batch_index": 1,
+        "pubs": 2,
+        "ceiling_seconds": 60
+      }
+    ],
+    "combined_ceiling_seconds": 60.0,
+    "reserve_seconds": 60.0,
+    "max_total_execution_seconds": 60.0,
+    "remaining_seconds": 430,
+    "admitted": true,
+    "reasons": [],
+    "reservation_scope": "invocation-local ceilings; external submissions can change shared quota"
+  },
+  "execution_contract": {
+    "backends": [
+      {
+        "name": "ibm_fez",
+        "repetition_delay_seconds": 0.00025
+      }
+    ],
+    "selected_job_costs": [
+      {
+        "name": "ibm_fez/dynamic/1",
+        "pubs": [
+          {
+            "name": "ibm_fez_dynamic_pub_01",
+            "shots": 4096,
+            "scheduled_seconds": 9.020000000000003e-06,
+            "repetition_delay_seconds": 0.00025,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 1.9999999999999998e-05,
+            "estimated_execution_seconds": 1.14286592,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 1
+          },
+          {
+            "name": "ibm_fez_dynamic_pub_02",
+            "shots": 4096,
+            "scheduled_seconds": 8.996000000000003e-06,
+            "repetition_delay_seconds": 0.00025,
+            "reset_seconds": 0.0,
+            "classical_latency_seconds": 0.0,
+            "estimated_execution_seconds": 1.060847616,
+            "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
+            "classical_stage_count": 0
+          }
+        ],
+        "overhead_seconds": 2.3,
+        "estimated_charge_seconds": 4.503713535999999,
+        "max_execution_seconds": 60,
+        "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
+      }
+    ],
+    "selected_cost_scenarios": [],
+    "selected_worst_case_charge_seconds": 4.503713535999999
+  },
+  "groups": [
+    {
+      "group": "n21_orbit_feedback",
+      "backend": "ibm_fez",
+      "calibration": "2026-10-12T23:27:11-07:00",
+      "noise_model_calibration": "2026-10-12T23:27:11-07:00",
+      "seed_transpiler": 20261010,
+      "initial_layout": [
+        2,
+        16,
+        3,
+        4
+      ],
+      "joint_score": 0.6541839723610101,
+      "replica_floor": 0.9,
+      "replicas": [
+        {
+          "index": 0,
+          "prefix": "r0_",
+          "score": 0.6881232651261474,
+          "physical_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "initial_layout": [
+            142,
+            136,
+            143,
+            144
+          ],
+          "mapping": {
+            "2": 142,
+            "3": 143,
+            "4": 144,
+            "16": 136
+          }
+        }
+      ],
+      "summary": {
+        "feedback_signed_contrast": 0.0,
+        "no_feedback_signed_contrast": -0.207275390625,
+        "contrast_difference": 0.207275390625,
+        "labeled_tvd": 0.11572265625,
+        "feedback_tvd_to_ideal": 0.0205078125,
+        "no_feedback_tvd_to_ideal": 0.02978515625
+      },
+      "summary_per_replica": [
+        {
+          "feedback_signed_contrast": 0.0,
+          "no_feedback_signed_contrast": -0.207275390625,
+          "contrast_difference": 0.207275390625,
+          "labeled_tvd": 0.11572265625,
+          "feedback_tvd_to_ideal": 0.0205078125,
+          "no_feedback_tvd_to_ideal": 0.02978515625
+        }
+      ],
+      "variance": {
+        "n21_orbit_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5,
+          "shot_variance": 3.0517578125e-05
+        },
+        "n21_orbit_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.3963623046875,
+          "shot_variance": 2.794002284645103e-05
+        }
+      },
+      "summary_readout_corrected": {
+        "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
+      },
+      "members": [
+        {
+          "name": "n21_orbit_feedback",
+          "reference": false,
+          "cz": 43,
+          "depth": 145,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": true,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            0.375,
+            0.25,
+            0.125,
+            0.25
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 9.020000000000003e-06,
+              "esp": 0.8854268705987638,
+              "coherence": 0.777165554802746,
+              "noisy": [
+                0.354492,
+                0.25,
+                0.145508,
+                0.25
+              ],
+              "tvd_noisy_to_ideal": 0.0205078125
+            }
+          ]
+        },
+        {
+          "name": "n21_orbit_no_feedback",
+          "reference": false,
+          "cz": 43,
+          "depth": 138,
+          "duration_bound": "lower_without_classical_latency",
+          "dynamic": true,
+          "feed_forward": false,
+          "replica_prefixes": [
+            "r0_"
+          ],
+          "replica_qubits": [
+            [
+              136,
+              142,
+              143,
+              144
+            ]
+          ],
+          "ideal": [
+            0.375,
+            0.125,
+            0.125,
+            0.375
+          ],
+          "replicas": [
+            {
+              "physical_qubits": [
+                136,
+                142,
+                143,
+                144
+              ],
+              "duration_s": 8.996000000000003e-06,
+              "esp": 0.8881723507441399,
+              "coherence": 0.7776870376189601,
+              "noisy": [
+                0.366211,
+                0.146729,
+                0.133057,
+                0.354004
+              ],
+              "tvd_noisy_to_ideal": 0.02978515625
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "evaluation_simulation_batches": [
+    {
+      "policy": {
+        "mode": "auto",
+        "threads": 12,
+        "memory_mb": 2048,
+        "shot_branching": false,
+        "method": "density_matrix_dynamic_statevector",
+        "precision": "double",
+        "shot_branching_sampling": false,
+        "parallel_experiments": 1,
+        "aer_native": {
+          "schema": "native-aer-identity-v1",
+          "distribution": "qiskit-aer",
+          "version": "0.17.2",
+          "python_soabi": "cpython-314-x86_64-linux-gnu",
+          "extension": {
+            "basename": "controller_wrappers.cpython-314-x86_64-linux-gnu.so",
+            "sha256": "be2dfe9c9f1a3546c21c5064724a1a5c54686f14f78c36d9e324cfa15c35a23e"
+          },
+          "native_cuda_build": {
+            "basename": "native_cuda_build.json",
+            "sha256": "232e1db26ba1f0b6de63e4c96edddca372e86d11113904bf2bd7ba1efbe0225c",
+            "contract": {
+              "build_dependencies": {
+                "build": "1.6.0",
+                "distro": "1.9.0",
+                "packaging": "26.3",
+                "pybind11": "3.1.0",
+                "pyproject_hooks": "1.3.3",
+                "qiskit-aer": "0.17.2",
+                "scikit-build": "0.19.1",
+                "setuptools": "84.0.0",
+                "wheel": "0.48.0"
+              },
+              "build_mode": "upstream-aer-thrust-cuda-with-cpu-support",
+              "build_wheel_sha256": {
+                "qiskit_aer-0.17.2-cp314-cp314-linux_x86_64.whl": "2fe488f842a6e9a644f137ce62d7ab913664f47d68a0773618ee444b559532a6"
+              },
+              "cmake_options": {
+                "AER_CUDA_ARCH": "8.9",
+                "AER_ENABLE_CUQUANTUM": "OFF",
+                "AER_MPI": "OFF",
+                "AER_THRUST_BACKEND": "CUDA",
+                "DISABLE_CONAN": "ON"
+              },
+              "compile_jobs": 6,
+              "cuda_architecture": "sm_89",
+              "cuda_compile_commands": [
+                {
+                  "arguments": [
+                    "${CUDA_ROOT}/bin/nvcc",
+                    "-forward-unknown-to-host-compiler",
+                    "-ccbin=${SYSTEM_BIN}/g++",
+                    "-DAER_THRUST_SUPPORTED=TRUE",
+                    "-DFMT_SHARED",
+                    "-DJSON_DIAGNOSTICS=0",
+                    "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+                    "-DSPDLOG_COMPILED_LIB",
+                    "-DSPDLOG_FMT_EXTERNAL",
+                    "-DSPDLOG_SHARED_LIB",
+                    "-DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA",
+                    "-Dcontroller_wrappers_EXPORTS",
+                    "-I${SYSTEM_INCLUDE}/python3.14",
+                    "-I${BUILD_ROOT}/build-env/lib/python3.14/site-packages/pybind11/include",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${BUILD_ROOT}/json-prefix/include",
+                    "--Werror",
+                    "all-warnings",
+                    "-Xcompiler=-Wall,-Wextra,-Werror",
+                    "-O3",
+                    "-DNDEBUG",
+                    "-std=c++20",
+                    "--generate-code=arch=compute_89,code=[compute_89,sm_89]",
+                    "-Xcompiler=-fPIC",
+                    "-Xcompiler=-fvisibility=hidden",
+                    "--compiler-options",
+                    "-fopenmp",
+                    "-gencode",
+                    "arch=compute_89,code=sm_89",
+                    "-DAER_THRUST_GPU",
+                    "-DAER_THRUST_CUDA",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${AER_SOURCE}/src/third-party/headers",
+                    "-use_fast_math",
+                    "--expt-extended-lambda",
+                    "-Xcompiler=-imacros,pyconfig.h",
+                    "-x",
+                    "cu",
+                    "-c",
+                    "${AER_SOURCE}/qiskit_aer/backends/wrappers/bindings.cc",
+                    "-o",
+                    "qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/bindings.cc.o"
+                  ],
+                  "source": "qiskit_aer/backends/wrappers/bindings.cc"
+                },
+                {
+                  "arguments": [
+                    "${CUDA_ROOT}/bin/nvcc",
+                    "-forward-unknown-to-host-compiler",
+                    "-ccbin=${SYSTEM_BIN}/g++",
+                    "-DAER_THRUST_SUPPORTED=TRUE",
+                    "-DFMT_SHARED",
+                    "-DJSON_DIAGNOSTICS=0",
+                    "-DJSON_USE_IMPLICIT_CONVERSIONS=1",
+                    "-DSPDLOG_COMPILED_LIB",
+                    "-DSPDLOG_FMT_EXTERNAL",
+                    "-DSPDLOG_SHARED_LIB",
+                    "-DTHRUST_DEVICE_SYSTEM=THRUST_DEVICE_SYSTEM_CUDA",
+                    "-Dcontroller_wrappers_EXPORTS",
+                    "-I${SYSTEM_INCLUDE}/python3.14",
+                    "-I${BUILD_ROOT}/build-env/lib/python3.14/site-packages/pybind11/include",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${BUILD_ROOT}/json-prefix/include",
+                    "--Werror",
+                    "all-warnings",
+                    "-Xcompiler=-Wall,-Wextra,-Werror",
+                    "-O3",
+                    "-DNDEBUG",
+                    "-std=c++20",
+                    "--generate-code=arch=compute_89,code=[compute_89,sm_89]",
+                    "-Xcompiler=-fPIC",
+                    "-Xcompiler=-fvisibility=hidden",
+                    "--compiler-options",
+                    "-fopenmp",
+                    "-gencode",
+                    "arch=compute_89,code=sm_89",
+                    "-DAER_THRUST_GPU",
+                    "-DAER_THRUST_CUDA",
+                    "-I${AER_SOURCE}/src",
+                    "-isystem",
+                    "${AER_SOURCE}/src/third-party/headers",
+                    "-use_fast_math",
+                    "--expt-extended-lambda",
+                    "--compiler-options",
+                    "-mfma",
+                    "--compiler-options",
+                    "-mavx2",
+                    "-x",
+                    "cu",
+                    "-c",
+                    "${AER_SOURCE}/src/simulators/statevector/qv_avx2.cpp",
+                    "-o",
+                    "qiskit_aer/backends/wrappers/CMakeFiles/controller_wrappers.dir/__/__/__/src/simulators/statevector/qv_avx2.cpp.o"
+                  ],
+                  "source": "src/simulators/statevector/qv_avx2.cpp"
+                }
+              ],
+              "cuda_compiler_flags": "--Werror all-warnings -Xcompiler=-Wall,-Wextra,-Werror",
+              "cuda_compiler_version": "nvcc: NVIDIA (R) Cuda compiler driver\nCopyright (c) 2005-2026 NVIDIA Corporation\nBuilt on Tue_Sep_01_08:45:21_PDT_2026\nCuda compilation tools, release 13.4, V13.4.92\nBuild cuda_13.4.r13.4/compiler.38855100_0",
+              "cuda_language_standard": "c++20",
+              "cuda_source_units": [
+                "qiskit_aer/backends/wrappers/bindings.cc",
+                "src/simulators/statevector/qv_avx2.cpp"
+              ],
+              "cuda_warning_flags_verified": true,
+              "device_warning_policy": "--Werror all-warnings",
+              "distribution": "qiskit-aer",
+              "host_compiler_target": "x86_64-pc-linux-gnu",
+              "host_compiler_version": "16.2.1",
+              "host_warning_policy": "-Wall -Wextra -Werror",
+              "native_dependencies": {
+                "cmake": "4.4.4-1.1",
+                "cuda": "13.4.2-1",
+                "fmt": "12.2.0-1.1",
+                "gcc": "16.2.1+r23+gd564253eb6c8-1",
+                "glibc": "2.44+r50+g1848099f063e-3",
+                "ninja": "1.13.2-3.1",
+                "openblas": "0.3.34-1",
+                "python-installer": "1.0.1-1",
+                "spdlog": "1.17.0-2.1",
+                "uv": "0.13.0-1.1"
+              },
+              "native_header_sha256": {
+                "fmt-base.h": "888315df369b34360880a89998ce24191e7c1b2b0606666ec8fddb31f0cae2fb",
+                "python-pyconfig.h": "82e7fa7be7bb2e49bcfb18d56aac4d10ca56d886219c90a95d2972efb1868c31",
+                "spdlog-common.h": "ddf4fa8ee4687f364086c3f3bca3b9113df3622916c67776594d231418102143"
+              },
+              "native_linked_library_sha256": {
+                "libc.so.6": "071e34179e645b25f8a8c2e7108894dc665caa9f5f8c939cd579a75b6638bc3f",
+                "libfmt.so.12": "6287216319c94ac38b15bc4f8bef43d8c98deac4ae8823d05c3fc27f0734082c",
+                "libgcc_s.so.1": "571745fb27883c763315fab54a536906064c1df6804d1a7884713dac259da68d",
+                "libgfortran.so.5": "2ab102295ffad3934f37b6aab4a1b99b00a68fcc22ae3e5c7ac1edcf2c3fbd7e",
+                "libgomp.so.1": "843e95ac19bdc9c450e8b090204cf01aafaf680ab9ca64bf1ec5e3674c3a776f",
+                "libm.so.6": "58b6b82e39d59d7810d402ba4ec34359fde058204fdb7cd5a269fda256a35421",
+                "libopenblas.so.0": "de853d97cff751afff66470bd01ff249902d057bbe4242d484a7e16a05e09dff",
+                "libspdlog.so.1.17": "2e39866a38f27ca6f316f18157812c1199c51d6586d5590c23f0c61f49d47fb8",
+                "libstdc++.so.6": "412e0fc561a10581aaff2d101206939a31fa12c696590d8d4a5ec3655953ffe0"
+              },
+              "numpy_version": "2.5.4",
+              "python_config_preload": {
+                "bindings_flag": "-Xcompiler=-imacros,pyconfig.h",
+                "header": "pyconfig.h",
+                "sha256": "82e7fa7be7bb2e49bcfb18d56aac4d10ca56d886219c90a95d2972efb1868c31"
+              },
+              "python_soabi": "cpython-314-x86_64-linux-gnu",
+              "python_version": "3.14.7",
+              "python_wheel_tag": "cp314-cp314-linux_x86_64",
+              "schema": "native-aer-cuda-build-v1",
+              "source_sha256": {
+                "aer-cccl-type-traits.patch": "faa60152663d9227ca049dc4f71f0dcfc81950d0c4f540d910c84db6b3394d96",
+                "aer-compiler-diagnostics.patch": "8135f1b382cf704e0f4db67c29765fad4be245c9bc1040ab1d2f13f00f1b2543",
+                "aer-native-toolchain.patch": "656d158ebf2fe100dbcbd5943c71ef7c54d4c35ecdaec6aacaf436fd593f5d04",
+                "aer-unused-parameter-annotations.patch": "d6a7df2caebd129c65d233f7e13598507e942123da2d12e9128594b4df38ac22",
+                "build-requirements.txt": "10e6c2e2adac4d2d585fbe2d49ccdf267e82bc70051ced87d37986cbe25f4352",
+                "check_native_aer.py": "18b7879ab0a41acf58c9c6965b6f6f092218876a5a807d2b702ee1e1ebf5c295",
+                "nlohmann-json-3.10.2.tar.gz": "081ed0f9f89805c2d96335c3acfa993b39a0a5b4b4cef7edb68dd2210a13458c",
+                "qiskit-aer-0.17.2.tar.gz": "0231c74ae23d7dcaef664c39e57f800ee5174f73821a60f328ca3fe542266950",
+                "scikit-build-cmake-cli.patch": "663964342a2fdc6e56501c0870577974f464020190508438bbc4411dca489c53",
+                "setuptools-license-expression.patch": "1e63fb8daa9df8d8e54ff177bec02fffc451908df52fd3c2c90fe1a862997c32"
+              },
+              "upstream_cuda_math_flags": [
+                "-use_fast_math"
+              ],
+              "version": "0.17.2"
+            }
+          },
+          "loaded_mapping_verified": true,
+          "loaded_mapping_scope": "linux-process-map-device-inode"
+        }
+      },
+      "device": "CPU",
+      "method": "statevector",
+      "gpu_admission": null,
+      "ordered_circuit_names": [
+        "n21_orbit_feedback",
+        "n21_orbit_no_feedback"
+      ],
+      "ordered_qpy_sha256": "5362871940487a8a9830cfed0f8475a18db4fbd55d96a7ee33087f9563e25a80",
+      "noise_serialized_channels_sha256": "9dad57a6e1eff63c1abe6569aaed016e3a80f2fb7b782a42555ab13d55f17f74",
+      "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
+      "shots": 4096,
+      "seed_simulator": 20261011,
+      "wall_seconds": 2.6417709349998404,
+      "experiment_metadata": [
+        {
+          "time_taken": 0.108429978,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 2048,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        },
+        {
+          "time_taken": 0.095709297,
+          "num_bind_params": 1,
+          "parallel_state_update": 1,
+          "required_memory_mb": 1,
+          "input_qubit_map": [
+            [
+              144,
+              3
+            ],
+            [
+              143,
+              2
+            ],
+            [
+              142,
+              1
+            ],
+            [
+              136,
+              0
+            ]
+          ],
+          "method": "statevector",
+          "device": "CPU",
+          "num_qubits": 4,
+          "active_input_qubits": [
+            136,
+            142,
+            143,
+            144
+          ],
+          "num_clbits": 2,
+          "remapped_qubits": true,
+          "parallel_shots": 12,
+          "runtime_parameter_bind": false,
+          "max_memory_mb": 2048,
+          "noise": "kraus",
+          "measure_sampling": false,
+          "batched_shots_optimization": false,
+          "fusion": {
+            "applied": false,
+            "max_fused_qubits": 2,
+            "threshold": 14,
+            "enabled": true
+          }
+        }
+      ]
+    }
+  ]
+}

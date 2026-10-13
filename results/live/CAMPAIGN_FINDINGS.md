@@ -6,13 +6,15 @@ retained record, measured quantity, result and interpretation boundary.
 Numbers come from the linked `collect.json`, adjudication or analysis files.
 The [service inventory](qpu-job-inventory.json) and
 [offline retention audit](qpu-job-retention-audit.json) reconcile every completed
-physical job observed at 2026-10-13T04:59:38Z: 214 PUBs, 552960 physical PUB
-shots, 224 indexed raw data files and ten indexed metrics snapshots. Local
+physical job observed at 2026-10-13T23:18:34Z: 15 jobs, 270 PUBs, 659456 physical PUB
+shots, 285 indexed raw data files and 15 indexed metrics snapshots. Local
 simulations and native mock outcomes retain separate evidence identities.
-The total settled charge is 170 seconds: 49 historical seconds and 121 new
-campaign seconds, leaving 59 seconds under the 180-second campaign ceiling.
-The account observation reports 430 remaining seconds; the 60-second reserve
-and fresh-account-read requirement still apply to future acquisition.
+The total settled charge is 210 seconds: 49 historical seconds and 161 new
+campaign seconds, leaving 19 seconds under the 180-second campaign ceiling.
+The account observation reports 390 remaining seconds; the 60-second reserve
+and fresh-account-read requirement still apply to future acquisition. The
+2026-10-13T04:59:38Z observation (ten jobs, 170 seconds, 59 seconds unallocated)
+precedes the N=21 orbit, orbit-window and patch-window acquisitions.
 The pilot's own collection and adjudication carry its 9-second charge;
 [qpu-coordination.json](qpu-coordination.json) carries the later campaign's
 execution ownership and settled charges.

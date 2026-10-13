@@ -1,0 +1,1020 @@
+{
+  "joint_quasistatic_detuning": {
+    "skipped": "window state is not a branch phase on the work bit for 1",
+    "unresolved": {
+      "n21_orbit_extra_readout_no_feedback": [
+        "a joint probe with qubit 136 fits neither relative sign of qubit 144"
+      ],
+      "n21_orbit_nominal_no_feedback": [
+        "a joint probe with qubit 136 fits neither relative sign of qubit 144"
+      ],
+      "n21_orbit_window_delay_no_feedback": [
+        "a joint probe with qubit 136 fits neither relative sign of qubit 144"
+      ]
+    }
+  },
+  "member_readout": {
+    "n21_orbit_extra_readout_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_extra_readout_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_nominal_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_nominal_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_delay_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_delay_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_echo_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    },
+    "n21_orbit_window_echo_no_feedback": {
+      "control_qubit": 142,
+      "end_e01": 0.00048828125,
+      "end_e10": 0.00634765625,
+      "mid_e01": 0.00048828125,
+      "mid_e10": 0.00634765625,
+      "source": "retained placed-qubit calibration or properties at the record calibration",
+      "terminal_qubit": 142
+    }
+  },
+  "pairs": {
+    "n21_orbit_extra_readout": {
+      "measured_counts": {
+        "feedback": [
+          1357,
+          1104,
+          762,
+          873
+        ],
+        "no_feedback": [
+          1391,
+          897,
+          742,
+          1066
+        ]
+      },
+      "models": {
+        "baseline_depolarizing": {
+          "added_parameters": 0,
+          "deviance": 33.66050410697741,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3250354617723634,
+            0.24999141693115237,
+            0.17789422572763655,
+            0.2470788955688477
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3250354617723635,
+            0.22713809017969416,
+            0.17789422572763658,
+            0.2699322223203059
+          ],
+          "parameters": {
+            "round1": 0.249514545584046,
+            "round2": 0.09183085344880794
+          }
+        },
+        "control_phase": {
+          "added_parameters": 1,
+          "deviance": 13.124072064199197,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3218012860790099,
+            0.2711507910554962,
+            0.18112840142099,
+            0.2259195214445038
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.32180128607901,
+            0.21970098095210885,
+            0.18112840142099004,
+            0.2773693315478913
+          ],
+          "parameters": {
+            "control_phase": -0.6097519266708825,
+            "round1": 0.21196767461988122,
+            "round2": 0.0
+          }
+        },
+        "mid_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 25.149854207675904,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.3354492281983065,
+            0.24188756762690594,
+            0.18359374413188428,
+            0.23906946004290322
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3354492281983066,
+            0.21977507568934518,
+            0.18359374413188428,
+            0.26118195198046396
+          ],
+          "parameters": {
+            "mid_e01": 0.028383118657956747,
+            "mid_e10": 0.06646906331833853,
+            "round1": 0.24532125221957626,
+            "round2": 0.02142710258849656
+          }
+        },
+        "reset_failure": {
+          "added_parameters": 1,
+          "deviance": 33.66050410698266,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.32503546555471874,
+            0.2499914169311524,
+            0.17789422194528123,
+            0.2470788955688477
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.32503546555471863,
+            0.22713809826639217,
+            0.17789422194528118,
+            0.2699322142336079
+          ],
+          "parameters": {
+            "reset_failure": 0.0832314290992711,
+            "round1": 0.23028065961198615,
+            "round2": 0.1175969264641997
+          }
+        },
+        "terminal_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 9.477046719499498,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.3255351470717903,
+            0.27528911261686284,
+            0.1773945404282096,
+            0.2217811998831372
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3255351470717903,
+            0.22828813646390236,
+            0.1773945404282096,
+            0.2687821760360977
+          ],
+          "parameters": {
+            "end_e01": 0.21701862844801914,
+            "end_e10": 0.3246651955194045,
+            "round1": 0.0,
+            "round2": 0.17394173126301937
+          }
+        },
+        "window_amplitude_damping": {
+          "added_parameters": 1,
+          "deviance": 33.66050410698023,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.32503546652625476,
+            0.2499914169311524,
+            0.1778942209737451,
+            0.24707889556884768
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3250354665262548,
+            0.22713809030529356,
+            0.17789422097374513,
+            0.2699322221947066
+          ],
+          "parameters": {
+            "round1": 0.15357493042059778,
+            "round2": 0.30424857537177624,
+            "window_t1": 0.09014131573388742
+          }
+        },
+        "window_dephasing": {
+          "added_parameters": 1,
+          "deviance": 33.660504106980454,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3250354656733665,
+            0.24999141693115234,
+            0.17789422182663353,
+            0.24707889556884766
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.32503546567336644,
+            0.2271380879021088,
+            0.1778942218266335,
+            0.2699322245978912
+          ],
+          "parameters": {
+            "round1": 0.22325196400915157,
+            "round2": 0.0,
+            "window_t2": 0.09494169235951434
+          }
+        },
+        "work_phase_one": {
+          "added_parameters": 1,
+          "deviance": 9.270487700825313,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.32464421674328314,
+            0.2771799924048699,
+            0.1782854707567169,
+            0.2198903200951301
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.32464421674328314,
+            0.22666599696625284,
+            0.1782854707567169,
+            0.2704043155337471
+          ],
+          "parameters": {
+            "phase_one": 0.6336019612787677,
+            "round1": 0.21878826863978207,
+            "round2": 0.0
+          }
+        },
+        "work_phase_sixteen": {
+          "added_parameters": 1,
+          "deviance": 9.270487700829761,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.32464422080775374,
+            0.27717998021797796,
+            0.17828546669224626,
+            0.219890332282022
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.32464422080775374,
+            0.22666599956537956,
+            0.17828546669224626,
+            0.2704043129346204
+          ],
+          "parameters": {
+            "phase_sixteen": -0.633601761209645,
+            "round1": 0.21878830299391525,
+            "round2": 0.0
+          }
+        }
+      },
+      "work_phase_95_interval": [
+        [
+          0.47123889803846897,
+          0.7330382858376181
+        ]
+      ]
+    },
+    "n21_orbit_nominal": {
+      "measured_counts": {
+        "feedback": [
+          1376,
+          1193,
+          713,
+          814
+        ],
+        "no_feedback": [
+          1376,
+          814,
+          723,
+          1183
+        ]
+      },
+      "models": {
+        "baseline_depolarizing": {
+          "added_parameters": 0,
+          "deviance": 69.98176037214856,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.33048289397351216,
+            0.2499914169311524,
+            0.17244679352648776,
+            0.24707889556884766
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.33048289397351216,
+            0.20261152030251803,
+            0.17244679352648776,
+            0.29445879219748206
+          ],
+          "parameters": {
+            "round1": 0.15640583741318645,
+            "round2": 0.15734441328063162
+          }
+        },
+        "control_phase": {
+          "added_parameters": 1,
+          "deviance": 3.8587368342958754,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.32788321140957827,
+            0.292712679917508,
+            0.17504647609042176,
+            0.20435763258249212
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3278832114095782,
+            0.19786941695839597,
+            0.17504647609042173,
+            0.2992008955416042
+          ],
+          "parameters": {
+            "control_phase": -0.6866022022449559,
+            "round1": 0.12690356710768616,
+            "round2": 0.0
+          }
+        },
+        "mid_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 67.7236201543448,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.33593751007933054,
+            0.2458167057155427,
+            0.17529296243966813,
+            0.24295282176545868
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3359375100793305,
+            0.19922804305628725,
+            0.17529296243966813,
+            0.2895414844247141
+          ],
+          "parameters": {
+            "mid_e01": 0.08304141460731143,
+            "mid_e10": 0.10550235964530859,
+            "round1": 0.14244565721282068,
+            "round2": 0.018664326969215855
+          }
+        },
+        "reset_failure": {
+          "added_parameters": 1,
+          "deviance": 69.98176037206284,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.33048292014793984,
+            0.24999141693115232,
+            0.17244676735206022,
+            0.24707889556884766
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.33048292014793984,
+            0.2026115309581729,
+            0.17244676735206022,
+            0.2944587815418271
+          ],
+          "parameters": {
+            "reset_failure": 0.0,
+            "round1": 0.15640595416079675,
+            "round2": 0.15734396005768353
+          }
+        },
+        "terminal_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 24.992769652818843,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.3354066733073904,
+            0.27296479082969793,
+            0.16752301419260948,
+            0.2241055216703021
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3354066733073904,
+            0.21374056796885832,
+            0.16752301419260948,
+            0.2833297445311418
+          ],
+          "parameters": {
+            "end_e01": 0.19329577171382725,
+            "end_e10": 0.29159025426632484,
+            "round1": 0.0,
+            "round2": 0.07388476253736553
+          }
+        },
+        "window_amplitude_damping": {
+          "added_parameters": 1,
+          "deviance": 69.98176037209174,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3304829178912286,
+            0.24999141693115234,
+            0.17244676960877145,
+            0.24707889556884763
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3304829178912286,
+            0.2026115066934841,
+            0.17244676960877145,
+            0.2944588058065159
+          ],
+          "parameters": {
+            "round1": 0.01020549326826312,
+            "round2": 0.4196732517143614,
+            "window_t1": 0.10103408261058515
+          }
+        },
+        "window_dephasing": {
+          "added_parameters": 1,
+          "deviance": 69.98176037206213,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3304829343773652,
+            0.24999141693115237,
+            0.17244675312263477,
+            0.2470788955688477
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3304829343773652,
+            0.20261153616369132,
+            0.17244675312263477,
+            0.2944587763363088
+          ],
+          "parameters": {
+            "round1": 0.13022041578423488,
+            "round2": 0.0020708573754352135,
+            "window_t2": 0.12226831495332678
+          }
+        },
+        "work_phase_one": {
+          "added_parameters": 1,
+          "deviance": 2.353039303176068,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3304399109285805,
+            0.295431033630165,
+            0.1724897765714196,
+            0.20163927886983507
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3304399109285805,
+            0.20255611152845931,
+            0.1724897765714196,
+            0.29451420097154063
+          ],
+          "parameters": {
+            "phase_one": 0.6967621936839404,
+            "round1": 0.12947501455890564,
+            "round2": 0.0
+          }
+        },
+        "work_phase_sixteen": {
+          "added_parameters": 1,
+          "deviance": 2.3530393031733965,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3304399068990181,
+            0.2954310384631646,
+            0.17248978060098183,
+            0.2016392740368355
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3304399068990181,
+            0.20255611512425803,
+            0.17248978060098183,
+            0.294514197375742
+          ],
+          "parameters": {
+            "phase_sixteen": -0.6967622749673699,
+            "round1": 0.1294750125520745,
+            "round2": 0.0
+          }
+        }
+      },
+      "work_phase_95_interval": [
+        [
+          0.5759586531581284,
+          0.7853981633974483
+        ]
+      ]
+    },
+    "n21_orbit_window_delay": {
+      "measured_counts": {
+        "feedback": [
+          1305,
+          1077,
+          799,
+          915
+        ],
+        "no_feedback": [
+          1342,
+          868,
+          727,
+          1159
+        ]
+      },
+      "models": {
+        "baseline_depolarizing": {
+          "added_parameters": 0,
+          "deviance": 16.95131876169173,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3190162647481879,
+            0.24999141693115234,
+            0.1839134227518121,
+            0.24707889556884763
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3190162647481879,
+            0.2128549784040157,
+            0.1839134227518121,
+            0.2842153340959842
+          ],
+          "parameters": {
+            "round1": 0.1728125463780668,
+            "round2": 0.26170064659742026
+          }
+        },
+        "control_phase": {
+          "added_parameters": 1,
+          "deviance": 5.592127089434857,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.319016256721624,
+            0.2687473376727858,
+            0.18391343077837605,
+            0.22832297482721423
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.319016256721624,
+            0.21285495560105155,
+            0.18391343077837602,
+            0.2842153568989484
+          ],
+          "parameters": {
+            "control_phase": -0.46768268137350216,
+            "round1": 0.1728124098593682,
+            "round2": 0.17288104652472605
+          }
+        },
+        "mid_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 15.579582016988677,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.3231201194723112,
+            0.2467375997856398,
+            0.18627929376944577,
+            0.2438629869726033
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3231201194723112,
+            0.21008450891450098,
+            0.18627929376944577,
+            0.2805160778437421
+          ],
+          "parameters": {
+            "mid_e01": 0.16102877445400546,
+            "mid_e10": 0.179827600937519,
+            "round1": 0.134608717535674,
+            "round2": 0.02879890115286422
+          }
+        },
+        "reset_failure": {
+          "added_parameters": 1,
+          "deviance": 16.951318761696896,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.31901626181287157,
+            0.24999141693115234,
+            0.18391342568712843,
+            0.2470788955688477
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.31901626181287157,
+            0.21285495985022515,
+            0.18391342568712843,
+            0.28421535264977493
+          ],
+          "parameters": {
+            "reset_failure": 0.179569369545781,
+            "round1": 0.05545117337586556,
+            "round2": 0.40393985298494534
+          }
+        },
+        "terminal_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 6.050098459853044,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.31974706585028784,
+            0.2655144595379308,
+            0.1831826216497121,
+            0.23155585296206935
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.31974706585028784,
+            0.2144116896837812,
+            0.1831826216497121,
+            0.282658622816219
+          ],
+          "parameters": {
+            "end_e01": 0.23869322656155104,
+            "end_e10": 0.3070107376296889,
+            "round1": 0.0,
+            "round2": 0.09390343545974475
+          }
+        },
+        "window_amplitude_damping": {
+          "added_parameters": 1,
+          "deviance": 16.951318761689016,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.31901626643488773,
+            0.24999141693115234,
+            0.18391342106511221,
+            0.24707889556884768
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3190162664348878,
+            0.21285497017820243,
+            0.18391342106511221,
+            0.28421534232179774
+          ],
+          "parameters": {
+            "round1": 0.01902843722397231,
+            "round2": 0.5022981005029057,
+            "window_t1": 0.1105822465510284
+          }
+        },
+        "window_dephasing": {
+          "added_parameters": 1,
+          "deviance": 16.951318761688626,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3190162641622503,
+            0.24999141693115237,
+            0.18391342333774963,
+            0.24707889556884768
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.31901626416225043,
+            0.21285497536298553,
+            0.18391342333774968,
+            0.2842153371370145
+          ],
+          "parameters": {
+            "round1": 0.13493805044008877,
+            "round2": 0.07367557700880711,
+            "window_t2": 0.1652243249801125
+          }
+        },
+        "work_phase_one": {
+          "added_parameters": 1,
+          "deviance": 5.592127089413447,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3190162716974805,
+            0.2687473617365099,
+            0.18391341580251944,
+            0.2283229507634901
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3190162716974805,
+            0.21285497116314178,
+            0.18391341580251944,
+            0.28421534133685833
+          ],
+          "parameters": {
+            "phase_one": 0.4103359982667777,
+            "round1": 0.16319813794723048,
+            "round2": 0.22229776420844544
+          }
+        },
+        "work_phase_sixteen": {
+          "added_parameters": 1,
+          "deviance": 5.592127089409836,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.31901626767270475,
+            0.2687473562172584,
+            0.18391341982729537,
+            0.22832295628274157
+          ],
+          "improves_at_family_alpha": true,
+          "no_feedback_law": [
+            0.3190162676727047,
+            0.21285497982432278,
+            0.18391341982729534,
+            0.2842153326756772
+          ],
+          "parameters": {
+            "phase_sixteen": -0.4103359502705547,
+            "round1": 0.16319817115486437,
+            "round2": 0.22229778380849793
+          }
+        }
+      },
+      "work_phase_95_interval": [
+        [
+          0.2094395102393194,
+          0.5759586531581284
+        ]
+      ]
+    },
+    "n21_orbit_window_echo": {
+      "measured_counts": {
+        "feedback": [
+          1471,
+          1049,
+          644,
+          932
+        ],
+        "no_feedback": [
+          1489,
+          710,
+          607,
+          1290
+        ]
+      },
+      "models": {
+        "baseline_depolarizing": {
+          "added_parameters": 0,
+          "deviance": 10.997507450028806,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3528796679809816,
+            0.24999141693115237,
+            0.15005001951901842,
+            0.24707889556884768
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3528796679809816,
+            0.17581079429558766,
+            0.15005001951901842,
+            0.3212595182044124
+          ],
+          "parameters": {
+            "round1": 0.10977794190763653,
+            "round2": 0.0
+          }
+        },
+        "control_phase": {
+          "added_parameters": 1,
+          "deviance": 5.537754149561131,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3522538781058842,
+            0.2627624655380286,
+            0.1506758093941158,
+            0.23430784696197146
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3522538781058842,
+            0.17510616462516282,
+            0.1506758093941158,
+            0.32196414787483724
+          ],
+          "parameters": {
+            "control_phase": -0.16891646966220286,
+            "round1": 0.1053656033161165,
+            "round2": 0.0
+          }
+        },
+        "mid_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 7.927387087693706,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.35691253080246754,
+            0.24554910606978975,
+            0.15485002334226117,
+            0.24268833978548154
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3569125308024676,
+            0.17074131212147747,
+            0.1548500233422612,
+            0.3174961337337939
+          ],
+          "parameters": {
+            "mid_e01": 0.0,
+            "mid_e10": 0.0235251082894575,
+            "round1": 0.10510036995564019,
+            "round2": 0.0
+          }
+        },
+        "reset_failure": {
+          "added_parameters": 1,
+          "deviance": 10.949978325910301,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3535197979781226,
+            0.24999141693115234,
+            0.1494098895218774,
+            0.24707889556884766
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3535197979781226,
+            0.17645996349911772,
+            0.1494098895218774,
+            0.3206103490008823
+          ],
+          "parameters": {
+            "reset_failure": 0.021148711606299695,
+            "round1": 0.10176618907392902,
+            "round2": 0.008437836567663259
+          }
+        },
+        "terminal_readout_assignment": {
+          "added_parameters": 2,
+          "deviance": 5.338905013901801,
+          "family_wise_threshold": 10.15034763046766,
+          "feedback_law": [
+            0.353519817662308,
+            0.2632138910976197,
+            0.14940986983769192,
+            0.23385642140238042
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.353519817662308,
+            0.17645997612589226,
+            0.14940986983769192,
+            0.32061033637410785
+          ],
+          "parameters": {
+            "end_e01": 0.11236949136421251,
+            "end_e10": 0.17143049130119703,
+            "round1": 0.0025488514693127956,
+            "round2": 0.014253123671802452
+          }
+        },
+        "window_amplitude_damping": {
+          "added_parameters": 1,
+          "deviance": 10.949978325909555,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.3535198003698022,
+            0.24999141693115237,
+            0.1494098871301978,
+            0.24707889556884768
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.3535198003698022,
+            0.1764599630149516,
+            0.1494098871301978,
+            0.3206103494850484
+          ],
+          "parameters": {
+            "round1": 0.0018017477387107616,
+            "round2": 0.23681927176833084,
+            "window_t1": 0.07065744482579432
+          }
+        },
+        "window_dephasing": {
+          "added_parameters": 1,
+          "deviance": 10.997507450027918,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.35287966846097446,
+            0.24999141693115234,
+            0.15005001903902557,
+            0.24707889556884768
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.35287966846097446,
+            0.1758107932325663,
+            0.15005001903902557,
+            0.3212595192674338
+          ],
+          "parameters": {
+            "round1": 0.10977793926990591,
+            "round2": 0.0,
+            "window_t2": 0.0
+          }
+        },
+        "work_phase_one": {
+          "added_parameters": 1,
+          "deviance": 5.478860971854488,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.352437293200522,
+            0.262946575283756,
+            0.15049239429947783,
+            0.2341237372162441
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.35243729320052203,
+            0.17533917836074603,
+            0.15049239429947786,
+            0.3217311341392541
+          ],
+          "parameters": {
+            "phase_one": 0.1649823117800452,
+            "round1": 0.10565243537969365,
+            "round2": 0.0
+          }
+        },
+        "work_phase_sixteen": {
+          "added_parameters": 1,
+          "deviance": 5.478860971854168,
+          "family_wise_threshold": 7.47677266076695,
+          "feedback_law": [
+            0.35243729407953,
+            0.26294658111003133,
+            0.15049239342047002,
+            0.23412373138996873
+          ],
+          "improves_at_family_alpha": false,
+          "no_feedback_law": [
+            0.35243729407952995,
+            0.1753391751981705,
+            0.15049239342047,
+            0.3217311373018295
+          ],
+          "parameters": {
+            "phase_sixteen": -0.1649823789997445,
+            "round1": 0.1056524250960616,
+            "round2": 0.0
+          }
+        }
+      },
+      "work_phase_95_interval": [
+        [
+          0.05235987755982974,
+          0.26179938779914913
+        ]
+      ]
+    }
+  }
+}

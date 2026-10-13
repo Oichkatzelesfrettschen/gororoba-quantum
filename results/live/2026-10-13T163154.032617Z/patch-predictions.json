@@ -1,0 +1,26 @@
+{
+  "written_before_submission": true,
+  "patch": {"control": 142, "work_a": 136, "spectator": 143, "work_b": 144, "neighbor_a": 123, "neighbor_b": 145},
+  "delays_dt": [900, 1400, 1900],
+  "delays_us": [3.6, 5.6, 7.6],
+  "basis": "orbit-run fits: the feed-forward orbit arms expose only qubit 136 in the window; phase 0.59-0.70 rad over 3.85 us of 136 idle",
+  "hypotheses": {
+    "static_or_quasistatic_detuning_T2star": {
+      "ramsey_plain_phase_136_rad": "linear in delay near 0.18 rad/us: 0.65, 1.0, 1.37 (magnitude; sign from the X/Y quadratures)",
+      "ramsey_echo_phase_136_rad": "within 0.1 of zero at every delay",
+      "coherence": "plain Ramsey visibility below echo visibility by more than T1/T2E decay explains"
+    },
+    "readout_associated_shift": {
+      "readout_window_vs_plain": "phase differs from plain Ramsey at equal delay by more than its interval",
+      "control_state_dependence": "control prepared in 1 and in 0 give different work phases"
+    },
+    "exchange_with_spectator_or_neighbors": {
+      "exchange_neighbor_population": "143, 123 or 145 reads 1 above 0.02 and grows with delay after a work qubit is excited",
+      "target_loss": "target population falls by more than exp(-t/T1) predicts (T1 94 us on 136, 157 us on 144)"
+    },
+    "compiler_window_structure": {
+      "barrier_orbit": "per-arm signed contrasts move toward the noise model relative to the non-barrier nominal arms (feed-forward +0.09 to near 0)"
+    }
+  },
+  "decision": "each row is supported or refuted on its own interval; rows are not mutually exclusive"
+}

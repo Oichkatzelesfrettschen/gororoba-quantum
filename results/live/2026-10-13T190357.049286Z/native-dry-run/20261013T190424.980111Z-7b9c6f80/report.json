@@ -1,0 +1,123 @@
+{
+  "binding": {
+    "execution_contract_sha256": "a99954b6198687448e3e654e21f2c8c1bdca74276356f50b52dfdcf0d90f1d0f",
+    "execution_pubs_sha256": "24709e5b1b85b3a2e1c84b9e04641ed28d8e0ff9df11c85920a46cca9a946122",
+    "experiment_digest": "77aa27527239c276a7aba49bd0b38c3a56e5fb0a916cdea368576fe186e01e82",
+    "files": {
+      "approval-consumed.json": null,
+      "isa.qpy": "cd45b6993fa4540ac75cc217a3685f07ff17af8fda34be630543cc6066911473",
+      "record.json": "c8a80a5a3f9a36afa4ffcbbbadf0950b371e58c1c84c64893b4fb176e7fc8878"
+    },
+    "instance_sha256_12": "e3de05b6901e",
+    "preflight_source_sha256": "a3842f58e590293e40d292735153cd21f58691fadae9c13e3fb7ba4ff6e1a91a",
+    "shots": 4096,
+    "versions": {
+      "numpy": "2.5.4",
+      "qiskit": "2.5.2",
+      "qiskit-aer": "0.17.2",
+      "qiskit-ibm-runtime": "0.50.0",
+      "rustworkx": "0.18.1",
+      "scipy": "1.18.1",
+      "sympy": "1.14.0"
+    }
+  },
+  "component_accounting": "initialization, repetition delay, circuit time, and overhead remain unseparated",
+  "dry_run": true,
+  "estimate_semantics": "server system-time estimate, distinct from executed QPU usage and final billing",
+  "evidence_kind": "server_mock_timing",
+  "finished_at": "2026-10-13T19:04:27.373078+00:00",
+  "jobs": [
+    {
+      "backend": "ibm_fez",
+      "backend_dt_seconds": 4e-09,
+      "calibration": "2026-10-13T10:32:21-07:00",
+      "fetched_at": "2026-10-13T19:04:27+00:00",
+      "kind": "dynamic",
+      "modeled_options_sha256": "db76bd9e8b09b478244a4a70fbba931bb3896b0db512e38845215026d2eb43db",
+      "options": {
+        "default_shots": 1024,
+        "dynamical_decoupling": {
+          "enable": false,
+          "extra_slack_distribution": "middle",
+          "scheduling_method": "alap",
+          "sequence_type": "XX",
+          "skip_reset_qubits": false
+        },
+        "environment": {
+          "image": null,
+          "job_tags": [
+            "gororoba-native-dry-run",
+            "native-20261013T190424.980111Z-7b9c6f80",
+            "native-batch-0"
+          ],
+          "log_level": "WARNING",
+          "max_execution_time": null,
+          "private": false
+        },
+        "execution": {
+          "init_qubits": true,
+          "meas_type": "classified",
+          "rep_delay": 0.00025,
+          "scheduler_timing": true,
+          "stretch_values": false
+        },
+        "experimental": {},
+        "max_execution_time": 9,
+        "simulator": {
+          "angle_decimals": 5,
+          "layer_noise_model": null,
+          "seed_simulator": null,
+          "warn_absent": true
+        },
+        "twirling": {
+          "enable_gates": null,
+          "enable_measure": null,
+          "group": "pauli",
+          "num_randomizations": "auto",
+          "shots_per_randomization": "auto",
+          "strategy": "active-accum"
+        }
+      },
+      "options_difference": "environment.job_tags only; native tags isolate mock recovery identity",
+      "options_sha256": "7b5ecd28d4c9801abc84fd9df02c31bc356cef428a76f6167b598d4572e47d4c",
+      "pub_manifests_sha256": "6dcaee0fe44d13c7c7aad4d2d495e56953312c118a31409d96ef0a90f8ee8c5b",
+      "pub_names": [
+        "ibm_fez_dynamic_pub_01",
+        "ibm_fez_dynamic_pub_02",
+        "ibm_fez_dynamic_pub_03",
+        "ibm_fez_dynamic_pub_04",
+        "ibm_fez_dynamic_pub_05",
+        "ibm_fez_dynamic_pub_06",
+        "ibm_fez_dynamic_pub_07",
+        "ibm_fez_dynamic_pub_08",
+        "ibm_fez_dynamic_pub_09",
+        "ibm_fez_dynamic_pub_10",
+        "ibm_fez_dynamic_pub_11",
+        "ibm_fez_dynamic_pub_12",
+        "ibm_fez_dynamic_pub_13",
+        "ibm_fez_dynamic_pub_14",
+        "ibm_fez_dynamic_pub_15",
+        "ibm_fez_dynamic_pub_16"
+      ],
+      "reason": "QiskitBackendNotFoundError",
+      "shots": 1024,
+      "state": "unavailable"
+    }
+  ],
+  "measurement_data": "randomized mock data omitted; excluded from scientific analysis and visuals",
+  "planned_jobs": 3,
+  "preserved_files": {
+    "approval-consumed.json": null,
+    "isa.qpy": "cd45b6993fa4540ac75cc217a3685f07ff17af8fda34be630543cc6066911473",
+    "record.json": "c8a80a5a3f9a36afa4ffcbbbadf0950b371e58c1c84c64893b4fb176e7fc8878"
+  },
+  "qualified": false,
+  "reasons": [
+    "QiskitBackendNotFoundError"
+  ],
+  "report_path": "native-dry-run/20261013T190424.980111Z-7b9c6f80/report.json",
+  "schema_version": 1,
+  "status": "unavailable",
+  "timing_qualified": false,
+  "within_execution_ceilings": false
+}
