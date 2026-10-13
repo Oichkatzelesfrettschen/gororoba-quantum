@@ -36,9 +36,5 @@ jobs:
           # The retained SymPy evidence ran on mpmath 1.4.1 beside sympy 1.14.0,
           # whose metadata caps mpmath below 1.4; --no-deps reproduces that pair.
           python -m pip install --no-deps mpmath==1.4.1
-      - name: Check out open_gororoba for verify.py
-        run: git clone --depth 1 https://github.com/Oichkatzelesfrettschen/open_gororoba "$RUNNER_TEMP/open_gororoba"
       - name: Run shard
-        env:
-          GOROROBA_ROOT: ${{ runner.temp }}/open_gororoba
         run: python ci/run_gates.py --shard ${{ matrix.shard }}/6

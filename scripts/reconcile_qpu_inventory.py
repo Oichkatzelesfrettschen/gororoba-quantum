@@ -69,6 +69,10 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         run = directory.parent.parent
         index = read(index_path)
         sources = {str(index_path.relative_to(ROOT)): digest(index_path)}
+        require("result_metadata.json" in index["files"], "indexed result metadata is missing")
+        indexed = set(index["files"]) | set(index["metrics"]) | {"index.json"}
+        present = {path.name for path in directory.iterdir() if path.is_file()}
+        require(present == indexed, f"raw files and index differ: {sorted(present ^ indexed)}")
         for name, expected in index["files"].items():
             require(
                 name in {"result_metadata.json"} or bool(re.fullmatch(r"pub_[0-9]+\.json", name)),
