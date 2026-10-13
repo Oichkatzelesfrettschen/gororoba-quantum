@@ -2739,7 +2739,8 @@ def unchanged_since_planning(
     """Whether a pre-submission refresh would rebuild exactly the planned choices.
 
     Selection reads every backend, so every backend's eligibility, calibration
-    timestamp and queue length must match the planning inventory, and every
+    timestamp, queue length and capabilities must match the planning
+    inventory, and every
     chosen backend's compiled instructions must keep their capabilities,
     calibration fingerprint and configured repetition delay.
     """
@@ -2750,9 +2751,10 @@ def unchanged_since_planning(
         before = planned[name]
         if not isinstance(before, dict) or not isinstance(entry, dict):
             return False
-        # Selection breaks equal-score ties by queue length, so pending_jobs
-        # joins eligibility and calibration in the equivalence.
-        fields = ("eligibility", "calibration", "pending_jobs")
+        # Selection admits every backend by its capabilities and breaks
+        # equal-score ties by queue length, so both join eligibility and
+        # calibration in the equivalence.
+        fields = ("eligibility", "calibration", "pending_jobs", "capabilities")
         if tuple(before.get(field) for field in fields) != tuple(entry.get(field) for field in fields):
             return False
     by_name = {snapshot.name: snapshot for snapshot in fresh}

@@ -3052,6 +3052,13 @@ def _verify_unchanged_since_planning() -> None:
     added = copy.deepcopy(inventory) | {"ibm_c": {"eligibility": "eligible", "calibration": "x"}}
     if live_run_module.unchanged_since_planning(record, added, [], []):
         raise RuntimeError("a new backend in the refresh inventory reused the plan")
+    gained = copy.deepcopy(inventory)
+    for entry in (inventory["ibm_b"], record["system_inventory"]["ibm_b"]):
+        entry["capabilities"] = {"dynamic_circuits": False}
+    gained["ibm_b"]["capabilities"] = {"dynamic_circuits": True}
+    if live_run_module.unchanged_since_planning(record, gained, [], []):
+        raise RuntimeError("an unselected backend's capability change reused the plan")
+    del inventory["ibm_b"]["capabilities"], record["system_inventory"]["ibm_b"]["capabilities"]
     queue_only = copy.deepcopy(inventory)
     queue_only["ibm_a"]["pending_jobs"] = 9
     if live_run_module.unchanged_since_planning(record, queue_only, [], []):
