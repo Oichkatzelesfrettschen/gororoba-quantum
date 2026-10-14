@@ -283,11 +283,18 @@ def self_check() -> None:
         raise RuntimeError("causally consistent synthetic data fail first-bit homogeneity")
 
 
+def replicates(text: str) -> int:
+    value = int(text)
+    if value < 0:
+        raise argparse.ArgumentTypeError("the replicate count is a nonnegative integer")
+    return value
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("run", nargs="?", type=Path, help="collected record directory")
     parser.add_argument("--self-check", action="store_true")
-    parser.add_argument("--bootstrap", type=int, default=0)
+    parser.add_argument("--bootstrap", type=replicates, default=0, help="parametric bootstrap replicates (0 skips)")
     parser.add_argument("--out", type=Path)
     args = parser.parse_args(argv)
     if args.self_check:
