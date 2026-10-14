@@ -329,13 +329,20 @@ CHI2_STRATA = -2.0 * math.log(FAMILY_ALPHA / STRATA_TESTS)
 
 
 def _support(dists: dict[str, np.ndarray], shots: dict[str, int], context: str, bit: int, value: int) -> dict[str, Any]:
-    """Probability of clbit bit = value pooled over the four Pauli settings, with its 95 percent interval."""
+    """Probability of clbit bit = value pooled over the four Pauli settings, with its 95 percent Wilson interval.
+
+    The Wilson score interval keeps its coverage near 0 and 1, where an almost
+    empty spectator sector sits; it contains a probability of zero or one only
+    when the observed fraction is zero or one.
+    """
     names = [f"coherence_{context}_{p}" for p in PAULI_SETTINGS]
     total = sum(shots[n] for n in names)
     inside = [o for o in range(1 << CLBITS) if (o >> bit) & 1 == value]
     probability = sum(float(dists[n][inside].sum()) * shots[n] for n in names) / total
-    half = Z95 * math.sqrt(max(probability * (1 - probability), 1.0 / total) / total)
-    return {"probability": probability, "ci": [probability - half, probability + half]}
+    z2 = Z95 * Z95
+    center = (probability + z2 / (2 * total)) / (1 + z2 / total)
+    half = Z95 * math.sqrt(probability * (1 - probability) / total + z2 / (4 * total * total)) / (1 + z2 / total)
+    return {"probability": probability, "ci": [max(0.0, center - half), min(1.0, center + half)]}
 
 
 def strata(dists: dict[str, np.ndarray], shots: dict[str, int], context: str) -> dict[str, Any]:
@@ -533,6 +540,7 @@ def self_check() -> None:
         raise RuntimeError("the preregistered endpoints differ from the contracts")
     _check_strata(result, epsilon)
     _check_selected_signs()
+    _check_support_interval()
     _check_zero_weighted_variance()
     # An idle detuning of 0.1 rad/us on both qubits with 3.3 us of extra idle and
     # 0.4 us more exposure in measure_reset leaves no excess once the rate is
@@ -635,6 +643,18 @@ def _check_selected_signs() -> None:
             got = complex(reduced[kind]["re"], reduced[kind]["im"])
             if abs(got - expected) > 1e-12 or abs(complex(reduced[other]["re"], reduced[other]["im"])) > 1e-12:
                 raise RuntimeError(f"{kind} estimator reads {got} for rho element {expected} at theta {theta}")
+
+
+def _check_support_interval() -> None:
+    """With no sector outcomes in 8192 shots the support interval still reaches 2/8192."""
+    shots = 2048
+    dist = np.zeros(1 << CLBITS)
+    dist[0] = 1.0
+    dists = {f"coherence_immediate_{p}": dist for p in PAULI_SETTINGS}
+    support = _support(dists, {name: shots for name in dists}, "immediate", SECTOR, 1)
+    lo, hi = support["ci"]
+    if support["probability"] != 0.0 or lo != 0.0 or not hi > 2 / 8192 or hi > 1e-3:
+        raise RuntimeError(f"an empty sector's support interval {support['ci']} misses 2/8192 or is too wide")
 
 
 def _check_zero_weighted_variance() -> None:
