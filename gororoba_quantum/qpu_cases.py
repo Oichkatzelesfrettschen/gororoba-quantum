@@ -1071,11 +1071,18 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "a negative control, the ZZ setting and the spectator readout give the work populations and the "
             "one-hot sector.",
             "",
-            f"One idle length fixes a window phase only modulo 2 pi: a static detuning above {alias_khz:.0f} kHz "
+            f"One idle length fixes a window phase only modulo 2 pi: a static detuning above {alias_khz:.1f} kHz "
             "aliases to a smaller rotation of the opposite sign, so a measured rotation converts to a "
-            "frequency only below that bound. In the immediate and matched-idle contexts b0 and the work "
-            "pair are read in one simultaneous layer, so correlated readout crosstalk enters C as a "
-            "context-independent scale. The calibration noise model omits measurement-induced dephasing "
+            "frequency only below that bound. Readout assignment error scales C only for a symmetric, "
+            "state-independent channel; correlated or asymmetric assignment error acts on raw counts whose "
+            "pre-measurement state differs between contexts and Pauli settings, so it can move the modulus "
+            "or the phase of C and remains a residual in every context. b0 and the work pair share one "
+            "readout layer in the immediate and matched-idle contexts, while measure_reset reads b0 in its "
+            "own mid-circuit layer. A control-work ZZ phase lam while the "
+            "control holds b0 shrinks C by cos(lam) without rotating it, the same signature as dephasing; "
+            "after the control's reset it rotates C instead, so measure_reset mixes both forms and a "
+            "matched-idle shrink alone does not separate ZZ from dephasing. The calibration noise model "
+            "omits measurement-induced dephasing "
             "of the work pair, so it prices the measure-and-reset contracts optimistically; a smaller "
             "hardware |C| there widens the reported intervals and remains an allowed outcome.",
             "",

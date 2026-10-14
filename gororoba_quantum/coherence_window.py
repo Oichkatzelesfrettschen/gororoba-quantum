@@ -31,7 +31,10 @@ is the branch-signed rho_{01,10}, whose argument is phi; the ideal value has
 window turns C by +delta (on work_a by -delta), so a coherent window phase
 rotates C, dephasing
 and amplitude damping shrink |C|, and first-bit assignment error epsilon
-scales C by (1 - 2 epsilon). matched_idle reads b0 after the window, so
+scales C by (1 - 2 epsilon). A control-work ZZ phase lam while the control
+holds b0 shrinks C by cos(lam) without rotating it, the dephasing signature;
+after the control's reset to |0> the same coupling rotates C like a Z phase
+on the work qubit. matched_idle reads b0 after the window, so
 control relaxation during the window adds to that context's epsilon; it
 scales C without rotating it, like every first-bit error. The ZZ setting
 returns the work populations.
@@ -243,6 +246,24 @@ def _verify() -> None:
             float(np.angle(turned / base)), turn, abs_tol=1e-9
         ):
             raise RuntimeError(f"RZ({delta}) on qubit {qubit} turns C to {turned}, not by {turn}")
+    # A control-work ZZ phase RZZ(lam) while the control still holds b0 turns
+    # the two branches oppositely, so the signed sum shrinks by cos(lam) with
+    # no rotation; once the control is reset to |0>, the same coupling acts as
+    # RZ(lam) on work_a and turns C by -lam.
+    from qiskit.circuit.library import RZZGate
+
+    lam = 0.4
+    for context, expected in (("immediate", complex(math.cos(lam))), ("measure_reset", complex(np.exp(-1j * lam)))):
+        probed = {}
+        for setting in PAULI_SETTINGS:
+            circuit = coherence_circuit(context, setting, window)
+            names = [op.operation.name for op in circuit.data]
+            at = names.index("reset" if context == "measure_reset" else "barrier") + 1
+            circuit.data.insert(at, CircuitInstruction(RZZGate(lam), (circuit.qubits[CONTROL], circuit.qubits[WORK_A])))
+            probed[f"coherence_{context}_{setting}"] = _expected_law(circuit)
+        ratio = coherence(probed, context) / coherence(laws, context)
+        if abs(ratio - expected) > 1e-9:
+            raise RuntimeError(f"{context}: control-work RZZ({lam}) scales C by {ratio}, not {expected}")
     epsilon = 0.07
     flipped = {}
     for name, law in laws.items():
