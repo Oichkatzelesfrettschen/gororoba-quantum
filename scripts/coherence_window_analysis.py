@@ -202,6 +202,8 @@ def analyze(
 def from_run(run: Path) -> dict[str, Any]:
     from patch_window_analysis import _bound_counts, executed_idle_us
 
+    from adjudicate import latest_metrics
+
     record = json.loads((run / "record.json").read_text())
     counts = _bound_counts(run)
     configuration = record["family_configuration"]
@@ -220,9 +222,18 @@ def from_run(run: Path) -> dict[str, Any]:
             exposure = None
     jobs = []
     for job in record["submission"]["jobs"]:
-        metrics = sorted((run / "raw" / job["job_id"]).glob("job_metrics*.json"))
-        timestamps = json.loads(metrics[-1].read_text()).get("timestamps") if metrics else None
-        jobs.append({"job_id": job["job_id"], "kind": job["kind"], "members": job["members"], "timestamps": timestamps})
+        # The index names the newest metrics snapshot and its digest; reading
+        # through it keeps the reported timing bound to the raw evidence.
+        raw_dir = run / "raw" / job["job_id"]
+        metrics = latest_metrics(raw_dir, json.loads((raw_dir / "index.json").read_text()))
+        jobs.append(
+            {
+                "job_id": job["job_id"],
+                "kind": job["kind"],
+                "members": job["members"],
+                "timestamps": metrics.get("timestamps"),
+            }
+        )
     dists, shots = {}, {}
     for member, counter in counts.items():
         total = sum(counter.values())

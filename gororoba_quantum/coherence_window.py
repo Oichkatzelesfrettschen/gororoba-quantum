@@ -2,9 +2,9 @@
 
 The first orbit round (patch_characterization.orbit, qpe_diagnostics.n21_orbit_diagnostic)
 leaves the control's first bit b0 correlated with the work superposition: on
-the pinned patch, work_a and work_b carry |10> + (-1)^b0 e^{i phi} |01> with
-the spectator in |0>. The selected coherence rho_{01,10} = <01|rho|10>
-(= (-1)^b0 e^{i phi} in each branch) therefore changes sign with b0, and
+the pinned patch, work_a and work_b carry (|10> + (-1)^b0 e^{i phi} |01>) / sqrt(2)
+with the spectator in |0>. The selected coherence rho_{01,10} = <01|rho|10>
+(= (-1)^b0 e^{i phi} / 2 in each branch) therefore changes sign with b0, and
 its average over both branches is zero on an ideal device; weighting every
 shot by (-1)^b0 recovers it.
 

@@ -126,6 +126,35 @@ replica. The planning contract
 requires the extra readout, the delay and the per-wire delay-X-delay-X echo
 to survive transpilation.
 
+`--family coherence-window` measures the coherence the first orbit round
+leaves on the work pair. After round 1 the pair holds
+(|10> + (-1)^b0 e^{i phi} |01>) / sqrt(2), so rho_{01,10} = <01|rho|10> is
+(-1)^b0 e^{i phi} / 2 and averages to zero over the control's first bit b0.
+Weighting each shot by (-1)^b0 gives
+C = (S_XX + S_YY + i (S_XY - S_YX)) / 4 with S_PQ = E[(-1)^(b0 + a + b)],
+the branch-signed rho_{01,10}; RZ(delta) on work_b turns C by +delta and on
+work_a by -delta. The prefix runs in three contexts, each read in XX, XY, YX,
+YY and ZZ with the spectator in Z:
+
+| Context | Window before the work readout | b0 read | Job |
+|---|---|---|---|
+| immediate | none | at the end | static |
+| matched_idle | delay of the control's measure plus reset (`window_dt`) | after the window | static |
+| measure_reset | mid-circuit measure and reset of the control | before the window | dynamic |
+
+A coherent window phase rotates C between contexts, dephasing and amplitude
+damping shrink it, and first-bit assignment error scales it by
+(1 - 2 epsilon). Five two-sided precision endpoints, 4 Re C in the immediate
+context and the 4 Re C and 4 Im C differences between adjacent contexts,
+share alpha; `--precision` sets their half-width h and defaults to
+`coherence_window.COHERENCE_PRECISION`, the 2048-shot Hoeffding radius. A
+half-width h resolves a rotation near h / (4 |C|). Routing moves the logical
+work qubits during the prefix, so the family configuration records
+`readout_qubits`, the physical qubit read into each clbit, and the analysis
+attributes exposure through it. `scripts/coherence_window_analysis.py`
+evaluates the preregistered endpoints with `analyze_observations` and reports
+the rotation net of the idle-detuning rate.
+
 `qpe_diagnostics.py` derives both families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
 compares those labels with exact circuit branches and seeded Aer sampling.
