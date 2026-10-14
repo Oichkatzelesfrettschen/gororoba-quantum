@@ -25,9 +25,17 @@ Counts bind to the submission through patch_window_analysis._bound_counts
   that bound admits gives a candidate. The correction crosses
   jobs, so it bounds a measurement-induced phase only together with the
   jobs' execution times; timestamps record provenance and correct no drift.
-- Inference: each +-1 score has the Laplace-adjusted per-shot variance
-  4 p (1 - p), p the adjusted fraction of +1 outcomes, and circuits are
-  independent. Re C and Im C come from disjoint settings, so their joint
+- Strata: from the same four settings, the even coherence
+  rho_00,11 = (S_XX - S_YY - i (S_XY + S_YX)) / 4 beside the odd one, and
+  both for the reduced pair (traced over b0 and the spectator), each b0
+  branch and each spectator sector (branch-signed), as unnormalized values
+  (stratum probability times conditional coherence) with each stratum's
+  support probability. Branch weighting measures a classical-quantum
+  correlation with the recorded b0; it recovers no coherence between
+  recorded branches.
+- Inference: each score, with values in {-1, 0, 1}, has the per-shot
+  variance E[S^2] - E[S]^2 after one pseudo-shot at +1 and one at -1, and
+  circuits are independent. Re C and Im C come from disjoint settings, so their joint
   region is the ellipse re^2/var_re + im^2/var_im <= chi2_2; an argument is
   reported only where that region at family-wise level FAMILY_ALPHA over
   the contexts excludes the origin, with the region's angular extent as its
@@ -54,6 +62,7 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from coherence_window import (  # noqa: E402
+    B0,
     CLBITS,
     COHERENCE_PRECISION,
     CONTEXTS,
@@ -80,27 +89,54 @@ FAMILY_ALPHA = 0.05
 CHI2_IDENTIFY = -2.0 * math.log(FAMILY_ALPHA / len(CONTEXTS))
 
 
-def _estimate(dist: np.ndarray, shots: int, score: tuple[float, ...]) -> tuple[float, float]:
-    """Mean of a +-1 score and its variance over shots independent shots.
+# Pauli-setting weights of 4 rho in |work_a work_b> order: Re and Im parts of the
+# odd coherence rho_01,10 = (XX + YY + i (XY - YX)) / 4 and of the even
+# coherence rho_00,11 = (XX - YY - i (XY + YX)) / 4.
+SELECTED = {
+    "odd": ({"xx": 1, "yy": 1}, {"xy": 1, "yx": -1}),
+    "even": ({"xx": 1, "yy": -1}, {"xy": -1, "yx": -1}),
+}
 
-    The variance uses the Laplace-adjusted fraction (n p + 1) / (n + 2) of +1
-    outcomes, 4 p (1 - p) / n, which stays positive when every shot agrees, so
-    the joint region and its angular extent remain defined at saturation.
+
+def _estimate(dist: np.ndarray, shots: int, score: tuple[float, ...]) -> tuple[float, float]:
+    """Mean of a score with values in [-1, 1] and its variance over shots independent shots.
+
+    The per-shot variance is E[S^2] - E[S]^2 after one pseudo-shot at +1 and
+    one at -1, ((n q + 2) / (n + 2) - (n m / (n + 2))^2) with q = E[S^2]. It
+    stays positive when every shot agrees or a stratum is empty, so the joint
+    region and its angular extent remain defined; for a +-1 score it is the
+    Laplace-adjusted 4 p (1 - p).
     """
-    mean = float(np.asarray(score) @ dist)
-    adjusted = (shots * (1 + mean) / 2 + 1) / (shots + 2)
-    return mean, 4 * adjusted * (1 - adjusted) / shots
+    values = np.asarray(score)
+    mean = float(values @ dist)
+    second = float((values * values) @ dist)
+    adjusted_mean = shots * mean / (shots + 2)
+    return mean, ((shots * second + 2) / (shots + 2) - adjusted_mean * adjusted_mean) / shots
+
+
+def _settings(
+    dists: dict[str, np.ndarray], shots: dict[str, int], context: str, score: tuple[float, ...]
+) -> dict[str, tuple[float, float]]:
+    return {
+        p: _estimate(dists[f"coherence_{context}_{p}"], shots[f"coherence_{context}_{p}"], score)
+        for p in PAULI_SETTINGS
+    }
 
 
 def context_coherence(
     dists: dict[str, np.ndarray], shots: dict[str, int], context: str, score: tuple[float, ...]
 ) -> dict[str, Any]:
-    s = {
-        p: _estimate(dists[f"coherence_{context}_{p}"], shots[f"coherence_{context}_{p}"], score)
-        for p in PAULI_SETTINGS
-    }
-    re, im = (s["xx"][0] + s["yy"][0]) / 4, (s["xy"][0] - s["yx"][0]) / 4
-    var_re, var_im = (s["xx"][1] + s["yy"][1]) / 16, (s["xy"][1] + s["yx"][1]) / 16
+    """The odd coherence of one score, identified at the primary per-context level."""
+    return selected_coherence(_settings(dists, shots, context, score), "odd", CHI2_IDENTIFY)
+
+
+def selected_coherence(s: dict[str, tuple[float, float]], kind: str, threshold: float) -> dict[str, Any]:
+    """One selected coherence from per-setting (mean, variance), its argument reported past threshold."""
+    real, imaginary = SELECTED[kind]
+    re = sum(w * s[p][0] for p, w in real.items()) / 4
+    im = sum(w * s[p][0] for p, w in imaginary.items()) / 4
+    var_re = sum(s[p][1] for p in real) / 16
+    var_im = sum(s[p][1] for p in imaginary) / 16
     modulus = math.hypot(re, im)
     var_mod = (re * re * var_re + im * im * var_im) / modulus**2 if modulus > 0 else var_re + var_im
     statistic = re * re / var_re + im * im / var_im if var_re > 0 and var_im > 0 else 0.0
@@ -112,13 +148,13 @@ def context_coherence(
         "modulus": modulus,
         "modulus_ci": [modulus - Z95 * math.sqrt(var_mod), modulus + Z95 * math.sqrt(var_mod)],
         "origin_statistic": statistic,
-        "origin_threshold": CHI2_IDENTIFY,
+        "origin_threshold": threshold,
         "_var": (var_re, var_im),
     }
-    if statistic > CHI2_IDENTIFY:
+    if statistic > threshold:
         arg = math.atan2(im, re)
         out["argument"] = arg
-        out["argument_region"] = list(angular_extent(re, im, var_re, var_im, CHI2_IDENTIFY))
+        out["argument_region"] = list(angular_extent(re, im, var_re, var_im, threshold))
         out["_var_arg"] = (re * re * var_im + im * im * var_re) / modulus**4
     return out
 
@@ -276,6 +312,68 @@ def excess_rotation(
     return out
 
 
+def stratum_score(bit: int | None, value: int, signed: bool) -> tuple[float, ...]:
+    """1{clbit bit = value} (-1)^(read_a + read_b), times (-1)^b0 when signed; bit None keeps every outcome."""
+    out = []
+    for o in range(1 << CLBITS):
+        inside = bit is None or (o >> bit) & 1 == value
+        parity = ((o >> READ_A) ^ (o >> READ_B) ^ ((o >> B0) if signed else 0)) & 1
+        out.append(0.0 if not inside else (-1.0 if parity else 1.0))
+    return tuple(out)
+
+
+# Per context: the reduced pair (odd, even), the branch-signed even coherence,
+# each b0 branch (odd, even) and each spectator sector, branch-signed (odd, even).
+STRATA_TESTS = len(CONTEXTS) * 11
+CHI2_STRATA = -2.0 * math.log(FAMILY_ALPHA / STRATA_TESTS)
+
+
+def _support(dists: dict[str, np.ndarray], shots: dict[str, int], context: str, bit: int, value: int) -> dict[str, Any]:
+    """Probability of clbit bit = value pooled over the four Pauli settings, with its 95 percent interval."""
+    names = [f"coherence_{context}_{p}" for p in PAULI_SETTINGS]
+    total = sum(shots[n] for n in names)
+    inside = [o for o in range(1 << CLBITS) if (o >> bit) & 1 == value]
+    probability = sum(float(dists[n][inside].sum()) * shots[n] for n in names) / total
+    half = Z95 * math.sqrt(max(probability * (1 - probability), 1.0 / total) / total)
+    return {"probability": probability, "ci": [probability - half, probability + half]}
+
+
+def strata(dists: dict[str, np.ndarray], shots: dict[str, int], context: str) -> dict[str, Any]:
+    """Unnormalized selected coherences of the reduced pair, each b0 branch and each spectator sector.
+
+    Each stratum's coherence is the probability of the stratum times the
+    coherence conditioned on it, so branch values sum to the reduced pair,
+    their difference is the branch-signed C, and the sector values sum to C.
+    Arguments use the family-wise level FAMILY_ALPHA over STRATA_TESTS.
+    """
+
+    def both(score: tuple[float, ...]) -> dict[str, Any]:
+        s = _settings(dists, shots, context, score)
+        return {kind: _public(selected_coherence(s, kind, CHI2_STRATA)) for kind in SELECTED}
+
+    out: dict[str, Any] = {
+        "reduced_pair": both(stratum_score(None, 0, False)),
+        "branch_signed_even": _public(
+            selected_coherence(_settings(dists, shots, context, stratum_score(None, 0, True)), "even", CHI2_STRATA)
+        ),
+    }
+    for value in (0, 1):
+        out[f"b0={value}"] = {
+            "support": _support(dists, shots, context, B0, value),
+            **both(stratum_score(B0, value, False)),
+        }
+    for value in (0, 1):
+        out[f"sector={value}"] = {
+            "support": _support(dists, shots, context, SECTOR, value),
+            **both(stratum_score(SECTOR, value, True)),
+        }
+    return out
+
+
+def _public(coherence: dict[str, Any]) -> dict[str, Any]:
+    return {k: v for k, v in coherence.items() if not k.startswith("_")}
+
+
 def populations(dist: np.ndarray) -> dict[str, float]:
     one_hot = sum(float(p) for o, p in enumerate(dist) if ((o >> READ_A) ^ (o >> READ_B)) & 1)
     sector = sum(float(p) for o, p in enumerate(dist) if not (o >> SECTOR) & 1)
@@ -316,6 +414,8 @@ def analyze(
         "executed_exposure_us": exposure,
         "jobs": jobs,
         "identification": {"family_alpha": FAMILY_ALPHA, "contexts": len(CONTEXTS), "chi2_2_threshold": CHI2_IDENTIFY},
+        "strata": {c: strata(dists, shots, c) for c in CONTEXTS},
+        "strata_identification": {"family_alpha": FAMILY_ALPHA, "tests": STRATA_TESTS, "chi2_2_threshold": CHI2_STRATA},
     }
     if exposure is not None and detuning_bound is not None:
         result["measure_reset_net_of_idle_detuning"] = excess_rotation(signed, exposure, detuning_bound)
@@ -429,6 +529,8 @@ def self_check() -> None:
             raise RuntimeError("the branch-unsigned coherence should vanish")
     if [row["name"] for row in result["preregistered"]] != [c.name for c in contracts]:
         raise RuntimeError("the preregistered endpoints differ from the contracts")
+    _check_strata(result, epsilon)
+    _check_zero_weighted_variance()
     # An idle detuning of 0.1 rad/us on both qubits with 3.3 us of extra idle and
     # 0.4 us more exposure in measure_reset leaves no excess once the rate is
     # subtracted; distinct per-context variances fix the matched idle's
@@ -457,6 +559,54 @@ def self_check() -> None:
         raise RuntimeError(f"the idle-detuning correction is wrong: {detuned}")
     _check_signed_exposure()
     _check_identification(rng)
+
+
+def _check_strata(result: dict[str, Any], epsilon: float) -> None:
+    """Exact stratum identities, preserved support masses, and the ideal branch and spectator values."""
+
+    def vec(c: dict[str, Any]) -> complex:
+        return complex(c["re"], c["im"])
+
+    for context in CONTEXTS:
+        st, signed = result["strata"][context], vec(result["signed_coherence"][context])
+        if abs(vec(st["b0=0"]["odd"]) - vec(st["b0=1"]["odd"]) - signed) > 1e-12:
+            raise RuntimeError(f"{context}: branch difference is not the branch-signed coherence")
+        if abs(vec(st["b0=0"]["odd"]) + vec(st["b0=1"]["odd"]) - vec(st["reduced_pair"]["odd"])) > 1e-12:
+            raise RuntimeError(f"{context}: branch sum is not the reduced pair")
+        if abs(vec(st["sector=0"]["odd"]) + vec(st["sector=1"]["odd"]) - signed) > 1e-12:
+            raise RuntimeError(f"{context}: sector sum is not the branch-signed coherence")
+        for bit in ("b0", "sector"):
+            mass = st[f"{bit}=0"]["support"]["probability"] + st[f"{bit}=1"]["support"]["probability"]
+            if abs(mass - 1.0) > 1e-12:
+                raise RuntimeError(f"{context}: {bit} supports sum to {mass}")
+        for name in ("reduced_pair",):
+            if abs(vec(st[name]["even"])) > 0.01 or abs(vec(st["branch_signed_even"])) > 0.01:
+                raise RuntimeError(f"{context}: the even coherence of a one-excitation pair should vanish")
+        if abs(vec(st["sector=1"]["odd"])) > 0.01 or st["sector=0"]["support"]["probability"] < 0.99:
+            raise RuntimeError(f"{context}: the spectator stays in |0> and carries no coherence")
+    immediate = result["strata"]["immediate"]
+    for value, sign in ((0, 1), (1, -1)):
+        branch = immediate[f"b0={value}"]
+        if abs(branch["support"]["probability"] - 0.5) > 0.01:
+            raise RuntimeError(f"b0={value} should hold half the shots: {branch['support']}")
+        # A b0 flip of probability epsilon mixes the branches: (1 - 2 epsilon) e^{i phi} / 4 per branch.
+        if abs(branch["odd"]["modulus"] - 0.25 * (1 - 2 * epsilon)) > 0.01:
+            raise RuntimeError(f"b0={value} unnormalized coherence {branch['odd']['modulus']}")
+        if sign * vec(branch["odd"]).real * vec(result["signed_coherence"]["immediate"]).real < 0:
+            raise RuntimeError(f"b0={value} coherence has the wrong sign against the signed coherence")
+
+
+def _check_zero_weighted_variance() -> None:
+    """A score with zeros uses E[S^2] - E[S]^2, not the +-1 shortcut 1 - E[S]^2."""
+    shots = 4096
+    dist = np.zeros(1 << CLBITS)
+    dist[1 << B0] = 0.5  # b0 = 1: outside the b0 = 0 stratum, score 0
+    dist[0] = 0.25  # b0 = 0, even parity: +1
+    dist[1 << READ_A] = 0.25  # b0 = 0, odd parity: -1
+    mean, variance = _estimate(dist, shots, stratum_score(B0, 0, False))
+    expected = ((shots * 0.5 + 2) / (shots + 2)) / shots
+    if abs(mean) > 1e-15 or abs(variance - expected) > 1e-15 or variance > 0.6 / shots:
+        raise RuntimeError(f"zero-weighted score variance {variance}, expected {expected}")
 
 
 def _phases(rates: tuple[float, float], exposure: dict[str, dict[str, Any]], window_phase: float) -> dict[str, Any]:
@@ -605,8 +755,9 @@ def main(argv: list[str] | None = None) -> int:
         self_check()
         print(
             "coherence window analysis: dephasing shrinks, a window phase rotates, the unsigned control vanishes, "
-            "zero coherence identifies no argument above the family level, and unequal exposure changes are not "
-            "attributed to the measurement"
+            "zero coherence identifies no argument above the family level, unequal exposure changes are not "
+            "attributed to the measurement, and the branch and spectator strata add up to the reduced and signed "
+            "coherences"
         )
         return 0
     if args.run is None:
