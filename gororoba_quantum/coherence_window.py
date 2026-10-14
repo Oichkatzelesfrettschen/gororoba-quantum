@@ -32,6 +32,11 @@ scales C by (1 - 2 epsilon). matched_idle reads b0 after the window, so
 control relaxation during the window adds to that context's epsilon; it
 scales C without rotating it, like every first-bit error. The ZZ setting
 returns the work populations.
+
+immediate and matched_idle run in the static job and measure_reset in the
+dynamic job, so only the idle-versus-immediate comparison shares one job;
+frequency drift between the two jobs enters the measure_reset comparison
+as a rotation, and the analysis reports both jobs' execution times beside it.
 """
 
 from __future__ import annotations

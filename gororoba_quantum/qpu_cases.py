@@ -1051,6 +1051,12 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "a negative control, the ZZ setting and the spectator readout give the work populations and the "
             "one-hot sector.",
             "",
+            "The immediate and matched-idle contexts run in the static job and the measure-and-reset "
+            "context in the dynamic job; the idle-versus-immediate comparison shares one job, while drift "
+            "between the jobs enters the measure-and-reset comparison as a rotation. The analysis reads "
+            "each PUB's executed work exposure from the returned schedule and reports both jobs' execution "
+            "times, so that comparison bounds a measurement-induced phase only together with them.",
+            "",
             "Five two-sided precision contracts admit the design: Re C in the immediate context and the Re C "
             "and Im C differences between adjacent contexts. They price resolution, not an effect; an "
             "unresolved rotation or a context-independent C remains an allowed outcome, and a phase is "

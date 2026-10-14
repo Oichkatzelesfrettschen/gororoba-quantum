@@ -11,7 +11,15 @@ Counts bind to the submission through patch_window_analysis._bound_counts
   S_PQ = E[(-1)^(b0 + a + b)], its modulus and argument, the rotation and
   modulus ratio between adjacent contexts, the branch-unsigned coherence (the
   negative control, zero on an ideal device), and the ZZ setting's one-hot
-  and spectator-sector populations. Each +-1 score has per-shot variance
+  and spectator-sector populations.
+- Timing: each context's executed work exposure (free-precession time of
+  work_a and work_b from the returned scheduler timing, averaged over the
+  Pauli settings) and each job's execution timestamps. The idle-versus-
+  immediate rotation per microsecond of extra exposure sets an idle
+  detuning rate, and the measure_reset rotation net of that rate times its
+  exposure excess over the matched idle is reported separately; it crosses
+  jobs, so it bounds a measurement-induced phase only together with the
+  jobs' execution times. Each +-1 score has per-shot variance
   1 - S^2, circuits are independent, and intervals are 95 percent normal
   (delta method); an argument is reported only where the modulus interval
   excludes zero.
@@ -53,7 +61,7 @@ from experiment_optimizer import (  # noqa: E402
     ObservedPub,
     analyze_observations,
 )
-from patch_characterization import WORK_B  # noqa: E402
+from patch_characterization import WORK_A, WORK_B  # noqa: E402
 
 Z95 = 1.959963984540054
 
@@ -112,6 +120,27 @@ def compare(later: dict[str, Any], earlier: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def excess_rotation(idle: dict[str, Any], window: dict[str, Any], exposure: dict[str, float]) -> dict[str, Any] | None:
+    """measure_reset rotation net of the idle detuning rate times its exposure excess over the matched idle."""
+    if idle.get("rotation") is None or window.get("rotation") is None:
+        return None
+    idle_extra = exposure["matched_idle"] - exposure["immediate"]
+    window_extra = exposure["measure_reset"] - exposure["matched_idle"]
+    if idle_extra <= 0.05:
+        return None
+    rate = idle["rotation"] / idle_extra
+    value = window["rotation"] - rate * window_extra
+    half_idle = (idle["rotation_ci"][1] - idle["rotation_ci"][0]) / 2
+    half_window = (window["rotation_ci"][1] - window["rotation_ci"][0]) / 2
+    half = math.hypot(half_window, half_idle * window_extra / idle_extra)
+    return {
+        "idle_rate_rad_per_us": rate,
+        "exposure_excess_us": window_extra,
+        "excess_rotation": value,
+        "excess_rotation_ci": [value - half, value + half],
+    }
+
+
 def populations(dist: np.ndarray) -> dict[str, float]:
     one_hot = sum(float(p) for o, p in enumerate(dist) if ((o >> READ_A) ^ (o >> READ_B)) & 1)
     sector = sum(float(p) for o, p in enumerate(dist) if not (o >> SECTOR) & 1)
@@ -123,6 +152,8 @@ def analyze(
     shots: dict[str, int],
     contracts: tuple[ObservableContract, ...],
     pubs: dict[str, list[str]],
+    exposure: dict[str, float] | None = None,
+    jobs: list[dict[str, Any]] | None = None,
 ) -> dict[str, Any]:
     observed = tuple(
         ObservedPub(name, {member: (tuple(float(x) for x in dists[member]),) for member in members}, shots[members[0]])
@@ -131,29 +162,54 @@ def analyze(
     prereg = analyze_observations(observed, contracts)
     signed = {c: context_coherence(dists, shots, c, signed_parity()) for c in CONTEXTS}
     unsigned = {c: context_coherence(dists, shots, c, unsigned_parity()) for c in CONTEXTS}
-    result = {
+    comparisons = {
+        "matched_idle_vs_immediate": compare(signed["matched_idle"], signed["immediate"]),
+        "measure_reset_vs_matched_idle": compare(signed["measure_reset"], signed["matched_idle"]),
+    }
+    result: dict[str, Any] = {
         "preregistered": [
             {"name": row.name, "estimate": row.estimate, "interval": [row.lo, row.hi], "alpha": row.alpha}
             for row in prereg.observables
         ],
         "signed_coherence": {c: {k: v for k, v in s.items() if not k.startswith("_")} for c, s in signed.items()},
-        "comparisons": {
-            "matched_idle_vs_immediate": compare(signed["matched_idle"], signed["immediate"]),
-            "measure_reset_vs_matched_idle": compare(signed["measure_reset"], signed["matched_idle"]),
-        },
+        "comparisons": comparisons,
         "unsigned_coherence_negative_control": {
             c: {k: u[k] for k in ("re", "im", "re_ci", "im_ci")} for c, u in unsigned.items()
         },
         "zz_populations": {c: populations(dists[f"coherence_{c}_zz"]) for c in CONTEXTS},
+        "executed_exposure_us": exposure,
+        "jobs": jobs,
     }
+    if exposure is not None:
+        result["measure_reset_net_of_idle_detuning"] = excess_rotation(
+            comparisons["matched_idle_vs_immediate"], comparisons["measure_reset_vs_matched_idle"], exposure
+        )
     return result
 
 
 def from_run(run: Path) -> dict[str, Any]:
-    from patch_window_analysis import _bound_counts
+    from patch_window_analysis import _bound_counts, executed_idle_us
 
     record = json.loads((run / "record.json").read_text())
     counts = _bound_counts(run)
+    configuration = record["family_configuration"]
+    work = (configuration["patch_qubits"][WORK_A], configuration["patch_qubits"][WORK_B])
+    exposure: dict[str, float] | None = {}
+    for context in CONTEXTS:
+        values = [
+            executed_idle_us(f"coherence_{context}_{setting}", qubit, configuration["dt_seconds"])
+            for setting in PAULI_SETTINGS
+            for qubit in work
+        ]
+        if exposure is not None and all(v is not None for v in values):
+            exposure[context] = float(np.mean([v for v in values if v is not None]))
+        else:
+            exposure = None
+    jobs = []
+    for job in record["submission"]["jobs"]:
+        metrics = sorted((run / "raw" / job["job_id"]).glob("job_metrics*.json"))
+        timestamps = json.loads(metrics[-1].read_text()).get("timestamps") if metrics else None
+        jobs.append({"job_id": job["job_id"], "kind": job["kind"], "members": job["members"], "timestamps": timestamps})
     dists, shots = {}, {}
     for member, counter in counts.items():
         total = sum(counter.values())
@@ -174,7 +230,7 @@ def from_run(run: Path) -> dict[str, Any]:
         for c in record["observable_contracts"]
     )
     pubs = {pub["name"]: [component["member"] for component in pub["components"]] for pub in record["execution_pubs"]}
-    return analyze(dists, shots, contracts, pubs)
+    return analyze(dists, shots, contracts, pubs, exposure, jobs)
 
 
 def self_check() -> None:
@@ -219,6 +275,15 @@ def self_check() -> None:
             raise RuntimeError("the branch-unsigned coherence should vanish")
     if [row["name"] for row in result["preregistered"]] != [c.name for c in contracts]:
         raise RuntimeError("the preregistered endpoints differ from the contracts")
+    # An idle detuning of 0.1 rad/us with 3.3 us of extra idle and 0.4 us more
+    # exposure in measure_reset leaves no excess once the rate is subtracted.
+    detuned = excess_rotation(
+        {"rotation": 0.33, "rotation_ci": [0.30, 0.36]},
+        {"rotation": 0.04, "rotation_ci": [0.01, 0.07]},
+        {"immediate": 1.0, "matched_idle": 4.3, "measure_reset": 4.7},
+    )
+    if detuned is None or abs(detuned["excess_rotation"]) > 1e-12 or abs(detuned["idle_rate_rad_per_us"] - 0.1) > 1e-12:
+        raise RuntimeError(f"the idle-detuning correction is wrong: {detuned}")
 
 
 def _dephased(law: np.ndarray, setting: str) -> np.ndarray:
