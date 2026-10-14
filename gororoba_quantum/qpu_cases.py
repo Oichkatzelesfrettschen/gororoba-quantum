@@ -31,9 +31,12 @@ FAMILIES = {
     "n21-orbit-feedback",
     "n21-orbit-rca",
     "patch-window",
+    "coherence-window",
     "ripple",
     "rank-sector",
 }
+# Families that run on one pinned patch and carry its six physical qubits.
+PATCH_FAMILIES = ("patch-window", "coherence-window")
 _IDENTIFIER = re.compile(r"[A-Za-z0-9][A-Za-z0-9_.:+/-]*\Z")
 _HEX_DIGEST = re.compile(r"[a-f0-9]{64}\Z")
 _DESIGN_OPTIONS = (
@@ -62,6 +65,8 @@ _MAPPING_FIELDS = (
     "window_delay_dt",
     "echo_half_dt",
     "measure_dt",
+    "window_dt",
+    "readout_qubits",
 )
 
 
@@ -130,7 +135,7 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         return None
     _require(
         design["family"] == record["family_configuration"]["name"]
-        and design["family"] in ("ripple", "rank-sector", "patch-window")
+        and design["family"] in ("ripple", "rank-sector", *PATCH_FAMILIES)
         and design["optimize"] is True,
         "per-PUB allocation requires an optimized algebra or patch family",
     )
@@ -152,10 +157,10 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         _count(record["shots"], "recorded shots") == max(result.values()),
         "recorded shots differ from allocation maximum",
     )
-    # The algebra families allocate static PUBs only; the patch family's
-    # dynamic window and orbit PUBs take per-PUB tiers in their own jobs.
+    # The algebra families allocate static PUBs only; the patch families'
+    # dynamic window PUBs take per-PUB tiers in their own jobs.
     _require(
-        design["family"] == "patch-window" or all(pub["kind"] == "static" for pub in record["execution_pubs"]),
+        design["family"] in PATCH_FAMILIES or all(pub["kind"] == "static" for pub in record["execution_pubs"]),
         "per-PUB allocation requires static execution PUBs",
     )
     return result
@@ -207,13 +212,13 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         )
     if design["optimize"]:
         arguments.append("--optimize")
-    if design["family"] == "patch-window":
+    if design["family"] in PATCH_FAMILIES:
         declared = design.get("patch_qubits")
-        _require(isinstance(declared, list), "the patch-window family requires its patch qubits")
+        _require(isinstance(declared, list), f"the {design['family']} family requires its patch qubits")
         patch = [qubit for qubit in declared if type(qubit) is int and qubit >= 0]
         _require(
             patch == declared and len(patch) == 6 and len(set(patch)) == 6,
-            "patch-window needs six distinct nonnegative qubits",
+            f"{design['family']} needs six distinct nonnegative qubits",
         )
         _require(
             patch == record["family_configuration"].get("patch_qubits"),
@@ -221,7 +226,7 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         )
         arguments.extend(["--patch-qubits", ",".join(str(qubit) for qubit in patch)])
     else:
-        _require(design.get("patch_qubits") is None, "only the patch-window family carries patch qubits")
+        _require(design.get("patch_qubits") is None, "only the pinned-patch families carry patch qubits")
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
         value = policy[name]
@@ -289,8 +294,8 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
             counts.add(_count(pub["shots"], "PUB shots"))
             if allocation is not None:
                 stages = pub.get("classical_stage_count")
-                # Only a dynamic job of the patch family carries dispatch stages.
-                dynamic_allowed = policy["design"]["family"] == "patch-window" and "/dynamic/" in job["name"]
+                # Only a dynamic job of a patch family carries dispatch stages.
+                dynamic_allowed = policy["design"]["family"] in PATCH_FAMILIES and "/dynamic/" in job["name"]
                 _require(
                     type(stages) is int and (stages == 0 or (dynamic_allowed and stages > 0)),
                     "static allocated PUB costs require zero classical stages",
@@ -1021,6 +1026,71 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "Raw outcomes and joint shot order, calibration windows, executed schedules, and final "
             "charged usage must be retained. Model residuals and uncertainty remain visible in measured "
             "visualizations. The family is independently admitted from the folded-QPE and N21 cases.",
+            "",
+        ]
+    if family == "coherence-window":
+        configuration = record["family_configuration"]
+        roles = configuration["patch_roles"]
+        patch = ", ".join(f"{role} {qubit}" for role, qubit in zip(roles, configuration["patch_qubits"], strict=True))
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        window = _count(configuration["window_dt"], "window_dt")
+        dt_seconds = _number(configuration["dt_seconds"], "dt_seconds", positive=True)
+        readout = configuration["readout_qubits"]
+        _require(
+            isinstance(readout, dict)
+            and set(readout) == {"b0", "read_a", "read_b", "sector"}
+            and all(type(qubit) is int and qubit >= 0 for qubit in readout.values()),
+            "coherence-window needs the executed readout qubit of b0, read_a, read_b and sector",
+        )
+        reads = ", ".join(f"{label} from qubit {readout[label]}" for label in ("b0", "read_a", "read_b", "sector"))
+        alias_khz = 1e-3 / (2 * window * dt_seconds)
+        precision = _number(record["policy"]["design"]["precision"], "precision", positive=True)
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The coherence-window family measures, on the pinned initial layout {patch} on {backends}, "
+            "the work coherence the first N=21 orbit round leaves between work_a and work_b, signed by the "
+            "control's first bit b0. In each branch the work pair holds |10> + (-1)^b0 e^{i phi} |01>, so "
+            "rho_{01,10} = <01|rho|10> changes sign with b0, its branch-unsigned average is zero on an ideal "
+            "device, and the terminal four-outcome orbit law cannot see it. Each shot is weighted by "
+            "(-1)^b0, and C = (S_XX + S_YY + i (S_XY - S_YX)) / 4 is the branch-signed rho_{01,10}, with "
+            "arg C = phi and |C| = 1/2 ideally; a Z rotation by delta on work_b turns C by +delta, on work_a "
+            "by -delta.",
+            "",
+            f"Routing moves the logical work qubits during the prefix, so the compiled circuits read {reads}; "
+            "no two-qubit gate follows the prefix, so per-qubit attribution of a window phase uses this "
+            "executed map, not the initial roles.",
+            "",
+            f"Three contexts follow the same round-1 prefix: immediate readout; a matched idle of {window} dt "
+            "(the control's measure plus reset) with b0 read after it; and a mid-circuit measure and reset "
+            "of the control before the work readout. A coherent window phase rotates C between contexts, "
+            "dephasing or amplitude damping shrinks |C| without rotating it, and first-bit assignment error "
+            "scales C by (1 - 2 epsilon), so rotation and shrinkage separate the explanations the terminal "
+            "law left degenerate. The matched idle reads b0 after the window, so control relaxation there "
+            "adds to epsilon and scales that context's C without rotating it. The branch-unsigned average is "
+            "a negative control, the ZZ setting and the spectator readout give the work populations and the "
+            "one-hot sector.",
+            "",
+            f"One idle length fixes a window phase only modulo 2 pi: a static detuning above {alias_khz:.0f} kHz "
+            "aliases to a smaller rotation of the opposite sign, so a measured rotation converts to a "
+            "frequency only below that bound. In the immediate and matched-idle contexts b0 and the work "
+            "pair are read in one simultaneous layer, so correlated readout crosstalk enters C as a "
+            "context-independent scale. The calibration noise model omits measurement-induced dephasing "
+            "of the work pair, so it prices the measure-and-reset contracts optimistically; a smaller "
+            "hardware |C| there widens the reported intervals and remains an allowed outcome.",
+            "",
+            "The immediate and matched-idle contexts run in the static job and the measure-and-reset "
+            "context in the dynamic job; the idle-versus-immediate comparison shares one job, while drift "
+            "between the jobs enters the measure-and-reset comparison as a rotation. The analysis reads "
+            "each PUB's executed work exposure from the returned schedule and reports both jobs' execution "
+            "times, so that comparison bounds a measurement-induced phase only together with them.",
+            "",
+            f"Five two-sided precision contracts admit the design, each with half-width {precision:g} on 4 C: "
+            "Re C in the immediate context and the Re C and Im C differences between adjacent contexts. "
+            f"That half-width resolves a rotation near {precision / 2:.2f} rad at |C| = 1/2 and "
+            f"{precision / 1.72:.2f} rad at |C| = 0.43. They price resolution, not an effect; an "
+            "unresolved rotation or a context-independent C remains an allowed outcome, and a phase is "
+            "reported only where |C| supports it.",
             "",
         ]
     if family == "patch-window":

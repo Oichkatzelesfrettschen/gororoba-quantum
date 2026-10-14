@@ -67,7 +67,8 @@ import parallel
 import placement_feasibility
 import qpu_planning
 import variance
-from diagnostic_experiments import FAMILY_NAMES, record_groups
+from coherence_window import COHERENCE_PRECISION
+from diagnostic_experiments import FAMILY_NAMES, PATCH_FAMILIES, record_groups
 from experiments import (
     MIRROR_SUFFIX,
     Group,
@@ -144,6 +145,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
     "patch_characterization.py",
+    "coherence_window.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "rank_attachments.py",
@@ -4695,7 +4697,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
     parser.add_argument(
-        "--precision", type=float, default=0.08, help="simultaneous half-width for family precision endpoints"
+        "--precision",
+        type=float,
+        help="simultaneous half-width for family precision endpoints; default 0.08, and "
+        "coherence_window.COHERENCE_PRECISION for coherence-window; patch-window preregisters its own",
     )
     parser.add_argument("--alpha", type=float, default=0.05)
     parser.add_argument("--power", type=float, default=0.8)
@@ -4831,9 +4836,9 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
-    if (args.family == "patch-window") != (args.patch_qubits is not None):
-        parser.error("--patch-qubits applies to, and is required by, --family patch-window")
-    if args.family == "patch-window" and args.max_replicas not in (None, 1):
+    if (args.family in PATCH_FAMILIES) != (args.patch_qubits is not None):
+        parser.error("--patch-qubits applies to, and is required by, the pinned-patch families")
+    if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
@@ -4864,7 +4869,7 @@ def main(argv: list[str] | None = None) -> int:
             parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
         args.max_replicas = 1
     if args.shot_allocation == "per-pub" and (
-        args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize
+        args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize
     ):
         parser.error("per-PUB shot allocation requires an optimized algebra or patch family")
     if args.family in ("ripple", "rank-sector"):
@@ -4875,6 +4880,8 @@ def main(argv: list[str] | None = None) -> int:
     for name in ("alpha", "power", "simulation_alpha"):
         if not math.isfinite(getattr(args, name)) or not 0 < getattr(args, name) < 1:
             parser.error(f"--{name.replace('_', '-')} must lie strictly between zero and one")
+    if args.precision is None:
+        args.precision = COHERENCE_PRECISION if args.family == "coherence-window" else 0.08
     for name in ("precision", "max_total_execution_seconds"):
         value = getattr(args, name)
         if value is not None and (not math.isfinite(value) or value <= 0):
