@@ -155,8 +155,10 @@ P(s) = ||Pi_bright v||^2 sin^2(2s/alpha) + ||Pi_S- v||^2 sin^2(sqrt2 s/alpha),
 ```
 
 and the dark component never leaves. For the review's example
-`a = e1 + e10`, `v = (e4 -+ e15)/sqrt2` and `alpha = 2`, this is 0 and
-`sin^2(s)`: the review's sedenion claim holds in this repository's convention.
+`a = e1 + e10` and `alpha = 2`, the dark input `v_- = (e4 - e15)/sqrt2` gives
+`P(s) = 0` and the bright input `v_+ = (e4 + e15)/sqrt2` gives
+`P(s) = sin^2(s)`: the review's sedenion claim holds in this repository's
+convention.
 The two lines have incommensurate frequencies, so a mixed response is
 quasi-periodic. From the maximally mixed register each oscillating sector
 averages to one half, and the long-time mean is `rank(L_a) / (2D)`: 3/8 for

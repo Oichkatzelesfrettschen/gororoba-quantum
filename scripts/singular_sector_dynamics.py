@@ -584,8 +584,10 @@ def fake_backend_record() -> dict[str, Any]:
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--fake-backend", type=Path, help="write the FakeFez cost and response record")
-    parser.add_argument("--check-fake-backend", type=Path, help="replay a retained FakeFez record")
+    # One invocation either writes a record or replays one, so a replay never reads its own output.
+    mode = parser.add_mutually_exclusive_group()
+    mode.add_argument("--fake-backend", type=Path, help="write the FakeFez cost and response record")
+    mode.add_argument("--check-fake-backend", type=Path, help="replay a retained FakeFez record")
     args = parser.parse_args(argv)
     if args.fake_backend or args.check_fake_backend:
         record = fake_backend_record()
