@@ -300,6 +300,9 @@ The [Heron platform note](notes/ibm_heron_platform.md) records the live Targets 
 (measurement variants, xslow, alignment, repetition-delay range, fractional-gate errors) retained in
 [targets.json](evidence/heron_platform/targets.json), and nine further IBM pages (billing, repetition rate, calibration,
 fractional gates, stretch, circuit timing, processor types, dynamic circuits, runtime release notes) with retrieval SHA-256.
+The [Heron and ISA reference guides](notes/ibm_quantum/README.md) retain transcribed Markdown reference copies of the core
+guides covering processor architectures, backend instruction sets, transpilation to ISA circuits, dynamic circuits, fractional gates,
+timing, and calibration, each with an upstream link to the full online piece.
 
 The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.
 The [measurement-foundations web note](notes/measurement_foundations_web_sources.md) records the 3 February 2025 removal
