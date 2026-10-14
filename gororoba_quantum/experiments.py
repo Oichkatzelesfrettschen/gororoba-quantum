@@ -388,3 +388,19 @@ def experiment_groups() -> list[Group]:
         _folded_qpe_mod15(),
         _hybrid_shor_mod15(),
     ]
+
+
+def standalone_campaign_groups() -> list[Group]:
+    """Opt-in campaigns, selected with --groups and run alone.
+
+    They stay out of the default suite, so default replica placement is
+    unchanged; plan() refuses to co-run a campaign with any other group.
+    """
+    from maximal_experiments import spectator_wavefront_ramsey_group
+
+    return [spectator_wavefront_ramsey_group()]
+
+
+def all_experiment_groups() -> list[Group]:
+    """All registered experiment groups across default suites and standalone campaigns."""
+    return [*experiment_groups(), *standalone_campaign_groups()]

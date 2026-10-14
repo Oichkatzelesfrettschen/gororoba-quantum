@@ -68,7 +68,15 @@ import placement_feasibility
 import qpu_planning
 import variance
 from diagnostic_experiments import FAMILY_NAMES, record_groups
-from experiments import MIRROR_SUFFIX, Group, Member, experiment_groups, tvd
+from experiments import (
+    MIRROR_SUFFIX,
+    Group,
+    Member,
+    all_experiment_groups,
+    experiment_groups,
+    standalone_campaign_groups,
+    tvd,
+)
 from packing import Replica
 
 SHOTS = 4096
@@ -125,6 +133,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "integral_homology.py",
     "live_run.py",
     "local_compute.py",
+    "maximal_experiments.py",
     "modular_arithmetic.py",
     "native_preflight.py",
     "order_finding.py",
@@ -1041,7 +1050,23 @@ def _replica_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float
     used, edges = packing.pattern(base_ops)
     graph = packing.coupling_graph(snap.admission_target, snap.backend.num_qubits)
 
-    judge = PlacementJudge(tuple(isas), target, frozenset(snap.excluded_qubits), frozenset(snap.excluded_edges))
+    matched_x: tuple[int, int] | None = None
+    if any(isa.name.startswith("spectator_wavefront_") for isa in isas):
+        from maximal_experiments import core_x_duration_dt
+
+        act_isa = next(isa for isa in isas if isa.name == "spectator_wavefront_active")
+        driven = [act_isa.find_bit(inst.qubits[0]).index for inst in act_isa.data if inst.operation.name == "x"]
+        if not driven:
+            raise LiveRunError("the spectator active arm compiled without an X on its core")
+        matched_x = (driven[0], core_x_duration_dt(target, driven[0]))
+
+    judge = PlacementJudge(
+        tuple(isas),
+        target,
+        frozenset(snap.excluded_qubits),
+        frozenset(snap.excluded_edges),
+        matched_x_duration=matched_x,
+    )
     candidates = packing.candidate_replicas(used, edges, graph, judge, floor, parallel.ordered_map)
     return graph, candidates, len(used)
 
@@ -1059,6 +1084,7 @@ class PlacementJudge:
     target: Any
     excluded_qubits: frozenset[int]
     excluded_edges: frozenset[tuple[int, int]]
+    matched_x_duration: tuple[int, int] | None = None
     static_checks: tuple[tuple[str, tuple[int, ...], tuple[Any, ...]], ...] | None = field(
         default=None, init=False, repr=False
     )
@@ -1120,6 +1146,14 @@ class PlacementJudge:
         return layout_score(packing.relabel(self.isas[0], mapping, ""), self.target)
 
     def __call__(self, mapping: dict[int, int]) -> float | None:
+        if self.matched_x_duration is not None:
+            from maximal_experiments import core_x_duration_dt
+
+            # A replica core must drive with the routed core's X duration, which
+            # the rebuilt arms subtract from the core's exposure delays.
+            src_core, exp_dt = self.matched_x_duration
+            if src_core in mapping and core_x_duration_dt(self.target, mapping[src_core]) != exp_dt:
+                return None
         if self.static_checks is not None:
             return self._static_score(mapping)
         moved = [packing.relabel(isa, mapping, "") for isa in self.isas]
@@ -1650,7 +1684,7 @@ def _trace_failure_summary(trace_by_backend: dict[str, list[dict[str, Any]]]) ->
         for entry in entries:
             stage = str(entry.get("stage", "routing"))
             reasons.update(f"{stage}: {reason}" for reason in entry.get("rejected", []))
-            for field_name in ("compile_error", "member_compile_error", "entry_build_error"):
+            for field_name in ("compile_error", "member_compile_error", "entry_build_error", "duration_mismatch"):
                 if field_name in entry:
                     reasons.add(f"{field_name}: {entry[field_name]}")
             for field_name in ("member_rejections", "execution_rejections"):
@@ -1707,11 +1741,49 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
             try:
                 templates = {id(primary.circuit): isa}
                 isas = []
-                for member in group.members:
-                    key = id(member.circuit)
-                    if key not in templates:
-                        templates[key] = _compile(member.circuit, snap, seed, layout)
-                    isas.append(_bind(templates[key], member))
+                if group.name == "spectator_wavefront_ramsey":
+                    from maximal_experiments import (
+                        build_spectator_wavefront_circuits,
+                        core_x_duration_dt,
+                        exposure_dt,
+                    )
+
+                    target = snap.admission_target or snap.backend.target
+                    routed_core = layout[0]
+                    cal_x_dt = core_x_duration_dt(target, routed_core)
+                    delay_dt = next(
+                        int(instruction.operation.duration)
+                        for instruction in group.members[1].circuit.data
+                        if instruction.operation.name == "delay"
+                    )
+                    qc_act, qc_ctrl, qc_null = build_spectator_wavefront_circuits(
+                        spectator_count=len(group.members[0].circuit.qubits) - 1,
+                        delay_dt=delay_dt,
+                        x_duration_dt=cal_x_dt,
+                    )
+                    isa_act = _compile(qc_act, snap, seed, layout)
+                    isa_ctrl = _compile(qc_ctrl, snap, seed, layout)
+                    isa_null = _compile(qc_null, snap, seed, layout)
+                    # Every exposure track of both arms, the driven core included,
+                    # must equal delay_dt in both directions.
+                    tracks = {
+                        f"{arm}_q{qubit}": exposure_dt(isa, qubit, target)
+                        for arm, isa in (("active", isa_act), ("control", isa_ctrl))
+                        for qubit in layout
+                    }
+                    mismatched = {name: value for name, value in tracks.items() if value != delay_dt}
+                    if mismatched:
+                        trace.append(
+                            {"seed": seed, "layout": layout, "duration_mismatch": f"delay={delay_dt} {mismatched}"}
+                        )
+                        continue
+                    isas = [isa_act, isa_ctrl, isa_null]
+                else:
+                    for member in group.members:
+                        key = id(member.circuit)
+                        if key not in templates:
+                            templates[key] = _compile(member.circuit, snap, seed, layout)
+                        isas.append(_bind(templates[key], member))
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "layout": layout, "member_compile_error": type(error).__name__})
                 continue
@@ -2439,7 +2511,7 @@ def discover_snapshots(
 
 
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
-    available_groups = experiment_groups()
+    available_groups = all_experiment_groups()
     known = {group.name for group in available_groups}
     unknown = sorted(set(args.groups or []) - known)
     if unknown:
@@ -2459,7 +2531,22 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         groups = [choice.group for choice in choices]
         fusion_placement = {"allocation": "matched-family", "configuration": design["family_configuration"]}
     else:
-        groups = [group for group in available_groups if not args.groups or group.name in args.groups]
+        if not args.groups:
+            groups = experiment_groups()
+        else:
+            groups = [group for group in available_groups if group.name in args.groups]
+            standalone = {group.name for group in standalone_campaign_groups()}
+            campaigns = sorted(group.name for group in groups if group.name in standalone)
+            if campaigns and len(groups) > 1:
+                raise LiveRunError(f"{campaigns[0]} requires an isolated campaign; cannot co-run with other groups")
+            if "spectator_wavefront_ramsey" in campaigns:
+                # The spectator arms read free Ramsey evolution over explicit delays,
+                # which dynamical decoupling would fill with echo pulses, and a second
+                # replica's driven core would sit within a few hops of these spectators.
+                if args.dd:
+                    raise LiveRunError("spectator_wavefront_ramsey runs without dynamical decoupling; omit --dd")
+                if args.max_replicas != 1:
+                    raise LiveRunError("spectator_wavefront_ramsey runs one replica; pass --max-replicas 1")
         candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
         choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
     pubs = execution_pubs(choices)
@@ -4032,7 +4119,7 @@ def _validate_archived_pub(pub_manifest: dict[str, Any], circuit: QuantumCircuit
 
 def _archived_entries(record: dict[str, Any], isas: dict[str, QuantumCircuit]) -> dict[str, list[Entry]]:
     """Rebuild logical entries from archived fused PUBs and their component map."""
-    weights = {m.name: m.weights for g in [*experiment_groups(), *record_groups(record)] for m in g.members}
+    weights = {m.name: m.weights for g in [*all_experiment_groups(), *record_groups(record)] for m in g.members}
     planned_jobs = record.get("submission", {}).get("planned_jobs")
     if planned_jobs is None:
         raise LiveRunError("schema-5 collection needs the immutable fused-PUB submission plan")
@@ -4096,7 +4183,7 @@ def collect(service: QiskitRuntimeService, run_dir: Path) -> None:
     """Measured replica distributions against the noise model of the calibration in force at execution."""
     record = json.loads((run_dir / "record.json").read_text())
     qpy_bytes = (run_dir / "isa.qpy").read_bytes()
-    groups = {g.name: g for g in [*experiment_groups(), *record_groups(record)]}
+    groups = {g.name: g for g in [*all_experiment_groups(), *record_groups(record)]}
     if (
         record.get("experiment_digest") != experiment_digest()
         or record.get("schema_version") != RECORD_SCHEMA_VERSION
