@@ -15,8 +15,10 @@ Named classes run from `Real` to `Voudon` (D = 256). Instances support
 ## Relation to cd_core
 
 Identical basis table: every `e(i) * e(j)` equals `cd_core.cd_sign(D, i, j) e_{i xor j}`
-for D = 8 and 16 exhaustively and for 400 sampled pairs at D = 32 and 64
-([tables.json](../../evidence/algebra_packages/tables.json)). The manual's
+for D = 8 and 16 exhaustively and for 400 seeded pairs at D = 32 and 64
+([tables.json](../../evidence/algebra_packages/tables.json) retains each
+sample as a sign string; `--check` regenerates the pairs from their seed
+string and compares every sign with `cd_core`). The manual's
 octonion `e_matrix` (row e1: `-e0 e3 -e2 e5 -e4 -e7 e6`) is the same table.
 
 ## Correct use

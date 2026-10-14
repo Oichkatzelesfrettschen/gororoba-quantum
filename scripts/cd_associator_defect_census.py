@@ -205,7 +205,7 @@ def check_lifting(max_lower: int) -> dict[str, int]:
                 cd_sign(2 * d, a + u * d, b + v * d) == cd_sign(d, a, b) * (-1) ** exponent, "sign lifting identity"
             )
         lo = np.array(list(itertools.product(range(d), repeat=3)), dtype=np.int64)
-        a, b, c = lo[:, 0], lo[:, 1], lo[:, 2]
+        la, lb, lc = lo[:, 0], lo[:, 1], lo[:, 2]
 
         def nzv(x: np.ndarray) -> np.ndarray:
             return (x != 0).astype(np.int64)
@@ -213,12 +213,12 @@ def check_lifting(max_lower: int) -> dict[str, int]:
         def kappav(x: np.ndarray, y: np.ndarray) -> np.ndarray:
             return (nzv(x) + nzv(y) + nzv(x ^ y)) % 2
 
-        coeff_a = kappav(b, c)
-        coeff_b = (kappav(a, b) + kappav(a, b ^ c)) % 2
-        coeff_c = (kappav(a ^ b, c) + kappav(b, c) + kappav(a, b ^ c)) % 2
+        coeff_a = kappav(lb, lc)
+        coeff_b = (kappav(la, lb) + kappav(la, lb ^ lc)) % 2
+        coeff_c = (kappav(la ^ lb, lc) + kappav(lb, lc) + kappav(la, lb ^ lc)) % 2
         mask = np.zeros(len(lo), dtype=np.int64)
         for m in range(1, 8):
-            combo = np.where(m & 1, a, 0) ^ np.where(m & 2, b, 0) ^ np.where(m & 4, c, 0)
+            combo = np.where(m & 1, la, 0) ^ np.where(m & 2, lb, 0) ^ np.where(m & 4, lc, 0)
             mask |= (combo == 0).astype(np.int64) << m
         packed = coeff_a * 4 + coeff_b * 2 + coeff_c
         for key in np.unique(mask).tolist():
@@ -227,9 +227,9 @@ def check_lifting(max_lower: int) -> dict[str, int]:
             relations = frozenset(m for m in range(1, 8) if key >> m & 1)
             coeff = (int(values[0]) >> 2 & 1, int(values[0]) >> 1 & 1, int(values[0]) & 1)
             require(classes.setdefault(relations, coeff) == coeff, "relation class changes with dimension")
-        base = omega(d, a, b, c)
+        base = omega(d, la, lb, lc)
         for u, v, w in itertools.product((0, 1), repeat=3):
-            lifted = omega(2 * d, a + u * d, b + v * d, c + w * d)
+            lifted = omega(2 * d, la + u * d, lb + v * d, lc + w * d)
             require(np.array_equal(lifted, base * (1 - 2 * ((coeff_a * u + coeff_b * v + coeff_c * w) % 2))), "lifting")
         d *= 2
     for relations, coeff in classes.items():

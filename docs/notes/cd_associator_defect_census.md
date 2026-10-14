@@ -104,9 +104,19 @@ to the mask, giving mask D - 2.
   tabulates the octonion subalgebra counts 1, 8, 50, 310, 2046, 14478,
   107950, 831470 and the quasi-octonion totals 7, 105, 1085, 9765, 82677,
   680085, 5516245 along the ladder, with a recurrence argued by induction.
-  O(D) and Q(D) above reproduce every listed value. Wilmot also splits the
-  72 type into P_4, P_12 and P_14, so the 168/72 defect count is a coarse
-  signature of a finer classification.
+  O(D) and Q(D) above reproduce every listed value, and the H row is
+  (D-1)(D-2)/6, the count of 2-dimensional index subspaces. Wilmot also
+  splits the 72 type into P_4, P_12 and P_14, so the 168/72 defect count is a
+  coarse signature of a finer classification.
+- [T] Theorem 3 derives Wilmot's Theorem 8, which its source argues from the
+  observed table pattern by induction. The lower planes number
+  G3(d) = O(d) + Q(d), since each has one of the two types, and each carries
+  seven graph lifts with a nonzero functional, so
+  Q(D) = 7 (O(d) + Q(d)), Wilmot's S_{m+1} = 7 (O_m + S_m). The same count
+  gives the companion recurrence O(D) = H(d) + O(d) + Q(d): the planes
+  through d project onto the H(d) lower 2-planes and each lower plane has one
+  lift with zero functional. Table 5's O row satisfies it
+  (8 = 7 + 1 + 0, 50 = 35 + 8 + 7, 310 = 155 + 50 + 105).
 - [P] Kirshtein Lemma 3 gives sufficient conditions for each associator
   value; Theorem 3 supplies what the lemma leaves open for order-16
   subloops other than O_16.

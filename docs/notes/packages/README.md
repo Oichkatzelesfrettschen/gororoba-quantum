@@ -11,14 +11,21 @@ holds one note per package and states how each one relates to `cd_core`.
 ## Measured relation to cd_core
 
 [scripts/algebra_package_tables.py](../../../scripts/algebra_package_tables.py)
-reads each package's basis table (`--extract`, local) and the CI gate verifies
-the declared relation against `cd_core` without importing any package
-(`--check`). The retained tables are
+reads each package's basis table (`--extract ARCHIVES`, local) and the CI
+gate verifies the declared relation against `cd_core` without importing any
+package (`--check`). Extraction first binds each installed distribution to
+its pinned release: exactly one file in ARCHIVES carries the pinned sha256,
+PyPI releases report the pinned version, and every installed `.py` file is
+byte-identical to a member of that archive. The single exception is a
+declared packaging shim, the one-line re-export `cayley_dickson/__init__.py`
+that the local build adds to the cayley-dickson commit archive, recorded
+with its digest. The retained tables, the binding counts and the seeded
+product samples are
 [tables.json](../../evidence/algebra_packages/tables.json).
 
 | Package | Relation to cd_core | Range checked | Independence |
 |---|---|---|---|
-| [hypercomplex](hypercomplex.md) | identical table | D = 8, 16 exhaustive; 32, 64 sampled | independent recursive implementation |
+| [hypercomplex](hypercomplex.md) | identical table | D = 8, 16 exhaustive; 32, 64 with 400 seeded pairs each | independent recursive implementation |
 | [hypercomplex-engine](hypercomplex-engine.md) | identical table (standard); split variant | D = 8, 16 exhaustive; 32 to 4096, 6000 sampled products each, both engines | independent closed-form sign evaluator |
 | [hypercomplex-algebra](hypercomplex-algebra.md) | identical (delegates to the engine) | spot products | **not independent**: wraps hypercomplex-engine |
 | [Cayley-Calculator](cayley-calculator.md) | identical table | D = 16 exhaustive | independent; Bourbaki-form doubling with gamma = -1 |
