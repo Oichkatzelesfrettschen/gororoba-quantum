@@ -342,8 +342,10 @@ def strata(dists: dict[str, np.ndarray], shots: dict[str, int], context: str) ->
     """Unnormalized selected coherences of the reduced pair, each b0 branch and each spectator sector.
 
     Each stratum's coherence is the probability of the stratum times the
-    coherence conditioned on it, so branch values sum to the reduced pair,
-    their difference is the branch-signed C, and the sector values sum to C.
+    coherence conditioned on it, so for either selected coherence the branch
+    values sum to the reduced pair, and their difference and the sector sum
+    are the branch-signed value: C for the odd coherence, branch_signed_even
+    for the even one.
     Arguments use the family-wise level FAMILY_ALPHA over STRATA_TESTS.
     """
 
@@ -530,6 +532,7 @@ def self_check() -> None:
     if [row["name"] for row in result["preregistered"]] != [c.name for c in contracts]:
         raise RuntimeError("the preregistered endpoints differ from the contracts")
     _check_strata(result, epsilon)
+    _check_selected_signs()
     _check_zero_weighted_variance()
     # An idle detuning of 0.1 rad/us on both qubits with 3.3 us of extra idle and
     # 0.4 us more exposure in measure_reset leaves no excess once the rate is
@@ -579,9 +582,16 @@ def _check_strata(result: dict[str, Any], epsilon: float) -> None:
             mass = st[f"{bit}=0"]["support"]["probability"] + st[f"{bit}=1"]["support"]["probability"]
             if abs(mass - 1.0) > 1e-12:
                 raise RuntimeError(f"{context}: {bit} supports sum to {mass}")
-        for name in ("reduced_pair",):
-            if abs(vec(st[name]["even"])) > 0.01 or abs(vec(st["branch_signed_even"])) > 0.01:
-                raise RuntimeError(f"{context}: the even coherence of a one-excitation pair should vanish")
+        even = vec(st["branch_signed_even"])
+        if abs(vec(st["b0=0"]["even"]) - vec(st["b0=1"]["even"]) - even) > 1e-12:
+            raise RuntimeError(f"{context}: even branch difference is not the branch-signed even coherence")
+        if abs(vec(st["b0=0"]["even"]) + vec(st["b0=1"]["even"]) - vec(st["reduced_pair"]["even"])) > 1e-12:
+            raise RuntimeError(f"{context}: even branch sum is not the reduced pair")
+        if abs(vec(st["sector=0"]["even"]) + vec(st["sector=1"]["even"]) - even) > 1e-12:
+            raise RuntimeError(f"{context}: even sector sum is not the branch-signed even coherence")
+        strata_even = [vec(st[name]["even"]) for name in ("reduced_pair", "b0=0", "b0=1", "sector=0", "sector=1")]
+        if max(abs(value) for value in (*strata_even, even)) > 0.01:
+            raise RuntimeError(f"{context}: the even coherence of a one-excitation pair should vanish")
         if abs(vec(st["sector=1"]["odd"])) > 0.01 or st["sector=0"]["support"]["probability"] < 0.99:
             raise RuntimeError(f"{context}: the spectator stays in |0> and carries no coherence")
     immediate = result["strata"]["immediate"]
@@ -594,6 +604,37 @@ def _check_strata(result: dict[str, Any], epsilon: float) -> None:
             raise RuntimeError(f"b0={value} unnormalized coherence {branch['odd']['modulus']}")
         if sign * vec(branch["odd"]).real * vec(result["signed_coherence"]["immediate"]).real < 0:
             raise RuntimeError(f"b0={value} coherence has the wrong sign against the signed coherence")
+
+
+def _check_selected_signs() -> None:
+    """Both estimators equal the density-matrix elements they name on states that carry each coherence.
+
+    The settings' outcome laws come from the state vector in |work_a work_b>
+    order with the readout's own basis change (H for X, S^dagger then H for
+    Y), independent of the Pauli bookkeeping in SELECTED.
+    """
+    shots = 1_000_000
+    rotate = {"x": np.array([[1, 1], [1, -1]]) / math.sqrt(2), "y": np.array([[1, -1j], [1, 1j]]) / math.sqrt(2)}
+    for pair, kind in (((0, 3), "even"), ((1, 2), "odd")):
+        for theta in (0.0, 0.7, 2.0, -2.9):
+            state = np.zeros(4, dtype=complex)
+            state[pair[0]], state[pair[1]] = 1 / math.sqrt(2), np.exp(1j * theta) / math.sqrt(2)
+            rho = np.outer(state, state.conj())
+            expected = complex(rho[0, 3] if kind == "even" else rho[1, 2])
+            dists = {}
+            for setting in PAULI_SETTINGS:
+                amplitudes = np.kron(rotate[setting[0]], rotate[setting[1]]) @ state
+                dist = np.zeros(1 << CLBITS)
+                for index, amplitude in enumerate(amplitudes):
+                    a, b = index >> 1, index & 1
+                    dist[(a << READ_A) | (b << READ_B)] += abs(amplitude) ** 2
+                dists[f"coherence_immediate_{setting}"] = dist
+            sizes = {name: shots for name in dists}
+            reduced = strata(dists, sizes, "immediate")["reduced_pair"]
+            other = "odd" if kind == "even" else "even"
+            got = complex(reduced[kind]["re"], reduced[kind]["im"])
+            if abs(got - expected) > 1e-12 or abs(complex(reduced[other]["re"], reduced[other]["im"])) > 1e-12:
+                raise RuntimeError(f"{kind} estimator reads {got} for rho element {expected} at theta {theta}")
 
 
 def _check_zero_weighted_variance() -> None:
