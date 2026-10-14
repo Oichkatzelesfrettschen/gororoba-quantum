@@ -200,7 +200,7 @@ def verify() -> dict[str, Any]:
             (("shots",), 1024, "allocation maximum"),
             ((*design, "shot_allocation"), "uniform", "uniform design carries"),
             ((*design, "shot_allocation"), "unknown", "unknown shot allocation"),
-            ((*design, "optimize"), False, "optimized static algebra"),
+            ((*design, "optimize"), False, "optimized algebra or patch family"),
             ((*design, "shot_tiers"), [4096, 1024], "unique and increasing"),
             (("execution_pubs", 0, "kind"), "dynamic", "static execution PUBs"),
             (("execution_pubs", 1, "name"), "low_pub", "identities must be unique"),
@@ -250,6 +250,29 @@ def verify() -> dict[str, Any]:
         changed["budget_plan"]["jobs"][1]["batch_index"] = 3
         changed["optimization"]["candidates"][0]["jobs"][1]["name"] = "ibm_fez/static/3"
         rejects(changed, "canonical batch sequence")
+        # A dynamic patch job's latency equals its stage count times the
+        # declared classical latency; halving one PUB's latency is refused.
+        dynamic = copy.deepcopy(record)
+        dynamic["family_configuration"]["name"] = dynamic["policy"]["design"]["family"] = "patch-window"
+        latency_us = dynamic["policy"]["design"]["classical_latency_us"]
+        candidate = dynamic["optimization"]["candidates"][0]
+        for ledger in [candidate, *candidate["cost_scenarios"]]:
+            ledger["jobs"][0]["name"] = "ibm_fez/dynamic/1"
+            for pub in ledger["jobs"][0]["pubs"]:
+                pub["classical_stage_count"] = 2
+                pub["classical_latency_seconds"] = 2 * latency_us * 1e-6
+        dynamic["budget_plan"]["jobs"][0]["kind"] = "dynamic"
+        reprice(dynamic)
+        qpu_cases._validate_costs(candidate, dynamic)
+        candidate["jobs"][0]["pubs"][0]["classical_latency_seconds"] = latency_us * 1e-6
+        reprice(dynamic)
+        try:
+            qpu_cases._validate_costs(candidate, dynamic)
+        except ValueError as error:
+            require("differs from its stages" in str(error), f"unexpected latency rejection: {error}")
+            rejected += 1
+        else:
+            raise RuntimeError("case admitted a dynamic PUB latency below its declared stages")
         retain(record)
         require(qpu_cases.write_case(run_dir, record) == destination, "valid allocation stopped reproducing")
         require(destination.read_bytes() == case_bytes, "allocated case reproduction changed bytes")

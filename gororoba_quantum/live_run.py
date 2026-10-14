@@ -134,6 +134,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "predict.py",
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
+    "patch_characterization.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "rank_attachments.py",
@@ -4577,6 +4578,11 @@ def main(argv: list[str] | None = None) -> int:
         default=[],
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
+    parser.add_argument(
+        "--patch-qubits",
+        type=lambda value: [int(item) for item in value.split(",")],
+        help="physical qubits of the pinned patch, in patch_characterization.PATCH_ROLES order",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
         "--local-compute-method",
@@ -4738,6 +4744,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if (args.family == "patch-window") != (args.patch_qubits is not None):
+        parser.error("--patch-qubits applies to, and is required by, --family patch-window")
+    if args.family == "patch-window" and args.max_replicas not in (None, 1):
+        parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
@@ -4766,8 +4776,10 @@ def main(argv: list[str] | None = None) -> int:
         elif len(args.backends) != 3 or set(args.backends) != set(correction_backends):
             parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
         args.max_replicas = 1
-    if args.shot_allocation == "per-pub" and (args.family not in ("ripple", "rank-sector") or not args.optimize):
-        parser.error("per-PUB shot allocation requires an optimized static algebra family")
+    if args.shot_allocation == "per-pub" and (
+        args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize
+    ):
+        parser.error("per-PUB shot allocation requires an optimized algebra or patch family")
     if args.family in ("ripple", "rank-sector"):
         if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
             parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")

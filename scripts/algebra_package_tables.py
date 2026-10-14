@@ -95,7 +95,20 @@ PACKAGING_SHIMS = {
         "cayley_dickson/__init__.py": hashlib.sha256(b"from .cayley_dickson import *\n").hexdigest(),
     },
 }
-SAMPLED = {"hypercomplex": ((32, 64), 400), "hypercomplex-engine": (tuple(2**n for n in range(5, 13)), 3000)}
+SAMPLED = {
+    "hypercomplex": ((32, 64), 400, ("default",)),
+    "hypercomplex-engine": (tuple(2**n for n in range(5, 13)), 3000, ("fast", "holographic")),
+}
+TABLES = {
+    "hypercomplex": {"8", "16"},
+    "hypercomplex-engine": {"8", "16", "split-8"},
+    "hypercomplex-algebra": set(),
+    "Cayley-Calculator": {"16"},
+    "cayley-dickson": {"8", "16"},
+    "octonion": {"8"},
+    "splitoct": {"8"},
+    "mathdunders": set(),
+}
 TORCH_TO_CD_PI = [0, 1, 2, 4, 3, 6, 7, 5]
 TORCH_TO_CD_ETA = [0, 0, 0, 0, 0, 0, 1, 0]
 
@@ -250,7 +263,7 @@ def extract(archives: Path) -> dict[str, Any]:
         "hypercomplex": lambda dim: {"default": hypercomplex_unit(dim)},
         "hypercomplex-engine": lambda dim: {variant: engine_unit(variant) for variant in ("fast", "holographic")},
     }
-    for name, (dims, count) in SAMPLED.items():
+    for name, (dims, count, _) in SAMPLED.items():
         packages[name]["samples"] = {}
         for dim in dims:
             pairs = sample_pairs(name, dim, count)
@@ -296,10 +309,16 @@ def check(data: dict[str, Any]) -> int:
     require(set(packages) == set(RELEASES), "package set differs from the declared releases")
     checked = 0
     for name, entry in packages.items():
-        require(entry["release_sha256"] == RELEASES[name][2], f"{name}: release digest differs")
+        version, release, sha = RELEASES[name]
+        require(
+            (entry["version"], entry["release"], entry["release_sha256"]) == (version, release, sha),
+            f"{name}: recorded release differs from the pin",
+        )
+        require(set(entry["tables"]) == TABLES[name], f"{name}: retained table set differs")
         installed = entry["installed"]
         require(
-            installed["packaging_shims"] == PACKAGING_SHIMS.get(name, {})
+            (version.startswith("commit ") or installed["distribution_version"] == version)
+            and installed["packaging_shims"] == PACKAGING_SHIMS.get(name, {})
             and installed["byte_identical_to_release"] + len(installed["packaging_shims"]) == installed["module_files"]
             and installed["module_files"] > 0,
             f"{name}: installed modules are not bound to the release archive",
@@ -307,12 +326,13 @@ def check(data: dict[str, Any]) -> int:
         for key, table in entry["tables"].items():
             check_table(name, int(str(key).rsplit("-", 1)[-1]), table)
             checked += 1
-    for name, (dims, count) in SAMPLED.items():
+    for name, (dims, count, labels) in SAMPLED.items():
         samples = packages[name].get("samples", {})
         require(sorted(samples) == sorted(str(dim) for dim in dims), f"{name}: sampled dimensions differ")
         for dim in dims:
             entry = samples[str(dim)]
-            require(entry["pairs"] == count and bool(entry["signs"]), f"{name} D={dim}: sample size differs")
+            require(entry["pairs"] == count, f"{name} D={dim}: sample size differs")
+            require(sorted(entry["signs"]) == sorted(labels), f"{name} D={dim}: sampled evaluators differ")
             expected = "".join("+" if cd_sign(dim, a, b) > 0 else "-" for a, b in sample_pairs(name, dim, count))
             for label, signs in entry["signs"].items():
                 require(signs == expected, f"{name} D={dim} {label}: sampled products disagree with cd_core")

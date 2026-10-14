@@ -105,37 +105,59 @@ standard error near 0.021, is about two standard errors from zero and
 descriptive only; the registered Hoeffding criterion governs and selects no
 intervention.
 
-Exploratory refit (orbit_refit.py; not preregistered): exact orbit law with
-round-1 and round-2 kickback phases (phi1, phi2), depolarization lam, and
-1 -> 0 report flips e0, e1 on b0 and b1, fitted per context across both arms.
-(phi1, phi2) and (phi1 + pi, phi2 + pi) give the identical law. The arm-bias
-model has no phase and the phase model's parameter count (lam and e1 per
-arm, shared e0).
+Exploratory refits (not preregistered). The record-local
+[orbit_refit.py](2026-10-13T201757.782152Z/orbit_refit.py) and its
+[output](2026-10-13T201757.782152Z/orbit-refit.json) stay as the historical
+first pass; they fit two phases (phi1, phi2), and the orbit law depends only
+on their sum theta = phi1 + phi2 (amplitude (1 + s t) e1 + t e4 + s e16 for
+round phases s, t), so (phi1 + x, phi2 - x) leaves every probability
+unchanged and those two coordinates are not separately identifiable. The
+maintained `scripts/n21_orbit_context_refit.py` (gated self-check; script
+commit and sha256 recorded in the output) fits theta with report-flip and
+depolarization nuisances and writes
+[orbit-context-refit.json](2026-10-13T201757.782152Z/orbit-context-refit.json),
+which also carries the record.json and collect.json digests and the fitted
+integer counts. Regions are profile-likelihood boundaries at deviance 3.84,
+root-found to 1e-6 rad:
 
-| Context | Bias deviance / 3 dof | Phase + bias deviance / 1 dof | Arm bias deviance / 1 dof | Phase LR (2 dof), p |
-|---|---:|---:|---:|---|
-| nominal | 16.5 | 4.5 | 2.6 | 12.0, 0.0025 |
-| barrier | 8.4 | 4.0 | 1.5 | 4.4, 0.11 |
-| barrier + echo | 2.0 | 1.8 | 0.6 | 0.2, 0.92 |
+| Context | theta (rad) | 95% profile region | Bias / phase / causal-saturated deviance | Phase excess over causal saturated (1 dimension) |
+|---|---:|---|---|---:|
+| nominal | -0.273 | [-0.411, -0.122] | 16.49 / 4.49 / 2.61 | 1.89 |
+| barrier | +0.141 | [0.010, 0.271] | 8.44 / 4.01 / 1.54 | 2.47 |
+| barrier + echo | -0.028 | [-0.162, 0.109] | 1.96 / 1.79 / 0.63 | 1.16 |
 
-- The no-phase arm-bias model fits every context at least as well as the
-  phase model, so these distributions do not identify a kickback phase; the
-  phase parameters absorb arm-dependent loss as readily as rotation.
-- One shared (phi1, phi2) with per-context nuisances is rejected against
-  per-context phases (LR 16.1 on 4 dof, p = 0.0028), and the echo context's
-  profile deviance at the nominal optimum is 8.6 (95% threshold 5.99): the
-  distributions change with context in a way one common phase cannot carry.
-- The echo context's 95% phase region contains zero; that is nondetection,
-  not absence.
+- Model dimensions per context over six cell dimensions: bias 3, phase 4,
+  causal saturated 5. The causal saturated model lets the two arms differ
+  freely except in the first-bit marginal, which causality fixes because b0
+  is measured before the arms diverge; its deviance is the first-bit
+  homogeneity G^2. The earlier "arm-bias" model reaches exactly that
+  deviance, so it is the causal saturated model and carries no mechanism
+  information.
+- Within the phase model, the nominal and barrier regions are disjoint and
+  on opposite sides of zero, and the echo context's region contains zero
+  (nondetection, not absence). One shared theta against per-context theta
+  gives LR 16.14 on 2 dimensions; 0 of 100 parametric bootstrap replicates
+  under the shared-theta fit (seed 20261014) reach it, so the bootstrap tail
+  is below 0.01 at that resolution. The test is conditional on the phase
+  model and its nuisances.
+- e0 relabels the reported first bit after the feedback law, so it is a
+  report nuisance and not a misclassification that drives the wrong
+  correction.
+- The phase model leaves 1.16 to 2.47 of deviance over the causal saturated
+  model in each context, so the terminal four-outcome law is consistent with
+  a context-dependent phase and does not exclude other context-dependent
+  channels; it does not localize a mechanism.
 
 ## Interpretation
 
 - The tested idle and measurement/reset windows do not reproduce a large
   phase on the product-state probes under this calibration, and the
   registered comparisons select no mitigation.
-- The same-calibration orbit distributions depend on the window context, but
-  a phase model and an arm-dependent loss model explain them comparably, so
-  the run does not localize a phase to the gates or to the window. The
+- The same-calibration orbit distributions depend on the window context. A
+  one-phase model in theta = phi1 + phi2 fits each context to within one
+  residual dimension of the causal saturated model, and the terminal law
+  cannot separate a phase from other context-dependent channels, so the run
+  does not localize a phase to the gates or to the window. The
   earlier inference that the phase arises in the gate sequence is withdrawn
   without replacement.
 - State dependence stays open: qubit 143 carries orbit amplitude for residue
@@ -169,10 +191,19 @@ approved.
 
 ## Next analysis before any acquisition
 
-- A discriminating measurement only where phase and arm-dependent loss
-  predict different outcomes: selected work-state coherences (below) separate
-  them, while the four-outcome orbit law does not.
-- A candidate selected-coherence measurement on the native round-1 prefix
-  (immediate, matched idle, measurement/reset contexts; XX, XY, YX, YY and Z
-  settings on the verified carriers including 143), written as a case only if
-  the refit leaves the question open.
+- Every candidate explanation is first extended to a quantum instrument at
+  the chosen circuit cut (true branch, reported branch, the correction that
+  branch selects, and the continuing work state), because a terminal
+  four-outcome model predicts no coherence.
+- The selected work coherence after the first control measurement carries
+  opposite signs in the two branches, (+-e^{i phi1})/2, so a branch-unsigned
+  average is zero on an ideal device. The estimator keeps b0 in the shot
+  record and weights XX, XY, YX, YY by (-1)^b0 with the third carrier's Z
+  outcome as a sector indicator, using
+  rho_{01,10} = (<XX> + <YY> + i(<XY> - <YX>))/4 in |ab> order; first-bit
+  assignment error scales the signed coherence by (1 - 2 epsilon).
+- The case compares the native round-1 prefix in three contexts (immediate,
+  matched idle, measurement/reset) on the verified carriers including 143,
+  and is written only if competing instruments predict separable signed
+  coherences after nuisance ranges; the 19 campaign seconds stay
+  uncommitted until then.

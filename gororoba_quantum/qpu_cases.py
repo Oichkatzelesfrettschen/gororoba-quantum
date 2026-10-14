@@ -30,6 +30,7 @@ FAMILIES = {
     "n21-feedback",
     "n21-orbit-feedback",
     "n21-orbit-rca",
+    "patch-window",
     "ripple",
     "rank-sector",
 }
@@ -60,6 +61,7 @@ _MAPPING_FIELDS = (
     "dt_seconds",
     "window_delay_dt",
     "echo_half_dt",
+    "measure_dt",
 )
 
 
@@ -128,9 +130,9 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         return None
     _require(
         design["family"] == record["family_configuration"]["name"]
-        and design["family"] in ("ripple", "rank-sector")
+        and design["family"] in ("ripple", "rank-sector", "patch-window")
         and design["optimize"] is True,
-        "per-PUB allocation requires an optimized static algebra family",
+        "per-PUB allocation requires an optimized algebra or patch family",
     )
     names = [_identifier(pub["name"], "execution PUB") for pub in record["execution_pubs"]]
     _require(bool(names) and len(names) == len(set(names)), "execution PUB identities must be unique and complete")
@@ -150,8 +152,10 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
         _count(record["shots"], "recorded shots") == max(result.values()),
         "recorded shots differ from allocation maximum",
     )
+    # The algebra families allocate static PUBs only; the patch family's
+    # dynamic window and orbit PUBs take per-PUB tiers in their own jobs.
     _require(
-        all(pub["kind"] == "static" for pub in record["execution_pubs"]),
+        design["family"] == "patch-window" or all(pub["kind"] == "static" for pub in record["execution_pubs"]),
         "per-PUB allocation requires static execution PUBs",
     )
     return result
@@ -203,6 +207,21 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         )
     if design["optimize"]:
         arguments.append("--optimize")
+    if design["family"] == "patch-window":
+        declared = design.get("patch_qubits")
+        _require(isinstance(declared, list), "the patch-window family requires its patch qubits")
+        patch = [qubit for qubit in declared if type(qubit) is int and qubit >= 0]
+        _require(
+            patch == declared and len(patch) == 6 and len(set(patch)) == 6,
+            "patch-window needs six distinct nonnegative qubits",
+        )
+        _require(
+            patch == record["family_configuration"].get("patch_qubits"),
+            "patch qubits differ between the design policy and the family configuration",
+        )
+        arguments.extend(["--patch-qubits", ",".join(str(qubit) for qubit in patch)])
+    else:
+        _require(design.get("patch_qubits") is None, "only the patch-window family carries patch qubits")
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
         value = policy[name]
@@ -269,11 +288,26 @@ def _validate_costs(candidate: dict[str, Any], record: dict[str, Any]) -> None:
             expected_shots = allocation[name] if allocation is not None else uniform_shots
             counts.add(_count(pub["shots"], "PUB shots"))
             if allocation is not None:
+                stages = pub.get("classical_stage_count")
+                # Only a dynamic job of the patch family carries dispatch stages.
+                dynamic_allowed = policy["design"]["family"] == "patch-window" and "/dynamic/" in job["name"]
                 _require(
-                    type(pub.get("classical_stage_count")) is int and pub["classical_stage_count"] == 0,
+                    type(stages) is int and (stages == 0 or (dynamic_allowed and stages > 0)),
                     "static allocated PUB costs require zero classical stages",
                 )
-                _require(pub["classical_latency_seconds"] == 0, "static allocated PUB cost includes classical latency")
+                _require(
+                    pub["classical_latency_seconds"] == 0 or (dynamic_allowed and stages > 0),
+                    "static allocated PUB cost includes classical latency",
+                )
+                _require(
+                    math.isclose(
+                        pub["classical_latency_seconds"],
+                        stages * policy["design"]["classical_latency_us"] * 1e-6,
+                        rel_tol=1e-12,
+                        abs_tol=1e-15,
+                    ),
+                    "allocated PUB latency differs from its stages at the declared classical latency",
+                )
             _require(_count(pub["shots"], "PUB shots") == expected_shots, "PUB shots differ from the saved plan")
             durations = [
                 _number(pub[key], key)
@@ -926,7 +960,7 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
     return lines
 
 
-def _scientific_case(family: str) -> list[str]:
+def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "folded-correction":
         return [
             "## Scientific question and interpretation",
@@ -987,6 +1021,38 @@ def _scientific_case(family: str) -> list[str]:
             "Raw outcomes and joint shot order, calibration windows, executed schedules, and final "
             "charged usage must be retained. Model residuals and uncertainty remain visible in measured "
             "visualizations. The family is independently admitted from the folded-QPE and N21 cases.",
+            "",
+        ]
+    if family == "patch-window":
+        configuration = record["family_configuration"]
+        roles = configuration.get("patch_roles") or [
+            "control",
+            "work_a",
+            "spectator",
+            "work_b",
+            "neighbor_a",
+            "neighbor_b",
+        ]
+        patch = ", ".join(f"{role} {qubit}" for role, qubit in zip(roles, configuration["patch_qubits"], strict=True))
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        return [
+            "## Scientific question and interpretation",
+            "",
+            f"The patch-window family characterizes the physical qubits {patch} on {backends}. It "
+            "reproduces the window of the N=21 orbit runs only when this backend and these roles match the "
+            "orbit record's layout; on other qubits it characterizes this patch alone. Paired and "
+            "single-qubit Ramsey, plain and echoed, "
+            "measure work-qubit phase and visibility against executed idle; measure-and-reset and reset-only "
+            "windows separate the explicit measurement; exchange circuits with zero-delay, unexcited and "
+            "all-one references bound population transfer; and nominal, barrier and barrier-plus-echo orbit "
+            "pairs compare scheduling contexts in one acquisition.",
+            "",
+            "Ten two-sided precision contracts on member differences admit the design; the calibration noise "
+            "model has no coherent window phase, so they price resolution, not an effect. The Y-only Ramsey "
+            "endpoints resolve phase differences only at favorable orientation, the exchange and orbit "
+            "endpoints are exploratory, and an unresolved or no-intervention outcome remains allowed. "
+            "Physical detuning is withheld wherever executed timing, alias separation or visibility does "
+            "not support it.",
             "",
         ]
     if family == "folded-qpe":
@@ -1153,7 +1219,7 @@ def _render(
     for package, version in sorted(record["versions"].items()):
         lines.append(f"| {_identifier(package, 'package')} | {_identifier(version, 'version')} |")
     lines.append("")
-    lines.extend(_scientific_case(family))
+    lines.extend(_scientific_case(family, record))
     lines.extend(
         [
             "## Archived ideal laws and placement",

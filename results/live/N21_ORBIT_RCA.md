@@ -4,12 +4,14 @@ Runs on ibm_fez, physical qubits 142 (control), 136 (work 1), 143 (work 4),
 144 (work 16), 4096 shots per PUB.
 
 Status: the phases below are model-dependent fit parameters from these runs'
-calibrations, not measured rotations. PATCH_WINDOW_FINDINGS.md adds a
+calibrations, not measured rotations. The orbit law depends on the phases
+only through theta = phi1 + phi2, so per-round phases are not separately
+identifiable from these distributions. PATCH_WINDOW_FINDINGS.md adds a
 same-calibration characterization: product-state Ramsey probes show no
 resolved window phase, and that run's orbit distributions change with the
-window context while a no-phase arm-dependent loss model fits them as well as
-the phase model. The window attribution below is one candidate, not an
-established mechanism, and the echo-contrast comparison (0.17 rad fitted,
+window context, with the one-phase model within one residual dimension of the
+causal saturated model. The window attribution below is one candidate, not
+an established mechanism, and the echo-contrast comparison (0.17 rad fitted,
 contrast nearly unchanged) shows why contrast alone cannot settle orbit
 phase.
 

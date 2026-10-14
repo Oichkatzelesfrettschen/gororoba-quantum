@@ -1,4 +1,4 @@
-# Journal and documentation sources without an arXiv copy: Casimir, dark sector, statistics, IBM execution
+# Journal and documentation sources without an arXiv copy: Casimir, dark sector, statistics
 
 ## Pages and retrieval
 
@@ -16,7 +16,6 @@ No PDF of these works is retained.
 | Inacio, Panja, Munday, Woods and Bostrom 2026, Nano Letters 26(34), 11398-11405, DOI 10.1021/acs.nanolett.6c02620 | https://eutils.ncbi.nlm.nih.gov/entrez/eutils/efetch.fcgi?db=pubmed&id=42444133&retmode=xml | `b918efd8a394bea0d314a18ba8698880246e494c661ed2c57ff140ec4c369fba` | [P] A polystyrene plate and a metallic sphere immersed in a magnetic fluid: the plasma model predicts a force-sign reversal over a broad range of separations for different magnetic fluids, in contrast to the Drude model, offering an experimentally testable resolution of the optical-model dispute. Received 2026-05-29, accepted 2026-07-08, PubMed entry 2026-07-14; issue 26(34) dated 2026-09-02. |
 | Wasserstein and Lazar 2016, The American Statistician 70(2), 129-133, DOI 10.1080/00031305.2016.1154108 | https://api.crossref.org/works/10.1080/00031305.2016.1154108 | `5712f92e97c7f9b64fa0b0b692cfeb3e80510b48eb2d44398c124b2c94343ba3` | [P] The ASA statement on p-values, its context, process and purpose. |
 | DES Collaboration, Y6 cosmology results page (summary of the Y6 dark-energy multi-probe analysis) | https://www.darkenergysurvey.org/des-y6-cosmology-results-papers/ | `b3f36e2f315f24b0bd784714d4462159735896b3c64844cd0ea9f700085ca21e` | [P] SN Ia + BAO + 3x2pt gives w0 = -0.84 +- 0.10, wa = -0.44 (+0.60/-0.55), a 2.2 sigma deviation from a cosmological constant; with DESI DR2 BAO 2.3 sigma; with primary CMB 3.0 sigma; leaving out one probe at a time the deviation ranges from 2.3 to 3.2 sigma with w0 > -1 and wa < 0. |
-| IBM Quantum, execution modes guide | https://quantum.cloud.ibm.com/docs/en/guides/execution-modes | `c074a1e488274bd98170784bc8d5501afd14d0ec50d222a3e789979292b7f142` | [P] Batched jobs are not guaranteed to run in submission order, and QPU calibration jobs can run between batched jobs; session mode excludes calibration jobs during its window. |
 
 ## Mapping to this repository
 
@@ -24,7 +23,6 @@ No PDF of these works is retained.
 - [I] The symmetron and atom-interferometer ([2511.09750](2511.09750.md)) sources fix what a laboratory scalar-force claim must include: a screening model, a source geometry, and an independent calibration of Newtonian gravity.
 - [I] Inacio et al. and [Ma et al.](2601.00483.md) supply a conventional-electrodynamics discriminator (Drude against plasma) that precedes attributing any Casimir residual to a new interaction; [0902.4022](0902.4022.md) carries the real-material baseline.
 - [I] The registered patch-window endpoints report nondetection, not equivalence; the ASA statement is the general reference for not reading a non-rejected null as evidence of absence.
-- [I] The execution-modes guide is why the patch-window record checks each job's start-time calibration stamp rather than assuming one calibration across jobs submitted together.
 
 ## Boundaries
 
