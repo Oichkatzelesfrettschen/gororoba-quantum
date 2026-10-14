@@ -11,17 +11,21 @@ in integer or rational arithmetic:
 2. Each of the seven signed sedenion box-kites has 12 edges and 8 triangles
    of sign -1. Over shared vertex signs the frustration
    F = sum_edges (1 - r_uv s_u s_v) / 2 has minimum 4; over shared phases
-   F(theta) = sum_edges (1 - r_uv cos(theta_u - theta_v)) / 2 has minimum 3,
-   attained with equal phases on opposite vertices and 120 degrees between
-   the three opposite pairs (proof in the note).
+   F(theta) = sum_edges (1 - r_uv cos(theta_u - theta_v)) / 2 obeys
+   F = 6 + (|Z|^2 - |Z_1|^2 - |Z_2|^2 - |Z_3|^2) / 4 in the switched gauge,
+   so its minimum is 3, attained with equal phases on opposite vertices and
+   120 degrees between the three opposite pairs.
 3. For the walk cores U = (-i)^popcount(y xor x) w(x) / 4 of the pairs
    (25, 31) and (9, 22) at D = 32, U^120 is the identity, so every eigenvalue
    is a 120th root of unity and the weight of |0> on the primitive-k sector is
    (1/120) sum_{t<120} <0|U^t|0> c_k(t), with c_k Ramanujan's sum. The first
-   state return is the lcm of the orders that carry weight.
-4. For G = L_a^T L_a / |a|^2 the excess second moment
-   Delta = tr(G^2)/d - 1 is unchanged by the pure embedding a -> (a, 0),
-   whose multiplication operator is diag(L_a, R_a) up to the doubling signs.
+   state return is the order of the eigenvalue ratios lambda / lambda_0 over
+   the weighted spectrum; it equals the lcm of the weighted orders when
+   lambda = 1 carries weight, as for (9, 22).
+4. The pure embedding a -> (a, 0) has multiplication operator
+   diag(L_a, R_a) exactly, R_a = C L_conj(a) C with C the conjugation and
+   L_conj(a) = L_a^T, so G = L_a^T L_a / |a|^2 keeps its excess second moment
+   Delta = tr(G^2)/d - 1 and the rank doubles, zero divisors included.
 5. The doubling (a, b)(c, d) = (ac - d conj(b), conj(a) d + c b) and the
    repository doubling are intertwined by T(a, b) = (T(a), conj(T(b))) on
    every basis pair through D = 16.
@@ -127,7 +131,9 @@ def box_kites() -> list[dict[str, int]]:
             sum((1 - r * s[u] * s[v]) // 2 for u, v, r in edges) for s in itertools.product((1, -1), repeat=6)
         )
         require(discrete == 4, f"strut {strut}: discrete frustration minimum")
-        gauge = next(s for s in itertools.product((1, -1), repeat=6) if all(s[u] * r * s[v] == -1 for u, v, r in edges))
+        gauges = [s for s in itertools.product((1, -1), repeat=6) if all(s[u] * r * s[v] == -1 for u, v, r in edges)]
+        require(len(gauges) == 2, f"strut {strut}: switching to the all-negative octahedron")
+        gauge = gauges[0]
         opposite = [(u, v) for u, v in itertools.combinations(range(6), 2) if (u, v) not in adjacency]
         theta = [0.0] * 6
         for k, pair in enumerate(opposite):
@@ -135,13 +141,18 @@ def box_kites() -> list[dict[str, int]]:
                 theta[u] = 2 * math.pi * k / 3 + (0.0 if gauge[u] == 1 else math.pi)
         continuous = sum((1 - r * math.cos(theta[u] - theta[v])) / 2 for u, v, r in edges)
         require(abs(continuous - 3) < 1e-12, f"strut {strut}: the 120-degree assignment reaches 3")
+        # The proof's identity, on random phases in the switched gauge: with
+        # |Z_k| <= 2 it gives F >= 6 - 12/4 = 3 for every assignment.
         rng = np.random.default_rng(strut)
-        for _ in range(2000):
+        for _ in range(500):
             trial = rng.uniform(0, 2 * math.pi, 6)
-            require(
-                sum((1 - r * math.cos(trial[u] - trial[v])) / 2 for u, v, r in edges) >= 3 - 1e-12,
-                f"strut {strut}: a phase assignment falls below 3",
-            )
+            switched = [trial[u] + (0.0 if gauge[u] == 1 else math.pi) for u in range(6)]
+            phasor = [complex(math.cos(x), math.sin(x)) for x in switched]
+            pair_sums = [abs(phasor[u] + phasor[v]) ** 2 for u, v in opposite]
+            identity = 6 + (abs(sum(phasor)) ** 2 - sum(pair_sums)) / 4
+            frustration = sum((1 - r * math.cos(trial[u] - trial[v])) / 2 for u, v, r in edges)
+            require(abs(frustration - identity) < 1e-12, f"strut {strut}: the frustration identity fails")
+            require(max(pair_sums) <= 4 + 1e-12, f"strut {strut}: an opposite-pair phasor exceeds 2")
         out.append({"strut": strut, "discrete_minimum": discrete, "continuous_minimum": 3})
     return out
 
@@ -202,10 +213,30 @@ def walk_sectors(pair: tuple[int, int], expected: dict[int, Fraction]) -> dict[s
         {k: weights.get(k, Fraction(0)) for k in expected} == expected and set(weights) <= set(expected),
         f"{pair}: sector weights {weights}",
     )
-    state_return = math.lcm(*weights)
     first = next(t for t in range(1, 121) if returns[t][0] ** 2 + returns[t][1] ** 2 == 1)
-    require(first == state_return, f"{pair}: first state return {first} differs from lcm {state_return}")
-    return {"pair": list(pair), "weights": {str(k): str(v) for k, v in weights.items()}, "first_state_return": first}
+    # Per-eigenvalue weights q_n on lambda = exp(2 pi i n / 120), from the same
+    # return amplitudes. Their sector sums reproduce the exact weights, and the
+    # first return is the order of the ratios lambda_n / lambda_n0 over the
+    # weighted support: 120 / gcd(120, n - n0 for all weighted n).
+    amplitudes = np.array([float(re) + 1j * float(im) for re, im in returns[:120]])
+    q = np.array(
+        [np.mean(amplitudes * np.exp(-2j * math.pi * n * np.arange(120) / 120)) for n in range(120)], dtype=complex
+    )
+    require(bool(np.all(np.abs(q.imag) < 1e-9) and np.all(q.real > -1e-9)), f"{pair}: eigenvalue weights")
+    support = [n for n in range(120) if q[n].real > 1e-9]
+    for k, weight in weights.items():
+        sector = sum(q[n].real for n in support if 120 // math.gcd(120, n) == k)
+        require(abs(sector - float(weight)) < 1e-9, f"{pair}: sector {k} differs from its eigenvalue weights")
+    ratio_order = 120 // math.gcd(120, *(n - support[0] for n in support))
+    require(first == ratio_order, f"{pair}: first return {first} differs from the ratio order {ratio_order}")
+    if 1 in weights:
+        require(first == math.lcm(*weights), f"{pair}: lambda = 1 carries weight, so the lcm rule must hold")
+    return {
+        "pair": list(pair),
+        "weights": {str(k): str(v) for k, v in weights.items()},
+        "first_state_return": first,
+        "lcm_of_weighted_orders": math.lcm(*weights),
+    }
 
 
 def _excess_moment(matrix: npt.NDArray[np.float64], norm_squared: float) -> float:
@@ -213,24 +244,50 @@ def _excess_moment(matrix: npt.NDArray[np.float64], norm_squared: float) -> floa
     return float(np.trace(gram @ gram) / gram.shape[0] - 1)
 
 
+def right_mult_matrix(dim: int, v: list[float]) -> list[list[float]]:
+    """R_v: x -> x v, column q holding e_q v = sum_p v_p cd_sign(q, p) e_{q xor p}."""
+    mat = [[0.0] * dim for _ in range(dim)]
+    for p, vp in enumerate(v):
+        if vp == 0.0:
+            continue
+        for q in range(dim):
+            mat[q ^ p][q] += vp * cd_sign(dim, q, p)
+    return mat
+
+
 def gram_moment_embedding() -> dict[str, object]:
     rng = np.random.default_rng(20261014)
+    checked = 0
     for d in (16, 32):
-        for _ in range(20):
-            a = [float(x) for x in rng.normal(size=d)]
+        zero_divisor = [0.0] * d
+        zero_divisor[1] = zero_divisor[10] = 1.0
+        samples = [[float(x) for x in rng.integers(-3, 4, size=d)] for _ in range(10)] + [zero_divisor]
+        for a in samples:
+            if not any(a):
+                continue
             norm_squared = math.fsum(x * x for x in a)
+            conj = [a[0], *(-x for x in a[1:])]
             left = np.asarray(left_mult_matrix(d, a), dtype=np.float64)
-            require(np.allclose(np.diag(left.T @ left) / norm_squared, 1.0), "every basis column of L_a has norm |a|")
+            right = np.asarray(right_mult_matrix(d, a), dtype=np.float64)
+            flip = np.diag([1.0] + [-1.0] * (d - 1))
             big = np.asarray(left_mult_matrix(2 * d, a + [0.0] * d), dtype=np.float64)
+            # Integer coefficients keep every entry exact in float64.
+            require(np.array_equal(big[:d, :d], left) and np.array_equal(big[d:, d:], right), "diag(L_a, R_a)")
+            require(not big[:d, d:].any() and not big[d:, :d].any(), "the embedding operator is block diagonal")
+            transpose_left = np.asarray(left_mult_matrix(d, conj), dtype=np.float64)
+            require(np.array_equal(transpose_left, left.T), "L_conj(a) = L_a^T")
+            require(np.array_equal(right, flip @ transpose_left @ flip), "R_a = C L_conj(a) C")
+            require(np.allclose(np.diag(left.T @ left) / norm_squared, 1.0), "every basis column of L_a has norm |a|")
             require(
                 abs(_excess_moment(left, norm_squared) - _excess_moment(big, norm_squared)) < 1e-10,
                 f"D={d}: the pure embedding changes the excess moment",
             )
-            require(
-                int(np.linalg.matrix_rank(big, tol=1e-9)) == 2 * int(np.linalg.matrix_rank(left, tol=1e-9)),
-                f"D={d}: the pure embedding does not double the rank",
-            )
-    return {"dimensions": [16, 32], "samples": 20}
+            rank_left = int(np.linalg.matrix_rank(left, tol=1e-9))
+            require(int(np.linalg.matrix_rank(big, tol=1e-9)) == 2 * rank_left, f"D={d}: the rank does not double")
+            if a is zero_divisor:
+                require(rank_left == 3 * d // 4, f"D={d}: e1 + e10 has rank {rank_left}, not {3 * d // 4}")
+            checked += 1
+    return {"dimensions": [16, 32], "samples": checked}
 
 
 def _conj(x: tuple[int, ...]) -> tuple[int, ...]:
