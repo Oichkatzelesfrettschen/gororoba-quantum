@@ -296,6 +296,11 @@ The [execution-guide note](notes/ibm-runtime-execution-guides.md) records nine I
 (workload usage, stretch, Sampler options, Sampler inputs and outputs, run-time minimization,
 the client-side Sampler API, real-time backend-property refresh, circuit timing and execution modes) with retrieval SHA-256 and the use each page is cited for.
 
+The [Heron platform note](notes/ibm_heron_platform.md) records the live Targets of ibm_fez, ibm_kingston and ibm_marrakesh
+(measurement variants, xslow, alignment, repetition-delay range, fractional-gate errors) retained in
+[targets.json](evidence/heron_platform/targets.json), and nine further IBM pages (billing, repetition rate, calibration,
+fractional gates, stretch, circuit timing, processor types, dynamic circuits, runtime release notes) with retrieval SHA-256.
+
 The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.
 The [measurement-foundations web note](notes/measurement_foundations_web_sources.md) records the 3 February 2025 removal
 of pulse-level control, the Qiskit Experiments 0.14.2 tomography pages, and the Crossref identities of the

@@ -29,8 +29,9 @@ octonion `e_matrix` (row e1: `-e0 e3 -e2 e5 -e4 -e7 e6`) is the same table.
   zero-divisor witness `x y = 0`.
 - Independent cross-check of `cd_core.cd_multiply` on general (non-basis)
   elements at small D.
-- Not for large D: products recurse through every level and cost grows
-  quickly; use [hypercomplex-engine](hypercomplex-engine.md) for basis signs
+- Not for large D: products recurse through every level, and one basis
+  product took 0.21 s at D = 256, 0.86 s at 512 and 3.4 s at 1024 on the
+  build host (about 4x per doubling); use [hypercomplex-engine](hypercomplex-engine.md) for basis signs
   at D up to 4096 and beyond.
 
 ## Pitfalls

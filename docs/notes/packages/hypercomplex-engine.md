@@ -25,7 +25,9 @@ the doubling recursively.
 
 ## Correct use
 
-- Fast, independent oracle for basis signs at large dimension; the census
+- Fast, independent oracle for basis signs at large dimension (about 5 us
+  per product with `fast` and 7 us with `holographic` at D = 4096 on the
+  build host); the census
   and proof work can cross-check `cd_core.cd_sign` against it.
 - Split and dual algebras are separate algebras with their own quadratic
   forms; compare them with `cd_core` only through the split negative control

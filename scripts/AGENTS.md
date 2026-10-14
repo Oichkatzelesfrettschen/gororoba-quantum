@@ -101,4 +101,32 @@ workspace fixtures on the circuit builders of `designs.py`.
   comparison.
 - IBM removed pulse-level control on 3 February 2025; designs use the gate
   set, fractional gates and dynamic circuits.
+
+**Cayley-Dickson packages on the build host.**
+`gororoba_quantum/cd_core.py` is the specification. A package result enters
+evidence only through a declared map onto it, identity or a signed
+relabeling checked on every basis pair; majority agreement is never the
+criterion. `scripts/algebra_package_tables.py` binds each installed package
+to its pinned release and retains its tables in
+`docs/evidence/algebra_packages/tables.json` (CI rechecks them without
+importing any package), and `docs/notes/packages/` holds one note per
+package. Each package is an Arch package; a broken or missing one is rebuilt
+and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
+--nocheck` in the package directory), never patched in place, and the note's
+pinned digest is checked again after the rebuild.
+
+| Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
+|---|---|---|---|---|---|
+| sagemath | `sage`, `OctonionAlgebra(QQ)` | 10.10 | opposite algebra in natural order; sign flip on e3, e5, e6 is an isomorphism | exact octonion reference, quadratic forms, G2 | ported code reverses every product unless mapped |
+| python-hypercomplex | `hypercomplex` | 0.3.4 | identical table (D = 8, 16 exhaustive; 32, 64 sampled) | exact certificates with `cayley_dickson_algebra(n, fractions.Fraction)` | a basis product costs about 4x more per doubling; `inverse()` exists for zero divisors |
+| python-hypercomplex-engine | `hypercomplex_engine` | 0.5.0 | identical (standard); its split variant shares every associator sign | fast basis-sign oracle at D = 4096 and beyond | takes and returns `(sign, index)` tuples; `dim` changes which doubling is split |
+| python-hypercomplex-algebra | `hypercomplex_algebra` | 0.2.0.2 | identical; wraps the engine | parsing and formatting expressions | not an independent witness; `multiply_many_expressions` folds left |
+| python-cayley-calculator | `Cayley_Calculator`, then `sedenion` and the other level modules | 1.3.1 | identical table at D = 16 (gamma = -1) | elementary functions (exp, log, trigonometric) through D = 128 | coerces every coefficient to float64; `from octonion import *` loads python-octonion |
+| python-cayley-dickson | `cayley_dickson` | commit abf96e7 | identical table at D = 8, 16 | reading and cross-checking only; the source carries no license | installs a top-level `src` package, so `import src` resolves to it; its pandas table reads transposed |
+| python-octonion | `octonion` | 0.1.0 | signed relabeling from a Fano labeling, `pi = (0, 1, 2, 4, 3, 6, 7, 5)` with a flip on e6 | batched octonion tensors in PyTorch | index i is not cd_core e_i; its tensors are float64 while torch defaults to float32; owns the `octonion` module name; AGPL |
+| python-splitoct | `SplitOct` | 0.16 (commit e29e72f) | split octonions: the same 512 associator signs, signature (4, 4) | negative control for associator-only tests; SymPy symbolics | not the octonions; isotropic elements have no inverse; GPL |
+| python-mathdunders | `mathdunders` | 0.4.2 | none | operator plumbing for python-hypercomplex | contributes no algebra evidence |
+
+Octonion-Sedenion and pyoctonion are not installed, so their relation to
+cd_core is unmeasured and no artifact claims one.
 <!-- algebra-circuit-rules:end -->

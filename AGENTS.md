@@ -207,6 +207,34 @@ workspace fixtures on the circuit builders of `designs.py`.
   comparison.
 - IBM removed pulse-level control on 3 February 2025; designs use the gate
   set, fractional gates and dynamic circuits.
+
+**Cayley-Dickson packages on the build host.**
+`gororoba_quantum/cd_core.py` is the specification. A package result enters
+evidence only through a declared map onto it, identity or a signed
+relabeling checked on every basis pair; majority agreement is never the
+criterion. `scripts/algebra_package_tables.py` binds each installed package
+to its pinned release and retains its tables in
+`docs/evidence/algebra_packages/tables.json` (CI rechecks them without
+importing any package), and `docs/notes/packages/` holds one note per
+package. Each package is an Arch package; a broken or missing one is rebuilt
+and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
+--nocheck` in the package directory), never patched in place, and the note's
+pinned digest is checked again after the rebuild.
+
+| Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
+|---|---|---|---|---|---|
+| sagemath | `sage`, `OctonionAlgebra(QQ)` | 10.10 | opposite algebra in natural order; sign flip on e3, e5, e6 is an isomorphism | exact octonion reference, quadratic forms, G2 | ported code reverses every product unless mapped |
+| python-hypercomplex | `hypercomplex` | 0.3.4 | identical table (D = 8, 16 exhaustive; 32, 64 sampled) | exact certificates with `cayley_dickson_algebra(n, fractions.Fraction)` | a basis product costs about 4x more per doubling; `inverse()` exists for zero divisors |
+| python-hypercomplex-engine | `hypercomplex_engine` | 0.5.0 | identical (standard); its split variant shares every associator sign | fast basis-sign oracle at D = 4096 and beyond | takes and returns `(sign, index)` tuples; `dim` changes which doubling is split |
+| python-hypercomplex-algebra | `hypercomplex_algebra` | 0.2.0.2 | identical; wraps the engine | parsing and formatting expressions | not an independent witness; `multiply_many_expressions` folds left |
+| python-cayley-calculator | `Cayley_Calculator`, then `sedenion` and the other level modules | 1.3.1 | identical table at D = 16 (gamma = -1) | elementary functions (exp, log, trigonometric) through D = 128 | coerces every coefficient to float64; `from octonion import *` loads python-octonion |
+| python-cayley-dickson | `cayley_dickson` | commit abf96e7 | identical table at D = 8, 16 | reading and cross-checking only; the source carries no license | installs a top-level `src` package, so `import src` resolves to it; its pandas table reads transposed |
+| python-octonion | `octonion` | 0.1.0 | signed relabeling from a Fano labeling, `pi = (0, 1, 2, 4, 3, 6, 7, 5)` with a flip on e6 | batched octonion tensors in PyTorch | index i is not cd_core e_i; its tensors are float64 while torch defaults to float32; owns the `octonion` module name; AGPL |
+| python-splitoct | `SplitOct` | 0.16 (commit e29e72f) | split octonions: the same 512 associator signs, signature (4, 4) | negative control for associator-only tests; SymPy symbolics | not the octonions; isotropic elements have no inverse; GPL |
+| python-mathdunders | `mathdunders` | 0.4.2 | none | operator plumbing for python-hypercomplex | contributes no algebra evidence |
+
+Octonion-Sedenion and pyoctonion are not installed, so their relation to
+cd_core is unmeasured and no artifact claims one.
 <!-- algebra-circuit-rules:end -->
 
 ## QPU time and calibration
@@ -237,6 +265,109 @@ workspace fixtures on the circuit builders of `designs.py`.
   Target and properties afresh in the process that decides, compiles,
   simulates, and submits; no calibration value is cached or read back from a
   file to drive a submission.
+
+<!-- heron-execution-facts:begin -->
+## Heron execution facts
+
+The root AGENTS.md and gororoba_quantum/AGENTS.md carry this section with
+identical bytes (gate core-250). The account reaches ibm_fez, ibm_kingston
+and ibm_marrakesh, all Heron r2: 156 qubits, heavy-hex, native CZ, basis
+cz, id, rz, sx, x and xslow. Heron r3 and Nighthawk (square grid) exist in
+IBM's processor list and are absent from this account, so
+`service.backends()` is the authority before a design names a backend.
+`scripts/heron_target_snapshot.py --out` reads the live Targets into
+`docs/evidence/heron_platform/targets.json`, and gates core-254 and core-255
+recompute every per-backend fact below from it; a refreshed snapshot that
+contradicts this section fails until the text changes with it. Measured
+values and the documentation captures are in
+`docs/notes/ibm_heron_platform.md`.
+
+- **The Target is the timing authority.** dt is 4 ns and the timing
+  constraints read granularity 1, min_length 2, pulse and acquire alignment
+  1; a design reads them from the Target and assumes no 16-sample
+  alignment. live_run.py binds them into the calibration identity.
+- **Measurement variants.** `measure_2` (`MidCircuitMeasure`) is the shorter
+  mid-circuit readout IBM recommends where supported, with a higher reported
+  assignment error than `measure`. `reset` lasts exactly as long as
+  `measure_reset` and `reset_2` as long as `measure_reset_2` on every qubit,
+  so a reset is a measurement followed by a conditional flip. Switching
+  variants changes the physical measurement and needs its own control; Aer
+  lacks `measure_2`, so local simulation needs an explicit representation
+  (QPU_EXECUTION_ROADMAP.md).
+- **`xslow`** is a native 1 us X that shares its reported error with `x` and
+  `sx` on every qubit; the preset transpiler at optimization levels 1 to 3
+  never emits it, so it appears only where a circuit names it.
+- **Dynamic-circuit limits** (execute-dynamic-circuits guide): one level of
+  `if` with no nesting, no reset or measurement inside a conditional,
+  operands of at most 32 bits, no loops, switch or arithmetic, and a
+  per-job broadcast budget of about 300 broadcasts of 60 bits or 2400 of 1
+  bit. `store` is a supported instruction from runtime 0.47.
+- **Repetition delay** defaults to 250 us within `backend.rep_delay_range`,
+  0 to 2 ms on all three; the range changes over time, so a design reads
+  it. A lower delay raises state-preparation error, and `rep_delay` is one
+  value per job.
+- **Execution order.** Circuits iterate column-wise over shots; neither PUB
+  order nor single-batch execution of a job is guaranteed, so adjacent
+  entries of a shot array are not adjacent physical executions.
+- **Billing** is QPU lock time with about 2 s of overhead per sub-job, and
+  the service splits a job too large for its execution engine into
+  sub-jobs. `scheduler_timing` and the compilation circuit time are
+  schedule evidence, not billing. In job and batch mode a job cancelled or
+  failed by user error bills what it consumed, preparation overhead
+  included, and a system error bills zero; a session bills its active
+  wall-clock time, idle time and failed jobs included.
+- **Calibration** runs as roughly hourly monitoring interleaved with user
+  jobs plus triggered recalibration, under two hours a day on Heron, so two
+  jobs submitted together, or one job waiting in the queue, can execute
+  under a calibration other than the one it was planned against.
+  live_run.py checks calibration at each submitted batch, and `--collect`
+  fetches `properties(datetime=...)` and `target_history(datetime=...)` at
+  each PUB's execution start and replays under them, so the planning
+  Target and the execution calibration are separate identities.
+- **Fractional gates** (`use_fractional_gates=True`, experimental):
+  `rzz(theta)` for 0 < theta <= pi/2 and `rx(theta)` for any theta; a bound
+  parameter outside that range fails the job; Pauli twirling, PEC and PEA
+  are unsupported with them and TREX is supported. Reported `rx` errors copy
+  `sx` on every qubit, while `rzz` reports its own error on more than 90
+  percent of pairs and can exceed `cz`. A fractional decomposition is an
+  intervention with its own controls, never a silent substitution.
+- **Stretch** (Qiskit 2.0 or later) resolves at compile time and adds any
+  remainder to the first delay that uses it; the resolved values come from
+  the experimental execution options `stretch_values` and
+  `scheduler_timing`, and equal symbolic halves are checked against them.
+- **Runtime 0.48 to 0.50.** 0.48 deprecates differing `pub.shots` across the
+  PUBs of one job; 0.49 adds `MidCircuitReset` and
+  `ConvertToMidCircuitResetAndMeasure`; 0.50 adds the client-side
+  `executor_sampler.Sampler`, moves `max_execution_time` to the top level
+  (live_run.py sets it there) and adds `XSlowGate`.
+
+**Python stack on the build host.** requirements.txt and
+ci/requirements-ci.txt pin what CI runs; the build host runs Arch packages
+at those versions, except the linters.
+
+| Arch package | Pin it carries |
+|---|---|
+| python-qiskit | qiskit 2.5.2 |
+| python-qiskit-ibm-runtime | qiskit-ibm-runtime 0.50.0 |
+| python-qiskit-aer-cuda (provides python-qiskit-aer) | qiskit-aer 0.17.2 |
+| python-samplomatic | samplomatic 0.21.0, the runtime 0.50 floor |
+| python-ibm-quantum-schemas | ibm-quantum-schemas 0.12.20260921, the runtime 0.50 floor |
+| python-numpy, python-scipy | numpy 2.5.4, scipy 1.18.1 |
+| python-rustworkx, python-sympy | rustworkx 0.18.1, sympy 1.14.0 |
+| python-matplotlib | matplotlib 3.11.2 |
+| python-pytorch-opt-cuda, python-pandas | torch and pandas for python-octonion and python-cayley-dickson only |
+| python-ruff, mypy | newer than the CI pins ruff 0.14.11 and mypy 1.19.1; `uvx ruff@0.14.11` reproduces CI formatting |
+
+A broken or missing package is rebuilt and reinstalled from its PKGBUILD in
+`~/Github/PKGBUILDs` with `makepkg -si --nocheck` in the package
+directory: python-qiskit-aer and python-samplomatic before
+python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
+`blas` and `lapack` virtuals that the installed AMD AOCL libraries provide,
+which leaves AOCL in place; a package without a local PKGBUILD comes from
+the distribution repositories through pacman or paru. After a rebuild,
+`"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
+submit-free dry run confirm the stack.
+<!-- heron-execution-facts:end -->
 
 ## Qiskit skills
 
