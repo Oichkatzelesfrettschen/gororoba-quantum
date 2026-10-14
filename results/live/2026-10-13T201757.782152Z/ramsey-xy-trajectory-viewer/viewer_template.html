@@ -1,0 +1,157 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="description" content="An offline, time-resolved visualization of measured IBM Fez X/Y Ramsey coordinates. Derived radius is not an independent observable. Interpolated connectors are not measured evolution.">
+<title>Reality Ripple | Four-coordinate trajectory explorer</title>
+<style>
+:root {font-family:system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;color-scheme:light;line-height:1.5}
+* {box-sizing:border-box} [hidden]{display:none!important} body{margin:0;background:Canvas;color:CanvasText} header{padding:24px 30px 18px;border-bottom:1px solid #d8dde3}
+.eyebrow{font-size:11px;letter-spacing:.2em;font-weight:750;margin:0 0 9px} h1{font-size:clamp(24px,3vw,38px);letter-spacing:-.025em;line-height:1.13;margin:0 0 10px;font-weight:650}
+header p{margin:6px 0;max-width:1040px;font-size:14px}.chips{display:flex;gap:8px;flex-wrap:wrap;margin-top:12px}.chip{font-size:12px;border:1px solid #d8dde3;padding:3px 9px;border-radius:4px}
+.workspace{display:grid;grid-template-columns:290px minmax(0,1fr);max-width:1700px;margin:auto}.sidebar{padding:20px 18px;border-right:1px solid #d8dde3}.controls-title{font-size:11px;letter-spacing:.1em;text-transform:uppercase;font-weight:750;margin:14px 0 7px}.controls-title:first-child{margin-top:0}
+label{font-size:13px}select,button{font:inherit;font-size:13px;border:1px solid #b9c0c9;border-radius:4px;padding:7px 10px;background:Canvas;color:CanvasText;cursor:pointer}select{max-width:100%;width:100%}button:hover{filter:brightness(.95)}button:focus-visible,input:focus-visible,select:focus-visible{outline:2px solid Highlight;outline-offset:2px}
+input[type=range]{width:100%;margin:8px 0}input[type=checkbox]{vertical-align:middle;margin-right:6px}.buttonrow{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}.buttonrow button{flex:1}.checkrow{display:block;margin:6px 0}.fine{font-size:12px;line-height:1.45;opacity:.82}.note{border-left:3px solid #aab3be;padding:7px 11px;margin:12px 0;font-size:12px}.metric{font-size:24px;font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}#timeState{font-size:11px;min-height:33px}#rotations{padding-top:6px}#rotations label{display:flex;justify-content:space-between}
+.main{min-width:0;padding:14px 20px 20px}.plothead{display:flex;justify-content:space-between;gap:14px;align-items:flex-start}.plothead h2{margin:0;font-size:19px;font-weight:600}.plothead p{margin:4px 0;font-size:12px}.plot-actions{display:flex;gap:6px}#plot{height:620px;width:100%}#projection{font-size:12px;white-space:pre-wrap;margin:0}.legendNote{font-size:12px;border-top:1px solid #e1e5ea;padding:9px 0}
+details{margin-top:14px;border-top:1px solid #e1e5ea;padding-top:12px}summary{cursor:pointer;font-weight:600;font-size:14px}.tablewrap{overflow:auto;max-height:390px;margin-top:10px}table{border-collapse:collapse;width:100%;font-size:12px;font-variant-numeric:tabular-nums}th,td{padding:7px 9px;text-align:right;border-bottom:1px solid #e1e5ea;white-space:nowrap}th:first-child,td:first-child{text-align:left}thead{position:sticky;top:0;background:Canvas}td.empty{text-align:center;white-space:normal}.meta{font-size:12px;max-width:1100px;margin:8px 0}.meta code{overflow-wrap:anywhere}footer{border-top:1px solid #d8dde3;padding:17px 30px;font-size:12px}.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}#fallback{display:none;border:1px solid;padding:20px}#playButton{font-weight:650}#errorBox{display:none;border:2px solid;padding:16px;margin:10px}
+@media(max-width:850px){header{padding:18px}.workspace{grid-template-columns:1fr}.sidebar{border-right:none;border-bottom:1px solid #d8dde3;display:grid;grid-template-columns:1fr 1fr;gap:8px 18px}.controlgroup{min-width:0}.span2{grid-column:1/-1}.main{padding:14px 8px}#plot{height:560px}.plothead{padding:0 9px}.metric{font-size:21px}footer{padding:16px}#rotations{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.plot-actions{flex-direction:column}}
+@media(prefers-reduced-motion:reduce){*{scroll-behavior:auto}}
+</style>
+
+</head>
+<body>
+<header>
+<p class="eyebrow">REALITY RIPPLE / MEASURED FEZ CHARACTERIZATION</p>
+<h1>Four-coordinate trajectories, with time</h1>
+<p>Spatial coordinates <b>X, Y, R</b>; executed idle <b>τ</b> drives playback. Switch to spacetime tracks or a rotatable projection of all four coordinates.</p>
+<div class="chips"><span class="chip">26 measured X/Y pairs</span><span class="chip">8 condition–qubit trajectories</span><span class="chip">0.004–7.604 μs</span><span class="chip">No new QPU execution</span></div>
+</header>
+<div class="workspace">
+<aside class="sidebar" aria-label="Visualization controls">
+<div class="controlgroup span2"><div class="controls-title">Projection</div>
+<select id="mode" aria-label="Projection mode"><option value="slice">4D movie: (X, Y, R) + time</option><option value="worldline">Spacetime tracks: (X, Y, τ)</option><option value="four">4D → 3D oblique projection</option></select>
+<p id="modeNote" class="fine"></p></div>
+<div class="controlgroup span2"><div class="controls-title">Executed idle / animation time</div>
+<div class="metric"><output id="tauText">7.604</output> <small>μs</small></div>
+<input type="range" id="time" min="0" max="3" step="1" value="3" aria-label="Executed idle time">
+<div id="timeState" aria-live="polite"></div>
+<div class="buttonrow"><button id="playButton" type="button">Play</button><button id="stepButton" type="button">Next sample</button><button id="allButton" type="button">Show all</button></div>
+<label class="checkrow"><input id="interpolate" type="checkbox">Animate connecting segments</label>
+<p class="fine">Off: four acquired time settings only.<br>On: a moving guide interpolates X/Y; R is recomputed. Intermediate positions are not observations.</p>
+<label for="speed">Seconds per complete sweep</label><input id="speed" type="range" min="4" max="24" step="1" value="12"><output id="speedText" class="fine">12 seconds</output>
+</div>
+<div class="controlgroup"><div class="controls-title">Physical qubits</div>
+<label class="checkrow"><input class="qubit-filter" type="checkbox" value="136" checked>Q136 · circles</label>
+<label class="checkrow"><input class="qubit-filter" type="checkbox" value="144" checked>Q144 · diamonds</label></div>
+<div class="controlgroup"><div class="controls-title">Conditions</div>
+<label class="checkrow"><input class="condition-filter" type="checkbox" value="plain" checked>Plain Ramsey</label>
+<label class="checkrow"><input class="condition-filter" type="checkbox" value="echo" checked>Echo</label>
+<label class="checkrow"><input class="condition-filter" type="checkbox" value="window c0" checked>Window · control 0</label>
+<label class="checkrow"><input class="condition-filter" type="checkbox" value="window c1" checked>Window · control 1</label></div>
+<div class="controlgroup span2"><label class="checkrow"><input id="trails" type="checkbox" checked>Show connecting trajectories</label>
+<label class="checkrow"><input id="labels" type="checkbox">Label measured times</label>
+<div class="note"><b>Measured:</b> filled markers; rings mark the current time.<br><b>Between samples:</b> dashed guides; hollow moving marker.<br>Nothing is extrapolated before the first observation of each condition.</div></div>
+<div id="rotations" hidden>
+<div><label for="rx">X–τ rotation <output id="rxText">0°</output></label><input type="range" id="rx" min="-90" max="90" value="0" step="1"></div>
+<div><label for="ry">Y–τ rotation <output id="ryText">0°</output></label><input type="range" id="ry" min="-90" max="90" value="0" step="1"></div>
+<div><label for="rr">R–τ rotation <output id="rrText">45°</output></label><input type="range" id="rr" min="-90" max="90" value="45" step="1"></div>
+</div>
+</aside>
+<main class="main">
+<div class="plothead"><div><h2 id="viewTitle">Local coherence through executed idle</h2><p>Drag or swipe to rotate. Scroll or pinch to zoom. Hover or tap a point for the recorded values.</p></div><div class="plot-actions"><button id="resetCamera">Reset view</button><button id="exportImage">Save PNG</button><button id="exportSVG">Save SVG</button></div></div>
+<div id="errorBox" role="alert"></div><div id="plot"><svg id="scene" role="img" aria-label="Interactive projection of measured coherence trajectories" style="width:100%;height:100%;touch-action:none;cursor:grab;font-family:system-ui,sans-serif"></svg></div><div id="pointTip" hidden style="position:fixed;z-index:100;max-width:305px;background:Canvas;color:CanvasText;border:1px solid;border-radius:4px;padding:10px;font-size:12px;pointer-events:none;box-shadow:0 3px 20px #0002"></div>
+<div id="fallback">The interactive plot could not be displayed. The measured-data table below remains available. Open this file in a browser with JavaScript enabled, or use the supplied PNG / video.</div>
+<div class="legendNote"><b>One scene, three projections.</b> R = √(X² + Y²) is a derived radius, not measured Z. This is an embedding of recorded local Ramsey responses, not a complete Bloch vector, a spacetime reconstruction, or four independent physical degrees of freedom.</div>
+<pre id="projection"></pre>
+<details open><summary>Coordinates at the selected time</summary><p class="fine" id="tableNote"></p><div class="tablewrap"><table><thead><tr><th>Trajectory</th><th>Status</th><th>τ (μs)</th><th>X</th><th>Y</th><th>R</th><th>Principal phase (rad)</th><th>X zero / shots</th><th>Y zero / shots</th></tr></thead><tbody id="currentRows"></tbody></table></div></details>
+<details><summary>All 26 measured points and original interval fields</summary><p class="fine">The source intervals are marginal 95% Jeffreys intervals. They are exploratory, not simultaneous bounds, and do not replace the registered Hoeffding tests. No independent R interval is invented.</p><div class="tablewrap"><table><thead><tr><th>Trajectory</th><th>τ (μs)</th><th>X</th><th>Y</th><th>R</th><th>Phase</th><th>X interval</th><th>Y interval</th></tr></thead><tbody id="allRows"></tbody></table></div></details>
+<details><summary>Interpretation, time semantics, and provenance</summary>
+<p class="meta"><b>Time is an experimental setting.</b> τ is the returned-schedule idle exposure for separately prepared circuits. It is not elapsed browser time or a timestamp tracking one continuously observed quantum state. X and Y come from distinct circuits with matched exposure. Playback is slowed for inspection.</p>
+<p class="meta"><b>Aliasing remains unresolved.</b> Echo and window points separated by 2 μs admit 500 kHz detuning aliases. Connector paths do not unwrap phase or select a physical trajectory between samples. Plain Ramsey has a near-zero-idle reference; the other conditions start at 3.604 μs.</p>
+<p class="meta"><b>Raw coordinates.</b> Finite-shot, uncorrected measurement estimators can yield R slightly above 1. The supplied maximum 1.000322 is retained, not clipped or interpreted as a physical Bloch radius.</p>
+<p class="meta"><b>4D projection.</b> Each coordinate is centered and scaled to its observed span before optional X–τ, Y–τ, and R–τ rotations. The first three rotated coordinates are shown. These viewer rotations are changes of display coordinates, not gates or physical transformations. Their numerical matrix appears above.</p>
+<p class="meta"><b>Source snapshot:</b> <code>eb64ead57b75beb07ba8018ccfbc1e6242c5ec21</code><br><b>Executed source:</b> <code>9b86a1349aa48cc3834ed446cbda7da55c3724e5</code><br><b>Collected record:</b> <code>results/live/2026-10-13T201757.782152Z</code><br><b>Executed case digest:</b> <code>ec6e86629948407640b5e7a66a2306cca8bd7d1004227f66de50aedee898cc2f</code></p>
+<p class="meta">The executed case differed from the earlier digest-bound approval. This derived viewer does not retroactively change that record. The input CSV matches the supplied package manifest; the original QPY and raw PUB archives were not independently rehashed for this visualization.</p>
+<div class="buttonrow"><button id="downloadData">Save measured data JSON</button></div>
+</details>
+</main>
+</div>
+<footer><b>Data boundaries:</b> measured local X/Y coordinates; derived radius and principal phase; displayed trajectories are guides. No complete N21 state, Casimir force, ZPE signal, or causal root mechanism is inferred by this view. Offline viewer: native vector rendering and all 26 observations are embedded; no WebGL or network is required.</footer>
+<script id="data" type="application/json">__MEASUREMENTS__</script>
+<script>
+'use strict';
+const DATA=JSON.parse(document.getElementById('data').textContent);
+const $=id=>document.getElementById(id), T=DATA.times_us, t0=T[0], t1=T[T.length-1];
+const LABELS={'plain':'Plain Ramsey','echo':'Echo','window c0':'Window c0','window c1':'Window c1'};
+const DASH={'plain':'4 4','echo':'9 4','window c0':'11 4 2 4','window c1':'13 4 3 4 3 4'};
+const SERIES=DATA.series;
+const state={mode:'slice',tau:t1,interpolate:false,playing:false,rotation:[0,0,45],yaw:-.65,pitch:.48,zoom:1};
+let timer=null,hitPoints=[],drag=null,tipPinned=false;
+const pointerPositions=new Map(); let pinchDistance=null;
+const fmt=(n,d=5)=>Number(n).toFixed(d), isTime=(a,b)=>Math.abs(a-b)<1e-8;
+const escapeHtml=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const identity=()=>Array.from({length:4},(_,i)=>Array.from({length:4},(_,j)=>i===j?1:0));
+function multiply(a,b){return a.map(row=>b[0].map((_,j)=>row.reduce((v,x,k)=>v+x*b[k][j],0)));}
+function matrix(){let m=identity();state.rotation.forEach((deg,axis)=>{const r=identity(),a=deg*Math.PI/180,c=Math.cos(a),s=Math.sin(a);r[axis][axis]=c;r[axis][3]=-s;r[3][axis]=s;r[3][3]=c;m=multiply(r,m);});return m;}
+function projected(p,m){if(state.mode==='slice')return[p.x,p.y,p.r];if(state.mode==='worldline')return[p.x,p.y,p.t];const v=[p.x,p.y,p.r,p.t].map((v,i)=>(v-DATA.scaling.center[i])/DATA.scaling.halfspan[i]);return m.slice(0,3).map(row=>row.reduce((acc,c,i)=>acc+c*v[i],0));}
+function enabled(s){return [...document.querySelectorAll('.qubit-filter:checked')].some(e=>+e.value===s.qubit)&&[...document.querySelectorAll('.condition-filter:checked')].some(e=>e.value===s.condition);}
+function exactAt(s,t){return s.points.find(p=>isTime(p.t,t));}
+function at(s,t,allowInterpolation=true){const exact=exactAt(s,t);if(exact)return{...exact,kind:'measured'};if(t<s.points[0].t||t>s.points[s.points.length-1].t||!allowInterpolation)return null;for(let i=1;i<s.points.length;i++){const a=s.points[i-1],b=s.points[i];if(t>a.t&&t<b.t){const f=(t-a.t)/(b.t-a.t),x=a.x+f*(b.x-a.x),y=a.y+f*(b.y-a.y);return{x,y,r:Math.hypot(x,y),phase:Math.atan2(y,x),t,kind:'interpolated',left:a.t,right:b.t};}}return null;}
+function path(s,t){if(t<s.points[0].t)return[];const out=[{...s.points[0],kind:'measured'}];for(let i=1;i<s.points.length;i++){const a=s.points[i-1],b=s.points[i];if(t<=a.t+1e-9)break;const stop=Math.min(t,b.t),steps=Math.max(1,Math.ceil(18*(stop-a.t)/(b.t-a.t)));for(let j=1;j<=steps;j++){const tt=a.t+(stop-a.t)*j/steps,p=at(s,tt);if(p)out.push(p);}if(t<=b.t+1e-9)break;}return out;}
+function axisConfig(){if(state.mode==='four')return{ranges:[[-1.6,1.6],[-1.6,1.6],[-1.6,1.6]],labels:['Projected u₁','Projected u₂','Projected u₃'],ticks:[[-1,0,1],[-1,0,1],[-1,0,1]],aspect:[1,1,1]};return{ranges:[[.84,1.045],[-.15,.19],state.mode==='worldline'?[-.2,8]:[.84,1.045]],labels:['X · measured quadrature','Y · measured quadrature',state.mode==='worldline'?'Executed idle τ (μs)':'R = √(X²+Y²) · derived'],ticks:[[.85,.90,.95,1.00],[-.10,0,.10],state.mode==='worldline'?T:[.85,.90,.95,1.00]],aspect:[1,1.1,state.mode==='worldline'?1.25:1.1]};}
+function updateText(m){$('tauText').value=fmt(state.tau,3);const measured=T.some(t=>isTime(t,state.tau)),active=SERIES.filter(enabled),current=active.map(s=>({s,p:at(s,state.tau,state.interpolate)})),n=current.filter(e=>e.p).length;
+$('timeState').textContent=measured?`Acquired time setting · ${n} selected trajectories measured here`:`CONNECTOR TIME · ${n} interpolated positions · no new measurements`;
+const notes={slice:'R is the observed radius derived from X/Y. The animation clock supplies the fourth coordinate.',worldline:'Time becomes the vertical coordinate. R and principal phase remain available in the point readout.',four:'Normalize (X,Y,R,τ), rotate in 4D, then project to 3D. These are display transformations, not physical gates.'};
+$('modeNote').textContent=notes[state.mode];$('viewTitle').textContent={slice:'Local coherence through executed idle',worldline:'Spacetime trajectories in the measured X/Y plane',four:'Rotatable four-coordinate embedding'}[state.mode];$('rotations').hidden=state.mode!=='four';
+$('projection').textContent=state.mode==='four'?'Projection of normalized [X*, Y*, R*, τ*]:\n'+m.slice(0,3).map((row,i)=>`u${i+1} = [ ${row.map(v=>v.toFixed(3)).join(', ')} ] · [X*, Y*, R*, τ*]`).join('\n'):(state.mode==='slice'?'Displayed position = (X, Y, R). Fourth coordinate = selected executed idle τ.':'Displayed position = (X, Y, τ). Radius R is derived and appears in the point readout.');
+$('tableNote').textContent=measured?'Rows are actual paired X/Y observations at this time. Some conditions have no near-zero-idle record.':'These rows are interpolated guide positions. No counts, uncertainty interval, or measured evolution is assigned to them.';
+$('currentRows').innerHTML=current.map(({s,p})=>p?`<tr><td>${LABELS[s.condition]} · Q${s.qubit}</td><td>${p.kind==='measured'?'Measured':'Guide only'}</td><td>${fmt(p.t,3)}</td><td>${fmt(p.x)}</td><td>${fmt(p.y)}</td><td>${fmt(p.r)}</td><td>${fmt(p.phase)}</td><td>${p.kind==='measured'?`${p.kx} / ${p.nx}`:'—'}</td><td>${p.kind==='measured'?`${p.ky} / ${p.ny}`:'—'}</td></tr>`:`<tr><td>${LABELS[s.condition]} · Q${s.qubit}</td><td colspan="8" class="empty">No acquired point or permitted connector at this time; no extrapolation.</td></tr>`).join('');}
+function renderScene(m){const host=$('plot'),svg=$('scene'),W=Math.max(300,host.clientWidth),H=host.clientHeight,ac=axisConfig();svg.setAttribute('viewBox',`0 0 ${W} ${H}`);svg.setAttribute('width',W);svg.setAttribute('height',H);
+const sc=Math.min(W*.265,H*.25)*state.zoom,cx=W*.51,cy=H*.47;
+function screen(v){let vv=v.map((x,i)=>2*(x-ac.ranges[i][0])/(ac.ranges[i][1]-ac.ranges[i][0])-1);vv=vv.map((x,i)=>x*ac.aspect[i]);const [x,y,z]=vv,u=Math.cos(state.yaw)*x-Math.sin(state.yaw)*y,w=Math.sin(state.yaw)*x+Math.cos(state.yaw)*y,v2=Math.cos(state.pitch)*z-Math.sin(state.pitch)*w,depth=Math.sin(state.pitch)*z+Math.cos(state.pitch)*w,persp=1/(1-depth/8);return{sx:cx+sc*u*persp,sy:cy-sc*v2*persp,depth};}
+const pxy=p=>`${p.sx.toFixed(2)},${p.sy.toFixed(2)}`;
+const line=(a,b,extra='')=>`<line x1="${a.sx}" y1="${a.sy}" x2="${b.sx}" y2="${b.sy}" stroke="currentColor" ${extra}/>`;
+const text=(p,t,extra='')=>`<text x="${p.sx}" y="${p.sy}" fill="currentColor" ${extra}>${escapeHtml(t)}</text>`;
+let parts=[`<title>Measured local coherence trajectories at executed idle ${fmt(state.tau,3)} microseconds</title>`,`<desc>Rotatable three-dimensional view of four recorded coordinates. Filled circles represent qubit 136; diamonds represent qubit 144. Dashed connectors are guides, not measured intermediate states.</desc>`];
+// A box and faint base-plane grid provide depth without a filled surface.
+const lo=ac.ranges.map(r=>r[0]),hi=ac.ranges.map(r=>r[1]);
+for(let dim=0;dim<3;dim++)for(let a=0;a<2;a++)for(let b=0;b<2;b++){const other=[0,1,2].filter(i=>i!==dim),v=lo.slice();v[other[0]]=a?hi[other[0]]:lo[other[0]];v[other[1]]=b?hi[other[1]]:lo[other[1]];const w=v.slice();w[dim]=hi[dim];parts.push(line(screen(v),screen(w),'stroke-width="1" opacity="0.17"'));}
+for(let dim=0;dim<2;dim++)for(const tick of ac.ticks[dim]){let a=lo.slice(),b=lo.slice();a[dim]=tick;b[dim]=tick;b[1-dim]=hi[1-dim];parts.push(line(screen(a),screen(b),'stroke-width="0.65" opacity="0.09"'));}
+for(let dim=0;dim<3;dim++){const end=lo.slice();end[dim]=hi[dim];parts.push(line(screen(lo),screen(end),'stroke-width="1.3" opacity="0.65"'));for(const tick of ac.ticks[dim]){const v=lo.slice();v[dim]=tick;const p=screen(v);const label=state.mode==='worldline'&&dim===2?fmt(tick,3):(state.mode==='four'?String(tick):fmt(tick,2));parts.push(text({sx:p.sx+(dim===2?-12:0),sy:p.sy+(dim===2?4:18)},label,`text-anchor="${dim===2?'end':'middle'}" font-size="11" opacity="0.8"`));}const mid=lo.slice();mid[dim]=(lo[dim]+hi[dim])/2;const p=screen(mid);const offsets=dim===0?[15,38]:(dim===1?[-18,38]:(W<650?[12,-15]:[-75,-15]));const axisLabel=W<650?(state.mode==='four'?['u₁','u₂','u₃'][dim]:['X','Y',state.mode==='worldline'?'τ (μs)':'R (derived)'][dim]):ac.labels[dim];parts.push(text({sx:p.sx+offsets[0],sy:p.sy+offsets[1]},axisLabel,`text-anchor="middle" font-size="12" font-weight="550"`));}
+hitPoints=[];let allMarkers=[];
+SERIES.forEach((s,idx)=>{if(!enabled(s))return;const points=path(s,state.tau);if(!points.length)return;const projectedPoints=points.map(p=>screen(projected(p,m)));if($('trails').checked&&points.length>1)parts.push(`<polyline points="${projectedPoints.map(pxy).join(' ')}" fill="none" stroke="currentColor" stroke-width="1.65" stroke-dasharray="${DASH[s.condition]}" opacity="0.70"/>`);
+points.forEach((p,j)=>{if(p.kind==='measured'||isTime(p.t,state.tau))allMarkers.push({p,s,screen:projectedPoints[j],head:isTime(p.t,state.tau),seriesIndex:idx});});});
+allMarkers.sort((a,b)=>a.screen.depth-b.screen.depth);
+allMarkers.forEach(({p,s,screen:pos,head,seriesIndex})=>{const r=head?6:4.1,fill=p.kind==='measured'?'currentColor':'none';const title=`${LABELS[s.condition]} · Q${s.qubit} · τ=${fmt(p.t,3)} μs · ${p.kind}`;let shape=s.qubit===136?`<circle cx="${pos.sx}" cy="${pos.sy}" r="${r}"`:`<polygon points="${[[pos.sx,pos.sy-r-1],[pos.sx+r+1,pos.sy],[pos.sx,pos.sy+r+1],[pos.sx-r-1,pos.sy]].map(v=>v.join(',')).join(' ')}"`;parts.push(shape+` fill="${fill}" stroke="currentColor" stroke-width="1.2"><title>${escapeHtml(title)}</title></${s.qubit===136?'circle':'polygon'}>`);if(head)parts.push(`<circle cx="${pos.sx}" cy="${pos.sy}" r="${r+4}" fill="none" stroke="currentColor" stroke-width="0.8" opacity=".6"/>`);if($('labels').checked&&p.kind==='measured'){const dy=(seriesIndex%2===0?-11:16),dx=7+(seriesIndex%2)*3;parts.push(text({sx:pos.sx+dx,sy:pos.sy+dy},`${s.qubit} · ${fmt(p.t,3)}`,`font-size="10" opacity=".88"`));}hitPoints.push({...pos,p,s});});
+parts.push(text({sx:16,sy:25},`τ = ${fmt(state.tau,3)} μs   ·   ${T.some(t=>isTime(t,state.tau))?'acquired setting':'interpolated connector'}`,'font-size="13" font-weight="600"'));
+const conditions=Object.keys(LABELS),legendY=H-47;conditions.forEach((condition,i)=>{const x=16+(i%2)*(W/2),y=legendY+Math.floor(i/2)*20;parts.push(`<line x1="${x}" y1="${y}" x2="${x+35}" y2="${y}" stroke="currentColor" stroke-width="1.6" stroke-dasharray="${DASH[condition]}"/>`);parts.push(text({sx:x+43,sy:y+4},LABELS[condition],'font-size="11"'));});
+if(!allMarkers.length)parts.push(text({sx:W/2,sy:H/2},'No acquired points for the selected conditions at this time.','font-size="13" text-anchor="middle"'));
+svg.innerHTML=parts.join('');}
+function draw(){try{const m=matrix();updateText(m);renderScene(m);window.__viewerReady=true;window.__lastFrame={mode:state.mode,tau:state.tau,measured:T.some(t=>isTime(t,state.tau)),visible_series:SERIES.filter(enabled).length,point_count:SERIES.reduce((n,s)=>n+(enabled(s)?s.points.filter(p=>p.t<=state.tau+1e-8).length:0),0),renderer:'native SVG; no WebGL'};}catch(err){$('errorBox').style.display='block';$('errorBox').textContent=String(err);console.error(err);}}
+function stop(){state.playing=false;$('playButton').textContent='Play';if(timer){clearInterval(timer);timer=null;}}
+function setTime(t){state.tau=Math.min(t1,Math.max(t0,t));$('time').value=state.interpolate?state.tau:Math.max(0,T.findIndex(x=>isTime(x,state.tau)));draw();}
+function configureSlider(){const e=$('time');if(state.interpolate){e.min=t0;e.max=t1;e.step=.001;e.value=state.tau;}else{const index=T.reduce((a,t,i)=>Math.abs(t-state.tau)<Math.abs(T[a]-state.tau)?i:a,0);e.min=0;e.max=T.length-1;e.step=1;state.tau=T[index];e.value=index;}}
+function play(){if(state.playing){stop();return;}state.playing=true;$('playButton').textContent='Pause';const duration=+$('speed').value*1000;if(!state.interpolate){let i=0;setTime(T[i]);timer=setInterval(()=>{i++;if(i>=T.length){stop();return;}setTime(T[i]);},duration/T.length);}else{const start=performance.now();setTime(t0);timer=setInterval(()=>{const elapsed=performance.now()-start;if(elapsed>=duration){setTime(t1);stop();return;}setTime(t0+(t1-t0)*elapsed/duration);},60);}}
+function hideTip(){$('pointTip').hidden=true;}
+function tooltipAt(event){const rect=$('scene').getBoundingClientRect(),px=event.clientX-rect.left,py=event.clientY-rect.top;let best=null,dist=19;for(const item of hitPoints){const d=Math.hypot(item.sx-px,item.sy-py);if(d<dist){dist=d;best=item;}}if(!best){if(!tipPinned)hideTip();return;}const {p,s}=best;let details=p.kind==='measured'?`X zeros: ${p.kx}/${p.nx}<br>Y zeros: ${p.ky}/${p.ny}<br>X 95% marginal interval: [${fmt(p.xlow)}, ${fmt(p.xhigh)}]<br>Y 95% marginal interval: [${fmt(p.ylow)}, ${fmt(p.yhigh)}]`:'No counts or uncertainties exist for this interpolated position.';
+$('pointTip').innerHTML=`<b>${LABELS[s.condition]} · Q${s.qubit}</b><br><b>${p.kind==='measured'?'MEASURED COORDINATE PAIR':'CONNECTOR ONLY · NOT MEASURED'}</b><br>τ = ${fmt(p.t,3)} μs<br>X = ${fmt(p.x,6)}<br>Y = ${fmt(p.y,6)}<br>R = ${fmt(p.r,6)}<br>Principal phase = ${fmt(p.phase,6)} rad<br>${details}<br>${s.alias_resolved?'Frequency fit is model-dependent.':'Frequency aliases remain unresolved.'}`;
+const tip=$('pointTip');tip.hidden=false;tip.style.left=Math.max(8,Math.min(event.clientX+14,window.innerWidth-315))+'px';tip.style.top=Math.max(8,Math.min(event.clientY+12,window.innerHeight-285))+'px';}
+const svg=$('scene');svg.addEventListener('pointerdown',e=>{svg.setPointerCapture(e.pointerId);pointerPositions.set(e.pointerId,[e.clientX,e.clientY]);drag={x:e.clientX,y:e.clientY,moved:false};tipPinned=false;hideTip();});svg.addEventListener('pointermove',e=>{if(pointerPositions.has(e.pointerId)){pointerPositions.set(e.pointerId,[e.clientX,e.clientY]);if(pointerPositions.size===2){const[a,b]=[...pointerPositions.values()],d=Math.hypot(a[0]-b[0],a[1]-b[1]);if(pinchDistance)state.zoom=Math.max(.55,Math.min(2.3,state.zoom*d/pinchDistance));pinchDistance=d;draw();return;}if(drag){const dx=e.clientX-drag.x,dy=e.clientY-drag.y;if(Math.abs(dx)+Math.abs(dy)>1)drag.moved=true;state.yaw+=dx*.007;state.pitch=Math.max(-1.25,Math.min(1.25,state.pitch+dy*.006));drag.x=e.clientX;drag.y=e.clientY;draw();}}else tooltipAt(e);});
+function release(e){pointerPositions.delete(e.pointerId);pinchDistance=null;if(drag&&!drag.moved){tooltipAt(e);tipPinned=true;}drag=null;}
+svg.addEventListener('pointerup',release);svg.addEventListener('pointercancel',release);svg.addEventListener('pointerleave',()=>{if(!tipPinned)hideTip();});svg.addEventListener('wheel',e=>{e.preventDefault();state.zoom=Math.max(.55,Math.min(2.3,state.zoom*Math.exp(-e.deltaY*.001)));draw();},{passive:false});
+$('time').addEventListener('input',()=>{stop();hideTip();setTime(state.interpolate?+$('time').value:T[+$('time').value]);});$('playButton').addEventListener('click',play);$('stepButton').addEventListener('click',()=>{stop();const next=T.find(t=>t>state.tau+1e-8);setTime(next??t0);});$('allButton').addEventListener('click',()=>{stop();setTime(t1);});
+$('interpolate').addEventListener('change',()=>{stop();state.interpolate=$('interpolate').checked;configureSlider();draw();});$('speed').addEventListener('input',()=>{$('speedText').value=$('speed').value+' seconds';});
+$('mode').addEventListener('change',()=>{state.mode=$('mode').value;draw();});['trails','labels'].forEach(id=>$(id).addEventListener('change',draw));document.querySelectorAll('.qubit-filter,.condition-filter').forEach(e=>e.addEventListener('change',draw));
+['rx','ry','rr'].forEach((id,i)=>$(id).addEventListener('input',()=>{state.rotation[i]=+$(id).value;$(id+'Text').value=$(id).value+'°';draw();}));$('resetCamera').addEventListener('click',()=>{state.yaw=-.65;state.pitch=.48;state.zoom=1;draw();});
+function saveBlob(blob,name){const url=URL.createObjectURL(blob),a=document.createElement('a');a.href=url;a.download=name;a.click();setTimeout(()=>URL.revokeObjectURL(url),3000);}
+function svgSource(){const clone=svg.cloneNode(true);clone.setAttribute('xmlns','http://www.w3.org/2000/svg');return new XMLSerializer().serializeToString(clone);}
+$('exportSVG').addEventListener('click',()=>saveBlob(new Blob([svgSource()],{type:'image/svg+xml'}),'reality_ripple_'+state.mode+'_t'+fmt(state.tau,3)+'.svg'));
+$('exportImage').addEventListener('click',()=>{const blob=new Blob([svgSource()],{type:'image/svg+xml'}),url=URL.createObjectURL(blob),image=new Image();image.onload=()=>{const canvas=document.createElement('canvas');canvas.width=svg.clientWidth*2;canvas.height=svg.clientHeight*2;const c=canvas.getContext('2d');c.scale(2,2);c.drawImage(image,0,0);canvas.toBlob(b=>{if(b)saveBlob(b,'reality_ripple_'+state.mode+'_t'+fmt(state.tau,3)+'.png');});URL.revokeObjectURL(url);};image.onerror=()=>{URL.revokeObjectURL(url);$('errorBox').style.display='block';$('errorBox').textContent='PNG export is unavailable in this browser; use Save SVG.';};image.src=url;});
+$('downloadData').addEventListener('click',()=>saveBlob(new Blob([JSON.stringify(DATA,null,2)],{type:'application/json'}),'reality_ripple_4d_measurements.json'));
+$('allRows').innerHTML=SERIES.flatMap(s=>s.points.map(p=>`<tr><td>${LABELS[s.condition]} · Q${s.qubit}</td><td>${fmt(p.t,3)}</td><td>${fmt(p.x)}</td><td>${fmt(p.y)}</td><td>${fmt(p.r)}</td><td>${fmt(p.phase)}</td><td>[${fmt(p.xlow)}, ${fmt(p.xhigh)}]</td><td>[${fmt(p.ylow)}, ${fmt(p.yhigh)}]</td></tr>`)).join('');
+window.viewerAPI={setTime,draw,state,at,projected,matrix};
+new ResizeObserver(()=>draw()).observe($('plot'));draw();
+
+</script>
+</body></html>

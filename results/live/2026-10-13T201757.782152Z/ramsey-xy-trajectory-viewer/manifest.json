@@ -1,0 +1,131 @@
+{
+  "source_archive_sha256": "c16d45179f147ce98949712247afcff6fa1d646f166df5e5f2ce6f0b1feb8e84",
+  "measured_pairs": 26,
+  "trajectories": 8,
+  "time_unit": "microseconds of executed idle",
+  "fourth_coordinate": "executed_idle_us",
+  "radius_is_derived": true,
+  "connectors_are_measurements": false,
+  "files": [
+    {
+      "path": "README.md",
+      "size_bytes": 6451,
+      "sha256": "f6b5cc27a3a2c3220ef0960a600a948c412250871b982815b5d0c272781a94eb"
+    },
+    {
+      "path": "browser_validation.json",
+      "size_bytes": 386,
+      "sha256": "aabdfa008b974a0089d9f598a62dcae636d2d140c7c7cefce14f40c8d503566b"
+    },
+    {
+      "path": "browser_validation.log",
+      "size_bytes": 761,
+      "sha256": "6809b78fa92819b3e86f55db616cf23479c004df7e47f895078c321308cf734d"
+    },
+    {
+      "path": "build_visualization.py",
+      "size_bytes": 12729,
+      "sha256": "6d84533d0a590b5c210bb9d147b79e12fca7a1bb90d1add39fba04d28793e9cd"
+    },
+    {
+      "path": "data/measurements_4d.json",
+      "size_bytes": 13187,
+      "sha256": "c6e300aa94b91fc4bc886f1f1f30ce6c15d8ce0e5ec6479e40208588751fa3bd"
+    },
+    {
+      "path": "data/ramsey_fits_model_dependent.csv",
+      "size_bytes": 802,
+      "sha256": "11590b28236357994562544ea483b17303416d9d2d7e063a949a00621e16969a"
+    },
+    {
+      "path": "data/ramsey_observations.csv",
+      "size_bytes": 5036,
+      "sha256": "106a2b0eb98e6d531410add375950a106d68744a548cbd5a386ea2b73935b162"
+    },
+    {
+      "path": "data/source_analysis.md",
+      "size_bytes": 7980,
+      "sha256": "46301ce8560fabae27ddbe10c4968e3403e65e5bd98a67b633e209b35959e59b"
+    },
+    {
+      "path": "data/source_manifest.json",
+      "size_bytes": 5162,
+      "sha256": "1490515dc76917c36863220e777c4f466d08ce5767741b21e210b4ffb9daa9aa"
+    },
+    {
+      "path": "index.html",
+      "size_bytes": 38707,
+      "sha256": "3276324dc756c27e0d5a8361d24148dfc165830dc27572c1987b2d73d0cb5504"
+    },
+    {
+      "path": "previews/four_coordinates.png",
+      "size_bytes": 424915,
+      "sha256": "1663f8c9f645f0615090514ca18172c2bd2516635d741d51af79f2a2cb1f7be9"
+    },
+    {
+      "path": "previews/four_coordinates.svg",
+      "size_bytes": 109513,
+      "sha256": "9b1409cb0047a892b6ea5d9ac5bfa62955a61f2f5080547acd32a00678afe553"
+    },
+    {
+      "path": "previews/interactive_desktop.png",
+      "size_bytes": 180200,
+      "sha256": "74015107850ca0f1d1b6f8cbe45d53cbf129955ba35bdedf9b59bcd85f60a764"
+    },
+    {
+      "path": "previews/interactive_mobile.png",
+      "size_bytes": 184387,
+      "sha256": "ea9e5c99e8931fb2b7dd30dca78daa2be43c88ca84cceea41df9fc7a6817e63b"
+    },
+    {
+      "path": "previews/native_scene.png",
+      "size_bytes": 200882,
+      "sha256": "9f771e856ced56dd92e062caf88d049b234b4bac89acd279d1148a19c7833302"
+    },
+    {
+      "path": "previews/native_scene.svg",
+      "size_bytes": 19641,
+      "sha256": "3babcd838ee83c0c82989958b67a6c3246f5e5b6d66a50f22a65f6aa230897aa"
+    },
+    {
+      "path": "previews/oblique_4d_projection.png",
+      "size_bytes": 175700,
+      "sha256": "045256af272c524fae800d9ec5cb8c30f06098bf651befda3cc0a9edfda51f23"
+    },
+    {
+      "path": "previews/reality_ripple_4d_time.gif",
+      "size_bytes": 1070127,
+      "sha256": "f6b003ede43c18105e8021831ad2d996597e2a2e9b034dac2fa88761532a6a2d"
+    },
+    {
+      "path": "previews/reality_ripple_4d_time.mp4",
+      "size_bytes": 1990847,
+      "sha256": "a345681e2b8a5382665897d528e4ee22b615d9ca19742a05dbb1a7b2b21a5b96"
+    },
+    {
+      "path": "previews/spacetime.png",
+      "size_bytes": 442142,
+      "sha256": "bbae76ef9b9103cb031ab42353e89ef4f863ee8741da670e3bdacc1bf2e779f3"
+    },
+    {
+      "path": "previews/spacetime.svg",
+      "size_bytes": 107863,
+      "sha256": "93932ea5df71a5fe9aea0cbf6bdfa9361179e5a3bbc871b435b148622fae0313"
+    },
+    {
+      "path": "validation.json",
+      "size_bytes": 485,
+      "sha256": "a362c04baaa1afd5de0b63d0fdacf94283909c860f9dcfd19a6c8562a40d6845"
+    },
+    {
+      "path": "verify_viewer.py",
+      "size_bytes": 3424,
+      "sha256": "38003e4f9339bad47603a31a11e14e6dd76ab49323ae6e468a6a83b1656e72d8"
+    },
+    {
+      "path": "viewer_template.html",
+      "size_bytes": 30163,
+      "sha256": "635063a6b0607a257a86799ac45baac2f39b6a7e1e94af8a91487f7f1b566866"
+    }
+  ]
+}

@@ -1,0 +1,145 @@
+{
+  "source_commit": "eb64ead57b75beb07ba8018ccfbc1e6242c5ec21",
+  "source_urls": [
+    "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/eb64ead57b75beb07ba8018ccfbc1e6242c5ec21/results/live/2026-10-13T201757.782152Z/patch-analysis.json",
+    "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/eb64ead57b75beb07ba8018ccfbc1e6242c5ec21/results/live/PATCH_WINDOW_FINDINGS.md",
+    "https://github.com/Oichkatzelesfrettschen/gororoba-quantum/blob/eb64ead57b75beb07ba8018ccfbc1e6242c5ec21/results/live/N21_ORBIT_RCA.md"
+  ],
+  "files": [
+    {
+      "path": "ANALYSIS.md",
+      "size_bytes": 7980,
+      "sha256": "46301ce8560fabae27ddbe10c4968e3403e65e5bd98a67b633e209b35959e59b"
+    },
+    {
+      "path": "README.md",
+      "size_bytes": 5031,
+      "sha256": "df7af9bb251660e5ef50fb17b18684529380db694cdd7367d05015fc4f7a93b3"
+    },
+    {
+      "path": "data/derived_summary.json",
+      "size_bytes": 2091,
+      "sha256": "091a3926b31de03bb8df19b927c88b4a00fd52154aad781d8c815ce195f07fef"
+    },
+    {
+      "path": "data/earlier_orbit_phase_fits.csv",
+      "size_bytes": 517,
+      "sha256": "425f4daf671aa4cad2c64b08be92b88afa7fa44b24cd44b478b8d0193f9040a9"
+    },
+    {
+      "path": "data/exchange_controls.csv",
+      "size_bytes": 2345,
+      "sha256": "cd5d4abde241136fcfb5a17304e17db64e6b8134b174fa8869a6b8b5b37ae772"
+    },
+    {
+      "path": "data/orbit_contrasts.csv",
+      "size_bytes": 328,
+      "sha256": "9d006b146c6acb92500e2f97d8b4c9db75c7ba11cc00bcddcf3775ab2f19a4e2"
+    },
+    {
+      "path": "data/ramsey_fits_model_dependent.csv",
+      "size_bytes": 802,
+      "sha256": "11590b28236357994562544ea483b17303416d9d2d7e063a949a00621e16969a"
+    },
+    {
+      "path": "data/ramsey_observations.csv",
+      "size_bytes": 5036,
+      "sha256": "106a2b0eb98e6d531410add375950a106d68744a548cbd5a386ea2b73935b162"
+    },
+    {
+      "path": "data/registered_contrasts.csv",
+      "size_bytes": 981,
+      "sha256": "a7f657abb29ca5cf3edca62f0754a8ae9af63cb30447d88d016cb79c6d43ea8c"
+    },
+    {
+      "path": "figures/00_publication_overview.png",
+      "size_bytes": 510624,
+      "sha256": "7504e690802fc376d050d8b0b666f791beaabd3261502f6fef10edb15a67ef2d"
+    },
+    {
+      "path": "figures/00_publication_overview.svg",
+      "size_bytes": 225850,
+      "sha256": "3c73909652f65f53bdd4de41c8dc3c4ddcb58a96ff23e6b0910b6b785246ba99"
+    },
+    {
+      "path": "figures/01_registered_contrasts.png",
+      "size_bytes": 172435,
+      "sha256": "10f0b82cf575db0ac68027a7c25c20712da2337af5898126e4067f6d9f97ccfb"
+    },
+    {
+      "path": "figures/01_registered_contrasts.svg",
+      "size_bytes": 103506,
+      "sha256": "174cee88d337c948a6a86005ec0d9a86ddad726ae8ff7c19bd87a03cb1720497"
+    },
+    {
+      "path": "figures/02_ramsey_magnitude_phase.png",
+      "size_bytes": 249315,
+      "sha256": "c0abf46576e129897ece1ed95aa203dd4bb6927e33bab87e4df5b795a2569689"
+    },
+    {
+      "path": "figures/02_ramsey_magnitude_phase.svg",
+      "size_bytes": 127289,
+      "sha256": "efdd07f94bead8ea56c48d9af6db395df8f84f2de25bd074ecc3a9427201ddfc"
+    },
+    {
+      "path": "figures/03_ramsey_phasors.png",
+      "size_bytes": 151238,
+      "sha256": "04ed2ec285bf90b35ae5578b75f8a7bd025879760ee6bf74c73a13784744a391"
+    },
+    {
+      "path": "figures/03_ramsey_phasors.svg",
+      "size_bytes": 93502,
+      "sha256": "426e8f304e892b47dfc3d152a3a01f58966edf9c2c8a61b0b3b4cecfbbccaeb9"
+    },
+    {
+      "path": "figures/04_orbit_contrasts.png",
+      "size_bytes": 83008,
+      "sha256": "84958b78aa4e01b22de2487b5c0c5bc3e9f5325b07f3f4f16cc51bc95509bbe7"
+    },
+    {
+      "path": "figures/04_orbit_contrasts.svg",
+      "size_bytes": 58450,
+      "sha256": "c6650eab481c149c8b79f4fe773e8a35af0d31d5e2f225af7547c3664ca46bbf"
+    },
+    {
+      "path": "figures/05_population_retention.png",
+      "size_bytes": 126970,
+      "sha256": "ee5fe0cf118bec2fd13b8b783705a52e3f22b60f86255bd8d54756fa8aa494b4"
+    },
+    {
+      "path": "figures/05_population_retention.svg",
+      "size_bytes": 86804,
+      "sha256": "0acd974c900f49367e21676349728ccc9cf5d573fe7331c2723549777104ed37"
+    },
+    {
+      "path": "figures/06_exchange_background.png",
+      "size_bytes": 110035,
+      "sha256": "f9743eb55ebb24c225be9af3db2f58637f53c5624ded11cdc03e01f23e3564ba"
+    },
+    {
+      "path": "figures/06_exchange_background.svg",
+      "size_bytes": 65933,
+      "sha256": "63edd162413f927aed735e3c2cd26c0a6e36c0825c77934d35eb07db1ec443dc"
+    },
+    {
+      "path": "figures/07_earlier_orbit_inference.png",
+      "size_bytes": 108104,
+      "sha256": "cdfe2332e7251aa4c9d0b9c034252f24fb3d2efb2c461712d87b84372a7562b9"
+    },
+    {
+      "path": "figures/07_earlier_orbit_inference.svg",
+      "size_bytes": 70204,
+      "sha256": "440335018093846ce4c593d0183d24373040ac07c32ba5ae3493a5d2dfcbb0ca"
+    },
+    {
+      "path": "index.html",
+      "size_bytes": 4914124,
+      "sha256": "39c5121db47f1941b3ce618e118de2f621b772e83ab75e60fd931f9492f3abae"
+    },
+    {
+      "path": "rebuild.py",
+      "size_bytes": 49203,
+      "sha256": "29ffc43e786ffa8f5d7b7db1bf8b7a915250f4da2ce751a4f445007ed3811c22"
+    }
+  ]
+}

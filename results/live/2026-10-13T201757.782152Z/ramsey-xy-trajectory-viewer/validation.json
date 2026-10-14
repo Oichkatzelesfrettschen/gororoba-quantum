@@ -1,0 +1,14 @@
+{
+  "observations": 26,
+  "trajectories": 8,
+  "unique_executed_idle_settings": 4,
+  "all_counts_checked": true,
+  "input_hashes_verified": true,
+  "maximum_connector_endpoint_error": 0.0,
+  "maximum_derived_radius_error": 0.0,
+  "extrapolation": "forbidden",
+  "uncertainties": "Source marginal Jeffreys intervals retained only at acquired points; no interpolated uncertainty",
+  "python": "3.13.5",
+  "numpy": "2.3.5",
+  "visualization_engine": "native SVG / JavaScript; no WebGL"
+}
