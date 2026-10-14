@@ -1,4 +1,8 @@
+# yaml-language-server: $schema=https://coderabbit.ai/integrations/schema.v2.json
 # Owner request 2026-10-14: CodeRabbit reviews only on explicit prompt.
 reviews:
-  auto_review: false
+  profile: "assertive"
+  auto_review:
+    enabled: false
   request_changes_workflow: false
+
