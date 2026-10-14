@@ -5,6 +5,8 @@
 line-length = 120
 target-version = "py314"
 src = ["gororoba_quantum"]
+# Retained third-party bytes bound by their SHA256SUMS; their replay gates run them.
+extend-exclude = ["docs/evidence/reviewer_associator_audit/audit.py"]
 
 [tool.ruff.lint]
 select = ["E", "W", "F", "I", "B", "UP"]

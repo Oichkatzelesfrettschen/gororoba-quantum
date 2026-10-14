@@ -5,7 +5,7 @@ The repository's algebra lives in `gororoba_quantum/cd_core.py`: the doubling
 `e_p e_q = s(p, q) e_{p xor q}`, and the associator sign
 `omega(p, q, r) = s(p, q) s(p xor q, r) s(q, r) s(p, q xor r)`. Every census,
 proof and circuit in this repository derives from that one specification.
-Eight external Python packages implement related algebra; this directory
+Nine external Python packages implement related algebra; this directory
 holds one note per package and states how each one relates to `cd_core`.
 
 ## Measured relation to cd_core
@@ -31,8 +31,13 @@ product samples are
 | [Cayley-Calculator](cayley-calculator.md) | identical table | D = 16 exhaustive | independent; Bourbaki-form doubling with gamma = -1 |
 | [cayley-dickson](cayley-dickson.md) | identical table | D = 8, 16 exhaustive | independent; same doubling formula |
 | [octonion](octonion.md) | signed relabeling (Fano labeling) | D = 8 exhaustive | independent; octonions only |
+| [SageMath](sagemath.md) | opposite algebra in natural order; sign flip on e3, e5, e6 is an isomorphism | D = 8 exhaustive, from a retained export | independent; Sage library construction, exact |
 | [splitoct](splitoct.md) | split octonions: same associators, different squares | D = 8 exhaustive | independent; equals the engine's split table |
 | [mathdunders](mathdunders.md) | none | not applicable | operator-method plumbing, not an algebra |
+
+Octonion-Sedenion 1.0.0 and pyoctonion 3.12 appear in the reviewed package
+roster but are not installed on the build host, so their relation to
+`cd_core` is unmeasured and no note claims one.
 
 ## Rules
 

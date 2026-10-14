@@ -127,6 +127,27 @@ it prompted.
 | Childs-Wiebe LCU, QSVT, GST, mid-circuit GST and QET on IBM hardware supply the cited foundations | verified | [1202.5822](1202.5822.md), [1806.01838](1806.01838.md), [2009.07301](2009.07301.md), [2103.03008](2103.03008.md), [2301.02666](2301.02666.md) |
 | An algebraic annihilator, an engineered dark state and a particle-physics dark sector are three different objects | verified | the singular-sector note's consequences; no repository witness carries an electromagnetic coupling |
 
+## Sedenion-circuit protocol review
+
+A second external review corrected a proposed protocol for encoding sedenion
+arithmetic on qubits. Its CPU audit is retained unchanged in
+[reviewer_associator_audit](../evidence/reviewer_associator_audit/PROVENANCE.md),
+and its rules bind circuit work through the algebra circuit design rules of
+AGENTS.md. [sedenion_hardware_witness_review.md](sedenion_hardware_witness_review.md)
+reviewed the same proposal against the repository's designs.
+
+| Claim | Status | Evidence |
+|---|---|---|
+| (e1 + e10)(e2 - e13) = 0 | refuted | the four terms land on labels 3, 12, 8 and 7, so no signs cancel; the product is e3 + e7 + e8 - e12 (audit, gate sources-240) |
+| (e1 + e10)(e4 - e15) = 0, with fixed-operand LCU outcomes 0 (dark), 1/2 (the proposed pair) and 1 (bright) | verified | audit `fixed_operand_LCU`; Design B in designs.py |
+| A sign register in \|0> applies the product signs | corrected | it records them as which-path labels; phase kickback needs \|->, and retained input registers still separate the paths (audit `tagged_gate_output_marginal_*`) |
+| The proposed interferometer reads the associator sign with X after its final Hadamard | corrected | X before the final H, or Z after it, gives Re<psi_L\|psi_R>; X after it gives 0 for balanced branches (audit `Hadamard_basis_check`) |
+| A uniform superposition of all triples reads the associator sign as -1 | corrected | it gives 1 - 2(1848/4096) = 25/256; 1848 of the 4096 basis triples do not associate |
+| The universal coefficient contraction is unitary | corrected | M M^dagger = 16 I, so the success Kraus operator is M/4 and P = \|\|xy\|\|^2/16 |
+| Photonic lattice interferometers have simulated quaternionic and octonionic quantum theory | refuted as stated | the verified experiment, [1602.01624](1602.01624.md), bounds non-commuting phases and reports no hypercomplex amplitudes; [Adler](1604.04950.md) and [the authors' reply](1607.01648.md) dispute its scope |
+| Adler's critique is a 2016 preprint, and the reply is titled after the preprint | refined | Adler's article is Physical Review A 95, 060101 (2017); the reply is arXiv 1607.01648, Physical Review A 96, 036101 ([Crossref note](hypercomplex_quantum_crossref_records.md)) |
+| Non-Abelian anyon experiments demonstrate operational encodings | verified and refined | [2210.10255](2210.10255.md) and [2305.03766](2305.03766.md) specify states, fusion rules, braids and measurements; braiding is noncommutative and associative, so they bear on operational realization and not on non-associativity |
+
 ## Out of scope for this repository
 
 Precision Casimir force metrology, tourmaline and quartz nonlinear optics,
