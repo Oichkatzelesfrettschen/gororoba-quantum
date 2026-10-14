@@ -6,11 +6,11 @@ The selected bounded-search candidate is `candidate-000-shots-4096-per-pub` with
 
 ## Artifact and source binding
 
-- Saved run: `results/live/2026-10-14T214325.271357Z`.
-- [record.json](record.json) SHA-256: `2dde22ad03ae0342756b6ec99f5792d7cc50448fc206393d32199b06a5cd6e18`.
+- Saved run: `results/live/2026-10-14T220552.787448Z`.
+- [record.json](record.json) SHA-256: `e1a5f2702aa4123e6cffa96da8c79e3b518efc0326dedab415ad4cc21456999c`.
 - [isa.qpy](isa.qpy) SHA-256: `d79e920aefe534f4dd186b2873dade29905403568029565d817c7f55c9ac96db`.
-- Experiment source digest: `4d9fafa97c54ca8eadeb4b17527acac648c431f7ae9497c78602a2075e8ebe48`.
-- Source commit: `a2392dc8ab9cbbcaff7e220cad00cb4eaafbb8c1`; sources_modified=`false`.
+- Experiment source digest: `c4ff925704cd4658e7230128711f01d5cec226947a4a540935b2e92e905dcfc0`.
+- Source commit: `dac1f2ebf9b310dde3e30b5b1bc6c455bca9819e`; sources_modified=`false`.
 - Simulator seed: `20261011`; the source digest binds the simulator implementation.
 
 Recorded dependency versions:
@@ -1726,7 +1726,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_basis_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.480155944824; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.473753669375.
+The noise model predicts 0.480155944824; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.473550395825.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1736,7 +1736,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_basis_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.363792419434; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.357390143984.
+The noise model predicts 0.363792419434; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.357186870434.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1746,7 +1746,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_basis_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.490539550781; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.484137275332.
+The noise model predicts 0.490539550781; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.483934001782.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -1756,7 +1756,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_basis_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.323188781738; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.316786506289.
+The noise model predicts 0.323188781738; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.316583232739.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1766,7 +1766,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_basis_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.253112792969; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.246710517519.
+The noise model predicts 0.253112792969; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.246507243969.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1776,7 +1776,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.480888366699; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.47448609125.
+The noise model predicts 0.480888366699; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.4742828177.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1786,7 +1786,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.072883605957; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0664813305077.
+The noise model predicts 0.072883605957; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0662780569577.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1796,7 +1796,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0514602661133; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.045057990664.
+The noise model predicts 0.0514602661133; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0448547171139.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -1806,7 +1806,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0862045288086; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0798022533593.
+The noise model predicts 0.0862045288086; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0795989798092.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1816,7 +1816,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.251396179199; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.24499390375.
+The noise model predicts 0.251396179199; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.2447906302.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1826,7 +1826,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.481727600098; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.475325324648.
+The noise model predicts 0.481727600098; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.475122051098.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1836,7 +1836,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.349594116211; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.343191840762.
+The noise model predicts 0.349594116211; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.342988567212.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -1846,7 +1846,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.491470336914; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.485068061465.
+The noise model predicts 0.491470336914; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.484864787915.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -1856,7 +1856,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.172714233398; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.166311957949.
+The noise model predicts 0.172714233398; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.166108684399.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1866,7 +1866,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_kernel_at_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0350189208984; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0286166454491.
+The noise model predicts 0.0350189208984; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0284133718991.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1876,7 +1876,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_bright_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.481132507324; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.474730231875.
+The noise model predicts 0.481132507324; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.474526958325.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1886,7 +1886,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_bright_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.653434753418; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.647032477969.
+The noise model predicts 0.653434753418; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.646829204419.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1896,7 +1896,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.930564880371; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.924162604922.
+The noise model predicts 0.930564880371; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.923959331372.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -1906,7 +1906,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_bright_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.566619873047; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.560217597598.
+The noise model predicts 0.566619873047; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.560014324047.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1916,7 +1916,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_0_bright_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.254554748535; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.248152473086.
+The noise model predicts 0.254554748535; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.247949199536.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1927,11 +1927,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_0_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_0_kernel_at_one_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.879104614258; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.866300063359.
+The noise model predicts 0.879104614258; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.865893516259.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.866300063359, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.865893516259, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -1942,7 +1942,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_0_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_0_kernel_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000724792480469; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0120797584182.
+The noise model predicts 0.000724792480469; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0124863055183.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -1953,7 +1953,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_0_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_0_bright_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000419616699219; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0123849341994.
+The noise model predicts 0.000419616699219; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0127914812995.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -1963,7 +1963,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_basis_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.487442016602; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481039741152.
+The noise model predicts 0.487442016602; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.480836467602.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1973,7 +1973,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_basis_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.366065979004; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.359663703555.
+The noise model predicts 0.366065979004; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.359460430005.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -1983,7 +1983,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_basis_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.489273071289; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.48287079584.
+The noise model predicts 0.489273071289; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.48266752229.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -1993,7 +1993,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_basis_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.324180603027; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.317778327578.
+The noise model predicts 0.324180603027; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.317575054028.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2003,7 +2003,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_basis_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.255012512207; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.248610236758.
+The noise model predicts 0.255012512207; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.248406963208.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2013,7 +2013,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.48754119873; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481138923281.
+The noise model predicts 0.48754119873; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.480935649731.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2023,7 +2023,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0900573730469; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0836550975976.
+The noise model predicts 0.0900573730469; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0834518240475.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2033,7 +2033,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0507278442383; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.044325568789.
+The noise model predicts 0.0507278442383; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0441222952389.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2043,7 +2043,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0653381347656; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0589358593163.
+The noise model predicts 0.0653381347656; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0587325857662.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2053,7 +2053,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.143249511719; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.136847236269.
+The noise model predicts 0.143249511719; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.136643962719.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2063,7 +2063,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.488151550293; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481749274844.
+The noise model predicts 0.488151550293; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481546001294.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2073,7 +2073,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.228256225586; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.221853950137.
+The noise model predicts 0.228256225586; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.221650676587.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2083,7 +2083,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.271492004395; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.265089728945.
+The noise model predicts 0.271492004395; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.264886455395.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2093,7 +2093,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.107925415039; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.10152313959.
+The noise model predicts 0.107925415039; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.10131986604.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2103,7 +2103,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_kernel_at_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0351791381836; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0287768627343.
+The noise model predicts 0.0351791381836; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0285735891842.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2113,7 +2113,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_bright_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.487701416016; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481299140566.
+The noise model predicts 0.487701416016; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481095867016.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2123,7 +2123,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_bright_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.638717651367; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.632315375918.
+The noise model predicts 0.638717651367; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.632112102368.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2133,7 +2133,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.927963256836; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.921560981387.
+The noise model predicts 0.927963256836; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.921357707837.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2143,7 +2143,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_bright_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.589492797852; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.583090522402.
+The noise model predicts 0.589492797852; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.582887248852.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2153,7 +2153,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_1_bright_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.366912841797; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.360510566348.
+The noise model predicts 0.366912841797; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.360307292797.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2164,11 +2164,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_1_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_1_kernel_at_one_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.877235412598; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.864430861699.
+The noise model predicts 0.877235412598; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.864024314599.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.864430861699, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.864024314599, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2179,7 +2179,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_1_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_1_kernel_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000648498535156; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0121560523635.
+The noise model predicts 0.000648498535156; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0125625994636.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2190,7 +2190,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_1_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_1_bright_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000923156738281; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0118813941603.
+The noise model predicts 0.000923156738281; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0122879412605.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2200,7 +2200,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_basis_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.488433837891; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.482031562441.
+The noise model predicts 0.488433837891; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481828288891.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2210,7 +2210,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_basis_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.364219665527; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.357817390078.
+The noise model predicts 0.364219665527; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.357614116528.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2220,7 +2220,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_basis_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.488525390625; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.482123115176.
+The noise model predicts 0.488525390625; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481919841626.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2230,7 +2230,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_basis_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.323196411133; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.316794135684.
+The noise model predicts 0.323196411133; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.316590862133.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2240,7 +2240,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_basis_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.253944396973; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.247542121523.
+The noise model predicts 0.253944396973; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.247338847973.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2250,7 +2250,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.486267089844; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.479864814394.
+The noise model predicts 0.486267089844; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.479661540844.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2260,7 +2260,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0834121704102; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0770098949608.
+The noise model predicts 0.0834121704102; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0768066214108.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2270,7 +2270,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0431518554688; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0367495800194.
+The noise model predicts 0.0431518554688; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0365463064694.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2280,7 +2280,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.059211730957; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0528094555077.
+The noise model predicts 0.059211730957; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0526061819577.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2290,7 +2290,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.14087677002; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.13447449457.
+The noise model predicts 0.14087677002; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.13427122102.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2300,7 +2300,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.488235473633; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481833198184.
+The noise model predicts 0.488235473633; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481629924633.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2310,7 +2310,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.224571228027; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.218168952578.
+The noise model predicts 0.224571228027; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.217965679028.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2320,7 +2320,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.268676757812; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.262274482363.
+The noise model predicts 0.268676757812; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.262071208813.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2330,7 +2330,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.104293823242; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0978915477929.
+The noise model predicts 0.104293823242; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0976882742428.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2340,7 +2340,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_kernel_at_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0314788818359; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0250766063866.
+The noise model predicts 0.0314788818359; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0248733328366.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2350,7 +2350,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_bright_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.487564086914; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481161811465.
+The noise model predicts 0.487564086914; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.480958537915.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2360,7 +2360,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_bright_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.644218444824; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.637816169375.
+The noise model predicts 0.644218444824; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.637612895825.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2370,7 +2370,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.935096740723; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.928694465273.
+The noise model predicts 0.935096740723; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.928491191723.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2380,7 +2380,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_bright_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.594635009766; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.588232734316.
+The noise model predicts 0.594635009766; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.588029460766.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2390,7 +2390,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_2_bright_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.368095397949; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.3616931225.
+The noise model predicts 0.368095397949; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.36148984895.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2401,11 +2401,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_2_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_2_kernel_at_one_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.891944885254; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.879140334355.
+The noise model predicts 0.891944885254; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.878733787255.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.879140334355, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.878733787255, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2416,7 +2416,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_2_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_2_kernel_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000740051269531; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0120644996291.
+The noise model predicts 0.000740051269531; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0124710467292.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2427,7 +2427,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_2_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_2_bright_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 9.91821289062e-05; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0127053687697.
+The noise model predicts 9.91821289062e-05; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0131119158699.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2437,7 +2437,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_basis_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.486618041992; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.480215766543.
+The noise model predicts 0.486618041992; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.480012492993.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2447,7 +2447,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_basis_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.37035369873; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.363951423281.
+The noise model predicts 0.37035369873; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.363748149731.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2457,7 +2457,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_basis_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.500198364258; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.493796088809.
+The noise model predicts 0.500198364258; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.493592815258.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2467,7 +2467,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_basis_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.329162597656; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.322760322207.
+The noise model predicts 0.329162597656; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.322557048657.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2477,7 +2477,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_basis_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.257385253906; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.250982978457.
+The noise model predicts 0.257385253906; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.250779704907.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2487,7 +2487,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.487983703613; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481581428164.
+The noise model predicts 0.487983703613; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481378154614.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2497,7 +2497,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0753021240234; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0688998485741.
+The noise model predicts 0.0753021240234; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0686965750241.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2507,7 +2507,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0547409057617; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0483386303124.
+The noise model predicts 0.0547409057617; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0481353567623.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2517,7 +2517,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.088005065918; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0816027904687.
+The noise model predicts 0.088005065918; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0813995169186.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2527,7 +2527,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.255310058594; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.248907783144.
+The noise model predicts 0.255310058594; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.248704509594.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2537,7 +2537,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.48811340332; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481711127871.
+The noise model predicts 0.48811340332; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481507854321.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2547,7 +2547,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.355949401855; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.349547126406.
+The noise model predicts 0.355949401855; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.349343852856.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2557,7 +2557,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.500686645508; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.494284370059.
+The noise model predicts 0.500686645508; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.494081096508.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2567,7 +2567,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.17603302002; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.16963074457.
+The noise model predicts 0.17603302002; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.16942747102.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2577,7 +2577,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_kernel_at_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0356674194336; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0292651439843.
+The noise model predicts 0.0356674194336; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0290618704342.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2587,7 +2587,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_bright_at_one_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.487701416016; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.481299140566.
+The noise model predicts 0.487701416016; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.481095867016.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2597,7 +2597,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_bright_at_one_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.663200378418; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.656798102969.
+The noise model predicts 0.663200378418; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.656594829419.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2607,7 +2607,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.946357727051; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.939955451601.
+The noise model predicts 0.946357727051; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.939752178051.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2617,7 +2617,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_bright_at_one_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.575675964355; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.569273688906.
+The noise model predicts 0.575675964355; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.569070415356.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2627,7 +2627,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_3_bright_at_one_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.258674621582; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.252272346133.
+The noise model predicts 0.258674621582; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.252069072583.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2638,11 +2638,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_3_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_3_kernel_at_one_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.891616821289; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.87881227039.
+The noise model predicts 0.891616821289; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.87840572329.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.87881227039, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.87840572329, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2653,7 +2653,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_3_kernel_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_3_kernel_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0013427734375; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0114617774611.
+The noise model predicts 0.0013427734375; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0118683245613.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2664,7 +2664,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_3_bright_at_one_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_3_bright_at_one_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000450134277344; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0123544166213.
+The noise model predicts 0.000450134277344; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0127609637214.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2674,7 +2674,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_persistent_kernel_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0326309204102; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0262286449608.
+The noise model predicts 0.0326309204102; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0260253714108.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2684,7 +2684,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_persistent_kernel_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0247421264648; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0183398510155.
+The noise model predicts 0.0247421264648; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0181365774655.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2694,7 +2694,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0282897949219; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0218875194726.
+The noise model predicts 0.0282897949219; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0216842459225.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2704,7 +2704,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_persistent_kernel_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0160903930664; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.00968811761709.
+The noise model predicts 0.0160903930664; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00948484406703.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2714,7 +2714,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_persistent_kernel_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0117568969727; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.00535462152334.
+The noise model predicts 0.0117568969727; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00515134797328.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2724,7 +2724,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_zero_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0325546264648; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0261523510155.
+The noise model predicts 0.0325546264648; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0259490774655.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2734,7 +2734,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.547096252441; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.540693976992.
+The noise model predicts 0.547096252441; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.540490703442.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2744,7 +2744,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_zero_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.954917907715; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.948515632266.
+The noise model predicts 0.954917907715; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.948312358715.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2754,7 +2754,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.30290222168; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.29649994623.
+The noise model predicts 0.30290222168; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.29629667268.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2764,7 +2764,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_zero_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0274963378906; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0210940624413.
+The noise model predicts 0.0274963378906; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0208907888912.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2774,7 +2774,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_one_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.955375671387; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.948973395937.
+The noise model predicts 0.955375671387; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.948770122387.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2784,7 +2784,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.154304504395; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.147902228945.
+The noise model predicts 0.154304504395; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.147698955395.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2794,7 +2794,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_one_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0290069580078; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0226046825585.
+The noise model predicts 0.0290069580078; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0224014090084.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2804,7 +2804,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_one_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0322265625; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0258242870507.
+The noise model predicts 0.0322265625; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0256210135006.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2814,7 +2814,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_pulse_one_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0240097045898; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0176074291405.
+The noise model predicts 0.0240097045898; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0174041555905.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2824,7 +2824,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_bright_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.95726776123; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.950865485781.
+The noise model predicts 0.95726776123; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.950662212231.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2834,7 +2834,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_bright_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.734077453613; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.727675178164.
+The noise model predicts 0.734077453613; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.727471904614.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2844,7 +2844,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.955444335938; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.949042060488.
+The noise model predicts 0.955444335938; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.948838786938.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2854,7 +2854,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_bright_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.951347351074; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.944945075625.
+The noise model predicts 0.951347351074; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.944741802075.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2864,7 +2864,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_4_bright_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.951049804688; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.944647529238.
+The noise model predicts 0.951049804688; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.944444255688.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2875,11 +2875,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_4_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_4_persistent_kernel_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.927154541016; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.914349990117.
+The noise model predicts 0.927154541016; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.913943443017.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.914349990117, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.913943443017, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2890,7 +2890,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_4_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_4_persistent_kernel_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts -7.62939453125e-06; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0128121802932.
+The noise model predicts -7.62939453125e-06; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0132187273933.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2901,7 +2901,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_4_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_4_bright_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000846862792969; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0119576881057.
+The noise model predicts 0.000846862792969; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0123642352058.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -2912,11 +2912,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_4_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_4_pulse_zero_two_t0d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.514541625977; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.501737075078.
+The noise model predicts 0.514541625977; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.501330527978.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.501737075078, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.501330527978, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2927,11 +2927,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_4_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_4_pulse_one_two_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.125297546387; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.112492995488.
+The noise model predicts 0.125297546387; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.112086448388.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.112492995488, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.112086448388, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2942,11 +2942,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_4_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_4_pulse_zero_two_t2d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.275405883789; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.26260133289.
+The noise model predicts 0.275405883789; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.26219478579.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.26260133289, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.26219478579, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -2956,7 +2956,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_persistent_kernel_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0392608642578; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0328585888085.
+The noise model predicts 0.0392608642578; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0326553152584.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2966,7 +2966,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_persistent_kernel_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0303802490234; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0239779735741.
+The noise model predicts 0.0303802490234; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0237747000241.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2976,7 +2976,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0349807739258; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0285784984765.
+The noise model predicts 0.0349807739258; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0283752249264.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -2986,7 +2986,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_persistent_kernel_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0215377807617; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0151355053124.
+The noise model predicts 0.0215377807617; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0149322317623.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -2996,7 +2996,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_persistent_kernel_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0164108276367; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0100085521874.
+The noise model predicts 0.0164108276367; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00980527863734.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3006,7 +3006,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_zero_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0387420654297; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0323397899804.
+The noise model predicts 0.0387420654297; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0321365164303.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3016,7 +3016,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.546943664551; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.540541389101.
+The noise model predicts 0.546943664551; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.540338115551.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3026,7 +3026,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_zero_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.95068359375; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.944281318301.
+The noise model predicts 0.95068359375; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.944078044751.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3036,7 +3036,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.30451965332; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.298117377871.
+The noise model predicts 0.30451965332; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.297914104321.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3046,7 +3046,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_zero_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0315933227539; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0251910473046.
+The noise model predicts 0.0315933227539; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0249877737545.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3056,7 +3056,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_one_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.95068359375; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.944281318301.
+The noise model predicts 0.95068359375; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.944078044751.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3066,7 +3066,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.158584594727; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.152182319277.
+The noise model predicts 0.158584594727; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.151979045727.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3076,7 +3076,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_one_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0359878540039; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0295855785546.
+The noise model predicts 0.0359878540039; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0293823050045.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3086,7 +3086,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_one_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0378723144531; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0314700390038.
+The noise model predicts 0.0378723144531; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0312667654537.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3096,7 +3096,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_pulse_one_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0293197631836; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0229174877343.
+The noise model predicts 0.0293197631836; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0227142141842.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3106,7 +3106,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_bright_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.952705383301; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.946303107851.
+The noise model predicts 0.952705383301; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.946099834301.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3116,7 +3116,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_bright_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.731132507324; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.724730231875.
+The noise model predicts 0.731132507324; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.724526958325.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3126,7 +3126,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.950981140137; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.944578864687.
+The noise model predicts 0.950981140137; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.944375591137.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3136,7 +3136,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_bright_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.946006774902; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.939604499453.
+The noise model predicts 0.946006774902; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.939401225903.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3146,7 +3146,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_5_bright_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.944625854492; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.938223579043.
+The noise model predicts 0.944625854492; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.938020305493.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3157,11 +3157,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_5_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_5_persistent_kernel_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.916000366211; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.903195815312.
+The noise model predicts 0.916000366211; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.902789268212.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.903195815312, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.902789268212, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3172,7 +3172,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_5_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_5_persistent_kernel_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 9.1552734375e-05; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0127129981642.
+The noise model predicts 9.1552734375e-05; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0131195452644.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -3183,7 +3183,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_5_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_5_bright_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000282287597656; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.012522263301.
+The noise model predicts 0.000282287597656; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0129288104011.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -3194,11 +3194,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_5_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_5_pulse_zero_two_t0d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.508201599121; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.495397048222.
+The noise model predicts 0.508201599121; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.494990501122.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.495397048222, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.494990501122, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3209,11 +3209,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_5_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_5_pulse_one_two_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.122596740723; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.109792189824.
+The noise model predicts 0.122596740723; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.109385642724.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.109792189824, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.109385642724, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3224,11 +3224,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_5_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_5_pulse_zero_two_t2d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.272926330566; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.260121779668.
+The noise model predicts 0.272926330566; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.259715232568.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.260121779668, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.259715232568, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3238,7 +3238,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_persistent_kernel_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.039665222168; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0332629467187.
+The noise model predicts 0.039665222168; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0330596731686.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3248,7 +3248,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_persistent_kernel_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0268936157227; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0204913402733.
+The noise model predicts 0.0268936157227; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0202880667233.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3258,7 +3258,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0281448364258; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0217425609765.
+The noise model predicts 0.0281448364258; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0215392874264.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3268,7 +3268,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_persistent_kernel_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0158081054688; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.00940583001944.
+The noise model predicts 0.0158081054688; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00920255646937.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3278,7 +3278,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_persistent_kernel_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0111465454102; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.00474426996084.
+The noise model predicts 0.0111465454102; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00454099641078.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3288,7 +3288,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_zero_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0394821166992; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0330798412499.
+The noise model predicts 0.0394821166992; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0328765676998.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3298,7 +3298,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.544563293457; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.538161018008.
+The noise model predicts 0.544563293457; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.537957744458.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3308,7 +3308,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_zero_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.946731567383; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.940329291934.
+The noise model predicts 0.946731567383; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.940126018383.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3318,7 +3318,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.304618835449; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.29821656.
+The noise model predicts 0.304618835449; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.29801328645.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3328,7 +3328,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_zero_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0344848632812; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0280825878319.
+The noise model predicts 0.0344848632812; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0278793142819.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3338,7 +3338,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_one_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.948234558105; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.941832282656.
+The noise model predicts 0.948234558105; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.941629009106.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3348,7 +3348,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.154319763184; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.147917487734.
+The noise model predicts 0.154319763184; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.147714214184.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3358,7 +3358,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_one_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0291137695312; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0227114940819.
+The noise model predicts 0.0291137695312; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0225082205319.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3368,7 +3368,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_one_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0320053100586; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0256030346093.
+The noise model predicts 0.0320053100586; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0253997610592.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3378,7 +3378,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_pulse_one_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0244674682617; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0180651928124.
+The noise model predicts 0.0244674682617; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0178619192623.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3388,7 +3388,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_bright_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.948928833008; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.942526557559.
+The noise model predicts 0.948928833008; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.942323284008.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3398,7 +3398,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_bright_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.727508544922; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.721106269473.
+The noise model predicts 0.727508544922; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.720902995922.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3408,7 +3408,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.946952819824; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.940550544375.
+The noise model predicts 0.946952819824; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.940347270825.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3418,7 +3418,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_bright_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.944641113281; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.938238837832.
+The noise model predicts 0.944641113281; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.938035564282.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3428,7 +3428,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_6_bright_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.943977355957; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.937575080508.
+The noise model predicts 0.943977355957; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.937371806958.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3439,11 +3439,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_6_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_6_persistent_kernel_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.918807983398; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.9060034325.
+The noise model predicts 0.918807983398; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.9055968854.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.9060034325, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.9055968854, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3454,7 +3454,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_6_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_6_persistent_kernel_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts -0.000457763671875; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0132623145705.
+The noise model predicts -0.000457763671875; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0136688616706.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -3465,7 +3465,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_6_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_6_bright_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.000198364257812; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0126061866408.
+The noise model predicts 0.000198364257812; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0130127337409.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -3476,11 +3476,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_6_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_6_pulse_zero_two_t0d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.505081176758; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.492276625859.
+The noise model predicts 0.505081176758; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.491870078759.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.492276625859, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.491870078759, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3491,11 +3491,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_6_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_6_pulse_one_two_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.125205993652; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.112401442754.
+The noise model predicts 0.125205993652; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.111994895654.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.112401442754, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.111994895654, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3506,11 +3506,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_6_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_6_pulse_zero_two_t2d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.270133972168; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.257329421269.
+The noise model predicts 0.270133972168; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.256922874169.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.257329421269, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.256922874169, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3520,7 +3520,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_persistent_kernel_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0280151367188; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0216128612694.
+The noise model predicts 0.0280151367188; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0214095877194.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3530,7 +3530,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_persistent_kernel_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0214233398438; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0150210643944.
+The noise model predicts 0.0214233398438; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0148177908444.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3540,7 +3540,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0232009887695; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0167987133202.
+The noise model predicts 0.0232009887695; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0165954397702.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3550,7 +3550,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_persistent_kernel_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0157699584961; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.00936768304678.
+The noise model predicts 0.0157699584961; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00916440949671.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3560,7 +3560,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_persistent_kernel_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0125732421875; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.00617096673819.
+The noise model predicts 0.0125732421875; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.00596769318812.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3570,7 +3570,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_zero_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0280456542969; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0216433788476.
+The noise model predicts 0.0280456542969; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0214401052975.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3580,7 +3580,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.525451660156; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.519049384707.
+The noise model predicts 0.525451660156; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.518846111157.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3590,7 +3590,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_zero_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.92121887207; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.914816596621.
+The noise model predicts 0.92121887207; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.914613323071.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3600,7 +3600,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.286964416504; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.280562141055.
+The noise model predicts 0.286964416504; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.280358867505.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3610,7 +3610,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_zero_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0219650268555; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0155627514062.
+The noise model predicts 0.0219650268555; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0153594778561.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3620,7 +3620,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_one_two_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.922142028809; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.915739753359.
+The noise model predicts 0.922142028809; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.915536479809.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3630,7 +3630,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.145774841309; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.139372565859.
+The noise model predicts 0.145774841309; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.139169292309.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3640,7 +3640,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_one_two_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.024299621582; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0178973461327.
+The noise model predicts 0.024299621582; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0176940725827.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3650,7 +3650,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_one_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0273208618164; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0209185863671.
+The noise model predicts 0.0273208618164; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.020715312817.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3660,7 +3660,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_pulse_one_two_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.0188369750977; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.0124346996483.
+The noise model predicts 0.0188369750977; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.0122314260983.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3670,7 +3670,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_bright_t0d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.923782348633; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.917380073184.
+The noise model predicts 0.923782348633; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.917176799633.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3680,7 +3680,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_bright_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.706932067871; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.700529792422.
+The noise model predicts 0.706932067871; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.700326518872.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3690,7 +3690,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.920303344727; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.913901069277.
+The noise model predicts 0.920303344727; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.913697795727.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0330847967139; requested precision is 0.08.
 
@@ -3700,7 +3700,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_bright_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.918281555176; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.911879279726.
+The noise model predicts 0.918281555176; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.911676006176.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3710,7 +3710,7 @@ Score terms (each member averages its recorded replicas):
 
 - `rank_sector_7_bright_t2d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.917282104492; the simultaneous finite-simulation allowance is +/-0.00640227544931. The lower modeled value is 0.910879829043.
+The noise model predicts 0.917282104492; the simultaneous finite-simulation allowance is +/-0.00660554899938. The lower modeled value is 0.910676555493.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0661695934278; requested precision is 0.08.
 
@@ -3721,11 +3721,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_7_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_7_persistent_kernel_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.897102355957; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.884297805058.
+The noise model predicts 0.897102355957; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.883891257958.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.884297805058, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.883891257958, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3736,7 +3736,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_7_persistent_kernel_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_7_persistent_kernel_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.00054931640625; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0122552344924.
+The noise model predicts 0.00054931640625; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0126617815925.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -3747,7 +3747,7 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_7_bright_t1d1`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_7_bright_t1d1_reference`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts -0.00107574462891; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is -0.0138802955275.
+The noise model predicts -0.00107574462891; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is -0.0142868426277.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is 0.08.
 
@@ -3758,11 +3758,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_7_pulse_zero_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_7_pulse_zero_two_t0d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.497406005859; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.484601454961.
+The noise model predicts 0.497406005859; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.484194907861.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.484601454961, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.484194907861, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3773,11 +3773,11 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_7_pulse_one_two_t1d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_7_pulse_one_two_t1d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.121475219727; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.108670668828.
+The noise model predicts 0.121475219727; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.108264121728.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.0686794428207; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.108670668828, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.0661695934278 (null 0 plus one-sided radius 0.0661695934278). The admitted alternative effect is 0.108264121728, with conditional target power 0.8 and lower-tail radius 0.0335307191608. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
@@ -3788,15 +3788,15 @@ Score terms (each member averages its recorded replicas):
 - `rank_sector_7_pulse_zero_two_t3d2`: sign +1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 - `rank_sector_7_pulse_zero_two_t2d1`: sign -1, labeled score vector `[1.0, 0.0, 0.0, 0.0]`.
 
-The noise model predicts 0.264999389648; the simultaneous finite-simulation allowance is +/-0.0128045508986. The lower modeled value is 0.25219483875.
+The noise model predicts 0.264999389648; the simultaneous finite-simulation allowance is +/-0.0132110979988. The lower modeled value is 0.25178829165.
 
 At alpha 0.000255102040816, the two-sided confidence half-width is 0.137358885641; requested precision is n/a.
 
-Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.25219483875, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
+Reject the directional null only when the measured score exceeds 0.132339186856 (null 0 plus one-sided radius 0.132339186856). The admitted alternative effect is 0.25178829165, with conditional target power 0.8 and lower-tail radius 0.0670614383215. The requested minimum effect is 0.
 
 Zero requested minimum effect selects the positive modeled contrast after the simulation allowance. The power statement concerns that reported alternative, rather than every arbitrarily small effect.
 
-The search-wide simulation error probability is 0.01 across 232 scored finite-shot marginals. Hoeffding/union bounds allow arbitrary same-shot replica dependence. Independent stationary repetitions remain an assumption. Hardware-model discrepancy remains unquantified.
+The search-wide simulation error probability is 0.01 across 464 scored finite-shot marginals. Hoeffding/union bounds allow arbitrary same-shot replica dependence. Independent stationary repetitions remain an assumption. Hardware-model discrepancy remains unquantified.
 
 Power admission is conditional on the supplied outcome model and reported alternative effect.
 
@@ -3892,7 +3892,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-threads 6 \
   --simulation-memory-mb 512 \
   --optimize \
-  --backends ibm_kingston \
+  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
   --shots 4096 \
   --seeds 2 \
   --max-pending 60 \
@@ -3932,7 +3932,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-threads 6 \
   --simulation-memory-mb 512 \
   --optimize \
-  --backends ibm_kingston \
+  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
   --shots 4096 \
   --seeds 2 \
   --max-pending 60 \
@@ -3953,7 +3953,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --reserve-seconds 60.0 \
   --max-total-execution-seconds 54.0 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-14T214325.271357Z \
-  --approved-record-sha256 2dde22ad03ae0342756b6ec99f5792d7cc50448fc206393d32199b06a5cd6e18 \
+  --approved-record ../results/live/2026-10-14T220552.787448Z \
+  --approved-record-sha256 e1a5f2702aa4123e6cffa96da8c79e3b518efc0326dedab415ad4cc21456999c \
   --submit
 ```

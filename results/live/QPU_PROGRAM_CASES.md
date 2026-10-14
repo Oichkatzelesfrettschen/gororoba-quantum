@@ -1,64 +1,86 @@
 # QPU program for review: ripple, rank sectors and the coherence window
 
 Three UNAPPROVED cases make up the program, with 146 s of service ceilings
-in all. Each case is a submit-free dry run whose record digest an approval
-names; nothing here submits a job, and each `--submit` waits for the owner's
-approval of that case and its digest (AGENTS.md, QPU time and calibration).
-The account's 28-day window reported 210 of 600 s used and 390 s remaining
-at 2026-10-14T21:42Z, so the program plus the 60 s reserve fits.
+in all. No command chooses a backend or a qubit: each dry run omitted
+`--backends` and `--patch-qubits`, so the planner scored every accessible
+backend and, for the coherence window, every calibrated patch embedding,
+and chose by calibration. The case files' reproduce and approval commands
+list the whole roster it chose from, `--backends
+ibm_fez,ibm_kingston,ibm_marrakesh`, so a backend added to the account later
+cannot change the plan silently. Each case is a submit-free dry run whose record
+digest an approval names; nothing here submits a job, and each `--submit`
+waits for the owner's approval of that case and its digest (AGENTS.md, QPU
+time and calibration). The account's 28-day window reported 210 of 600 s
+used and 390 s remaining at 2026-10-14T21:42Z, so the program plus the 60 s
+reserve fits.
 
-| Case | Backend, calibration (PDT) | Record SHA-256 | Jobs and shots | Nominal / stress (s) | Ceilings (s) |
+| Case | Chosen backend and placement | Record SHA-256 | Jobs and shots | Nominal / stress (s) | Ceilings (s) |
 |---|---|---|---|---:|---:|
-| [ripple](2026-10-14T214325.818563Z/UNAPPROVED_CASE.md) | ibm_kingston, 2026-10-14 14:25:47 | `abbbb2d3b39953e35914b6b33cfd81fb14bd674b3e889e5f6f87a59fd00d32fe` | 120 x 1024 and 26 x 4096, two static jobs | 64.28 / 68.88 | 2 x 37 |
-| [rank sectors](2026-10-14T214325.271357Z/UNAPPROVED_CASE.md) | ibm_kingston, 2026-10-14 14:25:47 | `2dde22ad03ae0342756b6ec99f5792d7cc50448fc206393d32199b06a5cd6e18` | 15 x 1024 and 21 x 4096, two static jobs | 30.45 / 35.05 | 2 x 27 |
-| [coherence window](2026-10-14T055711.938217Z/UNAPPROVED_CASE.md) | ibm_fez, 2026-10-13 22:42:00 | `9ca39ad47c1833903111c344b29ff1467e12c3728c7cd93d5f1fc35af7255138` | 10 static and 5 dynamic PUBs at 2048 shots, two jobs | 12.47 / 12.47 | 2 x 9 |
-| **Program** | | | 6 jobs | **107.20 / 116.40** | **146** |
+| [ripple](2026-10-14T220553.174983Z/UNAPPROVED_CASE.md) | ibm_kingston, optimizer layouts | `ac01ef20898820a9f99c6e1ba3b36f41f9f643c7c43f599c31dcc62ceb8fefc6` | 120 x 1024 and 26 x 4096, two static jobs | 64.28 / 68.88 | 2 x 37 |
+| [rank sectors](2026-10-14T220552.787448Z/UNAPPROVED_CASE.md) | ibm_kingston, optimizer layouts | `e1a5f2702aa4123e6cffa96da8c79e3b518efc0326dedab415ad4cc21456999c` | 15 x 1024 and 21 x 4096, two static jobs | 30.45 / 35.05 | 2 x 27 |
+| [coherence window](2026-10-14T220552.942969Z/UNAPPROVED_CASE.md) | ibm_kingston, patch 57, 68, 67, 66, 69, 65 | `26a7a13afe246ccd5c420a3f5f266fed12e912740ce8cac7479dcc389eb42579` | 10 static and 5 dynamic PUBs at 2048 shots, two jobs | 12.51 / 12.51 | 2 x 9 |
+| **Program** | | | 6 jobs | **107.25 / 116.45** | **146** |
 
-Both Kingston records come from the recorded commands of their earlier
-cases, run unchanged on source `a2392dc` with `sources_modified=false`;
-every one of ripple's 1138 and rank's 196 observables admits. Their
-`SHA256SUMS` bind record.json, isa.qpy and the case file.
+All three were planned on source `dac1f2e` with `sources_modified=false`
+against the ibm_kingston calibration of 2026-10-14 14:25:47 PDT, and every
+observable admits (ripple 1138, rank 196, coherence 5). `SHA256SUMS` in each
+directory binds record.json, isa.qpy and the case file.
+
+## How the planner chose
+
+- **Eligibility.** ibm_fez reported maintenance (61 pending jobs). ibm_marrakesh
+  (37 pending) exceeded ripple's `--max-pending 25` and stayed eligible
+  for rank (`--max-pending 60`) and the coherence window
+  (`--max-pending 100`), where its compiled layouts scored below Kingston's.
+  Each record's `skipped_backends` and selection trace carry the reasons.
+- **Coherence patch.** The planner enumerated every embedding of the patch's
+  five couplers into each eligible backend's admitted CZ graph, ranked them
+  by readout error, CZ error and T2 decay over a 5 us idle, compiled the best
+  16 per backend and chose the highest joint score: Kingston control 57,
+  work_a 68, spectator 67, work_b 66, neighbors 69 and 65 (joint score
+  0.760, best of 32 compiled patches). Routing reads b0 from 57, read_a from
+  66, read_b from 68 and the sector from 67. The matched idle is 1098 dt
+  (control measure 545 dt plus reset 553 dt), so a static detuning above
+  114 kHz aliases.
+- **Binding.** The approval binds the choice. If a fresh plan at submit picks
+  another backend or patch (a recalibration, or ibm_fez leaving maintenance
+  and scoring higher), the runner refuses and sends nothing until a new dry
+  run is approved.
 
 ## What each case measures
 
-- **Ripple and rank sectors** are Kingston replications of the 2026-10-13
-  ibm_fez acquisitions (CAMPAIGN_FINDINGS.md sections 5 and 6). The
-  incremental question is transfer: whether the 84 box-kite, 8 sector and
-  12 pulse-difference contrasts that rejected their nulls on Fez reproduce
-  on a second Heron r2 processor under different placements and
-  calibration. They do not target the Fez union-template walk discrepancy.
+- **Ripple and rank sectors** replicate the 2026-10-13 ibm_fez acquisitions
+  (CAMPAIGN_FINDINGS.md sections 5 and 6) on ibm_kingston. The incremental
+  question is transfer: whether the 84 box-kite, 8 sector and 12
+  pulse-difference contrasts that rejected their nulls on Fez reproduce on a
+  second Heron r2 processor. A future plan that the planner places on ibm_fez
+  would be a repeat on the same device instead, and its case would say so.
+  They do not target the Fez union-template walk discrepancy.
   [KINGSTON_ALGEBRA_CASES.md](KINGSTON_ALGEBRA_CASES.md) carries the design
   search and the runtime levers.
-- **Rank sectors at 4096 shots.** The 131072-sample noise model admits every
-  contrast without an 8192-shot tier. On the 14:25 calibration the sector
-  4 to 7 `t1d2 - t1d1` contrasts predict 0.1253, 0.1226, 0.1252 and 0.1215,
-  with lower modeled values 0.1125, 0.1098, 0.1124 and 0.1087 against the
-  0.0997 the directional contracts need; sector 7 has the thinnest margin,
-  0.0090.
+- **Rank margins.** The 131072-sample noise model admits every contrast at
+  4096 shots; the sector 4 to 7 `t1d2 - t1d1` lower modeled values clear the
+  0.0997 directional threshold by 0.0124, 0.0097, 0.0123 and 0.0086.
 - **Ripple's ceiling.** The 120-PUB job's latency-stress charge is 36.27 s
   against its 37 s ceiling.
-- **Coherence window** measures, on the pinned ibm_fez patch (control 142,
-  work 136 and 144, spectator 143), the branch-signed work coherence the
-  first N=21 orbit round leaves, in three contexts: immediate readout, a
-  matched 836 dt idle, and a mid-circuit measure and reset of the control.
-  Five precision contracts at half-width 0.33 on 4 C admit it. The
-  analyzer reports a phase only where the joint (Re C, Im C) region
-  excludes the origin, attributes a measurement-induced phase only after
-  the signed per-qubit exposure, setting-specific and winding corrections,
-  and also reports both selected coherences with branch and spectator
-  strata (scripts/coherence_window_analysis.py).
+- **Coherence window** measures the branch-signed work coherence the first
+  N=21 orbit round leaves on the chosen patch, in three contexts: immediate
+  readout, a matched 1098 dt idle, and a mid-circuit measure and reset of the
+  control. It no longer continues the earlier ibm_fez patch; it measures the
+  measurement-induced phase on the patch the planner chose. Five precision
+  contracts at half-width 0.33 on 4 C admit it. The analyzer reports a phase
+  only where the joint (Re C, Im C) region excludes the origin, attributes a
+  measurement-induced phase only after the signed per-qubit exposure,
+  setting-specific and winding corrections, and reports both selected
+  coherences with branch and spectator strata
+  (scripts/coherence_window_analysis.py).
 
 ## Holds before approval
 
-- **ibm_fez is in maintenance** (58 pending jobs at 14:42 PDT), so the
-  coherence case cannot be re-planned; its record predates two Fez
-  calibrations and source changes after `5f46c38`. Approval needs a fresh
-  dry run of its recorded command once ibm_fez reports `active`, and the
-  new record digest replaces the one above.
-- **Kingston recalibrates** roughly hourly and on triggers. The runner
+- **Kingston recalibrates** roughly hourly and on triggers; the runner
   compares calibration at the refresh and at each batch with the approved
-  record and refuses submission on a change, so a Kingston case approved
-  after a recalibration needs another dry run of the same command.
+  record, so a case approved after a recalibration needs another dry run of
+  the same command.
 - **The runner applies one ceiling per invocation**, so the program runs as
   three invocations: ripple under `--max-total-execution-seconds 74`, rank
   under 54 and the coherence window under 18. Per-job ceilings and

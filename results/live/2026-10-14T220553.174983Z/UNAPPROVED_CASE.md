@@ -6,11 +6,11 @@ The selected bounded-search candidate is `candidate-000-shots-4096-per-pub` with
 
 ## Artifact and source binding
 
-- Saved run: `results/live/2026-10-14T214325.818563Z`.
-- [record.json](record.json) SHA-256: `abbbb2d3b39953e35914b6b33cfd81fb14bd674b3e889e5f6f87a59fd00d32fe`.
+- Saved run: `results/live/2026-10-14T220553.174983Z`.
+- [record.json](record.json) SHA-256: `ac01ef20898820a9f99c6e1ba3b36f41f9f643c7c43f599c31dcc62ceb8fefc6`.
 - [isa.qpy](isa.qpy) SHA-256: `5c4d7cb14aa00dcbdf93108b3f71d347ee6ecd8efa3deacf5cdbd7a2cabf3871`.
-- Experiment source digest: `4d9fafa97c54ca8eadeb4b17527acac648c431f7ae9497c78602a2075e8ebe48`.
-- Source commit: `a2392dc8ab9cbbcaff7e220cad00cb4eaafbb8c1`; sources_modified=`false`.
+- Experiment source digest: `c4ff925704cd4658e7230128711f01d5cec226947a4a540935b2e92e905dcfc0`.
+- Source commit: `dac1f2ebf9b310dde3e30b5b1bc6c455bca9819e`; sources_modified=`false`.
 - Simulator seed: `20261011`; the source digest binds the simulator implementation.
 
 Recorded dependency versions:
@@ -18147,7 +18147,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-threads 6 \
   --simulation-memory-mb 512 \
   --optimize \
-  --backends ibm_kingston \
+  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
   --shots 4096 \
   --seeds 2 \
   --max-pending 25 \
@@ -18188,7 +18188,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-threads 6 \
   --simulation-memory-mb 512 \
   --optimize \
-  --backends ibm_kingston \
+  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
   --shots 4096 \
   --seeds 2 \
   --max-pending 25 \
@@ -18210,7 +18210,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --reserve-seconds 60.0 \
   --max-total-execution-seconds 74.0 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-14T214325.818563Z \
-  --approved-record-sha256 abbbb2d3b39953e35914b6b33cfd81fb14bd674b3e889e5f6f87a59fd00d32fe \
+  --approved-record ../results/live/2026-10-14T220553.174983Z \
+  --approved-record-sha256 ac01ef20898820a9f99c6e1ba3b36f41f9f643c7c43f599c31dcc62ceb8fefc6 \
   --submit
 ```
