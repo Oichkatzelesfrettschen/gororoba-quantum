@@ -77,14 +77,38 @@ signs, number
 c(D) = (3/2) D log2(D) - (9/4) D + 3          (D >= 8),
 ```
 
-equivalently `c(D) = 2 c(D/2) + 3D/2 - 3`. At D = 16 the count 63 is
-Levratti's Remark 5.4 ([note](levratti-2026-fano-css.md)), and the Gram
-identity `L_a^T L_a = 2I - t {L_i, L_j}` with the 63/42 split is already gated
-in [octonion_structure_checks.md](octonion_structure_checks.md); its
-annihilator of `e1 + e10`, `span{e4 - e15, e5 + e14, e6 - e13, e7 + e12}`, is
-this note's dark sector. Label for the all-dimension formula: candidate new
-result; the checker confirms it exhaustively through D = 512 and no proof is
-written.
+the solution of `c(D) = 2 c(D/2) + 3(D/2 - 1)` with `c(8) = 21`. The proof runs
+through the doubling `(a, b)(c, d) = (ac - conj(d) b, da + b conj(c))` of
+`cd_core`, with `h = D/2`, `e_x = (e_x, 0)` and `e_(h+x) = (0, e_x)`. Then
+`L_(a,0) = diag(L_a, R_a)` and `L_(0,b)` maps `(c, d)` to
+`(-R_b C d, L_b C c)`, where `C` is conjugation and `R_a = C L_conj(a) C`.
+
+- Low pair `(a, 0), (b, 0)`: the anticommutator is
+  `diag({L_a, L_b}, {R_a, R_b})` and `{R_a, R_b} = C {L_a, L_b} C`, so `|S+|`
+  doubles from `A_(n-1)`.
+- High pair `(0, a), (0, b)`: the anticommutator is
+  `diag({R_a, R_b}, {L_a, L_b})` for imaginary `a, b`, so `|S+|` doubles; it
+  vanishes for `a = 1`, so every pair through `e_h` anticommutes.
+- Mixed pair `(a, 0), (0, x)`: the anticommutator is off-diagonal, built from
+  `[L_a, R_x]` and `[R_a, L_x]`. The column of `[L_a, R_x]` at `e_c` is
+  nonzero exactly when `omega(a, c, x) = -1`, and by census Theorem 3
+  `omega(a, c, x) = +1` for `c` outside `span(a, x)` exactly when `c` lies in
+  `S+(a, x)` of `A_(n-1)`. So `|S+| = 2(h - 4 - |S+(a, x)|)` for `x` outside
+  `{0, a}`, and 0 for `x = 0` (the unit) or `x = a` (flexibility).
+
+Induction from the octonions, where `|S+| = 0`, gives `|S+| <= D - 8`, with
+equality on mixed pairs over anticommuting lower pairs. A mixed pair therefore
+anticommutes only for `x` in `{0, a}`, which yields the recurrence, and the
+largest two-term nullity is `D/2 - 4`; the retained census records 4, 12, 28,
+60 and 124 at D = 16 to 256. At D = 16 the count 63 is Levratti's Remark 5.4
+([note](levratti-2026-fano-css.md)), and the Gram identity
+`L_a^T L_a = 2I - t {L_i, L_j}` with the 63/42 split is already gated in
+[octonion_structure_checks.md](octonion_structure_checks.md); its annihilator
+of `e1 + e10`, `span{e4 - e15, e5 + e14, e6 - e13, e7 + e12}`, is this note's
+dark sector. Label: new proof, derived from census Theorem 3 and the doubling
+formula; a comparison with de Marrais's higher-dimensional counts remains
+open. The checker verifies the recursion at every pair and the bound at every
+dimension through D = 512.
 
 | D | Anticommuting pairs c(D) | Two-term zero-divisor index pairs | Sum of \|S+\| |
 | ---: | ---: | ---: | ---: |

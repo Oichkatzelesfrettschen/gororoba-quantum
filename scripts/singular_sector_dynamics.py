@@ -18,10 +18,15 @@ tolerance TOL:
    Theorem 3 (omega = -(-1)^l_W(a xor c) on a quasi-octonion plane W, -1 on
    an octonion plane) this is l_W(i xor j) = 1 for W = span(i, j, k): twelve
    of a quasi-octonion plane's 21 pairs, four k each. Hence
-   sum over pairs of |S+| = 48 Q(D) = (D-2)(D-4)(D-8)/4. The anticommuting
-   pairs (S+ empty) number (3/2) D log2(D) - (9/4) D + 3, checked through
-   SECTOR_MAX_DIM. Nullity |S+|/2 per pair, doubled for the two signs,
-   reproduces every rank-nullity histogram in annihilator_strata.json.
+   sum over pairs of |S+| = 48 Q(D) = (D-2)(D-4)(D-8)/4. The doubling
+   (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)) makes |S+| double on low
+   and high pairs and gives 2 (h - 4 - |S+_m(a, x)|) on a mixed pair
+   (e_a, e_(h+x)), x outside {0, a}; so |S+| <= D - 8 with equality, the
+   anticommuting pairs (S+ empty) satisfy c(D) = 2 c(D/2) + 3D/2 - 3 and
+   number (3/2) D log2(D) - (9/4) D + 3, and the largest two-term nullity is
+   D/2 - 4. All of this is checked through SECTOR_MAX_DIM. Nullity |S+|/2
+   per pair, doubled for the two signs, reproduces every rank-nullity
+   histogram in annihilator_strata.json.
 3. Dilation. Imaginary a has L_a^T = -L_a, so the Hermitian dilation
    H_a = |0><1| (x) L_a + |1><0| (x) L_a^T equals (iY) (x) L_a and
    H_a^2 = I (x) L_a^T L_a. From |1>|v>, evolution under H_a / alpha for time s
@@ -171,16 +176,53 @@ def sector_split(max_dim: int) -> dict[str, int]:
     return {"signed_pairs": checked}
 
 
-def sector_sizes(dim: int, table: np.ndarray) -> Counter[int]:
-    """Imaginary basis pairs counted by |S+|, from a sign table."""
+def pair_sizes(dim: int, table: np.ndarray) -> dict[tuple[int, int], int]:
+    """|S+| for every imaginary basis pair i < j, from a sign table."""
     k = np.arange(dim)
-    sizes: Counter[int] = Counter()
+    sizes: dict[tuple[int, int], int] = {}
     for i in range(1, dim):
         js = np.arange(i + 1, dim)
         step = table[js][:, k] * table[i][js[:, None] ^ k[None, :]]
         shifted = np.take_along_axis(step, k[None, :] ^ (i ^ js)[:, None], axis=1)
-        sizes.update(int(x) for x in (step * shifted == 1).sum(axis=1))
+        for j, n in zip(js, (step * shifted == 1).sum(axis=1), strict=True):
+            sizes[(i, int(j))] = int(n)
     return sizes
+
+
+def sector_sizes(dim: int, table: np.ndarray) -> Counter[int]:
+    """Imaginary basis pairs counted by |S+|."""
+    return Counter(pair_sizes(dim, table).values())
+
+
+def size_recursion(max_dim: int) -> int:
+    """Doubling recursion of |S+| from A_m (dimension h) to A_(m+1), and the bound |S+| <= D - 8.
+
+    Low and high pairs double their sector because the anticommutator is
+    block diagonal with {R_a, R_b} = C {L_a, L_b} C; the high pair through
+    e_h anticommutes. A mixed pair (e_a, e_(h+x)) has an off-diagonal
+    anticommutator built from [L_a, R_x] and [R_a, L_x], whose nonzero columns
+    are the c with omega(a, c, x) = -1, so |S+| = 2 (h - 4 - |S+_m(a, x)|) for
+    x outside {0, a} and 0 for x in {0, a}.
+    """
+    previous = pair_sizes(8, sign_table(8))
+    require(max(previous.values()) == 0, "every octonion pair anticommutes")
+    dim = 16
+    while dim <= max_dim:
+        half = dim // 2
+        current = pair_sizes(dim, sign_table(dim))
+        for (i, j), n in current.items():
+            if j < half:
+                expected = 2 * previous[(i, j)]
+            elif i >= half:
+                expected = 0 if i == half else 2 * previous[(i - half, j - half)]
+            else:
+                x = j - half
+                expected = 0 if x in (0, i) else 2 * (half - 4 - previous[(min(i, x), max(i, x))])
+            require(n == expected, f"D={dim} ({i},{j}): |S+| doubling recursion")
+        require(max(current.values()) == dim - 8, f"D={dim}: largest |S+| is D - 8")
+        previous = current
+        dim *= 2
+    return max_dim
 
 
 def sign_table(dim: int) -> np.ndarray:
@@ -559,6 +601,7 @@ def main(argv: list[str] | None = None) -> int:
     gpt_example()
     split = sector_split(MATRIX_MAX_DIM)
     link = census_link(SECTOR_MAX_DIM)
+    size_recursion(SECTOR_MAX_DIM)
     dynamics = dilation_and_steps()
     rounds = amplification()
     flow = population_flow()
