@@ -30,5 +30,9 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   | cmp - docs/evidence/reviewer_associator_audit/audit_results.json
 ```
 
+`audit.py` keeps the bytes it arrived with, so gates sources-120 and
+sources-121 exclude it from the ruff check and format pass over
+`docs/evidence`; the replay gates still run it under `-W error`.
+
 The audit establishes ideal arithmetic and ideal circuit behavior; it runs no
 QPU job and supplies no gate-cost estimate.
