@@ -24,6 +24,7 @@ from qiskit.circuit import Measure
 from qiskit.transpiler import InstructionProperties, Target
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
+import diagnostic_experiments
 import live_run
 import local_compute
 import native_preflight
@@ -363,6 +364,38 @@ def _verify_cli_approval_boundary() -> None:
     _require("--max-total-execution-seconds" in stderr.getvalue(), "CLI rejection did not identify the combined cap")
 
 
+def _verify_precision_defaults() -> None:
+    """An omitted --precision resolves to the family default; a given one reaches the coherence contracts."""
+    from coherence_window import COHERENCE_PRECISION
+
+    class _Parsed(Exception):
+        pass
+
+    resolved: list[float] = []
+
+    def capture(args: Any) -> Any:
+        resolved.append(args.precision)
+        raise _Parsed
+
+    ceilings = ["--max-execution-seconds", "9", "--max-total-execution-seconds", "18"]
+    coherence = ["--family", "coherence-window", "--patch-qubits", "142,136,143,144,123,145"]
+    cases = (
+        (coherence, COHERENCE_PRECISION),
+        ([*coherence, "--precision", "0.2"], 0.2),
+        (["--family", "folded-qpe"], 0.08),
+    )
+    with patch.object(live_run.local_compute, "settings", side_effect=capture):
+        for arguments, expected in cases:
+            try:
+                live_run.main([*ceilings, *arguments])
+            except _Parsed:
+                pass
+            _require(bool(resolved) and resolved[-1] == expected, f"{arguments}: --precision resolved to {resolved}")
+            resolved.clear()
+    contracts = diagnostic_experiments.family_contracts("coherence-window", 0.2, 0.05, 0.8)
+    _require(all(c.precision_half_width == 0.2 for c in contracts), "coherence contracts ignore --precision")
+
+
 def _verify_compute_boundary() -> None:
     with tempfile.TemporaryDirectory(prefix="gororoba-compute-boundary-") as directory:
         with (
@@ -572,6 +605,31 @@ def _verify_control_timing() -> None:
         raise RuntimeError("incomplete control timing was admitted")
 
 
+def _verify_coherence_readout(snapshot: live_run.Snapshot) -> None:
+    """The extracted readout map equals the routed final layout; a post-prefix two-qubit gate or a split map raises."""
+    from coherence_window import B0, READ_A, READ_B, SECTOR, coherence_circuits
+    from patch_characterization import CONTROL, SPECTATOR, WORK_A, WORK_B
+
+    layout = [142, 136, 143, 144, 123, 145]
+    static, dynamic = coherence_circuits(836)
+    isas = [live_run._compile(circuit, snapshot, live_run.SEED_TRANSPILER, layout) for circuit in (*static, *dynamic)]
+    readout = qpu_planning.coherence_readout_qubits(isas)
+    final = isas[0].layout.final_index_layout()
+    roles = {"b0": CONTROL, "read_a": WORK_A, "read_b": WORK_B, "sector": SPECTATOR}
+    _require(readout == {label: final[role] for label, role in roles.items()}, f"readout {readout} != final layout")
+    _require({B0, READ_A, READ_B, SECTOR} == set(range(4)), "coherence clbits changed")
+    entangled = isas[0].copy()
+    entangled.cz(readout["read_a"], readout["read_b"])
+    split = isas[1].copy()
+    split.measure(readout["sector"], READ_A)
+    for broken in ([entangled], [isas[0], split]):
+        try:
+            qpu_planning.coherence_readout_qubits(broken)
+        except ValueError:
+            continue
+        raise RuntimeError("a post-prefix two-qubit gate or a split readout map was admitted")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -590,14 +648,16 @@ def _verify() -> None:
         metadata = _verify_optimizer(snapshot, choices, configuration)
         _verify_approval_mutations(choices, metadata)
         _verify_cli_approval_boundary()
+        _verify_precision_defaults()
         _verify_compute_boundary()
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)
         _verify_unrouted_family_diagnostics(service)
+        _verify_coherence_readout(snapshot)
     _verify_control_timing()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
-        "approval, infeasible archives, and unrouted rejection diagnostics checked"
+        "approval, infeasible archives, unrouted rejection diagnostics and coherence readout maps checked"
     )
 
 
