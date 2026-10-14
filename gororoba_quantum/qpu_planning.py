@@ -219,16 +219,17 @@ PATCH_PREFILTER = 16
 PATCH_PREFILTER_IDLE_S = 5e-6
 
 
-def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
+def patch_layouts(snapshot: Any, limit: int) -> tuple[list[tuple[list[int], float]], int]:
     """Patch embeddings on one backend's admitted CZ graph, best error product first.
 
     Every injective map of PATCH_ROLES onto physical qubits that carries each
     PATCH_EDGES pair onto a CZ coupler (rustworkx VF2, non-induced) is a
     candidate, excluding qubits and couplers the calibration excludes. The
-    prefilter is the product of (1 - measure error) and exp(-PATCH_PREFILTER_IDLE_S
-    / T2) over the six qubits and (1 - cz error) over the five couplers; a
-    qubit without a reported T2 contributes no decay factor. Ties break on
-    the layout tuple, so one calibration always yields the same ordered list.
+    prefilter is the product of (1 - measure error), (1 - sx error) and
+    exp(-PATCH_PREFILTER_IDLE_S / T2) over the six qubits and (1 - cz error)
+    over the five couplers; a qubit without a positive T2 scores zero. Ties
+    break on the layout tuple, so one calibration always yields the same
+    ordered list. The second value is the number of embeddings found.
     """
     import rustworkx as rx
 
@@ -236,7 +237,7 @@ def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
 
     target = snapshot.backend.target
     if "cz" not in target.operation_names:
-        return []
+        return [], 0
     excluded = set(snapshot.excluded_qubits)
     blocked = {tuple(sorted(edge)) for edge in snapshot.excluded_edges}
     couplers = {
@@ -257,18 +258,18 @@ def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
     def decay(qubit: int) -> float:
         properties = target.qubit_properties[qubit] if target.qubit_properties else None
         t2 = getattr(properties, "t2", None)
-        return math.exp(-PATCH_PREFILTER_IDLE_S / float(t2)) if t2 else 1.0
+        return math.exp(-PATCH_PREFILTER_IDLE_S / float(t2)) if t2 is not None and t2 > 0 else 0.0
 
     scored = []
     for mapping in rx.vf2_mapping(graph, pattern, subgraph=True, induced=False, id_order=True):
         layout = [0] * len(PATCH_ROLES)
         for physical, role in mapping.items():
             layout[role] = int(physical)
-        product = math.prod((1.0 - error("measure", (q,))) * decay(q) for q in layout)
+        product = math.prod((1.0 - error("measure", (q,))) * (1.0 - error("sx", (q,))) * decay(q) for q in layout)
         product *= math.prod(1.0 - error("cz", (layout[a], layout[b])) for a, b in PATCH_EDGES)
         scored.append((-product, tuple(layout)))
     scored.sort()
-    return [(list(layout), -negative) for negative, layout in scored[:limit]]
+    return [(list(layout), -negative) for negative, layout in scored[:limit]], len(scored)
 
 
 def _patch_candidate(
@@ -381,8 +382,18 @@ def patch_candidates(
             raise runtime.LiveRunError(f"--patch-qubits names {len(PATCH_ROLES)} distinct qubits: {PATCH_ROLES}")
     scored: list[tuple[float, int, list[Any], dict[str, Any]]] = []
     search = trace.setdefault("patch_search", [])
+    prefilter_trace = trace.setdefault("patch_prefilter", {})
     for snapshot in snapshots:
-        layouts = [(fixed, None)] if declared else patch_layouts(snapshot, PATCH_PREFILTER)
+        if declared:
+            layouts: list[tuple[list[int], float | None]] = [(fixed, None)]
+        else:
+            ranked, found = patch_layouts(snapshot, PATCH_PREFILTER)
+            layouts = [(layout, score) for layout, score in ranked]
+            prefilter_trace[snapshot.name] = {
+                "embeddings": found,
+                "compiled": len(ranked),
+                "cutoff_prefilter": ranked[-1][1] if ranked else None,
+            }
         for layout, prefilter in layouts:
             try:
                 choices, configuration = _patch_candidate(runtime, snapshot, layout, args, delays)

@@ -637,9 +637,9 @@ def _verify_patch_selection(snapshot: live_run.Snapshot) -> None:
 
     from patch_characterization import PATCH_EDGES, PATCH_ROLES
 
-    layouts = qpu_planning.patch_layouts(snapshot, 8)
-    _require(len(layouts) == 8, f"FakeFez offers {len(layouts)} patch embeddings")
-    _require(layouts == qpu_planning.patch_layouts(snapshot, 8), "patch embeddings are not deterministic")
+    layouts, found = qpu_planning.patch_layouts(snapshot, 8)
+    _require(len(layouts) == 8 and found >= 8, f"FakeFez offers {len(layouts)} of {found} patch embeddings")
+    _require((layouts, found) == qpu_planning.patch_layouts(snapshot, 8), "patch embeddings are not deterministic")
     couplers = {tuple(sorted(pair)) for pair in snapshot.backend.target["cz"]}
     for layout, prefilter in layouts:
         _require(len(set(layout)) == len(PATCH_ROLES), f"{layout} reuses a qubit")
@@ -654,8 +654,18 @@ def _verify_patch_selection(snapshot: live_run.Snapshot) -> None:
     excluded = copy_module.copy(snapshot)
     excluded.excluded_qubits = {**snapshot.excluded_qubits, best[0]: "fixture"}
     _require(
-        all(best[0] not in layout for layout, _ in qpu_planning.patch_layouts(excluded, 8)),
+        all(best[0] not in layout for layout, _ in qpu_planning.patch_layouts(excluded, 8)[0]),
         "an excluded qubit entered a patch",
+    )
+    coupler = (best[PATCH_EDGES[0][0]], best[PATCH_EDGES[0][1]])
+    blocked = copy_module.copy(snapshot)
+    blocked.excluded_edges = {**snapshot.excluded_edges, coupler: "fixture", coupler[::-1]: "fixture"}
+    _require(
+        all(
+            tuple(sorted(coupler)) not in {tuple(sorted((layout[a], layout[b]))) for a, b in PATCH_EDGES}
+            for layout, _ in qpu_planning.patch_layouts(blocked, 8)[0]
+        ),
+        "an excluded coupler entered a patch",
     )
     with patch.object(qpu_planning, "PATCH_PREFILTER", 3):
         trace: dict[str, Any] = {}
@@ -667,6 +677,22 @@ def _verify_patch_selection(snapshot: live_run.Snapshot) -> None:
     scores = {tuple(row["patch_qubits"]): row["joint_score"] for row in trace["patch_search"]}
     picked = [scores[tuple(configuration["patch_qubits"])] for _, configuration in chosen]
     _require(picked == sorted(scores.values(), reverse=True)[: len(picked)], "admission skipped a better patch")
+    prefilter = trace["patch_prefilter"][snapshot.name]
+    _require(prefilter["compiled"] == 3 and prefilter["embeddings"] >= 3, f"prefilter trace {prefilter}")
+    configuration = chosen[0][1]
+    record = {
+        "policy": {"design": {"family": "coherence-window", "patch_qubits": None}},
+        "family_configuration": configuration,
+    }
+    arguments = qpu_cases._patch_arguments(record)
+    _require(arguments == [], f"a calibration-chosen patch replays with {arguments}")
+    record["policy"]["design"]["patch_qubits"] = list(configuration["patch_qubits"])
+    try:
+        qpu_cases._patch_arguments(record)
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("a declared patch was replayed for a calibration-chosen selection")
     declared = qpu_planning.patch_candidates(
         live_run, [snapshot], _args("coherence-window", patch_qubits=[142, 136, 143, 144, 123, 145]), {}
     )
