@@ -234,7 +234,7 @@ def _verify_archived_weights() -> None:
             },
         }
         with (
-            patch.object(live_run, "experiment_groups", return_value=[]),
+            patch.object(live_run, "all_experiment_groups", return_value=[]),
             patch.object(live_run, "record_groups", return_value=[group]),
         ):
             restored = live_run._archived_entries(record, circuits)[group.name]
