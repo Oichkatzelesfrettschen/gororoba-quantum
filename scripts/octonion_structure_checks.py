@@ -42,7 +42,12 @@ periods belong to ripple_dynamics.EXPECTED_PERIODS:
    Among the 105 sedenion pairs, 63 have {L_p, L_q} = 0; for a = e_i + t e_j,
    L_a^T L_a = 2I - t {L_i, L_j}, so only the other 42 pairs can carry a zero
    divisor, and the index pairs of cd_core.sedenion_zero_divisor_corpus are
-   exactly those 42.
+   exactly those 42. The kernel of L_(e1 + e10) is spanned by its corpus
+   partners e4 - e15, e5 + e14, e6 - e13, e7 + e12. The sign row
+   x -> cd_sign(m, x) has degree log2(D) - 1 for every m != 0, the bivariate
+   sign (i, j) -> cd_sign(i, j) has degree log2(D), and the associator is
+   nonzero on 168 of the 512 ordered basis triples at D = 8 and 1848 of 4096
+   at D = 16.
 """
 
 from __future__ import annotations
@@ -57,7 +62,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from cd_core import cd_sign, left_mult_matrix, sedenion_zero_divisor_corpus  # noqa: E402
+from boolean_anf import anf_degree  # noqa: E402
+from cd_core import cd_multiply, cd_sign, left_mult_matrix, sedenion_zero_divisor_corpus  # noqa: E402
 from predict import associator_phase  # noqa: E402
 
 WALK_PAIRS = {
@@ -492,7 +498,40 @@ def left_multiplication_products() -> dict[str, object]:
     corpus = sedenion_zero_divisor_corpus()
     used = {(i, j) for i, j, _, _, _, _ in corpus} | {(k, el) for _, _, _, k, el, _ in corpus}
     require(len(corpus) == 336 and used == other, "the corpus index pairs differ from the non-anticommuting pairs")
-    return {"fano_line_signs": signs, "anticommuting_pairs": 63, "corpus_index_pairs": 42}
+    # L_(e1 + e10) has rank 12 (gram_moment_embedding); its four corpus partners
+    # have disjoint supports, so they span the whole four-dimensional kernel.
+    partners = sorted((k, el, s) for i, j, t, k, el, s in corpus if (i, j, t) == (1, 10, 1))
+    require(partners == [(4, 15, -1), (5, 14, 1), (6, 13, -1), (7, 12, 1)], f"partners of e1 + e10: {partners}")
+    element = [0.0] * 16
+    element[1] = element[10] = 1.0
+    for k, el, s in partners:
+        partner = [0.0] * 16
+        partner[k], partner[el] = 1.0, float(s)
+        require(not any(cd_multiply(16, element, partner)), f"(e1 + e10)(e{k} {s:+d} e{el}) is not zero")
+    degrees = {}
+    for dim in (4, 8, 16, 32):
+        n = dim.bit_length() - 1
+        table = [0] * (1 << (2 * n))
+        for i in range(dim):
+            for j in range(dim):
+                table[i | (j << n)] = int(cd_sign(dim, i, j) < 0)
+        rows = {anf_degree([int(cd_sign(dim, m, v) < 0) for v in range(dim)]) for m in range(1, dim)}
+        require(anf_degree(table) == n and rows == {n - 1}, f"D={dim}: sign degrees {anf_degree(table)}, rows {rows}")
+        degrees[dim] = n
+    support = {}
+    for dim in (8, 16):
+        support[dim] = sum(
+            cd_sign(dim, i, j) * cd_sign(dim, i ^ j, k) != cd_sign(dim, j, k) * cd_sign(dim, i, j ^ k)
+            for i, j, k in itertools.product(range(dim), repeat=3)
+        )
+    require(support == {8: 168, 16: 1848}, f"associator support {support}")
+    return {
+        "fano_line_signs": signs,
+        "anticommuting_pairs": 63,
+        "corpus_index_pairs": 42,
+        "bivariate_sign_degree": degrees,
+        "associator_support": support,
+    }
 
 
 def main(argv: list[str] | None = None) -> int:
