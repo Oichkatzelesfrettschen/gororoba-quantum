@@ -1,6 +1,6 @@
-"""Opt-in hardware campaigns: spectator wavefront Ramsey and concurrent Shor carpet.
+"""Opt-in hardware campaign: spectator wavefront Ramsey.
 
-Both groups are standalone campaigns (experiments.standalone_campaign_groups),
+The group is a standalone campaign (experiments.standalone_campaign_groups),
 selected with --groups and planned alone:
 
 1. ``spectator_wavefront_ramsey``: Measures spatial spectator dephasing and crosstalk
@@ -11,11 +11,6 @@ selected with --groups and planned alone:
    accounting for physical single-qubit gate durations (x_duration_dt), providing
    a differential contrast delta_C = C_control - C_active that isolates hardware
    crosstalk from intrinsic T1/T2 relaxation.
-
-2. ``concurrent_shor_mod15``: Reuses the semiclassical order-finding circuit of
-   order_finding.py for N=15, a=2. At the default 4 phase bits the ideal factorable
-   probability is 0.5000 against 0.3750 for a uniform outcome, so admission requires
-   phase kickback beyond uniform noise. Replicas take the default replica floor.
 """
 
 from __future__ import annotations
@@ -25,10 +20,7 @@ from typing import Any
 import numpy as np
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
 
-import variance
 from experiments import Group, Member, tvd
-from factoring import distribution_success, ideal_phase_distribution
-from order_finding import factor_order_finding
 
 DEFAULT_DELAY_DT = 4000
 DEFAULT_SPECTATORS = 5
@@ -292,104 +284,3 @@ def spectator_wavefront_ramsey_group(
             }
         ),
     )
-
-
-def concurrent_shor_mod15_group(replica_floor: float | None = None, phase_bits: int = 4) -> Group:
-    """Group evaluating concurrent semiclassical order finding for N=15, a=2.
-
-    Outcomes y = 16 k / 4 with odd k recover the order 4 and the factors 3 and
-    5. At the default 4 phase bits the ideal factorable probability is 0.5000
-    against 0.3750 for a uniform outcome; other phase_bits change both values,
-    which distribution_success computes.
-    """
-    modulus, base = 15, 2
-    qc_primary = factor_order_finding(modulus, base, phase_bits)
-    qc_null = factor_order_finding(modulus, base, phase_bits, identity=True)
-
-    outcomes = 1 << phase_bits
-    r = 4  # multiplicative order of 2 mod 15
-    ideal_primary = np.asarray(ideal_phase_distribution(r, phase_bits))
-    ideal_null = np.zeros(outcomes, dtype=float)
-    ideal_null[0] = 1.0
-
-    factorable_weights = np.array(
-        [
-            distribution_success(np.eye(outcomes)[y], phase_bits, modulus, base)["factorable_probability"]
-            for y in range(outcomes)
-        ]
-    )
-
-    uniform_baseline = distribution_success([1.0 / outcomes] * outcomes, phase_bits, modulus, base)
-    uniform_factorable_rate = uniform_baseline["factorable_probability"]
-    uniform_order_rate = uniform_baseline["order_recovery_probability"]
-
-    members = (
-        Member("shor_mod15_a2", qc_primary, ideal_primary, weights=factorable_weights),
-        Member("shor_mod15_a2_null", qc_null, ideal_null, weights=factorable_weights),
-    )
-
-    def summarize(distributions: dict[str, np.ndarray]) -> dict[str, float]:
-        primary = distributions["shor_mod15_a2"]
-        null = distributions["shor_mod15_a2_null"]
-
-        primary_success = distribution_success(primary, phase_bits, modulus, base)
-        null_success = distribution_success(null, phase_bits, modulus, base)
-
-        p_factorable = primary_success["factorable_probability"]
-        p_order = primary_success["order_recovery_probability"]
-        p_null_factorable = null_success["factorable_probability"]
-        p_null_order = null_success["order_recovery_probability"]
-
-        return {
-            "factorable_probability": p_factorable,
-            "order_recovery_probability": p_order,
-            "identity_null_factorable_probability": p_null_factorable,
-            "identity_null_order_recovery_probability": p_null_order,
-            "factorable_margin_over_null": float(p_factorable - p_null_factorable),
-            "order_recovery_margin_over_null": float(p_order - p_null_order),
-            "uniform_null_factorable_probability": uniform_factorable_rate,
-            "uniform_null_order_recovery_probability": uniform_order_rate,
-            "identity_null_p0": float(null[0]),
-            "tvd_to_ideal": tvd(primary, ideal_primary),
-        }
-
-    def admit(per_replica: list[dict[str, float]], shots: int) -> dict[str, Any]:
-        primary_rates = [r["factorable_probability"] for r in per_replica]
-        null_rates = [r["identity_null_factorable_probability"] for r in per_replica]
-        primary_interval = variance.interval(primary_rates, shots, bernoulli=True)
-        null_interval = variance.interval(null_rates, shots, bernoulli=True)
-
-        admitted = bool(
-            "lo" in primary_interval
-            and "hi" in null_interval
-            and primary_interval["lo"] > uniform_factorable_rate
-            and null_interval["hi"] < primary_interval["lo"]
-        )
-        return {
-            "primary": primary_interval,
-            "null": null_interval,
-            "uniform_null": uniform_factorable_rate,
-            "admitted": admitted,
-        }
-
-    return Group(
-        "concurrent_shor_mod15",
-        members,
-        summarize,
-        admission=admit,
-        replica_floor=replica_floor,
-        rate_keys=frozenset(
-            {
-                "factorable_probability",
-                "order_recovery_probability",
-                "identity_null_factorable_probability",
-                "identity_null_order_recovery_probability",
-                "identity_null_p0",
-            }
-        ),
-    )
-
-
-def maximal_groups() -> list[Group]:
-    """Return all maximal-scale benchmark groups."""
-    return [spectator_wavefront_ramsey_group(), concurrent_shor_mod15_group()]

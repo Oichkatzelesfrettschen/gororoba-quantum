@@ -16,10 +16,8 @@ from experiments import all_experiment_groups, experiment_groups, standalone_cam
 from live_run import LiveRunError, PlacementJudge, _compile, _ops, plan, select_candidates
 from maximal_experiments import (
     build_spectator_wavefront_circuits,
-    concurrent_shor_mod15_group,
     core_x_duration_dt,
     exposure_dt,
-    maximal_groups,
     spectator_wavefront_ramsey_group,
 )
 from runtime_contracts import _fake_snapshot, _fixture_args, _ProbeBackend, _ProbeService
@@ -165,97 +163,6 @@ def _verify_spectator_wavefront_summary_and_simulation() -> None:
     _require(abs(sim_summary["delta_contrast"]) < 0.05, "noiseless delta contrast must be near zero")
 
 
-def _verify_concurrent_shor_group() -> None:
-    phase_bits = 4
-    outcomes = 1 << phase_bits
-    group = concurrent_shor_mod15_group(replica_floor=0.75, phase_bits=phase_bits)
-    _require(group.name == "concurrent_shor_mod15", "group name mismatch")
-    _require(len(group.members) == 2, "group must have 2 members")
-    _require(group.replica_floor == 0.75, "replica floor mismatch")
-
-    # Rate keys must not contain differences or margins
-    _require(
-        "factorable_margin_over_null" not in group.rate_keys,
-        "factorable_margin_over_null is a difference, not a Bernoulli rate key",
-    )
-
-    # Check rate keys
-    ideals = {member.name: member.ideal for member in group.members}
-    summary = group.summarize(ideals)
-    for rate_key in group.rate_keys:
-        _require(rate_key in summary, f"rate key {rate_key} missing from summary")
-        _require(0.0 <= summary[rate_key] <= 1.0, f"rate key {rate_key} must be in [0, 1]")
-
-    # In ideal distributions:
-    # Primary has factorable probability = 0.50
-    # Null has factorable probability = 0.0, null_p0 = 1.0
-    # Uniform null has factorable probability = 0.375
-    _require(_math_close(summary["factorable_probability"], 0.50), "ideal factorable probability must be 0.50")
-    _require(
-        _math_close(summary["identity_null_factorable_probability"], 0.0),
-        "ideal null factorable probability must be 0.0",
-    )
-    _require(_math_close(summary["factorable_margin_over_null"], 0.50), "ideal margin over null must be 0.50")
-    _require(
-        _math_close(summary["uniform_null_factorable_probability"], 0.375),
-        "uniform null factorable probability must be 0.375 for 4 phase bits",
-    )
-    _require(_math_close(summary["identity_null_p0"], 1.0), "ideal identity_null_p0 must be 1.0")
-    _require(_math_close(summary["tvd_to_ideal"], 0.0), "ideal tvd must be 0.0")
-
-    # Aer simulation
-    sim = AerSimulator()
-    sim_dists: dict[str, np.ndarray] = {}
-    for member in group.members:
-        res = sim.run(member.circuit, shots=10000, seed_simulator=20261011).result()
-        counts = res.get_counts()
-        total = sum(counts.values())
-        dist = np.zeros(outcomes, dtype=float)
-        for bitstring, count in counts.items():
-            dist[int(bitstring, 2)] = count / total
-        sim_dists[member.name] = dist
-
-    sim_summary = group.summarize(sim_dists)
-    _require(
-        abs(sim_summary["factorable_probability"] - 0.50) < 0.03,
-        "simulated factorable probability must be near 0.50",
-    )
-    _require(
-        sim_summary["identity_null_factorable_probability"] == 0.0,
-        "simulated identity null factorable probability must be 0.0",
-    )
-    _require(sim_summary["identity_null_p0"] == 1.0, "simulated identity null p0 must be 1.0")
-
-    # Admission check on valid simulation
-    admission = group.admission
-    _require(admission is not None, "admission check must be defined")
-    if admission is None:
-        raise RuntimeError("unreachable")
-    admit_result = admission([sim_summary], 10000)
-    _require(admit_result["admitted"] is True, "noiseless simulation must pass admission")
-
-    # Admission check on uniform random noise: MUST FAIL admission!
-    uniform_summary = group.summarize(
-        {
-            "shor_mod15_a2": np.full(outcomes, 1.0 / outcomes),
-            "shor_mod15_a2_null": np.full(outcomes, 1.0 / outcomes),
-        }
-    )
-    noise_admit = admission([uniform_summary], 10000)
-    _require(
-        noise_admit["admitted"] is False,
-        "uniform random noise must fail statistical admission",
-    )
-
-
-def _verify_maximal_groups() -> None:
-    groups = maximal_groups()
-    _require(len(groups) == 2, "maximal_groups must return 2 groups")
-    names = {g.name for g in groups}
-    _require("spectator_wavefront_ramsey" in names, "missing spectator_wavefront_ramsey group")
-    _require("concurrent_shor_mod15" in names, "missing concurrent_shor_mod15 group")
-
-
 def _verify_isolation_contract() -> None:
     all_names = {g.name for g in all_experiment_groups()}
     default_names = {g.name for g in experiment_groups()}
@@ -274,8 +181,8 @@ def _verify_isolation_contract() -> None:
         "standalone_campaign_groups must contain spectator_wavefront_ramsey",
     )
     _require(
-        "concurrent_shor_mod15" in standalone_names and "concurrent_shor_mod15" not in default_names,
-        "concurrent_shor_mod15 is an opt-in campaign outside the default suite",
+        "concurrent_shor_mod15" not in all_names,
+        "the order-4 Shor carpet reaches only y in {0, 4, 8, 12}, where its ideal law equals uniform noise",
     )
 
     # Verify select_candidates on spectator_wavefront_ramsey produces duration-matched ISAs
@@ -347,12 +254,11 @@ def _verify_isolation_contract() -> None:
         "PlacementJudge must accept a full placement whose core X duration matches",
     )
 
-    # Concurrent Shor and the spectator wavefront are opt-in campaigns outside the default suite.
+    # The spectator wavefront is an opt-in campaign outside the default suite.
     default_names = {group.name for group in experiment_groups()}
     standalone_names = {group.name for group in standalone_campaign_groups()}
     _require(
-        standalone_names == {"spectator_wavefront_ramsey", "concurrent_shor_mod15"}
-        and not default_names & standalone_names,
+        standalone_names == {"spectator_wavefront_ramsey"} and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",
     )
 
@@ -360,7 +266,7 @@ def _verify_isolation_contract() -> None:
     probe_backend = _ProbeBackend("viable", backend)
     service = _ProbeService([probe_backend])
     for overrides, message in (
-        ({"groups": ["spectator_wavefront_ramsey", "concurrent_shor_mod15"]}, "isolated campaign"),
+        ({"groups": ["spectator_wavefront_ramsey", "design_a"]}, "isolated campaign"),
         ({"groups": ["spectator_wavefront_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
         ({"groups": ["spectator_wavefront_ramsey"], "max_replicas": None}, "one replica"),
     ):
@@ -375,7 +281,5 @@ def _verify_isolation_contract() -> None:
 if __name__ == "__main__":
     _verify_spectator_wavefront_circuits()
     _verify_spectator_wavefront_summary_and_simulation()
-    _verify_concurrent_shor_group()
-    _verify_maximal_groups()
     _verify_isolation_contract()
-    print("maximal contracts: spectator wavefront, idle control, concurrent Shor, and admission pass")
+    print("maximal contracts: spectator wavefront arms, exposure checks, placement filter and plan refusals pass")

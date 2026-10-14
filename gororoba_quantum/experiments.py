@@ -393,12 +393,12 @@ def experiment_groups() -> list[Group]:
 def standalone_campaign_groups() -> list[Group]:
     """Opt-in campaigns, selected with --groups and run alone.
 
-    Neither joins the default suite, so default replica placement is unchanged;
-    plan() refuses to co-run either one with any other group.
+    They stay out of the default suite, so default replica placement is
+    unchanged; plan() refuses to co-run a campaign with any other group.
     """
-    from maximal_experiments import concurrent_shor_mod15_group, spectator_wavefront_ramsey_group
+    from maximal_experiments import spectator_wavefront_ramsey_group
 
-    return [spectator_wavefront_ramsey_group(), concurrent_shor_mod15_group()]
+    return [spectator_wavefront_ramsey_group()]
 
 
 def all_experiment_groups() -> list[Group]:
