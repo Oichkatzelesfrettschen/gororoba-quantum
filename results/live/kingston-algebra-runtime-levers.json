@@ -68,6 +68,29 @@
    "uniform_ceiling_sum": 123
   }
  },
+ "qualification": {
+  "jobs": 3,
+  "nominal_seconds": 9.72624,
+  "per_job": {
+   "100us": {
+    "ceiling_seconds": 6,
+    "nominal_seconds": 3.03728,
+    "stress_seconds": 5.33728
+   },
+   "250us": {
+    "ceiling_seconds": 7,
+    "nominal_seconds": 3.95888,
+    "stress_seconds": 6.25888
+   },
+   "50us": {
+    "ceiling_seconds": 6,
+    "nominal_seconds": 2.73008,
+    "stress_seconds": 5.03008
+   }
+  },
+  "per_job_ceiling_sum": 19,
+  "stress_seconds": 16.62624
+ },
  "records": {
   "rank": "2026-10-14T113945.518703Z",
   "ripple": "2026-10-14T113012.109467Z"

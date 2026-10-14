@@ -94,8 +94,11 @@ cost.
   phase on a spectator (residual resonator photons shift its frequency). A
   shorter delay is admissible only when each effect moves the sector 5-7
   contrasts by less than a quarter of their 0.020 power margin and the
-  contracts' radii are recomputed for the measured correlation. The job
-  costs under a second of shots plus its 2.3 s overhead.
+  contracts' radii are recomputed for the measured correlation.
+  `execution.rep_delay` is a Sampler-wide option, so the qualification is
+  three jobs, one per delay. With three PUBs of 2048 shots each and a
+  declared 20 us circuit, they cost 9.73 s nominal (6.9 s of it job
+  overhead) and 16.63 s under stress, under 7 + 6 + 6 s of ceilings.
 - Readout mitigation could lift the sector 5-7 lower modeled values back over
   the directional threshold at 4096 shots and remove the 8192-shot job, a net
   6.7 s under stress once its two PUBs join the 4096-shot job, but it changes

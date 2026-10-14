@@ -31,6 +31,10 @@ is recomputed from the selected candidate's ledger in each record.json:
    time, and the job overheads that fewer tiers remove.
 5. Repetition delay: the same ledgers at 100 and 50 microseconds, which needs a
    state-preparation qualification before any submission uses it.
+   execution.rep_delay is a Sampler-wide option, so the qualification at 250,
+   100 and 50 us is three jobs, each priced here with QUALIFICATION_PUBS PUBs
+   of QUALIFICATION_SHOTS shots and a declared QUALIFICATION_CIRCUIT_SECONDS
+   per shot.
 
 Usage: "$PYTHON" scripts/qpu_runtime_levers.py [--out FILE] [--check FILE]
 """
@@ -52,6 +56,10 @@ STRESS_OVERHEAD = 4.6
 DELAYS = (250e-6, 100e-6, 50e-6)
 # Declared allowance for scheduler time the ledger does not model, per shot.
 RESIDUAL_PER_SHOT = 2e-6
+# Qualification design: initialization after a |1> shot, lag-1 memory, spectator Ramsey.
+QUALIFICATION_PUBS = 3
+QUALIFICATION_SHOTS = 2048
+QUALIFICATION_CIRCUIT_SECONDS = 20e-6
 
 
 def require(condition: bool, message: str) -> None:
@@ -276,7 +284,20 @@ def analyze() -> dict[str, Any]:
             "fused_reduction_vs_fused_default": round(1 - fused_delay / fused_charges["nominal_seconds"], 4),
             "fused_reduction_vs_planned": round(1 - fused_delay / separate_nominal, 4),
         }
+    shots = QUALIFICATION_PUBS * QUALIFICATION_SHOTS
+    qualification: dict[str, Any] = {"jobs": len(DELAYS), "per_job": {}}
+    for delay in DELAYS:
+        job = charges({shots: (shots * (QUALIFICATION_CIRCUIT_SECONDS + delay), shots)})
+        qualification["per_job"][f"{round(delay * 1e6)}us"] = {
+            "nominal_seconds": job["nominal_seconds"],
+            "stress_seconds": job["stress_seconds"],
+            "ceiling_seconds": job["per_job_ceiling_sum"],
+        }
+    for key in ("nominal_seconds", "stress_seconds"):
+        qualification[key] = round(sum(j[key] for j in qualification["per_job"].values()), 6)
+    qualification["per_job_ceiling_sum"] = sum(j["ceiling_seconds"] for j in qualification["per_job"].values())
     return {
+        "qualification": qualification,
         "records": {"ripple": RIPPLE.parent.name, "rank": RANK.parent.name},
         "separate": separate,
         "co_batched": {**cobatched, "saving_seconds": round(separate_nominal - cobatched["nominal_seconds"], 6)},
