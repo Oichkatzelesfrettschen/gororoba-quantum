@@ -1768,6 +1768,14 @@
    "name": "core-215",
    "seconds": 0.5,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -W error ../scripts/cd_associator_defect_census.py --replay ../docs/evidence/cd_associator_defect_census/census.json",
+   "name": "core-216",
+   "seconds": 110.0,
+   "tier": "full"
   }
  ],
  "excluded": [
