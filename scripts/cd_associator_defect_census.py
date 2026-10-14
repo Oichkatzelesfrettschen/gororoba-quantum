@@ -27,10 +27,21 @@ against exact enumeration:
   D >= 32, and ordered pairs from the block landing in the complement
   number 128.
 
-The block counts follow from the XOR structure alone (proof in
-docs/notes/cd_associator_defect_census.md). The other closed forms are
-finite evidence over the enumerated ranges, and the sampled rates are finite
-evidence beyond them; the note carries the literature comparison.
+check_lifting certifies the doubling identity behind the all-dimension
+proofs in docs/notes/cd_associator_defect_census.md: for lower indices
+a, b, c < d and top bits u, v, w,
+s_2d(a + u d, b + v d) = s_d(a, b) (-1)^(v kappa(a, b) + u [b != 0] + u v)
+and omega_2d = omega_d(a, b, c) (-1)^(A u + B v + C w), where kappa(x, y) = 1
+exactly when x, y are distinct and nonzero and (A, B, C) depends only on the
+set of F_2 relations among a, b, c: zero for rank at most one, the relation's
+own coefficient vector for one relation, and (1, 0, 1) for an independent
+triple. The relation set is dimension independent, so the 16-class table is
+a finite certificate; the gate checks it exhaustively for d <= 32. With it,
+N(D), the per-pair law, the 168/72 subspace split with O(D) and
+Q(D) = (D - 2)(D - 4)(D - 8) / 192, and the (1, 6) parity law hold for every
+power-of-two D. The cross-scale Walsh law and the eight-point formula
+omega = -(-1)^(q.k + [k in E_D]) are checked from 16 to 4096; their
+derivation came from an external review and is not yet reviewed here.
 """
 
 from __future__ import annotations
@@ -176,6 +187,63 @@ def require(condition: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
+def check_lifting(max_lower: int) -> dict[str, int]:
+    """Exhaustive sign and associator lifting identities with the relation-class table, lower dimension <= max_lower."""
+
+    def nz(x: int) -> int:
+        return int(x != 0)
+
+    def kappa(x: int, y: int) -> int:
+        return (nz(x) + nz(y) + nz(x ^ y)) % 2
+
+    classes: dict[frozenset[int], tuple[int, int, int]] = {}
+    d = 2
+    while d <= max_lower:
+        for a, b, u, v in itertools.product(range(d), range(d), (0, 1), (0, 1)):
+            exponent = (v * kappa(a, b) + u * nz(b) + u * v) % 2
+            require(
+                cd_sign(2 * d, a + u * d, b + v * d) == cd_sign(d, a, b) * (-1) ** exponent, "sign lifting identity"
+            )
+        lo = np.array(list(itertools.product(range(d), repeat=3)), dtype=np.int64)
+        a, b, c = lo[:, 0], lo[:, 1], lo[:, 2]
+
+        def nzv(x: np.ndarray) -> np.ndarray:
+            return (x != 0).astype(np.int64)
+
+        def kappav(x: np.ndarray, y: np.ndarray) -> np.ndarray:
+            return (nzv(x) + nzv(y) + nzv(x ^ y)) % 2
+
+        coeff_a = kappav(b, c)
+        coeff_b = (kappav(a, b) + kappav(a, b ^ c)) % 2
+        coeff_c = (kappav(a ^ b, c) + kappav(b, c) + kappav(a, b ^ c)) % 2
+        mask = np.zeros(len(lo), dtype=np.int64)
+        for m in range(1, 8):
+            combo = np.where(m & 1, a, 0) ^ np.where(m & 2, b, 0) ^ np.where(m & 4, c, 0)
+            mask |= (combo == 0).astype(np.int64) << m
+        packed = coeff_a * 4 + coeff_b * 2 + coeff_c
+        for key in np.unique(mask).tolist():
+            values = np.unique(packed[mask == key])
+            require(len(values) == 1, "lifting coefficients depend on more than the relations")
+            relations = frozenset(m for m in range(1, 8) if key >> m & 1)
+            coeff = (int(values[0]) >> 2 & 1, int(values[0]) >> 1 & 1, int(values[0]) & 1)
+            require(classes.setdefault(relations, coeff) == coeff, "relation class changes with dimension")
+        base = omega(d, a, b, c)
+        for u, v, w in itertools.product((0, 1), repeat=3):
+            lifted = omega(2 * d, a + u * d, b + v * d, c + w * d)
+            require(np.array_equal(lifted, base * (1 - 2 * ((coeff_a * u + coeff_b * v + coeff_c * w) % 2))), "lifting")
+        d *= 2
+    for relations, coeff in classes.items():
+        if len(relations) >= 3:
+            require(coeff == (0, 0, 0), "rank <= 1 triples lift without sign")
+        elif len(relations) == 1:
+            (m,) = relations
+            require(coeff == (m & 1, m >> 1 & 1, m >> 2 & 1), "one relation lifts by its coefficient vector")
+        else:
+            require(coeff == (1, 0, 1), "independent triples lift by (1, 0, 1)")
+    require(len(classes) == 16, "relation classes")
+    return {"max_lower": max_lower, "relation_classes": len(classes)}
+
+
 def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: int, samples: int) -> dict[str, object]:
     check_sign_array(min(exhaustive_max, 256), max(exhaustive_max, sample_max, 4096))
     parameters = {
@@ -193,6 +261,7 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
         "pairs": {},
         "walsh": {},
         "blocks": {},
+        "lifting": check_lifting(32),
     }
     triples = out["triples"]
     assert isinstance(triples, dict)
@@ -244,6 +313,12 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
         require(np.array_equal(linear, parity), f"{dim}: omega(1, 6, k) parity law")
         spectrum = walsh(omega(dim, np.full(dim, dim // 2 + 1), np.full(dim, dim // 4 + 3), k))
         support, peak = int(np.count_nonzero(spectrum)), int(np.abs(spectrum).max())
+        cross = omega(dim, np.full(dim, dim // 2 + 1), np.full(dim, dim // 4 + 3), k)
+        exceptional = {x + y for x in (0, 2, 3, dim // 4 + 2) for y in (0, dim // 2)}
+        eight_point = np.array(
+            [-(1 - 2 * ((bin((dim - 4) & int(x)).count("1") + (int(x) in exceptional)) & 1)) for x in k]
+        )
+        require(np.array_equal(cross, eight_point), f"{dim}: cross-scale eight-point formula")
         if dim >= 32:
             require(support == 5 * dim // 16 and peak == dim - 16, f"{dim}: cross-scale Walsh law")
             complement = sum(24 <= (i ^ m) < dim for i in range(24, dim) for m in range(24))

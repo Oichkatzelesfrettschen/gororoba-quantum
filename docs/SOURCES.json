@@ -815,6 +815,78 @@
       "bytes": 122939,
       "reading_scope": "Results page summaries of the Y6 dark-energy multi-probe analysis",
       "retention": "external_reference; mutable response hash identifies inspected bytes"
+    },
+    {
+      "note": "docs/notes/packages/hypercomplex.md",
+      "url": "https://files.pythonhosted.org/packages/cf/6c/6294a81aa3d9ab83a7d23f490fbb1ded5daeb09272364a27999478586570/hypercomplex-0.3.4.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "04241e5d01b3f10e813c70882a2caa9b7dc168f8b921d47156c3d964363f9352",
+      "bytes": 17104,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/hypercomplex-engine.md",
+      "url": "https://files.pythonhosted.org/packages/4e/61/41751c34606fa605ec767e7937bfebc93ce96b17162a4d734f6942767a1f/hypercomplex_engine-0.5.0.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "05634d7421e1b6bc427bbc9cb8b0b91599c46cf1b1321e1d0f3e2f259dc08cb7",
+      "bytes": 43574,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/hypercomplex-algebra.md",
+      "url": "https://files.pythonhosted.org/packages/17/a2/16efb3f2caa0f65ff575b62317b9b7b997b26d7e6be5602232b2c4f42738/hypercomplex_algebra-0.2.0.2.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "aa043b53a00409c4c1a6c83ecdfae188a20358aaddae587d489de46bff22f52a",
+      "bytes": 46254,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/cayley-calculator.md",
+      "url": "https://files.pythonhosted.org/packages/ce/ac/900ec61f84527a9c1330aa3c23f748ea8e0930b303702e500175a5c018f4/cayley_calculator-1.3.1.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "65922fc90cc0d8159830e5d90424cb7cda6c6306824bea628542c647f364d55b",
+      "bytes": 57637,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/octonion.md",
+      "url": "https://files.pythonhosted.org/packages/4d/df/2c9e67ead49d2dbb00bd11d4c0c1993e597db7e7d4e7001caec222113c36/octonion-0.1.0.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "01788b55497dd6be79411aa03ba17762211e73dafbd014b5f54e66934c98bfcc",
+      "bytes": 2516260,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/mathdunders.md",
+      "url": "https://files.pythonhosted.org/packages/fe/4f/5b3c6b65f46b6300827d673efe9bb3997a3acbebcd3ff2920520d63e7006/mathdunders-0.4.2.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "ff9b624725fafd34c51decbe3e661eb91b79bbd3841ab04d2256704df0845ce5",
+      "bytes": 7406,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/cayley-dickson.md",
+      "url": "https://github.com/thoppe/Cayley-Dickson/archive/abf96e707e2af10c0f66480ebb00205d3d159e54.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "446b43f2c955c563f79660045a728b1c96d7c3ee4f7fbc0ae1ae109e90465164",
+      "bytes": 2238881,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
+    },
+    {
+      "note": "docs/notes/packages/splitoct.md",
+      "url": "https://github.com/EQUINOX24/SplitOct/archive/e29e72f805c2b2e15d904e2dc4d0955e02418390.tar.gz",
+      "retrieved_at_utc": "2026-10-14T01:48:39Z",
+      "sha256": "a192a1d5d9734b31670092be16c19a40b12a79db51ea2cfdfcb1e8a90a6505d6",
+      "bytes": 110636,
+      "reading_scope": "Release artifact identity; the note's manual reading and measured tables carry the content",
+      "retention": "external_reference; sha256 identifies the release artifact"
     }
   ],
   "provenance_policy": "Existing cache means original source-note acquisition; audited_at_utc dates verification, not the original download. Downloads verify PDF structure and identity, not every theorem. Reading scope belongs to each note. Publisher versions remain distinct from retained preprints.",

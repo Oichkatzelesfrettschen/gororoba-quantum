@@ -9,6 +9,7 @@ table alone, so every circuit prediction downstream rests on the functions here.
 
 from __future__ import annotations
 
+from fractions import Fraction
 from itertools import combinations, permutations
 
 
@@ -173,12 +174,12 @@ def left_mult_matrix(dim: int, v: list[float]) -> list[list[float]]:
 
 
 def _determinant(mat: list[list[float]]) -> float:
-    """Determinant by fraction-free Gaussian elimination on a copy; every entry here is an integer."""
+    """Exact determinant by Gaussian elimination over Fractions; integral entries give an exact integer."""
     n = len(mat)
-    a = [[float(x) for x in row] for row in mat]
-    det = 1.0
+    a = [[Fraction(x) for x in row] for row in mat]
+    det = Fraction(1)
     for col in range(n):
-        pivot = next((r for r in range(col, n) if a[r][col] != 0.0), None)
+        pivot = next((r for r in range(col, n) if a[r][col] != 0), None)
         if pivot is None:
             return 0.0
         if pivot != col:
@@ -189,7 +190,7 @@ def _determinant(mat: list[list[float]]) -> float:
             factor = a[r][col] / a[col][col]
             if factor:
                 a[r] = [x - factor * y for x, y in zip(a[r], a[col], strict=True)]
-    return det
+    return float(det)
 
 
 def sedenion_counterexamples() -> dict[str, dict[str, float]]:

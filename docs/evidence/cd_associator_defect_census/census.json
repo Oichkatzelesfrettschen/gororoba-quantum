@@ -180,5 +180,9 @@
    "complement_pairs_into_block": 97600,
    "block_pairs_into_complement": 128
   }
+ },
+ "lifting": {
+  "max_lower": 32,
+  "relation_classes": 16
  }
 }

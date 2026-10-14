@@ -1,7 +1,8 @@
 # Reconciliation of the patch-window, campaign and vacuum/dark-sector reviews
 
 Four external reviews of the patch-window acquisition and campaign records,
-and one synthesis on dark-sector and quantum-vacuum research, made claims
+one synthesis on dark-sector and quantum-vacuum research, and seven further
+reviews of the resulting reconciliation made claims
 about this repository, its sister project and the literature. Each row
 gives the claim, its status and the artifact that settles it. Statuses:
 verified (reproduced from retained data or source), refined (reproduced and
@@ -18,9 +19,14 @@ this repository lacks).
 | The findings first reported window control 0 where the contract registers control 1, and omitted the spectator endpoint | corrected | the findings table now comes from the collector; control-0 and work-B rows are labeled descriptive |
 | The executed case differs from the approved case in source, digest and circuit archive | refined | source commit and experiment digest differ; the compiled `isa.qpy` is byte-identical (`cd45b699`) in both records; the run stays classified as an approval and review-gate deviation; issues #76 (classifier parity) and #77 (approval receipt) |
 | Four approval refusals were reported | corrected | three refusal records exist, each for one cause, the mixed static/dynamic group |
-| The campaign spent 210 s over 15 jobs, 270 PUBs and 659456 PUB shots, leaving 19 s of the 180 s cap | verified | a fresh read-only service inventory and the regenerated retention audit (results/live/qpu-job-inventory.json, qpu-job-retention-audit.json); the earlier ten-job snapshot is dated as historical |
-| The product-state Ramsey probes rule out the window as the source of the orbit phase | corrected | small sampled phases and nondetection constrain unconditional idle detuning only; a same-calibration orbit refit finds context dependence that a no-phase arm-loss model fits as well as a phase model, so no mechanism is localized |
+| The account spent 210 s over 15 jobs, 270 PUBs and 659456 PUB shots: 49 s historical and 161 s in the campaign, leaving 19 s of the 180 s campaign cap and 390 s of the 600 s account window | verified | a fresh read-only service inventory and the regenerated retention audit (results/live/qpu-job-inventory.json, qpu-job-retention-audit.json); the earlier ten-job snapshot is dated as historical |
+| The product-state Ramsey probes rule out the window as the source of the orbit phase | corrected | small sampled phases and nondetection constrain unconditional idle detuning only; a same-calibration orbit refit finds context dependence that no phase-specific mechanism explains uniquely (rows below), so no mechanism is localized |
 | The RCA joint quasi-static fit (49.9 on 18 dof) supports the window attribution | corrected | the retained rca-mechanism-fit.json records the joint fit as skipped; the RCA marks the numbers superseded |
+| The refit's two kickback phases are separately estimable | corrected | the modeled law depends only on theta = phi1 + phi2 (amplitude (1 + st) e1 + t e4 + s e16 with s, t the round phases): (phi1 + t, phi2 - t) leaves every probability unchanged; the phase model has 4 identifiable parameters, not 5 (Jacobian rank 4) |
+| The phase and arm-bias models have equal complexity, and the shared-phase test has 4 degrees of freedom | corrected | effective dimensions are 4 and 5; adding phase to the shared-bias model adds 1, and three context phases against one shared phase add 2 (LR 16.14, reported without a calibrated p-value); AIC 12.49 against 12.61 in the nominal context is a tie |
+| The arm-bias model is a mechanism alternative to phase | refined | its deviance equals the first-bit homogeneity G^2 in every context (2.606, 1.535, 0.634): the control bit is measured before the arms diverge, so equal first-bit marginals are a causality constraint and the arm-bias model is the causal saturated model; the one-phase model's excess over it is 1.89, 2.47 and 1.16 on 1 degree of freedom |
+| The refit's e0 parameter models a mid-circuit misclassification | corrected | `observe` flips the reported first bit after the feedback law runs, so e0 is a post-hoc report relabel; a feedback-assignment error needs an instrument in which the reported bit selects the correction |
+| A branch-unsigned average measures the round-1 work coherence | refuted | after the first control measurement the two branches carry opposite coherences (+-e^{i phi1}/2), so the unsigned average is 0 on an ideal device; the estimator weights each shot by (-1)^b0 and retains the branch record |
 | Contrast is insensitive to fitted phase (0.70 to 0.17 rad with contrast 0.183 to 0.170) | verified | results/live/N21_ORBIT_RCA.md; the selected-coherence design in the findings addresses it |
 | The orbit context sensitivity sits in the feedback arm | verified | per-arm counts in the findings: the no-feedback score stays within -0.135 to -0.141 |
 | Qubit 144 retains 0.894 after 7.6 us against 0.953 predicted from its calibration T1 | verified | Jeffreys interval [0.874, 0.913]; one delay does not identify a new T1 |
@@ -30,9 +36,9 @@ this repository lacks).
 
 | Claim | Status | Evidence |
 |---|---|---|
-| The non-associating fraction of basis triples tends to about 1/2 | refined | exact closed form N(D) = (D-2)(D-4)(D+6)/2 and the per-pair and per-subspace structure behind it ([cd_associator_defect_census.md](cd_associator_defect_census.md)) |
-| omega(1, 6, k) is one parity character at mask D-2, an unexpectedly simple law | refined | the degree-1 case of the repository's associator degree formula (open proof, task M1) |
-| The cross-scale pair's Walsh support grows while its leading mode dominates | refined | support exactly 5D/16 and peak 1 - 16/D for D >= 32 |
+| The non-associating fraction of basis triples tends to about 1/2 | refined and proved | exact closed form N(D) = (D-2)(D-4)(D+6)/2 and the per-pair and per-subspace structure behind it ([cd_associator_defect_census.md](cd_associator_defect_census.md)) |
+| omega(1, 6, k) is one parity character at mask D-2, an unexpectedly simple law | proved | the degree-1 case of the repository's associator degree formula (open proof, task M1) |
+| The cross-scale pair's Walsh support grows while its leading mode dominates | refined; eight-point formula verified to 4096, its derivation not yet reviewed | support exactly 5D/16 and peak 1 - 16/D for D >= 32 |
 | Dark-dark products return to the 24-index block in 24D - 704 ordered pairs | verified and proved | XOR count proof in the census note |
 | The associator defect is the coboundary of the sign cochain, so its cocycle identity carries no nontrivial class | verified | the identity holds by construction; the census note records it |
 | Kirshtein Lemma 3 characterizes non-association exactly by the O_16 subloop | corrected | the lemma gives sufficient conditions; [1207.4230.md](1207.4230.md) now quotes them; quasi-octonion subspaces carry 72 non-associating triples |
@@ -41,6 +47,14 @@ this repository lacks).
 | A first-swap prefix has zero control coherence on the full-cycle eigenstate chi+ = (e1 + w^2 e4 + w e16)/sqrt(3), while the full multiplier gives exp(2 pi i/3) | verified | direct evaluation: <chi+|S_41|chi+> = 0, <chi+|U|chi+> = -1/2 + i sqrt(3)/2; a prefix-phase design needs probes with nonzero overlap |
 | rho_{01,10} = (<XX> + <YY> + i(<XY> - <YX>))/4 for |ab> ordering | verified | checked on a random two-qubit density matrix; the conjugate convention fails, so a selected-coherence case fixes the register order before acquisition |
 | Walk A first returns its state and operator at depth 24; walk B returns its state at 30 and its operator at 120; depth-4 returns 9/16 and 1/4 | verified | `ripple_dynamics.EXPECTED_PERIODS` already asserts the periods; recomputed from `predict.associator_phase` |
+| N(D), the pair law and the 168/72 plane split hold in every dimension | proved | a doubling lifting identity whose coefficients depend only on the 16 relation classes of the lower triple, certified in the census gate; derivation from external reviews, checked here ([cd_associator_defect_census.md](cd_associator_defect_census.md)) |
+| The plane-type counts O(D) and Q(D) are new | corrected | Wilmot's Table 5 already tabulates them (1, 8, 50, 310, 2046, ... and 7, 105, 1085, ...); the closed forms and the plane functional l_W reproduce every listed value |
+| Ordinary and split forms share every basis associator | verified | the split tables of splitoct and hypercomplex-engine match all 512 octonion associator signs with three of seven imaginary squares negative ([packages/README.md](packages/README.md)) |
+| External hypercomplex packages implement the repository's algebra | verified | hypercomplex, hypercomplex-engine, Cayley-Calculator and cayley-dickson give tables identical to cd_core; octonion is a signed Fano relabeling; hypercomplex-algebra repeats its engine; mathdunders is not an algebra ([packages/README.md](packages/README.md)) |
+| A package element inverse certifies an invertible multiplication | refuted | x = e1 + e10 has x x^-1 = 1 while L_x has rank 12 of 16 |
+| cd_core._determinant is fraction-free | corrected | it divided in floats; it now eliminates over Fractions |
+| The QET record-flip optimum is sqrt(C^2 + (1-2q)^2 A^2) - C and E_B has a cancellation-free rationalized form | verified | scripts/qet_two_qubit_reference.py checks both and the local-energy identity |
+| `total, bob_local = hamiltonians(h, k)` fails the enabled Ruff F rules | refuted | F841 excludes tuple unpacking (RUF059 covers it, not selected); the variable now feeds the local-energy identity check |
 | The two-qubit QET protocol injects h^2/r and lets Bob extract sqrt(h^2+4k^2) - (h^2+2k^2)/r | verified | scripts/qet_two_qubit_reference.py at machine precision; the supplied grid search sat about 4e-8 below the optimum at k = 0.1; the model matches [Hotta](1002.0200.md) under sigma^z -> -sigma^z |
 
 ## Sister project (open_gororoba, read-only here)
@@ -53,6 +67,7 @@ this repository lacks).
 | The reported Monte Carlo error is negative | verified | same section |
 | The sign_imbalance energy law has no minimum at F = 3/8 | verified | same section |
 | The Leech complement is an algebraic coordinate complement, not a physical sector | verified | same section and the census proof |
+| The six findings warrant upstream issues | filed | open_gororoba #209 to #214 at b977e43f, including the seed overlap (4,174 shared seeds between adjacent quadrature nodes), the single-plate double-crossing fixture, and the 56 against 28 pair count |
 
 ## Literature claims
 
