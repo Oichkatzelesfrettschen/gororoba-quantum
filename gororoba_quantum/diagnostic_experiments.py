@@ -30,9 +30,12 @@ FAMILY_NAMES = (
     "n21-orbit-feedback",
     "n21-orbit-rca",
     "patch-window",
+    "coherence-window",
     "ripple",
     "rank-sector",
 )
+# Families that run on one pinned patch (--patch-qubits, patch_characterization.PATCH_ROLES).
+PATCH_FAMILIES = ("patch-window", "coherence-window")
 N21_FAMILIES = ("n21-feedback", "n21-orbit-feedback")
 
 
@@ -168,6 +171,10 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
         from patch_characterization import PATCH_DELAYS_DT, patch_contracts
 
         return patch_contracts(list(PATCH_DELAYS_DT), alpha, power)
+    if family == "coherence-window":
+        from coherence_window import coherence_contracts
+
+        return coherence_contracts(alpha, power)
     if family == "n21-orbit-rca":
         # Four directional endpoints share the requested family-wise alpha.
         return tuple(
@@ -243,6 +250,10 @@ def record_groups(record: dict[str, Any]) -> list[Group]:
         return patch_groups(
             [int(delay) for delay in family["delays_dt"]], int(family["measure_dt"]), int(family["echo_half_dt"])
         )
+    if family.get("name") == "coherence-window":
+        from coherence_window import coherence_groups
+
+        return coherence_groups(int(family["window_dt"]))
     if family.get("name") == "n21-orbit-rca":
         return [n21_orbit_rca_group(int(family["window_delay_dt"]), int(family["echo_half_dt"]))]
     if family.get("name") in N21_FAMILIES:

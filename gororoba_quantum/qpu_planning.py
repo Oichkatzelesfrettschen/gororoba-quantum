@@ -19,7 +19,14 @@ from qiskit.exceptions import QiskitError
 
 import local_compute
 import parallel
-from diagnostic_experiments import N21_FAMILIES, family_contracts, folded_group, n21_group, n21_orbit_rca_group
+from diagnostic_experiments import (
+    N21_FAMILIES,
+    PATCH_FAMILIES,
+    family_contracts,
+    folded_group,
+    n21_group,
+    n21_orbit_rca_group,
+)
 from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
@@ -180,6 +187,7 @@ def patch_candidates(
     The patch is fixed, so a snapshot whose fresh calibration excludes a patch
     qubit or exercised coupler is refused rather than re-placed.
     """
+    from coherence_window import coherence_groups
     from patch_characterization import PATCH_DELAYS_DT, PATCH_EDGES, PATCH_ROLES, patch_groups
 
     layout = [int(qubit) for qubit in args.patch_qubits]
@@ -212,9 +220,17 @@ def patch_candidates(
                 raise runtime.LiveRunError(str(error)) from error
             measure_dt = granularity * math.ceil(control_measure / granularity)
             half_dt = granularity * math.ceil(0.6 * (control_measure + control_reset) / granularity)
+            # The matched idle spans the control's measure and reset, the window
+            # the measure_reset context places between the round and the readout.
+            window_dt = granularity * math.ceil((control_measure + control_reset) / granularity)
             dt = float(target.dt)
             choices = []
-            for group in patch_groups(delays, measure_dt, half_dt):
+            groups = (
+                coherence_groups(window_dt)
+                if args.family == "coherence-window"
+                else patch_groups(delays, measure_dt, half_dt)
+            )
+            for group in groups:
                 isas = [
                     runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, layout)
                     for member in group.members
@@ -239,13 +255,27 @@ def patch_candidates(
                 raise runtime.LiveRunError(
                     f"routing left the pinned patch through qubits {sorted(set(used) - set(layout))}"
                 )
-            replica = Replica(0, {qubit: qubit for qubit in used}, min(min(choice.member_scores) for choice in choices))
+            # The pinned patch is reserved whole: an idle neighbor stays mapped so the
+            # replica, the case and the collector name the same six qubits.
+            pinned = sorted(set(used) | set(layout))
+            replica = Replica(
+                0, {qubit: qubit for qubit in pinned}, min(min(choice.member_scores) for choice in choices)
+            )
             for choice in choices:
                 runtime._set_entries(choice, [replica], runtime.ReplicaPolicy(args.replica_floor, 1, False, True))
             runtime.execution_pubs(choices)
         except (runtime.LiveRunError, QiskitError, ValueError) as error:
             trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
             continue
+        timing: dict[str, Any] = (
+            {
+                "window_dt": window_dt,
+                "control_measure_dt": round(control_measure),
+                "control_reset_dt": round(control_reset),
+            }
+            if args.family == "coherence-window"
+            else {"delays_dt": delays, "measure_dt": measure_dt, "echo_half_dt": half_dt}
+        )
         candidates.append(
             (
                 choices,
@@ -253,9 +283,7 @@ def patch_candidates(
                     "name": args.family,
                     "patch_qubits": layout,
                     "patch_roles": list(PATCH_ROLES),
-                    "delays_dt": delays,
-                    "measure_dt": measure_dt,
-                    "echo_half_dt": half_dt,
+                    **timing,
                     "dt_seconds": dt,
                     "placement_contract": "one pinned patch; static and dynamic jobs",
                 },
@@ -328,7 +356,7 @@ def family_candidates(
                         ([trial], {"name": args.family, "replica_cap": cap, **windows.get(candidate.snap.name, {})})
                     )
         return candidates
-    if args.family == "patch-window":
+    if args.family in PATCH_FAMILIES:
         return patch_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
@@ -487,7 +515,7 @@ def prepare(
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
-    if per_pub and (args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize):
+    if per_pub and (args.family not in ("ripple", "rank-sector", *PATCH_FAMILIES) or not args.optimize):
         raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
@@ -626,7 +654,7 @@ def prepare(
             objective=policy["objective"],
             cost_scenarios=scenarios,
             coupled_pubs=couplings,
-            unscored_tier="smallest" if args.family == "patch-window" else "largest",
+            unscored_tier="smallest" if args.family in PATCH_FAMILIES else "largest",
         )
         for original, allocated_plan in zip(plans, allocated, strict=True):
             selected_choices, selected_configuration, _shots = ownership[original.name]
