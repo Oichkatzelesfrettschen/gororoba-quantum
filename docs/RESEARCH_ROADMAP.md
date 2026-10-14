@@ -34,6 +34,7 @@ comparison before it receives a novelty claim.
 | [Kernel limits and cone attachments](notes/annihilator_kernel_limits.md) | Exact polynomial projectors certify persistent kernel inclusions. The complete real three-coefficient affine slice has nullities 0, 8 and 12, global cone kernel frames and actual mapping cylinders; its total incidence retracts onto `S11`, while the attachment image is `S3*(S1 x S3)` | Ordinary embedding extends the construction and invariants to every higher stage. Unrestricted rank loci, frontier coverage, ambient topology and the later Rocq port remain open. |
 | [Folding and Rocq audit](notes/open_gororoba_folding_proofs.md) | Exact fold averaging destroys a zero product; eight implemented `4 x 4` XOR blocks preserve the complete selected-path multiplication matrix up to input/output permutations. The historical sign-code receipts retain seven closed assumption queries; the [latest C881 audit](notes/c881_exhaustive_proof.md) adds a fresh Rocq 9.2 check of exhaustive quadratic rejection with six closed queries | The C881 theorem covers the fixed fifteen-label partition. Count identities lack topology-transfer maps. Earlier compiler and import receipts retain their historical scope. |
 | [Folded hardware evidence](../results/live/2026-10-12T055624.091217Z/ANALYSIS.md) | Sixteen PUBs in two Kingston jobs retain shot-level evidence and 40 final charged seconds | Layout, terminal writer, measurement, reset, latency, and history confound a unique physical attribution. Existing outcomes support bounded model exclusions. |
+| [Singular sectors](notes/singular_sector_dynamics.md) | `(L_i L_j)^2` splits every two-term element into dark, bright and anticommuting sectors with `L_a^T L_a` in `{0, 2, 4}` in every dimension; nullity `\|S+\|/2` reproduces every retained two-term stratum histogram; the dilation, product-formula and amplitude-amplification responses follow exactly | The anticommuting-pair closed form is checked through D = 512 without a proof; the de Marrais higher-dimensional comparison, the `sqrt2`-line synthesis cost and any hardware echo contrast remain open |
 | [Installed local computation](../gororoba_quantum/LOCAL_COMPUTE.md) | The tested stack uses NumPy 2.5.4, Qiskit 2.5.2, Runtime 0.50.0, and CPU Aer 0.17.2 | Custom Aer/CUDA packaging stays paused. Native accelerator use requires actual installed support and equivalence evidence before activation. |
 
 For the restricted ordinary embeddings, set `h=4*2^(n-5)`. Integral
@@ -143,6 +144,23 @@ owns the link from literature and observations to the next intervention.
    correction-arm spend. The design reuses the four-PUB
    correction template, adds the repeated-readout and delayed arms, and costs
    one dynamic job near 11 seconds per arm set at 8192 shots.
+10. Measure coherences before adding dynamics. The merged branch-signed work
+   coherence case (PR #79) reads one off-diagonal element per context with
+   five settings, where conditional two-qubit tomography needs nine, and is
+   the next acquisition under its own approval. The [singular-sector
+   note](notes/singular_sector_dynamics.md) shows that the Hermitian dilation
+   of a two-term zero divisor adds only its `sqrt2` line beyond Design B: one
+   product-formula step reproduces Design B, and amplitude amplification of
+   Design B is frozen at 0, 1/2 and 1. Its echo-matched contrast, `U Z
+   U^dagger Z U` against `U U^dagger U` with equal non-virtual gates and
+   duration (141 CZ per arm on FakeFez), separates rotation errors that the
+   compiled inverse undoes (positive difference) from conditional phases on
+   self-inverse CZ gates (negative difference); a mixture can cancel, so it
+   is a candidate Cayley-Dickson diagnostic that needs an independent
+   CZ-phase reference before a priced case. Pulse-level, continuous-record
+   and resonator protocols lie outside the cloud gate set since the 3
+   February 2025 pulse removal ([web-source
+   note](notes/measurement_foundations_web_sources.md)).
 
 The installed runner creates separate static and dynamic jobs and uses no
 Runtime Batch context. A future Batch wrapper changes orchestration; measured

@@ -13,8 +13,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 19 licensed PDFs and two aliases;
-73 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 20 licensed PDFs and two aliases;
+79 external sources retain citations and optional ignored local reading copies.
 Four licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
@@ -220,12 +220,14 @@ hardware cases retain their independent admission gates.
 | Device noise | [Schoelkopf](notes/cond-mat-0210247.md), [Clerk](notes/0810.4729.md), [Jin](notes/1412.2772.md); spectral convention, residual populations and calibrated inference |
 | Encoded field models | [Digital optics](notes/1909.04408.md), [Gaussian coherence](notes/1610.03272.md), [lattice Casimir](notes/2105.02032.md), [Gaussian simulation](notes/quant-ph-0109047.md), [collision models](notes/2106.11974.md); encoding, model bias and classical baselines |
 | Physical interpretation and execution | [Physical DCE](notes/1105.4714.md), [real-material Casimir](notes/0902.4022.md), [circuit QED](notes/2005.12667.md), [IBM policy](notes/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
-| Vacuum, dark sector and negative energy | [ALPS II](notes/2512.14110.md), [Dark SRF](notes/2510.02427.md), [dielectric haloscope](notes/2503.23354.md), [atom interferometry](notes/2511.09750.md), [LZ](notes/2609.02823.md), [DES Y6](notes/2601.14559.md), [worldline DCE](notes/2604.13237.md), [magnetic-fluid Casimir](notes/2601.00483.md), [quantum inequalities](notes/gr-qc-9607003.md), [QET theory](notes/1002.0200.md) and [hardware](notes/2301.02666.md), [journal and IBM pages](notes/casimir-dark-sector-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
+| Vacuum, dark sector and negative energy | [ALPS II](notes/2512.14110.md), [Dark SRF](notes/2510.02427.md), [dielectric haloscope](notes/2503.23354.md), [qubit haloscope](notes/2503.18315.md), [atom interferometry](notes/2511.09750.md), [LZ](notes/2609.02823.md), [DES Y6](notes/2601.14559.md), [worldline DCE](notes/2604.13237.md), [magnetic-fluid Casimir](notes/2601.00483.md), [quantum inequalities](notes/gr-qc-9607003.md), [QET theory](notes/1002.0200.md) and [hardware](notes/2301.02666.md), [journal and IBM pages](notes/casimir-dark-sector-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
 | Cayley-Dickson associator structure | [defect census](notes/cd_associator_defect_census.md), [Wilmot](notes/2505.11747.md), [Kirshtein](notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
 | External algebra packages | [package index](notes/packages/README.md): measured relation of eight hypercomplex packages to cd_core, independence, licenses and correct use |
 | Octonion structure checks | [associator codes, box-kite frustration and walk sectors](notes/octonion_structure_checks.md): RM(1,3) and E8 from the associator slices, shared-sign and shared-phase frustration minima 4 and 3, exact walk sector weights by Ramanujan sums, and the doubling-convention bridge |
 | Sedenion hardware witnesses | [review of an external proposal](notes/sedenion_hardware_witness_review.md): the encoding Designs A to D measure, exact corrections (the annihilator of e1 + e10, the degree-4 sign, the post-selected zero-divisor observable), the measured Design C verdicts and the zero-divisor test's price |
 | Review reconciliation | [QPU, Cayley-Dickson and vacuum review claims](notes/qpu_vacuum_cd_review_reconciliation.md); each claim with its status and settling artifact |
+| Singular sectors and dilation | [sector split, census link and dynamics](notes/singular_sector_dynamics.md): dark, bright and anticommuting sectors of every two-term element, the Hermitian dilation's frequencies, product-formula exactness, the frozen Design B walk and its echo-matched control; [LCU](notes/1202.5822.md), [oblivious amplification](notes/1312.1414.md), [Hamiltonian block encoding](notes/2510.06316.md), [QSVT](notes/1806.01838.md) |
+| Measurement foundations | [coherence decay](notes/0909.4585.md), [trajectories](notes/1305.7270.md), [efficient tomography](notes/1101.4366.md), [pulse removal, tomography API and early superconducting tomography](notes/measurement_foundations_web_sources.md); which laboratory reconstructions transfer to the cloud gate set |
 
 ## Historical action items and current status
 
