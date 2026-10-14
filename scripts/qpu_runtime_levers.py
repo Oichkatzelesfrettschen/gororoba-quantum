@@ -31,26 +31,55 @@ is recomputed from the selected candidate's ledger in each record.json:
    time, and the job overheads that fewer tiers remove.
 5. Repetition delay: the same ledgers at 100 and 50 microseconds, which needs a
    state-preparation qualification before any submission uses it.
-   execution.rep_delay is a Sampler-wide option, so the qualification at 250,
-   100 and 50 us is three jobs, each priced here with QUALIFICATION_PUBS PUBs
-   of QUALIFICATION_SHOTS shots and a declared QUALIFICATION_CIRCUIT_SECONDS
-   per shot.
+   execution.rep_delay is a Sampler-wide option, so a screening workload at
+   250, 100 and 50 us is three jobs, each priced here with QUALIFICATION_PUBS
+   PUBs of QUALIFICATION_SHOTS shots and a declared
+   QUALIFICATION_CIRCUIT_SECONDS per shot. The price is a cost, not a
+   demonstrated precision: the workload has no sensitivity map to the sector
+   contrasts yet.
+6. Rank tier collapse: the two 8192-shot rank PUBs priced at 4096 shots inside
+   the 4096-shot job. A larger declared noise-model sample admits that design;
+   its own record (RANK_4096) must reproduce the collapsed nominal and stress
+   charges, which binds the arithmetic to an admitted dry run.
 
-Usage: "$PYTHON" scripts/qpu_runtime_levers.py [--out FILE] [--check FILE]
+Job overheads are per client job. IBM bills overhead per sub-job and may split
+a job, so every overhead saving here holds only when each client job runs as
+one sub-job; the retained usage of an executed job decides it.
+
+Every input is bound: each case directory's SHA256SUMS must list exactly its
+case files with matching digests, record.json must carry the digest the case
+names, and the output records those digests, the coupling-map edge digest and
+this script's own digest. --self-test mutates a copy of the rank case (a
+whitespace-only record.json change, one isa.qpy byte, one SHA256SUMS entry)
+and requires each mutation to fail the binding.
+
+Usage: "$PYTHON" scripts/qpu_runtime_levers.py [--out FILE | --check FILE | --self-test]
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
+import shutil
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 RIPPLE = ROOT / "results/live/2026-10-14T113012.109467Z/record.json"
 RANK = ROOT / "results/live/2026-10-14T113945.518703Z/record.json"
+# The rank-sector design at 1024 and 4096 shots only, admitted with 131072 noise-model samples.
+RANK_4096 = ROOT / "results/live/2026-10-14T204144.526374Z/record.json"
+# record.json digests the cases name for approval.
+CASE_DIGESTS = {
+    RIPPLE.parent.name: "c10b99918f8c68fee09746bb5351b41bc7c3a5c104cd77329ee9dbd005c845db",
+    RANK.parent.name: "e39aaccec1c6cd3c64cb034602ac52089688633a4b167d1d20143f5c88c38c8b",
+    RANK_4096.parent.name: "036237e0bae40cc7e65c3055a4a919300242b857f6c56d1ed5599600c7e211a1",
+}
+CASE_FILES = ("UNAPPROVED_CASE.md", "isa.qpy", "record.json")
 NOMINAL_OVERHEAD = 2.3
 STRESS_OVERHEAD = 4.6
 DELAYS = (250e-6, 100e-6, 50e-6)
@@ -67,7 +96,84 @@ def require(condition: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
+def sha256(path: Path) -> str:
+    digest = hashlib.sha256()
+    with path.open("rb") as handle:
+        for block in iter(lambda: handle.read(1 << 20), b""):
+            digest.update(block)
+    return digest.hexdigest()
+
+
+def verify_case(directory: Path, record_digest: str) -> dict[str, str]:
+    """Digests of a case whose SHA256SUMS lists exactly CASE_FILES, each matching, with the named record."""
+    listed: dict[str, str] = {}
+    for line in (directory / "SHA256SUMS").read_text(encoding="ascii").splitlines():
+        digest, _, name = line.partition("  ")
+        require(len(digest) == 64 and name not in listed, f"{directory.name}/SHA256SUMS: malformed line")
+        listed[name] = digest
+    require(sorted(listed) == sorted(CASE_FILES), f"{directory.name}/SHA256SUMS: must list exactly {CASE_FILES}")
+    for name, digest in listed.items():
+        require(sha256(directory / name) == digest, f"{directory.name}/{name}: digest differs from SHA256SUMS")
+    require(listed["record.json"] == record_digest, f"{directory.name}/record.json: not the record the case names")
+    return {
+        "record_sha256": listed["record.json"],
+        "isa_qpy_sha256": listed["isa.qpy"],
+        "case_sha256": listed["UNAPPROVED_CASE.md"],
+        "sha256sums_sha256": sha256(directory / "SHA256SUMS"),
+    }
+
+
+def self_test() -> None:
+    """Each mutation of a copied rank case fails verify_case; the unmodified copy passes."""
+    source = RANK.parent
+    digest = CASE_DIGESTS[source.name]
+
+    def rejects(mutate: Any) -> bool:
+        with tempfile.TemporaryDirectory() as scratch:
+            copy = Path(scratch) / source.name
+            copy.mkdir()
+            for name in (*CASE_FILES, "SHA256SUMS"):
+                shutil.copyfile(source / name, copy / name)
+            mutate(copy)
+            try:
+                verify_case(copy, digest)
+            except RuntimeError:
+                return True
+            return False
+
+    def whitespace(copy: Path) -> None:
+        with (copy / "record.json").open("ab") as handle:
+            handle.write(b" ")
+
+    def qpy_byte(copy: Path) -> None:
+        data = bytearray((copy / "isa.qpy").read_bytes())
+        data[len(data) // 2] ^= 0x01
+        (copy / "isa.qpy").write_bytes(bytes(data))
+
+    def checksum_entry(copy: Path) -> None:
+        text = (copy / "SHA256SUMS").read_text(encoding="ascii")
+        line = next(entry for entry in text.splitlines() if entry.endswith("  isa.qpy"))
+        flipped = ("0" if line[0] != "0" else "1") + line[1:]
+        (copy / "SHA256SUMS").write_text(text.replace(line, flipped), encoding="ascii")
+
+    def relisted(copy: Path) -> None:
+        whitespace(copy)
+        text = (copy / "SHA256SUMS").read_text(encoding="ascii")
+        (copy / "SHA256SUMS").write_text(text.replace(digest, sha256(copy / "record.json")), encoding="ascii")
+
+    require(not rejects(lambda copy: None), "self-test: the unmodified copy must pass")
+    for name, mutate in (
+        ("whitespace-only record.json change", whitespace),
+        ("one isa.qpy byte", qpy_byte),
+        ("one SHA256SUMS entry", checksum_entry),
+        ("record.json change re-listed in SHA256SUMS", relisted),
+    ):
+        require(rejects(mutate), f"self-test: {name} passed the binding")
+    print("runtime-lever input binding: 4 mutations rejected, unmodified case accepted")
+
+
 def load(path: Path) -> dict[str, Any]:
+    inputs = verify_case(path.parent, CASE_DIGESTS[path.parent.name])
     record = json.loads(path.read_text(encoding="utf-8"))
     require(record["state"] == "planned", f"{path.name}: the case must be planned")
     selected = record["optimization"]["selected"]
@@ -103,7 +209,7 @@ def load(path: Path) -> dict[str, Any]:
         "uniform_ceiling": record["policy"]["max_execution_seconds"],
         "nominal": candidate["estimated_charge_seconds"],
         "stress": candidate["worst_case_charge_seconds"],
-        "sha256_name": path.parent.name,
+        "inputs": {"directory": path.parent.name, **inputs},
     }
 
 
@@ -135,14 +241,29 @@ def charges(tiers: dict[int, tuple[float, int]]) -> dict[str, Any]:
     }
 
 
-def distances() -> list[list[int]]:
-    """All-pairs hop distance on the ibm_kingston coupling map."""
+def coupling_edges() -> list[tuple[int, int]]:
+    """Undirected ibm_kingston coupling edges from the FakeKingston snapshot, sorted."""
     from qiskit_ibm_runtime.fake_provider import FakeKingston
 
     coupling = FakeKingston().coupling_map
-    size = coupling.size()
+    return sorted({(min(a, b), max(a, b)) for a, b in coupling.get_edges()})
+
+
+def topology_identity(edges: list[tuple[int, int]]) -> dict[str, Any]:
+    text = "".join(f"{a} {b}\n" for a, b in edges)
+    return {
+        "source": "qiskit_ibm_runtime.fake_provider.FakeKingston coupling map, undirected, sorted",
+        "qubits": 1 + max(b for _, b in edges),
+        "edges": len(edges),
+        "edge_list_sha256": hashlib.sha256(text.encode("ascii")).hexdigest(),
+    }
+
+
+def distances(edges: list[tuple[int, int]]) -> list[list[int]]:
+    """All-pairs hop distance on the coupling map."""
+    size = 1 + max(b for _, b in edges)
     neighbors: list[set[int]] = [set() for _ in range(size)]
-    for a, b in coupling.get_edges():
+    for a, b in edges:
         neighbors[a].add(b)
         neighbors[b].add(a)
     table = []
@@ -257,7 +378,8 @@ def analyze() -> dict[str, Any]:
         "rank": charges(jobs_by_tier(rank["pubs"])),
         "uniform_ceilings_as_planned": {"ripple": 2 * ripple["uniform_ceiling"], "rank": 3 * rank["uniform_ceiling"]},
     }
-    dist = distances()
+    edges = coupling_edges()
+    dist = distances(edges)
     fusion = fuse(ripple["pubs"], rank["pubs"], dist, 2)
     strict = fuse(ripple["pubs"], rank["pubs"], dist, 3)
     fused_tiers = jobs_by_tier(fusion["pubs"])
@@ -284,6 +406,26 @@ def analyze() -> dict[str, Any]:
             "fused_reduction_vs_fused_default": round(1 - fused_delay / fused_charges["nominal_seconds"], 4),
             "fused_reduction_vs_planned": round(1 - fused_delay / separate_nominal, 4),
         }
+    top = max(p["shots"] for p in ripple["pubs"])
+    collapsed = [{**p, "shots": min(p["shots"], top)} for p in rank["pubs"]]
+    collapsed_rank = charges(jobs_by_tier(collapsed))
+    collapsed_cobatched = charges(jobs_by_tier(ripple["pubs"] + collapsed))
+    admitted = load(RANK_4096)
+    require(abs(admitted["nominal"] - collapsed_rank["nominal_seconds"]) < 1e-6, "admitted rank nominal charge")
+    require(abs(admitted["stress"] - collapsed_rank["stress_seconds"]) < 1e-6, "admitted rank stress charge")
+    tier_collapse = {
+        "admitted_record": admitted["inputs"],
+        "admitted_uniform_ceiling_sum": admitted["uniform_ceiling"] * admitted["jobs"],
+        "rank_pubs_moved": sum(1 for p in rank["pubs"] if p["shots"] > top),
+        "rank": {
+            **collapsed_rank,
+            "saving_seconds": round(separate["rank"]["nominal_seconds"] - collapsed_rank["nominal_seconds"], 6),
+        },
+        "co_batched": {
+            **collapsed_cobatched,
+            "saving_seconds": round(separate_nominal - collapsed_cobatched["nominal_seconds"], 6),
+        },
+    }
     shots = QUALIFICATION_PUBS * QUALIFICATION_SHOTS
     qualification: dict[str, Any] = {"jobs": len(DELAYS), "per_job": {}}
     for delay in DELAYS:
@@ -298,7 +440,13 @@ def analyze() -> dict[str, Any]:
     qualification["per_job_ceiling_sum"] = sum(j["ceiling_seconds"] for j in qualification["per_job"].values())
     return {
         "qualification": qualification,
-        "records": {"ripple": RIPPLE.parent.name, "rank": RANK.parent.name},
+        "inputs": {
+            "ripple": ripple["inputs"],
+            "rank": rank["inputs"],
+            "topology": topology_identity(edges),
+            "analysis_source_sha256": sha256(Path(__file__)),
+        },
+        "rank_tier_collapse": tier_collapse,
         "separate": separate,
         "co_batched": {**cobatched, "saving_seconds": round(separate_nominal - cobatched["nominal_seconds"], 6)},
         "fusion": {
@@ -330,7 +478,11 @@ def main(argv: list[str] | None = None) -> int:
     mode = parser.add_mutually_exclusive_group()
     mode.add_argument("--out", type=Path, help="write the analysis JSON")
     mode.add_argument("--check", type=Path, help="replay a retained analysis JSON")
+    mode.add_argument("--self-test", action="store_true", help="mutate a copied case and require the binding to fail")
     args = parser.parse_args(argv)
+    if args.self_test:
+        self_test()
+        return 0
     result = analyze()
     text = json.dumps(result, indent=1, sort_keys=True) + "\n"
     if args.out:

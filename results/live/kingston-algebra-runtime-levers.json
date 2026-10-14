@@ -68,6 +68,29 @@
    "uniform_ceiling_sum": 123
   }
  },
+ "inputs": {
+  "analysis_source_sha256": "859406f09529c70adf5a4aee797d991de7a025ec26951204d781dc96797f719e",
+  "rank": {
+   "case_sha256": "56f89953984103fadab840c11426e3e55b95a12f5d6efcaa758f6a66310efbfe",
+   "directory": "2026-10-14T113945.518703Z",
+   "isa_qpy_sha256": "bac329070162e4e003ddc9155057bd8638e31f6564b8fcfc4eb52d7c1a2aad9e",
+   "record_sha256": "e39aaccec1c6cd3c64cb034602ac52089688633a4b167d1d20143f5c88c38c8b",
+   "sha256sums_sha256": "09681b8d49715f88f9e2a1e48981556379a2e66d30904c6b8f66f4872966d9bc"
+  },
+  "ripple": {
+   "case_sha256": "2f14378254dccd0017694ee2211641642ded31239d35e5a1413ab7a15b6ab401",
+   "directory": "2026-10-14T113012.109467Z",
+   "isa_qpy_sha256": "77990b3c0a4219a9defd429c04463b767e2778e3465c5c4e40c3601b2a5599b7",
+   "record_sha256": "c10b99918f8c68fee09746bb5351b41bc7c3a5c104cd77329ee9dbd005c845db",
+   "sha256sums_sha256": "897e76f6999428e8e304d901ef13e27de727377643785e3c1a2d1f84582a19c4"
+  },
+  "topology": {
+   "edge_list_sha256": "a1d8a313899d26719ef778b3d53ac98353149a22a8947bc8548f36ce3f02402a",
+   "edges": 176,
+   "qubits": 156,
+   "source": "qiskit_ibm_runtime.fake_provider.FakeKingston coupling map, undirected, sorted"
+  }
+ },
  "qualification": {
   "jobs": 3,
   "nominal_seconds": 9.72624,
@@ -91,9 +114,40 @@
   "per_job_ceiling_sum": 19,
   "stress_seconds": 16.62624
  },
- "records": {
-  "rank": "2026-10-14T113945.518703Z",
-  "ripple": "2026-10-14T113012.109467Z"
+ "rank_tier_collapse": {
+  "admitted_record": {
+   "case_sha256": "1aba308f003a05ff9bcfcd9d1438466cd02c464e5eec8b735448c172d960c8b3",
+   "directory": "2026-10-14T204144.526374Z",
+   "isa_qpy_sha256": "d79e920aefe534f4dd186b2873dade29905403568029565d817c7f55c9ac96db",
+   "record_sha256": "036237e0bae40cc7e65c3055a4a919300242b857f6c56d1ed5599600c7e211a1",
+   "sha256sums_sha256": "d65fb8d9bb3b6cec7763447ead226f530f6f7b148c236bf739141ff233085c12"
+  },
+  "admitted_uniform_ceiling_sum": 54,
+  "co_batched": {
+   "jobs": 2,
+   "nominal_seconds": 90.139078,
+   "per_job_ceiling_sum": 96,
+   "per_job_ceilings": {
+    "1024": 41,
+    "4096": 55
+   },
+   "saving_seconds": 8.995219,
+   "stress_seconds": 94.739078,
+   "uniform_ceiling_sum": 110
+  },
+  "rank": {
+   "jobs": 2,
+   "nominal_seconds": 30.449098,
+   "per_job_ceiling_sum": 36,
+   "per_job_ceilings": {
+    "1024": 9,
+    "4096": 27
+   },
+   "saving_seconds": 4.395219,
+   "stress_seconds": 35.049098,
+   "uniform_ceiling_sum": 54
+  },
+  "rank_pubs_moved": 2
  },
  "repetition_delay": {
   "100us": {
