@@ -37,6 +37,7 @@ from fractions import Fraction
 from pathlib import Path
 
 import numpy as np
+import numpy.typing as npt
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
@@ -207,7 +208,7 @@ def walk_sectors(pair: tuple[int, int], expected: dict[int, Fraction]) -> dict[s
     return {"pair": list(pair), "weights": {str(k): str(v) for k, v in weights.items()}, "first_state_return": first}
 
 
-def _excess_moment(matrix: np.ndarray, norm_squared: float) -> float:
+def _excess_moment(matrix: npt.NDArray[np.float64], norm_squared: float) -> float:
     gram = matrix.T @ matrix / norm_squared
     return float(np.trace(gram @ gram) / gram.shape[0] - 1)
 
@@ -216,17 +217,17 @@ def gram_moment_embedding() -> dict[str, object]:
     rng = np.random.default_rng(20261014)
     for d in (16, 32):
         for _ in range(20):
-            a = rng.normal(size=d)
-            left = np.array(left_mult_matrix(d, a), dtype=float)
-            require(np.allclose(np.diag(left.T @ left) / (a @ a), 1.0), "every basis column of L_a has norm |a|")
-            embedded = np.concatenate([a, np.zeros(d)])
-            big = np.array(left_mult_matrix(2 * d, embedded), dtype=float)
+            a = [float(x) for x in rng.normal(size=d)]
+            norm_squared = math.fsum(x * x for x in a)
+            left = np.asarray(left_mult_matrix(d, a), dtype=np.float64)
+            require(np.allclose(np.diag(left.T @ left) / norm_squared, 1.0), "every basis column of L_a has norm |a|")
+            big = np.asarray(left_mult_matrix(2 * d, a + [0.0] * d), dtype=np.float64)
             require(
-                abs(_excess_moment(left, a @ a) - _excess_moment(big, a @ a)) < 1e-10,
+                abs(_excess_moment(left, norm_squared) - _excess_moment(big, norm_squared)) < 1e-10,
                 f"D={d}: the pure embedding changes the excess moment",
             )
             require(
-                np.linalg.matrix_rank(big, tol=1e-9) == 2 * np.linalg.matrix_rank(left, tol=1e-9),
+                int(np.linalg.matrix_rank(big, tol=1e-9)) == 2 * int(np.linalg.matrix_rank(left, tol=1e-9)),
                 f"D={d}: the pure embedding does not double the rank",
             )
     return {"dimensions": [16, 32], "samples": 20}
