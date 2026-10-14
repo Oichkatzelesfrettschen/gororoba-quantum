@@ -1,10 +1,12 @@
-"""Check that the algebra circuit design rules bind every directory that carries them.
+"""Check that the replicated AGENTS.md sections bind every directory that carries them.
 
-The root AGENTS.md owns the section between the algebra-circuit-rules markers.
-gororoba_quantum/AGENTS.md and scripts/AGENTS.md repeat it byte for byte, and
-the root and each of those directories carry a CLAUDE.md whose entire content
-is the loader line `@AGENTS.md` followed by one LF, so an agent started in any
-of them reads the same rules. The loader format is fixed bytes: a CLAUDE.md
+The root AGENTS.md owns each section in SECTIONS, delimited by
+`<!-- NAME:begin -->` and `<!-- NAME:end -->`, and every nested AGENTS.md
+listed for it repeats it byte for byte: the algebra circuit design rules in
+gororoba_quantum/ and scripts/, the Heron execution facts in
+gororoba_quantum/. The root and each nested directory carry a CLAUDE.md whose
+entire content is the loader line `@AGENTS.md` followed by one LF, so an agent
+started in any of them reads the same rules. The loader format is fixed bytes: a CLAUDE.md
 that adds prose, comments, fences or a different line ending fails, which
 leaves no Markdown construct able to hide the import.
 
@@ -17,8 +19,10 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
-BEGIN = b"<!-- algebra-circuit-rules:begin -->"
-END = b"<!-- algebra-circuit-rules:end -->"
+SECTIONS = {
+    "algebra-circuit-rules": ("gororoba_quantum", "scripts"),
+    "heron-execution-facts": ("gororoba_quantum",),
+}
 LOADER = b"@AGENTS.md\n"
 NESTED = ("gororoba_quantum", "scripts")
 
@@ -31,11 +35,12 @@ def read(path: Path) -> bytes:
         raise SystemExit(f"{path.relative_to(ROOT)}: missing") from None
 
 
-def section(path: Path) -> bytes:
+def section(path: Path, name: str) -> bytes:
     data = read(path)
-    if data.count(BEGIN) != 1 or data.count(END) != 1:
-        raise SystemExit(f"{path.relative_to(ROOT)}: needs exactly one algebra-circuit-rules section")
-    start, end = data.index(BEGIN), data.index(END) + len(END)
+    begin, end_marker = f"<!-- {name}:begin -->".encode(), f"<!-- {name}:end -->".encode()
+    if data.count(begin) != 1 or data.count(end_marker) != 1:
+        raise SystemExit(f"{path.relative_to(ROOT)}: needs exactly one {name} section")
+    start, end = data.index(begin), data.index(end_marker) + len(end_marker)
     if start > end:
         raise SystemExit(f"{path.relative_to(ROOT)}: section markers out of order")
     body = data[start:end]
@@ -79,15 +84,18 @@ def main(argv: list[str]) -> int:
         return 0
     if argv:
         raise SystemExit("usage: check_agents_sections.py [--self-test]")
-    reference = section(ROOT / "AGENTS.md")
-    for directory in NESTED:
-        if section(ROOT / directory / "AGENTS.md") != reference:
-            raise SystemExit(f"{directory}/AGENTS.md: algebra circuit rules differ from the root AGENTS.md")
+    sizes = []
+    for name, directories in SECTIONS.items():
+        reference = section(ROOT / "AGENTS.md", name)
+        for directory in directories:
+            if section(ROOT / directory / "AGENTS.md", name) != reference:
+                raise SystemExit(f"{directory}/AGENTS.md: {name} differs from the root AGENTS.md")
+        sizes.append(f"{name} in root and {', '.join(directories)} ({len(reference)} bytes)")
     for directory in ("", *NESTED):
         loader = ROOT / directory / "CLAUDE.md"
         if not is_loader(read(loader)):
             raise SystemExit(f"{loader.relative_to(ROOT)}: must contain exactly the line @AGENTS.md and one LF")
-    print(f"algebra circuit rules: root and {', '.join(NESTED)} identical ({len(reference)} bytes)")
+    print("identical sections: " + "; ".join(sizes))
     return 0
 
 

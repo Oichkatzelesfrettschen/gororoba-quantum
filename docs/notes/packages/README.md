@@ -35,6 +35,10 @@ product samples are
 | [splitoct](splitoct.md) | split octonions: same associators, different squares | D = 8 exhaustive | independent; equals the engine's split table |
 | [mathdunders](mathdunders.md) | none | not applicable | operator-method plumbing, not an algebra |
 
+Each package is installed as the Arch package named in the AGENTS.md
+algebra section and rebuilt from its local PKGBUILD when broken; a rebuild
+re-runs `--extract` so the pinned digest binds the reinstalled files.
+
 Octonion-Sedenion 1.0.0 and pyoctonion 3.12 appear in the reviewed package
 roster but are not installed on the build host, so their relation to
 `cd_core` is unmeasured and no note claims one.

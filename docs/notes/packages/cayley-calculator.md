@@ -32,5 +32,10 @@ of each component reordered. The sedenion basis table is identical to
   `pathion`, `chingon` and `routon` modules do not collide. Import the
   sedenion module (octonions embed as a subalgebra) or adjust `sys.path`
   explicitly.
+- Coefficients live in a float64 numpy array: `Fraction` inputs become
+  floats (a sedenion with real part `Fraction(1, 3)`, squared, holds
+  0.11111111), so the package
+  certifies no exact identity; use [hypercomplex](hypercomplex.md) with a
+  `Fraction` base for that.
 - The `.pth` files sit inside the package directory, so the `sys.path`
   change applies to a process only after it imports `Cayley_Calculator`.

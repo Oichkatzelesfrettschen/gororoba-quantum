@@ -26,6 +26,10 @@ isomorphic and the basis numbering differs.
 
 ## Pitfalls
 
+- Its tensors and `STRUCTURE_CONSTANTS` default to float64
+  (`random_octonion(dtype=torch.float64)`), while torch's default dtype is
+  float32; inputs built with `torch.tensor(...)` and no dtype mix precisions.
+
 - Index `i` here is not `e_i` of `cd_core`; translate through the map before
   comparing any coefficient, associator or Fano line.
 - It owns the top-level module name `octonion`, which shadows

@@ -22,6 +22,10 @@ tables are identical at D = 8 and 16.
 
 ## Pitfalls
 
+- The Arch package python-cayley-dickson also installs the archive's `src/`
+  directory as a top-level `src` package in site-packages, so `import src`
+  in any process that lacks its own `src` on `sys.path` resolves to it.
+
 - `KD_construction` assigns `K[a][b] = a * b`, which pandas stores at column
   `a`, row `b`: reading the frame row-first gives the transpose of the
   multiplication table.
