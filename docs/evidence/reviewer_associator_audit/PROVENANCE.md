@@ -15,7 +15,8 @@ basis pairs; the reviewer's proposed pair `(e1 + e10)(e2 - e13)`, which is
 nonzero; the corpus pair `(e1 + e10)(e4 - e15)`, which is zero; the
 reversible signed lookup on all 512 basis states; the universal contraction
 `M M^dagger = 16 I`; the fixed-operand LCU outcomes 0, 1/2 and 1; the
-fixed-pair associator unitary on all 256 pairs; the 1848 non-associating
+fixed-pair associator witness `U_L^T U_R` as the expected diagonal sign matrix
+on all 256 pairs; the 1848 non-associating
 triples among 4096; the Hadamard-test measurement basis; and a complex-linear
 zero divisor of an associative subalgebra. The algebra circuit design rules
 in the root AGENTS.md cite these results.

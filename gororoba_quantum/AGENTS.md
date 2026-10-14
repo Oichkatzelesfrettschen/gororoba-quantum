@@ -12,9 +12,10 @@ These rules bind every circuit, case, analysis and note that encodes
 Cayley-Dickson arithmetic on a qubit register. The root AGENTS.md,
 gororoba_quantum/AGENTS.md and scripts/AGENTS.md carry this section with
 identical bytes; `ci/check_agents_sections.py` fails on any difference.
-`docs/evidence/reviewer_associator_audit/`
-replays the arithmetic behind each rule, and gates sources-240 and
-sources-241 check it.
+`docs/evidence/reviewer_associator_audit/` replays the numeric claims below
+(gates sources-240 and sources-241), and `scripts/algebra_circuit_fixtures.py`
+(gates core-251 and core-252) runs the zero-product, Hadamard-basis and
+workspace fixtures on the circuit builders of `designs.py`.
 
 **Encoding and representation.**
 - The map `a -> L_a` is a linear encoding, not an algebra homomorphism.
@@ -29,9 +30,10 @@ sources-241 check it.
   state `|0>` is `e_0 = 1`, the multiplicative identity, never the zero
   vector. A unitary cannot output the zero vector: an algebraic zero product
   is a heralded branch of zero probability while the full state keeps norm 1.
-- Norm multiplicativity and Hurwitz-type statements apply to real
-  coefficients. The complex-linear extension has zero divisors even on
-  associative subalgebras: `(e_0 + i e_1)(e_0 - i e_1) = 0`.
+- Norm multiplicativity `|ab| = |a||b|` holds for real coefficients in
+  dimensions 1, 2, 4 and 8 only (Hurwitz). The real sedenions already have
+  zero divisors, `(e1 + e10)(e4 - e15) = 0`, and the complex-linear extension
+  has them even on associative subalgebras: `(e_0 + i e_1)(e_0 - i e_1) = 0`.
 
 **Zero-product witnesses.**
 - Certify every claimed zero-divisor pair with `cd_core` before circuit work.
@@ -42,9 +44,10 @@ sources-241 check it.
   `(e1 + e10)(e4 + e15)` is its bright control (`P(s = 0) = 1`).
 - Read the selector's success outcome, not "output label unequal to zero".
   The fixed-operand LCU of Design B gives `P(s = 0) = ||x y||^2 / 2` for
-  normalized `x = (e_i + t e_j)/sqrt2` and `y`. The universal coefficient
-  contraction `M|i, j> = sigma(i, j)|i xor j>` has `M M^dagger = D I`, so its
-  success Kraus operator is `M / sqrt(D)` and `P = ||x y||^2 / D`. Reports
+  normalized `x = (e_i + t e_j)/sqrt2`, `t = +-1`, and normalized `y`. The
+  universal coefficient contraction of the D-dimensional algebra (D = 16 for
+  the sedenions), `M|i, j> = sigma(i, j)|i xor j>`, has `M M^dagger = D I`,
+  so its success Kraus operator is `M / sqrt(D)` and `P = ||x y||^2 / D`. Reports
   give success counts, attempts, the bright reference, the uncertainty and
   the implemented normalization; the dark floor carries preparation, coherent
   control, incoherent, readout and sampling contributions together.
