@@ -68,7 +68,15 @@ import placement_feasibility
 import qpu_planning
 import variance
 from diagnostic_experiments import FAMILY_NAMES, record_groups
-from experiments import MIRROR_SUFFIX, Group, Member, all_experiment_groups, experiment_groups, tvd
+from experiments import (
+    MIRROR_SUFFIX,
+    Group,
+    Member,
+    all_experiment_groups,
+    experiment_groups,
+    standalone_campaign_groups,
+    tvd,
+)
 from packing import Replica
 
 SHOTS = 4096
@@ -1047,8 +1055,10 @@ def _replica_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float
         from maximal_experiments import core_x_duration_dt
 
         act_isa = next(isa for isa in isas if isa.name == "spectator_wavefront_active")
-        core_q = next(act_isa.find_bit(inst.qubits[0]).index for inst in act_isa.data if inst.operation.name == "x")
-        matched_x = (core_q, core_x_duration_dt(target, core_q))
+        driven = [act_isa.find_bit(inst.qubits[0]).index for inst in act_isa.data if inst.operation.name == "x"]
+        if not driven:
+            raise LiveRunError("the spectator active arm compiled without an X on its core")
+        matched_x = (driven[0], core_x_duration_dt(target, driven[0]))
 
     judge = PlacementJudge(
         tuple(isas),
@@ -1127,14 +1137,6 @@ class PlacementJudge:
                 return None
             if name == "cz" and (moved in self.excluded_edges or tuple(reversed(moved)) in self.excluded_edges):
                 return None
-        if self.matched_x_duration is not None:
-            from maximal_experiments import core_x_duration_dt
-
-            src_core, exp_dt = self.matched_x_duration
-            if src_core in mapping:
-                replica_core = mapping[src_core]
-                if core_x_duration_dt(self.target, replica_core) != exp_dt:
-                    return None
         if self.static_checks is None:
             raise LiveRunError("static placement checks were not prepared")
         for name, original, parameters in self.static_checks:
@@ -1147,11 +1149,11 @@ class PlacementJudge:
         if self.matched_x_duration is not None:
             from maximal_experiments import core_x_duration_dt
 
+            # A replica core must drive with the routed core's X duration, which
+            # the rebuilt arms subtract from the core's exposure delays.
             src_core, exp_dt = self.matched_x_duration
-            if src_core in mapping:
-                replica_core = mapping[src_core]
-                if core_x_duration_dt(self.target, replica_core) != exp_dt:
-                    return None
+            if src_core in mapping and core_x_duration_dt(self.target, mapping[src_core]) != exp_dt:
+                return None
         if self.static_checks is not None:
             return self._static_score(mapping)
         moved = [packing.relabel(isa, mapping, "") for isa in self.isas]
@@ -1682,7 +1684,7 @@ def _trace_failure_summary(trace_by_backend: dict[str, list[dict[str, Any]]]) ->
         for entry in entries:
             stage = str(entry.get("stage", "routing"))
             reasons.update(f"{stage}: {reason}" for reason in entry.get("rejected", []))
-            for field_name in ("compile_error", "member_compile_error", "entry_build_error"):
+            for field_name in ("compile_error", "member_compile_error", "entry_build_error", "duration_mismatch"):
                 if field_name in entry:
                     reasons.add(f"{field_name}: {entry[field_name]}")
             for field_name in ("member_rejections", "execution_rejections"):
@@ -1743,6 +1745,7 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
                     from maximal_experiments import (
                         build_spectator_wavefront_circuits,
                         core_x_duration_dt,
+                        exposure_dt,
                     )
 
                     target = snap.admission_target or snap.backend.target
@@ -1761,15 +1764,17 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
                     isa_act = _compile(qc_act, snap, seed, layout)
                     isa_ctrl = _compile(qc_ctrl, snap, seed, layout)
                     isa_null = _compile(qc_null, snap, seed, layout)
-                    dur_act = target_duration_dt(isa_act, target)
-                    dur_ctrl = target_duration_dt(isa_ctrl, target)
-                    if dur_act != dur_ctrl:
+                    # Every exposure track of both arms, the driven core included,
+                    # must equal delay_dt in both directions.
+                    tracks = {
+                        f"{arm}_q{qubit}": exposure_dt(isa, qubit, target)
+                        for arm, isa in (("active", isa_act), ("control", isa_ctrl))
+                        for qubit in layout
+                    }
+                    mismatched = {name: value for name, value in tracks.items() if value != delay_dt}
+                    if mismatched:
                         trace.append(
-                            {
-                                "seed": seed,
-                                "layout": layout,
-                                "duration_mismatch": f"active={dur_act} ctrl={dur_ctrl}",
-                            }
+                            {"seed": seed, "layout": layout, "duration_mismatch": f"delay={delay_dt} {mismatched}"}
                         )
                         continue
                     isas = [isa_act, isa_ctrl, isa_null]
@@ -2530,10 +2535,18 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             groups = experiment_groups()
         else:
             groups = [group for group in available_groups if group.name in args.groups]
-            if "spectator_wavefront_ramsey" in (g.name for g in groups) and len(groups) > 1:
-                raise LiveRunError(
-                    "spectator_wavefront_ramsey requires an isolated campaign; cannot co-run with other groups"
-                )
+            standalone = {group.name for group in standalone_campaign_groups()}
+            campaigns = sorted(group.name for group in groups if group.name in standalone)
+            if campaigns and len(groups) > 1:
+                raise LiveRunError(f"{campaigns[0]} requires an isolated campaign; cannot co-run with other groups")
+            if "spectator_wavefront_ramsey" in campaigns:
+                # The spectator arms read free Ramsey evolution over explicit delays,
+                # which dynamical decoupling would fill with echo pulses, and a second
+                # replica's driven core would sit within a few hops of these spectators.
+                if args.dd:
+                    raise LiveRunError("spectator_wavefront_ramsey runs without dynamical decoupling; omit --dd")
+                if args.max_replicas != 1:
+                    raise LiveRunError("spectator_wavefront_ramsey runs one replica; pass --max-replicas 1")
         candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
         choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
     pubs = execution_pubs(choices)

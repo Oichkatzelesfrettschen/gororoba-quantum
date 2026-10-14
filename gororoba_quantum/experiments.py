@@ -381,23 +381,24 @@ def _hybrid_shor_mod15() -> Group:
 
 
 def experiment_groups() -> list[Group]:
-    from maximal_experiments import concurrent_shor_mod15_group
-
     return [
         _design_a(),
         _zero_divisor_fringe(),
         *(_associator_spectrum(dim, i, j) for dim, i, j in SPECTRUM_EXEMPLARS),
         _folded_qpe_mod15(),
         _hybrid_shor_mod15(),
-        concurrent_shor_mod15_group(),
     ]
 
 
 def standalone_campaign_groups() -> list[Group]:
-    """Isolated campaign groups that must not co-run or fuse with other static groups."""
-    from maximal_experiments import spectator_wavefront_ramsey_group
+    """Opt-in campaigns, selected with --groups and run alone.
 
-    return [spectator_wavefront_ramsey_group()]
+    Neither joins the default suite, so default replica placement is unchanged;
+    plan() refuses to co-run either one with any other group.
+    """
+    from maximal_experiments import concurrent_shor_mod15_group, spectator_wavefront_ramsey_group
+
+    return [spectator_wavefront_ramsey_group(), concurrent_shor_mod15_group()]
 
 
 def all_experiment_groups() -> list[Group]:

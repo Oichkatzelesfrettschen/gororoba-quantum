@@ -13,11 +13,12 @@ from qiskit_ibm_runtime.fake_provider import FakeKingston
 
 import packing
 from experiments import all_experiment_groups, experiment_groups, standalone_campaign_groups
-from live_run import LiveRunError, PlacementJudge, _ops, plan, select_candidates, target_duration_dt
+from live_run import LiveRunError, PlacementJudge, _compile, _ops, plan, select_candidates
 from maximal_experiments import (
     build_spectator_wavefront_circuits,
     concurrent_shor_mod15_group,
     core_x_duration_dt,
+    exposure_dt,
     maximal_groups,
     spectator_wavefront_ramsey_group,
 )
@@ -237,7 +238,7 @@ def _verify_concurrent_shor_group() -> None:
     uniform_summary = group.summarize(
         {
             "shor_mod15_a2": np.full(outcomes, 1.0 / outcomes),
-            "shor_mod15_a2_null": np.zeros(outcomes),
+            "shor_mod15_a2_null": np.full(outcomes, 1.0 / outcomes),
         }
     )
     noise_admit = admission([uniform_summary], 10000)
@@ -273,8 +274,8 @@ def _verify_isolation_contract() -> None:
         "standalone_campaign_groups must contain spectator_wavefront_ramsey",
     )
     _require(
-        "concurrent_shor_mod15" in default_names,
-        "default experiment_groups must contain concurrent_shor_mod15",
+        "concurrent_shor_mod15" in standalone_names and "concurrent_shor_mod15" not in default_names,
+        "concurrent_shor_mod15 is an opt-in campaign outside the default suite",
     )
 
     # Verify select_candidates on spectator_wavefront_ramsey produces duration-matched ISAs
@@ -288,12 +289,20 @@ def _verify_isolation_contract() -> None:
         "select_candidates must produce at least one candidate for spectator_wavefront_ramsey",
     )
     best = candidates[0]
-    dur_act = target_duration_dt(best.isas[0], backend.target)
-    dur_ctrl = target_duration_dt(best.isas[1], backend.target)
-    _require(
-        dur_act == dur_ctrl,
-        f"candidate ISAs must have identical duration: active={dur_act} ctrl={dur_ctrl}",
-    )
+    # Every exposure track of both arms equals the requested delay, the driven core included.
+    for arm in best.isas[:2]:
+        for qubit in best.layout:
+            exposure = exposure_dt(arm, qubit, backend.target)
+            _require(exposure == 3000, f"{arm.name} q{qubit} exposure {exposure} differs from 3000 dt")
+    # A core built for the wrong X duration is caught in both directions.
+    core = best.layout[0]
+    for wrong_x, expected in ((16, 2984), (4, 3008)):
+        wrong_active = build_spectator_wavefront_circuits(3, 3000, wrong_x)[0]
+        compiled = _compile(wrong_active, snap, best.seed, best.layout)
+        _require(
+            exposure_dt(compiled, core, backend.target) == expected,
+            f"an X duration of {wrong_x} dt must leave a core exposure of {expected} dt",
+        )
     # The calibration-aware rebuild keeps the group's requested 3000-dt Ramsey delay.
     ctrl_delay = next(
         int(instruction.operation.duration)
@@ -317,11 +326,13 @@ def _verify_isolation_contract() -> None:
         frozenset(),
         matched_x_duration=(best.layout[0], 8),
     )
-    # Mapping best.layout[0] to physical qubit 0 (which has 16 dt in target_x_mod != expected 8 dt) must be rejected
-    mismatch_mapping = {best.layout[0]: 0}
+    # A full identity placement on a target whose X takes 16 dt everywhere is
+    # rejected when the routed core expects 8 dt and accepted when it expects 16.
+    used, _edges = packing.pattern({op for isa in best.isas for op in _ops(isa)})
+    full_mapping = {qubit: qubit for qubit in used}
     _require(
-        judge_mismatch(mismatch_mapping) is None,
-        "PlacementJudge must reject replica mapping when core X duration differs from layout[0]",
+        judge_mismatch(full_mapping) is None,
+        "PlacementJudge must reject a placement whose core X duration differs from the routed core's",
     )
     # Mapping with matching expected duration (16 dt) passes core duration check
     judge_matched = PlacementJudge(
@@ -332,24 +343,33 @@ def _verify_isolation_contract() -> None:
         matched_x_duration=(best.layout[0], 16),
     )
     _require(
-        judge_matched.matched_x_duration == (best.layout[0], 16),
-        "PlacementJudge matched_x_duration must be retained",
+        judge_matched(full_mapping) is not None,
+        "PlacementJudge must accept a full placement whose core X duration matches",
+    )
+
+    # Concurrent Shor and the spectator wavefront are opt-in campaigns outside the default suite.
+    default_names = {group.name for group in experiment_groups()}
+    standalone_names = {group.name for group in standalone_campaign_groups()}
+    _require(
+        standalone_names == {"spectator_wavefront_ramsey", "concurrent_shor_mod15"}
+        and not default_names & standalone_names,
+        "the opt-in campaigns must stay outside the default suite",
     )
 
     # Verify plan rejects co-running spectator_wavefront_ramsey with other groups
     probe_backend = _ProbeBackend("viable", backend)
     service = _ProbeService([probe_backend])
-    try:
-        plan(
-            service,
-            _fixture_args(groups=["spectator_wavefront_ramsey", "concurrent_shor_mod15"]),
-        )
-        raise RuntimeError("plan must reject co-running spectator_wavefront_ramsey with other groups")
-    except LiveRunError as err:
-        _require(
-            "isolated campaign" in str(err),
-            f"unexpected error message: {err}",
-        )
+    for overrides, message in (
+        ({"groups": ["spectator_wavefront_ramsey", "concurrent_shor_mod15"]}, "isolated campaign"),
+        ({"groups": ["spectator_wavefront_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
+        ({"groups": ["spectator_wavefront_ramsey"], "max_replicas": None}, "one replica"),
+    ):
+        try:
+            plan(service, _fixture_args(**overrides))
+        except LiveRunError as err:
+            _require(message in str(err), f"unexpected error message: {err}")
+        else:
+            raise RuntimeError(f"plan must refuse {overrides}")
 
 
 if __name__ == "__main__":

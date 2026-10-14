@@ -1,7 +1,7 @@
-"""Maximal-scale hardware benchmark experiments: spectator wavefront and concurrent Shor carpet.
+"""Opt-in hardware campaigns: spectator wavefront Ramsey and concurrent Shor carpet.
 
-This module provides two calibration-aware, hardware-scale experiments designed
-for whole-chip execution under the repository's strict submission gating:
+Both groups are standalone campaigns (experiments.standalone_campaign_groups),
+selected with --groups and planned alone:
 
 1. ``spectator_wavefront_ramsey``: Measures spatial spectator dephasing and crosstalk
    along a connected line graph of physical qubits during active core driving.
@@ -12,13 +12,10 @@ for whole-chip execution under the repository's strict submission gating:
    a differential contrast delta_C = C_control - C_active that isolates hardware
    crosstalk from intrinsic T1/T2 relaxation.
 
-2. ``concurrent_shor_mod15``: Reuses the repository's verified semiclassical order-finding
-   circuit from order_finding.py for N=15, a=2 with 4 phase bits. With 4 phase bits, the
-   ideal factorable probability is 0.5000, which strictly exceeds the uniform random baseline
-   of 0.3750, ensuring statistical admission verifies genuine phase kickback over uniform
-   noise. Placing replicas using live backend calibration metrics filters degraded ("bum")
-   qubits and embeds the order-finding engines across disjoint hardware patches with identical
-   compiled gate sequences.
+2. ``concurrent_shor_mod15``: Reuses the semiclassical order-finding circuit of
+   order_finding.py for N=15, a=2. At the default 4 phase bits the ideal factorable
+   probability is 0.5000 against 0.3750 for a uniform outcome, so admission requires
+   phase kickback beyond uniform noise. Replicas take the default replica floor.
 """
 
 from __future__ import annotations
@@ -53,8 +50,32 @@ def core_x_duration_dt(target: Any, core_qubit: int = 0) -> int:
         if sx_dur is not None:
             duration = 2.0 * sx_dur
     if duration is None or duration <= 0:
-        return DEFAULT_X_DURATION_DT
+        raise ValueError(f"the Target gives no X duration for qubit {core_qubit}")
     return max(1, int(round(duration / dt)))
+
+
+def exposure_dt(isa: QuantumCircuit, qubit: int, target: Any) -> int:
+    """Summed duration in dt of one qubit's instructions between the last two barriers.
+
+    The exposure window of every arm sits between those barriers; the
+    critical-path duration cannot see a core track shorter than the
+    spectator delays, because the closing barrier pads it.
+    """
+    barriers = [index for index, inst in enumerate(isa.data) if inst.operation.name == "barrier"]
+    if len(barriers) < 2:
+        raise ValueError("the exposure window needs two closing barriers")
+    total = 0.0
+    for inst in isa.data[barriers[-2] + 1 : barriers[-1]]:
+        if qubit not in (isa.find_bit(bit).index for bit in inst.qubits):
+            continue
+        if inst.operation.name == "delay":
+            total += float(inst.operation.duration)
+            continue
+        duration = target[inst.operation.name][(qubit,)].duration
+        if duration is None:
+            raise ValueError(f"the Target gives no {inst.operation.name} duration for qubit {qubit}")
+        total += duration / target.dt
+    return int(round(total))
 
 
 def build_spectator_wavefront_circuits(
@@ -176,13 +197,15 @@ def spectator_wavefront_ramsey_group(
     target: Any | None = None,
     core_qubit: int = 0,
     x_duration_dt: int | None = None,
-    replica_floor: float = 0.75,
+    replica_floor: float | None = None,
 ) -> Group:
     """Group evaluating spectator Ramsey contrast under active drive vs idle control.
 
-    When target is provided, x_duration_dt is derived dynamically from target calibrations
-    for core_qubit (target['x'][(core_qubit,)].duration / target.dt), ensuring active and
-    control arm timing envelopes match down to the exact dt cycle.
+    Offline construction takes x_duration_dt, or derives it from target for
+    core_qubit, or uses the 8 dt default. live_run.select_candidates rebuilds
+    the arms for each routed core from that core's calibrated X duration and
+    checks every exposure track against delay_dt (exposure_dt), so these
+    arguments shape only the offline template.
     """
     if x_duration_dt is None:
         if target is not None:
@@ -271,13 +294,13 @@ def spectator_wavefront_ramsey_group(
     )
 
 
-def concurrent_shor_mod15_group(replica_floor: float = 0.75, phase_bits: int = 4) -> Group:
+def concurrent_shor_mod15_group(replica_floor: float | None = None, phase_bits: int = 4) -> Group:
     """Group evaluating concurrent semiclassical order finding for N=15, a=2.
 
-    Reuses verified order-finding logic with 4 phase bits. With 4 phase bits, the ideal
-    factorable probability is 0.5000, which strictly exceeds the uniform random baseline
-    of 0.3750, providing verifiable separation against random noise. Odd-phase outcomes
-    recover non-trivial factors 3 and 5 of 15. The replica floor filters degraded qubits.
+    Outcomes y = 16 k / 4 with odd k recover the order 4 and the factors 3 and
+    5. At the default 4 phase bits the ideal factorable probability is 0.5000
+    against 0.3750 for a uniform outcome; other phase_bits change both values,
+    which distribution_success computes.
     """
     modulus, base = 15, 2
     qc_primary = factor_order_finding(modulus, base, phase_bits)
