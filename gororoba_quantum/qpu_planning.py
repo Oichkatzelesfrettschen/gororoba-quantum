@@ -211,8 +211,12 @@ def coherence_readout_qubits(isas: list[Any]) -> dict[str, int]:
     return found
 
 
-# Patch embeddings compiled in full per backend after the error-product prefilter.
-PATCH_PREFILTER = 8
+# Patch embeddings compiled in full per backend after the prefilter, and the
+# declared idle over which the prefilter charges each qubit's T2 decay: the
+# window the families place between the round and the readout is a control
+# measure plus reset, about 4 to 5 us on Heron r2.
+PATCH_PREFILTER = 16
+PATCH_PREFILTER_IDLE_S = 5e-6
 
 
 def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
@@ -221,9 +225,10 @@ def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
     Every injective map of PATCH_ROLES onto physical qubits that carries each
     PATCH_EDGES pair onto a CZ coupler (rustworkx VF2, non-induced) is a
     candidate, excluding qubits and couplers the calibration excludes. The
-    prefilter is the product of (1 - measure error) over the six qubits and
-    (1 - cz error) over the five couplers; ties break on the layout tuple, so
-    one calibration always yields the same ordered list.
+    prefilter is the product of (1 - measure error) and exp(-PATCH_PREFILTER_IDLE_S
+    / T2) over the six qubits and (1 - cz error) over the five couplers; a
+    qubit without a reported T2 contributes no decay factor. Ties break on
+    the layout tuple, so one calibration always yields the same ordered list.
     """
     import rustworkx as rx
 
@@ -249,12 +254,17 @@ def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
         value = getattr(properties, "error", None)
         return float(value) if value is not None else 1.0
 
+    def decay(qubit: int) -> float:
+        properties = target.qubit_properties[qubit] if target.qubit_properties else None
+        t2 = getattr(properties, "t2", None)
+        return math.exp(-PATCH_PREFILTER_IDLE_S / float(t2)) if t2 else 1.0
+
     scored = []
     for mapping in rx.vf2_mapping(graph, pattern, subgraph=True, induced=False, id_order=True):
         layout = [0] * len(PATCH_ROLES)
         for physical, role in mapping.items():
             layout[role] = int(physical)
-        product = math.prod(1.0 - error("measure", (q,)) for q in layout)
+        product = math.prod((1.0 - error("measure", (q,))) * decay(q) for q in layout)
         product *= math.prod(1.0 - error("cz", (layout[a], layout[b])) for a, b in PATCH_EDGES)
         scored.append((-product, tuple(layout)))
     scored.sort()
