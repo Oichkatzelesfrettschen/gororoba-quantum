@@ -314,6 +314,8 @@ def _patch_candidate(
         if violations:
             raise runtime.LiveRunError(str(violations))
         scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+        if any(score <= 0 for score in scores):
+            raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero on patch {layout}")
         choices.append(
             runtime.Choice(
                 group,
@@ -517,6 +519,8 @@ def family_candidates(
             if violations:
                 raise runtime.LiveRunError(str(violations))
             scores = [runtime.layout_score(isa, candidate.snap.backend.target) for isa in isas]
+            if any(score <= 0 for score in scores):
+                raise runtime.LiveRunError(f"{group.name}: layout score underflows to zero on patch {layout}")
             dynamic = runtime.Choice(
                 group,
                 candidate.snap,
