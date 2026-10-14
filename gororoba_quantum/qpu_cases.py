@@ -65,6 +65,8 @@ _MAPPING_FIELDS = (
     "window_delay_dt",
     "echo_half_dt",
     "measure_dt",
+    "window_dt",
+    "readout_qubits",
 )
 
 
@@ -1032,14 +1034,31 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
         patch = ", ".join(f"{role} {qubit}" for role, qubit in zip(roles, configuration["patch_qubits"], strict=True))
         backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
         window = _count(configuration["window_dt"], "window_dt")
+        dt_seconds = _number(configuration["dt_seconds"], "dt_seconds", positive=True)
+        readout = configuration["readout_qubits"]
+        _require(
+            isinstance(readout, dict)
+            and set(readout) == {"b0", "read_a", "read_b", "sector"}
+            and all(type(qubit) is int and qubit >= 0 for qubit in readout.values()),
+            "coherence-window needs the executed readout qubit of b0, read_a, read_b and sector",
+        )
+        reads = ", ".join(f"{label} from qubit {readout[label]}" for label in ("b0", "read_a", "read_b", "sector"))
+        alias_khz = 1e-3 / (2 * window * dt_seconds)
         return [
             "## Scientific question and interpretation",
             "",
-            f"The coherence-window family measures, on the physical qubits {patch} on {backends}, the "
-            "work coherence the first N=21 orbit round leaves between work_a and work_b, signed by the "
-            "control's first bit b0. That coherence changes sign with b0, so its branch-unsigned average is "
-            "zero on an ideal device and the terminal four-outcome orbit law cannot see it. Each shot is "
-            "weighted by (-1)^b0, and C = (S_XX + S_YY + i (S_XY - S_YX)) / 4 has |C| = 1/2 ideally.",
+            f"The coherence-window family measures, on the pinned initial layout {patch} on {backends}, "
+            "the work coherence the first N=21 orbit round leaves between work_a and work_b, signed by the "
+            "control's first bit b0. In each branch the work pair holds |10> + (-1)^b0 e^{i phi} |01>, so "
+            "rho_{01,10} = <01|rho|10> changes sign with b0, its branch-unsigned average is zero on an ideal "
+            "device, and the terminal four-outcome orbit law cannot see it. Each shot is weighted by "
+            "(-1)^b0, and C = (S_XX + S_YY + i (S_XY - S_YX)) / 4 is the branch-signed rho_{01,10}, with "
+            "arg C = phi and |C| = 1/2 ideally; a Z rotation by delta on work_b turns C by +delta, on work_a "
+            "by -delta.",
+            "",
+            f"Routing moves the logical work qubits during the prefix, so the compiled circuits read {reads}; "
+            "no two-qubit gate follows the prefix, so per-qubit attribution of a window phase uses this "
+            "executed map, not the initial roles.",
             "",
             f"Three contexts follow the same round-1 prefix: immediate readout; a matched idle of {window} dt "
             "(the control's measure plus reset) with b0 read after it; and a mid-circuit measure and reset "
@@ -1050,6 +1069,14 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "adds to epsilon and scales that context's C without rotating it. The branch-unsigned average is "
             "a negative control, the ZZ setting and the spectator readout give the work populations and the "
             "one-hot sector.",
+            "",
+            f"One idle length fixes a window phase only modulo 2 pi: a static detuning above {alias_khz:.0f} kHz "
+            "aliases to a smaller rotation of the opposite sign, so a measured rotation converts to a "
+            "frequency only below that bound. In the immediate and matched-idle contexts b0 and the work "
+            "pair are read in one simultaneous layer, so correlated readout crosstalk enters C as a "
+            "context-independent scale. The calibration noise model omits measurement-induced dephasing "
+            "of the work pair, so it prices the measure-and-reset contracts optimistically; a smaller "
+            "hardware |C| there widens the reported intervals and remains an allowed outcome.",
             "",
             "The immediate and matched-idle contexts run in the static job and the measure-and-reset "
             "context in the dynamic job; the idle-versus-immediate comparison shares one job, while drift "

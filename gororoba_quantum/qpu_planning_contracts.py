@@ -572,6 +572,31 @@ def _verify_control_timing() -> None:
         raise RuntimeError("incomplete control timing was admitted")
 
 
+def _verify_coherence_readout(snapshot: live_run.Snapshot) -> None:
+    """The extracted readout map equals the routed final layout; a post-prefix two-qubit gate or a split map raises."""
+    from coherence_window import B0, READ_A, READ_B, SECTOR, coherence_circuits
+    from patch_characterization import CONTROL, SPECTATOR, WORK_A, WORK_B
+
+    layout = [142, 136, 143, 144, 123, 145]
+    static, dynamic = coherence_circuits(836)
+    isas = [live_run._compile(circuit, snapshot, live_run.SEED_TRANSPILER, layout) for circuit in (*static, *dynamic)]
+    readout = qpu_planning.coherence_readout_qubits(isas)
+    final = isas[0].layout.final_index_layout()
+    roles = {"b0": CONTROL, "read_a": WORK_A, "read_b": WORK_B, "sector": SPECTATOR}
+    _require(readout == {label: final[role] for label, role in roles.items()}, f"readout {readout} != final layout")
+    _require({B0, READ_A, READ_B, SECTOR} == set(range(4)), "coherence clbits changed")
+    entangled = isas[0].copy()
+    entangled.cz(readout["read_a"], readout["read_b"])
+    split = isas[1].copy()
+    split.measure(readout["sector"], READ_A)
+    for broken in ([entangled], [isas[0], split]):
+        try:
+            qpu_planning.coherence_readout_qubits(broken)
+        except ValueError:
+            continue
+        raise RuntimeError("a post-prefix two-qubit gate or a split readout map was admitted")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -594,10 +619,11 @@ def _verify() -> None:
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)
         _verify_unrouted_family_diagnostics(service)
+        _verify_coherence_readout(snapshot)
     _verify_control_timing()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
-        "approval, infeasible archives, and unrouted rejection diagnostics checked"
+        "approval, infeasible archives, unrouted rejection diagnostics and coherence readout maps checked"
     )
 
 

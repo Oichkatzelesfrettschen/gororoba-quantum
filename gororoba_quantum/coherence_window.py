@@ -3,9 +3,10 @@
 The first orbit round (patch_characterization.orbit, qpe_diagnostics.n21_orbit_diagnostic)
 leaves the control's first bit b0 correlated with the work superposition: on
 the pinned patch, work_a and work_b carry |10> + (-1)^b0 e^{i phi} |01> with
-the spectator in |0>. The selected coherence rho_{10,01} therefore changes
-sign with b0, and its average over both branches is zero on an ideal device;
-weighting every shot by (-1)^b0 recovers it.
+the spectator in |0>. The selected coherence rho_{01,10} = <01|rho|10>
+(= (-1)^b0 e^{i phi} in each branch) therefore changes sign with b0, and
+its average over both branches is zero on an ideal device; weighting every
+shot by (-1)^b0 recovers it.
 
 Each circuit runs the round-1 prefix, then one of three contexts before the
 work readout:
@@ -25,8 +26,10 @@ order
 
     C = (S_XX + S_YY + i (S_XY - S_YX)) / 4
 
-is the branch-signed rho_{10,01}; the ideal value has |C| = 1/2 in every
-context. A coherent phase acquired during the window rotates C, dephasing
+is the branch-signed rho_{01,10}, whose argument is phi; the ideal value has
+|C| = 1/2 in every context. A Z rotation by delta on work_b during the
+window turns C by +delta (on work_a by -delta), so a coherent window phase
+rotates C, dephasing
 and amplitude damping shrink |C|, and first-bit assignment error epsilon
 scales C by (1 - 2 epsilon). matched_idle reads b0 after the window, so
 control relaxation during the window adds to that context's epsilon; it
@@ -182,28 +185,33 @@ def _verify() -> None:
     for law in laws.values():
         if not math.isclose(float(law.sum()), 1.0, abs_tol=1e-12):
             raise RuntimeError("an ideal law does not sum to one")
-    # Independent reference: the post-round-1 state, projected on each control outcome.
-    prefix = QuantumCircuit(len(PATCH_ROLES))
-    prefix.x(WORK_A)
-    prefix.h(CONTROL)
-    prefix.cswap(CONTROL, WORK_A, SPECTATOR)
-    prefix.cswap(CONTROL, SPECTATOR, WORK_B)
-    prefix.h(CONTROL)
-    state = DensityMatrix(Statevector(prefix))
-    reference = 0j
-    for b0 in (0, 1):
-        projector = np.zeros((2, 2))
-        projector[b0, b0] = 1.0
-        full = np.kron(np.eye(1 << (len(PATCH_ROLES) - 1)), projector)
-        branch = DensityMatrix(full @ state.data @ full)
-        work = partial_trace(branch, [q for q in range(len(PATCH_ROLES)) if q not in (WORK_A, WORK_B)]).data
-        # Qiskit orders the reduced pair little-endian: index = work_a + 2 work_b.
-        # |work_a work_b> = |10> is index 1 and |01> is index 2.
-        reference += (-1) ** b0 * work[1, 2]
+
+    def reference(rotation: float, qubit: int) -> complex:
+        """Branch-signed <01|rho|10> of the work pair after the round-1 prefix and RZ(rotation) on qubit."""
+        prefix = QuantumCircuit(len(PATCH_ROLES))
+        prefix.x(WORK_A)
+        prefix.h(CONTROL)
+        prefix.cswap(CONTROL, WORK_A, SPECTATOR)
+        prefix.cswap(CONTROL, SPECTATOR, WORK_B)
+        prefix.h(CONTROL)
+        prefix.rz(rotation, qubit)
+        state = DensityMatrix(Statevector(prefix))
+        total = 0j
+        for b0 in (0, 1):
+            projector = np.zeros((2, 2))
+            projector[b0, b0] = 1.0
+            full = np.kron(np.eye(1 << (len(PATCH_ROLES) - 1)), projector)
+            branch = DensityMatrix(full @ state.data @ full)
+            work = partial_trace(branch, [q for q in range(len(PATCH_ROLES)) if q not in (WORK_A, WORK_B)]).data
+            # Qiskit orders the reduced pair little-endian, index = work_a + 2 work_b:
+            # |work_a work_b> = |10> is index 1 and |01> is index 2, so <01|rho|10> is work[2, 1].
+            total += (-1) ** b0 * work[2, 1]
+        return complex(total)
+
     for context in CONTEXTS:
         value = coherence(laws, context)
-        if not (math.isclose(abs(value), 0.5, abs_tol=1e-9) and abs(value - reference) < 1e-9):
-            raise RuntimeError(f"{context}: branch-signed C {value} differs from rho_10,01 {reference}")
+        if not (math.isclose(abs(value), 0.5, abs_tol=1e-9) and abs(value - reference(0.0, WORK_B)) < 1e-9):
+            raise RuntimeError(f"{context}: branch-signed C {value} differs from rho_01,10 {reference(0.0, WORK_B)}")
         if abs(coherence(laws, context, unsigned_parity())) > 1e-9:
             raise RuntimeError(f"{context}: the branch-unsigned coherence is not zero")
         population = laws[f"coherence_{context}_zz"]
@@ -211,24 +219,28 @@ def _verify() -> None:
         one_hot = sum(p for o, p in enumerate(population) if ((o >> READ_A) ^ (o >> READ_B)) & 1)
         if not (math.isclose(sector, 1.0, abs_tol=1e-12) and math.isclose(one_hot, 1.0, abs_tol=1e-12)):
             raise RuntimeError(f"{context}: the ideal work pair leaves the one-hot sector")
-    # A Z rotation by delta on work_b inside the window rotates C by a fixed
-    # angle of magnitude delta, and a symmetric first-bit flip with
-    # probability epsilon scales C by (1 - 2 epsilon) without rotating it.
+    # A Z rotation by delta inside the window turns C by +delta on work_b and
+    # -delta on work_a, equal as complex numbers to the density-matrix
+    # reference; a swapped work clbit or a flipped Im sign fails this. A
+    # symmetric first-bit flip with probability epsilon scales C by
+    # (1 - 2 epsilon) without rotating it.
     from qiskit.circuit import CircuitInstruction
     from qiskit.circuit.library import RZGate
 
     delta = 0.3
-    probed = {}
-    for setting in PAULI_SETTINGS:
-        circuit = coherence_circuit("immediate", setting, window)
-        first_barrier = next(i for i, op in enumerate(circuit.data) if op.operation.name == "barrier")
-        circuit.data.insert(first_barrier + 1, CircuitInstruction(RZGate(delta), (circuit.qubits[WORK_B],)))
-        probed[f"coherence_immediate_{setting}"] = _expected_law(circuit)
-    base, turned = coherence(laws, "immediate"), coherence(probed, "immediate")
-    if not (
-        math.isclose(abs(turned), 0.5, abs_tol=1e-9) and math.isclose(abs(np.angle(turned / base)), delta, abs_tol=1e-9)
-    ):
-        raise RuntimeError("a window Z rotation does not rotate C by its angle")
+    base = coherence(laws, "immediate")
+    for qubit, turn in ((WORK_B, delta), (WORK_A, -delta)):
+        probed = {}
+        for setting in PAULI_SETTINGS:
+            circuit = coherence_circuit("immediate", setting, window)
+            first_barrier = next(i for i, op in enumerate(circuit.data) if op.operation.name == "barrier")
+            circuit.data.insert(first_barrier + 1, CircuitInstruction(RZGate(delta), (circuit.qubits[qubit],)))
+            probed[f"coherence_immediate_{setting}"] = _expected_law(circuit)
+        turned = coherence(probed, "immediate")
+        if abs(turned - reference(delta, qubit)) > 1e-9 or not math.isclose(
+            float(np.angle(turned / base)), turn, abs_tol=1e-9
+        ):
+            raise RuntimeError(f"RZ({delta}) on qubit {qubit} turns C to {turned}, not by {turn}")
     epsilon = 0.07
     flipped = {}
     for name, law in laws.items():
@@ -248,4 +260,4 @@ def _verify() -> None:
 
 if __name__ == "__main__":
     _verify()
-    print("coherence window: 15 circuits; branch-signed C = rho_10,01 with |C| = 1/2 and zero unsigned average")
+    print("coherence window: 15 circuits; branch-signed C = rho_01,10 with |C| = 1/2, signed rotations, zero unsigned")

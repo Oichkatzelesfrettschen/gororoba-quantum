@@ -13,7 +13,8 @@ Counts bind to the submission through patch_window_analysis._bound_counts
   negative control, zero on an ideal device), and the ZZ setting's one-hot
   and spectator-sector populations.
 - Timing: each context's executed work exposure (free-precession time of
-  work_a and work_b from the returned scheduler timing, averaged over the
+  the physical qubits read into the work clbits, from the record's
+  readout_qubits map and the returned scheduler timing, averaged over the
   Pauli settings) and each job's execution timestamps. The idle-versus-
   immediate rotation per microsecond of extra exposure sets an idle
   detuning rate, and the measure_reset rotation net of that rate times its
@@ -61,7 +62,7 @@ from experiment_optimizer import (  # noqa: E402
     ObservedPub,
     analyze_observations,
 )
-from patch_characterization import WORK_A, WORK_B  # noqa: E402
+from patch_characterization import WORK_B  # noqa: E402
 
 Z95 = 1.959963984540054
 
@@ -120,21 +121,33 @@ def compare(later: dict[str, Any], earlier: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def excess_rotation(idle: dict[str, Any], window: dict[str, Any], exposure: dict[str, float]) -> dict[str, Any] | None:
-    """measure_reset rotation net of the idle detuning rate times its exposure excess over the matched idle."""
-    if idle.get("rotation") is None or window.get("rotation") is None:
+def excess_rotation(signed: dict[str, dict[str, Any]], exposure: dict[str, float]) -> dict[str, Any] | None:
+    """measure_reset rotation net of the idle detuning rate times its exposure excess over the matched idle.
+
+    With k the ratio of the measure_reset excess to the matched-idle excess, the
+    value is arg C_mr - (1 + k) arg C_mi + k arg C_imm. Both comparisons contain
+    the matched idle, so its argument variance enters once with weight
+    (1 + k)^2: Var = v_mr + (1 + k)^2 v_mi + k^2 v_imm.
+    """
+    if any("argument" not in signed[context] for context in CONTEXTS):
         return None
     idle_extra = exposure["matched_idle"] - exposure["immediate"]
     window_extra = exposure["measure_reset"] - exposure["matched_idle"]
     if idle_extra <= 0.05:
         return None
-    rate = idle["rotation"] / idle_extra
-    value = window["rotation"] - rate * window_extra
-    half_idle = (idle["rotation_ci"][1] - idle["rotation_ci"][0]) / 2
-    half_window = (window["rotation_ci"][1] - window["rotation_ci"][0]) / 2
-    half = math.hypot(half_window, half_idle * window_extra / idle_extra)
+    k = window_extra / idle_extra
+    value_of = {context: complex(signed[context]["re"], signed[context]["im"]) for context in CONTEXTS}
+    idle = cmath.phase(value_of["matched_idle"] / value_of["immediate"])
+    window = cmath.phase(value_of["measure_reset"] / value_of["matched_idle"])
+    value = window - k * idle
+    variance = (
+        signed["measure_reset"]["_var_arg"]
+        + (1 + k) ** 2 * signed["matched_idle"]["_var_arg"]
+        + k**2 * signed["immediate"]["_var_arg"]
+    )
+    half = Z95 * math.sqrt(variance)
     return {
-        "idle_rate_rad_per_us": rate,
+        "idle_rate_rad_per_us": idle / idle_extra,
         "exposure_excess_us": window_extra,
         "excess_rotation": value,
         "excess_rotation_ci": [value - half, value + half],
@@ -181,9 +194,7 @@ def analyze(
         "jobs": jobs,
     }
     if exposure is not None:
-        result["measure_reset_net_of_idle_detuning"] = excess_rotation(
-            comparisons["matched_idle_vs_immediate"], comparisons["measure_reset_vs_matched_idle"], exposure
-        )
+        result["measure_reset_net_of_idle_detuning"] = excess_rotation(signed, exposure)
     return result
 
 
@@ -193,7 +204,8 @@ def from_run(run: Path) -> dict[str, Any]:
     record = json.loads((run / "record.json").read_text())
     counts = _bound_counts(run)
     configuration = record["family_configuration"]
-    work = (configuration["patch_qubits"][WORK_A], configuration["patch_qubits"][WORK_B])
+    readout = configuration["readout_qubits"]
+    work = (readout["read_a"], readout["read_b"])
     exposure: dict[str, float] | None = {}
     for context in CONTEXTS:
         values = [
@@ -276,13 +288,24 @@ def self_check() -> None:
     if [row["name"] for row in result["preregistered"]] != [c.name for c in contracts]:
         raise RuntimeError("the preregistered endpoints differ from the contracts")
     # An idle detuning of 0.1 rad/us with 3.3 us of extra idle and 0.4 us more
-    # exposure in measure_reset leaves no excess once the rate is subtracted.
-    detuned = excess_rotation(
-        {"rotation": 0.33, "rotation_ci": [0.30, 0.36]},
-        {"rotation": 0.04, "rotation_ci": [0.01, 0.07]},
-        {"immediate": 1.0, "matched_idle": 4.3, "measure_reset": 4.7},
+    # exposure in measure_reset leaves no excess once the rate is subtracted;
+    # distinct per-context variances fix the matched idle's (1 + k)^2 weight.
+    variances = {"immediate": 1e-4, "matched_idle": 4e-4, "measure_reset": 9e-4}
+    arguments = {"immediate": 0.0, "matched_idle": 0.33, "measure_reset": 0.37}
+    signed = {
+        c: {"re": math.cos(a), "im": math.sin(a), "argument": a, "_var_arg": variances[c]} for c, a in arguments.items()
+    }
+    detuned = excess_rotation(signed, {"immediate": 1.0, "matched_idle": 4.3, "measure_reset": 4.7})
+    k = 0.4 / 3.3
+    half = Z95 * math.sqrt(
+        variances["measure_reset"] + (1 + k) ** 2 * variances["matched_idle"] + k**2 * variances["immediate"]
     )
-    if detuned is None or abs(detuned["excess_rotation"]) > 1e-12 or abs(detuned["idle_rate_rad_per_us"] - 0.1) > 1e-12:
+    if (
+        detuned is None
+        or abs(detuned["excess_rotation"]) > 1e-12
+        or abs(detuned["idle_rate_rad_per_us"] - 0.1) > 1e-12
+        or abs(detuned["excess_rotation_ci"][1] - half) > 1e-12
+    ):
         raise RuntimeError(f"the idle-detuning correction is wrong: {detuned}")
 
 
