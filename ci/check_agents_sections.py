@@ -2,23 +2,24 @@
 
 The root AGENTS.md owns the section between the algebra-circuit-rules markers.
 gororoba_quantum/AGENTS.md and scripts/AGENTS.md repeat it byte for byte, and
-the root and each of those directories load their AGENTS.md through a
-CLAUDE.md with a line that is exactly `@AGENTS.md`, outside HTML comments and
-fenced code (backtick or tilde, closed by a matching fence), so an agent
-started in any of them reads the same rules.
+the root and each of those directories carry a CLAUDE.md whose entire content
+is the loader line `@AGENTS.md` followed by one LF, so an agent started in any
+of them reads the same rules. The loader format is fixed bytes: a CLAUDE.md
+that adds prose, comments, fences or a different line ending fails, which
+leaves no Markdown construct able to hide the import.
 
-Usage: "$PYTHON" ci/check_agents_sections.py   (from the repository root)
+Usage: "$PYTHON" ci/check_agents_sections.py [--self-test]   (from the repository root)
 """
 
 from __future__ import annotations
 
-import re
 import sys
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 BEGIN = b"<!-- algebra-circuit-rules:begin -->"
 END = b"<!-- algebra-circuit-rules:end -->"
+LOADER = b"@AGENTS.md\n"
 NESTED = ("gororoba_quantum", "scripts")
 
 
@@ -43,49 +44,52 @@ def section(path: Path) -> bytes:
     return body
 
 
-def loads_agents(path: Path) -> bool:
-    """True when some line outside HTML comments and fenced code is exactly @AGENTS.md.
-
-    A fence opens with three or more backticks or tildes and closes only on a
-    line of the same character at least as long (CommonMark); fence markers
-    inside a comment open nothing.
-    """
-    fence: tuple[str, int] | None = None
-    in_comment = False
-    for raw in read(path).decode("utf-8").splitlines():
-        line = raw.strip()
-        if in_comment:
-            in_comment = "-->" not in line
-            continue
-        if fence is not None:
-            closing = re.fullmatch(r"(`{3,}|~{3,})", line)
-            if closing and closing[1][0] == fence[0] and len(closing[1]) >= fence[1]:
-                fence = None
-            continue
-        opening = re.match(r"`{3,}|~{3,}", line)
-        if opening:
-            fence = (opening[0][0], len(opening[0]))
-            continue
-        if line.startswith("<!--"):
-            in_comment = "-->" not in line[4:]
-            continue
-        if line == "@AGENTS.md":
-            return True
-    return False
+def is_loader(data: bytes) -> bool:
+    return data == LOADER
 
 
-def main() -> int:
+def self_test() -> None:
+    """Every loader variant other than the exact bytes fails, including Markdown that hides the import."""
+    rejected = {
+        "inline comment opened after text": b"text <!--\n@AGENTS.md\n-->\n",
+        "second comment on one line": b"<!-- first --> text <!--\n@AGENTS.md\n-->\n",
+        "comment block": b"<!--\n@AGENTS.md\n-->\n",
+        "backtick fence": b"```\n@AGENTS.md\n```\n",
+        "tilde fence": b"~~~\n@AGENTS.md\n~~~\n",
+        "nested backtick fence": b"````\n```\n@AGENTS.md\n````\n",
+        "comment holding a fence": b"<!-- ```\n-->\n@AGENTS.md\n```\n",
+        "CRLF": b"@AGENTS.md\r\n",
+        "missing newline": b"@AGENTS.md",
+        "leading prose": b"# loader\n@AGENTS.md\n",
+        "trailing prose": b"@AGENTS.md\nmore\n",
+        "indented": b"  @AGENTS.md\n",
+        "empty": b"",
+    }
+    for name, data in rejected.items():
+        if is_loader(data):
+            raise SystemExit(f"self-test: accepted {name}")
+    if not is_loader(LOADER):
+        raise SystemExit("self-test: rejected the canonical loader")
+    print(f"loader self-test: {len(rejected)} variants rejected, canonical bytes accepted")
+
+
+def main(argv: list[str]) -> int:
+    if argv == ["--self-test"]:
+        self_test()
+        return 0
+    if argv:
+        raise SystemExit("usage: check_agents_sections.py [--self-test]")
     reference = section(ROOT / "AGENTS.md")
     for directory in NESTED:
         if section(ROOT / directory / "AGENTS.md") != reference:
             raise SystemExit(f"{directory}/AGENTS.md: algebra circuit rules differ from the root AGENTS.md")
     for directory in ("", *NESTED):
         loader = ROOT / directory / "CLAUDE.md"
-        if not loads_agents(loader):
-            raise SystemExit(f"{loader.relative_to(ROOT)}: needs a line that is exactly @AGENTS.md")
+        if not is_loader(read(loader)):
+            raise SystemExit(f"{loader.relative_to(ROOT)}: must contain exactly the line @AGENTS.md and one LF")
     print(f"algebra circuit rules: root and {', '.join(NESTED)} identical ({len(reference)} bytes)")
     return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    sys.exit(main(sys.argv[1:]))

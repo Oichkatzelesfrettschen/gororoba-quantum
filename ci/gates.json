@@ -1962,6 +1962,14 @@
    "tier": "pr"
   },
   {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -W error ci/check_agents_sections.py --self-test",
+   "name": "core-253",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
    "suite": "sources",
    "cwd": ".",
    "cmd": "\"$PYTHON\" -I -W error docs/evidence/reviewer_associator_audit/audit.py | cmp - docs/evidence/reviewer_associator_audit/audit_results.json",
