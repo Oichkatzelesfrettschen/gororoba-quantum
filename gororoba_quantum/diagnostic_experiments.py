@@ -174,7 +174,7 @@ def family_contracts(family: str, precision: float, alpha: float, power: float) 
     if family == "coherence-window":
         from coherence_window import coherence_contracts
 
-        return coherence_contracts(alpha, power)
+        return coherence_contracts(precision, alpha, power)
     if family == "n21-orbit-rca":
         # Four directional endpoints share the requested family-wise alpha.
         return tuple(

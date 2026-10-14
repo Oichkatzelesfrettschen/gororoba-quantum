@@ -67,6 +67,7 @@ import parallel
 import placement_feasibility
 import qpu_planning
 import variance
+from coherence_window import COHERENCE_PRECISION
 from diagnostic_experiments import FAMILY_NAMES, PATCH_FAMILIES, record_groups
 from experiments import (
     MIRROR_SUFFIX,
@@ -4696,7 +4697,10 @@ def main(argv: list[str] | None = None) -> int:
     )
     parser.add_argument("--model-shots", type=_positive_int, default=32768)
     parser.add_argument(
-        "--precision", type=float, default=0.08, help="simultaneous half-width for family precision endpoints"
+        "--precision",
+        type=float,
+        help="simultaneous half-width for family precision endpoints; default 0.08, and "
+        "coherence_window.COHERENCE_PRECISION for coherence-window; patch-window preregisters its own",
     )
     parser.add_argument("--alpha", type=float, default=0.05)
     parser.add_argument("--power", type=float, default=0.8)
@@ -4876,6 +4880,8 @@ def main(argv: list[str] | None = None) -> int:
     for name in ("alpha", "power", "simulation_alpha"):
         if not math.isfinite(getattr(args, name)) or not 0 < getattr(args, name) < 1:
             parser.error(f"--{name.replace('_', '-')} must lie strictly between zero and one")
+    if args.precision is None:
+        args.precision = COHERENCE_PRECISION if args.family == "coherence-window" else 0.08
     for name in ("precision", "max_total_execution_seconds"):
         value = getattr(args, name)
         if value is not None and (not math.isfinite(value) or value <= 0):

@@ -24,6 +24,7 @@ from qiskit.circuit import Measure
 from qiskit.transpiler import InstructionProperties, Target
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
+import diagnostic_experiments
 import live_run
 import local_compute
 import native_preflight
@@ -363,6 +364,38 @@ def _verify_cli_approval_boundary() -> None:
     _require("--max-total-execution-seconds" in stderr.getvalue(), "CLI rejection did not identify the combined cap")
 
 
+def _verify_precision_defaults() -> None:
+    """An omitted --precision resolves to the family default; a given one reaches the coherence contracts."""
+    from coherence_window import COHERENCE_PRECISION
+
+    class _Parsed(Exception):
+        pass
+
+    resolved: list[float] = []
+
+    def capture(args: Any) -> Any:
+        resolved.append(args.precision)
+        raise _Parsed
+
+    ceilings = ["--max-execution-seconds", "9", "--max-total-execution-seconds", "18"]
+    coherence = ["--family", "coherence-window", "--patch-qubits", "142,136,143,144,123,145"]
+    cases = (
+        (coherence, COHERENCE_PRECISION),
+        ([*coherence, "--precision", "0.2"], 0.2),
+        (["--family", "folded-qpe"], 0.08),
+    )
+    with patch.object(live_run.local_compute, "settings", side_effect=capture):
+        for arguments, expected in cases:
+            try:
+                live_run.main([*ceilings, *arguments])
+            except _Parsed:
+                pass
+            _require(bool(resolved) and resolved[-1] == expected, f"{arguments}: --precision resolved to {resolved}")
+            resolved.clear()
+    contracts = diagnostic_experiments.family_contracts("coherence-window", 0.2, 0.05, 0.8)
+    _require(all(c.precision_half_width == 0.2 for c in contracts), "coherence contracts ignore --precision")
+
+
 def _verify_compute_boundary() -> None:
     with tempfile.TemporaryDirectory(prefix="gororoba-compute-boundary-") as directory:
         with (
@@ -615,6 +648,7 @@ def _verify() -> None:
         metadata = _verify_optimizer(snapshot, choices, configuration)
         _verify_approval_mutations(choices, metadata)
         _verify_cli_approval_boundary()
+        _verify_precision_defaults()
         _verify_compute_boundary()
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)

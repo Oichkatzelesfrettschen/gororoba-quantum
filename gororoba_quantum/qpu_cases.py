@@ -1044,6 +1044,7 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
         )
         reads = ", ".join(f"{label} from qubit {readout[label]}" for label in ("b0", "read_a", "read_b", "sector"))
         alias_khz = 1e-3 / (2 * window * dt_seconds)
+        precision = _number(record["policy"]["design"]["precision"], "precision", positive=True)
         return [
             "## Scientific question and interpretation",
             "",
@@ -1084,8 +1085,10 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "each PUB's executed work exposure from the returned schedule and reports both jobs' execution "
             "times, so that comparison bounds a measurement-induced phase only together with them.",
             "",
-            "Five two-sided precision contracts admit the design: Re C in the immediate context and the Re C "
-            "and Im C differences between adjacent contexts. They price resolution, not an effect; an "
+            f"Five two-sided precision contracts admit the design, each with half-width {precision:g} on 4 C: "
+            "Re C in the immediate context and the Re C and Im C differences between adjacent contexts. "
+            f"That half-width resolves a rotation near {precision / 2:.2f} rad at |C| = 1/2 and "
+            f"{precision / 1.72:.2f} rad at |C| = 0.43. They price resolution, not an effect; an "
             "unresolved rotation or a context-independent C remains an allowed outcome, and a phase is "
             "reported only where |C| supports it.",
             "",

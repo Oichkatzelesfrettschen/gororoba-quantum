@@ -58,6 +58,7 @@ SETTINGS = ("xx", "xy", "yx", "yy", "zz")
 PAULI_SETTINGS = SETTINGS[:4]
 CLBITS = 4
 B0, READ_A, READ_B, SECTOR = range(CLBITS)
+COHERENCE_PRECISION = 0.33
 
 
 def _basis(circuit: QuantumCircuit, qubit: int, axis: str) -> None:
@@ -144,26 +145,27 @@ def _context_terms(context: str, part: str, sign: int) -> tuple[ObservableTerm, 
     return tuple(ObservableTerm(f"coherence_{context}_{s}", signed, sign=sign * k) for s, k in pairs)
 
 
-def coherence_contracts(alpha: float, power: float) -> tuple[ObservableContract, ...]:
-    """Two-sided precision on 4 Re C and 4 Im C differences between adjacent contexts.
+def coherence_contracts(precision: float, alpha: float, power: float) -> tuple[ObservableContract, ...]:
+    """Two-sided precision on 4 Re C in the immediate context and on the 4 Re C and 4 Im C differences between contexts.
 
-    A window phase delta rotates C, so 4 Im C moves by about 4 |C| delta
-    between contexts, while shrinkage moves 4 Re C. A difference half-width of
-    0.33 (Hoeffding over four arbitrary-within-shot terms at 2048 shots each)
-    resolves a 0.17 rad rotation at the ideal |C| = 1/2 and 0.19 rad at
-    |C| = 0.43. The immediate context's 4 Re C anchors the visibility at 0.24.
-    Alpha is shared.
+    precision is every endpoint's half-width. A window phase delta moves 4 Im C
+    by about 4 |C| delta between contexts and shrinkage moves 4 Re C, so a
+    half-width h resolves a rotation near h / (4 |C|). COHERENCE_PRECISION is
+    the Hoeffding radius of a difference endpoint (four arbitrary-within-shot
+    terms at 2048 shots each, alpha over five endpoints), rounded up: it
+    resolves 0.17 rad at the ideal |C| = 1/2 and 0.19 rad at |C| = 0.43, and
+    halving it takes four times the shots. Alpha is shared.
     """
-    endpoints: list[tuple[str, tuple[ObservableTerm, ...], float]] = [
-        ("re_immediate", _context_terms("immediate", "re", 1), 0.24),
+    endpoints: list[tuple[str, tuple[ObservableTerm, ...]]] = [
+        ("re_immediate", _context_terms("immediate", "re", 1)),
     ]
     for later, earlier in (("matched_idle", "immediate"), ("measure_reset", "matched_idle")):
         for part in ("re", "im"):
             terms = _context_terms(later, part, 1) + _context_terms(earlier, part, -1)
-            endpoints.append((f"{part}_{later}_minus_{earlier}", terms, 0.33))
+            endpoints.append((f"{part}_{later}_minus_{earlier}", terms))
     return tuple(
-        ObservableContract(name, terms, alpha=alpha / len(endpoints), power=power, precision_half_width=width)
-        for name, terms, width in endpoints
+        ObservableContract(name, terms, alpha=alpha / len(endpoints), power=power, precision_half_width=precision)
+        for name, terms in endpoints
     )
 
 
@@ -250,9 +252,14 @@ def _verify() -> None:
         flipped[name] = mixed
     if abs(coherence(flipped, "immediate") - (1 - 2 * epsilon) * base) > 1e-12:
         raise RuntimeError("a first-bit flip does not scale C by (1 - 2 epsilon)")
-    contracts = coherence_contracts(0.05, 0.8)
-    if len(contracts) != 5 or any(c.precision_half_width is None for c in contracts):
+    contracts = coherence_contracts(COHERENCE_PRECISION, 0.05, 0.8)
+    if len(contracts) != 5 or any(c.precision_half_width != COHERENCE_PRECISION for c in contracts):
         raise RuntimeError("five two-sided precision endpoints")
+    # The default is the tight Hoeffding radius of a four-term difference at
+    # 2048 shots: span 2 per term, tail alpha / 5 / 4, two-sided.
+    radius = 4 * 2 * math.sqrt(math.log(2 / (0.05 / 5 / 4)) / (2 * 2048))
+    if not radius <= COHERENCE_PRECISION < radius + 0.01:
+        raise RuntimeError(f"COHERENCE_PRECISION {COHERENCE_PRECISION} is not the 2048-shot radius {radius}")
     members = {member.name for group in coherence_groups(window) for member in group.members}
     if not all(term.member in members for contract in contracts for term in contract.terms):
         raise RuntimeError("a contract names a member outside the groups")

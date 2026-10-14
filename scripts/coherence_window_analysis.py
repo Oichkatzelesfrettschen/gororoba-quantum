@@ -46,6 +46,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from coherence_window import (  # noqa: E402
     CLBITS,
+    COHERENCE_PRECISION,
     CONTEXTS,
     PAULI_SETTINGS,
     READ_A,
@@ -269,7 +270,7 @@ def self_check() -> None:
                 flipped[outcome ^ 1] += epsilon * p
             name = f"coherence_{context}_{setting}"
             dists[name], sizes[name] = rng.multinomial(shots, flipped) / shots, shots
-    contracts = coherence_contracts(0.05, 0.8)
+    contracts = coherence_contracts(COHERENCE_PRECISION, 0.05, 0.8)
     pubs = {name: [name] for name in dists}
     result = analyze(dists, sizes, contracts, pubs)
     scale = 1 - 2 * epsilon
