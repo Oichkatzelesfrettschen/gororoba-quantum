@@ -33,14 +33,16 @@ Counts come from the raw ledger through patch_window_analysis._bound_counts.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
+import subprocess
 import sys
 from pathlib import Path
 from typing import Any
 
 import numpy as np
-from scipy.optimize import minimize
+from scipy.optimize import brentq, minimize
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
 CONTEXTS = ("nominal", "window_barrier", "window_echo")
@@ -135,17 +137,30 @@ def causal_saturated_deviance(counts: dict[bool, np.ndarray]) -> float:
     return float(2 * (table[mask] * np.log(table[mask] / expected[mask])).sum())
 
 
-def profile(counts: dict[bool, np.ndarray], best: float, grid: int = 72) -> list[list[float]]:
-    """theta values whose profile deviance stays within 3.84 of the optimum, as arcs on the circle."""
-    thetas = np.linspace(-math.pi, math.pi, grid, endpoint=False)
-    inside = [2 * (fit(counts, True, theta=float(t))[0] - best) <= 3.84 for t in thetas]
-    arcs, start = [], None
-    for i, flag in enumerate(inside + [False]):
-        if flag and start is None:
-            start = i
-        if not flag and start is not None:
-            arcs.append([float(thetas[start]), float(thetas[i - 1])])
-            start = None
+def profile(counts: dict[bool, np.ndarray], theta_hat: float, best: float, grid: int = 72) -> list[list[float]]:
+    """Arcs of theta whose profile deviance stays within 3.84 of the optimum.
+
+    A grid centered on theta_hat brackets each boundary, and brentq places it
+    to 1e-6 rad; each arc runs counterclockwise from its first to its second
+    endpoint, both reduced to (-pi, pi].
+    """
+    thetas = theta_hat + np.linspace(-math.pi, math.pi, grid, endpoint=False)
+
+    def excess(t: float) -> float:
+        return 2 * (fit(counts, True, theta=t)[0] - best) - 3.84
+
+    inside = [excess(float(t)) <= 0 for t in thetas]
+    if all(inside):
+        return [[-math.pi, math.pi]]
+    first_out = inside.index(False)
+    arcs = []
+    for step in range(1, grid + 1):
+        i, j = (first_out + step - 1) % grid, (first_out + step) % grid
+        lo, hi = float(thetas[i]), float(thetas[i]) + 2 * math.pi / grid
+        if not inside[i] and inside[j]:
+            arcs.append([math.remainder(brentq(excess, lo, hi, xtol=1e-6), 2 * math.pi)])
+        elif inside[i] and not inside[j]:
+            arcs[-1].append(math.remainder(brentq(excess, lo, hi, xtol=1e-6), 2 * math.pi))
     return arcs
 
 
@@ -163,7 +178,7 @@ def analyze(contexts: dict[str, dict[bool, np.ndarray]], bootstrap: int = 0, see
             "phase": {
                 "params": dict(zip(("lam", "e0", "e1", "theta"), phase_x, strict=True)),
                 "deviance": phase_dev,
-                "theta_region_arcs": profile(counts, phase_nll),
+                "theta_region_arcs": profile(counts, phase_x[3], phase_nll),
             },
             "causal_saturated_deviance": causal,
             "phase_excess_over_causal": phase_dev - causal,
@@ -190,8 +205,7 @@ def analyze(contexts: dict[str, dict[bool, np.ndarray]], bootstrap: int = 0, see
             alternative = sum(fit(synthetic[c], True)[0] for c in synthetic)
             null = fit_shared(synthetic, np.array([shared_theta]))[1]
             exceed += 2 * (null - alternative) >= lr
-        test["bootstrap_replicates"] = bootstrap
-        test["bootstrap_tail"] = (exceed + 1) / (bootstrap + 1)
+        test["bootstrap"] = {"replicates": bootstrap, "seed": seed, "replicates_reaching_lr": int(exceed)}
     out["shared_vs_per_context_theta"] = test
     return out
 
@@ -255,9 +269,16 @@ def self_check() -> None:
     counts = {
         fb: rng.multinomial(400_000, observe(law(planted, fb), 0.1, 0.03, 0.05)).astype(float) for fb in (True, False)
     }
-    theta = fit(counts, True)[1][3]
+    best, params = fit(counts, True)
+    theta = params[3]
     if abs(math.remainder(theta - planted, 2 * math.pi)) > 0.05:
         raise RuntimeError(f"planted theta {planted} recovered as {theta}")
+    arcs = profile(counts, theta, best)
+    if len(arcs) != 1 or not arcs[0][0] < theta < arcs[0][1]:
+        raise RuntimeError(f"the profile region {arcs} does not bracket the estimate {theta}")
+    for edge in arcs[0]:
+        if abs(2 * (fit(counts, True, theta=edge)[0] - best) - 3.84) > 1e-3:
+            raise RuntimeError("a profile endpoint misses the 3.84 deviance boundary")
     if causal_saturated_deviance(counts) > 15:
         raise RuntimeError("causally consistent synthetic data fail first-bit homogeneity")
 
@@ -271,11 +292,32 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     if args.self_check:
         self_check()
-        print("orbit context refit: law depends on phi1 + phi2 only; dimensions 4 and 5; planted theta recovered")
+        print("orbit context refit: theta-only law, dimensions 4 and 5, planted theta and profile boundary recovered")
         return 0
     if args.run is None:
         parser.error("a record directory or --self-check is required")
-    result = analyze(counts_from_record(args.run), args.bootstrap)
+    contexts = counts_from_record(args.run)
+    result = analyze(contexts, args.bootstrap)
+    script = Path(__file__).resolve()
+    commit = subprocess.run(
+        ["git", "-C", str(script.parent), "log", "-1", "--format=%H", "--", script.name],
+        capture_output=True,
+        text=True,
+        check=False,
+    ).stdout.strip()
+    result["provenance"] = {
+        "script": "scripts/n21_orbit_context_refit.py",
+        "script_sha256": hashlib.sha256(script.read_bytes()).hexdigest(),
+        "script_last_commit": commit or None,
+        "inputs_sha256": {
+            name: hashlib.sha256((args.run / name).read_bytes()).hexdigest() for name in ("record.json", "collect.json")
+        },
+        "counts_order": "outcome index b0 + 2 b1",
+        "counts": {
+            c: {("feedback" if fb else "no_feedback"): [int(x) for x in n] for fb, n in arms.items()}
+            for c, arms in contexts.items()
+        },
+    }
     text = json.dumps(result, indent=1) + "\n"
     if args.out:
         args.out.write_text(text)
