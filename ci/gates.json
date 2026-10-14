@@ -1992,6 +1992,14 @@
    "name": "core-252",
    "seconds": 1.6,
    "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "docs/evidence/reviewer_associator_audit",
+   "cmd": "sha256sum -c SHA256SUMS",
+   "name": "sources-242",
+   "seconds": 0.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
