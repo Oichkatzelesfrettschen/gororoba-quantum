@@ -144,7 +144,10 @@ YY and ZZ with the spectator in Z:
 
 A coherent window phase rotates C between contexts, dephasing and amplitude
 damping shrink it, and first-bit assignment error scales it by
-(1 - 2 epsilon). Five two-sided precision endpoints, 4 Re C in the immediate
+(1 - 2 epsilon). A control-work ZZ phase lam shrinks C by cos(lam) while the
+control holds b0 and rotates it after the control's reset, so a matched-idle
+shrink alone does not separate ZZ from dephasing. The coherence laws come
+from a branch-resolved statevector, not the exact integer oracle above. Five two-sided precision endpoints, 4 Re C in the immediate
 context and the 4 Re C and 4 Im C differences between adjacent contexts,
 share alpha; `--precision` sets their half-width h and defaults to
 `coherence_window.COHERENCE_PRECISION`, the 2048-shot Hoeffding radius. A
@@ -155,7 +158,7 @@ attributes exposure through it. `scripts/coherence_window_analysis.py`
 evaluates the preregistered endpoints with `analyze_observations` and reports
 the rotation net of the idle-detuning rate.
 
-`qpe_diagnostics.py` derives both families' laws independently of Qiskit
+`qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
 compares those labels with exact circuit branches and seeded Aer sampling.
 A deliberately swapped classical register must fail the N=21 labeled check;

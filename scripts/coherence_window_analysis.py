@@ -292,7 +292,7 @@ def self_check() -> None:
     window = result["comparisons"]["measure_reset_vs_matched_idle"]
     if abs(idle["rotation"]) > 0.02 or abs(idle["modulus_ratio"] - shrink) > 0.02:
         raise RuntimeError(f"pure dephasing should shrink without rotating: {idle}")
-    if abs(abs(window["rotation"]) - rotation) > 0.02 or abs(window["modulus_ratio"] - 1.0) > 0.03:
+    if abs(window["rotation"] - rotation) > 0.02 or abs(window["modulus_ratio"] - 1.0) > 0.03:
         raise RuntimeError(f"a window rotation should rotate without shrinking: {window}")
     for control in result["unsigned_coherence_negative_control"].values():
         if abs(control["re"]) > 0.01 or abs(control["im"]) > 0.01:

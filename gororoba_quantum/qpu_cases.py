@@ -1071,11 +1071,16 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
             "a negative control, the ZZ setting and the spectator readout give the work populations and the "
             "one-hot sector.",
             "",
-            f"One idle length fixes a window phase only modulo 2 pi: a static detuning above {alias_khz:.0f} kHz "
+            f"One idle length fixes a window phase only modulo 2 pi: a static detuning above {alias_khz:.1f} kHz "
             "aliases to a smaller rotation of the opposite sign, so a measured rotation converts to a "
             "frequency only below that bound. In the immediate and matched-idle contexts b0 and the work "
-            "pair are read in one simultaneous layer, so correlated readout crosstalk enters C as a "
-            "context-independent scale. The calibration noise model omits measurement-induced dephasing "
+            "pair are read in one simultaneous layer, so correlated readout crosstalk scales C equally in "
+            "both; measure_reset reads b0 in its own mid-circuit layer, so a readout-correlation change "
+            "there enters its modulus as an unresolved residual. A control-work ZZ phase lam while the "
+            "control holds b0 shrinks C by cos(lam) without rotating it, the same signature as dephasing; "
+            "after the control's reset it rotates C instead, so measure_reset mixes both forms and a "
+            "matched-idle shrink alone does not separate ZZ from dephasing. The calibration noise model "
+            "omits measurement-induced dephasing "
             "of the work pair, so it prices the measure-and-reset contracts optimistically; a smaller "
             "hardware |C| there widens the reported intervals and remains an allowed outcome.",
             "",
