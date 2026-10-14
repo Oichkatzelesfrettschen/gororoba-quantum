@@ -1,20 +1,22 @@
 # Octonion associator codes, box-kite frustration and walk sectors
 
 [scripts/octonion_structure_checks.py](../../scripts/octonion_structure_checks.py)
-recomputes every statement below from `cd_core.cd_sign` and
-`predict.associator_phase` in integer or rational arithmetic; its CI gate runs
-in normal and optimized Python. Tags: [P] prior or textbook result, [E] finite
-check, [T] proved here, [I] interpretation.
+recomputes the statements below from `cd_core.cd_sign` and
+`predict.associator_phase` in integer, rational or cyclotomic-integer
+arithmetic; the whole-operator periods are gated in
+[ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py). Its CI gate
+runs in normal and optimized Python. Tags: [P] prior or textbook result, [E]
+finite check, [T] proved here, [I] interpretation.
 
 | Statement | Status |
 |---|---|
 | The 21 associator slices omega_ij(x) of the octonions are the seven nonzero characters of F_2^3, three times each | [E] all 21 slices |
 | With the zero character and complements they span RM(1,3), weight enumerator 1 + 14 z^4 + z^8, doubly even and self-orthogonal; Construction A gives 240 norm-2 vectors closed under reflection (all 57600 root-reflection pairs), the E8 root system | [P] RM(1,3) is the extended Hamming [8,4,4] code and Construction A on it is E8 (Conway and Sloane, *Sphere Packings, Lattices and Groups*); [E] the associator slices generate it |
-| Each of the seven signed sedenion box-kites has 12 edges and 8 triangles of sign -1; shared vertex signs give frustration minimum 4, shared phases give minimum 3 | [T] below; [E] all 64 sign assignments per kite, the 120-degree phase assignment, and the proof's identity on 500 random phase assignments per kite |
+| Each of the seven signed sedenion box-kites has 12 edges and 8 triangles of sign -1; shared vertex signs give frustration minimum 4, shared phases give minimum 3 | [T] below; [E] all 64 sign assignments per kite, the 120-degree phase assignment in rational cosines, and the proof's identity as an exact coefficient comparison of two bilinear forms in the unit phasors, which covers every phase assignment |
 | For the walk cores of the pairs (25, 31) and (9, 22) at D = 32, U^120 = I and the weight of the initial state on the primitive-k eigenvalue sector is (1/120) sum_{t<120} <0|U^t|0> c_k(t) | [E] U^120 = I exactly; [T] the sector formula below, Fourier inversion on Z_120 ([P] standard); [E] weights (25, 31): order 6 and 8, 1/2 each; (9, 22): orders 1, 2, 3, 5, 6 with 11/30, 1/6, 1/12, 3/10, 1/12 and zero weight on order 8 |
-| The first return of the initial state is the order of the eigenvalue ratios lambda / lambda_0 over the weighted spectrum, which equals the lcm of the weighted orders when lambda = 1 carries weight: 30 for (9, 22). For (25, 31) no weight sits on lambda = 1; its weighted eigenvalues exp(2 pi i n / 120) have n in {15, 45, 75, 105} and {20, 100}, ratio order 24, which equals lcm(6, 8) = 24 | [T] below; [E] both first returns from exact amplitudes, the weighted support from the per-eigenvalue Fourier weights (tied to the exact sector sums within 1e-9) |
+| The first return of the initial state is the order of the eigenvalue ratios lambda / lambda_0 over the weighted spectrum, which equals the lcm of the weighted orders when lambda = 1 carries weight: 30 for (9, 22). For (25, 31) no weight sits on lambda = 1; its weighted eigenvalues exp(2 pi i n / 120) have n in {15, 45, 75, 105} and {20, 100}, ratio order 24, which equals lcm(6, 8) = 24 | [T] below; [E] both first returns from exact amplitudes; the weighted support from exact zero tests of 120 q_n = sum_t <0&#124;U^t&#124;0> zeta^{-n t} in Z[zeta_120] modulo Phi_120, consistent with the exact sector weights and calibrated on three known spectra |
 | The whole operator returns at 120 for (9, 22) and at 24 for (25, 31); the order-8 sector of (9, 22) carries no initial weight, so the state returns at 30 | [E] operator periods gated in [ripple_dynamics.py](../../gororoba_quantum/ripple_dynamics.py) (`EXPECTED_PERIODS`) |
-| The pure embedding a -> (a, 0) multiplies as diag(L_a, R_a); G = L_a^T L_a / &#124;a&#124;^2 has unit diagonal, and Delta = tr(G^2)/d - 1 and the rank ratio are unchanged by the embedding, zero divisors included | [T] below; [E] block structure, L_conj(a) = L_a^T and R_a = C L_conj(a) C exactly for 10 integer vectors and the zero divisor e1 + e10 at D = 16 and 32 (rank 12 of 16 and 24 of 32) |
+| The pure embedding a -> (a, 0) multiplies as diag(L_a, R_a); G = L_a^T L_a / &#124;a&#124;^2 has unit diagonal, and Delta = tr(G^2)/d - 1 and the rank ratio are unchanged by the embedding, zero divisors included | [T] below; [E] block structure, L_conj(a) = L_a^T, R_a = C L_conj(a) C, Delta and the ranks in integer and rational arithmetic for 10 integer vectors and the zero divisor e1 + e10 at D = 16 and 32 (rank 12 of 16 and 24 of 32) |
 | The doubling (a, b)(c, d) = (ac - d conj(b), conj(a) d + c b) and the repository doubling are intertwined by T(a, b) = (T(a), conj(T(b))) | [E] all 340 basis pairs at D = 2 to 16; bilinearity extends each stage to all real coefficients |
 
 ## Proofs
@@ -59,8 +61,8 @@ of the weighted sector orders. Without weight on 1 the ratio order can be
 smaller: an eigenvector with a primitive eighth-root eigenvalue returns at
 t = 1. Sector weights alone therefore fix the first return only when order 1
 carries weight; the script reads the weighted support from the per-eigenvalue
-Fourier weights. The whole operator returns at the lcm of all orders
-present.
+weights, each zero or nonzero as an exact element of Z[zeta_120]. The whole
+operator returns at the lcm of all orders present.
 
 **Embedding moments.** The repository doubling
 (x, y)(z, w) = (xz - conj(w) y, w x + y conj(z)) gives

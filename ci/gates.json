@@ -1870,7 +1870,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/octonion_structure_checks.py",
    "name": "core-228",
-   "seconds": 0.8,
+   "seconds": 4.6,
    "tier": "pr"
   },
   {
@@ -1878,7 +1878,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error ../scripts/octonion_structure_checks.py",
    "name": "core-229",
-   "seconds": 0.8,
+   "seconds": 4.6,
    "tier": "pr"
   }
  ],
