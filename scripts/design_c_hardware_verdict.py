@@ -30,11 +30,12 @@ MEASURED = ROOT / "results" / "ripple" / "measured-ripple.json"
 PAIRS = ((8, 1, 4), (16, 1, 8), (32, 1, 16))
 SEED = 20261013
 RESAMPLES = 2000
-# Verdicts and distances at the fixed seed; --check requires them.
+# Verdicts, distances, shot noise and margins at the fixed seed; --check
+# requires every published value.
 EXPECTED = {
-    8: ("resolved", 0.127, 0.310, 0.936),
-    16: ("not resolved", 0.194, 0.218, 0.863),
-    32: ("resolved", 0.268, 0.334, 0.842),
+    8: ("resolved", 0.127, 0.310, 0.936, 0.015, 0.183),
+    16: ("not resolved", 0.194, 0.218, 0.863, 0.032, 0.023),
+    32: ("resolved", 0.268, 0.334, 0.842, 0.039, 0.066),
 }
 
 
@@ -88,9 +89,10 @@ def main(argv: list[str] | None = None) -> int:
     args = parser.parse_args(argv)
     result = verdicts()
     if args.check:
-        for dim, (verdict, true, flip, omit) in EXPECTED.items():
+        for dim, (verdict, true, flip, omit, noise, margin) in EXPECTED.items():
             row = result[dim]
-            if (row["verdict"], row["tvd"]) != (verdict, {"true": true, "flip": flip, "omit": omit}):
+            published = (row["verdict"], row["tvd"], row["shot_noise_p99"], row["margin"])
+            if published != (verdict, {"true": true, "flip": flip, "omit": omit}, noise, margin):
                 raise SystemExit(f"D={dim}: {row} differs from the recorded {EXPECTED[dim]}")
     print(json.dumps(result, indent=1))
     return 0

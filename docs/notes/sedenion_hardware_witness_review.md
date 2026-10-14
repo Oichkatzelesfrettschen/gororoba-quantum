@@ -71,15 +71,19 @@ witness below are the open measurements.
 
 ## Hardware test and price
 
-The `zero_divisor_fringe` group carries Design B's dark and bright witnesses,
-Design D's eight-phase sweep and their mirror twins: 14 static PUBs on five
-qubits. A submit-free dry run at ibm_fez calibration 2026-10-13 22:42 PDT
-placed three replicas on layout [3, 16, 2, 4, 23] at 40 to 42 CZ. The
-calibration noise model predicts P(anc = 0) = 0.084 dark and 0.920 bright,
-ratio 0.092 (0.008 after mirror rescaling), and a fringe visibility of 0.843
-(0.997 rescaled) at phase -0.002 rad. The planner's cost model (shots times
-the 250 us repetition delay, plus 2.3 s per job) prices one static job at
-about 17 s at 4096 shots and about 9.6 s at 2048.
+The `zero_divisor_fringe` group has 14 members on five qubits: Design B's
+dark and bright witnesses and their mirror twins, Design D's nine-point
+phase sweep (phi = k pi / 4, k = 0 to 8) and one isolated dark reference.
+The retained submit-free dry run
+[2026-10-14T055754.499747Z](../../results/live/2026-10-14T055754.499747Z/record.json)
+plans it on ibm_fez (calibration 2026-10-13 22:42 PDT) with two replicas, on
+physical qubits 103-106, 117 and 24-26, 37, 45, at 40 to 42 CZ, packed with
+the other static groups. The calibration noise model predicts
+P(anc = 0) = 0.081 dark and 0.927 bright, ratio 0.087 (0.016 after mirror
+rescaling), and a fringe visibility of 0.849 (0.981 rescaled) at phase
+0.009 rad. The planner's cost model (shots times the 250 us repetition
+delay, plus 2.3 s per job) prices the 14 PUBs alone as one static job at
+about 17 s at 4096 shots and about 10 s at 2048.
 
 A dark-to-bright ratio not significantly below 1, or a fringe phase away
 from zero, refutes the zero-divisor witness on that device; a ratio near the
