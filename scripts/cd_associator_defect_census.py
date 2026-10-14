@@ -82,8 +82,22 @@ def omega(dim: int, a: np.ndarray, b: np.ndarray, c: np.ndarray) -> np.ndarray:
     return sign_array(dim, a, b) * sign_array(dim, a ^ b, c) * sign_array(dim, b, c) * sign_array(dim, a, b ^ c)
 
 
-def check_sign_array(max_dim: int) -> None:
-    """sign_array equals cd_sign on every pair, and omega equals predict.associator_phase."""
+def check_sign_array(max_dim: int, sampled_max: int) -> None:
+    """sign_array equals cd_sign on every pair through max_dim and on seeded samples beyond.
+
+    Every dimension the census evaluates, up to sampled_max, is compared with
+    cd_sign: exhaustively where feasible and on 4096 seeded pairs (including the
+    top-bit operands) above that.
+    """
+    rng = np.random.default_rng(SEED + 1)
+    dim = 2 * max_dim
+    while dim <= sampled_max:
+        p = np.concatenate([rng.integers(0, dim, 4096), [dim - 1, dim // 2, dim // 2 + 1]])
+        q = np.concatenate([rng.integers(0, dim, 4096), [dim // 2, dim - 1, dim // 2]])
+        reference = np.array([cd_sign(dim, int(x), int(y)) for x, y in zip(p, q, strict=True)])
+        if not np.array_equal(sign_array(dim, p, q), reference):
+            raise RuntimeError(f"sign_array differs from cd_sign at dimension {dim}")
+        dim *= 2
     dim = 8
     while dim <= max_dim:
         p, q = np.meshgrid(np.arange(dim), np.arange(dim), indexing="ij")
@@ -163,8 +177,23 @@ def require(condition: bool, message: str) -> None:
 
 
 def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: int, samples: int) -> dict[str, object]:
-    check_sign_array(min(exhaustive_max, 256))
-    out: dict[str, object] = {"seed": SEED, "triples": {}, "subspaces": {}, "pairs": {}, "walsh": {}, "blocks": {}}
+    check_sign_array(min(exhaustive_max, 256), max(exhaustive_max, sample_max, 4096))
+    parameters = {
+        "exhaustive_max": exhaustive_max,
+        "pair_max": pair_max,
+        "subspace_max": subspace_max,
+        "sample_max": sample_max,
+        "samples": samples,
+    }
+    out: dict[str, object] = {
+        "seed": SEED,
+        "parameters": parameters,
+        "triples": {},
+        "subspaces": {},
+        "pairs": {},
+        "walsh": {},
+        "blocks": {},
+    }
     triples = out["triples"]
     assert isinstance(triples, dict)
     dim = 8
@@ -233,7 +262,15 @@ def main() -> int:
     parser.add_argument("--sample-max", type=int, default=4096)
     parser.add_argument("--samples", type=int, default=400_000)
     parser.add_argument("--out", type=Path, help="JSON path; default prints a summary only")
+    parser.add_argument("--replay", type=Path, help="retained census JSON to regenerate and compare")
     args = parser.parse_args()
+    if args.replay:
+        retained = json.loads(args.replay.read_text())
+        replayed = census(**retained["parameters"])
+        if json.loads(json.dumps(replayed)) != retained:
+            raise RuntimeError(f"{args.replay} differs from a fresh census at its recorded parameters")
+        print(f"replayed {args.replay}: identical")
+        return 0
     result = census(args.exhaustive_max, args.pair_max, args.subspace_max, args.sample_max, args.samples)
     triples = result["triples"]
     assert isinstance(triples, dict)

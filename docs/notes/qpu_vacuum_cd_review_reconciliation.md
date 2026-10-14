@@ -36,10 +36,11 @@ this repository lacks).
 | Dark-dark products return to the 24-index block in 24D - 704 ordered pairs | verified and proved | XOR count proof in the census note |
 | The associator defect is the coboundary of the sign cochain, so its cocycle identity carries no nontrivial class | verified | the identity holds by construction; the census note records it |
 | Kirshtein Lemma 3 characterizes non-association exactly by the O_16 subloop | corrected | the lemma gives sufficient conditions; [1207.4230.md](1207.4230.md) now quotes them; quasi-octonion subspaces carry 72 non-associating triples |
-| The sedenions have 8 octonion and 7 other 8-dimensional basis subalgebras | verified | census subspace split at D = 16 and the eight octonion and seven power-associative subalgebras of [Wilmot](2505.11747.md); Cawagas names the quasi-octonion type, and no count from Cawagas was read |
+| The sedenions have 8 octonion and 7 other 8-dimensional basis subalgebras | verified | census subspace split at D = 16 and the eight octonion and seven power-associative subalgebras of [Wilmot](2505.11747.md); the Cawagas record binds bibliographic identity only |
 | The N=21 orbit laws are (3/8, 1/4, 1/8, 1/4) with feedback and (3/8, 1/8, 1/8, 3/8) without, contrast difference 1/4 | verified | `law` in results/live/2026-10-13T201757.782152Z/orbit_refit.py and `qpe_diagnostics.n21_labeled_law` |
 | A first-swap prefix has zero control coherence on the full-cycle eigenstate chi+ = (e1 + w^2 e4 + w e16)/sqrt(3), while the full multiplier gives exp(2 pi i/3) | verified | direct evaluation: <chi+|S_41|chi+> = 0, <chi+|U|chi+> = -1/2 + i sqrt(3)/2; a prefix-phase design needs probes with nonzero overlap |
 | rho_{01,10} = (<XX> + <YY> + i(<XY> - <YX>))/4 for |ab> ordering | verified | checked on a random two-qubit density matrix; the conjugate convention fails, so a selected-coherence case fixes the register order before acquisition |
+| Walk A first returns its state and operator at depth 24; walk B returns its state at 30 and its operator at 120; depth-4 returns 9/16 and 1/4 | verified | `ripple_dynamics.EXPECTED_PERIODS` already asserts the periods; recomputed from `predict.associator_phase` |
 | The two-qubit QET protocol injects h^2/r and lets Bob extract sqrt(h^2+4k^2) - (h^2+2k^2)/r | verified | scripts/qet_two_qubit_reference.py at machine precision; the supplied grid search sat about 4e-8 below the optimum at k = 0.1; the model matches [Hotta](1002.0200.md) under sigma^z -> -sigma^z |
 
 ## Sister project (open_gororoba, read-only here)

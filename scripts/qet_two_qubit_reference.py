@@ -49,7 +49,7 @@ def energy(rho: np.ndarray, operator: np.ndarray) -> float:
 
 
 def protocol(h: float, k: float, angle_scale: float = 1.0) -> dict[str, float]:
-    total, bob_local = hamiltonians(h, k)
+    total, _ = hamiltonians(h, k)
     values, vectors = np.linalg.eigh(total)
     if abs(values[0]) > TOLERANCE:
         raise RuntimeError(f"ground energy {values[0]} differs from zero")

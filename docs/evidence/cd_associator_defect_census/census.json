@@ -1,5 +1,12 @@
 {
  "seed": 20261013,
+ "parameters": {
+  "exhaustive_max": 512,
+  "pair_max": 256,
+  "subspace_max": 128,
+  "sample_max": 4096,
+  "samples": 2000000
+ },
  "triples": {
   "8": {
    "non_associating": 168,
