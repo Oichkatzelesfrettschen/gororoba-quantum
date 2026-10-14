@@ -13,8 +13,8 @@ The canonical source library lives under `docs/`: paper descriptions in
 `notes/`, retained primary PDFs in `pdf/`, and repeatable research checks in
 `evidence/`. [SOURCES.json](SOURCES.json) records each PDF's URL, SHA-256,
 byte count, page count, acquisition status, owning note, and exact-version
-license evidence. The library publishes 15 licensed PDFs and two aliases;
-65 external sources retain citations and optional ignored local reading copies.
+license evidence. The library publishes 19 licensed PDFs and two aliases;
+73 external sources retain citations and optional ignored local reading copies.
 Four licensed original software archives retain upstream notices under
 `source_archives/`; the verifier checks their inspected members and licenses.
 [PDF_SHA256SUMS](PDF_SHA256SUMS) verifies the published PDF set from the
@@ -130,6 +130,17 @@ snapshot; the Howard note adds the 51st source and records its separate audit.
 | [2602.03938](notes/2602.03938.md) | Wysocki et al., Interpretable mid-circuit measurement errors (2026 preprint) | high | none | none |
 | [Coste](notes/coste-semialgebraic-geometry.md) | Semialgebraic geometry: compatible triangulation, Hardt triviality and local conic structure (2002) | none | method | none |
 | [Hatcher](notes/hatcher-algebraic-topology.md) | Algebraic Topology, Chapter 0, attachment and quotient hypotheses | none | method | none |
+| [2403.09514](notes/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
+| [2403.06852](notes/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
+| [1101.4707](notes/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |
+| [1612.00858](notes/1612.00858.md) | McKay et al., Efficient Z gates for quantum computing, PRA 96, 022330 (2017) | high | none | low |
+| [1207.1655](notes/1207.1655.md) | Granade et al., Robust online Hamiltonian learning, NJP 14, 103013 (2012) | medium | none | none |
+| [1504.06597](notes/1504.06597.md) | Sheldon et al., Characterizing errors on qubit operations via iterative randomized benchmarking, PRA 93, 012301 (2016) | medium | none | none |
+| [1502.02677](notes/1502.02677.md) | Kimmel, Low and Yoder, Robust calibration via robust phase estimation, PRA 92, 062315 (2015); erratum PRA 104, 069901 (2021) | medium | none | none |
+| [1301.7007](notes/1301.7007.md) | Smolin, Smith and Vargo, Oversimplifying quantum factoring, Nature 499, 163 (2013) | low | none | high |
+| [0907.3740](notes/0907.3740.md) | Maurer and Pontil, Empirical Bernstein bounds and sample variance penalization, COLT 2009 | medium | none | none |
+| [2010.09686](notes/2010.09686.md) | Waudby-Smith and Ramdas, Estimating means of bounded random variables by betting, JRSSB 86, 1 (2024) | medium | none | none |
+| [hoeffding-1963](notes/hoeffding-1963.md) | Hoeffding, Probability inequalities for sums of bounded random variables, JASA 58, 13 (1963) | high | none | none |
 
 The [parallel-experiment synthesis](notes/quantum_experiment_parallelism.md)
 connects these sources to fixed and varied companions, patch/time blocking,
@@ -209,17 +220,10 @@ hardware cases retain their independent admission gates.
 | Device noise | [Schoelkopf](notes/cond-mat-0210247.md), [Clerk](notes/0810.4729.md), [Jin](notes/1412.2772.md); spectral convention, residual populations and calibrated inference |
 | Encoded field models | [Digital optics](notes/1909.04408.md), [Gaussian coherence](notes/1610.03272.md), [lattice Casimir](notes/2105.02032.md), [Gaussian simulation](notes/quant-ph-0109047.md), [collision models](notes/2106.11974.md); encoding, model bias and classical baselines |
 | Physical interpretation and execution | [Physical DCE](notes/1105.4714.md), [real-material Casimir](notes/0902.4022.md), [circuit QED](notes/2005.12667.md), [IBM policy](notes/ibm_fractional_execution_sources.md); apparatus, observable and runtime boundaries |
-| [2403.09514](notes/2403.09514.md) | Baeumer et al., Quantum Fourier transform using dynamic circuits, PRL 133, 150602 (2024) | high | none | medium |
-| [2403.06852](notes/2403.06852.md) | Seif et al., Suppressing correlated noise via context-aware compiling, ISCA 2024 | high | none | low |
-| [1101.4707](notes/1101.4707.md) | Bylander et al., Noise spectroscopy through dynamical decoupling with a superconducting flux qubit, Nat. Phys. 7, 565 (2011) | medium | none | none |
-| [1612.00858](notes/1612.00858.md) | McKay et al., Efficient Z gates for quantum computing, PRA 96, 022330 (2017) | high | none | low |
-| [1207.1655](notes/1207.1655.md) | Granade et al., Robust online Hamiltonian learning, NJP 14, 103013 (2012) | medium | none | none |
-| [1504.06597](notes/1504.06597.md) | Sheldon et al., Characterizing errors on qubit operations via iterative randomized benchmarking, PRA 93, 012301 (2016) | medium | none | none |
-| [1502.02677](notes/1502.02677.md) | Kimmel, Low and Yoder, Robust calibration via robust phase estimation, PRA 92, 062315 (2015); erratum PRA 104, 069901 (2021) | medium | none | none |
-| [1301.7007](notes/1301.7007.md) | Smolin, Smith and Vargo, Oversimplifying quantum factoring, Nature 499, 163 (2013) | low | none | high |
-| [0907.3740](notes/0907.3740.md) | Maurer and Pontil, Empirical Bernstein bounds and sample variance penalization, COLT 2009 | medium | none | none |
-| [2010.09686](notes/2010.09686.md) | Waudby-Smith and Ramdas, Estimating means of bounded random variables by betting, JRSSB 86, 1 (2024) | medium | none | none |
-| [hoeffding-1963](notes/hoeffding-1963.md) | Hoeffding, Probability inequalities for sums of bounded random variables, JASA 58, 13 (1963) | high | none | none |
+| Vacuum, dark sector and negative energy | [ALPS II](notes/2512.14110.md), [Dark SRF](notes/2510.02427.md), [dielectric haloscope](notes/2503.23354.md), [atom interferometry](notes/2511.09750.md), [LZ](notes/2609.02823.md), [DES Y6](notes/2601.14559.md), [worldline DCE](notes/2604.13237.md), [magnetic-fluid Casimir](notes/2601.00483.md), [quantum inequalities](notes/gr-qc-9607003.md), [QET theory](notes/1002.0200.md) and [hardware](notes/2301.02666.md), [journal and IBM pages](notes/casimir-dark-sector-web-sources.md); exclusions, nuisances and energy accounting before any new-physics reading |
+| Cayley-Dickson associator structure | [defect census](notes/cd_associator_defect_census.md), [Wilmot](notes/2505.11747.md), [Kirshtein](notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
+| External algebra packages | [package index](notes/packages/README.md): measured relation of eight hypercomplex packages to cd_core, independence, licenses and correct use |
+| Review reconciliation | [QPU, Cayley-Dickson and vacuum review claims](notes/qpu_vacuum_cd_review_reconciliation.md); each claim with its status and settling artifact |
 
 ## Historical action items and current status
 

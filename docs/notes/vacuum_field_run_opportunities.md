@@ -98,6 +98,7 @@ supply zero additional submission authority.
 | Excitation/relaxation rates and effective residual populations | Schoelkopf/Clerk spectral equations; Jin calibration constraints; finite SPAM counterexample | Independent preparation/readout constraints, declared delays, stationarity/drift checks, leakage model; thermodynamic temperature needs equilibrium assumptions | Long delays, calibration shots and context controls count; reject vacuum isolation or absolute rates when nuisance parameters remain unidentifiable | Source and counterexample retained; establish calibration identifiability before Fisher/shot allocation |
 | Fresh versus reused bath collision channel | Collision review Eq. 4.7; finite exchange-channel reference | Correct diagonal mixed preparation, fresh independent bath per collision, matched reset schedules; retain joint-record scope | Price randomization/purification, reset and width separately; coherent RY preparation or shared hidden bath correlations falsify the intended mixture model | Small CPU law retained; certify the complete channel and implementation controls |
 | Encoded force derivative or constructed rank-spectrum susceptibility | Real-material review; free-lattice Casimir source; sister-project model contracts | Specify self-adjoint Hamiltonian, Hilbert space, Gram convention, multiplicities, units, regulator, reference energy, length map and parameter-dependent encoding | Price preparation/synthesis/observable estimation and classical baseline; omitted identity/reference/basis derivatives or uncalibrated physical map reject the interpretation | Model-only opportunity; no physical force/radiation calibration established |
+| Two-qubit quantum energy teleportation: Bob's local energy drop after Alice's X measurement | [Hotta](1002.0200.md) minimal model; [Ikeda](2301.02666.md) IBM hardware precedent; exact reference [scripts/qet_two_qubit_reference.py](../../scripts/qet_two_qubit_reference.py) (E_A = h^2/r, E_B = sqrt(h^2+4k^2) - (h^2+2k^2)/r) | Ground-state reference, measurement only, correct feedback, randomized feedback, fixed rotation, sign-reversed feedback, product-state reference; Z_A, Z_B and X_A X_B from calibrated settings | Price every arm and setting; reject when correct feedback fails to lower Bob's energy beyond the controls' envelope; a failure characterizes the device, not field theory | Exact reference gated; no case written and no QPU time assigned |
 
 [I] For paired rate curves the observable model is
 `p_obs(t)=r0+(1-r0-r1)[p_eq+(p_init-p_eq)exp(-Gamma*t)]`.
@@ -162,3 +163,24 @@ needed if the project adopts non-Gaussian/interacting targets, claims optical
 nonclassicality beyond a declared mixture alternative, or builds a physical
 force/radiation apparatus. Cheap finite, covariance and mode-sum references
 remain mandatory baselines; non-Clifford gates alone establish no advantage.
+
+## Dark-sector and negative-energy claims
+
+[I] A dark-sector or vacuum-energy reading of any residual names its field
+content and coupling (scalar, pseudoscalar or kinetically mixed vector),
+compares the claimed region with current exclusions ([ALPS II](2512.14110.md),
+[Dark SRF](2510.02427.md), [dielectric haloscope](2503.23354.md), the
+symmetron force sensor in
+[casimir-dark-sector-web-sources.md](casimir-dark-sector-web-sources.md)),
+and models the conventional nuisances those searches fit, such as resonator
+frequency instability and Newtonian source gravity
+([2511.09750](2511.09750.md)). A QPU circuit residual has no physical
+dark-sector source and stays a device-model discrepancy until an external,
+separately predicted dependence appears. Negative local energy in a
+boundary geometry or a QET protocol leaves total energy at or above the
+ground state; [Ford and Roman](gr-qc-9607003.md) bound free-field sampling,
+and a cavity needs its own boundary-adapted inequality. Casimir residuals
+first face the Drude-plasma discriminators of [Ma et al.](2601.00483.md) and
+Inacio et al. (web-source note) before any new-force attribution. The
+open_gororoba vacuum-model code checks live in
+[open_gororoba_handoff.md](open_gororoba_handoff.md#vacuum-model-code-checks).

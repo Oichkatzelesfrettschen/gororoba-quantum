@@ -91,3 +91,17 @@ smoothness of that locus; use the component constraints.
 The minimal uncurved A_infinity claim is refuted as stated: m_1 = 0 forces
 m_2 associative, so a replacement must change the structure
 (Albuquerque-Majid quasiassociativity is the existing alternative).
+
+## Vacuum-model code checks
+
+Read at open_gororoba commit `b977e43f`. Each row names the file and line,
+the defect, the check that confirms it, and the acceptance test for a fix.
+
+| Location | Finding | Confirming check | Acceptance test |
+|---|---|---|---|
+| `crates/casimir_core/src/energy.rs:264-270`, `geometry.rs:36-39` | `casimir_parallel_plates_exact` returns -pi^2/(720 a^3) and labels it the massless scalar result (Casimir 1948). That coefficient is the perfect-conductor electromagnetic energy per area; a Dirichlet scalar gives -pi^2/(1440 a^3), and Casimir 1948 treats the electromagnetic field. | Mode-sum identity: the electromagnetic field between ideal conductors is one Dirichlet and one Neumann scalar, each contributing half ([0902.4022](0902.4022.md) carries the electromagnetic formula; [2604.13237](2604.13237.md) recovers the Dirichlet scalar limit). | A scalar benchmark returns -pi^2/1440 and a separately named electromagnetic benchmark returns -pi^2/720. |
+| `energy.rs:83` with `geometry.rs:47-68` | The loop indicator is 1 when a loop crosses either plate, so isolated single-surface self-energy enters the average. The interaction energy counts loops that intersect both surfaces. | `intersects_count` sums crossings of z = 0 and z = a independently; `n_crossings > 0` accepts a loop touching one plate. | The parallel-plate interaction energy uses the both-surfaces indicator and its separation derivative reproduces the Casimir pressure. |
+| `energy.rs:1-14, 105, 137` | The integrand (4 pi)^(-3/2) T^(-5/2) has dimension length^-3 (T is length squared), not the length^-4 of a 3+1D local energy density, while the module documents a local energy density and compares it with an energy per area. | Dimensional count of the proper-time integral. | The documented quantity, its spacetime dimension and the analytic comparison carry matching units. |
+| `energy.rs:145` | `error: prefactor * error_sq.sqrt()` with a negative prefactor reports a negative standard error. | `prefactor = -1/(2 (4 pi)^1.5) < 0`. | The error field is `prefactor.abs() * error_sq.sqrt()` and a test asserts it is nonnegative. |
+| `crates/sign_imbalance/src/imbalance_energy.rs:16-17, 92` | `E_frust = F * C(N,3) * E_0` increases strictly with the imbalance F for E_0 > 0, yet F = 3/8 is documented as a local energy minimum. | The energy law is linear in F with a positive slope. | Either a stabilizing term with a derived minimum at 3/8, or the attractor claim removed from the energy documentation. |
+| `crates/algebra_experimental/src/leech_pathion.rs:8-18` | The 8D "dark sector" is the coordinate complement of a 24-index block. With that block fixed at every doubling, ordered complement pairs whose product index lands in the block number 24D - 704 for D >= 32, and block pairs landing in the complement number 128 (e_8 e_16 = e_24 already leaves the block). | Exhaustive XOR count from 32 to 4096 in [scripts/cd_associator_defect_census.py](../../scripts/cd_associator_defect_census.py). Proof: an index i >= 24 meets a block index k < 8 in the complement always, and k in [8, 24) only when i >= 32, so 8(D - 24) + 16(D - 32) = 24D - 704. | The module names the complement a coordinate complement, and any physical-sector reading carries its own field content and dynamics. |

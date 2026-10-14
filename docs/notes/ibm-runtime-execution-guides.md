@@ -4,7 +4,7 @@ Tag convention: [P] marks documentation statements; [I] marks repository interpr
 
 ## Pages and retrieval
 
-Retrieved 2026-10-13T18:49:33Z. The SHA-256 identifies the HTML bytes served at retrieval; the documentation changes without versioned URLs, so a later reading checks the live page against its stated use.
+Retrieved 2026-10-13T18:49:33Z (execution-modes at 2026-10-13T23:27:30Z). The SHA-256 identifies the HTML bytes served at retrieval; the documentation changes without versioned URLs, so a later reading checks the live page against its stated use.
 
 | Page | URL | SHA-256 of retrieved HTML | Cited for |
 |---|---|---|---|
@@ -16,6 +16,7 @@ Retrieved 2026-10-13T18:49:33Z. The SHA-256 identifies the HTML bytes served at 
 | executor-sampler-sampler | https://quantum.cloud.ibm.com/docs/en/api/qiskit-ibm-runtime/executor-sampler-sampler | `79ebba9527eecbe413914cdd8dd4aea331e08d4f733f3f7cfb18bcb60b183958` | [I] Client-side Sampler API: dry_run=True usage estimates with randomized mock results, and automatic dynamical decoupling unavailable for dynamic circuits. |
 | refresh-backend-properties-with-real-time-benchmarking | https://quantum.cloud.ibm.com/docs/en/tutorials/refresh-backend-properties-with-real-time-benchmarking | `99f70c4c4febcd0329d276a482de94af837496677544836f1a182a731c583fbb` | [I] Reported properties against contemporaneous measurement: drift on timescales shorter than daily calibration, transient two-level-system defects, and differences that reflect measurement methodology rather than drift. Retrieved 2026-10-13. |
 | qiskit-runtime-circuit-timing | https://quantum.cloud.ibm.com/docs/en/guides/qiskit-runtime-circuit-timing | `dff635a3dbbf53f3ae49153dde44eb41bda030619e7cbb0c761190a5e19d9a82` | [I] Returned scheduler timing: the experimental scheduler_timing flag, the raw timing table per channel, and circuit time that differs from billed QPU time. Retrieved 2026-10-13. |
+| execution-modes | https://quantum.cloud.ibm.com/docs/en/guides/execution-modes | `c074a1e488274bd98170784bc8d5501afd14d0ec50d222a3e789979292b7f142` | [P] Batched jobs are not guaranteed to run in submission order, and QPU calibration jobs can run between batched jobs; session mode excludes calibration jobs during its window. |
 
 ## Reading scope
 
@@ -26,3 +27,4 @@ Retrieved 2026-10-13T18:49:33Z. The SHA-256 identifies the HTML bytes served at 
 - [I] live_run.py sends dynamic circuits with twirling and automatic dynamical decoupling off; explicit echo sequences replace them in the window arms.
 - [I] The staged plan keeps per-PUB shots (40 x 1,024 plus 6 x 4,096), a fixed repetition delay, separate jobs rather than a session, and a native dry run that excludes mock outcomes from analysis.
 - [I] Charge estimates remain predictions; the collected job metrics carry the billed seconds.
+- [I] The execution-modes guide is why the patch-window record checks each job's start-time calibration stamp rather than assuming one calibration across jobs submitted together.
