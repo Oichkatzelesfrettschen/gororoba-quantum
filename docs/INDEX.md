@@ -7,8 +7,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 20 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 79 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 21 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 84 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -67,6 +67,7 @@ each source license in force.
 | [Fosco and Guntsche 2026 -- Dynamical Casimir effect in the worldline formulation](notes/2604.13237.md) | [2604.13237v3.pdf](pdf/2604.13237v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Ma et al. 2026 -- Prediction of a measurable sign change in the Casimir force using a magnetic fluid](notes/2601.00483.md) | [2601.00483v1.pdf](pdf/2601.00483v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Kang et al. 2025 -- Scalable architecture for dark photon searches: Superconducting-qubit proof of principle](notes/2503.18315.md) | [2503.18315v1.pdf](pdf/2503.18315v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Google Quantum AI and Collaborators 2023 -- Non-Abelian braiding of graph vertices in a superconducting processor](notes/2210.10255.md) | [2210.10255v2.pdf](pdf/2210.10255v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.
@@ -159,6 +160,11 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Wang et al. 2009 -- Decoherence Dynamics of Complex Photon States in a Superconducting Circuit](notes/0909.4585.md) | [PDF](https://arxiv.org/pdf/0909.4585v1) | `0909.4585v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0909.4585v1) |
 | [Murch, Weber, Macklin and Siddiqi 2013 -- Observing single quantum trajectories of a superconducting qubit](notes/1305.7270.md) | [PDF](https://arxiv.org/pdf/1305.7270v2) | `1305.7270v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1305.7270v2) |
 | [Cramer et al. 2010 -- Efficient quantum state tomography](notes/1101.4366.md) | [PDF](https://arxiv.org/pdf/1101.4366v1) | `1101.4366v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1101.4366v1) |
+| [Baez 2002 -- The Octonions](notes/math-0105155.md) | [PDF](https://arxiv.org/pdf/math/0105155v4) | `math-0105155v4.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/math/0105155v4) |
+| [Procopio et al. 2017 -- Experimental Test of Hyper-Complex Quantum Theories](notes/1602.01624.md) | [PDF](https://arxiv.org/pdf/1602.01624v2) | `1602.01624v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1602.01624v2) |
+| [Adler 2017 -- Does the Peres experiment using photons test for hyper-complex (quaternionic) quantum theories?](notes/1604.04950.md) | [PDF](https://arxiv.org/pdf/1604.04950v3) | `1604.04950v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1604.04950v3) |
+| [Procopio, Rozema, Dakic and Walther 2017 -- Comment on Adler's Peres-experiment critique](notes/1607.01648.md) | [PDF](https://arxiv.org/pdf/1607.01648v1) | `1607.01648v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1607.01648v1) |
+| [Iqbal et al. 2024 -- Non-Abelian Topological Order and Anyons on a Trapped-Ion Processor](notes/2305.03766.md) | [PDF](https://arxiv.org/pdf/2305.03766v2) | `2305.03766v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2305.03766v2) |
 
 ## Licensed software source snapshots
 
@@ -294,3 +300,7 @@ The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind t
 The [measurement-foundations web note](notes/measurement_foundations_web_sources.md) records the 3 February 2025 removal
 of pulse-level control, the Qiskit Experiments 0.14.2 tomography pages, and the Crossref identities of the
 Steffen 2006 and Hofheinz 2009 superconducting tomography papers.
+The [hypercomplex and anyon Crossref note](notes/hypercomplex_quantum_crossref_records.md) binds the
+versions of record of the hypercomplex-theory exchange and the two non-Abelian anyon experiments.
+The [associator audit](evidence/reviewer_associator_audit/PROVENANCE.md) retains the arithmetic behind the
+algebra circuit design rules of AGENTS.md.
