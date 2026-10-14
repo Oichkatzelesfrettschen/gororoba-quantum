@@ -14,9 +14,12 @@ is recomputed from the selected candidate's ledger in each record.json:
 3. Cross-family fusion: each rank PUB rides in a ripple PUB of the same shot
    tier on disjoint qubits; the fused PUB costs its larger scheduled duration
    once. Rank PUBs above the largest ripple tier raise one ripple PUB to their
-   shots. The script counts pairs whose current placements are already
-   disjoint with a one-hop buffer on the ibm_kingston coupling map; the rest
-   need a joint placement.
+   shots. A maximum bipartite matching per tier chooses hosts whose current
+   placements are already disjoint from their guest with a one-hop buffer on
+   the ibm_kingston coupling map (the fixed topology of the FakeKingston
+   snapshot); the remaining pairs need a joint placement. The saving splits
+   into shared repetition delay per fused shot and the job overheads that
+   fewer shot tiers remove.
 4. Repetition delay: the same ledgers at 100 and 50 microseconds, which needs a
    state-preparation qualification before any submission uses it.
 
@@ -117,23 +120,61 @@ def coupling_edges() -> set[tuple[int, int]]:
     return edges
 
 
+def disjoint(a: list[int], b: list[int], edges: set[tuple[int, int]]) -> bool:
+    """No shared qubit and no coupling edge between the two placements."""
+    x, y = set(a), set(b)
+    return not x & y and not any((p, q) in edges for p in x for q in y)
+
+
+def max_matching(
+    guests: list[dict[str, Any]], hosts: list[dict[str, Any]], edges: set[tuple[int, int]]
+) -> dict[str, str]:
+    """Maximum bipartite matching of guests to hosts on already-disjoint placements, as host -> guest names."""
+    by_name = {g["name"]: g for g in guests}
+    owner: dict[str, str] = {}
+
+    def augment(guest: dict[str, Any], seen: set[str]) -> bool:
+        for host in hosts:
+            if host["name"] in seen or not disjoint(host["qubits"], guest["qubits"], edges):
+                continue
+            seen.add(host["name"])
+            if host["name"] not in owner or augment(by_name[owner[host["name"]]], seen):
+                owner[host["name"]] = guest["name"]
+                return True
+        return False
+
+    for guest in guests:
+        augment(guest, set())
+    return owner
+
+
 def fuse(ripple: list[dict[str, Any]], rank: list[dict[str, Any]], edges: set[tuple[int, int]]) -> dict[str, Any]:
-    """Greedy same-tier fusion; rank PUBs above every ripple tier lift one ripple PUB."""
-    hosts = sorted(ripple, key=lambda p: (p["shots"], p["name"]))
-    used: set[str] = set()
-    fused: list[dict[str, Any]] = []
-    already_disjoint = 0
+    """Same-tier fusion; a maximum matching per tier prefers hosts already disjoint as placed."""
     top_tier = max(p["shots"] for p in ripple)
-    for guest in sorted(rank, key=lambda p: (-p["shots"], p["name"])):
-        tier = min(guest["shots"], top_tier)
-        host = next((h for h in hosts if h["name"] not in used and h["shots"] == tier), None)
-        if host is None:
-            raise RuntimeError(f"no ripple host at {tier} shots for {guest['name']}")
-        used.add(host["name"])
-        a, b = set(host["qubits"]), set(guest["qubits"])
-        if not a & b and not any((x, y) in edges for x in a for y in b):
-            already_disjoint += 1
-        require(len(a | b) <= 148, "fused footprint fits the 148 usable Kingston qubits")
+    hosts_by_tier: dict[int, list[dict[str, Any]]] = {}
+    for host in sorted(ripple, key=lambda p: p["name"]):
+        hosts_by_tier.setdefault(host["shots"], []).append(host)
+    guests_by_tier: dict[int, list[dict[str, Any]]] = {}
+    for guest in sorted(rank, key=lambda p: p["name"]):
+        guests_by_tier.setdefault(min(guest["shots"], top_tier), []).append(guest)
+    chosen: dict[str, dict[str, Any]] = {}
+    matched_total = 0
+    for tier, guests in guests_by_tier.items():
+        hosts = hosts_by_tier.get(tier, [])
+        require(len(hosts) >= len(guests), f"{len(guests)} rank PUBs need ripple hosts at {tier} shots")
+        owner = max_matching(guests, hosts, edges)
+        matched_total += len(owner)
+        assigned = {guest: host for host, guest in owner.items()}
+        free = [h for h in hosts if h["name"] not in owner]
+        for guest in guests:
+            if guest["name"] not in assigned:
+                assigned[guest["name"]] = free.pop(0)["name"]
+        host_lookup = {h["name"]: h for h in hosts}
+        for guest in guests:
+            chosen[guest["name"]] = host_lookup[assigned[guest["name"]]]
+    fused = []
+    for guest in rank:
+        host = chosen[guest["name"]]
         fused.append(
             {
                 "name": f"{host['name']}+{guest['name']}",
@@ -142,8 +183,16 @@ def fuse(ripple: list[dict[str, Any]], rank: list[dict[str, Any]], edges: set[tu
                 "delay": host["delay"],
             }
         )
-    rest = [h for h in hosts if h["name"] not in used]
-    return {"pubs": fused + rest, "pairs": len(fused), "already_disjoint_pairs": already_disjoint}
+    used = {h["name"] for h in chosen.values()}
+    require(len(used) == len(rank), "every rank PUB has its own ripple host")
+    rest = [h for h in ripple if h["name"] not in used]
+    lifted = sum(1 for g in rank if g["shots"] > chosen[g["name"]]["shots"])
+    return {
+        "pubs": fused + rest,
+        "pairs": len(fused),
+        "disjoint_pairs_max_matching": matched_total,
+        "lifted_hosts": lifted,
+    }
 
 
 def analyze() -> dict[str, Any]:
@@ -160,25 +209,39 @@ def analyze() -> dict[str, Any]:
     }
     fusion = fuse(ripple["pubs"], rank["pubs"], coupling_edges())
     fused_tiers = jobs_by_tier(fusion["pubs"])
+    separate_nominal = separate["ripple"]["nominal_seconds"] + separate["rank"]["nominal_seconds"]
+    fused_charges = charges(fused_tiers)
+    saving = separate_nominal - fused_charges["nominal_seconds"]
+    overhead_saving = NOMINAL_OVERHEAD * (separate["ripple"]["jobs"] + separate["rank"]["jobs"] - fused_charges["jobs"])
+    shares = [p["delay"] / (p["scheduled"] + p["delay"]) for p in ripple["pubs"]]
     delays = {}
     for delay in DELAYS:
         key = f"{round(delay * 1e6)}us"
+        separate_delay = (
+            charges(jobs_by_tier(ripple["pubs"], delay))["nominal_seconds"]
+            + charges(jobs_by_tier(rank["pubs"], delay))["nominal_seconds"]
+        )
+        fused_delay = charges(jobs_by_tier(fusion["pubs"], delay))["nominal_seconds"]
         delays[key] = {
-            "separate_nominal_seconds": round(
-                charges(jobs_by_tier(ripple["pubs"], delay))["nominal_seconds"]
-                + charges(jobs_by_tier(rank["pubs"], delay))["nominal_seconds"],
-                6,
-            ),
-            "fused_nominal_seconds": charges(jobs_by_tier(fusion["pubs"], delay))["nominal_seconds"],
+            "separate_nominal_seconds": round(separate_delay, 6),
+            "fused_nominal_seconds": fused_delay,
+            "separate_reduction_vs_planned": round(1 - separate_delay / separate_nominal, 4),
+            "fused_reduction_vs_fused_default": round(1 - fused_delay / fused_charges["nominal_seconds"], 4),
+            "fused_reduction_vs_planned": round(1 - fused_delay / separate_nominal, 4),
         }
     return {
         "records": {"ripple": RIPPLE.parent.name, "rank": RANK.parent.name},
         "separate": separate,
         "fusion": {
-            **charges(fused_tiers),
+            **fused_charges,
             "pairs": fusion["pairs"],
-            "pairs_disjoint_with_buffer_as_placed": fusion["already_disjoint_pairs"],
+            "disjoint_pairs_max_matching": fusion["disjoint_pairs_max_matching"],
+            "lifted_hosts": fusion["lifted_hosts"],
+            "saving_seconds": round(saving, 6),
+            "saving_from_job_overheads_seconds": round(overhead_saving, 6),
+            "saving_from_shared_repetition_delay_seconds": round(saving - overhead_saving, 6),
         },
+        "ripple_repetition_delay_share": {"min": round(min(shares), 4), "max": round(max(shares), 4)},
         "repetition_delay": delays,
     }
 

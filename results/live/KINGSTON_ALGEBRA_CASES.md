@@ -38,7 +38,7 @@ every lever from the two records' own ledgers and retains the result in
 [kingston-algebra-runtime-levers.json](kingston-algebra-runtime-levers.json)
 (gates core-260 and core-261 replay it). A PUB costs shots x (scheduled
 duration + repetition delay), plus 2.3 s per job (4.6 s under stress); the
-250 microsecond repetition delay is 90 to 99 percent of each ripple PUB's
+250 microsecond repetition delay is 90.2 to 99.1 percent of each ripple PUB's
 cost.
 
 | Program | Nominal (s) | Stress (s) | Uniform ceilings (s) | Per-job ceilings (s) |
@@ -52,22 +52,26 @@ cost.
 
 - Per-job ceilings change no data. Sized to each job's stress charge they
   cap ripple at 37 + 33 s and rank at 9 + 25 + 9 s, so ripple, rank and the
-  18 s coherence-window case fit 131 s of ceilings, inside a 135 s
-  allotment. The runner applies one `--max-execution-seconds` to every job of
-  an invocation; per-job ceilings need a policy field, approval binding and
-  a per-job `max_execution_time`.
-- Fusion keeps every PUB's shots and adds data: the two 8192-shot rank PUBs
-  lift two ripple PUBs from 4096 to 8192 shots. It saves 30.4 s (31 percent)
-  because each fused shot pays one repetition delay. 15 of the 36 rank PUBs
-  already sit on qubits disjoint from their host, with a one-hop buffer on the
-  Kingston coupling map; the other 21 need a joint placement. Fused rows need
-  matched packed and isolated controls for cross-family crosstalk, which the
-  ripple family's packing contrasts already model within one family.
+  18 s coherence-window case fit 131 s of ceilings, inside the owner's 135 s
+  allotment for 2026-10-14. The runner applies one `--max-execution-seconds`
+  to every job of an invocation; per-job ceilings need a policy field,
+  approval binding and a per-job `max_execution_time`.
+- Fusion keeps every PUB's shots, and two ripple PUBs rise from 4096 to 8192
+  shots to host the 8192-shot rank PUBs. It saves 30.43 s (31 percent): 25.83
+  s because each fused shot pays one repetition delay, and 4.6 s because five
+  jobs become three. A maximum matching places 21 of the 36 rank PUBs in a
+  host whose current qubits are already disjoint with a one-hop buffer on the
+  Kingston coupling map (1 of 15 at 1024 shots, 20 of 21 at 4096); the other
+  15 need a joint placement. Fused rows need matched packed and isolated
+  controls for cross-family crosstalk, which the ripple family's packing
+  contrasts already model within one family.
 - A shorter repetition delay raises state-preparation error (IBM's qubit
-  initialization guide). A qualification run that measures readout of
-  prepared `|0>` and `|1>` at 250, 100 and 50 us on the case's own qubits
-  costs well under a second of QPU time and decides whether the 50 to 79
-  percent reduction is available.
+  initialization guide). At 100 and 50 us the planned program shrinks by 51
+  and 68 percent, the fused one by 52 and 69 percent, and fusion with a 50 us
+  delay by 79 percent against the plan. A qualification job that reads
+  prepared `|0>` and `|1>` at 250, 100 and 50 us on the cases' own qubits
+  costs under a second of shot time plus its 2.3 s job overhead and decides
+  whether that reduction is available.
 
 The cheapest complete program that keeps all data is fusion with per-job
 ceilings at the default delay: 68.70 s nominal under 77 s of ceilings, which
