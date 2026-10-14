@@ -9,10 +9,11 @@ INSTRUCTIONS and FRACTIONAL, and a transpile probe that counts xslow in a
 circuit of X, SX, RX and CX gates at optimization levels 1 to 3. No
 credential, instance or account identifier enters the file.
 
---check FILE (CI, offline) recomputes every fact in FACTS from the retained
-per-qubit values, requires each to hold on every backend, and requires the
-retained "facts" block to equal the recomputation, so a refreshed snapshot
-that contradicts AGENTS.md fails until the text changes with it.
+--check FILE (CI, offline) requires the snapshot's backends to be exactly
+ROSTER, recomputes every fact from the retained per-qubit values, requires
+each to hold on every backend, and requires the retained "facts" block to
+equal the recomputation, so a refreshed snapshot that contradicts AGENTS.md
+fails until the text changes with it.
 
 Usage: "$PYTHON" scripts/heron_target_snapshot.py (--out FILE | --check FILE)
 """
@@ -42,6 +43,9 @@ INSTRUCTIONS = (
 FRACTIONAL = ("rzz", "rx", "cz", "sx")
 TIMING = {"granularity": 1, "min_length": 2, "pulse_alignment": 1, "acquire_alignment": 1}
 BASIS = ["cz", "id", "rz", "sx", "x", "xslow"]
+# The backends the Heron execution facts section of AGENTS.md names; a refreshed
+# snapshot with another roster fails until the section and this tuple change together.
+ROSTER = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
 # rzz reports its own error, not the cz value, on more than this fraction of pairs.
 RZZ_OWN_ERROR_FRACTION = 0.9
 
@@ -168,6 +172,10 @@ def facts(data: dict[str, Any]) -> dict[str, dict[str, Any]]:
 def check(path: Path) -> None:
     data = json.loads(path.read_text(encoding="utf-8"))
     require(data["accessible_backends"] == sorted(data["backends"]), "backend list and tables differ")
+    require(
+        data["accessible_backends"] == list(ROSTER) and data["fractional_backends"] == list(ROSTER),
+        f"snapshot roster {data['accessible_backends']} differs from the documented {list(ROSTER)}",
+    )
     recomputed = facts(data)
     require(data["facts"] == recomputed, "retained facts differ from the recomputation")
     failing = [f"{name}:{fact}" for name, values in recomputed.items() for fact, holds in values.items() if not holds]
