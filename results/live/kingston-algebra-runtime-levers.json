@@ -1,0 +1,63 @@
+{
+ "fusion": {
+  "jobs": 3,
+  "nominal_seconds": 68.698863,
+  "pairs": 36,
+  "pairs_disjoint_with_buffer_as_placed": 15,
+  "per_job_ceiling_sum": 77,
+  "per_job_ceilings": {
+   "1024": 37,
+   "4096": 31,
+   "8192": 9
+  },
+  "stress_seconds": 75.598863,
+  "uniform_ceiling_sum": 111
+ },
+ "records": {
+  "rank": "2026-10-14T113945.518703Z",
+  "ripple": "2026-10-14T113012.109467Z"
+ },
+ "repetition_delay": {
+  "100us": {
+   "fused_nominal_seconds": 33.063663,
+   "separate_nominal_seconds": 48.292697
+  },
+  "250us": {
+   "fused_nominal_seconds": 68.698863,
+   "separate_nominal_seconds": 99.134297
+  },
+  "50us": {
+   "fused_nominal_seconds": 21.185263,
+   "separate_nominal_seconds": 31.345497
+  }
+ },
+ "separate": {
+  "rank": {
+   "jobs": 3,
+   "nominal_seconds": 34.844317,
+   "per_job_ceiling_sum": 43,
+   "per_job_ceilings": {
+    "1024": 9,
+    "4096": 25,
+    "8192": 9
+   },
+   "stress_seconds": 41.744317,
+   "uniform_ceiling_sum": 75
+  },
+  "ripple": {
+   "jobs": 2,
+   "nominal_seconds": 64.28998,
+   "per_job_ceiling_sum": 70,
+   "per_job_ceilings": {
+    "1024": 37,
+    "4096": 33
+   },
+   "stress_seconds": 68.88998,
+   "uniform_ceiling_sum": 74
+  },
+  "uniform_ceilings_as_planned": {
+   "rank": 75,
+   "ripple": 74
+  }
+ }
+}
