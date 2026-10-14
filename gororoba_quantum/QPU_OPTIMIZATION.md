@@ -165,7 +165,12 @@ part of the per-qubit exposure change, widened by a bias bound for the
 orthogonal part and for setting-specific exposure at the design's aliasing
 detuning. Every idle winding that detuning admits gives a candidate, and a
 measurement-induced phase is attributed only when every widened candidate
-interval excludes every multiple of 2 pi.
+interval excludes every multiple of 2 pi. From the same four settings it also reports the
+even coherence rho_00,11 beside the odd one, for the reduced pair, each b0
+branch and each spectator sector, as unnormalized values with their support
+probabilities; for either coherence the branch values add to the reduced
+pair, and their difference and the sector sum are the branch-signed value,
+C for the odd coherence.
 
 `qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
