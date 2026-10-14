@@ -35,6 +35,19 @@ periods belong to ripple_dynamics.EXPECTED_PERIODS:
 5. The doubling (a, b)(c, d) = (ac - d conj(b), conj(a) d + c b) and the
    repository doubling are intertwined by T(a, b) = (T(a), conj(T(b))) on
    every basis pair through D = 16.
+6. Each basis left multiplication L_m is a signed permutation, L_m e_x =
+   cd_sign(m, x) e_{m xor x}. On a Fano line {p, q, p xor q} of the
+   octonions the product L_p L_q L_{p xor q} is the signed Z-string
+   eps_L (-1)^{<x, v_L>}, with v_L the nonzero vector orthogonal to the line.
+   Among the 105 sedenion pairs, 63 have {L_p, L_q} = 0; for a = e_i + t e_j,
+   L_a^T L_a = 2I - t {L_i, L_j}, so only the other 42 pairs can carry a zero
+   divisor, and the index pairs of cd_core.sedenion_zero_divisor_corpus are
+   exactly those 42. The kernel of L_(e1 + e10) is spanned by its corpus
+   partners e4 - e15, e5 + e14, e6 - e13, e7 + e12. The sign row
+   x -> cd_sign(m, x) has degree log2(D) - 1 for every m != 0, the bivariate
+   sign (i, j) -> cd_sign(i, j) has degree log2(D), and the associator is
+   nonzero on 168 of the 512 ordered basis triples at D = 8 and 1848 of 4096
+   at D = 16.
 """
 
 from __future__ import annotations
@@ -49,7 +62,8 @@ from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from cd_core import cd_sign, left_mult_matrix  # noqa: E402
+from boolean_anf import anf_degree  # noqa: E402
+from cd_core import cd_multiply, cd_sign, left_mult_matrix, sedenion_zero_divisor_corpus  # noqa: E402
 from predict import associator_phase  # noqa: E402
 
 WALK_PAIRS = {
@@ -432,6 +446,94 @@ def convention_bridge() -> dict[str, int]:
     return {"basis_pairs": checked}
 
 
+def _apply(dim: int, factors: tuple[int, ...], x: int) -> tuple[int, int]:
+    """(sign, index) of L_{f_1} ... L_{f_n} e_x for basis factors, applied right to left."""
+    sign = 1
+    for m in reversed(factors):
+        sign *= cd_sign(dim, m, x)
+        x ^= m
+    return sign, x
+
+
+def _sparse_gram(dim: int, i: int, j: int, t: int) -> list[list[int]]:
+    """L_a^T L_a for a = e_i + t e_j, from the two nonzero entries of each column."""
+    columns = [{i ^ x: cd_sign(dim, i, x), j ^ x: t * cd_sign(dim, j, x)} for x in range(dim)]
+    return [[sum(v * columns[y].get(r, 0) for r, v in columns[x].items()) for y in range(dim)] for x in range(dim)]
+
+
+def left_multiplication_products() -> dict[str, object]:
+    signs: dict[str, dict[str, int]] = {}
+    for p, q in itertools.combinations(range(1, 8), 2):
+        r = p ^ q
+        if r < q:
+            continue
+        orthogonal = [v for v in range(1, 8) if all(bin(v & w).count("1") % 2 == 0 for w in (p, q))]
+        require(len(orthogonal) == 1, f"line {p, q, r}: one orthogonal vector")
+        diagonal = []
+        for x in range(8):
+            sign, image = _apply(8, (p, q, r), x)
+            require(image == x, f"line {p, q, r}: L_p L_q L_r is not diagonal")
+            diagonal.append(sign)
+        character = [(-1) ** bin(x & orthogonal[0]).count("1") for x in range(8)]
+        eps = diagonal[0]
+        require(diagonal == [eps * c for c in character], f"line {p, q, r}: not +/- Z^(v_L)")
+        signs[f"{p},{q},{r}"] = {"v_L": orthogonal[0], "sign": eps}
+    require(len(signs) == 7, "seven Fano lines")
+    anticommuting: set[tuple[int, int]] = set()
+    other: set[tuple[int, int]] = set()
+    for i, j in itertools.combinations(range(1, 16), 2):
+        anti = [[0] * 16 for _ in range(16)]
+        for x in range(16):
+            for factors in ((i, j), (j, i)):
+                sign, image = _apply(16, factors, x)
+                anti[image][x] += sign
+        (anticommuting if not any(any(row) for row in anti) else other).add((i, j))
+        for t in (1, -1):
+            gram = _sparse_gram(16, i, j, t)
+            require(
+                all(gram[x][y] == 2 * (x == y) - t * anti[x][y] for x in range(16) for y in range(16)),
+                f"({i}, {j}, {t}): L_a^T L_a differs from 2I - t {{L_i, L_j}}",
+            )
+    require(len(anticommuting) == 63 and len(other) == 42, f"split {len(anticommuting)} / {len(other)}")
+    corpus = sedenion_zero_divisor_corpus()
+    used = {(i, j) for i, j, _, _, _, _ in corpus} | {(k, el) for _, _, _, k, el, _ in corpus}
+    require(len(corpus) == 336 and used == other, "the corpus index pairs differ from the non-anticommuting pairs")
+    # L_(e1 + e10) has rank 12 (gram_moment_embedding); its four corpus partners
+    # have disjoint supports, so they span the whole four-dimensional kernel.
+    partners = sorted((k, el, s) for i, j, t, k, el, s in corpus if (i, j, t) == (1, 10, 1))
+    require(partners == [(4, 15, -1), (5, 14, 1), (6, 13, -1), (7, 12, 1)], f"partners of e1 + e10: {partners}")
+    element = [0.0] * 16
+    element[1] = element[10] = 1.0
+    for k, el, s in partners:
+        partner = [0.0] * 16
+        partner[k], partner[el] = 1.0, float(s)
+        require(not any(cd_multiply(16, element, partner)), f"(e1 + e10)(e{k} {s:+d} e{el}) is not zero")
+    degrees = {}
+    for dim in (4, 8, 16, 32):
+        n = dim.bit_length() - 1
+        table = [0] * (1 << (2 * n))
+        for i in range(dim):
+            for j in range(dim):
+                table[i | (j << n)] = int(cd_sign(dim, i, j) < 0)
+        rows = {anf_degree([int(cd_sign(dim, m, v) < 0) for v in range(dim)]) for m in range(1, dim)}
+        require(anf_degree(table) == n and rows == {n - 1}, f"D={dim}: sign degrees {anf_degree(table)}, rows {rows}")
+        degrees[dim] = n
+    support = {}
+    for dim in (8, 16):
+        support[dim] = sum(
+            cd_sign(dim, i, j) * cd_sign(dim, i ^ j, k) != cd_sign(dim, j, k) * cd_sign(dim, i, j ^ k)
+            for i, j, k in itertools.product(range(dim), repeat=3)
+        )
+    require(support == {8: 168, 16: 1848}, f"associator support {support}")
+    return {
+        "fano_line_signs": signs,
+        "anticommuting_pairs": 63,
+        "corpus_index_pairs": 42,
+        "bivariate_sign_degree": degrees,
+        "associator_support": support,
+    }
+
+
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.parse_args(argv)
@@ -442,9 +544,10 @@ def main(argv: list[str] | None = None) -> int:
         walk_sectors(pair, expected)
     gram_moment_embedding()
     convention_bridge()
+    left_multiplication_products()
     print(
         "octonion structure: RM(1,3) and E8 from associators; kite minima 4 and 3; walk sectors by Ramanujan sums; "
-        "embedding moments; convention bridge"
+        "embedding moments; convention bridge; Fano-line Z-strings and the 63/42 sedenion anticommutation split"
     )
     return 0
 

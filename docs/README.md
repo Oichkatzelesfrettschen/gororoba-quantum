@@ -224,6 +224,7 @@ hardware cases retain their independent admission gates.
 | Cayley-Dickson associator structure | [defect census](notes/cd_associator_defect_census.md), [Wilmot](notes/2505.11747.md), [Kirshtein](notes/1207.4230.md); closed forms, subspace types and the sufficient conditions of Lemma 3 |
 | External algebra packages | [package index](notes/packages/README.md): measured relation of eight hypercomplex packages to cd_core, independence, licenses and correct use |
 | Octonion structure checks | [associator codes, box-kite frustration and walk sectors](notes/octonion_structure_checks.md): RM(1,3) and E8 from the associator slices, shared-sign and shared-phase frustration minima 4 and 3, exact walk sector weights by Ramanujan sums, and the doubling-convention bridge |
+| Sedenion hardware witnesses | [review of an external proposal](notes/sedenion_hardware_witness_review.md): the encoding Designs A to D measure, exact corrections (the annihilator of e1 + e10, the degree-4 sign, the post-selected zero-divisor observable), the measured Design C verdicts and the zero-divisor test's price |
 | Review reconciliation | [QPU, Cayley-Dickson and vacuum review claims](notes/qpu_vacuum_cd_review_reconciliation.md); each claim with its status and settling artifact |
 
 ## Historical action items and current status
