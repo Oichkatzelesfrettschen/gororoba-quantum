@@ -1,6 +1,18 @@
 {
+ "co_batched": {
+  "jobs": 3,
+  "nominal_seconds": 94.534297,
+  "per_job_ceiling_sum": 103,
+  "per_job_ceilings": {
+   "1024": 41,
+   "4096": 53,
+   "8192": 9
+  },
+  "saving_seconds": 4.6,
+  "stress_seconds": 101.434297,
+  "uniform_ceiling_sum": 159
+ },
  "fusion": {
-  "disjoint_pairs_max_matching": 21,
   "jobs": 3,
   "lifted_hosts": 2,
   "nominal_seconds": 68.700042,
@@ -12,10 +24,49 @@
    "8192": 9
   },
   "saving_from_job_overheads_seconds": 4.6,
-  "saving_from_shared_repetition_delay_seconds": 25.834255,
+  "saving_from_overlapping_circuit_time_seconds": 0.490255,
+  "saving_from_shared_repetition_delay_seconds": 25.344,
   "saving_seconds": 30.434255,
   "stress_seconds": 75.600042,
   "uniform_ceiling_sum": 111
+ },
+ "fusion_as_placed": {
+  "min_distance_2": {
+   "jobs": 3,
+   "nominal_seconds": 73.403307,
+   "pairs": 21,
+   "pairs_by_tier": {
+    "1024": 1,
+    "4096": 20
+   },
+   "per_job_ceiling_sum": 82,
+   "per_job_ceilings": {
+    "1024": 41,
+    "4096": 32,
+    "8192": 9
+   },
+   "saving_seconds": 25.73099,
+   "stress_seconds": 80.303307,
+   "uniform_ceiling_sum": 123
+  },
+  "min_distance_3": {
+   "jobs": 3,
+   "nominal_seconds": 75.494659,
+   "pairs": 19,
+   "pairs_by_tier": {
+    "1024": 1,
+    "4096": 18
+   },
+   "per_job_ceiling_sum": 84,
+   "per_job_ceilings": {
+    "1024": 41,
+    "4096": 34,
+    "8192": 9
+   },
+   "saving_seconds": 23.639638,
+   "stress_seconds": 82.394659,
+   "uniform_ceiling_sum": 123
+  }
  },
  "records": {
   "rank": "2026-10-14T113945.518703Z",
@@ -44,6 +95,7 @@
    "separate_reduction_vs_planned": 0.6838
   }
  },
+ "residual_per_shot_seconds": 2e-06,
  "ripple_repetition_delay_share": {
   "max": 0.9914,
   "min": 0.9017
