@@ -155,8 +155,17 @@ half-width h resolves a rotation near h / (4 |C|). Routing moves the logical
 work qubits during the prefix, so the family configuration records
 `readout_qubits`, the physical qubit read into each clbit, and the analysis
 attributes exposure through it. `scripts/coherence_window_analysis.py`
-evaluates the preregistered endpoints with `analyze_observations` and reports
-the rotation net of the idle-detuning rate.
+evaluates the preregistered endpoints with `analyze_observations`. It reports
+an argument only where the joint (Re C, Im C) region at family-wise level
+0.05 over the three contexts excludes the origin, with that region's angular
+extent as the phase region; a one-dimensional modulus interval admits a phase
+at zero coherence about 14.65 percent of the time. It reports the
+measure_reset rotation net of the idle rotation carried along the collinear
+part of the per-qubit exposure change, widened by a bias bound for the
+orthogonal part and for setting-specific exposure at the design's aliasing
+detuning. Every idle winding that detuning admits gives a candidate, and a
+measurement-induced phase is attributed only when every widened candidate
+interval excludes every multiple of 2 pi.
 
 `qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
