@@ -1,0 +1,111 @@
+{
+ "backend": "FakeFez",
+ "cz_phase_rows": [
+  {
+   "coherent_only_amplified": 0.011525,
+   "coherent_only_difference": -0.07595,
+   "coherent_only_echo": 0.087475,
+   "cz_phase_rad": 0.02,
+   "fakefez_amplified": 0.24155,
+   "fakefez_difference": -0.03795,
+   "fakefez_echo": 0.2795
+  },
+  {
+   "coherent_only_amplified": 0.05885,
+   "coherent_only_difference": -0.289425,
+   "coherent_only_echo": 0.348275,
+   "cz_phase_rad": 0.05,
+   "fakefez_amplified": 0.2653,
+   "fakefez_difference": -0.15335,
+   "fakefez_echo": 0.41865
+  },
+  {
+   "coherent_only_amplified": 0.1765,
+   "coherent_only_difference": -0.3419,
+   "coherent_only_echo": 0.5184,
+   "cz_phase_rad": 0.1,
+   "fakefez_amplified": 0.3253,
+   "fakefez_difference": -0.185625,
+   "fakefez_echo": 0.510925
+  }
+ ],
+ "echo_rows": [
+  {
+   "amplified_p_anc0": 0.236025,
+   "difference": 0.001275,
+   "duration_dt": 4146,
+   "echo_normalized_difference": 0.002403,
+   "echo_p_anc0": 0.23475,
+   "ideal_difference": 0.0,
+   "prep_error_rad": 0.0,
+   "two_qubit_gates": 141
+  },
+  {
+   "amplified_p_anc0": 0.254925,
+   "difference": 0.017825,
+   "duration_dt": 4170,
+   "echo_normalized_difference": 0.033901,
+   "echo_p_anc0": 0.2371,
+   "ideal_difference": 0.028456,
+   "prep_error_rad": 0.03,
+   "two_qubit_gates": 141
+  },
+  {
+   "amplified_p_anc0": 0.30765,
+   "difference": 0.063225,
+   "duration_dt": 4170,
+   "echo_normalized_difference": 0.123692,
+   "echo_p_anc0": 0.244425,
+   "ideal_difference": 0.109766,
+   "prep_error_rad": 0.06,
+   "two_qubit_gates": 141
+  },
+  {
+   "amplified_p_anc0": 0.42215,
+   "difference": 0.16175,
+   "duration_dt": 4170,
+   "echo_normalized_difference": 0.337542,
+   "echo_p_anc0": 0.2604,
+   "ideal_difference": 0.279352,
+   "prep_error_rad": 0.1,
+   "two_qubit_gates": 141
+  }
+ ],
+ "echo_shots": 40000,
+ "element": "e1 + e10",
+ "input": "(e4 - e15)/sqrt2, the dark partner",
+ "optimization_level": 3,
+ "rows": [
+  {
+   "depth": 142,
+   "ideal_p_anc0": 0.0,
+   "noisy_p_anc0": 0.0886,
+   "rounds": 0,
+   "two_qubit_gates": 42
+  },
+  {
+   "depth": 398,
+   "ideal_p_anc0": 0.0,
+   "noisy_p_anc0": 0.22185,
+   "rounds": 1,
+   "two_qubit_gates": 131
+  },
+  {
+   "depth": 656,
+   "ideal_p_anc0": 0.0,
+   "noisy_p_anc0": 0.30695,
+   "rounds": 2,
+   "two_qubit_gates": 220
+  }
+ ],
+ "seeds": {
+  "simulator": 11,
+  "transpiler": 7
+ },
+ "shots": 20000,
+ "versions": {
+  "qiskit": "2.5.2",
+  "qiskit_aer": "0.17.2",
+  "qiskit_ibm_runtime": "0.50.0"
+ }
+}

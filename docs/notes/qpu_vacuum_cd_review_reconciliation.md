@@ -1,8 +1,9 @@
 # Reconciliation of the patch-window, campaign and vacuum/dark-sector reviews
 
 Four external reviews of the patch-window acquisition and campaign records,
-one synthesis on dark-sector and quantum-vacuum research, and seven further
-reviews of the resulting reconciliation made claims
+one synthesis on dark-sector and quantum-vacuum research, seven further
+reviews of the resulting reconciliation, and one review of the measurement
+foundations behind the Cayley-Dickson and coherence work made claims
 about this repository, its sister project and the literature. Each row
 gives the claim, its status and the artifact that settles it. Statuses:
 verified (reproduced from retained data or source), refined (reproduced and
@@ -88,6 +89,43 @@ this repository lacks).
 | IBM batch jobs may run out of order with calibrations between them | verified | web-source note |
 | The dynamical Casimir effect is experimentally demonstrated | verified | [1105.4714](1105.4714.md), already registered |
 | Ideal Casimir pressures and energy densities (50 to 1000 nm), the 10 mV electrostatic pressures, sphere-plane forces for R = 50 um, the Yukawa pressure -2.11e-16 alpha Pa and the 100 nm mass equivalent -4.82e-17 kg/m^3 | verified | recomputed from hbar, c, epsilon_0 and G; ideal-conductor benchmarks only |
+
+## Measurement-foundations review
+
+The review answered a conjecture that, as the review characterized it, held
+that Cayley-Dickson structure cannot be decomposed, that the relevant
+quantum-state structure cannot be measured, and that comparable hardware
+experiments lack foundations. It rejected the broad
+form and kept a narrower concern: the retained terminal distributions do not
+determine every phase or error mechanism, and nothing establishes a physical
+dark-sector reading. The rows check its specific claims; the
+[singular-sector note](singular_sector_dynamics.md) carries the mathematics
+it prompted.
+
+| Claim | Status | Evidence |
+|---|---|---|
+| Computational-basis counts give P(01) = P(10) = 1/2 for every (\|10> + e^{i phi}\|01>)/sqrt2 and for the incoherent mixture; <01\|rho\|10> is e^{i phi}/2 for the superposition and 0 for the mixture | verified | direct evaluation; the rho_{01,10} Pauli identity row above fixes the register order |
+| A global phase has no observable effect; relative phases and coherences are the reconstruction target | verified | rho is invariant under psi -> e^{i chi} psi |
+| Superconducting hardware has reconstructed two-qubit density matrices (Steffen 2006) and resonator superpositions by Wigner tomography (Hofheinz 2009) | verified | Crossref identities in [measurement_foundations_web_sources.md](measurement_foundations_web_sources.md); content beyond bibliographic identity was not read |
+| Wang et al. 2009 measured the time evolution of selected density-matrix elements and separated relaxation from dephasing | verified | the abstract of [0909.4585](0909.4585.md) states both |
+| Murch et al. 2013 tracked measurement-conditioned trajectories with tomographic checks, using continuous weak measurement | verified | [1305.7270](1305.7270.md); the continuous record has no cloud-interface counterpart |
+| Unrestricted pulse-level control was removed from IBM access in February 2025 | refined | the changelog entry of 3 February 2025 removes pulse-level control on all IBM Quantum processors and points to fractional gates ([web-source note](measurement_foundations_web_sources.md)) |
+| Qiskit Experiments StateTomography supports selected bases and qubits and clbit-conditioned reconstruction; ParallelExperiment runs subsystem tomography | verified and refined | release 0.14.2 pages (web-source note); the branch-signed C = sum_b p_b (-1)^b <01\|rho_b\|10> is one linear functional of the conditional states, read with XX, XY, YX, YY plus ZZ: five settings per context against nine for conditional two-qubit tomography |
+| The supplied atlas defines P = I - H H^T with frames F_k satisfying F_k^T F_k = I and F_k F_k^T = P | refined | the identities hold by construction for any orthonormal H and any orthonormal basis F_k of range(P); the attachment is outside the repository, so its particular frames remain unchecked |
+| Biss and collaborators supply annihilator and eigentheoretic foundations; Reggiani relates the sedenion zero-divisor pairs to G_2 and the elements to V_2(R^7) | verified and refined | [0905.2987](0905.2987.md), [math-0511691](math-0511691.md), [2411.18881](2411.18881.md); the diffeomorphisms are Moreno's (Reggiani's Theorem 2.2), Reggiani contributes the induced Riemannian geometry |
+| (L_a L_b - L_ab) c = -(a, b, c), and no faithful associative operator representation of a non-associative product exists | verified | statement 7 of scripts/singular_sector_dynamics.py on 40 integer sedenion triples; a homomorphism into an associative algebra forces every represented associator to vanish |
+| The Hermitian dilation H_a of L_a keeps annihilator vectors dark and flips the block with sin^2(g sigma t / alpha) | verified and refined | imaginary a gives H_a = (iY) (x) L_a; two-term elements have sigma in {0, sqrt2, 2} in every dimension ([singular-sector note](singular_sector_dynamics.md)) |
+| a = e1 + e10 with dark input v_- = (e4 - e15)/sqrt2 and bright input v_+ = (e4 + e15)/sqrt2: L_a v_- = 0, L_a^T L_a v_+ = 4 v_+, so P_- = 0 and P_+ = sin^2(g t) at alpha = 2 | verified | exact integer check in the cd_core convention; the pair is corpus row (1, 10, 1, 4, 15, -1), Design B's dark partner |
+| The dilation gives an explicit, previously unavailable route from an annihilator to a measurable dark/bright response | refined | Design B and Design D already measure that response at alpha = 2; one product-formula step reproduces Design B times sin^2(2 theta), and amplitude amplification of Design B is frozen at 0, 1/2 and 1; only the sqrt2 line of the anticommuting sector is new, and it needs several steps or an exact synthesis |
+| Five state-register qubits suffice, with synthesis cost accounted separately | verified and refined | four algebra qubits and one block or LCU ancilla; the FakeFez record prices one dark probe at 42 CZ and one amplification round at 131 CZ |
+| After the first orbit bit the branch coherences are (-1)^b e^{i phi}/2, the unsigned average is zero, and the signed estimate returns e^{i phi}/2 | verified | the branch-unsigned row above; the branch-signed coherence-window case (PR #79) implements the signed estimator |
+| A coherent rotation turns arg C, dephasing shrinks \|C\|, and a symmetric branch-report error scales C by 1 - 2 epsilon | verified and refined | the report error and dephasing both scale \|C\| and stay confounded in it; arg C alone separates a coherent rotation, and epsilon needs an independent instrument characterization such as [2103.03008](2103.03008.md) |
+| dp_x/dt = (2/hbar) sum_y Im(H_xy rho_yx), and one unitary step adds the y != z interference terms to the population update | verified | statement 6 of the checker; the ripple walk's incoherent part is uniform at every depth, so its depth-two structure is interference |
+| An n-qubit density matrix has 4^n - 1 real parameters; efficient tomography exploits structure and classical shadows cost depends on the observables | verified | [1101.4366](1101.4366.md) (the review's unnamed arXiv citation), [2002.08953](2002.08953.md) |
+| Kang et al. demonstrated a three-qubit dark-photon search architecture, PRL 135, 181004 (2025) | verified | [2503.18315](2503.18315.md) and its Crossref record (published 2025-10-29) |
+| Kang and Su, ACM Transactions on Quantum Computing 7(4), Article 26 (2026) | corrected | Crossref lists volume 7, issue 4, pages 1-86 and no article number; arXiv 2510.06316v3 ([note](2510.06316.md)) |
+| Childs-Wiebe LCU, QSVT, GST, mid-circuit GST and QET on IBM hardware supply the cited foundations | verified | [1202.5822](1202.5822.md), [1806.01838](1806.01838.md), [2009.07301](2009.07301.md), [2103.03008](2103.03008.md), [2301.02666](2301.02666.md) |
+| An algebraic annihilator, an engineered dark state and a particle-physics dark sector are three different objects | verified | the singular-sector note's consequences; no repository witness carries an electromagnetic coupling |
 
 ## Out of scope for this repository
 

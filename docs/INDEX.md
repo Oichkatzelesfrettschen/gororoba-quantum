@@ -7,8 +7,8 @@ controls PDF hosting; availability for download alone supplies no downstream gra
 
 | Location | Contents | Git treatment |
 | --- | --- | --- |
-| `docs/pdf/` | 14 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
-| `docs/local_source_cache/` | 56 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
+| `docs/pdf/` | 20 unchanged PDFs with source-specific CC BY 4.0 or CC0 evidence, plus two aliases | Tracked |
+| `docs/local_source_cache/` | 79 optional original reading copies with restricted or unestablished rehosting permission | Ignored |
 | `docs/source_archives/` | 4 licensed original software archives, with exact inspected members and notices | Tracked |
 | `docs/notes/`, `docs/evidence/` | Research descriptions, provenance, and repeatable checks | Tracked |
 
@@ -66,6 +66,7 @@ each source license in force.
 | [Wei et al. 2026 -- New Constraints on Dark Photon Dark Matter with a Millimeter-Wave Dielectric Haloscope](notes/2503.23354.md) | [2503.23354v2.pdf](pdf/2503.23354v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Fosco and Guntsche 2026 -- Dynamical Casimir effect in the worldline formulation](notes/2604.13237.md) | [2604.13237v3.pdf](pdf/2604.13237v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Ma et al. 2026 -- Prediction of a measurable sign change in the Casimir force using a magnetic fluid](notes/2601.00483.md) | [2601.00483v1.pdf](pdf/2601.00483v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Kang et al. 2025 -- Scalable architecture for dark photon searches: Superconducting-qubit proof of principle](notes/2503.18315.md) | [2503.18315v1.pdf](pdf/2503.18315v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.
@@ -152,6 +153,12 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [LZ Collaboration 2026 -- Search for dark matter particle interactions in an extended nuclear recoil energy window with the LUX-ZEPLIN (LZ) experiment](notes/2609.02823.md) | [PDF](https://arxiv.org/pdf/2609.02823v1) | `2609.02823v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2609.02823v1) |
 | [DES Collaboration 2026 -- Dark Energy Survey Year 6 Results: Cosmological Constraints from Galaxy Clustering and Weak Lensing](notes/2601.14559.md) | [PDF](https://arxiv.org/pdf/2601.14559v2) | `2601.14559v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2601.14559v2) |
 | [Quantum collision models: open system dynamics from repeated interactions](notes/2106.11974.md) | [PDF](https://arxiv.org/pdf/2106.11974v2) | `2106.11974v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2106.11974v2) |
+| [Childs and Wiebe 2012 -- Hamiltonian Simulation Using Linear Combinations of Unitary Operations](notes/1202.5822.md) | [PDF](https://arxiv.org/pdf/1202.5822v1) | `1202.5822v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1202.5822v1) |
+| [Berry, Childs, Cleve, Kothari and Somma 2014 -- Exponential improvement in precision for simulating sparse Hamiltonians](notes/1312.1414.md) | [PDF](https://arxiv.org/pdf/1312.1414v2) | `1312.1414v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1312.1414v2) |
+| [Kang and Su 2026 -- Quantum matrix arithmetics with Hamiltonian evolution](notes/2510.06316.md) | [PDF](https://arxiv.org/pdf/2510.06316v3) | `2510.06316v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2510.06316v3) |
+| [Wang et al. 2009 -- Decoherence Dynamics of Complex Photon States in a Superconducting Circuit](notes/0909.4585.md) | [PDF](https://arxiv.org/pdf/0909.4585v1) | `0909.4585v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0909.4585v1) |
+| [Murch, Weber, Macklin and Siddiqi 2013 -- Observing single quantum trajectories of a superconducting qubit](notes/1305.7270.md) | [PDF](https://arxiv.org/pdf/1305.7270v2) | `1305.7270v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1305.7270v2) |
+| [Cramer et al. 2010 -- Efficient quantum state tomography](notes/1101.4366.md) | [PDF](https://arxiv.org/pdf/1101.4366v1) | `1101.4366v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1101.4366v1) |
 
 ## Licensed software source snapshots
 
@@ -243,6 +250,12 @@ pair cover and metric-preserving kernel transitions. In dimension 32 the
 cover uses fifteen domains and 16-by-16 complex matrices. Real components,
 strata and unrestricted attachments remain open.
 
+The [singular-sector note](notes/singular_sector_dynamics.md) and its
+[FakeFez record](evidence/singular_sector_dynamics/fakefez_amplification.json)
+split every two-term Cayley-Dickson element into dark, bright and anticommuting
+sectors, derive the stratum census from one diagonal sign, and price the
+frozen amplitude-amplification walk and its virtual-Z echo control.
+
 ## Ripple source supplement
 
 The [De Marrais Box-Kites III note](notes/math-0403113.md) records a bounded
@@ -278,3 +291,6 @@ The [execution-guide note](notes/ibm-runtime-execution-guides.md) records nine I
 the client-side Sampler API, real-time backend-property refresh, circuit timing and execution modes) with retrieval SHA-256 and the use each page is cited for.
 
 The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.
+The [measurement-foundations web note](notes/measurement_foundations_web_sources.md) records the 3 February 2025 removal
+of pulse-level control, the Qiskit Experiments 0.14.2 tomography pages, and the Crossref identities of the
+Steffen 2006 and Hofheinz 2009 superconducting tomography papers.
