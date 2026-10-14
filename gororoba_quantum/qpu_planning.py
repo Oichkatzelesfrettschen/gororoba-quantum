@@ -211,121 +211,186 @@ def coherence_readout_qubits(isas: list[Any]) -> dict[str, int]:
     return found
 
 
+# Patch embeddings compiled in full per backend after the error-product prefilter.
+PATCH_PREFILTER = 8
+
+
+def patch_layouts(snapshot: Any, limit: int) -> list[tuple[list[int], float]]:
+    """Patch embeddings on one backend's admitted CZ graph, best error product first.
+
+    Every injective map of PATCH_ROLES onto physical qubits that carries each
+    PATCH_EDGES pair onto a CZ coupler (rustworkx VF2, non-induced) is a
+    candidate, excluding qubits and couplers the calibration excludes. The
+    prefilter is the product of (1 - measure error) over the six qubits and
+    (1 - cz error) over the five couplers; ties break on the layout tuple, so
+    one calibration always yields the same ordered list.
+    """
+    import rustworkx as rx
+
+    from patch_characterization import PATCH_EDGES, PATCH_ROLES
+
+    target = snapshot.backend.target
+    if "cz" not in target.operation_names:
+        return []
+    excluded = set(snapshot.excluded_qubits)
+    blocked = {tuple(sorted(edge)) for edge in snapshot.excluded_edges}
+    couplers = {
+        tuple(sorted(pair)) for pair in target["cz"] if not set(pair) & excluded and tuple(sorted(pair)) not in blocked
+    }
+    graph = rx.PyGraph()
+    nodes = graph.add_nodes_from(range(target.num_qubits))
+    graph.add_edges_from_no_data([(nodes[a], nodes[b]) for a, b in sorted(couplers)])
+    pattern = rx.PyGraph()
+    pattern.add_nodes_from(range(len(PATCH_ROLES)))
+    pattern.add_edges_from_no_data(list(PATCH_EDGES))
+
+    def error(operation: str, qargs: tuple[int, ...]) -> float:
+        properties = target[operation].get(qargs) or target[operation].get(qargs[::-1])
+        value = getattr(properties, "error", None)
+        return float(value) if value is not None else 1.0
+
+    scored = []
+    for mapping in rx.vf2_mapping(graph, pattern, subgraph=True, induced=False, id_order=True):
+        layout = [0] * len(PATCH_ROLES)
+        for physical, role in mapping.items():
+            layout[role] = int(physical)
+        product = math.prod(1.0 - error("measure", (q,)) for q in layout)
+        product *= math.prod(1.0 - error("cz", (layout[a], layout[b])) for a, b in PATCH_EDGES)
+        scored.append((-product, tuple(layout)))
+    scored.sort()
+    return [(list(layout), -negative) for negative, layout in scored[:limit]]
+
+
+def _patch_candidate(
+    runtime: Any, snapshot: Any, layout: list[int], args: Any, delays: list[int]
+) -> tuple[list[Any], dict[str, Any]]:
+    """Compile the characterization groups on one patch of one snapshot, or raise why it is refused."""
+    from coherence_window import coherence_groups
+    from patch_characterization import PATCH_EDGES, PATCH_ROLES, patch_groups
+
+    excluded = sorted(set(layout) & set(snapshot.excluded_qubits))
+    edges = [(layout[a], layout[b]) for a, b in PATCH_EDGES]
+    blocked = [edge for edge in edges if edge in snapshot.excluded_edges or edge[::-1] in snapshot.excluded_edges]
+    if excluded or blocked:
+        raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
+    # Exchange circuits use no two-qubit gate, so the declared couplers
+    # must exist in the Target for neighbors to be physical neighbors.
+    couplers = set(snapshot.backend.target["cz"]) if "cz" in snapshot.backend.target.operation_names else set()
+    missing = [edge for edge in edges if edge not in couplers and edge[::-1] not in couplers]
+    if missing:
+        raise runtime.LiveRunError(f"the backend has no coupler for patch edges {missing}")
+    # The reset-only reference and echo halves follow the patch control's own
+    # measure and reset durations.
+    target = snapshot.backend.target
+    granularity = max(1, int(target.granularity))
+    try:
+        control_measure, control_reset = control_timing_dt(target, layout[0])
+    except ValueError as error:
+        raise runtime.LiveRunError(str(error)) from error
+    measure_dt = granularity * math.ceil(control_measure / granularity)
+    half_dt = granularity * math.ceil(0.6 * (control_measure + control_reset) / granularity)
+    # The matched idle spans the control's measure and reset, the window
+    # the measure_reset context places between the round and the readout.
+    window_dt = granularity * math.ceil((control_measure + control_reset) / granularity)
+    dt = float(target.dt)
+    choices = []
+    groups = (
+        coherence_groups(window_dt) if args.family == "coherence-window" else patch_groups(delays, measure_dt, half_dt)
+    )
+    for group in groups:
+        isas = [runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, layout) for member in group.members]
+        violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, snapshot)]
+        if violations:
+            raise runtime.LiveRunError(str(violations))
+        scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+        choices.append(
+            runtime.Choice(
+                group,
+                snapshot,
+                runtime.SEED_TRANSPILER,
+                layout,
+                isas,
+                scores,
+                math.exp(sum(math.log(score) for score in scores) / len(scores)),
+            )
+        )
+    used = sorted({qubit for choice in choices for isa in choice.isas for qubit in runtime._physical(isa)})
+    if set(used) - set(layout):
+        raise runtime.LiveRunError(f"routing left the patch through qubits {sorted(set(used) - set(layout))}")
+    readout: dict[str, int] = {}
+    if args.family == "coherence-window":
+        readout = coherence_readout_qubits([isa for choice in choices for isa in choice.isas])
+    # The patch is reserved whole: an idle neighbor stays mapped so the
+    # replica, the case and the collector name the same six qubits.
+    pinned = sorted(set(used) | set(layout))
+    replica = Replica(0, {qubit: qubit for qubit in pinned}, min(min(choice.member_scores) for choice in choices))
+    for choice in choices:
+        runtime._set_entries(choice, [replica], runtime.ReplicaPolicy(args.replica_floor, 1, False, True))
+    runtime.execution_pubs(choices)
+    timing: dict[str, Any] = (
+        {
+            "window_dt": window_dt,
+            "control_measure_dt": round(control_measure),
+            "control_reset_dt": round(control_reset),
+            "readout_qubits": readout,
+        }
+        if args.family == "coherence-window"
+        else {"delays_dt": delays, "measure_dt": measure_dt, "echo_half_dt": half_dt}
+    )
+    return choices, {
+        "name": args.family,
+        "patch_qubits": layout,
+        "patch_roles": list(PATCH_ROLES),
+        **timing,
+        "dt_seconds": dt,
+        "placement_contract": "one pinned patch; static and dynamic jobs",
+    }
+
+
 def patch_candidates(
     runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
 ) -> list[tuple[list[Any], dict[str, Any]]]:
-    """Compile the characterization groups on the pinned patch of every snapshot that admits it.
+    """Compile the characterization groups on a declared patch, or on the best calibrated patches of every backend.
 
-    The patch is fixed, so a snapshot whose fresh calibration excludes a patch
-    qubit or exercised coupler is refused rather than re-placed.
+    With --patch-qubits the patch is fixed, so a snapshot whose fresh
+    calibration excludes a patch qubit or exercised coupler is refused rather
+    than re-placed. Without it, each eligible snapshot contributes its
+    PATCH_PREFILTER best embeddings (patch_layouts); every compiled patch is
+    ranked by its joint score, fewer pending jobs breaking ties, and the
+    best --optimizer-candidates go to admission. The trace keeps every scored
+    and refused patch, so a dry run and a submit on one calibration choose the
+    same patch.
     """
-    from coherence_window import coherence_groups
-    from patch_characterization import PATCH_DELAYS_DT, PATCH_EDGES, PATCH_ROLES, patch_groups
+    from patch_characterization import PATCH_DELAYS_DT, PATCH_ROLES
 
-    layout = [int(qubit) for qubit in args.patch_qubits]
-    if len(layout) != len(PATCH_ROLES) or len(set(layout)) != len(layout):
-        raise runtime.LiveRunError(f"--patch-qubits names {len(PATCH_ROLES)} distinct qubits: {PATCH_ROLES}")
     delays = list(PATCH_DELAYS_DT)
-    candidates: list[tuple[list[Any], dict[str, Any]]] = []
+    declared = args.patch_qubits is not None
+    if declared:
+        fixed = [int(qubit) for qubit in args.patch_qubits]
+        if len(fixed) != len(PATCH_ROLES) or len(set(fixed)) != len(fixed):
+            raise runtime.LiveRunError(f"--patch-qubits names {len(PATCH_ROLES)} distinct qubits: {PATCH_ROLES}")
+    scored: list[tuple[float, int, list[Any], dict[str, Any]]] = []
+    search = trace.setdefault("patch_search", [])
     for snapshot in snapshots:
-        try:
-            excluded = sorted(set(layout) & set(snapshot.excluded_qubits))
-            edges = [(layout[a], layout[b]) for a, b in PATCH_EDGES]
-            blocked = [
-                edge for edge in edges if edge in snapshot.excluded_edges or edge[::-1] in snapshot.excluded_edges
-            ]
-            if excluded or blocked:
-                raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
-            # Exchange circuits use no two-qubit gate, so the declared couplers
-            # must exist in the Target for neighbors to be physical neighbors.
-            couplers = set(snapshot.backend.target["cz"]) if "cz" in snapshot.backend.target.operation_names else set()
-            missing = [edge for edge in edges if edge not in couplers and edge[::-1] not in couplers]
-            if missing:
-                raise runtime.LiveRunError(f"the backend has no coupler for patch edges {missing}")
-            # The reset-only reference and echo halves follow the pinned
-            # control's own measure and reset durations.
-            target = snapshot.backend.target
-            granularity = max(1, int(target.granularity))
+        layouts = [(fixed, None)] if declared else patch_layouts(snapshot, PATCH_PREFILTER)
+        for layout, prefilter in layouts:
             try:
-                control_measure, control_reset = control_timing_dt(target, layout[0])
-            except ValueError as error:
-                raise runtime.LiveRunError(str(error)) from error
-            measure_dt = granularity * math.ceil(control_measure / granularity)
-            half_dt = granularity * math.ceil(0.6 * (control_measure + control_reset) / granularity)
-            # The matched idle spans the control's measure and reset, the window
-            # the measure_reset context places between the round and the readout.
-            window_dt = granularity * math.ceil((control_measure + control_reset) / granularity)
-            dt = float(target.dt)
-            choices = []
-            groups = (
-                coherence_groups(window_dt)
-                if args.family == "coherence-window"
-                else patch_groups(delays, measure_dt, half_dt)
-            )
-            for group in groups:
-                isas = [
-                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, layout)
-                    for member in group.members
-                ]
-                violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, snapshot)]
-                if violations:
-                    raise runtime.LiveRunError(str(violations))
-                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
-                choices.append(
-                    runtime.Choice(
-                        group,
-                        snapshot,
-                        runtime.SEED_TRANSPILER,
-                        layout,
-                        isas,
-                        scores,
-                        math.exp(sum(math.log(score) for score in scores) / len(scores)),
-                    )
+                choices, configuration = _patch_candidate(runtime, snapshot, layout, args, delays)
+            except (runtime.LiveRunError, QiskitError, ValueError) as error:
+                trace.setdefault("family_rejections", []).append(
+                    {"backend": snapshot.name, "patch_qubits": layout, "reason": str(error)}
                 )
-            used = sorted({qubit for choice in choices for isa in choice.isas for qubit in runtime._physical(isa)})
-            if set(used) - set(layout):
-                raise runtime.LiveRunError(
-                    f"routing left the pinned patch through qubits {sorted(set(used) - set(layout))}"
-                )
-            readout: dict[str, int] = {}
-            if args.family == "coherence-window":
-                readout = coherence_readout_qubits([isa for choice in choices for isa in choice.isas])
-            # The pinned patch is reserved whole: an idle neighbor stays mapped so the
-            # replica, the case and the collector name the same six qubits.
-            pinned = sorted(set(used) | set(layout))
-            replica = Replica(
-                0, {qubit: qubit for qubit in pinned}, min(min(choice.member_scores) for choice in choices)
+                continue
+            joint = math.exp(sum(math.log(choice.joint_score) for choice in choices) / len(choices))
+            configuration["patch_selection"] = "declared" if declared else "calibration"
+            search.append(
+                {"backend": snapshot.name, "patch_qubits": layout, "prefilter": prefilter, "joint_score": joint}
             )
-            for choice in choices:
-                runtime._set_entries(choice, [replica], runtime.ReplicaPolicy(args.replica_floor, 1, False, True))
-            runtime.execution_pubs(choices)
-        except (runtime.LiveRunError, QiskitError, ValueError) as error:
-            trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
-            continue
-        timing: dict[str, Any] = (
-            {
-                "window_dt": window_dt,
-                "control_measure_dt": round(control_measure),
-                "control_reset_dt": round(control_reset),
-                "readout_qubits": readout,
-            }
-            if args.family == "coherence-window"
-            else {"delays_dt": delays, "measure_dt": measure_dt, "echo_half_dt": half_dt}
-        )
-        candidates.append(
-            (
-                choices,
-                {
-                    "name": args.family,
-                    "patch_qubits": layout,
-                    "patch_roles": list(PATCH_ROLES),
-                    **timing,
-                    "dt_seconds": dt,
-                    "placement_contract": "one pinned patch; static and dynamic jobs",
-                },
-            )
-        )
-    return candidates
+            scored.append((joint, -snapshot.pending_jobs, choices, configuration))
+    if declared:
+        return [(choices, configuration) for _, _, choices, configuration in scored]
+    scored.sort(key=lambda item: (item[0], item[1], [-q for q in item[3]["patch_qubits"]]), reverse=True)
+    return [(choices, configuration) for _, _, choices, configuration in scored[: args.optimizer_candidates]]
 
 
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:

@@ -382,6 +382,7 @@ def _verify_precision_defaults() -> None:
     cases = (
         (coherence, COHERENCE_PRECISION),
         ([*coherence, "--precision", "0.2"], 0.2),
+        (["--family", "coherence-window"], COHERENCE_PRECISION),
         (["--family", "folded-qpe"], 0.08),
     )
     with patch.object(live_run.local_compute, "settings", side_effect=capture):
@@ -630,6 +631,50 @@ def _verify_coherence_readout(snapshot: live_run.Snapshot) -> None:
         raise RuntimeError("a post-prefix two-qubit gate or a split readout map was admitted")
 
 
+def _verify_patch_selection(snapshot: live_run.Snapshot) -> None:
+    """Calibrated patch embeddings are valid, ordered and deterministic; exclusions and the declared override hold."""
+    import copy as copy_module
+
+    from patch_characterization import PATCH_EDGES, PATCH_ROLES
+
+    layouts = qpu_planning.patch_layouts(snapshot, 8)
+    _require(len(layouts) == 8, f"FakeFez offers {len(layouts)} patch embeddings")
+    _require(layouts == qpu_planning.patch_layouts(snapshot, 8), "patch embeddings are not deterministic")
+    couplers = {tuple(sorted(pair)) for pair in snapshot.backend.target["cz"]}
+    for layout, prefilter in layouts:
+        _require(len(set(layout)) == len(PATCH_ROLES), f"{layout} reuses a qubit")
+        _require(
+            all(tuple(sorted((layout[a], layout[b]))) in couplers for a, b in PATCH_EDGES), f"{layout} lacks a coupler"
+        )
+        _require(0.0 < prefilter <= 1.0, f"{layout} prefilter {prefilter}")
+    _require(
+        [p for _, p in layouts] == sorted((p for _, p in layouts), reverse=True), "prefilter order is not descending"
+    )
+    best = layouts[0][0]
+    excluded = copy_module.copy(snapshot)
+    excluded.excluded_qubits = {**snapshot.excluded_qubits, best[0]: "fixture"}
+    _require(
+        all(best[0] not in layout for layout, _ in qpu_planning.patch_layouts(excluded, 8)),
+        "an excluded qubit entered a patch",
+    )
+    with patch.object(qpu_planning, "PATCH_PREFILTER", 3):
+        trace: dict[str, Any] = {}
+        chosen = qpu_planning.patch_candidates(
+            live_run, [snapshot], _args("coherence-window", patch_qubits=None, optimizer_candidates=2), trace
+        )
+    _require(1 <= len(chosen) <= 2, f"{len(chosen)} calibrated patches reached admission")
+    _require(all(configuration["patch_selection"] == "calibration" for _, configuration in chosen), "selection label")
+    scores = {tuple(row["patch_qubits"]): row["joint_score"] for row in trace["patch_search"]}
+    picked = [scores[tuple(configuration["patch_qubits"])] for _, configuration in chosen]
+    _require(picked == sorted(scores.values(), reverse=True)[: len(picked)], "admission skipped a better patch")
+    declared = qpu_planning.patch_candidates(
+        live_run, [snapshot], _args("coherence-window", patch_qubits=[142, 136, 143, 144, 123, 145]), {}
+    )
+    _require(
+        len(declared) == 1 and declared[0][1]["patch_selection"] == "declared", "the declared patch override changed"
+    )
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -654,10 +699,12 @@ def _verify() -> None:
         _verify_infeasible_archive(service, choices, configuration)
         _verify_unrouted_family_diagnostics(service)
         _verify_coherence_readout(snapshot)
+        _verify_patch_selection(snapshot)
     _verify_control_timing()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
-        "approval, infeasible archives, unrouted rejection diagnostics and coherence readout maps checked"
+        "approval, infeasible archives, unrouted rejection diagnostics, coherence readout maps and calibrated "
+        "patch selection checked"
     )
 
 
