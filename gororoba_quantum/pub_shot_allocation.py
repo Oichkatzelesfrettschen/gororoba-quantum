@@ -60,6 +60,7 @@ def allocate_plans(
     objective: str = "minimum_charge",
     cost_scenarios: tuple[CostScenario, ...] = (),
     coupled_pubs: dict[str, tuple[tuple[str, ...], ...]] | None = None,
+    unscored_tier: str = "largest",
 ) -> tuple[tuple[CandidatePlan, ...], dict[str, dict[str, Any]]]:
     """Preserve every member and use conservative endpoint-wise tier admission.
 
@@ -69,6 +70,8 @@ def allocate_plans(
     hardware data never enters allocation. Endpoint-wise minimum tiers and
     whole-tier promotion define a bounded search, not a global PUB optimum.
     """
+    if unscored_tier not in ("smallest", "largest"):
+        raise ValueError(f"unscored_tier must be smallest or largest, not {unscored_tier!r}")
     if not tiers or any(type(tier) is not int or tier <= 0 for tier in tiers):
         raise ValueError("PUB shot tiers must be positive integers")
     if tuple(sorted(set(tiers))) != tiers:
@@ -116,9 +119,11 @@ def allocate_plans(
                 name = member_pubs[term.member]
                 pub_shots[name] = max(pub_shots[name], tier)
                 scored_pubs.add(name)
+        # PUBs outside every contract take the largest tier unless the family
+        # declares them descriptive, in which case they keep the smallest.
         unscored = sorted(set(pub_names) - scored_pubs)
         for name in unscored:
-            pub_shots[name] = tiers[-1]
+            pub_shots[name] = tiers[0] if unscored_tier == "smallest" else tiers[-1]
         couplings = (coupled_pubs or {}).get(plan.name, ())
         for coupling in couplings:
             if (
@@ -176,7 +181,8 @@ def allocate_plans(
             "minimum_pub_shots": minimum_pub_shots,
             "endpoint_tiers": endpoint_tiers,
             "infeasible_at_max_tier": largest_rejections,
-            "unscored_pubs_at_max_tier": unscored,
+            "unscored_pubs": unscored,
+            "unscored_tier": unscored_tier,
             "coupled_pubs": [list(coupling) for coupling in couplings],
             "job_count": len(selected_plan.jobs),
             "objective": objective,

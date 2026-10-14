@@ -1,0 +1,430 @@
+"""Count-likelihood analysis of a collected patch-window run.
+
+Every analyzed PUB binds to the submission: its job and position in
+record.json, the collection's raw ledger, its own pub_index, and the
+submitted circuit archive digest. Ramsey and measurement-window members are
+fitted from counts: for idle time t, taken from the returned schedule, the
+work qubit's X- and Y-basis readouts are binomial with
+P(0) = (1 + V cos phi) / 2 and P(0) = (1 + V sin phi) / 2, where
+phi(t) = phi0 + 2 pi delta t and V(t) = V0 exp(-gamma t). The detuning delta
+is searched on a grid across its periodic basins and reported with a
+profile-likelihood interval; a point whose visibility interval reaches zero
+leaves its phase undefined. Populations carry Wilson intervals, which stay
+finite at zero or full counts. Orbit contrasts use the multinomial variance.
+
+Usage: "$PYTHON" scripts/patch_window_analysis.py RUN_DIR [--out FILE]
+       "$PYTHON" scripts/patch_window_analysis.py --self-check
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+from collections import Counter
+from pathlib import Path
+from typing import Any
+
+import numpy as np
+from scipy.optimize import minimize
+
+Z95 = 1.959963984540054
+# X and Y circuits of one point must execute the same idle within this many microseconds.
+TIMING_TOLERANCE_US = 0.02
+DELTA_GRID_MHZ = np.linspace(-0.5, 0.5, 201)
+CONDITIONS = {
+    "ramsey_plain": ("ramsey_plain_{q}_d{d}", 0),
+    "ramsey_echo": ("ramsey_echo_{q}_d{d}", 0),
+    "window_c0": ("window_measure_reset_c0_{q}_d{d}", 1),
+    "window_c1": ("window_measure_reset_c1_{q}_d{d}", 1),
+}
+
+
+def wilson(successes: int, trials: int) -> tuple[float, float, float]:
+    """Proportion with its Wilson 95 percent interval."""
+    if trials <= 0:
+        raise ValueError("an interval needs at least one trial")
+    p = successes / trials
+    centre = (p + Z95**2 / (2 * trials)) / (1 + Z95**2 / trials)
+    half = Z95 * math.sqrt(p * (1 - p) / trials + Z95**2 / (4 * trials**2)) / (1 + Z95**2 / trials)
+    return p, max(0.0, centre - half), min(1.0, centre + half)
+
+
+def _bound_counts(run: Path) -> dict[str, Counter[str]]:
+    record = json.loads((run / "record.json").read_text())
+    submission = record["submission"]
+    if hashlib.sha256((run / "isa.qpy").read_bytes()).hexdigest() != submission["qpy_archive_sha256"]:
+        raise RuntimeError("isa.qpy differs from the submitted circuit archive")
+    ledger = json.loads((run / "collect.json").read_text())[0]["jobs"]
+    if submission.get("complete") is not True or len(submission["jobs"]) != len(submission["planned_jobs"]):
+        raise RuntimeError("the submission is incomplete; a partial run has no patch analysis")
+    planned = {job["job_id"]: job for job in submission["jobs"]}
+    if set(planned) != set(ledger):
+        raise RuntimeError("collected jobs differ from the submitted jobs")
+    manifests = {
+        (job["backend"], job["kind"], job["batch_index"]): [pub["name"] for pub in job["pubs"]]
+        for job in submission["planned_jobs"]
+    }
+    counts: dict[str, Counter[str]] = {}
+    for job_id, job in planned.items():
+        directory = run / "raw" / job_id
+        index = json.loads((directory / "index.json").read_text())
+        raw_ledger = ledger[job_id].get("raw")
+        if index.get("job_id", job_id) != job_id or (raw_ledger is not None and raw_ledger["files"] != index["files"]):
+            raise RuntimeError(f"raw/{job_id} differs from the collection ledger")
+        for position, member in enumerate(job["members"]):
+            path = directory / f"pub_{position:02d}.json"
+            if hashlib.sha256(path.read_bytes()).hexdigest() != index["files"].get(path.name):
+                raise RuntimeError(f"{path} differs from its indexed sha256")
+            payload = json.loads(path.read_text())
+            expected_name = manifests[(job["backend"], job["kind"], job["batch_index"])][position]
+            if payload.get("pub_index") != position or payload.get("pub_name") != expected_name:
+                raise RuntimeError(f"{path} differs from the submitted PUB manifest at position {position}")
+            (register,) = payload["registers"].values()
+            counts[member] = Counter(register["bitstrings"])
+            _TIMING[member] = payload["metadata"]["compilation"].get("scheduler_timing", {}).get("timing", "")
+    return counts
+
+
+_TIMING: dict[str, str] = {}
+
+
+def executed_idle_us(member: str, qubit: int, dt_seconds: float) -> float | None:
+    """Free-precession time of one physical qubit: idle gaps between its first and last pulses, echo pulses excluded."""
+    rows = [line.split(",") for line in _TIMING.get(member, "").splitlines()]
+    pulses = sorted(
+        (int(row[3]), int(row[4]))
+        for row in rows
+        if len(row) >= 6 and row[5] == "play" and row[2] == f"Qubit {qubit}" and not row[1].startswith(("INIT", "FINI"))
+    )
+    if len(pulses) < 2:
+        return None
+    idle = sum(max(0, b[0] - (a[0] + a[1])) for a, b in zip(pulses, pulses[1:], strict=False))
+    return idle * dt_seconds * 1e6
+
+
+def _ones(counts: Counter[str], clbit: int) -> tuple[int, int]:
+    shots = sum(value for key, value in counts.items() if key != "__timing__")
+    ones = sum(value for key, value in counts.items() if key != "__timing__" and key[-1 - clbit] == "1")
+    return ones, shots
+
+
+def fit_ramsey(points: list[dict[str, Any]]) -> dict[str, Any]:
+    """Binomial likelihood fit of phase and visibility against executed idle; delta over its periodic basins."""
+    times = np.array([point["t_us"] for point in points])
+    zeros = np.array([[point["x_zero"], point["y_zero"]] for point in points], dtype=float)
+    shots = np.array([[point["x_shots"], point["y_shots"]] for point in points], dtype=float)
+
+    def nll(params: np.ndarray, delta: float) -> float:
+        # offset absorbs asymmetric assignment error, which shifts both
+        # quadratures of one qubit by the same P(0|1) - P(1|0).
+        phi0, log_v0, gamma, raw_offset = params
+        offset = 0.2 * math.tanh(raw_offset)
+        visibility = math.exp(min(log_v0, 0.0)) * np.exp(-max(gamma, 0.0) * times)
+        phase = phi0 + 2 * math.pi * delta * times
+        probabilities = np.clip(
+            np.stack(
+                [(1 + offset + visibility * np.cos(phase)) / 2, (1 + offset + visibility * np.sin(phase)) / 2], axis=1
+            ),
+            1e-9,
+            1 - 1e-9,
+        )
+        return float(-(zeros * np.log(probabilities) + (shots - zeros) * np.log(1 - probabilities)).sum())
+
+    def profile(delta: float, start: np.ndarray) -> Any:
+        return min(
+            (minimize(nll, start + shift, args=(delta,), method="Nelder-Mead") for shift in (0.0, 1.5, -1.5)),
+            key=lambda result: result.fun,
+        )
+
+    # A coarse grid finds the periodic basin; a free fit refines delta, and
+    # bisection on the profile likelihood finds each interval edge.
+    origin = np.array([0.0, -0.2, 0.02, 0.0])
+    grid = [(profile(float(delta), origin).fun, float(delta)) for delta in DELTA_GRID_MHZ[::4]]
+    coarse = min(grid)
+    # Phase aliases: every local grid minimum within the 95 percent profile
+    # threshold of the best one stays a compatible detuning.
+    aliases = [
+        delta
+        for index, (value, delta) in enumerate(grid)
+        if 2 * (value - coarse[0]) <= Z95**2
+        and value <= grid[max(index - 1, 0)][0]
+        and value <= grid[min(index + 1, len(grid) - 1)][0]
+    ]
+    free = minimize(
+        lambda v: nll(v[:4], float(v[4])), np.array([*profile(coarse[1], origin).x, coarse[1]]), method="Nelder-Mead"
+    )
+    best_delta, best_value, best_params = float(free.x[4]), float(free.fun), free.x[:4]
+
+    def edge(direction: float) -> float | None:
+        inner, outer = best_delta, best_delta + direction * 0.05
+        if 2 * (profile(outer, best_params).fun - best_value) <= Z95**2:
+            return None
+        for _step in range(30):
+            middle = (inner + outer) / 2
+            if 2 * (profile(middle, best_params).fun - best_value) <= Z95**2:
+                inner = middle
+            else:
+                outer = middle
+        return (inner + outer) / 2
+
+    low, high = edge(-1.0), edge(1.0)
+    minimum = (best_value, best_delta, best_params)
+    # An edge the profile never crosses within 0.05 MHz stays open (None).
+    interval = [low, high]
+    edge_hit = low is None or high is None
+    phi0, log_v0, gamma, raw_offset = minimum[2]
+    return {
+        "delta_mhz": minimum[1],
+        "delta_95_mhz": interval,
+        "delta_resolved": not edge_hit and len(aliases) <= 1,
+        "compatible_alias_deltas_mhz": aliases,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "phi0_rad": float(math.remainder(phi0, 2 * math.pi)),
+        "visibility0": float(math.exp(min(log_v0, 0.0))),
+        "decay_per_us": float(max(gamma, 0.0)),
+        "assignment_offset": float(0.2 * math.tanh(raw_offset)),
+        "negative_log_likelihood": minimum[0],
+    }
+
+
+def ramsey_points(
+    counts: dict[str, Counter[str]],
+    pattern: str,
+    offset: int,
+    qubit_clbit: int,
+    delays: list[int],
+    qubit: int,
+    dt: float,
+) -> list[dict[str, Any]]:
+    points = []
+    for delay in delays:
+        x_name, y_name = pattern.format(q="x", d=delay), pattern.format(q="y", d=delay)
+        if x_name not in counts or y_name not in counts:
+            continue
+        x_ones, x_shots = _ones(counts[x_name], offset + qubit_clbit)
+        y_ones, y_shots = _ones(counts[y_name], offset + qubit_clbit)
+        executed_x = executed_idle_us(x_name, qubit, dt)
+        executed_y = executed_idle_us(y_name, qubit, dt)
+        x = 1 - 2 * x_ones / x_shots
+        y = 1 - 2 * y_ones / y_shots
+        radius = math.hypot(x, y)
+        se = math.sqrt((1 - x * x) / x_shots + (1 - y * y) / y_shots)
+        points.append(
+            {
+                "member": x_name,
+                "requested_dt": delay,
+                "t_us": executed_x,
+                "t_us_y": executed_y,
+                "timing_qualified": executed_x is not None
+                and executed_y is not None
+                and abs(executed_x - executed_y) <= TIMING_TOLERANCE_US,
+                "x_zero": x_shots - x_ones,
+                "x_shots": x_shots,
+                "y_zero": y_shots - y_ones,
+                "y_shots": y_shots,
+                "visibility": radius,
+                "phase_rad": math.atan2(y, x) if radius > Z95 * se else None,
+            }
+        )
+    return points
+
+
+def analyze(run: Path) -> dict[str, Any]:
+    record = json.loads((run / "record.json").read_text())
+    family = record["family_configuration"]
+    delays = [int(delay) for delay in family["delays_dt"]]
+    dt = float(family["dt_seconds"])
+    patch = [int(qubit) for qubit in family["patch_qubits"]]
+    counts = _bound_counts(run)
+    report: dict[str, Any] = {"patch_qubits": patch, "delays_dt": delays, "dt_seconds": dt, "conditions": {}}
+    for condition, (pattern, offset) in CONDITIONS.items():
+        for role, clbit, qubit in (("work_a", 0, patch[1]), ("work_b", 1, patch[3])):
+            points = ramsey_points(
+                counts, pattern, offset, clbit, [0, *delays] if condition == "ramsey_plain" else delays, qubit, dt
+            )
+            if not points:
+                continue
+            # Physical fits use only points whose X and Y circuits executed the
+            # same idle and whose coherence is resolved from zero; requested
+            # delays never stand in for executed timing.
+            timed = [point for point in points if point["timing_qualified"]]
+            qualified = [point for point in timed if point["phase_rad"] is not None]
+            distinct = sorted({round(point["t_us"], 2) for point in qualified})
+            entry: dict[str, Any] = {"points": points}
+            if len(distinct) >= 2 and len(qualified) >= 3:
+                entry["fit"] = fit_ramsey(qualified)
+            elif len(timed) > len(qualified):
+                entry["fit"] = {"status": "unresolved: visibility not resolved from zero", "times_us": distinct}
+            else:
+                entry["fit"] = {"status": "unresolved: executed timing unavailable or collapsed", "times_us": distinct}
+            if condition == "ramsey_echo":
+                entry["exposure"] = "unsigned idle; the fit is an effective response descriptor, not a static detuning"
+            report["conditions"][f"{condition}/{role}"] = entry
+    populations = {}
+    for name, histogram in counts.items():
+        if name.startswith("exchange_"):
+            populations[name] = {
+                role: wilson(*_ones(histogram, clbit))
+                for clbit, role in enumerate(("work_a", "spectator", "work_b", "neighbor_a", "neighbor_b"))
+            }
+    report["exchange_populations"] = populations
+    orbit = {}
+    for context in ("nominal", "window_barrier", "window_echo"):
+        arms = {}
+        for arm in ("feedback", "no_feedback"):
+            member = f"orbit_{context}_{arm}"
+            if member not in counts:
+                continue
+            histogram = counts[member]
+            total = sum(value for key, value in histogram.items() if key != "__timing__")
+            law = [histogram.get(format(label, "02b"), 0) / total for label in range(4)]
+            contrast = law[1] - law[3]
+            arms[arm] = (contrast, (law[1] + law[3] - contrast**2) / total)
+        if len(arms) == 2:
+            difference = arms["feedback"][0] - arms["no_feedback"][0]
+            orbit[context] = {
+                "contrast_difference": difference,
+                "se": math.sqrt(arms["feedback"][1] + arms["no_feedback"][1]),
+            }
+    report["orbit"] = orbit
+    contexts = {
+        "orbit_barrier_minus_nominal": ("window_barrier", "nominal"),
+        "orbit_echo_minus_barrier": ("window_echo", "window_barrier"),
+    }
+    report["orbit_between_context"] = {
+        name: {
+            "difference": orbit[first]["contrast_difference"] - orbit[second]["contrast_difference"],
+            "se": math.hypot(orbit[first]["se"], orbit[second]["se"]),
+        }
+        for name, (first, second) in contexts.items()
+        if first in orbit and second in orbit
+    }
+    middle, longest = sorted(delays)[len(delays) // 2], max(delays)
+    references = {}
+    for role, clbit in (("work_a", 0), ("work_b", 1)):
+        pairs = {
+            f"{role}_measured_minus_reset_only_y": (
+                f"window_measure_reset_c1_y_d{middle}",
+                f"window_reset_only_c1_y_d{middle}",
+                clbit + 1,
+                clbit + 1,
+            ),
+            f"{role}_paired_minus_single_y": (
+                f"ramsey_plain_y_d{longest}",
+                f"ramsey_plain_y_d{longest}_only_{role}",
+                clbit,
+                clbit,
+            ),
+        }
+        for name, (first, second, first_bit, second_bit) in pairs.items():
+            if first in counts and second in counts:
+                values = []
+                for member, bit in ((first, first_bit), (second, second_bit)):
+                    ones, shots = _ones(counts[member], bit)
+                    mean = 1 - 2 * ones / shots
+                    values.append((mean, (1 - mean * mean) / shots))
+                references[name] = {
+                    "difference": values[0][0] - values[1][0],
+                    "se": math.sqrt(values[0][1] + values[1][1]),
+                }
+    report["reference_comparisons"] = references
+    report["registered_endpoints"] = registered_endpoints(run, record)
+    return report
+
+
+def registered_endpoints(run: Path, record: dict[str, Any]) -> dict[str, Any]:
+    """The collector's preregistered contract results for this record.
+
+    collect.json evaluates every registered contract with the planner's
+    grouped Hoeffding bounds on the same raw members; the analyzer reports
+    those rows unchanged so the registered family and its intervals have one
+    source.
+    """
+    path = run / "collect.json"
+    if not path.exists():
+        return {"withheld": "collect.json absent; run live_run.py --collect first"}
+    analysis = json.loads(path.read_text())[0].get("family_analysis", {})
+    if "observables" not in analysis:
+        return {"withheld": analysis.get("withheld", "the collector produced no registered analysis")}
+    names = [contract["name"] for contract in record.get("observable_contracts", [])]
+    rows = {row["name"]: row for row in analysis["observables"]}
+    if sorted(rows) != sorted(names):
+        return {"withheld": "collector endpoints differ from the record's registered contracts"}
+    return {"method": analysis.get("method"), "endpoints": [rows[name] for name in names]}
+
+
+def self_check() -> None:
+    """Planted detuning recovery with interval coverage, and an unresolved phase at zero visibility."""
+    rng = np.random.default_rng(20261013)
+    truth, covered, trials = 0.06, 0, 20
+    for _trial in range(trials):
+        points = []
+        for t in (0.0, 3.6, 5.6, 7.6):
+            phase, visibility = 0.3 + 2 * math.pi * truth * t, 0.9 * math.exp(-0.03 * t)
+            x0 = int(rng.binomial(1024, (1 + visibility * math.cos(phase)) / 2))
+            y0 = int(rng.binomial(1024, (1 + visibility * math.sin(phase)) / 2))
+            points.append({"t_us": t, "x_zero": x0, "x_shots": 1024, "y_zero": y0, "y_shots": 1024})
+        fit = fit_ramsey(points)
+        low, high = fit["delta_95_mhz"]
+        covered += (low is None or low <= truth) and (high is None or truth <= high)
+    if covered < 0.8 * trials:
+        raise RuntimeError(f"planted detuning covered in {covered} of {trials} fits")
+    aliased = []
+    for t in (3.6, 5.6, 7.6):
+        phase = 0.3 + 2 * math.pi * truth * t
+        aliased.append(
+            {
+                "t_us": t,
+                "x_zero": round(1024 * (1 + 0.9 * math.cos(phase)) / 2),
+                "x_shots": 1024,
+                "y_zero": round(1024 * (1 + 0.9 * math.sin(phase)) / 2),
+                "y_shots": 1024,
+            }
+        )
+    if fit_ramsey(aliased)["delta_resolved"]:
+        raise RuntimeError("2 us-spaced times without a zero-idle point resolved delta despite 500 kHz aliases")
+    flat = Counter({"0": 512, "1": 512})
+    x_ones, x_shots = _ones(flat, 0)
+    x, y = 1 - 2 * x_ones / x_shots, 0.0
+    if math.hypot(x, y) > Z95 * math.sqrt(2 / 1024):
+        raise RuntimeError("a zero-visibility point resolved a phase")
+    p, low, high = wilson(0, 1024)
+    if not (p == 0 and low == 0 and high > 0):
+        raise RuntimeError("a zero-count Wilson interval collapsed")
+    print(
+        f"patch window analysis: planted detuning covered in {covered} of {trials} fits; "
+        "aliases kept; boundary intervals finite"
+    )
+
+
+def main(argv: list[str] | None = None) -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("run", type=Path, nargs="?")
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--self-check", action="store_true")
+    arguments = parser.parse_args(argv)
+    if arguments.self_check:
+        self_check()
+        return 0
+    if arguments.run is None:
+        parser.error("a run directory is required")
+    report = analyze(arguments.run)
+    for key, entry in report["conditions"].items():
+        fit = entry["fit"]
+        if "status" in fit:
+            print(f"{key:24s} {fit['status']}")
+            continue
+        interval = ["open" if value is None else round(value * 1e3, 1) for value in fit["delta_95_mhz"]]
+        print(f"{key:24s} delta {fit['delta_mhz'] * 1e3:+7.1f} kHz 95% {interval} V0 {fit['visibility0']:.3f}")
+    for context, entry in report["orbit"].items():
+        half = Z95 * entry["se"]
+        print(f"orbit {context:15s} contrast difference {entry['contrast_difference']:+.3f} +/- {half:.3f}")
+    if arguments.out:
+        arguments.out.write_text(json.dumps(report, indent=2, sort_keys=True, default=str) + "\n")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
