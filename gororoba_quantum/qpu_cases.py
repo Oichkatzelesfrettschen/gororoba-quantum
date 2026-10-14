@@ -166,6 +166,33 @@ def _shot_allocation(record: dict[str, Any]) -> dict[str, int] | None:
     return result
 
 
+def _patch_arguments(record: dict[str, Any]) -> list[str]:
+    """--patch-qubits for a declared patch, nothing for a calibration-chosen one or a family without a patch.
+
+    A declared patch is replayed by name; a calibration-chosen patch is
+    re-chosen by the same deterministic search, which the approval comparison
+    then holds to the recorded layout.
+    """
+    design = record["policy"]["design"]
+    if design["family"] not in PATCH_FAMILIES:
+        _require(design.get("patch_qubits") is None, "only the pinned-patch families carry patch qubits")
+        return []
+    declared = design.get("patch_qubits")
+    chosen = record["family_configuration"].get("patch_qubits")
+    selection = record["family_configuration"].get("patch_selection", "declared")
+    _require(isinstance(chosen, list), f"the {design['family']} family records its patch qubits")
+    patch = [qubit for qubit in chosen if type(qubit) is int and qubit >= 0]
+    _require(
+        patch == chosen and len(patch) == 6 and len(set(patch)) == 6,
+        f"{design['family']} needs six distinct nonnegative qubits",
+    )
+    if declared is not None:
+        _require(selection == "declared" and patch == declared, "patch qubits differ from the declared patch")
+        return ["--patch-qubits", ",".join(str(qubit) for qubit in patch)]
+    _require(selection == "calibration", "an undeclared patch must come from the calibrated search")
+    return []
+
+
 def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]:
     policy = record["policy"]
     design = policy["design"]
@@ -212,21 +239,7 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         )
     if design["optimize"]:
         arguments.append("--optimize")
-    if design["family"] in PATCH_FAMILIES:
-        declared = design.get("patch_qubits")
-        _require(isinstance(declared, list), f"the {design['family']} family requires its patch qubits")
-        patch = [qubit for qubit in declared if type(qubit) is int and qubit >= 0]
-        _require(
-            patch == declared and len(patch) == 6 and len(set(patch)) == 6,
-            f"{design['family']} needs six distinct nonnegative qubits",
-        )
-        _require(
-            patch == record["family_configuration"].get("patch_qubits"),
-            "patch qubits differ between the design policy and the family configuration",
-        )
-        arguments.extend(["--patch-qubits", ",".join(str(qubit) for qubit in patch)])
-    else:
-        _require(design.get("patch_qubits") is None, "only the pinned-patch families carry patch qubits")
+    arguments.extend(_patch_arguments(record))
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
         value = policy[name]
@@ -1045,10 +1058,15 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
         reads = ", ".join(f"{label} from qubit {readout[label]}" for label in ("b0", "read_a", "read_b", "sector"))
         alias_khz = 1e-3 / (2 * window * dt_seconds)
         precision = _number(record["policy"]["design"]["precision"], "precision", positive=True)
+        origin = (
+            "the best calibrated patch embedding the planner found on the eligible backends"
+            if configuration.get("patch_selection") == "calibration"
+            else "a declared patch"
+        )
         return [
             "## Scientific question and interpretation",
             "",
-            f"The coherence-window family measures, on the pinned initial layout {patch} on {backends}, "
+            f"The coherence-window family measures, on the initial layout {patch} on {backends}, {origin}, "
             "the work coherence the first N=21 orbit round leaves between work_a and work_b, signed by the "
             "control's first bit b0. In each branch the work pair holds |10> + (-1)^b0 e^{i phi} |01>, so "
             "rho_{01,10} = <01|rho|10> changes sign with b0, its branch-unsigned average is zero on an ideal "
@@ -1112,10 +1130,15 @@ def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
         ]
         patch = ", ".join(f"{role} {qubit}" for role, qubit in zip(roles, configuration["patch_qubits"], strict=True))
         backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
+        origin = (
+            "the best calibrated patch embedding the planner found on the eligible backends"
+            if configuration.get("patch_selection") == "calibration"
+            else "a declared patch"
+        )
         return [
             "## Scientific question and interpretation",
             "",
-            f"The patch-window family characterizes the physical qubits {patch} on {backends}. It "
+            f"The patch-window family characterizes the physical qubits {patch} on {backends}, {origin}. It "
             "reproduces the window of the N=21 orbit runs only when this backend and these roles match the "
             "orbit record's layout; on other qubits it characterizes this patch alone. Paired and "
             "single-qubit Ramsey, plain and echoed, "

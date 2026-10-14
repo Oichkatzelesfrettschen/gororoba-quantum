@@ -4670,7 +4670,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument(
         "--patch-qubits",
         type=lambda value: [int(item) for item in value.split(",")],
-        help="physical qubits of the pinned patch, in patch_characterization.PATCH_ROLES order",
+        help="physical qubits of the patch, in patch_characterization.PATCH_ROLES order; "
+        "omitted, the planner chooses the best calibrated patch on every eligible backend",
     )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
     parser.add_argument(
@@ -4836,8 +4837,8 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
-    if (args.family in PATCH_FAMILIES) != (args.patch_qubits is not None):
-        parser.error("--patch-qubits applies to, and is required by, the pinned-patch families")
+    if args.patch_qubits is not None and args.family not in PATCH_FAMILIES:
+        parser.error("--patch-qubits applies to the pinned-patch families only")
     if args.family in PATCH_FAMILIES and args.max_replicas not in (None, 1):
         parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.family == "folded-correction":
