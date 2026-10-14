@@ -30,6 +30,14 @@ workspace fixtures on the circuit builders of `designs.py`.
   state `|0>` is `e_0 = 1`, the multiplicative identity, never the zero
   vector. A unitary cannot output the zero vector: an algebraic zero product
   is a heralded branch of zero probability while the full state keeps norm 1.
+- Algebra index bit `b` sits on register qubit `b` (`designs.left_mult_gate`),
+  so qubit 0 carries the least significant bit, matching Qiskit's
+  little-endian outcome strings; a register drawn or read in another order
+  states its map.
+- A product sign carried as the global phase of a block is unobservable on
+  its own. A Hadamard test sees it only when the sign is set on the block
+  before it is controlled, so the controlled block applies it as a relative
+  phase on the control (`scripts/algebra_circuit_fixtures.py`).
 - Norm multiplicativity `|ab| = |a||b|` holds for real coefficients in
   dimensions 1, 2, 4 and 8 only (Hurwitz). The real sedenions already have
   zero divisors, `(e1 + e10)(e4 - e15) = 0`, and the complex-linear extension
@@ -44,7 +52,9 @@ workspace fixtures on the circuit builders of `designs.py`.
   `(e1 + e10)(e4 + e15)` is its bright control (`P(s = 0) = 1`).
 - Read the selector's success outcome, not "output label unequal to zero".
   The fixed-operand LCU of Design B gives `P(s = 0) = ||x y||^2 / 2` for
-  normalized `x = (e_i + t e_j)/sqrt2`, `t = +-1`, and normalized `y`. The
+  normalized `x = (e_i + t e_j)/sqrt2`, `t = +-1`, and normalized `y`;
+  `designs.lcu_witness` builds `t = +1`, and `t = -1` adds a Z on the
+  selector after its first H. The
   universal coefficient contraction of the D-dimensional algebra (D = 16 for
   the sedenions), `M|i, j> = sigma(i, j)|i xor j>`, has `M M^dagger = D I`,
   so its success Kraus operator is `M / sqrt(D)` and `P = ||x y||^2 / D`. Reports
@@ -73,8 +83,10 @@ workspace fixtures on the circuit builders of `designs.py`.
   reconstruction are three observables. The fixed-pair witness
   `W_ij = L_(e_i e_j)^dagger L_(e_i) L_(e_j)` is diagonal, so its expectation
   `sum_k rho_kk omega(i, j, k)` reconstructs no coherence of the data
-  register; coherences need their own basis settings (for a two-qubit pair,
-  XX, XY, YX, YY with the register order fixed).
+  register. A selected coherence `<x|rho|y>` needs the `2^w` settings with X
+  or Y on the `w` bits where `x` and `y` differ and Z on the rest, with the
+  register order fixed: four settings (XX, XY, YX, YY) for a two-qubit pair,
+  and at most 16 for a sedenion register.
 - Logical register counts: fixed-pair associator test, 4 data qubits plus 1
   control; fixed sparse operand zero-product LCU, 4 data qubits plus 1
   selector; two-input signed lookup, 8 input qubits plus 1 sign qubit; three
