@@ -1,0 +1,302 @@
+{
+  "congruence_and_reparametrization": {
+    "complex_congruence": true,
+    "reparametrized_divisions": 6,
+    "reparametrized_pfaffian_order": 4
+  },
+  "dimension32": [
+    {
+      "direction": [
+        3,
+        27
+      ],
+      "divisions": 0,
+      "endpoint_nullity": 12,
+      "pfaffian_order": 2,
+      "projector_equal": true,
+      "real_nullity": 8
+    },
+    {
+      "direction": [
+        4,
+        11
+      ],
+      "divisions": 1,
+      "endpoint_nullity": 12,
+      "pfaffian_order": 2,
+      "projector_equal": true,
+      "real_nullity": 8
+    },
+    {
+      "direction": [
+        8,
+        27
+      ],
+      "divisions": 0,
+      "endpoint_nullity": 12,
+      "pfaffian_order": 2,
+      "projector_equal": true,
+      "real_nullity": 8
+    },
+    {
+      "direction": [
+        11,
+        24
+      ],
+      "divisions": 0,
+      "endpoint_nullity": 12,
+      "pfaffian_order": 2,
+      "projector_equal": true,
+      "real_nullity": 8
+    }
+  ],
+  "dimension64": {
+    "endpoint_nullity": 24,
+    "projector_equal": true,
+    "real_nullity": 16
+  },
+  "fixtures": {
+    "complex_rank_drop": {
+      "complex_size": 4,
+      "divisions": 3,
+      "generic_rank": 2,
+      "initial_minor_order": 3,
+      "leading_coordinates": [
+        [
+          [
+            0,
+            1
+          ],
+          "1 + I"
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          "0"
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          "0"
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          "1 + I"
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          "-1 - I"
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          "0"
+        ]
+      ],
+      "pfaffian_order": 2,
+      "punctured_radius": "1"
+    },
+    "empty_kernel": {
+      "complex_size": 2,
+      "divisions": 0,
+      "generic_rank": 2,
+      "initial_minor_order": 0,
+      "leading_coordinates": [
+        [
+          [],
+          "1"
+        ]
+      ],
+      "pfaffian_order": 1,
+      "punctured_radius": "1"
+    },
+    "odd_ambient": {
+      "complex_size": 3,
+      "divisions": 0,
+      "generic_rank": 2,
+      "initial_minor_order": 0,
+      "leading_coordinates": [
+        [
+          [
+            0
+          ],
+          "0"
+        ],
+        [
+          [
+            1
+          ],
+          "-1"
+        ],
+        [
+          [
+            2
+          ],
+          "0"
+        ]
+      ],
+      "pfaffian_order": 0,
+      "punctured_radius": "1"
+    },
+    "shifted_endpoint": {
+      "complex_size": 4,
+      "divisions": 3,
+      "generic_rank": 2,
+      "initial_minor_order": 3,
+      "leading_coordinates": [
+        [
+          [
+            0,
+            1
+          ],
+          "1"
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          "0"
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          "0"
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          "1"
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          "-1"
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          "0"
+        ]
+      ],
+      "pfaffian_order": 0,
+      "punctured_radius": "1"
+    },
+    "singular_chart_constant_rank": {
+      "complex_size": 4,
+      "divisions": 3,
+      "generic_rank": 2,
+      "initial_minor_order": 3,
+      "leading_coordinates": [
+        [
+          [
+            0,
+            1
+          ],
+          "1"
+        ],
+        [
+          [
+            0,
+            2
+          ],
+          "0"
+        ],
+        [
+          [
+            0,
+            3
+          ],
+          "0"
+        ],
+        [
+          [
+            1,
+            2
+          ],
+          "1"
+        ],
+        [
+          [
+            1,
+            3
+          ],
+          "-1"
+        ],
+        [
+          [
+            2,
+            3
+          ],
+          "0"
+        ]
+      ],
+      "pfaffian_order": 0,
+      "punctured_radius": "1"
+    },
+    "zero_operator": {
+      "complex_size": 4,
+      "divisions": 0,
+      "generic_rank": 0,
+      "initial_minor_order": 0,
+      "leading_coordinates": [
+        [
+          [
+            0,
+            1,
+            2,
+            3
+          ],
+          "1"
+        ]
+      ],
+      "pfaffian_order": 0,
+      "punctured_radius": "1"
+    }
+  },
+  "nullity_four_limits": {
+    "orthogonal_planes": 3,
+    "sum_equals_endpoint_kernel": true
+  },
+  "physical_qpu_jobs": 0,
+  "rejected_certificates": [
+    "admission",
+    "division_coefficients",
+    "division_pivot",
+    "divisions",
+    "endpoint",
+    "factor",
+    "free_rows",
+    "initial_order",
+    "initial_rows",
+    "limit",
+    "order",
+    "pivot_pfaffian",
+    "radius",
+    "rank",
+    "regular_frame",
+    "seed"
+  ],
+  "rejected_inputs": 7,
+  "schema": "projective-kernel-limits-v1"
+}

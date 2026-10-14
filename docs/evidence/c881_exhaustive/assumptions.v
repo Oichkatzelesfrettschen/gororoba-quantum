@@ -1,0 +1,7 @@
+From OpenGororobaVerified Require Import C881_GF2CubicMinDegree.
+Print Assumptions degree2_monomials_characterization.
+Print Assumptions degree2_candidate_count.
+Print Assumptions coefficient_support_enumerated.
+Print Assumptions degree2_all_candidates_fail.
+Print Assumptions degree2_coefficients_fail.
+Print Assumptions fixed_partition_minimum_separating_degree.

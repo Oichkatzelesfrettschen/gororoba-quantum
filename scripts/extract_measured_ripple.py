@@ -679,7 +679,15 @@ def main() -> int:
         result = extract_run(args.run)
         payload = canonical(result)
         if args.check:
-            require(args.out.is_file() and args.out.read_bytes() == payload, "output differs from validated extraction")
+            # analysis_sources records which extractor and runtime sources
+            # produced the file; the replay pins every other field, and the
+            # retained payload hash still binds the file as written.
+            retained = read_artifact(args.out)
+
+            def replayed(artifact: dict[str, Any]) -> bytes:
+                return canonical({k: v for k, v in artifact.items() if k not in ("analysis_sources", "payload_sha256")})
+
+            require(replayed(retained) == replayed(result), "output differs from validated extraction")
         else:
             validate_output(args.run, args.out)
             write_new(args.out, payload)

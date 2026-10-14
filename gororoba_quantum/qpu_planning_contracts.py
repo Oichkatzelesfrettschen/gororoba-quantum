@@ -139,6 +139,51 @@ def _verify_family_layouts(snapshot: live_run.Snapshot) -> tuple[list[live_run.C
         {pub.kind for pub in live_run.execution_pubs(n21_choices)} == {"dynamic"},
         "N=21 feedback controls crossed execution kinds",
     )
+    orbit_trace: dict[str, Any] = {}
+    orbit_candidates = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-feedback"), orbit_trace)
+    _require(bool(orbit_candidates), f"FakeFez rejects every N=21 orbit family: {orbit_trace}")
+    (orbit_choice,) = orbit_candidates[0][0]
+    _require(len(orbit_choice.isas) == 2, "N=21 orbit comparison lost an arm")
+    orbit_cz = max(isa.count_ops().get("cz", 0) for isa in orbit_choice.isas)
+    full_cz = max(isa.count_ops().get("cz", 0) for isa in n21_choice.isas)
+    _require(orbit_cz * 10 < full_cz, f"orbit multipliers use {orbit_cz} CZ against {full_cz} for the full register")
+    _require(
+        {pub.kind for pub in live_run.execution_pubs(orbit_candidates[0][0])} == {"dynamic"},
+        "N=21 orbit controls crossed execution kinds",
+    )
+    rca_trace: dict[str, Any] = {}
+    rca_candidates = qpu_planning.family_candidates(live_run, [snapshot], _args("n21-orbit-rca"), rca_trace)
+    _require(bool(rca_candidates), f"FakeFez rejects every N=21 window family: {rca_trace}")
+    (rca_choice,), rca_configuration = rca_candidates[0]
+    _require(
+        rca_configuration["window_delay_dt"] > 0 and rca_configuration["echo_half_dt"] > 0,
+        f"window durations missing from the family configuration: {rca_configuration}",
+    )
+    _require(len(rca_choice.isas) == 8, "N=21 window family lost an arm")
+    arms = dict(zip((member.name for member in rca_choice.group.members), rca_choice.isas, strict=True))
+
+    def ops(name: str) -> dict[str, int]:
+        return dict(arms[name].count_ops())
+
+    # The interventions preserve the ideal law, so only these structural
+    # checks show they survived transpilation, in both arms of every pair.
+    for arm in ("feedback", "no_feedback"):
+        nominal = ops(f"n21_orbit_nominal_{arm}")
+        extra = ops(f"n21_orbit_extra_readout_{arm}")
+        _require(extra["measure"] == nominal["measure"] + 1, f"extra readout was removed from the {arm} arm")
+        _require(ops(f"n21_orbit_window_delay_{arm}").get("delay", 0) >= 1, f"window delay left the {arm} arm")
+        echo_isa = arms[f"n21_orbit_window_echo_{arm}"]
+        wires: dict[int, list[str]] = {}
+        for instruction in echo_isa.data:
+            for qubit in instruction.qubits:
+                wires.setdefault(echo_isa.find_bit(qubit).index, []).append(instruction.operation.name)
+        echoed = [
+            wire
+            for wire, names in wires.items()
+            if ["barrier", "delay", "x", "delay", "x", "barrier"]
+            in [names[index : index + 6] for index in range(len(names))]
+        ]
+        _require(len(echoed) == 2, f"the {arm} echo lost its delay-X-delay-X sequence on the work wires: {echoed}")
     return choices, configuration
 
 
@@ -503,6 +548,30 @@ def _verify_unrouted_family_diagnostics(service: _ProbeService) -> None:
     _require(supplied_traces == [trace_fixture], "diagnostic sanitization mutated the caller's selection trace")
 
 
+def _verify_control_timing() -> None:
+    """A Target missing the control's measure or reset timing, or dt, raises ValueError."""
+    from types import SimpleNamespace
+
+    class Target:
+        def __init__(self, dt: float | None, measure: float | None, reset: float | None) -> None:
+            self.dt = dt
+            self.table = {name: value for name, value in (("measure", measure), ("reset", reset)) if value is not None}
+            self.operation_names = set(self.table)
+
+        def __getitem__(self, name: str) -> dict[tuple[int], Any]:
+            return {(3,): SimpleNamespace(duration=self.table[name])}
+
+    measure, reset = qpu_planning.control_timing_dt(Target(2e-9, 1.6e-6, 0.8e-6), 3)
+    if not (math.isclose(measure, 800.0) and math.isclose(reset, 400.0)):
+        raise RuntimeError("control timing differs from duration / dt")
+    for broken in (Target(None, 1.6e-6, 0.8e-6), Target(2e-9, None, 0.8e-6), Target(2e-9, 1.6e-6, 0.0)):
+        try:
+            qpu_planning.control_timing_dt(broken, 3)
+        except ValueError:
+            continue
+        raise RuntimeError("incomplete control timing was admitted")
+
+
 def _forbid_service(*args: Any, **kwargs: Any) -> Any:
     del args, kwargs
     raise RuntimeError("credential-free planning contract reached a RuntimeService constructor")
@@ -525,6 +594,7 @@ def _verify() -> None:
         _verify_usage_accounting()
         _verify_infeasible_archive(service, choices, configuration)
         _verify_unrouted_family_diagnostics(service)
+    _verify_control_timing()
     print(
         "QPU planning: matching, calibrated timing, budgets, shot optimization, "
         "approval, infeasible archives, and unrouted rejection diagnostics checked"

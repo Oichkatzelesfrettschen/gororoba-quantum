@@ -1,0 +1,595 @@
+[
+  {
+    "submission_complete": true,
+    "backends_without_recorded_job_id": [],
+    "members_without_recorded_job_id": [],
+    "jobs_without_recorded_id": [],
+    "jobs": {
+      "db6uqdkvf2bc73d1sc80": {
+        "backend": "ibm_fez",
+        "kind": "dynamic",
+        "usage": {
+          "job_status": "DONE",
+          "usage_status": "final",
+          "usage_source": "job.usage(partial=False)",
+          "submitted_pub_shots": 32768,
+          "qpu_charge_time_seconds": "11",
+          "pub_shots_per_qpu_second": "2978.909",
+          "throughput_unavailable_reason": null,
+          "raw_usage_metadata": {
+            "qpu_charge_time_seconds": 11,
+            "value": 0.1745,
+            "unit": "resource_units",
+            "status": "complete",
+            "details": [
+              {
+                "value": 0.1745,
+                "unit": "resource_units",
+                "metric": {
+                  "id": "caffe3ca-729c-5750-8777-df63bbf8bfd9",
+                  "value": 11
+                }
+              }
+            ]
+          }
+        },
+        "pub_timing": {
+          "ibm_fez_dynamic_pub_01": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2255,
+            "target_gate_lower_bound_dt": 2255,
+            "scheduled_circuit_duration_dt": 4128,
+            "scheduler_residual_dt": 1873,
+            "feed_forward_operation_count": 1,
+            "sequential_stage_count": 1,
+            "parallel_stream_count": 1,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_02": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2249,
+            "target_gate_lower_bound_dt": 2249,
+            "scheduled_circuit_duration_dt": 3973,
+            "scheduler_residual_dt": 1724,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_03": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2664,
+            "target_gate_lower_bound_dt": 2664,
+            "scheduled_circuit_duration_dt": 4537,
+            "scheduler_residual_dt": 1873,
+            "feed_forward_operation_count": 1,
+            "sequential_stage_count": 1,
+            "parallel_stream_count": 1,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_04": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2664,
+            "target_gate_lower_bound_dt": 2664,
+            "scheduled_circuit_duration_dt": 4388,
+            "scheduler_residual_dt": 1724,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_05": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2664,
+            "target_gate_lower_bound_dt": 2664,
+            "scheduled_circuit_duration_dt": 4538,
+            "scheduler_residual_dt": 1874,
+            "feed_forward_operation_count": 1,
+            "sequential_stage_count": 1,
+            "parallel_stream_count": 1,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_06": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2664,
+            "target_gate_lower_bound_dt": 2664,
+            "scheduled_circuit_duration_dt": 4389,
+            "scheduler_residual_dt": 1725,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_07": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2504,
+            "target_gate_lower_bound_dt": 2504,
+            "scheduled_circuit_duration_dt": 4251,
+            "scheduler_residual_dt": 1747,
+            "feed_forward_operation_count": 1,
+            "sequential_stage_count": 1,
+            "parallel_stream_count": 1,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          },
+          "ibm_fez_dynamic_pub_08": {
+            "timing_status": "complete",
+            "timing_source": "executor_chunk_timing",
+            "execution_window_start": "2026-10-13T08:35:34.497704+00:00",
+            "execution_window_stop": "2026-10-13T08:35:44.264928+00:00",
+            "planned_target_gate_lower_bound_dt": 2504,
+            "target_gate_lower_bound_dt": 2504,
+            "scheduled_circuit_duration_dt": 4226,
+            "scheduler_residual_dt": 1722,
+            "feed_forward_operation_count": 0,
+            "sequential_stage_count": 0,
+            "parallel_stream_count": 0,
+            "groups": [
+              "n21_orbit_rca"
+            ],
+            "timing_unavailable_reason": null
+          }
+        },
+        "raw": {
+          "directory": "raw/db6uqdkvf2bc73d1sc80",
+          "files": {
+            "pub_00.json": "3f1275b86807a1d4773a81503db0b3a096a4d146a9d1f980d7aa28ddd5e3db0e",
+            "pub_01.json": "62c2e75faeb7a6e1355a0428b8ada55e0e7e36086da0c6f32bc097b9ecfcdafc",
+            "pub_02.json": "2f5c5af4e0abf4c916bef66b507eeb14ac7c7b78a3a323898ac71e60c80539c0",
+            "pub_03.json": "6fe6c63e7c461ba9a7f380b32ec4c5705c5a0b195c650ee9e2b23a90fbc6db14",
+            "pub_04.json": "72bc2f1e0b23d6af45ae768f7305fbc5130af72ad7cd0caf7b0c8ad6b5545a6f",
+            "pub_05.json": "91d80ffb45a955e29bc9fd22093b3cbc7c352bcc63c000c503ca24a216c09e01",
+            "pub_06.json": "25196fa1b7c27980c534b3adf8d541c3866709ee0fd487d2a9ebc9b2e811609b",
+            "pub_07.json": "b959c91b955295a0fba3c6d8f977489278f1856f223bb05044ba9f3700d3de86",
+            "result_metadata.json": "3c817c13d94a67911a7b896088261547b81d08e1755f64c1220cdf0cedde69f7"
+          }
+        }
+      }
+    },
+    "family_analysis": {
+      "observables": [
+        {
+          "name": "n21_orbit_nominal_feedback_contrast",
+          "estimate": 0.1826171875,
+          "lo": 0.09010423829370011,
+          "hi": 0.2751301367062999,
+          "confidence_half_width": 0.09251294920629989,
+          "alpha": 0.05,
+          "null_value": 0.0,
+          "detection_radius": 0.08488134473378872,
+          "reject_null": true,
+          "bound_methods": [
+            "hoeffding_arbitrary_within_shot",
+            "hoeffding_arbitrary_within_shot"
+          ]
+        },
+        {
+          "name": "n21_orbit_window_delay_feedback_contrast",
+          "estimate": 0.110595703125,
+          "lo": 0.01808275391870011,
+          "hi": 0.20310865233129988,
+          "confidence_half_width": 0.09251294920629989,
+          "alpha": 0.05,
+          "null_value": 0.0,
+          "detection_radius": 0.08488134473378872,
+          "reject_null": true,
+          "bound_methods": [
+            "hoeffding_arbitrary_within_shot",
+            "hoeffding_arbitrary_within_shot"
+          ]
+        },
+        {
+          "name": "n21_orbit_extra_readout_feedback_contrast",
+          "estimate": 0.09765625,
+          "lo": 0.005143300793700109,
+          "hi": 0.19016919920629988,
+          "confidence_half_width": 0.09251294920629989,
+          "alpha": 0.05,
+          "null_value": 0.0,
+          "detection_radius": 0.08488134473378872,
+          "reject_null": true,
+          "bound_methods": [
+            "hoeffding_arbitrary_within_shot",
+            "hoeffding_arbitrary_within_shot"
+          ]
+        },
+        {
+          "name": "n21_orbit_window_echo_feedback_contrast",
+          "estimate": 0.170166015625,
+          "lo": 0.07765306641870011,
+          "hi": 0.2626789648312999,
+          "confidence_half_width": 0.09251294920629989,
+          "alpha": 0.05,
+          "null_value": 0.0,
+          "detection_radius": 0.08488134473378872,
+          "reject_null": true,
+          "bound_methods": [
+            "hoeffding_arbitrary_within_shot",
+            "hoeffding_arbitrary_within_shot"
+          ]
+        }
+      ],
+      "method": "shared planning/collection Hoeffding bounds grouped by immutable PUB identity",
+      "assumptions": [
+        "independent stationary repetitions; arbitrary dependence among replicas and members within each PUB shot",
+        "union bounds across PUBs; no independence assumption between PUBs or jobs",
+        "directional rejection uses the one-sided alpha radius; displayed intervals use the two-sided alpha radius"
+      ]
+    },
+    "invocation_usage": {
+      "known_final_charge_seconds": "11",
+      "total_charge_seconds": "11",
+      "charge_complete": true,
+      "workload_complete": true,
+      "predicted_charge_seconds": 11.150112512,
+      "charge_prediction_residual_seconds": -0.15011251199999975,
+      "charge_prediction_residual_withheld": null,
+      "jobs_without_final_charge": []
+    }
+  },
+  {
+    "group": "n21_orbit_rca",
+    "backend": "ibm_fez",
+    "job_id": "db6uqdkvf2bc73d1sc80",
+    "executed": {
+      "n21_orbit_nominal_feedback": {
+        "pub": "ibm_fez_dynamic_pub_01",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_nominal_no_feedback": {
+        "pub": "ibm_fez_dynamic_pub_02",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_window_delay_feedback": {
+        "pub": "ibm_fez_dynamic_pub_03",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_window_delay_no_feedback": {
+        "pub": "ibm_fez_dynamic_pub_04",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_extra_readout_feedback": {
+        "pub": "ibm_fez_dynamic_pub_05",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_extra_readout_no_feedback": {
+        "pub": "ibm_fez_dynamic_pub_06",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_window_echo_feedback": {
+        "pub": "ibm_fez_dynamic_pub_07",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      },
+      "n21_orbit_window_echo_no_feedback": {
+        "pub": "ibm_fez_dynamic_pub_08",
+        "start": "2026-10-13T08:35:34.497704+00:00",
+        "stop": "2026-10-13T08:35:44.264928+00:00",
+        "calibration": "2026-10-13T01:01:23-07:00",
+        "calibration_changed_during_shots": false,
+        "window_unavailable_reason": null,
+        "shots": 4096
+      }
+    },
+    "packing_schedule": null,
+    "measured": {
+      "n21_orbit_nominal_feedback": [
+        [
+          0.335938,
+          0.29126,
+          0.174072,
+          0.19873
+        ]
+      ],
+      "n21_orbit_nominal_no_feedback": [
+        [
+          0.335938,
+          0.19873,
+          0.176514,
+          0.288818
+        ]
+      ],
+      "n21_orbit_window_delay_feedback": [
+        [
+          0.318604,
+          0.262939,
+          0.195068,
+          0.223389
+        ]
+      ],
+      "n21_orbit_window_delay_no_feedback": [
+        [
+          0.327637,
+          0.211914,
+          0.17749,
+          0.282959
+        ]
+      ],
+      "n21_orbit_extra_readout_feedback": [
+        [
+          0.331299,
+          0.269531,
+          0.186035,
+          0.213135
+        ]
+      ],
+      "n21_orbit_extra_readout_no_feedback": [
+        [
+          0.3396,
+          0.218994,
+          0.181152,
+          0.260254
+        ]
+      ],
+      "n21_orbit_window_echo_feedback": [
+        [
+          0.359131,
+          0.256104,
+          0.157227,
+          0.227539
+        ]
+      ],
+      "n21_orbit_window_echo_no_feedback": [
+        [
+          0.363525,
+          0.17334,
+          0.148193,
+          0.314941
+        ]
+      ]
+    },
+    "measured_statistics": {
+      "summary": {
+        "nominal_feedback_signed_contrast": 0.092529296875,
+        "nominal_no_feedback_signed_contrast": -0.090087890625,
+        "nominal_contrast_difference": 0.1826171875,
+        "window_delay_feedback_signed_contrast": 0.03955078125,
+        "window_delay_no_feedback_signed_contrast": -0.071044921875,
+        "window_delay_contrast_difference": 0.110595703125,
+        "extra_readout_feedback_signed_contrast": 0.056396484375,
+        "extra_readout_no_feedback_signed_contrast": -0.041259765625,
+        "extra_readout_contrast_difference": 0.09765625,
+        "window_echo_feedback_signed_contrast": 0.028564453125,
+        "window_echo_no_feedback_signed_contrast": -0.1416015625,
+        "window_echo_contrast_difference": 0.170166015625
+      },
+      "summary_per_replica": [
+        {
+          "nominal_feedback_signed_contrast": 0.092529296875,
+          "nominal_no_feedback_signed_contrast": -0.090087890625,
+          "nominal_contrast_difference": 0.1826171875,
+          "window_delay_feedback_signed_contrast": 0.03955078125,
+          "window_delay_no_feedback_signed_contrast": -0.071044921875,
+          "window_delay_contrast_difference": 0.110595703125,
+          "extra_readout_feedback_signed_contrast": 0.056396484375,
+          "extra_readout_no_feedback_signed_contrast": -0.041259765625,
+          "extra_readout_contrast_difference": 0.09765625,
+          "window_echo_feedback_signed_contrast": 0.028564453125,
+          "window_echo_no_feedback_signed_contrast": -0.1416015625,
+          "window_echo_contrast_difference": 0.170166015625
+        }
+      ],
+      "variance": {
+        "n21_orbit_nominal_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5462646484375,
+          "shot_variance": 2.9384067602222785e-05
+        },
+        "n21_orbit_nominal_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4549560546875,
+          "shot_variance": 2.9262268071761355e-05
+        },
+        "n21_orbit_window_delay_feedback": {
+          "replicas": 1.0,
+          "mean": 0.519775390625,
+          "shot_variance": 2.9587637982331216e-05
+        },
+        "n21_orbit_window_delay_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4644775390625,
+          "shot_variance": 2.9896586056565866e-05
+        },
+        "n21_orbit_extra_readout_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5281982421875,
+          "shot_variance": 2.9265469493111596e-05
+        },
+        "n21_orbit_extra_readout_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4793701171875,
+          "shot_variance": 2.9147075110813603e-05
+        },
+        "n21_orbit_window_echo_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5142822265625,
+          "shot_variance": 2.946940003312193e-05
+        },
+        "n21_orbit_window_echo_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.42919921875,
+          "shot_variance": 2.857850631698966e-05
+        }
+      }
+    },
+    "packing_interpretation": null,
+    "measured_summary_readout_corrected": {
+      "skipped": "feed-forward circuit: mid-circuit readout error changes later quantum evolution"
+    },
+    "replayed_statistics": {
+      "summary": {
+        "nominal_feedback_signed_contrast": -0.00048828125,
+        "nominal_no_feedback_signed_contrast": -0.197998046875,
+        "nominal_contrast_difference": 0.197509765625,
+        "window_delay_feedback_signed_contrast": 0.009521484375,
+        "window_delay_no_feedback_signed_contrast": -0.208251953125,
+        "window_delay_contrast_difference": 0.2177734375,
+        "extra_readout_feedback_signed_contrast": -0.008056640625,
+        "extra_readout_no_feedback_signed_contrast": -0.2197265625,
+        "extra_readout_contrast_difference": 0.211669921875,
+        "window_echo_feedback_signed_contrast": 0.007080078125,
+        "window_echo_no_feedback_signed_contrast": -0.194580078125,
+        "window_echo_contrast_difference": 0.20166015625
+      },
+      "summary_per_replica": [
+        {
+          "nominal_feedback_signed_contrast": -0.00048828125,
+          "nominal_no_feedback_signed_contrast": -0.197998046875,
+          "nominal_contrast_difference": 0.197509765625,
+          "window_delay_feedback_signed_contrast": 0.009521484375,
+          "window_delay_no_feedback_signed_contrast": -0.208251953125,
+          "window_delay_contrast_difference": 0.2177734375,
+          "extra_readout_feedback_signed_contrast": -0.008056640625,
+          "extra_readout_no_feedback_signed_contrast": -0.2197265625,
+          "extra_readout_contrast_difference": 0.211669921875,
+          "window_echo_feedback_signed_contrast": 0.007080078125,
+          "window_echo_no_feedback_signed_contrast": -0.194580078125,
+          "window_echo_contrast_difference": 0.20166015625
+        }
+      ],
+      "variance": {
+        "n21_orbit_nominal_feedback": {
+          "replicas": 1.0,
+          "mean": 0.499755859375,
+          "shot_variance": 3.045795892830938e-05
+        },
+        "n21_orbit_nominal_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4010009765625,
+          "shot_variance": 2.819930887199007e-05
+        },
+        "n21_orbit_window_delay_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5047607421875,
+          "shot_variance": 3.034813198610209e-05
+        },
+        "n21_orbit_window_delay_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.3958740234375,
+          "shot_variance": 2.7170197427039966e-05
+        },
+        "n21_orbit_extra_readout_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4959716796875,
+          "shot_variance": 3.076693610637449e-05
+        },
+        "n21_orbit_extra_readout_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.39013671875,
+          "shot_variance": 2.7868838515132666e-05
+        },
+        "n21_orbit_window_echo_feedback": {
+          "replicas": 1.0,
+          "mean": 0.5035400390625,
+          "shot_variance": 3.0320803489303216e-05
+        },
+        "n21_orbit_window_echo_no_feedback": {
+          "replicas": 1.0,
+          "mean": 0.4027099609375,
+          "shot_variance": 2.8251404728507623e-05
+        }
+      }
+    },
+    "tvd_measured_to_replayed": {
+      "n21_orbit_nominal_feedback": [
+        0.07177734375
+      ],
+      "n21_orbit_nominal_no_feedback": [
+        0.087158203125
+      ],
+      "n21_orbit_window_delay_feedback": [
+        0.068603515625
+      ],
+      "n21_orbit_window_delay_no_feedback": [
+        0.11376953125
+      ],
+      "n21_orbit_extra_readout_feedback": [
+        0.07373046875
+      ],
+      "n21_orbit_extra_readout_no_feedback": [
+        0.117431640625
+      ],
+      "n21_orbit_window_echo_feedback": [
+        0.017333984375
+      ],
+      "n21_orbit_window_echo_no_feedback": [
+        0.03271484375
+      ]
+    }
+  }
+]

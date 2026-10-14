@@ -19,6 +19,25 @@ in a clean checkout. All retained originals preserve their registered SHA-256.
 Historical Git commits can retain previously tracked PDF blobs; the folder split
 changes the branch tip and performs no history rewrite.
 
+The [annihilator determinant-line proof](notes/annihilator_determinant_line.md)
+and [exact replay](evidence/kernel_determinant/README.md) apply the complex
+skew framework to global determinant trivializations on each rank locus.
+They retain full bundle and attachment classification as open obligations.
+The [latest C881 audit](notes/c881_exhaustive_proof.md) and
+[Rocq replay](evidence/c881_exhaustive/README.md) refresh the finite
+separating-degree proof against the latest audited `open_gororoba` HEAD.
+
+The [projective kernel-frontier construction](notes/projective_kernel_frontiers.md)
+and [exact replay](evidence/projective_kernel_limits/README.md) recover leading
+kernel planes through polynomial saturation and describe the full pair space
+as a quotient of tautological sphere spaces over real frontier graphs.
+Computing those graph closures and the global invariants remains open.
+
+The [real circle-frontier graph](notes/real_circle_frontier_graphs.md) and
+[replay](evidence/real_frontier_graphs/README.md) compute the complete named
+cone slice closure, its trace inverse, and integral evaluation maps. Ambient
+coverage and unrestricted topology remain open.
+
 ## Hosted papers
 
 The notes attribute each source and link its exact-version license evidence.
@@ -38,10 +57,15 @@ each source license in force.
 | [Levratti 2026 -- Fano Duality, Projective Orthogonality and the CSS Bridge (author-hosted manuscript)](notes/levratti-2026-fano-css.md) | [levratti-2026-fano-css.pdf](pdf/levratti-2026-fano-css.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Covariant quantum kernels for data with group structure](notes/s41567-023-02340-9.md) | [2105.03406.pdf](pdf/2105.03406.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Challenges and opportunities in quantum optimization](notes/s42254-024-00770-9.md) | [2312.02279.pdf](pdf/2312.02279.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Baeumer et al. 2024 -- Quantum Fourier transform using dynamic circuits (arXiv 2403.09514)](notes/2403.09514.md) | [2403.09514v2.pdf](pdf/2403.09514v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 | [Proving Quantum Programs Correct](notes/sqir-voqc-proof-interfaces.md) | [LIPIcs.ITP.2021.21.pdf](pdf/LIPIcs.ITP.2021.21.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Gate Set Tomography](notes/2009.07301.md) | [2009.07301.pdf](pdf/2009.07301.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 | [Latency considerations for stochastic optimizers in variational quantum algorithms](notes/2201.13438.md) | [2201.13438.pdf](pdf/2201.13438.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Brotherton et al. 2025 -- Any Light Particle Searches with ALPS II: first science results](notes/2512.14110.md) | [2512.14110v3.pdf](pdf/2512.14110v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Wei et al. 2026 -- New Constraints on Dark Photon Dark Matter with a Millimeter-Wave Dielectric Haloscope](notes/2503.23354.md) | [2503.23354v2.pdf](pdf/2503.23354v2.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Fosco and Guntsche 2026 -- Dynamical Casimir effect in the worldline formulation](notes/2604.13237.md) | [2604.13237v3.pdf](pdf/2604.13237v3.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
+| [Ma et al. 2026 -- Prediction of a measurable sign change in the Casimir force using a magnetic fluid](notes/2601.00483.md) | [2601.00483v1.pdf](pdf/2601.00483v1.pdf) | [CC-BY-4.0](https://creativecommons.org/licenses/by/4.0/) |
 
 The two Nature aliases identify retained arXiv preprints, with their own
 licenses and versions. The aliases do not identify the publisher versions.
@@ -94,6 +118,15 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Decker and Wocjan 2007 -- Hidden quadratic and cubic polynomial function graphs (arXiv quant-ph/0703195)](notes/quant-ph-0703195.md) | [PDF](https://arxiv.org/pdf/quant-ph/0703195v3) | `quant-ph-0703195v3.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/0703195v3) |
 | [Griffiths and Niu 1996 -- Semiclassical Fourier Transform for Quantum Computation (arXiv quant-ph/9511007)](notes/quant-ph-9511007.md) | [PDF](https://arxiv.org/pdf/quant-ph/9511007v1) | `quant-ph-9511007v1.pdf` | [Legacy arXiv hosting grant](https://arxiv.org/abs/quant-ph/9511007v1) |
 | [Howard et al. -- Time-uniform confidence sequences](notes/1810.08240.md) | [PDF](https://arxiv.org/pdf/1810.08240v9) | `1810.08240v9.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1810.08240v9) |
+| [Seif et al. 2024 -- Suppressing correlated noise via context-aware compiling](notes/2403.06852.md) | [PDF](https://arxiv.org/pdf/2403.06852v2) | `2403.06852v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2403.06852v2) |
+| [Bylander et al. 2011 -- Noise spectroscopy through dynamical decoupling with a superconducting flux qubit](notes/1101.4707.md) | [PDF](https://arxiv.org/pdf/1101.4707v1) | `1101.4707v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1101.4707v1) |
+| [McKay et al. 2017 -- Efficient Z gates for quantum computing](notes/1612.00858.md) | [PDF](https://arxiv.org/pdf/1612.00858v2) | `1612.00858v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1612.00858v2) |
+| [Granade et al. 2012 -- Robust online Hamiltonian learning](notes/1207.1655.md) | [PDF](https://arxiv.org/pdf/1207.1655v2) | `1207.1655v2.pdf` | [CC-BY-NC-SA-3.0](https://arxiv.org/abs/1207.1655v2) |
+| [Sheldon et al. 2016 -- Characterizing errors on qubit operations via iterative randomized benchmarking](notes/1504.06597.md) | [PDF](https://arxiv.org/pdf/1504.06597v1) | `1504.06597v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1504.06597v1) |
+| [Kimmel, Low and Yoder 2015 -- Robust calibration of a universal single-qubit gate set via robust phase estimation](notes/1502.02677.md) | [PDF](https://arxiv.org/pdf/1502.02677v3) | `1502.02677v3.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1502.02677v3) |
+| [Smolin, Smith and Vargo 2013 -- Oversimplifying quantum factoring](notes/1301.7007.md) | [PDF](https://arxiv.org/pdf/1301.7007v1) | `1301.7007v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1301.7007v1) |
+| [Maurer and Pontil 2009 -- Empirical Bernstein bounds and sample variance penalization](notes/0907.3740.md) | [PDF](https://arxiv.org/pdf/0907.3740v1) | `0907.3740v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/0907.3740v1) |
+| [Waudby-Smith and Ramdas 2024 -- Estimating means of bounded random variables by betting](notes/2010.09686.md) | [PDF](https://arxiv.org/pdf/2010.09686v7) | `2010.09686v7.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2010.09686v7) |
 
 | [Quantitative Curve Selection Lemma](notes/1803.00505.md) | [PDF](https://arxiv.org/pdf/1803.00505v3) | `1803.00505v3.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1803.00505v3) |
 | [Rational points in henselian discrete valuation rings](notes/greenberg-henselian-lifting.md) | [PDF](https://pmihes.centre-mersenne.org/item/10.1007/BF02684802.pdf) | `greenberg-1966-henselian-points.pdf` | [Source-specific rights audit](https://pmihes.centre-mersenne.org/articles/10.1007/BF02684802/) |
@@ -110,6 +143,14 @@ exclusion from hosting does not assert that every possible reuse is forbidden.
 | [Circuit Quantum Electrodynamics](notes/2005.12667.md) | [PDF](https://arxiv.org/pdf/2005.12667v1) | `2005.12667v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2005.12667v1) |
 | [The Casimir force between real materials: experiment and theory](notes/0902.4022.md) | [PDF](https://arxiv.org/pdf/0902.4022v1) | `0902.4022v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/0902.4022v1) |
 | [Observation of the Dynamical Casimir Effect in a Superconducting Circuit](notes/1105.4714.md) | [PDF](https://arxiv.org/pdf/1105.4714v1) | `1105.4714v1.pdf` | [Source-specific rights audit](https://arxiv.org/abs/1105.4714v1) |
+| [Kalia et al. 2026 -- Improved Dark Photon Sensitivity from the Dark SRF Experiment](notes/2510.02427.md) | [PDF](https://arxiv.org/pdf/2510.02427v2) | `2510.02427v2.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2510.02427v2) |
+| [Banks et al. 2025 -- Searching for screened scalar forces with long-baseline atom interferometers](notes/2511.09750.md) | [PDF](https://arxiv.org/pdf/2511.09750v1) | `2511.09750v1.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2511.09750v1) |
+| [Ikeda 2023 -- Demonstration of Quantum Energy Teleportation on Superconducting Quantum Hardware](notes/2301.02666.md) | [PDF](https://arxiv.org/pdf/2301.02666v5) | `2301.02666v5.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2301.02666v5) |
+| [Hotta 2010 -- Energy-Entanglement Relation for Quantum Energy Teleportation](notes/1002.0200.md) | [PDF](https://arxiv.org/pdf/1002.0200v2) | `1002.0200v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/1002.0200v2) |
+| [Ford and Roman 1997 -- Restrictions on Negative Energy Density in Flat Spacetime](notes/gr-qc-9607003.md) | [PDF](https://arxiv.org/pdf/gr-qc/9607003v2) | `gr-qc-9607003v2.pdf` | [Assumed arXiv 1991-2003 grant](https://arxiv.org/abs/gr-qc/9607003v2) |
+| [Wilmot 2025 -- Structure of the Cayley-Dickson algebras](notes/2505.11747.md) | [PDF](https://arxiv.org/pdf/2505.11747v3) | `2505.11747v3.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2505.11747v3) |
+| [LZ Collaboration 2026 -- Search for dark matter particle interactions in an extended nuclear recoil energy window with the LUX-ZEPLIN (LZ) experiment](notes/2609.02823.md) | [PDF](https://arxiv.org/pdf/2609.02823v1) | `2609.02823v1.pdf` | [CC-BY-NC-SA-4.0](https://arxiv.org/abs/2609.02823v1) |
+| [DES Collaboration 2026 -- Dark Energy Survey Year 6 Results: Cosmological Constraints from Galaxy Clustering and Weak Lensing](notes/2601.14559.md) | [PDF](https://arxiv.org/pdf/2601.14559v2) | `2601.14559v2.pdf` | [ArXiv-only distribution grant](https://arxiv.org/abs/2601.14559v2) |
 | [Quantum collision models: open system dynamics from repeated interactions](notes/2106.11974.md) | [PDF](https://arxiv.org/pdf/2106.11974v2) | `2106.11974v2.pdf` | [Source-specific rights audit](https://arxiv.org/abs/2106.11974v2) |
 
 ## Licensed software source snapshots
@@ -229,3 +270,11 @@ sha256sum -c docs/PDF_SHA256SUMS
 proof, optimizer, review, and hardware obligations. The next hardware priority
 remains model discrimination followed by a measured optimizer decision before
 broad atlas expenditure. Each new physical case requires its own approval.
+
+## IBM Runtime documentation
+
+The [execution-guide note](notes/ibm-runtime-execution-guides.md) records nine IBM Quantum documentation pages
+(workload usage, stretch, Sampler options, Sampler inputs and outputs, run-time minimization,
+the client-side Sampler API, real-time backend-property refresh, circuit timing and execution modes) with retrieval SHA-256 and the use each page is cited for.
+
+The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.

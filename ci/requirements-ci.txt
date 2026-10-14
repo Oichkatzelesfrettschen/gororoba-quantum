@@ -1,0 +1,4 @@
+# Tools the CI gates invoke beyond the runtime pins in requirements.txt.
+mypy==1.19.1
+ruff==0.14.11
+matplotlib==3.11.2

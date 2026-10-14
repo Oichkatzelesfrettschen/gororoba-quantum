@@ -1,0 +1,118 @@
+--- a/sympy/ntheory/partitions_.py
++++ b/sympy/ntheory/partitions_.py
+@@ -1,7 +1,8 @@
+ from mpmath.libmp import (fzero, from_int, from_rational,
+-    fone, fhalf, bitcount, to_int, mpf_mul, mpf_div, mpf_sub,
++    fone, fhalf, to_int, mpf_mul, mpf_div, mpf_sub,
+     mpf_add, mpf_sqrt, mpf_pi, mpf_cosh_sinh, mpf_cos, mpf_sin)
+ from .residue_ntheory import _sqrt_mod_prime_power, is_quad_residue
++from sympy.core.evalf import bitcount
+ from sympy.utilities.decorator import deprecated
+ from sympy.utilities.memoization import recurrence_memo
+ 
+@@ -236,7 +237,7 @@
+         # On average, the terms decrease rapidly in magnitude.
+         # Dynamically reducing the precision greatly improves
+         # performance.
+-        p = bitcount(abs(to_int(d))) + 50
++        p = bitcount(to_int(d)) + 50
+     return int(to_int(mpf_add(s, fhalf, prec)))
+ 
+ 
+--- a/sympy/core/numbers.py
++++ b/sympy/core/numbers.py
+@@ -24,7 +24,7 @@
+ from sympy.multipledispatch import dispatch
+ import mpmath
+ import mpmath.libmp as mlib
+-from mpmath.libmp import bitcount, round_nearest as rnd
++from mpmath.libmp import round_nearest as rnd
+ from mpmath.libmp.backend import MPZ
+ from mpmath.libmp import mpf_pow, mpf_pi, mpf_e, phi_fixed
+ from mpmath.ctx_mp_python import mpnumeric
+@@ -910,7 +910,7 @@
+                     # don't compute number or else it may
+                     # over/underflow
+                     return Float._new(
+-                        (num[0], num[1], num[2], bitcount(num[1])),
++                        (num[0], num[1], num[2], MPZ(num[1]).bit_length()),
+                         precision)
+         elif isinstance(num, (Number, NumberSymbol)):
+             _mpf_ = num._as_mpf_val(precision)
+--- a/sympy/core/evalf.py
++++ b/sympy/core/evalf.py
+@@ -13,10 +13,9 @@
+ from mpmath import inf as mpmath_inf
+ from mpmath.libmp import (from_int, from_man_exp, from_rational, fhalf,
+                           fnan, finf, fninf, fnone, fone, fzero, mpf_abs, mpf_add,
+-                          mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_e, mpf_exp, mpf_log, mpf_lt,
++                          mpf_atan, mpf_atan2, mpf_cmp, mpf_cos, mpf_e, mpf_exp, mpf_ln, mpf_lt,
+                           mpf_mul, mpf_neg, mpf_pi, mpf_pow, mpf_pow_int, mpf_shift, mpf_sin,
+                           mpf_sqrt, normalize, round_nearest, to_int, to_str, mpf_tan)
+-from mpmath.libmp import bitcount as mpmath_bitcount
+ from mpmath.libmp.backend import MPZ
+ from mpmath.libmp.libmpc import _infs_nan
+ from mpmath.libmp.libmpf import dps_to_prec, prec_to_dps
+@@ -50,7 +49,7 @@
+ def bitcount(n):
+     """Return smallest integer, b, such that |n|/2**b < 1.
+     """
+-    return mpmath_bitcount(abs(int(n)))
++    return MPZ(abs(int(n))).bit_length()
+ 
+ # Used in a few places as placeholder values to denote exponents and
+ # precision levels, e.g. of exact numbers. Must be careful to avoid
+@@ -992,7 +991,7 @@
+ 
+     imaginary_term = (mpf_cmp(xre, fzero) < 0)
+ 
+-    re = mpf_log(mpf_abs(xre), prec, rnd)
++    re = mpf_ln(mpf_abs(xre), prec, rnd)
+     size = fastlog(re)
+     if prec - size > workprec and re != fzero:
+         from .add import Add
+@@ -1001,7 +1000,7 @@
+         xre, xim, _, _ = evalf_add(add, prec, options)
+         prec2 = workprec - fastlog(xre)
+         # xre is now x - 1 so we add 1 back here to calculate x
+-        re = mpf_log(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
++        re = mpf_ln(mpf_abs(mpf_add(xre, fone, prec2)), prec, rnd)
+ 
+     re_acc = prec
+ 
+--- a/sympy/physics/quantum/qubit.py
++++ b/sympy/physics/quantum/qubit.py
+@@ -10,6 +10,7 @@
+ import math
+ 
+ from sympy.core.add import Add
++from sympy.core.evalf import bitcount
+ from sympy.core.mul import Mul
+ from sympy.core.numbers import Integer
+ from sympy.core.power import Pow
+@@ -29,7 +30,6 @@
+ from sympy.physics.quantum.matrixutils import (
+     numpy_ndarray, scipy_sparse_matrix
+ )
+-from mpmath.libmp.libintmath import bitcount
+ 
+ __all__ = [
+     'Qubit',
+@@ -307,7 +307,7 @@
+         # that integer with the minimal number of bits.
+         if len(args) == 1 and args[0] > 1:
+             #rvalues is the minimum number of bits needed to express the number
+-            rvalues = reversed(range(bitcount(abs(args[0]))))
++            rvalues = reversed(range(bitcount(args[0])))
+             qubit_values = [(args[0] >> i) & 1 for i in rvalues]
+             return QubitState._eval_args(qubit_values)
+         # For two numbers, the second number is the number of bits
+@@ -319,7 +319,7 @@
+ 
+     @classmethod
+     def _eval_args_with_nqubits(cls, number, nqubits):
+-        need = bitcount(abs(number))
++        need = bitcount(number)
+         if nqubits < need:
+             raise ValueError(
+                 'cannot represent %s with %s bits' % (number, nqubits))

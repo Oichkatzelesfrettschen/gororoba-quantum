@@ -135,6 +135,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "predict.py",
     "pub_shot_allocation.py",
     "qpe_diagnostics.py",
+    "patch_characterization.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "rank_attachments.py",
@@ -238,6 +239,7 @@ class Snapshot:
             "calibration": self.calibration,
             "fetched_at": self.fetched_at,
             "capabilities": self.capabilities.summary(),
+            "repetition_delay": _optional_repetition_delay(self.backend),
             "medians": self.medians,
             "excluded_qubits": {str(q): r for q, r in sorted(self.excluded_qubits.items())},
             "excluded_edges": {f"{a}-{b}": r for (a, b), r in sorted(self.excluded_edges.items())},
@@ -2102,7 +2104,7 @@ def readout_corrected(dist: np.ndarray, isa: QuantumCircuit, props: Any, symmetr
     for inst in isa.data:
         if inst.operation.name == "measure":
             writer[isa.find_bit(inst.clbits[0]).index] = isa.find_bit(inst.qubits[0]).index
-    inverse = np.ones((1, 1))
+    inverse: np.ndarray = np.ones((1, 1))
     for clbit in reversed(range(isa.num_clbits)):
         e10, e01 = readout_flips(props, writer[clbit])
         if symmetric:
@@ -2418,8 +2420,31 @@ def _choice_record(
         ],
         **replica_statistics(choice.group, choice.entries, noisy, shots, _reference_scope(choice, scopes)),
         "summary_readout_corrected": corrected_summary(choice.group, choice.entries, noisy, choice.snap.properties),
+        "placed_qubit_calibration": placed_qubit_calibration(
+            choice.snap.properties, sorted({qubit for replica in choice.replicas for qubit in replica.qubits})
+        ),
         "members": members,
     }
+
+
+PLACED_QUBIT_FIELDS = ("T1", "T2", "readout_error", "prob_meas1_prep0", "prob_meas0_prep1", "frequency")
+
+
+def placed_qubit_calibration(properties: Any, qubits: list[int]) -> dict[str, dict[str, float]]:
+    """The snapshot's per-qubit coherence and assignment values for every executing qubit.
+
+    Backend properties report T1 and T2 in microseconds and assignment rates as
+    probabilities; a field the backend omits stays absent.
+    """
+    if properties is None:
+        return {}
+    placed = {}
+    for qubit in qubits:
+        values = {item.name: item.value for item in properties.qubits[qubit]}
+        placed[str(qubit)] = {
+            name: float(values[name]) for name in PLACED_QUBIT_FIELDS if isinstance(values.get(name), (int, float))
+        }
+    return placed
 
 
 def discover_snapshots(
@@ -2805,6 +2830,53 @@ def choice_change_reasons(choice: Choice, fresh: Snapshot) -> list[str]:
     except Exception as error:
         reasons.append(f"calibration fingerprint failed ({type(error).__name__})")
     return sorted(set(reasons))
+
+
+def _optional_repetition_delay(backend: Any) -> float | None:
+    """The backend's configured repetition delay in seconds, or None for a fixed repetition rate."""
+    try:
+        return qpu_planning.repetition_delay(backend)
+    except (ValueError, AttributeError):
+        return None
+
+
+def unchanged_since_planning(
+    record: dict[str, Any],
+    inventory: dict[str, Any],
+    choices: list[Choice],
+    fresh: list[Snapshot],
+    remaining_seconds: Any,
+) -> bool:
+    """Whether a pre-submission refresh would rebuild exactly the planned choices.
+
+    Selection reads every backend's inventory entry (eligibility, status,
+    queue, calibration, capabilities, repetition delay, medians and
+    exclusions) and the optimizer reads the account's remaining quota, so
+    each must match its planning value; the entries are captured when the
+    snapshot is taken, so a cached backend object refreshed in place still
+    compares its planning value. Every chosen backend's compiled instructions
+    must also keep their capabilities and calibration fingerprint.
+    """
+    planned = record.get("system_inventory")
+    if not isinstance(planned, dict) or set(planned) != set(inventory):
+        return False
+    planned_remaining = record.get("budget_plan", {}).get("remaining_seconds")
+    if planned_remaining is None or remaining_seconds != planned_remaining:
+        return False
+    for name, entry in inventory.items():
+        before = planned[name]
+        if not isinstance(before, dict) or not isinstance(entry, dict):
+            return False
+        if {k: v for k, v in before.items() if k != "fetched_at"} != {
+            k: v for k, v in entry.items() if k != "fetched_at"
+        }:
+            return False
+    by_name = {snapshot.name: snapshot for snapshot in fresh}
+    for choice in choices:
+        current = by_name.get(choice.snap.name)
+        if current is None or choice_change_reasons(choice, current):
+            return False
+    return True
 
 
 def choice_reselection_reasons(current: Choice, fresh: Choice) -> list[str]:
@@ -3222,7 +3294,17 @@ def submit(
             f"submission requires an admitted plan, received {record.get('state')!r}: {'; '.join(reasons)}"
         )
     fresh_design: dict[str, Any] = {}
-    if getattr(args, "family", None):
+    unchanged = unchanged_since_planning(
+        record, inventory, choices, fresh_snapshots, service.usage().get("usage_remaining_seconds")
+    )
+    if unchanged:
+        # plan() ran in this process against the same calibrations, so a
+        # rebuild reproduces its choices exactly; the approved-record
+        # comparison below still checks this plan in full.
+        fresh_choices = list(choices)
+        fresh_fusion_placement = record.get("fusion_placement", {})
+        print("pre-submit refresh: every backend's calibration, eligibility and queue match planning; reusing the plan")
+    elif getattr(args, "family", None):
         fresh_choices, fresh_design = qpu_planning.prepare(
             sys.modules[__name__], fresh_snapshots, args, service.usage(), attempt_trace
         )
@@ -3270,6 +3352,7 @@ def submit(
             "system_inventory": inventory,
             "skipped_backends": skipped,
             "reselected_groups": reselected,
+            "rebuilt": not unchanged,
             "fusion_placement": fresh_fusion_placement,
             "selection_trace": attempt_trace,
         }
@@ -4569,7 +4652,18 @@ def main(argv: list[str] | None = None) -> int:
         default=[],
         help="require an additional cost assumption NAME:OVERHEAD_SECONDS:LATENCY_US; repeat for a finite set",
     )
+    parser.add_argument(
+        "--patch-qubits",
+        type=lambda value: [int(item) for item in value.split(",")],
+        help="physical qubits of the pinned patch, in patch_characterization.PATCH_ROLES order",
+    )
     parser.add_argument("--local-compute", choices=("cpu", "gpu", "auto"), default="auto")
+    parser.add_argument(
+        "--local-compute-method",
+        choices=local_compute.QUALIFIED_METHODS,
+        default=local_compute.DYNAMIC_STATEVECTOR,
+        help="density_matrix replays records planned before dynamic batches ran statevector trajectories",
+    )
     parser.add_argument("--simulation-threads", type=_positive_int, default=parallel.default_threads())
     parser.add_argument("--simulation-memory-mb", type=_positive_int, default=512)
     parser.add_argument(
@@ -4724,6 +4818,10 @@ def main(argv: list[str] | None = None) -> int:
         parser.error("--family needs per-job --max-execution-seconds and combined --max-total-execution-seconds")
     if args.family == "folded-qpe" and args.max_replicas not in (None, 1):
         parser.error("the folded family uses one fixed physical placement per candidate; --max-replicas must be 1")
+    if (args.family == "patch-window") != (args.patch_qubits is not None):
+        parser.error("--patch-qubits applies to, and is required by, --family patch-window")
+    if args.family == "patch-window" and args.max_replicas not in (None, 1):
+        parser.error("the patch family runs one pinned placement; --max-replicas must be 1")
     if args.family == "folded-correction":
         if args.native_dry_run:
             parser.error("folded-correction uses fresh live calibration and post-execution schedules; mock is disabled")
@@ -4752,8 +4850,10 @@ def main(argv: list[str] | None = None) -> int:
         elif len(args.backends) != 3 or set(args.backends) != set(correction_backends):
             parser.error("folded-correction compares fresh calibration for ibm_fez,ibm_kingston,ibm_marrakesh")
         args.max_replicas = 1
-    if args.shot_allocation == "per-pub" and (args.family not in ("ripple", "rank-sector") or not args.optimize):
-        parser.error("per-PUB shot allocation requires an optimized static algebra family")
+    if args.shot_allocation == "per-pub" and (
+        args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize
+    ):
+        parser.error("per-PUB shot allocation requires an optimized algebra or patch family")
     if args.family in ("ripple", "rank-sector"):
         if args.max_replicas not in (None, 1) or (args.optimize and args.replica_tiers != [1]):
             parser.error("static algebra families require --max-replicas 1 and --replica-tiers 1")

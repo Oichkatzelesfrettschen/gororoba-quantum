@@ -149,12 +149,20 @@ def _verify_allocation() -> dict[str, Any]:
         pass
     else:
         raise RuntimeError("nonadjacent matched rows passed")
+    try:
+        allocate_plans((plan,), contracts[:2], (1024, 4096), budget, simulation_alpha=0.01, unscored_tier="Largest")
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("an unknown unscored tier was accepted")
     unscored_plans, unscored_audits = allocate_plans(
         (plan,), contracts[:2], (1024, 4096), budget, simulation_alpha=0.01
     )
     unscored = unscored_audits[unscored_plans[0].name]
     _require(
-        unscored["pub_shots"]["other_mean"] == 4096 and unscored["unscored_pubs_at_max_tier"] == ["other_mean"],
+        unscored["pub_shots"]["other_mean"] == 4096
+        and unscored["unscored_pubs"] == ["other_mean"]
+        and unscored["unscored_tier"] == "largest",
         "unscored control was silently dropped or downsampled",
     )
     impossible = tuple(replace(contract, precision_half_width=0.00001) for contract in contracts)

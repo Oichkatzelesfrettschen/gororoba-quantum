@@ -62,13 +62,13 @@ REGISTRY = GOROROBA_ROOT / "registry/data/project_csv"
 ZD_CSV = "data/csv/reggiani_standard_zero_divisor_pairs.csv"
 ZD_COLUMNS = ("u_low", "u_high", "u_sign", "v_low", "v_high", "v_sign")
 C881_SOURCE = "proofs/verified/C881_GF2CubicMinDegree.v"
-C881_SOURCE_SHA256 = "888059f2c064d811e3d0e5a8f4faaa2a104b19eb6a521d3b34e2f339dd8598c1"
+C881_SOURCE_SHA256 = "e72a6a1ae0ab345e482346c264451abe9acc0b959ac2bee645856d946a461a87"
 
 # C881_GF2CubicMinDegree.v transcribes these dim-32 top-level cross-assessor
 # component labels and classes from open_gororoba's Rust graph census. The
-# Rocq file checks the cubic witness below but only representative quadratic
-# candidates; the bounded interpolant check here independently closes the
-# degree-two denominator.
+# Rocq file checks the cubic witness and all 2048 degree-at-most-two
+# coefficient vectors, including the constant monomial. The bounded
+# interpolant check independently reconstructs that finite lower bound.
 PATHION_COMPONENT_LABELS = (3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 13, 12, 15, 14, 1)
 PATHION_HEPTACROSS_CLASSES = (1, 1, 1, 1, 1, 1, 0, 1, 0, 0, 0, 0, 0, 0, 1)
 PATHION_CUBIC_WITNESS = (1, 2, 3, 4, 5, 6, 7, 8)

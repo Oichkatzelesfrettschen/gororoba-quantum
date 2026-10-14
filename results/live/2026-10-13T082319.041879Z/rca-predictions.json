@@ -1,0 +1,27 @@
+{
+  "written_before_submission": true,
+  "quantity": "fitted coherent kickback phase per arm from scripts/n21_orbit_rca.py work_phase_one, in radians, sign as fitted on job db6ub8svf2bc73d1rc50 (+0.59)",
+  "reference": {"job": "db6ub8svf2bc73d1rc50", "phase": 0.5925, "work_idle_dt": {"136": 962, "144": 1412}},
+  "window_delay_dt": 415,
+  "hypotheses": {
+    "detuning_on_work_qubits": {
+      "nominal": "0.59 +/- drift",
+      "window_delay": "0.76 to 0.84 (phase scales with idle 962-1412 dt plus 415 dt)",
+      "extra_readout": "0.81 to 0.92 (adds a scheduled readout block near 531 dt)",
+      "window_echo": "|phase| below 0.2"
+    },
+    "readout_induced_shift_on_work": {
+      "nominal": "0.59",
+      "window_delay": "0.59",
+      "extra_readout": "near 0.89 (three control readouts against two)",
+      "window_echo": "between 0 and 0.59"
+    },
+    "residual_control_photons": {
+      "nominal": "0.59",
+      "window_delay": "below 0.59",
+      "extra_readout": "near 0.59",
+      "window_echo": "near 0.59"
+    }
+  },
+  "decision": "the hypothesis whose ordering the four fitted phases follow, judged against each arm's fit interval; an ordering no row predicts refutes all three"
+}

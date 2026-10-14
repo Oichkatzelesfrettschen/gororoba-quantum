@@ -14,7 +14,7 @@ import json
 import logging
 import sys
 from types import SimpleNamespace
-from typing import Any
+from typing import Any, cast
 from unittest.mock import patch
 
 import diagnose_qiskit_mock as diagnostic
@@ -67,7 +67,7 @@ class _Service:
             headers={"Authorization": TOKEN, HEADER: INSTANCE},
             body=BODY,
         )
-        response = self.session.send(request, timeout=7, allow_redirects=False)
+        response = self.session.send(cast(Any, request), timeout=7, allow_redirects=False)
         session, observed_request, kwargs, observed_response = self.transport_calls[-1]
         require(session is self.session and observed_request is request, "HTTP observer replaced a request")
         require(kwargs == {"timeout": 7, "allow_redirects": False}, "HTTP observer changed send options")

@@ -124,6 +124,13 @@ def _verify_spectator_wavefront_summary_and_simulation() -> None:
         "contrast_active" not in group.rate_keys,
         "contrast_active is a transformed contrast, not a Bernoulli rate key",
     )
+    for averaged in ("spectator_p0_active", "spectator_p0_control", "null_p0"):
+        _require(
+            averaged not in group.rate_keys,
+            f"{averaged} averages correlated bits within a shot, not a Bernoulli rate key",
+        )
+        for step in range(1, 5):
+            _require(f"{averaged}_s{step}" in group.rate_keys, f"{averaged}_s{step} is a per-shot Bernoulli rate")
 
     # Check that all rate keys exist in summary
     ideals = {member.name: member.ideal for member in group.members}

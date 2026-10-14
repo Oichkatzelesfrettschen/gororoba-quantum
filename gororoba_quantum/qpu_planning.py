@@ -15,10 +15,11 @@ from dataclasses import asdict
 from typing import Any
 
 import numpy as np
+from qiskit.exceptions import QiskitError
 
 import local_compute
 import parallel
-from diagnostic_experiments import family_contracts, folded_group, n21_group
+from diagnostic_experiments import N21_FAMILIES, family_contracts, folded_group, n21_group, n21_orbit_rca_group
 from experiment_optimizer import (
     BudgetContract,
     CandidatePlan,
@@ -57,6 +58,7 @@ def settings(args: Any) -> dict[str, Any]:
             ("classical_latency_us", 20.0),
             ("reserve_seconds", 0.0),
             ("max_total_execution_seconds", None),
+            ("patch_qubits", None),
         )
     }
 
@@ -132,6 +134,136 @@ def budget_plan(runtime: Any, choices: list[Any], args: Any, usage: dict[str, An
     }
 
 
+def window_durations(runtime: Any, snapshot: Any) -> tuple[int, int, float]:
+    """Readout length and echo half-window in dt from the backend's slowest measure and reset.
+
+    The delay arm idles one readout length. The echo halves together cover
+    1.2 times the longest measure plus reset, so the second X precedes the
+    second round and no tail of the window stays unechoed.
+    """
+    target = snapshot.backend.target
+    granularity = max(1, int(target.granularity))
+    longest = {}
+    for name in ("measure", "reset"):
+        durations = [
+            float(properties.duration)
+            for properties in target[name].values()
+            if properties is not None and properties.duration is not None
+        ]
+        if not durations or target.dt is None or target.dt <= 0:
+            raise runtime.LiveRunError(f"the N=21 window arms need a calibrated {name} duration and dt")
+        longest[name] = max(durations) / float(target.dt)
+
+    def rounded(value: float) -> int:
+        return granularity * math.ceil(value / granularity)
+
+    return rounded(longest["measure"]), rounded(0.6 * (longest["measure"] + longest["reset"])), float(target.dt)
+
+
+def control_timing_dt(target: Any, control: int) -> tuple[float, float]:
+    """Measure and reset durations of one physical qubit in units of the Target's dt."""
+    durations = []
+    for operation in ("measure", "reset"):
+        properties = target[operation].get((control,)) if operation in target.operation_names else None
+        duration = getattr(properties, "duration", None)
+        if not target.dt or not duration or duration <= 0:
+            raise ValueError(f"no Target {operation} duration or dt for control {control}")
+        durations.append(float(duration) / float(target.dt))
+    return durations[0], durations[1]
+
+
+def patch_candidates(
+    runtime: Any, snapshots: list[Any], args: Any, trace: dict[str, Any]
+) -> list[tuple[list[Any], dict[str, Any]]]:
+    """Compile the characterization groups on the pinned patch of every snapshot that admits it.
+
+    The patch is fixed, so a snapshot whose fresh calibration excludes a patch
+    qubit or exercised coupler is refused rather than re-placed.
+    """
+    from patch_characterization import PATCH_DELAYS_DT, PATCH_EDGES, PATCH_ROLES, patch_groups
+
+    layout = [int(qubit) for qubit in args.patch_qubits]
+    if len(layout) != len(PATCH_ROLES) or len(set(layout)) != len(layout):
+        raise runtime.LiveRunError(f"--patch-qubits names {len(PATCH_ROLES)} distinct qubits: {PATCH_ROLES}")
+    delays = list(PATCH_DELAYS_DT)
+    candidates: list[tuple[list[Any], dict[str, Any]]] = []
+    for snapshot in snapshots:
+        try:
+            excluded = sorted(set(layout) & set(snapshot.excluded_qubits))
+            edges = [(layout[a], layout[b]) for a, b in PATCH_EDGES]
+            blocked = [
+                edge for edge in edges if edge in snapshot.excluded_edges or edge[::-1] in snapshot.excluded_edges
+            ]
+            if excluded or blocked:
+                raise runtime.LiveRunError(f"calibration excludes patch qubits {excluded} or couplers {blocked}")
+            # Exchange circuits use no two-qubit gate, so the declared couplers
+            # must exist in the Target for neighbors to be physical neighbors.
+            couplers = set(snapshot.backend.target["cz"]) if "cz" in snapshot.backend.target.operation_names else set()
+            missing = [edge for edge in edges if edge not in couplers and edge[::-1] not in couplers]
+            if missing:
+                raise runtime.LiveRunError(f"the backend has no coupler for patch edges {missing}")
+            # The reset-only reference and echo halves follow the pinned
+            # control's own measure and reset durations.
+            target = snapshot.backend.target
+            granularity = max(1, int(target.granularity))
+            try:
+                control_measure, control_reset = control_timing_dt(target, layout[0])
+            except ValueError as error:
+                raise runtime.LiveRunError(str(error)) from error
+            measure_dt = granularity * math.ceil(control_measure / granularity)
+            half_dt = granularity * math.ceil(0.6 * (control_measure + control_reset) / granularity)
+            dt = float(target.dt)
+            choices = []
+            for group in patch_groups(delays, measure_dt, half_dt):
+                isas = [
+                    runtime._compile(member.circuit, snapshot, runtime.SEED_TRANSPILER, layout)
+                    for member in group.members
+                ]
+                violations = [reason for isa in isas for reason in runtime.compiled_violations(isa, snapshot)]
+                if violations:
+                    raise runtime.LiveRunError(str(violations))
+                scores = [runtime.layout_score(isa, snapshot.backend.target) for isa in isas]
+                choices.append(
+                    runtime.Choice(
+                        group,
+                        snapshot,
+                        runtime.SEED_TRANSPILER,
+                        layout,
+                        isas,
+                        scores,
+                        math.exp(sum(math.log(score) for score in scores) / len(scores)),
+                    )
+                )
+            used = sorted({qubit for choice in choices for isa in choice.isas for qubit in runtime._physical(isa)})
+            if set(used) - set(layout):
+                raise runtime.LiveRunError(
+                    f"routing left the pinned patch through qubits {sorted(set(used) - set(layout))}"
+                )
+            replica = Replica(0, {qubit: qubit for qubit in used}, min(min(choice.member_scores) for choice in choices))
+            for choice in choices:
+                runtime._set_entries(choice, [replica], runtime.ReplicaPolicy(args.replica_floor, 1, False, True))
+            runtime.execution_pubs(choices)
+        except (runtime.LiveRunError, QiskitError, ValueError) as error:
+            trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
+            continue
+        candidates.append(
+            (
+                choices,
+                {
+                    "name": args.family,
+                    "patch_qubits": layout,
+                    "patch_roles": list(PATCH_ROLES),
+                    "delays_dt": delays,
+                    "measure_dt": measure_dt,
+                    "echo_half_dt": half_dt,
+                    "dt_seconds": dt,
+                    "placement_contract": "one pinned patch; static and dynamic jobs",
+                },
+            )
+        )
+    return candidates
+
+
 def measurement_delay(runtime: Any, snapshot: Any, physical_qubit: int) -> int:
     """Round the actual measurement writer's fresh duration to timing granularity."""
     target = snapshot.backend.target
@@ -151,9 +283,38 @@ def family_candidates(
 
         return algebra_planning.family_candidates(runtime, snapshots, args, trace)
     candidates: list[tuple[list[Any], dict[str, Any]]] = []
-    if args.family == "n21-feedback":
-        routed = runtime.select_candidates(n21_group(), snapshots, args.seeds, trace)
+    if args.family in (*N21_FAMILIES, "n21-orbit-rca"):
+        routed = []
+        windows: dict[str, dict[str, float]] = {}
+        if args.family == "n21-orbit-rca":
+            # Window durations come from each backend's calibration, so each
+            # snapshot routes its own group; per-snapshot traces merge by group.
+            # A backend that lacks calibrated durations or rejects the group
+            # leaves the others in the search; the trace records its reason.
+            for snapshot in snapshots:
+                local: dict[str, Any] = {}
+                try:
+                    window_dt, half_dt, dt = window_durations(runtime, snapshot)
+                    group = n21_orbit_rca_group(window_dt, half_dt)
+                    routed += runtime.select_candidates(group, [snapshot], args.seeds, local)
+                except (runtime.LiveRunError, QiskitError, ValueError) as error:
+                    trace.setdefault("family_rejections", []).append({"backend": snapshot.name, "reason": str(error)})
+                    continue
+                windows[snapshot.name] = {"window_delay_dt": window_dt, "echo_half_dt": half_dt, "dt_seconds": dt}
+                trace.setdefault(group.name, {}).update(local.get(group.name, {}))
+            if not routed:
+                raise runtime.LiveRunError(
+                    f"no backend routes the N=21 window family: {trace.get('family_rejections')}"
+                )
+            routed.sort(key=lambda choice: -choice.joint_score)
+        else:
+            routed = runtime.select_candidates(
+                n21_group(orbit=args.family == "n21-orbit-feedback"), snapshots, args.seeds, trace
+            )
         tiers = args.replica_tiers if args.optimize else [args.max_replicas or 1]
+        if args.family == "n21-orbit-rca":
+            # The window analysis reads one replica's schedule and wires.
+            tiers = [1]
         if args.max_replicas is not None:
             tiers = [tier for tier in tiers if tier <= args.max_replicas]
         if not tiers:
@@ -163,8 +324,12 @@ def family_candidates(
                 trial = copy.copy(candidate)
                 policy = runtime.ReplicaPolicy(args.replica_floor, cap, False, True)
                 if runtime._prepare_individual_candidate(trial, trace, policy):
-                    candidates.append(([trial], {"name": args.family, "replica_cap": cap}))
+                    candidates.append(
+                        ([trial], {"name": args.family, "replica_cap": cap, **windows.get(candidate.snap.name, {})})
+                    )
         return candidates
+    if args.family == "patch-window":
+        return patch_candidates(runtime, snapshots, args, trace)
     if args.family != "folded-qpe":
         raise runtime.LiveRunError(f"unknown family {args.family}")
     coherent = runtime.select_candidates(folded_group(("coherent",)), snapshots, args.seeds, trace)
@@ -322,8 +487,8 @@ def prepare(
     simulators: dict[int, Any] = {}
     tiers = sorted(set(args.shot_tiers if args.optimize else [args.shots]))
     per_pub = getattr(args, "shot_allocation", "uniform") == "per-pub"
-    if per_pub and (args.family not in ("ripple", "rank-sector") or not args.optimize):
-        raise runtime.LiveRunError("per-PUB shot allocation requires an optimized static algebra family")
+    if per_pub and (args.family not in ("ripple", "rank-sector", "patch-window") or not args.optimize):
+        raise runtime.LiveRunError("per-PUB shot allocation requires an optimized algebra or patch family")
     if not per_pub and hasattr(args, "pub_shots"):
         del args.pub_shots
     for choices, _configuration in candidates:
@@ -461,6 +626,7 @@ def prepare(
             objective=policy["objective"],
             cost_scenarios=scenarios,
             coupled_pubs=couplings,
+            unscored_tier="smallest" if args.family == "patch-window" else "largest",
         )
         for original, allocated_plan in zip(plans, allocated, strict=True):
             selected_choices, selected_configuration, _shots = ownership[original.name]
@@ -502,13 +668,14 @@ def prepare(
         "optimizer_settings": settings(args),
         **({"pub_shots": args.pub_shots, "shot_allocation": allocation_audits[retained]} if per_pub else {}),
         "optimization_budget": asdict(budget),
-        "local_simulation_batches": [
-            batch for simulator in simulators.values() for batch in local_compute.batches(simulator)
-        ],
+        "local_simulation_batches": (
+            batches := [batch for simulator in simulators.values() for batch in local_compute.batches(simulator)]
+        ),
         "compiled_ideal_validation": {
             "method": "branch-resolved statevector on active compiled replica wires",
             "absolute_tolerance": 1e-10,
-            "noise_method": "density_matrix",
+            "noise_method": sorted({str(batch["method"]) for batch in batches}),
+            "noise_policy": local_compute.settings(args)["method"],
             "all_candidates_passed": True,
         },
     }

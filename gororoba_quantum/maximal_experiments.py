@@ -74,9 +74,9 @@ def build_spectator_wavefront_circuits(
     ensuring the active core's scheduled track duration exactly equals the spectators'
     delay_dt and the control's delay_dt duration down to the dt cycle.
     The matched control circuit holds core qubit 0 idle for the identical delay_dt duration.
-    The null circuit measures the ground state readout baseline.
-    The active and control Ramsey arms are purely static and share identical scheduled
-    timing envelopes.
+    The null circuit measures every qubit immediately in the ground state, so it
+    is a readout baseline without a delay window; only the active and control
+    Ramsey arms are static and share one scheduled timing envelope.
     """
     if spectator_count < 1:
         raise ValueError(f"spectator_count must be at least 1, got {spectator_count}")
@@ -246,6 +246,9 @@ def spectator_wavefront_ramsey_group(
             c_act = 2.0 * active_spectator_p0s[idx] - 1.0
             c_ctrl = 2.0 * control_spectator_p0s[idx] - 1.0
             metrics[f"delta_contrast_dist_{dist_step}"] = float(c_ctrl - c_act)
+            metrics[f"spectator_p0_active_s{dist_step}"] = active_spectator_p0s[idx]
+            metrics[f"spectator_p0_control_s{dist_step}"] = control_spectator_p0s[idx]
+            metrics[f"null_p0_s{dist_step}"] = null_spectator_p0s[idx]
 
         return metrics
 
@@ -254,12 +257,15 @@ def spectator_wavefront_ramsey_group(
         members,
         summarize,
         replica_floor=replica_floor,
+        # Each spectator's p0 is one bit per shot, a Bernoulli rate with a pooled-shot
+        # Wilson interval. The spectator means average correlated bits within a shot,
+        # so they carry only the replica t interval.
         rate_keys=frozenset(
-            {
-                "spectator_p0_active",
-                "spectator_p0_control",
-                "null_p0",
-                "core_p0_active",
+            {"core_p0_active"}
+            | {
+                f"{prefix}_s{step}"
+                for prefix in ("spectator_p0_active", "spectator_p0_control", "null_p0")
+                for step in range(1, 1 + spectator_count)
             }
         ),
     )

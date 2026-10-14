@@ -4,7 +4,7 @@ Each directory records one `gororoba_quantum/live_run.py` invocation under its
 UTC start time. `record.json` carries the schema-specific plan and lifecycle
 evidence; `isa.qpy` carries the exact circuits produced by that revision.
 
-The completed campaign ran under the owner's bounded approval. Two
+The registered campaign ran under the owner's bounded approval. Two
 folded-correction acquisitions on ibm_kingston
 ([first](2026-10-13T020454.599853Z/analysis-1fdb68508f14.json),
 [second](2026-10-13T022433.333775Z/collect.json)) settled 11 seconds each and
@@ -14,14 +14,61 @@ reach `retain_measured_correction`. Ripple
 ibm_fez, and rank-sector
 ([approved](2026-10-13T031726.380783Z/record.json),
 [collected](2026-10-13T032011.664435Z/collect.json)) settled 31 seconds.
-The [coordination ledger](qpu-coordination.json) carries each family's
-findings and the settled 119 seconds against the 180-second cap.
+The [coordination ledger](qpu-coordination.json) carries the later campaign's
+execution ownership and settled 121 seconds against the 180-second cap,
+including the separately recovered two-second wide control.
+[CAMPAIGN_FINDINGS.md](CAMPAIGN_FINDINGS.md) interprets the retained
+acquisitions: registered box-kite and rank contrast signs hold, while the
+folded delay comparison remains inconclusive and the correction adoption
+failures establish neither equivalence nor absence of improvement. The walk
+readout controls retain a large discrepancy from calibration-bound replay.
+Across ripple and rank, 35 of 37 registered scalar packing comparisons pass
+the normalized +/-0.10 equivalence margin; two ripple controls remain
+unresolved. These results retain their circuit, layout and inference scope.
 
 The [historical ripple and rank-sector cases](../ripple/PREPARATION.md) retain
 their source-closure reports, independent uncertainty families and written
 cases under `historical_renewal_required`. Their 197.022-second nominal estimate
 and proposed 240-second aggregate ceiling describe the older preparation;
 the current campaign cases supply the renewed planning qualification.
+
+## Completed-job coverage and recovered wide control
+
+The [read-only IBM inventory](qpu-job-inventory.json) observes ten completed
+physical jobs across seven acquisitions. The [retention audit](qpu-job-retention-audit.json)
+checks all ten raw indices, data and metrics hashes, PUB order, binary register
+widths, shot denominators, submitted circuit hashes and settled charges.
+The inventory observed at 2026-10-13T23:18:34Z covers 15 jobs, 270 PUBs and
+659456 physical PUB shots at 210 total charged seconds. Historical
+acquisitions use 49 seconds; the new campaign uses 161, leaving 19 seconds
+under its ceiling. The account snapshot reports 390 remaining seconds at its
+observation time, with a retained 60-second reserve. qpu-coordination.json
+keeps its 121-second settlement as the snapshot before the orbit (4 s),
+orbit-window (11 s) and patch-window (25 s) acquisitions. Local simulation and
+native mock records remain distinct from these physical acquisitions.
+
+The [recovered Kingston control](kingston-wide-control-result/README.md) retains
+job `db6qe7klf4us73c5pdc0` and descriptive analysis of its actual submitted
+components. Its original local approval/archive/calibration is unavailable;
+the recovery preserves that provenance limit. Gate-active qubits, measurement-only
+spectators, forbidden outputs and joint replica residuals are reported separately.
+
+Replay coverage and both normal/optimized control analyses from the root:
+
+```sh
+PYTHON="${PYTHON:-$(command -v python3)}"
+"$PYTHON" -B -W error scripts/reconcile_qpu_inventory.py --check
+"$PYTHON" -B -O -W error scripts/reconcile_qpu_inventory.py --check
+"$PYTHON" -B -W error scripts/check_reconcile_qpu_inventory.py
+"$PYTHON" -B -O -W error scripts/check_reconcile_qpu_inventory.py
+"$PYTHON" -B -W error scripts/review_wide_control_job.py --check
+"$PYTHON" -B -O -W error scripts/review_wide_control_job.py --check
+```
+
+The [measured static explorer](../ripple/measured-cayley-dickson-ripples.html)
+uses the completed ripple and rank-sector acquisitions. Counts determine its
+geometry overlays, uncertainty, within-PUB joint fluctuations and
+hardware-minus-model residuals; exact algebra defines its coordinates.
 
 ## Completed folded-QPE hardware case
 

@@ -2382,6 +2382,9 @@ def _verify_schema_lifecycle() -> None:
         run_dir = Path(directory)
         live_run_module.select_candidates = changed_select_candidates
         live_run_module.configure_sampler = forbidden_configure_sampler
+        # A planning inventory unlike the refresh takes the rebuild path this
+        # fixture exercises.
+        approval_record["system_inventory"] = {"planning-only-backend": {}}
         try:
             try:
                 live_run_module.submit(
@@ -3029,6 +3032,49 @@ def _verify_static_placement_judge() -> None:
         compare(recursive, {0: 0, 1: 1})
 
 
+def _verify_unchanged_since_planning() -> None:
+    """The pre-submit fast path reuses a plan only when every backend matches planning."""
+    inventory = {
+        "ibm_a": {"eligibility": "eligible", "calibration": "2026-01-01T00:00:00Z", "pending_jobs": 1},
+        "ibm_b": {"eligibility": "eligible", "calibration": "2026-01-01T01:00:00Z", "pending_jobs": 4},
+    }
+    record: dict[str, Any] = {"system_inventory": copy.deepcopy(inventory), "budget_plan": {"remaining_seconds": 500}}
+    if not live_run_module.unchanged_since_planning(record, copy.deepcopy(inventory), [], [], 500):
+        raise RuntimeError("identical planning and refresh inventories rebuilt the plan")
+    for name, field, value in (
+        ("ibm_b", "calibration", "2026-01-01T02:00:00Z"),
+        ("ibm_a", "eligibility", "maintenance"),
+    ):
+        changed = copy.deepcopy(inventory)
+        changed[name][field] = value
+        if live_run_module.unchanged_since_planning(record, changed, [], [], 500):
+            raise RuntimeError(f"a changed {field} on {name} reused the plan")
+    added = copy.deepcopy(inventory) | {"ibm_c": {"eligibility": "eligible", "calibration": "x"}}
+    if live_run_module.unchanged_since_planning(record, added, [], [], 500):
+        raise RuntimeError("a new backend in the refresh inventory reused the plan")
+    gained = copy.deepcopy(inventory)
+    for entry in (inventory["ibm_b"], record["system_inventory"]["ibm_b"]):
+        entry["capabilities"] = {"dynamic_circuits": False}
+    gained["ibm_b"]["capabilities"] = {"dynamic_circuits": True}
+    if live_run_module.unchanged_since_planning(record, gained, [], [], 500):
+        raise RuntimeError("an unselected backend's capability change reused the plan")
+    del inventory["ibm_b"]["capabilities"], record["system_inventory"]["ibm_b"]["capabilities"]
+    delayed = copy.deepcopy(inventory)
+    delayed["ibm_b"]["repetition_delay"] = 1.0e-4
+    if live_run_module.unchanged_since_planning(record, delayed, [], [], 500):
+        raise RuntimeError("a changed repetition delay on an unselected backend reused the plan")
+    if live_run_module.unchanged_since_planning(record, copy.deepcopy(inventory), [], [], 499):
+        raise RuntimeError("a changed account quota reused the optimized plan")
+    refetched = copy.deepcopy(inventory)
+    refetched["ibm_a"]["fetched_at"] = "later"
+    if not live_run_module.unchanged_since_planning(record, refetched, [], [], 500):
+        raise RuntimeError("a fetch timestamp alone rebuilt the plan")
+    queue_only = copy.deepcopy(inventory)
+    queue_only["ibm_a"]["pending_jobs"] = 9
+    if live_run_module.unchanged_since_planning(record, queue_only, [], [], 500):
+        raise RuntimeError("a queue-length change, which breaks selection ties, reused the plan")
+
+
 def _verify() -> None:
     _verify_dynamic_classification()
     _verify_dynamic_mitigation_boundaries()
@@ -3049,6 +3095,7 @@ def _verify() -> None:
     _verify_snapshot_and_fingerprint_coherence()
     _verify_pub_fusion_contracts()
     _verify_worker_quota()
+    _verify_unchanged_since_planning()
     _verify_replay_seed_independence()
     _verify_fused_collection()
     _verify_joint_fusion_placement()

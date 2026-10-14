@@ -1,0 +1,742 @@
+{
+  "conditions": {
+    "ramsey_echo/work_a": {
+      "exposure": "unsigned idle; the fit is an effective response descriptor, not a static detuning",
+      "fit": {
+        "assignment_offset": -0.034658040493306765,
+        "compatible_alias_deltas_mhz": [
+          -0.5,
+          0.0,
+          0.5
+        ],
+        "decay_per_us": 0.004803077187626473,
+        "delta_95_mhz": [
+          0.4945032076854884,
+          0.501575745729792
+        ],
+        "delta_mhz": 0.49806013071822675,
+        "delta_resolved": false,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 2557.9557702981433,
+        "phi0_rad": 1.3726151141548626,
+        "visibility0": 1.0
+      },
+      "points": [
+        {
+          "member": "ramsey_echo_x_d900",
+          "phase_rad": 0.0495461945911252,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9464739765472953,
+          "x_shots": 1024,
+          "x_zero": 996,
+          "y_shots": 1024,
+          "y_zero": 536
+        },
+        {
+          "member": "ramsey_echo_x_d1400",
+          "phase_rad": 0.029219239126328678,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.9359463852092854,
+          "x_shots": 1024,
+          "x_zero": 991,
+          "y_shots": 1024,
+          "y_zero": 526
+        },
+        {
+          "member": "ramsey_echo_x_d1900",
+          "phase_rad": -0.0021008372454352727,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.9296895515996271,
+          "x_shots": 1024,
+          "x_zero": 988,
+          "y_shots": 1024,
+          "y_zero": 511
+        }
+      ]
+    },
+    "ramsey_echo/work_b": {
+      "exposure": "unsigned idle; the fit is an effective response descriptor, not a static detuning",
+      "fit": {
+        "assignment_offset": 0.004930510397384637,
+        "compatible_alias_deltas_mhz": [
+          -0.5,
+          0.0,
+          0.5
+        ],
+        "decay_per_us": 0.004093832157976252,
+        "delta_95_mhz": [
+          -0.004044917134089221,
+          0.0036270720404704927
+        ],
+        "delta_mhz": 0.0004323851536160221,
+        "delta_resolved": false,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 2491.54651461115,
+        "phi0_rad": 0.0016360630149152167,
+        "visibility0": 0.9663213022498595
+      },
+      "points": [
+        {
+          "member": "ramsey_echo_x_d900",
+          "phase_rad": 0.002040813493251108,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9570332429826187,
+          "x_shots": 1024,
+          "x_zero": 1002,
+          "y_shots": 1024,
+          "y_zero": 513
+        },
+        {
+          "member": "ramsey_echo_x_d1400",
+          "phase_rad": 0.051395028904949,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.9504737877198813,
+          "x_shots": 1024,
+          "x_zero": 998,
+          "y_shots": 1024,
+          "y_zero": 537
+        },
+        {
+          "member": "ramsey_echo_x_d1900",
+          "phase_rad": 0.012447489868861053,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.9414791854526711,
+          "x_shots": 1024,
+          "x_zero": 994,
+          "y_shots": 1024,
+          "y_zero": 518
+        }
+      ]
+    },
+    "ramsey_plain/work_a": {
+      "fit": {
+        "assignment_offset": -0.008732031407951098,
+        "compatible_alias_deltas_mhz": [
+          0.0
+        ],
+        "decay_per_us": 0.014714511764574263,
+        "delta_95_mhz": [
+          0.0006738312134734249,
+          0.004767691210120068
+        ],
+        "delta_mhz": 0.0030224468384153105,
+        "delta_resolved": true,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 3471.5149535552896,
+        "phi0_rad": -0.010851717186942757,
+        "visibility0": 0.9936362636641284
+      },
+      "points": [
+        {
+          "member": "ramsey_plain_x_d0",
+          "phase_rad": -0.03760602469805206,
+          "requested_dt": 0,
+          "t_us": 0.004,
+          "t_us_y": 0.004,
+          "timing_qualified": true,
+          "visibility": 0.9870259752807452,
+          "x_shots": 1024,
+          "x_zero": 1017,
+          "y_shots": 1024,
+          "y_zero": 493
+        },
+        {
+          "member": "ramsey_plain_x_d900",
+          "phase_rad": 0.06175506390997099,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9177651037408926,
+          "x_shots": 1024,
+          "x_zero": 981,
+          "y_shots": 1024,
+          "y_zero": 541
+        },
+        {
+          "member": "ramsey_plain_x_d1400",
+          "phase_rad": 0.1262073343175876,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.915484504206055,
+          "x_shots": 1024,
+          "x_zero": 977,
+          "y_shots": 1024,
+          "y_zero": 571
+        },
+        {
+          "member": "ramsey_plain_x_d1900",
+          "phase_rad": 0.09065988720074511,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.8844918002044486,
+          "x_shots": 1024,
+          "x_zero": 963,
+          "y_shots": 1024,
+          "y_zero": 553
+        }
+      ]
+    },
+    "ramsey_plain/work_b": {
+      "fit": {
+        "assignment_offset": 0.0001889530486029369,
+        "compatible_alias_deltas_mhz": [
+          0.0
+        ],
+        "decay_per_us": 0.010065454255631164,
+        "delta_95_mhz": [
+          -0.000836140506509103,
+          0.0027264963997720103
+        ],
+        "delta_mhz": 0.0009536993153585421,
+        "delta_resolved": true,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 3220.496421548304,
+        "phi0_rad": -0.017269473635320817,
+        "visibility0": 1.0
+      },
+      "points": [
+        {
+          "member": "ramsey_plain_x_d0",
+          "phase_rad": -0.02538517080106114,
+          "requested_dt": 0,
+          "t_us": 0.004,
+          "t_us_y": 0.004,
+          "timing_qualified": true,
+          "visibility": 1.0003222899835287,
+          "x_shots": 1024,
+          "x_zero": 1024,
+          "y_shots": 1024,
+          "y_zero": 499
+        },
+        {
+          "member": "ramsey_plain_x_d900",
+          "phase_rad": 0.024385409172718538,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.961223280675463,
+          "x_shots": 1024,
+          "x_zero": 1004,
+          "y_shots": 1024,
+          "y_zero": 524
+        },
+        {
+          "member": "ramsey_plain_x_d1400",
+          "phase_rad": 0.010266579728268404,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.9512220052241518,
+          "x_shots": 1024,
+          "x_zero": 999,
+          "y_shots": 1024,
+          "y_zero": 517
+        },
+        {
+          "member": "ramsey_plain_x_d1900",
+          "phase_rad": 0.023251622810462915,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.9240779095455947,
+          "x_shots": 1024,
+          "x_zero": 985,
+          "y_shots": 1024,
+          "y_zero": 523
+        }
+      ]
+    },
+    "window_c0/work_a": {
+      "fit": {
+        "assignment_offset": -0.0001717776721479211,
+        "compatible_alias_deltas_mhz": [
+          0.0,
+          0.5
+        ],
+        "decay_per_us": 0.012339849816006658,
+        "delta_95_mhz": [
+          -0.0029489657301747683,
+          0.004603208888292921
+        ],
+        "delta_mhz": 7.58403287908552e-05,
+        "delta_resolved": false,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 2670.2754311875656,
+        "phi0_rad": 0.0007064398666829011,
+        "visibility0": 0.979519967522478
+      },
+      "points": [
+        {
+          "member": "window_measure_reset_c0_x_d900",
+          "phase_rad": 0.004201655946871886,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9296957063713441,
+          "x_shots": 1024,
+          "x_zero": 988,
+          "y_shots": 1024,
+          "y_zero": 514
+        },
+        {
+          "member": "window_measure_reset_c0_x_d1400",
+          "phase_rad": -0.02928033234577806,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.933994095646822,
+          "x_shots": 1024,
+          "x_zero": 990,
+          "y_shots": 1024,
+          "y_zero": 498
+        },
+        {
+          "member": "window_measure_reset_c0_x_d1900",
+          "phase_rad": 0.028880856330944765,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.8792729269839673,
+          "x_shots": 1024,
+          "x_zero": 962,
+          "y_shots": 1024,
+          "y_zero": 525
+        }
+      ]
+    },
+    "window_c0/work_b": {
+      "fit": {
+        "assignment_offset": 0.008857272266864552,
+        "compatible_alias_deltas_mhz": [
+          -0.5,
+          0.0,
+          0.5
+        ],
+        "decay_per_us": 0.01104812714879714,
+        "delta_95_mhz": [
+          -0.0055494839102643665,
+          0.0018066044654083328
+        ],
+        "delta_mhz": -0.001964617754394107,
+        "delta_resolved": false,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 2490.609266285551,
+        "phi0_rad": 0.04828797311009869,
+        "visibility0": 1.0
+      },
+      "points": [
+        {
+          "member": "window_measure_reset_c0_x_d900",
+          "phase_rad": 0.01212061854209015,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9668678951187324,
+          "x_shots": 1024,
+          "x_zero": 1007,
+          "y_shots": 1024,
+          "y_zero": 518
+        },
+        {
+          "member": "window_measure_reset_c0_x_d1400",
+          "phase_rad": -0.012219351063027678,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.9590559736510185,
+          "x_shots": 1024,
+          "x_zero": 1003,
+          "y_shots": 1024,
+          "y_zero": 506
+        },
+        {
+          "member": "window_measure_reset_c0_x_d1900",
+          "phase_rad": -0.03395721804604474,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.9204525075219882,
+          "x_shots": 1024,
+          "x_zero": 983,
+          "y_shots": 1024,
+          "y_zero": 496
+        }
+      ]
+    },
+    "window_c1/work_a": {
+      "fit": {
+        "assignment_offset": 0.04057200562352258,
+        "compatible_alias_deltas_mhz": [
+          -0.5,
+          0.0,
+          0.5
+        ],
+        "decay_per_us": 0.004329252735333881,
+        "delta_95_mhz": [
+          -0.502273752789128,
+          -0.49317958165623554
+        ],
+        "delta_mhz": -0.49787025758263026,
+        "delta_resolved": false,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 2672.8440398490056,
+        "phi0_rad": -1.3519331146026863,
+        "visibility0": 0.8956279531837094
+      },
+      "points": [
+        {
+          "member": "window_measure_reset_c1_x_d900",
+          "phase_rad": -0.02122823318172046,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9201291897500471,
+          "x_shots": 1024,
+          "x_zero": 983,
+          "y_shots": 1024,
+          "y_zero": 502
+        },
+        {
+          "member": "window_measure_reset_c1_x_d1400",
+          "phase_rad": 0.029841884667109377,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.9164236497975176,
+          "x_shots": 1024,
+          "x_zero": 981,
+          "y_shots": 1024,
+          "y_zero": 526
+        },
+        {
+          "member": "window_measure_reset_c1_x_d1900",
+          "phase_rad": 0.030163262725205548,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.9066624196270973,
+          "x_shots": 1024,
+          "x_zero": 976,
+          "y_shots": 1024,
+          "y_zero": 526
+        }
+      ]
+    },
+    "window_c1/work_b": {
+      "fit": {
+        "assignment_offset": 0.010869912442684789,
+        "compatible_alias_deltas_mhz": [
+          0.0,
+          0.5
+        ],
+        "decay_per_us": 0.011293099970481084,
+        "delta_95_mhz": [
+          0.4960285975613157,
+          0.5033241408892435
+        ],
+        "delta_mhz": 0.4996524845963801,
+        "delta_resolved": false,
+        "interval_kind": "profile likelihood; model-dependent, distinct from the registered Hoeffding contracts",
+        "negative_log_likelihood": 2494.0850254607058,
+        "phi0_rad": 1.1842729176474414,
+        "visibility0": 1.0
+      },
+      "points": [
+        {
+          "member": "window_measure_reset_c1_x_d900",
+          "phase_rad": -0.07245359608858848,
+          "requested_dt": 900,
+          "t_us": 3.604,
+          "t_us_y": 3.604,
+          "timing_qualified": true,
+          "visibility": 0.9712983116201994,
+          "x_shots": 1024,
+          "x_zero": 1008,
+          "y_shots": 1024,
+          "y_zero": 476
+        },
+        {
+          "member": "window_measure_reset_c1_x_d1400",
+          "phase_rad": -0.024737220989133057,
+          "requested_dt": 1400,
+          "t_us": 5.604,
+          "t_us_y": 5.604,
+          "timing_qualified": true,
+          "visibility": 0.9475555290920372,
+          "x_shots": 1024,
+          "x_zero": 997,
+          "y_shots": 1024,
+          "y_zero": 500
+        },
+        {
+          "member": "window_measure_reset_c1_x_d1900",
+          "phase_rad": -0.08209356333513565,
+          "requested_dt": 1900,
+          "t_us": 7.604,
+          "t_us_y": 7.604,
+          "timing_qualified": true,
+          "visibility": 0.9289096174507927,
+          "x_shots": 1024,
+          "x_zero": 986,
+          "y_shots": 1024,
+          "y_zero": 473
+        }
+      ]
+    }
+  },
+  "delays_dt": [
+    900,
+    1400,
+    1900
+  ],
+  "dt_seconds": 4e-09,
+  "exchange_populations": {
+    "exchange_all_d0": {
+      "neighbor_a": [
+        0.9912109375,
+        0.9833809256772761,
+        0.9953692418380973
+      ],
+      "neighbor_b": [
+        0.9853515625,
+        0.9759721861451764,
+        0.9911030290737908
+      ],
+      "spectator": [
+        0.99609375,
+        0.9899993755946205,
+        0.9984799188344246
+      ],
+      "work_a": [
+        0.9853515625,
+        0.9759721861451764,
+        0.9911030290737908
+      ],
+      "work_b": [
+        0.9931640625,
+        0.9859570275523517,
+        0.9966847907284904
+      ]
+    },
+    "exchange_none_d1900": {
+      "neighbor_a": [
+        0.001953125,
+        0.0005357808273540998,
+        0.007093273978132259
+      ],
+      "neighbor_b": [
+        0.0078125,
+        0.0039639345168160835,
+        0.015340072585076319
+      ],
+      "spectator": [
+        0.001953125,
+        0.0005357808273540998,
+        0.007093273978132259
+      ],
+      "work_a": [
+        0.0078125,
+        0.0039639345168160835,
+        0.015340072585076319
+      ],
+      "work_b": [
+        0.0029296875,
+        0.0009968475014902932,
+        0.008578032686730408
+      ]
+    },
+    "exchange_work_a_d0": {
+      "neighbor_a": [
+        0.0068359375,
+        0.003315209271509724,
+        0.01404297244764834
+      ],
+      "neighbor_b": [
+        0.01171875,
+        0.0067161566035602565,
+        0.020371152029269507
+      ],
+      "spectator": [
+        0.00390625,
+        0.0015200811655754903,
+        0.01000062440537955
+      ],
+      "work_a": [
+        0.9892578125,
+        0.980867229044482,
+        0.9939912877054227
+      ],
+      "work_b": [
+        0.0009765625,
+        0.0001724080656205127,
+        0.005510821357131506
+      ]
+    },
+    "exchange_work_a_d1900": {
+      "neighbor_a": [
+        0.00390625,
+        0.0015200811655754903,
+        0.01000062440537955
+      ],
+      "neighbor_b": [
+        0.0107421875,
+        0.006008712294577323,
+        0.019132770955518102
+      ],
+      "spectator": [
+        0.001953125,
+        0.0005357808273540998,
+        0.007093273978132259
+      ],
+      "work_a": [
+        0.91796875,
+        0.8995580510898586,
+        0.9332552127204392
+      ],
+      "work_b": [
+        0.0009765625,
+        0.0001724080656205127,
+        0.005510821357131506
+      ]
+    },
+    "exchange_work_b_d0": {
+      "neighbor_a": [
+        0.00390625,
+        0.0015200811655754903,
+        0.01000062440537955
+      ],
+      "neighbor_b": [
+        0.0107421875,
+        0.006008712294577323,
+        0.019132770955518102
+      ],
+      "spectator": [
+        0.0048828125,
+        0.0020873949741738243,
+        0.011379135979515557
+      ],
+      "work_a": [
+        0.01171875,
+        0.0067161566035602565,
+        0.020371152029269507
+      ],
+      "work_b": [
+        0.99609375,
+        0.9899993755946205,
+        0.9984799188344246
+      ]
+    },
+    "exchange_work_b_d1900": {
+      "neighbor_a": [
+        0.001953125,
+        0.0005357808273540998,
+        0.007093273978132259
+      ],
+      "neighbor_b": [
+        0.0107421875,
+        0.006008712294577323,
+        0.019132770955518102
+      ],
+      "spectator": [
+        0.0009765625,
+        0.0001724080656205127,
+        0.005510821357131506
+      ],
+      "work_a": [
+        0.0048828125,
+        0.0020873949741738243,
+        0.011379135979515557
+      ],
+      "work_b": [
+        0.890625,
+        0.8700287292565995,
+        0.9083014238371369
+      ]
+    }
+  },
+  "orbit": {
+    "nominal": {
+      "contrast_difference": 0.201416015625,
+      "se": 0.015135105012426571
+    },
+    "window_barrier": {
+      "contrast_difference": 0.1591796875,
+      "se": 0.015084232385271686
+    },
+    "window_echo": {
+      "contrast_difference": 0.18408203125,
+      "se": 0.015154565588209231
+    }
+  },
+  "orbit_between_context": {
+    "orbit_barrier_minus_nominal": {
+      "difference": -0.042236328125,
+      "se": 0.0213683286756372
+    },
+    "orbit_echo_minus_barrier": {
+      "difference": 0.02490234375,
+      "se": 0.02138211693963473
+    }
+  },
+  "patch_qubits": [
+    142,
+    136,
+    143,
+    144,
+    123,
+    145
+  ],
+  "reference_comparisons": {
+    "work_a_measured_minus_reset_only_y": {
+      "difference": -0.0078125,
+      "se": 0.04417225202595856
+    },
+    "work_a_paired_minus_single_y": {
+      "difference": -0.025390625,
+      "se": 0.0439999981874769
+    },
+    "work_b_measured_minus_reset_only_y": {
+      "difference": 0.0546875,
+      "se": 0.04412060849217157
+    },
+    "work_b_paired_minus_single_y": {
+      "difference": -0.005859375,
+      "se": 0.04418081125302463
+    }
+  }
+}

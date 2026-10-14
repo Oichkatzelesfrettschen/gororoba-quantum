@@ -1,0 +1,109 @@
+# Staged patch-window characterization and validation
+
+The orbit window analysis ([QPU_OPTIMIZATION.md](../../gororoba_quantum/QPU_OPTIMIZATION.md))
+shows that the compiled feed-forward and omitted-correction members hold the
+work state on different physical qubits during the mid-circuit window. This
+plan stages a characterization of the pinned ibm_fez patch (control 142, work
+136 and 144, spectator 143, neighbors 123 and 145), a frozen intervention
+choice, and an independent validation on new observations.
+
+## Budget
+
+| Stage | Aggregate ceiling |
+|---|---|
+| Characterization | 27 s (3 jobs x 9 s ceiling; 24.05 s predicted) |
+| Validation of one frozen intervention | 14 s |
+| Campaign buffer | 5 s |
+
+The usable budget is min(campaign remaining, account remaining - reserve -
+unsettled ceilings). Each stage submits only after a fresh priced case and
+explicit owner approval; an informative unresolved result ends the campaign.
+
+## Characterization design: 46 circuits, 65,536 shots
+
+| Circuit family | Circuits | Shots each | Purpose |
+|---|---:|---:|---|
+| Paired plain Ramsey, three durations, X/Y | 6 | 1,024 | Phase and visibility against executed exposure |
+| Paired echoed Ramsey, three durations, X/Y | 6 | 1,024 | Refocusing response |
+| Zero-idle paired X/Y references | 2 | 1,024 | Preparation and analysis anchor |
+| Single-work-qubit long-delay X/Y references | 4 | 1,024 | Paired-preparation ZZ context |
+| Control 0/1 measurement-and-reset Ramsey, three durations, X/Y | 12 | 1,024 | Measurement-associated response |
+| Explicit measurement omitted, reset retained, middle duration, control 0/1, X/Y | 4 | 1,024 | Separates the measurement from the reset |
+| Excite work A or B, zero and long delay | 4 | 1,024 | Transfer against preparation |
+| Unexcited long-delay and all-one immediate references | 2 | 1,024 | Population and readout background |
+| Original, barrier-only, barrier-plus-echo orbit pairs | 6 | 4,096 | Contemporaneous intervention contrasts |
+
+24 static and 22 dynamic circuits run in separate jobs with per-PUB shots;
+40 x 1,024 + 6 x 4,096 = 65,536.
+
+## Design rules
+
+- Simultaneous X on both work qubits leaves their mutual ZZ unrefocused,
+  since (X_A X_B)(Z_A Z_B)(X_A X_B) = Z_A Z_B; the single-qubit references
+  separate that context effect.
+- Weak population transfer leaves dispersive phase possible: with
+  Delta/2pi = 10 MHz and g/2pi = 0.4 MHz the transfer bound is 0.6 percent
+  while g^2 t / Delta over 5.6 us is 0.56 rad.
+- Phase fits use executed exposure from the returned schedule, piecewise
+  across carrier changes, echo pulses, measurement, reset and dispatch.
+- The barrier-only and barrier-plus-echo orbit members match requested idle
+  halves; their elapsed exposure and pulse differences come from the returned
+  schedules, so their comparison is not described as refocusing alone.
+
+## Admission and analysis
+
+- Admission contracts test phase differences, visibility differences,
+  exchange excess and between-context orbit contrasts, replacing the
+  positive-X proxy.
+- Fits use count likelihoods with preparation and readout nuisances, leave
+  phase undefined when visibility is unresolved, search periodic basins,
+  keep finite intervals at boundary counts, and pass planted-mechanism
+  coverage checks.
+- Every analyzed row binds job id, PUB identity, shots, register order,
+  compiled-circuit hash, physical mapping, raw hash and timing.
+
+## Decision usefulness at the registered precision
+
+Half-widths are the simultaneous Hoeffding radii of the final dry run. The
+registered Ramsey endpoints score Y expectations only. For two responses of
+equal visibility R at phases phi1 and phi2,
+|dY| = 2 R |cos((phi1 + phi2) / 2) sin((phi2 - phi1) / 2)|, so the cosine
+factor can vanish; the full X/Y distance 2 R |sin(dphi / 2)| bounds |dY| from
+above. The phase figures below are favorable-orientation sensitivities at the
+stated visibility, not phase-independent resolution limits or power
+certificates, and a joint X/Y decision would need its own simultaneous rule.
+
+| Endpoint (units) | Half-width | Role | Resolves |
+|---|---:|---|---|
+| work A/B echo minus plain, Y expectation at 7.6 us | 0.229 | primary | at favorable orientation, phase differences above about 0.27 rad at R near 0.87 (5.6 kHz static detuning) |
+| work A/B measurement window minus plain, Y at 5.6 us | 0.229 | primary | at favorable orientation, a window-associated phase above about 0.27 rad at R near 0.87 |
+| work A control 1 minus 0, Y at 5.6 us | 0.229 | primary | control-state-dependent phase of the same size, same orientation caveat |
+| work A measured minus reset-only, Y at 5.6 us | 0.229 | primary | explicit-measurement contribution of the same size, same orientation caveat |
+| work A paired minus single, Y at 7.6 us | 0.229 | exploratory | only a large paired-preparation ZZ effect |
+| spectator excess from work A (population) | 0.114 | exploratory | transfer above about 11 percent; weak transfer stays possible |
+| orbit barrier minus nominal (contrast difference) | 0.240 | exploratory | gains above about 0.24; adoption needs validation power |
+| orbit echo minus barrier (contrast difference) | 0.240 | exploratory | as above |
+
+The run is primarily informative for the window-phase hypotheses and exploratory for
+the orbit interventions; "no intervention selected" stays an allowed outcome.
+
+## Execution limits
+
+- The orbit job is predicted at 8.9 s under a 9 s ceiling (1 percent
+  headroom); a cancellation is recorded and never retried automatically.
+- IBM's server-side dry run returned QiskitBackendNotFoundError, so executed
+  timing is qualified only from the collected schedules; physical detuning
+  is withheld wherever executed timing is unavailable or collapsed.
+- The runner submits the three jobs in one invocation; a dynamic-first staged
+  release needs a runner change and stays a follow-up.
+
+## Checklist
+
+- [x] Source imports and notes in docs/ (registry, INDEX, README)
+- [x] 46-circuit groups with per-PUB shots and exact-law checks
+- [ ] Executed-exposure timing qualification (native dry run returned QiskitBackendNotFoundError; analyzer reads timing from the collected schedule)
+- [x] Contracts and analyzer repairs with planted-mechanism coverage
+- [x] Priced characterization case (4aaea17, record 50d512b5...3a70); owner approval
+- [x] Characterization executed as an amended case outside that approval (9b86a13, record ec6e8662...cc2f, byte-identical isa.qpy; 25 s charged); results/live/PATCH_WINDOW_FINDINGS.md records the deviation
+- [ ] Validation stage: no intervention selected, so no frozen intervention exists to validate
+- [ ] Frozen intervention and validation case at or below 14 s; owner approval
