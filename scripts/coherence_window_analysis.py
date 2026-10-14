@@ -20,11 +20,13 @@ Counts bind to the submission through patch_window_analysis._bound_counts
   delta_B t_B - delta_A t_A, a signed combination of the two qubits'
   exposures, so the measure_reset rotation is corrected by the part of its
   exposure change that is collinear with the idle-versus-immediate change;
-  the orthogonal part and the per-setting spread enter a bias bound at the
-  design's aliasing detuning, pi over the window. The correction crosses
+  the orthogonal part and the per-setting departures enter a bias bound at
+  the design's aliasing detuning, pi over the window, and every idle winding
+  that bound admits gives a candidate. The correction crosses
   jobs, so it bounds a measurement-induced phase only together with the
   jobs' execution times; timestamps record provenance and correct no drift.
-- Inference: each +-1 score has per-shot variance 1 - S^2 and circuits are
+- Inference: each +-1 score has the Laplace-adjusted per-shot variance
+  4 p (1 - p), p the adjusted fraction of +1 outcomes, and circuits are
   independent. Re C and Im C come from disjoint settings, so their joint
   region is the ellipse re^2/var_re + im^2/var_im <= chi2_2; an argument is
   reported only where that region at family-wise level FAMILY_ALPHA over
@@ -79,9 +81,15 @@ CHI2_IDENTIFY = -2.0 * math.log(FAMILY_ALPHA / len(CONTEXTS))
 
 
 def _estimate(dist: np.ndarray, shots: int, score: tuple[float, ...]) -> tuple[float, float]:
-    """Mean of a +-1 score and its variance over shots independent shots."""
+    """Mean of a +-1 score and its variance over shots independent shots.
+
+    The variance uses the Laplace-adjusted fraction (n p + 1) / (n + 2) of +1
+    outcomes, 4 p (1 - p) / n, which stays positive when every shot agrees, so
+    the joint region and its angular extent remain defined at saturation.
+    """
     mean = float(np.asarray(score) @ dist)
-    return mean, max(0.0, 1.0 - mean * mean) / shots
+    adjusted = (shots * (1 + mean) / 2 + 1) / (shots + 2)
+    return mean, 4 * adjusted * (1 - adjusted) / shots
 
 
 def context_coherence(
@@ -160,12 +168,37 @@ def compare(later: dict[str, Any], earlier: dict[str, Any]) -> dict[str, Any]:
     }
 
 
-def _half_range(per_setting: dict[str, list[float]] | None) -> float:
-    """Sum over the two work qubits of half the range of their exposure across Pauli settings."""
+def _setting_deviation(exposure: dict[str, Any]) -> float:
+    """Sum over the two work qubits of the largest per-setting departure from their mean exposure."""
+    per_setting = exposure.get("per_setting")
     if not per_setting:
         return 0.0
-    pairs = list(per_setting.values())
-    return sum((max(p[q] for p in pairs) - min(p[q] for p in pairs)) / 2 for q in (0, 1))
+    means = (exposure["read_a"], exposure["read_b"])
+    return sum(max(abs(pair[q] - means[q]) for pair in per_setting.values()) for q in (0, 1))
+
+
+def _setting_bias(coherence: dict[str, Any], exposure: dict[str, Any], detuning_bound: float) -> float | None:
+    """Bound on a context's argument shift from setting-specific exposure, or None when it is unbounded.
+
+    Each Pauli setting's pair rotation departs from the mean-exposure rotation
+    by at most eps = detuning_bound * _setting_deviation. That moves Re C and
+    Im C each by at most (|C| + 1/2) eps, the 1/2 bounding the even coherence
+    rho_00,11 that enters XX and YY with opposite signs, so the argument moves
+    by at most asin(sqrt2 (|C| + 1/2) eps / |C|), evaluated at the lower end of
+    the modulus interval. A ratio of 1 or more leaves the argument unbounded.
+    """
+    eps = detuning_bound * _setting_deviation(exposure)
+    if eps == 0.0:
+        return 0.0
+    lower = coherence["modulus_ci"][0]
+    if lower <= 0.0:
+        return None
+    ratio = math.sqrt(2.0) * (lower + 0.5) * eps / lower
+    return math.asin(ratio) if ratio < 1.0 else None
+
+
+def _holds_multiple_of_2pi(lo: float, hi: float) -> bool:
+    return math.floor(hi / (2 * math.pi)) >= math.ceil(lo / (2 * math.pi))
 
 
 def excess_rotation(
@@ -178,12 +211,15 @@ def excess_rotation(
     d_win = t_mr - t_mi per qubit, k = (d_win . d_idle) / |d_idle|^2 and
     o = d_win - k d_idle, the value arg C_mr - (1 + k) arg C_mi + k arg C_imm
     equals the measurement-induced phase plus w . o, so |w . o| <=
-    detuning_bound (|o_A| + |o_B|) is a bias bound. Each context's per-setting
-    exposure half-range adds detuning_bound times its weight (1, 1 + k, |k|)
-    to first order. Both comparisons contain the matched idle, so its argument
-    variance enters once with weight (1 + k)^2: Var = v_mr + (1 + k)^2 v_mi +
-    k^2 v_imm. The phase is attributed only when the interval, widened by the
-    bias bound, excludes zero.
+    detuning_bound (|o_A| + |o_B|) bounds that bias; each context's
+    setting-specific exposure adds its _setting_bias with weight (1, 1 + k,
+    |k|). The measured idle rotation is known only modulo 2 pi while the true
+    one can reach detuning_bound (|d_idle_A| + |d_idle_B|), so every winding n
+    within that reach gives a candidate value - 2 pi k n. Both comparisons
+    contain the matched idle, so its argument variance enters once with weight
+    (1 + k)^2: Var = v_mr + (1 + k)^2 v_mi + k^2 v_imm. A phase is attributed
+    only when every candidate interval, widened by the bias bound, excludes
+    every multiple of 2 pi.
     """
     if any("argument" not in signed[context] for context in CONTEXTS):
         return None
@@ -194,9 +230,8 @@ def excess_rotation(
         return None
     k = float(d_win @ d_idle) / float(d_idle @ d_idle)
     orthogonal = d_win - k * d_idle
-    spread = {c: _half_range(exposure[c].get("per_setting")) for c in CONTEXTS}
-    weights = {"measure_reset": 1.0, "matched_idle": 1.0 + k, "immediate": abs(k)}
-    bias = detuning_bound * (float(np.abs(orthogonal).sum()) + sum(weights[c] * spread[c] for c in CONTEXTS))
+    setting_bias = {c: _setting_bias(signed[c], exposure[c], detuning_bound) for c in CONTEXTS}
+    weights = {"measure_reset": 1.0, "matched_idle": abs(1.0 + k), "immediate": abs(k)}
     value_of = {context: complex(signed[context]["re"], signed[context]["im"]) for context in CONTEXTS}
     idle = cmath.phase(value_of["matched_idle"] / value_of["immediate"])
     window = cmath.phase(value_of["measure_reset"] / value_of["matched_idle"])
@@ -206,18 +241,39 @@ def excess_rotation(
         + (1 + k) ** 2 * signed["matched_idle"]["_var_arg"]
         + k**2 * signed["immediate"]["_var_arg"]
     )
-    half = Z95 * math.sqrt(variance) + bias
-    return {
+    reach = detuning_bound * float(np.abs(d_idle).sum()) + Z95 * math.sqrt(
+        signed["matched_idle"]["_var_arg"] + signed["immediate"]["_var_arg"]
+    )
+    span = math.ceil(reach / (2 * math.pi)) + 1
+    windings = [n for n in range(-span, span + 1) if abs(idle + 2 * math.pi * n) <= reach]
+    candidates = [value - 2 * math.pi * k * n for n in windings]
+    out: dict[str, Any] = {
         "idle_rate_rad_per_us": idle / float(d_idle.mean()),
         "collinear_ratio": k,
         "orthogonal_exposure_us": orthogonal.tolist(),
-        "per_setting_half_range_us": spread,
+        "setting_deviation_us": {c: _setting_deviation(exposure[c]) for c in CONTEXTS},
         "detuning_bound_rad_per_us": detuning_bound,
-        "bias_bound_rad": bias,
+        "idle_windings": windings,
         "excess_rotation": value,
-        "excess_rotation_ci": [value - half, value + half],
-        "attributed": value - half > 0 or value + half < 0,
+        "excess_candidates": candidates,
     }
+    if any(bias is None for bias in setting_bias.values()):
+        out.update(attributed=False, withheld="setting-specific exposure leaves a context's argument unbounded")
+        return out
+    bias = detuning_bound * float(np.abs(orthogonal).sum()) + sum(
+        weights[c] * (setting_bias[c] or 0.0) for c in CONTEXTS
+    )
+    half = Z95 * math.sqrt(variance) + bias
+    out.update(
+        bias_bound_rad=bias,
+        excess_rotation_ci=[value - half, value + half],
+        candidate_intervals=[[v - half, v + half] for v in candidates],
+    )
+    if not windings:
+        out.update(attributed=False, withheld="no idle winding fits the detuning bound")
+        return out
+    out["attributed"] = not any(_holds_multiple_of_2pi(v - half, v + half) for v in candidates)
+    return out
 
 
 def populations(dist: np.ndarray) -> dict[str, float]:
@@ -403,13 +459,19 @@ def self_check() -> None:
     _check_identification(rng)
 
 
-def _phases(rates: tuple[float, float], exposure: dict[str, dict[str, float]], window_phase: float) -> dict[str, Any]:
+def _phases(rates: tuple[float, float], exposure: dict[str, dict[str, Any]], window_phase: float) -> dict[str, Any]:
     """Noise-free signed coherences whose pair phase is delta_B t_B - delta_A t_A, plus a phase in measure_reset."""
     out = {}
     for c in CONTEXTS:
         phase = rates[1] * exposure[c]["read_b"] - rates[0] * exposure[c]["read_a"]
         phase += window_phase if c == "measure_reset" else 0.0
-        out[c] = {"re": math.cos(phase), "im": math.sin(phase), "argument": phase, "_var_arg": 1e-8}
+        out[c] = {
+            "re": math.cos(phase),
+            "im": math.sin(phase),
+            "argument": math.atan2(math.sin(phase), math.cos(phase)),
+            "modulus_ci": [0.99, 1.01],
+            "_var_arg": 1e-8,
+        }
     return out
 
 
@@ -438,6 +500,31 @@ def _check_signed_exposure() -> None:
     result = excess_rotation(_phases(rates, collinear, 0.3), collinear, bound)
     if result is None or not result["attributed"] or abs(result["excess_rotation"] - 0.3) > 1e-9:
         raise RuntimeError(f"a collinear exposure change hid the window phase: {result}")
+    # Rates (-0.8, 0.8) rad/us over equal exposures 1/4.3/4.7 us rotate the idle
+    # pair by 5.28 rad, which wraps to -1.00; the wrapped value times k = 0.4/3.3
+    # alone reads 0.76 rad with no measurement phase, and the 5.28 rad winding
+    # the bound admits returns zero.
+    equal = {
+        c: {"read_a": t, "read_b": t} for c, t in (("immediate", 1.0), ("matched_idle", 4.3), ("measure_reset", 4.7))
+    }
+    result = excess_rotation(_phases((-0.8, 0.8), equal, 0.0), equal, bound)
+    if result is None or result["attributed"] or len(result["idle_windings"]) < 2:
+        raise RuntimeError(f"a wrapped idle rotation was attributed to the measurement: {result}")
+    # Setting-specific exposure: measure_reset's B exposure 1 us shorter for XX
+    # and YY and 1 us longer for XY and YX leaves the mean, and k = 0, unchanged
+    # while it can flip the reconstructed coherence; attribution is withheld.
+    flipped: dict[str, dict[str, Any]] = {
+        "immediate": {"read_a": 1.0, "read_b": 1.0},
+        "matched_idle": {"read_a": 2.0, "read_b": 2.0},
+        "measure_reset": {
+            "read_a": 2.0,
+            "read_b": 2.0,
+            "per_setting": {"xx": [2.0, 1.0], "yy": [2.0, 1.0], "xy": [2.0, 3.0], "yx": [2.0, 3.0]},
+        },
+    }
+    result = excess_rotation(_phases((0.0, 0.9), flipped, 0.0), flipped, bound)
+    if result is None or result["attributed"] or "withheld" not in result:
+        raise RuntimeError(f"setting-specific exposure was attributed to the measurement: {result}")
 
 
 def _two_outcome(score: tuple[float, ...], plus: np.ndarray, shots: int) -> list[np.ndarray]:
@@ -485,6 +572,14 @@ def _check_identification(rng: np.random.Generator) -> None:
         raise RuntimeError(f"the phase region covers the true argument in {covered} of {len(strong)}")
     if not any(r["argument_region"][1] > math.pi or r["argument_region"][0] < -math.pi for r in strong):
         raise RuntimeError("a region straddling pi must extend past it rather than split")
+    # Saturated XX and YY scores (every shot +1) with balanced XY and YX: C = 1/2.
+    score = tuple(float(x) for x in signed_parity())
+    plus = {"xx": shots, "yy": shots, "xy": shots // 2, "yx": shots // 2}
+    dists = {f"coherence_immediate_{p}": _two_outcome(score, np.array([n]), shots)[0] for p, n in plus.items()}
+    saturated = context_coherence(dists, {name: shots for name in dists}, "immediate", score)
+    region = saturated.get("argument_region")
+    if region is None or not region[0] < 0.0 < region[1] or abs(saturated["argument"]) > 1e-12:
+        raise RuntimeError(f"a saturated coherence must identify a finite region around 0: {saturated}")
 
 
 def _dephased(law: np.ndarray, setting: str) -> np.ndarray:

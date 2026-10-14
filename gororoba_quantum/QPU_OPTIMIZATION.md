@@ -162,8 +162,10 @@ extent as the phase region; a one-dimensional modulus interval admits a phase
 at zero coherence about 14.65 percent of the time. It reports the
 measure_reset rotation net of the idle rotation carried along the collinear
 part of the per-qubit exposure change, widened by a bias bound for the
-orthogonal part at the design's aliasing detuning, and attributes a
-measurement-induced phase only when that widened interval excludes zero.
+orthogonal part and for setting-specific exposure at the design's aliasing
+detuning. Every idle winding that detuning admits gives a candidate, and a
+measurement-induced phase is attributed only when every widened candidate
+interval excludes every multiple of 2 pi.
 
 `qpe_diagnostics.py` derives the folded-QPE and N=21 families' laws independently of Qiskit
 using exact integer branch amplitudes and rational probabilities. The gate
