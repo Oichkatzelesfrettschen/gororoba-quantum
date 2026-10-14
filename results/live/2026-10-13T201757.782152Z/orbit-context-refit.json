@@ -1,0 +1,182 @@
+{
+ "contexts": {
+  "nominal": {
+   "bias": {
+    "params": {
+     "lam": 0.3170357546176687,
+     "e0": 0.04380418671595237,
+     "e1": 0.06273678160864568
+    },
+    "deviance": 16.488829416812223
+   },
+   "phase": {
+    "params": {
+     "lam": 0.2941035236522219,
+     "e0": 0.04054976785722572,
+     "e1": 0.03950209335660345,
+     "theta": -0.2726321506490932
+    },
+    "deviance": 4.491353585715842,
+    "theta_region_arcs": [
+     [
+      -0.41085223525283077,
+      -0.12214086842700929
+     ]
+    ]
+   },
+   "causal_saturated_deviance": 2.606018312087002,
+   "phase_excess_over_causal": 1.88533527362884,
+   "aic": {
+    "bias": 22.488829416812223,
+    "phase": 12.491353585715842,
+    "causal_saturated": 12.606018312087002
+   },
+   "dimensions": {
+    "bias": 3,
+    "phase": 4,
+    "causal_saturated": 5,
+    "saturated": 6
+   }
+  },
+  "window_barrier": {
+   "bias": {
+    "params": {
+     "lam": 0.1310046418406751,
+     "e0": 0.04391634197032019,
+     "e1": 0.09062271452198253
+    },
+    "deviance": 8.435549193476618
+   },
+   "phase": {
+    "params": {
+     "lam": 0.1173752721126097,
+     "e0": 0.047160281393696143,
+     "e1": 0.10513823455265166,
+     "theta": 0.140528768691057
+    },
+    "deviance": 4.008253410400357,
+    "theta_region_arcs": [
+     [
+      0.009597748418901075,
+      0.27093886984788
+     ]
+    ]
+   },
+   "causal_saturated_deviance": 1.535031652571547,
+   "phase_excess_over_causal": 2.47322175782881,
+   "aic": {
+    "bias": 14.435549193476618,
+    "phase": 12.008253410400357,
+    "causal_saturated": 11.535031652571547
+   },
+   "dimensions": {
+    "bias": 3,
+    "phase": 4,
+    "causal_saturated": 5,
+    "saturated": 6
+   }
+  },
+  "window_echo": {
+   "bias": {
+    "params": {
+     "lam": 0.18461646494826084,
+     "e0": 0.03975870633662317,
+     "e1": 0.08180619130223353
+    },
+    "deviance": 1.9624565530648397
+   },
+   "phase": {
+    "params": {
+     "lam": 0.18498042804212034,
+     "e0": 0.03927538612272996,
+     "e1": 0.07902919361750733,
+     "theta": -0.02847801931129956
+    },
+    "deviance": 1.7944157935198746,
+    "theta_region_arcs": [
+     [
+      -0.16160442424805546,
+      0.10883633701096772
+     ]
+    ]
+   },
+   "causal_saturated_deviance": 0.633716516570658,
+   "phase_excess_over_causal": 1.1606992769492166,
+   "aic": {
+    "bias": 7.96245655306484,
+    "phase": 9.794415793519875,
+    "causal_saturated": 10.633716516570658
+   },
+   "dimensions": {
+    "bias": 3,
+    "phase": 4,
+    "causal_saturated": 5,
+    "saturated": 6
+   }
+  }
+ },
+ "shared_vs_per_context_theta": {
+  "shared_theta": -0.027841751300124385,
+  "lr": 16.144015599966224,
+  "dimension_difference": 2,
+  "bootstrap": {
+   "replicates": 100,
+   "seed": 20261014,
+   "replicates_reaching_lr": 0
+  }
+ },
+ "provenance": {
+  "script": "scripts/n21_orbit_context_refit.py",
+  "script_sha256": "73ac4e8f326ea118d1ac3f205f4d5bdd1b6f5dc73ca73ed8ae56b571a7496930",
+  "script_last_commit": "8d410bf6545f7174f2e8af2421ddbae281bc4c51",
+  "inputs_sha256": {
+   "record.json": "5685faab1c278ee1078799612d2b61a97949f891eafde4038e4388f98fcc4868",
+   "collect.json": "eaf5a285bafc98ac8bd150d43724787c91b6cc1a73d247e6a77bbc4face0b239"
+  },
+  "counts_order": "outcome index b0 + 2 b1",
+  "counts": {
+   "nominal": {
+    "feedback": [
+     1488,
+     1092,
+     675,
+     841
+    ],
+    "no_feedback": [
+     1380,
+     716,
+     710,
+     1290
+    ]
+   },
+   "window_barrier": {
+    "feedback": [
+     1543,
+     1038,
+     578,
+     937
+    ],
+    "no_feedback": [
+     1613,
+     684,
+     564,
+     1235
+    ]
+   },
+   "window_echo": {
+    "feedback": [
+     1533,
+     1083,
+     574,
+     906
+    ],
+    "no_feedback": [
+     1512,
+     688,
+     631,
+     1265
+    ]
+   }
+  }
+ }
+}
