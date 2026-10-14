@@ -1,7 +1,7 @@
 # Cayley-Calculator 1.3.1
 
 - Release: [PyPI Cayley-Calculator 1.3.1](https://pypi.org/project/Cayley-Calculator/1.3.1/), sdist sha256 `65922fc90cc0d8159830e5d90424cb7cda6c6306824bea628542c647f364d55b`; source [Kadelka/Cayley_Calculator](https://github.com/Kadelka/Cayley_Calculator); MIT per its build recipe.
-- Modules: `Cayley_Calculator` plus top-level `compl`, `quat`, `octonion`, `sedenion`, `pathion`, `chingon`, `routon` placed on `sys.path` by `.pth` files.
+- Modules: `Cayley_Calculator` plus top-level `compl`, `quat`, `octonion`, `sedenion`, `pathion`, `chingon`, `routon` placed on `sys.path` when `import Cayley_Calculator` appends the package directory and runs `site.addsitedir` on it, whose `.pth` files add `Linear`, `Mods`, `Special` and `Test`.
 
 ## What it implements
 
@@ -32,5 +32,5 @@ of each component reordered. The sedenion basis table is identical to
   `pathion`, `chingon` and `routon` modules do not collide. Import the
   sedenion module (octonions embed as a subalgebra) or adjust `sys.path`
   explicitly.
-- The `.pth` files modify `sys.path` for every Python process in the
-  environment.
+- The `.pth` files sit inside the package directory, so the `sys.path`
+  change applies to a process only after it imports `Cayley_Calculator`.

@@ -37,7 +37,7 @@ this repository lacks).
 | Claim | Status | Evidence |
 |---|---|---|
 | The non-associating fraction of basis triples tends to about 1/2 | refined and proved | exact closed form N(D) = (D-2)(D-4)(D+6)/2 and the per-pair and per-subspace structure behind it ([cd_associator_defect_census.md](cd_associator_defect_census.md)) |
-| omega(1, 6, k) is one parity character at mask D-2, an unexpectedly simple law | proved | the degree-1 case of the repository's associator degree formula (open proof, task M1) |
+| omega(1, 6, k) is one parity character at mask D-2, an unexpectedly simple law | proved | Theorem 4 in [cd_associator_defect_census.md](cd_associator_defect_census.md); the census gate checks it from 16 to 4096 |
 | The cross-scale pair's Walsh support grows while its leading mode dominates | refined; eight-point formula verified to 4096, its derivation not yet reviewed | support exactly 5D/16 and peak 1 - 16/D for D >= 32 |
 | Dark-dark products return to the 24-index block in 24D - 704 ordered pairs | verified and proved | XOR count proof in the census note |
 | The associator defect is the coboundary of the sign cochain, so its cocycle identity carries no nontrivial class | verified | the identity holds by construction; the census note records it |
@@ -87,7 +87,6 @@ this repository lacks).
 | The ASA statement warns against reading nondetection as absence | verified | web-source note |
 | IBM batch jobs may run out of order with calibrations between them | verified | web-source note |
 | The dynamical Casimir effect is experimentally demonstrated | verified | [1105.4714](1105.4714.md), already registered |
-
 | Ideal Casimir pressures and energy densities (50 to 1000 nm), the 10 mV electrostatic pressures, sphere-plane forces for R = 50 um, the Yukawa pressure -2.11e-16 alpha Pa and the 100 nm mass equivalent -4.82e-17 kg/m^3 | verified | recomputed from hbar, c, epsilon_0 and G; ideal-conductor benchmarks only |
 
 ## Out of scope for this repository

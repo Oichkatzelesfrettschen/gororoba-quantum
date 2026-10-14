@@ -1823,7 +1823,7 @@
    "cmd": "\"$PYTHON\" -W error ../scripts/cd_associator_defect_census.py --replay ../docs/evidence/cd_associator_defect_census/census.json",
    "name": "sources-215",
    "seconds": 110.0,
-   "tier": "full"
+   "tier": "pr"
   },
   {
    "suite": "sources",
@@ -1831,7 +1831,7 @@
    "cmd": "\"$PYTHON\" -O -W error ../scripts/cd_associator_defect_census.py --replay ../docs/evidence/cd_associator_defect_census/census.json",
    "name": "sources-218",
    "seconds": 110.0,
-   "tier": "full"
+   "tier": "pr"
   },
   {
    "suite": "sources",

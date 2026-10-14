@@ -27,7 +27,7 @@ product samples are
 |---|---|---|---|
 | [hypercomplex](hypercomplex.md) | identical table | D = 8, 16 exhaustive; 32, 64 with 400 seeded pairs each | independent recursive implementation |
 | [hypercomplex-engine](hypercomplex-engine.md) | identical table (standard); split variant | D = 8, 16 exhaustive; 32 to 4096, 6000 sampled products each, both engines | independent closed-form sign evaluator |
-| [hypercomplex-algebra](hypercomplex-algebra.md) | identical (delegates to the engine) | spot products | **not independent**: wraps hypercomplex-engine |
+| [hypercomplex-algebra](hypercomplex-algebra.md) | identical (delegates to the engine) | 200 seeded expression products below 64, retained and checked | **not independent**: wraps hypercomplex-engine |
 | [Cayley-Calculator](cayley-calculator.md) | identical table | D = 16 exhaustive | independent; Bourbaki-form doubling with gamma = -1 |
 | [cayley-dickson](cayley-dickson.md) | identical table | D = 8, 16 exhaustive | independent; same doubling formula |
 | [octonion](octonion.md) | signed relabeling (Fano labeling) | D = 8 exhaustive | independent; octonions only |
@@ -49,7 +49,7 @@ product samples are
    splitoct and hypercomplex-engine carry exactly the associator signs of the
    ordinary octonions (512 of 512 triples) while three of seven imaginary
    units square to -1 instead of seven. A qualification checks basis squares,
-   conjugation and the quadratic-form signature, not only associators.
+   the quadratic-form signature (the basis squares), not only associators.
 4. **An element inverse is not an invertible operator.** For
    `x = e1 + e10` in the sedenions, hypercomplex returns
    `x^-1 = -(e1 + e10)/2` with `x x^-1 = x^-1 x = 1`, while `L_x` has rank

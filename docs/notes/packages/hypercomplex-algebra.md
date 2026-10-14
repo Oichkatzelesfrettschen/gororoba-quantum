@@ -14,7 +14,10 @@ and inverse on an `ExpressionMultiplier`. Its resolvers wrap the engine's
 ## Relation to cd_core
 
 Identical to the engine by construction; `multiply_expressions("e5", "e6")`
-returns `-e3`, matching `cd_core.cd_sign(8, 5, 6) = -1`.
+returns `-e3`, matching `cd_core.cd_sign(8, 5, 6) = -1`. tables.json retains
+200 seeded products `multiply_expressions("e<a>", "e<b>")` with a, b < 64,
+and `--check` parses each one and compares its sign and index with
+`cd_core.cd_sign(64, a, b)` and a xor b.
 
 ## Correct use
 

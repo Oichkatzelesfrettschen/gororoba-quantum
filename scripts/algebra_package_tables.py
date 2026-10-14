@@ -17,8 +17,8 @@ Two modes:
   declared relation against the retained tables:
   "identical" (same sign and index table), "signed relabeling" (an index map
   pi and sign flips eta carrying e_p e_q = s'(p, q) e_r onto cd_core), and
-  "split" (same index table and associator signs as cd_core, half the
-  imaginary units squaring to +1; such a table shares every basis associator
+  "split" (same index table and associator signs as cd_core, e1 to e3
+  squaring to -1 and e4 to e7 to +1, e0 the identity; such a table shares every basis associator
   with the ordinary algebra and is not isomorphic to it).
 
 Each package is bound to its public release by the sha256 of its PyPI sdist
@@ -99,18 +99,25 @@ SAMPLED = {
     "hypercomplex": ((32, 64), 400, ("default",)),
     "hypercomplex-engine": (tuple(2**n for n in range(5, 13)), 3000, ("fast", "holographic")),
 }
-TABLES = {
-    "hypercomplex": {"8", "16"},
-    "hypercomplex-engine": {"8", "16", "split-8"},
-    "hypercomplex-algebra": set(),
-    "Cayley-Calculator": {"16"},
-    "cayley-dickson": {"8", "16"},
-    "octonion": {"8"},
-    "splitoct": {"8"},
-    "mathdunders": set(),
-}
 TORCH_TO_CD_PI = [0, 1, 2, 4, 3, 6, 7, 5]
 TORCH_TO_CD_ETA = [0, 0, 0, 0, 0, 0, 1, 0]
+IDENTICAL: dict[str, Any] = {"kind": "identical"}
+SPLIT: dict[str, Any] = {"kind": "split"}
+# Declared relation of every retained table to cd_core; --check requires exactly these.
+RELATIONS: dict[str, dict[str, dict[str, Any]]] = {
+    "hypercomplex": {"8": IDENTICAL, "16": IDENTICAL},
+    "hypercomplex-engine": {"8": IDENTICAL, "16": IDENTICAL, "split-8": SPLIT},
+    "hypercomplex-algebra": {},
+    "Cayley-Calculator": {"16": IDENTICAL},
+    "cayley-dickson": {"8": IDENTICAL, "16": IDENTICAL},
+    "octonion": {"8": {"kind": "signed relabeling", "pi": TORCH_TO_CD_PI, "eta": TORCH_TO_CD_ETA}},
+    "splitoct": {"8": SPLIT},
+    "mathdunders": {},
+}
+# Basis squares of the split octonion tables: e1, e2, e3 square to -1, e4 to e7 to +1.
+SPLIT_SQUARES = [1, -1, -1, -1, 1, 1, 1, 1]
+EXPRESSION_SAMPLES = 200
+EXPRESSION_DIM = 64
 
 Table = dict[str, Any]
 
@@ -120,17 +127,23 @@ def require(condition: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
+def signed_unit(coefficients: Sequence[Any], label: str) -> tuple[int, int]:
+    """(sign, index) of a coefficient vector that must be exactly one basis unit with coefficient +-1."""
+    coeffs = [float(c) for c in coefficients]
+    nonzero = [k for k, c in enumerate(coeffs) if abs(c) > 1e-12]
+    require(len(nonzero) == 1 and abs(abs(coeffs[nonzero[0]]) - 1) < 1e-12, f"{label} is not a signed unit")
+    return (1 if coeffs[nonzero[0]] > 0 else -1), nonzero[0]
+
+
 def unit_table(dim: int, mul: Callable[[int, int], Sequence[Any]]) -> Table:
     """Read e_i e_j from a coefficient-returning product; every product must be a signed basis unit."""
     signs, index = [], []
     for i in range(dim):
         srow, irow = [], []
         for j in range(dim):
-            coeffs = [float(c) for c in mul(i, j)]
-            nonzero = [k for k, c in enumerate(coeffs) if abs(c) > 1e-12]
-            require(len(nonzero) == 1 and abs(abs(coeffs[nonzero[0]]) - 1) < 1e-12, f"e{i} e{j} is not a signed unit")
-            srow.append(1 if coeffs[nonzero[0]] > 0 else -1)
-            irow.append(nonzero[0])
+            sign, k = signed_unit(mul(i, j), f"e{i} e{j}")
+            srow.append(sign)
+            irow.append(k)
         signs.append(srow)
         index.append(irow)
     return {"signs": signs, "index": index}
@@ -157,8 +170,12 @@ def sign_string(dim: int, pairs: list[tuple[int, int]], mul: Callable[[int, int]
 def bind_installation(name: str, archives: Path) -> dict[str, Any]:
     """Tie the installed distribution to its pinned release archive by digest and file bytes."""
     version, _, sha = RELEASES[name]
-    matches = [path for path in sorted(archives.iterdir()) if hashlib.sha256(path.read_bytes()).hexdigest() == sha]
-    require(len(matches) == 1, f"{name}: no archive in the archive directory matches the pinned sha256")
+    matches = [
+        path
+        for path in sorted(archives.iterdir())
+        if path.is_file() and hashlib.sha256(path.read_bytes()).hexdigest() == sha
+    ]
+    require(len(matches) == 1, f"{name}: {len(matches)} archives match the pinned sha256; exactly one is required")
     with tarfile.open(matches[0]) as archive:
         members = set()
         for member in archive.getmembers():
@@ -186,6 +203,20 @@ def bind_installation(name: str, archives: Path) -> dict[str, Any]:
     }
 
 
+def require_bound(module: Any, name: str) -> None:
+    """The imported module file must belong to the distribution bind_installation checked."""
+    files = {Path(str(f.locate())).resolve() for f in importlib.metadata.distribution(name).files or []}
+    require(Path(module.__file__).resolve() in files, f"{module.__name__} resolves outside the {name} distribution")
+
+
+def parse_expression(text: str) -> tuple[int, int]:
+    """hypercomplex-algebra writes a signed basis unit as '[-]1' for e0 and '[-]eN' otherwise."""
+    sign = -1 if text.startswith("-") else 1
+    body = text.lstrip("-")
+    require(body == "1" or (body.startswith("e") and body[1:].isdigit()), f"unexpected product {text!r}")
+    return sign, 0 if body == "1" else int(body[1:])
+
+
 def extract(archives: Path) -> dict[str, Any]:
     packages: dict[str, Any] = {
         name: {"version": version, "release": url, "release_sha256": sha, "tables": {}}
@@ -199,10 +230,18 @@ def extract(archives: Path) -> dict[str, Any]:
     import hypercomplex_engine
     import SplitOct
 
+    for module, owner in (
+        (cayley_dickson, "cayley-dickson"),
+        (hypercomplex, "hypercomplex"),
+        (hypercomplex_algebra, "hypercomplex-algebra"),
+        (hypercomplex_engine, "hypercomplex-engine"),
+        (SplitOct, "splitoct"),
+    ):
+        require_bound(module, owner)
+
     def put(name: str, key: int | str, table: Table, relation: dict[str, Any]) -> None:
         packages[name]["tables"][str(key)] = table | {"relation": relation}
 
-    identical = {"kind": "identical"}
     for n in (3, 4):
         dim = 2**n
         algebra = hypercomplex.cayley_dickson_algebra(n)
@@ -210,8 +249,8 @@ def extract(archives: Path) -> dict[str, Any]:
         def hypercomplex_product(i: int, j: int, a: Any = algebra) -> Sequence[Any]:
             return (a.e(i) * a.e(j)).coefficients()
 
-        put("hypercomplex", dim, unit_table(dim, hypercomplex_product), identical)
-        put("hypercomplex-engine", dim, int_table(*hypercomplex_engine.build_table("standard", n)), identical)
+        put("hypercomplex", dim, unit_table(dim, hypercomplex_product), IDENTICAL)
+        put("hypercomplex-engine", dim, int_table(*hypercomplex_engine.build_table("standard", n)), IDENTICAL)
         basis: list[Any] = [1]
         for _ in range(n):
             basis = list(cayley_dickson.expand_basis(basis))
@@ -219,36 +258,39 @@ def extract(archives: Path) -> dict[str, Any]:
         def kd_product(i: int, j: int, b: list[Any] = basis) -> Sequence[Any]:
             return list(b[i] * b[j])
 
-        put("cayley-dickson", dim, unit_table(dim, kd_product), identical)
+        put("cayley-dickson", dim, unit_table(dim, kd_product), IDENTICAL)
     import Cayley_Calculator  # noqa: F401  (adds its module directory to sys.path)
     import sedenion
+
+    require_bound(sedenion, "Cayley-Calculator")
 
     def sedenion_unit(i: int) -> Any:
         return sedenion.Sedenion(*[1 if k == i else 0 for k in range(16)])
 
-    put("Cayley-Calculator", 16, unit_table(16, lambda i, j: list(sedenion_unit(i) * sedenion_unit(j))), identical)
-    put("hypercomplex-engine", "split-8", int_table(*hypercomplex_engine.build_table("split", 3)), {"kind": "split"})
+    put("Cayley-Calculator", 16, unit_table(16, lambda i, j: list(sedenion_unit(i) * sedenion_unit(j))), IDENTICAL)
+    put("hypercomplex-engine", "split-8", int_table(*hypercomplex_engine.build_table("split", 3)), SPLIT)
 
     def split_unit(i: int) -> Any:
         return SplitOct.SplitOctonion([1 if k == i else 0 for k in range(8)])
 
-    put("splitoct", 8, unit_table(8, lambda i, j: (split_unit(i) * split_unit(j)).x), {"kind": "split"})
+    put("splitoct", 8, unit_table(8, lambda i, j: (split_unit(i) * split_unit(j)).x), SPLIT)
     import octonion
 
+    require_bound(octonion, "octonion")
     constants = octonion.STRUCTURE_CONSTANTS.detach().cpu().numpy()
-    relabeling = {"kind": "signed relabeling", "pi": TORCH_TO_CD_PI, "eta": TORCH_TO_CD_ETA}
-    put("octonion", 8, unit_table(8, lambda i, j: constants[i, j]), relabeling)
-    require(
-        hypercomplex_algebra.multiply_expressions("e5", "e6") == "-e3", "hypercomplex-algebra differs from its engine"
-    )
+    put("octonion", 8, unit_table(8, lambda i, j: constants[i, j]), RELATIONS["octonion"]["8"])
+    expression_pairs = sample_pairs("hypercomplex-algebra", EXPRESSION_DIM, EXPRESSION_SAMPLES)
+    packages["hypercomplex-algebra"]["expression_samples"] = {
+        "dim": EXPRESSION_DIM,
+        "pairs": EXPRESSION_SAMPLES,
+        "products": [hypercomplex_algebra.multiply_expressions(f"e{a}", f"e{b}") for a, b in expression_pairs],
+    }
 
     def hypercomplex_unit(dim: int) -> Callable[[int, int], tuple[int, int]]:
         algebra = hypercomplex.cayley_dickson_algebra(dim.bit_length() - 1)
 
         def mul(i: int, j: int) -> tuple[int, int]:
-            coeffs = [float(c) for c in (algebra.e(i) * algebra.e(j)).coefficients()]
-            index = next(k for k, c in enumerate(coeffs) if c != 0)
-            return (1 if coeffs[index] > 0 else -1), index
+            return signed_unit((algebra.e(i) * algebra.e(j)).coefficients(), f"D={dim} e{i} e{j}")
 
         return mul
 
@@ -280,6 +322,10 @@ def omega(sign: list[list[int]], p: int, q: int, r: int) -> int:
 
 def check_table(name: str, dim: int, table: Table) -> None:
     sign, index, relation = table["signs"], table["index"], table["relation"]
+    require(
+        len(sign) == len(index) == dim and all(len(row) == dim for row in sign + index),
+        f"{name} D={dim}: table shape is not {dim} x {dim}",
+    )
     reference = [[cd_sign(dim, p, q) for q in range(dim)] for p in range(dim)]
     xor_indexed = all(index[p][q] == p ^ q for p in range(dim) for q in range(dim))
     if relation["kind"] == "identical":
@@ -291,9 +337,11 @@ def check_table(name: str, dim: int, table: Table) -> None:
             all(omega(sign, p, q, r) == omega(reference, p, q, r) for p, q, r in triples),
             f"{name}: split associator signs differ from cd_core",
         )
-        require(sum(sign[i][i] == 1 for i in range(1, dim)) == dim // 2, f"{name}: split basis squares differ")
+        require([sign[i][i] for i in range(dim)] == SPLIT_SQUARES, f"{name}: split basis squares differ")
+        require(all(sign[0][q] == 1 and sign[q][0] == 1 for q in range(dim)), f"{name}: e0 is not the split identity")
     elif relation["kind"] == "signed relabeling":
         pi, eta = relation["pi"], relation["eta"]
+        require(sorted(pi) == list(range(dim)) and len(eta) == dim, f"{name}: relabeling is not a permutation")
         for p, q in itertools.product(range(dim), repeat=2):
             r = index[p][q]
             require(pi[r] == pi[p] ^ pi[q], f"{name}: index map is not a homomorphism")
@@ -314,7 +362,9 @@ def check(data: dict[str, Any]) -> int:
             (entry["version"], entry["release"], entry["release_sha256"]) == (version, release, sha),
             f"{name}: recorded release differs from the pin",
         )
-        require(set(entry["tables"]) == TABLES[name], f"{name}: retained table set differs")
+        require(set(entry["tables"]) == set(RELATIONS[name]), f"{name}: retained table set differs")
+        for key, table in entry["tables"].items():
+            require(table["relation"] == RELATIONS[name][key], f"{name} {key}: declared relation differs")
         installed = entry["installed"]
         require(
             (version.startswith("commit ") or installed["distribution_version"] == version)
@@ -326,6 +376,24 @@ def check(data: dict[str, Any]) -> int:
         for key, table in entry["tables"].items():
             check_table(name, int(str(key).rsplit("-", 1)[-1]), table)
             checked += 1
+    split = packages["splitoct"]["tables"]["8"], packages["hypercomplex-engine"]["tables"]["split-8"]
+    require(
+        (split[0]["signs"], split[0]["index"]) == (split[1]["signs"], split[1]["index"]),
+        "the splitoct and hypercomplex-engine split tables differ",
+    )
+    expressions = packages["hypercomplex-algebra"]["expression_samples"]
+    require(
+        (expressions["dim"], expressions["pairs"], len(expressions["products"]))
+        == (EXPRESSION_DIM, EXPRESSION_SAMPLES, EXPRESSION_SAMPLES),
+        "hypercomplex-algebra expression sample size differs",
+    )
+    pairs = sample_pairs("hypercomplex-algebra", EXPRESSION_DIM, EXPRESSION_SAMPLES)
+    for (a, b), text in zip(pairs, expressions["products"], strict=True):
+        require(
+            parse_expression(text) == (cd_sign(EXPRESSION_DIM, a, b), a ^ b),
+            f"hypercomplex-algebra: e{a} e{b} = {text} differs from cd_core",
+        )
+    checked += 1
     for name, (dims, count, labels) in SAMPLED.items():
         samples = packages[name].get("samples", {})
         require(sorted(samples) == sorted(str(dim) for dim in dims), f"{name}: sampled dimensions differ")

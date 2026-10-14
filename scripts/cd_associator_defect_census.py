@@ -19,9 +19,10 @@ against exact enumeration:
   completion c exactly when {a, b, a^b} contains D/2, and otherwise exactly
   D/2 - 4;
 - omega(1, 6, k) = (-1)^popcount((D - 2) & k), the degree-1 case of the
-  associator degree formula max(1, bitlen(j) - 2) (task M1 in the notes);
+  associator degree formula max(1, bitlen(j) - 2) stated in
+  associator_walsh_classes.py and checked by verify.py;
 - the pair (D/2 + 1, D/4 + 3) has Walsh support 5D/16 and largest Walsh
-  amplitude 1 - 16/D for D >= 32;
+  amplitude 1 - 16/D for D >= 32, and algebraic degree n - 2 for D >= 16;
 - with the first 24 indices as one coordinate block, ordered pairs from the
   complement whose product index falls in the block number 24D - 704 for
   D >= 32, and ordered pairs from the block landing in the complement
@@ -40,8 +41,7 @@ a finite certificate; the gate checks it exhaustively for d <= 32. With it,
 N(D), the per-pair law, the 168/72 subspace split with O(D) and
 Q(D) = (D - 2)(D - 4)(D - 8) / 192, and the (1, 6) parity law hold for every
 power-of-two D. The cross-scale Walsh law and the eight-point formula
-omega = -(-1)^(q.k + [k in E_D]) are checked from 16 to 4096; their
-derivation came from an external review and is not yet reviewed here.
+omega = -(-1)^(q.k + [k in E_D]) are checked from 16 to 4096 without a proof.
 """
 
 from __future__ import annotations
@@ -51,6 +51,7 @@ import itertools
 import json
 import sys
 from collections import Counter
+from collections.abc import Callable
 from pathlib import Path
 
 import numpy as np
@@ -169,6 +170,17 @@ def pair_completions(dim: int) -> dict[str, int]:
             associating = int((omega(dim, np.full(len(c), a), np.full(len(c), b), c) == 1).sum())
             rows[(half in (a, b, a ^ b), associating)] += 1
     return {f"{'contains' if hit else 'avoids'}_half:{count}": pairs for (hit, count), pairs in sorted(rows.items())}
+
+
+def anf_degree(values: np.ndarray) -> int:
+    """Algebraic degree of the Boolean function with (-1)^f = values, by the binary Moebius transform."""
+    coefficients = ((1 - values) // 2).astype(np.int64)
+    step = 1
+    while step < coefficients.size:
+        for start in range(0, coefficients.size, 2 * step):
+            coefficients[start + step : start + 2 * step] ^= coefficients[start : start + step]
+        step *= 2
+    return max((bin(int(i)).count("1") for i in np.flatnonzero(coefficients)), default=-1)
 
 
 def walsh(values: np.ndarray) -> np.ndarray:
@@ -319,6 +331,7 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
             [-(1 - 2 * ((bin((dim - 4) & int(x)).count("1") + (int(x) in exceptional)) & 1)) for x in k]
         )
         require(np.array_equal(cross, eight_point), f"{dim}: cross-scale eight-point formula")
+        require(anf_degree(cross) == dim.bit_length() - 3, f"{dim}: cross-scale algebraic degree n - 2")
         if dim >= 32:
             require(support == 5 * dim // 16 and peak == dim - 16, f"{dim}: cross-scale Walsh law")
             complement = sum(24 <= (i ^ m) < dim for i in range(24, dim) for m in range(24))
@@ -329,13 +342,30 @@ def census(exhaustive_max: int, pair_max: int, subspace_max: int, sample_max: in
     return out
 
 
+def power_of_two(floor: int) -> Callable[[str], int]:
+    def parse(text: str) -> int:
+        value = int(text)
+        if value < floor or value & (value - 1):
+            raise argparse.ArgumentTypeError(f"a Cayley-Dickson dimension is a power of two of at least {floor}")
+        return value
+
+    return parse
+
+
+def positive(text: str) -> int:
+    value = int(text)
+    if value <= 0:
+        raise argparse.ArgumentTypeError("the sample count is a positive integer")
+    return value
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--exhaustive-max", type=int, default=128)
-    parser.add_argument("--pair-max", type=int, default=64)
-    parser.add_argument("--subspace-max", type=int, default=32)
-    parser.add_argument("--sample-max", type=int, default=4096)
-    parser.add_argument("--samples", type=int, default=400_000)
+    parser.add_argument("--exhaustive-max", type=power_of_two(8), default=128)
+    parser.add_argument("--pair-max", type=power_of_two(16), default=64)
+    parser.add_argument("--subspace-max", type=power_of_two(16), default=32)
+    parser.add_argument("--sample-max", type=power_of_two(8), default=4096)
+    parser.add_argument("--samples", type=positive, default=400_000)
     parser.add_argument("--out", type=Path, help="JSON path; default prints a summary only")
     parser.add_argument("--replay", type=Path, help="retained census JSON to regenerate and compare")
     args = parser.parse_args()
