@@ -70,6 +70,8 @@ def allocate_plans(
     hardware data never enters allocation. Endpoint-wise minimum tiers and
     whole-tier promotion define a bounded search, not a global PUB optimum.
     """
+    if unscored_tier not in ("smallest", "largest"):
+        raise ValueError(f"unscored_tier must be smallest or largest, not {unscored_tier!r}")
     if not tiers or any(type(tier) is not int or tier <= 0 for tier in tiers):
         raise ValueError("PUB shot tiers must be positive integers")
     if tuple(sorted(set(tiers))) != tiers:

@@ -149,6 +149,12 @@ def _verify_allocation() -> dict[str, Any]:
         pass
     else:
         raise RuntimeError("nonadjacent matched rows passed")
+    try:
+        allocate_plans((plan,), contracts[:2], (1024, 4096), budget, simulation_alpha=0.01, unscored_tier="Largest")
+    except ValueError:
+        pass
+    else:
+        raise RuntimeError("an unknown unscored tier was accepted")
     unscored_plans, unscored_audits = allocate_plans(
         (plan,), contracts[:2], (1024, 4096), budget, simulation_alpha=0.01
     )

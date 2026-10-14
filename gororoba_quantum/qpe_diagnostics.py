@@ -184,7 +184,7 @@ def n21_orbit_diagnostic(
     if variant == "window_delay" and (type(window_delay_dt) is not int or window_delay_dt <= 0):
         raise ValueError("window_delay requires a positive integer window_delay_dt from calibration")
     if variant in ("window_echo", "window_barrier") and (type(echo_half_dt) is not int or echo_half_dt <= 0):
-        raise ValueError("window_echo requires a positive integer echo_half_dt from calibration")
+        raise ValueError(f"{variant} requires a positive integer echo_half_dt from calibration")
     control = QuantumRegister(1, "ctrl")
     work = QuantumRegister(len(N21_ORBIT_BITS), "w")
     phase = ClassicalRegister(2, "phase")

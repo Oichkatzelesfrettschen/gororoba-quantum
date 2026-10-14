@@ -261,8 +261,8 @@ broad atlas expenditure. Each new physical case requires its own approval.
 
 ## IBM Runtime documentation
 
-The [execution-guide note](notes/ibm-runtime-execution-guides.md) records six IBM Quantum documentation pages
+The [execution-guide note](notes/ibm-runtime-execution-guides.md) records eight IBM Quantum documentation pages
 (workload usage, stretch, Sampler options, Sampler inputs and outputs, run-time minimization,
-and the client-side Sampler API) with retrieval SHA-256 and the use each page is cited for.
+the client-side Sampler API, real-time backend-property refresh and circuit timing) with retrieval SHA-256 and the use each page is cited for.
 
 The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.

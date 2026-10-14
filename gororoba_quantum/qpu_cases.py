@@ -207,13 +207,21 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         )
     if design["optimize"]:
         arguments.append("--optimize")
-    if design.get("patch_qubits") is not None:
-        patch = [qubit for qubit in design["patch_qubits"] if type(qubit) is int and qubit >= 0]
+    if design["family"] == "patch-window":
+        declared = design.get("patch_qubits")
+        _require(isinstance(declared, list), "the patch-window family requires its patch qubits")
+        patch = [qubit for qubit in declared if type(qubit) is int and qubit >= 0]
         _require(
-            patch == design["patch_qubits"] and patch == record["family_configuration"].get("patch_qubits"),
+            patch == declared and len(patch) == 6 and len(set(patch)) == 6,
+            "patch-window needs six distinct nonnegative qubits",
+        )
+        _require(
+            patch == record["family_configuration"].get("patch_qubits"),
             "patch qubits differ between the design policy and the family configuration",
         )
         arguments.extend(["--patch-qubits", ",".join(str(qubit) for qubit in patch)])
+    else:
+        _require(design.get("patch_qubits") is None, "only the patch-window family carries patch qubits")
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
         value = policy[name]
@@ -952,7 +960,7 @@ def _endpoints(record: dict[str, Any], candidate: dict[str, Any]) -> list[str]:
     return lines
 
 
-def _scientific_case(family: str) -> list[str]:
+def _scientific_case(family: str, record: dict[str, Any]) -> list[str]:
     if family == "folded-correction":
         return [
             "## Scientific question and interpretation",
@@ -1016,11 +1024,24 @@ def _scientific_case(family: str) -> list[str]:
             "",
         ]
     if family == "patch-window":
+        configuration = record["family_configuration"]
+        roles = configuration.get("patch_roles") or [
+            "control",
+            "work_a",
+            "spectator",
+            "work_b",
+            "neighbor_a",
+            "neighbor_b",
+        ]
+        patch = ", ".join(f"{role} {qubit}" for role, qubit in zip(roles, configuration["patch_qubits"], strict=True))
+        backends = ", ".join(sorted({_identifier(group["backend"], "backend") for group in record["groups"]}))
         return [
             "## Scientific question and interpretation",
             "",
-            "The patch-window family characterizes the pinned qubits the N=21 orbit runs used (control, two "
-            "work qubits, spectator, two outer neighbors). Paired and single-qubit Ramsey, plain and echoed, "
+            f"The patch-window family characterizes the physical qubits {patch} on {backends}. It "
+            "reproduces the window of the N=21 orbit runs only when this backend and these roles match the "
+            "orbit record's layout; on other qubits it characterizes this patch alone. Paired and "
+            "single-qubit Ramsey, plain and echoed, "
             "measure work-qubit phase and visibility against executed idle; measure-and-reset and reset-only "
             "windows separate the explicit measurement; exchange circuits with zero-delay, unexcited and "
             "all-one references bound population transfer; and nominal, barrier and barrier-plus-echo orbit "
@@ -1198,7 +1219,7 @@ def _render(
     for package, version in sorted(record["versions"].items()):
         lines.append(f"| {_identifier(package, 'package')} | {_identifier(version, 'version')} |")
     lines.append("")
-    lines.extend(_scientific_case(family))
+    lines.extend(_scientific_case(family, record))
     lines.extend(
         [
             "## Archived ideal laws and placement",
