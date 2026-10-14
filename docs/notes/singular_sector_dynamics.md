@@ -42,10 +42,9 @@ is a diagonal sign. Its `+1` and `-1` coordinates span `S+` and `S-`.
 Every two-term element therefore has `L_a^T L_a` spectrum in `{0, 2, 4}`
 (`M_a = L_a^T L_a / |a|^2` in `{0, 1, 2}`) and nullity `|S+|/2`. At D = 16 the
 spectrum is [BCDI](0905.2987.md) Proposition 7.4 (known theorem reproduced).
-The sign-driven split, its commutation structure and its validity in every
-dimension are a new proof or formalization; a comparison with de Marrais's
-higher-dimensional box-kite counts remains open, so the all-dimension
-statement carries the candidate label until that literature check. The checker
+The sign-driven split and its commutation structure in every dimension carry
+the label new proof or formalization, pending one check: whether de Marrais's
+higher-dimensional box-kite papers already state the split. The checker
 verifies every idempotent, invariance, kernel and Gram identity on integer
 matrices for all 1182 signed pairs through D = 32. A sign table with one
 flipped entry moves the D = 16 sector total, which the checker rejects.
@@ -53,7 +52,12 @@ flipped entry moves the D = 16 sector total, which the checker rejects.
 ## Census link and closed forms
 
 `{L_i, L_j} e_k = -[(e_i, e_j, e_k) + (e_j, e_i, e_k)]` for distinct imaginary
-units, since `e_i e_j + e_j e_i = 0`. Expanding both associators through the
+units, since `e_i e_j + e_j e_i = 0`. A dependent basis triple associates in
+every dimension: with `L_m^2 = R_m^2 = -I` (both are skew signed
+permutations), `(e_a e_a) e_b = e_a(e_a e_b) = -e_b`,
+`(e_a e_b) e_b = e_a(e_b e_b) = -e_a`, and for `e_c = s e_a e_b`, `s = +-1`,
+both `(e_a e_c) e_b` and `e_a(e_c e_b)` equal `s`. So the four indices of
+`span(i, j)` always lie in `S-`. Expanding both associators through the
 basis signs gives `k in S+` exactly when `omega(i, j, k) != omega(j, i, k)`,
 where `omega` is the associator sign of the
 [defect census](cd_associator_defect_census.md). Census Theorem 3 gives
@@ -91,7 +95,8 @@ through the doubling `(a, b)(c, d) = (ac - conj(d) b, da + b conj(c))` of
   vanishes for `a = 1`, so every pair through `e_h` anticommutes.
 - Mixed pair `(a, 0), (0, x)`: the anticommutator is off-diagonal, built from
   `[L_a, R_x]` and `[R_a, L_x]`. The column of `[L_a, R_x]` at `e_c` is
-  nonzero exactly when `omega(a, c, x) = -1`, and by census Theorem 3
+  nonzero exactly when `omega(a, c, x) = -1`, which never happens for the
+  four dependent `c` in `span(a, x)` by the lemma above, and by census Theorem 3
   `omega(a, c, x) = +1` for `c` outside `span(a, x)` exactly when `c` lies in
   `S+(a, x)` of `A_(n-1)`. So `|S+| = 2(h - 4 - |S+(a, x)|)` for `x` outside
   `{0, a}`, and 0 for `x = 0` (the unit) or `x = a` (flexibility).
@@ -100,7 +105,10 @@ Induction from the octonions, where `|S+| = 0`, gives `|S+| <= D - 8`, with
 equality on mixed pairs over anticommuting lower pairs. A mixed pair therefore
 anticommutes only for `x` in `{0, a}`, which yields the recurrence, and the
 largest two-term nullity is `D/2 - 4`; the retained census records 4, 12, 28,
-60 and 124 at D = 16 to 256. At D = 16 the count 63 is Levratti's Remark 5.4
+60 and 124 at D = 16 to 256. Elements reaching `2^(n-1) - 4` are
+[BDI II](math-0702075.md) Proposition 8.2 (known); the upper bound for every
+two-term element is this recursion, and its relation to BDI II Theorem 8.1 is
+unchecked. At D = 16 the count 63 is Levratti's Remark 5.4
 ([note](levratti-2026-fano-css.md)), and the Gram identity
 `L_a^T L_a = 2I - t {L_i, L_j}` with the 63/42 split is already gated in
 [octonion_structure_checks.md](octonion_structure_checks.md); its annihilator

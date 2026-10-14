@@ -1934,7 +1934,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error ../scripts/singular_sector_dynamics.py",
    "name": "core-240",
-   "seconds": 3.4,
+   "seconds": 4.2,
    "tier": "pr"
   },
   {
@@ -1942,7 +1942,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -O -W error ../scripts/singular_sector_dynamics.py",
    "name": "core-241",
-   "seconds": 3.4,
+   "seconds": 4.2,
    "tier": "pr"
   },
   {
