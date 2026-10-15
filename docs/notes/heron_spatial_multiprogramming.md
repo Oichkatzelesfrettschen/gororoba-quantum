@@ -138,26 +138,31 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   (`docs/notes/levratti-2026-fano-css.md` Theorem 3.1).
 - **`steane_z_syndrome_patch(error_qubit, mid_circuit_measure, dd_sequence, idle_delay_dt)`** (10 qubits): Measures the
   three Steane $Z$ parity checks with $CX$ from data qubits onto ancillas 7..9. Unnested `if_test` blocks
-  apply $X$ corrections. An optional `dd_sequence` (`"CPMG2"` or `"XY4"`) brackets an explicit `idle_delay_dt`
-  interval on the data qubits during syndrome extraction to suppress physical dephasing drift without transversal
-  logical perturbation (even-pulse CPMG-2 sequence $X \dots X = I$ or XY4 $XYXY = -I$).
+  apply $X$ corrections. `idle_delay_dt > 0` inserts an idle on the data qubits after the parity checks, filled by
+  `dd_window` with `"CPMG2"` (pulse product $I$) or `"XY4"` (product $-I$); Hahn is refused because one $X$ on all
+  seven data qubits is a transversal logical $X$. The patch starts in $|0\rangle^{\otimes 7}$ and reads only $Z$, so it
+  tests bit-flip syndrome extraction and frame restoration by the DD block; a phase error on these $Z$ eigenstates
+  changes no bit, so the patch is not a dephasing or logical-coherence experiment. The contracts check the pulse
+  order and dt intervals after tile routing, and refocusing of a static detuning on an $X$-basis readout.
 - **`steane_coherent_syndrome_patch(error_qubit)`** (10 qubits): Extracts syndrome into ancillas 7..9,
   then applies coherent multi-controlled corrections `mcx([7, 8, 9], val - 1, ctrl_state=val)` on the data
-  qubits to correct single $X$ errors on $|0\rangle^7$ without mid-circuit readout or reset. Conceptually
-  motivated by the performance distinction between coherent multi-control and dynamic feed-forward studied in
-  separate QPE ladder acquisitions (`results/live/CAMPAIGN_FINDINGS.md` Section 2).
+  qubits to correct single $X$ errors on $|0\rangle^7$ without mid-circuit readout or reset: an ideal
+  measurement-free correction map. The coherent-versus-feed-forward QPE ladder of `results/live/CAMPAIGN_FINDINGS.md`
+  Section 2 is a different experiment whose mechanism that note leaves unresolved.
 
 ### Run 3: Vacuum Endpoint Probes, Dynamical Decoupling, and Model Discrimination
-- **`bell_delay_probe(delay_dt, dd_sequence)`** (2 qubits): Prepares a Bell pair, applies an idle delay,
-  and inverts the state. `dd_sequence` supports `None` (plain idle), `"Hahn"` ($X$ echo at midpoint), or
-  `"XY4"` (symmetric CPMG-style $\tau/8 \to X \to \tau/4 \to Y \to \tau/4 \to X \to \tau/4 \to Y \to \tau/8$).
+- **`bell_delay_probe(delay_dt, dd_sequence, quadrature)`** (2 qubits): Prepares a Bell pair, fills an idle with
+  `dd_window` (`None`, `"Hahn"`, `"CPMG2"` or `"XY4"`), and inverts the state. With the idle acting as
+  $(|00\rangle + V e^{i\theta}|11\rangle)/\sqrt{2}$, quadrature `"x"` returns $P_{00} = (1 + V\cos\theta)/2$, which alone
+  cannot separate a contrast loss $V$ from a rotation $\theta$; quadrature `"y"` adds $S^\dagger$ before the inverse and
+  returns $(1 + V\sin\theta)/2$, and the two together identify both.
   In physical QPU characterizations, unmitigated idle exposure exhibited both coherent phase rotation and dephasing decay
   (e.g. a directly measured branch-signed coherence rotation of $-1.130$ rad over $4.4\,\mu\text{s}$ on `ibm_kingston`,
   accompanied by $|C|$ moving from $0.413$ to $0.375$, recorded in `results/live/QPU_PROGRAM_CASES.md`). A separate, older
   calibration on `ibm_fez` yielded an independent fitted phase parameter of $+0.17$ rad under different experimental
   conditions (`results/live/N21_ORBIT_RCA.md`); the two quantities reflect distinct observables and execution contexts
-  rather than a single differential DD effect. `bell_delay_probe` provides an isolated testbed to evaluate idle dephasing
-  and coherent drift against decoupling schedules.
+  rather than a single differential DD effect. `bell_delay_probe` is a proposed echo testbed for idle rotation and
+  contrast loss; it encodes neither number and no hardware result here shows a decoupling benefit.
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
   $\|\mathbf{r}_i - \mathbf{r}_j\|$ when coordinate pairs are supplied by the caller.
@@ -167,8 +172,9 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   (`docs/notes/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
   To bound the plug-in total-variation distance across all $K$ outcome bins simultaneously without falsely reporting
   distinguishable models due to multinomial sampling variation, the module computes the Bretagnolle-Huber-Carol
-  finite-sample bound (van der Vaart & Wellner 1996, Proposition A.6.6; Devroye 1987, Section 3.3). `alphabet_size`
-  is required and must give the size of the complete outcome alphabet, including outcomes absent from either count map:
+  finite-sample bound (van der Vaart & Wellner 1996, Proposition A.6.6). `alphabet_size` is required and must give
+  the size of the complete outcome alphabet, including outcomes absent from either count map, and for bit-string
+  outcomes of width $w$ it cannot exceed $2^w$:
   $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$, yielding simultaneous confidence radius
   $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$.
 
@@ -240,15 +246,15 @@ repository source notes, registered preprints, and verified platform artifacts:
      Establishes the non-parametric exponential concentration bound for bounded random variables in $[0, 1]$.
    - **Bretagnolle-Huber-Carol Bound**: The finite-sample multinomial total variation inequality
      $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (van der Vaart & Wellner 1996,
-     *Weak Convergence and Empirical Processes*, Springer, Proposition A.6.6, p. 438; Devroye 1987,
-     *A Course in Density Estimation*, Birkhauser, Section 3.3, p. 29). The implemented confidence radius
+     *Weak Convergence and Empirical Processes*, Springer, Proposition A.6.6, p. 438). The implemented confidence radius
      $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$ and $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$
      inverts this bound at tail $\alpha/4$ per sample, ensuring multi-outcome sampling variation does not falsely report
      distinguishable models.
 
 6. **IBM Heron r2 Platform & Qiskit Architecture Grounding:**
-   - **Fractional Gates & Continuous ISA** (`docs/notes/ibm_quantum/fractional-gates.md`): When `use_fractional_gates=True`,
-     Heron r2 natively supports continuous $R_{ZZ}(\theta)$ and $R_X(\theta)$ instructions alongside $\{RZ, \sqrt{X}, X, CZ\}$.
+   - **Fractional Gates & Continuous ISA** (`docs/notes/ibm_quantum/fractional-gates.md`): `use_fractional_gates=True`
+     adds `rzz` ($0 < \theta \le \pi/2$) and `rx` to the Target as fractional instructions beside the basis
+     `cz, id, rz, sx, x, xslow`; no builder here uses them.
    - **Dynamic Circuits & Mid-Circuit Execution** (`docs/notes/ibm_quantum/execute-dynamic-circuits.md`): Single-level
      `if_test` conditionals, operands $\le 32$ bits, and mid-circuit readout/reset constraints.
    - **Timing, Repetition Rate, and Stretch** (`docs/notes/ibm_quantum/repetition-rate-execution.md`,
@@ -256,7 +262,7 @@ repository source notes, registered preprints, and verified platform artifacts:
      range $[0, 2\,\text{ms}]$ (default $250\,\mu\text{s}$), and QASM3 stretch timing.
    - **Processor Topologies & Calibration Snapshots** (`docs/notes/ibm_quantum/qpu-information.md`,
      `docs/notes/ibm_quantum/processor-types.md`, `docs/notes/ibm_heron_platform.md`,
-     `docs/evidence/heron_platform/targets.json`): 156-qubit heavy-hex lattice, tunable couplers, $dt = 4\,\text{ns}$
+     `docs/evidence/heron_platform/targets.json`): 156-qubit heavy-hex lattice, $dt = 4\,\text{ns}$
      timing granularity, and machine-readable Target definitions for `ibm_fez`, `ibm_kingston`, and `ibm_marrakesh`.
    - **Transpiler Stages & Pass Managers** (`docs/notes/ibm_quantum/transpiler-stages.md`,
      `docs/notes/ibm_quantum/transpile-with-pass-managers.md`): Staged pass manager execution and layout synthesis.

@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import sys
 import unittest
 from pathlib import Path
@@ -19,6 +20,7 @@ from heron_multiprogramming import (  # noqa: E402
     HeronLattice,
     bell_delay_probe,
     bent_hidden_shift_circuit,
+    dd_window,
     fano_plane_incidence_matrix,
     hoeffding_model_discrimination,
     lcu_zero_product_witness,
@@ -43,6 +45,17 @@ def edge_circuit(tile: DisjointTile, flip: bool) -> QuantumCircuit:
         qc.x(position[b])
     qc.measure(position[b], 1)
     return qc
+
+
+def detuned(circuit: QuantumCircuit, rate: float) -> QuantumCircuit:
+    """circuit with every delay of d dt replaced by RZ(rate * d) on its qubit."""
+    out = circuit.copy_empty_like()
+    for inst in circuit.data:
+        if inst.operation.name == "delay":
+            out.rz(rate * inst.operation.duration, inst.qubits[0])
+        else:
+            out.append(inst.operation, inst.qubits, inst.clbits)
+    return out
 
 
 class TestHeronMultiprogramming(unittest.TestCase):
@@ -334,17 +347,67 @@ class TestHeronMultiprogramming(unittest.TestCase):
             steane_z_syndrome_patch(1, dd_sequence="Hahn")
 
     def test_bell_delay_probe_with_dd(self) -> None:
-        for dd in (None, "Hahn", "XY4"):
-            qc = bell_delay_probe(100, dd_sequence=dd)
-            self.assertEqual(qc.num_qubits, 2)
-            sv = Statevector(qc.remove_final_measurements(inplace=False))
-            self.assertAlmostEqual(float(sv.probabilities()[0]), 1.0)
+        for dd in (None, "Hahn", "CPMG2", "XY4"):
+            for quadrature, ideal in (("x", 1.0), ("y", 0.5)):
+                qc = bell_delay_probe(100, dd_sequence=dd, quadrature=quadrature)
+                self.assertEqual(qc.num_qubits, 2)
+                sv = Statevector(qc.remove_final_measurements(inplace=False))
+                self.assertAlmostEqual(float(sv.probabilities()[0]), ideal)
+        with self.assertRaises(ValueError):
+            bell_delay_probe(100, quadrature="z")
         with self.assertRaises(ValueError):
             bell_delay_probe(-1)
         with self.assertRaises(ValueError):
             bell_delay_probe(0, dd_sequence="invalid_dd")
         with self.assertRaises(ValueError):
             bell_delay_probe(100, dd_sequence="invalid_dd")
+
+    def test_dd_window_refocuses_a_static_detuning(self) -> None:
+        # Each delay becomes a Z rotation proportional to its length, a static detuning;
+        # an X-basis readout of |+> sees the phase that a Z-basis readout cannot.
+        for dd, refocused in ((None, False), ("Hahn", True), ("CPMG2", True), ("XY4", True)):
+            qc = QuantumCircuit(1)
+            qc.h(0)
+            dd_window(qc, [0], dd, 400)
+            qc.h(0)
+            p0 = float(Statevector(detuned(qc, 0.003)).probabilities()[0])
+            if refocused:
+                self.assertAlmostEqual(p0, 1.0)
+            else:
+                self.assertAlmostEqual(p0, math.cos(0.003 * 400 / 2) ** 2)
+
+    def test_bell_quadratures_separate_contrast_and_rotation(self) -> None:
+        # A static detuning on both qubits gives |11> the phase theta = 2 * rate * delay against |00>:
+        # quadrature x returns (1 + cos theta)/2 and y returns (1 + sin theta)/2, while CPMG-2 refocuses it.
+        theta, delay = 0.7, 100
+        for dd, effective in ((None, theta), ("CPMG2", 0.0)):
+            for quadrature, law in (("x", math.cos), ("y", math.sin)):
+                qc = bell_delay_probe(delay, dd_sequence=dd, quadrature=quadrature).remove_final_measurements(
+                    inplace=False
+                )
+                p00 = float(Statevector(detuned(qc, theta / (2 * delay))).probabilities()[0])
+                self.assertAlmostEqual(p00, (1 + law(effective)) / 2)
+
+    def test_routed_steane_dd_keeps_pulses_and_frame(self) -> None:
+        # Explicit DD pulses survive tile routing in order with their dt intervals, and the routed
+        # circuit still corrects a single X error and restores the computational frame.
+        tile = self.lattice.find_disjoint_tiles(k=10, max_tiles=1)[0]
+        routed = self.lattice.route_to_tile(steane_z_syndrome_patch(2, dd_sequence="CPMG2", idle_delay_dt=400), tile)
+        windows = 0
+        for qubit in routed.qubits:
+            line = [
+                (inst.operation.name, getattr(inst.operation, "duration", None))
+                for inst in routed.data
+                if qubit in inst.qubits and inst.operation.name in ("delay", "x", "sx", "rz", "cz", "measure")
+            ]
+            for start in range(len(line) - 4):
+                names = [name for name, _ in line[start : start + 5]]
+                if names == ["delay", "x", "delay", "x", "delay"]:
+                    self.assertEqual([line[start + k][1] for k in (0, 2, 4)], [100, 200, 100])
+                    windows += 1
+        self.assertEqual(windows, 7)
+        counts = AerSimulator().run(routed, shots=40, seed_simulator=11).result().get_counts()
+        self.assertEqual(counts, {"0000000 011": 40})
 
     def test_hoeffding_model_discrimination(self) -> None:
         p = {"0": 8000, "1": 192}
@@ -365,7 +428,11 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertGreater(same_source["multinomial_tv_radius"], same_source["total_variation_distance"])
 
         # alphabet_size contracts
-        res_alpha = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=64)
+        wide_a = {"0000" + key: count for key, count in sample_a.items()}
+        wide_b = {"0000" + key: count for key, count in sample_b.items()}
+        res_alpha = hoeffding_model_discrimination(wide_a, wide_b, alpha=0.01, alphabet_size=64)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=64)
         self.assertEqual(res_alpha["k_bins"], 64)
         self.assertGreater(res_alpha["multinomial_tv_radius"], same_source["multinomial_tv_radius"])
         sparse_counts = {"00": 4096}

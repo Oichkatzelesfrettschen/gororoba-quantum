@@ -19,8 +19,7 @@ Primary research literature grounding:
 - Octonionic Fano-plane CSS & dynamic circuits: Levratti (2026, fano-css & active-stabilizers),
   Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021, arXiv:2103.03008).
 - Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Bretagnolle-Huber-Carol
-  multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438;
-  Devroye 1987, Section 3.3, p. 29).
+  multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438).
 - Boolean bent hidden shifts: Roetteler (2008, arXiv:0811.3208; 2009,
   arXiv:0911.4724), Gavinsky, Roetteler & Roland (2011, arXiv:1103.3017).
 """
@@ -785,6 +784,50 @@ def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) 
 
 
 STEANE_Z_CHECKS = ((0, 2, 4, 6), (1, 2, 5, 6), (3, 4, 5, 6))
+DD_SEQUENCES = (None, "Hahn", "CPMG2", "XY4")
+
+
+def dd_window(qc: QuantumCircuit, qubits: Sequence[int], sequence: str | None, delay_dt: int) -> None:
+    """Fill a delay_dt idle on each qubit with the named decoupling sequence, in dt.
+
+    None idles; Hahn is t/2, X, t/2 (product X); CPMG2 is t/4, X, t/2, X, t/4
+    (product I); XY4 is t/8, X, t/4, Y, t/4, X, t/4, Y, rest (product -I). The
+    delays on each qubit sum to delay_dt. Ideal pulses refocus a static Z
+    detuning in every sequence but None; a sequence with an odd number of X
+    leaves the frame flipped, which the caller undoes or forbids.
+    """
+    if sequence not in DD_SEQUENCES:
+        raise ValueError(f"Unsupported dd_sequence '{sequence}'")
+    if delay_dt < 0:
+        raise ValueError(f"delay_dt must be non-negative, got {delay_dt}")
+    if delay_dt == 0:
+        return
+    for q in qubits:
+        if sequence is None:
+            qc.delay(delay_dt, q)
+        elif sequence == "Hahn":
+            half = delay_dt // 2
+            qc.delay(half, q)
+            qc.x(q)
+            qc.delay(delay_dt - half, q)
+        elif sequence == "CPMG2":
+            tau_4, tau_2 = delay_dt // 4, delay_dt // 2
+            qc.delay(tau_4, q)
+            qc.x(q)
+            qc.delay(tau_2, q)
+            qc.x(q)
+            qc.delay(delay_dt - tau_4 - tau_2, q)
+        else:
+            tau_8, tau_4 = delay_dt // 8, delay_dt // 4
+            qc.delay(tau_8, q)
+            qc.x(q)
+            qc.delay(tau_4, q)
+            qc.y(q)
+            qc.delay(tau_4, q)
+            qc.x(q)
+            qc.delay(tau_4, q)
+            qc.y(q)
+            qc.delay(delay_dt - tau_8 - 3 * tau_4, q)
 
 
 def fano_plane_incidence_matrix() -> np.ndarray:
@@ -823,23 +866,22 @@ def steane_z_syndrome_patch(
     unnested if_test blocks on the 3-bit register apply the X correction, and
     register `data` reads the 7 data qubits at the end.
 
-    An optional dd_sequence ('CPMG2' or 'XY4') applies dynamical decoupling to
-    the data qubits bracketing idle_delay_dt during syndrome extraction to suppress
-    physical dephasing drift without transversal logical perturbation. Note that
-    an even number of X rotations (CPMG-2: tau/4 -> X -> tau/2 -> X -> tau/4) or
-    XY4 (tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem) is required
-    because an odd number of X pulses on all 7 data qubits acts as a transversal logical
-    X flip on the Steane [[7,1,3]] code, transforming |0_L> into |1_L>. Single-pulse
-    Hahn echo is unsupported on Steane data qubits.
+    idle_delay_dt > 0 inserts an idle on the data qubits after the parity CXs,
+    filled by dd_window with dd_sequence 'CPMG2' (product I) or 'XY4' (product
+    -I); Hahn is refused because one X on all seven data qubits is a transversal
+    logical X. The patch starts in |0>^7 and reads only Z, so it tests bit-flip
+    syndrome extraction and that the DD block restores the computational frame;
+    a phase error on these Z eigenstates leaves every bit unchanged, so the
+    patch is not a dephasing or logical-coherence experiment.
     """
     if idle_delay_dt < 0:
         raise ValueError(f"idle_delay_dt must be non-negative, got {idle_delay_dt}")
-    if dd_sequence not in (None, "CPMG2", "XY4"):
-        if dd_sequence == "Hahn":
-            raise ValueError(
-                "dd_sequence='Hahn' (single-pulse echo) is unsupported on Steane data qubits "
-                "because transversal X flips |0_L> to |1_L>; use dd_sequence='CPMG2'"
-            )
+    if dd_sequence == "Hahn":
+        raise ValueError(
+            "dd_sequence='Hahn' (single-pulse echo) is unsupported on Steane data qubits "
+            "because transversal X flips |0_L> to |1_L>; use dd_sequence='CPMG2'"
+        )
+    if dd_sequence not in DD_SEQUENCES:
         raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
@@ -852,35 +894,7 @@ def steane_z_syndrome_patch(
         for q in support:
             qc.cx(q, 7 + bit)
 
-    # Delay window on data qubits during syndrome extraction
-    if idle_delay_dt > 0:
-        if dd_sequence == "CPMG2":
-            tau_4 = idle_delay_dt // 4
-            tau_2 = idle_delay_dt // 2
-            rem = idle_delay_dt - (2 * tau_4 + tau_2)
-            for q in range(7):
-                qc.delay(tau_4, q)
-                qc.x(q)
-                qc.delay(tau_2, q)
-                qc.x(q)
-                qc.delay(tau_4 + rem, q)
-        elif dd_sequence == "XY4":
-            tau_8 = idle_delay_dt // 8
-            tau_4 = idle_delay_dt // 4
-            rem = idle_delay_dt - (tau_8 + 3 * tau_4)
-            for q in range(7):
-                qc.delay(tau_8, q)
-                qc.x(q)
-                qc.delay(tau_4, q)
-                qc.y(q)
-                qc.delay(tau_4, q)
-                qc.x(q)
-                qc.delay(tau_4, q)
-                qc.y(q)
-                qc.delay(rem, q)
-        elif dd_sequence is None:
-            for q in range(7):
-                qc.delay(idle_delay_dt, q)
+    dd_window(qc, range(7), dd_sequence, idle_delay_dt)
 
     if mid_circuit_measure:
         from qiskit_ibm_runtime.circuit import MidCircuitMeasure
@@ -905,8 +919,8 @@ def steane_coherent_syndrome_patch(error_qubit: int | None = None) -> QuantumCir
     mcx([7, 8, 9], value - 1, ctrl_state=value).
 
     Corrects single X errors on data state |0>^7 coherently without mid-circuit readout
-    or reset. Conceptually motivated by comparing coherent multi-control vs dynamic
-    feed-forward studied in separate QPE ladder acquisitions (CAMPAIGN_FINDINGS.md Section 2).
+    or reset, an ideal measurement-free correction map; it prepares no logical codeword
+    and measures no X check.
     """
     data = ClassicalRegister(7, "data")
     qc = QuantumCircuit(QuantumRegister(10, "q"), data, name="steane_coherent_syndrome_patch")
@@ -923,49 +937,30 @@ def steane_coherent_syndrome_patch(error_qubit: int | None = None) -> QuantumCir
     return qc
 
 
-def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> QuantumCircuit:
-    """Bell pair with optional gap-aware dynamical decoupling, then inverse preparation, 2 qubits.
+def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None, quadrature: str = "x") -> QuantumCircuit:
+    """Bell pair, a delay_dt idle filled by dd_window, then the inverse preparation, 2 qubits.
 
-    dd_sequence supports None (plain delay), 'Hahn' (X echo at midpoint), or 'XY4'
-    (symmetric CPMG-style tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem),
-    serving as an echo testbed to measure and mitigate dephasing drift during idle gaps.
+    With the idle acting as (|00> + V e^{i theta} |11>)/sqrt2 on the pair, the
+    return probability P(00) is (1 + V cos theta)/2 for quadrature 'x', so one
+    value cannot separate a contrast loss V from a rotation theta; quadrature
+    'y' applies Sdg to qubit 0 before the inverse and reads (1 + V sin theta)/2,
+    and the pair of quadratures identifies both. dd_sequence is None, 'Hahn',
+    'CPMG2' or 'XY4' (dd_window); X on both qubits maps |00> + |11> to itself,
+    so every sequence restores the ideal pair. A proposed echo testbed; it
+    encodes no measured rotation.
     """
     if delay_dt < 0:
         raise ValueError(f"delay_dt must be non-negative, got {delay_dt}")
-    if dd_sequence not in (None, "Hahn", "XY4"):
+    if dd_sequence not in DD_SEQUENCES:
         raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
-    qc = QuantumCircuit(2, 2, name="bell_delay_probe")
+    if quadrature not in ("x", "y"):
+        raise ValueError(f"quadrature must be 'x' or 'y', got '{quadrature}'")
+    qc = QuantumCircuit(2, 2, name=f"bell_delay_probe_{quadrature}")
     qc.h(0)
     qc.cx(0, 1)
-    if delay_dt > 0:
-        if dd_sequence is None:
-            qc.delay(delay_dt, 0)
-            qc.delay(delay_dt, 1)
-        elif dd_sequence == "Hahn":
-            half = delay_dt // 2
-            rem = delay_dt - half
-            qc.delay(half, 0)
-            qc.delay(half, 1)
-            qc.x(0)
-            qc.x(1)
-            qc.delay(rem, 0)
-            qc.delay(rem, 1)
-        elif dd_sequence == "XY4":
-            tau_8 = delay_dt // 8
-            tau_4 = delay_dt // 4
-            rem = delay_dt - (tau_8 + 3 * tau_4)
-            for q in (0, 1):
-                qc.delay(tau_8, q)
-                qc.x(q)
-                qc.delay(tau_4, q)
-                qc.y(q)
-                qc.delay(tau_4, q)
-                qc.x(q)
-                qc.delay(tau_4, q)
-                qc.y(q)
-                qc.delay(rem, q)
-        else:
-            raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
+    dd_window(qc, (0, 1), dd_sequence, delay_dt)
+    if quadrature == "y":
+        qc.sdg(0)
     qc.cx(0, 1)
     qc.h(0)
     qc.measure([0, 1], [0, 1])
@@ -986,7 +981,7 @@ def hoeffding_model_discrimination(
     1. Single-observable Hoeffding confidence radius: r_obs = sqrt(ln(2/alpha) / (2*N_eff))
        for any fixed binary partition or parity observable in [0, 1].
     2. Simultaneous multinomial Total Variation confidence radius via Bretagnolle-Huber-Carol
-       bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438; Devroye 1987, Section 3.3, p. 29)
+       bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438)
        over K bins:
        eps_p = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_p)
        eps_q = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_q)
@@ -1019,6 +1014,8 @@ def hoeffding_model_discrimination(
         lengths = {len(k) for k in all_keys}
         if len(lengths) > 1:
             raise ValueError(f"Inconsistent outcome bit widths detected: {sorted(lengths)}")
+        if alphabet_size > 2 ** lengths.pop():
+            raise ValueError(f"alphabet_size ({alphabet_size}) exceeds the 2^width outcomes of the bit strings")
     if alphabet_size < len(all_keys):
         raise ValueError(
             f"alphabet_size ({alphabet_size}) cannot be smaller than observed distinct outcomes ({len(all_keys)})"
@@ -1036,7 +1033,7 @@ def hoeffding_model_discrimination(
     n_eff = min(n_p, n_q)
     radius_hoeffding = float(math.sqrt(math.log(2.0 / alpha) / (2.0 * n_eff)))
 
-    # Simultaneous multinomial TV confidence radius (Bretagnolle-Huber-Carol / Devroye bound)
+    # Simultaneous multinomial TV confidence radius (Bretagnolle-Huber-Carol bound)
     eps_p = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_p)
     eps_q = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_q)
     radius_tv = float(0.5 * (eps_p + eps_q))
