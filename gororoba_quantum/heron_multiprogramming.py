@@ -967,8 +967,9 @@ def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> Qua
 def hoeffding_model_discrimination(
     counts_p: dict[str, int],
     counts_q: dict[str, int],
+    *,
+    alphabet_size: int,
     alpha: float = 0.01,
-    alphabet_size: int | None = None,
 ) -> dict[str, Any]:
     """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding and multinomial TV bounds.
 
@@ -981,9 +982,8 @@ def hoeffding_model_discrimination(
        eps_p = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_p)
        eps_q = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_q)
        radius_tv = 0.5 * (eps_p + eps_q)
-    where K is given by alphabet_size if supplied, or len(all_keys). This prevents sampling
-    noise on multi-outcome spaces from falsely declaring identical underlying distributions
-    distinguishable.
+    where K is the required size of the complete outcome alphabet, including outcomes with
+    zero observed counts. This prevents omitted outcomes from understating the bound.
     """
     if not 0.0 < alpha < 1.0:
         raise ValueError(f"alpha must be in (0, 1), got {alpha}")
@@ -996,16 +996,13 @@ def hoeffding_model_discrimination(
     if n_p == 0 or n_q == 0:
         raise ValueError("Total shots must be positive in both distributions")
     all_keys = sorted(set(counts_p) | set(counts_q))
-    if alphabet_size is not None:
-        if alphabet_size <= 0:
-            raise ValueError(f"alphabet_size must be positive, got {alphabet_size}")
-        if alphabet_size < len(all_keys):
-            raise ValueError(
-                f"alphabet_size ({alphabet_size}) cannot be smaller than observed distinct outcomes ({len(all_keys)})"
-            )
-        k_bins = alphabet_size
-    else:
-        k_bins = len(all_keys)
+    if alphabet_size <= 0:
+        raise ValueError(f"alphabet_size must be positive, got {alphabet_size}")
+    if alphabet_size < len(all_keys):
+        raise ValueError(
+            f"alphabet_size ({alphabet_size}) cannot be smaller than observed distinct outcomes ({len(all_keys)})"
+        )
+    k_bins = alphabet_size
     p = np.array([counts_p.get(k, 0) / n_p for k in all_keys], dtype=np.float64)
     q = np.array([counts_q.get(k, 0) / n_q for k in all_keys], dtype=np.float64)
 

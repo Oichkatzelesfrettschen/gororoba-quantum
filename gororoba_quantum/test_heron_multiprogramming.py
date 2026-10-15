@@ -340,7 +340,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
     def test_hoeffding_model_discrimination(self) -> None:
         p = {"0": 8000, "1": 192}
         q = {"0": 1000, "1": 7192}
-        res = hoeffding_model_discrimination(p, q, alpha=0.01)
+        res = hoeffding_model_discrimination(p, q, alpha=0.01, alphabet_size=2)
         self.assertTrue(res["models_distinguishable"])
         self.assertGreater(res["total_variation_distance"], 0.8)
         self.assertLess(res["hoeffding_radius"], 0.05)
@@ -349,7 +349,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
         # Independent samples from the same underlying distribution are not distinguishable
         sample_a = {"00": 1040, "01": 1010, "10": 1030, "11": 1016}
         sample_b = {"00": 1005, "01": 1050, "10": 1015, "11": 1026}
-        same_source = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01)
+        same_source = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=4)
         self.assertFalse(same_source["models_distinguishable"])
         self.assertEqual(same_source["tv_confidence_interval"][0], 0.0)
         self.assertGreater(same_source["multinomial_tv_radius"], same_source["total_variation_distance"])
@@ -358,6 +358,11 @@ class TestHeronMultiprogramming(unittest.TestCase):
         res_alpha = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=64)
         self.assertEqual(res_alpha["k_bins"], 64)
         self.assertGreater(res_alpha["multinomial_tv_radius"], same_source["multinomial_tv_radius"])
+        sparse_counts = {"00": 4096}
+        sparse_support = hoeffding_model_discrimination(sparse_counts, sparse_counts, alphabet_size=4)
+        observed_only_support = hoeffding_model_discrimination(sparse_counts, sparse_counts, alphabet_size=1)
+        self.assertEqual(sparse_support["k_bins"], 4)
+        self.assertGreater(sparse_support["multinomial_tv_radius"], observed_only_support["multinomial_tv_radius"])
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=2)
         with self.assertRaises(ValueError):
@@ -366,13 +371,15 @@ class TestHeronMultiprogramming(unittest.TestCase):
             hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=-5)
 
         with self.assertRaises(ValueError):
-            hoeffding_model_discrimination({}, q)
+            hoeffding_model_discrimination({}, q, alphabet_size=2)
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination(p, q)
         with self.assertRaises(ValueError):
-            hoeffding_model_discrimination(p, q, alpha=0.0)
+            hoeffding_model_discrimination(p, q, alpha=0.0, alphabet_size=2)
         with self.assertRaises(ValueError):
-            hoeffding_model_discrimination(p, q, alpha=1.0)
+            hoeffding_model_discrimination(p, q, alpha=1.0, alphabet_size=2)
         with self.assertRaises(ValueError):
-            hoeffding_model_discrimination({"0": -1}, q)
+            hoeffding_model_discrimination({"0": -1}, q, alphabet_size=2)
 
     def test_bent_hidden_shift_circuit(self) -> None:
         for n in (4, 6):

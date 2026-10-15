@@ -157,13 +157,14 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
   $\|\mathbf{r}_i - \mathbf{r}_j\|$ when coordinate pairs are supplied by the caller.
-- **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01, alphabet_size=None)`**: Computes empirical Total
+- **`hoeffding_model_discrimination(counts_p, counts_q, *, alphabet_size, alpha=0.01)`**: Computes empirical Total
   Variation distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
   $D_{\text{JS}}(P \parallel Q)$. For single binary projections or parity observables, Hoeffding's inequality
   (`docs/notes/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
-  To bound the plug-in total-variation distance across all $K$ outcome bins (where $K$ is `alphabet_size` if supplied,
-  or $|\mathcal{X}|$ observed keys) simultaneously without falsely reporting distinguishable models due to multinomial
-  sampling variation, the module computes the Bretagnolle-Huber-Carol (1979) / Devroye (1987) finite-sample bound:
+  To bound the plug-in total-variation distance across all $K$ outcome bins simultaneously without falsely reporting
+  distinguishable models due to multinomial sampling variation, the module computes the
+  Bretagnolle-Huber-Carol (1979) / Devroye (1987) finite-sample bound. `alphabet_size` is required and must give the
+  size of the complete outcome alphabet, including outcomes absent from either count map:
   $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$, yielding simultaneous confidence radius
   $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$.
 
@@ -263,5 +264,4 @@ peer-reviewed primary literature and verified repository artifacts:
   exhibited support violations under simultaneous operation. The campaign note explicitly cautions that these counts do not
   isolate causal crosstalk mechanisms, so the observations are recorded as baseline operational support violations without
   causal attribution.
-
 

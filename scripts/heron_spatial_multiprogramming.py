@@ -167,7 +167,7 @@ def self_test() -> None:
     require(fano_plane_incidence_matrix().shape == (7, 7), "Fano plane matrix shape mismatch")
     require(steane_coherent_syndrome_patch(1).num_qubits == 10, "coherent Steane patch qubit count mismatch")
     require(
-        hoeffding_model_discrimination({"0": 8000}, {"1": 8000})["models_distinguishable"],
+        hoeffding_model_discrimination({"0": 8000}, {"1": 8000}, alphabet_size=2)["models_distinguishable"],
         "Hoeffding model discrimination failed",
     )
     coords_cov = HeronLattice.tile_parity_covariance(
