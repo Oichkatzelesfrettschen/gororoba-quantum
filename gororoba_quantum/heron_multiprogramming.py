@@ -12,18 +12,17 @@ or measures a throughput.
 
 Primary research literature grounding:
 - Spatial multiprogramming & crosstalk guard bands: Sarovar et al. (2020, arXiv:1908.09855),
-  Niu & Todri-Sanial (2021, arXiv:2102.05321; 2023, arXiv:2112.00387), Gambetta et al.
+  Niu & Todri-Sanial (2021, arXiv:2102.05321; 2021, arXiv:2112.00387), Gambetta et al.
   (2012, arXiv:1204.6308), Das et al. (2019, ASPLOS).
-- Non-associative Cayley-Dickson witnesses & singular sectors: Freedman et al. (2019,
-  arXiv:1811.08580), Biss et al. (2009, arXiv:0905.2987), Moreno (1998, math/9710228).
-- Octonionic Fano-plane CSS & active vs coherent stabilizers: Levratti (2026, fano-css &
-  active-stabilizers), Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021,
-  arXiv:2103.03008).
+- Non-associative Cayley-Dickson witnesses & singular sectors: Freedman, Shokrian-Zini & Wang
+  (2019, arXiv:1811.08580), Biss, Christensen, Dugger & Isaksen (2009, arXiv:0905.2987).
+- Octonionic Fano-plane CSS & dynamic circuits: Levratti (2026, fano-css & active-stabilizers),
+  Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021, arXiv:2103.03008).
 - Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Bretagnolle-Huber-Carol
-  multinomial total variation bound (Bretagnolle, Huber & Carol 1979; van der Vaart & Wellner
-  1996, Proposition A.6.6; Devroye 1987, Theorem 2.1; Devroye, Gyorfi & Lugosi 1996, Theorem 3.1).
+  multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438;
+  Devroye 1987, Section 3.3, p. 29).
 - Boolean bent hidden shifts & polar rank: Roetteler (2008, arXiv:0811.3208; 2009,
-  arXiv:0911.4724), Gavinsky, Ito & Roetteler (2011, arXiv:1103.3017).
+  arXiv:0911.4724), Gavinsky, Roetteler & Roland (2011, arXiv:1103.3017).
 """
 
 from __future__ import annotations
@@ -821,17 +820,23 @@ def steane_z_syndrome_patch(
     unnested if_test blocks on the 3-bit register apply the X correction, and
     register `data` reads the 7 data qubits at the end.
 
-    An optional dd_sequence ('CPMG2', 'Hahn', or 'XY4') applies dynamical decoupling to
+    An optional dd_sequence ('CPMG2' or 'XY4') applies dynamical decoupling to
     the data qubits bracketing idle_delay_dt during syndrome extraction to suppress
     physical dephasing drift without transversal logical perturbation. Note that
     an even number of X rotations (CPMG-2: tau/4 -> X -> tau/2 -> X -> tau/4) or
     XY4 (tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem) is required
     because an odd number of X pulses on all 7 data qubits acts as a transversal logical
-    X flip on the Steane [[7,1,3]] code, transforming |0_L> into |1_L>.
+    X flip on the Steane [[7,1,3]] code, transforming |0_L> into |1_L>. Single-pulse
+    Hahn echo is unsupported on Steane data qubits.
     """
     if idle_delay_dt < 0:
         raise ValueError(f"idle_delay_dt must be non-negative, got {idle_delay_dt}")
-    if dd_sequence not in (None, "CPMG2", "Hahn", "XY4"):
+    if dd_sequence not in (None, "CPMG2", "XY4"):
+        if dd_sequence == "Hahn":
+            raise ValueError(
+                "dd_sequence='Hahn' (single-pulse echo) is unsupported on Steane data qubits "
+                "because transversal X flips |0_L> to |1_L>; use dd_sequence='CPMG2'"
+            )
         raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
@@ -846,7 +851,7 @@ def steane_z_syndrome_patch(
 
     # Delay window on data qubits during syndrome extraction
     if idle_delay_dt > 0:
-        if dd_sequence in ("CPMG2", "Hahn"):
+        if dd_sequence == "CPMG2":
             tau_4 = idle_delay_dt // 4
             tau_2 = idle_delay_dt // 2
             rem = idle_delay_dt - (2 * tau_4 + tau_2)
@@ -976,8 +981,9 @@ def hoeffding_model_discrimination(
     Computes both:
     1. Single-observable Hoeffding confidence radius: r_obs = sqrt(ln(2/alpha) / (2*N_eff))
        for any fixed binary partition or parity observable in [0, 1].
-    2. Simultaneous multinomial Total Variation confidence radius via Bretagnolle-Huber-Carol (1979) /
-       Devroye (1987) bound over K bins:
+    2. Simultaneous multinomial Total Variation confidence radius via Bretagnolle-Huber-Carol
+       bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438; Devroye 1987, Section 3.3, p. 29)
+       over K bins:
        eps_p = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_p)
        eps_q = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_q)
        radius_tv = 0.5 * (eps_p + eps_q)
