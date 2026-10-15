@@ -364,7 +364,11 @@ def collection_contrasts(path: Path) -> dict[str, Any]:
     entry = next((item for item in entries if item.get("group") == "crossed_tile_template"), None)
     if entry is None or "measured_statistics" not in entry:
         raise SystemExit("the collection carries no measured crossed_tile_template statistics")
-    for member, executed in entry.get("executed", {}).items():
+    executed_by_member = entry.get("executed")
+    expected = {name for sector in TEMPLATES for name, _, _ in science_members(sector)}
+    if not isinstance(executed_by_member, dict) or not expected <= set(executed_by_member):
+        raise SystemExit("the collection lacks execution windows for some crossed_tile_template member")
+    for member, executed in executed_by_member.items():
         if executed.get("calibration_changed_during_shots") or executed.get("window_unavailable_reason"):
             raise SystemExit(f"{member} spans a recalibration or lacks its window; the crossing is withheld")
     group = next(item for item in record["groups"] if item["group"] == "crossed_tile_template")
