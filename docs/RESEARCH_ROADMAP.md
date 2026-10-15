@@ -53,123 +53,67 @@ detailed timing, official-manual references, candidate precision tiers, and
 runtime limitations. The [decision synthesis](notes/model_discrimination_optimizer.md)
 owns the link from literature and observations to the next intervention.
 
-1. Reuse the retained raw records, exact QPY, source identities, calibration
-   windows, and final job usage. Reconcile scientific endpoints across the
-   historical static case and the ripple/rank-sector proposals before spending
-   on overlapping measurements.
-2. Compare identifiable model hypotheses against the existing labeled data.
-   Preserve the distinction between an added binary report channel, replacement
-   readout model, continuing-state disturbance, coherent error, and temporal
-   dependence. Fit and validate against separate observations.
-3. Complete execution admission for the prepared known-label correction pilot owned by
-   [PR #36](https://github.com/Oichkatzelesfrettschen/gororoba-quantum/pull/36).
-   Labels `s1,s3` each receive measured feedback `F` and unconditional correction
-   `U`: four PUBs at the selected 8192 shots. Both arms retain measurement,
-   reset, and both output bits. Routed prefix/suffix, terminal writer, and
-   schedule matching remain evidence gates. The [coordination ledger](../results/live/qpu-coordination.json)
-   and [current campaign preparation](../results/ripple/CAMPAIGN_PREPARATION.md)
-   own source-bound readiness and timing. The
-   [exact correction case](../results/live/2026-10-12T170742.727534Z/UNAPPROVED_CASE.md)
-   passes independent planning checks at source `f1b9830`. Clean current-head
-   Copilot review, passing checks, merge and fresh live bindings remain gates
-   under the user's conditional authority. Returned execution schedules qualify
-   the matched inference after acquisition.
-4. Apply the declared optimizer decision: both labels must satisfy
-   `lower_CP(p_U)-upper_CP(p_F)>0.01`, with four one-sided tails of `0.0125`.
-   Binomial assumptions support at least 95% simultaneous coverage. Independent
-   accuracy validation and equal-or-lower charged time, or an explicitly
-   justified tradeoff, precede policy adoption. Known labels cannot supply
-   unavailable phase information to an unknown-phase algorithm.
-5. Retain the fresh source-bound forecast and refresh its bindings before
-   execution. The four-PUB correction case estimates 11.519211264 nominal
-   seconds and 14.474571264 stress seconds under a 30-second ceiling. The
-   current campaign totals 106.290103040 nominal seconds and 118.445463040
-   stress seconds, with five job ceilings totaling 170 seconds. The earlier
-   11.2425-second conditional estimate remains historical. The executed folded
-   case attributes most nominal cost to repetition delay;
-   precision selection, qualified initialization delay, and compatible endpoint
-   packing therefore receive cost attention alongside circuit fidelity.
-6. Qualify native mechanisms separately: the N21 shared-predicate challenger,
-   measurement/reset-aware scheduling, explicit idle protection, mixed-job
-   policy, and compatible static mitigation. The retained N21 challenger reduces
-   unrouted CX from 243 to 204 per controlled multiplier; routed cost and noise
-   admission determine its value. Two phase bits test a distribution change
-   and provide zero verified order recovery.
-7. Design full tomography or adaptive stopping only against an identified
-   question. Four scalar probes of a real four-state sector do not identify a
-   general ten-parameter symmetric Gram matrix. Instrument tomography requires
-   continuing-state probes and its own identifiability assumptions. Sequential
-   stopping requires valid time-uniform inference or a specified spending rule,
-   with job-granularity costs. Repeated fixed-sample intervals lose their stated
-   coverage under unrestricted stopping.
-8. Admit a broad atlas only after its additional estimand, controls, effect or
-   equivalence margins, multiplicity coverage, and incremental information value
-   justify the expenditure. The prospective
-   [practical accuracy protocol](../results/ripple/STATIC_PACKING_ACCURACY.md)
-   supplies the current static criterion; its under-resolved weighted control
-   prevents a blanket equivalence claim at the frozen shot allocation. The planning-qualified
-   [ripple case](../results/live/2026-10-12T163354.310138Z/UNAPPROVED_CASE.md) and
-   [rank case](../results/live/2026-10-12T163354.210407Z/UNAPPROVED_CASE.md)
-   preserve their controls and joint shot vectors; independent execution
-   admission follows the correction decision and remaining campaign gates.
-9. Separate first-measurement assignment error from true state error with the
-   feed-forward contrast. Two Kingston correction runs
-   ([db6p55clf4us73c5nd9g](../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json),
-   [db6pepklf4us73c5nqcg](../results/live/2026-10-13T022433.333775Z/collect.json))
-   record the first bit as 0 in about 11 percent of shots for both odd labels.
-   Within that stratum the arms reverse by label: for s3 the known-label arm
-   succeeds more often (0.567 and 0.553 against 0.451 and 0.429), while for s1
-   the measured-bit arm succeeds more often (0.573 and 0.553 against 0.540 and
-   0.512). An assignment error leaves the qubit in its prepared state, so
-   following the recorded bit applies the wrong phase and the known label
-   wins; a true state change before readout makes the recorded bit correct and
-   the measured-bit arm wins. The stratified contrast estimates, per label,
-   the mixture of the two error types. The recorded-0 stratum contributes
-   +0.016 of the aggregate s3 gain of +0.013 in the first run and +0.013 of
-   +0.021 in the second. Predictions: repeated first
-   readout with a majority vote shrinks the s3 stratum gap and leaves the s1
-   reversal; a delay inserted before the first readout grows the s1 true-error
-   share at the qubit's T1 rate; readout-calibration circuits on the first
-   writer give an assignment matrix whose label asymmetry matches the strata.
-   Falsifier: a single symmetric assignment model reproduces both labels'
-   strata within their binomial intervals. Two N=21 orbit runs on ibm_fez add a
-   competing explanation for a recorded-1 stratum shift: a coherent phase on
-   the second-round kickback, with mid-circuit assignment explaining none of
-   it. Their compiled feed-forward and omitted-correction members also leave
-   different physical qubits holding the work superposition during the
-   window, because work-only gates commute with the control's measurement;
-   the omitted-correction member exposes an extra qubit only in its recorded-1
-   branch. A barrier before the first measurement equalizes the arms, and
-   refitting the correction runs with a coherent-phase term precedes any
-   correction-arm spend. The design reuses the four-PUB
-   correction template, adds the repeated-readout and delayed arms, and costs
-   one dynamic job near 11 seconds per arm set at 8192 shots.
-10. Measure coherences before adding dynamics. The merged branch-signed work
-   coherence case (PR #79) reads one off-diagonal element per context with
-   five settings, where conditional two-qubit tomography needs nine, and is
-   the next acquisition under its own approval. The [singular-sector
-   note](notes/singular_sector_dynamics.md) shows that the Hermitian dilation
-   of a two-term zero divisor adds only its `sqrt2` line beyond Design B: one
-   product-formula step reproduces Design B, and amplitude amplification of
-   Design B is frozen at 0, 1/2 and 1. Its echo-matched contrast, `U Z
-   U^dagger Z U` against `U U^dagger U` with equal non-virtual gates and
-   duration (141 CZ per arm on FakeFez), separates rotation errors that the
-   compiled inverse undoes (positive difference) from conditional phases on
-   self-inverse CZ gates (negative difference); a mixture can cancel, so it
-   is a candidate Cayley-Dickson diagnostic that needs an independent
-   CZ-phase reference before a priced case. Pulse-level, continuous-record
-   and resonator protocols lie outside the cloud gate set since the 3
-   February 2025 pulse removal ([web-source
-   note](notes/measurement_foundations_web_sources.md)).
+<!-- research-state:begin (generated by scripts/research_state.py; edit docs/state/research_state.json) -->
+### Open and proposed claims
 
-The installed runner creates separate static and dynamic jobs and uses no
-Runtime Batch context. A future Batch wrapper changes orchestration; measured
-job overhead and physical usage determine savings. Several QPUs share the
-account's rolling allowance, so backend count supplies neither extra quota nor
-a reason to duplicate data. The three retained campaign cases qualify five
-homogeneous-shot jobs within 170 seconds of service ceilings, leaving ten
-seconds under the user's 180-second cap. Current-head review, merge, live
-binding and each family's execution admission remain gates.
+[RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
+(37 established, 10 exploratory, 3 open, 5 proposed, 2 withdrawn) and every executed acquisition. Open and
+proposed work, in dependency order:
+
+- **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
+- **a5-stiefel-universal** (open, mathematical theorem). Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5). Depends on a5-stiefel-selected-nullity.
+- **dimension32-global-topology** (open, mathematical theorem). A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants. Depends on four-support-topology, principal-skew-atlas, kernel-limit-slice, nullity-twelve-cone.
+- **proposed-conditional-ramsey-hamiltonian** (proposed, proposed experiment). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model. Depends on hw-coherence-window.
+- **proposed-signed-kernel-probe** (proposed, proposed experiment). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order. Depends on algebra-circuit-fixtures.
+- **proposed-crossed-tile-template** (proposed, proposed experiment). Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss. Depends on hw-corner-explains-weak-lane.
+- **proposed-first-bit-readout-controls** (proposed, proposed experiment). Add repeated first readout with majority vote and a delayed first readout to the correction template to split the recorded-0 stratum into assignment and true-state error. Depends on hw-first-bit-disagreement.
+- **proposed-echo-matched-dilation** (proposed, proposed experiment). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases. Depends on singular-sector-split.
+<!-- research-state:end -->
+
+The correction pilot, coherence window, ripple and rank-sector transfers,
+corner baseline and zero-divisor fringe have run; their conclusions are the
+`hw-` claims of the research state, and their original cases stay unchanged
+as history. The methods work below has no claim record of its own.
+
+1. Complete the existing-data coherence analysis before acquiring more:
+   keep true physical branch, reported branch, conditional operation and
+   terminal report distinct; analyze signed and unsigned moments together
+   with both coherence sectors and their branch and spectator strata; build
+   joint confidence regions for the complex coherence, withhold a phase where
+   the region contains the origin, and keep disconnected winding
+   possibilities. Competing explanations get predictive checks on
+   observations not used to choose them.
+2. Make sensitivity an admission condition. Each proposed measurement names
+   the hypotheses it separates and passes an identifiability test (a design
+   rank or the effective information
+   `I_eff = I_tt - I_tn I_nn^+ I_nt`) before shots are allocated; more shots
+   never substitute for missing model rank.
+3. Qualify native mechanisms separately: the N21 shared-predicate challenger,
+   measurement/reset-aware scheduling, explicit idle protection, mixed-job
+   policy, compatible static mitigation and shorter repetition delays. The
+   retained N21 challenger reduces unrouted CX from 243 to 204 per controlled
+   multiplier; routed cost and noise admission determine its value.
+   Repetition delay dominates the retained execution-time arithmetic, so a
+   lower delay is a priced intervention with its own preparation-error and
+   temporal-dependence control.
+4. Design full tomography or adaptive stopping only against an identified
+   question. Instrument tomography requires continuing-state probes and its
+   own identifiability assumptions; sequential stopping requires valid
+   time-uniform inference or a specified spending rule, with job-granularity
+   costs.
+5. Admit a broad atlas only after its additional estimand, controls, effect or
+   equivalence margins, multiplicity coverage and incremental information
+   value justify the expenditure. Cross-device sign transfer is already
+   established for the ripple and rank-sector families; a new atlas needs a
+   new purpose.
+
+The runner creates separate static and dynamic jobs and uses no Runtime Batch
+context. Several QPUs share the account's rolling allowance, so backend count
+supplies neither extra quota nor a reason to duplicate data, and the retained
+remainder is a resource observation rather than a target to spend. Pulse-level,
+continuous-record and resonator protocols lie outside the cloud gate set since
+the 3 February 2025 pulse removal ([web-source
+note](notes/measurement_foundations_web_sources.md)).
 
 ## Ordered topology and proof work
 
