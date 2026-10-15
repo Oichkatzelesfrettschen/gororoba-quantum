@@ -21,6 +21,10 @@ threshold, and the planner skipped it.
 ## Corner baseline: a readout fault the calibration does not report
 
 Execution calibration 2026-10-15 00:03:15 PDT; 1024 shots per circuit.
+Rows are physical qubits. The `qubit_baseline` summary keys `q0` to `q5`
+index classical bits, mapped to qubits 1, 0, 16, 4, 2 and 3 in this run
+(`isa.qpy`). The reported readout error and T1 columns are the
+`placed_qubit_calibration` of the submitted `record.json`.
 
 | Qubit | P(1 \| 0) | P(0 \| 1) | Reported readout error | Excited retained after 50 us (model) | Reported T1 (us) | Ramsey visibility 2 us / 10 us |
 |---:|---:|---:|---:|---:|---:|---:|

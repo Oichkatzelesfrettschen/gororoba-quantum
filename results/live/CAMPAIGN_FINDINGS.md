@@ -90,7 +90,8 @@ predicted.
   0.452 and 0.429; s1 measured 0.573 and 0.553 against known 0.540 and 0.512.
   Recorded-bit disagreement can arise from state preparation, evolution or
   readout. The retained counts do not identify assignment error or separate
-  those mechanisms. [Roadmap item 9](../../docs/RESEARCH_ROADMAP.md) proposes
+  those mechanisms. The proposed claim `proposed-first-bit-readout-controls`
+  in the [research state](../../docs/state/RESEARCH_STATE.md) adds
   repeated-readout and delayed-readout controls to investigate that boundary.
 - The first run's exposed native event tables place the else-branch update
   at 4075 dt and the then-branch update at 4071 dt in both validated circuit
@@ -208,15 +209,21 @@ density. Nominal circuit width, idle spectators and 29 replicas do not certify
   separately qualified preparation-error and temporal-dependence check.
 - **Packing passes a bounded scalar comparison.** Across ripple and rank,
   35 of 37 packed-versus-isolated control intervals lie within the normalized
-  +/-0.10 equivalence margin. Two ripple controls remain unresolved. Those
+  +/-0.10 equivalence margin, each interval divided by its score range as
+  [STATIC_PACKING_ACCURACY.md](../ripple/STATIC_PACKING_ACCURACY.md)
+  defines. Two ripple controls remain unresolved. Those
   results concern registered scalar observables on selected layouts; they
   establish neither failure independence, absence of crosstalk nor full
   outcome-distribution equivalence. Filling qubits can improve acquisition
   density only within the qualified measurement and statistical contract.
-- **Recorded first-bit disagreement remains a mechanism question.** The
-  roughly 11 percent disagreement in the correction witnesses is measured;
-  the share attributable to assignment, preparation or evolution remains
-  unresolved.
+- **Recorded first-bit disagreement is correlated with the terminal
+  outcome.** The roughly 11 percent disagreement on qubit 79 is measured. In
+  the known-label arms the terminal success falls from 0.80 to 0.54-0.57 when
+  the first bit reads 0. Independent, state-preserving assignment error
+  cannot do that
+  ([novel-insights](../../docs/evidence/novel-insights/REPORT.md),
+  section 2). A state change of qubit 79 and a common cause behind both the
+  misread and the terminal loss remain, and the strata stay descriptive.
 - **The coherent advantage remains implementation-specific.** The ladder's
   inconclusive and confounded delay comparison, the correction adoption
   failures and the walk control/replay discrepancy motivate matched controls.
