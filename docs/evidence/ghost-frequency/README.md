@@ -38,19 +38,21 @@ drift, two-level-system coupling, Stark shifts and Z Z.
   windows that follow a mid-circuit readout, such as the N21 orbit's.
 - **A sign-blind estimator cannot resolve the sign.** The power analysis
   estimates the phase as `arccos(2 p - 1)`, which cannot tell +delta from
-  -delta. The conditional Ramsey design reads both X and Y quadratures and
-  avoids this.
+  -delta. A design that reads both X and Y quadratures at every delay avoids
+  this, which is a requirement for any case built from these notebooks.
 - **The budget was misstated.** The service inventory observed at
   2026-10-15T07:13Z reports 334 of 600 s consumed, 266 s remaining, and
   nothing has run since, not about 120 s.
 
 ## Where the designs go
 
-- **A pairwise test of the window rotation.** Conditional Ramsey on the
-  coupled pairs (68, 67) and (66, 67) (`docs/notes/conditional_ramsey_hamiltonian.md`)
-  measures both work detunings, the spectator's, and each work-spectator Z Z.
-  It predicts the window rate as `nu_68|67=0 - nu_66|67=0` and resolves
-  winding to 1 MHz. It covers the spectator |0>/|1> comparison of the
+- **A pairwise test of the window rotation (proposed design).** Conditional
+  Ramsey on the coupled pairs (68, 67) and (66, 67) would measure both work
+  detunings, the spectator's, and each work-spectator Z Z, and predict the
+  window rate as `nu_68|67=0 - nu_66|67=0`. The design requires X and Y
+  quadratures at every delay and a geometric delay ladder whose first step
+  bounds the unambiguous range near 1 MHz; the retained notebooks implement
+  neither. It covers the spectator |0>/|1> comparison of the
   original Experiment A on the qubits that matter.
 - **The pre-delay discriminator.** A variable delay between a mid-circuit
   readout and the Ramsey idle separates H2 from H1 where a readout precedes

@@ -47,10 +47,12 @@ replicas the fitted phase spreads from -0.26 to +0.50 rad (standard deviation
 (47, 57, 66, 67, 68) reads +0.29, inside that spread
 (`walk-control-scaffolding/exposure.json`).
 
-**Test:** the conditional Ramsey design (`docs/notes/conditional_ramsey_hamiltonian.md`)
-is this measurement. It gives `omega_A`, `omega_B` and `J` of one coupled
-pair over a delay ladder that resolves winding to 1 MHz, and its falsifier
-tests the static diagonal model. Work qubits 68 and 66 are not coupled to
+**Test (proposed design):** conditional Ramsey is this measurement. The
+design requires both X and Y quadratures at every delay, so the sign of each
+rate survives, and a geometric delay ladder whose first step bounds the
+unambiguous range near 1 MHz. It gives `omega_A`, `omega_B` and `J` of one
+coupled pair, and its overdetermined fourth sector tests the static diagonal
+model. Work qubits 68 and 66 are not coupled to
 each other; both couple to spectator 67. Runs on the pairs (68, 67) and
 (66, 67) therefore give both work detunings, the spectator's, and each
 work-spectator J. Together they predict the window's rotation rate as
