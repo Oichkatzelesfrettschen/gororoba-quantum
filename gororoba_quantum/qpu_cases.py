@@ -1504,7 +1504,8 @@ def _render(
             "above; copying temporary evidence preserves record.json and isa.qpy byte-for-byte. "
             "The runner compares fresh source, dependency, policy, calibration, layout, and QPY evidence "
             "with the approved record, consumes its approval once, and stops for renewed approval when "
-            "the comparison changes.",
+            "the comparison changes. It plans only over the backends this record found eligible, so a "
+            "backend whose queue or status changes after the dry run cannot enter the plan.",
             "",
             "```sh",
             _command(
