@@ -259,7 +259,14 @@ def _verify_isolation_contract() -> None:
     standalone_names = {group.name for group in standalone_campaign_groups()}
     _require(
         standalone_names
-        == {"spectator_wavefront_ramsey", "qubit_baseline", "crossed_tile_template", "conditional_ramsey"}
+        == {
+            "spectator_wavefront_ramsey",
+            "qubit_baseline",
+            "crossed_tile_template",
+            "conditional_ramsey",
+            "scaffold_ab",
+            "readout_delay",
+        }
         and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",
     )
@@ -274,6 +281,9 @@ def _verify_isolation_contract() -> None:
         ({"groups": ["conditional_ramsey", "design_a"]}, "isolated campaign"),
         ({"groups": ["conditional_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
         ({"groups": ["conditional_ramsey"], "max_replicas": None}, "one replica"),
+        ({"groups": ["scaffold_ab", "design_a"]}, "isolated campaign"),
+        ({"groups": ["scaffold_ab"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
+        ({"groups": ["readout_delay"], "max_replicas": None}, "one replica"),
         ({"groups": ["crossed_tile_template", "design_a"]}, "isolated campaign"),
         ({"groups": ["crossed_tile_template"], "dd": "XX", "max_replicas": 2}, "dynamical decoupling"),
         ({"groups": ["crossed_tile_template"], "max_replicas": None}, "one replica per tile"),
