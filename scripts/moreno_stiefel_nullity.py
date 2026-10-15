@@ -41,6 +41,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_multiply, cd_sign  # noqa: E402
 
 PRIME = (1 << 61) - 1
+SECOND_PRIME = 1_000_000_007
 CAYLEY_POINTS = 24
 DISJOINT_POINTS = 8
 SKEW_RANGE = 2
@@ -68,6 +69,26 @@ def rank_mod(matrix: list[list[int]], prime: int) -> int:
                 rows[r] = [(x - factor * y) % prime for x, y in zip(rows[r], rows[rank], strict=True)]
         rank += 1
     return rank
+
+
+def determinant_mod(matrix: list[list[int]], prime: int) -> int:
+    """det(matrix) modulo prime by elimination with row swaps."""
+    rows = [[value % prime for value in row] for row in matrix]
+    size, det = len(rows), 1
+    for column in range(size):
+        pivot = next((r for r in range(column, size) if rows[r][column]), None)
+        if pivot is None:
+            return 0
+        if pivot != column:
+            rows[column], rows[pivot] = rows[pivot], rows[column]
+            det = -det
+        det = det * rows[column][column] % prime
+        inverse = pow(rows[column][column], prime - 2, prime)
+        for r in range(column + 1, size):
+            if rows[r][column]:
+                factor = rows[r][column] * inverse % prime
+                rows[r] = [(x - factor * y) % prime for x, y in zip(rows[r], rows[column], strict=True)]
+    return det % prime
 
 
 def rational_kernel(matrix: list[list[int]]) -> list[list[Fraction]]:
@@ -247,7 +268,13 @@ def measure() -> dict[str, Any]:
         "prime": PRIME,
         "skew_entry_range": [-SKEW_RANGE, SKEW_RANGE],
         "cd_multiply_cross_checks": check_left_matrix(),
-        "a6_integer_witness": {"seed": 0, "v": witness},
+        "a6_integer_witness": {
+            "seed": 0,
+            "v": witness,
+            "determinant_residues": {
+                str(prime): determinant_mod(left_matrix(64, witness), prime) for prime in (PRIME, SECOND_PRIME)
+            },
+        },
         "a6_zero_divisor_controls": controls,
         "algebras": algebras,
         "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),

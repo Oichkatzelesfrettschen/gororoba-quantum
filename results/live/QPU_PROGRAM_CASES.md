@@ -87,11 +87,15 @@ packed-minus-isolated differences), so "20 of 196" is 20 of 20.
   (qubits 1 to 4 and 16) is the only ripple lane weaker on Kingston than on
   Fez (median box-kite contrast 0.558 against 0.663). The reported
   calibration of qubits 0 to 3 is nominal and unchanged across the 20:25 PDT
-  recalibration, and every sector, sector 4 included, is stationary along
-  shot order (mean chi-square per degree of freedom 0.82 to 1.06 over eight
-  blocks), so the loss is steady within the job. Its cause is unresolved;
-  the readout and Ramsey baseline of the corner (`qubit_baseline`) is the
-  discriminating measurement.
+  recalibration. A Pearson homogeneity test of each member's complete
+  outcome distribution over eight consecutive shot blocks resolves no
+  block-to-block change in sector 4 (smallest p 0.025) and finds 3 of 176
+  members below p = 0.01 overall, about the count chance gives; at that
+  resolution the loss does not vary within the job, which neither
+  establishes shot independence nor excludes slower dependence. The weak
+  sectors and the medians outside them are chosen after seeing the data, so
+  these summaries are exploratory. The corner baseline in
+  `ZERO_DIVISOR_AND_CORNER_FINDINGS.md` is the follow-up measurement.
 
 ## Planning at source 71decdf
 

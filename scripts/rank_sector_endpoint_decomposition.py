@@ -16,9 +16,11 @@ collected ibm_kingston and ibm_fez runs and reports, for the 160 means:
   without that sector;
 - endpoints where the two devices differ by more than both half-widths.
 
-It tests shot-order stationarity of every Kingston member: the rate of its most
-frequent outcome in STATIONARITY_BLOCKS consecutive shot blocks of its raw
-register, as a chi-square statistic per degree of freedom by sector. It also
+It tests block homogeneity of every Kingston member's complete outcome
+distribution over STATIONARITY_BLOCKS consecutive shot blocks of its raw
+register (Pearson chi-square, rare outcomes pooled), summarized by sector, and
+checks that the test sees a distribution change that leaves the modal-outcome
+rate fixed. It also
 tabulates the 16 packing differences, and the median box-kite contrast
 of each ripple lane on both devices (Kingston from the calibration-scoped
 secondary analysis). It is descriptive: no threshold here is preregistered.
@@ -37,9 +39,12 @@ import re
 import statistics
 import sys
 from collections import Counter
+from collections.abc import Sequence
 from fractions import Fraction
 from pathlib import Path
 from typing import Any
+
+import scipy.stats
 
 ROOT = Path(__file__).resolve().parent.parent
 LIVE = ROOT / "results/live"
@@ -61,6 +66,7 @@ DEVICES = {
     },
 }
 STATIONARITY_BLOCKS = 8
+MIN_EXPECTED = 5
 SUCCESS = re.compile(r"rank_sector_(\d)_(.+)_t(\d+)d(\d+)_success$")
 
 
@@ -85,32 +91,78 @@ def ripple_observables(path: str) -> dict[str, dict[str, Any]]:
     return {observable["name"]: observable for observable in observables}
 
 
+def block_homogeneity(bits: Sequence[str]) -> tuple[float, int]:
+    """Pearson chi-square p-value and degrees of freedom of the full outcome distribution across shot blocks.
+
+    The table is STATIONARITY_BLOCKS consecutive blocks by outcomes; outcomes
+    whose pooled count gives fewer than MIN_EXPECTED expected shots per block
+    merge into one column, so the statistic compares the whole distribution,
+    not one outcome's rate.
+    """
+    size = len(bits) // STATIONARITY_BLOCKS
+    blocks = [Counter(bits[i * size : (i + 1) * size]) for i in range(STATIONARITY_BLOCKS)]
+    pooled = Counter(b for block in blocks for b in block.elements())
+    common = sorted(o for o, c in pooled.items() if c / STATIONARITY_BLOCKS >= MIN_EXPECTED)
+    rare_total = sum(c for o, c in pooled.items() if o not in common)
+    columns = [[block[o] for o in common] for block in blocks]
+    if rare_total / STATIONARITY_BLOCKS >= MIN_EXPECTED:
+        for row, block in zip(columns, blocks, strict=True):
+            row.append(sum(c for o, c in block.items() if o not in common))
+    width = len(columns[0])
+    if width < 2:
+        return 1.0, 0
+    totals = [sum(row[k] for row in columns) for k in range(width)]
+    chi2 = sum(
+        (row[k] - size * totals[k] / (size * STATIONARITY_BLOCKS)) ** 2
+        / (size * totals[k] / (size * STATIONARITY_BLOCKS))
+        for row in columns
+        for k in range(width)
+    )
+    dof = (STATIONARITY_BLOCKS - 1) * (width - 1)
+    return float(scipy.stats.chi2.sf(chi2, dof)), dof
+
+
+def homogeneity_counterexample() -> dict[str, float]:
+    """Blocks whose modal-outcome rate is constant while the full distribution moves (TV 0.375)."""
+    first, last = ["0"] * 625 + ["1"] * 375, ["0"] * 625 + ["2"] * 375
+    bits = first * (STATIONARITY_BLOCKS // 2) + last * (STATIONARITY_BLOCKS // 2)
+    p_value, _ = block_homogeneity(bits)
+    if p_value > 1e-6:
+        raise ValueError("the full-distribution test misses a change the modal rate cannot see")
+    return {"modal_rate_change": 0.0, "total_variation": 0.375, "full_distribution_p": p_value}
+
+
 def stationarity(run: str) -> dict[str, Any]:
-    """Chi-square of the modal outcome's rate across consecutive shot blocks, per sector."""
+    """Full-distribution block homogeneity per member, summarized by sector, with the raw files it read."""
     record = read(LIVE / run / "record.json")
     per_sector: dict[int, list[float]] = {}
+    raw_files: dict[str, str] = {}
     for job in record["submission"]["jobs"]:
         for index, pub in enumerate(job["pubs"]):
-            raw = read(LIVE / run / "raw" / job["job_id"] / f"pub_{index:02d}.json")
+            path = LIVE / run / "raw" / job["job_id"] / f"pub_{index:02d}.json"
+            raw_files[str(path.relative_to(LIVE))] = hashlib.sha256(path.read_bytes()).hexdigest()
+            raw = read(path)
             if raw["pub_name"] != pub["name"]:
                 raise ValueError(f"{job['job_id']} PUB {index} is {raw['pub_name']}, not {pub['name']}")
             for component in pub["components"]:
                 bits = raw["registers"][component["registers_by_replica"][0][0]]["bitstrings"]
-                size = len(bits) // STATIONARITY_BLOCKS
-                modal = Counter(bits).most_common(1)[0][0]
-                hits = [sum(b == modal for b in bits[i * size : (i + 1) * size]) for i in range(STATIONARITY_BLOCKS)]
-                rate = sum(hits) / (size * STATIONARITY_BLOCKS)
-                if 0 < rate < 1:
-                    chi2 = sum((h - size * rate) ** 2 / (size * rate * (1 - rate)) for h in hits)
-                    sector = int(component["group"].rsplit("_", 1)[1])
-                    per_sector.setdefault(sector, []).append(chi2 / (STATIONARITY_BLOCKS - 1))
+                sector = int(component["group"].rsplit("_", 1)[1])
+                per_sector.setdefault(sector, []).append(block_homogeneity(bits)[0])
     return {
-        str(sector): {
-            "members": len(values),
-            "mean_chi2_per_dof": round(statistics.mean(values), 3),
-            "max_chi2_per_dof": round(max(values), 3),
-        }
-        for sector, values in sorted(per_sector.items())
+        "scope": (
+            f"Pearson homogeneity of each member's complete outcome distribution over {STATIONARITY_BLOCKS} "
+            "consecutive shot blocks. A large p-value means no block-to-block change resolved at this block size; "
+            "it does not establish shot independence or exclude slower or within-block dependence."
+        ),
+        "sectors": {
+            str(sector): {
+                "members": len(values),
+                "members_p_below_0_01": sum(v < 0.01 for v in values),
+                "min_p": round(min(values), 6),
+            }
+            for sector, values in sorted(per_sector.items())
+        },
+        "raw_files_sha256": raw_files,
     }
 
 
@@ -159,7 +211,8 @@ def decompose() -> dict[str, Any]:
             )
         estimates[device] = {row["name"]: row for row in rows}
         off_model = [r for r in rows if abs(r["measured"] - r["model"]) > r["half_width"] + r["model_radius"]]
-        weak_sector = Counter(r["sector"] for r in off_model).most_common(1)[0][0]
+        ranked = Counter(r["sector"] for r in off_model).most_common(1)
+        weak_sector = ranked[0][0] if ranked else None
 
         def medians(selection: list[dict[str, Any]]) -> dict[str, float | None]:
             return {
@@ -176,7 +229,7 @@ def decompose() -> dict[str, Any]:
             "off_model_by_sector": dict(sorted(Counter(r["sector"] for r in off_model).items())),
             "off_model_by_probe": dict(sorted(Counter(r["probe"] for r in off_model).items())),
             "weak_sector": weak_sector,
-            "weak_sector_qubits": lanes[f"rank_sector_{weak_sector}"],
+            "weak_sector_qubits": lanes[f"rank_sector_{weak_sector}"] if weak_sector is not None else None,
             "dark_all": medians([r for r in rows if r["exact"] == 0]),
             "dark_outside_weak_sector": medians([r for r in rows if r["exact"] == 0 and r["sector"] != weak_sector]),
             "bright_outside_weak_sector": medians([r for r in rows if r["exact"] == 1 and r["sector"] != weak_sector]),
@@ -214,21 +267,32 @@ def decompose() -> dict[str, Any]:
             for lane, values in sorted(by_lane.items())
         }
     return {
-        "schema": "rank-sector-endpoint-decomposition-v1",
-        "scope": "Descriptive decomposition of collected estimation endpoints; no threshold here is preregistered.",
+        "schema": "rank-sector-endpoint-decomposition-v2",
+        "scope": (
+            "Exploratory decomposition of collected estimation endpoints. The weak sector is chosen after seeing "
+            "the data and the medians outside it are post-selected; no threshold here is preregistered, and "
+            "a prospective crossed design is needed to attribute a loss to tile or template."
+        ),
         "contract_kinds": dict(sorted(kinds.items())),
         "devices": per_device,
         "kingston_vs_fez_separated": separated,
         "ripple_lanes": ripple,
-        "kingston_shot_order_stationarity": stationarity(DEVICES["ibm_kingston"]["collected"]),
+        "kingston_block_homogeneity": stationarity(DEVICES["ibm_kingston"]["collected"]),
+        "homogeneity_counterexample": homogeneity_counterexample(),
         "inputs_sha256": {
             path: hashlib.sha256((LIVE / path).read_bytes()).hexdigest()
             for runs in DEVICES.values()
             for path in (
                 f"{runs['approved']}/record.json",
+                f"{runs['collected']}/record.json",
                 f"{runs['collected']}/collect.json",
+                f"{runs['ripple_record']}/record.json",
                 runs["ripple_observables"],
             )
+        },
+        "producer_sources_sha256": {
+            name: hashlib.sha256((ROOT / "gororoba_quantum" / name).read_bytes()).hexdigest()
+            for name in rank_sector_experiments.SOURCE_FILES
         },
         "source_sha256": hashlib.sha256(Path(__file__).read_bytes()).hexdigest(),
     }
@@ -250,7 +314,8 @@ def main() -> int:
         print(
             f"{device}: {summary['tests_rejecting']}/{summary['tests']} tests reject; "
             f"{summary['off_model_endpoints']} of 160 means off the model, sector {summary['weak_sector']} "
-            f"(qubits {summary['weak_sector_qubits']}) holds {summary['off_model_by_sector'][summary['weak_sector']]}"
+            f"(qubits {summary['weak_sector_qubits']}) holds "
+            f"{summary['off_model_by_sector'].get(summary['weak_sector'], 0)}"
         )
     return 0
 
