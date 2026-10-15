@@ -25,9 +25,12 @@ result or an approval.
 
 ## Which designs need it
 
-On the build host, density-matrix noise simulation on the CPU is
-comfortable up to about 12 to 14 qubits. GPU memory extends that to about
-16 (16 GB holds a 15-qubit complex128 density matrix). Candidates:
+A complex128 density matrix on n qubits takes `16 * 4^n` bytes: 4 GiB at 14
+qubits, 16 GiB at 15 and 64 GiB at 16, before Aer's workspace. On a 16 GB
+GPU a density-matrix run therefore fits up to about 14 qubits with headroom;
+15 qubits fill the card. A 2xT4 pair does not pool into one 32 GB device for
+a single matrix. The GPU's gain is speed at 10 to 14 qubits and throughput
+for batched trials, not width. Candidates:
 
 | Design | Qubits | Why a GPU helps |
 | --- | --- | --- |
@@ -50,15 +53,14 @@ The Kaggle CLI drives notebooks with three commands:
 - `kaggle kernels output USER/SLUG -p OUT` retrieves the results.
 
 The credential lives in the Kaggle account store or in the environment,
-never in the repository. A retained Kaggle result is listed with:
+never in the repository.
 
-- the notebook, its output, the package versions (`qiskit`, `qiskit-aer-gpu`,
-  CUDA) and the accelerator type;
-- every seed;
-- the evidence class `numerical or stochastic simulation`.
-
-CI cannot rerun it, so it enters the research state with byte checks only
-until a CPU replay of a reduced case exists.
+A retained Kaggle run keeps the notebook, its output, the package versions
+(`qiskit`, `qiskit-aer-gpu`, CUDA), the accelerator type and every seed.
+Retaining it registers no claim. A `numerical or stochastic simulation`
+claim in the research state needs a replay gate that re-derives it in CI,
+so a Kaggle result becomes a claim only once a reduced case reproduces it on
+the CPU under a gate. Until then it informs a design as a retained artifact.
 
 ## Retained notebooks
 

@@ -1715,7 +1715,7 @@
     },
     {
       "id": "a6-stiefel-witness-rocq",
-      "statement": "Rocq 9.2 kernel-checks that the retained A_6 Stiefel witness has pure, orthogonal, norm-62 halves and that N L_v = d I with d = 208270573125941552, L_v built from open_gororoba's cd_sign_fuel at the fuel C-1474 proves adequate, so L_v has a trivial integer kernel; every theorem is closed under the global context.",
+      "statement": "Rocq 9.2 kernel-checks that the retained A_6 Stiefel witness has pure, orthogonal halves of squared norm 62 and that N L_v = d I with d = 208270573125941552, L_v built from open_gororoba's cd_sign_fuel at the fuel C-1474 proves adequate, so L_v has a trivial integer kernel; every theorem is closed under the global context.",
       "domain": "formal",
       "evidence_class": "machine-checked proof",
       "status": "established",
