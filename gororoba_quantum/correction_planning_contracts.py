@@ -110,7 +110,9 @@ def _verify_complete_discovery_frontier(snapshots: list[live_run.Snapshot]) -> d
         eligible_names = names if scenario == "healthy" else names[:2]
         peer_eligibility = "eligible" if scenario == "healthy" else "ineligible"
         arguments = _args(backends=names, max_pending=25, local_compute="cpu")
-        with patch.object(live_run, "take_snapshot", side_effect=lambda unused, name, current=fresh: current[name]):
+        with patch.object(
+            live_run, "take_snapshot", side_effect=lambda unused, name, excluded=(), current=fresh: current[name]
+        ):
             generic, skipped, inventory = live_run.discover_snapshots(service, names, 25)
             _require(
                 [snapshot.name for snapshot in generic] == eligible_names,
@@ -281,7 +283,7 @@ def _verify_complete_discovery_frontier(snapshots: list[live_run.Snapshot]) -> d
 
     fresh = {snapshot.name: copy.copy(snapshot) for snapshot in snapshots}
 
-    def failed_refresh(unused: Any, name: str) -> live_run.Snapshot:
+    def failed_refresh(unused: Any, name: str, excluded: Any = ()) -> live_run.Snapshot:
         if name == "ibm_marrakesh":
             raise live_run.LiveRunError("fixture coherent snapshot refresh failed")
         return fresh[name]
@@ -305,7 +307,9 @@ def _verify_complete_discovery_frontier(snapshots: list[live_run.Snapshot]) -> d
     for snapshot in fresh.values():
         snapshot.status_msg = "maintenance"
     with (
-        patch.object(live_run, "take_snapshot", side_effect=lambda unused, name, current=fresh: current[name]),
+        patch.object(
+            live_run, "take_snapshot", side_effect=lambda unused, name, excluded=(), current=fresh: current[name]
+        ),
         patch.object(live_run, "_compile", side_effect=RuntimeError("inactive frontier reached compilation")),
     ):
         _reject(partial(live_run.plan, service, _args(backends=names, max_pending=25)), "all-inactive plan accepted")

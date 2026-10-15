@@ -39,7 +39,7 @@ import subprocess
 import sys
 import time
 from collections import OrderedDict
-from collections.abc import Callable, Collection
+from collections.abc import Callable, Collection, Mapping
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
@@ -148,6 +148,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "coherence_window.py",
     "qpu_cases.py",
     "qpu_planning.py",
+    "qubit_baseline.py",
     "rank_attachments.py",
     "rank_charts.py",
     "rank_polynomials.py",
@@ -271,8 +272,31 @@ def _backend_capabilities(backend: Any) -> BackendCapabilities:
     )
 
 
-def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
-    """Fresh status, Target, and properties for one backend, with the exclusion policy applied."""
+def _qubit_exclusion(text: str) -> tuple[str, frozenset[int]]:
+    """Parse BACKEND:Q[,Q|A-B...] into the backend name and its excluded physical qubits."""
+    backend_name, separator, spec = text.partition(":")
+    if not separator or not backend_name or not spec:
+        raise argparse.ArgumentTypeError(f"expected BACKEND:Q[,Q|A-B...], got {text!r}")
+    qubits: set[int] = set()
+    try:
+        for part in spec.split(","):
+            low, dash, high = part.partition("-")
+            first, last = int(low), int(high) if dash else int(low)
+            if first < 0 or last < first:
+                raise ValueError(part)
+            qubits.update(range(first, last + 1))
+    except ValueError as error:
+        raise argparse.ArgumentTypeError(f"invalid qubit list {spec!r}") from error
+    return backend_name, frozenset(qubits)
+
+
+def take_snapshot(service: QiskitRuntimeService, name: str, operator_excluded: Collection[int] = ()) -> Snapshot:
+    """Fresh status, Target, and properties for one backend, with the exclusion policy applied.
+
+    operator_excluded names qubits the operator withholds from placement whatever
+    their reported calibration (--exclude-qubits), recorded as "operator
+    exclusion" beside the calibration exclusions.
+    """
     try:
         backend = service.backend(name)
     except Exception as error:
@@ -323,8 +347,13 @@ def take_snapshot(service: QiskitRuntimeService, name: str) -> Snapshot:
     # qubit still makes that qubit unusable for these circuits.
     faulty_gate_q = {q: g.gate for g in props.faulty_gates() if g.gate != "cz" for q in g.qubits}
     t1s, t2s, ros, czs = [], [], [], []
+    unknown = sorted(q for q in operator_excluded if not 0 <= q < backend.num_qubits)
+    if unknown:
+        raise LiveRunError(f"{name}: --exclude-qubits names qubits {unknown} outside 0..{backend.num_qubits - 1}")
     for q in range(backend.num_qubits):
         reason = f"faulty {faulty_gate_q[q]}" if q in faulty_gate_q else _qubit_reason(props, q, faulty_q)
+        if reason is None and q in operator_excluded:
+            reason = "operator exclusion"
         if reason:
             snap.excluded_qubits[q] = reason
         else:
@@ -1069,7 +1098,12 @@ def _replica_candidates(snap: Snapshot, isas: list[QuantumCircuit], floor: float
         frozenset(snap.excluded_edges),
         matched_x_duration=matched_x,
     )
-    candidates = packing.candidate_replicas(used, edges, graph, judge, floor, parallel.ordered_map)
+    # Embeddings that touch an excluded qubit fail the judge, so the search runs on
+    # the placeable qubits only; node indices stay physical. An edgeless pattern
+    # otherwise enumerates every ordered tuple of the whole device.
+    placeable = graph.copy()
+    placeable.remove_nodes_from(sorted(snap.excluded_qubits))
+    candidates = packing.candidate_replicas(used, edges, placeable, judge, floor, parallel.ordered_map)
     return graph, candidates, len(used)
 
 
@@ -2461,6 +2495,7 @@ def discover_snapshots(
     *,
     retain_ineligible: bool = False,
     scope: Collection[str] | None = None,
+    operator_excluded: Mapping[str, Collection[int]] | None = None,
 ) -> tuple[list[Snapshot], dict[str, Any], dict[str, Any]]:
     """Refresh the requested inventory and filter candidates unless the caller needs every snapshot.
 
@@ -2468,6 +2503,7 @@ def discover_snapshots(
     independently. Failed probes supply inventory evidence without a Snapshot.
     A backend outside scope (the approved record's eligible set during a
     submission) is recorded as outside_approved_scope without a probe.
+    operator_excluded maps a backend to qubits withheld from placement.
     """
     if pinned_names is not None:
         names = list(dict.fromkeys(pinned_names))
@@ -2488,7 +2524,7 @@ def discover_snapshots(
             print(f"{name}: skipped: {reason}")
             continue
         try:
-            snapshot = take_snapshot(service, name)
+            snapshot = take_snapshot(service, name, (operator_excluded or {}).get(name, ()))
         except Exception as error:
             reason = (
                 str(error) if isinstance(error, LiveRunError) else f"snapshot refresh failed ({type(error).__name__})"
@@ -2551,6 +2587,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         args.max_pending,
         retain_ineligible=getattr(args, "family", None) == "folded-correction",
         scope=getattr(args, "approved_scope", None),
+        operator_excluded=getattr(args, "exclude_qubits", None),
     )
     if not snaps:
         raise LiveRunError("no eligible backend")
@@ -2569,6 +2606,10 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             campaigns = sorted(group.name for group in groups if group.name in standalone)
             if campaigns and len(groups) > 1:
                 raise LiveRunError(f"{campaigns[0]} requires an isolated campaign; cannot co-run with other groups")
+            if "qubit_baseline" in campaigns and args.dd:
+                # The Ramsey and relaxation idles measure free evolution, which
+                # dynamical decoupling would fill with echo pulses.
+                raise LiveRunError("qubit_baseline runs without dynamical decoupling; omit --dd")
             if "spectator_wavefront_ramsey" in campaigns:
                 # The spectator arms read free Ramsey evolution over explicit delays,
                 # which dynamical decoupling would fill with echo pulses, and a second
@@ -2604,6 +2645,9 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
             "dd": getattr(args, "dd", None),
             "min_remaining_seconds": getattr(args, "min_remaining_seconds", None),
             "max_execution_seconds": getattr(args, "max_execution_seconds", None),
+            "operator_excluded_qubits": {
+                name: sorted(qubits) for name, qubits in sorted((getattr(args, "exclude_qubits", None) or {}).items())
+            },
             "design": qpu_planning.settings(args),
             "local_compute": local_compute.settings(args),
         },
@@ -3327,6 +3371,7 @@ def submit(
         args.max_pending,
         retain_ineligible=getattr(args, "family", None) == "folded-correction",
         scope=getattr(args, "approved_scope", None),
+        operator_excluded=getattr(args, "exclude_qubits", None),
     )
     if not fresh_snapshots:
         raise LiveRunError("no eligible backend remains before submission")
@@ -3471,7 +3516,7 @@ def submit(
         batch_index = int(plan_entry["batch_index"])
         batch_count = int(plan_entry["batch_count"])
         batch_tag = f"{kind}-{batch_index}-of-{batch_count}"
-        fresh = take_snapshot(service, name)
+        fresh = take_snapshot(service, name, (getattr(args, "exclude_qubits", None) or {}).get(name, ()))
         ineligible = fresh.ineligible_reason(args.max_pending)
         if ineligible:
             raise LiveRunError(f"{name}: {batch_tag} left the eligibility gate ({ineligible})")
@@ -4671,6 +4716,13 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--backends", type=lambda s: s.split(","), help="comma-separated pin; default all accessible")
     parser.add_argument("--groups", type=lambda s: s.split(","), help="comma-separated experiment groups")
     parser.add_argument(
+        "--exclude-qubits",
+        action="append",
+        type=_qubit_exclusion,
+        metavar="BACKEND:Q[,Q|A-B...]",
+        help="withhold these physical qubits of BACKEND from placement whatever their calibration; repeatable",
+    )
+    parser.add_argument(
         "--family", choices=FAMILY_NAMES, help="complete experiment family with statistical design admission"
     )
     parser.add_argument(
@@ -4830,6 +4882,10 @@ def main(argv: list[str] | None = None) -> int:
         ),
     )
     args = parser.parse_args(argv)
+    exclusions: dict[str, set[int]] = {}
+    for backend_name, qubits in args.exclude_qubits or []:
+        exclusions.setdefault(backend_name, set()).update(qubits)
+    args.exclude_qubits = {name: frozenset(qubits) for name, qubits in sorted(exclusions.items())} or None
     if args.native_dry_run and (args.submit or args.collect or args.preserve_raw):
         parser.error("--native-dry-run requires a separate submit-free planning invocation")
     if args.native_dry_run and (not args.out or not args.family):
