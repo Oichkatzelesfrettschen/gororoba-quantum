@@ -20,6 +20,11 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORICAL_JOBS = {"db5qmqclf4us73c4e1ug", "db67fqsvf2bc73d0pk4g", "db67frimb58s738bci4g"}
+# The owner's 180-second campaign cap covers the non-historical jobs created
+# before this instant; a later program is bounded by its own approved
+# --max-total-execution-seconds and is reported separately.
+CAMPAIGN_CEILING_SECONDS = 180
+CAMPAIGN_CUTOFF = "2026-10-14T00:00:00Z"
 
 
 ACCOUNT_RESERVE_SECONDS = 60
@@ -69,6 +74,21 @@ def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
         require(running >= start, "a job straddles the usage-period start; its in-window charge is not recorded")
         total += Decimal(str(job["final_qpu_charge_seconds"]))
     return total
+
+
+def campaign_split(rows: list[dict[str, Any]]) -> tuple[Decimal, Decimal, Decimal]:
+    """Final charges of the historical jobs, the capped campaign, and later programs."""
+    cutoff = timestamp(CAMPAIGN_CUTOFF)
+    historical = campaign = later = Decimal(0)
+    for row in rows:
+        charge = Decimal(str(row["final_qpu_charge_seconds"]))
+        if row["job_id"] in HISTORICAL_JOBS:
+            historical += charge
+        elif timestamp(row["created_at"]) < cutoff:
+            campaign += charge
+        else:
+            later += charge
+    return historical, campaign, later
 
 
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
@@ -214,9 +234,8 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
     total = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows)
     in_window = window_charge(rows, usage)
     require(in_window == Decimal(consumed), "final charges inside the usage period differ from the consumed seconds")
-    historical = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows if row["job_id"] in HISTORICAL_JOBS)
-    campaign = total - historical
-    require(campaign <= 180, "new campaign exceeds authorized 180-second ceiling")
+    historical, campaign, later = campaign_split(rows)
+    require(campaign <= CAMPAIGN_CEILING_SECONDS, "new campaign exceeds authorized 180-second ceiling")
     return {
         "schema": "qpu-job-retention-audit-v1",
         "observed_at": snapshot["observed_at"],
@@ -236,8 +255,10 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "final_charge_seconds": str(total),
         "historical_charge_seconds": str(historical),
         "new_campaign_charge_seconds": str(campaign),
-        "new_campaign_ceiling_seconds": 180,
-        "unallocated_campaign_seconds": str(Decimal(180) - campaign),
+        "new_campaign_ceiling_seconds": CAMPAIGN_CEILING_SECONDS,
+        "new_campaign_cutoff": CAMPAIGN_CUTOFF,
+        "unallocated_campaign_seconds": str(Decimal(CAMPAIGN_CEILING_SECONDS) - campaign),
+        "later_program_charge_seconds": str(later),
         "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
         "usage_window_charge_seconds": str(in_window),
         "account_usage_observation": snapshot["account_usage"],

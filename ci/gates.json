@@ -2107,7 +2107,7 @@
   {
    "cmd": "ROCQ=\"${ROCQ:-rocq}\" sh docs/evidence/c881_exhaustive/replay_rocq.sh",
    "cwd": ".",
-   "reason": "needs the pinned Rocq 9.1.1 toolchain; proof-change replay"
+   "reason": "needs the Rocq toolchain pinned in docs/evidence/c881_exhaustive/toolchain.txt; proof-change replay"
   }
  ]
 }

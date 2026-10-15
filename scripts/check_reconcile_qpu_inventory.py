@@ -64,6 +64,7 @@ def main() -> None:
                     "pub_count": 1,
                     "shots_per_pub": 2,
                     "timestamps": dict(times),
+                    "created_at": "2026-10-12T00:00:00Z",
                 }
             ],
         }
@@ -133,6 +134,12 @@ def main() -> None:
             write(source, snapshot)
             usage = snapshot["account_usage"]
             audit.require(audit.window_charge(snapshot["jobs"], usage) == 1, "in-window charge differs")
+            split_rows = [
+                {"job_id": "synthetic-job", "final_qpu_charge_seconds": 1, "created_at": "2026-10-12T00:00:00Z"},
+                {"job_id": "campaign", "final_qpu_charge_seconds": 170, "created_at": "2026-10-13T23:59:59Z"},
+                {"job_id": "later", "final_qpu_charge_seconds": 146, "created_at": "2026-10-14T00:00:00Z"},
+            ]
+            audit.require(audit.campaign_split(split_rows) == (1, 170, 146), "campaign cutoff split differs")
             expired = copy.deepcopy(snapshot["jobs"][0])
             expired["timestamps"] = {"running": "2026-09-14T00:00:00Z", "finished": "2026-09-14T00:00:01Z"}
             audit.require(audit.window_charge([expired], usage) == 0, "an expired job contributes a rolling charge")
@@ -175,7 +182,8 @@ def main() -> None:
                 raise RuntimeError("raw digest mutation admitted")
     print(
         "Synthetic inventory contract: 20 inventory mutations, two window chronology mutations, "
-        "a repeated metrics snapshot and raw corruption rejected; replay preserves bytes"
+        "a repeated metrics snapshot and raw corruption rejected; the campaign cutoff splits charges; "
+        "replay preserves bytes"
     )
 
 
