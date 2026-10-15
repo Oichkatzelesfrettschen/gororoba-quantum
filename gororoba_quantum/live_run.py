@@ -146,6 +146,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "qpe_diagnostics.py",
     "patch_characterization.py",
     "coherence_window.py",
+    "conditional_ramsey.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qubit_baseline.py",
@@ -2626,6 +2627,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 # The Ramsey and relaxation idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses.
                 raise LiveRunError("qubit_baseline runs without dynamical decoupling; omit --dd")
+            if "conditional_ramsey" in campaigns:
+                # The sector rates are free-evolution phase slopes, which echo pulses
+                # refocus, and the reduced model covers one pair: a second replica's
+                # qubits beside A or B would add spectator Z Z terms to the rates.
+                if args.dd:
+                    raise LiveRunError("conditional_ramsey runs without dynamical decoupling; omit --dd")
+                if args.max_replicas != 1:
+                    raise LiveRunError("conditional_ramsey runs one replica; pass --max-replicas 1")
             if "spectator_wavefront_ramsey" in campaigns:
                 # The spectator arms read free Ramsey evolution over explicit delays,
                 # which dynamical decoupling would fill with echo pulses, and a second

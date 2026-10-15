@@ -254,21 +254,25 @@ def _verify_isolation_contract() -> None:
         "PlacementJudge must accept a full placement whose core X duration matches",
     )
 
-    # The spectator wavefront and the qubit baseline are opt-in campaigns outside the default suite.
+    # The spectator wavefront, qubit baseline and conditional Ramsey are opt-in campaigns outside the default suite.
     default_names = {group.name for group in experiment_groups()}
     standalone_names = {group.name for group in standalone_campaign_groups()}
     _require(
-        standalone_names == {"spectator_wavefront_ramsey", "qubit_baseline"} and not default_names & standalone_names,
+        standalone_names == {"spectator_wavefront_ramsey", "qubit_baseline", "conditional_ramsey"}
+        and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",
     )
 
-    # Verify plan rejects co-running spectator_wavefront_ramsey with other groups
+    # plan refuses to co-run either free-evolution campaign, to decouple it, or to replicate it
     probe_backend = _ProbeBackend("viable", backend)
     service = _ProbeService([probe_backend])
     for overrides, message in (
         ({"groups": ["spectator_wavefront_ramsey", "design_a"]}, "isolated campaign"),
         ({"groups": ["spectator_wavefront_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
         ({"groups": ["spectator_wavefront_ramsey"], "max_replicas": None}, "one replica"),
+        ({"groups": ["conditional_ramsey", "design_a"]}, "isolated campaign"),
+        ({"groups": ["conditional_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
+        ({"groups": ["conditional_ramsey"], "max_replicas": None}, "one replica"),
     ):
         try:
             plan(service, _fixture_args(**overrides))
