@@ -31,6 +31,8 @@ ROOT = Path(__file__).resolve().parent.parent
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 OUTPUT = ROOT / "docs/evidence/walk-control-scaffolding/exposure.json"
 FRINGE_RUN = "results/live/2026-10-15T070853.550532Z"
+PILOT_RUN = "results/live/2026-10-11T152922.787095Z"
+PILOT_MEMBER = "hybrid_shor_N15_a2"
 # Qubit sets a measurement flagged, with the claim that carries the flag.
 FLAGS: dict[str, dict[str, dict[str, Any]]] = {
     "ibm_kingston": {
@@ -153,6 +155,38 @@ def fringe_replicas() -> list[dict[str, Any]]:
     ]
 
 
+def pilot_bit_marginals() -> list[dict[str, Any]]:
+    """P(bit = 1) of every measured output bit of every pilot replica, with the qubit that wrote it.
+
+    The replicas share one ideal law, so a replica whose bit departs from the
+    others carries a readout or state fault on that bit's qubit.
+    """
+    record = json.loads((ROOT / PILOT_RUN / "record.json").read_text())
+    collection = json.loads((ROOT / PILOT_RUN / "collect.json").read_text())
+    entry = next(item for item in collection if isinstance(item, dict) and item.get("group") == "hybrid_shor_mod15")
+    with (ROOT / PILOT_RUN / "isa.qpy").open("rb") as stream:
+        circuits = qpy.load(stream)
+    for circuit, pub in zip(circuits, record["execution_pubs"], strict=True):
+        component = next((item for item in pub["components"] if item["member"] == PILOT_MEMBER), None)
+        if component is None:
+            continue
+        writer = {}
+        for instruction in circuit.data:
+            if instruction.operation.name == "measure":
+                clbit = instruction.clbits[0]
+                register = next(reg for reg in circuit.cregs if clbit in reg)
+                writer[(register.name, list(register).index(clbit))] = circuit.find_bit(instruction.qubits[0]).index
+        rows = []
+        for replica, names in enumerate(component["registers_by_replica"]):
+            distribution = entry["measured"][PILOT_MEMBER][replica]
+            for (register, bit), qubit in sorted(writer.items()):
+                if register == names[0]:
+                    marginal = sum(value for outcome, value in enumerate(distribution) if outcome >> bit & 1)
+                    rows.append({"replica": replica, "bit": bit, "qubit": qubit, "p_one": float(marginal)})
+        return rows
+    raise ValueError(f"{PILOT_MEMBER} is not in {PILOT_RUN}")
+
+
 def evidence() -> dict[str, Any]:
     exposures = [run_exposure(run) for run in runs()]
     phases = [row["phase"] for row in fringe_replicas()]
@@ -162,6 +196,7 @@ def evidence() -> dict[str, Any]:
         "runs": [{key: value for key, value in exposure.items() if key != "member_cz"} for exposure in exposures],
         "walk_readout_controls": walk_readouts(exposures),
         "fringe_replicas": fringe_replicas(),
+        "pilot_bit_marginals": pilot_bit_marginals(),
         "fringe_phase_spread": {"min": min(phases), "max": max(phases), "stdev": statistics.stdev(phases)},
     }
 

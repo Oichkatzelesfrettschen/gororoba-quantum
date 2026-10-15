@@ -147,6 +147,80 @@
    "visibility": 0.6806665281454004
   }
  ],
+ "pilot_bit_marginals": [
+  {
+   "bit": 6,
+   "p_one": 0.512452,
+   "qubit": 2,
+   "replica": 0
+  },
+  {
+   "bit": 7,
+   "p_one": 0.6181639999999999,
+   "qubit": 0,
+   "replica": 0
+  },
+  {
+   "bit": 6,
+   "p_one": 0.521729,
+   "qubit": 82,
+   "replica": 1
+  },
+  {
+   "bit": 7,
+   "p_one": 0.44824200000000003,
+   "qubit": 96,
+   "replica": 1
+  },
+  {
+   "bit": 6,
+   "p_one": 0.515136,
+   "qubit": 67,
+   "replica": 2
+  },
+  {
+   "bit": 7,
+   "p_one": 0.490966,
+   "qubit": 47,
+   "replica": 2
+  },
+  {
+   "bit": 6,
+   "p_one": 0.494629,
+   "qubit": 34,
+   "replica": 3
+  },
+  {
+   "bit": 7,
+   "p_one": 0.48608399999999996,
+   "qubit": 19,
+   "replica": 3
+  },
+  {
+   "bit": 6,
+   "p_one": 0.469483,
+   "qubit": 71,
+   "replica": 4
+  },
+  {
+   "bit": 7,
+   "p_one": 0.488037,
+   "qubit": 73,
+   "replica": 4
+  },
+  {
+   "bit": 6,
+   "p_one": 0.468994,
+   "qubit": 109,
+   "replica": 5
+  },
+  {
+   "bit": 7,
+   "p_one": 0.481934,
+   "qubit": 129,
+   "replica": 5
+  }
+ ],
  "runs": [
   {
    "groups": [
