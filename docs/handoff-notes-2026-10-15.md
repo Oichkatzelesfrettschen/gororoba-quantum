@@ -123,5 +123,78 @@ All GPU-validated notebooks from this session are in:
 - `docs/evidence/ccz-reduction/factorized-vs-ccz.ipynb`
 - `docs/evidence/ghost-frequency/algebraic-frequency.ipynb`
 - `docs/evidence/ghost-frequency/differential-interleaved.ipynb`
+- `docs/evidence/ghost-frequency/predelay-84-84.ipynb`
 - `docs/evidence/simulation/qiskit-aer-simulation.ipynb`
 - `docs/evidence/falsification/gemma-falsification-review.ipynb`
+
+## Red-Team Review (Ferreton, 2026-10-15)
+
+An LLM red-team was attempted via Gemma 4 on Kaggle. RCA: v1/v2 returned
+empty because Gemma instruction-tuned models require the chat template
+(`apply_chat_template` with `<start_of_turn>` markers); raw text input
+produces no generation. Also requires `transformers>=5.5`. v3 with the fix
+was submitted; results pending.
+
+Manual red-team findings (pending Gemma confirmation):
+
+**Claim 1 (Compiler) — strongest.** Gap: the audit verified submitted
+circuits, not executed circuits. IBM's runtime could apply additional
+optimization. Test: compare QPY bytes in the job record against submitted
+circuits.
+
+**Claim 2 (Coherent error) — strong but narrow.** dΔ/dα=0 covers angle
+miscalibration only. Gap: axis miscalibration, correlated coherent errors
+across 37 CZ gates untested. Test: GPU sim with axis-error and
+correlated-error models.
+
+**Claim 3 (Readout) — strong.** Linearity argument is airtight for
+classical readout. Gap: assumes classical linear readout. Quantum
+measurement backaction could differ between bright/dark because
+pre-measurement states differ. Test: model measurement as quantum channel.
+
+**Claim 4 (Resonator) — weakest, in tension with ghost hypothesis.**
+The arithmetic bound assumed photons manifest as readout bias. But AC
+Stark shifts qubit frequency, a different mechanism. The ghost hypothesis
+H2 *is* resonator photons. Cannot simultaneously claim photons explain
+the ghost and are ruled out for 84/84 without distinguishing the
+mechanisms.
+
+Ranking by vulnerability: 4 > 2 > 3 > 1.
+
+## Pre-Delay Discriminator: Negative Result for 84/84
+
+A GPU simulation tested whether a pre-delay sweep [0,1,2,5,10,20,50] µs
+could detect photonic contribution to the 84/84 contrast. Result: 11%
+detection power. The differential photonic effect on Δ is second-order
+and buried in measurement noise.
+
+Implication: do not spend QPU time on a pre-delay sweep of the 84/84
+circuits expecting to resolve photonic contribution. The pre-delay test
+is strong for the ghost itself (absolute detuning, H1 vs H2) but weak
+for 84/84 (differential contrast).
+
+## What Claude Must Test (QPU Priority Order)
+
+1. **Ghost pre-delay discriminator** (highest value). Ramsey with
+   pre-delay sweep on a single qubit. If detuning decays with pre-delay:
+   photonic (H2). If flat: intrinsic (H1). This resolves the leading
+   hypothesis. Notebook: `docs/evidence/ghost-frequency/` suite.
+
+2. **Algebraic-frequency Ramsey.** ~20 defective + ~20 clean triples,
+   Ramsey at [1,2,4,8] µs each. Tests whether ghost detuning correlates
+   with sedenion structure. Start at 500 Hz sensitivity (~1s per point).
+
+3. **Differential interleaved** (only if 1 and 2 are null). Interleaved
+   defective/clean shots for Hz-level differential sensitivity. Optimal
+   Ramsey delay: 8.3 µs. Expensive: 50 Hz needs 720k shots (~72s);
+   5 Hz needs 72M shots (~2hrs). Parallelize across qubits.
+
+4. **CCZ normal form on hardware.** Run the CCZ circuits to confirm the
+   1.19x fidelity improvement on real hardware. Ideal outcomes verified
+   identical (fidelity 1.0).
+
+5. **QPY comparison** (no QPU needed). Compare submitted circuit bytes
+   against job record QPY to close the Claim 1 gap.
+
+Do NOT run: pre-delay sweep on 84/84 circuits (11% power, negative
+result). Do NOT run: VLF correlation (calendar check first, free).
