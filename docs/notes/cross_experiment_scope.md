@@ -14,7 +14,7 @@ and needs no QPU time unless it says so.
 | --- | --- | --- | --- |
 | Kingston readout fault | 0, 1 | corner baseline (`hw-corner-readout-fault`) | pilot hybrid Shor replica 0 (2026-10-11), rank sector 4 and ripple atlas lane 6 (2026-10-15), corner baseline |
 | Kingston short relaxation | 2, 3, 16 | corner baseline | same runs |
-| Kingston first-bit state change | 79 | correction strata (`hw-first-bit-disagreement`) | pilot folded-QPE replica 2, folded-QPE ladder (both arms), both correction runs |
+| Kingston first-bit correlation | 79 | correction strata (`hw-first-bit-disagreement`) | pilot folded-QPE replica 2, folded-QPE ladder (both arms), both correction runs |
 | Fez weak rank tile | 2, 3, 4, 16 | endpoint decomposition | Fez rank sector 2, Fez walk lane 0 |
 | Fez walk lane 0 | 1, 2, 3, 4 | walk audit | Fez walk lane 0, Fez rank sector 2 |
 
@@ -32,15 +32,18 @@ and needs no QPU time unless it says so.
      recalibrations that never reported it.
    - The pilot's factorable yield on that replica (0.5125) stayed among the
      best, because factorability does not depend on that bit.
-2. **The correction decision and the first-bit state change share qubit 79.**
+2. **The correction decision and the first-bit correlation share qubit 79.**
    - The measured-bit arm follows the recorded first bit. The known-label arm
      ignores it.
-   - At least a third of the recorded-0 shots carry a real state change
-     ([novel-insights](../evidence/novel-insights/REPORT.md), section 2). On
-     those shots, following the recorded bit corrects the actual state, so the
-     defect itself favors measured correction.
+   - Independent, state-preserving assignment error is excluded
+     ([novel-insights](../evidence/novel-insights/REPORT.md), section 2).
+   - Where the recorded 0 reflects a real state change of qubit 79, following
+     the recorded bit corrects the actual state, so that part of the defect
+     favors measured correction. A common cause behind both the misread and
+     the terminal loss is not excluded.
    - `retain_measured_correction` therefore stands as the registered decision,
-     but it was taken on a qubit whose state changes at readout.
+     but it was taken on a qubit whose recorded bit is correlated with the
+     terminal outcome.
    - A known-label gain on a clean writer qubit remains untested.
 3. **The walk controls are a per-tile gate-quality probe.** The
    identity-equivalent 252-CZ readout controls retain about 0.996 per CZ on
@@ -68,7 +71,8 @@ post-processing with the quantum circuit carry the flagged qubits in the
 places that matter most:
 
 - **Folded correction.** The recorded first bit is written on qubit 79, the
-  qubit with the state change. A rerun on a clean writer separates the
+  qubit whose recorded bit correlates with the terminal outcome. A rerun on
+  a clean writer separates the
   algorithm from the defect.
 - **Folded-QPE ladder.** The archived arm reads its terminal bit on qubit 93,
   which shares 28 CZ with 79 in the correction circuit, while the coherent arm

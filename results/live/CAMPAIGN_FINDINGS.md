@@ -215,14 +215,14 @@ density. Nominal circuit width, idle spectators and 29 replicas do not certify
   establish neither failure independence, absence of crosstalk nor full
   outcome-distribution equivalence. Filling qubits can improve acquisition
   density only within the qualified measurement and statistical contract.
-- **Recorded first-bit disagreement is mostly a state change.** The
-  roughly 11 percent disagreement on qubit 79 is measured. In the
-  known-label arms the terminal success falls from 0.80 to 0.54-0.57 when
-  the first bit reads 0, which a state-preserving assignment error cannot
-  do; at least a third of those shots carry a real state change
+- **Recorded first-bit disagreement is correlated with the terminal
+  outcome.** The roughly 11 percent disagreement on qubit 79 is measured. In
+  the known-label arms the terminal success falls from 0.80 to 0.54-0.57 when
+  the first bit reads 0. Independent, state-preserving assignment error
+  cannot do that
   ([novel-insights](../../docs/evidence/novel-insights/REPORT.md),
-  section 2). Preparation, relaxation and measurement back-action remain
-  unresolved.
+  section 2). A state change of qubit 79 and a common cause behind both the
+  misread and the terminal loss remain, and the strata stay descriptive.
 - **The coherent advantage remains implementation-specific.** The ladder's
   inconclusive and confounded delay comparison, the correction adoption
   failures and the walk control/replay discrepancy motivate matched controls.

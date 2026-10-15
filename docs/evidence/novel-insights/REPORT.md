@@ -24,7 +24,8 @@ named here decide them.
 - A Z Z coupling J between the work coherence and the branch bit would
   separate the strata by 2 J t. Interval arithmetic over the four argument
   regions (half-widths 0.092 to 0.108 rad) bounds `|J| <= 7.6 kHz` at this
-  exposure.
+  exposure. The bound holds if the two strata do not differ by whole extra
+  turns; the arguments fix that difference only modulo 2 pi.
 
 **Fez N21 orbit** (`N21_ORBIT_RCA.md`):
 - The fitted phase of +0.59 rad over the 1187 dt mean feedback-arm idle
@@ -67,17 +68,29 @@ In the known-label arms, where the correction ignores the recorded bit,
 terminal success is 0.540 and 0.567 when the first bit reads 0, against 0.804
 and 0.806 when it reads 1 (first run; `analysis-1fdb68508f14.json`). An
 assignment error that leaves the state untouched cannot change what the
-known arm does next, so it would leave the two strata equal. Suppose a
-fraction f of recorded-0 shots carries a real state change whose terminal
-success is s0:
+known arm does next. An assignment error that is also independent of
+everything else in the shot would therefore leave the two strata equal.
 
-    0.54 = f s0 + (1 - f) 0.80,   so   f >= 0.33 for any s0 >= 0,
+The strata differ, so the recorded bit is correlated with terminal success.
+Two kinds of cause remain:
 
-and f is near 0.87 if s0 is near 1/2.
+- a real change of qubit 79's state (preparation, relaxation before readout,
+  or a measurement that flips the state);
+- a common cause that both misreads 79 and degrades the terminal result,
+  while 79's state is preserved.
 
-**Verdict:** at least a third of the recorded-0 shots are real state changes.
-Preparation error, relaxation before readout and a measurement that flips the
-state remain distinguishable only by new data.
+Assume the second contributes nothing, so that misread shots succeed like
+recorded-1 shots. A fraction f of recorded-0 shots with a real state change
+of terminal success s0 then gives
+
+    0.54 = f s0 + (1 - f) 0.80,   so   f >= 0.33 for any s0 >= 0.
+
+That bound holds only under the assumption; the counts alone do not establish
+it.
+
+**Verdict:** independent, state-preserving assignment error is excluded. A
+state change of qubit 79 and a correlated common cause remain, and the
+strata stay descriptive, as `correction_statistics.py` records them.
 
 **Test:** read qubit 79 prepared in |1> immediately and after the
 mid-circuit-measurement delay. A constant rate points to preparation, and a

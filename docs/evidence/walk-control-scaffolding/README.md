@@ -48,17 +48,18 @@ retained run.
 
 Retention per CZ is `P(0000)^(1/252)`. It is a descriptive, load-normalized
 figure that assumes exponential loss, not a gate error. Read that way, the
-hardware loses 2 to 3 times what the calibrated model predicts on Kingston
-and 5 to 8 times on Fez. The worst lane, Fez 1-4, overlaps Fez's weak
+per-CZ loss `1 - r` on hardware is 1.8 and 3.4 times the calibrated model's on
+the Kingston lanes and 4.4 and 3.8 times on the Fez lanes. The worst lane, Fez 1-4, overlaps Fez's weak
 rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
 
 ## Hypotheses and their status
 
-1. **The scaffold sets the floor** (confirmed). The executed circuit is the
-   identity, so the loss is physical noise. The depth sweep shares its
-   physical gates across depths, and only virtual RZ angles change. A flat
-   hardware P(0000) across depths therefore carries no information about walk
-   dynamics.
+1. **The scaffold sets the floor** (confirmed). The executed readout
+   circuit is the identity, so its loss is physical noise. The depth members
+   share the same CZ and SX scaffold, and their bound angles change the
+   implemented walk and its ideal law. The hardware's flat P(0000) across
+   depths is therefore a depth dependence suppressed under a constant
+   252-CZ load, not evidence about walk dynamics either way.
 2. **An effective CZ error eight times the calibration** (not supported as
    stated). The figure came from a depolarizing fit to Fez lane 0, a model
    that hypothesis 3 rejects. The load-normalized loss also varies by lane

@@ -21,7 +21,7 @@
    }
   },
   "ibm_kingston": {
-   "first_bit_state_defect": {
+   "first_bit_correlation": {
     "claim": "hw-first-bit-disagreement",
     "qubits": [
      79
@@ -227,7 +227,7 @@
     {
      "backend": "ibm_kingston",
      "flagged": {
-      "first_bit_state_defect": [
+      "first_bit_correlation": [
        [],
        [],
        [
@@ -379,7 +379,7 @@
     {
      "backend": "ibm_kingston",
      "flagged": {
-      "first_bit_state_defect": [
+      "first_bit_correlation": [
        [
         79
        ]
@@ -400,7 +400,7 @@
     {
      "backend": "ibm_kingston",
      "flagged": {
-      "first_bit_state_defect": [
+      "first_bit_correlation": [
        [
         79
        ]
@@ -452,7 +452,7 @@
     {
      "backend": "ibm_kingston",
      "flagged": {
-      "first_bit_state_defect": [
+      "first_bit_correlation": [
        [
         79
        ]
@@ -491,7 +491,7 @@
     {
      "backend": "ibm_kingston",
      "flagged": {
-      "first_bit_state_defect": [
+      "first_bit_correlation": [
        [
         79
        ]

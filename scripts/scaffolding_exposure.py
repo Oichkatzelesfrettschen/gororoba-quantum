@@ -38,7 +38,7 @@ FLAGS: dict[str, dict[str, dict[str, Any]]] = {
     "ibm_kingston": {
         "readout_fault": {"qubits": [0, 1], "claim": "hw-corner-readout-fault"},
         "short_relaxation": {"qubits": [2, 3, 16], "claim": "hw-corner-readout-fault"},
-        "first_bit_state_defect": {"qubits": [79], "claim": "hw-first-bit-disagreement"},
+        "first_bit_correlation": {"qubits": [79], "claim": "hw-first-bit-disagreement"},
     },
     "ibm_fez": {
         "rank_weak_sector": {"qubits": [2, 3, 4, 16], "claim": "hw-rank-endpoint-decomposition"},
