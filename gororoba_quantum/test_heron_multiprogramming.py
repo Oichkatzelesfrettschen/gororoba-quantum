@@ -18,7 +18,13 @@ from heron_multiprogramming import (  # noqa: E402
     DisjointTile,
     HeronLattice,
     bell_delay_probe,
+    bent_hidden_shift_circuit,
+    fano_plane_incidence_matrix,
+    hoeffding_model_discrimination,
     lcu_zero_product_witness,
+    pathion_singular_sector_witness,
+    sedenion_associator_witness,
+    steane_coherent_syndrome_patch,
     steane_z_syndrome_patch,
 )
 
@@ -220,6 +226,90 @@ class TestHeronMultiprogramming(unittest.TestCase):
         for strings, slices in ((["0", "0"], [slice(0, 5)]), (["00", "0"], [slice(0, 1)]), (["00"], [slice(0, 1)])):
             with self.assertRaises(ValueError):
                 HeronLattice.tile_parity_covariance(strings, slices)
+        with_coords = HeronLattice.tile_parity_covariance(
+            ["00", "11"],
+            [slice(0, 1), slice(1, 2)],
+            tile_coords=[(0.0, 0.0), (3.0, 4.0)],
+        )
+        self.assertEqual(with_coords["distance_matrix"][0][1], 5.0)
+        with self.assertRaises(ValueError):
+            HeronLattice.tile_parity_covariance(["00", "11"], [slice(0, 1), slice(1, 2)], tile_coords=[(0.0, 0.0)])
+
+    def test_sedenion_and_pathion_witnesses(self) -> None:
+        # Non-associating triple (1, 2, 4): P(anc=1) = 1.0
+        qc_nonassoc = sedenion_associator_witness(1, 2, 4)
+        self.assertEqual(qc_nonassoc.num_qubits, 5)
+        sv1 = Statevector(qc_nonassoc.remove_final_measurements(inplace=False))
+        self.assertAlmostEqual(float(sv1.probabilities([4])[1]), 1.0)
+
+        # Associating triple (1, 2, 3): P(anc=0) = 1.0
+        qc_assoc = sedenion_associator_witness(1, 2, 3)
+        sv2 = Statevector(qc_assoc.remove_final_measurements(inplace=False))
+        self.assertAlmostEqual(float(sv2.probabilities([4])[0]), 1.0)
+
+        # Pathion singular sector witness on 5 qubits
+        qc_pathion = pathion_singular_sector_witness(32, 1, 16)
+        self.assertEqual(qc_pathion.num_qubits, 5)
+
+    def test_steane_coherent_and_fano_plane(self) -> None:
+        # All 7 single-qubit errors correctly and coherently corrected
+        for err in range(7):
+            qc_coh = steane_coherent_syndrome_patch(err)
+            self.assertEqual(qc_coh.num_qubits, 10)
+            sv_coh = Statevector(qc_coh.remove_final_measurements(inplace=False))
+            self.assertAlmostEqual(float(sv_coh.probabilities(range(7))[0]), 1.0)
+
+        # Fano plane PG(2,2) incidence matrix
+        fano = fano_plane_incidence_matrix()
+        self.assertEqual(fano.shape, (7, 7))
+        self.assertTrue((fano.sum(axis=1) == 3).all())
+        self.assertTrue((fano.sum(axis=0) == 3).all())
+
+        # Dynamical decoupling on Steane Z syndrome patch
+        qc_hahn = steane_z_syndrome_patch(1, dd_sequence="Hahn")
+        self.assertGreater(qc_hahn.count_ops().get("x", 0), 10)
+        qc_xy4 = steane_z_syndrome_patch(1, dd_sequence="XY4")
+        self.assertGreater(qc_xy4.count_ops().get("y", 0), 5)
+        with self.assertRaises(ValueError):
+            steane_z_syndrome_patch(1, dd_sequence="invalid_dd")
+
+    def test_bell_delay_probe_with_dd(self) -> None:
+        for dd in (None, "Hahn", "XY4"):
+            qc = bell_delay_probe(100, dd_sequence=dd)
+            self.assertEqual(qc.num_qubits, 2)
+            sv = Statevector(qc.remove_final_measurements(inplace=False))
+            self.assertAlmostEqual(float(sv.probabilities()[0]), 1.0)
+        with self.assertRaises(ValueError):
+            bell_delay_probe(100, dd_sequence="invalid_dd")
+
+    def test_hoeffding_model_discrimination(self) -> None:
+        p = {"0": 8000, "1": 192}
+        q = {"0": 1000, "1": 7192}
+        res = hoeffding_model_discrimination(p, q, alpha=0.01)
+        self.assertTrue(res["models_distinguishable"])
+        self.assertGreater(res["total_variation_distance"], 0.8)
+        self.assertLess(res["hoeffding_radius"], 0.05)
+        self.assertGreater(res["tv_confidence_interval"][0], 0.0)
+
+        # Identical distributions cannot be distinguished
+        same = hoeffding_model_discrimination(p, p, alpha=0.01)
+        self.assertFalse(same["models_distinguishable"])
+        self.assertAlmostEqual(same["total_variation_distance"], 0.0)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination({}, q)
+
+    def test_bent_hidden_shift_circuit(self) -> None:
+        for n in (4, 6):
+            s = [1 if i % 2 == 0 else 0 for i in range(n)]
+            qc = bent_hidden_shift_circuit(n, s)
+            self.assertEqual(qc.num_qubits, n)
+            sv = Statevector(qc.remove_final_measurements(inplace=False))
+            expected = "".join(str(s[i]) for i in reversed(range(n)))
+            self.assertAlmostEqual(float(sv.probabilities_dict()[expected]), 1.0)
+        with self.assertRaises(ValueError):
+            bent_hidden_shift_circuit(5)  # Odd n must raise
+        with self.assertRaises(ValueError):
+            bent_hidden_shift_circuit(4, shift=[1, 0])  # Length mismatch
 
 
 if __name__ == "__main__":

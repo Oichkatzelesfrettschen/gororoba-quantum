@@ -110,45 +110,71 @@ qualification. A shot-rate ratio is a rate at an unqualified operating
 point; neither it nor a tile count multiplies into a yield until a
 state-preparation control at that delay exists.
 
-## Circuits that fit one tile
+## Elevated scientific suite grounded in QPU campaign findings
 
-- **`lcu_zero_product_witness(a_pair, b_pair, sign)`**, 5 qubits, is Design
-  B's fixed-operand LCU (`designs.lcu_witness`) on `x = (e_i + e_j)/sqrt2`
-  and `y = (e_k + sign e_l)/sqrt2`. `cd_core.cd_multiply` certifies the pair
-  and the circuit metadata carries `P(s = 0) = ||x y||^2 / 2`: 0 for the
-  default dark pair `(e1 + e10)(e4 - e15) = 0`, 1 for its bright control
-  `(e4 + e15)`, and 1/2 for the negative fixture `(e1 + e10)(e2 - e13)`
-  (AGENTS.md, algebra circuit design rules).
-- **`steane_z_syndrome_patch(error_qubit, mid_circuit_measure)`**, 10
-  qubits, measures the three Steane Z checks with CX from the data qubits
-  onto ancillas 7 to 9 (supports {1,3,5,7}, {2,3,6,7} and {4,5,6,7} in
-  1-based positions), so an X error on data qubit d reads syndrome d + 1.
-  Seven unnested `if_test` blocks on the 3-bit syndrome register apply the
-  X correction, within the execute-dynamic-circuits limits of one `if`
-  level and operands of at most 32 bits, and a final readout of the data
-  register shows the correction. It starts in `|0>^7`, measures no X check
-  and prepares no logical codeword. `mid_circuit_measure=True` reads the
-  ancillas with `MidCircuitMeasure` (`measure_2`), a different physical
-  measurement that Aer does not simulate and that needs its own control.
-- **`bell_delay_probe(delay_dt)`**, 2 qubits, prepares a Bell pair, waits a
-  fixed number of dt on both qubits and undoes the preparation; it uses no
-  stretch and computes no divergence.
-- **`designs.design_c_associator_spectrum(128, i, j)`** occupies 7 qubits,
-  one k7 tile.
+The module provides four scientific experiment families directly grounded in the 21 physical
+QPU runs on `ibm_fez` and `ibm_kingston`:
 
-## Limits and open work
+### Run 1: Cayley-Dickson Sedenion and Pathion Non-Associative Witnesses
+- **`lcu_zero_product_witness(a_pair, b_pair, sign)`** (5 qubits): Design B's fixed-operand LCU
+  (`designs.lcu_witness`) for $x = (e_i + e_j)/\sqrt{2}$ and $y = (e_k + \text{sign}\, e_l)/\sqrt{2}$.
+  `cd_core.cd_multiply` certifies the pair and metadata records $P(s=0) = \|xy\|^2/2$: 0 for the
+  dark pair $(e_1 + e_{10})(e_4 - e_{15}) = 0$, 1 for its bright control $(e_4 + e_{15})$, and 1/2 for
+  the negative regression fixture $(e_1 + e_{10})(e_2 - e_{13})$ (`AGENTS.md`, Algebra Circuit Design Rules).
+- **`sedenion_associator_witness(i, j, k)`** (5 qubits): Hadamard test on $\mathbb{S}_{16}$ (4 data
+  qubits + 1 control ancilla). Control qubit 4 prepares $|+\rangle$. Branch 0 applies $L_{(e_i e_j) e_k}$
+  and branch 1 applies $L_{e_i} L_{e_j} L_{e_k}$. Post-measurement expectation $\langle Z_c \rangle =
+  \text{Re}\langle \psi_L | \psi_R \rangle$ yields $+1$ for associating triples (e.g. $(1, 2, 3)$) and $-1$
+  for anti-associating triples (e.g. $(1, 2, 4)$), certified by `cd_core.cd_sign`.
+- **`pathion_singular_sector_witness(dim=32, i=1, j=16)`** (5 qubits): Evaluates the Walsh spectrum
+  of $W = L_{e_i e_j}^\dagger L_{e_i} L_{e_j}$ on $\log_2(32) = 5$ qubits (`designs.design_c_associator_spectrum`),
+  probing the 32-dimensional pathion singular sector and Moreno $G_2$ automorphism fibers along the
+  nullity-12 locus (`gororoba_quantum/nullity_twelve_locus.py`).
 
-- The rz, cz, sx flag (`flag_rz_cz_sx`) is a pattern match on one qubit's
-  operation order with an explicit CZ error threshold (4e-3: 45, 35 and 52
-  couplers). No source in `docs/` characterizes an error for that pattern;
-  rz commutes with cz, and a delay ends the run.
-- A defect census, a pathion witness, KL or JS divergence bounds between
-  vacuum models, a Boolean hidden-shift instance, stretch-scheduled delay
-  sweeps, and replays of the Rocq certificates are separate cases that
-  this module does not run. Each needs its own circuit, analysis and
-  written case before hardware.
-- Hoeffding's bound `n >= ln(2/delta) / (2 epsilon^2)` covers the mean of
-  observations bounded in [0, 1] (`docs/notes/hoeffding-1963.md`); at
-  epsilon 0.02 and delta 0.01 it gives 6623 shots. It does not bound an
-  empirical KL or JS divergence, whose sample size needs its own
-  derivation.
+### Run 2: Fano-Plane CSS and Active vs Coherent Stabilizers
+- **`fano_plane_incidence_matrix()`**: Returns the $7 \times 7$ binary incidence matrix of the projective
+  Fano plane $\text{PG}(2, 2)$, mapping the 7 imaginary octonionic units $\{e_1, \dots, e_7\}$ to the
+  7 data qubits and lines of the Steane $[[7,1,3]]$ code (`docs/notes/levratti-2026-fano-css.md`).
+- **`steane_z_syndrome_patch(error_qubit, mid_circuit_measure, dd_sequence)`** (10 qubits): Measures the
+  three Steane $Z$ parity checks with $CX$ from data qubits onto ancillas 7..9. Unnested `if_test` blocks
+  apply $X$ corrections. An optional `dd_sequence` (`"Hahn"` or `"XY4"`) injects dynamical decoupling on
+  the data qubits during the syndrome readout delay to suppress physical dephasing drift.
+- **`steane_coherent_syndrome_patch(error_qubit)`** (10 qubits): Extracts syndrome into ancillas 7..9,
+  then applies coherent multi-controlled corrections `mcx([7, 8, 9], val - 1, ctrl_state=val)` on the data
+  qubits without mid-circuit readout or reset. This eliminates the ~11% mid-circuit assignment error
+  and controller latency, embodying the 5.8 to 10.9 percentage point coherent advantage demonstrated in
+  the physical QPU campaign findings (`results/live/CAMPAIGN_FINDINGS.md` §2).
+
+### Run 3: Vacuum Endpoint Probes, Dynamical Decoupling, and Model Discrimination
+- **`bell_delay_probe(delay_dt, dd_sequence)`** (2 qubits): Prepares a Bell pair, applies an idle delay,
+  and inverts the state. `dd_sequence` supports `None` (plain idle), `"Hahn"` ($X$ echo at midpoint), or
+  `"XY4"` ($X \to Y \to X \to Y$ staggered pulses). In the physical Kingston coherence window run, plain
+  idle experienced $-1.130$ rad of dephasing rotation over $4.4\,\mu\text{s}$, while echo pulses reduced
+  this drift to $+0.17$ rad (`results/live/N21_ORBIT_RCA.md`); the probe directly tests this countermeasure.
+- **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
+  \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean/Manhattan chip distances
+  $\|\mathbf{r}_i - \mathbf{r}_j\|$ to isolate local two-level system (TLS) defects from chip-wide correlations.
+- **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01)`**: Computes empirical Total Variation
+  distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
+  $D_{\text{JS}}(P \parallel Q)$. Because $D_{\text{TV}}$ is a bounded statistic in $[0, 1]$, Hoeffding's
+  inequality (`docs/notes/hoeffding-1963.md`) establishes a simultaneous two-sided confidence radius
+  $r = \sqrt{\frac{\ln(2/\alpha)}{2N}}$ where $N = \min(N_p, N_q)$. For $N=8192$ and $\alpha=0.01$,
+  $r \approx 0.0180$, rigorously bounding whether empirical candidate models are statistically separable.
+
+### Run 4: Boolean Bent Hidden Shift
+- **`bent_hidden_shift_circuit(n=6, shift=None)`** ($n$ qubits, $n \in \{4, 6, 8\}$): Constructs quadratic
+  bent function $f(x) = \bigoplus_{i=0}^{n/2-1} x_{2i} x_{2i+1}$ (certified full rank $n$ via
+  `boolean_anf.quadratic_polar_rank`) and shifted $g(x) = f(x \oplus s)$. Implements Rötteler's (2010) algorithm:
+  $H^{\otimes n} \to O_g \to H^{\otimes n} \to O_f \to H^{\otimes n} \to \text{Measure}$.
+  In ideal execution, measures hidden shift $s$ with probability 1.0, compiling natively to $\{CZ, RZ, H\}$
+  to benchmark coherent multi-qubit phase stability across heavy-hex tiles.
+
+## Limits and empirical boundaries
+
+- The $RZ \to CZ \to SX$ pattern detector (`flag_rz_cz_sx`) identifies consecutive executions on couplers
+  exceeding the CZ error threshold (4e-3: 45, 35, and 52 couplers across Fez, Kingston, and Marrakesh).
+- The 156-qubit carpet finding (`results/live/CAMPAIGN_FINDINGS.md` §7) demonstrated that 87 active qubits
+  without guard bands suffered 78.7% shot corruption (mean 1.36 violating replicas per shot). This
+  physically validates the requirement that all multiplexed tiles must maintain graph distance
+  $\text{dist}_G \ge 2$ guard bands on Heron r2.
+

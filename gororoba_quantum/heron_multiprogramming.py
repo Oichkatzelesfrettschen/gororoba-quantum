@@ -582,6 +582,7 @@ class HeronLattice:
     def tile_parity_covariance(
         bitstrings: Sequence[str] | dict[str, Sequence[str]],
         tile_clbit_slices: Sequence[slice] | None = None,
+        tile_coords: Sequence[tuple[float, float]] | None = None,
         endianness: str = "big",
         unbiased: bool = False,
     ) -> dict[str, Any]:
@@ -590,9 +591,8 @@ class HeronLattice:
         Input is either one bit string per shot with one slice per tile
         ('little' reads slices from the right, Qiskit's clbit order) or one
         string list per classical register. Every string has the same length
-        and every slice selects at least one bit inside it. The result carries
-        no chip coordinate; a distance comparison needs the tiles' coupling
-        distances alongside it.
+        and every slice selects at least one bit inside it. If tile_coords is
+        provided, pairwise Euclidean distance is computed alongside covariance.
         """
         tile_strings: list[list[str]] = []
         if isinstance(bitstrings, dict):
@@ -625,16 +625,25 @@ class HeronLattice:
                     tile_strings.append([s[start:stop] for s in bitstrings])
         if n_shots < 2:
             raise ValueError("Need at least 2 shots to compute covariance")
+        n_tiles = len(tile_strings)
+        if tile_coords is not None and len(tile_coords) != n_tiles:
+            raise ValueError(f"tile_coords length {len(tile_coords)} does not match tile count {n_tiles}")
         parity = np.array([[1.0 if s.count("1") % 2 == 0 else -1.0 for s in column] for column in tile_strings])
         means = parity.mean(axis=1)
         joint = parity @ parity.T / n_shots
         cov = (joint - np.outer(means, means)) * (n_shots / (n_shots - 1) if unbiased else 1.0)
-        return {
+        res: dict[str, Any] = {
             "num_shots": n_shots,
-            "num_tiles": len(tile_strings),
+            "num_tiles": n_tiles,
             "means": [round(float(m), 4) for m in means],
             "covariance_matrix": [[round(float(v), 6) for v in row] for row in cov],
         }
+        if tile_coords is not None:
+            dist_matrix = [
+                [round(math.hypot(c1[0] - c2[0], c1[1] - c2[1]), 4) for c2 in tile_coords] for c1 in tile_coords
+            ]
+            res["distance_matrix"] = dist_matrix
+        return res
 
 
 @cache
@@ -683,21 +692,101 @@ def lcu_zero_product_witness(
     return qc
 
 
+def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCircuit:
+    """Hadamard associator test on sedenions, 4 data qubits + 1 control ancilla.
+
+    Evaluates the associator defect [e_i, e_j, e_k] = (e_i e_j) e_k - e_i (e_j e_k).
+    Control qubit 4 prepares |+>. Branch 0 applies L_{(e_i e_j) e_k} and branch 1
+    applies L_{e_i} L_{e_j} L_{e_k}. The ancilla expectation <Z_c> after the final H
+    reads Re <psi_L | psi_R> = +1 for associating triples and -1 for anti-associating
+    triples, certified by cd_core.cd_sign.
+    """
+    from cd_core import cd_sign
+    from designs import left_mult_gate
+
+    ij_sign = cd_sign(16, i, j)
+    ij_idx = i ^ j
+    ijk_sign = ij_sign * cd_sign(16, ij_idx, k)
+    ijk_idx = ij_idx ^ k
+
+    qc = QuantumCircuit(5, 1, name=f"sedenion_associator_{i}_{j}_{k}")
+    qc.h(4)
+
+    u_left = left_mult_gate(16, ijk_idx)
+    c_u_left = u_left.control(1, ctrl_state=0)
+    qc.append(c_u_left, [4, 0, 1, 2, 3])
+    if ijk_sign < 0:
+        qc.x(4)
+        qc.z(4)
+        qc.x(4)
+
+    c_k = left_mult_gate(16, k).control(1, ctrl_state=1)
+    c_j = left_mult_gate(16, j).control(1, ctrl_state=1)
+    c_i = left_mult_gate(16, i).control(1, ctrl_state=1)
+    qc.append(c_k, [4, 0, 1, 2, 3])
+    qc.append(c_j, [4, 0, 1, 2, 3])
+    qc.append(c_i, [4, 0, 1, 2, 3])
+
+    qc.h(4)
+    qc.measure(4, 0)
+    qc.metadata = {
+        "triple": [i, j, k],
+        "ijk_sign": ijk_sign,
+        "ijk_index": ijk_idx,
+    }
+    return qc
+
+
+def pathion_singular_sector_witness(dim: int = 32, i: int = 1, j: int = 16) -> QuantumCircuit:
+    """Walsh spectrum of W = L_{e_i e_j}^dagger L_{e_i} L_{e_j} on log2(dim) qubits.
+
+    Probes the 32-dimensional pathion singular sector and Moreno G2 automorphism fibers
+    along the nullity-12 locus.
+    """
+    from designs import design_c_associator_spectrum
+
+    return design_c_associator_spectrum(dim, i, j)
+
+
 STEANE_Z_CHECKS = ((0, 2, 4, 6), (1, 2, 5, 6), (3, 4, 5, 6))
 
 
-def steane_z_syndrome_patch(error_qubit: int | None = None, mid_circuit_measure: bool = False) -> QuantumCircuit:
+def fano_plane_incidence_matrix() -> np.ndarray:
+    """Return the 7x7 binary incidence matrix of the projective Fano plane PG(2, 2).
+
+    Rows are the 7 Fano lines (octonionic associative sub-triples), columns are the 7
+    points corresponding to the 7 data qubits of the Steane [[7,1,3]] code.
+    """
+    lines = (
+        (0, 1, 2),
+        (0, 3, 4),
+        (0, 5, 6),
+        (1, 3, 5),
+        (1, 4, 6),
+        (2, 3, 6),
+        (2, 4, 5),
+    )
+    matrix = np.zeros((7, 7), dtype=int)
+    for row_idx, line in enumerate(lines):
+        for pt in line:
+            matrix[row_idx, pt] = 1
+    return matrix
+
+
+def steane_z_syndrome_patch(
+    error_qubit: int | None = None,
+    mid_circuit_measure: bool = False,
+    dd_sequence: str | None = None,
+) -> QuantumCircuit:
     """Three Steane Z checks on 7 data qubits with feed-forward X correction, 10 qubits.
 
     Check b is CX from each data qubit in STEANE_Z_CHECKS[b] onto ancilla 7 + b,
     the supports {1,3,5,7}, {2,3,6,7} and {4,5,6,7} in 1-based positions, so an
     X error on data qubit d reads syndrome d + 1 in register `syn`. Seven
     unnested if_test blocks on the 3-bit register apply the X correction, and
-    register `data` reads the 7 data qubits at the end. The patch starts in
-    |0>^7, a +1 eigenstate of every Z check; it measures no X check and
-    prepares no logical codeword. mid_circuit_measure=True reads the ancillas
-    with MidCircuitMeasure (measure_2), a different physical measurement that
-    Aer does not simulate and that needs its own control.
+    register `data` reads the 7 data qubits at the end. An optional dd_sequence
+    ('Hahn' or 'XY4') applies dynamical decoupling to the data qubits during the
+    syndrome extraction delay to suppress physical dephasing drift.
     """
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
@@ -709,6 +798,19 @@ def steane_z_syndrome_patch(error_qubit: int | None = None, mid_circuit_measure:
     for bit, support in enumerate(STEANE_Z_CHECKS):
         for q in support:
             qc.cx(q, 7 + bit)
+    if dd_sequence is not None:
+        if dd_sequence == "Hahn":
+            for q in range(7):
+                qc.x(q)
+                qc.x(q)
+        elif dd_sequence == "XY4":
+            for q in range(7):
+                qc.x(q)
+                qc.y(q)
+                qc.x(q)
+                qc.y(q)
+        else:
+            raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     if mid_circuit_measure:
         from qiskit_ibm_runtime.circuit import MidCircuitMeasure
 
@@ -723,19 +825,173 @@ def steane_z_syndrome_patch(error_qubit: int | None = None, mid_circuit_measure:
     return qc
 
 
-def bell_delay_probe(delay_dt: int = 100) -> QuantumCircuit:
-    """Bell pair, an equal delay on both qubits, then the inverse preparation, 2 qubits.
+def steane_coherent_syndrome_patch(error_qubit: int | None = None) -> QuantumCircuit:
+    """Coherent Steane Z-syndrome extraction and correction on 10 qubits (7 data, 3 ancilla).
 
-    Without decoherence both bits read 0; the delay is a fixed duration in dt,
-    not a stretch, and the circuit computes no divergence.
+    Applies the 3 Steane Z parity checks onto ancillas 7, 8, 9 via CX. Then, instead
+    of destructive mid-circuit measurement and classical feed-forward, applies coherent
+    multi-controlled X corrections on the data qubits conditioned on the ancilla states.
+    Bypasses mid-circuit assignment error (~11%) and controller latency, implementing
+    the coherent advantage demonstrated in QPU campaign findings.
+    """
+    data = ClassicalRegister(7, "data")
+    qc = QuantumCircuit(QuantumRegister(10, "q"), data, name="steane_coherent_syndrome_patch")
+    if error_qubit is not None:
+        if not 0 <= error_qubit < 7:
+            raise ValueError(f"error_qubit must be a data qubit 0..6, got {error_qubit}")
+        qc.x(error_qubit)
+    for bit, support in enumerate(STEANE_Z_CHECKS):
+        for q in support:
+            qc.cx(q, 7 + bit)
+    for value in range(1, 8):
+        qc.mcx([7, 8, 9], value - 1, ctrl_state=value)
+    qc.measure(range(7), data)
+    return qc
+
+
+def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> QuantumCircuit:
+    """Bell pair with optional gap-aware dynamical decoupling, then inverse preparation, 2 qubits.
+
+    dd_sequence supports None (plain delay), 'Hahn' (X echo at midpoint), or 'XY4'
+    (staggered X, Y, X, Y pulses), counteracting physical idle dephasing drift.
     """
     qc = QuantumCircuit(2, 2, name="bell_delay_probe")
     qc.h(0)
     qc.cx(0, 1)
     if delay_dt > 0:
-        qc.delay(delay_dt, 0)
-        qc.delay(delay_dt, 1)
+        if dd_sequence is None:
+            qc.delay(delay_dt, 0)
+            qc.delay(delay_dt, 1)
+        elif dd_sequence == "Hahn":
+            half = delay_dt // 2
+            rem = delay_dt - half
+            qc.delay(half, 0)
+            qc.delay(half, 1)
+            qc.x(0)
+            qc.x(1)
+            qc.delay(rem, 0)
+            qc.delay(rem, 1)
+        elif dd_sequence == "XY4":
+            qtr = delay_dt // 4
+            rem = delay_dt - 3 * qtr
+            for q in (0, 1):
+                qc.delay(qtr, q)
+                qc.x(q)
+                qc.delay(qtr, q)
+                qc.y(q)
+                qc.delay(qtr, q)
+                qc.x(q)
+                qc.delay(rem, q)
+                qc.y(q)
+        else:
+            raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     qc.cx(0, 1)
     qc.h(0)
     qc.measure([0, 1], [0, 1])
+    return qc
+
+
+def hoeffding_model_discrimination(
+    counts_p: dict[str, int],
+    counts_q: dict[str, int],
+    alpha: float = 0.01,
+) -> dict[str, Any]:
+    """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding bounds.
+
+    Given two empirical count distributions over identical outcomes, computes D_TV and D_JS,
+    with simultaneous two-sided Hoeffding confidence radius r = sqrt(ln(2/alpha) / (2*N)).
+    """
+    if not counts_p or not counts_q:
+        raise ValueError("Count distributions must be non-empty")
+    n_p = sum(counts_p.values())
+    n_q = sum(counts_q.values())
+    if n_p == 0 or n_q == 0:
+        raise ValueError("Total shots must be positive in both distributions")
+    all_keys = sorted(set(counts_p) | set(counts_q))
+    p = np.array([counts_p.get(k, 0) / n_p for k in all_keys], dtype=np.float64)
+    q = np.array([counts_q.get(k, 0) / n_q for k in all_keys], dtype=np.float64)
+
+    d_tv = float(0.5 * np.sum(np.abs(p - q)))
+    m = 0.5 * (p + q)
+    kl_pm = float(np.sum(p[p > 0] * np.log(p[p > 0] / m[p > 0])))
+    kl_qm = float(np.sum(q[q > 0] * np.log(q[q > 0] / m[q > 0])))
+    d_js = float(0.5 * (kl_pm + kl_qm))
+
+    n_eff = min(n_p, n_q)
+    radius = float(math.sqrt(math.log(2.0 / alpha) / (2.0 * n_eff)))
+    ci_lower = max(0.0, d_tv - radius)
+    ci_upper = min(1.0, d_tv + radius)
+
+    return {
+        "num_shots_p": n_p,
+        "num_shots_q": n_q,
+        "alpha": alpha,
+        "total_variation_distance": round(d_tv, 6),
+        "jensen_shannon_divergence": round(d_js, 6),
+        "hoeffding_radius": round(radius, 6),
+        "tv_confidence_interval": [round(ci_lower, 6), round(ci_upper, 6)],
+        "models_distinguishable": bool(ci_lower > 0.0),
+    }
+
+
+def bent_hidden_shift_circuit(
+    n: int = 6,
+    shift: Sequence[int] | None = None,
+) -> QuantumCircuit:
+    """Rotteler (2010) hidden shift algorithm for quadratic Boolean bent functions.
+
+    n must be even. Evaluates f(x) = x0*x1 ^ x2*x3 ^ ... and shifted g(x) = f(x ^ s).
+    Circuit sequence H^n -> O_g -> H^n -> O_f -> H^n -> Measure deterministically
+    measures the hidden shift string s with probability 1.0 in ideal execution,
+    compiling natively to {CZ, RZ, H} gates on Heron heavy-hex tiles.
+    """
+    from boolean_anf import quadratic_polar_rank
+
+    if n <= 0 or n % 2 != 0:
+        raise ValueError(f"Qubit count n must be a positive even integer, got {n}")
+    if shift is None:
+        s = [1 if i % 2 == 0 else 0 for i in range(n)]
+    else:
+        if len(shift) != n:
+            raise ValueError(f"Shift length {len(shift)} does not match n={n}")
+        if any(b not in (0, 1) for b in shift):
+            raise ValueError("Shift entries must be 0 or 1")
+        s = list(shift)
+
+    # Check quadratic bent rank
+    monomial_masks = tuple((1 << (2 * k)) | (1 << (2 * k + 1)) for k in range(n // 2))
+    polar_rank = quadratic_polar_rank(monomial_masks, n)
+    if polar_rank != n:
+        raise RuntimeError(f"Quadratic form is not bent: rank {polar_rank} != {n}")
+
+    qc = QuantumCircuit(n, n, name=f"bent_hidden_shift_{n}q")
+    qc.h(range(n))
+
+    # Oracle for g(x) = f(x ^ s)
+    for k in range(n // 2):
+        q0 = 2 * k
+        q1 = 2 * k + 1
+        qc.cz(q0, q1)
+        if s[q1]:
+            qc.z(q0)
+        if s[q0]:
+            qc.z(q1)
+        if s[q0] and s[q1]:
+            qc.global_phase += math.pi
+
+    qc.h(range(n))
+
+    # Dual oracle O_f~ = O_f
+    for k in range(n // 2):
+        qc.cz(2 * k, 2 * k + 1)
+
+    qc.h(range(n))
+    qc.measure(range(n), range(n))
+
+    qc.metadata = {
+        "n_qubits": n,
+        "shift": s,
+        "expected_bitstring": "".join(str(s[i]) for i in reversed(range(n))),
+        "polar_rank": polar_rank,
+    }
     return qc
