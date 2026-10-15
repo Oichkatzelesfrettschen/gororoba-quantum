@@ -31,7 +31,12 @@ ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from heron_multiprogramming import (  # noqa: E402
     HeronLattice,
+    bent_hidden_shift_circuit,
+    fano_plane_incidence_matrix,
+    hoeffding_model_discrimination,
     lcu_zero_product_witness,
+    sedenion_associator_witness,
+    steane_coherent_syndrome_patch,
     steane_z_syndrome_patch,
 )
 
@@ -158,7 +163,21 @@ def self_test() -> None:
     )
     expect_value_error(lambda: lattice.shot_rate_ratio(5e-6, 3e-3), "a delay outside rep_delay_range was accepted")
     require(lcu_zero_product_witness().metadata["p_success"] == 0.0, "the default witness is not the dark pair")
-    print("self-test: guard distances, composer rejections, routing, flag, covariance, delay range and witness hold")
+    require(bent_hidden_shift_circuit(4).metadata["polar_rank"] == 4, "bent hidden shift polar rank mismatch")
+    require(fano_plane_incidence_matrix().shape == (7, 7), "Fano plane matrix shape mismatch")
+    require(steane_coherent_syndrome_patch(1).num_qubits == 10, "coherent Steane patch qubit count mismatch")
+    require(
+        hoeffding_model_discrimination({"0": 8000}, {"1": 8000}, alphabet_size=2)["models_distinguishable"],
+        "Hoeffding model discrimination failed",
+    )
+    coords_cov = HeronLattice.tile_parity_covariance(
+        ["00", "11"],
+        [slice(0, 1), slice(1, 2)],
+        tile_coords=[(0.0, 0.0), (3.0, 4.0)],
+    )
+    require(coords_cov["distance_matrix"][0][1] == 5.0, "coordinate distance mismatch")
+    require(sedenion_associator_witness(1, 2, 4).num_qubits == 5, "sedenion witness qubit count mismatch")
+    print("self-test: guard distances, composer, routing, flag, covariance, and elevated runs hold")
 
 
 def main(argv: list[str] | None = None) -> int:

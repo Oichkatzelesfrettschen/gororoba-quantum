@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import math
 import sys
 import unittest
 from pathlib import Path
@@ -18,7 +19,14 @@ from heron_multiprogramming import (  # noqa: E402
     DisjointTile,
     HeronLattice,
     bell_delay_probe,
+    bent_hidden_shift_circuit,
+    dd_window,
+    fano_plane_incidence_matrix,
+    hoeffding_model_discrimination,
     lcu_zero_product_witness,
+    pathion_associator_spectrum_witness,
+    sedenion_associator_witness,
+    steane_coherent_syndrome_patch,
     steane_z_syndrome_patch,
 )
 
@@ -37,6 +45,17 @@ def edge_circuit(tile: DisjointTile, flip: bool) -> QuantumCircuit:
         qc.x(position[b])
     qc.measure(position[b], 1)
     return qc
+
+
+def detuned(circuit: QuantumCircuit, rate: float) -> QuantumCircuit:
+    """circuit with every delay of d dt replaced by RZ(rate * d) on its qubit."""
+    out = circuit.copy_empty_like()
+    for inst in circuit.data:
+        if inst.operation.name == "delay":
+            out.rz(rate * inst.operation.duration, inst.qubits[0])
+        else:
+            out.append(inst.operation, inst.qubits, inst.clbits)
+    return out
 
 
 class TestHeronMultiprogramming(unittest.TestCase):
@@ -134,6 +153,8 @@ class TestHeronMultiprogramming(unittest.TestCase):
         a, b = tiles[0].internal_edges[0]
         good.cz(qubits.index(a), qubits.index(b))
         self.assertEqual(self.lattice.build_multiplexed_pub([good], tiles[:1]).count_ops()["cz"], 1)
+        with self.assertRaises(ValueError):
+            self.lattice.build_multiplexed_pub([good], tiles[:1], min_buffer_distance=0)
 
     def test_routed_witnesses_compose_and_run(self) -> None:
         tiles = self.lattice.find_disjoint_tiles(k=10, max_tiles=2)
@@ -165,6 +186,23 @@ class TestHeronMultiprogramming(unittest.TestCase):
         for qc in same:
             qc.rx(shared, 0)
         self.assertEqual(self.lattice.build_multiplexed_pub(same, tiles).num_parameters, 1)
+
+        c_pre = QuantumCircuit(5)
+        c_pre.rx(Parameter("theta"), 0)
+        c_pre.rx(Parameter("tile_1_theta"), 1)
+        c_other = QuantumCircuit(5)
+        c_other.rx(Parameter("theta"), 0)
+        wide_avoid = self.lattice.build_multiplexed_pub([c_pre, c_other], tiles)
+        self.assertEqual(sorted(p.name for p in wide_avoid.parameters), ["theta", "tile_1_theta", "tile_1_theta_1"])
+
+        c_first = QuantumCircuit(5)
+        c_first.rx(Parameter("theta"), 0)
+        c_second = QuantumCircuit(5)
+        c_second.rx(Parameter("theta"), 0)
+        c_second.rx(Parameter("tile_1_theta"), 1)
+        wide_same_circ = self.lattice.build_multiplexed_pub([c_first, c_second], tiles)
+        self.assertEqual(sorted(p.name for p in wide_same_circ.parameters), ["theta", "tile_1_theta", "tile_1_theta_1"])
+
         pub = HeronLattice.pack_parameter_sweep_pub(wide, [[0.0, 0.5], [0.5, 1.0], [1.0, 1.5]], shots=2048)
         self.assertEqual(pub[1].shape, (3, 2))
         for values in ([[0.0, 0.5, 1.0]], [[float("nan"), 0.0]], [[0.0, 0.0]][:0]):
@@ -220,6 +258,230 @@ class TestHeronMultiprogramming(unittest.TestCase):
         for strings, slices in ((["0", "0"], [slice(0, 5)]), (["00", "0"], [slice(0, 1)]), (["00"], [slice(0, 1)])):
             with self.assertRaises(ValueError):
                 HeronLattice.tile_parity_covariance(strings, slices)
+        with_coords = HeronLattice.tile_parity_covariance(
+            ["00", "11"],
+            [slice(0, 1), slice(1, 2)],
+            tile_coords=[(0.0, 0.0), (3.0, 4.0)],
+        )
+        self.assertEqual(with_coords["distance_matrix"][0][1], 5.0)
+        with self.assertRaises(ValueError):
+            HeronLattice.tile_parity_covariance(["00", "11"], [slice(0, 1), slice(1, 2)], tile_coords=[(0.0, 0.0)])
+        with self.assertRaises(ValueError):
+            HeronLattice.tile_parity_covariance(["00", "11"], [slice(0, 1)], endianness="invalid")
+        with self.assertRaises(ValueError):
+            HeronLattice.tile_parity_covariance(["00", "11"], tile_clbit_slices=[])
+
+    def test_sedenion_and_pathion_witnesses(self) -> None:
+        # Non-associating triple (1, 2, 4): P(anc=1) = 1.0
+        qc_nonassoc = sedenion_associator_witness(1, 2, 4)
+        self.assertEqual(qc_nonassoc.num_qubits, 5)
+        sv1 = Statevector(qc_nonassoc.remove_final_measurements(inplace=False))
+        self.assertAlmostEqual(float(sv1.probabilities([4])[1]), 1.0)
+
+        # Associating triple (1, 2, 3): P(anc=0) = 1.0
+        qc_assoc = sedenion_associator_witness(1, 2, 3)
+        sv2 = Statevector(qc_assoc.remove_final_measurements(inplace=False))
+        self.assertAlmostEqual(float(sv2.probabilities([4])[0]), 1.0)
+
+        # Pathion associator spectrum witness on 5 qubits
+        qc_pathion = pathion_associator_spectrum_witness(32, 1, 16)
+        self.assertEqual(qc_pathion.num_qubits, 5)
+
+        with self.assertRaises(ValueError):
+            sedenion_associator_witness(16, 2, 4)
+        with self.assertRaises(ValueError):
+            sedenion_associator_witness(-1, 2, 4)
+        with self.assertRaises(ValueError):
+            pathion_associator_spectrum_witness(dim=15, i=1, j=16)
+        with self.assertRaises(ValueError):
+            pathion_associator_spectrum_witness(dim=32, i=32, j=16)
+
+    def test_steane_coherent_and_fano_plane(self) -> None:
+        # All 7 single-qubit errors correctly and coherently corrected
+        for err in range(7):
+            qc_coh = steane_coherent_syndrome_patch(err)
+            self.assertEqual(qc_coh.num_qubits, 10)
+            sv_coh = Statevector(qc_coh.remove_final_measurements(inplace=False))
+            self.assertAlmostEqual(float(sv_coh.probabilities(range(7))[0]), 1.0)
+
+        qc_coh_none = steane_coherent_syndrome_patch(None)
+        sv_coh_none = Statevector(qc_coh_none.remove_final_measurements(inplace=False))
+        self.assertAlmostEqual(float(sv_coh_none.probabilities(range(7))[0]), 1.0)
+        with self.assertRaises(ValueError):
+            steane_coherent_syndrome_patch(7)
+        with self.assertRaises(ValueError):
+            steane_coherent_syndrome_patch(-1)
+        with self.assertRaises(ValueError):
+            steane_z_syndrome_patch(1, idle_delay_dt=-10)
+
+        # Fano plane PG(2,2) incidence matrix
+        fano = fano_plane_incidence_matrix()
+        self.assertEqual(fano.shape, (7, 7))
+        self.assertTrue((fano.sum(axis=1) == 3).all())
+        self.assertTrue((fano.sum(axis=0) == 3).all())
+
+        # Dynamical decoupling on Steane Z syndrome patch with CPMG-2 and XY4
+        sim = AerSimulator()
+        for dd in ("CPMG2", "XY4"):
+            for err_target in (None, 1):
+                qc = steane_z_syndrome_patch(err_target, dd_sequence=dd, idle_delay_dt=100)
+                counts = sim.run(qc, shots=50, seed_simulator=42).result().get_counts()
+                expected_syn = 0 if err_target is None else err_target + 1
+                self.assertEqual(counts, {f"0000000 {expected_syn:03b}": 50})
+
+        # Preserves idle_delay_dt=0 without forcing delay insertion
+        qc_zero_delay = steane_z_syndrome_patch(1, dd_sequence="CPMG2", idle_delay_dt=0)
+        self.assertEqual(qc_zero_delay.count_ops().get("delay", 0), 0)
+        self.assertEqual(qc_zero_delay.count_ops().get("x", 1), 1)
+
+        qc_cpmg = steane_z_syndrome_patch(1, dd_sequence="CPMG2", idle_delay_dt=100)
+        self.assertEqual(qc_cpmg.count_ops().get("delay", 0), 21)
+        self.assertEqual(qc_cpmg.count_ops().get("x", 0), 15)  # 2 X per 7 data qubits + 1 error
+
+        qc_xy4 = steane_z_syndrome_patch(1, dd_sequence="XY4", idle_delay_dt=100)
+        self.assertEqual(qc_xy4.count_ops().get("delay", 0), 35)
+        self.assertEqual(qc_xy4.count_ops().get("y", 0), 14)  # 2 Y per 7 data qubits
+        with self.assertRaises(ValueError):
+            steane_z_syndrome_patch(1, dd_sequence="invalid_dd")
+        with self.assertRaises(ValueError):
+            steane_z_syndrome_patch(1, dd_sequence="Hahn")
+
+    def test_bell_delay_probe_with_dd(self) -> None:
+        for dd in (None, "Hahn", "CPMG2", "XY4"):
+            for quadrature, ideal in (("x", 1.0), ("y", 0.5)):
+                qc = bell_delay_probe(100, dd_sequence=dd, quadrature=quadrature)
+                self.assertEqual(qc.num_qubits, 2)
+                sv = Statevector(qc.remove_final_measurements(inplace=False))
+                self.assertAlmostEqual(float(sv.probabilities()[0]), ideal)
+        with self.assertRaises(ValueError):
+            bell_delay_probe(100, quadrature="z")
+        with self.assertRaises(ValueError):
+            bell_delay_probe(-1)
+        with self.assertRaises(ValueError):
+            bell_delay_probe(0, dd_sequence="invalid_dd")
+        with self.assertRaises(ValueError):
+            bell_delay_probe(100, dd_sequence="invalid_dd")
+
+    def test_dd_window_refocuses_a_static_detuning(self) -> None:
+        # Each delay becomes a Z rotation proportional to its length, a static detuning;
+        # an X-basis readout of |+> sees the phase that a Z-basis readout cannot.
+        for dd, refocused in ((None, False), ("Hahn", True), ("CPMG2", True), ("XY4", True)):
+            qc = QuantumCircuit(1)
+            qc.h(0)
+            dd_window(qc, [0], dd, 400)
+            qc.h(0)
+            p0 = float(Statevector(detuned(qc, 0.003)).probabilities()[0])
+            if refocused:
+                self.assertAlmostEqual(p0, 1.0)
+            else:
+                self.assertAlmostEqual(p0, math.cos(0.003 * 400 / 2) ** 2)
+
+    def test_bell_quadratures_separate_contrast_and_rotation(self) -> None:
+        # A static detuning on both qubits gives |11> the phase theta = 2 * rate * delay against |00>:
+        # quadrature x returns (1 + cos theta)/2 and y returns (1 + sin theta)/2, while CPMG-2 refocuses it.
+        theta, delay = 0.7, 100
+        for dd, effective in ((None, theta), ("CPMG2", 0.0)):
+            for quadrature, law in (("x", math.cos), ("y", math.sin)):
+                qc = bell_delay_probe(delay, dd_sequence=dd, quadrature=quadrature).remove_final_measurements(
+                    inplace=False
+                )
+                p00 = float(Statevector(detuned(qc, theta / (2 * delay))).probabilities()[0])
+                self.assertAlmostEqual(p00, (1 + law(effective)) / 2)
+
+    def test_routed_steane_dd_keeps_pulses_and_frame(self) -> None:
+        # Explicit DD pulses survive tile routing in order with their dt intervals, and the routed
+        # circuit still corrects a single X error and restores the computational frame.
+        tile = self.lattice.find_disjoint_tiles(k=10, max_tiles=1)[0]
+        routed = self.lattice.route_to_tile(steane_z_syndrome_patch(2, dd_sequence="CPMG2", idle_delay_dt=400), tile)
+        windows = 0
+        for qubit in routed.qubits:
+            line = [
+                (inst.operation.name, getattr(inst.operation, "duration", None))
+                for inst in routed.data
+                if qubit in inst.qubits and inst.operation.name in ("delay", "x", "sx", "rz", "cz", "measure")
+            ]
+            for start in range(len(line) - 4):
+                names = [name for name, _ in line[start : start + 5]]
+                if names == ["delay", "x", "delay", "x", "delay"]:
+                    self.assertEqual([line[start + k][1] for k in (0, 2, 4)], [100, 200, 100])
+                    windows += 1
+        self.assertEqual(windows, 7)
+        counts = AerSimulator().run(routed, shots=40, seed_simulator=11).result().get_counts()
+        self.assertEqual(counts, {"0000000 011": 40})
+
+    def test_hoeffding_model_discrimination(self) -> None:
+        p = {"0": 8000, "1": 192}
+        q = {"0": 1000, "1": 7192}
+        res = hoeffding_model_discrimination(p, q, alpha=0.01, alphabet_size=2)
+        self.assertEqual(hoeffding_model_discrimination(p, q, 0.01, alphabet_size=2), res)
+        self.assertTrue(res["models_distinguishable"])
+        self.assertGreater(res["total_variation_distance"], 0.8)
+        self.assertLess(res["hoeffding_radius"], 0.05)
+        self.assertGreater(res["tv_confidence_interval"][0], 0.0)
+
+        # Independent samples from the same underlying distribution are not distinguishable
+        sample_a = {"00": 1040, "01": 1010, "10": 1030, "11": 1016}
+        sample_b = {"00": 1005, "01": 1050, "10": 1015, "11": 1026}
+        same_source = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=4)
+        self.assertFalse(same_source["models_distinguishable"])
+        self.assertEqual(same_source["tv_confidence_interval"][0], 0.0)
+        self.assertGreater(same_source["multinomial_tv_radius"], same_source["total_variation_distance"])
+
+        # alphabet_size contracts
+        wide_a = {"0000" + key: count for key, count in sample_a.items()}
+        wide_b = {"0000" + key: count for key, count in sample_b.items()}
+        res_alpha = hoeffding_model_discrimination(wide_a, wide_b, alpha=0.01, alphabet_size=64)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=64)
+        self.assertEqual(res_alpha["k_bins"], 64)
+        self.assertGreater(res_alpha["multinomial_tv_radius"], same_source["multinomial_tv_radius"])
+        sparse_counts = {"00": 4096}
+        sparse_support = hoeffding_model_discrimination(sparse_counts, sparse_counts, alphabet_size=4)
+        observed_only_support = hoeffding_model_discrimination(sparse_counts, sparse_counts, alphabet_size=1)
+        self.assertEqual(sparse_support["k_bins"], 4)
+        self.assertGreater(sparse_support["multinomial_tv_radius"], observed_only_support["multinomial_tv_radius"])
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=2)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=0)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=-5)
+
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination({}, q, alphabet_size=2)
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination(p, q)  # type: ignore[call-arg]
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alpha=0.0, alphabet_size=2)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alpha=1.0, alphabet_size=2)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alpha=True, alphabet_size=2)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alphabet_size=True)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination({"0": -1}, q, alphabet_size=2)
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination({"0": 1.5}, q, alphabet_size=2)  # type: ignore[dict-item]
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination({"0": True}, q, alphabet_size=2)
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination([1, 2], q, alphabet_size=2)  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination({"0": 1, "00": 2}, q, alphabet_size=4)
+
+    def test_bent_hidden_shift_circuit(self) -> None:
+        for n in (4, 6):
+            s = [1 if i % 2 == 0 else 0 for i in range(n)]
+            qc = bent_hidden_shift_circuit(n, s)
+            self.assertEqual(qc.num_qubits, n)
+            sv = Statevector(qc.remove_final_measurements(inplace=False))
+            expected = "".join(str(s[i]) for i in reversed(range(n)))
+            self.assertAlmostEqual(float(sv.probabilities_dict()[expected]), 1.0)
+        with self.assertRaises(ValueError):
+            bent_hidden_shift_circuit(5)  # Odd n must raise
+        with self.assertRaises(ValueError):
+            bent_hidden_shift_circuit(4, shift=[1, 0])  # Length mismatch
 
 
 if __name__ == "__main__":

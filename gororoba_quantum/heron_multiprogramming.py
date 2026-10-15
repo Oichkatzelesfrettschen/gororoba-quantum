@@ -9,6 +9,19 @@ one circuit per tile into one wide circuit, rejecting any two-qubit gate that
 lands off its tile's induced edges. Duration and shot-rate figures are
 arithmetic on Target values; nothing here schedules a circuit on a backend
 or measures a throughput.
+
+Primary research literature grounding:
+- Spatial multiprogramming & crosstalk guard bands: Sarovar et al. (2020, arXiv:1908.09855),
+  Niu & Todri-Sanial (2021, arXiv:2102.05321; 2021, arXiv:2112.00387), Gambetta et al.
+  (2012, arXiv:1204.6308), Das et al. (2019, MICRO-52).
+- Non-associative Cayley-Dickson witnesses & singular sectors: Freedman, Shokrian-Zini & Wang
+  (2019, arXiv:1811.08580), Biss, Christensen, Dugger & Isaksen (2009, arXiv:0905.2987).
+- Octonionic Fano-plane CSS & dynamic circuits: Levratti (2026, fano-css & active-stabilizers),
+  Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021, arXiv:2103.03008).
+- Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Bretagnolle-Huber-Carol
+  multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438).
+- Boolean bent hidden shifts: Roetteler (2008, arXiv:0811.3208; 2009,
+  arXiv:0911.4724), Gavinsky, Roetteler & Roland (2011, arXiv:1103.3017).
 """
 
 from __future__ import annotations
@@ -27,6 +40,10 @@ import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
 from qiskit.circuit import Clbit, Parameter, Qubit
 from qiskit.transpiler import CouplingMap
+
+from boolean_anf import quadratic_polar_rank
+from cd_core import basis, cd_multiply, triple_sign
+from designs import design_c_associator_spectrum, lcu_witness, left_mult_gate
 
 HERON_BASIS = ("cz", "rz", "sx", "x")
 ROUTING_SEED = 20261015
@@ -452,6 +469,8 @@ class HeronLattice:
         Parameter object is renamed tile_<k>_<name>; one Parameter object shared
         across tiles stays one parameter.
         """
+        if min_buffer_distance < 1:
+            raise ValueError(f"min_buffer_distance must be at least 1, got {min_buffer_distance}")
         if len(tile_circuits) != len(tiles):
             raise ValueError(f"Circuit count {len(tile_circuits)} must match tile count {len(tiles)}")
         closest = self.min_tile_distance(tiles)
@@ -472,11 +491,19 @@ class HeronLattice:
                     raise ValueError(
                         f"tile {tile.tile_id}: {name} on {physical[a]}, {physical[b]} is not an induced coupler"
                     )
+            reserved_names = set(names.keys()) | {p.name for p in circ.parameters}
             renames: dict[Parameter, Parameter] = {}
             for param in circ.parameters:
                 owner = names.get(param.name)
                 if owner is not None and owner != param:
-                    renames[param] = Parameter(f"tile_{tile_idx}_{param.name}")
+                    candidate = f"tile_{tile_idx}_{param.name}"
+                    suffix = 1
+                    while candidate in reserved_names:
+                        candidate = f"tile_{tile_idx}_{param.name}_{suffix}"
+                        suffix += 1
+                    new_param = Parameter(candidate)
+                    renames[param] = new_param
+                    reserved_names.add(candidate)
             placed = circ.assign_parameters(renames) if renames else circ
             for param in placed.parameters:
                 names.setdefault(param.name, param)
@@ -582,6 +609,7 @@ class HeronLattice:
     def tile_parity_covariance(
         bitstrings: Sequence[str] | dict[str, Sequence[str]],
         tile_clbit_slices: Sequence[slice] | None = None,
+        tile_coords: Sequence[tuple[float, float]] | None = None,
         endianness: str = "big",
         unbiased: bool = False,
     ) -> dict[str, Any]:
@@ -590,10 +618,11 @@ class HeronLattice:
         Input is either one bit string per shot with one slice per tile
         ('little' reads slices from the right, Qiskit's clbit order) or one
         string list per classical register. Every string has the same length
-        and every slice selects at least one bit inside it. The result carries
-        no chip coordinate; a distance comparison needs the tiles' coupling
-        distances alongside it.
+        and every slice selects at least one bit inside it. If tile_coords is
+        provided, pairwise Euclidean distance is computed alongside covariance.
         """
+        if endianness not in ("big", "little"):
+            raise ValueError(f"endianness must be 'big' or 'little', got '{endianness}'")
         tile_strings: list[list[str]] = []
         if isinstance(bitstrings, dict):
             if not bitstrings:
@@ -623,18 +652,29 @@ class HeronLattice:
                     tile_strings.append([s[width - stop : width - start] for s in bitstrings])
                 else:
                     tile_strings.append([s[start:stop] for s in bitstrings])
+        if not tile_strings:
+            raise ValueError("At least one tile is required")
         if n_shots < 2:
             raise ValueError("Need at least 2 shots to compute covariance")
+        n_tiles = len(tile_strings)
+        if tile_coords is not None and len(tile_coords) != n_tiles:
+            raise ValueError(f"tile_coords length {len(tile_coords)} does not match tile count {n_tiles}")
         parity = np.array([[1.0 if s.count("1") % 2 == 0 else -1.0 for s in column] for column in tile_strings])
         means = parity.mean(axis=1)
         joint = parity @ parity.T / n_shots
         cov = (joint - np.outer(means, means)) * (n_shots / (n_shots - 1) if unbiased else 1.0)
-        return {
+        res: dict[str, Any] = {
             "num_shots": n_shots,
-            "num_tiles": len(tile_strings),
+            "num_tiles": n_tiles,
             "means": [round(float(m), 4) for m in means],
             "covariance_matrix": [[round(float(v), 6) for v in row] for row in cov],
         }
+        if tile_coords is not None:
+            dist_matrix = [
+                [round(math.hypot(c1[0] - c2[0], c1[1] - c2[1]), 4) for c2 in tile_coords] for c1 in tile_coords
+            ]
+            res["distance_matrix"] = dist_matrix
+        return res
 
 
 @cache
@@ -664,9 +704,6 @@ def lcu_zero_product_witness(
     carries P(s = 0) = ||x y||^2 / 2, which is 0 for the default dark pair
     (e1 + e10)(e4 - e15) = 0 and 1 for its bright control at sign +1.
     """
-    from cd_core import basis, cd_multiply
-    from designs import lcu_witness
-
     if sign not in (1, -1):
         raise ValueError(f"sign must be +1 or -1, got {sign}")
     (i, j), (k, el) = a_pair, b_pair
@@ -683,22 +720,169 @@ def lcu_zero_product_witness(
     return qc
 
 
+def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCircuit:
+    """Hadamard associator test on sedenions, 4 data qubits + 1 control ancilla.
+
+    Evaluates the associator defect [e_i, e_j, e_k] = (e_i e_j) e_k - e_i (e_j e_k).
+    Control qubit 4 prepares |+>. Branch 0 applies L_{(e_i e_j) e_k} and branch 1
+    applies L_{e_i} L_{e_j} L_{e_k}. The ancilla expectation <Z_c> after the final H
+    reads Re <psi_L | psi_R> = +1 for associating triples and -1 for anti-associating
+    triples, certified by cd_core.triple_sign.
+    """
+    for idx, name in ((i, "i"), (j, "j"), (k, "k")):
+        if not 0 <= idx < 16:
+            raise ValueError(f"Sedenion index {name} must be in range 0..15, got {idx}")
+    left_sign, right_sign = triple_sign(16, i, j, k)
+    ijk_idx = (i ^ j) ^ k
+
+    qc = QuantumCircuit(5, 1, name=f"sedenion_associator_{i}_{j}_{k}")
+    qc.h(4)
+
+    u_left = left_mult_gate(16, ijk_idx)
+    c_u_left = u_left.control(1, ctrl_state=0)
+    qc.append(c_u_left, [4, 0, 1, 2, 3])
+    if left_sign < 0:
+        qc.x(4)
+        qc.z(4)
+        qc.x(4)
+
+    c_k = left_mult_gate(16, k).control(1, ctrl_state=1)
+    c_j = left_mult_gate(16, j).control(1, ctrl_state=1)
+    c_i = left_mult_gate(16, i).control(1, ctrl_state=1)
+    qc.append(c_k, [4, 0, 1, 2, 3])
+    qc.append(c_j, [4, 0, 1, 2, 3])
+    qc.append(c_i, [4, 0, 1, 2, 3])
+
+    qc.h(4)
+    qc.measure(4, 0)
+    qc.metadata = {
+        "triple": [i, j, k],
+        "left_sign": left_sign,
+        "right_sign": right_sign,
+        "associates": bool(left_sign == right_sign),
+        "ijk_sign": left_sign,
+        "ijk_index": ijk_idx,
+    }
+    return qc
+
+
+def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) -> QuantumCircuit:
+    """Design C's Walsh spectrum of W = L_{e_i e_j}^dagger L_{e_i} L_{e_j} on log2(dim) qubits.
+
+    Applies the three left-multiplication blocks of W on a uniform superposition
+    H^n |0>^n, followed by H^n before measurement to turn W's diagonal phase into
+    a bitstring distribution. For dim=32, (1, 16) is the five-qubit pathion
+    exemplar from designs.SPECTRUM_EXEMPLARS.
+    """
+    if dim <= 0 or (dim & (dim - 1)) != 0:
+        raise ValueError(f"dim must be a positive power of 2, got {dim}")
+    if not 0 <= i < dim:
+        raise ValueError(f"Basis index i must be in range 0..{dim - 1}, got {i}")
+    if not 0 <= j < dim:
+        raise ValueError(f"Basis index j must be in range 0..{dim - 1}, got {j}")
+    return design_c_associator_spectrum(dim, i, j)
+
+
 STEANE_Z_CHECKS = ((0, 2, 4, 6), (1, 2, 5, 6), (3, 4, 5, 6))
+DD_SEQUENCES = (None, "Hahn", "CPMG2", "XY4")
 
 
-def steane_z_syndrome_patch(error_qubit: int | None = None, mid_circuit_measure: bool = False) -> QuantumCircuit:
+def dd_window(qc: QuantumCircuit, qubits: Sequence[int], sequence: str | None, delay_dt: int) -> None:
+    """Fill a delay_dt idle on each qubit with the named decoupling sequence, in dt.
+
+    None idles; Hahn is t/2, X, t/2 (product X); CPMG2 is t/4, X, t/2, X, t/4
+    (product I); XY4 is t/8, X, t/4, Y, t/4, X, t/4, Y, rest (product -I). The
+    delays on each qubit sum to delay_dt. Ideal pulses refocus a static Z
+    detuning in every sequence but None; a sequence with an odd number of X
+    leaves the frame flipped, which the caller undoes or forbids.
+    """
+    if sequence not in DD_SEQUENCES:
+        raise ValueError(f"Unsupported dd_sequence '{sequence}'")
+    if delay_dt < 0:
+        raise ValueError(f"delay_dt must be non-negative, got {delay_dt}")
+    if delay_dt == 0:
+        return
+    for q in qubits:
+        if sequence is None:
+            qc.delay(delay_dt, q)
+        elif sequence == "Hahn":
+            half = delay_dt // 2
+            qc.delay(half, q)
+            qc.x(q)
+            qc.delay(delay_dt - half, q)
+        elif sequence == "CPMG2":
+            tau_4, tau_2 = delay_dt // 4, delay_dt // 2
+            qc.delay(tau_4, q)
+            qc.x(q)
+            qc.delay(tau_2, q)
+            qc.x(q)
+            qc.delay(delay_dt - tau_4 - tau_2, q)
+        else:
+            tau_8, tau_4 = delay_dt // 8, delay_dt // 4
+            qc.delay(tau_8, q)
+            qc.x(q)
+            qc.delay(tau_4, q)
+            qc.y(q)
+            qc.delay(tau_4, q)
+            qc.x(q)
+            qc.delay(tau_4, q)
+            qc.y(q)
+            qc.delay(delay_dt - tau_8 - 3 * tau_4, q)
+
+
+def fano_plane_incidence_matrix() -> np.ndarray:
+    """Return the 7x7 binary incidence matrix of the projective Fano plane PG(2, 2).
+
+    Rows are the 7 Fano lines (octonionic associative sub-triples), columns are the 7
+    points corresponding to the 7 data qubits of the Steane [[7,1,3]] code.
+    """
+    lines = (
+        (0, 1, 2),
+        (0, 3, 4),
+        (0, 5, 6),
+        (1, 3, 5),
+        (1, 4, 6),
+        (2, 3, 6),
+        (2, 4, 5),
+    )
+    matrix = np.zeros((7, 7), dtype=int)
+    for row_idx, line in enumerate(lines):
+        for pt in line:
+            matrix[row_idx, pt] = 1
+    return matrix
+
+
+def steane_z_syndrome_patch(
+    error_qubit: int | None = None,
+    mid_circuit_measure: bool = False,
+    dd_sequence: str | None = None,
+    idle_delay_dt: int = 0,
+) -> QuantumCircuit:
     """Three Steane Z checks on 7 data qubits with feed-forward X correction, 10 qubits.
 
     Check b is CX from each data qubit in STEANE_Z_CHECKS[b] onto ancilla 7 + b,
     the supports {1,3,5,7}, {2,3,6,7} and {4,5,6,7} in 1-based positions, so an
     X error on data qubit d reads syndrome d + 1 in register `syn`. Seven
     unnested if_test blocks on the 3-bit register apply the X correction, and
-    register `data` reads the 7 data qubits at the end. The patch starts in
-    |0>^7, a +1 eigenstate of every Z check; it measures no X check and
-    prepares no logical codeword. mid_circuit_measure=True reads the ancillas
-    with MidCircuitMeasure (measure_2), a different physical measurement that
-    Aer does not simulate and that needs its own control.
+    register `data` reads the 7 data qubits at the end.
+
+    idle_delay_dt > 0 inserts an idle on the data qubits after the parity CXs,
+    filled by dd_window with dd_sequence 'CPMG2' (product I) or 'XY4' (product
+    -I); Hahn is refused because one X on all seven data qubits is a transversal
+    logical X. The patch starts in |0>^7 and reads only Z, so it tests bit-flip
+    syndrome extraction and that the DD block restores the computational frame;
+    a phase error on these Z eigenstates leaves every bit unchanged, so the
+    patch is not a dephasing or logical-coherence experiment.
     """
+    if idle_delay_dt < 0:
+        raise ValueError(f"idle_delay_dt must be non-negative, got {idle_delay_dt}")
+    if dd_sequence == "Hahn":
+        raise ValueError(
+            "dd_sequence='Hahn' (single-pulse echo) is unsupported on Steane data qubits "
+            "because transversal X flips |0_L> to |1_L>; use dd_sequence='CPMG2'"
+        )
+    if dd_sequence not in DD_SEQUENCES:
+        raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
     qc = QuantumCircuit(QuantumRegister(10, "q"), syn, data, name="steane_z_syndrome_patch")
@@ -709,6 +893,9 @@ def steane_z_syndrome_patch(error_qubit: int | None = None, mid_circuit_measure:
     for bit, support in enumerate(STEANE_Z_CHECKS):
         for q in support:
             qc.cx(q, 7 + bit)
+
+    dd_window(qc, range(7), dd_sequence, idle_delay_dt)
+
     if mid_circuit_measure:
         from qiskit_ibm_runtime.circuit import MidCircuitMeasure
 
@@ -723,19 +910,209 @@ def steane_z_syndrome_patch(error_qubit: int | None = None, mid_circuit_measure:
     return qc
 
 
-def bell_delay_probe(delay_dt: int = 100) -> QuantumCircuit:
-    """Bell pair, an equal delay on both qubits, then the inverse preparation, 2 qubits.
+def steane_coherent_syndrome_patch(error_qubit: int | None = None) -> QuantumCircuit:
+    """Coherent Steane Z-syndrome extraction and correction on 10 qubits (7 data, 3 ancilla).
 
-    Without decoherence both bits read 0; the delay is a fixed duration in dt,
-    not a stretch, and the circuit computes no divergence.
+    Applies the 3 Steane Z parity checks onto ancillas 7, 8, 9 via CX. Then, instead
+    of destructive mid-circuit measurement and classical feed-forward, applies coherent
+    multi-controlled X corrections on the data qubits conditioned on ancilla states via
+    mcx([7, 8, 9], value - 1, ctrl_state=value).
+
+    Corrects single X errors on data state |0>^7 coherently without mid-circuit readout
+    or reset, an ideal measurement-free correction map; it prepares no logical codeword
+    and measures no X check.
     """
-    qc = QuantumCircuit(2, 2, name="bell_delay_probe")
+    data = ClassicalRegister(7, "data")
+    qc = QuantumCircuit(QuantumRegister(10, "q"), data, name="steane_coherent_syndrome_patch")
+    if error_qubit is not None:
+        if not 0 <= error_qubit < 7:
+            raise ValueError(f"error_qubit must be a data qubit 0..6, got {error_qubit}")
+        qc.x(error_qubit)
+    for bit, support in enumerate(STEANE_Z_CHECKS):
+        for q in support:
+            qc.cx(q, 7 + bit)
+    for value in range(1, 8):
+        qc.mcx([7, 8, 9], value - 1, ctrl_state=value)
+    qc.measure(range(7), data)
+    return qc
+
+
+def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None, quadrature: str = "x") -> QuantumCircuit:
+    """Bell pair, a delay_dt idle filled by dd_window, then the inverse preparation, 2 qubits.
+
+    With the idle acting as (|00> + V e^{i theta} |11>)/sqrt2 on the pair, the
+    return probability P(00) is (1 + V cos theta)/2 for quadrature 'x', so one
+    value cannot separate a contrast loss V from a rotation theta; quadrature
+    'y' applies Sdg to qubit 0 before the inverse and reads (1 + V sin theta)/2,
+    and the pair of quadratures identifies both. dd_sequence is None, 'Hahn',
+    'CPMG2' or 'XY4' (dd_window); X on both qubits maps |00> + |11> to itself,
+    so every sequence restores the ideal pair. A proposed echo testbed; it
+    encodes no measured rotation.
+    """
+    if delay_dt < 0:
+        raise ValueError(f"delay_dt must be non-negative, got {delay_dt}")
+    if dd_sequence not in DD_SEQUENCES:
+        raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
+    if quadrature not in ("x", "y"):
+        raise ValueError(f"quadrature must be 'x' or 'y', got '{quadrature}'")
+    qc = QuantumCircuit(2, 2, name=f"bell_delay_probe_{quadrature}")
     qc.h(0)
     qc.cx(0, 1)
-    if delay_dt > 0:
-        qc.delay(delay_dt, 0)
-        qc.delay(delay_dt, 1)
+    dd_window(qc, (0, 1), dd_sequence, delay_dt)
+    if quadrature == "y":
+        qc.sdg(0)
     qc.cx(0, 1)
     qc.h(0)
     qc.measure([0, 1], [0, 1])
+    return qc
+
+
+def hoeffding_model_discrimination(
+    counts_p: dict[str, int],
+    counts_q: dict[str, int],
+    alpha: float = 0.01,
+    *,
+    alphabet_size: int,
+) -> dict[str, Any]:
+    """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding and multinomial TV bounds.
+
+    Given two empirical count distributions over identical outcomes, computes D_TV and D_JS.
+    Computes both:
+    1. Single-observable Hoeffding confidence radius: r_obs = sqrt(ln(2/alpha) / (2*N_eff))
+       for any fixed binary partition or parity observable in [0, 1].
+    2. Simultaneous multinomial Total Variation confidence radius via Bretagnolle-Huber-Carol
+       bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438)
+       over K bins:
+       eps_p = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_p)
+       eps_q = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_q)
+       radius_tv = 0.5 * (eps_p + eps_q)
+    where K is the required size of the complete outcome alphabet, including outcomes with
+    zero observed counts. This prevents omitted outcomes from understating the bound.
+    """
+    if isinstance(alpha, bool) or not isinstance(alpha, (int, float)) or not (0.0 < alpha < 1.0):
+        raise ValueError(f"alpha must be in (0, 1), got {alpha}")
+    if isinstance(alphabet_size, bool) or not isinstance(alphabet_size, int) or alphabet_size <= 0:
+        raise ValueError(f"alphabet_size must be a positive integer, got {alphabet_size}")
+    if not counts_p or not counts_q:
+        raise ValueError("Count distributions must be non-empty")
+    for name, cdict in (("counts_p", counts_p), ("counts_q", counts_q)):
+        if not isinstance(cdict, dict):
+            raise TypeError(f"{name} must be a dict, got {type(cdict).__name__}")
+        for k, v in cdict.items():
+            if not isinstance(k, str):
+                raise TypeError(f"Outcome keys in {name} must be strings, got {type(k).__name__}")
+            if isinstance(v, bool) or not isinstance(v, int):
+                raise TypeError(f"Counts in {name} must be exact integers, got {type(v).__name__} for key '{k}'")
+            if v < 0:
+                raise ValueError(f"Counts in {name} must be non-negative, got {v} for key '{k}'")
+    n_p = sum(counts_p.values())
+    n_q = sum(counts_q.values())
+    if n_p == 0 or n_q == 0:
+        raise ValueError("Total shots must be positive in both distributions")
+    all_keys = sorted(set(counts_p) | set(counts_q))
+    if all(all(ch in "01" for ch in k) for k in all_keys):
+        lengths = {len(k) for k in all_keys}
+        if len(lengths) > 1:
+            raise ValueError(f"Inconsistent outcome bit widths detected: {sorted(lengths)}")
+        if alphabet_size > 2 ** lengths.pop():
+            raise ValueError(f"alphabet_size ({alphabet_size}) exceeds the 2^width outcomes of the bit strings")
+    if alphabet_size < len(all_keys):
+        raise ValueError(
+            f"alphabet_size ({alphabet_size}) cannot be smaller than observed distinct outcomes ({len(all_keys)})"
+        )
+    k_bins = alphabet_size
+    p = np.array([counts_p.get(k, 0) / n_p for k in all_keys], dtype=np.float64)
+    q = np.array([counts_q.get(k, 0) / n_q for k in all_keys], dtype=np.float64)
+
+    d_tv = float(0.5 * np.sum(np.abs(p - q)))
+    m = 0.5 * (p + q)
+    kl_pm = float(np.sum(p[p > 0] * np.log(p[p > 0] / m[p > 0])))
+    kl_qm = float(np.sum(q[q > 0] * np.log(q[q > 0] / m[q > 0])))
+    d_js = float(0.5 * (kl_pm + kl_qm))
+
+    n_eff = min(n_p, n_q)
+    radius_hoeffding = float(math.sqrt(math.log(2.0 / alpha) / (2.0 * n_eff)))
+
+    # Simultaneous multinomial TV confidence radius (Bretagnolle-Huber-Carol bound)
+    eps_p = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_p)
+    eps_q = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_q)
+    radius_tv = float(0.5 * (eps_p + eps_q))
+
+    ci_lower = max(0.0, d_tv - radius_tv)
+    ci_upper = min(1.0, d_tv + radius_tv)
+
+    return {
+        "num_shots_p": n_p,
+        "num_shots_q": n_q,
+        "k_bins": k_bins,
+        "alpha": alpha,
+        "total_variation_distance": round(d_tv, 6),
+        "jensen_shannon_divergence": round(d_js, 6),
+        "hoeffding_radius": round(radius_hoeffding, 6),
+        "multinomial_tv_radius": round(radius_tv, 6),
+        "tv_confidence_interval": [round(ci_lower, 6), round(ci_upper, 6)],
+        "models_distinguishable": bool(ci_lower > 0.0),
+    }
+
+
+def bent_hidden_shift_circuit(
+    n: int = 6,
+    shift: Sequence[int] | None = None,
+) -> QuantumCircuit:
+    """Roetteler (2010) hidden shift algorithm for quadratic Boolean bent functions.
+
+    n must be even. Evaluates f(x) = x0*x1 ^ x2*x3 ^ ... and shifted g(x) = f(x ^ s).
+    Circuit sequence H^n -> O_g -> H^n -> O_f -> H^n -> Measure deterministically
+    measures the hidden shift string s with probability 1.0 in ideal execution.
+    The ideal circuit is constructed from {H, CZ, Z}, compiling to native Heron ISA
+    instructions {cz, rz, sx, x} after transpilation.
+    """
+
+    if n <= 0 or n % 2 != 0:
+        raise ValueError(f"Qubit count n must be a positive even integer, got {n}")
+    if shift is None:
+        s = [1 if i % 2 == 0 else 0 for i in range(n)]
+    else:
+        if len(shift) != n:
+            raise ValueError(f"Shift length {len(shift)} does not match n={n}")
+        if any(b not in (0, 1) for b in shift):
+            raise ValueError("Shift entries must be 0 or 1")
+        s = list(shift)
+
+    # Check quadratic bent rank
+    monomial_masks = tuple((1 << (2 * k)) | (1 << (2 * k + 1)) for k in range(n // 2))
+    polar_rank = quadratic_polar_rank(monomial_masks, n)
+    if polar_rank != n:
+        raise RuntimeError(f"Quadratic form is not bent: rank {polar_rank} != {n}")
+
+    qc = QuantumCircuit(n, n, name=f"bent_hidden_shift_{n}q")
+    qc.h(range(n))
+
+    # Oracle for g(x) = f(x ^ s)
+    for k in range(n // 2):
+        q0 = 2 * k
+        q1 = 2 * k + 1
+        qc.cz(q0, q1)
+        if s[q1]:
+            qc.z(q0)
+        if s[q0]:
+            qc.z(q1)
+        if s[q0] and s[q1]:
+            qc.global_phase += math.pi
+
+    qc.h(range(n))
+
+    # Dual oracle O_f~ = O_f
+    for k in range(n // 2):
+        qc.cz(2 * k, 2 * k + 1)
+
+    qc.h(range(n))
+    qc.measure(range(n), range(n))
+
+    qc.metadata = {
+        "n_qubits": n,
+        "shift": s,
+        "expected_bitstring": "".join(str(s[i]) for i in reversed(range(n))),
+        "polar_rank": polar_rank,
+    }
     return qc
