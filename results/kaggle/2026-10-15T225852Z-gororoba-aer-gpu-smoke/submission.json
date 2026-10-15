@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-submission-v1",
+ "kernel": "probablyeric/gororoba-aer-gpu-smoke",
+ "machine_shape": "NvidiaTeslaT4",
+ "entry": null,
+ "args": [],
+ "smoke": true,
+ "git_commit": "7a6e63f0cdc10baafb0233d8c1721d017f818f50-dirty",
+ "pins": [
+  "qiskit==2.5.2",
+  "qiskit-aer-gpu-cu11==0.17.2"
+ ],
+ "bundle": {},
+ "run_py_sha256": "23be1c86fde96fff0816a9bdf19c697c9f093262465019345d4279c75ac93d53",
+ "pushed_utc": "2026-10-15T225852Z"
+}
