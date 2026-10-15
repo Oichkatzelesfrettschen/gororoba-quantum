@@ -87,10 +87,14 @@ real foundations, deterministic interval premises and unproved coverage.
 The recovered wide-control acquisition uses
 `scripts/review_wide_control_job.py --check` and `--self-test`, each in
 normal and optimized Python. `scripts/reconcile_qpu_inventory.py --check`
-binds the complete recorded service inventory to every raw job archive;
-its synthetic contract rejects missing/duplicate jobs, altered denominators
-and raw corruption. These replays and measured extraction/render checks
-join `ci/gates.json`.
+binds the complete recorded service inventory to every raw job archive and
+the account's consumed seconds to the final charges of the jobs that ran
+inside its rolling usage period; its synthetic contract rejects
+missing/duplicate jobs, altered denominators, off-window chronology and raw
+corruption. `scripts/inventory_retained_runs.py` requires every job id a
+runner record or retention file names to belong to that inventory, and
+mock and local artifacts to declare no QPU execution. These replays and
+measured extraction/render checks join `ci/gates.json`.
 
 Changes to the C881 proof sources or receipts also run the pinned Rocq
 procedure in `docs/evidence/c881_exhaustive/README.md`. The CI receipt

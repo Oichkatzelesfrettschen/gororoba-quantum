@@ -2,6 +2,9 @@
 
 The service snapshot records a bounded read-only observation. Offline replay
 checks archive coverage and identities; it cannot refresh live account state.
+The account's consumed seconds cover a rolling usage_period, so they equal the
+final charges of the jobs that ran inside that period, not of every retained
+job: a job finished before the period's start has rolled out of the window.
 """
 
 from __future__ import annotations
@@ -10,12 +13,18 @@ import argparse
 import hashlib
 import json
 import re
+from datetime import datetime
 from decimal import Decimal
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 HISTORICAL_JOBS = {"db5qmqclf4us73c4e1ug", "db67fqsvf2bc73d0pk4g", "db67frimb58s738bci4g"}
+# The owner's 180-second campaign cap covers the non-historical jobs created
+# before this instant; a later program is bounded by its own approved
+# --max-total-execution-seconds and is reported separately.
+CAMPAIGN_CEILING_SECONDS = 180
+CAMPAIGN_CUTOFF = "2026-10-14T00:00:00Z"
 
 
 ACCOUNT_RESERVE_SECONDS = 60
@@ -32,6 +41,54 @@ def digest(path: Path) -> str:
 
 def read(path: Path) -> Any:
     return json.loads(path.read_text())
+
+
+def timestamp(value: Any) -> datetime:
+    require(isinstance(value, str), "usage-window timestamp requires text")
+    parsed = datetime.fromisoformat(value.replace("Z", "+00:00"))
+    require(parsed.utcoffset() is not None, "usage-window timestamp requires a timezone")
+    return parsed
+
+
+def window_charge(jobs: list[dict[str, Any]], usage: dict[str, Any]) -> Decimal:
+    """Final charges of the jobs that ran inside the account's usage_period.
+
+    A job finished before the period's start contributes nothing. A job that
+    started before the start and finished inside the period straddles the
+    boundary, and its in-window share is not recorded, so it is refused.
+    """
+    period = usage.get("usage_period")
+    if not isinstance(period, dict):
+        raise ValueError("account usage period is missing")
+    start, end = timestamp(period.get("start_time")), timestamp(period.get("end_time"))
+    require(start < end, "account usage period is reversed or empty")
+    total = Decimal(0)
+    for job in jobs:
+        times = job.get("timestamps")
+        if not isinstance(times, dict):
+            raise ValueError(f"job timestamps are missing for {job.get('job_id')}")
+        running, finished = timestamp(times.get("running")), timestamp(times.get("finished"))
+        require(running <= finished <= end, "job execution chronology differs from the account observation")
+        if finished < start:
+            continue
+        require(running >= start, "a job straddles the usage-period start; its in-window charge is not recorded")
+        total += Decimal(str(job["final_qpu_charge_seconds"]))
+    return total
+
+
+def campaign_split(rows: list[dict[str, Any]]) -> tuple[Decimal, Decimal, Decimal]:
+    """Final charges of the historical jobs, the capped campaign, and later programs."""
+    cutoff = timestamp(CAMPAIGN_CUTOFF)
+    historical = campaign = later = Decimal(0)
+    for row in rows:
+        charge = Decimal(str(row["final_qpu_charge_seconds"]))
+        if row["job_id"] in HISTORICAL_JOBS:
+            historical += charge
+        elif timestamp(row["created_at"]) < cutoff:
+            campaign += charge
+        else:
+            later += charge
+    return historical, campaign, later
 
 
 def reconcile(snapshot_path: Path) -> dict[str, Any]:
@@ -98,6 +155,11 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         final_metrics = read(directory / latest)
         require(final_metrics["usage"]["status"] == "complete", "retained usage is unsettled")
         require(Decimal(str(final_metrics["usage"]["qpu_charge_time_seconds"])) == charge, "retained charge differs")
+        for stage in ("running", "finished"):
+            require(
+                timestamp(job["timestamps"][stage]) == timestamp(final_metrics["timestamps"][stage]),
+                f"inventory {stage} timestamp differs from the retained final metrics",
+            )
         pub_paths = sorted(directory.glob("pub_*.json"), key=lambda path: int(path.stem.split("_")[1]))
         require(len(pub_paths) == job["pub_count"], "decoded service PUB count differs from raw count")
         require(job["shots_per_pub"] > 0 and job["pub_count"] > 0, "empty physical acquisition")
@@ -170,10 +232,10 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
             }
         )
     total = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows)
-    require(total == Decimal(consumed), "summed final job charges differ from the account's consumed seconds")
-    historical = sum(Decimal(str(row["final_qpu_charge_seconds"])) for row in rows if row["job_id"] in HISTORICAL_JOBS)
-    campaign = total - historical
-    require(campaign <= 180, "new campaign exceeds authorized 180-second ceiling")
+    in_window = window_charge(rows, usage)
+    require(in_window == Decimal(consumed), "final charges inside the usage period differ from the consumed seconds")
+    historical, campaign, later = campaign_split(rows)
+    require(campaign <= CAMPAIGN_CEILING_SECONDS, "new campaign exceeds authorized 180-second ceiling")
     return {
         "schema": "qpu-job-retention-audit-v1",
         "observed_at": snapshot["observed_at"],
@@ -193,9 +255,12 @@ def reconcile(snapshot_path: Path) -> dict[str, Any]:
         "final_charge_seconds": str(total),
         "historical_charge_seconds": str(historical),
         "new_campaign_charge_seconds": str(campaign),
-        "new_campaign_ceiling_seconds": 180,
-        "unallocated_campaign_seconds": str(Decimal(180) - campaign),
+        "new_campaign_ceiling_seconds": CAMPAIGN_CEILING_SECONDS,
+        "new_campaign_cutoff": CAMPAIGN_CUTOFF,
+        "unallocated_campaign_seconds": str(Decimal(CAMPAIGN_CEILING_SECONDS) - campaign),
+        "later_program_charge_seconds": str(later),
         "account_reserve_seconds": ACCOUNT_RESERVE_SECONDS,
+        "usage_window_charge_seconds": str(in_window),
         "account_usage_observation": snapshot["account_usage"],
         "jobs": rows,
     }

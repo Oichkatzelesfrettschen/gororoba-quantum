@@ -26,7 +26,8 @@ def main() -> None:
         pub = {"pub_index": 0, "registers": {"c": {"num_bits": 2, "num_shots": 2, "bitstrings": ["00", "11"]}}}
         write(raw / "pub_00.json", pub)
         write(raw / "result_metadata.json", {})
-        metrics = {"usage": {"status": "complete", "qpu_charge_time_seconds": 1}}
+        times = {"running": "2026-10-12T00:00:00Z", "finished": "2026-10-12T00:00:01Z"}
+        metrics = {"usage": {"status": "complete", "qpu_charge_time_seconds": 1}, "timestamps": times}
         write(raw / "job_metrics.json", metrics)
         index: dict[str, Any] = {
             "job_id": "synthetic-job",
@@ -51,6 +52,7 @@ def main() -> None:
                 "usage_limit_seconds": 600,
                 "usage_consumed_seconds": 1,
                 "usage_remaining_seconds": 599,
+                "usage_period": {"start_time": "2026-09-15T00:00:00Z", "end_time": "2026-10-13T00:00:00Z"},
             },
             "jobs": [
                 {
@@ -61,6 +63,8 @@ def main() -> None:
                     "final_qpu_charge_seconds": 1,
                     "pub_count": 1,
                     "shots_per_pub": 2,
+                    "timestamps": dict(times),
+                    "created_at": "2026-10-12T00:00:00Z",
                 }
             ],
         }
@@ -103,7 +107,21 @@ def main() -> None:
                 {"usage_limit_seconds": 600, "usage_consumed_seconds": 2, "usage_remaining_seconds": 598},
             ):
                 mutant = copy.deepcopy(snapshot)
-                mutant["account_usage"] = usage
+                mutant["account_usage"] = usage | {"usage_period": snapshot["account_usage"]["usage_period"]}
+                mutants.append(mutant)
+            mutant = copy.deepcopy(snapshot)
+            del mutant["account_usage"]["usage_period"]
+            mutants.append(mutant)
+            # Chronology: straddling the period start, finishing after the observation,
+            # an expired job against nonzero consumption, and a timestamp off the metrics.
+            for running, finished in (
+                ("2026-09-14T00:00:00Z", "2026-09-16T00:00:00Z"),
+                ("2026-10-14T00:00:00Z", "2026-10-14T00:00:01Z"),
+                ("2026-09-14T00:00:00Z", "2026-09-14T00:00:01Z"),
+                ("2026-10-12T00:00:00Z", "2026-10-12T00:00:02Z"),
+            ):
+                mutant = copy.deepcopy(snapshot)
+                mutant["jobs"][0]["timestamps"] = {"running": running, "finished": finished}
                 mutants.append(mutant)
             for number, mutant in enumerate(mutants):
                 write(source, mutant)
@@ -114,6 +132,29 @@ def main() -> None:
                 else:
                     raise RuntimeError(f"inventory mutant {number} admitted")
             write(source, snapshot)
+            usage = snapshot["account_usage"]
+            audit.require(audit.window_charge(snapshot["jobs"], usage) == 1, "in-window charge differs")
+            split_rows = [
+                {"job_id": "synthetic-job", "final_qpu_charge_seconds": 1, "created_at": "2026-10-12T00:00:00Z"},
+                {"job_id": "campaign", "final_qpu_charge_seconds": 170, "created_at": "2026-10-13T23:59:59Z"},
+                {"job_id": "later", "final_qpu_charge_seconds": 146, "created_at": "2026-10-14T00:00:00Z"},
+            ]
+            audit.require(audit.campaign_split(split_rows) == (1, 170, 146), "campaign cutoff split differs")
+            expired = copy.deepcopy(snapshot["jobs"][0])
+            expired["timestamps"] = {"running": "2026-09-14T00:00:00Z", "finished": "2026-09-14T00:00:01Z"}
+            audit.require(audit.window_charge([expired], usage) == 0, "an expired job contributes a rolling charge")
+            for running, finished in (
+                ("2026-10-12T00:00:01Z", "2026-10-12T00:00:00Z"),
+                ("2026-10-12T00:00:00", "2026-10-12T00:00:01Z"),
+            ):
+                invalid = copy.deepcopy(snapshot["jobs"][0])
+                invalid["timestamps"] = {"running": running, "finished": finished}
+                try:
+                    audit.window_charge([invalid], usage)
+                except ValueError:
+                    pass
+                else:
+                    raise RuntimeError("an invalid usage-window chronology was admitted")
             after = {
                 str(path.relative_to(run)): hashlib.sha256(path.read_bytes()).hexdigest()
                 for path in run.rglob("*")
@@ -140,8 +181,9 @@ def main() -> None:
             else:
                 raise RuntimeError("raw digest mutation admitted")
     print(
-        "Synthetic inventory contract: 15 inventory mutations, a repeated metrics snapshot "
-        "and raw corruption rejected; replay preserves bytes"
+        "Synthetic inventory contract: 20 inventory mutations, two window chronology mutations, "
+        "a repeated metrics snapshot and raw corruption rejected; the campaign cutoff splits charges; "
+        "replay preserves bytes"
     )
 
 
