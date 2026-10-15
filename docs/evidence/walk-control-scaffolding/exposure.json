@@ -1,4 +1,22 @@
 {
+ "atlas_pair_structure": [
+  {
+   "identical_gate_and_qubit_sequences": 84,
+   "pairs": 84,
+   "parameter_differences": {
+    "rz": 84
+   },
+   "run": "results/live/2026-10-13T025444.603480Z"
+  },
+  {
+   "identical_gate_and_qubit_sequences": 84,
+   "pairs": 84,
+   "parameter_differences": {
+    "rz": 84
+   },
+   "run": "results/live/2026-10-15T031229.371738Z"
+  }
+ ],
  "flags": {
   "ibm_fez": {
    "rank_weak_sector": {

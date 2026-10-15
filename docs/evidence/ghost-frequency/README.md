@@ -1,80 +1,73 @@
-# Ghost-Frequency Campaign — Experimental Spec
+# Idle-phase campaign design, audited against the retained data
 
-**Status:** Design complete. GPU pre-validation in progress. QPU execution owned by Claude Code.
-**Date:** 2026-10-15
+The three notebooks here simulate Ramsey designs for the idle phase seen in
+two retained runs. They test three hypotheses: no detuning (H0), a
+quasi-static detuning (H1), and an AC Stark shift from residual resonator
+photons (H2). This README states what the retained data already settle
+before any of these designs spends QPU time. Every QPU run still needs the
+owner's approval of a written case.
 
-## 1. Background: the observation
+## The observations, read correctly
 
-From the novel-insights hunt (2026-10-15), two independent analyses found the same
-unmodeled phase drift:
+- **Kingston coherence window** (`results/live/2026-10-15T030748.903241Z`).
+  - The matched idle rotates the work pair's branch-signed coherence by
+    -1.130 rad over 4.392 us.
+  - That coherence is `rho_{01,10}` of work qubits 68 and 66, an odd-sector
+    coherence, so it winds at the difference `omega_68 - omega_66`. The 40.9
+    kHz figure is a detuning difference between two qubits, not one qubit's
+    detuning, and a 2 pi winding alternative remains.
+  - The rotation is the same in both branch strata (-1.122 and -1.141 rad).
+- **Fez N21 orbit** (`results/live/N21_ORBIT_RCA.md`). A model-fit phase of
+  +0.59 rad over a 4.75 us mean idle, which also combines work-qubit
+  detunings.
 
-| Device | Phase drift | Idle time | Implied detuning |
-|---|---|---|---|
-| ibm_kingston | −1.130 rad | 4.392 µs | **−40.9 kHz** |
-| ibm_fez (N21 orbit) | +0.59 rad | 4.75 µs | **+19.8 kHz** |
+These are two devices, different qubits, different circuits and different
+days. They show a recurring scale of tens of kHz, which backend properties
+do not report: there is no reported qubit frequency, and an echo-based T2
+refocuses quasi-static detuning. They do not show one effect common to all
+qubits, and nothing here points beyond ordinary transmon physics: frequency
+drift, two-level-system coupling, Stark shifts and Z Z.
 
-Supporting facts:
-- **Branch independence** (Kingston): b0=0 → −1.122 rad, b0=1 → −1.141 rad.
-  Rules out a branch-dependent ZZ explanation in that configuration.
-- **Calibration blind spot**: no qubit frequency is retained in calibration data,
-  and reported T2 is Hahn-echo T2, which *refocuses* quasi-static detuning —
-  so the calibration pipeline is structurally blind to exactly this effect.
+## What the retained data already decide
 
-## 2. Hypotheses
+- **H2 for the coherence window is disfavored.** A residual-photon Stark
+  shift needs a recent readout. In the matched-idle context nothing is
+  measured before the idle, and the previous shot's readout lies a 250 us
+  repetition delay back, yet the rotation is present. Adding a mid-circuit
+  measure and reset changes it by only +0.054 rad. H2 can still apply to
+  windows that follow a mid-circuit readout, such as the N21 orbit's.
+- **A sign-blind estimator cannot resolve the sign.** The power analysis
+  estimates the phase as `arccos(2 p - 1)`, which cannot tell +delta from
+  -delta. The conditional Ramsey design reads both X and Y quadratures and
+  avoids this.
+- **The budget was misstated.** The service inventory observed at
+  2026-10-15T07:13Z reports 334 of 600 s consumed, 266 s remaining, and
+  nothing has run since, not about 120 s.
 
-- **H0 (null):** The drift is consistent with the standard calibration model
-  (T1/T2/depolarizing/readout). No unmodeled detuning exists; the observation
-  is drift, miscalibration, or a fitting artifact.
-- **H1 (ghost):** A quasi-static detuning δ ≈ 20–40 kHz exists, common across
-  qubits and both Heron devices, invisible to the calibration pipeline.
+## Where the designs go
 
-## 3. QPU protocol (Claude Code owns hardware execution)
+- **A pairwise test of the window rotation.** Conditional Ramsey on the
+  coupled pairs (68, 67) and (66, 67) (`docs/notes/conditional_ramsey_hamiltonian.md`)
+  measures both work detunings, the spectator's, and each work-spectator Z Z.
+  It predicts the window rate as `nu_68|67=0 - nu_66|67=0` and resolves
+  winding to 1 MHz. It covers the spectator |0>/|1> comparison of the
+  original Experiment A on the qubits that matter.
+- **The pre-delay discriminator.** A variable delay between a mid-circuit
+  readout and the Ramsey idle separates H2 from H1 where a readout precedes
+  the idle. It is worth a case only for the readout-adjacent windows.
+- **A full-chip checkerboard Ramsey.** A detuning map across the chip is a
+  characterization in its own right. It needs its own written case, with
+  spectators in |0> and |1>, two quadratures and a delay ladder that
+  resolves winding.
 
-### Experiment A — full-chip checkerboard Ramsey (ibm_fez and/or ibm_kingston)
-- 156-qubit checkerboard split: work qubits (even parity) run Ramsey;
-  spectator qubits (odd parity) idle.
-- Two spectator conditions: spectators prepared in |0⟩ vs |1⟩.
-  Distinguishes intrinsic detuning from ZZ crosstalk.
-- Idle delays packed into PUBs: 1, 2, 4, 8 µs.
-- Sequence per work qubit: X/2 – idle(t) – X/2 – measure.
-- Fit Ramsey fringe phase vs t per qubit → detuning map δ_q across the chip.
+## Files
 
-### Experiment B — isolated controls (Eric's spec: three runs, each ≤ 2 s)
-- Single qubit (or widely separated qubits selected from the ISA).
-- Identical Ramsey delays.
-- Full-chip vs isolated distinguishes crowd/crosstalk from intrinsic effects.
+- `ghost-frequency-gpu.ipynb`: the null and detuning Ramsey models, a power
+  analysis, an amplitude-miscalibration mimic and a Z Z mimic.
+- `ac-stark-discriminator.ipynb`: a residual-photon Stark model and its
+  pre-delay signature.
+- `ghost-falsification-suite.ipynb`: the three hypotheses together.
 
-### Falsification matrix
-
-| Observation | Interpretation |
-|---|---|
-| Detuning in full-chip, absent in isolated | Crowd/crosstalk effect — H1 (intrinsic) falsified |
-| Detuning depends on spectator \|0⟩ vs \|1⟩ | ZZ coupling, not intrinsic detuning |
-| No detuning in either | Original was drift/miscalibration — H1 falsified |
-| ~20–40 kHz in both, spectator-independent | H1 supported; proceed to characterize |
-
-## 4. GPU pre-validation (Kaggle — run BEFORE spending QPU time)
-
-Classical simulation of the Ramsey protocol to (a) confirm the design can
-resolve the effect and (b) try to kill H1 with mundane explanations first:
-
-1. **Null simulation** — Ramsey under the standard noise model (T1, Hahn-echo
-   T2, readout error), no detuning. Prediction: ~zero systematic phase drift.
-2. **Ghost simulation** — add quasi-static δ = 30 kHz. Prediction: reproduces
-   the observed ~1 rad drift over ~4.5 µs.
-3. **Power analysis** — shots needed to resolve 20 kHz from 0 at 5σ.
-4. **Mimic check** — pulse amplitude miscalibration. Prediction: produces
-   visibility loss, *not* coherent phase drift — a distinguishable signature.
-5. **Crosstalk check** — static ZZ model. Prediction: spectator-state-dependent
-   shift — distinguishable from intrinsic detuning by Experiment A's |0⟩/|1⟩
-   comparison.
-
-If the GPU validation shows the protocol cannot distinguish H1 from a mundane
-cause, the spec is revised before any QPU time is spent.
-
-## 5. Budget
-
-- GPU pre-validation: Kaggle free tier (30 h available; this test ≈ minutes).
-- QPU: Eric reports ~120 s remaining on IBM Quantum (unverified).
-  Keep total QPU wall-clock under budget; prefer the isolated controls first
-  (cheapest falsification), then full-chip only if controls support H1.
+The notebooks ran in their own environment. Their outputs are retained as
+produced and are not replayed in CI; CI checks only that their code passes
+the docs ruff and type gates.

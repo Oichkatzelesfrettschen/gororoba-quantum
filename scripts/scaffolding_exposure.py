@@ -155,6 +155,51 @@ def fringe_replicas() -> list[dict[str, Any]]:
     ]
 
 
+def atlas_pair_structure(run: str) -> dict[str, Any]:
+    """Executed bright (phase0) and dark (phase4) atlas members: same gates on the same qubits?
+
+    Each pair binds one shared template, so the executed circuits should share
+    every operation and qubit and differ only in parameters; the count of
+    differing parameters by operation name shows where the bound angle enters.
+    """
+    record = json.loads((ROOT / run / "record.json").read_text())
+    with (ROOT / run / "isa.qpy").open("rb") as stream:
+        circuits = qpy.load(stream)
+    executed: dict[str, list[tuple[str, tuple[int, ...], tuple[float, ...]]]] = {}
+    for circuit, pub in zip(circuits, record["execution_pubs"], strict=True):
+        for component in pub["components"]:
+            qubits = set(component["physical_qubits"])
+            executed[component["member"]] = [
+                (
+                    instruction.operation.name,
+                    tuple(circuit.find_bit(qubit).index for qubit in instruction.qubits),
+                    tuple(float(value) for value in instruction.operation.params),
+                )
+                for instruction in circuit.data
+                if instruction.operation.name not in ("barrier", "delay")
+                and {circuit.find_bit(qubit).index for qubit in instruction.qubits} <= qubits
+            ]
+    pairs = identical = 0
+    differing: dict[str, int] = {}
+    for member, bright in executed.items():
+        match = re.fullmatch(r"(ripple_atlas_lane\d+_kite\d+_edge\d+_\d+)_phase0_atlas", member)
+        dark = executed.get(f"{match.group(1)}_phase4_atlas") if match else None
+        if dark is None:
+            continue
+        pairs += 1
+        if [(name, qubits) for name, qubits, _ in bright] == [(name, qubits) for name, qubits, _ in dark]:
+            identical += 1
+            for (name, _, first), (_, _, second) in zip(bright, dark, strict=True):
+                if first != second:
+                    differing[name] = differing.get(name, 0) + 1
+    return {
+        "run": run,
+        "pairs": pairs,
+        "identical_gate_and_qubit_sequences": identical,
+        "parameter_differences": differing,
+    }
+
+
 def pilot_bit_marginals() -> list[dict[str, Any]]:
     """P(bit = 1) of every measured output bit of every pilot replica, with the qubit that wrote it.
 
@@ -197,6 +242,14 @@ def evidence() -> dict[str, Any]:
         "walk_readout_controls": walk_readouts(exposures),
         "fringe_replicas": fringe_replicas(),
         "pilot_bit_marginals": pilot_bit_marginals(),
+        "atlas_pair_structure": [
+            atlas_pair_structure(run)
+            for run in runs()
+            if any(
+                group["group"].startswith("ripple_atlas")
+                for group in json.loads((ROOT / run / "record.json").read_text())["groups"]
+            )
+        ],
         "fringe_phase_spread": {"min": min(phases), "max": max(phases), "stdev": statistics.stdev(phases)},
     }
 
