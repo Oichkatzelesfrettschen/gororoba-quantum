@@ -201,7 +201,7 @@ def _case(mutation: str | None = None, estimate: Any = 3.25) -> dict[str, Any]:
         before = native_preflight._preserved_files(directory)
         with (
             patch.object(runtime, "configure_sampler", probe.configure),
-            patch.object(runtime, "take_snapshot", lambda service, name: snapshot),
+            patch.object(runtime, "take_snapshot", lambda service, name, excluded=(): snapshot),
         ):
             report = native_preflight.qualify(runtime, service, choices, record, directory)
         _require(before == native_preflight._preserved_files(directory), "preflight changed retained files")
