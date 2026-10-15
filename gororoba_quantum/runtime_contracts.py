@@ -2878,6 +2878,39 @@ def _verify_operator_qubit_exclusion() -> None:
         raise RuntimeError("an exclusion outside the backend is accepted")
 
 
+def _verify_compile_panic_isolation() -> None:
+    """A transpiler panic on one backend is one recorded compile failure, not a crashed plan."""
+
+    class PanicException(BaseException):
+        pass
+
+    def panicking(*_: Any, **__: Any) -> QuantumCircuit:
+        raise PanicException("capacity overflow")
+
+    service = _ProbeService([_ProbeBackend("viable", FakeFez())])
+    snapshots, _, _ = discover_snapshots(service, None, None)
+    group = next(group for group in experiment_groups() if group.name == "design_a")
+    with patch.object(live_run_module, "transpile", panicking):
+        try:
+            select_candidates(group, snapshots, 1, {})
+        except LiveRunError as error:
+            if "compile_error: CompilePanic" not in str(error):
+                raise RuntimeError(f"a transpiler panic reports {error}") from error
+        else:
+            raise RuntimeError("a panicking compile produced a candidate")
+
+    def interrupted(*_: Any, **__: Any) -> QuantumCircuit:
+        raise KeyboardInterrupt
+
+    with patch.object(live_run_module, "transpile", interrupted):
+        try:
+            select_candidates(group, snapshots, 1, {})
+        except KeyboardInterrupt:
+            pass
+        else:
+            raise RuntimeError("an interrupt during compilation is swallowed")
+
+
 def _verify_experiment_source_manifest() -> None:
     """Every static local import in the declared run sources participates in replay identity."""
     source_root = Path(live_run_module.__file__).resolve().parent
@@ -3187,6 +3220,7 @@ def _verify() -> None:
     _verify_discovery_failure_isolation()
     _verify_approved_backend_scope()
     _verify_operator_qubit_exclusion()
+    _verify_compile_panic_isolation()
     _verify_packed_replica_split()
     _verify_packing_global_phase()
     _verify_packed_static_stays_static()

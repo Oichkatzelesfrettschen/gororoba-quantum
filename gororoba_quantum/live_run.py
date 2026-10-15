@@ -911,17 +911,33 @@ def build_admission_target(snapshot: Snapshot) -> Target:
     return admitted
 
 
+class CompilePanic(ValueError):
+    """A Rust panic inside the transpiler, reported as one compile failure of one backend and seed."""
+
+
 def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | None = None) -> QuantumCircuit:
+    """Transpile qc onto the snapshot's admission Target.
+
+    Qiskit's Rust passes raise pyo3's PanicException, a BaseException, on some
+    fragmented admission Targets (a backend whose calibration excludes most
+    qubits); it becomes CompilePanic, a ValueError, so candidate selection
+    records it for that backend and seed and goes on with the others.
+    """
     if snap.admission_target is None:
         snap.admission_target = build_admission_target(snap)
-    return transpile(
-        qc,
-        backend=snap.backend,
-        target=snap.admission_target,
-        optimization_level=OPT_LEVEL,
-        seed_transpiler=seed,
-        initial_layout=layout,
-    )
+    try:
+        return transpile(
+            qc,
+            backend=snap.backend,
+            target=snap.admission_target,
+            optimization_level=OPT_LEVEL,
+            seed_transpiler=seed,
+            initial_layout=layout,
+        )
+    except BaseException as error:
+        if type(error).__name__ != "PanicException":
+            raise
+        raise CompilePanic(f"{snap.name}: transpiler panic ({error})") from None
 
 
 def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
