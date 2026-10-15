@@ -57,38 +57,48 @@ readout cannot distinguish the first mutation, because `p(t) = p(-t)`.
 ## Price
 
 Compiled on FakeFez (optimization level 3, seed 20261015), the dark probe
-costs 110 CZ and the signed probe 272 CZ. The table gives the shots needed to
-resolve the perturbation at z = 3:
+costs 110 CZ and the signed probe 272 CZ. Both readouts are priced at one
+criterion, a z = 3 resolution:
 
-- dark counting needs `ln 20 / p` shots at zero background, and
-  `z^2 b(1-b) / p^2` above a background `b`;
-- the signed readout needs `z^2 (1 - V^2 s^2) / (V s)^2` with
+- dark counting estimates the rate `b + p` above a background `b`, needing
+  `z^2 (b + p)(1 - b - p) / p^2` shots;
+- the signed readout needs `z^2 (1 - V^2 s^2) / (V s)^2` shots with
   `s = t / (2 + |t|)`.
 
-The hardware scenario takes the ibm_kingston Design B fringe, a 46-CZ
-circuit: dark floor `b = 0.182` and visibility `V = 0.678`. The signed
-visibility is further multiplied by `(1 - e)^(272 - 46)` at the median
-FakeFez CZ error, giving 0.286. The dark count keeps `b` unchanged, which is
-a lower bound for a probe with more CZ than Design B, so the table favors
-dark counting.
+Because `p = s^2`, the two agree exactly at `b = 0` and `V = 1`. The
+separate `ln 20 / p` column is the number of shots for a 95 percent chance
+of at least one dark count at `b = 0`, a detection probability rather than a
+precision.
 
-| t | Scenario | Dark shots | Signed shots | Dark resolves sign |
-| ---: | --- | ---: | ---: | --- |
-| 0.05 | ideal | 5,036 | 15,120 | no |
-| 0.05 | Kingston Design B fringe | 3,786,192 | 185,212 | no |
-| 0.1 | ideal | 1,322 | 3,961 | no |
-| 0.1 | Kingston Design B fringe | 260,582 | 48,583 | no |
-| 0.2 | ideal | 363 | 1,080 | no |
-| 0.2 | Kingston Design B fringe | 19,618 | 13,324 | no |
+The hardware scenario reads its anchor from the ibm_kingston zero-divisor
+fringe run (`results/live/2026-10-15T070853.550532Z`), with `collect.json`
+and `record.json` pinned by digest:
 
-At zero background, dark counting detects `|t|` in about three times fewer
-shots and never yields its sign. Above the measured floor, the cost of dark
-counting grows as `t^-4` and that of the signed readout as `t^-2`. The signed
-readout is about 20 times cheaper at `t = 0.05` and about 1.5 times cheaper
-at `t = 0.2`, and it gives the sign. No universal speedup follows: the
-advantage requires a background, and at small `t` the shot count is large.
-At about 0.27 ms per shot, the 13,324 shots at `t = 0.2` take about 3.6 s of
-QPU time per sign; the 185,212 shots at `t = 0.05` take about 50 s.
+- dark floor `b = 0.1818` and visibility `V = 0.6781` from the collection;
+- 42 CZ for the dark member, from the record.
+
+The signed visibility multiplies `V` by `(1 - e)^(272 - 42)` at the median
+FakeFez CZ error, giving 0.282. The dark count keeps `b`, which is a lower
+bound for a probe with more CZ than the anchor, so the table favors dark
+counting.
+
+| t | Scenario | Dark shots | One dark count (95%) | Signed shots | Dark resolves sign |
+| ---: | --- | ---: | ---: | ---: | --- |
+| 0.05 | ideal | 15,120 | 5,036 | 15,120 | no |
+| 0.05 | Kingston fringe anchor | 3,792,959 | -- | 190,895 | no |
+| 0.1 | ideal | 3,960 | 1,322 | 3,961 | no |
+| 0.1 | Kingston fringe anchor | 262,903 | -- | 50,074 | no |
+| 0.2 | ideal | 1,080 | 363 | 1,080 | no |
+| 0.2 | Kingston fringe anchor | 20,287 | -- | 13,733 | no |
+
+At zero background and unit visibility, the signed readout costs what dark
+counting costs and adds the sign. Above the measured floor, dark counting
+scales as `t^-4` and the signed readout as `t^-2`, so the signed readout is
+about 20 times cheaper at `t = 0.05`, 5 times at `t = 0.1` and 1.5 times at
+`t = 0.2`. No universal speedup follows: the advantage requires a background,
+and at small `t` the shot count is large. At about 0.27 ms per shot, the
+13,733 shots at `t = 0.2` take about 3.7 s of QPU time per sign, and the
+190,895 shots at `t = 0.05` about 52 s.
 
 ## What this establishes
 

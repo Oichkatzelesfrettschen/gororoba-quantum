@@ -37,6 +37,12 @@
     }
   },
   "convention": "cd_core.cd_sign, D = 16, algebra bit b on qubit b",
+  "hardware_anchor": {
+    "dark_floor": 0.18182373046875,
+    "dark_member_cz": 42,
+    "run": "results/live/2026-10-15T070853.550532Z",
+    "visibility": 0.6781216014433903
+  },
   "native_cost": {
     "backend": "FakeFez",
     "dark": {
@@ -55,8 +61,9 @@
   "schema": "signed-kernel-probe-v1",
   "shot_scenarios": [
     {
+      "dark_one_count_shots": 5036,
       "dark_resolves_sign": false,
-      "dark_shots": 5036,
+      "dark_shots": 15120,
       "dark_success": 0.0005948839976204641,
       "scenario": "ideal",
       "signed_effective_visibility": 1.0,
@@ -64,17 +71,19 @@
       "t": 0.05
     },
     {
+      "dark_one_count_shots": null,
       "dark_resolves_sign": false,
-      "dark_shots": 3786192,
+      "dark_shots": 3792959,
       "dark_success": 0.0005948839976204641,
       "scenario": "kingston_design_b_fringe",
-      "signed_effective_visibility": 0.2857990126848818,
-      "signed_shots": 185212,
+      "signed_effective_visibility": 0.28151299711459016,
+      "signed_shots": 190895,
       "t": 0.05
     },
     {
+      "dark_one_count_shots": 1322,
       "dark_resolves_sign": false,
-      "dark_shots": 1322,
+      "dark_shots": 3960,
       "dark_success": 0.002267573696145125,
       "scenario": "ideal",
       "signed_effective_visibility": 1.0,
@@ -82,17 +91,19 @@
       "t": 0.1
     },
     {
+      "dark_one_count_shots": null,
       "dark_resolves_sign": false,
-      "dark_shots": 260582,
+      "dark_shots": 262903,
       "dark_success": 0.002267573696145125,
       "scenario": "kingston_design_b_fringe",
-      "signed_effective_visibility": 0.2857990126848818,
-      "signed_shots": 48583,
+      "signed_effective_visibility": 0.28151299711459016,
+      "signed_shots": 50074,
       "t": 0.1
     },
     {
+      "dark_one_count_shots": 363,
       "dark_resolves_sign": false,
-      "dark_shots": 363,
+      "dark_shots": 1080,
       "dark_success": 0.008264462809917356,
       "scenario": "ideal",
       "signed_effective_visibility": 1.0,
@@ -100,12 +111,13 @@
       "t": 0.2
     },
     {
+      "dark_one_count_shots": null,
       "dark_resolves_sign": false,
-      "dark_shots": 19618,
+      "dark_shots": 20287,
       "dark_success": 0.008264462809917356,
       "scenario": "kingston_design_b_fringe",
-      "signed_effective_visibility": 0.2857990126848818,
-      "signed_shots": 13324,
+      "signed_effective_visibility": 0.28151299711459016,
+      "signed_shots": 13733,
       "t": 0.2
     }
   ],

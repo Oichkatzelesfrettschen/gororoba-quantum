@@ -60,9 +60,17 @@ DIRECTION = 2
 KERNEL = {4: 1, 15: -1}
 CHECK_T = (Fraction(-1, 5), Fraction(-1, 20), Fraction(0), Fraction(1, 20), Fraction(1, 5))
 SEED = 20261015
-# Design B compiles to 46 CZ on ibm_fez (README, "Designs"); its measured
-# floor and visibility anchor the hardware scenario.
-DESIGN_B_CZ = 46
+# The ibm_kingston zero-divisor fringe run anchors the hardware scenario: its
+# collection carries the measured Design B dark floor and fringe visibility,
+# its record the compiled CZ count of the dark member, and both files are
+# pinned by digest.
+ANCHOR_RUN = "results/live/2026-10-15T070853.550532Z"
+ANCHOR_SHA256 = {
+    "collect.json": "2d6b3b2eeb9dd3aadc29f524f51e233c2d259ce508690bf28f63d83aea410696",
+    "record.json": "22c078143a9e266123ad0f9acba9f3c234ac1c6522aa3e669eb4a579aee32c65",
+}
+ANCHOR_MEMBER = "design_b_dark_1_10_4_15"
+ROOT = Path(__file__).resolve().parent.parent
 Z_SCORE = 3.0
 
 
@@ -280,29 +288,71 @@ def native_cost() -> dict[str, Any]:
     return out
 
 
-def shot_scenarios(cost: dict[str, Any]) -> list[dict[str, Any]]:
-    """Shots to resolve the perturbation at z = Z_SCORE in each readout.
+def hardware_anchor() -> dict[str, Any]:
+    """Dark floor, visibility and dark-member CZ count of the pinned Kingston fringe run."""
+    import hashlib
 
-    Dark counting sees p(t) above a background b, needing
-    z^2 b(1-b) / p^2 shots, or ln(20)/p shots for one count at b = 0. The
-    signed readout sees V s with s = t/(2+|t|) and needs z^2 (1 - V^2 s^2)/(V s)^2.
-    b = 0.182 and V = 0.678 are the measured Design B dark floor and fringe
-    visibility on ibm_kingston, a 46-CZ circuit; the signed visibility
-    multiplies V by (1 - e)^(CZ - 46) at the median FakeFez CZ error e, and the
-    dark count keeps b, a lower bound for a probe with more CZ than Design B,
-    so the comparison favors dark counting. These price the readouts and
-    predict no hardware result.
+    run = ROOT / ANCHOR_RUN
+    for name, expected in ANCHOR_SHA256.items():
+        if hashlib.sha256((run / name).read_bytes()).hexdigest() != expected:
+            raise ValueError(f"{ANCHOR_RUN}/{name} differs from its pinned digest")
+    collect = json.loads((run / "collect.json").read_text())
+    summary = next(
+        group["measured_statistics"]["summary"]
+        for group in collect
+        if isinstance(group, dict) and "visibility" in group.get("measured_statistics", {}).get("summary", {})
+    )
+
+    def members(node: Any) -> Any:
+        if isinstance(node, dict):
+            if node.get("name") == ANCHOR_MEMBER and isinstance(node.get("cz"), int):
+                yield node["cz"]
+            for value in node.values():
+                yield from members(value)
+        elif isinstance(node, list):
+            for value in node:
+                yield from members(value)
+
+    counts = set(members(json.loads((run / "record.json").read_text())))
+    if len(counts) != 1:
+        raise ValueError(f"{ANCHOR_MEMBER} carries CZ counts {sorted(counts)} in the anchor record")
+    return {
+        "run": ANCHOR_RUN,
+        "dark_floor": float(summary["p0_dark"]),
+        "visibility": float(summary["visibility"]),
+        "dark_member_cz": counts.pop(),
+    }
+
+
+def shot_scenarios(cost: dict[str, Any], anchor: dict[str, Any]) -> list[dict[str, Any]]:
+    """Shots for a z = Z_SCORE resolution in each readout, under one criterion.
+
+    Dark counting estimates the rate b + p above a background b, so it needs
+    z^2 (b + p)(1 - b - p) / p^2 shots; the signed readout sees V s with
+    s = t/(2+|t|) and needs z^2 (1 - V^2 s^2)/(V s)^2. Since p = s^2, the two
+    agree at b = 0 and V = 1. dark_one_count_shots is a different quantity,
+    ln(20)/p shots for a 95 percent chance of at least one dark count at b = 0.
+    The hardware scenario takes the anchor run's floor b and visibility V; the
+    signed visibility multiplies V by (1 - e)^(CZ - CZ_anchor) at the median
+    FakeFez CZ error e, while the dark count keeps b, a lower bound for a
+    probe with more CZ than the anchor, so the comparison favors dark
+    counting. These price the readouts and predict no hardware result.
     """
+    scenarios = (
+        (0.0, 1.0, "ideal"),
+        (anchor["dark_floor"], anchor["visibility"], "kingston_design_b_fringe"),
+    )
     rows = []
     for t in (0.05, 0.1, 0.2):
         alpha = 2.0 + t
         p = t * t / alpha**2
         s = t / alpha
-        for background, visibility, label in ((0.0, 1.0, "ideal"), (0.182, 0.678, "kingston_design_b_fringe")):
-            extra = cost["signed"]["cz"] - DESIGN_B_CZ
+        for background, visibility, label in scenarios:
+            extra = cost["signed"]["cz"] - anchor["dark_member_cz"]
             gate = (1.0 - cost["median_cz_error"]) ** extra if label != "ideal" else 1.0
             effective = visibility * gate
-            dark = math.log(20.0) / p if background == 0.0 else Z_SCORE**2 * background * (1 - background) / p**2
+            rate = background + p
+            dark = Z_SCORE**2 * rate * (1.0 - rate) / p**2
             signed = Z_SCORE**2 * (1.0 - (effective * s) ** 2) / (effective * s) ** 2
             rows.append(
                 {
@@ -310,6 +360,7 @@ def shot_scenarios(cost: dict[str, Any]) -> list[dict[str, Any]]:
                     "scenario": label,
                     "dark_success": p,
                     "dark_shots": math.ceil(dark),
+                    "dark_one_count_shots": math.ceil(math.log(20.0) / p) if background == 0.0 else None,
                     "signed_effective_visibility": effective,
                     "signed_shots": math.ceil(signed),
                     "dark_resolves_sign": False,
@@ -320,14 +371,43 @@ def shot_scenarios(cost: dict[str, Any]) -> list[dict[str, Any]]:
 
 def evidence() -> dict[str, Any]:
     cost = native_cost()
+    anchor = hardware_anchor()
     return {
         "schema": "signed-kernel-probe-v1",
         "convention": "cd_core.cd_sign, D = 16, algebra bit b on qubit b",
         "certificate": certificate(),
         "statevector": statevector_checks(),
         "native_cost": cost,
-        "shot_scenarios": shot_scenarios(cost),
+        "hardware_anchor": anchor,
+        "shot_scenarios": shot_scenarios(cost, anchor),
     }
+
+
+def _matches(retained: Any, derived: Any, where: str = "$") -> list[str]:
+    """Structural comparison: keys, lengths, strings and integers exact; floats to 1e-9 relative.
+
+    Statevector and fit floats differ in their last digits between BLAS builds,
+    while exact rationals stay strings and compiled CZ counts stay integers.
+    """
+    if isinstance(retained, dict) and isinstance(derived, dict):
+        if retained.keys() != derived.keys():
+            return [f"{where}: keys {sorted(retained)} != {sorted(derived)}"]
+        return [problem for key in retained for problem in _matches(retained[key], derived[key], f"{where}.{key}")]
+    if isinstance(retained, list) and isinstance(derived, list):
+        if len(retained) != len(derived):
+            return [f"{where}: length {len(retained)} != {len(derived)}"]
+        return [
+            problem
+            for index, pair in enumerate(zip(retained, derived, strict=True))
+            for problem in _matches(*pair, f"{where}[{index}]")
+        ]
+    if isinstance(retained, float) or isinstance(derived, float):
+        if isinstance(retained, bool) or isinstance(derived, bool):
+            return [] if retained == derived else [f"{where}: {retained} != {derived}"]
+        if math.isclose(float(retained), float(derived), rel_tol=1e-9, abs_tol=1e-12):
+            return []
+        return [f"{where}: {retained} != {derived}"]
+    return [] if retained == derived else [f"{where}: {retained!r} != {derived!r}"]
 
 
 def main() -> int:
@@ -341,8 +421,11 @@ def main() -> int:
     if arguments.out is not None:
         arguments.out.write_text(text)
         return 0
-    if arguments.check.read_text() != text:
-        print(f"signed kernel probe: {arguments.check} differs from the re-derived evidence", file=sys.stderr)
+    problems = _matches(json.loads(arguments.check.read_text()), json.loads(text))
+    if problems:
+        print(f"signed kernel probe: {arguments.check} differs from the re-derived evidence:", file=sys.stderr)
+        for problem in problems[:20]:
+            print(f"  {problem}", file=sys.stderr)
         return 1
     signed = data["native_cost"]["signed"]["cz"]
     print(f"signed kernel probe: exact laws at {len(CHECK_T)} points, 2 mutations rejected, signed probe {signed} CZ")
