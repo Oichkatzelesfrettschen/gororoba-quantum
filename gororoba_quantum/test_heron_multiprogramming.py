@@ -302,7 +302,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
 
         # Dynamical decoupling on Steane Z syndrome patch with CPMG-2 and XY4
         sim = AerSimulator()
-        for dd in ("CPMG2", "Hahn", "XY4"):
+        for dd in ("CPMG2", "XY4"):
             for err_target in (None, 1):
                 qc = steane_z_syndrome_patch(err_target, dd_sequence=dd, idle_delay_dt=100)
                 counts = sim.run(qc, shots=50, seed_simulator=42).result().get_counts()
@@ -323,6 +323,8 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertEqual(qc_xy4.count_ops().get("y", 0), 14)  # 2 Y per 7 data qubits
         with self.assertRaises(ValueError):
             steane_z_syndrome_patch(1, dd_sequence="invalid_dd")
+        with self.assertRaises(ValueError):
+            steane_z_syndrome_patch(1, dd_sequence="Hahn")
 
     def test_bell_delay_probe_with_dd(self) -> None:
         for dd in (None, "Hahn", "XY4"):

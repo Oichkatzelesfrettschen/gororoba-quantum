@@ -162,9 +162,9 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   $D_{\text{JS}}(P \parallel Q)$. For single binary projections or parity observables, Hoeffding's inequality
   (`docs/notes/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
   To bound the plug-in total-variation distance across all $K$ outcome bins simultaneously without falsely reporting
-  distinguishable models due to multinomial sampling variation, the module computes the
-  Bretagnolle-Huber-Carol (1979) / Devroye (1987) finite-sample bound. `alphabet_size` is required and must give the
-  size of the complete outcome alphabet, including outcomes absent from either count map:
+  distinguishable models due to multinomial sampling variation, the module computes the Bretagnolle-Huber-Carol
+  finite-sample bound (van der Vaart & Wellner 1996, Proposition A.6.6; Devroye 1987, Section 3.3). `alphabet_size`
+  is required and must give the size of the complete outcome alphabet, including outcomes absent from either count map:
   $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$, yielding simultaneous confidence radius
   $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$.
 
@@ -179,75 +179,76 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 ## Primary research literature grounding
 
 Every circuit builder, routing policy, and validation threshold in this suite is grounded in
-peer-reviewed primary literature and verified repository artifacts:
+repository source notes, registered preprints, and verified platform artifacts:
 
 1. **Spatial Multiprogramming & Crosstalk Suppression:**
    - **Sarovar et al. (2020)**, *Detecting crosstalk errors in quantum information processors*,
-     [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/pdf/1908.09855v3.pdf`): Demonstrates that
-     simultaneous operations on unbuffered transmons cause spectator dephasing and non-local Hamiltonian errors.
-     This paper directly motivates the graph-distance $\text{dist}_G \ge 2$ guard band enforced by
-     `find_disjoint_tiles`.
-   - **Niu & Todri-Sanial (2021, 2023)**, *Enabling Multi-Programming of Quantum Programs on Scalable Multi-Core
-     Quantum Architectures*, [arXiv:2102.05321](https://arxiv.org/abs/2102.05321) (`docs/pdf/2102.05321v3.pdf`)
-     and *Crosstalk-Aware Scheduling*, [arXiv:2112.00387](https://arxiv.org/abs/2112.00387): Provides the algorithmic
-     basis for disjoint tile allocation, heavy-hex subgraph isolation, and independent classical register multiplexing.
+     [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/notes/1908.09855.md`, `docs/pdf/1908.09855v3.pdf`):
+     Establishes protocols for detecting crosstalk under concurrent drives; the $\text{dist}_G \ge 2$ guard band
+     is enforced as a placement policy to separate concurrent execution subgraphs.
+   - **Niu & Todri-Sanial (2021, 2023)**, *Enabling Multi-programming Mechanism for Quantum Computing in the NISQ Era*,
+     [arXiv:2102.05321](https://arxiv.org/abs/2102.05321) (Quantum 7, 925, 2023; `docs/notes/2102.05321.md`, `docs/pdf/2102.05321v3.pdf`)
+     and *How Parallel Circuit Execution Can Be Useful for NISQ Computing?*, [arXiv:2112.00387](https://arxiv.org/abs/2112.00387)
+     (`docs/notes/2112.00387.md`, `docs/local_source_cache/2112.00387v1.pdf`): Provides the algorithmic basis for
+     multi-programming partitioning, heavy-hex subgraph isolation, and independent classical register multiplexing.
    - **Gambetta et al. (2012)**, *Characterization of addressability by simultaneous randomized benchmarking*,
-     [arXiv:1204.6308](https://arxiv.org/abs/1204.6308) (`docs/notes/1204.6308.md`): Foundational framework for
-     measuring independent subsystem addressability under simultaneous microwave and coupler drives.
+     [arXiv:1204.6308](https://arxiv.org/abs/1204.6308) (`docs/notes/1204.6308.md`, `docs/local_source_cache/1204.6308v2.pdf`):
+     Foundational framework for measuring addressability under simultaneous microwave and coupler drives.
 
 2. **Non-Associative Cayley-Dickson Algebra & Zero-Divisor Loci:**
-   - **Freedman, Lovitz, & Wang (2019)**, *Sedenions, the exceptional Jordan algebra, and quantum information*,
-     [arXiv:1811.08580](https://arxiv.org/abs/1811.08580) (`docs/notes/1811.08580.md`): Formulates the embedding of
-     Cayley-Dickson algebras $\mathbb{S}_{16}$ into multi-qubit Pauli registers and characterises singular
-     zero-divisor sectors.
-   - **Biss, Christensen, & Dugger (2009)**, *Cayley-Dickson algebras and homotopy groups*,
-     [arXiv:0905.2987](https://arxiv.org/abs/0905.2987) (`docs/notes/0905.2987.md`): Establishes topological and
-     combinatorial invariants of the non-associative multiplication tables implemented in `gororoba_quantum/cd_core.py`.
+   - **Freedman, Shokrian-Zini, & Wang (2019)**, *Quantum Computing with Octonions*,
+     [arXiv:1811.08580](https://arxiv.org/abs/1811.08580) (`docs/notes/1811.08580.md`, `docs/local_source_cache/1811.08580v5.pdf`):
+     Formulates Hilbert space representations and non-associative gate structures on multi-qubit systems.
+   - **Biss, Christensen, Dugger, & Isaksen (2009)**, *Eigentheory of Cayley-Dickson algebras*,
+     [arXiv:0905.2987](https://arxiv.org/abs/0905.2987) (`docs/notes/0905.2987.md`, `docs/local_source_cache/0905.2987v1.pdf`):
+     Characterizes eigenvalues, zero-divisor structures, and annihilator dimensions in Cayley-Dickson algebras
+     codified in `gororoba_quantum/cd_core.py`.
 
 3. **Fano-Plane Projective Geometry & Stabilizer Codes:**
-   - **Levratti (2026)**, *Octonionic Fano-Plane CSS Codes* (`docs/pdf/levratti-2026-fano-css.pdf`) and *Active
-     Stabilizers under Correlated Dephasing* (`docs/pdf/levratti-2026-active-stabilizers.pdf`): Proves the isomorphism
-     between the 7 points / 7 lines of the projective Fano plane $\text{PG}(2, 2)$ and the parity-check matrix of
-     the Steane $[[7, 1, 3]]$ code, providing the theoretical basis for `fano_plane_incidence_matrix`,
-     `steane_z_syndrome_patch`, and `steane_coherent_syndrome_patch`.
-   - **Corcoles et al. (2021)**, *Demonstrating a quantum error detection code using a square lattice of four qubits*,
-     [arXiv:2102.01682](https://arxiv.org/abs/2102.01682) (`docs/pdf/2102.01682.pdf`): Demonstrates physical syndrome
-     extraction on superconducting transmon architectures, highlighting the severe performance penalty of mid-circuit
-     readout latency that motivates our coherent `mcx` bypass.
-   - **Rudinger et al. (2021)**, *Experimental characterization of crosstalk errors with simultaneous gate set tomography*,
-     [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (`docs/notes/2103.03008.md`): Characterizes spectator Stark
-     shifts during readout and two-qubit gating.
+   - **Levratti (2026)**, *Fano Duality, Projective Orthogonality, and the CSS Bridge* (`docs/notes/levratti-2026-fano-css.md`,
+     `docs/pdf/levratti-2026-fano-css.pdf`) and *Active Stabilizers in Reed-Muller CSS Codes from Cayley-Dickson Zero-Divisors*
+     (`docs/notes/levratti-2026-active-stabilizers.md`, `docs/pdf/levratti-2026-active-stabilizers.pdf`): Author-hosted
+     manuscripts mapping the 7 points and 7 lines of the projective Fano plane $\text{PG}(2, 2)$ to octonionic triads
+     and the Steane $[[7, 1, 3]]$ code parity-check incidence matrix (`fano_plane_incidence_matrix`, `steane_z_syndrome_patch`).
+   - **Corcoles et al. (2021)**, *Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits*,
+     [arXiv:2102.01682](https://arxiv.org/abs/2102.01682) (Phys. Rev. Lett. 127, 100501; `docs/notes/2102.01682.md`,
+     `docs/pdf/2102.01682.pdf`): Demonstrates physical dynamic circuits and feed-forward on superconducting transmons,
+     balancing mid-circuit measurement against coherent routing.
+   - **Rudinger et al. (2021)**, *Characterizing mid-circuit measurements on a superconducting qubit using gate set tomography*,
+     [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (Phys. Rev. Applied 17, 014014; `docs/notes/2103.03008.md`,
+     `docs/local_source_cache/2103.03008v1.pdf`): Quantum-instrument tomography characterizing mid-circuit measurement operations.
 
 4. **Boolean Bent Hidden Shift Algorithms:**
-   - **Rotteler (2008, 2009)**, *Quantum algorithms for computing shifts of Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
-     (`docs/local_source_cache/0811.3208v2.pdf`) and *Quantum algorithms to solve the hidden shift problem for quadratically
-     independent Boolean bent functions*, [arXiv:0911.4724](https://arxiv.org/abs/0911.4724) (`docs/local_source_cache/0911.4724v1.pdf`):
-     Derives the exact quantum algorithm using dual bent oracles $O_g$ and $O_{\tilde{f}}$ separated by Hadamard transforms
-     to solve the hidden shift problem with $O(1)$ quantum queries and deterministic $P=1.0$ recovery.
-   - **Gavinsky, Ito, & Rotteler (2011)**, *Efficient quantum algorithms for the hidden shift problem of bent functions*,
-     [arXiv:1103.3017](https://arxiv.org/abs/1103.3017) (`docs/local_source_cache/1103.3017v1.pdf`): Extends polar rank
-     characterization of bent functions, establishing the algebraic rank invariant certified by `boolean_anf.quadratic_polar_rank`.
+   - **Rotteler (2008, 2009)**, *Quantum algorithms for highly non-linear Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
+     (Proc. SODA 2010, pp. 448-457; `docs/notes/0811.3208.md`, `docs/local_source_cache/0811.3208v2.pdf`) and *Quantum algorithms
+     to solve the hidden shift problem for quadratics and for functions of large Gowers norm*, [arXiv:0911.4724](https://arxiv.org/abs/0911.4724)
+     (`docs/notes/0911.4724.md`, `docs/local_source_cache/0911.4724v1.pdf`): Derives the exact quantum algorithm using dual bent
+     oracles $O_g$ and $O_{\tilde{f}}$ separated by Hadamard transforms to solve the hidden shift problem with $O(1)$ queries
+     and deterministic $P=1.0$ recovery.
+   - **Gavinsky, Rotteler, & Roland (2011)**, *Quantum algorithm for the Boolean hidden shift problem*,
+     [arXiv:1103.3017](https://arxiv.org/abs/1103.3017) (`docs/notes/1103.3017.md`, `docs/local_source_cache/1103.3017v1.pdf`):
+     Formulates polar rank and algebraic characterization of Boolean bent hidden shifts.
 
 5. **Statistical Discrimination & Concentration Bounds:**
    - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13-30
      [DOI:10.1080/01621459.1963.10500830](https://doi.org/10.1080/01621459.1963.10500830) (`docs/notes/hoeffding-1963.md`):
      Establishes the non-parametric exponential concentration bound for bounded random variables in $[0, 1]$.
-   - **Bretagnolle-Huber-Carol / Devroye (1987)**: The finite-sample multinomial total variation inequality
-     $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (Bretagnolle, Huber, & Carol 1979,
-     *Permutabilite et lois de transition*, Seminar on Probability, Lecture Notes in Math. 721, pp. 310-333;
-     van der Vaart & Wellner 1996, *Weak Convergence and Empirical Processes*, Proposition A.6.6; Devroye 1987,
-     *A Course in Density Estimation*, Birkhauser Boston, Theorem 2.1; Devroye, Gyorfi, & Lugosi 1996,
-     *A Probabilistic Theory of Pattern Recognition*, Theorem 3.1), which prevents false discovery from
-     multinomial sampling noise on multi-outcome spaces.
+   - **Bretagnolle-Huber-Carol Bound**: The finite-sample multinomial total variation inequality
+     $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (van der Vaart & Wellner 1996,
+     *Weak Convergence and Empirical Processes*, Springer, Proposition A.6.6, p. 438; Devroye 1987,
+     *A Course in Density Estimation*, Birkhauser, Section 3.3, p. 29). The implemented confidence radius
+     $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$ and $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$
+     inverts this bound at tail $\alpha/4$ per sample, ensuring multi-outcome sampling variation does not falsely report
+     distinguishable models.
 
 6. **IBM Heron r2 Platform & Qiskit Architecture Grounding:**
-   - **Fractional Gates & Continuous ISA** (`docs/notes/ibm_quantum/fractional-gates.md`): Heron r2 native continuous
-     $R_{ZZ}(\theta)$ and $R_X(\theta)$ instructions alongside $\{RZ, \sqrt{X}, X, CZ\}$.
+   - **Fractional Gates & Continuous ISA** (`docs/notes/ibm_quantum/fractional-gates.md`): When `use_fractional_gates=True`,
+     Heron r2 natively supports continuous $R_{ZZ}(\theta)$ and $R_X(\theta)$ instructions alongside $\{RZ, \sqrt{X}, X, CZ\}$.
    - **Dynamic Circuits & Mid-Circuit Execution** (`docs/notes/ibm_quantum/execute-dynamic-circuits.md`): Single-level
      `if_test` conditionals, operands $\le 32$ bits, and mid-circuit readout/reset constraints.
    - **Timing, Repetition Rate, and Stretch** (`docs/notes/ibm_quantum/repetition-rate-execution.md`,
-     `docs/notes/ibm_quantum/stretch.md`, `docs/notes/ibm_quantum/qiskit-runtime-circuit-timing.md`): Shot repetition
-     rates, relaxation delay tuning (`rep_delay` floor $10\text{--}50\,\mu\text{s}$), and QASM3 stretch timing.
+     `docs/notes/ibm_quantum/stretch.md`, `docs/notes/ibm_quantum/qiskit-runtime-circuit-timing.md`): Repetition rate
+     range $[0, 2\,\text{ms}]$ (default $250\,\mu\text{s}$), and QASM3 stretch timing.
    - **Processor Topologies & Calibration Snapshots** (`docs/notes/ibm_quantum/qpu-information.md`,
      `docs/notes/ibm_quantum/processor-types.md`, `docs/notes/ibm_heron_platform.md`,
      `docs/evidence/heron_platform/targets.json`): 156-qubit heavy-hex lattice, tunable couplers, $dt = 4\,\text{ns}$
