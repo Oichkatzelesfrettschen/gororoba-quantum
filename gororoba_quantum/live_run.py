@@ -146,6 +146,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "qpe_diagnostics.py",
     "patch_characterization.py",
     "coherence_window.py",
+    "crossed_tile_template.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qubit_baseline.py",
@@ -2626,6 +2627,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                 # The Ramsey and relaxation idles measure free evolution, which
                 # dynamical decoupling would fill with echo pulses.
                 raise LiveRunError("qubit_baseline runs without dynamical decoupling; omit --dd")
+            if "crossed_tile_template" in campaigns:
+                # Each PUB row runs one member on both tiles in the same shots, which
+                # needs exactly two replicas, and the crossing matches the rank-sector
+                # acquisition it tests, which ran without dynamical decoupling.
+                if args.dd:
+                    raise LiveRunError("crossed_tile_template runs without dynamical decoupling; omit --dd")
+                if args.max_replicas != 2:
+                    raise LiveRunError("crossed_tile_template runs one replica per tile; pass --max-replicas 2")
             if "spectator_wavefront_ramsey" in campaigns:
                 # The spectator arms read free Ramsey evolution over explicit delays,
                 # which dynamical decoupling would fill with echo pulses, and a second

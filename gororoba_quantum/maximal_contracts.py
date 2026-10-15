@@ -258,7 +258,8 @@ def _verify_isolation_contract() -> None:
     default_names = {group.name for group in experiment_groups()}
     standalone_names = {group.name for group in standalone_campaign_groups()}
     _require(
-        standalone_names == {"spectator_wavefront_ramsey", "qubit_baseline"} and not default_names & standalone_names,
+        standalone_names == {"spectator_wavefront_ramsey", "qubit_baseline", "crossed_tile_template"}
+        and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",
     )
 
@@ -269,6 +270,9 @@ def _verify_isolation_contract() -> None:
         ({"groups": ["spectator_wavefront_ramsey", "design_a"]}, "isolated campaign"),
         ({"groups": ["spectator_wavefront_ramsey"], "dd": "XX", "max_replicas": 1}, "dynamical decoupling"),
         ({"groups": ["spectator_wavefront_ramsey"], "max_replicas": None}, "one replica"),
+        ({"groups": ["crossed_tile_template", "design_a"]}, "isolated campaign"),
+        ({"groups": ["crossed_tile_template"], "dd": "XX", "max_replicas": 2}, "dynamical decoupling"),
+        ({"groups": ["crossed_tile_template"], "max_replicas": None}, "one replica per tile"),
     ):
         try:
             plan(service, _fixture_args(**overrides))
