@@ -151,8 +151,10 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   and inverts the state. `dd_sequence` supports `None` (plain idle), `"Hahn"` ($X$ echo at midpoint), or
   `"XY4"` (symmetric CPMG-style $\tau/8 \to X \to \tau/4 \to Y \to \tau/4 \to X \to \tau/4 \to Y \to \tau/8$).
   In physical QPU characterizations, unmitigated idle exposure exhibited substantial dephasing drift
-  (e.g. $-1.130$ rad of rotation over $4.4\,\mu\text{s}$ on `ibm_kingston` in `results/live/QPU_PROGRAM_CASES.md`),
-  whereas dynamical decoupling echo pulses on `ibm_fez` yielded a fitted phase of $+0.17$ rad (`results/live/N21_ORBIT_RCA.md`).
+  (e.g. $-1.130$ rad of directly measured branch-signed coherence rotation over $4.4\,\mu\text{s}$ on `ibm_kingston`
+  in `results/live/QPU_PROGRAM_CASES.md`). A separate, older calibration on `ibm_fez` yielded an independent fitted
+  phase parameter of $+0.17$ rad under different experimental conditions (`results/live/N21_ORBIT_RCA.md`); the two quantities
+  reflect distinct observables and execution contexts rather than a single differential DD effect.
   `bell_delay_probe` provides an isolated testbed to benchmark idle dephasing against calibrated decoupling schedules.
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
