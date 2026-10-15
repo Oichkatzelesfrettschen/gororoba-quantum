@@ -43,13 +43,30 @@ so the X and Y readouts give `<X_A> = V cos(nu t + phi0)` and
 `<Y_A> = V sin(nu t + phi0)`. Barriers keep the transpiler from merging the
 preparation into the idle.
 
-Delays are 0, 1250, 2500, 5000, 7500 and 10000 dt (0 to 40 us at dt = 4 ns),
-48 circuits in all. The estimator unwraps the phase `atan2(<Y>, <X>)` across
-consecutive delays and fits a straight line: the slope is `nu` in rad per dt,
-and fixed gate durations and preparation phases go into the intercept, so
-they leave the rate unchanged. Unwrapping is unambiguous for
+Delays are 0, 1250, 2500, 5000, 7500 and 10000 dt (0 to 40 us at dt = 4 ns):
+48 Ramsey circuits plus two calibration circuits that read both qubits
+prepared in `|0>` and in `|1>`. The calibration gives A's flips
+`e10 = P(1 | 0)` and `e01 = P(0 | 1)`, measured in the job, because the
+corner baseline showed reported readout errors off by a factor of 40. The
+channel maps a true expectation `q` to `(1 - e10 - e01) q + (e01 - e10)` in
+both quadratures. The common offset moves the centre of the Ramsey circle,
+so the phase of the raw expectations errs by an amount that depends on the
+true phase, and therefore on delay, which biases the rate. The summary
+inverts the channel before taking phases.
+
+The estimator unwraps the corrected phase `atan2(<Y>, <X>)` across
+consecutive delays and fits a straight line. The slope is `nu` in rad per dt;
+fixed gate durations and preparation phases go into the intercept, so they
+leave the rate unchanged. Unwrapping is unambiguous for
 `|nu| < pi / 2500` rad per dt, 50 kHz; a faster rate aliases, which the
 self-check demonstrates.
+
+Each rate, parameter and the falsifier residual carries a delta-method
+standard error at one shot per circuit (`*_se_one_shot`; divide by
+`sqrt(shots)`). Every circuit is an independent multinomial, and central
+differences propagate its covariance through the calibration, the phase fits
+and the reconstruction. A collected run therefore yields intervals from a
+single replica.
 
 ## Checks
 
@@ -59,9 +76,12 @@ self-check demonstrates.
   zero falsifier residual.
 - A detuning delta added to the conditional arms only leaves a residual of
   exactly `-2 delta`.
-- Over 40 multinomial resamplings at 1024 shots, the spread of the `J`
-  estimate matches the propagated phase noise
-  `(sqrt2 / 2) / (sqrt N sqrt S_tt)`, about 95 Hz, with no resolved bias.
+- With asymmetric channels on both qubits (A: 0.04 and 0.12, B: 0.02 and
+  0.08), the corrected summary still recovers `J` to 1e-10, and the summary
+  without the calibration is biased.
+- Over 40 multinomial resamplings at 1024 shots, the spread of `J` and of the
+  falsifier residual lies within 0.7 to 1.4 times the propagated standard
+  error (about 89 Hz for `J`), with no resolved bias.
 
 ## Nuisances the design leaves in place
 
@@ -71,9 +91,13 @@ self-check demonstrates.
   `|arg(1 + r exp(i theta))| <= arcsin r` for `r < 1`. The summary reports
   the measured `P(B != prepared)` per sector. B in `|1>` also relaxes during
   the idle, which ends the conditioning partway through the exposure.
-- **Readout.** Assignment error scales the visibility and leaves the phase
-  unchanged when it is symmetric between the quadrature arms. An asymmetric
-  assignment adds a delay-independent phase, which goes into the intercept.
+- **Readout.** The in-job calibration corrects A's assignment channel,
+  including its asymmetric offset. The correction assumes that the channel
+  measured with both qubits in one basis state also holds for the Ramsey arms.
+  It leaves readout crosstalk that depends on B's state uncorrected, and it
+  is distinct from `live_run.corrected_summary`, which inverts the
+  calibration-reported flips. The B preparation error is reported raw, so it
+  includes B's assignment error.
 - **Spectators.** The model covers one pair. The campaign runs one replica
   without dynamical decoupling, and Z Z couplings to idle neighbors in `|0>`
   shift `omega_A` and `omega_B` by a constant that the design absorbs.

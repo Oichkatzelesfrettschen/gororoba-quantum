@@ -28,6 +28,14 @@ fixed gate durations and preparation phases fall into the intercept.
 Consecutive delays differ by at most DELAY_STEP_DT, so a rate below
 pi / DELAY_STEP_DT rad per dt unwraps without ambiguity; dynamical
 decoupling would refocus the free evolution these arms measure.
+
+Two calibration circuits read both qubits prepared in |0> and in |1>. The
+summary inverts A's measured assignment channel before taking phases,
+because an asymmetric channel adds a common offset to both quadratures that
+the slope would absorb as a delay-dependent phase error. It reports each
+rate, parameter and the falsifier residual with a delta-method standard
+error at one shot per circuit (divide by sqrt(shots)), propagated through
+the calibration, the phase fits and the reconstruction.
 """
 
 from __future__ import annotations
@@ -53,6 +61,16 @@ DELAYS_DT = (0, 1250, 2500, 5000, 7500, 10000)
 DELAY_STEP_DT = max(b - a for a, b in zip(DELAYS_DT, DELAYS_DT[1:], strict=False))
 QUADRATURES = ("x", "y")
 B_PREPARED = {"even": 0, "odd": 1, "a_given_b0": 0, "a_given_b1": 1}
+# In-job assignment calibration: both qubits prepared in |0>, and both in |1>.
+READOUT_MEMBERS = ("cr_readout_0", "cr_readout_1")
+SE_KEYS = (
+    *(f"{sector}_rate_rad_per_dt" for sector in ("even", "odd", "a_given_b0", "a_given_b1")),
+    "omega_a_bell",
+    "omega_a_conditional",
+    "omega_b",
+    "zz_j",
+    "falsifier_residual",
+)
 
 Evolution = Callable[[QuantumCircuit, str, int], None]
 
@@ -97,8 +115,16 @@ def ideal_distribution(sector: str, quadrature: str) -> np.ndarray:
     return ideal
 
 
+def readout_circuit(prepared: int) -> QuantumCircuit:
+    circuit = QuantumCircuit(2, 2, name=READOUT_MEMBERS[prepared])
+    if prepared:
+        circuit.x([0, 1])
+    circuit.measure([0, 1], [0, 1])
+    return circuit
+
+
 def circuits(evolve: Evolution = idle) -> tuple[tuple[str, QuantumCircuit, np.ndarray], ...]:
-    return tuple(
+    sectors = tuple(
         (
             member_name(sector, quadrature, delay),
             sector_circuit(sector, quadrature, delay, evolve),
@@ -108,11 +134,32 @@ def circuits(evolve: Evolution = idle) -> tuple[tuple[str, QuantumCircuit, np.nd
         for delay in DELAYS_DT
         for quadrature in QUADRATURES
     )
+    calibration = tuple(
+        (READOUT_MEMBERS[prepared], readout_circuit(prepared), np.eye(4)[3 * prepared]) for prepared in (0, 1)
+    )
+    return sectors + calibration
 
 
 def a_expectation(distribution: np.ndarray) -> float:
     """<Z> of the rotated A readout, 1 - 2 P(A = 1), from a four-outcome distribution."""
     return float(1.0 - 2.0 * (distribution[1] + distribution[3]))
+
+
+def a_assignment(distributions: Mapping[str, np.ndarray]) -> tuple[float, float]:
+    """A's flips from the in-job calibration: e10 = P(1 | prepared 0), e01 = P(0 | prepared 1).
+
+    The channel maps a true expectation q to (1 - e10 - e01) q + (e01 - e10)
+    in both quadratures. The common offset moves the centre of the Ramsey
+    circle, so atan2 of raw expectations carries a phase error that changes
+    with the true phase and therefore with delay; inverting the channel
+    removes it.
+    """
+    zero, one = distributions[READOUT_MEMBERS[0]], distributions[READOUT_MEMBERS[1]]
+    return float(zero[1] + zero[3]), float(one[0] + one[2])
+
+
+def corrected_expectation(raw: float, e10: float, e01: float) -> float:
+    return (raw - (e01 - e10)) / (1.0 - e10 - e01)
 
 
 def b_preparation_error(distribution: np.ndarray, sector: str) -> float:
@@ -175,14 +222,16 @@ def rate_hz(rate_rad_per_dt: float, dt_seconds: float) -> float:
     return rate_rad_per_dt / (2.0 * math.pi * dt_seconds)
 
 
-def summarize_distributions(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
-    summary: dict[str, float] = {}
+def point_summary(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
+    """Phases, fitted rates and reconstructed parameters on assignment-corrected expectations."""
+    e10, e01 = a_assignment(distributions)
+    summary: dict[str, float] = {"a_assignment_e10": e10, "a_assignment_e01": e01}
     rates: dict[str, float] = {}
     for sector in SECTORS:
         phases = []
         for delay in DELAYS_DT:
-            x = a_expectation(distributions[member_name(sector, "x", delay)])
-            y = a_expectation(distributions[member_name(sector, "y", delay)])
+            x = corrected_expectation(a_expectation(distributions[member_name(sector, "x", delay)]), e10, e01)
+            y = corrected_expectation(a_expectation(distributions[member_name(sector, "y", delay)]), e10, e01)
             phases.append(math.atan2(y, x))
             summary[f"{sector}_{delay}dt_phase"] = phases[-1]
             summary[f"{sector}_{delay}dt_visibility"] = math.hypot(x, y)
@@ -199,6 +248,44 @@ def summarize_distributions(distributions: Mapping[str, np.ndarray]) -> dict[str
             )
         )
     summary.update(reconstruct(rates))
+    return summary
+
+
+def one_shot_standard_errors(distributions: Mapping[str, np.ndarray], step: float = 1e-6) -> dict[str, float]:
+    """Delta-method standard errors at one shot per circuit; divide by sqrt(shots).
+
+    Every circuit is an independent multinomial with covariance
+    (diag(p) - p p^T) / N. Central differences give the gradient of each
+    SE_KEYS output with respect to every outcome probability, the in-job
+    calibration circuits included, so the error budget carries the
+    assignment correction as well as the Ramsey arms.
+    """
+    base = {name: np.asarray(dist, dtype=float) for name, dist in distributions.items()}
+    variance = dict.fromkeys(SE_KEYS, 0.0)
+    for name, dist in base.items():
+        gradient = np.zeros((len(SE_KEYS), len(dist)))
+        for outcome in range(len(dist)):
+            shifted = []
+            for sign in (1.0, -1.0):
+                moved = dict(base)
+                moved[name] = dist.copy()
+                moved[name][outcome] += sign * step
+                values = point_summary(moved)
+                shifted.append([values[key] for key in SE_KEYS])
+            gradient[:, outcome] = (np.asarray(shifted[0]) - np.asarray(shifted[1])) / (2.0 * step)
+        covariance = np.diag(dist) - np.outer(dist, dist)
+        for index, key in enumerate(SE_KEYS):
+            variance[key] += float(gradient[index] @ covariance @ gradient[index])
+    return {f"{key}_se_one_shot": math.sqrt(max(value, 0.0)) for key, value in variance.items()}
+
+
+def standard_error(summary: Mapping[str, float], key: str, shots: int) -> float:
+    return summary[f"{key}_se_one_shot"] / math.sqrt(shots)
+
+
+def summarize_distributions(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
+    summary = point_summary(distributions)
+    summary.update(one_shot_standard_errors(distributions))
     return summary
 
 
@@ -232,6 +319,18 @@ def exact_distributions(evolve: Evolution) -> dict[str, np.ndarray]:
         name: Statevector(circuit.remove_final_measurements(inplace=False)).probabilities()
         for name, circuit, _ in circuits(evolve)
     }
+
+
+def with_assignment(
+    distributions: Mapping[str, np.ndarray], a_flips: tuple[float, float], b_flips: tuple[float, float]
+) -> dict[str, np.ndarray]:
+    """Pass every outcome law through per-qubit channels [[1 - e10, e01], [e10, 1 - e01]]."""
+
+    def channel(e10: float, e01: float) -> np.ndarray:
+        return np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])
+
+    joint = np.kron(channel(*b_flips), channel(*a_flips))
+    return {name: joint @ np.asarray(dist) for name, dist in distributions.items()}
 
 
 def _require(condition: bool, message: str) -> None:
@@ -270,23 +369,41 @@ def self_check() -> str:
     aliased = summarize_distributions(exact_distributions(hamiltonian_evolution(beyond, 0.0, 0.0)))
     _require(abs(aliased["a_given_b0_rate_rad_per_dt"] - beyond) > 1e-6, "a rate past the unwrap bound must alias")
 
-    rng = np.random.default_rng(20261015)
     laws = exact_distributions(hamiltonian_evolution(omega_a, omega_b, zz))
+    misread = with_assignment(laws, (0.04, 0.12), (0.02, 0.08))
+    corrected = point_summary(misread)
+    _require(abs(corrected["zz_j"] - zz) < 1e-10, "the in-job calibration must undo an asymmetric assignment")
+    uncalibrated = dict(misread)
+    uncalibrated.update({name: laws[name] for name in READOUT_MEMBERS})
+    raw_bias = abs(point_summary(uncalibrated)["omega_a_conditional"] - omega_a)
+    _require(raw_bias > 1e-7, "an asymmetric assignment must bias the uncorrected rates")
+
+    rng = np.random.default_rng(20261015)
     shots = 1024
-    estimates = []
+    propagated = summarize_distributions(laws)
+    samples: dict[str, list[float]] = {"zz_j": [], "falsifier_residual": []}
     for _ in range(40):
         sampled = {
             name: rng.multinomial(shots, np.clip(law, 0.0, None) / law.sum()) / shots for name, law in laws.items()
         }
-        estimates.append(summarize_distributions(sampled)["zz_j"])
-    spread = float(np.std(estimates, ddof=1))
-    centered = sum(np.asarray(DELAYS_DT, dtype=float) ** 2) - len(DELAYS_DT) * float(np.mean(DELAYS_DT)) ** 2
-    predicted = math.sqrt(2.0) / 2.0 * (1.0 / math.sqrt(shots)) / math.sqrt(centered)
-    _require(0.5 * predicted < spread < 2.0 * predicted, f"J sampling spread {spread} departs from {predicted}")
-    _require(abs(float(np.mean(estimates)) - zz) < 4.0 * spread / math.sqrt(len(estimates)), "J estimate is biased")
+        values = point_summary(sampled)
+        for key in samples:
+            samples[key].append(values[key])
+    for key, truth in (("zz_j", zz), ("falsifier_residual", 0.0)):
+        spread = float(np.std(samples[key], ddof=1))
+        predicted = standard_error(propagated, key, shots)
+        _require(
+            0.7 * predicted < spread < 1.4 * predicted, f"{key} spread {spread} departs from propagated {predicted}"
+        )
+        _require(
+            abs(float(np.mean(samples[key])) - truth) < 4.0 * predicted / math.sqrt(len(samples[key])),
+            f"{key} estimate is biased",
+        )
+    spread = standard_error(propagated, "zz_j", shots)
     return (
-        f"conditional Ramsey: {len(circuits())} circuits; design rank 2 -> 3; J recovered exactly and to "
-        f"{rate_hz(spread, dt):.0f} Hz at {shots} shots; "
+        f"conditional Ramsey: {len(circuits())} circuits; design rank 2 -> 3; J recovered exactly, "
+        f"assignment bias {rate_hz(raw_bias, dt):.0f} Hz removed by the in-job calibration, "
+        f"propagated J error {rate_hz(spread, dt):.0f} Hz at {shots} shots; "
         f"unwrap bound {rate_hz(unambiguous_rate_bound(), dt) / 1e3:.0f} kHz"
     )
 
