@@ -307,7 +307,10 @@ cd_core is unmeasured and no artifact claims one.
   approved record found eligible (`live_run.approved_backend_scope`), so a
   backend whose queue or status changed after the dry run cannot enter the
   plan; an approved backend that turns ineligible still refuses through the
-  comparison. The first batch consumes the approval by writing
+  comparison. `--exclude-qubits BACKEND:Q[,Q|A-B...]` withholds named qubits
+  from placement whatever their calibration; the policy records it, so the
+  approval binds it, and every snapshot, the per-batch one included,
+  applies it. The first batch consumes the approval by writing
   `approval-consumed.json` into the approved record's directory, so a second
   invocation on the same record sends nothing. Calibration reads,
   transpilation, noise simulation, result retrieval, and `--preserve-raw`

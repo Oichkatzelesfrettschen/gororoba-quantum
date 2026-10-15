@@ -12,6 +12,7 @@ import math
 import os
 import shutil
 import tempfile
+from collections.abc import Collection
 from contextlib import redirect_stdout
 from dataclasses import dataclass
 from datetime import UTC, datetime, timedelta
@@ -2258,12 +2259,12 @@ def _verify_approved_record_gate() -> None:
         original_take_snapshot = live_run_module.take_snapshot
         snapshot_calls = 0
 
-        def rolled_snapshot(service: Any, name: str) -> Snapshot:
+        def rolled_snapshot(service: Any, name: str, operator_excluded: Collection[int] = ()) -> Snapshot:
             # The refresh before the gate reads the first snapshot; the
             # per-batch revalidation reads the next, which has rolled.
             nonlocal snapshot_calls
             snapshot_calls += 1
-            snapshot = original_take_snapshot(service, name)
+            snapshot = original_take_snapshot(service, name, operator_excluded)
             if snapshot_calls > 1:
                 snapshot.calibration = "2099-01-01T00:00:00+00:00"
             return snapshot
@@ -2833,6 +2834,50 @@ def _verify_approved_backend_scope() -> None:
         raise RuntimeError("a dry run without scope stops probing every discovered backend")
 
 
+def _verify_operator_qubit_exclusion() -> None:
+    """--exclude-qubits withholds named qubits from every snapshot and from placement, whatever their calibration."""
+    if live_run_module._qubit_exclusion("ibm_kingston:0-4,16") != ("ibm_kingston", frozenset({0, 1, 2, 3, 4, 16})):
+        raise RuntimeError("the qubit exclusion parser misreads a range list")
+    for malformed in ("ibm_kingston", "ibm_kingston:", "ibm_kingston:4-1", "ibm_kingston:a"):
+        try:
+            live_run_module._qubit_exclusion(malformed)
+        except argparse.ArgumentTypeError:
+            pass
+        else:
+            raise RuntimeError(f"a malformed exclusion {malformed!r} parses")
+    withheld = {0, 1, 2, 3, 4, 16}
+    service = _ProbeService([_ProbeBackend("viable", FakeFez())])
+    snapshot = live_run_module.take_snapshot(service, "viable", withheld)
+    if not withheld <= set(snapshot.excluded_qubits):
+        raise RuntimeError("an operator-excluded qubit stays available")
+    plain = live_run_module.take_snapshot(service, "viable")
+    if any(plain.excluded_qubits.get(q) == "operator exclusion" for q in withheld):
+        raise RuntimeError("an exclusion leaks into a snapshot taken without it")
+    snapshots, _, _ = discover_snapshots(service, None, None, operator_excluded={"viable": withheld})
+    if not withheld <= set(snapshots[0].excluded_qubits):
+        raise RuntimeError("discovery drops the operator exclusion")
+    group = next(group for group in experiment_groups() if group.name == "design_a")
+    choice = select(group, snapshots, 1, {}, SINGLE_REPLICA_POLICY)
+    placed = {q for replica in choice.replicas for q in replica.qubits}
+    if placed & withheld:
+        raise RuntimeError(f"placement uses operator-excluded qubits {sorted(placed & withheld)}")
+    # An edgeless six-qubit pattern searches only the placeable qubits, so a corner
+    # left as the only placeable set is found at once and used whole.
+    from qubit_baseline import qubit_baseline_group
+
+    corner = {0, 1, 2, 3, 4, 16}
+    only_corner, _, _ = discover_snapshots(service, None, None, operator_excluded={"viable": set(range(156)) - corner})
+    baseline = select(qubit_baseline_group(), only_corner, 1, {}, SINGLE_REPLICA_POLICY)
+    if [set(replica.qubits) for replica in baseline.replicas] != [corner]:
+        raise RuntimeError("the qubit baseline does not occupy exactly the placeable corner")
+    try:
+        live_run_module.take_snapshot(service, "viable", {9999})
+    except LiveRunError:
+        pass
+    else:
+        raise RuntimeError("an exclusion outside the backend is accepted")
+
+
 def _verify_experiment_source_manifest() -> None:
     """Every static local import in the declared run sources participates in replay identity."""
     source_root = Path(live_run_module.__file__).resolve().parent
@@ -3141,6 +3186,7 @@ def _verify() -> None:
     _verify_live_reselection()
     _verify_discovery_failure_isolation()
     _verify_approved_backend_scope()
+    _verify_operator_qubit_exclusion()
     _verify_packed_replica_split()
     _verify_packing_global_phase()
     _verify_packed_static_stays_static()
@@ -3150,7 +3196,8 @@ def _verify() -> None:
     print(
         "runtime contracts: discovery, direct pinned lookup, capability admission, "
         "bounded-angle isolation, coherent snapshots, Target routing, joint placement, "
-        "cross-group PUB fusion, renewed approval, approved backend scope, job revalidation, schema lifecycle, "
+        "cross-group PUB fusion, renewed approval, approved backend scope, operator exclusion, job revalidation, "
+        "schema lifecycle, "
         "recovery, result order, rate keys, scheduler timing, job usage, and digest pass"
     )
 

@@ -241,6 +241,12 @@ def _reproduction_arguments(record: dict[str, Any], location: Path) -> list[str]
         arguments.append("--optimize")
     arguments.extend(_patch_arguments(record))
     arguments.extend(["--backends", ",".join(backends), "--shots", str(_count(record["shots"], "shots"))])
+    for backend_name, qubits in sorted(policy.get("operator_excluded_qubits", {}).items()):
+        _require(
+            isinstance(qubits, list) and bool(qubits) and all(type(q) is int and q >= 0 for q in qubits),
+            "operator excluded qubits must be nonnegative integers",
+        )
+        arguments.extend(["--exclude-qubits", f"{_identifier(backend_name, 'backend')}:{','.join(map(str, qubits))}"])
     for name in ("seeds", "max_pending", "min_remaining_seconds", "max_execution_seconds"):
         value = policy[name]
         _number(value, name)

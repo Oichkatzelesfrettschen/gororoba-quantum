@@ -224,7 +224,7 @@ def qualify(runtime: Any, service: Any, choices: list[Any], record: dict[str, An
         checkpoint()
         for plan_index, name, kind, batch in batches:
             _check_preservation(runtime, run_dir, binding)
-            fresh = runtime.take_snapshot(service, name)
+            fresh = runtime.take_snapshot(service, name, policy.get("operator_excluded_qubits", {}).get(name, ()))
             reason = fresh.ineligible_reason(policy["max_pending"])
             _require(reason is None, f"{name}: backend is ineligible: {reason}")
             owners = {id(component.choice): component.choice for pub in batch for component in pub.components}
