@@ -41,7 +41,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 | [2026-10-13T201757.782152Z](../../results/live/2026-10-13T201757.782152Z) | patch-window Ramsey characterization | ibm_fez | 3 | 46 | 25 | hw-patch-window-nondetection |
 | [2026-10-15T030748.903241Z](../../results/live/2026-10-15T030748.903241Z) | branch-signed coherence window | ibm_kingston | 2 | 15 | 13 | hw-coherence-window, hw-coherence-idle-rotation |
 | [2026-10-15T030903.235380Z](../../results/live/2026-10-15T030903.235380Z) | rank sectors | ibm_kingston | 2 | 36 | 31 | hw-kingston-rank-transfer, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-corner-explains-weak-lane |
-| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 | hw-kingston-ripple-transfer |
+| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane |
 | [2026-10-15T070847.644554Z](../../results/live/2026-10-15T070847.644554Z) | corner qubit baseline | ibm_kingston | 1 | 7 | 4 | hw-corner-readout-fault, hw-corner-explains-weak-lane |
 | [2026-10-15T070853.550532Z](../../results/live/2026-10-15T070853.550532Z) | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | 10 | hw-zero-divisor-floor |
 
@@ -73,6 +73,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); two-term elements e_i + s e_j.
   Evidence: [singular_sector_dynamics.md](../notes/singular_sector_dynamics.md).
   Gates: replayed by core-240, core-241.
+  Depends on: cd-associator-census.
 - **hpp-fixed-degree-refutation** (exact finite certificate, algebra). Bounded-degree Boolean interpolation recovers every degree-d promised polynomial on n <= 8 variables from sum_k<=d C(n, k) classical queries, refuting the stated fixed-degree exponential-query claim; squared Walsh data loses the phase the LCU witness carries.
   Boundary: Covers the enumerated variable counts and degrees; a hidden-polynomial advantage claim needs its own oracle, promise and output model.
   Evidence: [cayley_dickson_claim_boundaries.json](../../results/hw_estimate/cayley_dickson_claim_boundaries.json), [CLAIM_BOUNDARIES.md](../../gororoba_quantum/CLAIM_BOUNDARIES.md).
@@ -115,19 +116,64 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); full constant-rank loci.
   Evidence: [result.json](../evidence/kernel_determinant/result.json), [annihilator_determinant_line.md](../notes/annihilator_determinant_line.md).
   Gates: replayed by core-177, sources-181; bytes verified by sources-183.
+- **sedenion-g2-bundle** (exact finite certificate, geometry). sedenion_bundle.py realizes the published normalized zero-product pair space G2, with SU(2) -> G2 -> V2(R7), through seven quaternion charts, SU(2) transition maps and Cayley-frame automorphisms that its gate checks on every implemented pair.
+  Boundary: A reproduced published structure, not a new theorem; metric and curvature statements need the source's additional hypotheses.
+  Evidence: [CLAIM_BOUNDARIES.md](../../gororoba_quantum/CLAIM_BOUNDARIES.md).
+  Gates: replayed by core-042.
+- **rank-predicates-and-charts** (mathematical theorem, geometry). For D = 2^n, n >= 2, the trace/Newton polynomials E_j of B = L_x^T L_x decide the rank of L_x for every real x, and general pivot charts supply exact kernel frames, transition maps, cocycles and Gram data.
+  Boundary: Membership formulas, not a classification of components, smooth strata or bundle isomorphism classes.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the cited fourfold-multiplicity theorem, which makes each E_j a nonnegative elementary symmetric function of the reduced spectrum; the evaluator accepts integer and rational coordinates.
+  Evidence: [RANK_STRATUM_TOPOLOGY.md](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md).
+  Gates: replayed by core-044, core-045.
+- **restricted-path-topology** (mathematical theorem, geometry). The certified path has generic nullity 4 and exceptional nullities 8, 12 and 16, and its incidence space has homotopy type S7 v S11 v S15 v S4 v S4, with the stated integral homology, trivial torsion and vanishing positive-degree cup products.
+  Boundary: The restricted path space only; the full pair space has further directions and attachments.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the certified one-parameter path.
+  Evidence: [RANK_STRATUM_TOPOLOGY.md](../../gororoba_quantum/RANK_STRATUM_TOPOLOGY.md).
+  Gates: replayed by core-046, core-047, core-048, core-049.
+- **local-schur-fixtures** (exact finite certificate, geometry). Six rational perturbations pass the rank, skew, lift and negative-control checks, with pointwise unit-base linearized bounds 23, 21 and 11.
+  Boundary: Only the maximal bound matches a known stratum dimension; a germ atlas and lower-stratum regularity remain open.
+  Evidence: [result.json](../evidence/local_schur/result.json), [README.md](../evidence/local_schur/README.md).
+  Gates: replayed by sources-127, sources-128; bytes verified by sources-175.
+- **dimension32-skew-schur-charts** (mathematical theorem, geometry). Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.
+  Boundary: A pair of exact paths with one initial tangent shows different nearby ranks, so linearization bounds rank only; nonlinear rank geometry and attachments remain open.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); dimension 32, doubly-pure coefficients, admitted pivot domains.
+  Evidence: [result.json](../evidence/dimension32_skew_schur/result.json), [dimension32_skew_schur_charts.md](../notes/dimension32_skew_schur_charts.md).
+  Gates: replayed by sources-143, sources-144; bytes verified by sources-145.
+- **schur-acceleration-certificates** (exact finite certificate, geometry). Exact rational certificates at the admitted dimension-32 centers separate first-order failure, a complete affine space of compatible accelerations and a separating obstruction; an explicit nullity-12 direction passes every linear constraint and violates the quadratic tangent condition.
+  Boundary: Formal second-order compatibility gives neither an actual curve nor smoothness; the quadratic conditions are an outer bound.
+  Evidence: [result.json](../evidence/schur_acceleration/result.json), [schur_acceleration_certificates.md](../notes/schur_acceleration_certificates.md).
+  Gates: replayed by core-053, core-054, sources-150; bytes verified by sources-151.
+- **fold-average-obstruction** (exact finite certificate, geometry). Exact fold averaging destroys a zero product, while eight implemented 4 x 4 XOR blocks preserve the complete selected-path multiplication matrix up to input and output permutations.
+  Boundary: Count identities carry no topology-transfer map; information needs the full average and detail coordinates.
+  Evidence: [fold_projection_counterexamples.json](../evidence/folding_proofs/fold_projection_counterexamples.json), [open_gororoba_folding_proofs.md](../notes/open_gororoba_folding_proofs.md).
+  Gates: replayed by sources-129, sources-130; bytes verified by sources-176.
+- **complex-skew-certificate** (exact finite certificate, geometry). In dimension 32, fifteen coefficient-pair domains carry exhaustive Pfaffian equations and conjugated kernel maps, and the selected nullity-12 center has a six-coordinate complex residual.
+  Boundary: The residual's real branches and normal links are unsolved, so no neighborhood classification follows.
+  Evidence: [result.json](../evidence/complex_skew/result.json), [complex_skew_rank_geometry.md](../notes/complex_skew_rank_geometry.md).
+  Gates: replayed by core-063, core-064, sources-166, sources-167; bytes verified by sources-168.
+- **projective-kernel-frontiers** (mathematical theorem, geometry). Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.
+  Boundary: Graph-closure computation, smooth subdivisions and quotient cell maps remain open; the theorem supplies no homology table.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); admitted polynomial paths.
+  Evidence: [result.json](../evidence/projective_kernel_limits/result.json), [projective_kernel_frontiers.md](../notes/projective_kernel_frontiers.md).
+  Gates: replayed by core-179, core-180, sources-184, sources-185; bytes verified by sources-186.
+- **real-circle-frontier-graph** (mathematical theorem, geometry). The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.
+  Boundary: The named slice; ambient rank domains need their own positive-domain and coverage proofs.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); the named cone slice.
+  Evidence: [result.json](../evidence/real_frontier_graphs/result.json), [real_circle_frontier_graphs.md](../notes/real_circle_frontier_graphs.md).
+  Gates: replayed by core-190, core-191, sources-192, sources-193; bytes verified by sources-194.
 - **c881-exhaustive-rocq** (machine-checked proof, formal). Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.2 with six closed assumption queries.
   Boundary: The fixed partition only; count identities carry no topology-transfer map.
-  Evidence: [assumptions.v](../evidence/c881_exhaustive/assumptions.v), [provenance.json](../evidence/c881_exhaustive/provenance.json), [c881_exhaustive_proof.md](../notes/c881_exhaustive_proof.md), [README.md](../evidence/c881_exhaustive/README.md).
-  Gates: replayed by sources-188; bytes verified by sources-214.
+  Evidence: [assumptions.v](../evidence/c881_exhaustive/assumptions.v), [provenance.json](../evidence/c881_exhaustive/provenance.json), [kernel.txt](../evidence/c881_exhaustive/kernel.txt), [c881_exhaustive_proof.md](../notes/c881_exhaustive_proof.md), [README.md](../evidence/c881_exhaustive/README.md).
+  Gates: replay failure paths checked by sources-188; bytes verified by sources-214.
   Kernel receipt: [kernel.txt](../evidence/c881_exhaustive/kernel.txt).
 - **target-flip-n21-rocq** (machine-checked proof, formal). The three scheduled N=21 multiplier witnesses act as the stated finite Boolean permutations.
   Boundary: Finite Boolean permutation action; Qiskit phase and workspace behavior are checked separately by modular_arithmetic.py operator checks.
-  Evidence: [TargetFlipN21.v](../../proofs/TargetFlipN21.v), [n21_target_flip_proof_verification.json](../../results/hw_estimate/n21_target_flip_proof_verification.json), [MODULAR_SYNTHESIS.md](../../gororoba_quantum/MODULAR_SYNTHESIS.md).
-  Gates: replayed by core-067.
+  Evidence: [TargetFlipN21.v](../../proofs/TargetFlipN21.v), [n21_target_flip_proof_verification.json](../../results/hw_estimate/n21_target_flip_proof_verification.json), [check.txt](../../results/hw_estimate/n21_target_flip_proof/check.txt), [MODULAR_SYNTHESIS.md](../../gororoba_quantum/MODULAR_SYNTHESIS.md).
+  Gates: source regenerated by core-067.
   Kernel receipt: [check.txt](../../results/hw_estimate/n21_target_flip_proof/check.txt).
 - **fold-and-terminal-rocq** (machine-checked proof, formal). Scalar rational average/detail inverse identities with an average-only obstruction, and rational and real terminal-channel exclusion under four radius premises.
   Boundary: Receipts record Rocq 9.1.1; the full Cayley-Dickson scalar embedding, tower and zero-product bridge remain open obligations.
-  Evidence: [FoldAverageDescent.v](../../proofs/FoldAverageDescent.v), [TerminalChannelSeparation.v](../../proofs/TerminalChannelSeparation.v), [TerminalChannelSeparationReal.v](../../proofs/TerminalChannelSeparationReal.v), [README.md](../evidence/formal_certificates/README.md).
+  Evidence: [FoldAverageDescent.v](../../proofs/FoldAverageDescent.v), [TerminalChannelSeparation.v](../../proofs/TerminalChannelSeparation.v), [TerminalChannelSeparationReal.v](../../proofs/TerminalChannelSeparationReal.v), [FoldAverageDescent.kernel.txt](../evidence/formal_certificates/FoldAverageDescent.kernel.txt), [README.md](../evidence/formal_certificates/README.md).
   Gates: bytes verified by sources-173, sources-174.
   Kernel receipt: [FoldAverageDescent.kernel.txt](../evidence/formal_certificates/FoldAverageDescent.kernel.txt).
 - **designs-ideal-semantics** (circuit-conformance check, implementation). Designs A to D equal their ideal operators and statevectors over every instance, including both SELECT sign strategies.
@@ -231,7 +277,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 - **hw-corner-explains-weak-lane** (exploratory reanalysis, hardware). The qubit 0 and 1 readout fault accounts for the Kingston sector-4 and ripple lane-6 loss the endpoint decomposition located on qubits 0 to 4 and 16.
   Boundary: Inference across a four-hour gap from data that chose the tile; tile against template attribution needs the prospective crossed design.
   Evidence: [rank-sector-endpoint-decomposition.json](../../results/live/rank-sector-endpoint-decomposition.json), [collect.json](../../results/live/2026-10-15T070847.644554Z/collect.json), [ZERO_DIVISOR_AND_CORNER_FINDINGS.md](../../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md).
-  Acquisitions: kingston-rank-sectors, kingston-corner-baseline.
+  Acquisitions: kingston-rank-sectors, kingston-ripple-atlas, kingston-corner-baseline.
   Depends on: hw-corner-readout-fault, hw-rank-endpoint-decomposition.
 - **hw-charge-prediction-residuals** (exploratory reanalysis, hardware). Settled charges agree with live_run predictions within -5.07 to +3.18 percent on the folded ladder, both correction runs, Fez ripple and Fez rank sectors.
   Boundary: Empirical cost evidence on completed workloads; a future ceiling inherits no billing guarantee.

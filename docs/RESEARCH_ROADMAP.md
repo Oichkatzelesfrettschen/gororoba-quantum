@@ -57,7 +57,7 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(27 established, 10 exploratory, 3 open, 5 proposed, 2 withdrawn) and every executed acquisition. Open and
+(37 established, 10 exploratory, 3 open, 5 proposed, 2 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.

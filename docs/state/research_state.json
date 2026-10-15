@@ -109,12 +109,12 @@
       "documents": [
         "docs/notes/cd_associator_defect_census.md"
       ],
-      "gates": [
-        "core-212",
-        "core-213",
-        "sources-215",
-        "sources-218"
-      ],
+      "gates": {
+        "core-212": "replay",
+        "core-213": "replay",
+        "sources-215": "replay",
+        "sources-218": "replay"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -135,7 +135,7 @@
       "documents": [
         "docs/notes/cd_associator_defect_census.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -157,16 +157,18 @@
       "documents": [
         "docs/notes/singular_sector_dynamics.md"
       ],
-      "gates": [
-        "core-240",
-        "core-241"
-      ],
+      "gates": {
+        "core-240": "replay",
+        "core-241": "replay"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
         "two-term elements e_i + s e_j"
       ],
-      "depends_on": [],
+      "depends_on": [
+        "cd-associator-census"
+      ],
       "supersedes": [],
       "superseded_by": null
     },
@@ -186,9 +188,9 @@
       "documents": [
         "gororoba_quantum/CLAIM_BOUNDARIES.md"
       ],
-      "gates": [
-        "core-041"
-      ],
+      "gates": {
+        "core-041": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -211,9 +213,9 @@
       "documents": [
         "docs/evidence/moreno_stiefel/README.md"
       ],
-      "gates": [
-        "core-267"
-      ],
+      "gates": {
+        "core-267": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -231,7 +233,7 @@
       "documents": [
         "docs/notes/math-0512517.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -258,9 +260,9 @@
       "documents": [
         "docs/evidence/moreno_stiefel/README.md"
       ],
-      "gates": [
-        "core-267"
-      ],
+      "gates": {
+        "core-267": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -278,7 +280,7 @@
       "documents": [
         "docs/notes/math-0512517.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -323,16 +325,16 @@
         "docs/notes/four_support_doubling.md",
         "docs/notes/four_support_cellular_homology.md"
       ],
-      "gates": [
-        "sources-131",
-        "sources-134",
-        "sources-137",
-        "sources-140",
-        "sources-133",
-        "sources-136",
-        "sources-139",
-        "sources-142"
-      ],
+      "gates": {
+        "sources-131": "replay",
+        "sources-134": "replay",
+        "sources-137": "replay",
+        "sources-140": "replay",
+        "sources-133": "bytes",
+        "sources-136": "bytes",
+        "sources-139": "bytes",
+        "sources-142": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -358,12 +360,12 @@
       "documents": [
         "docs/notes/nullity_twelve_local_geometry.md"
       ],
-      "gates": [
-        "core-055",
-        "core-057",
-        "sources-160",
-        "sources-162"
-      ],
+      "gates": {
+        "core-055": "replay",
+        "core-057": "replay",
+        "sources-160": "replay",
+        "sources-162": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -389,10 +391,10 @@
       "documents": [
         "docs/notes/principal_skew_atlas.md"
       ],
-      "gates": [
-        "sources-146",
-        "sources-148"
-      ],
+      "gates": {
+        "sources-146": "replay",
+        "sources-148": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -418,11 +420,11 @@
       "documents": [
         "docs/notes/annihilator_kernel_limits.md"
       ],
-      "gates": [
-        "core-059",
-        "sources-163",
-        "sources-165"
-      ],
+      "gates": {
+        "core-059": "replay",
+        "sources-163": "replay",
+        "sources-165": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -448,11 +450,11 @@
       "documents": [
         "docs/notes/annihilator_determinant_line.md"
       ],
-      "gates": [
-        "core-177",
-        "sources-181",
-        "sources-183"
-      ],
+      "gates": {
+        "core-177": "replay",
+        "sources-181": "replay",
+        "sources-183": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
@@ -473,7 +475,7 @@
       "documents": [
         "docs/RESEARCH_ROADMAP.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [
         "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
@@ -484,6 +486,282 @@
         "kernel-limit-slice",
         "nullity-twelve-cone"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "sedenion-g2-bundle",
+      "statement": "sedenion_bundle.py realizes the published normalized zero-product pair space G2, with SU(2) -> G2 -> V2(R7), through seven quaternion charts, SU(2) transition maps and Cayley-frame automorphisms that its gate checks on every implemented pair.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "A reproduced published structure, not a new theorem; metric and curvature statements need the source's additional hypotheses.",
+      "evidence": [],
+      "documents": [
+        "gororoba_quantum/CLAIM_BOUNDARIES.md"
+      ],
+      "gates": {
+        "core-042": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "rank-predicates-and-charts",
+      "statement": "For D = 2^n, n >= 2, the trace/Newton polynomials E_j of B = L_x^T L_x decide the rank of L_x for every real x, and general pivot charts supply exact kernel frames, transition maps, cocycles and Gram data.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "Membership formulas, not a classification of components, smooth strata or bundle isomorphism classes.",
+      "evidence": [],
+      "documents": [
+        "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md"
+      ],
+      "gates": {
+        "core-044": "replay",
+        "core-045": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "the cited fourfold-multiplicity theorem, which makes each E_j a nonnegative elementary symmetric function of the reduced spectrum",
+        "the evaluator accepts integer and rational coordinates"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "restricted-path-topology",
+      "statement": "The certified path has generic nullity 4 and exceptional nullities 8, 12 and 16, and its incidence space has homotopy type S7 v S11 v S15 v S4 v S4, with the stated integral homology, trivial torsion and vanishing positive-degree cup products.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "The restricted path space only; the full pair space has further directions and attachments.",
+      "evidence": [],
+      "documents": [
+        "gororoba_quantum/RANK_STRATUM_TOPOLOGY.md"
+      ],
+      "gates": {
+        "core-046": "replay",
+        "core-047": "replay",
+        "core-048": "replay",
+        "core-049": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "the certified one-parameter path"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "local-schur-fixtures",
+      "statement": "Six rational perturbations pass the rank, skew, lift and negative-control checks, with pointwise unit-base linearized bounds 23, 21 and 11.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Only the maximal bound matches a known stratum dimension; a germ atlas and lower-stratum regularity remain open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/local_schur/result.json",
+          "sha256": "8ba959830a205ca53c6e789a7f4e29da5e322341c416f7cea617e80b4119bd6a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/local_schur/README.md"
+      ],
+      "gates": {
+        "sources-127": "replay",
+        "sources-128": "replay",
+        "sources-175": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "dimension32-skew-schur-charts",
+      "statement": "Exact rational evaluation accepts all 30 doubly-pure coefficient directions on each admitted pivot domain with nonzero reduced ranks and complete kernel lifts, inverse coordinates and sphere metrics; written all-real block identities give the local incidence homeomorphism.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "A pair of exact paths with one initial tangent shows different nearby ranks, so linearization bounds rank only; nonlinear rank geometry and attachments remain open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/dimension32_skew_schur/result.json",
+          "sha256": "f1d9e77b2e8b7cef3a2d7a4da7c87e88e689997193cf03771bd82d0614f64bdc"
+        }
+      ],
+      "documents": [
+        "docs/notes/dimension32_skew_schur_charts.md"
+      ],
+      "gates": {
+        "sources-143": "replay",
+        "sources-144": "replay",
+        "sources-145": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "dimension 32, doubly-pure coefficients, admitted pivot domains"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "schur-acceleration-certificates",
+      "statement": "Exact rational certificates at the admitted dimension-32 centers separate first-order failure, a complete affine space of compatible accelerations and a separating obstruction; an explicit nullity-12 direction passes every linear constraint and violates the quadratic tangent condition.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Formal second-order compatibility gives neither an actual curve nor smoothness; the quadratic conditions are an outer bound.",
+      "evidence": [
+        {
+          "path": "docs/evidence/schur_acceleration/result.json",
+          "sha256": "79d37ea6d9d03490a9ca83c8beb8956db851e8ec72ec09ac55d293af64835c3c"
+        }
+      ],
+      "documents": [
+        "docs/notes/schur_acceleration_certificates.md"
+      ],
+      "gates": {
+        "core-053": "replay",
+        "core-054": "replay",
+        "sources-150": "replay",
+        "sources-151": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "fold-average-obstruction",
+      "statement": "Exact fold averaging destroys a zero product, while eight implemented 4 x 4 XOR blocks preserve the complete selected-path multiplication matrix up to input and output permutations.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Count identities carry no topology-transfer map; information needs the full average and detail coordinates.",
+      "evidence": [
+        {
+          "path": "docs/evidence/folding_proofs/fold_projection_counterexamples.json",
+          "sha256": "501d323a5ef6dc1c4850c74cbd2eaa2142b82bfd3565fb48447a766e275b507f"
+        }
+      ],
+      "documents": [
+        "docs/notes/open_gororoba_folding_proofs.md"
+      ],
+      "gates": {
+        "sources-129": "replay",
+        "sources-130": "replay",
+        "sources-176": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "complex-skew-certificate",
+      "statement": "In dimension 32, fifteen coefficient-pair domains carry exhaustive Pfaffian equations and conjugated kernel maps, and the selected nullity-12 center has a six-coordinate complex residual.",
+      "domain": "geometry",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "The residual's real branches and normal links are unsolved, so no neighborhood classification follows.",
+      "evidence": [
+        {
+          "path": "docs/evidence/complex_skew/result.json",
+          "sha256": "460c4214b0d7e2692a62a94dcd0625b66668e7a63e44cc91a7c9b1dc360b806e"
+        }
+      ],
+      "documents": [
+        "docs/notes/complex_skew_rank_geometry.md"
+      ],
+      "gates": {
+        "core-063": "replay",
+        "core-064": "replay",
+        "sources-166": "replay",
+        "sources-167": "replay",
+        "sources-168": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "projective-kernel-frontiers",
+      "statement": "Finite frame saturation recovers the leading kernel plane of every admitted polynomial path, and an all-stage quotient theorem rebuilds the full pair space from tautological sphere spaces over all real frontier graphs.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "Graph-closure computation, smooth subdivisions and quotient cell maps remain open; the theorem supplies no homology table.",
+      "evidence": [
+        {
+          "path": "docs/evidence/projective_kernel_limits/result.json",
+          "sha256": "80558b89bd6099ba9d86d194214e4d0355028c6a0f35deed6b7a116ccaa7f423"
+        }
+      ],
+      "documents": [
+        "docs/notes/projective_kernel_frontiers.md"
+      ],
+      "gates": {
+        "core-179": "replay",
+        "core-180": "replay",
+        "sources-184": "replay",
+        "sources-185": "replay",
+        "sources-186": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "admitted polynomial paths"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "real-circle-frontier-graph",
+      "statement": "The named cone-slice frontier graph is a smooth cylinder with a trace inverse, and labelled integral contractions certify the unit-partner evaluation map and its cohomology pullbacks.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "The named slice; ambient rank domains need their own positive-domain and coverage proofs.",
+      "evidence": [
+        {
+          "path": "docs/evidence/real_frontier_graphs/result.json",
+          "sha256": "bc77cd4c70a27bc736cbcaafdc62d17324b6988ebd8ed552ffcd0aac4e40b543"
+        }
+      ],
+      "documents": [
+        "docs/notes/real_circle_frontier_graphs.md"
+      ],
+      "gates": {
+        "core-190": "replay",
+        "core-191": "replay",
+        "sources-192": "replay",
+        "sources-193": "replay",
+        "sources-194": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "the named cone slice"
+      ],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },
@@ -502,16 +780,20 @@
         {
           "path": "docs/evidence/c881_exhaustive/provenance.json",
           "sha256": "62225e12cffb277ac1f47bdbed8a218872f45cf354ebfe53c35ec106c458c6bd"
+        },
+        {
+          "path": "docs/evidence/c881_exhaustive/kernel.txt",
+          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
         }
       ],
       "documents": [
         "docs/notes/c881_exhaustive_proof.md",
         "docs/evidence/c881_exhaustive/README.md"
       ],
-      "gates": [
-        "sources-188",
-        "sources-214"
-      ],
+      "gates": {
+        "sources-188": "admission",
+        "sources-214": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -534,14 +816,18 @@
         {
           "path": "results/hw_estimate/n21_target_flip_proof_verification.json",
           "sha256": "9a6597a0afa633d23b1150165e333bf87d3a4ed18c7f1963bdb36494ce7ba4dd"
+        },
+        {
+          "path": "results/hw_estimate/n21_target_flip_proof/check.txt",
+          "sha256": "d8244eff15764b9053f9bf8199d0ab2aa6dec19e369f872d520a403f6f5b144f"
         }
       ],
       "documents": [
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
-      "gates": [
-        "core-067"
-      ],
+      "gates": {
+        "core-067": "freshness"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -568,15 +854,19 @@
         {
           "path": "proofs/TerminalChannelSeparationReal.v",
           "sha256": "b1227ae6842e33967def112c9cf69b37b2c9c0b04a7f4b7af3b9f8d3bb3dc797"
+        },
+        {
+          "path": "docs/evidence/formal_certificates/FoldAverageDescent.kernel.txt",
+          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
         }
       ],
       "documents": [
         "docs/evidence/formal_certificates/README.md"
       ],
-      "gates": [
-        "sources-173",
-        "sources-174"
-      ],
+      "gates": {
+        "sources-173": "bytes",
+        "sources-174": "bytes"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -595,9 +885,9 @@
       "documents": [
         "gororoba_quantum/DESIGN_NOTES.md"
       ],
-      "gates": [
-        "core-040"
-      ],
+      "gates": {
+        "core-040": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -615,10 +905,10 @@
       "documents": [
         "AGENTS.md"
       ],
-      "gates": [
-        "core-251",
-        "core-252"
-      ],
+      "gates": {
+        "core-251": "replay",
+        "core-252": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -636,9 +926,9 @@
       "documents": [
         "docs/notes/heron_spatial_multiprogramming.md"
       ],
-      "gates": [
-        "core-256"
-      ],
+      "gates": {
+        "core-256": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -665,7 +955,7 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-mod15-pilot"
       ],
@@ -694,10 +984,10 @@
       "documents": [
         "results/live/2026-10-12T055624.091217Z/ANALYSIS.md"
       ],
-      "gates": [
-        "core-017",
-        "core-032"
-      ],
+      "gates": {
+        "core-017": "replay",
+        "core-032": "replay"
+      },
       "acquisitions": [
         "kingston-folded-qpe-ladder"
       ],
@@ -730,7 +1020,7 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-correction-first",
         "kingston-correction-second"
@@ -760,7 +1050,7 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-correction-first",
         "kingston-correction-second"
@@ -790,9 +1080,9 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [
-        "core-205"
-      ],
+      "gates": {
+        "core-205": "replay"
+      },
       "acquisitions": [
         "fez-ripple-atlas"
       ],
@@ -817,7 +1107,7 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "fez-ripple-atlas"
       ],
@@ -846,9 +1136,9 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [
-        "core-206"
-      ],
+      "gates": {
+        "core-206": "replay"
+      },
       "acquisitions": [
         "fez-rank-sectors"
       ],
@@ -873,10 +1163,10 @@
       "documents": [
         "results/live/kingston-wide-control-result/README.md"
       ],
-      "gates": [
-        "core-200",
-        "core-204"
-      ],
+      "gates": {
+        "core-200": "replay",
+        "core-204": "bytes"
+      },
       "acquisitions": [
         "kingston-wide-control"
       ],
@@ -905,7 +1195,7 @@
       "documents": [
         "results/live/N21_ORBIT_RCA.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "fez-n21-orbit-feedback",
         "fez-n21-orbit-window"
@@ -935,7 +1225,7 @@
       "documents": [
         "results/live/PATCH_WINDOW_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "fez-patch-window"
       ],
@@ -964,7 +1254,7 @@
       "documents": [
         "results/live/QPU_PROGRAM_CASES.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-coherence-window"
       ],
@@ -989,7 +1279,7 @@
       "documents": [
         "results/live/QPU_PROGRAM_CASES.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-coherence-window"
       ],
@@ -1009,7 +1299,7 @@
       "boundary": "A rotation is not a dephasing, and no DD acquisition exists.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -1033,7 +1323,7 @@
       "documents": [
         "results/live/QPU_PROGRAM_CASES.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-rank-sectors"
       ],
@@ -1064,9 +1354,9 @@
       "documents": [
         "results/live/QPU_PROGRAM_CASES.md"
       ],
-      "gates": [
-        "core-266"
-      ],
+      "gates": {
+        "core-266": "replay"
+      },
       "acquisitions": [
         "kingston-ripple-atlas"
       ],
@@ -1093,9 +1383,9 @@
       "documents": [
         "results/live/QPU_PROGRAM_CASES.md"
       ],
-      "gates": [
-        "core-269"
-      ],
+      "gates": {
+        "core-269": "replay"
+      },
       "acquisitions": [
         "fez-rank-sectors",
         "kingston-rank-sectors"
@@ -1121,9 +1411,9 @@
       "documents": [
         "results/live/QPU_PROGRAM_CASES.md"
       ],
-      "gates": [
-        "core-269"
-      ],
+      "gates": {
+        "core-269": "replay"
+      },
       "acquisitions": [
         "fez-rank-sectors",
         "kingston-rank-sectors"
@@ -1144,7 +1434,7 @@
       "boundary": "The modal-outcome block statistic it rested on is blind to a distribution change that keeps the modal rate: p_first = (0.625, 0.375, 0) against p_last = (0.625, 0, 0.375) has TV distance 0.375.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
@@ -1168,7 +1458,7 @@
       "documents": [
         "results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-corner-baseline"
       ],
@@ -1197,9 +1487,10 @@
       "documents": [
         "results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-rank-sectors",
+        "kingston-ripple-atlas",
         "kingston-corner-baseline"
       ],
       "assumptions": [],
@@ -1226,7 +1517,7 @@
       "documents": [
         "results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md"
       ],
-      "gates": [],
+      "gates": {},
       "acquisitions": [
         "kingston-zero-divisor-fringe"
       ],
@@ -1251,9 +1542,9 @@
       "documents": [
         "results/live/CAMPAIGN_FINDINGS.md"
       ],
-      "gates": [
-        "core-196"
-      ],
+      "gates": {
+        "core-196": "replay"
+      },
       "acquisitions": [
         "kingston-folded-qpe-ladder",
         "kingston-correction-first",
@@ -1275,7 +1566,7 @@
       "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
@@ -1293,7 +1584,7 @@
       "boundary": "Priced against direct counting before any hardware case; no universal speedup follows.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
@@ -1311,7 +1602,7 @@
       "boundary": "Tiles were chosen after seeing the data, so only prospective validation counts; qubit labels on different processors do not identify one defect.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
@@ -1329,7 +1620,7 @@
       "boundary": "Falsifier: one symmetric assignment model reproduces both labels' strata within their binomial intervals.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
@@ -1347,7 +1638,7 @@
       "boundary": "A mixture can cancel, so it needs an independent CZ-phase reference before a priced case.",
       "evidence": [],
       "documents": [],
-      "gates": [],
+      "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [

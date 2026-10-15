@@ -2,12 +2,13 @@
 
 docs/state/research_state.json is the authoritative list of research claims
 and QPU acquisitions. Each claim names one evidence class, a status, its
-retained evidence (sha256-pinned data files and prose documents), the CI
-gates that reproduce it, the acquisitions it rests on and the claims it
-depends on, supersedes or is superseded by. The evidence class fixes what a
-claim may assert: a checksum gate verifies retained bytes only, a
-circuit-conformance check verifies ideal semantics only, and an exploratory
-reanalysis never reaches the established status.
+retained evidence (sha256-pinned data files and prose documents), its CI
+gates with the role each plays (replay, freshness, admission or bytes), the
+acquisitions it rests on and the claims it depends on, supersedes or is
+superseded by. The evidence class fixes what a claim may assert: only a
+replay gate re-derives a result, a circuit-conformance check verifies ideal
+semantics only, and an exploratory reanalysis never reaches the established
+status.
 
 Acquisitions are derived. The retained-run audit
 (results/live/qpu-job-retention-audit.json, bound to the service inventory
@@ -98,6 +99,11 @@ NEEDS_REPRODUCING_GATE = {
     "circuit-conformance check",
 }
 NEEDS_ACQUISITION = {"preregistered hardware inference", "exploratory reanalysis"}
+# What a gate does for a claim: replay re-derives the claimed result, bytes
+# verifies retained files, freshness regenerates a source from its producer,
+# and admission exercises the replay procedure's failure paths.
+GATE_ROLES = ("replay", "freshness", "admission", "bytes")
+CHECK_PREFIXES = ("sha256sum -c", "shellcheck ", "ruff ", "mypy ", "MYPYPATH=")
 CLAIM_KEYS = {
     "id",
     "statement",
@@ -166,8 +172,8 @@ def _strings(value: Any, field: str, owner: str) -> list[str]:
     return list(value)
 
 
-def _checksum_only(command: str) -> bool:
-    return command.strip().startswith("sha256sum -c") or command.strip().startswith("shellcheck ")
+def _static_check(command: str) -> bool:
+    return command.strip().startswith(CHECK_PREFIXES)
 
 
 def validate(registry: dict[str, Any], context: Context) -> None:
@@ -203,7 +209,7 @@ def validate(registry: dict[str, Any], context: Context) -> None:
             claim["status"] in CLASSES[kind]["statuses"],
             f"{owner}: status {claim['status']!r} is outside {sorted(CLASSES[kind]['statuses'])} for {kind}",
         )
-        for field in ("documents", "gates", "acquisitions", "assumptions", "depends_on", "supersedes"):
+        for field in ("documents", "acquisitions", "assumptions", "depends_on", "supersedes"):
             claim.setdefault(field, [])
             _strings(claim[field], field, owner)
         evidence = claim.setdefault("evidence", [])
@@ -218,22 +224,33 @@ def validate(registry: dict[str, Any], context: Context) -> None:
             require(context.digest(path) == item["sha256"], f"{owner}: evidence {item['path']} digest differs")
         for document in claim["documents"]:
             require((ROOT / document).is_file(), f"{owner}: document {document} is missing")
-        for gate in claim["gates"]:
+        gates = claim.setdefault("gates", {})
+        require(isinstance(gates, dict), f"{owner}: gates map each gate to its role")
+        for gate, role in gates.items():
             require(gate in context.gates, f"{owner}: gate {gate} is not in ci/gates.json")
+            require(role in GATE_ROLES, f"{owner}: gate {gate} role must be one of {GATE_ROLES}")
+            command = context.gates[gate]
+            if role == "bytes":
+                require(command.strip().startswith("sha256sum -c"), f"{owner}: bytes gate {gate} is not a checksum")
+            else:
+                require(not _static_check(command), f"{owner}: {role} gate {gate} is a lint or byte check")
         for acquisition in claim["acquisitions"]:
             require(acquisition in acquisition_ids, f"{owner}: acquisition {acquisition} is not registered")
 
         if kind in NEEDS_REPRODUCING_GATE:
             require(
-                any(not _checksum_only(context.gates[gate]) for gate in claim["gates"]),
-                f"{owner}: a {kind} needs a gate that re-derives it; a checksum gate verifies bytes only",
+                "replay" in gates.values(),
+                f"{owner}: a {kind} needs a replay gate; byte, freshness and admission gates re-derive nothing",
             )
         if kind == "mathematical theorem":
             require(claim["assumptions"], f"{owner}: a theorem lists its assumptions")
             require(claim["documents"], f"{owner}: a theorem names the document carrying its proof")
         if kind == "machine-checked proof":
             receipt = claim.get("kernel_receipt")
-            require(isinstance(receipt, str) and (ROOT / receipt).is_file(), f"{owner}: kernel_receipt is required")
+            require(
+                isinstance(receipt, str) and any(item["path"] == receipt for item in evidence),
+                f"{owner}: kernel_receipt is required and pinned as evidence",
+            )
             require(
                 any(item["path"].endswith(".v") for item in evidence),
                 f"{owner}: a machine-checked proof pins its Rocq source",
@@ -357,7 +374,7 @@ def _acquisition_table(registry: dict[str, Any], context: Context, origin: Path,
     return lines
 
 
-def _claim_entry(claim: dict[str, Any], origin: Path, gates: dict[str, str]) -> list[str]:
+def _claim_entry(claim: dict[str, Any], origin: Path) -> list[str]:
     lines = [f"- **{claim['id']}** ({claim['evidence_class']}, {claim['domain']}). {claim['statement']}"]
     lines.append(f"  Boundary: {claim['boundary']}")
     if claim["assumptions"]:
@@ -367,13 +384,17 @@ def _claim_entry(claim: dict[str, Any], origin: Path, gates: dict[str, str]) -> 
     if sources:
         lines.append(f"  Evidence: {', '.join(sources)}.")
     if claim["gates"]:
-        replay = [gate for gate in claim["gates"] if not _checksum_only(gates[gate])]
-        checksum = [gate for gate in claim["gates"] if _checksum_only(gates[gate])]
-        parts = []
-        if replay:
-            parts.append(f"replayed by {', '.join(replay)}")
-        if checksum:
-            parts.append(f"bytes verified by {', '.join(checksum)}")
+        verbs = {
+            "replay": "replayed by",
+            "freshness": "source regenerated by",
+            "admission": "replay failure paths checked by",
+            "bytes": "bytes verified by",
+        }
+        parts = [
+            f"{verbs[role]} {', '.join(gate for gate, kind in claim['gates'].items() if kind == role)}"
+            for role in GATE_ROLES
+            if role in claim["gates"].values()
+        ]
         lines.append(f"  Gates: {'; '.join(parts)}.")
     if claim.get("kernel_receipt"):
         lines.append(f"  Kernel receipt: {_link(claim['kernel_receipt'], origin, Path(claim['kernel_receipt']).name)}.")
@@ -432,7 +453,7 @@ def render_state_document(registry: dict[str, Any], context: Context) -> str:
         for domain in DOMAINS:
             for claim in members:
                 if claim["domain"] == domain:
-                    lines += _claim_entry(claim, origin, context.gates)
+                    lines += _claim_entry(claim, origin)
         lines.append("")
     return "\n".join(lines).rstrip() + "\n"
 
@@ -535,10 +556,17 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
         claim(registry, lambda c: c["evidence_class"] == "preregistered hardware inference")["acquisitions"] = []
 
     def checksum_certificate(registry: dict[str, Any]) -> None:
-        claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = ["sources-242"]
+        claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {"sources-242": "bytes"}
+
+    def lint_as_replay(registry: dict[str, Any]) -> None:
+        claim(registry, lambda c: c["evidence_class"] == "exact finite certificate")["gates"] = {"core-001": "replay"}
+
+    def receipt_unpinned(registry: dict[str, Any]) -> None:
+        entry = claim(registry, lambda c: c["evidence_class"] == "machine-checked proof")
+        entry["evidence"] = [item for item in entry["evidence"] if item["path"] != entry["kernel_receipt"]]
 
     def unknown_gate(registry: dict[str, Any]) -> None:
-        claim(registry, lambda c: bool(c.get("gates")))["gates"] = ["core-9999"]
+        claim(registry, lambda c: bool(c.get("gates")))["gates"] = {"core-9999": "replay"}
 
     def altered_evidence(registry: dict[str, Any]) -> None:
         claim(registry, lambda c: bool(c.get("evidence")))["evidence"][0]["sha256"] = "0" * 64
@@ -580,7 +608,9 @@ def _mutations() -> Iterable[tuple[str, Callable[[dict[str, Any]], None], str]]:
     yield "withdrawn claim names a missing successor", dangling_successor, "is not a claim"
     yield "successor omits the superseded claim", one_sided_supersession, "does not list it"
     yield "hardware inference without an acquisition", hardware_without_acquisition, "names its acquisitions"
-    yield "certificate reproduced only by a checksum", checksum_certificate, "checksum gate verifies bytes only"
+    yield "certificate reproduced only by a checksum", checksum_certificate, "needs a replay gate"
+    yield "lint gate counted as replay", lint_as_replay, "is a lint or byte check"
+    yield "kernel receipt outside the pinned evidence", receipt_unpinned, "pinned as evidence"
     yield "unknown gate", unknown_gate, "is not in ci/gates.json"
     yield "altered evidence bytes", altered_evidence, "digest differs"
     yield "audited run without an acquisition", missing_run, "run set differs"
