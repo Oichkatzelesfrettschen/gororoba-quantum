@@ -2049,7 +2049,7 @@
       "evidence": [
         {
           "path": "docs/evidence/ccz-reduction/normal_form.json",
-          "sha256": "c6f2fdb8196ba3f1ab5f936b9e21abf1c98ea74648252ad8ce2a3b7921f47ae6"
+          "sha256": "a63e5b9507f604528fd767a35079811b39776f7754ac05b35e4297859aa4dddf"
         }
       ],
       "documents": [
@@ -2077,7 +2077,7 @@
       "evidence": [
         {
           "path": "docs/evidence/ccz-reduction/normal_form.json",
-          "sha256": "c6f2fdb8196ba3f1ab5f936b9e21abf1c98ea74648252ad8ce2a3b7921f47ae6"
+          "sha256": "a63e5b9507f604528fd767a35079811b39776f7754ac05b35e4297859aa4dddf"
         }
       ],
       "documents": [
@@ -2097,7 +2097,7 @@
       ],
       "superseded_by": null,
       "id": "associator-normal-form-compile",
-      "statement": "For all 360 dim-32 cubic pairs the factorized Design C circuit, the Reed-Muller diagonal oracle and the CCZ normal form are operator-equal to diag((-1)^omega); on the ibm_kingston coupling map (optimization level 3, seed 11) they compile to about 124-132, 10-43 and 25-32 CZ on average, and the normal form beats the diagonal oracle on 97 pairs.",
+      "statement": "For all 360 dim-32 cubic pairs the factorized Design C circuit (block barriers kept), the Reed-Muller diagonal oracle and the CCZ normal form equal diag((-1)^omega) entry by entry, global phase included; on the ibm_kingston coupling map (optimization level 3, seed 11) they compile to about 122-131, 10-43 and 25-32 CZ on average, and the normal form uses fewer CZ than the diagonal oracle on 97 pairs.",
       "domain": "implementation",
       "evidence_class": "circuit-conformance check",
       "status": "established",

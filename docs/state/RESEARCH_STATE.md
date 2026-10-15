@@ -210,7 +210,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Design semantics; the crossing itself is a proposed experiment.
   Evidence: [crossed_tile_template.py](../../gororoba_quantum/crossed_tile_template.py).
   Gates: replayed by core-274.
-- **associator-normal-form-compile** (circuit-conformance check, implementation). For all 360 dim-32 cubic pairs the factorized Design C circuit, the Reed-Muller diagonal oracle and the CCZ normal form are operator-equal to diag((-1)^omega); on the ibm_kingston coupling map (optimization level 3, seed 11) they compile to about 124-132, 10-43 and 25-32 CZ on average, and the normal form beats the diagonal oracle on 97 pairs.
+- **associator-normal-form-compile** (circuit-conformance check, implementation). For all 360 dim-32 cubic pairs the factorized Design C circuit (block barriers kept), the Reed-Muller diagonal oracle and the CCZ normal form equal diag((-1)^omega) entry by entry, global phase included; on the ibm_kingston coupling map (optimization level 3, seed 11) they compile to about 122-131, 10-43 and 25-32 CZ on average, and the normal form uses fewer CZ than the diagonal oracle on 97 pairs.
   Boundary: One coupling map, one seed, ideal semantics; the two diagonal circuits encode the predicted phase and are references for the factorized circuit, not substitutes. The dim-16 ripple circuits have no cubic phase.
   Evidence: [normal_form.json](../evidence/ccz-reduction/normal_form.json), [README.md](../evidence/ccz-reduction/README.md), [README.md](../evidence/simulation-notebook-audit/README.md).
   Gates: replayed by core-278.

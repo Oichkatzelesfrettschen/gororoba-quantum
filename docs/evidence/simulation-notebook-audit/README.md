@@ -44,20 +44,26 @@ structural claim behind the CCZ notebooks from `cd_core`:
 - Compiled to the ibm_kingston coupling map (basis cz, rz, sx, x;
   optimization level 3; seed 11), mean CZ counts by monomial count are:
 
-  | cubic monomials | pairs | factorized (Design C) | Reed-Muller diagonal | CCZ normal form |
-  | ---: | ---: | ---: | ---: | ---: |
-  | 1 | 96 | 124.4 | 9.9 | 24.6 |
-  | 2 | 144 | 128.7 | 21.7 | 32.5 |
-  | 3 | 96 | 131.6 | 32.9 | 32.3 |
-  | 4 | 24 | 132.4 | 42.7 | 29.3 |
+  | cubic monomials | pairs | factorized (Design C) | Reed-Muller diagonal | CCZ normal form | normal form fewer CZ |
+  | ---: | ---: | ---: | ---: | ---: | ---: |
+  | 1 | 96 | 121.6 | 9.9 | 24.6 | 3 |
+  | 2 | 144 | 124.6 | 21.7 | 32.5 | 22 |
+  | 3 | 96 | 125.9 | 32.9 | 32.3 | 48 |
+  | 4 | 24 | 130.6 | 42.7 | 29.3 | 24 |
 
-- The normal form beats the direct diagonal oracle on 97 of 360 pairs, all
-  with three or four cubic monomials. The 18.9 % and 1.19x figures have no
-  counterpart in any compiled circuit.
+- The factorized circuit keeps the barriers between its three blocks, so
+  each block compiles separately, as in the hardware design.
+- The normal form uses fewer CZ than the direct diagonal oracle on 97 of
+  360 pairs: every four-monomial pair, half of the three-monomial pairs and
+  a few with one or two. The 18.9 % and 1.19x figures have no counterpart in
+  any compiled circuit.
 - Both diagonal circuits are built from the precomputed phase, so they
   encode the predicted answer. They cannot replace the factorized circuit,
   whose hardware run tests whether the device composes the three
   multiplication blocks; they serve as references that carry the same ideal
   distribution at a quarter or less of the CZ count.
+- Every circuit is compared entry by entry with `diag((-1)^f)`, global
+  phase included, because a controlled copy turns a global sign into a
+  relative one.
 - The 84/84 sedenion ripple circuits are dim 16, where every associator
   phase has degree at most 2, so the CCZ normal form does not apply to them.
