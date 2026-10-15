@@ -1,0 +1,8 @@
+{
+  "columns_compared": 64,
+  "construction": "cayley_dickson_algebra(6, fractions.Fraction); column j of L_v is v * e(j)",
+  "mismatched_entries": 0,
+  "package": "hypercomplex",
+  "schema": "stiefel-witness-package-cross-check-v1",
+  "version": "0.3.4"
+}

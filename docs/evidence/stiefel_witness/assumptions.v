@@ -1,0 +1,5 @@
+From GororobaQuantum Require Import StiefelWitnessInvertible.
+Print Assumptions sigma_fuel_adequate.
+Print Assumptions witness_is_stiefel.
+Print Assumptions Lv_left_inverse.
+Print Assumptions Lv_integer_kernel_trivial.
