@@ -52,3 +52,12 @@ unital errors cannot create population contrast, which is not true in
 general, since a unitary error changes populations. The argument that
 applies is the virtual-RZ one above. The notebook's executed outputs come
 from its own environment and are not replayed in CI.
+
+`falsify-resonator-readout.ipynb` asks whether a circuit-dependent readout
+error could produce the contrast from equal populations. Its arithmetic
+holds, but two framing points apply. The contrast is the designed
+dependence of one compiled interferometer on its bound phase, so readout
+models bear on its size, not its existence. Its final table also repeats the
+unitarity argument for angle-dependent errors, which the virtual-RZ argument
+above replaces. The 37 CZ it cites is a typical atlas member; atlas members
+run 33 to 53, and each bright and dark pair shares its count exactly.
