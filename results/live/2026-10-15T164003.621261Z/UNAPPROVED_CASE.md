@@ -24,11 +24,14 @@ the backend recalibrates or its queue changes.
 - **Response and contrasts:** the response is the endpoint error
   `y = (mean over ideal-one members of (1 - p) + mean over ideal-zero members of p) / 2`.
   From it come the tile effect T, the template effect L, and the interaction
-  `I = (y_w4 - y_w7) - (y_r4 - y_r7)`, each with a Bonferroni 95 percent
-  interval (z = 2.394).
+  `I = (y_w4 - y_w7) - (y_r4 - y_r7)`. Their family-wise 95 percent
+  intervals come from Clopper-Pearson bounds on all 80 member-tile success
+  counts, carried through the contrasts by interval arithmetic. They need
+  no independence between the shot-sharing tiles.
 - **Predictions:**
   - The calibrated noise model of this dry run reads T = -0.003
-    [-0.009, +0.003], L = -0.003 and I = +0.005: no tile effect.
+    [-0.063, +0.057], L = -0.003 [-0.063, +0.057] and I = +0.005
+    [-0.116, +0.125]: no tile effect.
   - The corner-measured readout channel of qubits 0 and 1, applied to the
     weak tile's selector bits, predicts T = 0.315 with L = I = 0, whichever
     selector bit each qubit reads.
@@ -42,19 +45,21 @@ the backend recalibrates or its queue changes.
   - The readout hypothesis is consistent with the run when T falls within
     0.315 +- its interval half-width; a resolved T far below it leaves part of
     the loss unexplained.
-- **Record:** `2026-10-15T160033.321980Z/record.json`, sha256
-  `d2a0ccc356c414febe78ddde1b3f6a184c2e80e907d48a591dcd280e49989d41`;
-  source `8eb17cc`, experiment digest `a11d092c2164`, calibration
+- **Record:** `2026-10-15T164003.621261Z/record.json`, sha256
+  `48e6495e70f494c08d0abcefba51f29cb8bfea87eb5e7806d4d37cafb8003d1d`;
+  source `4c1984c`, experiment digest `15715eb03f62`, calibration
   2026-10-15 08:49:10 PDT. Replica 0 sits on 104-107 and replica 1 on 0-3,
   at 20 CZ per member.
 - **Job:** one static job of 40 PUBs on ibm_kingston, ceiling 15 s. Nominal
   cost is 40 x 512 shots x about 260 us, about 5.3 s, plus 2.3 s of job
   overhead: about 8 s of the 266 s observed remaining.
 
-`"$PYTHON" crossed_tile_template.py --record <collect.json>` prints the
-contrasts after collection.
+`"$PYTHON" crossed_tile_template.py --collection <collect.json>` prints the
+measured contrasts after collection, and `--record` prints this dry run's
+noise-model contrasts. `plan()` refuses any placement other than one replica
+on each tile.
 
 Command (run from gororoba_quantum/; refresh the dry run first, then replace
 the record and digest):
 
-    "$PYTHON" live_run.py --groups crossed_tile_template --backends ibm_kingston --exclude-qubits ibm_kingston:4-103,108-155 --shots 512 --max-replicas 2 --no-isolated-reference --max-pending 100 --max-execution-seconds 15 --max-total-execution-seconds 15 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T160033.321980Z --approved-record-sha256 d2a0ccc356c414febe78ddde1b3f6a184c2e80e907d48a591dcd280e49989d41 --submit
+    "$PYTHON" live_run.py --groups crossed_tile_template --backends ibm_kingston --exclude-qubits ibm_kingston:4-103,108-155 --shots 512 --max-replicas 2 --no-isolated-reference --max-pending 100 --max-execution-seconds 15 --max-total-execution-seconds 15 --reserve-seconds 60 --min-remaining-seconds 60 --out ../results/live --approved-record ../results/live/2026-10-15T164003.621261Z --approved-record-sha256 48e6495e70f494c08d0abcefba51f29cb8bfea87eb5e7806d4d37cafb8003d1d --submit
