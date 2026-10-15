@@ -1980,6 +1980,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -W error results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/check_viewer_binding.py",
+   "name": "core-263",
+   "seconds": 0.2,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -W error ci/check_agents_sections.py",
    "name": "core-250",
    "seconds": 0.2,

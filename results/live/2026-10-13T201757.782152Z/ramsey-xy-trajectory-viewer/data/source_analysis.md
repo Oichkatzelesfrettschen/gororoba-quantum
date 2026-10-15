@@ -28,14 +28,6 @@ There are two sources of phase uncertainty: measurement noise and frequency alia
 
 ## II. Registered contrasts
 
-> Correction: the table in this section lists window control 0 and the work-B
-> measured/reset-only and paired/single comparisons as registered endpoints.
-> The registered family is the collector's ten rows in
-> `../../collect.json` family_analysis (window control 1, spectator excess,
-> work A only for the reference comparisons); see
-> `results/live/PATCH_WINDOW_FINDINGS.md`. The other rows are descriptive.
-
-
 | Endpoint | Difference | Registered half-width | Interval contains zero |
 |---|---:|---:|---|
 | Echo − plain · A | -0.08200 | ±0.229 | Yes |
