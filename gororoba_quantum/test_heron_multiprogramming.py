@@ -22,6 +22,7 @@ from heron_multiprogramming import (  # noqa: E402
     fano_plane_incidence_matrix,
     hoeffding_model_discrimination,
     lcu_zero_product_witness,
+    pathion_associator_spectrum_witness,
     pathion_singular_sector_witness,
     sedenion_associator_witness,
     steane_coherent_syndrome_patch,
@@ -247,9 +248,10 @@ class TestHeronMultiprogramming(unittest.TestCase):
         sv2 = Statevector(qc_assoc.remove_final_measurements(inplace=False))
         self.assertAlmostEqual(float(sv2.probabilities([4])[0]), 1.0)
 
-        # Pathion singular sector witness on 5 qubits
-        qc_pathion = pathion_singular_sector_witness(32, 1, 16)
+        # Pathion associator spectrum witness on 5 qubits
+        qc_pathion = pathion_associator_spectrum_witness(32, 1, 16)
         self.assertEqual(qc_pathion.num_qubits, 5)
+        self.assertEqual(pathion_singular_sector_witness(32, 1, 16).num_qubits, 5)
 
     def test_steane_coherent_and_fano_plane(self) -> None:
         # All 7 single-qubit errors correctly and coherently corrected

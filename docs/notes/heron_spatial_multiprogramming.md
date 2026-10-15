@@ -110,10 +110,11 @@ qualification. A shot-rate ratio is a rate at an unqualified operating
 point; neither it nor a tile count multiplies into a yield until a
 state-preparation control at that delay exists.
 
-## Elevated scientific suite grounded in QPU campaign findings
+### Elevated scientific suite motivated by QPU campaign observations
 
-The module provides four scientific experiment families directly grounded in the 21 physical
-QPU runs on `ibm_fez` and `ibm_kingston`:
+The module provides four scientific experiment families motivated by observations across the
+retained QPU campaign acquisitions (`results/live/CAMPAIGN_FINDINGS.md`, `results/live/QPU_PROGRAM_CASES.md`,
+and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 
 ### Run 1: Cayley-Dickson Sedenion and Pathion Non-Associative Witnesses
 - **`lcu_zero_product_witness(a_pair, b_pair, sign)`** (5 qubits): Design B's fixed-operand LCU
@@ -125,11 +126,10 @@ QPU runs on `ibm_fez` and `ibm_kingston`:
   qubits + 1 control ancilla). Control qubit 4 prepares $|+\rangle$. Branch 0 applies $L_{(e_i e_j) e_k}$
   and branch 1 applies $L_{e_i} L_{e_j} L_{e_k}$. Post-measurement expectation $\langle Z_c \rangle =
   \text{Re}\langle \psi_L | \psi_R \rangle$ yields $+1$ for associating triples (e.g. $(1, 2, 3)$) and $-1$
-  for anti-associating triples (e.g. $(1, 2, 4)$), certified by `cd_core.cd_sign`.
-- **`pathion_singular_sector_witness(dim=32, i=1, j=16)`** (5 qubits): Evaluates the Walsh spectrum
-  of $W = L_{e_i e_j}^\dagger L_{e_i} L_{e_j}$ on $\log_2(32) = 5$ qubits (`designs.design_c_associator_spectrum`),
-  probing the 32-dimensional pathion singular sector and Moreno $G_2$ automorphism fibers along the
-  nullity-12 locus (`gororoba_quantum/nullity_twelve_locus.py`).
+  for anti-associating triples (e.g. $(1, 2, 4)$), certified by `cd_core.triple_sign`.
+- **`pathion_associator_spectrum_witness(dim=32, i=1, j=16)`** (5 qubits): Evaluates Design C's Walsh spectrum
+  of $W = L_{e_i e_j}^\dagger L_{e_i} L_{e_j}$ on $\log_2(32) = 5$ qubits (`designs.design_c_associator_spectrum`)
+  for the five-qubit pathion exemplar $(1, 16)$ from `designs.SPECTRUM_EXEMPLARS`.
 
 ### Run 2: Fano-Plane CSS and Active vs Coherent Stabilizers
 - **`fano_plane_incidence_matrix()`**: Returns the $7 \times 7$ binary incidence matrix of the projective
@@ -141,20 +141,21 @@ QPU runs on `ibm_fez` and `ibm_kingston`:
   interval on the data qubits during syndrome extraction to suppress physical dephasing drift.
 - **`steane_coherent_syndrome_patch(error_qubit)`** (10 qubits): Extracts syndrome into ancillas 7..9,
   then applies coherent multi-controlled corrections `mcx([7, 8, 9], val - 1, ctrl_state=val)` on the data
-  qubits without mid-circuit readout or reset. This eliminates the ~11% mid-circuit assignment error
-  and controller latency, embodying the 5.8 to 10.9 percentage point coherent advantage demonstrated in
-  the physical QPU campaign findings (`results/live/CAMPAIGN_FINDINGS.md` §2).
+  qubits to correct single $X$ errors on $|0\rangle^7$ without mid-circuit readout or reset. Conceptually
+  motivated by the performance distinction between coherent multi-control and dynamic feed-forward studied in
+  separate QPE ladder acquisitions (`results/live/CAMPAIGN_FINDINGS.md` Section 2).
 
 ### Run 3: Vacuum Endpoint Probes, Dynamical Decoupling, and Model Discrimination
 - **`bell_delay_probe(delay_dt, dd_sequence)`** (2 qubits): Prepares a Bell pair, applies an idle delay,
   and inverts the state. `dd_sequence` supports `None` (plain idle), `"Hahn"` ($X$ echo at midpoint), or
   `"XY4"` (symmetric CPMG-style $\tau/8 \to X \to \tau/4 \to Y \to \tau/4 \to X \to \tau/4 \to Y \to \tau/8$).
-  In the physical Kingston coherence window run, plain idle experienced $-1.130$ rad of dephasing rotation over
-  $4.4\,\mu\text{s}$, while echo pulses reduced this drift to $+0.17$ rad (`results/live/N21_ORBIT_RCA.md`);
-  the probe directly tests this countermeasure.
+  In physical QPU characterizations, unmitigated idle exposure exhibited substantial dephasing drift
+  (e.g. $-1.130$ rad of rotation over $4.4\,\mu\text{s}$ on `ibm_kingston` in `results/live/QPU_PROGRAM_CASES.md`),
+  whereas dynamical decoupling echo pulses on `ibm_fez` yielded a fitted phase of $+0.17$ rad (`results/live/N21_ORBIT_RCA.md`).
+  `bell_delay_probe` provides an isolated testbed to benchmark idle dephasing against calibrated decoupling schedules.
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
-  $\|\mathbf{r}_i - \mathbf{r}_j\|$ to isolate local two-level system (TLS) defects from chip-wide correlations.
+  $\|\mathbf{r}_i - \mathbf{r}_j\|$ when coordinate pairs are supplied by the caller.
 - **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01)`**: Computes empirical Total Variation
   distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
   $D_{\text{JS}}(P \parallel Q)$. For single binary projections or parity observables, Hoeffding's inequality
@@ -167,10 +168,10 @@ QPU runs on `ibm_fez` and `ibm_kingston`:
 ### Run 4: Boolean Bent Hidden Shift
 - **`bent_hidden_shift_circuit(n=6, shift=None)`** ($n$ qubits, $n \in \{4, 6, 8\}$): Constructs quadratic
   bent function $f(x) = \bigoplus_{i=0}^{n/2-1} x_{2i} x_{2i+1}$ (certified full rank $n$ via
-  `boolean_anf.quadratic_polar_rank`) and shifted $g(x) = f(x \oplus s)$. Implements Rötteler's (2010) algorithm:
+  `boolean_anf.quadratic_polar_rank`) and shifted $g(x) = f(x \oplus s)$. Implements Rotteler's (2010) algorithm:
   $H^{\otimes n} \to O_g \to H^{\otimes n} \to O_f \to H^{\otimes n} \to \text{Measure}$.
-  In ideal execution, measures hidden shift $s$ with probability 1.0, compiling natively to $\{CZ, RZ, H\}$
-  to benchmark coherent multi-qubit phase stability across heavy-hex tiles.
+  In ideal execution, measures hidden shift $s$ with probability 1.0. The ideal circuit is constructed from
+  $\{H, CZ, Z\}$, compiling to native Heron ISA instructions $\{cz, rz, sx, x\}$ after transpilation.
 
 ## Primary research literature grounding
 
@@ -182,7 +183,7 @@ peer-reviewed primary literature and verified repository artifacts:
      [arXiv:1908.09855](https://arxiv.org/abs/1908.09855) (`docs/pdf/1908.09855v3.pdf`): Demonstrates that
      simultaneous operations on unbuffered transmons cause spectator dephasing and non-local Hamiltonian errors.
      This paper directly motivates the graph-distance $\text{dist}_G \ge 2$ guard band enforced by
-     `find_disjoint_tiles` and validated by the physical 87-qubit carpet finding (`results/live/CAMPAIGN_FINDINGS.md` §7).
+     `find_disjoint_tiles`.
    - **Niu & Todri-Sanial (2021, 2023)**, *Enabling Multi-Programming of Quantum Programs on Scalable Multi-Core
      Quantum Architectures*, [arXiv:2102.05321](https://arxiv.org/abs/2102.05321) (`docs/pdf/2102.05321v3.pdf`)
      and *Crosstalk-Aware Scheduling*, [arXiv:2112.00387](https://arxiv.org/abs/2112.00387): Provides the algorithmic
@@ -199,9 +200,6 @@ peer-reviewed primary literature and verified repository artifacts:
    - **Biss, Christensen, & Dugger (2009)**, *Cayley-Dickson algebras and homotopy groups*,
      [arXiv:0905.2987](https://arxiv.org/abs/0905.2987) (`docs/notes/0905.2987.md`): Establishes topological and
      combinatorial invariants of the non-associative multiplication tables implemented in `gororoba_quantum/cd_core.py`.
-   - **Moreno (1998)**, *The zero divisors of the Cayley-Dickson algebras over the real numbers*, [math/9710228](https://arxiv.org/abs/math/9710228):
-     Proves that the sedenion zero-divisor locus is fibered by $G_2$ orbits with nullity 12, directly implemented in
-     `gororoba_quantum/nullity_twelve_locus.py` and probed by `pathion_singular_sector_witness`.
 
 3. **Fano-Plane Projective Geometry & Stabilizer Codes:**
    - **Levratti (2026)**, *Octonionic Fano-Plane CSS Codes* (`docs/pdf/levratti-2026-fano-css.pdf`) and *Active
@@ -218,21 +216,21 @@ peer-reviewed primary literature and verified repository artifacts:
      shifts during readout and two-qubit gating.
 
 4. **Boolean Bent Hidden Shift Algorithms:**
-   - **Rötteler (2008, 2009)**, *Quantum algorithms for computing shifts of Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
+   - **Rotteler (2008, 2009)**, *Quantum algorithms for computing shifts of Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
      (`docs/local_source_cache/0811.3208v2.pdf`) and *Quantum algorithms to solve the hidden shift problem for quadratically
      independent Boolean bent functions*, [arXiv:0911.4724](https://arxiv.org/abs/0911.4724) (`docs/local_source_cache/0911.4724v1.pdf`):
      Derives the exact quantum algorithm using dual bent oracles $O_g$ and $O_{\tilde{f}}$ separated by Hadamard transforms
      to solve the hidden shift problem with $O(1)$ quantum queries and deterministic $P=1.0$ recovery.
-   - **Gavinsky, Ito, & Rötteler (2011)**, *Efficient quantum algorithms for the hidden shift problem of bent functions*,
+   - **Gavinsky, Ito, & Rotteler (2011)**, *Efficient quantum algorithms for the hidden shift problem of bent functions*,
      [arXiv:1103.3017](https://arxiv.org/abs/1103.3017) (`docs/local_source_cache/1103.3017v1.pdf`): Extends polar rank
      characterization of bent functions, establishing the algebraic rank invariant certified by `boolean_anf.quadratic_polar_rank`.
 
 5. **Statistical Discrimination & Concentration Bounds:**
-   - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13–30
+   - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13-30
      [DOI:10.1080/01621459.1963.10500830](https://doi.org/10.1080/01621459.1963.10500830) (`docs/notes/hoeffding-1963.md`):
      Establishes the non-parametric exponential concentration bound for bounded random variables in $[0, 1]$.
    - **Devroye (1983)**, *The equivalence of weak and strong convergence of the total variation of inductive limits*,
-     Ann. Statist. 11(4), 1069–1076: Establishes the finite-sample multinomial total variation inequality
+     Ann. Statist. 11(4), 1069-1076: Establishes the finite-sample multinomial total variation inequality
      $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$, which prevents false discovery in
      multi-outcome empirical model selection.
 
@@ -240,9 +238,10 @@ peer-reviewed primary literature and verified repository artifacts:
 
 - The $RZ \to CZ \to SX$ pattern detector (`flag_rz_cz_sx`) identifies consecutive executions on couplers
   exceeding the CZ error threshold (4e-3: 45, 35, and 52 couplers across Fez, Kingston, and Marrakesh).
-- The 156-qubit carpet finding (`results/live/CAMPAIGN_FINDINGS.md` §7) demonstrated that 87 active qubits
-  without guard bands suffered 78.7% shot corruption (mean 1.36 violating replicas per shot). This
-  physically validates the requirement that all multiplexed tiles must maintain graph distance
-  $\text{dist}_G \ge 2$ guard bands on Heron r2.
+- The 156-qubit carpet characterization (`results/live/CAMPAIGN_FINDINGS.md` Section 7) observed that across 29 disconnected
+  3-qubit components totaling 87 gate-active transmons, 403 of 512 shots (78.7%, mean 1.36 violating replicas per shot)
+  exhibited support violations under simultaneous operation. While the campaign note cautions that these counts do not
+  isolate causal crosstalk mechanisms, this high violation rate reinforces the conservative design policy of enforcing
+  graph distance $\text{dist}_G \ge 2$ guard bands between all concurrent tiles on Heron r2.
 
 

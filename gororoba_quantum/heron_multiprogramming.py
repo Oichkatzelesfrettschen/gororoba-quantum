@@ -752,15 +752,20 @@ def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCi
     return qc
 
 
-def pathion_singular_sector_witness(dim: int = 32, i: int = 1, j: int = 16) -> QuantumCircuit:
-    """Walsh spectrum of W = L_{e_i e_j}^dagger L_{e_i} L_{e_j} on log2(dim) qubits.
+def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) -> QuantumCircuit:
+    """Design C's Walsh spectrum of W = L_{e_i e_j}^dagger L_{e_i} L_{e_j} on log2(dim) qubits.
 
-    Probes the 32-dimensional pathion singular sector and Moreno G2 automorphism fibers
-    along the nullity-12 locus.
+    Applies the three left-multiplication blocks of W on a uniform superposition
+    H^n |0>^n, followed by H^n before measurement to turn W's diagonal phase into
+    a bitstring distribution. For dim=32, (1, 16) is the five-qubit pathion
+    exemplar from designs.SPECTRUM_EXEMPLARS.
     """
     from designs import design_c_associator_spectrum
 
     return design_c_associator_spectrum(dim, i, j)
+
+
+pathion_singular_sector_witness = pathion_associator_spectrum_witness
 
 
 STEANE_Z_CHECKS = ((0, 2, 4, 6), (1, 2, 5, 6), (3, 4, 5, 6))
@@ -866,9 +871,12 @@ def steane_coherent_syndrome_patch(error_qubit: int | None = None) -> QuantumCir
 
     Applies the 3 Steane Z parity checks onto ancillas 7, 8, 9 via CX. Then, instead
     of destructive mid-circuit measurement and classical feed-forward, applies coherent
-    multi-controlled X corrections on the data qubits conditioned on the ancilla states.
-    Bypasses mid-circuit assignment error (~11%) and controller latency, implementing
-    the coherent advantage demonstrated in QPU campaign findings.
+    multi-controlled X corrections on the data qubits conditioned on ancilla states via
+    mcx([7, 8, 9], value - 1, ctrl_state=value).
+
+    Corrects single X errors on data state |0>^7 coherently without mid-circuit readout
+    or reset. Conceptually motivated by comparing coherent multi-control vs dynamic
+    feed-forward studied in separate QPE ladder acquisitions (CAMPAIGN_FINDINGS.md Section 2).
     """
     data = ClassicalRegister(7, "data")
     qc = QuantumCircuit(QuantumRegister(10, "q"), data, name="steane_coherent_syndrome_patch")
@@ -999,8 +1007,9 @@ def bent_hidden_shift_circuit(
 
     n must be even. Evaluates f(x) = x0*x1 ^ x2*x3 ^ ... and shifted g(x) = f(x ^ s).
     Circuit sequence H^n -> O_g -> H^n -> O_f -> H^n -> Measure deterministically
-    measures the hidden shift string s with probability 1.0 in ideal execution,
-    compiling natively to {CZ, RZ, H} gates on Heron heavy-hex tiles.
+    measures the hidden shift string s with probability 1.0 in ideal execution.
+    The ideal circuit is constructed from {H, CZ, Z}, compiling to native Heron ISA
+    instructions {cz, rz, sx, x} after transpilation.
     """
     from boolean_anf import quadratic_polar_rank
 
