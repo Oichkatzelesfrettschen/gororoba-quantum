@@ -163,7 +163,7 @@ def compute() -> dict[str, Any]:
     cmap = coupling_map()
     pairs = [(i, j) for i in range(1, DIM) for j in range(i + 1, DIM) if j.bit_length() == N]
     require(len(pairs) == 360, f"expected 360 dim-32 pairs, found {len(pairs)}")
-    records = []
+    records: list[dict[str, Any]] = []
     part_counts: Counter[frozenset[int]] = Counter()
     for i, j in pairs:
         truth_table = [1 if sign == -1 else 0 for sign in associator_phase(DIM, i, j)]
