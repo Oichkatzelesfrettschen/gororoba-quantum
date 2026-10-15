@@ -1,4 +1,4 @@
-"""Tests for Heron r2 spatial multiprogramming and temporal ISA compression."""
+"""Contracts for Heron r2 guard-banded tiling, wide-circuit composition and Target duration arithmetic."""
 
 from __future__ import annotations
 
@@ -6,7 +6,7 @@ import sys
 import unittest
 from pathlib import Path
 
-from qiskit import QuantumCircuit
+from qiskit import QuantumCircuit, transpile
 from qiskit.circuit import Parameter
 from qiskit.quantum_info import Statevector
 from qiskit_aer import AerSimulator
@@ -14,25 +14,36 @@ from qiskit_aer import AerSimulator
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from heron_multiprogramming import (  # noqa: E402
+    STEANE_Z_CHECKS,
+    DisjointTile,
     HeronLattice,
-    build_run1_sedenion_witness,
-    build_run2_fano_stabilizer_patch,
-    build_run3_vacuum_probe,
-    build_run4_hidden_shift_circuit,
+    bell_delay_probe,
+    lcu_zero_product_witness,
+    steane_z_syndrome_patch,
 )
 
 SNAPSHOT = ROOT / "docs/evidence/heron_platform/targets.json"
 
 
-class TestHeronMultiprogramming(unittest.TestCase):
-    """Test suite for HeronLattice spatial tiling, temporal ISA compression, and execution mechanics."""
+def edge_circuit(tile: DisjointTile, flip: bool) -> QuantumCircuit:
+    """Measure one end of the tile's first coupler and flip the other end on a 1 inside if_test."""
+    position = {q: i for i, q in enumerate(tile.qubits)}
+    a, b = tile.internal_edges[0]
+    qc = QuantumCircuit(len(tile.qubits), 2)
+    if flip:
+        qc.x(position[a])
+    qc.measure(position[a], 0)
+    with qc.if_test((qc.clbits[0], 1)):
+        qc.x(position[b])
+    qc.measure(position[b], 1)
+    return qc
 
+
+class TestHeronMultiprogramming(unittest.TestCase):
     lattice: HeronLattice
 
     @classmethod
     def setUpClass(cls) -> None:
-        if not SNAPSHOT.exists():
-            raise unittest.SkipTest(f"Snapshot {SNAPSHOT} does not exist")
         cls.lattice = HeronLattice.from_snapshot(SNAPSHOT, "ibm_fez")
 
     def test_missing_backend_raises(self) -> None:
@@ -40,272 +51,175 @@ class TestHeronMultiprogramming(unittest.TestCase):
             HeronLattice.from_snapshot(SNAPSHOT, "nonexistent_backend")
 
     def test_lattice_graph_properties(self) -> None:
-        self.assertEqual(self.lattice.TOTAL_QUBITS, 156)
-        self.assertEqual(self.lattice.graph.num_nodes(), 156)
+        self.assertEqual(self.lattice.num_qubits, 156)
         self.assertEqual(self.lattice.graph.num_edges(), 176)
-
-    def test_distance_matrix(self) -> None:
         dist = self.lattice.distance_matrix()
-        self.assertEqual(len(dist), 156)
-        self.assertEqual(len(dist[0]), 156)
-        # Reflexive distance is 0
-        for i in range(156):
-            self.assertEqual(dist[i][i], 0)
-        # Symmetry
-        for i in range(20):
-            for j in range(20):
-                self.assertEqual(dist[i][j], dist[j][i])
+        self.assertEqual(dist.shape, (156, 156))
+        self.assertTrue((dist.diagonal() == 0).all())
+        self.assertTrue((dist == dist.T).all())
 
-    def test_tile_esp_bounds(self) -> None:
-        esp = self.lattice.tile_esp([0, 1], [(0, 1)])
-        self.assertGreaterEqual(esp, 0.0)
-        self.assertLessEqual(esp, 1.0)
-
-    def test_disjoint_tiles_guard_band(self) -> None:
-        tiles = self.lattice.find_disjoint_tiles(k=5, min_buffer_distance=2, max_tiles=16)
-        self.assertGreaterEqual(len(tiles), 12)
-        self.assertLessEqual(len(tiles), 16)
-
-        # Check disjointness of active qubits
-        used_qubits: set[int] = set()
-        for t in tiles:
-            q_set = set(t.qubits)
-            self.assertEqual(len(q_set & used_qubits), 0, f"Tile {t.tile_id} overlaps existing qubits")
-            used_qubits.update(q_set)
-
-        # Check guard band distance >= 2
+    def test_guard_distance_holds_at_two_and_three(self) -> None:
         dist = self.lattice.distance_matrix()
-        for i, t1 in enumerate(tiles):
-            for j, t2 in enumerate(tiles):
-                if i < j:
-                    min_d = min(dist[q1][q2] for q1 in t1.qubits for q2 in t2.qubits)
-                    self.assertGreaterEqual(
-                        min_d,
-                        2,
-                        f"Tiles {t1.tile_id} and {t2.tile_id} violate guard band: dist={min_d} < 2",
-                    )
+        for distance in (2, 3):
+            tiles = self.lattice.find_disjoint_tiles(k=5, min_buffer_distance=distance, max_tiles=16)
+            self.assertGreaterEqual(len(tiles), 9)
+            self.assertEqual(self.lattice.min_tile_distance(tiles), distance)
+            for tile in tiles:
+                for q in tile.buffer_qubits:
+                    self.assertLess(min(int(dist[q][p]) for p in tile.qubits), distance)
+        with self.assertRaises(ValueError):
+            self.lattice.find_disjoint_tiles(k=5, min_buffer_distance=0)
 
-    def test_plan_run_all_profiles(self) -> None:
-        # Run 1: 5q tiles, 16 target
-        p1 = self.lattice.plan_run("Run 1", 5, 16, "Sedenion", "RZZ", "Defects")
-        self.assertEqual(p1.target_tiles, 16)
-        self.assertEqual(p1.active_qubits, 80)
-        self.assertAlmostEqual(p1.chip_active_fraction, 80 / 156)
+    def test_tile_plans_pack_the_snapshot(self) -> None:
+        expected = {"ibm_fez": [16, 7, 20, 12], "ibm_kingston": [16, 8, 20, 10], "ibm_marrakesh": [16, 7, 20, 12]}
+        for backend, counts in expected.items():
+            lattice = HeronLattice.from_snapshot(SNAPSHOT, backend)
+            packed = [len(lattice.plan_tiles("k", k, n).tiles) for k, n in ((5, 16), (10, 8), (2, 20), (7, 12))]
+            self.assertEqual(packed, counts, backend)
 
-        # Run 2: 10q tiles, 8 target
-        p2 = self.lattice.plan_run("Run 2", 10, 8, "Fano CSS", "Dynamic", "Parity")
-        self.assertGreaterEqual(p2.target_tiles, 6)
-        self.assertLessEqual(p2.target_tiles, 8)
+    def test_tile_duration_reads_target_durations(self) -> None:
+        tile = self.lattice.find_disjoint_tiles(k=5, max_tiles=1)[0]
+        expected = (
+            max(self.lattice.sx_durations[q] for q in tile.qubits)
+            + sum(self.lattice.cz_durations[e] for e in tile.internal_edges)
+            + max(self.lattice.readout_durations[q] for q in tile.qubits)
+        ) * 1e9
+        self.assertAlmostEqual(tile.serial_duration_ns, expected)
+        self.assertIn((146, 147), tile.internal_edges)
+        self.assertAlmostEqual(self.lattice.cz_durations[(146, 147)] * 1e9, 88.0)
 
-        # Run 3: 2q tiles, 20 target
-        p3 = self.lattice.plan_run("Run 3", 2, 20, "Vacuum", "Stretch", "Discrimination")
-        self.assertEqual(p3.target_tiles, 20)
-        self.assertEqual(p3.active_qubits, 40)
+    def test_rzz_decomposition_uses_each_backend_durations(self) -> None:
+        sx_ns = {"ibm_fez": 24.0, "ibm_kingston": 32.0, "ibm_marrakesh": 36.0}
+        for backend, sx in sx_ns.items():
+            summary = HeronLattice.from_snapshot(SNAPSHOT, backend).rzz_duration_summary()
+            self.assertEqual(summary["sx_duration_ns"], [sx])
+            self.assertEqual(summary["decomposition_ops"]["cz"], 2)
+            sx_count = summary["decomposition_ops"]["sx"]
+            self.assertAlmostEqual(summary["decomposed_ns"]["median"], 2 * 68.0 + sx_count * sx)
 
-        # Run 4: 7q tiles, 12 target
-        p4 = self.lattice.plan_run("Run 4", 7, 12, "Hidden Shift", "PassManager", "Rocq")
-        self.assertEqual(p4.target_tiles, 12)
-        self.assertEqual(p4.active_qubits, 84)
+    def test_shot_rate_ratio_stays_inside_rep_delay_range(self) -> None:
+        self.assertAlmostEqual(self.lattice.shot_rate_ratio(5e-6, 50e-6)["ratio"], 255 / 55, places=3)
+        self.assertAlmostEqual(self.lattice.shot_rate_ratio(50e-6, 50e-6)["ratio"], 3.0)
+        with self.assertRaises(ValueError):
+            self.lattice.shot_rate_ratio(5e-6, 3e-3)
 
-    def test_temporal_compression_calculations(self) -> None:
-        tc = self.lattice.evaluate_temporal_compression(
-            circuit_duration_s=5e-6,
-            rep_delay_compressed_s=50e-6,
-            tile_count=16,
-        )
-        self.assertAlmostEqual(tc.rep_delay_default_s, 250e-6)
-        self.assertAlmostEqual(tc.rep_delay_compressed_s, 50e-6)
-        self.assertGreater(tc.shot_rate_multiplier, 4.0)
-        self.assertAlmostEqual(tc.fractional_rzz_duration_ns, 68.0)
-        self.assertAlmostEqual(tc.decomposed_cz_duration_ns, 264.0)
-        self.assertGreater(tc.rzz_duration_reduction_ratio, 3.8)
-        self.assertAlmostEqual(tc.total_scientific_yield_multiplier, 16 * tc.shot_rate_multiplier)
-
-    def test_abnormal_subsequence_detection(self) -> None:
-        # Coupler audit mode
-        anomalies = self.lattice.detect_anomalies()
-        self.assertIsInstance(anomalies, list)
-        self.assertGreater(len(anomalies), 0)
-
-        # Circuit instructions scan mode
-        high_coupler = anomalies[0].qubits
-        ops = [
-            ("rz", (high_coupler[0],)),
-            ("cz", (high_coupler[0], high_coupler[1])),
-            ("sx", (high_coupler[0],)),
-        ]
-        detected = self.lattice.detect_anomalies(ops)
-        self.assertEqual(len(detected), 1)
-        self.assertEqual(detected[0].gate_sequence, ["rz", "cz", "sx"])
-
-    def test_anomaly_detection_per_qubit_accuracy(self) -> None:
-        anomalies = self.lattice.detect_anomalies()
-        high_coupler = anomalies[0].qubits
-        qA, qB = high_coupler[0], high_coupler[1]
-
-        # 1. False alarm rejection: rz on independent qubit 99 must NOT trigger anomaly on coupler (qA, qB)
-        ops_false_alarm = [
-            ("rz", (99,)),
-            ("cz", (qA, qB)),
-            ("sx", (qA,)),
-        ]
-        det_false = self.lattice.detect_anomalies(ops_false_alarm)
-        self.assertEqual(len(det_false), 0, "Independent qubit rz must not trigger anomaly")
-
-        # 2. Interleaved gate on independent qubit 99 must NOT hide genuine anomaly on qA
-        ops_interleaved = [
-            ("rz", (qA,)),
-            ("x", (99,)),
-            ("cz", (qA, qB)),
-            ("sx", (qA,)),
-        ]
-        det_interleaved = self.lattice.detect_anomalies(ops_interleaved)
-        self.assertEqual(len(det_interleaved), 1, "Genuine sequence with interleaved gate must be detected")
-
-        # 3. Direct QuantumCircuit input test
+    def test_flag_rz_cz_sx_reads_one_qubit_line(self) -> None:
+        qa, qb = self.lattice.high_error_couplers(0.004)[0]
+        flagged = self.lattice.flag_rz_cz_sx([("rz", (qa,)), ("x", (99,)), ("cz", (qa, qb)), ("sx", (qa,))])
+        self.assertEqual([f.gate_sequence for f in flagged], [["rz", "cz", "sx"]])
+        self.assertEqual(self.lattice.flag_rz_cz_sx([("rz", (99,)), ("cz", (qa, qb)), ("sx", (qa,))]), [])
+        delayed = [("rz", (qa,)), ("cz", (qa, qb)), ("delay", (qa,)), ("sx", (qa,))]
+        self.assertEqual(self.lattice.flag_rz_cz_sx(delayed), [])
         qc = QuantumCircuit(156)
-        qc.rz(0.5, qA)
-        qc.x(99)
-        qc.cz(qA, qB)
-        qc.sx(qA)
-        det_circuit = self.lattice.detect_anomalies(qc)
-        self.assertEqual(len(det_circuit), 1, "Direct QuantumCircuit scanning must detect anomaly")
+        qc.rz(0.5, qa)
+        qc.barrier()
+        qc.cz(qa, qb)
+        qc.sx(qa)
+        self.assertEqual(len(self.lattice.flag_rz_cz_sx(qc)), 1)
 
-    def test_build_multiplexed_pub(self) -> None:
+    def test_composer_rejects_overlap_and_off_tile_gates(self) -> None:
+        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
+        with self.assertRaises(ValueError):
+            self.lattice.build_multiplexed_pub([QuantumCircuit(5), QuantumCircuit(5)], [tiles[0], tiles[0]])
+        with self.assertRaises(ValueError):
+            self.lattice.build_multiplexed_pub([QuantumCircuit(6)], tiles[:1])
+        qubits = tiles[0].qubits
+        allowed = set(tiles[0].internal_edges)
+        off = next((a, b) for a in range(5) for b in range(a + 1, 5) if (qubits[a], qubits[b]) not in allowed)
+        bad = QuantumCircuit(5)
+        bad.cz(*off)
+        with self.assertRaises(ValueError):
+            self.lattice.build_multiplexed_pub([bad], tiles[:1])
+        good = QuantumCircuit(5)
+        a, b = tiles[0].internal_edges[0]
+        good.cz(qubits.index(a), qubits.index(b))
+        self.assertEqual(self.lattice.build_multiplexed_pub([good], tiles[:1]).count_ops()["cz"], 1)
+
+    def test_routed_witnesses_compose_and_run(self) -> None:
+        tiles = self.lattice.find_disjoint_tiles(k=10, max_tiles=2)
+        patch = self.lattice.route_to_tile(steane_z_syndrome_patch(error_qubit=2), tiles[0])
+        probe = self.lattice.route_to_tile(bell_delay_probe(delay_dt=40), tiles[1])
+        wide = self.lattice.build_multiplexed_pub([patch, probe], tiles)
+        self.assertEqual([c.name for c in wide.cregs], ["tile_0_syn", "tile_0_data", "tile_1_c"])
+        counts = AerSimulator().run(wide, shots=40, seed_simulator=7).result().get_counts()
+        # Registers print last-added first: probe bits, corrected data, then syndrome 3 for X on data qubit 2.
+        self.assertEqual(counts, {"00 0000000 011": 40})
+
+    def test_feed_forward_body_is_observed(self) -> None:
+        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
+        wide = self.lattice.build_multiplexed_pub([edge_circuit(tiles[0], False), edge_circuit(tiles[1], True)], tiles)
+        counts = AerSimulator().run(wide, shots=20, seed_simulator=3).result().get_counts()
+        self.assertEqual(counts, {"11 00": 20})
+
+    def test_parameter_names_collide_only_across_objects(self) -> None:
         tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
         circuits = []
         for _ in range(2):
-            qc = QuantumCircuit(5, 1)
-            qc.h(0)
-            qc.cx(0, 1)
-            qc.measure(0, 0)
+            qc = QuantumCircuit(5)
+            qc.rx(Parameter("theta"), 0)
             circuits.append(qc)
-
-        multiplexed = self.lattice.build_multiplexed_pub(circuits, tiles)
-        self.assertEqual(multiplexed.num_qubits, 156)
-        self.assertEqual(len(multiplexed.cregs), 2)
-        self.assertEqual(multiplexed.cregs[0].name, "tile_0_c")
-        self.assertEqual(multiplexed.cregs[1].name, "tile_1_c")
-
-    def test_build_multiplexed_pub_mismatch_raises(self) -> None:
-        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=1)
-        circuits = [QuantumCircuit(6, 1)]  # requires 6 qubits, tile has 5
-        with self.assertRaises(ValueError):
-            self.lattice.build_multiplexed_pub(circuits, tiles)
-
-    def test_dynamic_circuits_multiplexing_aer_execution(self) -> None:
-        # Test that multiple tiles with dynamic if_test control flow can be multiplexed
-        # and executed in AerSimulator without register collisions or KeyError
-        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
-
-        def make_dynamic_tile(flip_initial: bool) -> QuantumCircuit:
-            qc = QuantumCircuit(5, 1)
-            if flip_initial:
-                qc.x(0)
-            qc.measure(0, 0)
-            with qc.if_test((qc.clbits[0], 1)):
-                qc.x(1)
-            return qc
-
-        c0 = make_dynamic_tile(False)  # outcome 0
-        c1 = make_dynamic_tile(True)  # outcome 1
-
-        wide_pub = self.lattice.build_multiplexed_pub([c0, c1], tiles)
-        sim = AerSimulator()
-        res = sim.run(wide_pub, shots=20).result()
-        counts = res.get_counts()
-        # Qiskit space-separates multiple classical registers: 'tile_1_c tile_0_c'
-        self.assertIn("1 0", counts)
-        self.assertEqual(counts["1 0"], 20)
-
-    def test_parameterized_pub_and_sweep_packing(self) -> None:
-        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
-        p0 = Parameter("theta_0")
-        p1 = Parameter("theta_1")
-
-        qc0 = QuantumCircuit(5)
-        qc0.rx(p0, 0)
-        qc1 = QuantumCircuit(5)
-        qc1.rx(p1, 0)
-
-        wide = self.lattice.build_parameterized_multiplexed_pub([qc0, qc1], tiles)
-        self.assertEqual(wide.num_parameters, 2)
-
-        # Pack parameter sweep with shape (N_sweeps, 2)
-        param_grid = [[0.0, 0.5], [0.5, 1.0], [1.0, 1.5]]
-        pub = HeronLattice.pack_parameter_sweep_pub(wide, param_grid, shots=2048)
-        self.assertEqual(pub[0], wide)
+        wide = self.lattice.build_multiplexed_pub(circuits, tiles)
+        self.assertEqual(sorted(p.name for p in wide.parameters), ["theta", "tile_1_theta"])
+        shared = Parameter("phi")
+        same = [QuantumCircuit(5), QuantumCircuit(5)]
+        for qc in same:
+            qc.rx(shared, 0)
+        self.assertEqual(self.lattice.build_multiplexed_pub(same, tiles).num_parameters, 1)
+        pub = HeronLattice.pack_parameter_sweep_pub(wide, [[0.0, 0.5], [0.5, 1.0], [1.0, 1.5]], shots=2048)
         self.assertEqual(pub[1].shape, (3, 2))
-        self.assertEqual(pub[2], 2048)
+        for values in ([[0.0, 0.5, 1.0]], [[float("nan"), 0.0]], [[0.0, 0.0]][:0]):
+            with self.assertRaises(ValueError):
+                HeronLattice.pack_parameter_sweep_pub(wide, values)
 
-        # Test validation on mismatched shape
-        with self.assertRaises(ValueError):
-            HeronLattice.pack_parameter_sweep_pub(wide, [[0.0, 0.5, 1.0]])
+    def test_basis_rotations_touch_terminal_measures_only(self) -> None:
+        plus = QuantumCircuit(1)
+        plus.h(0)
+        self.assertAlmostEqual(Statevector(HeronLattice.append_basis_rotations(plus, "X")).probabilities()[0], 1.0)
+        plus_i = QuantumCircuit(1)
+        plus_i.h(0)
+        plus_i.s(0)
+        self.assertAlmostEqual(Statevector(HeronLattice.append_basis_rotations(plus_i, "Y")).probabilities()[0], 1.0)
+        qc = QuantumCircuit(2, 3)
+        qc.measure(0, 0)
+        qc.x(0)
+        qc.measure(0, 1)
+        qc.measure(1, 2)
+        rotated = HeronLattice.append_basis_rotations(qc, {0: "X", 1: "Y"})
+        names = [inst.operation.name for inst in rotated.data]
+        self.assertEqual(names, ["measure", "x", "h", "measure", "sdg", "h", "measure"])
 
-    def test_append_basis_rotations(self) -> None:
-        # Test X basis rotation: H prepares |0> from |+>
-        qc_plus = QuantumCircuit(1)
-        qc_plus.h(0)
-        qc_x_rot = HeronLattice.append_basis_rotations(qc_plus, "X")
-        sv_x = Statevector(qc_x_rot)
-        self.assertAlmostEqual(sv_x.probabilities()[0], 1.0)
+    def test_lcu_witness_is_certified_by_cd_core(self) -> None:
+        sim = AerSimulator()
+        for sign, success in ((-1, 0.0), (1, 1.0)):
+            witness = lcu_zero_product_witness(sign=sign)
+            self.assertAlmostEqual(witness.metadata["p_success"], success)
+            counts = sim.run(transpile(witness, sim), shots=200, seed_simulator=1).result().get_counts()
+            self.assertEqual(counts.get("0", 0) / 200, success)
+        self.assertAlmostEqual(lcu_zero_product_witness((1, 10), (2, 13), -1).metadata["p_success"], 0.5)
 
-        # Test Y basis rotation: Sdg then H prepares |0> from |+i>
-        qc_y_state = QuantumCircuit(1)
-        qc_y_state.h(0)
-        qc_y_state.s(0)
-        qc_y_rot = HeronLattice.append_basis_rotations(qc_y_state, "Y")
-        sv_y = Statevector(qc_y_rot)
-        self.assertAlmostEqual(sv_y.probabilities()[0], 1.0)
+    def test_steane_syndrome_names_the_flipped_qubit(self) -> None:
+        sim = AerSimulator()
+        for error in (None, *range(7)):
+            counts = sim.run(steane_z_syndrome_patch(error), shots=20, seed_simulator=5).result().get_counts()
+            syndrome = 0 if error is None else error + 1
+            self.assertEqual(counts, {f"0000000 {syndrome:03b}": 20})
+            if error is not None:
+                fired = [bit for bit, support in enumerate(STEANE_Z_CHECKS) if error in support]
+                self.assertEqual(fired, [bit for bit in range(3) if syndrome >> bit & 1])
+        hardware = steane_z_syndrome_patch(1, mid_circuit_measure=True)
+        self.assertEqual(hardware.count_ops()["measure_2"], 3)
 
-    def test_run1_run2_run3_run4_circuit_builders(self) -> None:
-        # Run 1
-        r1 = build_run1_sedenion_witness((1, 10), (4, 15), 0.0)
-        self.assertEqual(r1.num_qubits, 5)
-        self.assertEqual(r1.num_clbits, 1)
-
-        # Run 2
-        r2 = build_run2_fano_stabilizer_patch(error_qubit=0)
-        self.assertEqual(r2.num_qubits, 10)
-        self.assertEqual(r2.num_clbits, 3)
-
-        # Run 3
-        r3 = build_run3_vacuum_probe(delay_dt=50)
-        self.assertEqual(r3.num_qubits, 2)
-        self.assertEqual(r3.num_clbits, 2)
-
-        # Run 4
-        r4 = build_run4_hidden_shift_circuit(dim=8, i=1, j=4)
-        self.assertEqual(r4.num_qubits, 7)
-        self.assertEqual(r4.num_clbits, 7)
-
-    def test_spatial_cross_covariance(self) -> None:
-        # Synthetic bitstrings for 2 tiles
-        bitstrings = ["00", "01", "10", "11"] * 25
-        slices = [slice(0, 1), slice(1, 2)]
-        res = self.lattice.compute_spatial_cross_covariance(bitstrings, slices)
-        self.assertEqual(res["num_shots"], 100)
-        self.assertEqual(res["num_tiles"], 2)
-        cov = res["covariance_matrix"]
-        self.assertEqual(len(cov), 2)
-        self.assertEqual(len(cov[0]), 2)
-        # Symmetry
-        self.assertAlmostEqual(cov[0][1], cov[1][0])
-
-    def test_spatial_cross_covariance_dict_input(self) -> None:
-        reg_dict = {
-            "tile_0_c": ["0", "1", "0", "1"] * 25,
-            "tile_1_c": ["1", "0", "1", "0"] * 25,
-        }
-        res = self.lattice.compute_spatial_cross_covariance(reg_dict)
-        self.assertEqual(res["num_shots"], 100)
-        self.assertEqual(res["num_tiles"], 2)
-        cov = res["covariance_matrix"]
-        self.assertAlmostEqual(cov[0][1], cov[1][0])
-
-    def test_spatial_cross_covariance_insufficient_shots_raises(self) -> None:
-        with self.assertRaises(ValueError):
-            self.lattice.compute_spatial_cross_covariance(["00"], [slice(0, 1)])
+    def test_parity_covariance_values_and_inputs(self) -> None:
+        result = HeronLattice.tile_parity_covariance(["00", "11", "11", "00", "01", "10"], [slice(0, 1), slice(1, 2)])
+        self.assertEqual(result["means"], [0.0, 0.0])
+        self.assertAlmostEqual(result["covariance_matrix"][0][1], 1 / 3, places=5)
+        little = HeronLattice.tile_parity_covariance(["10", "10"], [slice(0, 1)], endianness="little")
+        self.assertEqual(little["means"], [1.0])
+        registers = HeronLattice.tile_parity_covariance({"tile_0_c": ["0", "1"] * 5, "tile_1_c": ["1", "0"] * 5})
+        self.assertAlmostEqual(registers["covariance_matrix"][0][1], -1.0)
+        for strings, slices in ((["0", "0"], [slice(0, 5)]), (["00", "0"], [slice(0, 1)]), (["00"], [slice(0, 1)])):
+            with self.assertRaises(ValueError):
+                HeronLattice.tile_parity_covariance(strings, slices)
 
 
 if __name__ == "__main__":

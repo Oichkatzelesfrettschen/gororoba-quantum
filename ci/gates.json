@@ -2046,7 +2046,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -W error test_heron_multiprogramming.py",
    "name": "core-256",
-   "seconds": 0.5,
+   "seconds": 2.0,
    "tier": "pr"
   },
   {
@@ -2054,7 +2054,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -W error scripts/heron_spatial_multiprogramming.py --check docs/evidence/heron_platform/spatial_multiprogramming_audit.json",
    "name": "core-257",
-   "seconds": 0.5,
+   "seconds": 2.5,
    "tier": "pr"
   },
   {
@@ -2062,7 +2062,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -W error scripts/heron_spatial_multiprogramming.py --self-test",
    "name": "core-258",
-   "seconds": 0.5,
+   "seconds": 3.0,
    "tier": "pr"
   },
   {

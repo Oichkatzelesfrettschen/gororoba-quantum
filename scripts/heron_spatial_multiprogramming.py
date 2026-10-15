@@ -1,12 +1,11 @@
-"""Audit Heron r2 spatial multiprogramming, temporal ISA compression, and run planning.
+"""Audit guard-banded tile packing and Target duration arithmetic on the three Heron r2 backends.
 
-This script executes the hypergranular spatial tiling and temporal ISA compression
-analysis across all 156-qubit Heron r2 backends (ibm_fez, ibm_kingston, ibm_marrakesh).
-It plans all 4 prioritized scientific runs:
-1. Run 1: Sedenion (S_16) & Pathion (P_32) Hardware Witness
-2. Run 2: Octonionic Fano-Plane CSS Codes & Active Stabilizers
-3. Run 3: Vacuum Endpoint Information & Model Discrimination
-4. Run 4: Boolean Hidden Shift & Fold-Projection Counterexamples
+The audit reads docs/evidence/heron_platform/targets.json through
+gororoba_quantum/heron_multiprogramming.py and records, per backend: Target
+medians, tile plans at guard distance 2 (and one at distance 3), native RZZ
+against its CZ-basis synthesis, shot-rate ratios at two assumed circuit
+durations, and the couplers above the rz, cz, sx flag threshold. Every
+figure is arithmetic on the snapshot; no circuit is scheduled or executed.
 
 Usage:
     "$PYTHON" scripts/heron_spatial_multiprogramming.py \\
@@ -23,24 +22,37 @@ import hashlib
 import json
 import sys
 from pathlib import Path
+from statistics import median
 from typing import Any
 
 from qiskit import QuantumCircuit
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from heron_multiprogramming import HeronLattice  # noqa: E402
+from heron_multiprogramming import (  # noqa: E402
+    HeronLattice,
+    lcu_zero_product_witness,
+    steane_z_syndrome_patch,
+)
 
 SNAPSHOT = ROOT / "docs/evidence/heron_platform/targets.json"
 ROSTER = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
+# name, qubits per tile, requested tiles, the circuit that fits one tile
+TILE_PLANS = (
+    ("k5", 5, 16, "heron_multiprogramming.lcu_zero_product_witness"),
+    ("k10", 10, 8, "heron_multiprogramming.steane_z_syndrome_patch"),
+    ("k2", 2, 20, "heron_multiprogramming.bell_delay_probe"),
+    ("k7", 7, 12, "designs.design_c_associator_spectrum at dimension 128"),
+)
+# Assumed circuit durations: 5 us, and 50 us from the typical 50-100 us in
+# docs/notes/ibm_quantum/estimate-job-run-time.md.
+CIRCUIT_DURATIONS_S = (5e-6, 50e-6)
+REP_DELAYS_S = (250e-6, 100e-6, 50e-6, 20e-6, 10e-6)
+FLAG_THRESHOLD = 0.004
 
 
 def sha256(path: Path) -> str:
-    digest = hashlib.sha256()
-    with path.open("rb") as handle:
-        for block in iter(lambda: handle.read(1 << 20), b""):
-            digest.update(block)
-    return digest.hexdigest()
+    return hashlib.sha256(path.read_bytes()).hexdigest()
 
 
 def require(condition: bool, message: str) -> None:
@@ -48,216 +60,105 @@ def require(condition: bool, message: str) -> None:
         raise RuntimeError(message)
 
 
-def build_audit(snapshot_path: Path) -> dict[str, Any]:
-    """Build complete multi-backend spatial and temporal multiprogramming audit."""
-    require(snapshot_path.exists(), f"Snapshot {snapshot_path} does not exist")
-    snapshot_hash = sha256(snapshot_path)
-
-    backends_audit: dict[str, Any] = {}
-
-    runs_spec = [
-        (
-            "Run 1",
-            "Sedenion (S_16) & Pathion (P_32) Hardware Witness",
-            5,
-            16,
-            "Native continuous R_ZZ(theta) & R_X(theta)",
-            "Hardware witness of non-associative defect census, C_881 rank loci, and FakeFez amplification validation",
-        ),
-        (
-            "Run 2",
-            "Octonionic Fano-Plane CSS Codes & Active Stabilizers",
-            10,
-            8,
-            "Dynamic circuits (if_test, mid-circuit feed-forward, measure_2)",
-            "Octonionic Fano-plane incidence stabilizer parity checks and terminal channel separation certificates",
-        ),
-        (
-            "Run 3",
-            "Vacuum Endpoint Information & Model Discrimination",
-            2,
-            20,
-            "QASM3 stretch delays + Hoeffding-optimal shots",
-            "Out-of-sample empirical KL/JS divergence bounding between competing vacuum models",
-        ),
-        (
-            "Run 4",
-            "Boolean Hidden Shift & Fold-Projection Counterexamples",
-            7,
-            12,
-            "Staged PassManager (optimization_level=3)",
-            "Nonlinearity witness (PMC 4957665) & empirical validation of Rocq formal certificates",
-        ),
-    ]
-
-    delays = (250e-6, 100e-6, 50e-6, 20e-6, 10e-6)
-
-    for bname in ROSTER:
-        lattice = HeronLattice.from_snapshot(snapshot_path, bname)
-
-        # Plan all 4 runs
-        run_plans: dict[str, Any] = {}
-        for run_id, run_name, k, target_tiles, isa_feat, deliv in runs_spec:
-            plan = lattice.plan_run(
-                run_id=run_id,
-                k=k,
-                target_tiles=target_tiles,
-                name=run_name,
-                key_isa_feature=isa_feat,
-                deliverable=deliv,
-                min_buffer_distance=2,
-            )
-            # Verify disjointness and guard band distance >= 2
-            tile_qubits_set: set[int] = set()
-            for t in plan.tiles:
-                q_set = set(t.qubits)
-                require(
-                    not (q_set & tile_qubits_set),
-                    f"{bname} {run_id}: tiles must be strictly disjoint",
-                )
-                tile_qubits_set.update(q_set)
-
-            # Check pairwise buffer distance
-            dist = lattice.distance_matrix()
-            for i, t1 in enumerate(plan.tiles):
-                for j, t2 in enumerate(plan.tiles):
-                    if i < j:
-                        min_d = min(dist[q1][q2] for q1 in t1.qubits for q2 in t2.qubits)
-                        require(
-                            min_d >= 2,
-                            f"{bname} {run_id}: tiles {t1.tile_id} and {t2.tile_id} have distance {min_d} < 2",
-                        )
-
-            run_plans[run_id] = plan.to_dict()
-
-        # Evaluate temporal compression curves
-        compression_curves: dict[str, Any] = {}
-        top_tiles_run1 = len(run_plans["Run 1"]["tiles"])
-        for d in delays:
-            key = f"{round(d * 1e6)}us"
-            tc = lattice.evaluate_temporal_compression(
-                circuit_duration_s=5e-6,
-                rep_delay_compressed_s=d,
-                tile_count=top_tiles_run1,
-            )
-            compression_curves[key] = tc.to_dict()
-
-        # Audit gate sequence anomalies
-        anomalies = lattice.detect_anomalies()
-
-        # Simulate spatial cross-covariance
-        sim_bitstrings = [
-            "".join("1" if ((shot * 17 + bit * 13) % 29 < 14) else "0" for bit in range(16)) for shot in range(1000)
-        ]
-        cov_res = lattice.compute_spatial_cross_covariance(
-            sim_bitstrings,
-            [slice(i, i + 1) for i in range(16)],
-        )
-
-        backends_audit[bname] = {
-            "backend_name": bname,
-            "qubit_count": lattice.TOTAL_QUBITS,
-            "undirected_edges": lattice.graph.num_edges(),
-            "runs": run_plans,
-            "temporal_compression": compression_curves,
-            "subsequence_anomalies_flagged": len(anomalies),
-            "sample_anomalies": [a.to_dict() for a in anomalies[:5]],
-            "sample_covariance": cov_res,
-        }
-
+def target_medians(lattice: HeronLattice) -> dict[str, Any]:
+    """Medians over undirected couplers (worst direction) and over qubits."""
+    two_cz = {e: 1 - (1 - err) ** 2 for e, err in lattice.cz_errors.items()}
+    rzz_below = sum(lattice.rzz_errors[e] < two_cz[e] for e in lattice.rzz_errors)
     return {
-        "schema": "heron-spatial-multiprogramming-audit-v1",
-        "inputs": {
-            "targets_snapshot": str(snapshot_path.relative_to(ROOT)),
-            "targets_snapshot_sha256": snapshot_hash,
-            "roster": list(ROSTER),
+        "cz_error": round(median(lattice.cz_errors.values()), 7),
+        "two_cz_error": round(median(two_cz.values()), 7),
+        "rzz_error": round(median(lattice.rzz_errors.values()), 7),
+        "rzz_below_two_cz_couplers": rzz_below,
+        "sx_error": round(median(lattice.sx_errors.values()), 7),
+        "duration_ns": {
+            name: round(median(values.values()) * 1e9, 3) for name, values in sorted(lattice.durations.items())
         },
-        "backends": backends_audit,
     }
 
 
+def checked_plan(lattice: HeronLattice, name: str, k: int, requested: int, distance: int) -> dict[str, Any]:
+    plan = lattice.plan_tiles(name, k, requested, min_buffer_distance=distance)
+    closest = lattice.min_tile_distance(plan.tiles)
+    require(closest is None or closest >= distance, f"{lattice.backend_name} {name}: tiles at distance {closest}")
+    return {**plan.to_dict(lattice.num_qubits), "min_tile_distance": closest}
+
+
+def build_audit(snapshot_path: Path) -> dict[str, Any]:
+    require(snapshot_path.exists(), f"Snapshot {snapshot_path} does not exist")
+    backends: dict[str, Any] = {}
+    for bname in ROSTER:
+        lattice = HeronLattice.from_snapshot(snapshot_path, bname)
+        plans = {name: {**checked_plan(lattice, name, k, n, 2), "fits": use} for name, k, n, use in TILE_PLANS}
+        backends[bname] = {
+            "qubit_count": lattice.num_qubits,
+            "undirected_edges": lattice.graph.num_edges(),
+            "default_rep_delay_us": round(lattice.default_rep_delay_s * 1e6, 3),
+            "rep_delay_range_us": [round(v * 1e6, 3) for v in lattice.rep_delay_range_s],
+            "target_medians": target_medians(lattice),
+            "tile_plans": plans,
+            "guard_distance_3": checked_plan(lattice, "k5_d3", 5, 16, 3),
+            "rzz_durations": lattice.rzz_duration_summary(),
+            "shot_rate_ratios": {
+                f"circuit_{round(c * 1e6)}us": {
+                    f"rep_delay_{round(d * 1e6)}us": lattice.shot_rate_ratio(c, d) for d in REP_DELAYS_S
+                }
+                for c in CIRCUIT_DURATIONS_S
+            },
+            "rz_cz_sx_flag_couplers": {
+                "cz_error_threshold": FLAG_THRESHOLD,
+                "count": len(lattice.high_error_couplers(FLAG_THRESHOLD)),
+            },
+        }
+    return {
+        "schema": "heron-tile-packing-audit-v2",
+        "scope": (
+            "Arithmetic on the retained Target snapshot. Shot-rate ratios use assumed circuit durations and "
+            "repetition delays that need a state-preparation control below the default; no ratio is a yield."
+        ),
+        "inputs": {
+            "targets_snapshot": str(snapshot_path.relative_to(ROOT)),
+            "targets_snapshot_sha256": sha256(snapshot_path),
+            "roster": list(ROSTER),
+        },
+        "backends": backends,
+    }
+
+
+def expect_value_error(action: Any, message: str) -> None:
+    try:
+        action()
+    except ValueError:
+        return
+    raise RuntimeError(message)
+
+
 def self_test() -> None:
-    """Validate strict invariant enforcement and failure modes."""
-    require(SNAPSHOT.exists(), "Snapshot must exist for self-test")
     lattice = HeronLattice.from_snapshot(SNAPSHOT, "ibm_fez")
-
-    # 1. Normal run planning succeeds
-    plan = lattice.plan_run(
-        run_id="Run 1",
-        k=5,
-        target_tiles=16,
-        name="Test Sedenion",
-        key_isa_feature="RZZ",
-        deliverable="Test",
-        min_buffer_distance=2,
+    for distance in (2, 3):
+        tiles = lattice.find_disjoint_tiles(5, min_buffer_distance=distance, max_tiles=16)
+        require(lattice.min_tile_distance(tiles) == distance, f"guard distance {distance} does not hold")
+    tiles = lattice.find_disjoint_tiles(10, max_tiles=2)
+    expect_value_error(
+        lambda: lattice.build_multiplexed_pub([QuantumCircuit(10)] * 2, [tiles[0], tiles[0]]),
+        "the composer accepted one tile twice",
     )
-    require(len(plan.tiles) == 16, f"Expected 16 tiles, got {len(plan.tiles)}")
-
-    # 2. Assert min_buffer_distance >= 2 holds strictly
-    dist = lattice.distance_matrix()
-    for i, t1 in enumerate(plan.tiles):
-        for j, t2 in enumerate(plan.tiles):
-            if i < j:
-                min_d = min(dist[q1][q2] for q1 in t1.qubits for q2 in t2.qubits)
-                require(min_d >= 2, "Distance must be >= 2")
-
-    # 3. Assert tile overlap rejection
-    try:
-        t1 = plan.tiles[0]
-        fake_circuits = [QuantumCircuit(10)]
-        fake_tiles = [t1]
-        lattice.build_multiplexed_pub(fake_circuits, fake_tiles)
-        raise RuntimeError("Expected build_multiplexed_pub to fail on size mismatch")
-    except ValueError:
-        pass
-
-    # 4. Assert anomaly detection
-    ops = [("rz", (0,)), ("cz", (0, 1)), ("sx", (0,))]
-    anomalies = lattice.detect_anomalies(ops)
-    require(isinstance(anomalies, list), "Anomaly list returned")
-
-    # 5. Assert covariance calculation rejects < 2 shots
-    try:
-        lattice.compute_spatial_cross_covariance(["001"], [slice(0, 1)])
-        raise RuntimeError("Expected failure for < 2 shots")
-    except ValueError:
-        pass
-
-    # 6. Assert dynamic circuit multiplexing with if_test
-    c_dyn0 = QuantumCircuit(5, 1)
-    c_dyn0.measure(0, 0)
-    with c_dyn0.if_test((c_dyn0.clbits[0], 1)):
-        c_dyn0.x(1)
-    c_dyn1 = QuantumCircuit(5, 1)
-    c_dyn1.x(0)
-    c_dyn1.measure(0, 0)
-    with c_dyn1.if_test((c_dyn1.clbits[0], 1)):
-        c_dyn1.x(1)
-    wide_dyn = lattice.build_multiplexed_pub([c_dyn0, c_dyn1], plan.tiles[:2])
-    require(len(wide_dyn.cregs) == 2, "Wide circuit must contain 2 separate classical registers")
-
-    # 7. Assert single-PUB parameter sweep packing
-    from qiskit.circuit import Parameter
-
-    theta = Parameter("theta")
-    p_circ = QuantumCircuit(5)
-    p_circ.rx(theta, 0)
-    wide_param = lattice.build_parameterized_multiplexed_pub([p_circ], [plan.tiles[0]])
-    pub = HeronLattice.pack_parameter_sweep_pub(wide_param, [[0.0], [0.5], [1.0]], shots=1024)
-    require(pub[1].shape == (3, 1), "Parameter sweep shape must be (3, 1)")
-
-    # 8. Assert basis rotation appending
-    x_rot = HeronLattice.append_basis_rotations(QuantumCircuit(2), "X")
-    require(any(inst.operation.name == "h" for inst in x_rot.data), "Hadamard must be present for X basis")
-
-    # 9. Assert precision anomaly detection rejects false alarms on independent qubits
-    tile_qubits = plan.tiles[0].qubits
-    false_alarm_ops = [("rz", (99,)), ("cz", (tile_qubits[0], tile_qubits[1])), ("sx", (tile_qubits[0],))]
-    require(
-        len(lattice.detect_anomalies(false_alarm_ops)) == 0, "False alarm must not be triggered by independent qubit"
+    qubits = tiles[0].qubits
+    allowed = set(tiles[0].internal_edges)
+    off = next((a, b) for a in range(10) for b in range(a + 1, 10) if (qubits[a], qubits[b]) not in allowed)
+    stray = QuantumCircuit(10)
+    stray.cz(*off)
+    expect_value_error(lambda: lattice.build_multiplexed_pub([stray], tiles[:1]), "an off-tile CZ was placed")
+    patch = lattice.route_to_tile(steane_z_syndrome_patch(error_qubit=4), tiles[0])
+    require(lattice.build_multiplexed_pub([patch], tiles[:1]).num_qubits == 156, "a routed patch did not compose")
+    qa, qb = lattice.high_error_couplers(FLAG_THRESHOLD)[0]
+    delayed = [("rz", (qa,)), ("cz", (qa, qb)), ("delay", (qa,)), ("sx", (qa,))]
+    require(not lattice.flag_rz_cz_sx(delayed), "a delay did not end the flagged run")
+    expect_value_error(
+        lambda: lattice.tile_parity_covariance(["0", "0"], [slice(0, 5)]), "a slice past the strings was accepted"
     )
-
-    print("self-test: all 9 invariant checks passed successfully")
+    expect_value_error(lambda: lattice.shot_rate_ratio(5e-6, 3e-3), "a delay outside rep_delay_range was accepted")
+    require(lcu_zero_product_witness().metadata["p_success"] == 0.0, "the default witness is not the dark pair")
+    print("self-test: guard distances, composer rejections, routing, flag, covariance, delay range and witness hold")
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -272,20 +173,17 @@ def main(argv: list[str] | None = None) -> int:
         self_test()
         return 0
 
-    audit_data = build_audit(SNAPSHOT)
-    rendered = json.dumps(audit_data, indent=1, sort_keys=True) + "\n"
-
+    rendered = json.dumps(build_audit(SNAPSHOT), indent=1, sort_keys=True) + "\n"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
         args.out.write_text(rendered, encoding="utf-8")
-        print(f"Wrote spatial multiprogramming audit to {args.out}")
-
+        print(f"Wrote tile packing audit to {args.out}")
     if args.check:
         require(args.check.exists(), f"Check file {args.check} does not exist")
-        retained = args.check.read_text(encoding="utf-8")
-        require(retained == rendered, f"Audit in {args.check} differs from recomputed audit")
-        print(f"spatial multiprogramming audit check: passed against {args.check}")
-
+        require(
+            args.check.read_text(encoding="utf-8") == rendered, f"Audit in {args.check} differs from recomputed audit"
+        )
+        print(f"tile packing audit check: passed against {args.check}")
     return 0
 
 
