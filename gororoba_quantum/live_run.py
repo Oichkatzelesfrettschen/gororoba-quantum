@@ -148,6 +148,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "coherence_window.py",
     "conditional_ramsey.py",
     "crossed_tile_template.py",
+    "diagnostic_controls.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qubit_baseline.py",
@@ -2679,6 +2680,13 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError("conditional_ramsey runs without dynamical decoupling; omit --dd")
                 if args.max_replicas != 1:
                     raise LiveRunError("conditional_ramsey runs one replica; pass --max-replicas 1")
+            if set(campaigns) & {"scaffold_ab", "readout_delay"}:
+                # Both compare members on one tile under one calibration: the idles
+                # must stay free of echo pulses, and a second replica is a second tile.
+                if args.dd:
+                    raise LiveRunError(f"{campaigns[0]} runs without dynamical decoupling; omit --dd")
+                if args.max_replicas != 1:
+                    raise LiveRunError(f"{campaigns[0]} runs one replica; pass --max-replicas 1")
             if "crossed_tile_template" in campaigns:
                 # Each PUB row runs one member on both tiles in the same shots, which
                 # needs exactly two replicas, and the crossing matches the rank-sector

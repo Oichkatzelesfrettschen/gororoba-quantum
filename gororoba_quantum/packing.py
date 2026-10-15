@@ -42,10 +42,15 @@ class Replica:
 
 
 def coupling_graph(target: object, num_qubits: int) -> rx.PyGraph:
-    """Undirected graph of the target's CZ couplers over every physical qubit."""
+    """Undirected graph of the target's CZ couplers over every physical qubit.
+
+    An admission target that excludes every coupler, as an operation exclusion
+    leaving one qubit does, carries no CZ instruction and yields an edgeless graph.
+    """
     graph = rx.PyGraph()
     graph.add_nodes_from(range(num_qubits))
-    edges = {tuple(sorted(qargs)) for qargs in target["cz"]}  # type: ignore[index]
+    couplers = target["cz"] if "cz" in target else {}  # type: ignore[index, operator]
+    edges = {tuple(sorted(qargs)) for qargs in couplers}
     graph.add_edges_from_no_data(sorted(edges))
     return graph
 
