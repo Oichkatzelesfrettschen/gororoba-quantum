@@ -71,6 +71,7 @@ from live_run import (
     _physical,
     _pub_counts,
     _recovery_tags,
+    approved_backend_scope,
     build_admission_target,
     build_submission_plan,
     capability_violations,
@@ -2802,6 +2803,36 @@ def _verify_discovery_failure_isolation() -> None:
             raise RuntimeError(f"{failure_stage} failure prevents viable selection")
 
 
+def _verify_approved_backend_scope() -> None:
+    """A submission plans only over the approved record's backends; a newly eligible one is never probed."""
+    with tempfile.TemporaryDirectory() as temporary:
+        approved_dir = Path(temporary)
+        (approved_dir / "record.json").write_text(json.dumps({"backends": {"viable": {}, "approved": {}}}))
+        if approved_backend_scope(approved_dir) != ["approved", "viable"]:
+            raise RuntimeError("approved scope differs from the approved record's eligible backends")
+        (approved_dir / "record.json").write_text(json.dumps({"backends": {}}))
+        try:
+            approved_backend_scope(approved_dir)
+        except LiveRunError:
+            pass
+        else:
+            raise RuntimeError("an approved record without eligible backends yields a scope")
+    # The newcomer fails its first probe stage, so probing it would leave probe_failed.
+    service = _ProbeService([_ProbeBackend("approved", FakeFez()), _ProbeBackend("newcomer", FakeFez(), "refresh")])
+    snapshots, skipped, inventory = discover_snapshots(service, None, None, scope=["approved"])
+    if [snapshot.name for snapshot in snapshots] != ["approved"]:
+        raise RuntimeError("a backend outside the approved scope reached planning")
+    if inventory["newcomer"]["eligibility"] != "outside_approved_scope":
+        raise RuntimeError(f"out-of-scope backend was probed: {inventory['newcomer']}")
+    if "approved record" not in skipped["newcomer"]["reason"]:
+        raise RuntimeError(f"out-of-scope backend reports {skipped['newcomer']}")
+    unscoped, _, unscoped_inventory = discover_snapshots(service, None, None)
+    if [snapshot.name for snapshot in unscoped] != ["approved"] or unscoped_inventory["newcomer"]["eligibility"] != (
+        "probe_failed"
+    ):
+        raise RuntimeError("a dry run without scope stops probing every discovered backend")
+
+
 def _verify_experiment_source_manifest() -> None:
     """Every static local import in the declared run sources participates in replay identity."""
     source_root = Path(live_run_module.__file__).resolve().parent
@@ -3109,6 +3140,7 @@ def _verify() -> None:
     _verify_every_job_revalidates()
     _verify_live_reselection()
     _verify_discovery_failure_isolation()
+    _verify_approved_backend_scope()
     _verify_packed_replica_split()
     _verify_packing_global_phase()
     _verify_packed_static_stays_static()
@@ -3118,7 +3150,7 @@ def _verify() -> None:
     print(
         "runtime contracts: discovery, direct pinned lookup, capability admission, "
         "bounded-angle isolation, coherent snapshots, Target routing, joint placement, "
-        "cross-group PUB fusion, renewed approval, job revalidation, schema lifecycle, "
+        "cross-group PUB fusion, renewed approval, approved backend scope, job revalidation, schema lifecycle, "
         "recovery, result order, rate keys, scheduler timing, job usage, and digest pass"
     )
 

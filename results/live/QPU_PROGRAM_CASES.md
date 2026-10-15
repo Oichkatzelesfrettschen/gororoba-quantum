@@ -45,15 +45,19 @@ The comparison with the approved record listed 13 mismatches (backend,
 layout, replica qubits, calibration, fused PUB manifests and QPY bytes),
 and the runner wrote `approval_required` and sent nothing. Record 013647
 is the dry run of the same command one minute later, by which time
-Kingston had also recalibrated. The approval binding behaves as designed;
-the consequence is that a backend whose queue sits near a `--max-pending`
-limit can move the plan between a dry run and its submit, so a submit
-follows its dry run immediately.
+Kingston had also recalibrated. The refusal was correct, but a queue that
+crosses a `--max-pending` limit between a dry run and its submit could move
+the plan. `live_run.approved_backend_scope` now plans a submission over the
+approved record's eligible backends only: a backend outside that set is
+recorded as `outside_approved_scope` without a probe, while an approved
+backend that changes or turns ineligible still refuses through the record
+comparison. That source change moves the experiment digest, so the four
+records above need fresh dry runs before any approval.
 
 ibm_kingston admitted ripple and rank sectors in the 2026-10-14T22:05Z dry
 runs at source `dac1f2e` (ripple 64.28 s nominal and 68.88 s stress, rank
 30.45 s and 35.05 s, every observable admitted). Those records are retained
-in this branch's history at commit `ff59e2a` and no longer match the
+in the repository history at commit `ff59e2a` and no longer match the
 experiment digest. Under the unchanged commands, ripple needs Kingston at
 25 or fewer pending jobs, or ibm_fez out of maintenance; rank sectors need
 Kingston at 60 or fewer.
