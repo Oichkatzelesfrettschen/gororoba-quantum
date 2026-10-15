@@ -303,6 +303,10 @@ fractional gates, stretch, circuit timing, processor types, dynamic circuits, ru
 The [Heron and ISA reference guides](notes/ibm_quantum/README.md) retain transcribed Markdown reference copies of the core
 guides covering processor architectures, backend instruction sets, transpilation to ISA circuits, dynamic circuits, fractional gates,
 timing, and calibration, each with an upstream link to the full online piece.
+The [Heron tile packing note](notes/heron_spatial_multiprogramming.md) packs guard-banded tiles on the
+snapshot coupling map, composes one circuit per tile into one wide circuit, and states per-backend RZZ and
+repetition-delay arithmetic from Target values, audited in
+[spatial_multiprogramming_audit.json](evidence/heron_platform/spatial_multiprogramming_audit.json).
 
 The [Hoeffding note](notes/hoeffding-1963.md) cites the 1963 inequality behind the admission contracts by DOI.
 The [measurement-foundations web note](notes/measurement_foundations_web_sources.md) records the 3 February 2025 removal

@@ -111,6 +111,49 @@ Changes to proof replay inputs also follow the pinned Rocq replay in
 remain source limitations in the registry; checksum admission preserves the
 original bytes and differs from a fresh mathematical proof check.
 
+## Mandatory source and hardware grounding
+
+All architectural design, code synthesis, circuit optimization, and review decisions
+must be strictly grounded in verified repository sources rather than inferred or
+approximated from external generalizations. Never guess or estimate hardware
+specifications, timing budgets, algebraic conventions, or mathematical invariants.
+
+Grounding binds all operations through two authoritative pillars:
+
+1. **Heron r2 Hardware Documentation and Live Snapshots.**
+   The repository maintains authoritative hardware definitions and execution constraints:
+   - `docs/notes/ibm_quantum/`: Transcribed reference documentation covering processor
+     families (`processor-types.md`), backend details and basis instruction sets
+     (`qpu-information.md`), transpilation to ISA circuits (`transpile.md`), pass
+     managers (`transpile-with-pass-managers.md`), transpiler stages (`transpiler-stages.md`),
+     dynamic circuits and mid-circuit measurement (`execute-dynamic-circuits.md`),
+     native fractional gate limits (`fractional-gates.md`), stretch delays (`stretch.md`),
+     circuit timing (`qiskit-runtime-circuit-timing.md`), repetition rates and shot loops
+     (`repetition-rate-execution.md`), calibration cadence (`calibration-jobs.md`),
+     and execution time estimation (`estimate-job-run-time.md`).
+   - `docs/notes/ibm_heron_platform.md`: Measured platform targets, timing alignments,
+     instruction variants (`measure_2`, `reset_2`, `xslow`), and fractional-gate error
+     evaluations across `ibm_fez`, `ibm_kingston`, and `ibm_marrakesh`.
+   - `docs/evidence/heron_platform/targets.json`: Complete, machine-readable Target
+     snapshots across all 156 qubits and 352 coupling pairs.
+
+2. **Mathematical Papers, Notes, and Formal Proofs.**
+   The repository contains exact algebraic specifications, proof certificates, and
+   literature records:
+   - Primary research notes in `docs/notes/` and hosted/local papers in `docs/pdf/`
+     and `docs/local_source_cache/` (indexed in `docs/INDEX.md` and `docs/SOURCES.json`).
+     When mathematical derivations require broader context, follow the linked arXiv
+     version of record directly.
+   - Proof certificates in `proofs/` and verification evidence in `docs/evidence/`
+     (including Rocq formal certificates for `TargetFlipN21`, `FoldAverageDescent`,
+     `TerminalChannelSeparation`, and `C881`).
+   - Sedenion, octonion, and Cayley-Dickson multiplication conventions codified in
+     `gororoba_quantum/cd_core.py` and the Algebra Circuit Design Rules below.
+
+Every module, test contract, and hardware execution plan reflects these recorded sources.
+When an algebraic sign, gate duration, layout connectivity, or error rate is needed, code
+directly imports or validates against the registered repository artifact.
+
 <!-- algebra-circuit-rules:begin -->
 ## Algebra circuit design rules
 
