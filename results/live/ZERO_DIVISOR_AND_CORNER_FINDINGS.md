@@ -59,7 +59,7 @@ writes the dark value of the fit P0(phi) = o + A cos phi + B sin phi as
   family's ideal-zero endpoints showed (1.9 times on Kingston). In the
   pooled fit and in every replica, the incoherent contraction (1 - V)/2
   carries the floor; the offset and the coherent phase term are at most
-  0.04 in any replica. One replica (qubits 138 and 149 to 152) is
+  0.041 in any replica. One replica (qubits 138 and 149 to 152) is
   much weaker (V = 0.447).
 - The mirror twins, on the same qubits and with the same two-qubit content
   but no algebra, attenuate <Z> to 0.64 against a modeled 0.86, more than the
