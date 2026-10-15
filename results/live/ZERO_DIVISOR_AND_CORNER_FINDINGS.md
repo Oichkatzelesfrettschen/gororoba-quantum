@@ -39,10 +39,14 @@ Execution calibration 2026-10-15 00:03:15 PDT; 1024 shots per circuit.
 - Qubits 3, 2 and 16 relax faster than their reported T1 implies: 0.49
   retained after 50 us on qubit 3 against 0.72 modeled.
 - Rank sector 4 sat on qubits 0 to 3 and ripple lane 6 on 1 to 4 and 16, so
-  the readout fault on qubits 0 and 1 explains the steady, stationary loss
-  the decomposition located there. It persisted from the 03:10Z rank run to
-  this 07:10Z baseline. Readout crosstalk between the simultaneously measured
-  neighbors 0 and 1 is not separated from an intrinsic fault by this run.
+  a readout fault of this size on qubits 0 and 1 accounts for the loss the
+  decomposition located there, which the block-homogeneity test resolved no
+  change in during the 03:10Z rank job. That the fault already held at 03:10Z
+  is an inference from those losses; this 07:10Z run measures it directly.
+  Readout crosstalk between the simultaneously measured neighbors 0 and 1 is
+  not separated from an intrinsic fault by this run, and the tile and
+  template were chosen after seeing the data, so attributing the loss to the
+  tile rather than the circuit family needs a prospective crossed design.
 
 ## Zero-divisor fringe: the excess floor is incoherent
 

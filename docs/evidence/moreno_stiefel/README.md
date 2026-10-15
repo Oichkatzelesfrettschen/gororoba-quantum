@@ -13,7 +13,10 @@ v = (a, b) with a and b pure in A_n, a orthogonal to b and |a| = |b|
 
 `a6_integer_witness` is the seed-0 disjoint-support element: an integer
 vector of length 64 that is a Stiefel element of A_6 and not a zero divisor,
-the negative answer to the open question at A_6. Each A_5 and A_6 entry
+the negative answer to the open question at A_6. Its determinant residues modulo
+2^61 - 1 and 10^9 + 7 are retained and agree with an independent computation;
+with the connectedness of V_2(R^31) they give generic invertibility of the
+normalized A_6 Stiefel family (`docs/notes/math-0512517.md`). Each A_5 and A_6 entry
 records its seed, the sha256 of its skew-symmetric matrix and of the exact
 pair, the squared norm and the size of the cleared denominator. The script
 checks its L_v construction against `cd_core.cd_multiply` before measuring.
