@@ -9,11 +9,14 @@ independent linear forms and deg q <= 2, so W_ij equals
 D_q U_A^dagger (CCZ x I) U_A with U_A a CNOT network and D_q a Z/CZ
 diagonal. The degree-3 part takes 15 distinct values, 24 pairs each.
 
-Three circuits implement each W_ij and are checked operator-equal to
-diag((-1)^f):
+Three circuits implement each W_ij and are checked entry by entry,
+global phase included, against diag((-1)^f), since a controlled block turns
+a global sign into a relative one:
 
 - factorized: designs.design_c_associator_spectrum's three multiplication
-  blocks, the circuit whose hardware run tests composition of the factors;
+  blocks with the barriers between them kept, so compilation optimizes each
+  block separately as the hardware circuit does, the circuit whose run tests
+  composition of the factors;
 - reed_muller: select_lcu.phase_oracle_from_truth_table on f, one Z, CZ or
   CCZ per ANF monomial;
 - normal_form: LinearFunction(A), one CCZ, LinearFunction(A)^-1, then the
@@ -51,7 +54,7 @@ from qiskit.quantum_info import Operator  # noqa: E402
 from qiskit.transpiler import CouplingMap  # noqa: E402
 
 from boolean_anf import anf_coefficients  # noqa: E402
-from designs import _unitary_part, design_c_associator_spectrum  # noqa: E402
+from designs import design_c_associator_spectrum  # noqa: E402
 from predict import associator_phase  # noqa: E402
 from select_lcu import phase_oracle_from_truth_table  # noqa: E402
 
@@ -128,6 +131,17 @@ def normal_form_circuit(truth_table: list[int], forms: tuple[int, int, int]) -> 
     return circuit
 
 
+def factorized_blocks(i: int, j: int) -> QuantumCircuit:
+    """Design C between its H layers: the three blocks and the two barriers that separate them."""
+    full = design_c_associator_spectrum(DIM, i, j).remove_final_measurements(inplace=False)
+    barriers = [k for k, inst in enumerate(full.data) if inst.operation.name == "barrier"]
+    core = QuantumCircuit(N, global_phase=full.global_phase)
+    for inst in full.data[barriers[0] + 1 : barriers[-1]]:
+        core.append(inst.operation, [full.find_bit(q).index for q in inst.qubits])
+    require(core.count_ops().get("barrier", 0) == 2, f"pair ({i}, {j}) lost its block barriers")
+    return core
+
+
 def coupling_map() -> CouplingMap:
     snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
     return CouplingMap([tuple(edge) for edge in snapshot["backends"][BACKEND]["instructions"]["cz"]["qargs"]])
@@ -159,14 +173,15 @@ def compute() -> dict[str, Any]:
         require(part in forms_by_part, f"pair ({i}, {j}) cubic part is not a product of three independent forms")
         part_counts[part] += 1
         forms = forms_by_part[part]
-        want = Operator(np.diag([(-1.0) ** bit for bit in truth_table]))
+        want = np.diag([(-1.0) ** bit for bit in truth_table])
         circuits = {
-            "factorized": _unitary_part(design_c_associator_spectrum(DIM, i, j)),
+            "factorized": factorized_blocks(i, j),
             "reed_muller": phase_oracle_from_truth_table(truth_table),
             "normal_form": normal_form_circuit(truth_table, forms),
         }
         for name, circuit in circuits.items():
-            require(Operator(circuit).equiv(want), f"pair ({i}, {j}) {name} differs from diag((-1)^f)")
+            deviation = float(np.max(np.abs(Operator(circuit).data - want)))
+            require(deviation < 1e-9, f"pair ({i}, {j}) {name} deviates from diag((-1)^f) by {deviation:.2e}")
         records.append(
             {
                 "pair": [i, j],
@@ -204,7 +219,14 @@ def compute() -> dict[str, Any]:
             "qiskit": qiskit.__version__,
         },
         "by_cubic_monomial_count": by_size,
-        "normal_form_below_reed_muller": sum(r["cz"]["normal_form"] < r["cz"]["reed_muller"] for r in records),
+        "normal_form_below_reed_muller": {
+            size: sum(
+                r["cz"]["normal_form"] < r["cz"]["reed_muller"]
+                for r in records
+                if len(r["cubic_monomials"]) == int(size)
+            )
+            for size in by_size
+        },
         "records": records,
     }
 
