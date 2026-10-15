@@ -41,11 +41,15 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import numpy as np  # noqa: E402
 import qiskit  # noqa: E402
 import qiskit_aer  # noqa: E402
+from associator_cubic_normal_form import (  # noqa: E402
+    cubic_part,
+    factorized_blocks,
+    normal_form_circuit,
+    rank_one_forms,
+)
 from qiskit import QuantumCircuit, transpile  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
-from associator_cubic_normal_form import cubic_part, normal_form_circuit, rank_one_forms  # noqa: E402
-from designs import _unitary_part, design_c_associator_spectrum  # noqa: E402
 from predict import associator_phase  # noqa: E402
 from select_lcu import phase_oracle_from_truth_table  # noqa: E402
 
@@ -81,7 +85,7 @@ def spectrum_circuit(core: QuantumCircuit) -> QuantumCircuit:
 def cores(i: int, j: int, forms_by_part: dict[Any, tuple[int, int, int]]) -> dict[str, QuantumCircuit]:
     truth_table = [1 if s == -1 else 0 for s in associator_phase(DIM, i, j)]
     return {
-        "factorized": _unitary_part(design_c_associator_spectrum(DIM, i, j)),
+        "factorized": factorized_blocks(i, j),
         "reed_muller": phase_oracle_from_truth_table(truth_table),
         "normal_form": normal_form_circuit(truth_table, forms_by_part[cubic_part(truth_table)]),
     }
@@ -111,7 +115,11 @@ def run(pairs: list[tuple[int, int]], device: str, shots: int) -> dict[str, Any]
             compiled = transpile(spectrum_circuit(core), target=target, optimization_level=3, seed_transpiler=SEED)
             layout = compiled.layout.final_index_layout() if compiled.layout else list(range(N))
             counts = simulator.run(compiled, shots=shots, seed_simulator=SEED + i * DIM + j).result().get_counts()
-            entry[name] = {"cz": int(compiled.count_ops().get("cz", 0)), "final_layout": layout, **summarize(counts, ideal, shots)}
+            entry[name] = {
+                "cz": int(compiled.count_ops().get("cz", 0)),
+                "final_layout": layout,
+                **summarize(counts, ideal, shots),
+            }
         records.append(entry)
         print(json.dumps(entry), flush=True)
     return {

@@ -49,7 +49,7 @@ KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
 DEFAULT_MACHINE = "NvidiaTeslaT4"
 SMOKE_QUBITS = 14
 
-RUNNER = r'''
+RUNNER = r"""
 import base64, hashlib, io, json, os, platform, subprocess, sys, time, zipfile
 from pathlib import Path
 
@@ -111,7 +111,7 @@ for path in repo.rglob("*"):
         target.write_bytes(path.read_bytes())
 (out / "exit.json").write_text(json.dumps({{"returncode": proc.returncode}}) + "\n")
 raise SystemExit(proc.returncode)
-'''
+"""
 
 
 def require(condition: bool, message: str) -> None:

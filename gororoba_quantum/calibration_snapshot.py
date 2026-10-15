@@ -194,7 +194,8 @@ def export(name: str, out: Path) -> None:
     snapshot = json.loads(json.dumps(snapshot))
     live = channel_table(live_run._noise_model(name, live_run.TargetView(name, target), target, props))
     rebuilt = channel_table(noise_model(snapshot)[1])
-    differing = sorted(key for key in live.keys() | rebuilt.keys() if not (key in live and key in rebuilt and live[key] == rebuilt[key]))
+    shared = live.keys() & rebuilt.keys()
+    differing = sorted((live.keys() ^ rebuilt.keys()) | {key for key in shared if not live[key] == rebuilt[key]})
     if differing:
         raise SystemExit(f"rebuilt noise differs from live_run's on {len(differing)} channels, first {differing[:3]}")
     out.write_text(json.dumps(snapshot, indent=1, sort_keys=True) + "\n", encoding="utf-8")
