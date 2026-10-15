@@ -2688,6 +2688,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError("spectator_wavefront_ramsey runs one replica; pass --max-replicas 1")
         candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
         choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
+        for choice in choices:
+            if choice.group.name == "crossed_tile_template":
+                from crossed_tile_template import placement_violation
+
+                # --max-replicas caps the count; the crossing needs exactly one replica on each tile.
+                violation = placement_violation(choice.snap.name, [list(replica.qubits) for replica in choice.replicas])
+                if violation is not None:
+                    raise LiveRunError(violation)
     pubs = execution_pubs(choices)
     record = {
         "schema_version": RECORD_SCHEMA_VERSION,

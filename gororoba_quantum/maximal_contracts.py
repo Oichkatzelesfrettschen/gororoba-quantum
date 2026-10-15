@@ -273,6 +273,8 @@ def _verify_isolation_contract() -> None:
         ({"groups": ["crossed_tile_template", "design_a"]}, "isolated campaign"),
         ({"groups": ["crossed_tile_template"], "dd": "XX", "max_replicas": 2}, "dynamical decoupling"),
         ({"groups": ["crossed_tile_template"], "max_replicas": None}, "one replica per tile"),
+        # A plan off the prescribed backend and tiles is refused after selection.
+        ({"groups": ["crossed_tile_template"], "max_replicas": 2}, "crossed_tile_template runs on ibm_kingston"),
     ):
         try:
             plan(service, _fixture_args(**overrides))
