@@ -688,8 +688,12 @@ def lcu_zero_product_witness(
     carries P(s = 0) = ||x y||^2 / 2, which is 0 for the default dark pair
     (e1 + e10)(e4 - e15) = 0 and 1 for its bright control at sign +1.
     """
-    from cd_core import basis, cd_multiply
-    from designs import lcu_witness
+    try:
+        from cd_core import basis, cd_multiply
+        from designs import lcu_witness
+    except ImportError:
+        from gororoba_quantum.cd_core import basis, cd_multiply
+        from gororoba_quantum.designs import lcu_witness
 
     if sign not in (1, -1):
         raise ValueError(f"sign must be +1 or -1, got {sign}")
@@ -716,8 +720,12 @@ def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCi
     reads Re <psi_L | psi_R> = +1 for associating triples and -1 for anti-associating
     triples, certified by cd_core.triple_sign.
     """
-    from cd_core import triple_sign
-    from designs import left_mult_gate
+    try:
+        from cd_core import triple_sign
+        from designs import left_mult_gate
+    except ImportError:
+        from gororoba_quantum.cd_core import triple_sign
+        from gororoba_quantum.designs import left_mult_gate
 
     left_sign, right_sign = triple_sign(16, i, j, k)
     ijk_idx = (i ^ j) ^ k
@@ -761,7 +769,10 @@ def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) 
     a bitstring distribution. For dim=32, (1, 16) is the five-qubit pathion
     exemplar from designs.SPECTRUM_EXEMPLARS.
     """
-    from designs import design_c_associator_spectrum
+    try:
+        from designs import design_c_associator_spectrum
+    except ImportError:
+        from gororoba_quantum.designs import design_c_associator_spectrum
 
     return design_c_associator_spectrum(dim, i, j)
 
@@ -1012,7 +1023,10 @@ def bent_hidden_shift_circuit(
     The ideal circuit is constructed from {H, CZ, Z}, compiling to native Heron ISA
     instructions {cz, rz, sx, x} after transpilation.
     """
-    from boolean_anf import quadratic_polar_rank
+    try:
+        from boolean_anf import quadratic_polar_rank
+    except ImportError:
+        from gororoba_quantum.boolean_anf import quadratic_polar_rank
 
     if n <= 0 or n % 2 != 0:
         raise ValueError(f"Qubit count n must be a positive even integer, got {n}")
