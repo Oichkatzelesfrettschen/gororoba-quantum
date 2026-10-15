@@ -1,0 +1,13 @@
+{
+  "desktop_checked": true,
+  "mobile_layout_checked": true,
+  "three_projections_checked": true,
+  "interpolation_toggle_checked": true,
+  "measured_only_playback_checked": true,
+  "qubit_filter_checked": true,
+  "no_prestart_extrapolation_checked": true,
+  "svg_export_checked": true,
+  "png_export_checked": true,
+  "rendering": "native SVG, no WebGL",
+  "console_page_errors": []
+}
