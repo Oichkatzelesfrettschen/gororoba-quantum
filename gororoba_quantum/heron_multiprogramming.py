@@ -19,8 +19,9 @@ Primary research literature grounding:
 - Octonionic Fano-plane CSS & active vs coherent stabilizers: Levratti (2026, fano-css &
   active-stabilizers), Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021,
   arXiv:2103.03008).
-- Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Devroye (1983, Ann. Statist.
-  11:1069-1076).
+- Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Bretagnolle-Huber-Carol
+  multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6;
+  Devroye 1983, Ann. Statist. 11:896-904; Devroye, Gyorfi & Lugosi 1996, Theorem 3.1).
 - Boolean bent hidden shifts & polar rank: Roetteler (2008, arXiv:0811.3208; 2009,
   arXiv:0911.4724), Gavinsky, Ito & Roetteler (2011, arXiv:1103.3017).
 """

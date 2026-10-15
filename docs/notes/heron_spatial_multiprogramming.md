@@ -229,10 +229,12 @@ peer-reviewed primary literature and verified repository artifacts:
    - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13-30
      [DOI:10.1080/01621459.1963.10500830](https://doi.org/10.1080/01621459.1963.10500830) (`docs/notes/hoeffding-1963.md`):
      Establishes the non-parametric exponential concentration bound for bounded random variables in $[0, 1]$.
-   - **Devroye (1983)**, *The equivalence of weak and strong convergence of the total variation of inductive limits*,
-     Ann. Statist. 11(4), 1069-1076: Establishes the finite-sample multinomial total variation inequality
-     $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$, which prevents false discovery in
-     multi-outcome empirical model selection.
+   - **Bretagnolle-Huber-Carol / Devroye (1983)**: The finite-sample multinomial total variation inequality
+     $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (Bretagnolle, Huber, & Carol;
+     van der Vaart & Wellner 1996, *Weak Convergence and Empirical Processes*, Proposition A.6.6; Devroye 1983,
+     *The Equivalence of Weak, Strong and Complete Convergence in $L_1$ for Kernel Density Estimates*, Ann. Statist.
+     11(3), 896-904; Devroye, Gyorfi, & Lugosi 1996, *A Probabilistic Theory of Pattern Recognition*, Theorem 3.1),
+     which prevents false discovery from multinomial sampling noise on multi-outcome spaces.
 
 ## Limits and empirical boundaries
 
