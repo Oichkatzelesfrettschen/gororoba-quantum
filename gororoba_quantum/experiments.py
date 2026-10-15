@@ -397,10 +397,16 @@ def standalone_campaign_groups() -> list[Group]:
     unchanged; plan() refuses to co-run a campaign with any other group.
     """
     from conditional_ramsey import conditional_ramsey_group
+    from crossed_tile_template import crossed_group
     from maximal_experiments import spectator_wavefront_ramsey_group
     from qubit_baseline import qubit_baseline_group
 
-    return [spectator_wavefront_ramsey_group(), qubit_baseline_group(), conditional_ramsey_group()]
+    return [
+        spectator_wavefront_ramsey_group(),
+        qubit_baseline_group(),
+        crossed_group(),
+        conditional_ramsey_group(),
+    ]
 
 
 def all_experiment_groups() -> list[Group]:

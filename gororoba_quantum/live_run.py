@@ -147,6 +147,7 @@ EXPERIMENT_SOURCE_MANIFEST = (
     "patch_characterization.py",
     "coherence_window.py",
     "conditional_ramsey.py",
+    "crossed_tile_template.py",
     "qpu_cases.py",
     "qpu_planning.py",
     "qubit_baseline.py",
@@ -939,6 +940,49 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
         if type(error).__name__ != "PanicException":
             raise
         raise CompilePanic(f"{snap.name}: transpiler panic ({error})") from None
+
+
+def component_layouts(snap: Snapshot, width: int) -> list[list[int]]:
+    """Connected initial layouts, one inside each placeable component that holds width qubits.
+
+    Sabre layout panics (petgraph capacity overflow) on an admission Target
+    whose placeable qubits form small islands, as an operator exclusion that
+    leaves a few tiles does, while routing from a fixed layout inside one
+    connected component stays within it. Each component contributes its
+    first width qubits in breadth-first order from its lowest index, with
+    neighbours visited in ascending order, so the layout is connected and
+    deterministic; node indices are physical qubits.
+    """
+    if snap.admission_target is None:
+        snap.admission_target = build_admission_target(snap)
+    placeable = packing.coupling_graph(snap.admission_target, snap.backend.num_qubits)
+    placeable.remove_nodes_from(sorted(snap.excluded_qubits))
+    layouts = []
+    for component in sorted(rx.connected_components(placeable), key=min):
+        if len(component) < width:
+            continue
+        order, frontier = [min(component)], [min(component)]
+        while frontier and len(order) < width:
+            node = frontier.pop(0)
+            for neighbour in sorted(placeable.neighbors(node)):
+                if neighbour not in order:
+                    order.append(neighbour)
+                    frontier.append(neighbour)
+        layouts.append(order[:width])
+    return layouts
+
+
+def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCircuit:
+    """_compile with Sabre's own layout, or from component_layouts when that layout panics."""
+    try:
+        return _compile(qc, snap, seed)
+    except CompilePanic:
+        for layout in component_layouts(snap, qc.num_qubits):
+            try:
+                return _compile(qc, snap, seed, layout)
+            except (QiskitError, ValueError):
+                continue
+        raise
 
 
 def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
@@ -1773,7 +1817,7 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
         primary = group.members[0]
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
             try:
-                isa = _compile(primary.circuit, snap, seed)
+                isa = _compile_primary(primary.circuit, snap, seed)
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "compile_error": type(error).__name__})
                 continue
@@ -2635,6 +2679,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError("conditional_ramsey runs without dynamical decoupling; omit --dd")
                 if args.max_replicas != 1:
                     raise LiveRunError("conditional_ramsey runs one replica; pass --max-replicas 1")
+            if "crossed_tile_template" in campaigns:
+                # Each PUB row runs one member on both tiles in the same shots, which
+                # needs exactly two replicas, and the crossing matches the rank-sector
+                # acquisition it tests, which ran without dynamical decoupling.
+                if args.dd:
+                    raise LiveRunError("crossed_tile_template runs without dynamical decoupling; omit --dd")
+                if args.max_replicas != 2:
+                    raise LiveRunError("crossed_tile_template runs one replica per tile; pass --max-replicas 2")
             if "spectator_wavefront_ramsey" in campaigns:
                 # The spectator arms read free Ramsey evolution over explicit delays,
                 # which dynamical decoupling would fill with echo pulses, and a second
@@ -2645,6 +2697,14 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
                     raise LiveRunError("spectator_wavefront_ramsey runs one replica; pass --max-replicas 1")
         candidate_sets = [select_candidates(group, snaps, args.seeds, trace) for group in groups]
         choices, fusion_placement = select_fusion_choices(candidate_sets, _policy(args))
+        for choice in choices:
+            if choice.group.name == "crossed_tile_template":
+                from crossed_tile_template import placement_violation
+
+                # --max-replicas caps the count; the crossing needs exactly one replica on each tile.
+                violation = placement_violation(choice.snap.name, [list(replica.qubits) for replica in choice.replicas])
+                if violation is not None:
+                    raise LiveRunError(violation)
     pubs = execution_pubs(choices)
     record = {
         "schema_version": RECORD_SCHEMA_VERSION,
