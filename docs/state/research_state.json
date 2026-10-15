@@ -1573,7 +1573,9 @@
       "depends_on": [
         "hw-coherence-window"
       ],
-      "supersedes": [],
+      "supersedes": [
+        "withdrawn-interleaving-verified"
+      ],
       "superseded_by": null
     },
     {
@@ -1824,7 +1826,10 @@
       "depends_on": [],
       "supersedes": [
         "withdrawn-unital-angle-argument",
-        "withdrawn-readout-contrast-impossible"
+        "withdrawn-readout-contrast-impossible",
+        "withdrawn-aer-toy-split",
+        "withdrawn-algebraic-detuning-test",
+        "withdrawn-predelay-negative"
       ],
       "superseded_by": null
     },
@@ -2039,6 +2044,149 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "evidence": [
+        {
+          "path": "docs/evidence/ccz-reduction/normal_form.json",
+          "sha256": "c6f2fdb8196ba3f1ab5f936b9e21abf1c98ea74648252ad8ce2a3b7921f47ae6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ccz-reduction/README.md",
+        "docs/evidence/simulation-notebook-audit/README.md"
+      ],
+      "gates": {
+        "core-278": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "id": "associator-cubic-normal-form",
+      "statement": "Each of the 360 degree-3 dim-32 associator phases is l1 l2 l3 + q with l1, l2, l3 linearly independent linear forms on F_2^5 and deg q <= 2, so W_ij = D_q U_A^dagger (CCZ x I) U_A; the cubic part takes 15 values, 24 pairs each.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Dimension 32 only; degree-4 and degree-5 phases at dims 64 and 128 are not examined."
+    },
+    {
+      "evidence": [
+        {
+          "path": "docs/evidence/ccz-reduction/normal_form.json",
+          "sha256": "c6f2fdb8196ba3f1ab5f936b9e21abf1c98ea74648252ad8ce2a3b7921f47ae6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ccz-reduction/README.md",
+        "docs/evidence/simulation-notebook-audit/README.md"
+      ],
+      "gates": {
+        "core-278": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "associator-cubic-normal-form"
+      ],
+      "supersedes": [
+        "withdrawn-ccz-resource-gain"
+      ],
+      "superseded_by": null,
+      "id": "associator-normal-form-compile",
+      "statement": "For all 360 dim-32 cubic pairs the factorized Design C circuit, the Reed-Muller diagonal oracle and the CCZ normal form are operator-equal to diag((-1)^omega); on the ibm_kingston coupling map (optimization level 3, seed 11) they compile to about 124-132, 10-43 and 25-32 CZ on average, and the normal form beats the diagonal oracle on 97 pairs.",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "One coupling map, one seed, ideal semantics; the two diagonal circuits encode the predicted phase and are references for the factorized circuit, not substitutes. The dim-16 ripple circuits have no cubic phase."
+    },
+    {
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "associator-normal-form-compile",
+      "id": "withdrawn-ccz-resource-gain",
+      "statement": "The CCZ normal form cuts the associator circuit by 18.9 percent of its CZ gates, raises fidelity 1.19x, and is a verified drop-in replacement for the factorized circuit.",
+      "domain": "implementation",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The counts were typed-in estimates, the equivalence test compared CCZ with itself and a singular U_A, and a diagonal built from the predicted phase cannot replace the circuit that tests composition.",
+      "withdrawn_text": "docs/evidence/ccz-reduction/ccz-optimization.ipynb and factorized-vs-ccz.ipynb at commit fa6783e, and docs/handoff-notes-2026-10-15.md at commit 900461a."
+    },
+    {
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-box-kite-executed-pairs",
+      "id": "withdrawn-aer-toy-split",
+      "statement": "Aer simulation shows the 84/84 bright/dark split emerging from quantum mechanics and surviving Heron-level noise.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The simulated circuit is no repository design, and its kernel printed an ideal difference of 0.089 and 'Signal survives Heron-level noise: False'.",
+      "withdrawn_text": "docs/evidence/simulation/qiskit-aer-simulation.ipynb at commit fa6783e."
+    },
+    {
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "proposed-conditional-ramsey-hamiltonian",
+      "id": "withdrawn-interleaving-verified",
+      "statement": "GPU simulation verifies that interleaved differential Ramsey cancels drift and reaches 50 Hz in about 72 s.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03 and assumed a 10 kHz shot rate, about 2.6 times the Heron rate at the 250 us repetition delay.",
+      "withdrawn_text": "docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a."
+    },
+    {
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-box-kite-executed-pairs",
+      "id": "withdrawn-algebraic-detuning-test",
+      "statement": "Ramsey on 20 defective and 20 clean triples detects a sedenion-structure-dependent detuning down to about 5 kHz.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The single-quadrature fit returned -29.5 kHz for +30 kHz, and no circuit is named in which a triple label sets a qubit frequency; bright and dark members differ in one virtual RZ.",
+      "withdrawn_text": "docs/evidence/ghost-frequency/algebraic-frequency.ipynb at commit 6d51e9c."
+    },
+    {
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-box-kite-executed-pairs",
+      "id": "withdrawn-predelay-negative",
+      "statement": "A pre-delay sweep has 11 percent power to detect a photonic contribution to the 84/84 contrast, a negative result.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The power restates hand-set inputs (a 0.01 kHz shift at 0.1 contrast per kHz against a 0.02 standard error); it measures nothing about the device.",
+      "withdrawn_text": "docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57."
     }
   ]
 }

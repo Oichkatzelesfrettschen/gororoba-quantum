@@ -1,0 +1,47 @@
+[{"stream_name":"stderr","time":6.516240686,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.516290172,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.489894863,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.489939703,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.489943523,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.489945918,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.109229709,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.109257033,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.109262455,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.109266496,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":16.076244726,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":16.076284184,"data":"gpu: Tesla T4\n"}
+,{"stream_name":"stdout","time":16.233140089,"data":"  alpha   beta  Delta_obs  vs true 0.590\n"}
+,{"stream_name":"stdout","time":16.522371028,"data":"   0.00   0.00     0.5900\n"}
+,{"stream_name":"stdout","time":16.522402487,"data":"   0.02   0.00     0.5894\n"}
+,{"stream_name":"stdout","time":16.52240781,"data":"   0.05   0.00     0.5864\n"}
+,{"stream_name":"stdout","time":16.522411819,"data":"   0.10   0.00     0.5756\n"}
+,{"stream_name":"stdout","time":16.522415633,"data":"   0.02   0.02     0.5894\n"}
+,{"stream_name":"stdout","time":16.522419807,"data":"   0.10   0.10     0.5756\n"}
+,{"stream_name":"stdout","time":16.52242989,"data":"\n"}
+,{"stream_name":"stdout","time":16.52243333,"data":"Heron 1q gate infidelity ~5e-4 -\u003e coherent angle error ~1-2%.\n"}
+,{"stream_name":"stdout","time":16.522436464,"data":"Even 10% miscalibration shifts Delta by \u003c0.02. ROBUST.\n"}
+,{"stream_name":"stdout","time":16.53587785,"data":"dDelta/dalpha at 0 = 0.0000\n"}
+,{"stream_name":"stdout","time":16.535898901,"data":"A 2% angle error changes Delta by ~0.0000 (vs Delta=0.59)\n"}
+,{"stream_name":"stdout","time":16.535903481,"data":"Verdict: operating point is FLAT. Angle errors cannot explain the contrast.\n"}
+,{"stream_name":"stdout","time":16.549540162,"data":"    e0     e1   scale  true Δ=0.59 -\u003e observed\n"}
+,{"stream_name":"stdout","time":16.549558292,"data":"  0.02   0.02   0.960  -\u003e 0.566\n"}
+,{"stream_name":"stdout","time":16.549563584,"data":"  0.01   0.03   0.960  -\u003e 0.566\n"}
+,{"stream_name":"stdout","time":16.549567608,"data":"  0.05   0.05   0.900  -\u003e 0.531\n"}
+,{"stream_name":"stdout","time":16.549571894,"data":"  0.00   0.10   0.900  -\u003e 0.531\n"}
+,{"stream_name":"stdout","time":16.549575825,"data":"\n"}
+,{"stream_name":"stdout","time":16.549579403,"data":"Even 10% asymmetric readout only scales 0.59 -\u003e 0.53.\n"}
+,{"stream_name":"stdout","time":16.549583496,"data":"Cannot create contrast. At most a ~10% correction to magnitude.\n"}
+,{"stream_name":"stdout","time":16.549599098,"data":"\n"}
+,{"stream_name":"stdout","time":16.54960263,"data":"What WOULD fake it? e0,e1 depending on the CIRCUIT (not just state).\n"}
+,{"stream_name":"stdout","time":16.549605978,"data":"E.g., bright/dark leave resonator in different states -\u003e different fidelity.\n"}
+,{"stream_name":"stdout","time":16.549609429,"data":"That requires resonator memory across the circuit — exotic, testable via\n"}
+,{"stream_name":"stdout","time":16.549612914,"data":"inserted delays (same discriminator as AC Stark). No evidence for it.\n"}
+,{"stream_name":"stderr","time":21.818308249,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":21.818330757,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":21.978119393,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":21.978140475,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":22.694610124,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":22.768569934,"data":"[NbConvertApp] Writing 11936 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":25.120119369,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":25.614440634,"data":"[NbConvertApp] Writing 292150 bytes to __results__.html\n"}
+]

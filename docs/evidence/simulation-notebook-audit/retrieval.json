@@ -1,0 +1,119 @@
+{
+ "schema": "kaggle-kernel-retrieval-v1",
+ "retrieved_utc": "2026-10-15T22:54Z",
+ "client": "Kaggle CLI 2.2.4 (kaggle kernels output, kaggle kernels pull)",
+ "kernels": [
+  {
+   "kernel": "probablyeric/ac-stark-discriminator",
+   "log": "kaggle_logs/ac-stark-discriminator.log",
+   "notebook": "docs/evidence/ghost-frequency/ac-stark-discriminator.ipynb",
+   "last_run_utc": "2026-10-15 19:40:42.993000",
+   "status": "complete",
+   "code_cells_identical_to_commit": null
+  },
+  {
+   "kernel": "probablyeric/algebraic-frequency",
+   "log": "kaggle_logs/algebraic-frequency.log",
+   "notebook": "docs/evidence/ghost-frequency/algebraic-frequency.ipynb",
+   "last_run_utc": "2026-10-15 21:50:45.637000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/ccz-optimization",
+   "log": "kaggle_logs/ccz-optimization.log",
+   "notebook": "docs/evidence/ccz-reduction/ccz-optimization.ipynb",
+   "last_run_utc": "2026-10-15 21:45:15.383000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/census-4096",
+   "log": "kaggle_logs/census-4096.log",
+   "notebook": null,
+   "last_run_utc": "2026-10-15 20:44:48.433000",
+   "status": "complete",
+   "code_cells_identical_to_commit": null
+  },
+  {
+   "kernel": "probablyeric/census-4096-repaired",
+   "log": "kaggle_logs/census-4096-repaired.log",
+   "notebook": "docs/evidence/cd_census/census-4096-repaired.ipynb",
+   "last_run_utc": "2026-10-15 22:14:53.330000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/differential-interleaved",
+   "log": "kaggle_logs/differential-interleaved.log",
+   "notebook": "docs/evidence/ghost-frequency/differential-interleaved.ipynb",
+   "last_run_utc": "2026-10-15 22:01:04.650000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/factorized-vs-ccz",
+   "log": "kaggle_logs/factorized-vs-ccz.log",
+   "notebook": "docs/evidence/ccz-reduction/factorized-vs-ccz.ipynb",
+   "last_run_utc": "2026-10-15 22:14:54.270000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/falsify-84-84",
+   "log": "kaggle_logs/falsify-84-84.log",
+   "notebook": "docs/evidence/transpiler-audit/falsify-84-84.ipynb",
+   "last_run_utc": "2026-10-15 19:49:06.897000",
+   "status": "complete",
+   "code_cells_identical_to_commit": null
+  },
+  {
+   "kernel": "probablyeric/falsify-resonator-readout",
+   "log": "kaggle_logs/falsify-resonator-readout.log",
+   "notebook": "docs/evidence/transpiler-audit/falsify-resonator-readout.ipynb",
+   "last_run_utc": "2026-10-15 19:52:48.987000",
+   "status": "complete",
+   "code_cells_identical_to_commit": null
+  },
+  {
+   "kernel": "probablyeric/gemma-falsification-review",
+   "log": "kaggle_logs/gemma-falsification-review.log",
+   "notebook": "docs/evidence/falsification/gemma-falsification-review.ipynb",
+   "last_run_utc": "2026-10-15 22:31:08.600000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/ghost-falsification-suite",
+   "log": "kaggle_logs/ghost-falsification-suite.log",
+   "notebook": "docs/evidence/ghost-frequency/ghost-falsification-suite.ipynb",
+   "last_run_utc": "2026-10-15 19:44:32.883000",
+   "status": "complete",
+   "code_cells_identical_to_commit": null
+  },
+  {
+   "kernel": "probablyeric/ghost-frequency-gpu-validation",
+   "log": "kaggle_logs/ghost-frequency-gpu-validation.log",
+   "notebook": "docs/evidence/ghost-frequency/ghost-frequency-gpu.ipynb",
+   "last_run_utc": "2026-10-15 18:56:01.143000",
+   "status": "complete",
+   "code_cells_identical_to_commit": null
+  },
+  {
+   "kernel": "probablyeric/pre-delay-84-84",
+   "log": "kaggle_logs/pre-delay-84-84.log",
+   "notebook": "docs/evidence/ghost-frequency/predelay-84-84.ipynb",
+   "last_run_utc": "2026-10-15 22:31:10.767000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  },
+  {
+   "kernel": "probablyeric/qiskit-aer-simulation",
+   "log": "kaggle_logs/qiskit-aer-simulation.log",
+   "notebook": "docs/evidence/simulation/qiskit-aer-simulation.ipynb",
+   "last_run_utc": "2026-10-15 22:09:36.417000",
+   "status": "complete",
+   "code_cells_identical_to_commit": "900461a"
+  }
+ ]
+}

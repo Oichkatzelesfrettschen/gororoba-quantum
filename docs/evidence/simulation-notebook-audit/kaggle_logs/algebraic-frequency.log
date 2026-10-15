@@ -1,0 +1,33 @@
+[{"stream_name":"stderr","time":6.830055934,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.830117635,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.806407474,"data":"0.01s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.806434445,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.80643987,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.806443758,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.431305713,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.43133817,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.431341798,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.431344149,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.329764622,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":17.329792152,"data":"gpu: Tesla T4\n"}
+,{"stream_name":"stdout","time":17.962917644,"data":"True: 30.0 kHz, Measured: -29.5 kHz\n"}
+,{"stream_name":"stdout","time":18.223581732,"data":"Defective: mean=-29.8, std=0.4 kHz\n"}
+,{"stream_name":"stdout","time":18.223612024,"data":"Clean:     mean=-29.9, std=0.5 kHz\n"}
+,{"stream_name":"stdout","time":18.223617448,"data":"Difference: 0.1 kHz (expect ~0)\n"}
+,{"stream_name":"stdout","time":18.495800525,"data":"Defective: mean=-40.0 kHz\n"}
+,{"stream_name":"stdout","time":18.495830209,"data":"Clean:     mean=-29.8 kHz\n"}
+,{"stream_name":"stdout","time":18.495834838,"data":"Difference: -10.2 kHz, t = -66.3\n"}
+,{"stream_name":"stdout","time":18.495838452,"data":"Detectable: True (t \u003e 2 = significant)\n"}
+,{"stream_name":"stdout","time":18.960999581,"data":"True effect  5.0 kHz -\u003e measured  -4.9 ± 0.2 kHz\n"}
+,{"stream_name":"stdout","time":19.20874455,"data":"True effect 10.0 kHz -\u003e measured  -9.8 ± 0.1 kHz\n"}
+,{"stream_name":"stdout","time":19.4611778,"data":"True effect 15.0 kHz -\u003e measured -15.1 ± 0.1 kHz\n"}
+,{"stream_name":"stdout","time":19.506182456,"data":"True effect 20.0 kHz -\u003e measured -20.0 ± 0.1 kHz\n"}
+,{"stream_name":"stderr","time":25.179544949,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":25.179572373,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":25.353040361,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":25.353078867,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":26.096698535,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":26.17317191,"data":"[NbConvertApp] Writing 12124 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":28.583579984,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":29.106061345,"data":"[NbConvertApp] Writing 296998 bytes to __results__.html\n"}
+]

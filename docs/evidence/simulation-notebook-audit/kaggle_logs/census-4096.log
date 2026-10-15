@@ -1,0 +1,34 @@
+[{"stream_name":"stderr","time":6.928783665,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.928826229,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.925200219,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.9252300049999995,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.925235529,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.925250848,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.571030455,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.571075197,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.571081313,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.571086512,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.669981973,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":17.670011698,"data":"gpu: Tesla T4\n"}
+,{"stream_name":"stdout","time":18.036247527,"data":"table built. e_1*e_2 = 1.0 * e_3\n"}
+,{"stream_name":"stdout","time":18.036280198,"data":"e_8*e_8 = -1.0 * e_0 (expect -1*e_0)\n"}
+,{"stream_name":"stdout","time":18.036286059,"data":"check e_8*e_1 = (-1.0, 9) (expect (-1.0, 9))\n"}
+,{"stream_name":"stdout","time":18.236395948,"data":"4096 triples\n"}
+,{"stream_name":"stdout","time":18.322303579,"data":"Defective: 1728/4096 = 42.188%\n"}
+,{"stream_name":"stdout","time":18.322336848,"data":"Target:    1848/4096 = 45.117%\n"}
+,{"stream_name":"stdout","time":18.322341572,"data":"MISMATCH\n"}
+,{"stream_name":"stdout","time":18.491335982,"data":"all                         :  1728/ 4096 =  42.2%\n"}
+,{"stream_name":"stdout","time":18.491367135,"data":"distinct                    :  1576/ 3360 =  46.9%\n"}
+,{"stream_name":"stdout","time":18.491372752,"data":"has upper (sedenion-only)   :  1584/ 3584 =  44.2%\n"}
+,{"stream_name":"stdout","time":18.491377783,"data":"pure octonion (all\u003c8)       :   144/  512 =  28.1%\n"}
+,{"stream_name":"stdout","time":18.761829909,"data":"manifest: 4096 triples, 1728 defective\n"}
+,{"stream_name":"stdout","time":18.761857463,"data":"stages: 84 (done) -\u003e 200 (pilot) -\u003e 3896 (full)\n"}
+,{"stream_name":"stderr","time":24.353755912,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":24.353798725,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":24.52230323,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":24.522336952,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":25.298006708,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":25.376948546,"data":"[NbConvertApp] Writing 12710 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":27.930377615,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":28.483589663,"data":"[NbConvertApp] Writing 308540 bytes to __results__.html\n"}
+]

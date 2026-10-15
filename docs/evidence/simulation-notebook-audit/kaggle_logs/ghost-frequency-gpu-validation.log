@@ -1,0 +1,64 @@
+[{"stream_name":"stderr","time":7.380305008,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.380348354,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.359153151,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.359181399,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.359185814,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.359189384,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.009978282,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.010007714,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.010013947,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.010018611,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.906131925,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":17.906163506,"data":"gpu: Tesla T4\n"}
+,{"stream_name":"stdout","time":17.92154771,"data":"kingston: implied detuning = -40.9 kHz\n"}
+,{"stream_name":"stdout","time":17.921580438,"data":"fez_n21: implied detuning = +19.8 kHz\n"}
+,{"stream_name":"stdout","time":17.935624372,"data":" t (us)  null P(1)  ghost P(1) ghost phase (rad)\n"}
+,{"stream_name":"stdout","time":17.935659651,"data":"  4.392     0.9733      0.8202             0.828\n"}
+,{"stream_name":"stdout","time":17.935664846,"data":"  4.750     0.9712      0.7946             0.895\n"}
+,{"stream_name":"stdout","time":18.022767872,"data":"target phase for 20 kHz @ 8us: 1.005 rad; 5-sigma needs sigma \u003c 0.201\n"}
+,{"stream_name":"stdout","time":18.392667686,"data":"N=  200: sigma_phase=0.0805 rad  -\u003e  12.5 sigma\n"}
+,{"stream_name":"stdout","time":18.392700042,"data":"N=  500: sigma_phase=0.0514 rad  -\u003e  19.6 sigma\n"}
+,{"stream_name":"stdout","time":18.3927098,"data":"N= 1000: sigma_phase=0.0365 rad  -\u003e  27.6 sigma\n"}
+,{"stream_name":"stdout","time":18.39271289,"data":"N= 2000: sigma_phase=0.0252 rad  -\u003e  39.8 sigma\n"}
+,{"stream_name":"stdout","time":18.392715523,"data":"N= 4000: sigma_phase=0.0176 rad  -\u003e  57.2 sigma\n"}
+,{"stream_name":"stdout","time":18.410865019,"data":"Miscalibrated (eps=0.2 rad), NO detuning:\n"}
+,{"stream_name":"stdout","time":18.410888481,"data":"  t=0.0us  P(1)=0.9803\n"}
+,{"stream_name":"stdout","time":18.410894699,"data":"  t=1.0us  P(1)=0.9743\n"}
+,{"stream_name":"stdout","time":18.410899246,"data":"  t=2.0us  P(1)=0.9684\n"}
+,{"stream_name":"stdout","time":18.410903099,"data":"  t=3.0us  P(1)=0.9626\n"}
+,{"stream_name":"stdout","time":18.410906902,"data":"  t=4.0us  P(1)=0.9568\n"}
+,{"stream_name":"stdout","time":18.410910749,"data":"  t=5.0us  P(1)=0.9512\n"}
+,{"stream_name":"stdout","time":18.410914526,"data":"  t=6.0us  P(1)=0.9456\n"}
+,{"stream_name":"stdout","time":18.410918318,"data":"  t=7.0us  P(1)=0.9400\n"}
+,{"stream_name":"stdout","time":18.410933379,"data":"  t=8.0us  P(1)=0.9346\n"}
+,{"stream_name":"stdout","time":18.410937318,"data":"True detuning 30 kHz, perfect pulses:\n"}
+,{"stream_name":"stdout","time":18.410941198,"data":"  t=0.0us  P(1)=1.0000\n"}
+,{"stream_name":"stdout","time":18.410944958,"data":"  t=1.0us  P(1)=0.9850\n"}
+,{"stream_name":"stdout","time":18.410948712,"data":"  t=2.0us  P(1)=0.9534\n"}
+,{"stream_name":"stdout","time":18.410952600999998,"data":"  t=3.0us  P(1)=0.9066\n"}
+,{"stream_name":"stdout","time":18.410963157,"data":"  t=4.0us  P(1)=0.8467\n"}
+,{"stream_name":"stdout","time":18.410983093,"data":"  t=5.0us  P(1)=0.7761\n"}
+,{"stream_name":"stdout","time":18.410988094,"data":"  t=6.0us  P(1)=0.6975\n"}
+,{"stream_name":"stdout","time":18.410993232,"data":"  t=7.0us  P(1)=0.6139\n"}
+,{"stream_name":"stdout","time":18.41099738,"data":"  t=8.0us  P(1)=0.5284\n"}
+,{"stream_name":"stdout","time":18.411002024,"data":"\n"}
+,{"stream_name":"stdout","time":18.411006458,"data":"Verdict: miscalibration suppresses contrast uniformly; detuning OSCILLATES.\n"}
+,{"stream_name":"stdout","time":18.41101051,"data":"Fitting phase-vs-t separates them cleanly — miscalibration cannot mimic H1.\n"}
+,{"stream_name":"stdout","time":18.426660566,"data":"ZZ = 25.0 kHz:\n"}
+,{"stream_name":"stdout","time":18.426684013,"data":"  t=1us  spectator|0\u003e: P(1)=0.9938   spectator|1\u003e: P(1)=0.9877\n"}
+,{"stream_name":"stdout","time":18.426687942,"data":"  t=2us  spectator|0\u003e: P(1)=0.9877   spectator|1\u003e: P(1)=0.9638\n"}
+,{"stream_name":"stdout","time":18.426690394,"data":"  t=4us  spectator|0\u003e: P(1)=0.9756   spectator|1\u003e: P(1)=0.8848\n"}
+,{"stream_name":"stdout","time":18.426692694,"data":"  t=8us  spectator|0\u003e: P(1)=0.9524   spectator|1\u003e: P(1)=0.6398\n"}
+,{"stream_name":"stdout","time":18.426694973,"data":"\n"}
+,{"stream_name":"stdout","time":18.426697132,"data":"Verdict: ZZ gives a spectator-DEPENDENT shift.\n"}
+,{"stream_name":"stdout","time":18.426699357,"data":"If H1 (intrinsic 20-40 kHz) is real, |0\u003e vs |1\u003e spectators give the SAME detuning.\n"}
+,{"stream_name":"stdout","time":18.426717742,"data":"Experiment A falsifies ZZ-confusion directly.\n"}
+,{"stream_name":"stderr","time":23.79445193,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":23.79447836,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":23.956830224,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":23.956855201,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":24.699126237,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":24.778392719,"data":"[NbConvertApp] Writing 16847 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":27.215083557,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":27.745665033999998,"data":"[NbConvertApp] Writing 303642 bytes to __results__.html\n"}
+]
