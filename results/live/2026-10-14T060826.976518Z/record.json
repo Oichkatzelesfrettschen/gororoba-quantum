@@ -2,7 +2,7 @@
   "schema_version": 7,
   "schema_contract": "live-target-statistical-design-invocation-budget-v1",
   "state": "planned",
-  "started": "2026-10-14T22:05:52.942969+00:00",
+  "started": "2026-10-14T06:08:26.976518+00:00",
   "versions": {
     "numpy": "2.5.4",
     "qiskit": "2.5.2",
@@ -51,7 +51,14 @@
       "classical_latency_us": 20.0,
       "reserve_seconds": 60.0,
       "max_total_execution_seconds": 18.0,
-      "patch_qubits": null
+      "patch_qubits": [
+        142,
+        136,
+        143,
+        144,
+        123,
+        145
+      ]
     },
     "local_compute": {
       "mode": "auto",
@@ -279,20 +286,19 @@
   "shots": 2048,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "c4ff925704cd4658e7230128711f01d5cec226947a4a540935b2e92e905dcfc0",
+  "experiment_digest": "e62dc0e6d14f1b632a6d9a0510cdaeecc0ee299888a597ea980f8d924dca1686",
   "code_commit": {
-    "head": "dac1f2ebf9b310dde3e30b5b1bc6c455bca9819e",
+    "head": "10bb9ee2887b8ac7402663a49e34e62649793816",
     "sources_modified": false
   },
   "system_inventory": {
     "ibm_fez": {
-      "eligibility": "ineligible",
-      "reason": "status operational=True msg='maintenance'",
+      "eligibility": "eligible",
       "operational": true,
-      "status_msg": "maintenance",
-      "pending_jobs": 61,
-      "calibration": "2026-10-14T06:30:22-07:00",
-      "fetched_at": "2026-10-14T22:05:55+00:00",
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-13T22:55:28-07:00",
+      "fetched_at": "2026-10-14T06:08:29+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -318,23 +324,22 @@
       },
       "repetition_delay": 0.00025,
       "medians": {
-        "t1_us": 137.71169528089064,
-        "t2_us": 95.29168593312066,
-        "readout_error": 0.01055908203125,
-        "cz_error": 0.0026350914097418854
+        "t1_us": 138.17553969831943,
+        "t2_us": 95.02169558276891,
+        "readout_error": 0.010986328125,
+        "cz_error": 0.0027307687343220977
       },
       "excluded_qubits": {
         "11": "T1=75.3us T2=13.5us",
-        "43": "readout error 0.092",
+        "43": "readout error 0.098",
         "46": "T1=135.0us T2=15.7us",
         "53": "T1=179.1us T2=18.7us",
         "66": "T1=89.8us T2=18.6us",
         "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
-        "83": "readout error 0.175",
-        "90": "readout error 0.262",
-        "102": "readout error 0.096",
+        "83": "readout error 0.380",
+        "90": "readout error 0.271",
+        "102": "readout error 0.089",
         "108": "T1=124.9us T2=16.0us",
-        "120": "readout error 0.112",
         "148": "T1=6.4us T2=142.9us",
         "149": "T1=68.0us T2=5.2us",
         "150": "T1=144.9us T2=5.5us"
@@ -342,377 +347,32 @@
       "excluded_edges": {
         "27-28": "cz error 1.0",
         "28-27": "cz error 1.0",
-        "31-32": "cz error 0.045686315297069874",
-        "32-31": "cz error 0.045686315297069874",
+        "31-32": "cz error 0.0729987223785753",
+        "32-31": "cz error 0.0729987223785753",
         "32-33": "cz error 1.0",
         "33-32": "cz error 1.0",
-        "63-64": "cz error 0.05703157957346919",
-        "64-63": "cz error 0.05703157957346919",
+        "63-64": "cz error 0.05959556260279758",
+        "64-63": "cz error 0.05959556260279758",
         "71-72": "cz error 1.0",
         "72-71": "cz error 1.0",
         "72-73": "cz error 1.0",
         "73-72": "cz error 1.0",
-        "102-103": "cz error 0.06736407057004676",
-        "103-102": "cz error 0.06736407057004676",
-        "147-148": "cz error 0.055068388492531595",
-        "148-147": "cz error 0.055068388492531595",
+        "102-103": "cz error 0.07550807868088419",
+        "103-102": "cz error 0.07550807868088419",
+        "147-148": "cz error 0.0923314633856283",
+        "148-147": "cz error 0.0923314633856283",
         "148-149": "cz error 0.13106785643824742",
         "149-148": "cz error 0.13106785643824742"
-      }
-    },
-    "ibm_kingston": {
-      "eligibility": "eligible",
-      "operational": true,
-      "status_msg": "active",
-      "pending_jobs": 4,
-      "calibration": "2026-10-14T14:25:47-07:00",
-      "fetched_at": "2026-10-14T22:05:56+00:00",
-      "capabilities": {
-        "num_qubits": 156,
-        "dynamic_circuits": true,
-        "operation_names": [
-          "cz",
-          "delay",
-          "id",
-          "if_else",
-          "measure",
-          "measure_2",
-          "measure_reset",
-          "measure_reset_2",
-          "reset",
-          "reset_2",
-          "rz",
-          "sx",
-          "x",
-          "xslow"
-        ],
-        "control_flow": [
-          "if_else"
-        ]
-      },
-      "repetition_delay": 0.00025,
-      "medians": {
-        "t1_us": 245.3928419551087,
-        "t2_us": 137.09501290923689,
-        "readout_error": 0.009033203125,
-        "cz_error": 0.0020950229277399424
-      },
-      "excluded_qubits": {
-        "86": "T1=131.7us T2=18.8us",
-        "88": "T1=209.1us T2=15.7us",
-        "112": "sx error 0.0180",
-        "113": "T1=95.5us T2=13.7us",
-        "115": "T1=340.8us T2=14.5us",
-        "120": "readout error 0.227",
-        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
-        "127": "readout error 0.083",
-        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
-      },
-      "excluded_edges": {
-        "85-86": "cz error 0.0640210655130368",
-        "86-85": "cz error 0.0640210655130368",
-        "86-87": "cz error 0.07103733262727133",
-        "87-86": "cz error 0.07103733262727133",
-        "111-112": "cz error 0.16393370368690838",
-        "112-111": "cz error 0.16393370368690838",
-        "112-113": "cz error 1.0",
-        "113-112": "cz error 1.0",
-        "116-121": "cz error 0.06940003167469996",
-        "119-133": "cz error 0.04211294295445714",
-        "120-121": "cz error 0.032984158295178506",
-        "121-116": "cz error 0.06940003167469996",
-        "121-120": "cz error 0.032984158295178506",
-        "121-122": "cz error 0.04580941138822345",
-        "122-121": "cz error 0.04580941138822345",
-        "130-131": "cz error 1.0",
-        "131-130": "cz error 1.0",
-        "133-119": "cz error 0.04211294295445714",
-        "145-146": "cz error 1.0",
-        "146-145": "cz error 1.0",
-        "146-147": "cz error 1.0",
-        "147-146": "cz error 1.0"
-      }
-    },
-    "ibm_marrakesh": {
-      "eligibility": "eligible",
-      "operational": true,
-      "status_msg": "active",
-      "pending_jobs": 37,
-      "calibration": "2026-10-14T14:46:23-07:00",
-      "fetched_at": "2026-10-14T22:05:57+00:00",
-      "capabilities": {
-        "num_qubits": 156,
-        "dynamic_circuits": true,
-        "operation_names": [
-          "cz",
-          "delay",
-          "id",
-          "if_else",
-          "measure",
-          "measure_2",
-          "measure_reset",
-          "measure_reset_2",
-          "reset",
-          "reset_2",
-          "rz",
-          "sx",
-          "x",
-          "xslow"
-        ],
-        "control_flow": [
-          "if_else"
-        ]
-      },
-      "repetition_delay": 0.00025,
-      "medians": {
-        "t1_us": 149.7681634665247,
-        "t2_us": 77.2778058444445,
-        "readout_error": 0.017333984375,
-        "cz_error": 0.002692882663983903
-      },
-      "excluded_qubits": {
-        "8": "sx error 0.0289",
-        "16": "T1=87.5us T2=17.3us",
-        "17": "T1=149.2us T2=13.1us",
-        "18": "T1=10.2us T2=8.9us",
-        "23": "readout error 0.097",
-        "26": "T1=6.8us T2=9.1us",
-        "37": "T1=128.2us T2=18.0us",
-        "39": "readout error 0.097",
-        "43": "readout error 0.137",
-        "49": "readout error 0.091",
-        "53": "readout error 0.118",
-        "56": "T1=56.0us T2=5.1us",
-        "60": "readout error 0.115",
-        "61": "readout error 0.135",
-        "74": "T1=104.9us T2=15.4us",
-        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
-        "83": "readout error 0.206",
-        "84": "readout error 0.182",
-        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
-        "95": "readout error 0.097",
-        "106": "readout error 0.290",
-        "107": "readout error 0.082",
-        "109": "readout error 0.130",
-        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
-        "117": "T1=164.6us T2=7.2us",
-        "119": "T1=126.3us T2=18.9us",
-        "121": "readout error 0.109",
-        "122": "readout error 0.112",
-        "126": "T1=140.7us T2=17.2us",
-        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
-        "131": "readout error 0.127",
-        "137": "T1=152.0us T2=13.5us",
-        "147": "T1=192.2us T2=16.5us"
-      },
-      "excluded_edges": {
-        "13-14": "cz error 0.04735068295734962",
-        "14-13": "cz error 0.04735068295734962",
-        "14-15": "cz error 0.030182244417961274",
-        "15-14": "cz error 0.030182244417961274",
-        "40-41": "cz error 0.11682970209722861",
-        "41-40": "cz error 0.11682970209722861",
-        "81-82": "cz error 0.07469783469660052",
-        "82-81": "cz error 0.07469783469660052",
-        "82-83": "cz error 1.0",
-        "83-82": "cz error 1.0",
-        "95-99": "cz error 0.1418415119422666",
-        "99-95": "cz error 0.1418415119422666",
-        "112-113": "cz error 1.0",
-        "113-112": "cz error 1.0",
-        "113-114": "cz error 1.0",
-        "113-119": "cz error 1.0",
-        "114-113": "cz error 1.0",
-        "119-113": "cz error 1.0",
-        "119-133": "cz error 0.03687083743910288",
-        "129-130": "cz error 1.0",
-        "130-129": "cz error 1.0",
-        "130-131": "cz error 1.0",
-        "131-130": "cz error 1.0",
-        "133-119": "cz error 0.03687083743910288"
       }
     }
   },
   "backends": {
-    "ibm_kingston": {
-      "operational": true,
-      "status_msg": "active",
-      "pending_jobs": 4,
-      "calibration": "2026-10-14T14:25:47-07:00",
-      "fetched_at": "2026-10-14T22:05:56+00:00",
-      "capabilities": {
-        "num_qubits": 156,
-        "dynamic_circuits": true,
-        "operation_names": [
-          "cz",
-          "delay",
-          "id",
-          "if_else",
-          "measure",
-          "measure_2",
-          "measure_reset",
-          "measure_reset_2",
-          "reset",
-          "reset_2",
-          "rz",
-          "sx",
-          "x",
-          "xslow"
-        ],
-        "control_flow": [
-          "if_else"
-        ]
-      },
-      "repetition_delay": 0.00025,
-      "medians": {
-        "t1_us": 245.3928419551087,
-        "t2_us": 137.09501290923689,
-        "readout_error": 0.009033203125,
-        "cz_error": 0.0020950229277399424
-      },
-      "excluded_qubits": {
-        "86": "T1=131.7us T2=18.8us",
-        "88": "T1=209.1us T2=15.7us",
-        "112": "sx error 0.0180",
-        "113": "T1=95.5us T2=13.7us",
-        "115": "T1=340.8us T2=14.5us",
-        "120": "readout error 0.227",
-        "121": "missing calibration: \"Couldn't find the property 'T2' for qubit 121.\"",
-        "127": "readout error 0.083",
-        "146": "missing calibration: \"Couldn't find the property 'T1' for qubit 146.\""
-      },
-      "excluded_edges": {
-        "85-86": "cz error 0.0640210655130368",
-        "86-85": "cz error 0.0640210655130368",
-        "86-87": "cz error 0.07103733262727133",
-        "87-86": "cz error 0.07103733262727133",
-        "111-112": "cz error 0.16393370368690838",
-        "112-111": "cz error 0.16393370368690838",
-        "112-113": "cz error 1.0",
-        "113-112": "cz error 1.0",
-        "116-121": "cz error 0.06940003167469996",
-        "119-133": "cz error 0.04211294295445714",
-        "120-121": "cz error 0.032984158295178506",
-        "121-116": "cz error 0.06940003167469996",
-        "121-120": "cz error 0.032984158295178506",
-        "121-122": "cz error 0.04580941138822345",
-        "122-121": "cz error 0.04580941138822345",
-        "130-131": "cz error 1.0",
-        "131-130": "cz error 1.0",
-        "133-119": "cz error 0.04211294295445714",
-        "145-146": "cz error 1.0",
-        "146-145": "cz error 1.0",
-        "146-147": "cz error 1.0",
-        "147-146": "cz error 1.0"
-      }
-    },
-    "ibm_marrakesh": {
-      "operational": true,
-      "status_msg": "active",
-      "pending_jobs": 37,
-      "calibration": "2026-10-14T14:46:23-07:00",
-      "fetched_at": "2026-10-14T22:05:57+00:00",
-      "capabilities": {
-        "num_qubits": 156,
-        "dynamic_circuits": true,
-        "operation_names": [
-          "cz",
-          "delay",
-          "id",
-          "if_else",
-          "measure",
-          "measure_2",
-          "measure_reset",
-          "measure_reset_2",
-          "reset",
-          "reset_2",
-          "rz",
-          "sx",
-          "x",
-          "xslow"
-        ],
-        "control_flow": [
-          "if_else"
-        ]
-      },
-      "repetition_delay": 0.00025,
-      "medians": {
-        "t1_us": 149.7681634665247,
-        "t2_us": 77.2778058444445,
-        "readout_error": 0.017333984375,
-        "cz_error": 0.002692882663983903
-      },
-      "excluded_qubits": {
-        "8": "sx error 0.0289",
-        "16": "T1=87.5us T2=17.3us",
-        "17": "T1=149.2us T2=13.1us",
-        "18": "T1=10.2us T2=8.9us",
-        "23": "readout error 0.097",
-        "26": "T1=6.8us T2=9.1us",
-        "37": "T1=128.2us T2=18.0us",
-        "39": "readout error 0.097",
-        "43": "readout error 0.137",
-        "49": "readout error 0.091",
-        "53": "readout error 0.118",
-        "56": "T1=56.0us T2=5.1us",
-        "60": "readout error 0.115",
-        "61": "readout error 0.135",
-        "74": "T1=104.9us T2=15.4us",
-        "82": "missing calibration: \"Couldn't find the property 'T2' for qubit 82.\"",
-        "83": "readout error 0.206",
-        "84": "readout error 0.182",
-        "94": "missing calibration: \"Couldn't find the property 'T1' for qubit 94.\"",
-        "95": "readout error 0.097",
-        "106": "readout error 0.290",
-        "107": "readout error 0.082",
-        "109": "readout error 0.130",
-        "113": "missing calibration: \"Couldn't find the property 'T2' for qubit 113.\"",
-        "117": "T1=164.6us T2=7.2us",
-        "119": "T1=126.3us T2=18.9us",
-        "121": "readout error 0.109",
-        "122": "readout error 0.112",
-        "126": "T1=140.7us T2=17.2us",
-        "130": "missing calibration: \"Couldn't find the property 'T1' for qubit 130.\"",
-        "131": "readout error 0.127",
-        "137": "T1=152.0us T2=13.5us",
-        "147": "T1=192.2us T2=16.5us"
-      },
-      "excluded_edges": {
-        "13-14": "cz error 0.04735068295734962",
-        "14-13": "cz error 0.04735068295734962",
-        "14-15": "cz error 0.030182244417961274",
-        "15-14": "cz error 0.030182244417961274",
-        "40-41": "cz error 0.11682970209722861",
-        "41-40": "cz error 0.11682970209722861",
-        "81-82": "cz error 0.07469783469660052",
-        "82-81": "cz error 0.07469783469660052",
-        "82-83": "cz error 1.0",
-        "83-82": "cz error 1.0",
-        "95-99": "cz error 0.1418415119422666",
-        "99-95": "cz error 0.1418415119422666",
-        "112-113": "cz error 1.0",
-        "113-112": "cz error 1.0",
-        "113-114": "cz error 1.0",
-        "113-119": "cz error 1.0",
-        "114-113": "cz error 1.0",
-        "119-113": "cz error 1.0",
-        "119-133": "cz error 0.03687083743910288",
-        "129-130": "cz error 1.0",
-        "130-129": "cz error 1.0",
-        "130-131": "cz error 1.0",
-        "131-130": "cz error 1.0",
-        "133-119": "cz error 0.03687083743910288"
-      }
-    }
-  },
-  "skipped_backends": {
     "ibm_fez": {
-      "reason": "status operational=True msg='maintenance'",
       "operational": true,
-      "status_msg": "maintenance",
-      "pending_jobs": 61,
-      "calibration": "2026-10-14T06:30:22-07:00",
-      "fetched_at": "2026-10-14T22:05:55+00:00",
+      "status_msg": "active",
+      "pending_jobs": 0,
+      "calibration": "2026-10-13T22:55:28-07:00",
+      "fetched_at": "2026-10-14T06:08:29+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -738,23 +398,22 @@
       },
       "repetition_delay": 0.00025,
       "medians": {
-        "t1_us": 137.71169528089064,
-        "t2_us": 95.29168593312066,
-        "readout_error": 0.01055908203125,
-        "cz_error": 0.0026350914097418854
+        "t1_us": 138.17553969831943,
+        "t2_us": 95.02169558276891,
+        "readout_error": 0.010986328125,
+        "cz_error": 0.0027307687343220977
       },
       "excluded_qubits": {
         "11": "T1=75.3us T2=13.5us",
-        "43": "readout error 0.092",
+        "43": "readout error 0.098",
         "46": "T1=135.0us T2=15.7us",
         "53": "T1=179.1us T2=18.7us",
         "66": "T1=89.8us T2=18.6us",
         "72": "missing calibration: \"Couldn't find the property 'T2' for qubit 72.\"",
-        "83": "readout error 0.175",
-        "90": "readout error 0.262",
-        "102": "readout error 0.096",
+        "83": "readout error 0.380",
+        "90": "readout error 0.271",
+        "102": "readout error 0.089",
         "108": "T1=124.9us T2=16.0us",
-        "120": "readout error 0.112",
         "148": "T1=6.4us T2=142.9us",
         "149": "T1=68.0us T2=5.2us",
         "150": "T1=144.9us T2=5.5us"
@@ -762,25 +421,26 @@
       "excluded_edges": {
         "27-28": "cz error 1.0",
         "28-27": "cz error 1.0",
-        "31-32": "cz error 0.045686315297069874",
-        "32-31": "cz error 0.045686315297069874",
+        "31-32": "cz error 0.0729987223785753",
+        "32-31": "cz error 0.0729987223785753",
         "32-33": "cz error 1.0",
         "33-32": "cz error 1.0",
-        "63-64": "cz error 0.05703157957346919",
-        "64-63": "cz error 0.05703157957346919",
+        "63-64": "cz error 0.05959556260279758",
+        "64-63": "cz error 0.05959556260279758",
         "71-72": "cz error 1.0",
         "72-71": "cz error 1.0",
         "72-73": "cz error 1.0",
         "73-72": "cz error 1.0",
-        "102-103": "cz error 0.06736407057004676",
-        "103-102": "cz error 0.06736407057004676",
-        "147-148": "cz error 0.055068388492531595",
-        "148-147": "cz error 0.055068388492531595",
+        "102-103": "cz error 0.07550807868088419",
+        "103-102": "cz error 0.07550807868088419",
+        "147-148": "cz error 0.0923314633856283",
+        "148-147": "cz error 0.0923314633856283",
         "148-149": "cz error 0.13106785643824742",
         "149-148": "cz error 0.13106785643824742"
       }
     }
   },
+  "skipped_backends": {},
   "circuit_requirements": {
     "coherence_static": {
       "qubits": 6,
@@ -824,10 +484,10 @@
       "dynamic_circuits": 0,
       "max_classical_bits": 4,
       "physical_qubits": [
-        57,
-        66,
-        67,
-        68
+        136,
+        142,
+        143,
+        144
       ],
       "operation_names": [
         "cz",
@@ -853,10 +513,10 @@
       "dynamic_circuits": 5,
       "max_classical_bits": 4,
       "physical_qubits": [
-        57,
-        66,
-        67,
-        68
+        136,
+        142,
+        143,
+        144
       ],
       "operation_names": [
         "cz",
@@ -876,12 +536,12 @@
     "configuration": {
       "name": "coherence-window",
       "patch_qubits": [
-        57,
-        68,
-        67,
-        66,
-        69,
-        65
+        142,
+        136,
+        143,
+        144,
+        123,
+        145
       ],
       "patch_roles": [
         "control",
@@ -891,18 +551,17 @@
         "neighbor_a",
         "neighbor_b"
       ],
-      "window_dt": 1098,
-      "control_measure_dt": 545,
-      "control_reset_dt": 553,
+      "window_dt": 836,
+      "control_measure_dt": 415,
+      "control_reset_dt": 421,
       "readout_qubits": {
-        "b0": 57,
-        "read_a": 66,
-        "read_b": 68,
-        "sector": 67
+        "b0": 142,
+        "read_a": 144,
+        "read_b": 136,
+        "sector": 143
       },
       "dt_seconds": 4e-09,
-      "placement_contract": "one pinned patch; static and dynamic jobs",
-      "patch_selection": "calibration"
+      "placement_contract": "one pinned patch; static and dynamic jobs"
     }
   },
   "fusion_summary": {
@@ -927,10 +586,10 @@
   },
   "execution_pubs": [
     {
-      "name": "ibm_kingston_static_pub_01",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_01",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 1176,
+      "target_gate_lower_bound_dt": 986,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -941,12 +600,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -957,10 +616,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_02",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_02",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 1176,
+      "target_gate_lower_bound_dt": 986,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -971,12 +630,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -987,10 +646,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_03",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_03",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 1176,
+      "target_gate_lower_bound_dt": 986,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1001,12 +660,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1017,10 +676,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_04",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_04",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 1176,
+      "target_gate_lower_bound_dt": 986,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1031,12 +690,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1047,10 +706,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_05",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_05",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 1168,
+      "target_gate_lower_bound_dt": 980,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1061,12 +720,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1077,10 +736,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_06",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_06",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1091,12 +750,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1107,10 +766,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_07",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_07",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1121,12 +780,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1137,10 +796,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_08",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_08",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1151,12 +810,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1167,10 +826,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_09",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_09",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1181,12 +840,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1197,10 +856,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_static_pub_10",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_static_pub_10",
+      "backend": "ibm_fez",
       "kind": "static",
-      "target_gate_lower_bound_dt": 2266,
+      "target_gate_lower_bound_dt": 1816,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1211,12 +870,12 @@
           "reference": false,
           "register_prefix": "g0_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1227,10 +886,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_dynamic_pub_01",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_dynamic_pub_01",
+      "backend": "ibm_fez",
       "kind": "dynamic",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1241,12 +900,12 @@
           "reference": false,
           "register_prefix": "g1_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1257,10 +916,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_dynamic_pub_02",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_dynamic_pub_02",
+      "backend": "ibm_fez",
       "kind": "dynamic",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1271,12 +930,12 @@
           "reference": false,
           "register_prefix": "g1_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1287,10 +946,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_dynamic_pub_03",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_dynamic_pub_03",
+      "backend": "ibm_fez",
       "kind": "dynamic",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1301,12 +960,12 @@
           "reference": false,
           "register_prefix": "g1_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1317,10 +976,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_dynamic_pub_04",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_dynamic_pub_04",
+      "backend": "ibm_fez",
       "kind": "dynamic",
-      "target_gate_lower_bound_dt": 2274,
+      "target_gate_lower_bound_dt": 1822,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1331,12 +990,12 @@
           "reference": false,
           "register_prefix": "g1_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1347,10 +1006,10 @@
       ]
     },
     {
-      "name": "ibm_kingston_dynamic_pub_05",
-      "backend": "ibm_kingston",
+      "name": "ibm_fez_dynamic_pub_05",
+      "backend": "ibm_fez",
       "kind": "dynamic",
-      "target_gate_lower_bound_dt": 2266,
+      "target_gate_lower_bound_dt": 1816,
       "feed_forward_operation_count": 0,
       "sequential_stage_count": 0,
       "parallel_stream_count": 0,
@@ -1361,12 +1020,12 @@
           "reference": false,
           "register_prefix": "g1_",
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "registers_by_replica": [
             [
@@ -1377,435 +1036,16 @@
       ]
     }
   ],
-  "selection_trace": {
-    "patch_search": [
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          68,
-          57,
-          67,
-          66,
-          47,
-          65
-        ],
-        "prefilter": 0.806309553698284,
-        "joint_score": 0.7574841708347357
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          68,
-          66,
-          67,
-          57,
-          65,
-          47
-        ],
-        "prefilter": 0.8063095536982839,
-        "joint_score": 0.7536143487634841
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          66,
-          57,
-          67,
-          68,
-          47,
-          69
-        ],
-        "prefilter": 0.8007968762937946,
-        "joint_score": 0.7525769974316252
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          66,
-          68,
-          67,
-          57,
-          69,
-          47
-        ],
-        "prefilter": 0.8007968762937944,
-        "joint_score": 0.7585319669168367
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          57,
-          66,
-          67,
-          68,
-          65,
-          69
-        ],
-        "prefilter": 0.7914982048747207,
-        "joint_score": 0.7503807675748378
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          57,
-          68,
-          67,
-          66,
-          69,
-          65
-        ],
-        "prefilter": 0.7914982048747207,
-        "joint_score": 0.7602020660032247
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          64,
-          66,
-          65,
-          77,
-          67,
-          85
-        ],
-        "prefilter": 0.7809172635952812,
-        "joint_score": 0.7432075361217106
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          64,
-          77,
-          65,
-          66,
-          85,
-          67
-        ],
-        "prefilter": 0.7809172635952812,
-        "joint_score": 0.7308017563932806
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          138,
-          150,
-          151,
-          152,
-          149,
-          153
-        ],
-        "prefilter": 0.7778754658790852,
-        "joint_score": 0.7267353876328739
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          138,
-          152,
-          151,
-          150,
-          153,
-          149
-        ],
-        "prefilter": 0.7778754658790852,
-        "joint_score": 0.7301896083806183
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          110,
-          118,
-          109,
-          108,
-          129,
-          107
-        ],
-        "prefilter": 0.770869562122147,
-        "joint_score": 0.7404881673091908
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          110,
-          108,
-          109,
-          118,
-          107,
-          129
-        ],
-        "prefilter": 0.7708695621221469,
-        "joint_score": 0.7461156491993997
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          96,
-          102,
-          103,
-          104,
-          101,
-          105
-        ],
-        "prefilter": 0.7624402165585918,
-        "joint_score": 0.6738185503428912
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          96,
-          104,
-          103,
-          102,
-          105,
-          101
-        ],
-        "prefilter": 0.7624402165585918,
-        "joint_score": 0.7165359380643354
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          39,
-          32,
-          33,
-          34,
-          31,
-          35
-        ],
-        "prefilter": 0.7616196930576046,
-        "joint_score": 0.7374325191545821
-      },
-      {
-        "backend": "ibm_kingston",
-        "patch_qubits": [
-          39,
-          34,
-          33,
-          32,
-          35,
-          31
-        ],
-        "prefilter": 0.7616196930576046,
-        "joint_score": 0.7337993577017682
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          98,
-          90,
-          91,
-          92,
-          89,
-          93
-        ],
-        "prefilter": 0.7245808724184516,
-        "joint_score": 0.621874860997795
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          98,
-          92,
-          91,
-          90,
-          93,
-          89
-        ],
-        "prefilter": 0.7245808724184516,
-        "joint_score": 0.6259734013565086
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          92,
-          90,
-          91,
-          98,
-          89,
-          111
-        ],
-        "prefilter": 0.7000968321998737,
-        "joint_score": 0.6194512134984037
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          92,
-          98,
-          91,
-          90,
-          111,
-          89
-        ],
-        "prefilter": 0.7000968321998737,
-        "joint_score": 0.6278808051601349
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          90,
-          92,
-          91,
-          98,
-          93,
-          111
-        ],
-        "prefilter": 0.6905005038835508,
-        "joint_score": 0.6213147071431953
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          90,
-          98,
-          91,
-          92,
-          111,
-          93
-        ],
-        "prefilter": 0.6905005038835508,
-        "joint_score": 0.6256462613041762
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          48,
-          57,
-          47,
-          46,
-          67,
-          45
-        ],
-        "prefilter": 0.6537312286634085,
-        "joint_score": 0.5478253667833035
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          48,
-          46,
-          47,
-          57,
-          45,
-          67
-        ],
-        "prefilter": 0.6537312286634084,
-        "joint_score": 0.5468363299639288
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          138,
-          152,
-          151,
-          150,
-          153,
-          149
-        ],
-        "prefilter": 0.6298308798490578,
-        "joint_score": 0.37838708465619875
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          138,
-          150,
-          151,
-          152,
-          149,
-          153
-        ],
-        "prefilter": 0.6298308798490577,
-        "joint_score": 0.4799357269854315
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          78,
-          88,
-          89,
-          90,
-          87,
-          91
-        ],
-        "prefilter": 0.5960021451009753,
-        "joint_score": 0.5050489215430216
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          78,
-          90,
-          89,
-          88,
-          91,
-          87
-        ],
-        "prefilter": 0.5960021451009753,
-        "joint_score": 0.506389317062251
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          38,
-          28,
-          29,
-          30,
-          27,
-          31
-        ],
-        "prefilter": 0.5656190007797274,
-        "joint_score": 0.454414956287303
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          38,
-          30,
-          29,
-          28,
-          31,
-          27
-        ],
-        "prefilter": 0.5656190007797274,
-        "joint_score": 0.46065303314170575
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          88,
-          78,
-          89,
-          90,
-          69,
-          91
-        ],
-        "prefilter": 0.5557810091433688,
-        "joint_score": 0.5061951285705317
-      },
-      {
-        "backend": "ibm_marrakesh",
-        "patch_qubits": [
-          88,
-          90,
-          89,
-          78,
-          91,
-          69
-        ],
-        "prefilter": 0.5557810091433688,
-        "joint_score": 0.5076918155563065
-      }
-    ]
-  },
+  "selection_trace": {},
   "family_configuration": {
     "name": "coherence-window",
     "patch_qubits": [
-      57,
-      68,
-      67,
-      66,
-      69,
-      65
+      142,
+      136,
+      143,
+      144,
+      123,
+      145
     ],
     "patch_roles": [
       "control",
@@ -1815,18 +1055,17 @@
       "neighbor_a",
       "neighbor_b"
     ],
-    "window_dt": 1098,
-    "control_measure_dt": 545,
-    "control_reset_dt": 553,
+    "window_dt": 836,
+    "control_measure_dt": 415,
+    "control_reset_dt": 421,
     "readout_qubits": {
-      "b0": 57,
-      "read_a": 66,
-      "read_b": 68,
-      "sector": 67
+      "b0": 142,
+      "read_a": 144,
+      "read_b": 136,
+      "sector": 143
     },
     "dt_seconds": 4e-09,
-    "placement_contract": "one pinned patch; static and dynamic jobs",
-    "patch_selection": "calibration"
+    "placement_contract": "one pinned patch; static and dynamic jobs"
   },
   "observable_contracts": [
     {
@@ -2282,189 +1521,189 @@
       {
         "name": "candidate-000-shots-2048-per-pub",
         "feasible": true,
-        "estimated_charge_seconds": 12.514258431999998,
+        "estimated_charge_seconds": 12.469497343999999,
         "total_execution_ceiling_seconds": 18.0,
         "jobs": [
           {
-            "name": "ibm_kingston/dynamic/1",
+            "name": "ibm_fez/dynamic/1",
             "pubs": [
               {
-                "name": "ibm_kingston_dynamic_pub_01",
+                "name": "ibm_fez_dynamic_pub_01",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.288e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_dynamic_pub_02",
+                "name": "ibm_fez_dynamic_pub_02",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.288e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_dynamic_pub_03",
+                "name": "ibm_fez_dynamic_pub_03",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.288e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_dynamic_pub_04",
+                "name": "ibm_fez_dynamic_pub_04",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.288e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_dynamic_pub_05",
+                "name": "ibm_fez_dynamic_pub_05",
                 "shots": 2048,
-                "scheduled_seconds": 9.064e-06,
+                "scheduled_seconds": 7.264e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530563072,
+                "estimated_execution_seconds": 0.526876672,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               }
             ],
             "overhead_seconds": 2.3,
-            "estimated_charge_seconds": 4.9530775039999995,
+            "estimated_charge_seconds": 4.9345799679999995,
             "max_execution_seconds": 9,
             "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
           },
           {
-            "name": "ibm_kingston/static/1",
+            "name": "ibm_fez/static/1",
             "pubs": [
               {
-                "name": "ibm_kingston_static_pub_01",
+                "name": "ibm_fez_static_pub_01",
                 "shots": 2048,
-                "scheduled_seconds": 4.704e-06,
+                "scheduled_seconds": 3.944e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.521633792,
+                "estimated_execution_seconds": 0.520077312,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_02",
+                "name": "ibm_fez_static_pub_02",
                 "shots": 2048,
-                "scheduled_seconds": 4.704e-06,
+                "scheduled_seconds": 3.944e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.521633792,
+                "estimated_execution_seconds": 0.520077312,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_03",
+                "name": "ibm_fez_static_pub_03",
                 "shots": 2048,
-                "scheduled_seconds": 4.704e-06,
+                "scheduled_seconds": 3.944e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.521633792,
+                "estimated_execution_seconds": 0.520077312,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_04",
+                "name": "ibm_fez_static_pub_04",
                 "shots": 2048,
-                "scheduled_seconds": 4.704e-06,
+                "scheduled_seconds": 3.944e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.521633792,
+                "estimated_execution_seconds": 0.520077312,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_05",
+                "name": "ibm_fez_static_pub_05",
                 "shots": 2048,
-                "scheduled_seconds": 4.672e-06,
+                "scheduled_seconds": 3.92e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.521568256,
+                "estimated_execution_seconds": 0.52002816,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_06",
+                "name": "ibm_fez_static_pub_06",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.2879999999999995e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_07",
+                "name": "ibm_fez_static_pub_07",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.2879999999999995e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_08",
+                "name": "ibm_fez_static_pub_08",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.2879999999999995e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_09",
+                "name": "ibm_fez_static_pub_09",
                 "shots": 2048,
-                "scheduled_seconds": 9.096e-06,
+                "scheduled_seconds": 7.2879999999999995e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530628608,
+                "estimated_execution_seconds": 0.526925824,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               },
               {
-                "name": "ibm_kingston_static_pub_10",
+                "name": "ibm_fez_static_pub_10",
                 "shots": 2048,
-                "scheduled_seconds": 9.064e-06,
+                "scheduled_seconds": 7.263999999999999e-06,
                 "repetition_delay_seconds": 0.00025,
                 "reset_seconds": 0.0,
                 "classical_latency_seconds": 0.0,
-                "estimated_execution_seconds": 0.530563072,
+                "estimated_execution_seconds": 0.526876672,
                 "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                 "classical_stage_count": 0
               }
             ],
             "overhead_seconds": 2.3,
-            "estimated_charge_seconds": 7.561180928,
+            "estimated_charge_seconds": 7.534917375999999,
             "max_execution_seconds": 9,
             "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
           }
@@ -2472,10 +1711,10 @@
         "observables": [
           {
             "name": "re_immediate",
-            "predicted_value": 1.7532806396484375,
+            "predicted_value": 1.7641983032226562,
             "simulation_error_radius": 0.01580819281564353,
-            "modeled_value_lower_bound": 1.737472446832794,
-            "modeled_value_upper_bound": 1.769088832464081,
+            "modeled_value_lower_bound": 1.7483901104070128,
+            "modeled_value_upper_bound": 1.7800064960382997,
             "confidence_half_width": 0.15298417691755103,
             "detection_radius": null,
             "power_radius": null,
@@ -2495,10 +1734,10 @@
           },
           {
             "name": "re_matched_idle_minus_immediate",
-            "predicted_value": -0.14859771728515625,
+            "predicted_value": -0.131561279296875,
             "simulation_error_radius": 0.03161638563128706,
-            "modeled_value_lower_bound": -0.1802141029164433,
-            "modeled_value_upper_bound": -0.11698133165386919,
+            "modeled_value_lower_bound": -0.16317766492816205,
+            "modeled_value_upper_bound": -0.09994489366558794,
             "confidence_half_width": 0.3231827010296364,
             "detection_radius": null,
             "power_radius": null,
@@ -2520,10 +1759,10 @@
           },
           {
             "name": "im_matched_idle_minus_immediate",
-            "predicted_value": 0.0074615478515625,
+            "predicted_value": 0.0067291259765625,
             "simulation_error_radius": 0.03161638563128706,
-            "modeled_value_lower_bound": -0.02415483777972456,
-            "modeled_value_upper_bound": 0.03907793348284956,
+            "modeled_value_lower_bound": -0.02488725965472456,
+            "modeled_value_upper_bound": 0.03834551160784956,
             "confidence_half_width": 0.3231827010296364,
             "detection_radius": null,
             "power_radius": null,
@@ -2545,10 +1784,10 @@
           },
           {
             "name": "re_measure_reset_minus_matched_idle",
-            "predicted_value": 0.15122222900390625,
+            "predicted_value": 0.135772705078125,
             "simulation_error_radius": 0.03161638563128706,
-            "modeled_value_lower_bound": 0.11960584337261919,
-            "modeled_value_upper_bound": 0.1828386146351933,
+            "modeled_value_lower_bound": 0.10415631944683794,
+            "modeled_value_upper_bound": 0.16738909070941205,
             "confidence_half_width": 0.3231827010296364,
             "detection_radius": null,
             "power_radius": null,
@@ -2570,10 +1809,10 @@
           },
           {
             "name": "im_measure_reset_minus_matched_idle",
-            "predicted_value": -0.001251220703125,
+            "predicted_value": -0.00147247314453125,
             "simulation_error_radius": 0.03161638563128706,
-            "modeled_value_lower_bound": -0.03286760633441206,
-            "modeled_value_upper_bound": 0.03036516492816206,
+            "modeled_value_lower_bound": -0.03308885877581831,
+            "modeled_value_upper_bound": 0.03014391248675581,
             "confidence_half_width": 0.3231827010296364,
             "detection_radius": null,
             "power_radius": null,
@@ -2596,14 +1835,14 @@
         ],
         "rejection_reasons": [],
         "proxy_metadata": {
-          "backend": "ibm_kingston",
+          "backend": "ibm_fez",
           "seed": 20261010,
           "replicas": 1,
           "shots": 2048,
-          "proxy_score": 0.7604458617793046
+          "proxy_score": 0.7742809800777511
         },
         "cost_scenarios": [],
-        "worst_case_charge_seconds": 12.514258431999998,
+        "worst_case_charge_seconds": 12.469497343999999,
         "normalized_precision_radius": 0.9793415182716255
       }
     ],
@@ -2624,7 +1863,7 @@
       "explicit cost scenarios are sensitivity assumptions; their coverage of cost uncertainty is unquantified"
     ],
     "objective": "minimum_charge",
-    "selected_objective_value": 12.514258431999998,
+    "selected_objective_value": 12.469497343999999,
     "cost_scenarios": [],
     "retained_candidate": "candidate-000-shots-2048-per-pub",
     "searched_routed_sets": 1,
@@ -2655,24 +1894,31 @@
     "classical_latency_us": 20.0,
     "reserve_seconds": 60.0,
     "max_total_execution_seconds": 18.0,
-    "patch_qubits": null
+    "patch_qubits": [
+      142,
+      136,
+      143,
+      144,
+      123,
+      145
+    ]
   },
   "pub_shots": {
-    "ibm_kingston_dynamic_pub_01": 2048,
-    "ibm_kingston_dynamic_pub_02": 2048,
-    "ibm_kingston_dynamic_pub_03": 2048,
-    "ibm_kingston_dynamic_pub_04": 2048,
-    "ibm_kingston_dynamic_pub_05": 2048,
-    "ibm_kingston_static_pub_01": 2048,
-    "ibm_kingston_static_pub_02": 2048,
-    "ibm_kingston_static_pub_03": 2048,
-    "ibm_kingston_static_pub_04": 2048,
-    "ibm_kingston_static_pub_05": 2048,
-    "ibm_kingston_static_pub_06": 2048,
-    "ibm_kingston_static_pub_07": 2048,
-    "ibm_kingston_static_pub_08": 2048,
-    "ibm_kingston_static_pub_09": 2048,
-    "ibm_kingston_static_pub_10": 2048
+    "ibm_fez_dynamic_pub_01": 2048,
+    "ibm_fez_dynamic_pub_02": 2048,
+    "ibm_fez_dynamic_pub_03": 2048,
+    "ibm_fez_dynamic_pub_04": 2048,
+    "ibm_fez_dynamic_pub_05": 2048,
+    "ibm_fez_static_pub_01": 2048,
+    "ibm_fez_static_pub_02": 2048,
+    "ibm_fez_static_pub_03": 2048,
+    "ibm_fez_static_pub_04": 2048,
+    "ibm_fez_static_pub_05": 2048,
+    "ibm_fez_static_pub_06": 2048,
+    "ibm_fez_static_pub_07": 2048,
+    "ibm_fez_static_pub_08": 2048,
+    "ibm_fez_static_pub_09": 2048,
+    "ibm_fez_static_pub_10": 2048
   },
   "shot_allocation": {
     "schema": "prespecified-pub-shot-allocation-v2",
@@ -2682,38 +1928,38 @@
     ],
     "simulation_comparisons": 18,
     "pub_shots": {
-      "ibm_kingston_dynamic_pub_01": 2048,
-      "ibm_kingston_dynamic_pub_02": 2048,
-      "ibm_kingston_dynamic_pub_03": 2048,
-      "ibm_kingston_dynamic_pub_04": 2048,
-      "ibm_kingston_dynamic_pub_05": 2048,
-      "ibm_kingston_static_pub_01": 2048,
-      "ibm_kingston_static_pub_02": 2048,
-      "ibm_kingston_static_pub_03": 2048,
-      "ibm_kingston_static_pub_04": 2048,
-      "ibm_kingston_static_pub_05": 2048,
-      "ibm_kingston_static_pub_06": 2048,
-      "ibm_kingston_static_pub_07": 2048,
-      "ibm_kingston_static_pub_08": 2048,
-      "ibm_kingston_static_pub_09": 2048,
-      "ibm_kingston_static_pub_10": 2048
+      "ibm_fez_dynamic_pub_01": 2048,
+      "ibm_fez_dynamic_pub_02": 2048,
+      "ibm_fez_dynamic_pub_03": 2048,
+      "ibm_fez_dynamic_pub_04": 2048,
+      "ibm_fez_dynamic_pub_05": 2048,
+      "ibm_fez_static_pub_01": 2048,
+      "ibm_fez_static_pub_02": 2048,
+      "ibm_fez_static_pub_03": 2048,
+      "ibm_fez_static_pub_04": 2048,
+      "ibm_fez_static_pub_05": 2048,
+      "ibm_fez_static_pub_06": 2048,
+      "ibm_fez_static_pub_07": 2048,
+      "ibm_fez_static_pub_08": 2048,
+      "ibm_fez_static_pub_09": 2048,
+      "ibm_fez_static_pub_10": 2048
     },
     "minimum_pub_shots": {
-      "ibm_kingston_dynamic_pub_01": 2048,
-      "ibm_kingston_dynamic_pub_02": 2048,
-      "ibm_kingston_dynamic_pub_03": 2048,
-      "ibm_kingston_dynamic_pub_04": 2048,
-      "ibm_kingston_dynamic_pub_05": 2048,
-      "ibm_kingston_static_pub_01": 2048,
-      "ibm_kingston_static_pub_02": 2048,
-      "ibm_kingston_static_pub_03": 2048,
-      "ibm_kingston_static_pub_04": 2048,
-      "ibm_kingston_static_pub_05": 2048,
-      "ibm_kingston_static_pub_06": 2048,
-      "ibm_kingston_static_pub_07": 2048,
-      "ibm_kingston_static_pub_08": 2048,
-      "ibm_kingston_static_pub_09": 2048,
-      "ibm_kingston_static_pub_10": 2048
+      "ibm_fez_dynamic_pub_01": 2048,
+      "ibm_fez_dynamic_pub_02": 2048,
+      "ibm_fez_dynamic_pub_03": 2048,
+      "ibm_fez_dynamic_pub_04": 2048,
+      "ibm_fez_dynamic_pub_05": 2048,
+      "ibm_fez_static_pub_01": 2048,
+      "ibm_fez_static_pub_02": 2048,
+      "ibm_fez_static_pub_03": 2048,
+      "ibm_fez_static_pub_04": 2048,
+      "ibm_fez_static_pub_05": 2048,
+      "ibm_fez_static_pub_06": 2048,
+      "ibm_fez_static_pub_07": 2048,
+      "ibm_fez_static_pub_08": 2048,
+      "ibm_fez_static_pub_09": 2048,
+      "ibm_fez_static_pub_10": 2048
     },
     "endpoint_tiers": {
       "re_immediate": 2048,
@@ -2724,9 +1970,9 @@
     },
     "infeasible_at_max_tier": {},
     "unscored_pubs": [
-      "ibm_kingston_dynamic_pub_05",
-      "ibm_kingston_static_pub_05",
-      "ibm_kingston_static_pub_10"
+      "ibm_fez_dynamic_pub_05",
+      "ibm_fez_static_pub_05",
+      "ibm_fez_static_pub_10"
     ],
     "unscored_tier": "smallest",
     "coupled_pubs": [],
@@ -2742,189 +1988,189 @@
         {
           "name": "candidate-000-shots-2048-allocation-0000",
           "feasible": true,
-          "estimated_charge_seconds": 12.514258431999998,
+          "estimated_charge_seconds": 12.469497343999999,
           "total_execution_ceiling_seconds": 18.0,
           "jobs": [
             {
-              "name": "ibm_kingston/dynamic/1",
+              "name": "ibm_fez/dynamic/1",
               "pubs": [
                 {
-                  "name": "ibm_kingston_dynamic_pub_01",
+                  "name": "ibm_fez_dynamic_pub_01",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.288e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_dynamic_pub_02",
+                  "name": "ibm_fez_dynamic_pub_02",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.288e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_dynamic_pub_03",
+                  "name": "ibm_fez_dynamic_pub_03",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.288e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_dynamic_pub_04",
+                  "name": "ibm_fez_dynamic_pub_04",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.288e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_dynamic_pub_05",
+                  "name": "ibm_fez_dynamic_pub_05",
                   "shots": 2048,
-                  "scheduled_seconds": 9.064e-06,
+                  "scheduled_seconds": 7.264e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530563072,
+                  "estimated_execution_seconds": 0.526876672,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 }
               ],
               "overhead_seconds": 2.3,
-              "estimated_charge_seconds": 4.9530775039999995,
+              "estimated_charge_seconds": 4.9345799679999995,
               "max_execution_seconds": 9,
               "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
             },
             {
-              "name": "ibm_kingston/static/1",
+              "name": "ibm_fez/static/1",
               "pubs": [
                 {
-                  "name": "ibm_kingston_static_pub_01",
+                  "name": "ibm_fez_static_pub_01",
                   "shots": 2048,
-                  "scheduled_seconds": 4.704e-06,
+                  "scheduled_seconds": 3.944e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.521633792,
+                  "estimated_execution_seconds": 0.520077312,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_02",
+                  "name": "ibm_fez_static_pub_02",
                   "shots": 2048,
-                  "scheduled_seconds": 4.704e-06,
+                  "scheduled_seconds": 3.944e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.521633792,
+                  "estimated_execution_seconds": 0.520077312,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_03",
+                  "name": "ibm_fez_static_pub_03",
                   "shots": 2048,
-                  "scheduled_seconds": 4.704e-06,
+                  "scheduled_seconds": 3.944e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.521633792,
+                  "estimated_execution_seconds": 0.520077312,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_04",
+                  "name": "ibm_fez_static_pub_04",
                   "shots": 2048,
-                  "scheduled_seconds": 4.704e-06,
+                  "scheduled_seconds": 3.944e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.521633792,
+                  "estimated_execution_seconds": 0.520077312,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_05",
+                  "name": "ibm_fez_static_pub_05",
                   "shots": 2048,
-                  "scheduled_seconds": 4.672e-06,
+                  "scheduled_seconds": 3.92e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.521568256,
+                  "estimated_execution_seconds": 0.52002816,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_06",
+                  "name": "ibm_fez_static_pub_06",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.2879999999999995e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_07",
+                  "name": "ibm_fez_static_pub_07",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.2879999999999995e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_08",
+                  "name": "ibm_fez_static_pub_08",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.2879999999999995e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_09",
+                  "name": "ibm_fez_static_pub_09",
                   "shots": 2048,
-                  "scheduled_seconds": 9.096e-06,
+                  "scheduled_seconds": 7.2879999999999995e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530628608,
+                  "estimated_execution_seconds": 0.526925824,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 },
                 {
-                  "name": "ibm_kingston_static_pub_10",
+                  "name": "ibm_fez_static_pub_10",
                   "shots": 2048,
-                  "scheduled_seconds": 9.064e-06,
+                  "scheduled_seconds": 7.263999999999999e-06,
                   "repetition_delay_seconds": 0.00025,
                   "reset_seconds": 0.0,
                   "classical_latency_seconds": 0.0,
-                  "estimated_execution_seconds": 0.530563072,
+                  "estimated_execution_seconds": 0.526876672,
                   "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
                   "classical_stage_count": 0
                 }
               ],
               "overhead_seconds": 2.3,
-              "estimated_charge_seconds": 7.561180928,
+              "estimated_charge_seconds": 7.534917375999999,
               "max_execution_seconds": 9,
               "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
             }
@@ -2932,10 +2178,10 @@
           "observables": [
             {
               "name": "re_immediate",
-              "predicted_value": 1.7532806396484375,
+              "predicted_value": 1.7641983032226562,
               "simulation_error_radius": 0.01580819281564353,
-              "modeled_value_lower_bound": 1.737472446832794,
-              "modeled_value_upper_bound": 1.769088832464081,
+              "modeled_value_lower_bound": 1.7483901104070128,
+              "modeled_value_upper_bound": 1.7800064960382997,
               "confidence_half_width": 0.15298417691755103,
               "detection_radius": null,
               "power_radius": null,
@@ -2955,10 +2201,10 @@
             },
             {
               "name": "re_matched_idle_minus_immediate",
-              "predicted_value": -0.14859771728515625,
+              "predicted_value": -0.131561279296875,
               "simulation_error_radius": 0.03161638563128706,
-              "modeled_value_lower_bound": -0.1802141029164433,
-              "modeled_value_upper_bound": -0.11698133165386919,
+              "modeled_value_lower_bound": -0.16317766492816205,
+              "modeled_value_upper_bound": -0.09994489366558794,
               "confidence_half_width": 0.3231827010296364,
               "detection_radius": null,
               "power_radius": null,
@@ -2980,10 +2226,10 @@
             },
             {
               "name": "im_matched_idle_minus_immediate",
-              "predicted_value": 0.0074615478515625,
+              "predicted_value": 0.0067291259765625,
               "simulation_error_radius": 0.03161638563128706,
-              "modeled_value_lower_bound": -0.02415483777972456,
-              "modeled_value_upper_bound": 0.03907793348284956,
+              "modeled_value_lower_bound": -0.02488725965472456,
+              "modeled_value_upper_bound": 0.03834551160784956,
               "confidence_half_width": 0.3231827010296364,
               "detection_radius": null,
               "power_radius": null,
@@ -3005,10 +2251,10 @@
             },
             {
               "name": "re_measure_reset_minus_matched_idle",
-              "predicted_value": 0.15122222900390625,
+              "predicted_value": 0.135772705078125,
               "simulation_error_radius": 0.03161638563128706,
-              "modeled_value_lower_bound": 0.11960584337261919,
-              "modeled_value_upper_bound": 0.1828386146351933,
+              "modeled_value_lower_bound": 0.10415631944683794,
+              "modeled_value_upper_bound": 0.16738909070941205,
               "confidence_half_width": 0.3231827010296364,
               "detection_radius": null,
               "power_radius": null,
@@ -3030,10 +2276,10 @@
             },
             {
               "name": "im_measure_reset_minus_matched_idle",
-              "predicted_value": -0.001251220703125,
+              "predicted_value": -0.00147247314453125,
               "simulation_error_radius": 0.03161638563128706,
-              "modeled_value_lower_bound": -0.03286760633441206,
-              "modeled_value_upper_bound": 0.03036516492816206,
+              "modeled_value_lower_bound": -0.03308885877581831,
+              "modeled_value_upper_bound": 0.03014391248675581,
               "confidence_half_width": 0.3231827010296364,
               "detection_radius": null,
               "power_radius": null,
@@ -3056,31 +2302,31 @@
           ],
           "rejection_reasons": [],
           "proxy_metadata": {
-            "backend": "ibm_kingston",
+            "backend": "ibm_fez",
             "seed": 20261010,
             "replicas": 1,
             "shots": 2048,
-            "proxy_score": 0.7604458617793046
+            "proxy_score": 0.7742809800777511
           },
           "cost_scenarios": [],
-          "worst_case_charge_seconds": 12.514258431999998,
+          "worst_case_charge_seconds": 12.469497343999999,
           "normalized_precision_radius": 0.9793415182716255,
           "pub_shots": {
-            "ibm_kingston_dynamic_pub_01": 2048,
-            "ibm_kingston_dynamic_pub_02": 2048,
-            "ibm_kingston_dynamic_pub_03": 2048,
-            "ibm_kingston_dynamic_pub_04": 2048,
-            "ibm_kingston_dynamic_pub_05": 2048,
-            "ibm_kingston_static_pub_01": 2048,
-            "ibm_kingston_static_pub_02": 2048,
-            "ibm_kingston_static_pub_03": 2048,
-            "ibm_kingston_static_pub_04": 2048,
-            "ibm_kingston_static_pub_05": 2048,
-            "ibm_kingston_static_pub_06": 2048,
-            "ibm_kingston_static_pub_07": 2048,
-            "ibm_kingston_static_pub_08": 2048,
-            "ibm_kingston_static_pub_09": 2048,
-            "ibm_kingston_static_pub_10": 2048
+            "ibm_fez_dynamic_pub_01": 2048,
+            "ibm_fez_dynamic_pub_02": 2048,
+            "ibm_fez_dynamic_pub_03": 2048,
+            "ibm_fez_dynamic_pub_04": 2048,
+            "ibm_fez_dynamic_pub_05": 2048,
+            "ibm_fez_static_pub_01": 2048,
+            "ibm_fez_static_pub_02": 2048,
+            "ibm_fez_static_pub_03": 2048,
+            "ibm_fez_static_pub_04": 2048,
+            "ibm_fez_static_pub_05": 2048,
+            "ibm_fez_static_pub_06": 2048,
+            "ibm_fez_static_pub_07": 2048,
+            "ibm_fez_static_pub_08": 2048,
+            "ibm_fez_static_pub_09": 2048,
+            "ibm_fez_static_pub_10": 2048
           }
         }
       ]
@@ -3333,46 +2579,46 @@
         "coherence_matched_idle_yy",
         "coherence_matched_idle_zz"
       ],
-      "ordered_qpy_sha256": "56f5aa45ba9df5b14be9cb7baf5daeb3321007e4844b3ba9aa8312b43bbf71fd",
-      "noise_serialized_channels_sha256": "e2666bc71628a792a1f3b6035cffbdad425c5d6e68bf509cfaf07b8d1fccb67d",
+      "ordered_qpy_sha256": "14986bb31f7ae8815aa8c8ffc1ac01fb3a26ef168cf0b3f1dff5c29f21d89414",
+      "noise_serialized_channels_sha256": "fed962c83c175b09c348abe2ffc133d46ec4e36384c6440902bf2f8cc5490543",
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 262144,
       "seed_simulator": 20261011,
-      "wall_seconds": 7.236086257995339,
+      "wall_seconds": 14.423334564002289,
       "experiment_metadata": [
         {
-          "time_taken": 0.151484195,
+          "time_taken": 0.347648071,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.0128151,
+          "sample_measure_time": 0.022078457,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3389,38 +2635,38 @@
           }
         },
         {
-          "time_taken": 0.151431936,
+          "time_taken": 0.43587241,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.013671301,
+          "sample_measure_time": 0.018333421,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3437,38 +2683,38 @@
           }
         },
         {
-          "time_taken": 0.156740578,
+          "time_taken": 0.410449038,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.021238978,
+          "sample_measure_time": 0.022774498,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3485,38 +2731,38 @@
           }
         },
         {
-          "time_taken": 0.156411187,
+          "time_taken": 0.416480469,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.013472821,
+          "sample_measure_time": 0.021430637,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3533,38 +2779,38 @@
           }
         },
         {
-          "time_taken": 0.159314084,
+          "time_taken": 0.369116218,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015179414,
+          "sample_measure_time": 0.016081667,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3581,38 +2827,38 @@
           }
         },
         {
-          "time_taken": 0.154912603,
+          "time_taken": 0.464746161,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.012270168,
+          "sample_measure_time": 0.022636369,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3629,38 +2875,38 @@
           }
         },
         {
-          "time_taken": 0.150679624,
+          "time_taken": 0.443097145,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.013627371,
+          "sample_measure_time": 0.021656767,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3677,38 +2923,38 @@
           }
         },
         {
-          "time_taken": 0.15297751,
+          "time_taken": 0.448039923,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015174385,
+          "sample_measure_time": 0.020858916,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3725,38 +2971,38 @@
           }
         },
         {
-          "time_taken": 0.147616457,
+          "time_taken": 0.470579773,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.01311162,
+          "sample_measure_time": 0.026801195,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -3773,38 +3019,38 @@
           }
         },
         {
-          "time_taken": 0.151876866,
+          "time_taken": 0.384689846,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015540565,
+          "sample_measure_time": 0.032254855,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -4055,33 +3301,33 @@
         "coherence_measure_reset_yy",
         "coherence_measure_reset_zz"
       ],
-      "ordered_qpy_sha256": "0d8d65ab237cc18292b4115c92850347d549f9a0556b6b9962c229ddc3e0dec0",
-      "noise_serialized_channels_sha256": "e2666bc71628a792a1f3b6035cffbdad425c5d6e68bf509cfaf07b8d1fccb67d",
+      "ordered_qpy_sha256": "1291b3ad5ee267aa89d34d6bfe91670449db3f703142c16475a4dbf1ddd19350",
+      "noise_serialized_channels_sha256": "fed962c83c175b09c348abe2ffc133d46ec4e36384c6440902bf2f8cc5490543",
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 262144,
       "seed_simulator": 20261011,
-      "wall_seconds": 9.934526901008212,
+      "wall_seconds": 17.165861091001716,
       "experiment_metadata": [
         {
-          "time_taken": 1.417376828,
+          "time_taken": 2.493294432,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -4089,10 +3335,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -4110,25 +3356,25 @@
           }
         },
         {
-          "time_taken": 1.39601035,
+          "time_taken": 2.623087957,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -4136,10 +3382,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -4157,25 +3403,25 @@
           }
         },
         {
-          "time_taken": 2.045911507,
+          "time_taken": 2.64110692,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -4183,10 +3429,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -4204,25 +3450,25 @@
           }
         },
         {
-          "time_taken": 1.808687977,
+          "time_taken": 2.510095557,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -4230,10 +3476,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -4251,25 +3497,25 @@
           }
         },
         {
-          "time_taken": 2.162888569,
+          "time_taken": 2.386635723,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -4277,10 +3523,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -4313,38 +3559,38 @@
   "budget_plan": {
     "jobs": [
       {
-        "backend": "ibm_kingston",
+        "backend": "ibm_fez",
         "kind": "dynamic",
         "batch_index": 1,
         "pubs": 5,
         "ceiling_seconds": 9,
         "shots": 2048,
         "pub_names": [
-          "ibm_kingston_dynamic_pub_01",
-          "ibm_kingston_dynamic_pub_02",
-          "ibm_kingston_dynamic_pub_03",
-          "ibm_kingston_dynamic_pub_04",
-          "ibm_kingston_dynamic_pub_05"
+          "ibm_fez_dynamic_pub_01",
+          "ibm_fez_dynamic_pub_02",
+          "ibm_fez_dynamic_pub_03",
+          "ibm_fez_dynamic_pub_04",
+          "ibm_fez_dynamic_pub_05"
         ]
       },
       {
-        "backend": "ibm_kingston",
+        "backend": "ibm_fez",
         "kind": "static",
         "batch_index": 1,
         "pubs": 10,
         "ceiling_seconds": 9,
         "shots": 2048,
         "pub_names": [
-          "ibm_kingston_static_pub_01",
-          "ibm_kingston_static_pub_02",
-          "ibm_kingston_static_pub_03",
-          "ibm_kingston_static_pub_04",
-          "ibm_kingston_static_pub_05",
-          "ibm_kingston_static_pub_06",
-          "ibm_kingston_static_pub_07",
-          "ibm_kingston_static_pub_08",
-          "ibm_kingston_static_pub_09",
-          "ibm_kingston_static_pub_10"
+          "ibm_fez_static_pub_01",
+          "ibm_fez_static_pub_02",
+          "ibm_fez_static_pub_03",
+          "ibm_fez_static_pub_04",
+          "ibm_fez_static_pub_05",
+          "ibm_fez_static_pub_06",
+          "ibm_fez_static_pub_07",
+          "ibm_fez_static_pub_08",
+          "ibm_fez_static_pub_09",
+          "ibm_fez_static_pub_10"
         ]
       }
     ],
@@ -4359,260 +3605,260 @@
   "execution_contract": {
     "backends": [
       {
-        "name": "ibm_kingston",
+        "name": "ibm_fez",
         "repetition_delay_seconds": 0.00025
       }
     ],
     "selected_job_costs": [
       {
-        "name": "ibm_kingston/dynamic/1",
+        "name": "ibm_fez/dynamic/1",
         "pubs": [
           {
-            "name": "ibm_kingston_dynamic_pub_01",
+            "name": "ibm_fez_dynamic_pub_01",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.288e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_dynamic_pub_02",
+            "name": "ibm_fez_dynamic_pub_02",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.288e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_dynamic_pub_03",
+            "name": "ibm_fez_dynamic_pub_03",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.288e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_dynamic_pub_04",
+            "name": "ibm_fez_dynamic_pub_04",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.288e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_dynamic_pub_05",
+            "name": "ibm_fez_dynamic_pub_05",
             "shots": 2048,
-            "scheduled_seconds": 9.064e-06,
+            "scheduled_seconds": 7.264e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530563072,
+            "estimated_execution_seconds": 0.526876672,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           }
         ],
         "overhead_seconds": 2.3,
-        "estimated_charge_seconds": 4.9530775039999995,
+        "estimated_charge_seconds": 4.9345799679999995,
         "max_execution_seconds": 9,
         "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
       },
       {
-        "name": "ibm_kingston/static/1",
+        "name": "ibm_fez/static/1",
         "pubs": [
           {
-            "name": "ibm_kingston_static_pub_01",
+            "name": "ibm_fez_static_pub_01",
             "shots": 2048,
-            "scheduled_seconds": 4.704e-06,
+            "scheduled_seconds": 3.944e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.521633792,
+            "estimated_execution_seconds": 0.520077312,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_02",
+            "name": "ibm_fez_static_pub_02",
             "shots": 2048,
-            "scheduled_seconds": 4.704e-06,
+            "scheduled_seconds": 3.944e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.521633792,
+            "estimated_execution_seconds": 0.520077312,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_03",
+            "name": "ibm_fez_static_pub_03",
             "shots": 2048,
-            "scheduled_seconds": 4.704e-06,
+            "scheduled_seconds": 3.944e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.521633792,
+            "estimated_execution_seconds": 0.520077312,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_04",
+            "name": "ibm_fez_static_pub_04",
             "shots": 2048,
-            "scheduled_seconds": 4.704e-06,
+            "scheduled_seconds": 3.944e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.521633792,
+            "estimated_execution_seconds": 0.520077312,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_05",
+            "name": "ibm_fez_static_pub_05",
             "shots": 2048,
-            "scheduled_seconds": 4.672e-06,
+            "scheduled_seconds": 3.92e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.521568256,
+            "estimated_execution_seconds": 0.52002816,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_06",
+            "name": "ibm_fez_static_pub_06",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.2879999999999995e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_07",
+            "name": "ibm_fez_static_pub_07",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.2879999999999995e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_08",
+            "name": "ibm_fez_static_pub_08",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.2879999999999995e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_09",
+            "name": "ibm_fez_static_pub_09",
             "shots": 2048,
-            "scheduled_seconds": 9.096e-06,
+            "scheduled_seconds": 7.2879999999999995e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530628608,
+            "estimated_execution_seconds": 0.526925824,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           },
           {
-            "name": "ibm_kingston_static_pub_10",
+            "name": "ibm_fez_static_pub_10",
             "shots": 2048,
-            "scheduled_seconds": 9.064e-06,
+            "scheduled_seconds": 7.263999999999999e-06,
             "repetition_delay_seconds": 0.00025,
             "reset_seconds": 0.0,
             "classical_latency_seconds": 0.0,
-            "estimated_execution_seconds": 0.530563072,
+            "estimated_execution_seconds": 0.526876672,
             "duration_assumption": "Target duration includes reset; dynamic classical latency is a declared per-stage planning assumption",
             "classical_stage_count": 0
           }
         ],
         "overhead_seconds": 2.3,
-        "estimated_charge_seconds": 7.561180928,
+        "estimated_charge_seconds": 7.534917375999999,
         "max_execution_seconds": 9,
         "overhead_assumption": "declared overhead; 2.3 s default is the retained dynamic job's non-circuit charge, not a backend guarantee"
       }
     ],
     "selected_cost_scenarios": [],
-    "selected_worst_case_charge_seconds": 12.514258431999998,
+    "selected_worst_case_charge_seconds": 12.469497343999999,
     "pub_shots": {
-      "ibm_kingston_dynamic_pub_01": 2048,
-      "ibm_kingston_dynamic_pub_02": 2048,
-      "ibm_kingston_dynamic_pub_03": 2048,
-      "ibm_kingston_dynamic_pub_04": 2048,
-      "ibm_kingston_dynamic_pub_05": 2048,
-      "ibm_kingston_static_pub_01": 2048,
-      "ibm_kingston_static_pub_02": 2048,
-      "ibm_kingston_static_pub_03": 2048,
-      "ibm_kingston_static_pub_04": 2048,
-      "ibm_kingston_static_pub_05": 2048,
-      "ibm_kingston_static_pub_06": 2048,
-      "ibm_kingston_static_pub_07": 2048,
-      "ibm_kingston_static_pub_08": 2048,
-      "ibm_kingston_static_pub_09": 2048,
-      "ibm_kingston_static_pub_10": 2048
+      "ibm_fez_dynamic_pub_01": 2048,
+      "ibm_fez_dynamic_pub_02": 2048,
+      "ibm_fez_dynamic_pub_03": 2048,
+      "ibm_fez_dynamic_pub_04": 2048,
+      "ibm_fez_dynamic_pub_05": 2048,
+      "ibm_fez_static_pub_01": 2048,
+      "ibm_fez_static_pub_02": 2048,
+      "ibm_fez_static_pub_03": 2048,
+      "ibm_fez_static_pub_04": 2048,
+      "ibm_fez_static_pub_05": 2048,
+      "ibm_fez_static_pub_06": 2048,
+      "ibm_fez_static_pub_07": 2048,
+      "ibm_fez_static_pub_08": 2048,
+      "ibm_fez_static_pub_09": 2048,
+      "ibm_fez_static_pub_10": 2048
     }
   },
   "groups": [
     {
       "group": "coherence_static",
-      "backend": "ibm_kingston",
-      "calibration": "2026-10-14T14:25:47-07:00",
-      "noise_model_calibration": "2026-10-14T14:25:47-07:00",
+      "backend": "ibm_fez",
+      "calibration": "2026-10-13T22:55:28-07:00",
+      "noise_model_calibration": "2026-10-13T22:55:28-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
-        57,
-        68,
-        67,
-        66,
-        69,
-        65
+        142,
+        136,
+        143,
+        144,
+        123,
+        145
       ],
-      "joint_score": 0.7797001480994515,
+      "joint_score": 0.7913316911668284,
       "replica_floor": 0.9,
       "replicas": [
         {
           "index": 0,
           "prefix": "r0_",
-          "score": 0.7409816631808429,
+          "score": 0.7570159863959551,
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "initial_layout": [
-            57,
-            68,
-            67,
-            66,
-            69,
-            65
+            142,
+            136,
+            143,
+            144,
+            123,
+            145
           ],
           "mapping": {
-            "57": 57,
-            "65": 65,
-            "66": 66,
-            "67": 67,
-            "68": 68,
-            "69": 69
+            "123": 123,
+            "136": 136,
+            "142": 142,
+            "143": 143,
+            "144": 144,
+            "145": 145
           }
         }
       ],
@@ -4623,38 +3869,38 @@
       "variance": {
         "coherence_immediate_xx": {
           "replicas": 1.0,
-          "mean": 0.91259765625,
-          "shot_variance": 3.894686233252287e-05
+          "mean": 0.91650390625,
+          "shot_variance": 3.7365476600825787e-05
         },
         "coherence_immediate_xy": {
           "replicas": 1.0,
-          "mean": 0.97607421875,
-          "shot_variance": 1.1402997188270092e-05
+          "mean": 0.97412109375,
+          "shot_variance": 1.2309174053370953e-05
         },
         "coherence_immediate_yx": {
           "replicas": 1.0,
-          "mean": 0.978515625,
-          "shot_variance": 1.0265037417411804e-05
+          "mean": 0.97314453125,
+          "shot_variance": 1.276086550205946e-05
         },
         "coherence_immediate_yy": {
           "replicas": 1.0,
-          "mean": 0.923828125,
-          "shot_variance": 3.4360215067863464e-05
+          "mean": 0.9296875,
+          "shot_variance": 3.191828727722168e-05
         },
         "coherence_immediate_zz": {
           "replicas": 1.0,
-          "mean": 0.93115234375,
-          "shot_variance": 3.130256664007902e-05
+          "mean": 0.93896484375,
+          "shot_variance": 2.7983332984149456e-05
         },
         "coherence_matched_idle_xx": {
           "replicas": 1.0,
-          "mean": 0.8896484375,
-          "shot_variance": 4.79365698993206e-05
+          "mean": 0.9013671875,
+          "shot_variance": 4.341034218668938e-05
         },
         "coherence_matched_idle_xy": {
           "replicas": 1.0,
-          "mean": 0.974609375,
-          "shot_variance": 1.2082979083061218e-05
+          "mean": 0.97216796875,
+          "shot_variance": 1.3211625628173351e-05
         },
         "coherence_matched_idle_yx": {
           "replicas": 1.0,
@@ -4663,58 +3909,58 @@
         },
         "coherence_matched_idle_yy": {
           "replicas": 1.0,
-          "mean": 0.88525390625,
-          "shot_variance": 4.959932994097471e-05
+          "mean": 0.89453125,
+          "shot_variance": 4.606693983078003e-05
         },
         "coherence_matched_idle_zz": {
           "replicas": 1.0,
-          "mean": 0.90625,
-          "shot_variance": 4.1484832763671875e-05
+          "mean": 0.9111328125,
+          "shot_variance": 3.9536040276288986e-05
         }
       },
       "summary_readout_corrected": {},
       "placed_qubit_calibration": {
-        "57": {
-          "T1": 229.60975825721243,
-          "T2": 261.26502578263074,
-          "readout_error": 0.005615234375,
-          "prob_meas1_prep0": 0.00390625,
+        "123": {
+          "T1": 185.0945166153053,
+          "T2": 142.8974435327731,
+          "readout_error": 0.0062255859375,
+          "prob_meas1_prep0": 0.005126953125,
           "prob_meas0_prep1": 0.00732421875
         },
-        "65": {
-          "T1": 290.97505763840263,
-          "T2": 232.58831722398233,
-          "readout_error": 0.0096435546875,
-          "prob_meas1_prep0": 0.0029296875,
-          "prob_meas0_prep1": 0.016357421875
+        "136": {
+          "T1": 97.45061798096492,
+          "T2": 91.67698668744086,
+          "readout_error": 0.010986328125,
+          "prob_meas1_prep0": 0.00634765625,
+          "prob_meas0_prep1": 0.015625
         },
-        "66": {
-          "T1": 110.40415342041489,
-          "T2": 137.09501290923689,
-          "readout_error": 0.007568359375,
-          "prob_meas1_prep0": 0.000732421875,
-          "prob_meas0_prep1": 0.014404296875
+        "142": {
+          "T1": 162.25593266853846,
+          "T2": 200.44933476575252,
+          "readout_error": 0.0045166015625,
+          "prob_meas1_prep0": 0.002197265625,
+          "prob_meas0_prep1": 0.0068359375
         },
-        "67": {
-          "T1": 249.02093984473612,
-          "T2": 250.42263625484864,
-          "readout_error": 0.0072021484375,
-          "prob_meas1_prep0": 0.00439453125,
-          "prob_meas0_prep1": 0.02587890625
+        "143": {
+          "T1": 217.24473334169423,
+          "T2": 198.45025429392382,
+          "readout_error": 0.003662109375,
+          "prob_meas1_prep0": 0.001220703125,
+          "prob_meas0_prep1": 0.006103515625
         },
-        "68": {
-          "T1": 140.71529257084012,
-          "T2": 125.78925925400063,
-          "readout_error": 0.017333984375,
-          "prob_meas1_prep0": 0.013427734375,
-          "prob_meas0_prep1": 0.021240234375
+        "144": {
+          "T1": 119.3816472189371,
+          "T2": 184.84684820507118,
+          "readout_error": 0.0048828125,
+          "prob_meas1_prep0": 0.0009765625,
+          "prob_meas0_prep1": 0.0087890625
         },
-        "69": {
-          "T1": 242.75826724284346,
-          "T2": 219.76635999694707,
-          "readout_error": 0.0162353515625,
-          "prob_meas1_prep0": 0.014892578125,
-          "prob_meas0_prep1": 0.017578125
+        "145": {
+          "T1": 188.38716355912064,
+          "T2": 140.08084716130614,
+          "readout_error": 0.0155029296875,
+          "prob_meas1_prep0": 0.014404296875,
+          "prob_meas0_prep1": 0.0166015625
         }
       },
       "members": [
@@ -4731,12 +3977,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -4760,33 +4006,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 4.704e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8971817654874887,
+              "duration_s": 3.944e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.9013091272797148,
               "noisy": [
                 0.220215,
-                0.012695,
-                0.013672,
-                0.22998,
-                0.012207,
-                0.236816,
-                0.225586,
-                0.012207,
-                0.004395,
-                0.001953,
+                0.010254,
+                0.006348,
+                0.226562,
+                0.01416,
+                0.233887,
+                0.23584,
+                0.016113,
                 0.003906,
                 0.004883,
-                0.004883,
-                0.006348,
-                0.005371,
-                0.004883
+                0.004395,
+                0.005859,
+                0.001953,
+                0.00293,
+                0.007324,
+                0.005371
               ],
-              "tvd_noisy_to_ideal": 0.08740234374999978
+              "tvd_noisy_to_ideal": 0.08349609374999978
             }
           ]
         },
@@ -4803,12 +4049,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -4832,33 +4078,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 4.704e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8971817654874887,
+              "duration_s": 3.944e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.9013091272797148,
               "noisy": [
-                0.119629,
-                0.123047,
-                0.11084,
-                0.11084,
-                0.129395,
-                0.117188,
-                0.134766,
-                0.130371,
-                0.001953,
-                0.00293,
-                0.002441,
-                0.005371,
-                0.001465,
+                0.120117,
+                0.11377,
+                0.126953,
+                0.13623,
+                0.125,
+                0.107422,
+                0.11377,
+                0.130859,
                 0.003418,
-                0.00293,
+                0.003906,
+                0.001953,
+                0.003906,
+                0.001953,
+                0.003906,
+                0.003418,
                 0.003418
               ],
-              "tvd_noisy_to_ideal": 0.04345703124999992
+              "tvd_noisy_to_ideal": 0.044921875
             }
           ]
         },
@@ -4875,12 +4121,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -4904,33 +4150,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 4.704e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8971817654874887,
+              "duration_s": 3.944e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.9013091272797148,
               "noisy": [
-                0.116699,
-                0.128418,
-                0.116699,
-                0.125977,
-                0.133301,
-                0.120605,
-                0.118652,
-                0.118164,
-                0.004883,
+                0.120117,
+                0.112305,
+                0.129395,
+                0.124512,
+                0.126953,
+                0.121094,
+                0.123047,
+                0.115723,
+                0.004395,
                 0.00293,
-                0.003906,
-                0.001953,
-                0.003906,
+                0.003418,
                 0.000977,
-                0.001953,
-                0.000977
+                0.006836,
+                0.003906,
+                0.002441,
+                0.001953
               ],
-              "tvd_noisy_to_ideal": 0.03417968749999992
+              "tvd_noisy_to_ideal": 0.03320312499999983
             }
           ]
         },
@@ -4947,12 +4193,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -4976,33 +4222,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 4.704e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8971817654874887,
+              "duration_s": 3.944e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.9013091272797148,
               "noisy": [
-                0.229492,
-                0.018066,
-                0.009766,
-                0.232422,
-                0.019043,
-                0.242188,
-                0.219727,
-                0.006348,
-                0.001953,
+                0.228516,
+                0.015625,
+                0.01123,
+                0.225586,
+                0.013672,
+                0.230469,
+                0.245117,
+                0.004883,
+                0.00293,
                 0.002441,
-                0.001465,
+                0.00293,
                 0.004395,
                 0.000977,
-                0.005371,
-                0.003418,
+                0.004395,
+                0.003906,
                 0.00293
               ],
-              "tvd_noisy_to_ideal": 0.07617187499999978
+              "tvd_noisy_to_ideal": 0.07031249999999978
             }
           ]
         },
@@ -5019,12 +4265,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5048,33 +4294,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 4.672e-06,
-              "esp": 0.9145676467573911,
-              "coherence": 0.8978441959790134,
+              "duration_s": 3.92e-06,
+              "esp": 0.9179783535384743,
+              "coherence": 0.9018791998737602,
               "noisy": [
-                0.016602,
-                0.009766,
-                0.231934,
+                0.01416,
+                0.009277,
+                0.240234,
+                0.239258,
+                0.230469,
                 0.229004,
-                0.234375,
-                0.23584,
-                0.005371,
-                0.007324,
-                0.00293,
-                0.007324,
-                0.004883,
-                0.003418,
+                0.006348,
                 0.003418,
                 0.00293,
+                0.003906,
+                0.004395,
+                0.003906,
                 0.002441,
-                0.002441
+                0.005859,
+                0.001465,
+                0.00293
               ],
-              "tvd_noisy_to_ideal": 0.06884765624999989
+              "tvd_noisy_to_ideal": 0.06103515624999989
             }
           ]
         },
@@ -5091,12 +4337,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5120,33 +4366,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.2879999999999995e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.23291,
-                0.019043,
-                0.023438,
-                0.223633,
-                0.030273,
-                0.239258,
-                0.193848,
-                0.018066,
+                0.234375,
+                0.018555,
+                0.024414,
+                0.196777,
+                0.019531,
+                0.224609,
+                0.245605,
+                0.013184,
+                0.003906,
+                0.000977,
+                0.004395,
                 0.00293,
                 0.0,
-                0.001465,
-                0.002441,
                 0.003418,
-                0.00293,
                 0.003418,
-                0.00293
+                0.003906
               ],
-              "tvd_noisy_to_ideal": 0.11035156249999978
+              "tvd_noisy_to_ideal": 0.09863281249999978
             }
           ]
         },
@@ -5163,12 +4409,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5192,33 +4438,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.2879999999999995e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.123047,
-                0.121094,
-                0.126953,
-                0.113281,
-                0.123535,
-                0.117188,
+                0.126465,
                 0.12207,
-                0.127441,
-                0.003418,
-                0.003418,
-                0.003418,
-                0.001465,
+                0.121094,
+                0.119629,
+                0.120605,
+                0.114258,
+                0.120117,
+                0.12793,
                 0.00293,
-                0.004883,
-                0.001953,
+                0.00293,
+                0.003418,
+                0.003418,
+                0.004395,
+                0.00293,
+                0.003906,
                 0.003906
               ],
-              "tvd_noisy_to_ideal": 0.029785156249999833
+              "tvd_noisy_to_ideal": 0.03222656249999983
             }
           ]
         },
@@ -5235,12 +4481,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5264,33 +4510,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.2879999999999995e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.123535,
-                0.124512,
-                0.123047,
+                0.127441,
+                0.117188,
+                0.127441,
+                0.116211,
+                0.126953,
                 0.118164,
-                0.131348,
-                0.124023,
-                0.124023,
-                0.104004,
-                0.001953,
-                0.002441,
+                0.130371,
+                0.108887,
+                0.003418,
                 0.005371,
-                0.00293,
-                0.006348,
-                0.002441,
-                0.002441,
-                0.003418
+                0.005371,
+                0.001953,
+                0.0,
+                0.003418,
+                0.004883,
+                0.00293
               ],
-              "tvd_noisy_to_ideal": 0.03369140624999975
+              "tvd_noisy_to_ideal": 0.03955078125
             }
           ]
         },
@@ -5307,12 +4553,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5336,33 +4582,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.2879999999999995e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.233887,
+                0.234375,
                 0.019043,
-                0.024902,
-                0.201172,
-                0.021973,
-                0.225098,
-                0.225098,
+                0.022461,
+                0.222656,
                 0.019043,
+                0.202148,
+                0.235352,
+                0.016113,
                 0.004883,
                 0.00293,
-                0.001465,
-                0.004395,
                 0.002441,
-                0.005371,
+                0.00293,
+                0.002441,
+                0.00293,
                 0.004395,
-                0.003906
+                0.005859
               ],
-              "tvd_noisy_to_ideal": 0.11474609374999978
+              "tvd_noisy_to_ideal": 0.10546874999999978
             }
           ]
         },
@@ -5379,12 +4625,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5408,33 +4654,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.064e-06,
-              "esp": 0.9145676467573911,
-              "coherence": 0.8113471125193369,
+              "duration_s": 7.263999999999999e-06,
+              "esp": 0.9179783535384743,
+              "coherence": 0.8258234011314981,
               "noisy": [
-                0.027344,
-                0.029785,
-                0.237793,
-                0.226562,
-                0.228027,
-                0.213867,
-                0.004883,
-                0.003906,
+                0.023926,
+                0.024414,
+                0.230469,
+                0.217285,
+                0.230469,
+                0.23291,
+                0.008789,
                 0.005371,
-                0.006348,
-                0.00293,
-                0.000488,
-                0.003906,
+                0.002441,
+                0.004883,
+                0.004395,
+                0.004395,
+                0.001465,
                 0.003418,
-                0.003418,
-                0.001953
+                0.002441,
+                0.00293
               ],
-              "tvd_noisy_to_ideal": 0.09374999999999989
+              "tvd_noisy_to_ideal": 0.08886718749999989
             }
           ]
         }
@@ -5442,48 +4688,48 @@
     },
     {
       "group": "coherence_dynamic",
-      "backend": "ibm_kingston",
-      "calibration": "2026-10-14T14:25:47-07:00",
-      "noise_model_calibration": "2026-10-14T14:25:47-07:00",
+      "backend": "ibm_fez",
+      "calibration": "2026-10-13T22:55:28-07:00",
+      "noise_model_calibration": "2026-10-13T22:55:28-07:00",
       "seed_transpiler": 20261010,
       "initial_layout": [
-        57,
-        68,
-        67,
-        66,
-        69,
-        65
+        142,
+        136,
+        143,
+        144,
+        123,
+        145
       ],
-      "joint_score": 0.7411915754591578,
+      "joint_score": 0.7572302689886738,
       "replica_floor": 0.9,
       "replicas": [
         {
           "index": 0,
           "prefix": "r0_",
-          "score": 0.7409816631808429,
+          "score": 0.7570159863959551,
           "physical_qubits": [
-            57,
-            65,
-            66,
-            67,
-            68,
-            69
+            123,
+            136,
+            142,
+            143,
+            144,
+            145
           ],
           "initial_layout": [
-            57,
-            68,
-            67,
-            66,
-            69,
-            65
+            142,
+            136,
+            143,
+            144,
+            123,
+            145
           ],
           "mapping": {
-            "57": 57,
-            "65": 65,
-            "66": 66,
-            "67": 67,
-            "68": 68,
-            "69": 69
+            "123": 123,
+            "136": 136,
+            "142": 142,
+            "143": 143,
+            "144": 144,
+            "145": 145
           }
         }
       ],
@@ -5494,73 +4740,73 @@
       "variance": {
         "coherence_measure_reset_xx": {
           "replicas": 1.0,
-          "mean": 0.9208984375,
-          "shot_variance": 3.556860610842705e-05
+          "mean": 0.9189453125,
+          "shot_variance": 3.636954352259636e-05
         },
         "coherence_measure_reset_xy": {
           "replicas": 1.0,
-          "mean": 0.9736328125,
-          "shot_variance": 1.2535136193037033e-05
+          "mean": 0.9765625,
+          "shot_variance": 1.1175870895385742e-05
         },
         "coherence_measure_reset_yx": {
           "replicas": 1.0,
-          "mean": 0.97509765625,
-          "shot_variance": 1.185655128210783e-05
+          "mean": 0.97900390625,
+          "shot_variance": 1.0036746971309185e-05
         },
         "coherence_measure_reset_yy": {
           "replicas": 1.0,
-          "mean": 0.91455078125,
-          "shot_variance": 3.815803211182356e-05
+          "mean": 0.9228515625,
+          "shot_variance": 3.4763943403959274e-05
         },
         "coherence_measure_reset_zz": {
           "replicas": 1.0,
-          "mean": 0.9296875,
-          "shot_variance": 3.191828727722168e-05
+          "mean": 0.93408203125,
+          "shot_variance": 3.006483893841505e-05
         }
       },
       "summary_readout_corrected": {},
       "placed_qubit_calibration": {
-        "57": {
-          "T1": 229.60975825721243,
-          "T2": 261.26502578263074,
-          "readout_error": 0.005615234375,
-          "prob_meas1_prep0": 0.00390625,
+        "123": {
+          "T1": 185.0945166153053,
+          "T2": 142.8974435327731,
+          "readout_error": 0.0062255859375,
+          "prob_meas1_prep0": 0.005126953125,
           "prob_meas0_prep1": 0.00732421875
         },
-        "65": {
-          "T1": 290.97505763840263,
-          "T2": 232.58831722398233,
-          "readout_error": 0.0096435546875,
-          "prob_meas1_prep0": 0.0029296875,
-          "prob_meas0_prep1": 0.016357421875
+        "136": {
+          "T1": 97.45061798096492,
+          "T2": 91.67698668744086,
+          "readout_error": 0.010986328125,
+          "prob_meas1_prep0": 0.00634765625,
+          "prob_meas0_prep1": 0.015625
         },
-        "66": {
-          "T1": 110.40415342041489,
-          "T2": 137.09501290923689,
-          "readout_error": 0.007568359375,
-          "prob_meas1_prep0": 0.000732421875,
-          "prob_meas0_prep1": 0.014404296875
+        "142": {
+          "T1": 162.25593266853846,
+          "T2": 200.44933476575252,
+          "readout_error": 0.0045166015625,
+          "prob_meas1_prep0": 0.002197265625,
+          "prob_meas0_prep1": 0.0068359375
         },
-        "67": {
-          "T1": 249.02093984473612,
-          "T2": 250.42263625484864,
-          "readout_error": 0.0072021484375,
-          "prob_meas1_prep0": 0.00439453125,
-          "prob_meas0_prep1": 0.02587890625
+        "143": {
+          "T1": 217.24473334169423,
+          "T2": 198.45025429392382,
+          "readout_error": 0.003662109375,
+          "prob_meas1_prep0": 0.001220703125,
+          "prob_meas0_prep1": 0.006103515625
         },
-        "68": {
-          "T1": 140.71529257084012,
-          "T2": 125.78925925400063,
-          "readout_error": 0.017333984375,
-          "prob_meas1_prep0": 0.013427734375,
-          "prob_meas0_prep1": 0.021240234375
+        "144": {
+          "T1": 119.3816472189371,
+          "T2": 184.84684820507118,
+          "readout_error": 0.0048828125,
+          "prob_meas1_prep0": 0.0009765625,
+          "prob_meas0_prep1": 0.0087890625
         },
-        "69": {
-          "T1": 242.75826724284346,
-          "T2": 219.76635999694707,
-          "readout_error": 0.0162353515625,
-          "prob_meas1_prep0": 0.014892578125,
-          "prob_meas0_prep1": 0.017578125
+        "145": {
+          "T1": 188.38716355912064,
+          "T2": 140.08084716130614,
+          "readout_error": 0.0155029296875,
+          "prob_meas1_prep0": 0.014404296875,
+          "prob_meas0_prep1": 0.0166015625
         }
       },
       "members": [
@@ -5577,12 +4823,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5606,33 +4852,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.288e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.233398,
-                0.015137,
-                0.01123,
-                0.222656,
-                0.012695,
+                0.232422,
+                0.013184,
+                0.013184,
+                0.22168,
+                0.013184,
                 0.237305,
                 0.227539,
-                0.013672,
+                0.013184,
+                0.00293,
+                0.004883,
+                0.001953,
                 0.00293,
                 0.003906,
-                0.000977,
-                0.004883,
-                0.004395,
-                0.00293,
-                0.004883,
-                0.001465
+                0.003906,
+                0.003906,
+                0.003906
               ],
-              "tvd_noisy_to_ideal": 0.07910156249999978
+              "tvd_noisy_to_ideal": 0.08105468749999978
             }
           ]
         },
@@ -5649,12 +4895,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5678,33 +4924,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.288e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.117676,
-                0.129883,
-                0.119629,
                 0.118652,
-                0.130859,
-                0.126465,
-                0.115723,
-                0.114746,
-                0.004395,
-                0.004395,
-                0.003906,
-                0.002441,
-                0.001953,
-                0.001953,
+                0.129395,
+                0.123535,
+                0.119629,
+                0.132324,
+                0.125,
+                0.111328,
+                0.116699,
+                0.00293,
+                0.004883,
                 0.003418,
-                0.003906
+                0.001465,
+                0.000977,
+                0.002441,
+                0.004395,
+                0.00293
               ],
-              "tvd_noisy_to_ideal": 0.03857421874999992
+              "tvd_noisy_to_ideal": 0.03515624999999992
             }
           ]
         },
@@ -5721,12 +4967,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5750,31 +4996,31 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.288e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.130859,
-                0.130371,
-                0.108398,
-                0.123047,
-                0.137207,
+                0.133301,
+                0.131348,
+                0.111816,
                 0.124023,
-                0.117188,
+                0.137695,
+                0.122559,
+                0.114258,
                 0.104004,
-                0.004395,
-                0.003418,
-                0.00293,
                 0.001465,
-                0.00293,
-                0.004395,
                 0.001953,
-                0.003418
+                0.003906,
+                0.001953,
+                0.001953,
+                0.003418,
+                0.003418,
+                0.00293
               ],
               "tvd_noisy_to_ideal": 0.04833984374999992
             }
@@ -5793,12 +5039,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5822,33 +5068,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.096e-06,
-              "esp": 0.9139476218290482,
-              "coherence": 0.8107484996765404,
+              "duration_s": 7.288e-06,
+              "esp": 0.9172600260656831,
+              "coherence": 0.8253014029652556,
               "noisy": [
-                0.233398,
-                0.020508,
-                0.017578,
-                0.215332,
-                0.016602,
-                0.239258,
-                0.226562,
-                0.007812,
-                0.00293,
+                0.234375,
+                0.01416,
+                0.014648,
+                0.217285,
+                0.014648,
+                0.241211,
+                0.22998,
+                0.008301,
+                0.003418,
+                0.001953,
+                0.003906,
+                0.005371,
                 0.000977,
                 0.003418,
                 0.002441,
-                0.000977,
-                0.005859,
-                0.002441,
                 0.003906
               ],
-              "tvd_noisy_to_ideal": 0.08544921874999978
+              "tvd_noisy_to_ideal": 0.07714843749999978
             }
           ]
         },
@@ -5865,12 +5111,12 @@
           ],
           "replica_qubits": [
             [
-              57,
-              65,
-              66,
-              67,
-              68,
-              69
+              123,
+              136,
+              142,
+              143,
+              144,
+              145
             ]
           ],
           "ideal": [
@@ -5894,33 +5140,33 @@
           "replicas": [
             {
               "physical_qubits": [
-                57,
-                66,
-                67,
-                68
+                136,
+                142,
+                143,
+                144
               ],
-              "duration_s": 9.064e-06,
-              "esp": 0.9145676467573911,
-              "coherence": 0.8113471125193369,
+              "duration_s": 7.264e-06,
+              "esp": 0.9179783535384743,
+              "coherence": 0.8258234011314981,
               "noisy": [
-                0.016113,
-                0.010254,
+                0.013672,
+                0.012207,
+                0.230957,
+                0.234375,
                 0.22998,
-                0.233887,
-                0.223633,
-                0.242188,
-                0.004395,
-                0.009766,
-                0.003418,
-                0.002441,
-                0.004883,
-                0.005371,
-                0.004395,
+                0.23877,
                 0.003906,
+                0.007324,
                 0.003418,
+                0.006836,
+                0.003906,
+                0.005371,
+                0.003418,
+                0.001465,
+                0.002441,
                 0.001953
               ],
-              "tvd_noisy_to_ideal": 0.0703125
+              "tvd_noisy_to_ideal": 0.06591796875
             }
           ]
         }
@@ -6166,46 +5412,46 @@
         "coherence_matched_idle_yy",
         "coherence_matched_idle_zz"
       ],
-      "ordered_qpy_sha256": "56f5aa45ba9df5b14be9cb7baf5daeb3321007e4844b3ba9aa8312b43bbf71fd",
-      "noise_serialized_channels_sha256": "e2666bc71628a792a1f3b6035cffbdad425c5d6e68bf509cfaf07b8d1fccb67d",
+      "ordered_qpy_sha256": "14986bb31f7ae8815aa8c8ffc1ac01fb3a26ef168cf0b3f1dff5c29f21d89414",
+      "noise_serialized_channels_sha256": "fed962c83c175b09c348abe2ffc133d46ec4e36384c6440902bf2f8cc5490543",
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 2048,
       "seed_simulator": 20261011,
-      "wall_seconds": 6.790571546996944,
+      "wall_seconds": 10.334970380001323,
       "experiment_metadata": [
         {
-          "time_taken": 0.007224696,
+          "time_taken": 0.006734922,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.001032082,
+          "sample_measure_time": 0.000642741,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6222,38 +5468,38 @@
           }
         },
         {
-          "time_taken": 0.010219354,
+          "time_taken": 0.010111798,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.003546328,
+          "sample_measure_time": 0.004362437,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6270,38 +5516,38 @@
           }
         },
         {
-          "time_taken": 0.006046364,
+          "time_taken": 0.009620367,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.002851406,
+          "sample_measure_time": 0.003639476,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6318,38 +5564,38 @@
           }
         },
         {
-          "time_taken": 0.00432391,
+          "time_taken": 0.007975784,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.00010524,
+          "sample_measure_time": 0.001692413,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6366,38 +5612,38 @@
           }
         },
         {
-          "time_taken": 0.003644228,
+          "time_taken": 0.009003795,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.000338361,
+          "sample_measure_time": 0.002838555,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6414,38 +5660,38 @@
           }
         },
         {
-          "time_taken": 0.005974974,
+          "time_taken": 0.010301759,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.001310453,
+          "sample_measure_time": 0.004687588,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6462,38 +5708,38 @@
           }
         },
         {
-          "time_taken": 0.010679564,
+          "time_taken": 0.008846345,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.004886141,
+          "sample_measure_time": 0.001286043,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6510,38 +5756,38 @@
           }
         },
         {
-          "time_taken": 0.00437446,
+          "time_taken": 0.007980654,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.00039307,
+          "sample_measure_time": 0.001541513,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6558,38 +5804,38 @@
           }
         },
         {
-          "time_taken": 0.008055669,
+          "time_taken": 0.012523642,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.002617536,
+          "sample_measure_time": 0.004363108,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6606,38 +5852,38 @@
           }
         },
         {
-          "time_taken": 0.006920555,
+          "time_taken": 0.008345875,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.002512346,
+          "sample_measure_time": 0.001811854,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6888,33 +6134,33 @@
         "coherence_measure_reset_yy",
         "coherence_measure_reset_zz"
       ],
-      "ordered_qpy_sha256": "0d8d65ab237cc18292b4115c92850347d549f9a0556b6b9962c229ddc3e0dec0",
-      "noise_serialized_channels_sha256": "e2666bc71628a792a1f3b6035cffbdad425c5d6e68bf509cfaf07b8d1fccb67d",
+      "ordered_qpy_sha256": "1291b3ad5ee267aa89d34d6bfe91670449db3f703142c16475a4dbf1ddd19350",
+      "noise_serialized_channels_sha256": "fed962c83c175b09c348abe2ffc133d46ec4e36384c6440902bf2f8cc5490543",
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 2048,
       "seed_simulator": 20261011,
-      "wall_seconds": 2.220986593005364,
+      "wall_seconds": 3.401133168998058,
       "experiment_metadata": [
         {
-          "time_taken": 0.037202285,
+          "time_taken": 0.079779181,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -6922,10 +6168,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6943,25 +6189,25 @@
           }
         },
         {
-          "time_taken": 0.036662124,
+          "time_taken": 0.075811964,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -6969,10 +6215,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -6990,25 +6236,25 @@
           }
         },
         {
-          "time_taken": 0.034103069,
+          "time_taken": 0.083366227,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -7016,10 +6262,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -7037,25 +6283,25 @@
           }
         },
         {
-          "time_taken": 0.041116954,
+          "time_taken": 0.09611364,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -7063,10 +6309,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,
@@ -7084,25 +6330,25 @@
           }
         },
         {
-          "time_taken": 0.034959,
+          "time_taken": 0.095338868,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
           "input_qubit_map": [
             [
-              68,
+              144,
               3
             ],
             [
-              67,
+              143,
               2
             ],
             [
-              66,
+              142,
               1
             ],
             [
-              57,
+              136,
               0
             ]
           ],
@@ -7110,10 +6356,10 @@
           "device": "CPU",
           "num_qubits": 4,
           "active_input_qubits": [
-            57,
-            66,
-            67,
-            68
+            136,
+            142,
+            143,
+            144
           ],
           "num_clbits": 4,
           "remapped_qubits": true,

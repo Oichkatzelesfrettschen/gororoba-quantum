@@ -6,11 +6,11 @@ The selected bounded-search candidate is `candidate-000-shots-2048-per-pub` with
 
 ## Artifact and source binding
 
-- Saved run: `results/live/2026-10-14T220552.942969Z`.
-- [record.json](record.json) SHA-256: `26a7a13afe246ccd5c420a3f5f266fed12e912740ce8cac7479dcc389eb42579`.
-- [isa.qpy](isa.qpy) SHA-256: `4c510ab848e9a18658a68b1a826be5cece7680580d7fdda7e55857be849ccf51`.
-- Experiment source digest: `c4ff925704cd4658e7230128711f01d5cec226947a4a540935b2e92e905dcfc0`.
-- Source commit: `dac1f2ebf9b310dde3e30b5b1bc6c455bca9819e`; sources_modified=`false`.
+- Saved run: `results/live/2026-10-14T060826.976518Z`.
+- [record.json](record.json) SHA-256: `fdef1edf58c0a0872ee36201d649245525bfab55eae0b66406c7b0ef994a32a6`.
+- [isa.qpy](isa.qpy) SHA-256: `b128a6302cf376a2fe1fec84757d78150f4ff2699dd53fb7d8f14fa58a812862`.
+- Experiment source digest: `e62dc0e6d14f1b632a6d9a0510cdaeecc0ee299888a597ea980f8d924dca1686`.
+- Source commit: `10bb9ee2887b8ac7402663a49e34e62649793816`; sources_modified=`false`.
 - Simulator seed: `20261011`; the source digest binds the simulator implementation.
 
 Recorded dependency versions:
@@ -27,13 +27,13 @@ Recorded dependency versions:
 
 ## Scientific question and interpretation
 
-The coherence-window family measures, on the initial layout control 57, work_a 68, spectator 67, work_b 66, neighbor_a 69, neighbor_b 65 on ibm_kingston, the best calibrated patch embedding the planner found on the eligible backends, the work coherence the first N=21 orbit round leaves between work_a and work_b, signed by the control's first bit b0. In each branch the work pair holds |10> + (-1)^b0 e^{i phi} |01>, so rho_{01,10} = <01|rho|10> changes sign with b0, its branch-unsigned average is zero on an ideal device, and the terminal four-outcome orbit law cannot see it. Each shot is weighted by (-1)^b0, and C = (S_XX + S_YY + i (S_XY - S_YX)) / 4 is the branch-signed rho_{01,10}, with arg C = phi and |C| = 1/2 ideally; a Z rotation by delta on work_b turns C by +delta, on work_a by -delta.
+The coherence-window family measures, on the pinned initial layout control 142, work_a 136, spectator 143, work_b 144, neighbor_a 123, neighbor_b 145 on ibm_fez, the work coherence the first N=21 orbit round leaves between work_a and work_b, signed by the control's first bit b0. In each branch the work pair holds |10> + (-1)^b0 e^{i phi} |01>, so rho_{01,10} = <01|rho|10> changes sign with b0, its branch-unsigned average is zero on an ideal device, and the terminal four-outcome orbit law cannot see it. Each shot is weighted by (-1)^b0, and C = (S_XX + S_YY + i (S_XY - S_YX)) / 4 is the branch-signed rho_{01,10}, with arg C = phi and |C| = 1/2 ideally; a Z rotation by delta on work_b turns C by +delta, on work_a by -delta.
 
-Routing moves the logical work qubits during the prefix, so the compiled circuits read b0 from qubit 57, read_a from qubit 66, read_b from qubit 68, sector from qubit 67; no two-qubit gate follows the prefix, so per-qubit attribution of a window phase uses this executed map, not the initial roles.
+Routing moves the logical work qubits during the prefix, so the compiled circuits read b0 from qubit 142, read_a from qubit 144, read_b from qubit 136, sector from qubit 143; no two-qubit gate follows the prefix, so per-qubit attribution of a window phase uses this executed map, not the initial roles.
 
-Three contexts follow the same round-1 prefix: immediate readout; a matched idle of 1098 dt (the control's measure plus reset) with b0 read after it; and a mid-circuit measure and reset of the control before the work readout. A coherent window phase rotates C between contexts, dephasing or amplitude damping shrinks |C| without rotating it, and first-bit assignment error scales C by (1 - 2 epsilon), so rotation and shrinkage separate the explanations the terminal law left degenerate. The matched idle reads b0 after the window, so control relaxation there adds to epsilon and scales that context's C without rotating it. The branch-unsigned average is a negative control, the ZZ setting and the spectator readout give the work populations and the one-hot sector.
+Three contexts follow the same round-1 prefix: immediate readout; a matched idle of 836 dt (the control's measure plus reset) with b0 read after it; and a mid-circuit measure and reset of the control before the work readout. A coherent window phase rotates C between contexts, dephasing or amplitude damping shrinks |C| without rotating it, and first-bit assignment error scales C by (1 - 2 epsilon), so rotation and shrinkage separate the explanations the terminal law left degenerate. The matched idle reads b0 after the window, so control relaxation there adds to epsilon and scales that context's C without rotating it. The branch-unsigned average is a negative control, the ZZ setting and the spectator readout give the work populations and the one-hot sector.
 
-One idle length fixes a window phase only modulo 2 pi: a static detuning above 113.8 kHz aliases to a smaller rotation of the opposite sign, so a measured rotation converts to a frequency only below that bound. Readout assignment error scales C only for a symmetric, state-independent channel; correlated or asymmetric assignment error acts on raw counts whose pre-measurement state differs between contexts and Pauli settings, so it can move the modulus or the phase of C and remains a residual in every context. b0 and the work pair share one readout layer in the immediate and matched-idle contexts, while measure_reset reads b0 in its own mid-circuit layer. A control-work ZZ phase lam while the control holds b0 shrinks C by cos(lam) without rotating it, the same signature as dephasing; after the control's reset it rotates C instead, so measure_reset mixes both forms and a matched-idle shrink alone does not separate ZZ from dephasing. The calibration noise model omits measurement-induced dephasing of the work pair, so it prices the measure-and-reset contracts optimistically; a smaller hardware |C| there widens the reported intervals and remains an allowed outcome.
+One idle length fixes a window phase only modulo 2 pi: a static detuning above 150 kHz aliases to a smaller rotation of the opposite sign, so a measured rotation converts to a frequency only below that bound. In the immediate and matched-idle contexts b0 and the work pair are read in one simultaneous layer, so correlated readout crosstalk enters C as a context-independent scale. The calibration noise model omits measurement-induced dephasing of the work pair, so it prices the measure-and-reset contracts optimistically; a smaller hardware |C| there widens the reported intervals and remains an allowed outcome.
 
 The immediate and matched-idle contexts run in the static job and the measure-and-reset context in the dynamic job; the idle-versus-immediate comparison shares one job, while drift between the jobs enters the measure-and-reset comparison as a rotation. The analysis reads each PUB's executed work exposure from the returned schedule and reports both jobs' execution times, so that comparison bounds a measurement-induced phase only together with them.
 
@@ -63,40 +63,40 @@ The ideal arrays below come from the retained record. Their label order stays in
 
 | Group | Backend | Calibration | Transpiler seed | Template layout | Executed physical layouts |
 |---|---|---|---:|---|---|
-| coherence_static | ibm_kingston | 2026-10-14T14:25:47-07:00 | 20261010 | `[57, 68, 67, 66, 69, 65]` | `[[57, 68, 67, 66, 69, 65]]` |
-| coherence_dynamic | ibm_kingston | 2026-10-14T14:25:47-07:00 | 20261010 | `[57, 68, 67, 66, 69, 65]` | `[[57, 68, 67, 66, 69, 65]]` |
+| coherence_static | ibm_fez | 2026-10-13T22:55:28-07:00 | 20261010 | `[142, 136, 143, 144, 123, 145]` | `[[142, 136, 143, 144, 123, 145]]` |
+| coherence_dynamic | ibm_fez | 2026-10-13T22:55:28-07:00 | 20261010 | `[142, 136, 143, 144, 123, 145]` | `[[142, 136, 143, 144, 123, 145]]` |
 
 Calibration-bound family and replica mapping:
 
 ```json
 {
-  "window_dt": 1098,
+  "window_dt": 836,
   "readout_qubits": {
-    "b0": 57,
-    "read_a": 66,
-    "read_b": 68,
-    "sector": 67
+    "b0": 142,
+    "read_a": 144,
+    "read_b": 136,
+    "sector": 143
   },
   "dt_seconds": 4e-09,
   "group_replica_mappings": {
     "coherence_static": [
       {
-        "57": 57,
-        "65": 65,
-        "66": 66,
-        "67": 67,
-        "68": 68,
-        "69": 69
+        "123": 123,
+        "136": 136,
+        "142": 142,
+        "143": 143,
+        "144": 144,
+        "145": 145
       }
     ],
     "coherence_dynamic": [
       {
-        "57": 57,
-        "65": 65,
-        "66": 66,
-        "67": 67,
-        "68": 68,
-        "69": 69
+        "123": 123,
+        "136": 136,
+        "142": 142,
+        "143": 143,
+        "144": 144,
+        "145": 145
       }
     ]
   }
@@ -116,7 +116,7 @@ Score terms (each member averages its recorded replicas):
 - `coherence_immediate_xx`: sign +1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 - `coherence_immediate_yy`: sign +1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 
-The noise model predicts 1.75328063965; the simultaneous finite-simulation allowance is +/-0.0158081928156. The lower modeled value is 1.73747244683.
+The noise model predicts 1.76419830322; the simultaneous finite-simulation allowance is +/-0.0158081928156. The lower modeled value is 1.74839011041.
 
 At alpha 0.01, the two-sided confidence half-width is 0.152984176918; requested precision is 0.33.
 
@@ -129,7 +129,7 @@ Score terms (each member averages its recorded replicas):
 - `coherence_immediate_xx`: sign -1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 - `coherence_immediate_yy`: sign -1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 
-The noise model predicts -0.148597717285; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is -0.180214102916.
+The noise model predicts -0.131561279297; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is -0.163177664928.
 
 At alpha 0.01, the two-sided confidence half-width is 0.32318270103; requested precision is 0.33.
 
@@ -142,7 +142,7 @@ Score terms (each member averages its recorded replicas):
 - `coherence_immediate_xy`: sign -1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 - `coherence_immediate_yx`: sign +1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 
-The noise model predicts 0.00746154785156; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is -0.0241548377797.
+The noise model predicts 0.00672912597656; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is -0.0248872596547.
 
 At alpha 0.01, the two-sided confidence half-width is 0.32318270103; requested precision is 0.33.
 
@@ -155,7 +155,7 @@ Score terms (each member averages its recorded replicas):
 - `coherence_matched_idle_xx`: sign -1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 - `coherence_matched_idle_yy`: sign -1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 
-The noise model predicts 0.151222229004; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is 0.119605843373.
+The noise model predicts 0.135772705078; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is 0.104156319447.
 
 At alpha 0.01, the two-sided confidence half-width is 0.32318270103; requested precision is 0.33.
 
@@ -168,7 +168,7 @@ Score terms (each member averages its recorded replicas):
 - `coherence_matched_idle_xy`: sign -1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 - `coherence_matched_idle_yx`: sign +1, labeled score vector `[1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0, 1.0, -1.0, -1.0, 1.0, -1.0, 1.0, 1.0, -1.0]`.
 
-The noise model predicts -0.00125122070312; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is -0.0328676063344.
+The noise model predicts -0.00147247314453; the simultaneous finite-simulation allowance is +/-0.0316163856313. The lower modeled value is -0.0330888587758.
 
 At alpha 0.01, the two-sided confidence half-width is 0.32318270103; requested precision is 0.33.
 
@@ -184,37 +184,37 @@ The worst confidence half-width divided by its declared target is 0.979341518272
 
 | Job | PUBs | Submitted PUB shots | Estimated charge (s) | Service ceiling (s) |
 |---|---:|---:|---:|---:|
-| ibm_kingston/dynamic/1 | 5 | 10240 | 4.953077504 | 9 |
-| ibm_kingston/static/1 | 10 | 20480 | 7.561180928 | 9 |
+| ibm_fez/dynamic/1 | 5 | 10240 | 4.934579968 | 9 |
+| ibm_fez/static/1 | 10 | 20480 | 7.534917376 | 9 |
 
-The cost model predicts 12.514258432 seconds. The per-job service ceilings sum to 18 seconds against an invocation cap of 18 seconds. The global reserve is 60 seconds; the saved quota reports 390 seconds remaining.
+The cost model predicts 12.469497344 seconds. The per-job service ceilings sum to 18 seconds against an invocation cap of 18 seconds. The global reserve is 60 seconds; the saved quota reports 390 seconds remaining.
 
 Every PUB cost includes its Target duration, explicit repetition delay, and declared reset/classical-latency additions. Each job also includes its declared fixed overhead. Those model assumptions estimate charge; the ceilings bound service execution instead. The ledger retains accepted and attempted jobs' reservations while their charges remain unsettled. External submissions can still change the shared quota. Dynamic Target duration omits classical scheduler latency; the declared addition remains a planning assumption. Explicit circuit resets contribute to Target duration. Runtime's implicit initialization cost remains unseparated unless a native server timing artifact qualifies that accounting boundary.
 
 | PUB | Shots | Target duration (s) | Repetition delay (s) | Reset addition (s) | Classical latency addition (s) |
 |---|---:|---:|---:|---:|---:|
-| ibm_kingston_dynamic_pub_01 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_dynamic_pub_02 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_dynamic_pub_03 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_dynamic_pub_04 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_dynamic_pub_05 | 2048 | 9.064e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_dynamic_pub_01 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_dynamic_pub_02 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_dynamic_pub_03 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_dynamic_pub_04 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_dynamic_pub_05 | 2048 | 7.264e-06 | 0.00025 | 0 | 0 |
 
-Job `ibm_kingston/dynamic/1` adds 2.3 seconds of modeled overhead.
+Job `ibm_fez/dynamic/1` adds 2.3 seconds of modeled overhead.
 
 | PUB | Shots | Target duration (s) | Repetition delay (s) | Reset addition (s) | Classical latency addition (s) |
 |---|---:|---:|---:|---:|---:|
-| ibm_kingston_static_pub_01 | 2048 | 4.704e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_02 | 2048 | 4.704e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_03 | 2048 | 4.704e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_04 | 2048 | 4.704e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_05 | 2048 | 4.672e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_06 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_07 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_08 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_09 | 2048 | 9.096e-06 | 0.00025 | 0 | 0 |
-| ibm_kingston_static_pub_10 | 2048 | 9.064e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_01 | 2048 | 3.944e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_02 | 2048 | 3.944e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_03 | 2048 | 3.944e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_04 | 2048 | 3.944e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_05 | 2048 | 3.92e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_06 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_07 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_08 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_09 | 2048 | 7.288e-06 | 0.00025 | 0 | 0 |
+| ibm_fez_static_pub_10 | 2048 | 7.264e-06 | 0.00025 | 0 | 0 |
 
-Job `ibm_kingston/static/1` adds 2.3 seconds of modeled overhead.
+Job `ibm_fez/static/1` adds 2.3 seconds of modeled overhead.
 
 ## Native server qualification
 
@@ -238,7 +238,8 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-threads 12 \
   --simulation-memory-mb 512 \
   --optimize \
-  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
+  --patch-qubits 142,136,143,144,123,145 \
+  --backends ibm_fez \
   --shots 2048 \
   --seeds 1 \
   --max-pending 100 \
@@ -278,7 +279,8 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --simulation-threads 12 \
   --simulation-memory-mb 512 \
   --optimize \
-  --backends ibm_fez,ibm_kingston,ibm_marrakesh \
+  --patch-qubits 142,136,143,144,123,145 \
+  --backends ibm_fez \
   --shots 2048 \
   --seeds 1 \
   --max-pending 100 \
@@ -300,7 +302,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --reserve-seconds 60.0 \
   --max-total-execution-seconds 18.0 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-14T220552.942969Z \
-  --approved-record-sha256 26a7a13afe246ccd5c420a3f5f266fed12e912740ce8cac7479dcc389eb42579 \
+  --approved-record ../results/live/2026-10-14T060826.976518Z \
+  --approved-record-sha256 fdef1edf58c0a0872ee36201d649245525bfab55eae0b66406c7b0ef994a32a6 \
   --submit
 ```
