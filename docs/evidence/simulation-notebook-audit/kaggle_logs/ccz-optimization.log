@@ -1,0 +1,39 @@
+[{"stream_name":"stderr","time":7.368303338,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.368353068,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.407507311,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.40754252,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.407547964,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.407552095,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.097074553,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.097123307,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.097129281,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.097134662,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.876964899,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":17.877011769,"data":"gpu: Tesla T4\n"}
+,{"stream_name":"stdout","time":17.89189929,"data":"Direct CCZ match: True\n"}
+,{"stream_name":"stdout","time":17.891922922,"data":"Qubit relabeling is Clifford -\u003e any cubic term reduces to CCZ.\n"}
+,{"stream_name":"stdout","time":17.90575691,"data":"Original factorized: ~37 CZ + ~50 1q gates\n"}
+,{"stream_name":"stdout","time":17.905800616,"data":"CCZ normal form:     ~30 CZ + ~20 1q gates\n"}
+,{"stream_name":"stdout","time":17.905805771,"data":"CZ reduction: 18.9%\n"}
+,{"stream_name":"stdout","time":17.905809836,"data":"1q reduction: 60.0%\n"}
+,{"stream_name":"stdout","time":17.918533582,"data":"15 distinct cubic parts × 24 occurrences = 360\n"}
+,{"stream_name":"stdout","time":17.918557736,"data":"Expected: 360. Match: True\n"}
+,{"stream_name":"stdout","time":17.918562659,"data":"\n"}
+,{"stream_name":"stdout","time":17.918566602,"data":"Each cubic part involves only the lower 4 binary coordinates.\n"}
+,{"stream_name":"stdout","time":17.918570536,"data":"This is why the reduction works: 3 independent linear forms\n"}
+,{"stream_name":"stdout","time":17.918574557,"data":"suffice to isolate the cubic product; the rest is Clifford.\n"}
+,{"stream_name":"stdout","time":17.930709475,"data":"Original fidelity:  0.450\n"}
+,{"stream_name":"stdout","time":17.9307269,"data":"Optimized fidelity: 0.535\n"}
+,{"stream_name":"stdout","time":17.930731534,"data":"Improvement: 1.19x\n"}
+,{"stream_name":"stdout","time":17.930735344,"data":"\n"}
+,{"stream_name":"stdout","time":17.930738649,"data":"The CCZ normal form is not just simpler — it is measurably\n"}
+,{"stream_name":"stdout","time":17.930742345,"data":"more noise-resilient on real hardware.\n"}
+,{"stream_name":"stderr","time":24.044737858,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":24.044806075,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":24.234731198,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":24.234768112,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":25.08550369,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":25.172800572,"data":"[NbConvertApp] Writing 11895 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":27.850722009,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":28.428925674,"data":"[NbConvertApp] Writing 292180 bytes to __results__.html\n"}
+]

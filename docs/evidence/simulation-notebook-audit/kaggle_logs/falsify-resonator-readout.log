@@ -1,0 +1,44 @@
+[{"stream_name":"stderr","time":7.38334999,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.38338729,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.429063097,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.429130303,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.429136422,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.429140634,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.134841762,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.134882515,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.134891832,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.134894661,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":18.863161251,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":18.863201791,"data":"gpu: Tesla T4\n"}
+,{"stream_name":"stdout","time":18.877157867,"data":"To fake DeltaM=0.59 with zero true contrast:\n"}
+,{"stream_name":"stdout","time":18.877184151,"data":"  Need |e0_bright - e0_dark| \u003e= 1.18  (probabilities max at 1.0)\n"}
+,{"stream_name":"stdout","time":18.877189718,"data":"  =\u003e MATHEMATICALLY IMPOSSIBLE.\n"}
+,{"stream_name":"stdout","time":18.877194248,"data":"\n"}
+,{"stream_name":"stdout","time":18.877198407,"data":"Even with partial true contrast (say true Delta=0.2, need fake 0.39):\n"}
+,{"stream_name":"stdout","time":18.877202481,"data":"  Need |e0_b - e0_d| \u003e= 0.78. Still absurd (typical e0 ~ 0.02).\n"}
+,{"stream_name":"stdout","time":18.892351329,"data":"Resonator photons from 37 CZ gates: nbar = 3.70e-03\n"}
+,{"stream_name":"stdout","time":18.892380584,"data":"AC Stark from this: 7.4000 kHz (negligible)\n"}
+,{"stream_name":"stdout","time":18.892386019,"data":"\n"}
+,{"stream_name":"stdout","time":18.892390203,"data":"Bright and dark have IDENTICAL gate counts -\u003e IDENTICAL nbar.\n"}
+,{"stream_name":"stdout","time":18.892394594,"data":"-\u003e No differential resonator state. Hypothesis has no physical lever.\n"}
+,{"stream_name":"stdout","time":18.892399297,"data":"\n"}
+,{"stream_name":"stdout","time":18.892402855,"data":"  If dN= 1 gates differed: dnbar=1.0e-04 -\u003e de0 ~ 1.0e-04 (need 1.18!)\n"}
+,{"stream_name":"stdout","time":18.892406765,"data":"  If dN= 5 gates differed: dnbar=5.0e-04 -\u003e de0 ~ 5.0e-04 (need 1.18!)\n"}
+,{"stream_name":"stdout","time":18.892410685,"data":"  If dN=10 gates differed: dnbar=1.0e-03 -\u003e de0 ~ 1.0e-03 (need 1.18!)\n"}
+,{"stream_name":"stdout","time":18.907516963,"data":"Circuit difference: ONLY theta (0 vs pi) in single-qubit rotations.\n"}
+,{"stream_name":"stdout","time":18.90754462,"data":"Resonator coupling: g*(a*sigma+ + a_dag*sigma-) — no theta dependence.\n"}
+,{"stream_name":"stdout","time":18.907550559,"data":"Pulse duration for R(0) vs R(pi): 0 vs ~20ns. Photon leak difference:\n"}
+,{"stream_name":"stdout","time":18.907568942,"data":"  ~2.0e-05 photons. de0 ~ 1e-5. Need 1.18.\n"}
+,{"stream_name":"stdout","time":18.907573331000002,"data":"\n"}
+,{"stream_name":"stdout","time":18.907577042,"data":"VERDICT: resonator-state-dependent readout CANNOT fake the 84/84.\n"}
+,{"stream_name":"stdout","time":18.907581054,"data":"Three independent kills: (1) math impossible, (2) no physical lever,\n"}
+,{"stream_name":"stdout","time":18.907585488,"data":"                         (3) angle-only difference cannot drive resonator.\n"}
+,{"stream_name":"stderr","time":24.378519035,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":24.378579445,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":24.575137103,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":24.57516683,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":25.462763596,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":25.553270572,"data":"[NbConvertApp] Writing 11677 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":28.480255768,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":29.070049351,"data":"[NbConvertApp] Writing 287303 bytes to __results__.html\n"}
+]
