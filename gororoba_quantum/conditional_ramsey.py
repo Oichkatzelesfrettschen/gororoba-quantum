@@ -25,8 +25,11 @@ Either way A ends in (|0> + exp(i nu t)|1>) / sqrt2 times a fixed phase, so
 <X_A> = V cos(nu t + phi0) and <Y_A> = V sin(nu t + phi0). The delays are
 integer dt on both qubits; the fitted slope over delays is the rate, and
 fixed gate durations and preparation phases fall into the intercept.
-Consecutive delays differ by at most DELAY_STEP_DT, so a rate below
-pi / DELAY_STEP_DT rad per dt unwraps without ambiguity; dynamical
+The delays form a geometric ladder: the first nonzero delay fixes the
+unambiguous range |nu| < pi / FIRST_DELAY_DT, and each later phase is
+unwrapped against the line fitted through the shorter delays, as in robust
+phase estimation, so a ladder ratio of at most 4 keeps the prediction error
+near four times the per-point phase noise, far inside pi. Dynamical
 decoupling would refocus the free evolution these arms measure.
 
 Two calibration circuits read both qubits prepared in |0> and in |1>. The
@@ -57,8 +60,11 @@ DESIGN_ROWS: dict[str, tuple[int, int, int]] = {
     "a_given_b0": (1, 0, 1),
     "a_given_b1": (1, 0, -1),
 }
-DELAYS_DT = (0, 1250, 2500, 5000, 7500, 10000)
-DELAY_STEP_DT = max(b - a for a, b in zip(DELAYS_DT, DELAYS_DT[1:], strict=False))
+# Idle detunings of tens of kHz recur on Heron (docs/evidence/novel-insights),
+# so a Bell-even rate omega_A + omega_B can pass 80 kHz; the 125 dt first step
+# keeps the unambiguous range at 1 MHz while 10000 dt keeps the long baseline.
+DELAYS_DT = (0, 125, 500, 2000, 5000, 10000)
+FIRST_DELAY_DT = DELAYS_DT[1]
 QUADRATURES = ("x", "y")
 B_PREPARED = {"even": 0, "odd": 1, "a_given_b0": 0, "a_given_b1": 1}
 # In-job assignment calibration: both qubits prepared in |0>, and both in |1>.
@@ -167,18 +173,27 @@ def b_preparation_error(distribution: np.ndarray, sector: str) -> float:
     return float(distribution[(1 - b) << 1] + distribution[((1 - b) << 1) | 1])
 
 
-def unwrap(phases: list[float]) -> list[float]:
-    """Unwrap consecutive phases whose true increments lie in (-pi, pi]."""
+def unwrap(delays: tuple[int, ...], phases: list[float]) -> list[float]:
+    """Unwrap each phase to the branch nearest its prediction from the shorter delays.
+
+    The first increment is taken inside (-pi, pi]; every later phase is moved
+    by whole turns toward the line fitted through the phases already placed.
+    """
     out = [phases[0]]
-    for phase in phases[1:]:
-        step = math.remainder(phase - out[-1], 2.0 * math.pi)
-        out.append(out[-1] + step)
+    for index in range(1, len(phases)):
+        if index == 1:
+            predicted = out[0]
+        else:
+            slope, intercept = np.polyfit(np.asarray(delays[:index], dtype=float), np.asarray(out), 1)
+            predicted = float(slope * delays[index] + intercept)
+        turns = round((predicted - phases[index]) / (2.0 * math.pi))
+        out.append(phases[index] + 2.0 * math.pi * turns)
     return out
 
 
 def fit_rate(delays: tuple[int, ...], phases: list[float]) -> tuple[float, float]:
     """Least-squares slope (rad per dt) and intercept of unwrapped phase against delay."""
-    unwrapped = unwrap(phases)
+    unwrapped = unwrap(delays, phases)
     slope, intercept = np.polyfit(np.asarray(delays, dtype=float), np.asarray(unwrapped), 1)
     return float(slope), float(intercept)
 
@@ -214,8 +229,8 @@ def design_rank(sectors: tuple[str, ...]) -> int:
 
 
 def unambiguous_rate_bound() -> float:
-    """Largest |nu| in rad per dt whose phase step between consecutive delays stays inside pi."""
-    return math.pi / DELAY_STEP_DT
+    """Largest |nu| in rad per dt whose phase over the first nonzero delay stays inside pi."""
+    return math.pi / FIRST_DELAY_DT
 
 
 def rate_hz(rate_rad_per_dt: float, dt_seconds: float) -> float:
@@ -364,6 +379,17 @@ def self_check() -> str:
         abs(shifted["falsifier_residual"] + 2.0 * stark) < 1e-12,
         "a conditional-arm detuning must appear as falsifier residual -2 delta",
     )
+
+    # The coherence window's -1.130 rad over 4.392 us is 40.9 kHz, or 40.9 kHz
+    # plus whole turns of 227.7 kHz; both, on both qubits, must unwrap exactly.
+    for detuning_hz in (40.9e3, 40.9e3 + 1.0 / 4.392e-6):
+        fast = summarize_distributions(
+            exact_distributions(hamiltonian_evolution(-detuning_hz * to_rad, -detuning_hz * to_rad, zz))
+        )
+        _require(
+            abs(fast["omega_a_bell"] + detuning_hz * to_rad) < 1e-9 and abs(fast["zz_j"] - zz) < 1e-9,
+            f"a {detuning_hz / 1e3:.1f} kHz detuning on both qubits must unwrap exactly",
+        )
 
     beyond = 1.2 * unambiguous_rate_bound()
     aliased = summarize_distributions(exact_distributions(hamiltonian_evolution(beyond, 0.0, 0.0)))

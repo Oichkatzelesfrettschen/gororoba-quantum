@@ -43,7 +43,7 @@ so the X and Y readouts give `<X_A> = V cos(nu t + phi0)` and
 `<Y_A> = V sin(nu t + phi0)`. Barriers keep the transpiler from merging the
 preparation into the idle.
 
-Delays are 0, 1250, 2500, 5000, 7500 and 10000 dt (0 to 40 us at dt = 4 ns):
+Delays are 0, 125, 500, 2000, 5000 and 10000 dt (0 to 40 us at dt = 4 ns):
 48 Ramsey circuits plus two calibration circuits that read both qubits
 prepared in `|0>` and in `|1>`. The calibration gives A's flips
 `e10 = P(1 | 0)` and `e01 = P(0 | 1)`, measured in the job, because the
@@ -54,12 +54,22 @@ so the phase of the raw expectations errs by an amount that depends on the
 true phase, and therefore on delay, which biases the rate. The summary
 inverts the channel before taking phases.
 
-The estimator unwraps the corrected phase `atan2(<Y>, <X>)` across
-consecutive delays and fits a straight line. The slope is `nu` in rad per dt;
-fixed gate durations and preparation phases go into the intercept, so they
-leave the rate unchanged. Unwrapping is unambiguous for
-`|nu| < pi / 2500` rad per dt, 50 kHz; a faster rate aliases, which the
-self-check demonstrates.
+The estimator unwraps the corrected phase `atan2(<Y>, <X>)` along a
+geometric delay ladder:
+
+- the first nonzero delay, 125 dt, fixes the unambiguous range
+  `|nu| < pi / 125` rad per dt, which is 1 MHz;
+- each later phase moves by whole turns toward the line fitted through the
+  shorter delays, as in robust phase estimation;
+- a ladder ratio of at most 4 keeps that prediction error near four times
+  the per-point phase noise.
+
+The estimator then fits a straight line. The slope is `nu` in rad per dt,
+and fixed gate durations and preparation phases go into the intercept, so
+they leave the rate unchanged. Idle detunings of tens of kHz recur on Heron
+([novel-insights](../evidence/novel-insights/REPORT.md)), so a Bell-even rate
+`omega_A + omega_B` can pass 80 kHz. A uniform 10 us grid would alias it, and
+the ladder does not.
 
 Each rate, parameter and the falsifier residual carries a delta-method
 standard error at one shot per circuit (`*_se_one_shot`; divide by
@@ -79,6 +89,10 @@ single replica.
 - With asymmetric channels on both qubits (A: 0.04 and 0.12, B: 0.02 and
   0.08), the corrected summary still recovers `J` to 1e-10, and the summary
   without the calibration is biased.
+- Detunings of 40.9 kHz and 40.9 + 227.7 kHz on both qubits unwrap
+  exactly. These are the coherence window's -1.130 rad over 4.392 us, with
+  and without one extra turn.
+- A rate past 1 MHz aliases.
 - Over 40 multinomial resamplings at 1024 shots, the spread of `J` and of the
   falsifier residual lies within 0.7 to 1.4 times the propagated standard
   error (about 89 Hz for `J`), with no resolved bias.
