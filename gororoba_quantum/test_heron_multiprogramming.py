@@ -265,10 +265,12 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertTrue((fano.sum(axis=1) == 3).all())
         self.assertTrue((fano.sum(axis=0) == 3).all())
 
-        # Dynamical decoupling on Steane Z syndrome patch
-        qc_hahn = steane_z_syndrome_patch(1, dd_sequence="Hahn")
-        self.assertGreater(qc_hahn.count_ops().get("x", 0), 10)
-        qc_xy4 = steane_z_syndrome_patch(1, dd_sequence="XY4")
+        # Dynamical decoupling on Steane Z syndrome patch with explicit delay window
+        qc_hahn = steane_z_syndrome_patch(1, dd_sequence="Hahn", idle_delay_dt=100)
+        self.assertGreater(qc_hahn.count_ops().get("delay", 0), 0)
+        self.assertGreater(qc_hahn.count_ops().get("x", 0), 5)
+        qc_xy4 = steane_z_syndrome_patch(1, dd_sequence="XY4", idle_delay_dt=100)
+        self.assertGreater(qc_xy4.count_ops().get("delay", 0), 0)
         self.assertGreater(qc_xy4.count_ops().get("y", 0), 5)
         with self.assertRaises(ValueError):
             steane_z_syndrome_patch(1, dd_sequence="invalid_dd")
@@ -291,10 +293,13 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertLess(res["hoeffding_radius"], 0.05)
         self.assertGreater(res["tv_confidence_interval"][0], 0.0)
 
-        # Identical distributions cannot be distinguished
-        same = hoeffding_model_discrimination(p, p, alpha=0.01)
-        self.assertFalse(same["models_distinguishable"])
-        self.assertAlmostEqual(same["total_variation_distance"], 0.0)
+        # Independent samples from the same underlying distribution are not distinguishable
+        sample_a = {"00": 1040, "01": 1010, "10": 1030, "11": 1016}
+        sample_b = {"00": 1005, "01": 1050, "10": 1015, "11": 1026}
+        same_source = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01)
+        self.assertFalse(same_source["models_distinguishable"])
+        self.assertEqual(same_source["tv_confidence_interval"][0], 0.0)
+        self.assertGreater(same_source["multinomial_tv_radius"], same_source["total_variation_distance"])
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination({}, q)
 

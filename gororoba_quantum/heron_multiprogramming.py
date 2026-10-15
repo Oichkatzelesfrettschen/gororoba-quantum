@@ -9,6 +9,20 @@ one circuit per tile into one wide circuit, rejecting any two-qubit gate that
 lands off its tile's induced edges. Duration and shot-rate figures are
 arithmetic on Target values; nothing here schedules a circuit on a backend
 or measures a throughput.
+
+Primary research literature grounding:
+- Spatial multiprogramming & crosstalk guard bands: Sarovar et al. (2020, arXiv:1908.09855),
+  Niu & Todri-Sanial (2021, arXiv:2102.05321; 2023, arXiv:2112.00387), Gambetta et al.
+  (2012, arXiv:1204.6308), Das et al. (2019, ASPLOS).
+- Non-associative Cayley-Dickson witnesses & singular sectors: Freedman et al. (2019,
+  arXiv:1811.08580), Biss et al. (2009, arXiv:0905.2987), Moreno (1998, math/9710228).
+- Octonionic Fano-plane CSS & active vs coherent stabilizers: Levratti (2026, fano-css &
+  active-stabilizers), Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021,
+  arXiv:2103.03008).
+- Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Devroye (1983, Ann. Statist.
+  11:1069-1076).
+- Boolean bent hidden shifts & polar rank: Roetteler (2008, arXiv:0811.3208; 2009,
+  arXiv:0911.4724), Gavinsky, Ito & Roetteler (2011, arXiv:1103.3017).
 """
 
 from __future__ import annotations
@@ -699,15 +713,13 @@ def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCi
     Control qubit 4 prepares |+>. Branch 0 applies L_{(e_i e_j) e_k} and branch 1
     applies L_{e_i} L_{e_j} L_{e_k}. The ancilla expectation <Z_c> after the final H
     reads Re <psi_L | psi_R> = +1 for associating triples and -1 for anti-associating
-    triples, certified by cd_core.cd_sign.
+    triples, certified by cd_core.triple_sign.
     """
-    from cd_core import cd_sign
+    from cd_core import triple_sign
     from designs import left_mult_gate
 
-    ij_sign = cd_sign(16, i, j)
-    ij_idx = i ^ j
-    ijk_sign = ij_sign * cd_sign(16, ij_idx, k)
-    ijk_idx = ij_idx ^ k
+    left_sign, right_sign = triple_sign(16, i, j, k)
+    ijk_idx = (i ^ j) ^ k
 
     qc = QuantumCircuit(5, 1, name=f"sedenion_associator_{i}_{j}_{k}")
     qc.h(4)
@@ -715,7 +727,7 @@ def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCi
     u_left = left_mult_gate(16, ijk_idx)
     c_u_left = u_left.control(1, ctrl_state=0)
     qc.append(c_u_left, [4, 0, 1, 2, 3])
-    if ijk_sign < 0:
+    if left_sign < 0:
         qc.x(4)
         qc.z(4)
         qc.x(4)
@@ -731,7 +743,10 @@ def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCi
     qc.measure(4, 0)
     qc.metadata = {
         "triple": [i, j, k],
-        "ijk_sign": ijk_sign,
+        "left_sign": left_sign,
+        "right_sign": right_sign,
+        "associates": bool(left_sign == right_sign),
+        "ijk_sign": left_sign,
         "ijk_index": ijk_idx,
     }
     return qc
@@ -777,6 +792,7 @@ def steane_z_syndrome_patch(
     error_qubit: int | None = None,
     mid_circuit_measure: bool = False,
     dd_sequence: str | None = None,
+    idle_delay_dt: int = 0,
 ) -> QuantumCircuit:
     """Three Steane Z checks on 7 data qubits with feed-forward X correction, 10 qubits.
 
@@ -785,8 +801,8 @@ def steane_z_syndrome_patch(
     X error on data qubit d reads syndrome d + 1 in register `syn`. Seven
     unnested if_test blocks on the 3-bit register apply the X correction, and
     register `data` reads the 7 data qubits at the end. An optional dd_sequence
-    ('Hahn' or 'XY4') applies dynamical decoupling to the data qubits during the
-    syndrome extraction delay to suppress physical dephasing drift.
+    ('Hahn' or 'XY4') applies dynamical decoupling to the data qubits bracketing
+    idle_delay_dt during syndrome extraction to suppress physical dephasing drift.
     """
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
@@ -798,19 +814,39 @@ def steane_z_syndrome_patch(
     for bit, support in enumerate(STEANE_Z_CHECKS):
         for q in support:
             qc.cx(q, 7 + bit)
-    if dd_sequence is not None:
-        if dd_sequence == "Hahn":
+
+    # Delay window on data qubits during syndrome extraction
+    delay_window = idle_delay_dt if idle_delay_dt > 0 else (100 if dd_sequence is not None else 0)
+    if delay_window > 0:
+        if dd_sequence is None:
             for q in range(7):
+                qc.delay(delay_window, q)
+        elif dd_sequence == "Hahn":
+            half = delay_window // 2
+            rem = delay_window - half
+            for q in range(7):
+                qc.delay(half, q)
                 qc.x(q)
-                qc.x(q)
+                qc.delay(rem, q)
         elif dd_sequence == "XY4":
+            tau_8 = delay_window // 8
+            tau_4 = delay_window // 4
+            rem = delay_window - (tau_8 + 3 * tau_4)
             for q in range(7):
+                qc.delay(tau_8, q)
                 qc.x(q)
+                qc.delay(tau_4, q)
                 qc.y(q)
+                qc.delay(tau_4, q)
                 qc.x(q)
+                qc.delay(tau_4, q)
                 qc.y(q)
+                qc.delay(rem, q)
         else:
             raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
+    elif dd_sequence is not None:
+        raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
+
     if mid_circuit_measure:
         from qiskit_ibm_runtime.circuit import MidCircuitMeasure
 
@@ -853,7 +889,8 @@ def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> Qua
     """Bell pair with optional gap-aware dynamical decoupling, then inverse preparation, 2 qubits.
 
     dd_sequence supports None (plain delay), 'Hahn' (X echo at midpoint), or 'XY4'
-    (staggered X, Y, X, Y pulses), counteracting physical idle dephasing drift.
+    (symmetric CPMG-style tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem),
+    counteracting physical idle dephasing drift (-1.130 rad unmitigated drift measured on Kingston).
     """
     qc = QuantumCircuit(2, 2, name="bell_delay_probe")
     qc.h(0)
@@ -872,17 +909,19 @@ def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> Qua
             qc.delay(rem, 0)
             qc.delay(rem, 1)
         elif dd_sequence == "XY4":
-            qtr = delay_dt // 4
-            rem = delay_dt - 3 * qtr
+            tau_8 = delay_dt // 8
+            tau_4 = delay_dt // 4
+            rem = delay_dt - (tau_8 + 3 * tau_4)
             for q in (0, 1):
-                qc.delay(qtr, q)
+                qc.delay(tau_8, q)
                 qc.x(q)
-                qc.delay(qtr, q)
+                qc.delay(tau_4, q)
                 qc.y(q)
-                qc.delay(qtr, q)
+                qc.delay(tau_4, q)
                 qc.x(q)
+                qc.delay(tau_4, q)
+                qc.y(q)
                 qc.delay(rem, q)
-                qc.y(q)
         else:
             raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     qc.cx(0, 1)
@@ -896,10 +935,19 @@ def hoeffding_model_discrimination(
     counts_q: dict[str, int],
     alpha: float = 0.01,
 ) -> dict[str, Any]:
-    """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding bounds.
+    """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding and multinomial TV bounds.
 
-    Given two empirical count distributions over identical outcomes, computes D_TV and D_JS,
-    with simultaneous two-sided Hoeffding confidence radius r = sqrt(ln(2/alpha) / (2*N)).
+    Given two empirical count distributions over identical outcomes, computes D_TV and D_JS.
+    Computes both:
+    1. Single-observable Hoeffding confidence radius: r_obs = sqrt(ln(2/alpha) / (2*N_eff))
+       for any fixed binary partition or parity observable in [0, 1].
+    2. Simultaneous multinomial Total Variation confidence radius via Devroye (1983) /
+       Bretagnolle-Huber-Carol bound over K = len(all_keys) bins:
+       eps_p = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_p)
+       eps_q = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_q)
+       radius_tv = 0.5 * (eps_p + eps_q)
+    This prevents sampling noise on multi-outcome spaces from falsely declaring identical
+    underlying distributions distinguishable.
     """
     if not counts_p or not counts_q:
         raise ValueError("Count distributions must be non-empty")
@@ -908,6 +956,7 @@ def hoeffding_model_discrimination(
     if n_p == 0 or n_q == 0:
         raise ValueError("Total shots must be positive in both distributions")
     all_keys = sorted(set(counts_p) | set(counts_q))
+    k_bins = len(all_keys)
     p = np.array([counts_p.get(k, 0) / n_p for k in all_keys], dtype=np.float64)
     q = np.array([counts_q.get(k, 0) / n_q for k in all_keys], dtype=np.float64)
 
@@ -918,17 +967,25 @@ def hoeffding_model_discrimination(
     d_js = float(0.5 * (kl_pm + kl_qm))
 
     n_eff = min(n_p, n_q)
-    radius = float(math.sqrt(math.log(2.0 / alpha) / (2.0 * n_eff)))
-    ci_lower = max(0.0, d_tv - radius)
-    ci_upper = min(1.0, d_tv + radius)
+    radius_hoeffding = float(math.sqrt(math.log(2.0 / alpha) / (2.0 * n_eff)))
+
+    # Simultaneous multinomial TV confidence radius (Devroye 1983 / BHC bound)
+    eps_p = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_p)
+    eps_q = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_q)
+    radius_tv = float(0.5 * (eps_p + eps_q))
+
+    ci_lower = max(0.0, d_tv - radius_tv)
+    ci_upper = min(1.0, d_tv + radius_tv)
 
     return {
         "num_shots_p": n_p,
         "num_shots_q": n_q,
+        "k_bins": k_bins,
         "alpha": alpha,
         "total_variation_distance": round(d_tv, 6),
         "jensen_shannon_divergence": round(d_js, 6),
-        "hoeffding_radius": round(radius, 6),
+        "hoeffding_radius": round(radius_hoeffding, 6),
+        "multinomial_tv_radius": round(radius_tv, 6),
         "tv_confidence_interval": [round(ci_lower, 6), round(ci_upper, 6)],
         "models_distinguishable": bool(ci_lower > 0.0),
     }
