@@ -1,12 +1,12 @@
 {
   "account_usage": {
-    "usage_consumed_seconds": 210,
+    "usage_consumed_seconds": 320,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-13T23:18:23.572Z",
-      "start_time": "2026-09-15T23:18:23.572Z"
+      "end_time": "2026-10-15T03:39:11.110Z",
+      "start_time": "2026-09-17T03:39:11.110Z"
     },
-    "usage_remaining_seconds": 390
+    "usage_remaining_seconds": 280
   },
   "complete_service_inventory": true,
   "instance_crn_hash": "e3de05b6901e",
@@ -250,10 +250,106 @@
         "running": "2026-10-13T21:22:27.315763Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T03:09:20.029789+00:00",
+      "final_qpu_charge_seconds": 5,
+      "input_schema_version": "v2.0",
+      "job_id": "db847nur6oqs7388nen0",
+      "pub_count": 5,
+      "shots_per_pub": 2048,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-15T03:09:20.029789Z",
+        "finished": "2026-10-15T03:09:28.933083Z",
+        "running": "2026-10-15T03:09:22.727789Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T03:09:22.205807+00:00",
+      "final_qpu_charge_seconds": 8,
+      "input_schema_version": "v2.0",
+      "job_id": "db847oiraffc73fbmfk0",
+      "pub_count": 10,
+      "shots_per_pub": 2048,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-15T03:09:22.205807Z",
+        "finished": "2026-10-15T03:09:35.760135Z",
+        "running": "2026-10-15T03:09:23.494217Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T03:11:00.650007+00:00",
+      "final_qpu_charge_seconds": 6,
+      "input_schema_version": "v2.0",
+      "job_id": "db848h6r6oqs7388nfm0",
+      "pub_count": 15,
+      "shots_per_pub": 1024,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-15T03:11:00.650007Z",
+        "finished": "2026-10-15T03:11:31.490239Z",
+        "running": "2026-10-15T03:11:01.998238Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T03:11:02.931030+00:00",
+      "final_qpu_charge_seconds": 25,
+      "input_schema_version": "v2.0",
+      "job_id": "db848hmil99s73fp99tg",
+      "pub_count": 21,
+      "shots_per_pub": 4096,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-15T03:11:02.93103Z",
+        "finished": "2026-10-15T03:11:56.482295Z",
+        "running": "2026-10-15T03:11:04.364722Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T03:22:28.862834+00:00",
+      "final_qpu_charge_seconds": 35,
+      "input_schema_version": "v2.0",
+      "job_id": "db84dt6il99s73fp9gjg",
+      "pub_count": 120,
+      "shots_per_pub": 1024,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-15T03:22:28.862834Z",
+        "finished": "2026-10-15T03:26:14.983388Z",
+        "running": "2026-10-15T03:25:09.091213Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T03:22:36.276651+00:00",
+      "final_qpu_charge_seconds": 31,
+      "input_schema_version": "v2.0",
+      "job_id": "db84dv2raffc73fbmnag",
+      "pub_count": 26,
+      "shots_per_pub": 4096,
+      "status": "DONE",
+      "timestamps": {
+        "created": "2026-10-15T03:22:36.276651Z",
+        "finished": "2026-10-15T03:33:23.593321Z",
+        "running": "2026-10-15T03:31:45.960477Z"
+      },
+      "usage_status": "complete"
     }
   ],
   "new_qpu_submissions": 0,
-  "observed_at": "2026-10-13T23:18:34.620480+00:00",
+  "observed_at": "2026-10-15T03:39:11.165735+00:00",
   "retrieval_boundary": "Read-only service.jobs(limit=None), decoded QuantumProgram inputs and finalized metrics. Physical jobs require positive settled charge; local simulations and mock results are separate evidence.",
   "schema": "completed-qpu-job-inventory-v1"
 }
