@@ -13,7 +13,7 @@ or measures a throughput.
 Primary research literature grounding:
 - Spatial multiprogramming & crosstalk guard bands: Sarovar et al. (2020, arXiv:1908.09855),
   Niu & Todri-Sanial (2021, arXiv:2102.05321; 2021, arXiv:2112.00387), Gambetta et al.
-  (2012, arXiv:1204.6308), Das et al. (2019, ASPLOS).
+  (2012, arXiv:1204.6308), Das et al. (2019, MICRO-52).
 - Non-associative Cayley-Dickson witnesses & singular sectors: Freedman, Shokrian-Zini & Wang
   (2019, arXiv:1811.08580), Biss, Christensen, Dugger & Isaksen (2009, arXiv:0905.2987).
 - Octonionic Fano-plane CSS & dynamic circuits: Levratti (2026, fano-css & active-stabilizers),
@@ -21,7 +21,7 @@ Primary research literature grounding:
 - Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Bretagnolle-Huber-Carol
   multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6, p. 438;
   Devroye 1987, Section 3.3, p. 29).
-- Boolean bent hidden shifts & polar rank: Roetteler (2008, arXiv:0811.3208; 2009,
+- Boolean bent hidden shifts: Roetteler (2008, arXiv:0811.3208; 2009,
   arXiv:0911.4724), Gavinsky, Roetteler & Roland (2011, arXiv:1103.3017).
 """
 
@@ -492,16 +492,19 @@ class HeronLattice:
                     raise ValueError(
                         f"tile {tile.tile_id}: {name} on {physical[a]}, {physical[b]} is not an induced coupler"
                     )
+            reserved_names = set(names.keys()) | {p.name for p in circ.parameters}
             renames: dict[Parameter, Parameter] = {}
             for param in circ.parameters:
                 owner = names.get(param.name)
                 if owner is not None and owner != param:
                     candidate = f"tile_{tile_idx}_{param.name}"
                     suffix = 1
-                    while candidate in names and names[candidate] != param:
+                    while candidate in reserved_names:
                         candidate = f"tile_{tile_idx}_{param.name}_{suffix}"
                         suffix += 1
-                    renames[param] = Parameter(candidate)
+                    new_param = Parameter(candidate)
+                    renames[param] = new_param
+                    reserved_names.add(candidate)
             placed = circ.assign_parameters(renames) if renames else circ
             for param in placed.parameters:
                 names.setdefault(param.name, param)
@@ -1059,7 +1062,7 @@ def bent_hidden_shift_circuit(
     n: int = 6,
     shift: Sequence[int] | None = None,
 ) -> QuantumCircuit:
-    """Rotteler (2010) hidden shift algorithm for quadratic Boolean bent functions.
+    """Roetteler (2010) hidden shift algorithm for quadratic Boolean bent functions.
 
     n must be even. Evaluates f(x) = x0*x1 ^ x2*x3 ^ ... and shifted g(x) = f(x ^ s).
     Circuit sequence H^n -> O_g -> H^n -> O_f -> H^n -> Measure deterministically

@@ -174,14 +174,21 @@ class TestHeronMultiprogramming(unittest.TestCase):
             qc.rx(shared, 0)
         self.assertEqual(self.lattice.build_multiplexed_pub(same, tiles).num_parameters, 1)
 
-        # Pre-existing generated parameter name collision avoidance
         c_pre = QuantumCircuit(5)
         c_pre.rx(Parameter("theta"), 0)
         c_pre.rx(Parameter("tile_1_theta"), 1)
         c_other = QuantumCircuit(5)
-        c_other.rx(Parameter("theta"), 0)  # attempts to rename to tile_1_theta, colliding with c_pre
+        c_other.rx(Parameter("theta"), 0)
         wide_avoid = self.lattice.build_multiplexed_pub([c_pre, c_other], tiles)
         self.assertEqual(sorted(p.name for p in wide_avoid.parameters), ["theta", "tile_1_theta", "tile_1_theta_1"])
+
+        c_first = QuantumCircuit(5)
+        c_first.rx(Parameter("theta"), 0)
+        c_second = QuantumCircuit(5)
+        c_second.rx(Parameter("theta"), 0)
+        c_second.rx(Parameter("tile_1_theta"), 1)
+        wide_same_circ = self.lattice.build_multiplexed_pub([c_first, c_second], tiles)
+        self.assertEqual(sorted(p.name for p in wide_same_circ.parameters), ["theta", "tile_1_theta", "tile_1_theta_1"])
 
         pub = HeronLattice.pack_parameter_sweep_pub(wide, [[0.0, 0.5], [0.5, 1.0], [1.0, 1.5]], shots=2048)
         self.assertEqual(pub[1].shape, (3, 2))

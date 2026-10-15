@@ -133,8 +133,9 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 
 ### Run 2: Fano-Plane CSS and Active vs Coherent Stabilizers
 - **`fano_plane_incidence_matrix()`**: Returns the $7 \times 7$ binary incidence matrix of the projective
-  Fano plane $\text{PG}(2, 2)$, mapping the 7 imaginary octonionic units $\{e_1, \dots, e_7\}$ to the
-  7 data qubits and lines of the Steane $[[7,1,3]]$ code (`docs/notes/levratti-2026-fano-css.md`).
+  Fano plane $\text{PG}(2, 2)$ (associative triples of imaginary octonions $\{e_1, \dots, e_7\}$); the three
+  weight-4 Steane $Z$ checks in `steane_z_syndrome_patch` are the complements of three of these lines
+  (`docs/notes/levratti-2026-fano-css.md` Theorem 3.1).
 - **`steane_z_syndrome_patch(error_qubit, mid_circuit_measure, dd_sequence, idle_delay_dt)`** (10 qubits): Measures the
   three Steane $Z$ parity checks with $CX$ from data qubits onto ancillas 7..9. Unnested `if_test` blocks
   apply $X$ corrections. An optional `dd_sequence` (`"CPMG2"` or `"XY4"`) brackets an explicit `idle_delay_dt`
@@ -150,12 +151,13 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 - **`bell_delay_probe(delay_dt, dd_sequence)`** (2 qubits): Prepares a Bell pair, applies an idle delay,
   and inverts the state. `dd_sequence` supports `None` (plain idle), `"Hahn"` ($X$ echo at midpoint), or
   `"XY4"` (symmetric CPMG-style $\tau/8 \to X \to \tau/4 \to Y \to \tau/4 \to X \to \tau/4 \to Y \to \tau/8$).
-  In physical QPU characterizations, unmitigated idle exposure exhibited substantial dephasing drift
-  (e.g. $-1.130$ rad of directly measured branch-signed coherence rotation over $4.4\,\mu\text{s}$ on `ibm_kingston`
-  in `results/live/QPU_PROGRAM_CASES.md`). A separate, older calibration on `ibm_fez` yielded an independent fitted
-  phase parameter of $+0.17$ rad under different experimental conditions (`results/live/N21_ORBIT_RCA.md`); the two quantities
-  reflect distinct observables and execution contexts rather than a single differential DD effect.
-  `bell_delay_probe` provides an isolated testbed to benchmark idle dephasing against calibrated decoupling schedules.
+  In physical QPU characterizations, unmitigated idle exposure exhibited both coherent phase rotation and dephasing decay
+  (e.g. a directly measured branch-signed coherence rotation of $-1.130$ rad over $4.4\,\mu\text{s}$ on `ibm_kingston`,
+  accompanied by $|C|$ moving from $0.413$ to $0.375$, recorded in `results/live/QPU_PROGRAM_CASES.md`). A separate, older
+  calibration on `ibm_fez` yielded an independent fitted phase parameter of $+0.17$ rad under different experimental
+  conditions (`results/live/N21_ORBIT_RCA.md`); the two quantities reflect distinct observables and execution contexts
+  rather than a single differential DD effect. `bell_delay_probe` provides an isolated testbed to evaluate idle dephasing
+  and coherent drift against decoupling schedules.
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
   $\|\mathbf{r}_i - \mathbf{r}_j\|$ when coordinate pairs are supplied by the caller.
@@ -173,7 +175,7 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 ### Run 4: Boolean Bent Hidden Shift
 - **`bent_hidden_shift_circuit(n=6, shift=None)`** ($n$ qubits, $n \in \{4, 6, 8\}$): Constructs quadratic
   bent function $f(x) = \bigoplus_{i=0}^{n/2-1} x_{2i} x_{2i+1}$ (certified full rank $n$ via
-  `boolean_anf.quadratic_polar_rank`) and shifted $g(x) = f(x \oplus s)$. Implements Rotteler's (2010) algorithm:
+  `boolean_anf.quadratic_polar_rank`) and shifted $g(x) = f(x \oplus s)$. Implements Roetteler's (2010) algorithm:
   $H^{\otimes n} \to O_g \to H^{\otimes n} \to O_f \to H^{\otimes n} \to \text{Measure}$.
   In ideal execution, measures hidden shift $s$ with probability 1.0. The ideal circuit is constructed from
   $\{H, CZ, Z\}$, compiling to native Heron ISA instructions $\{cz, rz, sx, x\}$ after transpilation.
@@ -211,7 +213,7 @@ repository source notes, registered preprints, and verified platform artifacts:
      `docs/pdf/levratti-2026-fano-css.pdf`) and *Active Stabilizers in Reed-Muller CSS Codes from Cayley-Dickson Zero-Divisors*
      (`docs/notes/levratti-2026-active-stabilizers.md`, `docs/pdf/levratti-2026-active-stabilizers.pdf`): Author-hosted
      manuscripts mapping the 7 points and 7 lines of the projective Fano plane $\text{PG}(2, 2)$ to octonionic triads
-     and the Steane $[[7, 1, 3]]$ code parity-check incidence matrix (`fano_plane_incidence_matrix`, `steane_z_syndrome_patch`).
+     and the Fano line incidence matrix whose line complements yield the Steane $[[7, 1, 3]]$ $Z$ stabilizers (`fano_plane_incidence_matrix`, `steane_z_syndrome_patch`).
    - **Corcoles et al. (2021)**, *Exploiting dynamic quantum circuits in a quantum algorithm with superconducting qubits*,
      [arXiv:2102.01682](https://arxiv.org/abs/2102.01682) (Phys. Rev. Lett. 127, 100501; `docs/notes/2102.01682.md`,
      `docs/pdf/2102.01682.pdf`): Demonstrates physical dynamic circuits and feed-forward on superconducting transmons,
@@ -221,15 +223,16 @@ repository source notes, registered preprints, and verified platform artifacts:
      `docs/local_source_cache/2103.03008v1.pdf`): Quantum-instrument tomography characterizing mid-circuit measurement operations.
 
 4. **Boolean Bent Hidden Shift Algorithms:**
-   - **Rotteler (2008, 2009)**, *Quantum algorithms for highly non-linear Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
+   - **Roetteler (2008, 2009)**, *Quantum algorithms for highly non-linear Boolean functions*, [arXiv:0811.3208](https://arxiv.org/abs/0811.3208)
      (Proc. SODA 2010, pp. 448-457; `docs/notes/0811.3208.md`, `docs/local_source_cache/0811.3208v2.pdf`) and *Quantum algorithms
      to solve the hidden shift problem for quadratics and for functions of large Gowers norm*, [arXiv:0911.4724](https://arxiv.org/abs/0911.4724)
      (`docs/notes/0911.4724.md`, `docs/local_source_cache/0911.4724v1.pdf`): Derives the exact quantum algorithm using dual bent
      oracles $O_g$ and $O_{\tilde{f}}$ separated by Hadamard transforms to solve the hidden shift problem with $O(1)$ queries
      and deterministic $P=1.0$ recovery.
-   - **Gavinsky, Rotteler, & Roland (2011)**, *Quantum algorithm for the Boolean hidden shift problem*,
+   - **Gavinsky, Roetteler, & Roland (2011)**, *Quantum algorithm for the Boolean hidden shift problem*,
      [arXiv:1103.3017](https://arxiv.org/abs/1103.3017) (`docs/notes/1103.3017.md`, `docs/local_source_cache/1103.3017v1.pdf`):
-     Formulates polar rank and algebraic characterization of Boolean bent hidden shifts.
+     Establishes the $O(n / \sqrt{\gamma_f})$ quantum query algorithm based on minimum Boolean influence $\gamma_f$,
+     showing $O(n)$ query complexity for bent functions and $O(1)$ with dual oracle access.
 
 5. **Statistical Discrimination & Concentration Bounds:**
    - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13-30
