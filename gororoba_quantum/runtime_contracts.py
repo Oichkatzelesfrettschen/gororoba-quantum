@@ -2891,6 +2891,13 @@ def _verify_fragmented_target_layout() -> None:
     placed = {q for replica in choice.replicas for q in replica.qubits}
     if not placed or not placed <= tile:
         raise RuntimeError(f"design_a on the 0-4 tile placed {sorted(placed)}")
+    # One placeable qubit leaves the admission target without any CZ coupler.
+    from diagnostic_controls import readout_delay_group
+
+    lone, _, _ = discover_snapshots(service, None, None, operator_excluded={"viable": set(range(156)) - {79}})
+    single = select(readout_delay_group(), lone, 1, {}, SINGLE_REPLICA_POLICY)
+    if [sorted(replica.qubits) for replica in single.replicas] != [[79]]:
+        raise RuntimeError("the single-qubit readout campaign does not occupy the one placeable qubit")
 
 
 def _verify_compile_panic_isolation() -> None:
