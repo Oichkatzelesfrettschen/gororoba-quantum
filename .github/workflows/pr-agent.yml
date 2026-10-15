@@ -30,3 +30,4 @@ jobs:
           config.model: "groq/openai/gpt-oss-120b"
           config.fallback_models: '["groq/qwen/qwen3.8-27b"]'
           config.custom_model_max_tokens: "131072"
+          config.max_model_tokens: "6000"
