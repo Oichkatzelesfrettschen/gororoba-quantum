@@ -135,7 +135,7 @@ empty because Gemma instruction-tuned models require the chat template
 produces no generation. Also requires `transformers>=5.5`. v3 with the fix
 was submitted; results pending.
 
-Manual red-team findings (pending Gemma confirmation):
+Manual red-team findings (Gemma v3 confirms Q2, Q3, Q4 below):
 
 **Claim 1 (Compiler) — strongest.** Gap: the audit verified submitted
 circuits, not executed circuits. IBM's runtime could apply additional
@@ -160,6 +160,20 @@ the ghost and are ruled out for 84/84 without distinguishing the
 mechanisms.
 
 Ranking by vulnerability: 4 > 2 > 3 > 1.
+
+**Gemma v3 confirmations (2026-10-15):**
+- Q2 (readout): Confirmed. "Relies on the assumption that the readout
+  error is modeled purely as a classical bit-flip channel."
+- Q3 (AC Stark): Confirmed. "By varying the photon number in the
+  resonator while keeping the qubit state fixed, one can measure the
+  shift's dependence on nbar to differentiate the two effects."
+- Q4 (backaction): Confirmed. "The measurement process acts as a
+  non-trivial quantum channel whose effect depends on the input quantum
+  state."
+- Q1 (transpiler): Non-answer. Gemma gave a generic "transpilers can
+  introduce differences" without engaging with the byte-identical
+  evidence. Demonstrates LLM review limitation: does not weigh specific
+  evidence against general principles.
 
 ## Pre-Delay Discriminator: Negative Result for 84/84
 
