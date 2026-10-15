@@ -20,8 +20,8 @@ Primary research literature grounding:
   active-stabilizers), Corcoles et al. (2021, arXiv:2102.01682), Rudinger et al. (2021,
   arXiv:2103.03008).
 - Bounded model discrimination: Hoeffding (1963, JASA 58:13-30), Bretagnolle-Huber-Carol
-  multinomial total variation bound (van der Vaart & Wellner 1996, Proposition A.6.6;
-  Devroye 1983, Ann. Statist. 11:896-904; Devroye, Gyorfi & Lugosi 1996, Theorem 3.1).
+  multinomial total variation bound (Bretagnolle, Huber & Carol 1979; van der Vaart & Wellner
+  1996, Proposition A.6.6; Devroye 1987, Theorem 2.1; Devroye, Gyorfi & Lugosi 1996, Theorem 3.1).
 - Boolean bent hidden shifts & polar rank: Roetteler (2008, arXiv:0811.3208; 2009,
   arXiv:0911.4724), Gavinsky, Ito & Roetteler (2011, arXiv:1103.3017).
 """
@@ -782,9 +782,6 @@ def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) 
     return design_c_associator_spectrum(dim, i, j)
 
 
-pathion_singular_sector_witness = pathion_associator_spectrum_witness
-
-
 STEANE_Z_CHECKS = ((0, 2, 4, 6), (1, 2, 5, 6), (3, 4, 5, 6))
 
 
@@ -822,13 +819,19 @@ def steane_z_syndrome_patch(
     the supports {1,3,5,7}, {2,3,6,7} and {4,5,6,7} in 1-based positions, so an
     X error on data qubit d reads syndrome d + 1 in register `syn`. Seven
     unnested if_test blocks on the 3-bit register apply the X correction, and
-    register `data` reads the 7 data qubits at the end. An optional dd_sequence
-    ('Hahn' or 'XY4') applies dynamical decoupling to the data qubits bracketing
-    idle_delay_dt during syndrome extraction to suppress physical dephasing drift.
+    register `data` reads the 7 data qubits at the end.
+
+    An optional dd_sequence ('CPMG2', 'Hahn', or 'XY4') applies dynamical decoupling to
+    the data qubits bracketing idle_delay_dt during syndrome extraction to suppress
+    physical dephasing drift without transversal logical perturbation. Note that
+    an even number of X rotations (CPMG-2: tau/4 -> X -> tau/2 -> X -> tau/4) or
+    XY4 (tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem) is required
+    because an odd number of X pulses on all 7 data qubits acts as a transversal logical
+    X flip on the Steane [[7,1,3]] code, transforming |0_L> into |1_L>.
     """
     if idle_delay_dt < 0:
         raise ValueError(f"idle_delay_dt must be non-negative, got {idle_delay_dt}")
-    if dd_sequence not in (None, "Hahn", "XY4"):
+    if dd_sequence not in (None, "CPMG2", "Hahn", "XY4"):
         raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
@@ -842,22 +845,21 @@ def steane_z_syndrome_patch(
             qc.cx(q, 7 + bit)
 
     # Delay window on data qubits during syndrome extraction
-    delay_window = idle_delay_dt if idle_delay_dt > 0 else (100 if dd_sequence is not None else 0)
-    if delay_window > 0:
-        if dd_sequence is None:
+    if idle_delay_dt > 0:
+        if dd_sequence in ("CPMG2", "Hahn"):
+            tau_4 = idle_delay_dt // 4
+            tau_2 = idle_delay_dt // 2
+            rem = idle_delay_dt - (2 * tau_4 + tau_2)
             for q in range(7):
-                qc.delay(delay_window, q)
-        elif dd_sequence == "Hahn":
-            half = delay_window // 2
-            rem = delay_window - half
-            for q in range(7):
-                qc.delay(half, q)
+                qc.delay(tau_4, q)
                 qc.x(q)
-                qc.delay(rem, q)
+                qc.delay(tau_2, q)
+                qc.x(q)
+                qc.delay(tau_4 + rem, q)
         elif dd_sequence == "XY4":
-            tau_8 = delay_window // 8
-            tau_4 = delay_window // 4
-            rem = delay_window - (tau_8 + 3 * tau_4)
+            tau_8 = idle_delay_dt // 8
+            tau_4 = idle_delay_dt // 4
+            rem = idle_delay_dt - (tau_8 + 3 * tau_4)
             for q in range(7):
                 qc.delay(tau_8, q)
                 qc.x(q)
@@ -868,10 +870,9 @@ def steane_z_syndrome_patch(
                 qc.delay(tau_4, q)
                 qc.y(q)
                 qc.delay(rem, q)
-        else:
-            raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
-    elif dd_sequence is not None:
-        raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
+        elif dd_sequence is None:
+            for q in range(7):
+                qc.delay(idle_delay_dt, q)
 
     if mid_circuit_measure:
         from qiskit_ibm_runtime.circuit import MidCircuitMeasure
@@ -919,7 +920,7 @@ def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> Qua
 
     dd_sequence supports None (plain delay), 'Hahn' (X echo at midpoint), or 'XY4'
     (symmetric CPMG-style tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem),
-    counteracting physical idle dephasing drift (-1.130 rad unmitigated drift measured on Kingston).
+    serving as an echo testbed to measure and mitigate dephasing drift during idle gaps.
     """
     if delay_dt < 0:
         raise ValueError(f"delay_dt must be non-negative, got {delay_dt}")
@@ -967,6 +968,7 @@ def hoeffding_model_discrimination(
     counts_p: dict[str, int],
     counts_q: dict[str, int],
     alpha: float = 0.01,
+    alphabet_size: int | None = None,
 ) -> dict[str, Any]:
     """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding and multinomial TV bounds.
 
@@ -974,13 +976,14 @@ def hoeffding_model_discrimination(
     Computes both:
     1. Single-observable Hoeffding confidence radius: r_obs = sqrt(ln(2/alpha) / (2*N_eff))
        for any fixed binary partition or parity observable in [0, 1].
-    2. Simultaneous multinomial Total Variation confidence radius via Devroye (1983) /
-       Bretagnolle-Huber-Carol bound over K = len(all_keys) bins:
+    2. Simultaneous multinomial Total Variation confidence radius via Bretagnolle-Huber-Carol (1979) /
+       Devroye (1987) bound over K bins:
        eps_p = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_p)
        eps_q = sqrt(2 * (K*ln(2) + ln(4/alpha)) / n_q)
        radius_tv = 0.5 * (eps_p + eps_q)
-    This prevents sampling noise on multi-outcome spaces from falsely declaring identical
-    underlying distributions distinguishable.
+    where K is given by alphabet_size if supplied, or len(all_keys). This prevents sampling
+    noise on multi-outcome spaces from falsely declaring identical underlying distributions
+    distinguishable.
     """
     if not 0.0 < alpha < 1.0:
         raise ValueError(f"alpha must be in (0, 1), got {alpha}")
@@ -993,7 +996,16 @@ def hoeffding_model_discrimination(
     if n_p == 0 or n_q == 0:
         raise ValueError("Total shots must be positive in both distributions")
     all_keys = sorted(set(counts_p) | set(counts_q))
-    k_bins = len(all_keys)
+    if alphabet_size is not None:
+        if alphabet_size <= 0:
+            raise ValueError(f"alphabet_size must be positive, got {alphabet_size}")
+        if alphabet_size < len(all_keys):
+            raise ValueError(
+                f"alphabet_size ({alphabet_size}) cannot be smaller than observed distinct outcomes ({len(all_keys)})"
+            )
+        k_bins = alphabet_size
+    else:
+        k_bins = len(all_keys)
     p = np.array([counts_p.get(k, 0) / n_p for k in all_keys], dtype=np.float64)
     q = np.array([counts_q.get(k, 0) / n_q for k in all_keys], dtype=np.float64)
 
@@ -1006,7 +1018,7 @@ def hoeffding_model_discrimination(
     n_eff = min(n_p, n_q)
     radius_hoeffding = float(math.sqrt(math.log(2.0 / alpha) / (2.0 * n_eff)))
 
-    # Simultaneous multinomial TV confidence radius (Devroye 1983 / BHC bound)
+    # Simultaneous multinomial TV confidence radius (Bretagnolle-Huber-Carol / Devroye bound)
     eps_p = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_p)
     eps_q = math.sqrt(2.0 * (k_bins * math.log(2.0) + math.log(4.0 / alpha)) / n_q)
     radius_tv = float(0.5 * (eps_p + eps_q))

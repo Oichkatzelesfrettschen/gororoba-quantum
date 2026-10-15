@@ -137,8 +137,9 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
   7 data qubits and lines of the Steane $[[7,1,3]]$ code (`docs/notes/levratti-2026-fano-css.md`).
 - **`steane_z_syndrome_patch(error_qubit, mid_circuit_measure, dd_sequence, idle_delay_dt)`** (10 qubits): Measures the
   three Steane $Z$ parity checks with $CX$ from data qubits onto ancillas 7..9. Unnested `if_test` blocks
-  apply $X$ corrections. An optional `dd_sequence` (`"Hahn"` or `"XY4"`) brackets an explicit `idle_delay_dt`
-  interval on the data qubits during syndrome extraction to suppress physical dephasing drift.
+  apply $X$ corrections. An optional `dd_sequence` (`"CPMG2"` or `"XY4"`) brackets an explicit `idle_delay_dt`
+  interval on the data qubits during syndrome extraction to suppress physical dephasing drift without transversal
+  logical perturbation (even-pulse CPMG-2 sequence $X \dots X = I$ or XY4 $XYXY = -I$).
 - **`steane_coherent_syndrome_patch(error_qubit)`** (10 qubits): Extracts syndrome into ancillas 7..9,
   then applies coherent multi-controlled corrections `mcx([7, 8, 9], val - 1, ctrl_state=val)` on the data
   qubits to correct single $X$ errors on $|0\rangle^7$ without mid-circuit readout or reset. Conceptually
@@ -156,14 +157,15 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
   $\|\mathbf{r}_i - \mathbf{r}_j\|$ when coordinate pairs are supplied by the caller.
-- **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01)`**: Computes empirical Total Variation
-  distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
+- **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01, alphabet_size=None)`**: Computes empirical Total
+  Variation distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
   $D_{\text{JS}}(P \parallel Q)$. For single binary projections or parity observables, Hoeffding's inequality
   (`docs/notes/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
-  To bound the plug-in total-variation distance across all $K = |\mathcal{X}|$ outcome bins simultaneously without
-  falsely reporting distinguishable models due to multinomial sampling variation, the module computes the Devroye (1983) /
-  Bretagnolle-Huber-Carol finite-sample bound: $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$, yielding
-  simultaneous confidence radius $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$.
+  To bound the plug-in total-variation distance across all $K$ outcome bins (where $K$ is `alphabet_size` if supplied,
+  or $|\mathcal{X}|$ observed keys) simultaneously without falsely reporting distinguishable models due to multinomial
+  sampling variation, the module computes the Bretagnolle-Huber-Carol (1979) / Devroye (1987) finite-sample bound:
+  $\epsilon_m = \sqrt{\frac{2(K \ln 2 + \ln(4/\alpha))}{N_m}}$, yielding simultaneous confidence radius
+  $r_{\text{TV}} = \frac{1}{2}(\epsilon_p + \epsilon_q)$.
 
 ### Run 4: Boolean Bent Hidden Shift
 - **`bent_hidden_shift_circuit(n=6, shift=None)`** ($n$ qubits, $n \in \{4, 6, 8\}$): Constructs quadratic
@@ -229,21 +231,37 @@ peer-reviewed primary literature and verified repository artifacts:
    - **Hoeffding (1963)**, *Probability inequalities for sums of bounded random variables*, J. Amer. Statist. Assoc. 58, 13-30
      [DOI:10.1080/01621459.1963.10500830](https://doi.org/10.1080/01621459.1963.10500830) (`docs/notes/hoeffding-1963.md`):
      Establishes the non-parametric exponential concentration bound for bounded random variables in $[0, 1]$.
-   - **Bretagnolle-Huber-Carol / Devroye (1983)**: The finite-sample multinomial total variation inequality
-     $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (Bretagnolle, Huber, & Carol;
-     van der Vaart & Wellner 1996, *Weak Convergence and Empirical Processes*, Proposition A.6.6; Devroye 1983,
-     *The Equivalence of Weak, Strong and Complete Convergence in $L_1$ for Kernel Density Estimates*, Ann. Statist.
-     11(3), 896-904; Devroye, Gyorfi, & Lugosi 1996, *A Probabilistic Theory of Pattern Recognition*, Theorem 3.1),
-     which prevents false discovery from multinomial sampling noise on multi-outcome spaces.
+   - **Bretagnolle-Huber-Carol / Devroye (1987)**: The finite-sample multinomial total variation inequality
+     $\mathbb{P}(\|\hat{P} - P\|_1 \ge \epsilon) \le 2^K \exp(-n \epsilon^2 / 2)$ (Bretagnolle, Huber, & Carol 1979,
+     *Permutabilite et lois de transition*, Seminar on Probability, Lecture Notes in Math. 721, pp. 310-333;
+     van der Vaart & Wellner 1996, *Weak Convergence and Empirical Processes*, Proposition A.6.6; Devroye 1987,
+     *A Course in Density Estimation*, Birkhauser Boston, Theorem 2.1; Devroye, Gyorfi, & Lugosi 1996,
+     *A Probabilistic Theory of Pattern Recognition*, Theorem 3.1), which prevents false discovery from
+     multinomial sampling noise on multi-outcome spaces.
+
+6. **IBM Heron r2 Platform & Qiskit Architecture Grounding:**
+   - **Fractional Gates & Continuous ISA** (`docs/notes/ibm_quantum/fractional-gates.md`): Heron r2 native continuous
+     $R_{ZZ}(\theta)$ and $R_X(\theta)$ instructions alongside $\{RZ, \sqrt{X}, X, CZ\}$.
+   - **Dynamic Circuits & Mid-Circuit Execution** (`docs/notes/ibm_quantum/execute-dynamic-circuits.md`): Single-level
+     `if_test` conditionals, operands $\le 32$ bits, and mid-circuit readout/reset constraints.
+   - **Timing, Repetition Rate, and Stretch** (`docs/notes/ibm_quantum/repetition-rate-execution.md`,
+     `docs/notes/ibm_quantum/stretch.md`, `docs/notes/ibm_quantum/qiskit-runtime-circuit-timing.md`): Shot repetition
+     rates, relaxation delay tuning (`rep_delay` floor $10\text{--}50\,\mu\text{s}$), and QASM3 stretch timing.
+   - **Processor Topologies & Calibration Snapshots** (`docs/notes/ibm_quantum/qpu-information.md`,
+     `docs/notes/ibm_quantum/processor-types.md`, `docs/notes/ibm_heron_platform.md`,
+     `docs/evidence/heron_platform/targets.json`): 156-qubit heavy-hex lattice, tunable couplers, $dt = 4\,\text{ns}$
+     timing granularity, and machine-readable Target definitions for `ibm_fez`, `ibm_kingston`, and `ibm_marrakesh`.
+   - **Transpiler Stages & Pass Managers** (`docs/notes/ibm_quantum/transpiler-stages.md`,
+     `docs/notes/ibm_quantum/transpile-with-pass-managers.md`): Staged pass manager execution and layout synthesis.
 
 ## Limits and empirical boundaries
 
 - The $RZ \to CZ \to SX$ pattern detector (`flag_rz_cz_sx`) identifies consecutive executions on couplers
   exceeding the CZ error threshold (4e-3: 45, 35, and 52 couplers across Fez, Kingston, and Marrakesh).
 - The 156-qubit carpet characterization (`results/live/CAMPAIGN_FINDINGS.md` Section 7) observed that across 29 disconnected
-  3-qubit components totaling 87 gate-active transmons, 403 of 512 shots (78.7%, mean 1.36 violating replicas per shot)
-  exhibited support violations under simultaneous operation. While the campaign note cautions that these counts do not
-  isolate causal crosstalk mechanisms, this high violation rate reinforces the conservative design policy of enforcing
-  graph distance $\text{dist}_G \ge 2$ guard bands between all concurrent tiles on Heron r2.
+  3-qubit components totaling 87 gate-active transmons, 403 of 512 shots (78.7%, mean 1.357422 violating replicas per shot)
+  exhibited support violations under simultaneous operation. The campaign note explicitly cautions that these counts do not
+  isolate causal crosstalk mechanisms, so the observations are recorded as baseline operational support violations without
+  causal attribution.
 
 

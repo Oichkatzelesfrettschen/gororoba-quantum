@@ -23,7 +23,6 @@ from heron_multiprogramming import (  # noqa: E402
     hoeffding_model_discrimination,
     lcu_zero_product_witness,
     pathion_associator_spectrum_witness,
-    pathion_singular_sector_witness,
     sedenion_associator_witness,
     steane_coherent_syndrome_patch,
     steane_z_syndrome_patch,
@@ -267,7 +266,6 @@ class TestHeronMultiprogramming(unittest.TestCase):
         # Pathion associator spectrum witness on 5 qubits
         qc_pathion = pathion_associator_spectrum_witness(32, 1, 16)
         self.assertEqual(qc_pathion.num_qubits, 5)
-        self.assertEqual(pathion_singular_sector_witness(32, 1, 16).num_qubits, 5)
 
         with self.assertRaises(ValueError):
             sedenion_associator_witness(16, 2, 4)
@@ -302,13 +300,27 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertTrue((fano.sum(axis=1) == 3).all())
         self.assertTrue((fano.sum(axis=0) == 3).all())
 
-        # Dynamical decoupling on Steane Z syndrome patch with explicit delay window
-        qc_hahn = steane_z_syndrome_patch(1, dd_sequence="Hahn", idle_delay_dt=100)
-        self.assertGreater(qc_hahn.count_ops().get("delay", 0), 0)
-        self.assertGreater(qc_hahn.count_ops().get("x", 0), 5)
+        # Dynamical decoupling on Steane Z syndrome patch with CPMG-2 and XY4
+        sim = AerSimulator()
+        for dd in ("CPMG2", "Hahn", "XY4"):
+            for err_target in (None, 1):
+                qc = steane_z_syndrome_patch(err_target, dd_sequence=dd, idle_delay_dt=100)
+                counts = sim.run(qc, shots=50, seed_simulator=42).result().get_counts()
+                expected_syn = 0 if err_target is None else err_target + 1
+                self.assertEqual(counts, {f"0000000 {expected_syn:03b}": 50})
+
+        # Preserves idle_delay_dt=0 without forcing delay insertion
+        qc_zero_delay = steane_z_syndrome_patch(1, dd_sequence="CPMG2", idle_delay_dt=0)
+        self.assertEqual(qc_zero_delay.count_ops().get("delay", 0), 0)
+        self.assertEqual(qc_zero_delay.count_ops().get("x", 1), 1)
+
+        qc_cpmg = steane_z_syndrome_patch(1, dd_sequence="CPMG2", idle_delay_dt=100)
+        self.assertEqual(qc_cpmg.count_ops().get("delay", 0), 21)
+        self.assertEqual(qc_cpmg.count_ops().get("x", 0), 15)  # 2 X per 7 data qubits + 1 error
+
         qc_xy4 = steane_z_syndrome_patch(1, dd_sequence="XY4", idle_delay_dt=100)
-        self.assertGreater(qc_xy4.count_ops().get("delay", 0), 0)
-        self.assertGreater(qc_xy4.count_ops().get("y", 0), 5)
+        self.assertEqual(qc_xy4.count_ops().get("delay", 0), 35)
+        self.assertEqual(qc_xy4.count_ops().get("y", 0), 14)  # 2 Y per 7 data qubits
         with self.assertRaises(ValueError):
             steane_z_syndrome_patch(1, dd_sequence="invalid_dd")
 
@@ -341,6 +353,18 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertFalse(same_source["models_distinguishable"])
         self.assertEqual(same_source["tv_confidence_interval"][0], 0.0)
         self.assertGreater(same_source["multinomial_tv_radius"], same_source["total_variation_distance"])
+
+        # alphabet_size contracts
+        res_alpha = hoeffding_model_discrimination(sample_a, sample_b, alpha=0.01, alphabet_size=64)
+        self.assertEqual(res_alpha["k_bins"], 64)
+        self.assertGreater(res_alpha["multinomial_tv_radius"], same_source["multinomial_tv_radius"])
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=2)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=0)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(sample_a, sample_b, alphabet_size=-5)
+
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination({}, q)
         with self.assertRaises(ValueError):
