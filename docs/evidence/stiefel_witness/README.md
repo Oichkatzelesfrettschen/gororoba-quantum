@@ -42,13 +42,16 @@ GOROROBA_ROOT=/path/to/open_gororoba ROCQ="${ROCQ:-rocq}" \
 
 The replay requires the Rocq 9.2 / OCaml 5.5.0 toolchain of
 [toolchain.txt](toolchain.txt), the same one the C881 replay uses. It
-checks the evidence and open_gororoba source digests, copies the two
+checks the evidence digests, the open_gororoba source digest and the proof
+digest in [repo_sources.sha256](repo_sources.sha256), copies the two
 sources into temporary storage, compiles with `-w @all`, kernel-checks with
 `rocq check`, and compares all four outputs byte for byte. Compiling takes
 about 35 s; the independent kernel check takes about 4 minutes. Hosted CI
 supplies no Rocq toolchain, so CI verifies the retained bytes (`sha256sum
--c SHA256SUMS`), the generator's re-render, the Python identity and
-shellcheck. A retained receipt records this run; a later kernel check is a
+-c SHA256SUMS`), the proof digest in `repo_sources.sha256`, the generator's
+re-render, the Python identity and shellcheck. A regenerated proof therefore
+fails CI until a successful replay refreshes `repo_sources.sha256` and the
+receipts. A retained receipt records this run; a later kernel check is a
 fresh replay.
 
 open_gororoba's own build pins Rocq 9.1.1 with Flocq through

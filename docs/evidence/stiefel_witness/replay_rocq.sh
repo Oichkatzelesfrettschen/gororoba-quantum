@@ -17,6 +17,7 @@ if [ "$version" != "$(cat "$evidence_dir/toolchain.txt")" ]; then
 fi
 (cd "$evidence_dir" && sha256sum --strict -c SHA256SUMS >/dev/null)
 (cd "$GOROROBA_ROOT" && sha256sum --strict -c "$evidence_dir/source_hashes.sha256" >/dev/null)
+(cd "$repository_root" && sha256sum --strict -c "$evidence_dir/repo_sources.sha256" >/dev/null)
 proof_tmp=$(mktemp -d "${TMPDIR:-/tmp}/quantum-stiefel-witness.XXXXXXXX")
 trap 'find "$proof_tmp" -depth -delete' 0
 trap 'exit 1' HUP INT TERM

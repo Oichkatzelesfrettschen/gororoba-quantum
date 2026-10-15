@@ -2152,6 +2152,14 @@
    "name": "sources-244",
    "seconds": 0.1,
    "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": ".",
+   "cmd": "sha256sum -c docs/evidence/stiefel_witness/repo_sources.sha256",
+   "name": "sources-245",
+   "seconds": 0.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
