@@ -64,6 +64,35 @@ all 21 jobs, with 110 s reported as `later_program_charge_seconds`.
   to about 0.17 rad, so the +0.054 rad is not a resolved measurement-induced
   phase.
 
+## Rank-sector estimation endpoints
+
+`scripts/rank_sector_endpoint_decomposition.py` (gate core-269, output
+`rank-sector-endpoint-decomposition.json`) decomposes the 196 rank-sector
+contracts. 20 are directional tests and all 20 reject on both devices; the
+other 176 are precision estimates with no null (160 success means and 16
+packed-minus-isolated differences), so "20 of 196" is 20 of 20.
+
+- **Model gap.** Outside one weak lane per device, the ideal-one endpoints
+  measure 0.900 on both ibm_kingston and ibm_fez against calibrated models of
+  0.942 and 0.932, and the ideal-zero (annihilation) endpoints measure 0.057
+  and 0.053 against 0.030 and 0.039. The delivered performance agrees across
+  devices; the reported calibration is optimistic, more so on Kingston. The
+  packed-minus-isolated differences sit at 0 with half-widths near 0.069,
+  which cannot resolve a 0.03 to 0.04 gap, so packing crosstalk of that size
+  is not excluded.
+- **Weak lane.** Kingston sector 4 (qubits 0 to 3) holds 15 of Kingston's 29
+  off-model means, its ideal-one endpoints near 0.64, and Fez sector 2
+  (qubits 2, 3, 4 and 16) holds 7 of Fez's 11. All eight endpoints that
+  separate the devices lie in these lanes, and Kingston ripple lane 6
+  (qubits 1 to 4 and 16) is the only ripple lane weaker on Kingston than on
+  Fez (median box-kite contrast 0.558 against 0.663). The reported
+  calibration of qubits 0 to 3 is nominal and unchanged across the 20:25 PDT
+  recalibration, and every sector, sector 4 included, is stationary along
+  shot order (mean chi-square per degree of freedom 0.82 to 1.06 over eight
+  blocks), so the loss is steady within the job. Its cause is unresolved;
+  the readout and Ramsey baseline of the corner (`qubit_baseline`) is the
+  discriminating measurement.
+
 ## Planning at source 71decdf
 
 All four records below were planned at source `71decdf` with

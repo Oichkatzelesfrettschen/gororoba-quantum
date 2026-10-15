@@ -1,0 +1,449 @@
+{
+ "contract_kinds": {
+  "packing_difference": 16,
+  "success_mean": 160,
+  "test": 20
+ },
+ "devices": {
+  "ibm_fez": {
+   "bright_outside_weak_sector": {
+    "count": 27,
+    "measured": 0.8999,
+    "model": 0.9321
+   },
+   "dark_all": {
+    "count": 44,
+    "measured": 0.0535,
+    "model": 0.0401
+   },
+   "dark_outside_weak_sector": {
+    "count": 42,
+    "measured": 0.053,
+    "model": 0.0385
+   },
+   "off_model_by_probe": {
+    "basis": 2,
+    "bright": 2,
+    "bright_at_one": 5,
+    "kernel_at_one": 1,
+    "pulse_zero_two": 1
+   },
+   "off_model_by_sector": {
+    "1": 1,
+    "2": 7,
+    "7": 3
+   },
+   "off_model_endpoints": 11,
+   "packing_differences": {
+    "rank_sector_0_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0,
+     "half_width": 0.0687
+    },
+    "rank_sector_0_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0151,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0073,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0107,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0073,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0122,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0046,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0054,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_bright_t1d1_packed_minus_reference": {
+     "estimate": 0.0005,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0007,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0059,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0059,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0076,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_bright_t1d1_packed_minus_reference": {
+     "estimate": 0.0054,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0085,
+     "half_width": 0.0687
+    }
+   },
+   "tests": 20,
+   "tests_rejecting": 20,
+   "weak_sector": 2,
+   "weak_sector_qubits": [
+    2,
+    3,
+    4,
+    16
+   ]
+  },
+  "ibm_kingston": {
+   "bright_outside_weak_sector": {
+    "count": 22,
+    "measured": 0.8999,
+    "model": 0.9423
+   },
+   "dark_all": {
+    "count": 44,
+    "measured": 0.0573,
+    "model": 0.0288
+   },
+   "dark_outside_weak_sector": {
+    "count": 35,
+    "measured": 0.0566,
+    "model": 0.0301
+   },
+   "off_model_by_probe": {
+    "basis": 2,
+    "bright": 9,
+    "bright_at_one": 5,
+    "kernel_at_one": 1,
+    "persistent_kernel": 3,
+    "pulse_one_two": 3,
+    "pulse_zero_two": 6
+   },
+   "off_model_by_sector": {
+    "0": 1,
+    "1": 2,
+    "2": 4,
+    "3": 1,
+    "4": 15,
+    "5": 3,
+    "6": 1,
+    "7": 2
+   },
+   "off_model_endpoints": 29,
+   "packing_differences": {
+    "rank_sector_0_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0034,
+     "half_width": 0.0687
+    },
+    "rank_sector_0_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0081,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": 0.0085,
+     "half_width": 0.0687
+    },
+    "rank_sector_1_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0051,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0325,
+     "half_width": 0.0687
+    },
+    "rank_sector_2_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0042,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_bright_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0024,
+     "half_width": 0.0687
+    },
+    "rank_sector_3_kernel_at_one_t1d1_packed_minus_reference": {
+     "estimate": -0.0083,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_bright_t1d1_packed_minus_reference": {
+     "estimate": 0.0879,
+     "half_width": 0.0687
+    },
+    "rank_sector_4_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": -0.0071,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.011,
+     "half_width": 0.0687
+    },
+    "rank_sector_5_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": -0.0012,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0007,
+     "half_width": 0.0687
+    },
+    "rank_sector_6_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0022,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_bright_t1d1_packed_minus_reference": {
+     "estimate": -0.0056,
+     "half_width": 0.0687
+    },
+    "rank_sector_7_persistent_kernel_t1d1_packed_minus_reference": {
+     "estimate": 0.0017,
+     "half_width": 0.0687
+    }
+   },
+   "tests": 20,
+   "tests_rejecting": 20,
+   "weak_sector": 4,
+   "weak_sector_qubits": [
+    0,
+    1,
+    2,
+    3
+   ]
+  }
+ },
+ "inputs_sha256": {
+  "2026-10-13T025444.603480Z/collect.json": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13",
+  "2026-10-13T031726.380783Z/record.json": "5563c7e59b7e3a90d49cecefed223d354afcbbbacc121d7d2f3899455c6e37f6",
+  "2026-10-13T032011.664435Z/collect.json": "a0a4e59162ea9837322842a7e9094ef46761164b8a47a2917081338ec4b7c963",
+  "2026-10-15T030638.132007Z/record.json": "fbc8826e6dfcd3924ab57f076912b7cc7edbf3675916e5dea7d2e9c18415f6e9",
+  "2026-10-15T030903.235380Z/collect.json": "daa5b9eb360ee7ac639a6a2195c092ca11fb63c22940e882934d9a1a83d66fe9",
+  "2026-10-15T031229.371738Z/calibration-scoped-analysis.json": "879692e07df3594a4ab61c949ecba941a253bed3caae166c31a5d47c639f2808"
+ },
+ "kingston_shot_order_stationarity": {
+  "0": {
+   "max_chi2_per_dof": 1.917,
+   "mean_chi2_per_dof": 0.823,
+   "members": 22
+  },
+  "1": {
+   "max_chi2_per_dof": 2.018,
+   "mean_chi2_per_dof": 1.063,
+   "members": 22
+  },
+  "2": {
+   "max_chi2_per_dof": 1.966,
+   "mean_chi2_per_dof": 1.064,
+   "members": 22
+  },
+  "3": {
+   "max_chi2_per_dof": 1.745,
+   "mean_chi2_per_dof": 0.819,
+   "members": 22
+  },
+  "4": {
+   "max_chi2_per_dof": 1.873,
+   "mean_chi2_per_dof": 0.835,
+   "members": 22
+  },
+  "5": {
+   "max_chi2_per_dof": 2.305,
+   "mean_chi2_per_dof": 0.895,
+   "members": 22
+  },
+  "6": {
+   "max_chi2_per_dof": 1.665,
+   "mean_chi2_per_dof": 1.0,
+   "members": 22
+  },
+  "7": {
+   "max_chi2_per_dof": 2.372,
+   "mean_chi2_per_dof": 0.921,
+   "members": 22
+  }
+ },
+ "kingston_vs_fez_separated": [
+  "rank_sector_2_bright_at_one_t1d1_success",
+  "rank_sector_4_bright_t0d1_success",
+  "rank_sector_4_bright_t1d1_success",
+  "rank_sector_4_bright_t1d2_success",
+  "rank_sector_4_bright_t2d1_success",
+  "rank_sector_4_bright_t3d2_success",
+  "rank_sector_4_pulse_one_two_t0d1_success",
+  "rank_sector_4_pulse_zero_two_t1d1_success"
+ ],
+ "ripple_lanes": {
+  "ibm_fez": {
+   "0": {
+    "box_kite_median": 0.481,
+    "contrasts": 12,
+    "qubits": [
+     112,
+     113,
+     114,
+     115,
+     119
+    ]
+   },
+   "1": {
+    "box_kite_median": 0.6685,
+    "contrasts": 12,
+    "qubits": [
+     86,
+     87,
+     88,
+     89,
+     97
+    ]
+   },
+   "2": {
+    "box_kite_median": 0.6338,
+    "contrasts": 12,
+    "qubits": [
+     24,
+     25,
+     26,
+     37,
+     45
+    ]
+   },
+   "3": {
+    "box_kite_median": 0.5356,
+    "contrasts": 12,
+    "qubits": [
+     130,
+     131,
+     132,
+     138,
+     151
+    ]
+   },
+   "4": {
+    "box_kite_median": 0.6367,
+    "contrasts": 12,
+    "qubits": [
+     50,
+     51,
+     52,
+     58,
+     71
+    ]
+   },
+   "5": {
+    "box_kite_median": 0.5386,
+    "contrasts": 12,
+    "qubits": [
+     126,
+     127,
+     128,
+     137,
+     147
+    ]
+   },
+   "6": {
+    "box_kite_median": 0.6626,
+    "contrasts": 12,
+    "qubits": [
+     103,
+     104,
+     105,
+     106,
+     117
+    ]
+   }
+  },
+  "ibm_kingston": {
+   "0": {
+    "box_kite_median": 0.585,
+    "contrasts": 12,
+    "qubits": [
+     117,
+     124,
+     125,
+     126,
+     127
+    ]
+   },
+   "1": {
+    "box_kite_median": 0.7358,
+    "contrasts": 12,
+    "qubits": [
+     107,
+     108,
+     109,
+     110,
+     118
+    ]
+   },
+   "2": {
+    "box_kite_median": 0.7261,
+    "contrasts": 12,
+    "qubits": [
+     32,
+     33,
+     34,
+     35,
+     39
+    ]
+   },
+   "3": {
+    "box_kite_median": 0.6987,
+    "contrasts": 12,
+    "qubits": [
+     100,
+     101,
+     102,
+     103,
+     116
+    ]
+   },
+   "4": {
+    "box_kite_median": 0.7158,
+    "contrasts": 12,
+    "qubits": [
+     138,
+     150,
+     151,
+     152,
+     153
+    ]
+   },
+   "5": {
+    "box_kite_median": 0.6746,
+    "contrasts": 12,
+    "qubits": [
+     50,
+     51,
+     52,
+     58,
+     71
+    ]
+   },
+   "6": {
+    "box_kite_median": 0.5576,
+    "contrasts": 12,
+    "qubits": [
+     1,
+     2,
+     3,
+     4,
+     16
+    ]
+   }
+  }
+ },
+ "schema": "rank-sector-endpoint-decomposition-v1",
+ "scope": "Descriptive decomposition of collected estimation endpoints; no threshold here is preregistered.",
+ "source_sha256": "4e51ddd8cfb13faf39f26d1cbbe06e46565b41cb5a00a72e541253706f1c52fb"
+}
