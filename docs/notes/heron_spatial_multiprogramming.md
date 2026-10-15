@@ -218,8 +218,8 @@ repository source notes, registered preprints, and verified platform artifacts:
      [arXiv:2102.01682](https://arxiv.org/abs/2102.01682) (Phys. Rev. Lett. 127, 100501; `docs/notes/2102.01682.md`,
      `docs/pdf/2102.01682.pdf`): Demonstrates physical dynamic circuits and feed-forward on superconducting transmons,
      balancing mid-circuit measurement against coherent routing.
-   - **Rudinger et al. (2021)**, *Characterizing mid-circuit measurements on a superconducting qubit using gate set tomography*,
-     [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (Phys. Rev. Applied 17, 014014; `docs/notes/2103.03008.md`,
+   - **Rudinger et al. (2022)**, *Characterizing mid-circuit measurements on a superconducting qubit using gate set tomography*,
+     [arXiv:2103.03008](https://arxiv.org/abs/2103.03008) (2021; Phys. Rev. Applied 17, 014014, 2022; `docs/notes/2103.03008.md`,
      `docs/local_source_cache/2103.03008v1.pdf`): Quantum-instrument tomography characterizing mid-circuit measurement operations.
 
 4. **Boolean Bent Hidden Shift Algorithms:**
