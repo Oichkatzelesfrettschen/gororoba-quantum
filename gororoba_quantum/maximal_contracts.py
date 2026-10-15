@@ -254,11 +254,11 @@ def _verify_isolation_contract() -> None:
         "PlacementJudge must accept a full placement whose core X duration matches",
     )
 
-    # The spectator wavefront is an opt-in campaign outside the default suite.
+    # The spectator wavefront and the qubit baseline are opt-in campaigns outside the default suite.
     default_names = {group.name for group in experiment_groups()}
     standalone_names = {group.name for group in standalone_campaign_groups()}
     _require(
-        standalone_names == {"spectator_wavefront_ramsey"} and not default_names & standalone_names,
+        standalone_names == {"spectator_wavefront_ramsey", "qubit_baseline"} and not default_names & standalone_names,
         "the opt-in campaigns must stay outside the default suite",
     )
 
