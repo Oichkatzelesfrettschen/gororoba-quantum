@@ -1,21 +1,21 @@
 {
   "account_reserve_seconds": 60,
   "account_usage_observation": {
-    "usage_consumed_seconds": 320,
+    "usage_consumed_seconds": 334,
     "usage_limit_seconds": 600,
     "usage_period": {
-      "end_time": "2026-10-15T03:39:11.110Z",
-      "start_time": "2026-09-17T03:39:11.110Z"
+      "end_time": "2026-10-15T07:13:13.771Z",
+      "start_time": "2026-09-17T07:13:13.771Z"
     },
-    "usage_remaining_seconds": 280
+    "usage_remaining_seconds": 266
   },
-  "acquisition_count": 13,
-  "final_charge_seconds": "320",
+  "acquisition_count": 15,
+  "final_charge_seconds": "334",
   "historical_charge_seconds": "49",
-  "indexed_metrics_snapshots": 21,
-  "indexed_raw_data_files": 488,
-  "inventory_sha256": "fb7e5b24332a2789742a57728cdc1eec604113d8cd791c5fb7ba955b8033693e",
-  "job_count": 21,
+  "indexed_metrics_snapshots": 23,
+  "indexed_raw_data_files": 511,
+  "inventory_sha256": "aad17ae6c943939ece30119b1c9766be6c5cadc8a57003c9729d89668bc635b8",
+  "job_count": 23,
   "jobs": [
     {
       "backend": "ibm_kingston",
@@ -1093,18 +1093,97 @@
         "running": "2026-10-15T03:31:45.960477Z"
       },
       "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T07:09:05.987071+00:00",
+      "final_qpu_charge_seconds": 4,
+      "input_schema_version": "v2.0",
+      "job_id": "db87o48r1c5c738lu8jg",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 7,
+      "raw_data_files": 8,
+      "run": "results/live/2026-10-15T070847.644554Z",
+      "shots_per_pub": 1024,
+      "source_files": {
+        "results/live/2026-10-15T070847.644554Z/collect.json": "6de1c2f96ef316cc762f53f826f604cfbf74b3d6d364c36a9ea948e6d1f8a4f3",
+        "results/live/2026-10-15T070847.644554Z/isa.qpy": "f69e1e61381e9388cfddcc3648976f359d2d1002d4b55b106a7dce19d4e2290f",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/index.json": "15910378f2842d8b59b52fb1105ca0c0ae4d26a3b51c7fdb73e238fd73ea43af",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/job_metrics.json": "42c81dff9dceda0d0a6290ee9c5b3f28ef6d4d105c6d10d03d3c0ab1f8b16ffe",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_00.json": "8c2ad412d5184540fe870ebd5b0da583715c3dbc4ae3f5072757294a30940ebd",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_01.json": "1baaa0e3e1e431e18498a2a9cff655980811f649a2f8ccc8348e7d2ecb8c15ad",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_02.json": "624fcb705556b19903df6220e6fd80990123170a0b7c73f3e2a914131c0d5309",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_03.json": "fb2c245fd5110064d09a1fc8cb4c0f9240cb11b1e5909538ed0239c9a3e6de16",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_04.json": "9f8dc9de2c38ae3b20825678b854194b6291d500ceee3f0d80e2eea9cc81bc3a",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_05.json": "ac11d309bf5969362bc84d471555f3de2eb9ed36c3b771f481891a0cdbb5a3b9",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/pub_06.json": "6f21d553cda8ef71313809199344ffb1c36a8dd86ac3bceafc93f0074393ee42",
+        "results/live/2026-10-15T070847.644554Z/raw/db87o48r1c5c738lu8jg/result_metadata.json": "8b5b7925ac49694af23fc90d9d562eac8a0c51066102304aa1541aae33e5fdde",
+        "results/live/2026-10-15T070847.644554Z/record.json": "9bb872bf20dd664489afa2b423aefe102042f4be2747abc60765b6947af45733"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 7168,
+      "timestamps": {
+        "created": "2026-10-15T07:09:05.987071Z",
+        "finished": "2026-10-15T07:10:25.840536Z",
+        "running": "2026-10-15T07:09:35.05909Z"
+      },
+      "usage_status": "complete"
+    },
+    {
+      "backend": "ibm_kingston",
+      "created_at": "2026-10-15T07:09:23.618399+00:00",
+      "final_qpu_charge_seconds": 10,
+      "input_schema_version": "v2.0",
+      "job_id": "db87o8or1c5c738lu910",
+      "metrics_snapshots": 1,
+      "provenance": "registered_collection",
+      "pub_count": 14,
+      "raw_data_files": 15,
+      "run": "results/live/2026-10-15T070853.550532Z",
+      "shots_per_pub": 2048,
+      "source_files": {
+        "results/live/2026-10-15T070853.550532Z/collect.json": "2d6b3b2eeb9dd3aadc29f524f51e233c2d259ce508690bf28f63d83aea410696",
+        "results/live/2026-10-15T070853.550532Z/isa.qpy": "c8996f472748a40ae516c130b8b351894ce34aec9de92226af4d8b0db8327bd7",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/index.json": "6a5a047079a34fa78f4fb1dc3a5453d7f9742b36a9ce568f627bdd62d2cc0d91",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/job_metrics.json": "5dd0126b9a850d46d812a3887bb820ed17dccb2542a140c173c412c29ed62566",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_00.json": "098620b4f07fa038c54f7369bbe05a9cc695c5ed647cc6cb222d704d0e1e3c57",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_01.json": "de7d8fa3dcd9e66fb6631bd2d933d2c16f42ce30de68b344ee00ee34845220fb",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_02.json": "9e399f476c83dc61e8fa51fbd6d437795910a914c97621f5270d928f761791b6",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_03.json": "df992cdcb92ac60dd6ea69bbfaa296b503f8237a31b3b15997559d84c5249d32",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_04.json": "02b1ad6165f5666f3aba694d0dd4a9196e9da8396d8c8223c92e7472eeeda3b5",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_05.json": "3d7cc235f1b1f7a7dfeb86a9f3bf15d6416c41fd822484c6ec1bc13528e5be44",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_06.json": "c246c3fdce209c284eaf5bf4ff7835dfb1579497b0f2a523c8882de6db762e55",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_07.json": "bc84bba2d21307fcb9029184c730c119f8d0a6e30019dbe5ae781e6e89855e40",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_08.json": "656c859dfd1355463fa0fd52257f05388f5ff54b1b03bd3acc84a4cb94c66579",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_09.json": "43e5686fe74d6b40a85644cd149f71d2223c2642ad6f370f152c44c8e90f5006",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_10.json": "de9ec1c14fe2249a600a1ca056ee10b590c7276258f9e02d2f42590462dbcbef",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_11.json": "d0019e4b7bb0ec5d108c878e10814e8cb9bc811c7a640d15d141508b4fc2a5bf",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_12.json": "cb8966f57e7936bdca59517bdc69232ff9358a4b0902967c34102e2bc3dd7244",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/pub_13.json": "2560a14de6313051e5c4565e8c7f466b29bd3f50c6a6103cc061fcdce9828055",
+        "results/live/2026-10-15T070853.550532Z/raw/db87o8or1c5c738lu910/result_metadata.json": "63b37001ce9d4b13bb41c30b9b362659c0bec5fe49520774403e45357ba2c362",
+        "results/live/2026-10-15T070853.550532Z/record.json": "22c078143a9e266123ad0f9acba9f3c234ac1c6522aa3e669eb4a579aee32c65"
+      },
+      "status": "DONE",
+      "submitted_pub_shots": 28672,
+      "timestamps": {
+        "created": "2026-10-15T07:09:23.618399Z",
+        "finished": "2026-10-15T07:10:35.268318Z",
+        "running": "2026-10-15T07:09:40.417956Z"
+      },
+      "usage_status": "complete"
     }
   ],
-  "later_program_charge_seconds": "110",
+  "later_program_charge_seconds": "124",
   "new_campaign_ceiling_seconds": 180,
   "new_campaign_charge_seconds": "161",
   "new_campaign_cutoff": "2026-10-14T00:00:00Z",
-  "observed_at": "2026-10-15T03:39:11.165735+00:00",
-  "pub_count": 467,
+  "observed_at": "2026-10-15T07:13:13.827472+00:00",
+  "pub_count": 488,
   "replay_source_sha256": "c81037a0fcc3deb7d1cbc6f849c2353b85a552cc8f057b4a714bc74c6b0f6174",
   "schema": "qpu-job-retention-audit-v1",
   "scope": "All jobs in the retained service inventory have lossless raw archives. Offline replay establishes retained coverage at the observation time; subsequent live jobs require a fresh inventory.",
-  "submitted_pub_shots": 1020928,
+  "submitted_pub_shots": 1056768,
   "unallocated_campaign_seconds": "19",
-  "usage_window_charge_seconds": "320"
+  "usage_window_charge_seconds": "334"
 }
