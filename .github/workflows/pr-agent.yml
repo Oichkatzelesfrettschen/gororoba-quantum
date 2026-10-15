@@ -1,0 +1,32 @@
+name: PR Agent (manual)
+
+on:
+  issue_comment:
+    types: [created]
+
+permissions:
+  pull-requests: write
+  issues: write
+  contents: read
+
+jobs:
+  pr_agent_job:
+    if: >-
+      github.event.issue.pull_request &&
+      (github.event.comment.author_association == 'OWNER' ||
+        github.event.comment.author_association == 'MEMBER' ||
+        github.event.comment.author_association == 'COLLABORATOR') &&
+      (startsWith(github.event.comment.body, '/review') ||
+        startsWith(github.event.comment.body, '/describe') ||
+        startsWith(github.event.comment.body, '/improve') ||
+        startsWith(github.event.comment.body, '/ask'))
+    runs-on: ubuntu-latest
+    steps:
+      - name: PR Agent
+        uses: The-PR-Agent/pr-agent@main
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GROQ.KEY: ${{ secrets.GROQ_API_KEY }}
+          config.model: "groq/openai/gpt-oss-120b"
+          config.fallback_models: '["groq/qwen/qwen3-32b"]'
+          config.custom_model_max_tokens: "131072"
