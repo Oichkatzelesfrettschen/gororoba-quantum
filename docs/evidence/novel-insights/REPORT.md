@@ -9,9 +9,15 @@ named here decide them.
 
 **Kingston coherence window** (`2026-10-15T030748.903241Z/coherence-analysis.json`):
 - The matched idle adds 4.392 us of exposure and rotates the branch-signed
-  coherence by -1.130 rad. That is 40.9 kHz if the phase does not wind by a
-  further 2 pi during the idle. The analyzer keeps those winding alternatives
-  open, so 40.9 kHz is the slowest consistent rate, not a measured one.
+  coherence by -1.130 rad.
+- The coherence is `rho_{01,10}` of the work pair: work_a on qubit 68 and
+  work_b on qubit 66, with spectator 67 between them in |0>. It is an
+  odd-sector coherence, so it winds at the detuning difference
+  `omega_68 - omega_66`.
+- The -1.130 rad is therefore a 40.9 kHz difference between the two work
+  qubits, provided the phase does not wind by a further 2 pi during the
+  idle. The analyzer keeps those winding alternatives open, so 40.9 kHz is the
+  slowest consistent difference, not a measured single-qubit rate.
 - The rotation is the same in both branch strata:
   - b0 = 0: -1.133 - (-0.011) = -1.122 rad;
   - b0 = 1: 1.981 - 3.122 = -1.141 rad.
@@ -22,14 +28,15 @@ named here decide them.
 
 **Fez N21 orbit** (`N21_ORBIT_RCA.md`):
 - The fitted phase of +0.59 rad over the 1187 dt mean feedback-arm idle
-  corresponds to 19.8 kHz (23.5 kHz on the repeat).
+  corresponds to 19.8 kHz (23.5 kHz on the repeat). That too is a phase of
+  the work superposition, so it combines the work qubits' detunings.
 - The echo arm's +0.17 rad over 532 dt of unrefocused idle corresponds to
   12.7 kHz.
 - The orbit law sees only the summed phase, so these rates assume the whole
   phase accrues on the idle window. They are scale estimates from a model
   fit.
 
-**Verdict:** both observations fit quasi-static detunings of tens of kHz,
+**Verdict:** both observations fit quasi-static detuning differences of tens of kHz,
 which backend properties do not report: Heron reports no qubit frequency, and
 an echo-based T2 refocuses such detunings. They come from different devices,
 qubits, days and circuits, so they show a recurring scale, not one
@@ -40,10 +47,14 @@ replicas the fitted phase spreads from -0.26 to +0.50 rad (standard deviation
 (`walk-control-scaffolding/exposure.json`).
 
 **Test:** the conditional Ramsey design (`docs/notes/conditional_ramsey_hamiltonian.md`)
-is this measurement. It gives `omega_A`, `omega_B` and `J` of one pair over
-several delays, which resolves winding, and its falsifier tests the static
-diagonal model. Pointed at the coherence-window patch, it tests whether that
-patch's -1.130 rad is a frame detuning.
+is this measurement. It gives `omega_A`, `omega_B` and `J` of one coupled
+pair over a delay ladder that resolves winding to 1 MHz, and its falsifier
+tests the static diagonal model. Work qubits 68 and 66 are not coupled to
+each other; both couple to spectator 67. Runs on the pairs (68, 67) and
+(66, 67) therefore give both work detunings, the spectator's, and each
+work-spectator J. Together they predict the window's rotation rate as
+`nu_68|67=0 - nu_66|67=0`, and so test whether the -1.130 rad is a frame
+detuning difference.
 
 ## 2. The first-bit stratum is not state-independent assignment (exploratory, sharpened)
 
