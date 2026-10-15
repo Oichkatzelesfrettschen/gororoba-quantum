@@ -1,0 +1,161 @@
+{
+ "executor": {
+  "chunk_timing": [
+   {
+    "parts": [
+     {
+      "idx_item": 0,
+      "size": 1
+     },
+     {
+      "idx_item": 1,
+      "size": 1
+     },
+     {
+      "idx_item": 2,
+      "size": 1
+     },
+     {
+      "idx_item": 3,
+      "size": 1
+     },
+     {
+      "idx_item": 4,
+      "size": 1
+     },
+     {
+      "idx_item": 5,
+      "size": 1
+     },
+     {
+      "idx_item": 6,
+      "size": 1
+     },
+     {
+      "idx_item": 7,
+      "size": 1
+     },
+     {
+      "idx_item": 8,
+      "size": 1
+     },
+     {
+      "idx_item": 9,
+      "size": 1
+     },
+     {
+      "idx_item": 10,
+      "size": 1
+     },
+     {
+      "idx_item": 11,
+      "size": 1
+     },
+     {
+      "idx_item": 12,
+      "size": 1
+     },
+     {
+      "idx_item": 13,
+      "size": 1
+     },
+     {
+      "idx_item": 14,
+      "size": 1
+     },
+     {
+      "idx_item": 15,
+      "size": 1
+     },
+     {
+      "idx_item": 16,
+      "size": 1
+     },
+     {
+      "idx_item": 17,
+      "size": 1
+     },
+     {
+      "idx_item": 18,
+      "size": 1
+     },
+     {
+      "idx_item": 19,
+      "size": 1
+     },
+     {
+      "idx_item": 20,
+      "size": 1
+     },
+     {
+      "idx_item": 21,
+      "size": 1
+     },
+     {
+      "idx_item": 22,
+      "size": 1
+     },
+     {
+      "idx_item": 23,
+      "size": 1
+     },
+     {
+      "idx_item": 24,
+      "size": 1
+     },
+     {
+      "idx_item": 25,
+      "size": 1
+     }
+    ],
+    "start": "2026-10-15T03:32:50.400722+00:00",
+    "stop": "2026-10-15T03:33:20.545735+00:00"
+   }
+  ]
+ },
+ "options": {
+  "default_shots": 4096,
+  "dynamical_decoupling": {
+   "enable": false,
+   "extra_slack_distribution": "middle",
+   "scheduling_method": "alap",
+   "sequence_type": "XX",
+   "skip_reset_qubits": false
+  },
+  "environment": {
+   "image": null,
+   "job_tags": [
+    "gororoba-quantum",
+    "gororoba-run-291735cc876bb362b249",
+    "gororoba-batch-d91964bffd6e2524968a40ae"
+   ],
+   "log_level": "WARNING",
+   "max_execution_time": null,
+   "private": false
+  },
+  "execution": {
+   "init_qubits": true,
+   "meas_type": "classified",
+   "rep_delay": 0.00025,
+   "scheduler_timing": true,
+   "stretch_values": false
+  },
+  "experimental": {},
+  "max_execution_time": 37,
+  "simulator": {
+   "angle_decimals": 5,
+   "layer_noise_model": null,
+   "seed_simulator": null,
+   "warn_absent": true
+  },
+  "twirling": {
+   "enable_gates": false,
+   "enable_measure": false,
+   "group": "pauli",
+   "num_randomizations": "auto",
+   "shots_per_randomization": "auto",
+   "strategy": "active-accum"
+  }
+ },
+ "shots": 4096
+}
