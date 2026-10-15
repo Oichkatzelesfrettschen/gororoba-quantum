@@ -941,6 +941,49 @@ def _compile(qc: QuantumCircuit, snap: Snapshot, seed: int, layout: list[int] | 
         raise CompilePanic(f"{snap.name}: transpiler panic ({error})") from None
 
 
+def component_layouts(snap: Snapshot, width: int) -> list[list[int]]:
+    """Connected initial layouts, one inside each placeable component that holds width qubits.
+
+    Sabre layout panics (petgraph capacity overflow) on an admission Target
+    whose placeable qubits form small islands, as an operator exclusion that
+    leaves a few tiles does, while routing from a fixed layout inside one
+    connected component stays within it. Each component contributes its
+    first width qubits in breadth-first order from its lowest index, with
+    neighbours visited in ascending order, so the layout is connected and
+    deterministic; node indices are physical qubits.
+    """
+    if snap.admission_target is None:
+        snap.admission_target = build_admission_target(snap)
+    placeable = packing.coupling_graph(snap.admission_target, snap.backend.num_qubits)
+    placeable.remove_nodes_from(sorted(snap.excluded_qubits))
+    layouts = []
+    for component in sorted(rx.connected_components(placeable), key=min):
+        if len(component) < width:
+            continue
+        order, frontier = [min(component)], [min(component)]
+        while frontier and len(order) < width:
+            node = frontier.pop(0)
+            for neighbour in sorted(placeable.neighbors(node)):
+                if neighbour not in order:
+                    order.append(neighbour)
+                    frontier.append(neighbour)
+        layouts.append(order[:width])
+    return layouts
+
+
+def _compile_primary(qc: QuantumCircuit, snap: Snapshot, seed: int) -> QuantumCircuit:
+    """_compile with Sabre's own layout, or from component_layouts when that layout panics."""
+    try:
+        return _compile(qc, snap, seed)
+    except CompilePanic:
+        for layout in component_layouts(snap, qc.num_qubits):
+            try:
+                return _compile(qc, snap, seed, layout)
+            except (QiskitError, ValueError):
+                continue
+        raise
+
+
 def _bind(isa: QuantumCircuit, member: Member) -> QuantumCircuit:
     """Bind the shared ISA while preserving its exact compiled global phase.
 
@@ -1773,7 +1816,7 @@ def select_candidates(group: Group, snaps: list[Snapshot], seeds: int, log: dict
         primary = group.members[0]
         for seed in range(SEED_TRANSPILER, SEED_TRANSPILER + seeds):
             try:
-                isa = _compile(primary.circuit, snap, seed)
+                isa = _compile_primary(primary.circuit, snap, seed)
             except (QiskitError, ValueError) as error:
                 trace.append({"seed": seed, "compile_error": type(error).__name__})
                 continue

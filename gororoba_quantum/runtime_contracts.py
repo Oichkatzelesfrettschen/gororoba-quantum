@@ -2878,6 +2878,21 @@ def _verify_operator_qubit_exclusion() -> None:
         raise RuntimeError("an exclusion outside the backend is accepted")
 
 
+def _verify_fragmented_target_layout() -> None:
+    """A group placed on a few operator-allowed tiles compiles from a layout seeded inside them."""
+    service = _ProbeService([_ProbeBackend("viable", FakeFez())])
+    tile = {0, 1, 2, 3, 4}
+    snapshots, _, _ = discover_snapshots(service, None, None, operator_excluded={"viable": set(range(156)) - tile})
+    layouts = live_run_module.component_layouts(snapshots[0], 3)
+    if layouts != [[0, 1, 2]]:
+        raise RuntimeError(f"component layouts on the 0-4 line read {layouts}")
+    group = next(group for group in experiment_groups() if group.name == "design_a")
+    choice = select(group, snapshots, 1, {}, SINGLE_REPLICA_POLICY)
+    placed = {q for replica in choice.replicas for q in replica.qubits}
+    if not placed or not placed <= tile:
+        raise RuntimeError(f"design_a on the 0-4 tile placed {sorted(placed)}")
+
+
 def _verify_compile_panic_isolation() -> None:
     """A transpiler panic on one backend is one recorded compile failure, not a crashed plan."""
 
@@ -3221,6 +3236,7 @@ def _verify() -> None:
     _verify_approved_backend_scope()
     _verify_operator_qubit_exclusion()
     _verify_compile_panic_isolation()
+    _verify_fragmented_target_layout()
     _verify_packed_replica_split()
     _verify_packing_global_phase()
     _verify_packed_static_stays_static()
