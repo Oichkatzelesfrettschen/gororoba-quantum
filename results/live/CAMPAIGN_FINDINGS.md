@@ -208,14 +208,20 @@ density. Nominal circuit width, idle spectators and 29 replicas do not certify
   separately qualified preparation-error and temporal-dependence check.
 - **Packing passes a bounded scalar comparison.** Across ripple and rank,
   35 of 37 packed-versus-isolated control intervals lie within the normalized
-  +/-0.10 equivalence margin. Two ripple controls remain unresolved. Those
+  +/-0.10 equivalence margin, each interval divided by its score range as
+  [STATIC_PACKING_ACCURACY.md](../ripple/STATIC_PACKING_ACCURACY.md)
+  defines. Two ripple controls remain unresolved. Those
   results concern registered scalar observables on selected layouts; they
   establish neither failure independence, absence of crosstalk nor full
   outcome-distribution equivalence. Filling qubits can improve acquisition
   density only within the qualified measurement and statistical contract.
-- **Recorded first-bit disagreement remains a mechanism question.** The
-  roughly 11 percent disagreement in the correction witnesses is measured;
-  the share attributable to assignment, preparation or evolution remains
+- **Recorded first-bit disagreement is mostly a state change.** The
+  roughly 11 percent disagreement on qubit 79 is measured. In the
+  known-label arms the terminal success falls from 0.80 to 0.54-0.57 when
+  the first bit reads 0, which a state-preserving assignment error cannot
+  do; at least a third of those shots carry a real state change
+  ([novel-insights](../../docs/evidence/novel-insights/REPORT.md),
+  section 2). Preparation, relaxation and measurement back-action remain
   unresolved.
 - **The coherent advantage remains implementation-specific.** The ladder's
   inconclusive and confounded delay comparison, the correction adoption

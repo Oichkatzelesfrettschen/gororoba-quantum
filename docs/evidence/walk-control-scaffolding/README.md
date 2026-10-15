@@ -1,82 +1,102 @@
-# Walk-control discrepancy: compilation artifact, not physics
+# Walk controls execute the full CZ scaffold of the shared walk template
 
-Date: 2026-10-15. Analysis of `results/live/2026-10-13T025444.603480Z/collect.json` (ripple campaign bundle).
+The ripple walk members, the `readout0` controls included, compile from one
+symbolic template whose angles stay unbound for shared routing.
+`ripple_experiments._native_walk_circuit` lowers every `p` and `mcphase`
+into Gray-code parity cycles of SX and CZ whatever the bound angle, and only
+virtual RZ angles carry the parameters. A member bound to zero angles is
+logically the identity before measurement, yet it executes the whole
+scaffold. The walk discrepancy against calibrated replay is therefore a
+physical-noise measurement on a deep identity-equivalent circuit, not a
+disagreement about walk dynamics.
 
-## TL;DR
+`scripts/scaffolding_exposure.py --check` (gate core-276) re-derives the
+counts and tables below from the retained `record.json`, `isa.qpy` and
+`collect.json` into [exposure.json](exposure.json).
 
-The walk-control hardware-vs-replay discrepancy is not a physics mystery — it is a compilation
-artifact. The walk circuits (including the "readout" SPAM checks and the "depth sweep") all
-execute **144–252 physical CZ gates even when logically empty**, because the native synthesis
-emits full Gray-code scaffolding for zero-angle phase gates. The hardware is not disagreeing with
-the model about quantum walks; it is drowning in gate noise from gates that do nothing. The
-replay's calibration noise model underestimates the true error by ~8x, and the residual structure
-is not depolarizing at all.
+## Compiled load per member kind
 
-## Evidence
+Every walk member executes 252 CZ on its own four qubits, in both ripple
+runs: at every depth and for the readout controls. A noiseless statevector
+of the executed lane-0 and lane-1 readout components gives P(0000) = 1 to
+4e-15.
 
-- `_native_walk_circuit` (`gororoba_quantum/ripple_experiments.py:100`) expands every `p`/`mcphase`
-  into Gray-code parity rotations with physical `SX`+`CZ`, **regardless of bound angle**. Only the
-  `RZ` angles (virtual, zero-cost) carry the parameter.
-- Rebuilt template with readout0 bindings: **144 CZ + 328 SX**, depth 942 — for a circuit that
-  should be "prepare |0000>, measure."
-- Actually executed (isa.qpy pub_55, qubits [1,2,3,4]): **252 CZ + 491 SX**, depth 857.
-- Noiseless Statevector sim of the executed circuit: P(0000) = 0.9999999999999964 — logically
-  perfect, so the failure is 100% physical noise, 0% wrong circuit.
-- **Depth sweep is physically meaningless**: hw P(0000) is flat 0.03–0.12 across depths 0–4 while
-  replay varies 0.03–0.62. All depths share identical physical gates; only virtual RZ differs.
-- With 252 CZs, even 1%/CZ gives 0.99^252 ≈ 0.08 ≈ hw. Modest gate errors fully explain the
-  suppression. (fig1)
+The other families execute far less:
 
-## Ranked hypotheses
+| Family | CZ per member |
+| --- | --- |
+| atlas edges | median 42 (33 to 53) |
+| atlas readouts | 0 |
+| rank sectors | 21 to 38 |
+| coherence window | 23 |
+| correction | 70 |
+| corner baseline | 0 |
+| zero-divisor fringe | 42 per replica |
 
-1. **Zero-angle scaffolding dominates (primary, structural).** See evidence above.
-2. **True gate error ~8x calibration (quantitative).** Depolarizing fit on the exact executed
-   circuit (Aer, 20k shots): 0.2%/CZ reproduces replay (0.54); 2.0%/CZ reproduces hw (0.064).
-   Calibration model (~0.25% CZ) matches replay; hardware needs ~2%. Lane asymmetry (lane0
-   hw=0.064 vs lane1 hw=0.131 on different physical qubits) supports qubit-dependent error.
-   (fig3)
-3. **Non-depolarizing systematic error (structural).** Affine fit hw_d = (1−λ)·ideal_d + λq fails
-   (λ>1; least-squares (1−λ) goes negative for some depths). hw distributions have structure:
-   lane0 readout0 peaks at outcomes 12 (0.29), 8 (0.14), 4 (0.11) — specific qubits excited, not
-   uniform spread. Chi-square rejects uniform at p~1e-259. Candidates: coherent over-rotation
-   over 252 CZs, leakage, crosstalk. Not yet discriminated. (fig2)
-4. **Readout misassignment (ruled out as primary).** Even 8%/qubit gives P(all 4 correct) ≥ 0.72.
-   Cannot produce 0.064.
-5. **Crosstalk from packed neighbors (weak).** Walk readout shares pub_55 with 7 atlas readout
-   members, but zero cross-boundary 2-qubit gates and trivial neighbors. Not the driver.
+A fringe component reads 336 CZ (mirror 320) because eight replicas of 42
+(mirror 40) run in parallel in it. No CZ crosses a component boundary in any
+retained run.
 
-## Most surprising finding
+## Walk readout controls
 
-The campaign's simplest circuit — the readout SPAM check, the thing everything else is calibrated
-against — was never a SPAM check. It executed 252 entangling gates. And the "walk depth sweep,"
-the experiment's central dial, never swept anything physical. The repo was measuring the noise
-floor of its own compiler output and calling the flat line a physics result. The falsified
-terminal-channel model was trying to explain a discrepancy that lives one layer down, in
-synthesis.
+| Run | Backend | Qubits | CZ | Hardware P(0000) | Replay P(0000) | Retention per CZ, hardware / replay |
+| --- | --- | --- | ---: | ---: | ---: | --- |
+| 2026-10-13T025444.603480Z | ibm_fez | 1, 2, 3, 4 | 252 | 0.064 | 0.540 | 0.9892 / 0.9976 |
+| 2026-10-13T025444.603480Z | ibm_fez | 13, 14, 15, 19 | 252 | 0.131 | 0.587 | 0.9920 / 0.9979 |
+| 2026-10-15T031229.371738Z | ibm_kingston | 80, 81, 82, 83 | 252 | 0.336 | 0.544 | 0.9957 / 0.9976 |
+| 2026-10-15T031229.371738Z | ibm_kingston | 59, 73, 74, 75 | 252 | 0.251 | 0.666 | 0.9945 / 0.9984 |
 
-## Proposed diagnostic (cheap, decisive)
+Retention per CZ is `P(0000)^(1/252)`. It is a descriptive, load-normalized
+figure that assumes exponential loss, not a gate error. Read that way, the
+hardware loses 2 to 3 times what the calibrated model predicts on Kingston
+and 5 to 8 times on Fez. The worst lane, Fez 1-4, overlaps Fez's weak
+rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
 
-**Scaffolding A/B**: on the same 4 physical qubits, same calibration window, run
-(a) readout0 via the current symbolic template (252 CZ) and
-(b) readout0 via a pruned circuit (`QuantumCircuit(4,4); measure`, 0 CZ), 1024 shots each.
-If (b) gives P(0000)≈0.95+ and (a) gives ≈0.06, scaffolding is proven the culprit — fix by pruning
-zero-angle gates in `_native_walk_circuit` (or bind-then-optimize before transpiling), then re-run
-the walk sweep to see if hw tracks replay.
-**Follow-up**: 2-qubit RB or Bell-state fidelity on the same qubits to pin true CZ error (2% vs
-0.25%) — discriminates hypotheses 2 vs 3.
+## Hypotheses and their status
 
-## Honest limits
+1. **The scaffold sets the floor** (confirmed). The executed circuit is the
+   identity, so the loss is physical noise. The depth sweep shares its
+   physical gates across depths, and only virtual RZ angles change. A flat
+   hardware P(0000) across depths therefore carries no information about walk
+   dynamics.
+2. **An effective CZ error eight times the calibration** (not supported as
+   stated). The figure came from a depolarizing fit to Fez lane 0, a model
+   that hypothesis 3 rejects. The load-normalized loss also varies by lane
+   and by device.
+3. **Structured, non-depolarizing loss** (supported; mechanism open). The
+   lane-0 outcome distribution concentrates on a few outcomes, and a uniform
+   law is rejected (chi-square p ~ 1e-259). Coherent over-rotation
+   accumulated over 252 CZ, leakage and crosstalk remain candidates.
+4. **Readout misassignment as the driver** (excluded). Misassignment below 8
+   percent per qubit keeps P(all four correct) above 0.72.
+5. **Crosstalk from packed neighbours** (not supported). No CZ crosses a
+   component boundary.
 
-- The 252-vs-144 CZ gap (executed vs rebuilt template) is unexplained — possibly transpiler
-  decomposition or a version subtlety; order of magnitude is what matters.
-- Bit-ordering of the 16-dim outcome vector wasn't fully pinned, so the "which physical qubits are
-  excited" reading of the peaks is provisional (doesn't affect the hw-vs-replay gap, which uses
-  identical ordering).
-- No per-shot timestamps in the raw job data, so drift analysis wasn't possible.
+## Consequences
 
-## Artifacts in this directory
+- The walk readout controls measure the scaffold's noise floor, so they are
+  not SPAM controls. The 84 box-kite contrasts and the depth-4 class return
+  (`hw-fez-ripple`, `hw-kingston-ripple-transfer`) come from the atlas
+  members, at 33 to 53 CZ, not from the walk template.
+- An identity-equivalent deep circuit is a usable per-tile gate-quality
+  probe. The four lanes already rank Kingston above Fez, with Fez lane 0
+  lowest.
 
-- `fig1_depth_sweep.png` — flat hw vs structured replay across depths
-- `fig2_readout_dist.png` — readout0 full outcome distributions
-- `fig3_noise_fit.png` — effective noise fit showing the ~8x gap
-- `analyze.py`, `figures.py` — analysis and figure-generation scripts
+## Proposed controls
+
+- **Scaffold A/B on one tile under one calibration.** Run readout0 from the
+  shared template (252 CZ) against a measure-only circuit (0 CZ). If the
+  scaffold carries the loss, the measure-only arm reads near 0.95 and the
+  template arm stays at the table's floor.
+- **Conformance gate.** Check the compiled CZ count of every member whose
+  bound law is a point mass on its input. It would have flagged these
+  controls before submission.
+
+## Files
+
+- `analyze.py --run DIR` prints total-variation distances and the chi-square
+  test for the walk members of one run.
+- `figures.py --run DIR --out DIR` draws figures 1 and 2 from a run, plus
+  figure 3. Figure 3 plots an Aer depolarizing sweep whose generating script
+  was not retained, so `figures.py` tabulates its points. The retained
+  figures come from the 2026-10-13 Fez ripple run.
