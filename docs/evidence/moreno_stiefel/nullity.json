@@ -1,0 +1,813 @@
+{
+ "a6_integer_witness": {
+  "seed": 0,
+  "v": [
+   0,
+   -2,
+   0,
+   -3,
+   -1,
+   0,
+   3,
+   0,
+   2,
+   0,
+   0,
+   1,
+   0,
+   0,
+   0,
+   2,
+   0,
+   0,
+   2,
+   0,
+   -1,
+   -3,
+   -1,
+   2,
+   0,
+   0,
+   1,
+   -3,
+   0,
+   0,
+   0,
+   1,
+   0,
+   0,
+   -3,
+   0,
+   0,
+   -2,
+   0,
+   2,
+   0,
+   1,
+   1,
+   0,
+   1,
+   -3,
+   -2,
+   0,
+   1,
+   -1,
+   0,
+   -2,
+   0,
+   0,
+   0,
+   0,
+   1,
+   -3,
+   0,
+   0,
+   0,
+   -3,
+   2,
+   0
+  ]
+ },
+ "a6_zero_divisor_controls": [
+  {
+   "algebra_dimension": 64,
+   "denominator_lcm_digits": 1,
+   "element": "Proposition 4.3: a = e1 + e2, b = e3 + e4 in H_a^perp",
+   "element_sha256": "ea0529b7f377608b1744213dc1efc38da2c4604df66b440b2c481736a462b023",
+   "kernel_vectors_verified": 28,
+   "norm_squared": "2",
+   "nullity": 28,
+   "rank_mod_prime": 36
+  },
+  {
+   "algebra_dimension": 64,
+   "denominator_lcm_digits": 1,
+   "element": "Proposition 4.3: a = e1 + e2, b = a ee0 = e17 + e18",
+   "element_sha256": "ef8137a6e53b290667022d04a11a88250ad97276de473c86907e666863b86c18",
+   "kernel_vectors_verified": 28,
+   "norm_squared": "2",
+   "nullity": 28,
+   "rank_mod_prime": 36
+  }
+ ],
+ "algebras": {
+  "A_5": {
+   "cayley_points": [
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "79d2ccd3bee27605a1f3aa0b461a228f454a4425c47b13634655797abf4ea096",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 0,
+     "skew_sha256": "fe37eb06067a3bd45c6a17f1b86082a927842405b735653dbea9c1efa15b245d"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "9f38956b5e20f26f38609a9d902de6805db7883c4586399ad1d9cc379529791a",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 1,
+     "skew_sha256": "a2534e836f43ea6a7f4cabb6da54a8950c1dd74fa54f73c706f9d7853d058c41"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "cafbbe90253cfcb033fb0c430a0c573743b3647796c2ed114805e3201f796f51",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 2,
+     "skew_sha256": "a7a0db2d452df8a8668acea24fda4595ab40073c20a776228303e1ad80caf4b3"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 10,
+     "element_sha256": "f2c3961b7de3742c231fdaba131876d682f45344d001e1e879e25e92e794bc66",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 3,
+     "skew_sha256": "2b3f0548ce456d255c122804a08d46a897985c5489aafb870eb258f5cf44dced"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "d4369c3a8ceb74e3cc7e83de16cc94955aca3621bbf41b2194765a1f643811ce",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 4,
+     "skew_sha256": "0d59359d67038077cc42150a77af6ca287efdb41d3b582c8ca71565ed26656ed"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "aa5ae2613543ee76e79bbe10059647edbef42e999e7b755e579fc487e30a3eb0",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 5,
+     "skew_sha256": "d412444a5ef62f982259fbf44f4ceb7f17dd904cae5582df36421f862b99de6e"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "633876c152764c66e136fc75402483c16f047ab8fa9a817626da13c1f478fc47",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 6,
+     "skew_sha256": "c9693e6bed40c8807dee3109b4fc5e2845f336ef3e85013161c95d5926ca16ee"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 10,
+     "element_sha256": "1478c904cdc0ed317e3a8c8c51c16309e26f7b6bfd0f1c41686f8e4b3080148c",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 7,
+     "skew_sha256": "6426ae076439d8a4ed2e6386d8fb7d0a308d548f6e9b795120ea430a4fc9d2e4"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "732c68c2cc28cfe887d5a8597b11d9267f0cfd670fb3a32af425927408a18c95",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 8,
+     "skew_sha256": "24b7c2108771ba4b58f8bf4134e0648a7ac73ad2f7bf344c2a0aab9722753268"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "33405a738537e795704417d5c68b568d8d7fe111e4911215f5f758fac2a79d11",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 9,
+     "skew_sha256": "8bce17c04aedd381850b02496a65daedd202a22e3b82de9c2e8ded2ec572952b"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "52ca0f60315fa6bdfa1547302e78678ddf87d759acef42db3a8bd0413bc870e9",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 10,
+     "skew_sha256": "1d508c06c94dab48ab6c3380cfd657df56a9722cf7053d0c8f62922b25d20f05"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "cc2404cb7cf9e36599e5cf8344bbf594cc6d1e80a098a074f21138b9fc1b06b2",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 11,
+     "skew_sha256": "f842503329ac470bcddbb075a34d7f5aff749666682ddaab3f265373a9628fff"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "5c9832b6f771f4580701713296b487a474dc13ba00fc3893ed7ebb87449c41a3",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 12,
+     "skew_sha256": "c813c07bbcefa7a59b461825450056ec48f85110492bf8d5142c821069234291"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "b7c342f9f287216bf08e5229941ee0679cd560a7684949617f6698acbb216f0b",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 13,
+     "skew_sha256": "811dc6e784e9492b2eb6328cf5135ce9f1e319955c1c1be9499bfcae1ee6f5ef"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "30e869006a88fdaecd94f7d9c89365cec91ca750510fe991eef29bdcf5b53cf4",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 14,
+     "skew_sha256": "7ede6c055b132e77a953b05b4ec1fa3cb21a75f23494db73673f1c5257b1f121"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "bc5297930da306e7009e83a9550ce140898afb1fde3116c6529793a88d8c4b75",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 15,
+     "skew_sha256": "3d24e0d43c3e0c94442bcbe26aebe73d7b39e14854f012b1cb88133addd773ea"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "ec95bc90ebc95f96afd40dd5e98d024634bdc93feec3e828e1bc8962ee50e11c",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 16,
+     "skew_sha256": "f85ee009ee26060dc84745f63d0b89263bdea575d7f42d315f598fccd528cef6"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "f176179bec8fe0fbad4bd96356ce22a39b41c313072e2710f00d83e4ac38002a",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 17,
+     "skew_sha256": "43cf3d2d790b1413e811bb272307799e4603dcdf05e64b8ab999b76a2414a3e2"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "f71a36690860988083c3f823405c0eed30c0ad5e9f3cce39ca57b8797e7ec037",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 18,
+     "skew_sha256": "cedc8acd2665c907ddce7cd399fd89e28ab9d8a7bd9fa4bb9463969d41f01d1f"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "face1b2311217bcef18a21bf815f7184f637e2c958c217bd13db9bfad78af488",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 19,
+     "skew_sha256": "bb6c815b3a17c7d8dc9d9ae17b09d07a5889d02e563a810f372724ecb51ac7c0"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 8,
+     "element_sha256": "5300b6e1739f2f3f23cf22cf8d0c39202a7eec8cba8a65667209802214137035",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 20,
+     "skew_sha256": "09db82f725101041791ce4c42f91adb7f55ad930facf769db61d9fd9fd60cc56"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "5f435a84f78eca15c53ff5c5fed9cb4a113c4fa35620b9c624ff2cb78ac8a512",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 21,
+     "skew_sha256": "101286ed1ad36e4409082ef77aeb1f51e6ed1286458408f248e243b1a5e17637"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "5410893310459fa36e28cadcc2c49ddf185efe47a095a6ad405a2f90d8d93d50",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 22,
+     "skew_sha256": "f6de5f5f11507e197c20f90c9f306c104d5d0c8b08892cb31b0934759d07efdd"
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 9,
+     "element_sha256": "06637760c854e029965290a34af4e94c89d6ae1a31998bef1df4a3ee41e3ad87",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "1",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 23,
+     "skew_sha256": "103ab8e85b25d32c1c0a9300572835a562f486d194e764e8395c8e9bdfb4f31b"
+    }
+   ],
+   "disjoint_support_points": [
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "d73c05b000134793ebb1928b196f031fe76743ad21f145d09be2cb6cab9cd097",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "27",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 0
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "2762aacf31c519b0c142f3128b6c5907d40083733dc191e673e8c61718e004d1",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "34",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 1
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "26a4528b8cc91d75b3e5bd4ee389aa0dbd8f807282e3e64aed8637d783ac738a",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "29",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 2
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "930a9d4a7865f4910fe0be56604b7641ffa840dd9c908e13c9531c4290a282e0",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "24",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 3
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "82e359a23e3fe544bc42fbca8201f12f469ef91ba04d78126b39017c5d6b1f9e",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "24",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 4
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "ced0cb9bc85b30fa79e41171e84614ab16f959b2b04cab24fe8cf7e9219bff87",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "27",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 5
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "df4c3f5ea3f83c36ced40a061c42b74a74ff3246c693df7f3a33251a9b25798d",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "24",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 6
+    },
+    {
+     "algebra_dimension": 32,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "8fbfc0a592d8f8864f31241aaae4791c0c26c97c3501b41173af07939451395b",
+     "kernel_vectors_verified": 4,
+     "norm_squared": "29",
+     "nullity": 4,
+     "rank_mod_prime": 28,
+     "seed": 7
+    }
+   ],
+   "nullities": [
+    4
+   ],
+   "pure_coordinates": 15
+  },
+  "A_6": {
+   "cayley_points": [
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "4724a47daeb18c8a5d70aece88514059962e8aaf385ab1797b95c898fe3723d2",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 0,
+     "skew_sha256": "466e4b36b65038da17a420634a263466774a05b810c746cd4a325843c3f102d0"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "96568677cedfd4b6d561cf5c69d634832d305c71167bed411ebd8b7fd2ff934c",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 1,
+     "skew_sha256": "f43bbacd420b6ea4fd96b13c1b7f9329d71d5fad5c2bb83aeefd10c1087147cb"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "36d57a9263da87ca0c4f41dcc0c2a358cfaba33c561bef2f6852011ab5de42f5",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 2,
+     "skew_sha256": "0eaac47fdb89150e2655c7b3da4132b06e60efc40af7df0fbec0dcfb14a771ff"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 24,
+     "element_sha256": "4c30a364134846e9a209fd3702e7d965c60a962b02b54047198657ff598f4f39",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 3,
+     "skew_sha256": "960533a8603f36534ebb817e9e6e1a24929098c18559ff9c9b822c57a9672335"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "1d8f6ffa39ff6c6e6edf342eabc79ebce98454f04f06d96a64b282b566fcd7b7",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 4,
+     "skew_sha256": "23de7058c9d2e6817775b2181c11789b1dc604bed719679c10779118955f5477"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "f5cfb71416f65f32a45247a020441b78f922708c6d1c80c0fb638039647f4489",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 5,
+     "skew_sha256": "7c84ae703a63cf2614143a8afdae5d3ebb1baa463a1ce874a10f6d85877ab265"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "749cab4ed68ea4fa8b0a5242585f6d42d8872755477876cd86c65f91b54fcd2a",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 6,
+     "skew_sha256": "b108e7fc23c31039fb0b3d6a4611967893ee81cd30a6dd7a4ce9faa9f854b26f"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "4b5cc68861462e1b5e8faee3872e3bba6dba0722d51791f5330f827751861e13",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 7,
+     "skew_sha256": "7d761731dba13ffa1891e225a27cc4fdaea7c4952c83d4fb67afacfb2ef31332"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "cbbbe2b391fba462fc2e4c5df5fb303efb776203bb064b9a5f3e1b36a4b7d604",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 8,
+     "skew_sha256": "de5877a44ffdf1617a59e5a0453b19fc2f0e5ee940133be9379d099ef98195b6"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "e3caa9dd2daddc32bf87bd624b6d671eb709fa61cfaa7d2c34d09df080738977",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 9,
+     "skew_sha256": "f9465d8670022a42b93bdc26874ba10abb2bbca33179ab17f01a469e3ee36e78"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "c4493d4d35ced3cd19529d21de5d60923a382a8526a9632e852582e0980cddef",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 10,
+     "skew_sha256": "808945472a0cba742c91fa470252a856cb459ac7ed793b3efee9599be5c443e0"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "21567720996298653fb1d4d1f42bcf6fdc038c9bbcffb6c94ba177b2dbbeb2a0",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 11,
+     "skew_sha256": "cbe62a436649267295acf3f8bb667cbafed93fd41752578b04f8aa9fb7361886"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "54d0b603c2c58135cb0625c8e00b6b1418fb50b22892c516ca36ec1ee55fb03c",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 12,
+     "skew_sha256": "fd08f225bc2791b92e94f6f109e6cdf1737606cfc498e464c280f2a2187db253"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "463ce0f3bfba25068843162e76b37eb9451899d45131132febae6d4dfa1a971a",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 13,
+     "skew_sha256": "e69fa5dde63dd4178932147518777958dc214124648f03b25922dbcb8b928ddf"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "1bca15f4d32d6384489dc29d9324e5600279ece8dcf4a92fb04689bc6addfee5",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 14,
+     "skew_sha256": "11417c806f60a8b8f204017546e8d01c2c4c4ba5f4f91007ab4c74af013b2d0f"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "4b4b84a82e9bab2a0a3304add57d69a3e9946768709ec2f4c9efa1e00d3f2228",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 15,
+     "skew_sha256": "a195b8111c0aa65166a7eb89b520a985bee35f903c2ddcc5fa256117504afa1e"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "1efeb426a126455667be6e0fa075170505dbe4debfaaeab24f8450102fd5d1d2",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 16,
+     "skew_sha256": "ee10fa3bc03e2343d4093d71dee5f4c0c99a16db1743513116c9692d6bfa6237"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "234d59425356789015ddb529fa7a195a19690fa6f5c626d972e25e19dd71432f",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 17,
+     "skew_sha256": "65b36515feda085df13ef2b0349c9147d82d8359383306ab6b746b34a71c143c"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "718a66ae3184e2896a94b911dd97b1778ae9bfcd402cde680f47a1003b2500a2",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 18,
+     "skew_sha256": "ca907557a1170af37502bfbdbf63d1c0411adef294ab8dc0451a6e9e0eef44b0"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "37ca836eb085eb1d837c8f69db06847e0d788f227abcd6ec6d4ddb688a20f774",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 19,
+     "skew_sha256": "1e39666e2c5e2bd5539fc5f4fbd4952073e2477332205de99b15f407176ed239"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 22,
+     "element_sha256": "7fafcdb9d982f911e64a9dca77825545f175f2606f7ecacbbf027f9b508f4f84",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 20,
+     "skew_sha256": "94e12c4201ab5e1abe4cac84a71290ec705a7ac8b078c93fbaca443b85564d6d"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "cfae473e3d0032e0771021ca50dec066b1adc5ef30c90d3c8d591b6a89c66bfe",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 21,
+     "skew_sha256": "67f87836a302df4e173ad04b0feb41a9a3b54db219f99223573d083221cf2833"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "da7158e71ef4b19615d8930d81eafda8cb16a7e11accdae3f30fe66373750a51",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 22,
+     "skew_sha256": "f1c3e0f82a09be184fb0d18f68211c1842e795259d9781dae997e30f51b00d16"
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 23,
+     "element_sha256": "436523707c066b391d5b708b82dd85bc4848adc62eaaf314d7782e3dc10bc2bb",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "1",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 23,
+     "skew_sha256": "d2572fb9773b857c5df235d65391933991ce291aa340e259b417a60b4e00c5e1"
+    }
+   ],
+   "disjoint_support_points": [
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "f110018bd7960c565876d9155d018f8e41732ccf5a297df499041dac923c7e7d",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "62",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 0
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "c0cd837793df7ffe5909a29643e458e32f589717c1d8e8d4ee2d12d87257df95",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "83",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 1
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "3c4a4f749a913849e7e5f5fd31e4d8d5084c4e9072791f5ec34c60556123c593",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "53",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 2
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "540958d0b1549f44720b5fcfd1636970e6c25350308063d996f64957de0e71f6",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "72",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 3
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "07b7469088cf0058345f86739690c765e575e3df5dd96a8cf9af81d4b82dc6c3",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "70",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 4
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "e18997146f4a3d5b2327fec6f04baaae159e9a0aad24ecf9c9ef79f7b1f61bcf",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "69",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 5
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "edc09dd18cc4f8df32d06d9af959ed2f58b36b31af89000306eebfeb09a2e907",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "74",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 6
+    },
+    {
+     "algebra_dimension": 64,
+     "denominator_lcm_digits": 1,
+     "element_sha256": "aadefce38c94f6db54f87de534e1eaae3d35cef3d3ff613c030017329c6a1ac1",
+     "kernel_vectors_verified": 0,
+     "norm_squared": "71",
+     "nullity": 0,
+     "rank_mod_prime": 64,
+     "seed": 7
+    }
+   ],
+   "nullities": [
+    0
+   ],
+   "pure_coordinates": 31
+  }
+ },
+ "cd_multiply_cross_checks": 8,
+ "method": "Exact: rank of the integer matrix D L_v modulo P = 2^61 - 1 bounds the rational rank from below; positive nullity also carries that many exact rational kernel vectors.",
+ "prime": 2305843009213693951,
+ "question": "math/0512517, Section 5 (p. 26): is every Stiefel element of A_(n+1) a zero divisor?",
+ "schema": "moreno-stiefel-exact-nullity-v1",
+ "skew_entry_range": [
+  -2,
+  2
+ ],
+ "source_sha256": "343bc41735be3e2dc077cc1009933e477c521ea07bf8f2ea51f599b6c4bf2d84"
+}

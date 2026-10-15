@@ -37,6 +37,10 @@ The [real circle-frontier graph](notes/real_circle_frontier_graphs.md) and
 [replay](evidence/real_frontier_graphs/README.md) compute the complete named
 cone slice closure, its trace inverse, and integral evaluation maps. Ambient
 coverage and unrestricted topology remain open.
+The [Moreno Stiefel note](notes/math-0512517.md) and its
+[exact certificates](evidence/moreno_stiefel/README.md) give an integer Stiefel
+element of A_6 with nullity 0, a negative answer to Moreno's open question at
+A_6, against nullity 4 at every one of 32 exact A_5 points.
 
 ## Hosted papers
 

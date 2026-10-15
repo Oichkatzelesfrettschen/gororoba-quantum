@@ -116,5 +116,7 @@ repository's contribution, and the factor-2 gap in Kirshtein's printed bound
 is worth a line in the formalization handoff. The sedenion spectrum is a
 rescaling of BCDI 2009 and is labeled so. The A_5 two-term census now has
 retained exact evidence linked from the shared census. The A_6 Stiefel
-nullity scratch observation still requires an exact-arithmetic witness
-before the proposed negative answer supports a claim.
+nullity now has exact certificates (docs/evidence/moreno_stiefel/,
+gate core-267): an integer Stiefel element of A_6 with nullity 0 answers
+Moreno's open question negatively at A_6, while 32 exact A_5 points all
+have nullity 4.
