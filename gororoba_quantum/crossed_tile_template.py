@@ -32,9 +32,12 @@ I = (y_w4 - y_w7) - (y_r4 - y_r7).
 
 from __future__ import annotations
 
+import argparse
+import json
 import math
 from collections.abc import Callable, Mapping
 from fractions import Fraction
+from pathlib import Path
 
 import numpy as np
 from qiskit import QuantumCircuit
@@ -253,5 +256,30 @@ def self_check() -> str:
     )
 
 
+def record_contrasts(path: Path) -> dict[str, float]:
+    """Contrasts from a record or collection that carries the group's per-replica summaries.
+
+    The replica whose physical qubits are WEAK_TILE is the weak tile and the
+    one on REFERENCE_TILE the reference; any other placement is refused.
+    """
+    data = json.loads(path.read_text())
+    group = next(entry for entry in data["groups"] if entry["group"] == "crossed_tile_template")
+    by_tile = {}
+    for replica, summary in zip(group["replicas"], group["summary_per_replica"], strict=True):
+        tile = tuple(sorted(replica["physical_qubits"]))
+        if tile not in (WEAK_TILE, REFERENCE_TILE):
+            raise SystemExit(f"replica on {tile} is neither tile of the crossed design")
+        by_tile[tile] = summary
+    if set(by_tile) != {WEAK_TILE, REFERENCE_TILE}:
+        raise SystemExit("the crossed design needs one replica on each tile")
+    return crossed_contrasts(by_tile[WEAK_TILE], by_tile[REFERENCE_TILE], int(data["shots"]))
+
+
 if __name__ == "__main__":
-    print(self_check())
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--record", type=Path, help="print the crossed contrasts of a record.json or collect.json")
+    arguments = parser.parse_args()
+    if arguments.record is None:
+        print(self_check())
+    else:
+        print(json.dumps(record_contrasts(arguments.record), indent=2, sort_keys=True))
