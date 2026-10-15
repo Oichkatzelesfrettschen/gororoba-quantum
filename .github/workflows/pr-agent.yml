@@ -28,5 +28,5 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           GROQ.KEY: ${{ secrets.GROQ_API_KEY }}
           config.model: "groq/openai/gpt-oss-120b"
-          config.fallback_models: '["groq/qwen/qwen3-32b"]'
+          config.fallback_models: '["groq/qwen/qwen3.8-27b"]'
           config.custom_model_max_tokens: "131072"
