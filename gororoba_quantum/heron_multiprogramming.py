@@ -30,17 +30,12 @@ from __future__ import annotations
 
 import json
 import math
-import sys
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from functools import cache
 from pathlib import Path
 from statistics import median
 from typing import Any
-
-_PKG_DIR = str(Path(__file__).resolve().parent)
-if _PKG_DIR not in sys.path:
-    sys.path.insert(0, _PKG_DIR)
 
 import numpy as np
 import rustworkx as rx
@@ -778,6 +773,12 @@ def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) 
     a bitstring distribution. For dim=32, (1, 16) is the five-qubit pathion
     exemplar from designs.SPECTRUM_EXEMPLARS.
     """
+    if dim <= 0 or (dim & (dim - 1)) != 0:
+        raise ValueError(f"dim must be a positive power of 2, got {dim}")
+    if not 0 <= i < dim:
+        raise ValueError(f"Basis index i must be in range 0..{dim - 1}, got {i}")
+    if not 0 <= j < dim:
+        raise ValueError(f"Basis index j must be in range 0..{dim - 1}, got {j}")
     return design_c_associator_spectrum(dim, i, j)
 
 
@@ -825,6 +826,10 @@ def steane_z_syndrome_patch(
     ('Hahn' or 'XY4') applies dynamical decoupling to the data qubits bracketing
     idle_delay_dt during syndrome extraction to suppress physical dephasing drift.
     """
+    if idle_delay_dt < 0:
+        raise ValueError(f"idle_delay_dt must be non-negative, got {idle_delay_dt}")
+    if dd_sequence not in (None, "Hahn", "XY4"):
+        raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     syn = ClassicalRegister(3, "syn")
     data = ClassicalRegister(7, "data")
     qc = QuantumCircuit(QuantumRegister(10, "q"), syn, data, name="steane_z_syndrome_patch")
@@ -916,6 +921,10 @@ def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> Qua
     (symmetric CPMG-style tau/8 -> X -> tau/4 -> Y -> tau/4 -> X -> tau/4 -> Y -> rem),
     counteracting physical idle dephasing drift (-1.130 rad unmitigated drift measured on Kingston).
     """
+    if delay_dt < 0:
+        raise ValueError(f"delay_dt must be non-negative, got {delay_dt}")
+    if dd_sequence not in (None, "Hahn", "XY4"):
+        raise ValueError(f"Unsupported dd_sequence '{dd_sequence}'")
     qc = QuantumCircuit(2, 2, name="bell_delay_probe")
     qc.h(0)
     qc.cx(0, 1)
@@ -973,8 +982,12 @@ def hoeffding_model_discrimination(
     This prevents sampling noise on multi-outcome spaces from falsely declaring identical
     underlying distributions distinguishable.
     """
+    if not 0.0 < alpha < 1.0:
+        raise ValueError(f"alpha must be in (0, 1), got {alpha}")
     if not counts_p or not counts_q:
         raise ValueError("Count distributions must be non-empty")
+    if any(c < 0 for c in counts_p.values()) or any(c < 0 for c in counts_q.values()):
+        raise ValueError("Counts must be non-negative")
     n_p = sum(counts_p.values())
     n_q = sum(counts_q.values())
     if n_p == 0 or n_q == 0:

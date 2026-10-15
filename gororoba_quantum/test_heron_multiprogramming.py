@@ -141,6 +141,8 @@ class TestHeronMultiprogramming(unittest.TestCase):
         a, b = tiles[0].internal_edges[0]
         good.cz(qubits.index(a), qubits.index(b))
         self.assertEqual(self.lattice.build_multiplexed_pub([good], tiles[:1]).count_ops()["cz"], 1)
+        with self.assertRaises(ValueError):
+            self.lattice.build_multiplexed_pub([good], tiles[:1], min_buffer_distance=0)
 
     def test_routed_witnesses_compose_and_run(self) -> None:
         tiles = self.lattice.find_disjoint_tiles(k=10, max_tiles=2)
@@ -172,6 +174,16 @@ class TestHeronMultiprogramming(unittest.TestCase):
         for qc in same:
             qc.rx(shared, 0)
         self.assertEqual(self.lattice.build_multiplexed_pub(same, tiles).num_parameters, 1)
+
+        # Pre-existing generated parameter name collision avoidance
+        c_pre = QuantumCircuit(5)
+        c_pre.rx(Parameter("theta"), 0)
+        c_pre.rx(Parameter("tile_1_theta"), 1)
+        c_other = QuantumCircuit(5)
+        c_other.rx(Parameter("theta"), 0)  # attempts to rename to tile_1_theta, colliding with c_pre
+        wide_avoid = self.lattice.build_multiplexed_pub([c_pre, c_other], tiles)
+        self.assertEqual(sorted(p.name for p in wide_avoid.parameters), ["theta", "tile_1_theta", "tile_1_theta_1"])
+
         pub = HeronLattice.pack_parameter_sweep_pub(wide, [[0.0, 0.5], [0.5, 1.0], [1.0, 1.5]], shots=2048)
         self.assertEqual(pub[1].shape, (3, 2))
         for values in ([[0.0, 0.5, 1.0]], [[float("nan"), 0.0]], [[0.0, 0.0]][:0]):
@@ -235,6 +247,10 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertEqual(with_coords["distance_matrix"][0][1], 5.0)
         with self.assertRaises(ValueError):
             HeronLattice.tile_parity_covariance(["00", "11"], [slice(0, 1), slice(1, 2)], tile_coords=[(0.0, 0.0)])
+        with self.assertRaises(ValueError):
+            HeronLattice.tile_parity_covariance(["00", "11"], [slice(0, 1)], endianness="invalid")
+        with self.assertRaises(ValueError):
+            HeronLattice.tile_parity_covariance(["00", "11"], tile_clbit_slices=[])
 
     def test_sedenion_and_pathion_witnesses(self) -> None:
         # Non-associating triple (1, 2, 4): P(anc=1) = 1.0
@@ -253,6 +269,15 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertEqual(qc_pathion.num_qubits, 5)
         self.assertEqual(pathion_singular_sector_witness(32, 1, 16).num_qubits, 5)
 
+        with self.assertRaises(ValueError):
+            sedenion_associator_witness(16, 2, 4)
+        with self.assertRaises(ValueError):
+            sedenion_associator_witness(-1, 2, 4)
+        with self.assertRaises(ValueError):
+            pathion_associator_spectrum_witness(dim=15, i=1, j=16)
+        with self.assertRaises(ValueError):
+            pathion_associator_spectrum_witness(dim=32, i=32, j=16)
+
     def test_steane_coherent_and_fano_plane(self) -> None:
         # All 7 single-qubit errors correctly and coherently corrected
         for err in range(7):
@@ -260,6 +285,16 @@ class TestHeronMultiprogramming(unittest.TestCase):
             self.assertEqual(qc_coh.num_qubits, 10)
             sv_coh = Statevector(qc_coh.remove_final_measurements(inplace=False))
             self.assertAlmostEqual(float(sv_coh.probabilities(range(7))[0]), 1.0)
+
+        qc_coh_none = steane_coherent_syndrome_patch(None)
+        sv_coh_none = Statevector(qc_coh_none.remove_final_measurements(inplace=False))
+        self.assertAlmostEqual(float(sv_coh_none.probabilities(range(7))[0]), 1.0)
+        with self.assertRaises(ValueError):
+            steane_coherent_syndrome_patch(7)
+        with self.assertRaises(ValueError):
+            steane_coherent_syndrome_patch(-1)
+        with self.assertRaises(ValueError):
+            steane_z_syndrome_patch(1, idle_delay_dt=-10)
 
         # Fano plane PG(2,2) incidence matrix
         fano = fano_plane_incidence_matrix()
@@ -284,6 +319,10 @@ class TestHeronMultiprogramming(unittest.TestCase):
             sv = Statevector(qc.remove_final_measurements(inplace=False))
             self.assertAlmostEqual(float(sv.probabilities()[0]), 1.0)
         with self.assertRaises(ValueError):
+            bell_delay_probe(-1)
+        with self.assertRaises(ValueError):
+            bell_delay_probe(0, dd_sequence="invalid_dd")
+        with self.assertRaises(ValueError):
             bell_delay_probe(100, dd_sequence="invalid_dd")
 
     def test_hoeffding_model_discrimination(self) -> None:
@@ -304,6 +343,12 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertGreater(same_source["multinomial_tv_radius"], same_source["total_variation_distance"])
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination({}, q)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alpha=0.0)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alpha=1.0)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination({"0": -1}, q)
 
     def test_bent_hidden_shift_circuit(self) -> None:
         for n in (4, 6):
