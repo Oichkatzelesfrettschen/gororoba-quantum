@@ -6,11 +6,11 @@ The selected bounded-search candidate is `candidate-000-shots-2048-per-pub` with
 
 ## Artifact and source binding
 
-- Saved run: `results/live/2026-10-15T024455.113842Z`.
-- [record.json](record.json) SHA-256: `8ec3d9f46d6192ed5e12132f48a81d4999c010a56f50a5cfe234460764d64bad`.
+- Saved run: `results/live/2026-10-15T024845.723885Z`.
+- [record.json](record.json) SHA-256: `e38d8b06d28d44ae8b633dc94754ab17e20a0b73dddc36aa2d63af90ba2f4197`.
 - [isa.qpy](isa.qpy) SHA-256: `4c510ab848e9a18658a68b1a826be5cece7680580d7fdda7e55857be849ccf51`.
-- Experiment source digest: `438ed5273ec365893c60019d301a1e313a295dfb89938a38b85529169127d466`.
-- Source commit: `0e1fe8bdf945cbe62c7adac863ad7c1328f72aa4`; sources_modified=`false`.
+- Experiment source digest: `aa49bbd65c82520e8ccce9cc7dce558cb8d9d0c11b597b2e974d263de6ed2dbc`.
+- Source commit: `ac0bce463f2e31027e49ecfde182ea159b0bba10`; sources_modified=`false`.
 - Simulator seed: `20261011`; the source digest binds the simulator implementation.
 
 Recorded dependency versions:
@@ -264,7 +264,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
 
 ## Approval-only submission template
 
-Execute the following command only after the owner explicitly approves this concrete case and its ceilings. Keep the complete saved run at the repository-relative location above; copying temporary evidence preserves record.json and isa.qpy byte-for-byte. The runner compares fresh source, dependency, policy, calibration, layout, and QPY evidence with the approved record, consumes its approval once, and stops for renewed approval when the comparison changes.
+Execute the following command only after the owner explicitly approves this concrete case and its ceilings. Keep the complete saved run at the repository-relative location above; copying temporary evidence preserves record.json and isa.qpy byte-for-byte. The runner compares fresh source, dependency, policy, calibration, layout, and QPY evidence with the approved record, consumes its approval once, and stops for renewed approval when the comparison changes. It plans only over the backends this record found eligible, so a backend whose queue or status changes after the dry run cannot enter the plan.
 
 ```sh
 cd gororoba_quantum
@@ -300,7 +300,7 @@ PYTHON="${PYTHON:-$(command -v python3)}"
   --reserve-seconds 60.0 \
   --max-total-execution-seconds 18.0 \
   --out ../results/live \
-  --approved-record ../results/live/2026-10-15T024455.113842Z \
-  --approved-record-sha256 8ec3d9f46d6192ed5e12132f48a81d4999c010a56f50a5cfe234460764d64bad \
+  --approved-record ../results/live/2026-10-15T024845.723885Z \
+  --approved-record-sha256 e38d8b06d28d44ae8b633dc94754ab17e20a0b73dddc36aa2d63af90ba2f4197 \
   --submit
 ```

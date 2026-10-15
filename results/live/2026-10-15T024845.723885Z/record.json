@@ -2,7 +2,7 @@
   "schema_version": 7,
   "schema_contract": "live-target-statistical-design-invocation-budget-v1",
   "state": "planned",
-  "started": "2026-10-15T02:44:55.113842+00:00",
+  "started": "2026-10-15T02:48:45.723885+00:00",
   "versions": {
     "numpy": "2.5.4",
     "qiskit": "2.5.2",
@@ -279,9 +279,9 @@
   "shots": 2048,
   "instance_sha256_12": "e3de05b6901e",
   "seed_simulator": 20261011,
-  "experiment_digest": "438ed5273ec365893c60019d301a1e313a295dfb89938a38b85529169127d466",
+  "experiment_digest": "aa49bbd65c82520e8ccce9cc7dce558cb8d9d0c11b597b2e974d263de6ed2dbc",
   "code_commit": {
-    "head": "0e1fe8bdf945cbe62c7adac863ad7c1328f72aa4",
+    "head": "ac0bce463f2e31027e49ecfde182ea159b0bba10",
     "sources_modified": false
   },
   "system_inventory": {
@@ -290,9 +290,9 @@
       "reason": "status operational=True msg='maintenance'",
       "operational": true,
       "status_msg": "maintenance",
-      "pending_jobs": 71,
+      "pending_jobs": 72,
       "calibration": "2026-10-14T06:30:22-07:00",
-      "fetched_at": "2026-10-15T02:44:57+00:00",
+      "fetched_at": "2026-10-15T02:48:48+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -366,7 +366,7 @@
       "status_msg": "active",
       "pending_jobs": 4,
       "calibration": "2026-10-14T18:27:34-07:00",
-      "fetched_at": "2026-10-15T02:44:58+00:00",
+      "fetched_at": "2026-10-15T02:48:49+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -437,9 +437,9 @@
       "eligibility": "eligible",
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 3,
-      "calibration": "2026-10-14T18:37:35-07:00",
-      "fetched_at": "2026-10-15T02:44:59+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-14T19:26:53-07:00",
+      "fetched_at": "2026-10-15T02:48:50+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -526,7 +526,7 @@
       "status_msg": "active",
       "pending_jobs": 4,
       "calibration": "2026-10-14T18:27:34-07:00",
-      "fetched_at": "2026-10-15T02:44:58+00:00",
+      "fetched_at": "2026-10-15T02:48:49+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -596,9 +596,9 @@
     "ibm_marrakesh": {
       "operational": true,
       "status_msg": "active",
-      "pending_jobs": 3,
-      "calibration": "2026-10-14T18:37:35-07:00",
-      "fetched_at": "2026-10-15T02:44:59+00:00",
+      "pending_jobs": 1,
+      "calibration": "2026-10-14T19:26:53-07:00",
+      "fetched_at": "2026-10-15T02:48:50+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -684,9 +684,9 @@
       "reason": "status operational=True msg='maintenance'",
       "operational": true,
       "status_msg": "maintenance",
-      "pending_jobs": 71,
+      "pending_jobs": 72,
       "calibration": "2026-10-14T06:30:22-07:00",
-      "fetched_at": "2026-10-15T02:44:57+00:00",
+      "fetched_at": "2026-10-15T02:48:48+00:00",
       "capabilities": {
         "num_qubits": 156,
         "dynamic_circuits": true,
@@ -3324,10 +3324,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 262144,
       "seed_simulator": 20261011,
-      "wall_seconds": 5.439437435998116,
+      "wall_seconds": 5.892010295996442,
       "experiment_metadata": [
         {
-          "time_taken": 0.15079602,
+          "time_taken": 0.148409228,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3353,7 +3353,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015246472,
+          "sample_measure_time": 0.016785309,
           "active_input_qubits": [
             57,
             66,
@@ -3375,7 +3375,7 @@
           }
         },
         {
-          "time_taken": 0.14706227,
+          "time_taken": 0.149424751,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3401,7 +3401,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.012934256,
+          "sample_measure_time": 0.013442789,
           "active_input_qubits": [
             57,
             66,
@@ -3423,7 +3423,7 @@
           }
         },
         {
-          "time_taken": 0.145797967,
+          "time_taken": 0.150894696,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3449,7 +3449,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.012810126,
+          "sample_measure_time": 0.014093212,
           "active_input_qubits": [
             57,
             66,
@@ -3471,7 +3471,7 @@
           }
         },
         {
-          "time_taken": 0.145697056,
+          "time_taken": 0.147787557,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3497,7 +3497,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015359063,
+          "sample_measure_time": 0.012861528,
           "active_input_qubits": [
             57,
             66,
@@ -3519,7 +3519,7 @@
           }
         },
         {
-          "time_taken": 0.14695796,
+          "time_taken": 0.145083228,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3545,7 +3545,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015191012,
+          "sample_measure_time": 0.013235449,
           "active_input_qubits": [
             57,
             66,
@@ -3567,7 +3567,7 @@
           }
         },
         {
-          "time_taken": 0.145456655,
+          "time_taken": 0.149391461,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3593,7 +3593,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.015244513,
+          "sample_measure_time": 0.012671268,
           "active_input_qubits": [
             57,
             66,
@@ -3615,7 +3615,7 @@
           }
         },
         {
-          "time_taken": 0.143756001,
+          "time_taken": 0.147798376,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3641,7 +3641,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.012934726,
+          "sample_measure_time": 0.01333105,
           "active_input_qubits": [
             57,
             66,
@@ -3663,7 +3663,7 @@
           }
         },
         {
-          "time_taken": 0.142169246,
+          "time_taken": 0.150293064,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3689,7 +3689,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.011239771,
+          "sample_measure_time": 0.013756121,
           "active_input_qubits": [
             57,
             66,
@@ -3711,7 +3711,7 @@
           }
         },
         {
-          "time_taken": 0.148374324,
+          "time_taken": 0.152682621,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3737,7 +3737,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.012869946,
+          "sample_measure_time": 0.014319062,
           "active_input_qubits": [
             57,
             66,
@@ -3759,7 +3759,7 @@
           }
         },
         {
-          "time_taken": 0.146695339,
+          "time_taken": 0.150186944,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -3785,7 +3785,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.01072402,
+          "sample_measure_time": 0.013478879,
           "active_input_qubits": [
             57,
             66,
@@ -4046,10 +4046,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 262144,
       "seed_simulator": 20261011,
-      "wall_seconds": 7.090762438005186,
+      "wall_seconds": 8.219730401004199,
       "experiment_metadata": [
         {
-          "time_taken": 1.193186219,
+          "time_taken": 1.444184658,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -4096,7 +4096,7 @@
           }
         },
         {
-          "time_taken": 1.248585146,
+          "time_taken": 1.432480405,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -4143,7 +4143,7 @@
           }
         },
         {
-          "time_taken": 1.21055505,
+          "time_taken": 1.43418179,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -4190,7 +4190,7 @@
           }
         },
         {
-          "time_taken": 1.207997715,
+          "time_taken": 1.429453848,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -4237,7 +4237,7 @@
           }
         },
         {
-          "time_taken": 1.173401149,
+          "time_taken": 1.370371294,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -6157,10 +6157,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 2048,
       "seed_simulator": 20261011,
-      "wall_seconds": 3.046397692989558,
+      "wall_seconds": 3.7503375619999133,
       "experiment_metadata": [
         {
-          "time_taken": 0.005699416,
+          "time_taken": 0.008426565,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6186,7 +6186,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.000230121,
+          "sample_measure_time": 0.004700364,
           "active_input_qubits": [
             57,
             66,
@@ -6208,7 +6208,7 @@
           }
         },
         {
-          "time_taken": 0.009764748,
+          "time_taken": 0.003972771,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6234,7 +6234,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.005893196,
+          "sample_measure_time": 0.000752822,
           "active_input_qubits": [
             57,
             66,
@@ -6256,7 +6256,7 @@
           }
         },
         {
-          "time_taken": 0.007038699,
+          "time_taken": 0.004262393,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6282,7 +6282,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.004170532,
+          "sample_measure_time": 0.001082404,
           "active_input_qubits": [
             57,
             66,
@@ -6304,7 +6304,7 @@
           }
         },
         {
-          "time_taken": 0.0069777,
+          "time_taken": 0.003730891,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6330,7 +6330,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.003034229,
+          "sample_measure_time": 0.000501651,
           "active_input_qubits": [
             57,
             66,
@@ -6352,7 +6352,7 @@
           }
         },
         {
-          "time_taken": 0.01069178,
+          "time_taken": 0.006047548,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6378,7 +6378,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.007555801,
+          "sample_measure_time": 0.002919768,
           "active_input_qubits": [
             57,
             66,
@@ -6400,7 +6400,7 @@
           }
         },
         {
-          "time_taken": 0.008309983,
+          "time_taken": 0.004011692,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6426,7 +6426,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.00348321,
+          "sample_measure_time": 0.000838792,
           "active_input_qubits": [
             57,
             66,
@@ -6448,7 +6448,7 @@
           }
         },
         {
-          "time_taken": 0.004047561,
+          "time_taken": 0.005934677,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6474,7 +6474,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.000961493,
+          "sample_measure_time": 0.002592968,
           "active_input_qubits": [
             57,
             66,
@@ -6496,7 +6496,7 @@
           }
         },
         {
-          "time_taken": 0.006019227,
+          "time_taken": 0.004145633,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6522,7 +6522,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.000841692,
+          "sample_measure_time": 0.000860393,
           "active_input_qubits": [
             57,
             66,
@@ -6544,7 +6544,7 @@
           }
         },
         {
-          "time_taken": 0.007898752,
+          "time_taken": 0.005207085,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6570,7 +6570,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.004841843,
+          "sample_measure_time": 0.001638325,
           "active_input_qubits": [
             57,
             66,
@@ -6592,7 +6592,7 @@
           }
         },
         {
-          "time_taken": 0.008021053,
+          "time_taken": 0.003925632,
           "num_bind_params": 1,
           "parallel_state_update": 12,
           "parallel_shots": 1,
@@ -6618,7 +6618,7 @@
           "method": "density_matrix",
           "device": "CPU",
           "num_qubits": 4,
-          "sample_measure_time": 0.004865054,
+          "sample_measure_time": 0.000351551,
           "active_input_qubits": [
             57,
             66,
@@ -6879,10 +6879,10 @@
       "noise_digest_scope": "UUID-free sorted serialized gate/readout channels; delay RelaxationNoisePass is excluded by Aer serialization and depends on the run's Target T1/T2/dt calibration",
       "shots": 2048,
       "seed_simulator": 20261011,
-      "wall_seconds": 1.7453959770064102,
+      "wall_seconds": 1.9027187159954337,
       "experiment_metadata": [
         {
-          "time_taken": 0.033516784,
+          "time_taken": 0.041261652,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -6929,7 +6929,7 @@
           }
         },
         {
-          "time_taken": 0.033060803,
+          "time_taken": 0.038073333,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -6976,7 +6976,7 @@
           }
         },
         {
-          "time_taken": 0.036359922,
+          "time_taken": 0.04725463,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -7023,7 +7023,7 @@
           }
         },
         {
-          "time_taken": 0.031929959,
+          "time_taken": 0.039560537,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
@@ -7070,7 +7070,7 @@
           }
         },
         {
-          "time_taken": 0.033699845,
+          "time_taken": 0.042838067,
           "num_bind_params": 1,
           "parallel_state_update": 1,
           "required_memory_mb": 1,
