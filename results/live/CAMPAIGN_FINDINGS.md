@@ -90,7 +90,8 @@ predicted.
   0.452 and 0.429; s1 measured 0.573 and 0.553 against known 0.540 and 0.512.
   Recorded-bit disagreement can arise from state preparation, evolution or
   readout. The retained counts do not identify assignment error or separate
-  those mechanisms. [Roadmap item 9](../../docs/RESEARCH_ROADMAP.md) proposes
+  those mechanisms. The proposed claim `proposed-first-bit-readout-controls`
+  in the [research state](../../docs/state/RESEARCH_STATE.md) adds
   repeated-readout and delayed-readout controls to investigate that boundary.
 - The first run's exposed native event tables place the else-branch update
   at 4075 dt and the then-branch update at 4071 dt in both validated circuit

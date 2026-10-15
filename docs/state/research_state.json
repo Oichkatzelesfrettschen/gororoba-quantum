@@ -1,0 +1,1360 @@
+{
+  "schema": "research-state-v1",
+  "acquisitions": [
+    {
+      "id": "kingston-mod15-pilot",
+      "run": "results/live/2026-10-11T152922.787095Z",
+      "family": "hybrid Shor and folded QPE, mod 15",
+      "question": "Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?"
+    },
+    {
+      "id": "kingston-folded-qpe-ladder",
+      "run": "results/live/2026-10-12T055624.091217Z",
+      "family": "folded-QPE intervention ladder",
+      "question": "How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?"
+    },
+    {
+      "id": "kingston-correction-first",
+      "run": "results/live/2026-10-13T020454.599853Z",
+      "family": "folded correction",
+      "question": "Does known-label correction beat measured-bit correction by more than 0.01 on both odd labels?"
+    },
+    {
+      "id": "kingston-correction-second",
+      "run": "results/live/2026-10-13T022433.333775Z",
+      "family": "folded correction",
+      "question": "Repeat of the correction decision under a later calibration."
+    },
+    {
+      "id": "fez-ripple-atlas",
+      "run": "results/live/2026-10-13T025444.603480Z",
+      "family": "ripple box-kite atlas",
+      "question": "Do the 84 box-kite bright-minus-dark contrasts and the depth-4 class return appear on hardware?"
+    },
+    {
+      "id": "fez-rank-sectors",
+      "run": "results/live/2026-10-13T032011.664435Z",
+      "family": "rank sectors",
+      "question": "Do the 8 sector contrasts and 12 pulse-difference contrasts of the rank-sector family appear on hardware?"
+    },
+    {
+      "id": "kingston-wide-control",
+      "run": "results/live/kingston-wide-control-result",
+      "family": "wide Ramsey and carpet control",
+      "question": "What do a nominal 156-qubit Ramsey PUB and a 29-replica carpet show about spectators and support violations? Recovered retrospectively."
+    },
+    {
+      "id": "fez-n21-orbit-feedback",
+      "run": "results/live/2026-10-13T080216.451663Z",
+      "family": "N=21 orbit feed-forward",
+      "question": "Does the N=21 orbit's measured feed-forward match its exact law, and which mechanism explains the deviation?"
+    },
+    {
+      "id": "fez-n21-orbit-window",
+      "run": "results/live/2026-10-13T083417.634585Z",
+      "family": "N=21 orbit window arms",
+      "question": "How do delay, extra-readout and echo window arms change the fitted orbit phase?"
+    },
+    {
+      "id": "fez-patch-window",
+      "run": "results/live/2026-10-13T201757.782152Z",
+      "family": "patch-window Ramsey characterization",
+      "question": "Does the orbit's idle window leave a resolved phase on the work qubits under matched Ramsey probes?"
+    },
+    {
+      "id": "kingston-coherence-window",
+      "run": "results/live/2026-10-15T030748.903241Z",
+      "family": "branch-signed coherence window",
+      "question": "How do a matched idle and a mid-circuit measure-and-reset change the branch-signed work coherence?"
+    },
+    {
+      "id": "kingston-rank-sectors",
+      "run": "results/live/2026-10-15T030903.235380Z",
+      "family": "rank sectors",
+      "question": "Do the Fez rank-sector rejections transfer to a second Heron r2 processor?"
+    },
+    {
+      "id": "kingston-ripple-atlas",
+      "run": "results/live/2026-10-15T031229.371738Z",
+      "family": "ripple box-kite atlas",
+      "question": "Do the Fez ripple rejections transfer to a second Heron r2 processor?"
+    },
+    {
+      "id": "kingston-corner-baseline",
+      "run": "results/live/2026-10-15T070847.644554Z",
+      "family": "corner qubit baseline",
+      "question": "Do readout, relaxation and Ramsey on Kingston qubits 0-4 and 16 match their reported calibration?"
+    },
+    {
+      "id": "kingston-zero-divisor-fringe",
+      "run": "results/live/2026-10-15T070853.550532Z",
+      "family": "zero-divisor fringe (Design B and D)",
+      "question": "How large is the Design B dark floor off the corner, and which fringe term carries its excess over the model?"
+    }
+  ],
+  "claims": [
+    {
+      "id": "cd-associator-census",
+      "statement": "The Cayley-Dickson algebra of dimension D = 2^n >= 8 has N(D) = (D-2)(D-4)(D+6)/2 non-associating ordered basis triples; an independent pair has 0 associating completions when D/2 lies in its span and D/2 - 4 otherwise; every 3-dimensional index plane carries a linear functional fixing its associator signs (168 or 72 non-associating triples).",
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "The moving-pair Walsh law for (D/2+1, D/4+3) is finite evidence from D = 16 to 4096 without a proof.",
+      "evidence": [
+        {
+          "path": "docs/evidence/cd_associator_defect_census/census.json",
+          "sha256": "4523b7db9b61234462cfdd8a17b1a8595a998a034295326542df33156a1c9070"
+        }
+      ],
+      "documents": [
+        "docs/notes/cd_associator_defect_census.md"
+      ],
+      "gates": [
+        "core-212",
+        "core-213",
+        "sources-215",
+        "sources-218"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "real basis triples"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "cd-moving-pair-walsh-proof",
+      "statement": "The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32.",
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "open",
+      "boundary": "Exhaustively checked from 32 to 4096; a proof is outstanding.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_associator_defect_census.md"
+      ],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "cd-associator-census"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "singular-sector-split",
+      "statement": "(L_i L_j)^2 splits every two-term element into dark, bright and anticommuting sectors with L_a^T L_a eigenvalues in {0, 2, 4} in every dimension; a doubling recursion proves the anticommuting-pair count and the largest two-term nullity D/2 - 4.",
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "Two-term elements only; the de Marrais higher-dimensional comparison and any hardware echo contrast remain open.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/singular_sector_dynamics.md"
+      ],
+      "gates": [
+        "core-240",
+        "core-241"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "two-term elements e_i + s e_j"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hpp-fixed-degree-refutation",
+      "statement": "Bounded-degree Boolean interpolation recovers every degree-d promised polynomial on n <= 8 variables from sum_k<=d C(n, k) classical queries, refuting the stated fixed-degree exponential-query claim; squared Walsh data loses the phase the LCU witness carries.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Covers the enumerated variable counts and degrees; a hidden-polynomial advantage claim needs its own oracle, promise and output model.",
+      "evidence": [
+        {
+          "path": "results/hw_estimate/cayley_dickson_claim_boundaries.json",
+          "sha256": "f05eca772495a71b51f97d678dd112e6c401df9121adc664127abfde016b5fdd"
+        }
+      ],
+      "documents": [
+        "gororoba_quantum/CLAIM_BOUNDARIES.md"
+      ],
+      "gates": [
+        "core-041"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-stiefel-selected-nullity",
+      "statement": "32 selected A_5 Stiefel elements (24 Cayley-transform rational, 8 disjoint-support integer) each have nullity exactly 4: rank 28 modulo 2^61 - 1 and four exact rational kernel vectors.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "A selected finite family; it is not a universal nullity theorem for A_5.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/nullity.json",
+          "sha256": "49f0b15b50ababf05d031b2cc241b6da003eece144401e7de8e4e4f41e92748c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": [
+        "core-267"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a5-stiefel-universal",
+      "statement": "Every A_5 Stiefel element (a, b), a and b pure in A_4, orthogonal, equal norm, is a zero divisor (Moreno, math/0512517, Section 5, at A_5).",
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "open",
+      "boundary": "The 32 exact points support it and prove nothing beyond themselves.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/math-0512517.md"
+      ],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "a5-stiefel-selected-nullity"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a6-stiefel-witness",
+      "statement": "The retained integer A_6 Stiefel element (pure halves, a.b = 0, |a|^2 = |b|^2 = 62) has an invertible left multiplication: det L_v is 810824905836647058 modulo 2^61 - 1 and 486680426 modulo 10^9 + 7, so not every A_6 Stiefel element is a zero divisor.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "One witness; the 24 Cayley-transform and 7 other integer elements are further full-rank points of the same family.",
+      "evidence": [
+        {
+          "path": "docs/evidence/moreno_stiefel/nullity.json",
+          "sha256": "49f0b15b50ababf05d031b2cc241b6da003eece144401e7de8e4e4f41e92748c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/moreno_stiefel/README.md"
+      ],
+      "gates": [
+        "core-267"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a6-stiefel-generic-invertibility",
+      "statement": "On V = V_2(R^31), the unit orthogonal pure pairs (a, b) in (Im A_5)^2, L_(a,b) is invertible on an open, dense, full-measure subset; the zero-divisor Stiefel elements form a closed measure-zero semialgebraic subset of dimension at most 58.",
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/math-0512517.md"
+      ],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "V_2(R^31) is a connected real-analytic manifold of dimension 59",
+        "a real-analytic function not identically zero on a connected real-analytic manifold vanishes on a closed set with empty interior and measure zero (arXiv:1512.07276)",
+        "det L_(a,b) is a polynomial in the coordinates and is nonzero at the normalized integer witness"
+      ],
+      "depends_on": [
+        "a6-stiefel-witness"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "four-support-topology",
+      "statement": "On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/four_support_rank/result.json",
+          "sha256": "d60cf31405b4467cd8973b9dc97bebf58d910a4ae0777e687431c5603dd88beb"
+        },
+        {
+          "path": "docs/evidence/four_support_geometry/result.json",
+          "sha256": "f16f17c78ed0551f2e7da901ac56001ef76afded0c2357aa96b192c09a08b8fe"
+        },
+        {
+          "path": "docs/evidence/four_support_doubling/result.json",
+          "sha256": "5dbb38dea7404df6665be6f2dc8343dde215d87a800f1a573cfb2e3d5ebc5e40"
+        },
+        {
+          "path": "docs/evidence/four_support_homology/result.json",
+          "sha256": "0a4df891db7e9310df10bea7bd1b9e92791858f20cf21c586dbf772602d1eb5b"
+        }
+      ],
+      "documents": [
+        "docs/notes/four_support_rank_loci.md",
+        "docs/notes/four_support_incidence_geometry.md",
+        "docs/notes/four_support_doubling.md",
+        "docs/notes/four_support_cellular_homology.md"
+      ],
+      "gates": [
+        "sources-131",
+        "sources-134",
+        "sources-137",
+        "sources-140",
+        "sources-133",
+        "sources-136",
+        "sources-139",
+        "sources-142"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "operand on the zero-padded support {1, 10, 18, 25}"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "nullity-twelve-cone",
+      "statement": "At the doubly-pure center e1 + e18 of dimension 32 and norm squared two, the Bouligand cone of the nullity-12 locus is A15 union B17, with a 13-dimensional intersection.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "One selected center; neighborhood branches, links, attachments and other centers remain open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/nullity_twelve_locus/result.json",
+          "sha256": "b322a2ace603768229ef7aeb36d2e2af0c267b19049e7ddfd6b392a6a197b6ae"
+        }
+      ],
+      "documents": [
+        "docs/notes/nullity_twelve_local_geometry.md"
+      ],
+      "gates": [
+        "core-055",
+        "core-057",
+        "sources-160",
+        "sources-162"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "dimension 32, center e1 + e18"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "principal-skew-atlas",
+      "statement": "Fifteen explicit principal-pivot domains cover every nonzero doubly-pure dimension-32 element, with exact refinement and overlap identities gluing the kernel incidence across changing ranks; an all-stage proof gives 2^(n-1) - 1 domains for every n >= 2.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "A cover with gluing maps; smooth subdivisions, closure links and a finite attachment model are still needed for global invariants.",
+      "evidence": [
+        {
+          "path": "docs/evidence/principal_skew_atlas/result.json",
+          "sha256": "343fffb3100d0f9587a0ab4339b07a2cdb7f7f5f88a9b619ae559f38fc258c24"
+        }
+      ],
+      "documents": [
+        "docs/notes/principal_skew_atlas.md"
+      ],
+      "gates": [
+        "sources-146",
+        "sources-148"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "doubly-pure coefficients"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "kernel-limit-slice",
+      "statement": "The complete real three-coefficient affine slice has nullities 0, 8 and 12 with global cone kernel frames and actual mapping cylinders; its total incidence retracts onto S11 and the attachment image is S3*(S1 x S3); ordinary embedding extends this to every higher stage.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "The named slice only; unrestricted rank loci and frontier coverage remain open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/kernel_limits/result.json",
+          "sha256": "cbbe9eb23c9d31e3c9bb116bed020664d5e60412983528befb52160038fb0959"
+        }
+      ],
+      "documents": [
+        "docs/notes/annihilator_kernel_limits.md"
+      ],
+      "gates": [
+        "core-059",
+        "sources-163",
+        "sources-165"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "the named three-coefficient affine slice"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "determinant-line-trivial",
+      "statement": "The top exterior power of the annihilator bundle is trivial over every full constant-rank locus at every stage; Pfaffian volume factors give determinant-one transitions and zero first integral Chern class.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "boundary": "Higher characteristic classes and bundle isomorphism types remain open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/kernel_determinant/result.json",
+          "sha256": "f26297adbccd02434ce001a7a44fae68ff21311ef7dbf5b737631eb4ea8ca949"
+        }
+      ],
+      "documents": [
+        "docs/notes/annihilator_determinant_line.md"
+      ],
+      "gates": [
+        "core-177",
+        "sources-181",
+        "sources-183"
+      ],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "full constant-rank loci"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "dimension32-global-topology",
+      "statement": "A classification of the complete dimension-32 two-sided rank strata: components, smooth strata, closure incidences, attachments and integral invariants.",
+      "domain": "geometry",
+      "evidence_class": "mathematical theorem",
+      "status": "open",
+      "boundary": "Restricted models above supply fixtures and falsifiers; none covers the unrestricted pair space.",
+      "evidence": [],
+      "documents": [
+        "docs/RESEARCH_ROADMAP.md"
+      ],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))"
+      ],
+      "depends_on": [
+        "four-support-topology",
+        "principal-skew-atlas",
+        "kernel-limit-slice",
+        "nullity-twelve-cone"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "c881-exhaustive-rocq",
+      "statement": "Exhaustive quadratic rejection for the fixed fifteen-label C881 partition, kernel-checked by Rocq 9.2 with six closed assumption queries.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "The fixed partition only; count identities carry no topology-transfer map.",
+      "evidence": [
+        {
+          "path": "docs/evidence/c881_exhaustive/assumptions.v",
+          "sha256": "bf0ff96bb69dea96b4262b3dadcff1221e9efbd2decaec9971af194778d7bd54"
+        },
+        {
+          "path": "docs/evidence/c881_exhaustive/provenance.json",
+          "sha256": "62225e12cffb277ac1f47bdbed8a218872f45cf354ebfe53c35ec106c458c6bd"
+        }
+      ],
+      "documents": [
+        "docs/notes/c881_exhaustive_proof.md",
+        "docs/evidence/c881_exhaustive/README.md"
+      ],
+      "gates": [
+        "sources-188",
+        "sources-214"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/c881_exhaustive/kernel.txt"
+    },
+    {
+      "id": "target-flip-n21-rocq",
+      "statement": "The three scheduled N=21 multiplier witnesses act as the stated finite Boolean permutations.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "Finite Boolean permutation action; Qiskit phase and workspace behavior are checked separately by modular_arithmetic.py operator checks.",
+      "evidence": [
+        {
+          "path": "proofs/TargetFlipN21.v",
+          "sha256": "494e3e9c1a4370c46f37e26b0f9e7cb301d8acf8ac96f94e2512ad57612e0fc6"
+        },
+        {
+          "path": "results/hw_estimate/n21_target_flip_proof_verification.json",
+          "sha256": "9a6597a0afa633d23b1150165e333bf87d3a4ed18c7f1963bdb36494ce7ba4dd"
+        }
+      ],
+      "documents": [
+        "gororoba_quantum/MODULAR_SYNTHESIS.md"
+      ],
+      "gates": [
+        "core-067"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "results/hw_estimate/n21_target_flip_proof/check.txt"
+    },
+    {
+      "id": "fold-and-terminal-rocq",
+      "statement": "Scalar rational average/detail inverse identities with an average-only obstruction, and rational and real terminal-channel exclusion under four radius premises.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "Receipts record Rocq 9.1.1; the full Cayley-Dickson scalar embedding, tower and zero-product bridge remain open obligations.",
+      "evidence": [
+        {
+          "path": "proofs/FoldAverageDescent.v",
+          "sha256": "c30eb3e2b4979e231314d65187073a327c984016919ffc82d4a86cd6310eeafb"
+        },
+        {
+          "path": "proofs/TerminalChannelSeparation.v",
+          "sha256": "992c9705fbad7c64728cc709acff248f8d0b2e716cc3572d726ce905d86d3521"
+        },
+        {
+          "path": "proofs/TerminalChannelSeparationReal.v",
+          "sha256": "b1227ae6842e33967def112c9cf69b37b2c9c0b04a7f4b7af3b9f8d3bb3dc797"
+        }
+      ],
+      "documents": [
+        "docs/evidence/formal_certificates/README.md"
+      ],
+      "gates": [
+        "sources-173",
+        "sources-174"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/formal_certificates/FoldAverageDescent.kernel.txt"
+    },
+    {
+      "id": "designs-ideal-semantics",
+      "statement": "Designs A to D equal their ideal operators and statevectors over every instance, including both SELECT sign strategies.",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Ideal semantics only.",
+      "evidence": [],
+      "documents": [
+        "gororoba_quantum/DESIGN_NOTES.md"
+      ],
+      "gates": [
+        "core-040"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "algebra-circuit-fixtures",
+      "statement": "The designs.py builders pass the zero-product, Hadamard-basis and workspace fixtures: the dark witness (e1 + e10)(e4 - e15) gives P(s = 0) = 0, its bright control 1, and the four-label negative regression (e1 + e10)(e2 - e13) gives 1/2.",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Ideal semantics only.",
+      "evidence": [],
+      "documents": [
+        "AGENTS.md"
+      ],
+      "gates": [
+        "core-251",
+        "core-252"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "heron-dd-circuit-infrastructure",
+      "statement": "dd_window (none, Hahn, CPMG-2, XY4) refocuses a static detuning in ideal simulation, the routed Steane CPMG-2 patch keeps its seven windows and final frame, and the Bell probe's x and y quadratures read (1 + V cos theta)/2 and (1 + V sin theta)/2.",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Tested circuit and statistics infrastructure, not a demonstrated hardware mitigation.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/heron_spatial_multiprogramming.md"
+      ],
+      "gates": [
+        "core-256"
+      ],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-mod15-pilot",
+      "statement": "Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-11T152922.787095Z/collect.json",
+          "sha256": "0207f35e24ce37804aea3824e6ab693fbdad2232630fe3109532c8254c7df508"
+        },
+        {
+          "path": "results/live/2026-10-11T152922.787095Z/adjudication-05b97e57a73f-seed20261011.json",
+          "sha256": "f6cb4155d1d5db4b6c327da4927a5289073d86d6c1c892f11187c9c12eedb9d7"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-mod15-pilot"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-folded-qpe-ladder",
+      "statement": "The coherent two-control arm beats the archived measurement-and-feed-forward QPE by +5.8 to +10.9 points of terminal accuracy, every simultaneous interval above zero; the delay arm's intervals each include zero.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "The coherent arm changes routing, terminal readout qubit and control count, so the advantage belongs to the complete implementation and its mechanism is unresolved.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-12T055624.091217Z/collect.json",
+          "sha256": "6de820a83905e778e7c11b2e75d729ee6a40311003716e47eff9834d2199aed9"
+        },
+        {
+          "path": "results/live/2026-10-12T055624.091217Z/supplemental-shot-order.json",
+          "sha256": "d49cedd47f6b8423580de053e8768f80016c246ab47a080ca88ffad42a180b0c"
+        }
+      ],
+      "documents": [
+        "results/live/2026-10-12T055624.091217Z/ANALYSIS.md"
+      ],
+      "gates": [
+        "core-017",
+        "core-032"
+      ],
+      "acquisitions": [
+        "kingston-folded-qpe-ladder"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-correction-decision",
+      "statement": "Both correction runs reach retain_measured_correction: known-label correction fails the preregistered gain above +0.01 on both odd labels.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Failure to admit establishes neither equivalence nor absence of improvement.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T020454.599853Z/collect.json",
+          "sha256": "e11c9a43f4596cddb27947c94072b4fe6e8c794add28aac637299c8cfc2e6574"
+        },
+        {
+          "path": "results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json",
+          "sha256": "4fcd04f18528349b52ea6de68d46e12621d553ddfbd0b0a0b0a8d2dde9054b9b"
+        },
+        {
+          "path": "results/live/2026-10-13T022433.333775Z/collect.json",
+          "sha256": "083b27fa0f8200021a553aff7c4df85ef57c4a345b3005708f349a7edd35c66b"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-correction-first",
+        "kingston-correction-second"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-first-bit-disagreement",
+      "statement": "About 11 percent of correction shots record the first bit as 0 for odd labels, and within that stratum the arm ordering reverses by label (s3 favors the known label, s1 the measured bit).",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Assignment error, preparation and evolution are not separated by the retained counts.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json",
+          "sha256": "4fcd04f18528349b52ea6de68d46e12621d553ddfbd0b0a0b0a8d2dde9054b9b"
+        },
+        {
+          "path": "results/live/2026-10-13T022433.333775Z/collect.json",
+          "sha256": "083b27fa0f8200021a553aff7c4df85ef57c4a345b3005708f349a7edd35c66b"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-correction-first",
+        "kingston-correction-second"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-fez-ripple",
+      "statement": "On ibm_fez all 84 registered box-kite bright-minus-dark contrasts reject their nulls (+0.282 to +0.731); the depth-4 class-return contrast -0.0101 [-0.0848, +0.0645] retains its null against a detection radius of 0.0724.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Implementation evidence for the compiled circuits; exact zero products and topology remain classical results, and the retained null is not a zero contrast.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T025444.603480Z/collect.json",
+          "sha256": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13"
+        },
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [
+        "core-205"
+      ],
+      "acquisitions": [
+        "fez-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-fez-walk-control-discrepancy",
+      "statement": "The union-template walk readout controls read 0.064/0.046 (lane 0) and 0.131/0.126 (lane 1) on ibm_fez against 0.540/0.440 and 0.587/0.521 in calibration-bound replay.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The controls exercise the compiled union template, so readout assignment alone does not explain the gap; the mechanism is unresolved.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T025444.603480Z/collect.json",
+          "sha256": "2c3cc9f751bddc7a0aa86460601f426411eb9a4c87e5b4819c0779f5cb23db13"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "fez-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-fez-rank-sectors",
+      "statement": "On ibm_fez all 8 sector bright-minus-dark contrasts (+0.612 to +0.868) and all 12 pulse-difference contrasts reject their nulls; 16 of 16 packing controls lie within normalized +/-0.10.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Bounded scalar observables on the selected layouts; exact rank laws keep their classical proof boundary.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T032011.664435Z/collect.json",
+          "sha256": "a0a4e59162ea9837322842a7e9094ef46761164b8a47a2917081338ec4b7c963"
+        },
+        {
+          "path": "results/ripple/measured-rank-sector.json",
+          "sha256": "5f1ba2c0b0d25ec068a4ecbac98f984f32aaabe024dd8aca0ec180edd117e802"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [
+        "core-206"
+      ],
+      "acquisitions": [
+        "fez-rank-sectors"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-wide-control",
+      "statement": "In the recovered wide control, all 154 spectators read zero in 27 of 512 shots, and the carpet's forbidden outcome 10 appears 2 to 117 times per 512 shots across 29 replicas, with at least one violating replica in 403 shots.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Retrospective: the original approval, local archive and execution calibration are unavailable; marginal intervals assume iid shots and attribute no crosstalk.",
+      "evidence": [
+        {
+          "path": "results/live/kingston-wide-control-result/analysis.json",
+          "sha256": "7af732cc87e888c281931a7216642162de8f30cb432dfac1731f4c0eca3cb486"
+        }
+      ],
+      "documents": [
+        "results/live/kingston-wide-control-result/README.md"
+      ],
+      "gates": [
+        "core-200",
+        "core-204"
+      ],
+      "acquisitions": [
+        "kingston-wide-control"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-n21-orbit-phase",
+      "statement": "A one-phase work-superposition model fits the N=21 orbit runs (deviance 65.4 to 2.5 on the first run, phase +0.59 [0.52, 0.68] rad); mid-circuit assignment, reset failure, window T1 and window dephasing do not, and the echo arm lowers the fitted phase to +0.17 rad.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Phases are model-dependent fit parameters; the orbit law sees only phi1 + phi2, and the window attribution is one candidate.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
+          "sha256": "812f8b2f1695cb8d14fb2c2d4df09f426d5abf7e795d5c23d5520866d5539dd2"
+        },
+        {
+          "path": "results/live/2026-10-13T083417.634585Z/rca-mechanism-fit.json",
+          "sha256": "29288e5dc32ce91ff33a26ea3fa51ad77e0b672e564f240eb47f4a3a9c4506fd"
+        }
+      ],
+      "documents": [
+        "results/live/N21_ORBIT_RCA.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "fez-n21-orbit-feedback",
+        "fez-n21-orbit-window"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-patch-window-nondetection",
+      "statement": "Every registered patch-window interval on ibm_fez contains zero: no window phase is detected at the declared precision, and no intervention is selected.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Nondetection, not equivalence: every interval also contains effects near a quarter radian. The acquisition ran from a record other than the approved one (QPY byte-identical).",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T201757.782152Z/collect.json",
+          "sha256": "eaf5a285bafc98ac8bd150d43724787c91b6cc1a73d247e6a77bbc4face0b239"
+        },
+        {
+          "path": "results/live/2026-10-13T201757.782152Z/patch-analysis.json",
+          "sha256": "682600bda2319dc0b5c1548feddc11df91e9061a787f904a211a72503712052e"
+        }
+      ],
+      "documents": [
+        "results/live/PATCH_WINDOW_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "fez-patch-window"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-coherence-window",
+      "statement": "On ibm_kingston 4 Re C = 1.653 [1.500, 1.806] at immediate readout; the matched idle moves 4 C by -1.034 [-1.357, -0.711] (Re) and -1.341 [-1.664, -1.018] (Im); the mid-circuit measure and reset adds +0.090 [-0.233, +0.413] and +0.001 [-0.322, +0.324], so no measurement-induced change is resolved.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Registered precision contracts; the idle change has no identified mechanism.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T030748.903241Z/collect.json",
+          "sha256": "03bd5a19169fb8d8525020aa549fb12a728525d5991be8f9179409baae679afa"
+        },
+        {
+          "path": "results/live/2026-10-15T030748.903241Z/coherence-analysis.json",
+          "sha256": "91077c63ee43372590235c6da63a93cafbddb6e0736ec292edf1e42295a9bd1b"
+        }
+      ],
+      "documents": [
+        "results/live/QPU_PROGRAM_CASES.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-coherence-window"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-coherence-idle-rotation",
+      "statement": "Descriptively the idle rotates C by -1.130 rad over 4.4 us of added exposure (|C| 0.413 to 0.375), and the measure-and-reset context adds +0.054 [0.002, 0.105] rad, inside the up-to-0.17 rad the unsigned negative control's bias allows.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Does not identify the cause of the Fez orbit anomaly; the unsigned control's coupling to the signed estimator has no explicit model.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T030748.903241Z/coherence-analysis.json",
+          "sha256": "91077c63ee43372590235c6da63a93cafbddb6e0736ec292edf1e42295a9bd1b"
+        }
+      ],
+      "documents": [
+        "results/live/QPU_PROGRAM_CASES.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-coherence-window"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [
+        "withdrawn-idle-dephasing-drift"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "withdrawn-idle-dephasing-drift",
+      "statement": "The -1.130 rad coherence rotation is a dephasing drift that dynamical decoupling mitigates.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "A rotation is not a dephasing, and no DD acquisition exists.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-coherence-idle-rotation",
+      "withdrawn_text": "docs/notes/heron_spatial_multiprogramming.md before commit fd6832c."
+    },
+    {
+      "id": "hw-kingston-rank-transfer",
+      "statement": "On ibm_kingston the rank-sector analysis rejects the same 20 nulls as ibm_fez (8 sector and 12 pulse-difference contrasts), every one with the same sign; sector 4 is weaker (0.507 against 0.868).",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Transfer of contrast signs; magnitudes differ by device and lane.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T030903.235380Z/collect.json",
+          "sha256": "daa5b9eb360ee7ac639a6a2195c092ca11fb63c22940e882934d9a1a83d66fe9"
+        }
+      ],
+      "documents": [
+        "results/live/QPU_PROGRAM_CASES.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-rank-sectors"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-fez-rank-sectors"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-kingston-ripple-transfer",
+      "statement": "Under the calibration-scoped secondary analysis, 1137 of 1138 ripple contracts qualify and the 84 box-kite contrasts reject on ibm_kingston, the same set as ibm_fez with the same signs; the depth-4 return -0.019 [-0.093, +0.056] retains its null.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Secondary: the second job ran after a recalibration, so collect.json keeps the collector's withheld family verdict.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T031229.371738Z/collect.json",
+          "sha256": "0ee357bcc0438ca9c603d7766ec150e1c9c8b2a53ffd5021dc1697fbf8f05d7d"
+        },
+        {
+          "path": "results/live/2026-10-15T031229.371738Z/calibration-scoped-analysis.json",
+          "sha256": "879692e07df3594a4ab61c949ecba941a253bed3caae166c31a5d47c639f2808"
+        }
+      ],
+      "documents": [
+        "results/live/QPU_PROGRAM_CASES.md"
+      ],
+      "gates": [
+        "core-266"
+      ],
+      "acquisitions": [
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-fez-ripple"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-rank-endpoint-decomposition",
+      "statement": "The 196 rank-sector contracts are 20 directional tests (all reject on both devices), 160 success means and 16 packing differences; outside one weak lane per device the ideal-one endpoints read 0.900 on both devices against models of 0.942 (Kingston) and 0.932 (Fez), and Kingston sector 4 holds 15 of its 29 off-model means.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The weak lanes and the medians outside them were chosen after seeing the data.",
+      "evidence": [
+        {
+          "path": "results/live/rank-sector-endpoint-decomposition.json",
+          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+        }
+      ],
+      "documents": [
+        "results/live/QPU_PROGRAM_CASES.md"
+      ],
+      "gates": [
+        "core-269"
+      ],
+      "acquisitions": [
+        "fez-rank-sectors",
+        "kingston-rank-sectors"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-rank-block-homogeneity",
+      "statement": "A Pearson homogeneity test of each member's complete outcome distribution over eight shot blocks resolves no change in Kingston sector 4 (smallest p 0.025) and finds 3 of 176 members below p = 0.01.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "No change resolved at this block size; neither shot independence nor absence of slower dependence follows.",
+      "evidence": [
+        {
+          "path": "results/live/rank-sector-endpoint-decomposition.json",
+          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+        }
+      ],
+      "documents": [
+        "results/live/QPU_PROGRAM_CASES.md"
+      ],
+      "gates": [
+        "core-269"
+      ],
+      "acquisitions": [
+        "fez-rank-sectors",
+        "kingston-rank-sectors"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [
+        "withdrawn-modal-stationarity"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "withdrawn-modal-stationarity",
+      "statement": "Every rank sector is stationary across the shot order.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The modal-outcome block statistic it rested on is blind to a distribution change that keeps the modal rate: p_first = (0.625, 0.375, 0) against p_last = (0.625, 0, 0.375) has TV distance 0.375.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-rank-block-homogeneity",
+      "withdrawn_text": "results/live/rank-sector-endpoint-decomposition.json and QPU_PROGRAM_CASES.md at commit 9baac24."
+    },
+    {
+      "id": "hw-corner-readout-fault",
+      "statement": "Kingston qubits 0 and 1 misassign the ground state with P(1|0) 0.388 and 0.274 and the excited state with P(0|1) 0.144 and 0.123 against reported readout errors of 0.0088 and 0.0066; qubits 3, 2 and 16 retain 0.491, 0.727 and 0.728 of the excited state after 50 us against 0.718, 0.858 and 0.879 modeled.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One calibration (2026-10-15 00:03:15 PDT); readout crosstalk between simultaneously measured qubits 0 and 1 is not separated from an intrinsic fault.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T070847.644554Z/collect.json",
+          "sha256": "6de1c2f96ef316cc762f53f826f604cfbf74b3d6d364c36a9ea948e6d1f8a4f3"
+        }
+      ],
+      "documents": [
+        "results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-corner-baseline"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-corner-explains-weak-lane",
+      "statement": "The qubit 0 and 1 readout fault accounts for the Kingston sector-4 and ripple lane-6 loss the endpoint decomposition located on qubits 0 to 4 and 16.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inference across a four-hour gap from data that chose the tile; tile against template attribution needs the prospective crossed design.",
+      "evidence": [
+        {
+          "path": "results/live/rank-sector-endpoint-decomposition.json",
+          "sha256": "4c55897b0d860ad201c757d06f263adc969890d646b4b32c52c88dd47ad25210"
+        },
+        {
+          "path": "results/live/2026-10-15T070847.644554Z/collect.json",
+          "sha256": "6de1c2f96ef316cc762f53f826f604cfbf74b3d6d364c36a9ea948e6d1f8a4f3"
+        }
+      ],
+      "documents": [
+        "results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-rank-sectors",
+        "kingston-corner-baseline"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-corner-readout-fault",
+        "hw-rank-endpoint-decomposition"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-zero-divisor-floor",
+      "statement": "Off the corner, the Design B dark value is 0.182 [0.146, 0.217] against 0.081 modeled and 0.828 bright; the incoherent contraction (1 - V)/2 = 0.161 carries the floor, with offset and coherent phase terms at most 0.041 in any replica.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "Device noise the calibrated model underestimates, not a feature of the algebra; mirror-twin division over-corrects.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T070853.550532Z/collect.json",
+          "sha256": "2d6b3b2eeb9dd3aadc29f524f51e233c2d259ce508690bf28f63d83aea410696"
+        }
+      ],
+      "documents": [
+        "results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md"
+      ],
+      "gates": [],
+      "acquisitions": [
+        "kingston-zero-divisor-fringe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-charge-prediction-residuals",
+      "statement": "Settled charges agree with live_run predictions within -5.07 to +3.18 percent on the folded ladder, both correction runs, Fez ripple and Fez rank sectors.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Empirical cost evidence on completed workloads; a future ceiling inherits no billing guarantee.",
+      "evidence": [
+        {
+          "path": "results/live/qpu-job-retention-audit.json",
+          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+        }
+      ],
+      "documents": [
+        "results/live/CAMPAIGN_FINDINGS.md"
+      ],
+      "gates": [
+        "core-196"
+      ],
+      "acquisitions": [
+        "kingston-folded-qpe-ladder",
+        "kingston-correction-first",
+        "kingston-correction-second",
+        "fez-ripple-atlas",
+        "fez-rank-sectors"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-conditional-ramsey-hamiltonian",
+      "statement": "Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Each rate needs resolved quadratures, qualified exposure, phase-reference controls and delay diversity against winding.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "hw-coherence-window"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-signed-kernel-probe",
+      "statement": "Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order.",
+      "domain": "implementation",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Priced against direct counting before any hardware case; no universal speedup follows.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "algebra-circuit-fixtures"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-crossed-tile-template",
+      "statement": "Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Tiles were chosen after seeing the data, so only prospective validation counts; qubit labels on different processors do not identify one defect.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "hw-corner-explains-weak-lane"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-first-bit-readout-controls",
+      "statement": "Add repeated first readout with majority vote and a delayed first readout to the correction template to split the recorded-0 stratum into assignment and true-state error.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Falsifier: one symmetric assignment model reproduces both labels' strata within their binomial intervals.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "hw-first-bit-disagreement"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-echo-matched-dilation",
+      "statement": "Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "A mixture can cancel, so it needs an independent CZ-phase reference before a priced case.",
+      "evidence": [],
+      "documents": [],
+      "gates": [],
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "singular-sector-split"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    }
+  ]
+}
