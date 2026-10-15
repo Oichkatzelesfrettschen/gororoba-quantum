@@ -991,19 +991,31 @@ def hoeffding_model_discrimination(
     where K is the required size of the complete outcome alphabet, including outcomes with
     zero observed counts. This prevents omitted outcomes from understating the bound.
     """
-    if not 0.0 < alpha < 1.0:
+    if isinstance(alpha, bool) or not isinstance(alpha, (int, float)) or not (0.0 < alpha < 1.0):
         raise ValueError(f"alpha must be in (0, 1), got {alpha}")
+    if isinstance(alphabet_size, bool) or not isinstance(alphabet_size, int) or alphabet_size <= 0:
+        raise ValueError(f"alphabet_size must be a positive integer, got {alphabet_size}")
     if not counts_p or not counts_q:
         raise ValueError("Count distributions must be non-empty")
-    if any(c < 0 for c in counts_p.values()) or any(c < 0 for c in counts_q.values()):
-        raise ValueError("Counts must be non-negative")
+    for name, cdict in (("counts_p", counts_p), ("counts_q", counts_q)):
+        if not isinstance(cdict, dict):
+            raise TypeError(f"{name} must be a dict, got {type(cdict).__name__}")
+        for k, v in cdict.items():
+            if not isinstance(k, str):
+                raise TypeError(f"Outcome keys in {name} must be strings, got {type(k).__name__}")
+            if isinstance(v, bool) or not isinstance(v, int):
+                raise TypeError(f"Counts in {name} must be exact integers, got {type(v).__name__} for key '{k}'")
+            if v < 0:
+                raise ValueError(f"Counts in {name} must be non-negative, got {v} for key '{k}'")
     n_p = sum(counts_p.values())
     n_q = sum(counts_q.values())
     if n_p == 0 or n_q == 0:
         raise ValueError("Total shots must be positive in both distributions")
     all_keys = sorted(set(counts_p) | set(counts_q))
-    if alphabet_size <= 0:
-        raise ValueError(f"alphabet_size must be positive, got {alphabet_size}")
+    if all(all(ch in "01" for ch in k) for k in all_keys):
+        lengths = {len(k) for k in all_keys}
+        if len(lengths) > 1:
+            raise ValueError(f"Inconsistent outcome bit widths detected: {sorted(lengths)}")
     if alphabet_size < len(all_keys):
         raise ValueError(
             f"alphabet_size ({alphabet_size}) cannot be smaller than observed distinct outcomes ({len(all_keys)})"

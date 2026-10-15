@@ -376,13 +376,25 @@ class TestHeronMultiprogramming(unittest.TestCase):
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination({}, q, alphabet_size=2)
         with self.assertRaises(TypeError):
-            hoeffding_model_discrimination(p, q)
+            hoeffding_model_discrimination(p, q)  # type: ignore[call-arg]
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination(p, q, alpha=0.0, alphabet_size=2)
         with self.assertRaises(ValueError):
             hoeffding_model_discrimination(p, q, alpha=1.0, alphabet_size=2)
         with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alpha=True, alphabet_size=2)
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination(p, q, alphabet_size=True)
+        with self.assertRaises(ValueError):
             hoeffding_model_discrimination({"0": -1}, q, alphabet_size=2)
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination({"0": 1.5}, q, alphabet_size=2)  # type: ignore[dict-item]
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination({"0": True}, q, alphabet_size=2)  # type: ignore[dict-item]
+        with self.assertRaises(TypeError):
+            hoeffding_model_discrimination([1, 2], q, alphabet_size=2)  # type: ignore[arg-type]
+        with self.assertRaises(ValueError):
+            hoeffding_model_discrimination({"0": 1, "00": 2}, q, alphabet_size=4)
 
     def test_bent_hidden_shift_circuit(self) -> None:
         for n in (4, 6):
