@@ -390,7 +390,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
         with self.assertRaises(TypeError):
             hoeffding_model_discrimination({"0": 1.5}, q, alphabet_size=2)  # type: ignore[dict-item]
         with self.assertRaises(TypeError):
-            hoeffding_model_discrimination({"0": True}, q, alphabet_size=2)  # type: ignore[dict-item]
+            hoeffding_model_discrimination({"0": True}, q, alphabet_size=2)
         with self.assertRaises(TypeError):
             hoeffding_model_discrimination([1, 2], q, alphabet_size=2)  # type: ignore[arg-type]
         with self.assertRaises(ValueError):
