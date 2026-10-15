@@ -299,7 +299,11 @@ cd_core is unmeasured and no artifact claims one.
   dependency versions, IBM Cloud instance, groups, backends, seeds, layouts,
   replica qubits, fused PUB manifests, calibration at the refresh and again
   at each batch, and QPY bytes, or the run writes an `approval_required`
-  record and sends nothing. The first batch consumes the approval by writing
+  record and sends nothing. The submission plans only over the backends the
+  approved record found eligible (`live_run.approved_backend_scope`), so a
+  backend whose queue or status changed after the dry run cannot enter the
+  plan; an approved backend that turns ineligible still refuses through the
+  comparison. The first batch consumes the approval by writing
   `approval-consumed.json` into the approved record's directory, so a second
   invocation on the same record sends nothing. Calibration reads,
   transpilation, noise simulation, result retrieval, and `--preserve-raw`

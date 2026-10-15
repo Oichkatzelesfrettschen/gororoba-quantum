@@ -39,7 +39,7 @@ import subprocess
 import sys
 import time
 from collections import OrderedDict
-from collections.abc import Callable
+from collections.abc import Callable, Collection
 from dataclasses import dataclass, field
 from datetime import UTC, datetime
 from decimal import ROUND_HALF_EVEN, Decimal, InvalidOperation
@@ -2460,11 +2460,14 @@ def discover_snapshots(
     max_pending: int | None,
     *,
     retain_ineligible: bool = False,
+    scope: Collection[str] | None = None,
 ) -> tuple[list[Snapshot], dict[str, Any], dict[str, Any]]:
     """Refresh the requested inventory and filter candidates unless the caller needs every snapshot.
 
     Complete-inventory families classify successfully refreshed excluded peers
     independently. Failed probes supply inventory evidence without a Snapshot.
+    A backend outside scope (the approved record's eligible set during a
+    submission) is recorded as outside_approved_scope without a probe.
     """
     if pinned_names is not None:
         names = list(dict.fromkeys(pinned_names))
@@ -2478,6 +2481,12 @@ def discover_snapshots(
     skipped: dict[str, Any] = {}
     inventory: dict[str, Any] = {}
     for name in names:
+        if scope is not None and name not in scope:
+            reason = "outside the approved record's eligible backends"
+            skipped[name] = {"reason": reason}
+            inventory[name] = {"eligibility": "outside_approved_scope", "reason": reason}
+            print(f"{name}: skipped: {reason}")
+            continue
         try:
             snapshot = take_snapshot(service, name)
         except Exception as error:
@@ -2512,6 +2521,24 @@ def discover_snapshots(
     return snapshots, skipped, inventory
 
 
+def approved_backend_scope(approved_dir: Path) -> list[str]:
+    """The backends the approved dry run found eligible, which a submission alone plans over.
+
+    Eligibility reads each backend's status and pending-job count when the plan
+    runs, so a backend that was ineligible at the dry run (queue above
+    --max-pending, maintenance) can turn eligible before the submission
+    re-plans and outscore the approved choice. Planning the submission over the
+    approved record's `backends` keeps such a backend out; an approved backend
+    that changes or turns ineligible still moves the plan, and the
+    approved-record comparison refuses it.
+    """
+    approved = json.loads((approved_dir / "record.json").read_text())
+    backends = approved.get("backends")
+    if not isinstance(backends, dict) or not backends:
+        raise LiveRunError(f"approved record {approved_dir.name} names no eligible backend")
+    return sorted(backends)
+
+
 def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[Choice], dict[str, Any]]:
     available_groups = all_experiment_groups()
     known = {group.name for group in available_groups}
@@ -2523,6 +2550,7 @@ def plan(service: QiskitRuntimeService, args: argparse.Namespace) -> tuple[list[
         args.backends,
         args.max_pending,
         retain_ineligible=getattr(args, "family", None) == "folded-correction",
+        scope=getattr(args, "approved_scope", None),
     )
     if not snaps:
         raise LiveRunError("no eligible backend")
@@ -3298,6 +3326,7 @@ def submit(
         args.backends,
         args.max_pending,
         retain_ineligible=getattr(args, "family", None) == "folded-correction",
+        scope=getattr(args, "approved_scope", None),
     )
     if not fresh_snapshots:
         raise LiveRunError("no eligible backend remains before submission")
@@ -4922,6 +4951,7 @@ def main(argv: list[str] | None = None) -> int:
         # Microsecond names and exclusive creation keep concurrent runs from
         # sharing a directory.
         run_dir = args.out / now.strftime("%Y-%m-%dT%H%M%S.%fZ") if args.out else None
+        args.approved_scope = approved_backend_scope(args.approved_record) if args.submit else None
         choices, record = plan(service, args)
         evaluate(choices, record)
         if run_dir:
