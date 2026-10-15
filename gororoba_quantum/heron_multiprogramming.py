@@ -30,6 +30,7 @@ from __future__ import annotations
 
 import json
 import math
+import sys
 from collections.abc import Iterator, Sequence
 from dataclasses import dataclass
 from functools import cache
@@ -37,11 +38,19 @@ from pathlib import Path
 from statistics import median
 from typing import Any
 
+_PKG_DIR = str(Path(__file__).resolve().parent)
+if _PKG_DIR not in sys.path:
+    sys.path.insert(0, _PKG_DIR)
+
 import numpy as np
 import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister, transpile
 from qiskit.circuit import Clbit, Parameter, Qubit
 from qiskit.transpiler import CouplingMap
+
+from boolean_anf import quadratic_polar_rank
+from cd_core import basis, cd_multiply, triple_sign
+from designs import design_c_associator_spectrum, lcu_witness, left_mult_gate
 
 HERON_BASIS = ("cz", "rz", "sx", "x")
 ROUTING_SEED = 20261015
@@ -467,6 +476,8 @@ class HeronLattice:
         Parameter object is renamed tile_<k>_<name>; one Parameter object shared
         across tiles stays one parameter.
         """
+        if min_buffer_distance < 1:
+            raise ValueError(f"min_buffer_distance must be at least 1, got {min_buffer_distance}")
         if len(tile_circuits) != len(tiles):
             raise ValueError(f"Circuit count {len(tile_circuits)} must match tile count {len(tiles)}")
         closest = self.min_tile_distance(tiles)
@@ -491,7 +502,12 @@ class HeronLattice:
             for param in circ.parameters:
                 owner = names.get(param.name)
                 if owner is not None and owner != param:
-                    renames[param] = Parameter(f"tile_{tile_idx}_{param.name}")
+                    candidate = f"tile_{tile_idx}_{param.name}"
+                    suffix = 1
+                    while candidate in names and names[candidate] != param:
+                        candidate = f"tile_{tile_idx}_{param.name}_{suffix}"
+                        suffix += 1
+                    renames[param] = Parameter(candidate)
             placed = circ.assign_parameters(renames) if renames else circ
             for param in placed.parameters:
                 names.setdefault(param.name, param)
@@ -609,6 +625,8 @@ class HeronLattice:
         and every slice selects at least one bit inside it. If tile_coords is
         provided, pairwise Euclidean distance is computed alongside covariance.
         """
+        if endianness not in ("big", "little"):
+            raise ValueError(f"endianness must be 'big' or 'little', got '{endianness}'")
         tile_strings: list[list[str]] = []
         if isinstance(bitstrings, dict):
             if not bitstrings:
@@ -638,6 +656,8 @@ class HeronLattice:
                     tile_strings.append([s[width - stop : width - start] for s in bitstrings])
                 else:
                     tile_strings.append([s[start:stop] for s in bitstrings])
+        if not tile_strings:
+            raise ValueError("At least one tile is required")
         if n_shots < 2:
             raise ValueError("Need at least 2 shots to compute covariance")
         n_tiles = len(tile_strings)
@@ -688,13 +708,6 @@ def lcu_zero_product_witness(
     carries P(s = 0) = ||x y||^2 / 2, which is 0 for the default dark pair
     (e1 + e10)(e4 - e15) = 0 and 1 for its bright control at sign +1.
     """
-    try:
-        from cd_core import basis, cd_multiply
-        from designs import lcu_witness
-    except ImportError:
-        from gororoba_quantum.cd_core import basis, cd_multiply
-        from gororoba_quantum.designs import lcu_witness
-
     if sign not in (1, -1):
         raise ValueError(f"sign must be +1 or -1, got {sign}")
     (i, j), (k, el) = a_pair, b_pair
@@ -720,13 +733,9 @@ def sedenion_associator_witness(i: int = 1, j: int = 2, k: int = 4) -> QuantumCi
     reads Re <psi_L | psi_R> = +1 for associating triples and -1 for anti-associating
     triples, certified by cd_core.triple_sign.
     """
-    try:
-        from cd_core import triple_sign
-        from designs import left_mult_gate
-    except ImportError:
-        from gororoba_quantum.cd_core import triple_sign
-        from gororoba_quantum.designs import left_mult_gate
-
+    for idx, name in ((i, "i"), (j, "j"), (k, "k")):
+        if not 0 <= idx < 16:
+            raise ValueError(f"Sedenion index {name} must be in range 0..15, got {idx}")
     left_sign, right_sign = triple_sign(16, i, j, k)
     ijk_idx = (i ^ j) ^ k
 
@@ -769,11 +778,6 @@ def pathion_associator_spectrum_witness(dim: int = 32, i: int = 1, j: int = 16) 
     a bitstring distribution. For dim=32, (1, 16) is the five-qubit pathion
     exemplar from designs.SPECTRUM_EXEMPLARS.
     """
-    try:
-        from designs import design_c_associator_spectrum
-    except ImportError:
-        from gororoba_quantum.designs import design_c_associator_spectrum
-
     return design_c_associator_spectrum(dim, i, j)
 
 
@@ -1023,10 +1027,6 @@ def bent_hidden_shift_circuit(
     The ideal circuit is constructed from {H, CZ, Z}, compiling to native Heron ISA
     instructions {cz, rz, sx, x} after transpilation.
     """
-    try:
-        from boolean_anf import quadratic_polar_rank
-    except ImportError:
-        from gororoba_quantum.boolean_anf import quadratic_polar_rank
 
     if n <= 0 or n % 2 != 0:
         raise ValueError(f"Qubit count n must be a positive even integer, got {n}")
