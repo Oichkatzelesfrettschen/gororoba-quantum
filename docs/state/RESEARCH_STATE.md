@@ -29,21 +29,21 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 
 | Run | Family | Backend | Jobs | PUBs | Settled s | Claims |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| [2026-10-11T152922.787095Z](../../results/live/2026-10-11T152922.787095Z) | hybrid Shor and folded QPE, mod 15 | ibm_kingston | 1 | 6 | 9 | hw-mod15-pilot |
+| [2026-10-11T152922.787095Z](../../results/live/2026-10-11T152922.787095Z) | hybrid Shor and folded QPE, mod 15 | ibm_kingston | 1 | 6 | 9 | hw-mod15-pilot, hw-corner-fault-predates-discovery |
 | [2026-10-12T055624.091217Z](../../results/live/2026-10-12T055624.091217Z) | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | 40 | hw-folded-qpe-ladder, hw-charge-prediction-residuals |
-| [2026-10-13T020454.599853Z](../../results/live/2026-10-13T020454.599853Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals |
-| [2026-10-13T022433.333775Z](../../results/live/2026-10-13T022433.333775Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals |
-| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals |
+| [2026-10-13T020454.599853Z](../../results/live/2026-10-13T020454.599853Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation |
+| [2026-10-13T022433.333775Z](../../results/live/2026-10-13T022433.333775Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation |
+| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs |
 | [2026-10-13T032011.664435Z](../../results/live/2026-10-13T032011.664435Z) | rank sectors | ibm_fez | 2 | 36 | 31 | hw-fez-rank-sectors, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-charge-prediction-residuals |
 | [kingston-wide-control-result](../../results/live/kingston-wide-control-result) | wide Ramsey and carpet control | ibm_kingston | 1 | 2 | 2 | hw-wide-control |
-| [2026-10-13T080216.451663Z](../../results/live/2026-10-13T080216.451663Z) | N=21 orbit feed-forward | ibm_fez | 1 | 2 | 4 | hw-n21-orbit-phase |
+| [2026-10-13T080216.451663Z](../../results/live/2026-10-13T080216.451663Z) | N=21 orbit feed-forward | ibm_fez | 1 | 2 | 4 | hw-n21-orbit-phase, hw-idle-detuning-scale |
 | [2026-10-13T083417.634585Z](../../results/live/2026-10-13T083417.634585Z) | N=21 orbit window arms | ibm_fez | 1 | 8 | 11 | hw-n21-orbit-phase |
 | [2026-10-13T201757.782152Z](../../results/live/2026-10-13T201757.782152Z) | patch-window Ramsey characterization | ibm_fez | 3 | 46 | 25 | hw-patch-window-nondetection |
-| [2026-10-15T030748.903241Z](../../results/live/2026-10-15T030748.903241Z) | branch-signed coherence window | ibm_kingston | 2 | 15 | 13 | hw-coherence-window, hw-coherence-idle-rotation |
+| [2026-10-15T030748.903241Z](../../results/live/2026-10-15T030748.903241Z) | branch-signed coherence window | ibm_kingston | 2 | 15 | 13 | hw-coherence-window, hw-coherence-idle-rotation, hw-idle-detuning-scale |
 | [2026-10-15T030903.235380Z](../../results/live/2026-10-15T030903.235380Z) | rank sectors | ibm_kingston | 2 | 36 | 31 | hw-kingston-rank-transfer, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-corner-explains-weak-lane |
-| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane |
-| [2026-10-15T070847.644554Z](../../results/live/2026-10-15T070847.644554Z) | corner qubit baseline | ibm_kingston | 1 | 7 | 4 | hw-corner-readout-fault, hw-corner-explains-weak-lane |
-| [2026-10-15T070853.550532Z](../../results/live/2026-10-15T070853.550532Z) | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | 10 | hw-zero-divisor-floor |
+| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane, hw-walk-scaffold-floor, hw-box-kite-executed-pairs |
+| [2026-10-15T070847.644554Z](../../results/live/2026-10-15T070847.644554Z) | corner qubit baseline | ibm_kingston | 1 | 7 | 4 | hw-corner-readout-fault, hw-corner-explains-weak-lane, hw-corner-fault-predates-discovery |
+| [2026-10-15T070853.550532Z](../../results/live/2026-10-15T070853.550532Z) | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | 10 | hw-zero-divisor-floor, hw-idle-detuning-scale |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -90,7 +90,11 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Written proof, not machine-checked; the exceptional subset's exact dimension, components and geometry, and the A_5 question, remain open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); V_2(R^31) is a connected real-analytic manifold of dimension 59; a real-analytic function not identically zero on a connected real-analytic manifold vanishes on a closed set with empty interior and measure zero (arXiv:1512.07276); det L_(a,b) is a polynomial in the coordinates and is nonzero at the normalized integer witness.
   Evidence: [math-0512517.md](../notes/math-0512517.md).
-  Depends on: a6-stiefel-witness.
+  Depends on: a6-stiefel-witness, a6-stiefel-witness-rocq.
+- **signed-kernel-certificate** (exact finite certificate, algebra). L_(e1+e10) annihilates (e4 - e15)/sqrt2 exactly, and with B(t) = (L_e1 + L_e10 + t L_e2)/(2 + |t|) the dark success is t^2/(2+|t|)^2 and the dilation overlap t/(2+|t|); the block encoding's selector-00 block equals B(t), and the signed readout flips sign under |t| and changes under a one-branch selector.
+  Boundary: Exact and statevector facts plus a priced FakeFez compile; no hardware visibility.
+  Evidence: [result.json](../evidence/signed_kernel_probe/result.json), [signed_kernel_probe.md](../notes/signed_kernel_probe.md).
+  Gates: replayed by core-273.
 - **four-support-topology** (mathematical theorem, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
   Boundary: The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); operand on the zero-padded support {1, 10, 18, 25}.
@@ -176,6 +180,11 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Evidence: [FoldAverageDescent.v](../../proofs/FoldAverageDescent.v), [TerminalChannelSeparation.v](../../proofs/TerminalChannelSeparation.v), [TerminalChannelSeparationReal.v](../../proofs/TerminalChannelSeparationReal.v), [FoldAverageDescent.kernel.txt](../evidence/formal_certificates/FoldAverageDescent.kernel.txt), [README.md](../evidence/formal_certificates/README.md).
   Gates: bytes verified by sources-173, sources-174.
   Kernel receipt: [FoldAverageDescent.kernel.txt](../evidence/formal_certificates/FoldAverageDescent.kernel.txt).
+- **a6-stiefel-witness-rocq** (machine-checked proof, formal). Rocq 9.2 kernel-checks that the retained A_6 Stiefel witness has pure, orthogonal halves of squared norm 62 and that N L_v = d I with d = 208270573125941552, L_v built from open_gororoba's cd_sign_fuel at the fuel C-1474 proves adequate, so L_v has a trivial integer kernel; every theorem is closed under the global context.
+  Boundary: Finite step only; the analytic and semialgebraic steps of the generic theorem are cited, and CI verifies receipt bytes, not a fresh kernel check.
+  Evidence: [StiefelWitnessInvertible.v](../../proofs/StiefelWitnessInvertible.v), [kernel.txt](../evidence/stiefel_witness/kernel.txt), [package_cross_check.json](../evidence/stiefel_witness/package_cross_check.json), [stiefel_generic_invertibility.md](../notes/stiefel_generic_invertibility.md), [README.md](../evidence/stiefel_witness/README.md).
+  Gates: replayed by core-275; bytes verified by sources-243, sources-245.
+  Kernel receipt: [kernel.txt](../evidence/stiefel_witness/kernel.txt).
 - **designs-ideal-semantics** (circuit-conformance check, implementation). Designs A to D equal their ideal operators and statevectors over every instance, including both SELECT sign strategies.
   Boundary: Ideal semantics only.
   Evidence: [DESIGN_NOTES.md](../../gororoba_quantum/DESIGN_NOTES.md).
@@ -188,6 +197,14 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Tested circuit and statistics infrastructure, not a demonstrated hardware mitigation.
   Evidence: [heron_spatial_multiprogramming.md](../notes/heron_spatial_multiprogramming.md).
   Gates: replayed by core-256.
+- **conditional-ramsey-conformance** (circuit-conformance check, implementation). The conditional Ramsey design recovers injected omega_A, omega_B and J exactly, shows a planted conditional-arm detuning as falsifier residual -2 delta, unwraps 40.9 and 268.6 kHz detunings on its geometric delay ladder, undoes asymmetric assignment with its in-job calibration, and matches its propagated J error to multinomial resampling.
+  Boundary: Ideal and noise-model semantics only; it measures no hardware rate.
+  Evidence: [conditional_ramsey_hamiltonian.md](../notes/conditional_ramsey_hamiltonian.md).
+  Gates: replayed by core-272.
+- **crossed-design-conformance** (circuit-conformance check, implementation). Sectors 4 and 7 share every exact selector-success law, so a weak-tile readout channel resolves the tile effect with zero template effect and interaction, a template over-rotation resolves the template effect, and the count-based simultaneous intervals keep a positive width when a cell observes no error.
+  Boundary: Design semantics; the crossing itself is a proposed experiment.
+  Evidence: [crossed_tile_template.py](../../gororoba_quantum/crossed_tile_template.py).
+  Gates: replayed by core-274.
 - **hw-mod15-pilot** (preregistered hardware inference, hardware). Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.
   Boundary: The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.
   Evidence: [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [adjudication-05b97e57a73f-seed20261011.json](../../results/live/2026-10-11T152922.787095Z/adjudication-05b97e57a73f-seed20261011.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
@@ -235,14 +252,6 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 
 ## Exploratory claims
 
-- **hw-first-bit-disagreement** (exploratory reanalysis, hardware). About 11 percent of correction shots record the first bit as 0 for odd labels, and within that stratum the arm ordering reverses by label (s3 favors the known label, s1 the measured bit).
-  Boundary: Assignment error, preparation and evolution are not separated by the retained counts.
-  Evidence: [analysis-1fdb68508f14.json](../../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json), [collect.json](../../results/live/2026-10-13T022433.333775Z/collect.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
-  Acquisitions: kingston-correction-first, kingston-correction-second.
-- **hw-fez-walk-control-discrepancy** (exploratory reanalysis, hardware). The union-template walk readout controls read 0.064/0.046 (lane 0) and 0.131/0.126 (lane 1) on ibm_fez against 0.540/0.440 and 0.587/0.521 in calibration-bound replay.
-  Boundary: The controls exercise the compiled union template, so readout assignment alone does not explain the gap; the mechanism is unresolved.
-  Evidence: [collect.json](../../results/live/2026-10-13T025444.603480Z/collect.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
-  Acquisitions: fez-ripple-atlas.
 - **hw-wide-control** (exploratory reanalysis, hardware). In the recovered wide control, all 154 spectators read zero in 27 of 512 shots, and the carpet's forbidden outcome 10 appears 2 to 117 times per 512 shots across 29 replicas, with at least one violating replica in 403 shots.
   Boundary: Retrospective: the original approval, local archive and execution calibration are unavailable; marginal intervals assume iid shots and attribute no crosstalk.
   Evidence: [analysis.json](../../results/live/kingston-wide-control-result/analysis.json), [README.md](../../results/live/kingston-wide-control-result/README.md).
@@ -284,6 +293,34 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Evidence: [qpu-job-retention-audit.json](../../results/live/qpu-job-retention-audit.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
   Gates: replayed by core-196.
   Acquisitions: kingston-folded-qpe-ladder, kingston-correction-first, kingston-correction-second, fez-ripple-atlas, fez-rank-sectors.
+- **hw-walk-scaffold-floor** (exploratory reanalysis, hardware). Every ripple walk member, readout controls included, executes 252 CZ that are logically the identity for readout0; the readout controls read P(0000) 0.064 and 0.131 on Fez and 0.336 and 0.251 on Kingston against calibrated replay near 0.54-0.67, a per-CZ loss 3.8-4.4 times the model on Fez and 1.8-3.4 times on Kingston.
+  Boundary: The walk controls measure the scaffold's noise floor, not SPAM; the loss is structured, and its mechanism is open.
+  Evidence: [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [isa.qpy](../../results/live/2026-10-13T025444.603480Z/isa.qpy), [isa.qpy](../../results/live/2026-10-15T031229.371738Z/isa.qpy), [README.md](../evidence/walk-control-scaffolding/README.md).
+  Gates: replayed by core-276.
+  Acquisitions: fez-ripple-atlas, kingston-ripple-atlas.
+  Supersedes: hw-fez-walk-control-discrepancy, withdrawn-eightfold-cz-error.
+- **hw-box-kite-executed-pairs** (exploratory reanalysis, hardware). In both ripple runs all 84 bright and dark box-kite pairs executed the same gates on the same qubits and differ in one virtual RZ, so no compilation difference and no pulse-level angle error separates the arms.
+  Boundary: Second-order effects of the frame change on later SX over-rotations are not bounded; the contrasts remain implementation evidence.
+  Evidence: [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [isa.qpy](../../results/live/2026-10-13T025444.603480Z/isa.qpy), [isa.qpy](../../results/live/2026-10-15T031229.371738Z/isa.qpy), [README.md](../evidence/transpiler-audit/README.md).
+  Gates: replayed by core-276.
+  Acquisitions: fez-ripple-atlas, kingston-ripple-atlas.
+  Supersedes: withdrawn-unital-angle-argument, withdrawn-readout-contrast-impossible.
+- **hw-first-bit-correlation** (exploratory reanalysis, hardware). The recorded first bit on qubit 79 reads 0 in about 11 percent of correction shots, and in the known-label arms terminal success falls from 0.80 to 0.54-0.57 in that stratum, which excludes independent, state-preserving assignment error.
+  Boundary: A state change of qubit 79 and a common cause behind both the misread and the terminal loss remain; the strata stay descriptive.
+  Evidence: [analysis-1fdb68508f14.json](../../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json), [collect.json](../../results/live/2026-10-13T022433.333775Z/collect.json), [REPORT.md](../evidence/novel-insights/REPORT.md).
+  Acquisitions: kingston-correction-first, kingston-correction-second.
+  Supersedes: hw-first-bit-disagreement.
+- **hw-corner-fault-predates-discovery** (exploratory reanalysis, hardware). On 2026-10-11 the pilot's hybrid Shor replica 0 read its qubit-0 output bit as 1 with probability 0.618 against 0.448-0.491 on five replicas with the same ideal law, which the corner flips measured on 2026-10-15 predict as 0.622: the qubit-0 readout fault persisted at least four days through recalibrations that never reported it.
+  Boundary: Inference from one bit of one replica under an assumed ideal marginal of 1/2; the factorable yield is insensitive to that bit.
+  Evidence: [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [collect.json](../../results/live/2026-10-15T070847.644554Z/collect.json), [cross_experiment_scope.md](../notes/cross_experiment_scope.md).
+  Gates: replayed by core-276.
+  Acquisitions: kingston-mod15-pilot, kingston-corner-baseline.
+  Depends on: hw-corner-readout-fault.
+- **hw-idle-detuning-scale** (exploratory reanalysis, hardware). The Kingston coherence-window rotation is a 40.9 kHz detuning difference between work qubits 68 and 66 (up to 227.7 kHz windings), the Fez N21 orbit phase is of the same order, and fringe phases spread -0.26 to +0.50 rad across tiles: a recurring scale of tens of kHz that backend properties do not report.
+  Boundary: Different devices, qubits, circuits and days; not one mechanism. The matched idle has no preceding readout, which disfavors a residual-photon Stark shift there.
+  Evidence: [coherence-analysis.json](../../results/live/2026-10-15T030748.903241Z/coherence-analysis.json), [rca-mechanism-fit.json](../../results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json), [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [REPORT.md](../evidence/novel-insights/REPORT.md), [README.md](../evidence/ghost-frequency/README.md).
+  Acquisitions: kingston-coherence-window, fez-n21-orbit-feedback, kingston-zero-divisor-fringe.
+  Supersedes: withdrawn-common-ghost-detuning.
 
 ## Open claims
 
@@ -305,6 +342,9 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 
 ## Proposed claims
 
+- **proposed-census-frequency** (proposed experiment, algebra). Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function.
+  Boundary: Tests implementation fidelity, not the census theorem, which is proved.
+  Depends on: cd-associator-census.
 - **proposed-signed-kernel-probe** (proposed experiment, implementation). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order.
   Boundary: Priced against direct counting before any hardware case; no universal speedup follows.
   Depends on: algebra-circuit-fixtures.
@@ -314,12 +354,28 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 - **proposed-crossed-tile-template** (proposed experiment, hardware). Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss.
   Boundary: Tiles were chosen after seeing the data, so only prospective validation counts; qubit labels on different processors do not identify one defect.
   Depends on: hw-corner-explains-weak-lane.
-- **proposed-first-bit-readout-controls** (proposed experiment, hardware). Add repeated first readout with majority vote and a delayed first readout to the correction template to split the recorded-0 stratum into assignment and true-state error.
+- **proposed-first-bit-readout-controls** (proposed experiment, hardware). Read qubit 79 prepared in |1> immediately and after 4000 and 12500 dt idles (readout_delay in gororoba_quantum/diagnostic_controls.py), and add a repeated readout, to separate preparation, relaxation and measurement back-action behind the first-bit correlation.
   Boundary: Falsifier: one symmetric assignment model reproduces both labels' strata within their binomial intervals.
-  Depends on: hw-first-bit-disagreement.
+  Depends on: hw-first-bit-correlation.
 - **proposed-echo-matched-dilation** (proposed experiment, hardware). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases.
   Boundary: A mixture can cancel, so it needs an independent CZ-phase reference before a priced case.
   Depends on: singular-sector-split.
+- **proposed-scaffold-ab** (proposed experiment, hardware). Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss.
+  Boundary: Design in gororoba_quantum/diagnostic_controls.py; needs its own written case.
+  Depends on: hw-walk-scaffold-floor.
+
+## Superseded claims
+
+- **hw-first-bit-disagreement** (exploratory reanalysis, hardware). About 11 percent of correction shots record the first bit as 0 for odd labels, and within that stratum the arm ordering reverses by label (s3 favors the known label, s1 the measured bit).
+  Boundary: Assignment error, preparation and evolution are not separated by the retained counts.
+  Evidence: [analysis-1fdb68508f14.json](../../results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json), [collect.json](../../results/live/2026-10-13T022433.333775Z/collect.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
+  Acquisitions: kingston-correction-first, kingston-correction-second.
+  Superseded by: hw-first-bit-correlation.
+- **hw-fez-walk-control-discrepancy** (exploratory reanalysis, hardware). The union-template walk readout controls read 0.064/0.046 (lane 0) and 0.131/0.126 (lane 1) on ibm_fez against 0.540/0.440 and 0.587/0.521 in calibration-bound replay.
+  Boundary: The controls exercise the compiled union template, so readout assignment alone does not explain the gap; the mechanism is unresolved.
+  Evidence: [collect.json](../../results/live/2026-10-13T025444.603480Z/collect.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
+  Acquisitions: fez-ripple-atlas.
+  Superseded by: hw-walk-scaffold-floor.
 
 ## Withdrawn claims
 
@@ -331,3 +387,19 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: The modal-outcome block statistic it rested on is blind to a distribution change that keeps the modal rate: p_first = (0.625, 0.375, 0) against p_last = (0.625, 0, 0.375) has TV distance 0.375.
   Superseded by: hw-rank-block-homogeneity.
   Withdrawn text: results/live/rank-sector-endpoint-decomposition.json and QPU_PROGRAM_CASES.md at commit 9baac24.
+- **withdrawn-eightfold-cz-error** (withdrawn claim, hardware). The hardware's true CZ error is about eight times the calibrated 0.25 percent.
+  Boundary: A depolarizing fit to one Fez lane under a model the same report rejects; the loss is lane- and device-dependent.
+  Superseded by: hw-walk-scaffold-floor.
+  Withdrawn text: docs/evidence/walk-control-scaffolding/README.md at commit 9476dc2.
+- **withdrawn-unital-angle-argument** (withdrawn claim, hardware). Angle-dependent coherent errors cannot create the box-kite contrast because coherent errors are unital.
+  Boundary: A unitary error moves populations; the argument that applies is that the bound angle enters only a virtual RZ.
+  Superseded by: hw-box-kite-executed-pairs.
+  Withdrawn text: docs/evidence/transpiler-audit/falsify-84-84.ipynb at commit f47bd84.
+- **withdrawn-readout-contrast-impossible** (withdrawn claim, hardware). A circuit-dependent readout error is mathematically unable to produce the 0.59 contrast.
+  Boundary: Arm-dependent errors varying in both e0 and e1 can (0.59/0 against 0/0.59); the loophole is implausible, not impossible.
+  Superseded by: hw-box-kite-executed-pairs.
+  Withdrawn text: docs/evidence/transpiler-audit/falsify-resonator-readout.ipynb at commit 53dedb7.
+- **withdrawn-common-ghost-detuning** (withdrawn claim, hardware). One quasi-static 20-40 kHz detuning, common across qubits and both Heron devices, explains the Kingston coherence rotation and the Fez orbit phase.
+  Boundary: The Kingston rotation is a detuning difference between two work qubits, and the observations differ in device, qubits, circuits and day.
+  Superseded by: hw-idle-detuning-scale.
+  Withdrawn text: docs/evidence/ghost-frequency/README.md at commit e8df46e and docs/evidence/novel-insights/REPORT.md at commit 8f1dc70.

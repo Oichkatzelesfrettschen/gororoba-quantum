@@ -57,7 +57,7 @@ owns the link from literature and observations to the next intervention.
 ### Open and proposed claims
 
 [RESEARCH_STATE.md](state/RESEARCH_STATE.md) records every registered claim
-(37 established, 10 exploratory, 3 open, 5 proposed, 2 withdrawn) and every executed acquisition. Open and
+(41 established, 13 exploratory, 3 open, 7 proposed, 2 superseded, 6 withdrawn) and every executed acquisition. Open and
 proposed work, in dependency order:
 
 - **cd-moving-pair-walsh-proof** (open, mathematical theorem). The pair (D/2+1, D/4+3) has algebraic degree n - 2, Walsh support 5D/16, largest normalized amplitude 1 - 16/D and nonlinearity 8 for every D >= 32. Depends on cd-associator-census.
@@ -66,8 +66,10 @@ proposed work, in dependency order:
 - **proposed-conditional-ramsey-hamiltonian** (proposed, proposed experiment). Add Ramsey of qubit A conditioned on B in |0> and |1> to the Bell odd and even coherence rates: the design matrix for H/hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B)/2 rises from rank 2 to 3, J = (nu_A|0 - nu_A|1)/2, and nu_odd + nu_even = nu_A|0 + nu_A|1 is the falsifier of the reduced diagonal model. Depends on hw-coherence-window.
 - **proposed-signed-kernel-probe** (proposed, proposed experiment). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order. Depends on algebra-circuit-fixtures.
 - **proposed-crossed-tile-template** (proposed, proposed experiment). Cross {affected template, reference template} x {candidate weak tile, reference tile}, optionally x {isolated, packed}, to separate tile, template and interaction effects on the weak-lane loss. Depends on hw-corner-explains-weak-lane.
-- **proposed-first-bit-readout-controls** (proposed, proposed experiment). Add repeated first readout with majority vote and a delayed first readout to the correction template to split the recorded-0 stratum into assignment and true-state error. Depends on hw-first-bit-disagreement.
+- **proposed-first-bit-readout-controls** (proposed, proposed experiment). Read qubit 79 prepared in |1> immediately and after 4000 and 12500 dt idles (readout_delay in gororoba_quantum/diagnostic_controls.py), and add a repeated readout, to separate preparation, relaxation and measurement back-action behind the first-bit correlation. Depends on hw-first-bit-correlation.
 - **proposed-echo-matched-dilation** (proposed, proposed experiment). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases. Depends on singular-sector-split.
+- **proposed-scaffold-ab** (proposed, proposed experiment). Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss. Depends on hw-walk-scaffold-floor.
+- **proposed-census-frequency** (proposed, proposed experiment). Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function. Depends on cd-associator-census.
 <!-- research-state:end -->
 
 The correction pilot, coherence window, ripple and rank-sector transfers,

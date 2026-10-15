@@ -289,7 +289,8 @@
         "det L_(a,b) is a polynomial in the coordinates and is nonzero at the normalized integer witness"
       ],
       "depends_on": [
-        "a6-stiefel-witness"
+        "a6-stiefel-witness",
+        "a6-stiefel-witness-rocq"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -1035,7 +1036,7 @@
       "statement": "About 11 percent of correction shots record the first bit as 0 for odd labels, and within that stratum the arm ordering reverses by label (s3 favors the known label, s1 the measured bit).",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
-      "status": "exploratory",
+      "status": "superseded",
       "boundary": "Assignment error, preparation and evolution are not separated by the retained counts.",
       "evidence": [
         {
@@ -1058,7 +1059,7 @@
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": "hw-first-bit-correlation"
     },
     {
       "id": "hw-fez-ripple",
@@ -1096,7 +1097,7 @@
       "statement": "The union-template walk readout controls read 0.064/0.046 (lane 0) and 0.131/0.126 (lane 1) on ibm_fez against 0.540/0.440 and 0.587/0.521 in calibration-bound replay.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
-      "status": "exploratory",
+      "status": "superseded",
       "boundary": "The controls exercise the compiled union template, so readout assignment alone does not explain the gap; the mechanism is unresolved.",
       "evidence": [
         {
@@ -1114,7 +1115,7 @@
       "assumptions": [],
       "depends_on": [],
       "supersedes": [],
-      "superseded_by": null
+      "superseded_by": "hw-walk-scaffold-floor"
     },
     {
       "id": "hw-fez-rank-sectors",
@@ -1613,7 +1614,7 @@
     },
     {
       "id": "proposed-first-bit-readout-controls",
-      "statement": "Add repeated first readout with majority vote and a delayed first readout to the correction template to split the recorded-0 stratum into assignment and true-state error.",
+      "statement": "Read qubit 79 prepared in |1> immediately and after 4000 and 12500 dt idles (readout_delay in gororoba_quantum/diagnostic_controls.py), and add a repeated readout, to separate preparation, relaxation and measurement back-action behind the first-bit correlation.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
@@ -1624,7 +1625,7 @@
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
-        "hw-first-bit-disagreement"
+        "hw-first-bit-correlation"
       ],
       "supersedes": [],
       "superseded_by": null
@@ -1643,6 +1644,398 @@
       "assumptions": [],
       "depends_on": [
         "singular-sector-split"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "conditional-ramsey-conformance",
+      "statement": "The conditional Ramsey design recovers injected omega_A, omega_B and J exactly, shows a planted conditional-arm detuning as falsifier residual -2 delta, unwraps 40.9 and 268.6 kHz detunings on its geometric delay ladder, undoes asymmetric assignment with its in-job calibration, and matches its propagated J error to multinomial resampling.",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Ideal and noise-model semantics only; it measures no hardware rate.",
+      "evidence": [],
+      "documents": [
+        "docs/notes/conditional_ramsey_hamiltonian.md"
+      ],
+      "gates": {
+        "core-272": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "signed-kernel-certificate",
+      "statement": "L_(e1+e10) annihilates (e4 - e15)/sqrt2 exactly, and with B(t) = (L_e1 + L_e10 + t L_e2)/(2 + |t|) the dark success is t^2/(2+|t|)^2 and the dilation overlap t/(2+|t|); the block encoding's selector-00 block equals B(t), and the signed readout flips sign under |t| and changes under a one-branch selector.",
+      "domain": "algebra",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exact and statevector facts plus a priced FakeFez compile; no hardware visibility.",
+      "evidence": [
+        {
+          "path": "docs/evidence/signed_kernel_probe/result.json",
+          "sha256": "3129abeda1aa320c39c3decdd9d6c03954e555d165bd8e51650e5719ed39d26e"
+        }
+      ],
+      "documents": [
+        "docs/notes/signed_kernel_probe.md"
+      ],
+      "gates": {
+        "core-273": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "crossed-design-conformance",
+      "statement": "Sectors 4 and 7 share every exact selector-success law, so a weak-tile readout channel resolves the tile effect with zero template effect and interaction, a template over-rotation resolves the template effect, and the count-based simultaneous intervals keep a positive width when a cell observes no error.",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Design semantics; the crossing itself is a proposed experiment.",
+      "evidence": [],
+      "documents": [
+        "gororoba_quantum/crossed_tile_template.py"
+      ],
+      "gates": {
+        "core-274": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "a6-stiefel-witness-rocq",
+      "statement": "Rocq 9.2 kernel-checks that the retained A_6 Stiefel witness has pure, orthogonal halves of squared norm 62 and that N L_v = d I with d = 208270573125941552, L_v built from open_gororoba's cd_sign_fuel at the fuel C-1474 proves adequate, so L_v has a trivial integer kernel; every theorem is closed under the global context.",
+      "domain": "formal",
+      "evidence_class": "machine-checked proof",
+      "status": "established",
+      "boundary": "Finite step only; the analytic and semialgebraic steps of the generic theorem are cited, and CI verifies receipt bytes, not a fresh kernel check.",
+      "evidence": [
+        {
+          "path": "proofs/StiefelWitnessInvertible.v",
+          "sha256": "58473d43db57a20b6b767eb6ea2bb55e9f1232e249faa0aa9542d9e3f52bf8d3"
+        },
+        {
+          "path": "docs/evidence/stiefel_witness/kernel.txt",
+          "sha256": "263ae57ce30ab0954cf7211712e543a9280fe82738ec570e04d44859c5405ad3"
+        },
+        {
+          "path": "docs/evidence/stiefel_witness/package_cross_check.json",
+          "sha256": "d6d47622b48c32132862f2235895684a83c259efa973e811f96fdf03abf71f3c"
+        }
+      ],
+      "documents": [
+        "docs/notes/stiefel_generic_invertibility.md",
+        "docs/evidence/stiefel_witness/README.md"
+      ],
+      "gates": {
+        "core-275": "replay",
+        "sources-243": "bytes",
+        "sources-245": "bytes"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null,
+      "kernel_receipt": "docs/evidence/stiefel_witness/kernel.txt"
+    },
+    {
+      "id": "hw-walk-scaffold-floor",
+      "statement": "Every ripple walk member, readout controls included, executes 252 CZ that are logically the identity for readout0; the readout controls read P(0000) 0.064 and 0.131 on Fez and 0.336 and 0.251 on Kingston against calibrated replay near 0.54-0.67, a per-CZ loss 3.8-4.4 times the model on Fez and 1.8-3.4 times on Kingston.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "The walk controls measure the scaffold's noise floor, not SPAM; the loss is structured, and its mechanism is open.",
+      "evidence": [
+        {
+          "path": "docs/evidence/walk-control-scaffolding/exposure.json",
+          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+        },
+        {
+          "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
+          "sha256": "2edd167f3baff13dd2b23246d89f3ff5d4e3878437975f8fdbe2f4dc997a59e5"
+        },
+        {
+          "path": "results/live/2026-10-15T031229.371738Z/isa.qpy",
+          "sha256": "e71e277004c2a5968d798ad697fc73504fc1a44b58517096b67b5011ff4836f6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/walk-control-scaffolding/README.md"
+      ],
+      "gates": {
+        "core-276": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [
+        "hw-fez-walk-control-discrepancy",
+        "withdrawn-eightfold-cz-error"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-box-kite-executed-pairs",
+      "statement": "In both ripple runs all 84 bright and dark box-kite pairs executed the same gates on the same qubits and differ in one virtual RZ, so no compilation difference and no pulse-level angle error separates the arms.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Second-order effects of the frame change on later SX over-rotations are not bounded; the contrasts remain implementation evidence.",
+      "evidence": [
+        {
+          "path": "docs/evidence/walk-control-scaffolding/exposure.json",
+          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+        },
+        {
+          "path": "results/live/2026-10-13T025444.603480Z/isa.qpy",
+          "sha256": "2edd167f3baff13dd2b23246d89f3ff5d4e3878437975f8fdbe2f4dc997a59e5"
+        },
+        {
+          "path": "results/live/2026-10-15T031229.371738Z/isa.qpy",
+          "sha256": "e71e277004c2a5968d798ad697fc73504fc1a44b58517096b67b5011ff4836f6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/transpiler-audit/README.md"
+      ],
+      "gates": {
+        "core-276": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas",
+        "kingston-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [
+        "withdrawn-unital-angle-argument",
+        "withdrawn-readout-contrast-impossible"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-first-bit-correlation",
+      "statement": "The recorded first bit on qubit 79 reads 0 in about 11 percent of correction shots, and in the known-label arms terminal success falls from 0.80 to 0.54-0.57 in that stratum, which excludes independent, state-preserving assignment error.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "A state change of qubit 79 and a common cause behind both the misread and the terminal loss remain; the strata stay descriptive.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-13T020454.599853Z/analysis-1fdb68508f14.json",
+          "sha256": "4fcd04f18528349b52ea6de68d46e12621d553ddfbd0b0a0b0a8d2dde9054b9b"
+        },
+        {
+          "path": "results/live/2026-10-13T022433.333775Z/collect.json",
+          "sha256": "083b27fa0f8200021a553aff7c4df85ef57c4a345b3005708f349a7edd35c66b"
+        }
+      ],
+      "documents": [
+        "docs/evidence/novel-insights/REPORT.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-correction-first",
+        "kingston-correction-second"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [
+        "hw-first-bit-disagreement"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-corner-fault-predates-discovery",
+      "statement": "On 2026-10-11 the pilot's hybrid Shor replica 0 read its qubit-0 output bit as 1 with probability 0.618 against 0.448-0.491 on five replicas with the same ideal law, which the corner flips measured on 2026-10-15 predict as 0.622: the qubit-0 readout fault persisted at least four days through recalibrations that never reported it.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inference from one bit of one replica under an assumed ideal marginal of 1/2; the factorable yield is insensitive to that bit.",
+      "evidence": [
+        {
+          "path": "docs/evidence/walk-control-scaffolding/exposure.json",
+          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+        },
+        {
+          "path": "results/live/2026-10-11T152922.787095Z/collect.json",
+          "sha256": "0207f35e24ce37804aea3824e6ab693fbdad2232630fe3109532c8254c7df508"
+        },
+        {
+          "path": "results/live/2026-10-15T070847.644554Z/collect.json",
+          "sha256": "6de1c2f96ef316cc762f53f826f604cfbf74b3d6d364c36a9ea948e6d1f8a4f3"
+        }
+      ],
+      "documents": [
+        "docs/notes/cross_experiment_scope.md"
+      ],
+      "gates": {
+        "core-276": "replay"
+      },
+      "acquisitions": [
+        "kingston-mod15-pilot",
+        "kingston-corner-baseline"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-corner-readout-fault"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-idle-detuning-scale",
+      "statement": "The Kingston coherence-window rotation is a 40.9 kHz detuning difference between work qubits 68 and 66 (up to 227.7 kHz windings), the Fez N21 orbit phase is of the same order, and fringe phases spread -0.26 to +0.50 rad across tiles: a recurring scale of tens of kHz that backend properties do not report.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Different devices, qubits, circuits and days; not one mechanism. The matched idle has no preceding readout, which disfavors a residual-photon Stark shift there.",
+      "evidence": [
+        {
+          "path": "results/live/2026-10-15T030748.903241Z/coherence-analysis.json",
+          "sha256": "91077c63ee43372590235c6da63a93cafbddb6e0736ec292edf1e42295a9bd1b"
+        },
+        {
+          "path": "results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json",
+          "sha256": "812f8b2f1695cb8d14fb2c2d4df09f426d5abf7e795d5c23d5520866d5539dd2"
+        },
+        {
+          "path": "docs/evidence/walk-control-scaffolding/exposure.json",
+          "sha256": "4833c80261bb88ed5a5e9bd4225a331cb852a9a1e2fc7524a9636b42b0bbca72"
+        }
+      ],
+      "documents": [
+        "docs/evidence/novel-insights/REPORT.md",
+        "docs/evidence/ghost-frequency/README.md"
+      ],
+      "gates": {},
+      "acquisitions": [
+        "kingston-coherence-window",
+        "fez-n21-orbit-feedback",
+        "kingston-zero-divisor-fringe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [
+        "withdrawn-common-ghost-detuning"
+      ],
+      "superseded_by": null
+    },
+    {
+      "id": "withdrawn-eightfold-cz-error",
+      "statement": "The hardware's true CZ error is about eight times the calibrated 0.25 percent.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "A depolarizing fit to one Fez lane under a model the same report rejects; the loss is lane- and device-dependent.",
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-walk-scaffold-floor",
+      "withdrawn_text": "docs/evidence/walk-control-scaffolding/README.md at commit 9476dc2."
+    },
+    {
+      "id": "withdrawn-unital-angle-argument",
+      "statement": "Angle-dependent coherent errors cannot create the box-kite contrast because coherent errors are unital.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "A unitary error moves populations; the argument that applies is that the bound angle enters only a virtual RZ.",
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-box-kite-executed-pairs",
+      "withdrawn_text": "docs/evidence/transpiler-audit/falsify-84-84.ipynb at commit f47bd84."
+    },
+    {
+      "id": "withdrawn-readout-contrast-impossible",
+      "statement": "A circuit-dependent readout error is mathematically unable to produce the 0.59 contrast.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "Arm-dependent errors varying in both e0 and e1 can (0.59/0 against 0/0.59); the loophole is implausible, not impossible.",
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-box-kite-executed-pairs",
+      "withdrawn_text": "docs/evidence/transpiler-audit/falsify-resonator-readout.ipynb at commit 53dedb7."
+    },
+    {
+      "id": "withdrawn-common-ghost-detuning",
+      "statement": "One quasi-static 20-40 kHz detuning, common across qubits and both Heron devices, explains the Kingston coherence rotation and the Fez orbit phase.",
+      "domain": "hardware",
+      "evidence_class": "withdrawn claim",
+      "status": "withdrawn",
+      "boundary": "The Kingston rotation is a detuning difference between two work qubits, and the observations differ in device, qubits, circuits and day.",
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": "hw-idle-detuning-scale",
+      "withdrawn_text": "docs/evidence/ghost-frequency/README.md at commit e8df46e and docs/evidence/novel-insights/REPORT.md at commit 8f1dc70."
+    },
+    {
+      "id": "proposed-scaffold-ab",
+      "statement": "Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss.",
+      "domain": "hardware",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Design in gororoba_quantum/diagnostic_controls.py; needs its own written case.",
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "hw-walk-scaffold-floor"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "proposed-census-frequency",
+      "statement": "Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function.",
+      "domain": "algebra",
+      "evidence_class": "proposed experiment",
+      "status": "proposed",
+      "boundary": "Tests implementation fidelity, not the census theorem, which is proved.",
+      "evidence": [],
+      "documents": [],
+      "gates": {},
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "cd-associator-census"
       ],
       "supersedes": [],
       "superseded_by": null
