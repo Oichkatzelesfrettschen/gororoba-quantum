@@ -52,3 +52,20 @@ unital errors cannot create population contrast, which is not true in
 general, since a unitary error changes populations. The argument that
 applies is the virtual-RZ one above. The notebook's executed outputs come
 from its own environment and are not replayed in CI.
+
+`falsify-resonator-readout.ipynb` asks whether a circuit-dependent readout
+error could produce the contrast from equal populations. Its "impossible"
+verdict does not hold: it fixes e1 across the arms although its hypothesis
+lets both assignment errors vary. At equal populations of 1/2 the measured
+contrast is `(delta e0 - delta e1) / 2`, so bright errors (e0, e1) =
+(0.59, 0) and dark errors (0, 0.59) produce 0.795 against 0.205. What
+remains is plausibility. Faking the contrast needs arm-dependent errors
+near 0.6 on the same physical qubits and readout, far beyond any measured
+arm dependence. Even the faulty Kingston qubits 0 and 1 misassign by up to
+0.39 in a fixed, state-dependent way, not by arm. Two framing points
+also apply. The contrast is the designed
+dependence of one compiled interferometer on its bound phase, so readout
+models bear on its size, not its existence. Its final table also repeats the
+unitarity argument for angle-dependent errors, which the virtual-RZ argument
+above replaces. The 37 CZ it cites is a typical atlas member; atlas members
+run 33 to 53, and each bright and dark pair shares its count exactly.
