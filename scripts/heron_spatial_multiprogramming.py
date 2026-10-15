@@ -223,7 +223,41 @@ def self_test() -> None:
     except ValueError:
         pass
 
-    print("self-test: all 5 invariant checks passed successfully")
+    # 6. Assert dynamic circuit multiplexing with if_test
+    c_dyn0 = QuantumCircuit(5, 1)
+    c_dyn0.measure(0, 0)
+    with c_dyn0.if_test((c_dyn0.clbits[0], 1)):
+        c_dyn0.x(1)
+    c_dyn1 = QuantumCircuit(5, 1)
+    c_dyn1.x(0)
+    c_dyn1.measure(0, 0)
+    with c_dyn1.if_test((c_dyn1.clbits[0], 1)):
+        c_dyn1.x(1)
+    wide_dyn = lattice.build_multiplexed_pub([c_dyn0, c_dyn1], plan.tiles[:2])
+    require(len(wide_dyn.cregs) == 2, "Wide circuit must contain 2 separate classical registers")
+
+    # 7. Assert single-PUB parameter sweep packing
+    from qiskit.circuit import Parameter
+
+    theta = Parameter("theta")
+    p_circ = QuantumCircuit(5)
+    p_circ.rx(theta, 0)
+    wide_param = lattice.build_parameterized_multiplexed_pub([p_circ], [plan.tiles[0]])
+    pub = HeronLattice.pack_parameter_sweep_pub(wide_param, [[0.0], [0.5], [1.0]], shots=1024)
+    require(pub[1].shape == (3, 1), "Parameter sweep shape must be (3, 1)")
+
+    # 8. Assert basis rotation appending
+    x_rot = HeronLattice.append_basis_rotations(QuantumCircuit(2), "X")
+    require(any(inst.operation.name == "h" for inst in x_rot.data), "Hadamard must be present for X basis")
+
+    # 9. Assert precision anomaly detection rejects false alarms on independent qubits
+    tile_qubits = plan.tiles[0].qubits
+    false_alarm_ops = [("rz", (99,)), ("cz", (tile_qubits[0], tile_qubits[1])), ("sx", (tile_qubits[0],))]
+    require(
+        len(lattice.detect_anomalies(false_alarm_ops)) == 0, "False alarm must not be triggered by independent qubit"
+    )
+
+    print("self-test: all 9 invariant checks passed successfully")
 
 
 def main(argv: list[str] | None = None) -> int:

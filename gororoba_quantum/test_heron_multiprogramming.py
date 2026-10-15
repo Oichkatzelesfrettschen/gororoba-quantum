@@ -7,10 +7,19 @@ import unittest
 from pathlib import Path
 
 from qiskit import QuantumCircuit
+from qiskit.circuit import Parameter
+from qiskit.quantum_info import Statevector
+from qiskit_aer import AerSimulator
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
-from heron_multiprogramming import HeronLattice  # noqa: E402
+from heron_multiprogramming import (  # noqa: E402
+    HeronLattice,
+    build_run1_sedenion_witness,
+    build_run2_fano_stabilizer_patch,
+    build_run3_vacuum_probe,
+    build_run4_hidden_shift_circuit,
+)
 
 SNAPSHOT = ROOT / "docs/evidence/heron_platform/targets.json"
 
@@ -119,7 +128,6 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertGreater(len(anomalies), 0)
 
         # Circuit instructions scan mode
-        # High error coupler with rz -> cz -> sx
         high_coupler = anomalies[0].qubits
         ops = [
             ("rz", (high_coupler[0],)),
@@ -129,6 +137,39 @@ class TestHeronMultiprogramming(unittest.TestCase):
         detected = self.lattice.detect_anomalies(ops)
         self.assertEqual(len(detected), 1)
         self.assertEqual(detected[0].gate_sequence, ["rz", "cz", "sx"])
+
+    def test_anomaly_detection_per_qubit_accuracy(self) -> None:
+        anomalies = self.lattice.detect_anomalies()
+        high_coupler = anomalies[0].qubits
+        qA, qB = high_coupler[0], high_coupler[1]
+
+        # 1. False alarm rejection: rz on independent qubit 99 must NOT trigger anomaly on coupler (qA, qB)
+        ops_false_alarm = [
+            ("rz", (99,)),
+            ("cz", (qA, qB)),
+            ("sx", (qA,)),
+        ]
+        det_false = self.lattice.detect_anomalies(ops_false_alarm)
+        self.assertEqual(len(det_false), 0, "Independent qubit rz must not trigger anomaly")
+
+        # 2. Interleaved gate on independent qubit 99 must NOT hide genuine anomaly on qA
+        ops_interleaved = [
+            ("rz", (qA,)),
+            ("x", (99,)),
+            ("cz", (qA, qB)),
+            ("sx", (qA,)),
+        ]
+        det_interleaved = self.lattice.detect_anomalies(ops_interleaved)
+        self.assertEqual(len(det_interleaved), 1, "Genuine sequence with interleaved gate must be detected")
+
+        # 3. Direct QuantumCircuit input test
+        qc = QuantumCircuit(156)
+        qc.rz(0.5, qA)
+        qc.x(99)
+        qc.cz(qA, qB)
+        qc.sx(qA)
+        det_circuit = self.lattice.detect_anomalies(qc)
+        self.assertEqual(len(det_circuit), 1, "Direct QuantumCircuit scanning must detect anomaly")
 
     def test_build_multiplexed_pub(self) -> None:
         tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
@@ -152,6 +193,92 @@ class TestHeronMultiprogramming(unittest.TestCase):
         with self.assertRaises(ValueError):
             self.lattice.build_multiplexed_pub(circuits, tiles)
 
+    def test_dynamic_circuits_multiplexing_aer_execution(self) -> None:
+        # Test that multiple tiles with dynamic if_test control flow can be multiplexed
+        # and executed in AerSimulator without register collisions or KeyError
+        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
+
+        def make_dynamic_tile(flip_initial: bool) -> QuantumCircuit:
+            qc = QuantumCircuit(5, 1)
+            if flip_initial:
+                qc.x(0)
+            qc.measure(0, 0)
+            with qc.if_test((qc.clbits[0], 1)):
+                qc.x(1)
+            return qc
+
+        c0 = make_dynamic_tile(False)  # outcome 0
+        c1 = make_dynamic_tile(True)  # outcome 1
+
+        wide_pub = self.lattice.build_multiplexed_pub([c0, c1], tiles)
+        sim = AerSimulator()
+        res = sim.run(wide_pub, shots=20).result()
+        counts = res.get_counts()
+        # Qiskit space-separates multiple classical registers: 'tile_1_c tile_0_c'
+        self.assertIn("1 0", counts)
+        self.assertEqual(counts["1 0"], 20)
+
+    def test_parameterized_pub_and_sweep_packing(self) -> None:
+        tiles = self.lattice.find_disjoint_tiles(k=5, max_tiles=2)
+        p0 = Parameter("theta_0")
+        p1 = Parameter("theta_1")
+
+        qc0 = QuantumCircuit(5)
+        qc0.rx(p0, 0)
+        qc1 = QuantumCircuit(5)
+        qc1.rx(p1, 0)
+
+        wide = self.lattice.build_parameterized_multiplexed_pub([qc0, qc1], tiles)
+        self.assertEqual(wide.num_parameters, 2)
+
+        # Pack parameter sweep with shape (N_sweeps, 2)
+        param_grid = [[0.0, 0.5], [0.5, 1.0], [1.0, 1.5]]
+        pub = HeronLattice.pack_parameter_sweep_pub(wide, param_grid, shots=2048)
+        self.assertEqual(pub[0], wide)
+        self.assertEqual(pub[1].shape, (3, 2))
+        self.assertEqual(pub[2], 2048)
+
+        # Test validation on mismatched shape
+        with self.assertRaises(ValueError):
+            HeronLattice.pack_parameter_sweep_pub(wide, [[0.0, 0.5, 1.0]])
+
+    def test_append_basis_rotations(self) -> None:
+        # Test X basis rotation: H prepares |0> from |+>
+        qc_plus = QuantumCircuit(1)
+        qc_plus.h(0)
+        qc_x_rot = HeronLattice.append_basis_rotations(qc_plus, "X")
+        sv_x = Statevector(qc_x_rot)
+        self.assertAlmostEqual(sv_x.probabilities()[0], 1.0)
+
+        # Test Y basis rotation: Sdg then H prepares |0> from |+i>
+        qc_y_state = QuantumCircuit(1)
+        qc_y_state.h(0)
+        qc_y_state.s(0)
+        qc_y_rot = HeronLattice.append_basis_rotations(qc_y_state, "Y")
+        sv_y = Statevector(qc_y_rot)
+        self.assertAlmostEqual(sv_y.probabilities()[0], 1.0)
+
+    def test_run1_run2_run3_run4_circuit_builders(self) -> None:
+        # Run 1
+        r1 = build_run1_sedenion_witness((1, 10), (4, 15), 0.0)
+        self.assertEqual(r1.num_qubits, 5)
+        self.assertEqual(r1.num_clbits, 1)
+
+        # Run 2
+        r2 = build_run2_fano_stabilizer_patch(error_qubit=0)
+        self.assertEqual(r2.num_qubits, 10)
+        self.assertEqual(r2.num_clbits, 3)
+
+        # Run 3
+        r3 = build_run3_vacuum_probe(delay_dt=50)
+        self.assertEqual(r3.num_qubits, 2)
+        self.assertEqual(r3.num_clbits, 2)
+
+        # Run 4
+        r4 = build_run4_hidden_shift_circuit(dim=8, i=1, j=4)
+        self.assertEqual(r4.num_qubits, 7)
+        self.assertEqual(r4.num_clbits, 7)
+
     def test_spatial_cross_covariance(self) -> None:
         # Synthetic bitstrings for 2 tiles
         bitstrings = ["00", "01", "10", "11"] * 25
@@ -163,6 +290,17 @@ class TestHeronMultiprogramming(unittest.TestCase):
         self.assertEqual(len(cov), 2)
         self.assertEqual(len(cov[0]), 2)
         # Symmetry
+        self.assertAlmostEqual(cov[0][1], cov[1][0])
+
+    def test_spatial_cross_covariance_dict_input(self) -> None:
+        reg_dict = {
+            "tile_0_c": ["0", "1", "0", "1"] * 25,
+            "tile_1_c": ["1", "0", "1", "0"] * 25,
+        }
+        res = self.lattice.compute_spatial_cross_covariance(reg_dict)
+        self.assertEqual(res["num_shots"], 100)
+        self.assertEqual(res["num_tiles"], 2)
+        cov = res["covariance_matrix"]
         self.assertAlmostEqual(cov[0][1], cov[1][0])
 
     def test_spatial_cross_covariance_insufficient_shots_raises(self) -> None:

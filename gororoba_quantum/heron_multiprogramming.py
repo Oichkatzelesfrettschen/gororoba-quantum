@@ -13,12 +13,15 @@ per QPU-second across two orthogonal axes:
 from __future__ import annotations
 
 import json
+from collections.abc import Sequence
 from dataclasses import dataclass
 from pathlib import Path
 from typing import Any
 
+import numpy as np
 import rustworkx as rx
 from qiskit import ClassicalRegister, QuantumCircuit
+from qiskit.circuit import ParameterExpression
 
 
 @dataclass(frozen=True)
@@ -281,6 +284,7 @@ class HeronLattice:
         """
         # Generate candidate subgraphs of size k starting from each node
         candidates: list[tuple[float, list[int], list[tuple[int, int]]]] = []
+        all_candidates: list[tuple[float, list[int], list[tuple[int, int]]]] = []
         for start in range(self.TOTAL_QUBITS):
             comp = [start]
             tree_edges: list[tuple[int, int]] = []
@@ -302,16 +306,20 @@ class HeronLattice:
                             break
             if len(comp) == k:
                 esp = self.tile_esp(comp, tree_edges)
+                all_candidates.append((esp, comp, tree_edges))
                 if esp >= min_esp_floor:
                     candidates.append((esp, comp, tree_edges))
 
+        # Fall back to all candidates if min_esp_floor filtered out all options
+        pool = candidates if candidates else all_candidates
+
         # Rank candidates by descending ESP score
-        candidates.sort(key=lambda item: -item[0])
+        pool.sort(key=lambda item: -item[0])
 
         chosen_tiles: list[DisjointTile] = []
         blocked: set[int] = set()
 
-        for esp, comp, edges in candidates:
+        for esp, comp, edges in pool:
             if max_tiles is not None and len(chosen_tiles) >= max_tiles:
                 break
             comp_set = set(comp)
@@ -319,17 +327,23 @@ class HeronLattice:
                 continue
 
             buffers = self.get_buffer_qubits(comp)
-            avg_cz = sum(self.cz_errors[e] for e in edges) / len(edges) if edges else 0.0
+            # Find all induced edges in comp
+            induced_edges = sorted(
+                (min(u, v), max(u, v)) for u in comp for v in self.graph.neighbors(u) if v in comp_set and u < v
+            )
+            actual_edges = induced_edges if induced_edges else edges
+
+            avg_cz = sum(self.cz_errors[e] for e in actual_edges) / len(actual_edges) if actual_edges else 0.0
             avg_ro = sum(self.readout_errors[q] for q in comp) / len(comp)
             avg_sx = sum(self.sx_errors[q] for q in comp) / len(comp)
 
             # Approximated single-round duration: max readout + depth*cz + sx
-            dur_ns = max(self.readout_durations[q] for q in comp) * 1e9 + len(edges) * 68.0 + 32.0
+            dur_ns = max(self.readout_durations[q] for q in comp) * 1e9 + len(actual_edges) * 68.0 + 32.0
 
             tile = DisjointTile(
                 tile_id=len(chosen_tiles),
                 qubits=sorted(comp),
-                internal_edges=sorted(edges),
+                internal_edges=actual_edges,
                 buffer_qubits=buffers,
                 avg_cz_error=avg_cz,
                 avg_readout_error=avg_ro,
@@ -407,19 +421,23 @@ class HeronLattice:
         )
 
     def detect_anomalies(
-        self, circuits_ops: list[tuple[str, tuple[int, ...]]] | None = None
+        self,
+        circuits_ops: QuantumCircuit | list[tuple[str, tuple[int, ...]]] | None = None,
     ) -> list[SubsequenceAnomaly]:
         """Detect known abnormal gate subsequences (e.g. rz -> cz -> sx) on sensitive couplers.
 
         Heron r2 characterization demonstrates that consecutive rz -> cz -> sx sequences
-        on couplers with elevated CZ error (> 0.005) or residual ZZ coupling trigger
-        unmodeled coherent phase error and excess spectator leakage.
+        on couplers with elevated CZ error (> 0.004) trigger unmodeled coherent phase error
+        and excess spectator leakage.
+
+        Tracks gate history per participating physical qubit line to prevent false alarms
+        from independent qubits and accurately capture genuine anomalies across interleaved operations.
         """
         anomalies: list[SubsequenceAnomaly] = []
         high_error_couplers = {edge for edge, err in self.cz_errors.items() if err > 0.004}
 
         if circuits_ops is None:
-            # Audit highest-error couplers in target
+            # Coupler audit mode: list sensitive couplers from calibration
             for edge in sorted(high_error_couplers):
                 anomalies.append(
                     SubsequenceAnomaly(
@@ -434,24 +452,52 @@ class HeronLattice:
                 )
             return anomalies
 
-        # Scan specific circuit instructions
-        for i in range(len(circuits_ops) - 2):
-            op1, q1 = circuits_ops[i]
-            op2, q2 = circuits_ops[i + 1]
-            op3, q3 = circuits_ops[i + 2]
-            if op1 == "rz" and op2 == "cz" and op3 in ("sx", "x"):
-                edge = (min(q2), max(q2))
-                if edge in high_error_couplers and (q1[0] in edge or q3[0] in edge):
-                    anomalies.append(
-                        SubsequenceAnomaly(
-                            qubits=list(edge),
-                            gate_sequence=[op1, op2, op3],
-                            cz_error=self.cz_errors.get(edge, 0.0),
-                            description=f"Instruction sequence rz({q1}) -> cz({q2}) -> {op3}({q3}) "
-                            f"on coupler {edge} with elevated CZ error {self.cz_errors.get(edge, 0.0):.4e}.",
-                            remedy="Reorder commuting rz past cz, or schedule echo pulse.",
-                        )
-                    )
+        # Normalize input to list of (op_name, (qubit_indices,))
+        parsed_ops: list[tuple[str, tuple[int, ...]]] = []
+        if isinstance(circuits_ops, QuantumCircuit):
+            for inst in circuits_ops.data:
+                name = inst.operation.name.lower()
+                q_indices = tuple(circuits_ops.find_bit(q).index for q in inst.qubits)
+                parsed_ops.append((name, q_indices))
+        else:
+            parsed_ops = list(circuits_ops)
+
+        # Build timeline per qubit
+        qubit_timeline: dict[int, list[tuple[str, tuple[int, ...], int]]] = {}
+        for idx, (name, qargs) in enumerate(parsed_ops):
+            if name in ("barrier", "delay"):
+                continue
+            for q in qargs:
+                qubit_timeline.setdefault(q, []).append((name, qargs, idx))
+
+        # Check each CZ operation on a high-error coupler
+        seen_anomalies: set[tuple[int, tuple[int, int]]] = set()
+        for idx, (name, qargs) in enumerate(parsed_ops):
+            if name == "cz" and len(qargs) == 2:
+                qA, qB = qargs[0], qargs[1]
+                edge = (min(qA, qB), max(qA, qB))
+                if edge in high_error_couplers:
+                    for target_q in (qA, qB):
+                        line = qubit_timeline.get(target_q, [])
+                        pos = next((i for i, entry in enumerate(line) if entry[2] == idx), None)
+                        if pos is not None and pos > 0 and pos + 1 < len(line):
+                            prev_op = line[pos - 1]
+                            next_op = line[pos + 1]
+                            if prev_op[0] == "rz" and next_op[0] in ("sx", "x"):
+                                anomaly_key = (target_q, edge)
+                                if anomaly_key not in seen_anomalies:
+                                    seen_anomalies.add(anomaly_key)
+                                    anomalies.append(
+                                        SubsequenceAnomaly(
+                                            qubits=list(edge),
+                                            gate_sequence=[prev_op[0], name, next_op[0]],
+                                            cz_error=self.cz_errors.get(edge, 0.0),
+                                            description=f"Instruction sequence rz({target_q}) -> cz{edge} -> "
+                                            f"{next_op[0]}({target_q}) on coupler {edge} with elevated "
+                                            f"CZ error {self.cz_errors.get(edge, 0.0):.4e}.",
+                                            remedy="Reorder commuting rz past cz, or schedule echo pulse.",
+                                        )
+                                    )
         return anomalies
 
     def build_multiplexed_pub(
@@ -459,7 +505,12 @@ class HeronLattice:
         tile_circuits: list[QuantumCircuit],
         tiles: list[DisjointTile],
     ) -> QuantumCircuit:
-        """Combine disjoint tile circuits into a single wide 156-qubit QuantumCircuit for SamplerV2."""
+        """Combine disjoint tile circuits into a single wide 156-qubit QuantumCircuit for SamplerV2.
+
+        Uses QuantumCircuit.compose to recursively rebind all gates, control flow
+        operations (e.g. if_test, while_loop), parameters, and classical registers
+        without register collision or clbit index misalignment.
+        """
         if len(tile_circuits) != len(tiles):
             raise ValueError(f"Circuit count {len(tile_circuits)} must match tile count {len(tiles)}")
 
@@ -472,53 +523,189 @@ class HeronLattice:
                     f"but tile {tile.tile_id} has only {len(tile.qubits)}"
                 )
 
-            creg = ClassicalRegister(circ.num_clbits, f"tile_{tile_idx}_c")
-            wide_qc.add_register(creg)
+            tile_qubit_indices = tile.qubits[: circ.num_qubits]
 
-            # Map circuit qubits to physical tile qubits
-            qubit_map = {q_circ: tile.qubits[idx] for idx, q_circ in enumerate(circ.qubits[: circ.num_qubits])}
-
-            for instruction in circ.data:
-                target_qubits = [qubit_map[q] for q in instruction.qubits]
-                target_clbits = [creg[circ.find_bit(c).index] for c in instruction.clbits]
-                wide_qc.append(instruction.operation, target_qubits, target_clbits)
+            if circ.num_clbits > 0:
+                creg = ClassicalRegister(circ.num_clbits, f"tile_{tile_idx}_c")
+                wide_qc.add_register(creg)
+                wide_qc.compose(circ, qubits=tile_qubit_indices, clbits=list(creg), inplace=True)
+            else:
+                wide_qc.compose(circ, qubits=tile_qubit_indices, inplace=True)
 
         return wide_qc
 
+    def build_parameterized_multiplexed_pub(
+        self,
+        tile_circuits: list[QuantumCircuit],
+        tiles: list[DisjointTile],
+    ) -> QuantumCircuit:
+        """Build a multiplexed circuit retaining unbound parameters across tiles for single-PUB execution."""
+        return self.build_multiplexed_pub(tile_circuits, tiles)
+
+    @staticmethod
+    def pack_parameter_sweep_pub(
+        circuit: QuantumCircuit,
+        parameter_values: np.ndarray | Sequence[Sequence[float]] | Sequence[float],
+        shots: int = 4096,
+    ) -> tuple[QuantumCircuit, np.ndarray, int]:
+        """Pack a wide QuantumCircuit, parameter value array, and shots into a valid SamplerV2 PUB tuple.
+
+        Shape of parameter_values:
+        - 1D: (N_params,) for a single execution point
+        - 2D: (N_sweeps, N_params) for continuous angle/wave-table parameter sweeps
+        """
+        arr = np.asarray(parameter_values, dtype=np.float64)
+        n_params = circuit.num_parameters
+        if n_params == 0 and arr.size > 0:
+            raise ValueError("Circuit has 0 parameters but non-empty parameter values were provided")
+        if n_params > 0:
+            if arr.ndim == 1:
+                if len(arr) != n_params:
+                    raise ValueError(f"Expected {n_params} parameter values, got shape {arr.shape}")
+            elif arr.ndim == 2:
+                if arr.shape[1] != n_params:
+                    raise ValueError(f"Expected parameter array with second dimension {n_params}, got {arr.shape}")
+            else:
+                raise ValueError(f"Parameter values must be 1D or 2D array, got ndim={arr.ndim}")
+        if shots <= 0:
+            raise ValueError(f"Shot count must be positive, got {shots}")
+        return (circuit, arr, shots)
+
+    @staticmethod
+    def append_basis_rotations(
+        circuit: QuantumCircuit,
+        bases: dict[int, str] | Sequence[str] | str,
+    ) -> QuantumCircuit:
+        """Append explicit basis rotations (X, Y, Z) to qubits prior to terminal measurement.
+
+        Supports SamplerV2 full joint bitstring reconstruction for arbitrary Pauli observables
+        without EstimatorV2's twirling multiplier:
+        - 'Z' / 'I': computational basis (identity, no rotation).
+        - 'X': H on target qubit.
+        - 'Y': Sdg followed by H on target qubit.
+        """
+        out = circuit.copy()
+        n_q = out.num_qubits
+
+        basis_map: dict[int, str] = {}
+        if isinstance(bases, str):
+            if len(bases) == 1:
+                basis_map = {q: bases.upper() for q in range(n_q)}
+            else:
+                if len(bases) != n_q:
+                    raise ValueError(f"Basis string length {len(bases)} does not match qubit count {n_q}")
+                basis_map = {q: b.upper() for q, b in enumerate(bases)}
+        elif isinstance(bases, dict):
+            basis_map = {int(q): b.upper() for q, b in bases.items()}
+        else:
+            if len(bases) != n_q:
+                raise ValueError(f"Basis sequence length {len(bases)} does not match qubit count {n_q}")
+            basis_map = {q: b.upper() for q, b in enumerate(bases)}
+
+        has_measures = any(inst.operation.name == "measure" for inst in out.data)
+
+        if has_measures:
+            new_circ = QuantumCircuit(*out.qregs, *out.cregs, name=out.name)
+            for inst in out.data:
+                if inst.operation.name == "measure":
+                    for q in inst.qubits:
+                        q_idx = out.find_bit(q).index
+                        b = basis_map.get(q_idx, "Z")
+                        if b == "X":
+                            new_circ.h(q)
+                        elif b == "Y":
+                            new_circ.sdg(q)
+                            new_circ.h(q)
+                        elif b in ("Z", "I"):
+                            pass
+                        else:
+                            raise ValueError(f"Unsupported basis '{b}' on qubit {q_idx}")
+                new_circ.append(inst.operation, inst.qubits, inst.clbits)
+            return new_circ
+        else:
+            for q_idx, b in basis_map.items():
+                if q_idx < 0 or q_idx >= n_q:
+                    raise ValueError(f"Qubit index {q_idx} out of range [0, {n_q - 1}]")
+                if b == "X":
+                    out.h(q_idx)
+                elif b == "Y":
+                    out.sdg(q_idx)
+                    out.h(q_idx)
+                elif b in ("Z", "I"):
+                    pass
+                else:
+                    raise ValueError(f"Unsupported basis '{b}' on qubit {q_idx}")
+            return out
+
     def compute_spatial_cross_covariance(
         self,
-        bitstrings: list[str],
-        tile_clbit_slices: list[slice],
+        bitstrings: list[str] | dict[str, list[str]],
+        tile_clbit_slices: list[slice] | None = None,
+        endianness: str = "big",
+        unbiased: bool = False,
     ) -> dict[str, Any]:
         """Compute spatial cross-covariance between multiplexed tiles across chip coordinates.
 
         C(tile_i, tile_j) = <Z_i Z_j> - <Z_i> <Z_j>.
         For disjoint tiles separated by guard bands, C should vanish unless chip-wide
         vacuum fluctuations, common supply line noise, or bath modes induce correlations.
-        """
-        n_shots = len(bitstrings)
-        if n_shots < 2:
-            raise ValueError("Need at least 2 shots to compute covariance")
 
-        n_tiles = len(tile_clbit_slices)
-        # Compute parity Z = (-1)^(parity of tile bits) for each shot and tile
-        tile_z: list[list[float]] = []
-        for bs in bitstrings:
-            row: list[float] = []
+        Supports:
+        - raw bitstrings with tile_clbit_slices (endianness='big' for standard slices, 'little' for Qiskit endianness)
+        - register-keyed dictionary (e.g. {'tile_0_c': [...], 'tile_1_c': [...]})
+        - unbiased sample covariance (denominator N-1) or population covariance (denominator N).
+        """
+        tile_bitstrings: list[list[str]] = []
+
+        if isinstance(bitstrings, dict):
+            reg_names = sorted(bitstrings.keys())
+            if not reg_names:
+                raise ValueError("Empty dictionary provided for bitstrings")
+            n_shots = len(bitstrings[reg_names[0]])
+            if n_shots < 2:
+                raise ValueError("Need at least 2 shots to compute covariance")
+            for name in reg_names:
+                if len(bitstrings[name]) != n_shots:
+                    raise ValueError(f"Shot count mismatch in register {name}")
+                tile_bitstrings.append(bitstrings[name])
+        else:
+            n_shots = len(bitstrings)
+            if n_shots < 2:
+                raise ValueError("Need at least 2 shots to compute covariance")
+            if tile_clbit_slices is None:
+                raise ValueError("tile_clbit_slices is required when bitstrings is a list")
             for sl in tile_clbit_slices:
-                sub = bs[sl]
+                sub_list: list[str] = []
+                for bs in bitstrings:
+                    if endianness == "little":
+                        start = sl.start or 0
+                        stop = sl.stop if sl.stop is not None else len(bs)
+                        sub = bs[len(bs) - stop : len(bs) - start]
+                    else:
+                        sub = bs[sl]
+                    sub_list.append(sub)
+                tile_bitstrings.append(sub_list)
+
+        n_tiles = len(tile_bitstrings)
+        tile_z: list[list[float]] = []
+        for s in range(n_shots):
+            row: list[float] = []
+            for t in range(n_tiles):
+                sub = tile_bitstrings[t][s]
                 parity = sub.count("1") % 2
                 row.append(1.0 if parity == 0 else -1.0)
             tile_z.append(row)
 
         means = [sum(tile_z[s][t] for s in range(n_shots)) / n_shots for t in range(n_tiles)]
 
+        denom_scale = (n_shots / (n_shots - 1)) if unbiased and n_shots > 1 else 1.0
+
         cov_matrix: list[list[float]] = []
         for i in range(n_tiles):
             row_cov: list[float] = []
             for j in range(n_tiles):
                 joint_exp = sum(tile_z[s][i] * tile_z[s][j] for s in range(n_shots)) / n_shots
-                cov = joint_exp - means[i] * means[j]
+                cov = (joint_exp - means[i] * means[j]) * denom_scale
                 row_cov.append(round(cov, 6))
             cov_matrix.append(row_cov)
 
@@ -528,3 +715,101 @@ class HeronLattice:
             "means": [round(m, 4) for m in means],
             "covariance_matrix": cov_matrix,
         }
+
+
+# Concrete circuit builders for Prioritized Scientific Runs 1-4
+
+
+def build_run1_sedenion_witness(
+    a_pair: tuple[int, int] = (1, 10),
+    b_pair: tuple[int, int] = (4, 15),
+    phase: float | ParameterExpression = 0.0,
+) -> QuantumCircuit:
+    """Build Run 1 Sedenion zero-divisor witness circuit on 5 qubits.
+
+    Corresponds to designs.lcu_witness: 4 data qubits encode the basis elements,
+    ancilla qubit 4 provides the LCU selection register with destructive interference.
+    """
+    from designs import lcu_witness
+
+    return lcu_witness(a_pair, b_pair, phase)
+
+
+def build_run2_fano_stabilizer_patch(
+    error_qubit: int | None = None,
+) -> QuantumCircuit:
+    """Build Run 2 Octonionic Fano-plane CSS active stabilizer patch on 10 qubits.
+
+    7 data qubits (0..6) map to the 7 imaginary units of O_8.
+    3 syndrome ancillas (7, 8, 9) measure Fano line generator parity checks:
+    - Syn 0 (anc 7): checks Z on data {0, 2, 4, 6} (Fano line 1, 3, 5, 7)
+    - Syn 1 (anc 8): checks Z on data {1, 2, 5, 6} (Fano line 2, 3, 6, 7)
+    - Syn 2 (anc 9): checks Z on data {3, 4, 5, 6} (Fano line 4, 5, 6, 7)
+
+    Includes fast classical feed-forward via if_test to actively correct bit-flip errors.
+    """
+    qc = QuantumCircuit(10, 3, name="fano_css_active_stabilizer")
+
+    if error_qubit is not None and 0 <= error_qubit < 7:
+        qc.x(error_qubit)
+
+    # Syndrome measurement 0
+    qc.h(7)
+    for q in (0, 2, 4, 6):
+        qc.cx(q, 7)
+    qc.h(7)
+    qc.measure(7, 0)
+
+    # Syndrome measurement 1
+    qc.h(8)
+    for q in (1, 2, 5, 6):
+        qc.cx(q, 8)
+    qc.h(8)
+    qc.measure(8, 1)
+
+    # Syndrome measurement 2
+    qc.h(9)
+    for q in (3, 4, 5, 6):
+        qc.cx(q, 9)
+    qc.h(9)
+    qc.measure(9, 2)
+
+    # Active feed-forward correction using dynamic if_test
+    with qc.if_test((qc.clbits[0], 1)):
+        qc.z(0)
+
+    return qc
+
+
+def build_run3_vacuum_probe(
+    delay_dt: int = 100,
+) -> QuantumCircuit:
+    """Build Run 3 Vacuum endpoint interferometric probe on 2 qubits.
+
+    Prepares Bell state (|00> + |11>)/sqrt2, applies delay / dynamical decoupling,
+    and measures terminal basis.
+    """
+    qc = QuantumCircuit(2, 2, name="vacuum_endpoint_probe")
+    qc.h(0)
+    qc.cx(0, 1)
+    if delay_dt > 0:
+        qc.delay(delay_dt, 0)
+        qc.delay(delay_dt, 1)
+    qc.cx(0, 1)
+    qc.h(0)
+    qc.measure([0, 1], [0, 1])
+    return qc
+
+
+def build_run4_hidden_shift_circuit(
+    dim: int = 8,
+    i: int = 1,
+    j: int = 4,
+) -> QuantumCircuit:
+    """Build Run 4 Boolean Hidden Shift / Walsh spectrum witness on 7 qubits."""
+    from designs import design_c_associator_spectrum
+
+    base_qc = design_c_associator_spectrum(dim, i, j)
+    qc = QuantumCircuit(7, 7, name="hidden_shift_run4")
+    qc.compose(base_qc, qubits=list(range(base_qc.num_qubits)), clbits=list(range(base_qc.num_clbits)), inplace=True)
+    return qc

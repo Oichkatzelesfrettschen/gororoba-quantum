@@ -134,9 +134,9 @@ at higher gate fidelity than an un-multiplexed execution.
 | Priority | Experiment Module | Qubits / Tile | Parallel Tiles (156q) | Key Heron r2 ISA Feature | Primary Scientific Deliverable | Yield Boost |
 |:---:|:---|:---:|:---:|:---|:---|:---:|
 | **Run 1** | **Sedenion ($\mathbb{S}_{16}$) & Pathion ($\mathbb{P}_{32}$) Hardware Witness** | $5\text{q}$ (dim 16) or $6\text{q}$ (dim 32) | **16 tiles** ($80\text{q}$ active) | Native fractional $R_{ZZ}(\theta)$ & $R_X(\theta)$ | Hardware witness of non-associative defect census, $C_{881}$ rank loci, and FakeFez amplification validation | **$74.2\times$** |
-| **Run 2** | **Octonionic Fano-Plane CSS Codes & Active Stabilizers** | $10\text{q}$ ($7\text{q}$ data + $3\text{q}$ syn) | **8 tiles** ($80\text{q}$ active) | Dynamic Circuits (`if_test`, mid-circuit `measure_2`) | Fano-plane incidence stabilizer parity checks, terminal channel separation certificates | **$37.1\times$** |
+| **Run 2** | **Octonionic Fano-Plane CSS Codes & Active Stabilizers** | $10\text{q}$ ($7\text{q}$ data + $3\text{q}$ syn) | **7 to 8 tiles** ($70\text{--}80\text{q}$ active) | Dynamic Circuits (`if_test`, mid-circuit `measure_2`) | Fano-plane incidence stabilizer parity checks, terminal channel separation certificates | **$32.5\times\text{--}37.1\times$** |
 | **Run 3** | **Vacuum Endpoint Information & Model Discrimination** | $2\text{q}$ to $4\text{q}$ | **20 tiles** ($40\text{q}$ active) | QASM3 `stretch` + Hoeffding-optimal shots | Out-of-sample KL/JS divergence bounding between vacuum models; spatial cross-covariance $C(\mathbf{r}_i, \mathbf{r}_j)$ | **$92.7\times$** |
-| **Run 4** | **Boolean Hidden Shift & Fold-Projection Counterexamples** | $7\text{q}$ | **12 tiles** ($84\text{q}$ active) | Staged PassManager (`optimization_level=3`) | Nonlinearity witness (PMC 4957665) & validation of Rocq formal certificates | **$55.6\times$** |
+| **Run 4** | **Boolean Hidden Shift & Fold-Projection Counterexamples** | $7\text{q}$ | **10 to 12 tiles** ($70\text{--}84\text{q}$ active) | Staged PassManager (`optimization_level=3`) | Nonlinearity witness (PMC 4957665) & validation of Rocq formal certificates | **$46.4\times\text{--}55.6\times$** |
 
 ---
 
@@ -274,12 +274,28 @@ for the following architectural reasons:
    EstimatorV2 applies automated Pauli twirling and Zero-Noise Extrapolation (ZNE), introducing a hidden
    multiplier of $10\times\text{--}60\times$ in circuit evaluations per observable, rapidly exhausting
    the rolling 600-second execution quota.
-3. **SamplerV2 Implementation**:
+3. **SamplerV2 Implementation with Explicit Basis Rotations**:
    Each tile appends its own explicit basis change ($H$ for $X$-basis, $S^\dagger H$ for $Y$-basis,
    identity for $Z$-basis) prior to terminal measurement into namespaced classical registers
    `tile_{k}_c`. A single execution returns the full joint 156-qubit bitstring per shot.
 
-### 3.2 Single-PUB Parameter Vector Wave-Table Sweeps
+The engine provides `HeronLattice.append_basis_rotations(circuit, bases)`:
+- Basis `'X'`: appends $H$, mapping Pauli $X$ eigenvectors $(|0\rangle \pm |1\rangle)/\sqrt{2}$ to $\{|0\rangle, |1\rangle\}$.
+- Basis `'Y'`: appends $S^\dagger = P(-\pi/2)$ followed by $H$, mapping $(|0\rangle \pm i|1\rangle)/\sqrt{2}$ to $\{|0\rangle, |1\rangle\}$.
+- Basis `'Z'` / `'I'`: computational basis (identity, no rotation).
+
+This satisfies the repository's observable reconstruction rule (`AGENTS.md`): reconstructing arbitrary state coherences $\langle x|\rho|y\rangle$ using $2^w$ explicit Pauli settings without estimator overhead.
+
+### 3.2 Dynamic Circuit Multiplexing via `QuantumCircuit.compose`
+
+When multiplexing dynamic circuits (such as Run 2's active stabilizer patches with `if_test` feed-forward), naive instruction appending fails because `IfElseOp` operations retain conditions and inner blocks bound to the original circuit's registers, triggering `KeyError` in compiler backends.
+
+`HeronLattice.build_multiplexed_pub` uses `QuantumCircuit.compose` with explicit qubit and clbit target lists:
+- Each tile $k$ is allocated an independent namespaced classical register `ClassicalRegister(n_c, "tile_{k}_c")`.
+- `compose` recursively rebinds all sub-circuit blocks, control flow instructions, and classical condition tuples into the wide circuit's namespace.
+- Independent dynamic feedback executes in parallel across physical tiles without classical register collisions.
+
+### 3.3 Single-PUB Parameter Vector Wave-Table Sweeps
 
 Submitting separate circuits for each parameter point $\theta \in [0, \pi/2]$ incurs severe runtime
 penalties due to per-circuit initialization overhead.
@@ -290,20 +306,22 @@ Bind a `ParameterVector` across an array of shape `(N_angles, N_params)` within 
 ```python
 from qiskit.circuit import ParameterVector
 from qiskit_ibm_runtime import SamplerV2
+from heron_multiprogramming import HeronLattice
 
 # Define parameter vector across the multiplexed circuit
 theta = ParameterVector("theta", length=16)
-# Build wide circuit with theta parameters ...
+# Build parameterized wide circuit...
+wide_pub = lattice.build_parameterized_multiplexed_pub(tile_circuits, tiles)
 
-# Form single PUB with (N_angles, 16) array
-pub = (wide_circuit, parameter_values_array, 8192)
+# Pack single PUB with (N_angles, N_params) array
+pub = HeronLattice.pack_parameter_sweep_pub(wide_pub, parameter_values_array, shots=8192)
 job = sampler.run([pub])
 ```
 
 Heron r2 control electronics load updated parameter values into FPGA wave-table memory in
 microseconds during the shot loop, completely eliminating job recompilation latency.
 
-### 3.3 Abnormal Gate Subsequence Detection and Bypass
+### 3.4 Abnormal Gate Subsequence Detection and Bypass
 
 On `ibm_fez` and `ibm_marrakesh`, hardware characterization has revealed that specific 3-gate native
 subsequences trigger severe coherent phase errors:
@@ -316,14 +334,27 @@ qubit-coupler frequency detuning:
 2. The subsequent $SX$ drive on either transmon encounters transient Stark detuning and spectator
    state leakage unmodeled by standard VF2 transpiler scoring.
 
+#### Precision Per-Qubit Timeline Tracking
+To prevent false alarms from independent parallel operations on unrelated transmons, `HeronLattice.detect_anomalies`:
+1. Traces the instruction history individually for each participating qubit $q \in \{q_A, q_B\}$ of a coupler $(q_A, q_B)$ with $e_{CZ} > 4.0 \times 10^{-3}$.
+2. Verifies that the *same physical qubit* experiences an immediate preceding $R_Z$ and subsequent $SX$ (or $X$) without intervening operations.
+3. Automatically accepts both transpiled `QuantumCircuit` instances and raw operation streams.
+
 #### Automated Bypass Protocol
-The compiler engine in `gororoba_quantum/heron_multiprogramming.py` audits transpiled circuits:
 - **Commutation**: Because $CZ = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes Z$ is diagonal
   in the computational basis, $R_Z(\phi) \otimes I$ and $CZ$ strictly commute:
   $$[R_Z(\phi) \otimes I, CZ] = 0$$
   The compiler commutes $R_Z$ past $CZ$, reordering the sequence to $CZ \to R_Z(\phi) \to SX$.
 - **Echo Buffering**: Where commutation is prevented by cross-qubit dependencies, a 1-dt alignment delay
   or dynamical decoupling echo pulse is inserted between $CZ$ and $SX$.
+
+### 3.5 Ready-to-Run Scientific Circuit Builders
+
+The module provides canonical builders for all 4 prioritized runs:
+- `build_run1_sedenion_witness(a_pair, b_pair, phase)`: 5-qubit LCU witness implementing `designs.lcu_witness`, evaluating four-support zero divisors, bright controls, and continuous fringe sweeps.
+- `build_run2_fano_stabilizer_patch(error_qubit)`: 10-qubit Fano-plane CSS patch (7 data + 3 syndrome) with mid-circuit syndrome measurement and dynamic `if_test` feed-forward.
+- `build_run3_vacuum_probe(delay_dt)`: 2-qubit entangled Bell-state interferometric sensor with tunable delay / QASM3 stretch timing.
+- `build_run4_hidden_shift_circuit(dim, i, j)`: 7-qubit Design C / Boolean hidden shift circuit with Walsh-Hadamard transform layers.
 
 ---
 
@@ -341,9 +372,9 @@ Based on the live calibration snapshot in `docs/evidence/heron_platform/targets.
 | **Median Readout (`measure`) Duration** | $1660\,\text{ns}$ | $2180\,\text{ns}$ | $2684\,\text{ns}$ |
 | **Median Readout_2 (`measure_2`) Duration** | $1340\,\text{ns}$ | $1380\,\text{ns}$ | $1884\,\text{ns}$ |
 | **Run 1 Disjoint 5q Tiles Packed ($\text{dist}_G \ge 2$)** | **16 tiles** ($80\text{q}$) | **16 tiles** ($80\text{q}$) | **16 tiles** ($80\text{q}$) |
-| **Run 2 Disjoint 10q Tiles Packed ($\text{dist}_G \ge 2$)** | **7 tiles** ($70\text{q}$) | **7 tiles** ($70\text{q}$) | **7 tiles** ($70\text{q}$) |
+| **Run 2 Disjoint 10q Tiles Packed ($\text{dist}_G \ge 2$)** | **7 tiles** ($70\text{q}$) | **8 tiles** ($80\text{q}$) | **7 tiles** ($70\text{q}$) |
 | **Run 3 Disjoint 2q Tiles Packed ($\text{dist}_G \ge 2$)** | **20 tiles** ($40\text{q}$) | **20 tiles** ($40\text{q}$) | **20 tiles** ($40\text{q}$) |
-| **Run 4 Disjoint 7q Tiles Packed ($\text{dist}_G \ge 2$)** | **12 tiles** ($84\text{q}$) | **12 tiles** ($84\text{q}$) | **12 tiles** ($84\text{q}$) |
+| **Run 4 Disjoint 7q Tiles Packed ($\text{dist}_G \ge 2$)** | **12 tiles** ($84\text{q}$) | **10 tiles** ($70\text{q}$) | **12 tiles** ($84\text{q}$) |
 | **Run 1 Throughput Multiplier ($50\,\mu\text{s}$ rep_delay)** | **$74.18\times$** | **$74.18\times$** | **$74.18\times$** |
 
 ---
