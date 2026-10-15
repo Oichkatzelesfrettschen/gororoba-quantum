@@ -1,0 +1,20 @@
+{
+ "files": {
+  "pub_00.json": "8c2ad412d5184540fe870ebd5b0da583715c3dbc4ae3f5072757294a30940ebd",
+  "pub_01.json": "1baaa0e3e1e431e18498a2a9cff655980811f649a2f8ccc8348e7d2ecb8c15ad",
+  "pub_02.json": "624fcb705556b19903df6220e6fd80990123170a0b7c73f3e2a914131c0d5309",
+  "pub_03.json": "fb2c245fd5110064d09a1fc8cb4c0f9240cb11b1e5909538ed0239c9a3e6de16",
+  "pub_04.json": "9f8dc9de2c38ae3b20825678b854194b6291d500ceee3f0d80e2eea9cc81bc3a",
+  "pub_05.json": "ac11d309bf5969362bc84d471555f3de2eb9ed36c3b771f481891a0cdbb5a3b9",
+  "pub_06.json": "6f21d553cda8ef71313809199344ffb1c36a8dd86ac3bceafc93f0074393ee42",
+  "result_metadata.json": "8b5b7925ac49694af23fc90d9d562eac8a0c51066102304aa1541aae33e5fdde"
+ },
+ "job_id": "db87o48r1c5c738lu8jg",
+ "metrics": [
+  "job_metrics.json"
+ ],
+ "metrics_latest": "job_metrics.json",
+ "metrics_sha256": [
+  "42c81dff9dceda0d0a6290ee9c5b3f28ef6d4d105c6d10d03d3c0ab1f8b16ffe"
+ ]
+}
