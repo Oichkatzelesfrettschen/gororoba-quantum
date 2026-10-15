@@ -16,9 +16,10 @@ GOROROBA_AER_DEVICE (CPU by default), and records the CZ count, the layout,
 the total-variation distance to the ideal distribution, the unbiased
 collision estimate sum_y n_y (n_y - 1) / (S (S - 1)) and the ideal K.
 
-``--pairs all`` runs the 360 pairs; ``--pairs I,J;I,J`` names a subset (the
-CPU replay gate uses two representatives). ``--check FILE`` reruns the pairs
-FILE names on the CPU and requires each TV distance and collision estimate to
+``--pairs all`` runs the 360 pairs; ``--pairs I,J;I,J`` names a subset.
+``--check FILE`` reruns the ``--pairs`` subset of FILE (every pair with
+``--pairs all``) on the CPU, so the replay gate re-derives two class
+representatives of a 360-pair Kaggle result, and requires each TV distance and collision estimate to
 agree within five standard errors of a difference of two independent
 estimates at FILE's shot count: sqrt(2/S) for TV and 2 sqrt(2K/S) for the
 collision estimate, so a CPU replay re-derives a GPU result.
@@ -143,12 +144,14 @@ def parse_pairs(text: str) -> list[tuple[int, int]]:
     return pairs
 
 
-def check(path: Path) -> int:
+def check(path: Path, subset: list[tuple[int, int]]) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
     shots = retained["shots"]
-    pairs = [tuple(r["pair"]) for r in retained["records"]]
+    by_pair = {tuple(r["pair"]): r for r in retained["records"]}
+    require(all(pair in by_pair for pair in subset), f"{path} lacks one of the pairs {subset}")
+    pairs = subset or list(by_pair)
     fresh = run(pairs, "CPU", shots)
-    for old, new in zip(retained["records"], fresh["records"], strict=True):
+    for old, new in zip((by_pair[p] for p in pairs), fresh["records"], strict=True):
         for name in IMPLEMENTATIONS:
             for metric in ("tv", "collision"):
                 a, b = old[name][metric], new[name][metric]
@@ -170,7 +173,7 @@ def main() -> int:
     parser.add_argument("--check", type=Path)
     args = parser.parse_args()
     if args.check:
-        return check(args.check)
+        return check(args.check, parse_pairs(args.pairs) if args.pairs != "all" else [])
     require(args.out is not None, "--out is required")
     result = run(parse_pairs(args.pairs), os.environ.get("GOROROBA_AER_DEVICE", "CPU"), args.shots)
     args.out.parent.mkdir(parents=True, exist_ok=True)

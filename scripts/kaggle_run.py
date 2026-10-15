@@ -17,6 +17,9 @@ This script is the only path from the repository to Kaggle:
 - ``collect RUN_DIR`` downloads the kernel output into RUN_DIR/output and
   writes collect.json with the sha256 of every file.
 
+``self-test`` builds the Design C kernel in a temporary directory without
+network access and checks its bundle digests, metadata and generated code.
+
 ``--smoke`` replaces ENTRY with an environment probe: the Aer devices, the
 GPU name and the wall time of a 14-qubit density-matrix circuit on the GPU.
 
@@ -173,7 +176,8 @@ def git_commit() -> str:
     return head.stdout.strip() + ("-dirty" if dirty.stdout.strip() else "")
 
 
-def push(args: argparse.Namespace) -> int:
+def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str) -> dict[str, Any]:
+    """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
     require(smoke == args.smoke, "give ENTRY or --smoke, not both")
     files: list[Path] = []
@@ -195,8 +199,6 @@ def push(args: argparse.Namespace) -> int:
             data = path.read_bytes()
             digests[rel] = sha256(data)
             bundle.writestr(rel, data)
-    stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
-    run_dir = RESULTS / f"{stamp}-{args.slug}"
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
     runner = RUNNER.format(
@@ -208,7 +210,7 @@ def push(args: argparse.Namespace) -> int:
         bundle=base64.b64encode(buffer.getvalue()).decode("ascii"),
     )
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
-    kernel_id = f"{username()}/{args.slug}"
+    kernel_id = f"{owner}/{args.slug}"
     metadata = {
         "id": kernel_id,
         "title": args.slug,
@@ -235,11 +237,46 @@ def push(args: argparse.Namespace) -> int:
         "pushed_utc": stamp,
     }
     (run_dir / "submission.json").write_text(json.dumps(submission, indent=1) + "\n", encoding="utf-8")
+    return submission
+
+
+def push(args: argparse.Namespace) -> int:
+    stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
+    run_dir = RESULTS / f"{stamp}-{args.slug}"
+    build_kernel(args, run_dir, username(), stamp)
+    kernel_dir = run_dir / "kernel"
     push_args = ["kernels", "push", "-p", str(kernel_dir)]
     if args.timeout:
         push_args += ["-t", str(args.timeout)]
     print(kaggle(*push_args).strip())
     print(run_dir.relative_to(ROOT))
+    return 0
+
+
+def self_test(args: argparse.Namespace) -> int:
+    """Build the Design C kernel offline and check its bundle, metadata and generated code."""
+    import py_compile
+    import tempfile
+
+    entry = "scripts/design_c_cubic_noise.py"
+    data = "docs/evidence/calibration/ibm_kingston.json"
+    build_args = argparse.Namespace(
+        entry=entry, smoke=False, include=[data], args=["--pairs", "1,16"], slug="self-test", machine=DEFAULT_MACHINE
+    )
+    with tempfile.TemporaryDirectory() as scratch:
+        run_dir = Path(scratch) / "run"
+        submission = build_kernel(build_args, run_dir, "owner", "2000-01-01T000000Z")
+        for needed in (entry, data, "gororoba_quantum/calibration_snapshot.py", "gororoba_quantum/cd_core.py"):
+            require(needed in submission["bundle"], f"bundle lacks {needed}")
+        for rel, digest in submission["bundle"].items():
+            require(digest == sha256((ROOT / rel).read_bytes()), f"bundle digest of {rel} differs from the tree")
+        metadata = json.loads((run_dir / "kernel/kernel-metadata.json").read_text(encoding="utf-8"))
+        require(metadata["is_private"] is True and metadata["enable_gpu"] is True, "kernel is not a private GPU kernel")
+        require(metadata["id"] == "owner/self-test", f"kernel id {metadata['id']}")
+        py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
+        runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
+        require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
+    print(f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private GPU kernel, run.py compiles")
     return 0
 
 
@@ -286,6 +323,7 @@ def main() -> int:
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="Kaggle machine_shape")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.set_defaults(func=push)
+    sub.add_parser("self-test").set_defaults(func=self_test)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)
         sub_parser.add_argument("run_dir")

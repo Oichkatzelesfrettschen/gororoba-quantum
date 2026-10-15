@@ -289,6 +289,17 @@ cd_core is unmeasured and no artifact claims one.
 - The plan allows 600 s of quantum time on a rolling 28-day window: usage()
   reports a usage_period that ends at the moment of the call, so each second
   spent returns 28 days later and no reset date exists.
+- Simulations of 14 qubits or fewer run on Kaggle GPU kernels through
+  `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
+  entry's repository imports, installs qiskit 2.5.2 with
+  qiskit-aer-gpu-cu11 0.17.2 and retains the output under
+  results/kaggle/. IBM hardware serves 15 or more qubits, or a smaller run
+  whose question concerns the device itself (a named qubit's readout,
+  detuning or drift); its case states why Aer cannot answer it. A kernel's
+  noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
+  export, whose `--export` requires every gate and readout channel to equal
+  live_run's noise model, and a Kaggle result enters the research state
+  only through a CPU replay gate on a reduced case.
 - Every `--submit` waits for the user's approval of a written case: what the
   run measures, why noise simulation cannot answer it, and its expected
   seconds. The case is written against a submit-free dry run, and the

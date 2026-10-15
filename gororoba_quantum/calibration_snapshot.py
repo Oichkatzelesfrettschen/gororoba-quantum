@@ -16,8 +16,9 @@ module carries those inputs as JSON:
   two noise steps, and returns a density-matrix AerSimulator on CPU or GPU.
 
 The file is public device calibration and carries no account or instance
-identifier. ``--check FILE`` rebuilds the simulator from a retained file and
-runs the probe circuit; it needs no network.
+identifier. ``--check FILE`` rebuilds the Target from a retained file,
+requires it to reproduce every instruction entry and T1/T2, and runs a
+seeded noisy probe; it needs no network.
 """
 
 from __future__ import annotations
@@ -127,6 +128,18 @@ def build_target(snapshot: dict[str, Any]) -> Target:
     return target
 
 
+def round_trip(snapshot: dict[str, Any]) -> None:
+    """The rebuilt Target reproduces every instruction entry and every T1 and T2 of the snapshot."""
+    target = build_target(snapshot)
+    for op in (*GATES, "measure"):
+        if _entries(target, op) != snapshot["instructions"].get(op, []):
+            raise ValueError(f"rebuilt Target differs from the snapshot on {op}")
+    for q, qubit in enumerate(snapshot["qubits"]):
+        props = target.qubit_properties[q]
+        if (props.t1, props.t2) != (qubit["t1"], qubit["t2"]):
+            raise ValueError(f"rebuilt Target differs from the snapshot on qubit {q} T1/T2")
+
+
 def noise_model(snapshot: dict[str, Any]) -> tuple[SnapshotBackend, NoiseModel]:
     """live_run._noise_model's two steps applied to the rebuilt Target."""
     view = SnapshotBackend(snapshot["backend"], build_target(snapshot))
@@ -215,6 +228,7 @@ def main() -> int:
         export(args.export, args.out)
         return 0
     snapshot = json.loads(args.check.read_text(encoding="utf-8"))
+    round_trip(snapshot)
     qubits = probe_qubits(snapshot)
     counts = probe_counts(noise_simulator(snapshot), qubits)
     print(f"{args.check}: {snapshot['backend']} calibration {snapshot['calibration']}, probe on {qubits}: {counts}")

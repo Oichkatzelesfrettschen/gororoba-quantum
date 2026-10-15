@@ -13,12 +13,15 @@ result or an approval.
   - The weekly GPU quota is reported at about 30 hours with sessions of
     about 12 hours. Kaggle shows the live figure in the account settings
     and changes it without notice, so a plan reads the quota there.
-- **Aer on GPU.** `qiskit-aer-gpu` targets CUDA 12 and replaces the CPU
-  `qiskit-aer`. It runs statevector, density-matrix and unitary methods with
-  `AerSimulator(device="GPU")`, on x86_64 Linux only.
-  `AerSimulator().available_devices()` confirms the device in the notebook
-  before any run. The repository pins `qiskit-aer==0.17.2`; a Kaggle run
-  installs the matching GPU wheel and records its version.
+- **Aer on GPU.** The CUDA 12 wheel `qiskit-aer-gpu` stops at 0.15.1 on
+  PyPI and ships no wheel for Python 3.13, which Kaggle kernels run. The
+  CUDA 11.8 build `qiskit-aer-gpu-cu11` carries the pinned 0.17.2 for
+  Python 3.13 and runs on Kaggle's CUDA 12 driver, so kernels install
+  `qiskit==2.5.2` with `qiskit-aer-gpu-cu11==0.17.2`. It runs
+  statevector, density-matrix and unitary methods with
+  `AerSimulator(device="GPU")`. Kaggle's own numpy and scipy (2.1.3 and
+  1.16.3 on the T4 image) differ from the repository pins; every run
+  records them in `environment.json`.
 - **TPU.** Aer has no TPU backend. TPU hours help only simulators written in
   JAX, for example batched density-matrix contractions. None exists in the
   repository, so the TPU stays unused until a design needs one.
@@ -44,26 +47,40 @@ GPU matters for sweeps and batched trials, not for single circuits.
 
 ## Workflow
 
-The Kaggle CLI drives notebooks with three commands:
+`scripts/kaggle_run.py` is the path from the repository to Kaggle:
 
-- `kaggle kernels push -p DIR` uploads a notebook whose
-  `kernel-metadata.json` sets `enable_gpu` (or `enable_tpu`) and
-  `enable_internet` for the pip install.
-- `kaggle kernels status USER/SLUG` polls the run.
-- `kaggle kernels output USER/SLUG -p OUT` retrieves the results.
+- `push ENTRY --slug SLUG [--include FILE] [-- ARGS]` bundles ENTRY with
+  its repository imports and named data files, writes a private GPU kernel
+  (machine shape `NvidiaTeslaT4` by default) and pushes it. The kernel
+  records its environment, runs ENTRY with `GOROROBA_AER_DEVICE=GPU`, and
+  returns every file the run created under the repository root.
+- `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download its
+  output with a sha256 manifest.
+- `push --smoke` probes the environment and times a 14-qubit
+  density-matrix circuit on the GPU.
 
-The credential lives in the Kaggle account store or in the environment,
-never in the repository.
+A kernel holds no IBM credential, so its noise model comes from a retained
+calibration export (`gororoba_quantum/calibration_snapshot.py --export
+BACKEND --out FILE`), which refuses to write unless every gate and readout
+channel it rebuilds equals live_run's noise model for the same fetch.
 
-A retained Kaggle run keeps the notebook, its output, the package versions
-(`qiskit`, `qiskit-aer-gpu`, CUDA), the accelerator type and every seed.
-Retaining it registers no claim. A `numerical or stochastic simulation`
-claim in the research state needs a replay gate that re-derives it in CI,
-so a Kaggle result becomes a claim only once a reduced case reproduces it on
-the CPU under a gate. Until then it informs a design as a retained artifact.
+Kaggle authenticates through `kaggle auth login`, a browser OAuth flow
+whose token stays in the CLI's own store, never in the repository. Kaggle
+also serves an OAuth MCP endpoint at `https://www.kaggle.com/mcp`.
+
+Each run directory under results/kaggle/ keeps submission.json (entry,
+arguments, git commit, bundle digests, pins), the generated kernel, and
+after collection the output with collect.json. Retaining it registers no
+claim. A `numerical or stochastic simulation` claim in the research state
+needs a replay gate that re-derives it in CI, so a Kaggle result becomes a
+claim only once a reduced case reproduces it on the CPU under a gate. Until
+then it informs a design as a retained artifact.
 
 ## Retained notebooks
 
-The notebooks in `docs/evidence/ghost-frequency/` and
-`docs/evidence/transpiler-audit/` ran on Kaggle. Their corrected readings
-are in those directories' READMEs.
+The notebooks in `docs/evidence/ghost-frequency/`,
+`docs/evidence/transpiler-audit/`, `docs/evidence/ccz-reduction/`,
+`docs/evidence/cd_census/`, `docs/evidence/simulation/` and
+`docs/evidence/falsification/` ran on Kaggle. Their kernel logs and the
+reading of each verdict against its own output are in
+`docs/evidence/simulation-notebook-audit/`.
