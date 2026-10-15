@@ -424,7 +424,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Superseded by: hw-box-kite-executed-pairs.
   Withdrawn text: docs/evidence/simulation/qiskit-aer-simulation.ipynb at commit fa6783e.
 - **withdrawn-interleaving-verified** (withdrawn claim, hardware). GPU simulation verifies that interleaved differential Ramsey cancels drift and reaches 50 Hz in about 72 s.
-  Boundary: The kernel printed SNR 0.0 against the expected 1.18e-03 and assumed a 10 kHz shot rate, about 2.6 times the Heron rate at the 250 us repetition delay.
+  Boundary: The kernel printed SNR 0.0 against the expected 1.18e-03; two sampled arms at SNR 2 need 4/dP^2 shots in total, about 2.9 million (about 750 s) at 50 Hz, and IBM guarantees no PUB order, so one job does not interleave matched pairs.
   Superseded by: proposed-conditional-ramsey-hamiltonian.
   Withdrawn text: docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a.
 - **withdrawn-algebraic-detuning-test** (withdrawn claim, hardware). Ramsey on 20 defective and 20 clean triples detects a sedenion-structure-dependent detuning down to about 5 kHz.

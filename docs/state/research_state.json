@@ -2151,7 +2151,7 @@
       "domain": "hardware",
       "evidence_class": "withdrawn claim",
       "status": "withdrawn",
-      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03 and assumed a 10 kHz shot rate, about 2.6 times the Heron rate at the 250 us repetition delay.",
+      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03; two sampled arms at SNR 2 need 4/dP^2 shots in total, about 2.9 million (about 750 s) at 50 Hz, and IBM guarantees no PUB order, so one job does not interleave matched pairs.",
       "withdrawn_text": "docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a."
     },
     {
