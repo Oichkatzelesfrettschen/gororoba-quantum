@@ -341,6 +341,7 @@ class TestHeronMultiprogramming(unittest.TestCase):
         p = {"0": 8000, "1": 192}
         q = {"0": 1000, "1": 7192}
         res = hoeffding_model_discrimination(p, q, alpha=0.01, alphabet_size=2)
+        self.assertEqual(hoeffding_model_discrimination(p, q, 0.01, alphabet_size=2), res)
         self.assertTrue(res["models_distinguishable"])
         self.assertGreater(res["total_variation_distance"], 0.8)
         self.assertLess(res["hoeffding_radius"], 0.05)

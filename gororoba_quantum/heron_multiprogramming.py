@@ -967,9 +967,9 @@ def bell_delay_probe(delay_dt: int = 100, dd_sequence: str | None = None) -> Qua
 def hoeffding_model_discrimination(
     counts_p: dict[str, int],
     counts_q: dict[str, int],
+    alpha: float = 0.01,
     *,
     alphabet_size: int,
-    alpha: float = 0.01,
 ) -> dict[str, Any]:
     """Empirical Total Variation distance and JS divergence under finite-sample Hoeffding and multinomial TV bounds.
 

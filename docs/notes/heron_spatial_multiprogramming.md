@@ -157,7 +157,7 @@ and `results/live/TERMINAL_CHANNEL_HYPOTHESIS.md`):
 - **`tile_parity_covariance` with `tile_coords`**: Computes pairwise covariance $C_{ij} = \mathbb{E}[P_i P_j] -
   \mathbb{E}[P_i]\mathbb{E}[P_j]$ and pairs it with physical Euclidean chip distances
   $\|\mathbf{r}_i - \mathbf{r}_j\|$ when coordinate pairs are supplied by the caller.
-- **`hoeffding_model_discrimination(counts_p, counts_q, *, alphabet_size, alpha=0.01)`**: Computes empirical Total
+- **`hoeffding_model_discrimination(counts_p, counts_q, alpha=0.01, *, alphabet_size)`**: Computes empirical Total
   Variation distance $D_{\text{TV}}(P, Q) = \frac{1}{2} \sum_x |P(x) - Q(x)| \in [0, 1]$ and Jensen-Shannon divergence
   $D_{\text{JS}}(P \parallel Q)$. For single binary projections or parity observables, Hoeffding's inequality
   (`docs/notes/hoeffding-1963.md`) provides a two-sided confidence radius $r_{\text{obs}} = \sqrt{\frac{\ln(2/\alpha)}{2N_{\text{eff}}}}$.
@@ -264,4 +264,3 @@ peer-reviewed primary literature and verified repository artifacts:
   exhibited support violations under simultaneous operation. The campaign note explicitly cautions that these counts do not
   isolate causal crosstalk mechanisms, so the observations are recorded as baseline operational support violations without
   causal attribution.
-
