@@ -1,6 +1,6 @@
 {
  "backend": "ibm_kingston",
- "calibration": "2026-10-15T15:29:07-07:00",
+ "calibration": "2026-10-15T19:42:21-07:00",
  "dt": 4e-09,
  "instructions": {
   "cz": [
@@ -5009,6 +5009,1100 @@
     ]
    }
   ],
+  "reset": [
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     0
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     1
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     2
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     3
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     4
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     5
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     6
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     7
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     8
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     9
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     10
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     11
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     12
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     13
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     14
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     15
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     16
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     17
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     18
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     19
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     20
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     21
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     22
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     23
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     24
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     25
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     26
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     27
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     28
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     29
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     30
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     31
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     32
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     33
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     34
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     35
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     36
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     37
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     38
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     39
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     40
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     41
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     42
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     43
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     44
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     45
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     46
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     47
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     48
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     49
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     50
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     51
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     52
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     53
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     54
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     55
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     56
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     57
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     58
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     59
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     60
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     61
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     62
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     63
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     64
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     65
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     66
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     67
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     68
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     69
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     70
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     71
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     72
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     73
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     74
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     75
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     76
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     77
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     78
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     79
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     80
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     81
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     82
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     83
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     84
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     85
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     86
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     87
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     88
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     89
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     90
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     91
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     92
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     93
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     94
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     95
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     96
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     97
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     98
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     99
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     100
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     101
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     102
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     103
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     104
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     105
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     106
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     107
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     108
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     109
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     110
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     111
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     112
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     113
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     114
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     115
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     116
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     117
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     118
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     119
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     120
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     121
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     122
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     123
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     124
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     125
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     126
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     127
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     128
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     129
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     130
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     131
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     132
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     133
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     134
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     135
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     136
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     137
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     138
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     139
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     140
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     141
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     142
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     143
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     144
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     145
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     146
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     147
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     148
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     149
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     150
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     151
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     152
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     153
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     154
+    ]
+   },
+   {
+    "duration": 2.212e-06,
+    "error": null,
+    "qargs": [
+     155
+    ]
+   }
+  ],
   "rz": [
    {
     "duration": 0.0,
@@ -8293,6 +9387,14 @@
   ]
  },
  "num_qubits": 156,
+ "omitted_operations": [
+  "if_else",
+  "measure_2",
+  "measure_reset",
+  "measure_reset_2",
+  "reset_2",
+  "xslow"
+ ],
  "qubits": [
   {
    "e01": 0.0146484375,
@@ -9387,5 +10489,5 @@
    "t2": 0.0003648569744294328
   }
  ],
- "schema": "gororoba-calibration-snapshot-v1"
+ "schema": "gororoba-calibration-snapshot-v2"
 }

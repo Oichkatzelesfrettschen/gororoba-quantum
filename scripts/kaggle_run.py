@@ -40,6 +40,7 @@ import base64
 import hashlib
 import io
 import json
+import re
 import subprocess
 import sys
 import zipfile
@@ -134,12 +135,15 @@ def import_closure(entry: Path) -> list[Path]:
 
 
 def git_commit() -> str:
+    """HEAD, marked dirty when a tracked file differs; run directories are untracked until committed."""
     head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True)
-    dirty = subprocess.run(["git", "status", "--porcelain"], cwd=ROOT, capture_output=True, text=True, check=True)
+    dirty = subprocess.run(
+        ["git", "status", "--porcelain", "--untracked-files=no"], cwd=ROOT, capture_output=True, text=True, check=True
+    )
     return head.stdout.strip() + ("-dirty" if dirty.stdout.strip() else "")
 
 
-def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str) -> dict[str, Any]:
+def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str, revision: str) -> dict[str, Any]:
     """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
     require(smoke == args.smoke, "give ENTRY or --smoke, not both")
@@ -164,7 +168,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             data = path.read_bytes()
             digests[rel] = sha256(data)
             bundle.writestr(rel, data)
-        job = {"entry": entry_rel, "args": list(args.args), "smoke": smoke}
+        device = "CPU" if args.machine == "cpu" else "GPU"
+        job = {"entry": entry_rel, "args": list(args.args), "smoke": smoke, "device": device}
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
@@ -192,7 +197,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "entry": entry_rel,
         "args": list(args.args),
         "smoke": smoke,
-        "git_commit": git_commit(),
+        "git_commit": revision,
         "pins": list(KERNEL_PINS),
         "bundle": digests,
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -203,9 +208,10 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
 
 
 def push(args: argparse.Namespace) -> int:
+    revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
-    build_kernel(args, run_dir, username(), stamp)
+    build_kernel(args, run_dir, username(), stamp, revision)
     kernel_dir = run_dir / "kernel"
     push_args = ["kernels", "push", "-p", str(kernel_dir)]
     if args.machine != "cpu":
@@ -220,6 +226,12 @@ def push(args: argparse.Namespace) -> int:
 
         shutil.rmtree(run_dir)
         raise SystemExit(f"kaggle refused the push: {reply}")
+    version = re.search(r"Kernel version (\d+) successfully pushed", reply)
+    require(version is not None, f"push reply names no kernel version: {reply}")
+    assert version is not None
+    submission = submission_of(run_dir)
+    submission["kernel_version"] = int(version.group(1))
+    (run_dir / "submission.json").write_text(json.dumps(submission, indent=1) + "\n", encoding="utf-8")
     print(reply)
     print(run_dir.relative_to(ROOT))
     return 0
@@ -237,7 +249,7 @@ def self_test(args: argparse.Namespace) -> int:
     )
     with tempfile.TemporaryDirectory() as scratch:
         run_dir = Path(scratch) / "run"
-        submission = build_kernel(build_args, run_dir, "owner", "2000-01-01T000000Z")
+        submission = build_kernel(build_args, run_dir, "owner", "2000-01-01T000000Z", "0" * 40)
         expected = (entry, data, "gororoba_quantum/calibration_snapshot.py", "gororoba_quantum/cd_core.py")
         for needed in (*expected, *KERNEL_FILES):
             require(needed in submission["bundle"], f"bundle lacks {needed}")
@@ -266,12 +278,17 @@ def status(args: argparse.Namespace) -> int:
 
 def collect(args: argparse.Namespace) -> int:
     run_dir = Path(args.run_dir)
-    kernel = submission_of(run_dir)["kernel"]
+    submission = submission_of(run_dir)
+    kernel = submission["kernel"]
+    # An unversioned `kernels output` returns the latest version, which a later
+    # push to the same slug replaces; the run's own version is the one it owns.
+    require("kernel_version" in submission, f"{run_dir} records no kernel version to collect")
+    versioned = f"{kernel}/{submission['kernel_version']}"
     state = kaggle("kernels", "status", kernel)
     require("COMPLETE" in state or "ERROR" in state, f"{kernel} has not finished: {state.strip()}")
     out = run_dir / "output"
     out.mkdir(exist_ok=True)
-    kaggle("kernels", "output", kernel, "-p", str(out))
+    kaggle("kernels", "output", versioned, "-p", str(out))
     for stray in out.iterdir():
         # The kernel's results live in output/ and its log beside it; anything
         # else under /kaggle/working is scratch that Kaggle also returns.
@@ -282,7 +299,7 @@ def collect(args: argparse.Namespace) -> int:
     files = {p.relative_to(out).as_posix(): sha256(p.read_bytes()) for p in sorted(out.rglob("*")) if p.is_file()}
     record = {
         "schema": "kaggle-aer-collect-v1",
-        "kernel": kernel,
+        "kernel": versioned,
         "state": state.strip().rsplit(" ", 1)[-1].strip('"'),
         "collected_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ"),
         "files": files,

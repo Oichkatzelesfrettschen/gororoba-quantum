@@ -250,7 +250,7 @@ def main() -> int:
     if job["smoke"]:
         capacity()
         return 0
-    env = dict(os.environ, GOROROBA_AER_DEVICE="GPU", PYTHON=sys.executable)
+    env = dict(os.environ, GOROROBA_AER_DEVICE=job.get("device", "GPU"), PYTHON=sys.executable)
     proc = subprocess.run(
         [sys.executable, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True
     )
