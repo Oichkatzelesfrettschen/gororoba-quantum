@@ -69,8 +69,9 @@ Laws run through parallel.ordered_map. The entry reads GOROROBA_AER_DEVICE
 (CPU by default). ``--check FILE --run DIR`` binds FILE and the retained arms
 to the Kaggle run's collect.json digests, recomputes the cd_core side of the
 algebra record, recompiles Kingston and requires its compile summary and
-device arms to match, recomputes a reduced set of Kingston laws on the CPU
-to 1e-8, and recomputes every verdict and shot count from the retained laws.
+device arms to match, recomputes a reduced set of Kingston laws on
+GOROROBA_AER_DEVICE to 1e-8, and recomputes every verdict and shot count from
+the retained laws.
 """
 
 from __future__ import annotations
@@ -80,7 +81,6 @@ import hashlib
 import importlib.metadata
 import json
 import math
-import os
 import sys
 import time
 from fractions import Fraction
@@ -707,7 +707,7 @@ def check(path: Path, arms_path: Path, run_dir: Path) -> int:
         if physical_sequence(kept) != physical_sequence(recompiled) or not np.allclose(angles, fresh_angles):
             failures.append(f"retained {label} differs from the recompiled arm")
     kept_rows = {_key(row): row["p0"] for row in retained["rows"]}
-    for row in evaluate(compiled, "CPU", reduced=True):
+    for row in evaluate(compiled, calibration_snapshot.aer_device(), reduced=True):
         old = kept_rows.get(_key(row))
         if old is None:
             failures.append(f"{_key(row)} is absent from {path}")
@@ -734,7 +734,7 @@ def main() -> int:
         return check(args.check, args.arms, args.run)
     if args.out is None:
         parser.error("--out is required without --check")
-    result, arms = run(os.environ.get("GOROROBA_AER_DEVICE", "CPU"))
+    result, arms = run(calibration_snapshot.aer_device())
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     with args.out.with_name(Path(OUTPUT_QPY).name).open("wb") as stream:
