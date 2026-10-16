@@ -1,5 +1,5 @@
 {
- "schema": "rocq-kaggle-replay-v1",
+ "schema": "rocq-kaggle-replay-v2",
  "toolchain": "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0\n",
  "opam_packages": [
   "ocaml-base-compiler.5.5.0",
@@ -13,42 +13,49 @@
    "command": "apt-get update -qq",
    "returncode": 0,
    "seconds": 5.3,
+   "warning_lines": [],
    "tail": "W: Skipping acquire of configured file 'main/source/Sources' as repository 'https://r2u.stat.illinois.edu/ubuntu noble InRelease' does not seem to provide it (sources.list entry misspelt?)\n"
   },
   {
    "command": "apt-get install -y -qq opam m4 ...",
    "returncode": 0,
-   "seconds": 26.1,
+   "seconds": 33.1,
+   "warning_lines": [],
    "tail": "ge pkg-config:amd64.\nPreparing to unpack .../19-pkg-config_1.8.1-2build1_amd64.deb ...\nUnpacking pkg-config:amd64 (1.8.1-2build1) ...\nSetting up bubblewrap (0.9.0-1ubuntu0.3) ...\nSetting up mercurial-common (6.7.2-1ubuntu2.2) ...\nSetting up libgmpxx4ldbl:amd64 (2:6.3.0+dfsg-2ubuntu6.1) ...\nSetting up libstdlib-ocaml (4.14.1-1ubuntu1) ...\nSetting up ocaml-base (4.14.1-1ubuntu1) ...\nSetting up pkg-config:amd64 (1.8.1-2build1) ...\nSetting up opam-installer (2.1.5-1) ...\nSetting up libsuitesparseconfig7:amd64 (1:7.6.1+dfsg-1build1) ...\nSetting up ocaml-man (4.14.1-1ubuntu1) ...\nSetting up libgmp-dev:amd64 (2:6.3.0+dfsg-2ubuntu6.1) ...\nSetting up libamd3:amd64 (1:7.6.1+dfsg-1build1) ...\nSetting up mercurial (6.7.2-1ubuntu2.2) ...\n\nCreating config file /etc/mercurial/hgrc.d/hgext.rc with new version\nSetting up libstdlib-ocaml-dev (4.14.1-1ubuntu1) ...\nSetting up libcolamd3:amd64 (1:7.6.1+dfsg-1build1) ...\nSetting up ledit (2.04-7build5) ...\nupdate-alternatives: using /usr/bin/ledit to provide /usr/bin/readline-editor (readline-editor) in auto mode\nSetting up libcompiler-libs-ocaml-dev (4.14.1-1ubuntu1) ...\nSetting up ocaml-interp (4.14.1-1ubuntu1) ...\nSetting up libglpk40:amd64 (5.0-1build2) ...\nSetting up opam (2.1.5-1) ...\nSetting up ocaml (4.14.1-1ubuntu1) ...\nProcessing triggers for libc-bin (2.39-0ubuntu8.9) ...\n/sbin/ldconfig.real: /usr/local/lib/libtbbbind_2_5.so.3 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libur_adapter_level_zero.so.0 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtcm.so.1 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtbbbind.so.3 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libur_adapter_level_zero_v2.so.0 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtbbbind_2_0.so.3 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libur_loader.so.0 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtbb.so.12 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libumf.so.1 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtcm_debug.so.1 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libur_adapter_opencl.so.0 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtbbmalloc_proxy.so.2 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libtbbmalloc.so.2 is not a symbolic link\n\n/sbin/ldconfig.real: /usr/local/lib/libhwloc.so.15 is not a symbolic link\n\nProcessing triggers for man-db (2.12.0-4build2) ...\n"
   },
   {
    "command": "opam init --bare --disable-sandboxing -n",
    "returncode": 0,
-   "seconds": 19.5,
+   "seconds": 20.8,
+   "warning_lines": [],
    "tail": "No configuration file found, using built-in defaults.\nChecking for available remotes: rsync and local, git, mercurial.\n  - you won't be able to use darcs repositories unless you install the darcs command on your system.\n\n\n<><> Fetching repository information ><><><><><><><><><><><><><><><><><><><><><>\n[default] Initialised\ndefault (at https://opam.ocaml.org): \n    [INFO] opam is out-of-date. Please consider updating (https://opam.ocaml.org/doc/Install.html)\n\ndefault (at https://opam.ocaml.org): \n    [INFO] please ensure to have GNU patch installed as `patch`. Otherwise update may fail silently (since it can't remove files).\n\ndefault (at https://opam.ocaml.org): \n    [WARNING] opam >= 2.5.2 includes important security fixes; please consider upgrading (https://opam.ocaml.org/doc/Install.html)\n\n"
   },
   {
    "command": "opam switch create rocq-9.2 ocaml-base-compiler.5.5.0",
    "returncode": 0,
-   "seconds": 345.8,
+   "seconds": 324.1,
+   "warning_lines": [],
    "tail": "\n<><> Installing new switch packages <><><><><><><><><><><><><><><><><><><><><><>\nSwitch invariant: [\"ocaml-base-compiler\" {= \"5.5.0\"}]\n\n<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\u2217 installed base-bigarray.base\n\u2217 installed base-threads.base\n\u2217 installed base-unix.base\n\u2217 installed compiler-cloning.enabled\n\u2217 installed ocaml-options-vanilla.1\n\u2b07 retrieved ocaml.5.5.0  (https://opam.ocaml.org/cache)\n\u2b07 retrieved ocaml-compiler.5.5.0  (https://opam.ocaml.org/cache)\n\u2217 installed ocaml-compiler.5.5.0\n\u2217 installed ocaml-base-compiler.5.5.0\n\u2217 installed ocaml.5.5.0\n\u2217 installed base-domains.base\n\u2217 installed base-effects.base\n\u2217 installed base-nnp.base\nDone.\n\n<><> ocaml-compiler.5.5.0 installed successfully ><><><><><><><><><><><><><><><>\n=> This switch had to be compiled from sources, but future switches with the \ud83d\udc0c\n   same compiler version and configuration should assemble instantly.\n# Run eval $(opam env --switch=rocq-9.2) to update the current shell environment\n"
   },
   {
    "command": "opam install --switch rocq-9.2 rocq-runtime.9.2.0 rocq-core.9.2.0 ...",
    "returncode": 0,
-   "seconds": 521.8,
-   "tail": "The following actions will be performed:\n  \u2217 install conf-pkg-config     5             [required by zarith]\n  \u2217 install conf-linux-libc-dev 0             [required by rocq-runtime]\n  \u2217 install dune                3.23.1        [required by rocq-core, rocq-runtime]\n  \u2217 install conf-gmp            5             [required by zarith]\n  \u2217 install ocamlfind           1.9.9~preview [required by rocq-runtime]\n  \u2217 install zarith              1.14          [required by rocq-runtime]\n  \u2217 install rocq-runtime        9.2.0\n  \u2217 install rocq-core           9.2.0\n  \u2217 install rocq-stdlib         9.2.0\n===== \u2217 9 =====\n\n<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\u2b07 retrieved conf-gmp.5  (https://opam.ocaml.org/cache)\n\u2217 installed conf-gmp.5\n\u2217 installed conf-linux-libc-dev.0\n\u2b07 retrieved conf-pkg-config.5  (2 extra sources)\n\u2217 installed conf-pkg-config.5\n\u2b07 retrieved ocamlfind.1.9.9~preview  (https://opam.ocaml.org/cache)\n\u2b07 retrieved rocq-core.9.2.0  (https://opam.ocaml.org/cache)\n\u2b07 retrieved dune.3.23.1  (https://opam.ocaml.org/cache)\n\u2b07 retrieved zarith.1.14  (https://opam.ocaml.org/cache)\n\u2b07 retrieved rocq-stdlib.9.2.0  (https://opam.ocaml.org/cache)\n\u2b07 retrieved rocq-runtime.9.2.0  (https://opam.ocaml.org/cache)\n\u2217 installed ocamlfind.1.9.9~preview\n\u2217 installed zarith.1.14\n\u2217 installed dune.3.23.1\n\u2217 installed rocq-runtime.9.2.0\n\u2217 installed rocq-core.9.2.0\n\u2217 installed rocq-stdlib.9.2.0\nDone.\n# Run eval $(opam env) to update the current shell environment\n"
+   "seconds": 543.0,
+   "warning_lines": [],
+   "tail": "The following actions will be performed:\n  \u2217 install conf-pkg-config     5             [required by zarith]\n  \u2217 install conf-linux-libc-dev 0             [required by rocq-runtime]\n  \u2217 install dune                3.23.1        [required by rocq-core, rocq-runtime]\n  \u2217 install conf-gmp            5             [required by zarith]\n  \u2217 install ocamlfind           1.9.9~preview [required by rocq-runtime]\n  \u2217 install zarith              1.14          [required by rocq-runtime]\n  \u2217 install rocq-runtime        9.2.0\n  \u2217 install rocq-core           9.2.0\n  \u2217 install rocq-stdlib         9.2.0\n===== \u2217 9 =====\n\n<><> Processing actions <><><><><><><><><><><><><><><><><><><><><><><><><><><><>\n\u2b07 retrieved conf-gmp.5  (https://opam.ocaml.org/cache)\n\u2217 installed conf-gmp.5\n\u2217 installed conf-linux-libc-dev.0\n\u2b07 retrieved ocamlfind.1.9.9~preview  (https://opam.ocaml.org/cache)\n\u2b07 retrieved conf-pkg-config.5  (2 extra sources)\n\u2217 installed conf-pkg-config.5\n\u2b07 retrieved rocq-core.9.2.0  (https://opam.ocaml.org/cache)\n\u2b07 retrieved dune.3.23.1  (https://opam.ocaml.org/cache)\n\u2b07 retrieved zarith.1.14  (https://opam.ocaml.org/cache)\n\u2b07 retrieved rocq-stdlib.9.2.0  (https://opam.ocaml.org/cache)\n\u2b07 retrieved rocq-runtime.9.2.0  (https://opam.ocaml.org/cache)\n\u2217 installed ocamlfind.1.9.9~preview\n\u2217 installed zarith.1.14\n\u2217 installed dune.3.23.1\n\u2217 installed rocq-runtime.9.2.0\n\u2217 installed rocq-core.9.2.0\n\u2217 installed rocq-stdlib.9.2.0\nDone.\n# Run eval $(opam env) to update the current shell environment\n"
   },
   {
-   "command": "git clone -q --filter=blob:none https://github.com/Oichkatzelesfrettschen/open_gororoba.git /tmp/tmpfghvhhb0/open_gororoba",
+   "command": "git clone -q --filter=blob:none https://github.com/Oichkatzelesfrettschen/open_gororoba.git /tmp/tmpy06bwo0q/open_gororoba",
    "returncode": 0,
-   "seconds": 29.8,
+   "seconds": 25.4,
+   "warning_lines": [],
    "tail": ""
   },
   {
-   "command": "git -C /tmp/tmpfghvhhb0/open_gororoba checkout -q 7d95d228db6be8a5b2f613430f04f2385d6ae48a",
+   "command": "git -C /tmp/tmpy06bwo0q/open_gororoba checkout -q 7d95d228db6be8a5b2f613430f04f2385d6ae48a",
    "returncode": 0,
-   "seconds": 0.3,
+   "seconds": 2.2,
+   "warning_lines": [],
    "tail": ""
   }
  ],
@@ -56,30 +63,36 @@
   "formal_certificates": {
    "command": "sh /tmp/gororoba/repo/docs/evidence/formal_certificates/replay_rocq.sh",
    "returncode": 0,
-   "seconds": 122.7,
+   "seconds": 120.9,
+   "warning_lines": [],
    "tail": "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0\ncompile_kernel_assumptions_pass FoldAverageDescent\ncompile_kernel_assumptions_pass TerminalChannelSeparation\ncompile_kernel_assumptions_pass TerminalChannelSeparationReal\n"
   },
   "c881_exhaustive": {
    "command": "sh /tmp/gororoba/repo/docs/evidence/c881_exhaustive/replay_rocq.sh",
    "returncode": 0,
-   "seconds": 35.5,
+   "seconds": 33.3,
+   "warning_lines": [],
    "tail": "C881 exhaustive coefficient proof: compile, kernel, assumptions, and source identities pass.\n"
   },
   "stiefel_witness": {
    "command": "sh /tmp/gororoba/repo/docs/evidence/stiefel_witness/replay_rocq.sh",
    "returncode": 0,
-   "seconds": 562.8,
+   "seconds": 540.9,
+   "warning_lines": [],
    "tail": "A_6 Stiefel witness: compile, kernel, assumptions, and source identities pass.\n"
   },
   "folding_proofs": {
    "command": "sh /tmp/gororoba/repo/docs/evidence/folding_proofs/replay_rocq.sh",
    "returncode": 0,
-   "seconds": 54.8,
-   "tail": "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0\ncompile_pass theories/GF2Algebra.v\ncompile_pass theories/SignCodeProjection.v\ncompile_pass theories/SchreierSignCode.v\ncompile_pass theories/SignCodeCardinality.v\ncompile_pass theories/BooleanCochainFiltration.v\ncompile_pass verified/C881_GF2CubicMinDegree.v\ncompile_pass assumptions.v\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\n\nCONTEXT SUMMARY\n===============\n\n* Theory: Set is predicative\n  \n* Theory: Rewrite rules are not allowed\n  \n* Axioms: <none>\n  \n* Constants/Inductives relying on type-in-type: <none>\n  \n* Constants/Inductives relying on unsafe (co)fixpoints: <none>\n  \n* Inductives whose positivity is assumed: <none>\n  \nkernel_check_pass\n"
+   "seconds": 56.8,
+   "warning_lines": [],
+   "tail": "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0\ncompile_pass theories/GF2Algebra.v\ncompile_pass theories/SignCodeProjection.v\ncompile_pass theories/SchreierSignCode.v\ncompile_pass theories/SignCodeCardinality.v\ncompile_pass theories/BooleanCochainFiltration.v\ncompile_pass verified/C881_GF2CubicMinDegree.v\ncompile_pass assumptions.v\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\n\nCONTEXT SUMMARY\n===============\n\n* Theory: Set is predicative\n  \n* Theory: Rewrite rules are not allowed\n  \n* Axioms: <none>\n  \n* Constants/Inductives relying on type-in-type: <none>\n  \n* Constants/Inductives relying on unsafe (co)fixpoints: <none>\n  \n* Inductives whose positivity is assumed: <none>\n  \nkernel_check_pass\n",
+   "matches_retained_log": true
   },
   "TargetFlipN21": {
    "returncode": 0,
-   "seconds": 33.5,
+   "seconds": 43.3,
+   "warning_lines": [],
    "tail": "Closed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\nClosed under the global context\n\nCONTEXT SUMMARY\n===============\n\n* Theory: Set is predicative\n  \n* Theory: Rewrite rules are not allowed\n  \n* Axioms: <none>\n  \n* Constants/Inductives relying on type-in-type: <none>\n  \n* Constants/Inductives relying on unsafe (co)fixpoints: <none>\n  \n* Inductives whose positivity is assumed: <none>\n  \n"
   }
  },
