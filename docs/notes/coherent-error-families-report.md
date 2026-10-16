@@ -34,6 +34,14 @@ Commits, oldest first:
 3. `calibration: drift series from the record medians, one row per
    identity`. Adds `scripts/calibration_median_drift.py`,
    `docs/evidence/calibration_median_drift/` and gate core-326.
+4. `docs: audit the coherent-error, drift and Rocq replacements for the
+   starter kernels`. Adds this note.
+5. `calibration: bind the drift result to the snapshots it read`. The
+   result names its 17 snapshots with their sha256, so a later export
+   leaves core-326 green.
+6. `atlas: lane-constant model variants and raw-verified Kingston
+   marginals`. Adds `<family>_plus_mean` models, checks Kingston against
+   the raw shots, and lists inert columns.
 
 `scripts/atlas_coherent_families.py` rebuilds every phase point as its
 executed replica at its `scheduler_timing` pulse starts:
@@ -56,7 +64,16 @@ executed replica at its `scheduler_timing` pulse starts:
   - each family's reach at the coherent bound its reported gate error
     allows;
   - the count of fitted values beyond that bound;
-  - a held-out contrast cross-prediction.
+  - a held-out contrast cross-prediction;
+  - each single family refitted with a lane-constant phase term
+    (`<family>_plus_mean`). The models without the term stay the ones
+    comparable to the retained table.
+- Kingston observations come from the collector's `family_measurements`.
+  Every atlas member's marginal must equal the zero count of its raw shot
+  bit strings (`raw/<job>/pub_NN.json`). Fez reads `measured-ripple.json`,
+  whose extractor made the same check.
+- A column with no phase response at all is listed as inert and left out,
+  so an undriven qubit cannot make a family rank-deficient.
 - Edges whose 8 points span a recalibration are excluded and listed.
   Kingston has 14 such edges, 2 per lane.
 
@@ -124,6 +141,11 @@ Leave-one-out RMS in rad, linear / resimulated, with each model's floor:
 | detuning + ZZ | 0.159 / 0.191 | 0.123 | 1.645 / 0.973 | 0.763 |
 | detuning + SX amplitude | 0.132 / 0.135 | 0.074 | 0.168 / 0.207 | 0.113 |
 | detuning + axis tilt | 0.293 / 0.725 | 0.111 | 0.180 / 0.204 | 0.168 |
+| detuning + constant | 0.125 / 0.128 | 0.048 | 0.132 / 0.167 | 0.054 |
+| CZ phase + constant | 0.087 / 0.086 | 0.041 | 0.122 / 0.123 | 0.043 |
+| ZZ + constant | 0.174 / 0.162 | 0.041 | 0.076 / 0.078 | 0.039 |
+| SX amplitude + constant | 0.182 / 0.174 | 0.039 | 0.054 / 0.057 | 0.035 |
+| axis tilt + constant | 0.137 / 1.492 | 0.082 | 0.179 / 1.336 | 0.092 |
 
 The Fez detuning, CZ-phase and joint rows equal the retained map's lane 4
 to 1e-6.
@@ -142,10 +164,19 @@ Readings, per family:
   its floor) but needs 0.059 to 0.065 rad on qubits 50 and 52, about twice
   the 0.025 to 0.034 rad the sx errors allow. A static axis tilt of that
   size is inconsistent with the calibration. On Kingston it is refuted.
+  With a constant, its design reaches condition 7e4, fits tilts of hundreds
+  of radians and fails on resimulation (1.3 to 1.5 rad). Some tilt column
+  is nearly uniform over the edges, so it trades off against the constant.
+- **CZ phase + constant** is the best Fez model: 0.086 resimulated, 2.1
+  times its floor. It needs a 0.133 rad constant and CZ phases of -0.04 rad
+  on couplers 51-52 and 51-58, within their 0.10 and 0.15 rad bounds.
 - **Kingston lane 4** offsets are a nearly uniform +0.245 rad, against a
-  lane-mean held-out RMS of 0.060, 2.2 times its floor. No per-qubit or
-  per-coupler family improves on that constant. A lane-uniform phase is the
-  remaining structure there.
+  lane-mean held-out RMS of 0.060, 2.2 times its floor. Only SX amplitude +
+  constant improves on it (0.054 / 0.057), with a 0.256 rad constant. Its
+  fit needs eta = -0.029 on qubit 151 and -0.024 on qubit 153, beyond the
+  0.020 the sx errors allow on each, so it is inconsistent with the
+  calibration. No calibration-
+  consistent family improves on the lane constant there.
 - **Contrast.** The hardware contrast sits below the replay by
   log ratio -0.22 (Fez) and -0.14 (Kingston). No phase-fitted single family
   lowers the held-out contrast RMS by more than 0.005 below the lane mean's
@@ -156,8 +187,9 @@ Readings, per family:
   amplitude on Fez, which only ties the lane mean (0.135 against 0.136).
   The retained map found the same for detuning + CZ phase.
 
-These are two lanes. The full 14-lane fit decides whether axis tilt or CZ
-phase beats detuning elsewhere.
+These are two lanes. The full 14-lane fit decides whether CZ phase, with or
+without the constant, beats detuning elsewhere, and whether the
+lane-uniform offset recurs.
 
 ## Full fit on Kaggle
 
