@@ -9,7 +9,8 @@ and what it must prove before its output counts.
 
 | Substrate | Runs | Never runs |
 | --- | --- | --- |
-| Kaggle GPU kernel (Aer on GPU) | every simulation of 14 qubits or fewer: noise simulations under a retained calibration export, design power analyses, parameter sweeps | IBM jobs; anything needing an IBM credential |
+| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below `local_compute.GPU_MIN_ACTIVE_QUBITS`, and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |
+| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS` | IBM jobs; narrow replays the CPU runs faster |
 | Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |
 | Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. Batch pushes requesting either ID ran on 4-core CPU machines without libtpu, so this account reaches no TPU through the CLI | Qiskit or Aer |
 | Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |
@@ -50,10 +51,11 @@ and what it must prove before its output counts.
 
 ## Rules
 
-- A kernel is private, has GPU and internet enabled, and holds no IBM
-  credential. Noise comes from a retained
+- A kernel is private, has internet enabled (and a GPU when one is
+  requested), and holds no IBM credential. Noise comes from a retained
   `gororoba_quantum/calibration_snapshot.py` export.
-- The entry reads `GOROROBA_AER_DEVICE` and selects the GPU through it.
+- The entry reads `GOROROBA_AER_DEVICE`, which the kernel sets to its
+  machine's device.
 - An output is a numerical simulation. It enters
   `docs/state/research_state.json` only after a CPU replay gate re-derives
   a reduced case.

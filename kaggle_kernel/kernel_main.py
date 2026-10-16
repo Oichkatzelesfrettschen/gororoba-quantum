@@ -44,6 +44,7 @@ ARCHIVES = Path("/tmp/gororoba/archives")
 TABLES = REPO / "docs/evidence/algebra_packages/tables.json"
 REPORTED_PACKAGES = (
     "qiskit",
+    "qiskit-aer",
     "qiskit-aer-gpu-cu11",
     "numpy",
     "scipy",
@@ -267,6 +268,95 @@ def unpack_datasets(datasets: list[dict[str, Any]]) -> dict[str, Any]:
     return report
 
 
+CI_TREE = Path("/tmp/gororoba/ci")
+CI_VENV = Path("/tmp/gororoba/venv")
+
+
+def checked(name: str, *cmd: str, cwd: Path | None = None, env: dict[str, str] | None = None) -> str:
+    """Run one setup command, log it to output/<name>.txt, and stop the kernel when it fails."""
+    proc = subprocess.run(list(cmd), capture_output=True, text=True, cwd=cwd, env=env)
+    (OUT / f"{name}.txt").write_text(f"$ {' '.join(cmd)}\n{proc.stdout}{proc.stderr}", encoding="utf-8")
+    if proc.returncode:
+        raise SystemExit(f"{name} failed with exit {proc.returncode}: {(proc.stdout + proc.stderr)[-1500:]}")
+    return proc.stdout
+
+
+def apply_overlay(tree: Path, overlay: Path, modes: dict[str, str], deleted: list[str]) -> None:
+    """Apply a commit's changed files (with their git modes) and deletions to a checkout of its base."""
+    # Deletions come first and prune the directories they empty, so a commit
+    # that replaces a directory with a file or symlink finds the path free.
+    for rel in deleted:
+        (tree / rel).unlink()
+        parent = (tree / rel).parent
+        while parent != tree and not any(parent.iterdir()):
+            parent.rmdir()
+            parent = parent.parent
+    for rel, mode in modes.items():
+        source, target = overlay / rel, tree / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.is_symlink() or target.is_file():
+            target.unlink()
+        if mode == "120000":
+            target.symlink_to(source.read_text(encoding="utf-8"))
+        else:
+            shutil.copyfile(source, target)
+            target.chmod(0o755 if mode == "100755" else 0o644)
+
+
+def run_shard(job: dict[str, Any]) -> int:
+    """One CI shard on the tree job["tree"], under CI's interpreter and pins.
+
+    The base commit is fetched from the public repository, the bundled
+    overlay (files changed since the base) is applied with its deletions and
+    file modes, and git write-tree must reproduce the head commit's tree
+    before any gate runs, so the shard tests exactly that commit. uv installs
+    CI's Python, ci/install_pins.sh installs CI's pins, and the gates run on
+    the CPU through ci/run_gates.py.
+    """
+    CI_TREE.mkdir(parents=True)
+    checked("git-init", "git", "init", "-q", str(CI_TREE))
+    checked("git-fetch", "git", "fetch", "-q", "--depth", "1", job["remote"], job["base"], cwd=CI_TREE)
+    checked("git-checkout", "git", "checkout", "-q", "FETCH_HEAD", cwd=CI_TREE)
+    apply_overlay(CI_TREE, REPO / "kaggle_kernel/overlay", job["modes"], job["deleted"])
+    checked("git-add", "git", "add", "-A", cwd=CI_TREE)
+    tree = checked("git-write-tree", "git", "write-tree", cwd=CI_TREE).strip()
+    write("tree.json", {"base": job["base"], "head": job["head"], "expected_tree": job["tree"], "tree": tree})
+    if tree != job["tree"]:
+        print(f"the assembled tree {tree} differs from the head's {job['tree']}; no gate runs", flush=True)
+        return 4
+    checked("uv-install", sys.executable, "-m", "pip", "install", "-q", job["uv"])
+    checked("python-install", sys.executable, "-m", "uv", "python", "install", job["python"])
+    checked("venv", sys.executable, "-m", "uv", "venv", "-q", "--seed", "--python", job["python"], str(CI_VENV))
+    python = str(CI_VENV / "bin/python")
+    env = dict(
+        os.environ,
+        PATH=f"{CI_VENV / 'bin'}:{os.environ['PATH']}",
+        PYTHON=python,
+        PYTHONHASHSEED="0",
+        MPLBACKEND="Agg",
+        GOROROBA_AER_DEVICE="CPU",
+    )
+    checked("install-pins", "sh", "ci/install_pins.sh", cwd=CI_TREE, env=env)
+    if shutil.which("shellcheck", path=env["PATH"]) is None:
+        checked("shellcheck-install", python, "-m", "pip", "install", "-q", job["shellcheck"], env=env)
+    checked("runner-specs", python, "ci/runner_specs.py", cwd=CI_TREE, env=env)
+    gates = [python, "ci/run_gates.py", "--tier", job["tier"], "--shard", f"{job['shard']}/{job['count']}"]
+    started = time.time()
+    proc = subprocess.run(gates, cwd=CI_TREE, env=env, capture_output=True, text=True)
+    (OUT / "gates.txt").write_text(proc.stdout + proc.stderr, encoding="utf-8")
+    write(
+        "shard.json",
+        {
+            **{k: job[k] for k in ("tier", "shard", "count", "head")},
+            "returncode": proc.returncode,
+            "seconds": round(time.time() - started, 1),
+            "summary": proc.stdout.strip().splitlines()[-1:],
+        },
+    )
+    print(proc.stdout[-6000:], proc.stderr[-2000:], sep="\n", flush=True)
+    return proc.returncode
+
+
 def main() -> int:
     if len(sys.argv) in (4, 5) and sys.argv[1] == "--trial":
         device = sys.argv[4] if len(sys.argv) == 5 else "GPU"
@@ -296,6 +386,8 @@ def run_entry() -> int:
     if not stack["identical"]:
         print("hypercomplex stack differs from the repository's retained tables; the entry does not run", flush=True)
         return 3
+    if job.get("mode") == "shards":
+        return run_shard(job)
     if job["smoke"]:
         capacity()
         return 0
