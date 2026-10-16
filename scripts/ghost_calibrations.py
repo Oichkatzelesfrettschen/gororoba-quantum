@@ -158,8 +158,10 @@ def append() -> int:
     service = QiskitRuntimeService()
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     record = json.loads(APPENDED.read_text(encoding="utf-8")) if APPENDED.is_file() else {"files": {}}
+    # export() returns a known identity without verifying or rewriting it, so
+    # a retained snapshot keeps the bytes its recorded sha256 names.
     written = {relative: entry["calibration"] for relative, entry in index["files"].items()}
-    retrieved = datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ")
+    written |= {relative: entry["calibration"] for relative, entry in record["files"].items()}
     for name in BACKENDS:
         backend = service.backend(name)
         backend.refresh()
@@ -169,7 +171,7 @@ def append() -> int:
                 "backend": name,
                 "calibration": written[relative],
                 "sha256": sha256(ROOT / relative),
-                "retrieved_utc": retrieved,
+                "retrieved_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ"),
             }
     record = {"schema": "ghost-calibration-appended-v1", "files": dict(sorted(record["files"].items()))}
     APPENDED.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
@@ -194,6 +196,9 @@ def check() -> int:
         require(snapshot["calibration"] == entry["calibration"], f"{relative}: calibration identity differs")
         calibration_snapshot.round_trip(snapshot)
     appended = json.loads(APPENDED.read_text(encoding="utf-8"))["files"] if APPENDED.is_file() else {}
+    on_disk = {path.relative_to(ROOT).as_posix() for name in BACKENDS for path in (HISTORY / name).glob("*.json")}
+    unlisted = sorted(on_disk - set(index["files"]) - set(appended))
+    require(not unlisted, f"retained snapshots neither indexed nor appended: {unlisted}")
     for relative, entry in appended.items():
         require(relative not in index["files"], f"{relative} is both indexed and appended")
         require(sha256(ROOT / relative) == entry["sha256"], f"{relative} differs from its recorded sha256")
