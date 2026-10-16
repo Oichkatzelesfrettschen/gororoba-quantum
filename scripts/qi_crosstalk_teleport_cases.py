@@ -359,8 +359,9 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     if "stars" in cases:
         report["additivity"] = [star_report(star, raw) for star in cases["stars"]]
     tele = []
-    shots = raw["teleport.cq"]
-    for path in cases["paths"]:
+    # A star coupling map (Tuna-5) has no four-qubit path and so no teleport circuit.
+    shots = raw.get("teleport.cq", [])
+    for path in cases["paths"] if shots else []:
         _, _, flips = INPUTS[path["input"]]
         corrected = post = post_ok = 0
         for s in shots:

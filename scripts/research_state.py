@@ -242,13 +242,30 @@ class QuantumInspireRuns:
                 "cases": cases,
                 "results": _optional_json(directory / "results.json"),
                 "circuits": circuits,
+                "cases_digest": digest(directory / "cases.json") if (directory / "cases.json").is_file() else None,
                 "raw": raw,
             }
 
     def _run(self, run: str, record: dict[str, Any]) -> tuple[dict[str, Any], dict[int, tuple[Any, ...]]]:
         owner = f"Quantum Inspire run {run}"
         submission = record["submission"]
-        require(submission.get("schema") == "qi-submission-v1", f"{owner}: submission.json schema differs")
+        schema = submission.get("schema")
+        require(schema in ("qi-submission-v1", "qi-submission-v2"), f"{owner}: submission.json schema differs")
+        # A v2 receipt binds the uploaded bytes: each job's circuit sha256 and
+        # the cases.json digest, recorded before the enqueue. v1 receipts
+        # predate the binding and rest on cases.json alone.
+        if schema == "qi-submission-v2":
+            require(
+                submission.get("state") == "enqueued", f"{owner}: submission.json state is {submission.get('state')}"
+            )
+            require(
+                submission.get("cases_sha256") == record["cases_digest"], f"{owner}: cases.json changed after upload"
+            )
+            for row in submission["jobs"]:
+                require(
+                    row.get("sha256") == record["circuits"].get(row["file"]),
+                    f"{owner}: circuit {row['file']} differs from the bytes its receipt uploaded",
+                )
         require(
             isinstance(submission.get("approval"), str) and submission["approval"],
             f"{owner}: submission.json records no approval",
@@ -338,7 +355,11 @@ class QuantumInspireRuns:
         retained: dict[int, tuple[Any, ...]] = {}
         for run, record in self.records.items():
             facts[run], jobs = self._run(run, record)
+            shared = set(jobs) & set(retained)
+            require(not shared, f"Quantum Inspire jobs {sorted(shared)} are retained in two run directories")
             retained.update(jobs)
+        ledger_ids = [job["job"] for job in self.ledger["jobs"]]
+        require(len(ledger_ids) == len(set(ledger_ids)), "the Quantum Inspire ledger lists a job twice")
         ledger = {
             job["job"]: (job["backend_type_id"], job["batch_job"], job["status"], job["shots_done"], job["charged"])
             for job in self.ledger["jobs"]
@@ -904,6 +925,25 @@ def _qi_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], 
     def ledger_extra_job(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         ledger["jobs"].append({**ledger["jobs"][0], "job": 1})
 
+    def ledger_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        ledger["jobs"].append(dict(ledger["jobs"][0]))
+
+    def retained_twice(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        records["results/quantum_inspire/runs/~copy"] = copy.deepcopy(record(records, "-Rydberg-diagnostic"))
+
+    def receipt_digest(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-Rydberg-diagnostic")
+        target["submission"] = {
+            **target["submission"],
+            "schema": "qi-submission-v2",
+            "state": "enqueued",
+            "cases_sha256": target["cases_digest"],
+            "jobs": [{**row, "sha256": "0" * 64} for row in target["submission"]["jobs"]],
+        }
+
+    yield "ledger listing one job twice", ledger_duplicate, "lists a job twice"
+    yield "one job retained in two run directories", retained_twice, "retained in two run directories"
+    yield "v2 receipt whose uploaded bytes differ from the circuit", receipt_digest, "bytes its receipt uploaded"
     yield "circuit differing from its cases.json digest", circuit_digest, "digest differs from cases.json"
     yield "raw shot list shorter than shots done", raw_short, "length differs"
     yield "raw shots differing from the recorded histogram", raw_altered, "outcome histogram"

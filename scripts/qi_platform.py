@@ -24,11 +24,15 @@ Subcommands:
   heartbeat change minute to minute and stay out of the table.
 - submit CASE_DIR --backend-type-id N --approval TEXT (network, spends quota)
   creates one project, one algorithm, commit and file per circuit, one batch
-  job holding every circuit of cases.json, and enqueues it. It verifies each
-  circuit's sha256 against cases.json first and writes submission.json; a case
-  directory that already holds submission.json sends nothing.
+  job holding every circuit of cases.json, and enqueues it. It refuses a blank
+  approval, verifies each circuit's sha256 against cases.json, and refuses a
+  batch that would lift the account's queued jobs above queue_limit (three on
+  hardware, per the FAQ). submission.json (each job's circuit sha256 and the
+  cases.json digest) is written before the enqueue and updated after it, and a
+  case directory that already holds one sends nothing.
 - collect CASE_DIR (network, read-only) waits for the batch to finish and
-  writes raw/<file>.json (the shot-ordered bit strings), results.json (shots
+  writes raw/<file>.json (a repeated collection must reproduce the retained
+  raw files byte for byte and writes nothing) (the shot-ordered bit strings), results.json (shots
   requested and done, execution seconds, job timestamps and status) and the
   transactions charged to the batch's jobs.
 
@@ -55,6 +59,8 @@ USAGE_SCHEMA = "qi-usage-v1"
 REDACTED = ("email", "full_name", "oidc_sub")
 TERMINAL = {"completed", "failed", "cancelled"}
 REFRESH_MARGIN = 120.0
+# FAQ (quantum-inspire.com/faq): at most three queued jobs per hardware backend.
+HARDWARE_QUEUED_JOBS = 3
 
 
 def digest(value: object) -> str:
@@ -302,16 +308,33 @@ def check(directory: Path, agents: Path | None = None) -> None:
     print(f"qi snapshot: {len(catalogue['backend_types'])} backend types, {len(rows)} transactions consistent")
 
 
+def queue_limit(backend_type: dict[str, Any]) -> int:
+    """Jobs one user may hold queued on a backend type.
+
+    The FAQ allows three queued jobs per hardware backend; the API's batch
+    limits (batchjobs_per_queue_limit batch jobs of max_jobs_per_batch_job
+    jobs) bound the emulators.
+    """
+    if backend_type["is_hardware"]:
+        return HARDWARE_QUEUED_JOBS
+    return int(backend_type["batchjobs_per_queue_limit"]) * int(backend_type["max_jobs_per_batch_job"])
+
+
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
-    if (case_dir / "submission.json").exists():
-        raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
+    if not approval.strip():
+        raise SystemExit("--approval is blank; a submission records the user's approval of its case")
+    receipt = case_dir / "submission.json"
+    if receipt.exists():
+        raise SystemExit(f"{receipt} exists; this case was submitted, and a created receipt names a batch to reconcile")
     cases = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
     if cases["backend_type_id"] != backend_type_id:
         raise SystemExit(f"cases.json names backend type {cases['backend_type_id']}, not {backend_type_id}")
     sources = {}
+    digests = {}
     for row in cases["circuits"]:
         text = (case_dir / row["file"]).read_text(encoding="utf-8")
-        if hashlib.sha256(text.encode()).hexdigest() != row["sha256"]:
+        digests[row["file"]] = hashlib.sha256(text.encode()).hexdigest()
+        if digests[row["file"]] != row["sha256"]:
             raise SystemExit(f"{row['file']} differs from its cases.json sha256")
         sources[row["file"]] = text
     client = Client()
@@ -324,6 +347,12 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
+    queued = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)["number_of_jobs_in_queue"]
+    if queued + len(sources) > queue_limit(backend_type):
+        raise SystemExit(
+            f"{queued} queued jobs plus {len(sources)} new exceed the {queue_limit(backend_type)} this account may "
+            f"hold on {backend_type['name']}; wait for the queue to drain"
+        )
     language = next(lang for lang in client.pages("/languages") if lang["name"] == "cQASM" and lang["version"] == "3.0")
     name = f"gororoba-{case_dir.name}"[:32]
     project = client.post(
@@ -356,22 +385,32 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
                 "raw_data_enabled": True,
             },
         )
-        jobs.append({"file": file_name, "job": job["id"]})
-    client.patch(f"/batch_jobs/{batch['id']}/enqueue")
+        jobs.append({"file": file_name, "job": job["id"], "sha256": digests[file_name]})
     record = {
-        "schema": "qi-submission-v1",
-        "submitted_utc": now(),
+        "schema": "qi-submission-v2",
+        "state": "created",
+        "created_utc": now(),
         "approval": approval,
         "backend": cases["backend"],
         "backend_type_id": backend_type_id,
         "backend_status_at_submit": backend_type["status"],
-        "queue_at_submit": client.get(f"/backend_types/{backend_type_id}/queue"),
+        "user_queue_before": queued,
+        "cases_sha256": hashlib.sha256((case_dir / "cases.json").read_bytes()).hexdigest(),
         "batch_job": batch["id"],
         "project": project["id"],
         "shots": cases["shots"],
         "jobs": jobs,
     }
-    (case_dir / "submission.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    # The receipt exists before the batch can execute, so a failure after
+    # enqueue leaves a receipt that refuses a second submission of the case.
+    receipt.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    client.patch(f"/batch_jobs/{batch['id']}/enqueue")
+    record |= {
+        "state": "enqueued",
+        "submitted_utc": now(),
+        "queue_at_submit": client.get(f"/backend_types/{backend_type_id}/queue"),
+    }
+    receipt.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(f"batch {batch['id']}: jobs {[j['job'] for j in jobs]}")
 
 
@@ -387,8 +426,8 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             raise SystemExit(f"jobs still running: { {k: v['status'] for k, v in states.items()} }")
         time.sleep(poll)
     raw_dir = case_dir / "raw"
-    raw_dir.mkdir(exist_ok=True)
     rows = []
+    raw_texts: dict[str, str] = {}
     for row in record["jobs"]:
         job = states[row["job"]]
         results = client.get(f"/results/job/{row['job']}", page=1, size=100)["items"]
@@ -396,7 +435,7 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
         if job["status"] != "completed":
             logs = client.get(f"/jobs/{row['job']}/logs")
         for result in results:
-            (raw_dir / f"{row['file']}.json").write_text(json.dumps(result["raw_data"]) + "\n", encoding="utf-8")
+            raw_texts[f"{row['file']}.json"] = json.dumps(result["raw_data"]) + "\n"
         rows.append(
             {
                 "file": row["file"],
@@ -405,6 +444,19 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
                 "logs": logs,
             }
         )
+    # Retained raw files are never rewritten: a second collection must
+    # reproduce them byte for byte and then leaves the run untouched.
+    if (case_dir / "results.json").exists() or raw_dir.exists():
+        retained = {path.name: path.read_text(encoding="utf-8") for path in raw_dir.glob("*.json")}
+        if retained != raw_texts:
+            raise SystemExit(
+                f"{case_dir} holds a collection whose raw files differ from the service's; nothing written"
+            )
+        print(f"{case_dir}: already collected; the service returns identical raw files")
+        return
+    raw_dir.mkdir()
+    for name, text in raw_texts.items():
+        (raw_dir / name).write_text(text, encoding="utf-8")
     job_ids = {row["job"] for row in record["jobs"]}
     charged = [
         {
