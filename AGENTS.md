@@ -544,13 +544,14 @@ type this account can submit to.
   a timing-sensitive case writes cQASM directly with explicit `wait`.
 
 **Usage and cost.** The account's transaction ledger (`/transactions/`,
-`qi_platform.py snapshot` writes usage.json) recorded no entry for the twelve
-jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered seconds
+`qi_platform.py snapshot` writes usage.json) recorded no entry for the
+twenty-two jobs of 2026-10-16 on QX, the Ry emulator and Tuna-17, so no metered seconds
 or credits apply to this account as observed; the limits are structural: the
 table's qubits, shots, per-job execution limit and batch and queue counts,
 plus the FAQ's three queued jobs per hardware backend, which is stricter than
-the API's five batch jobs. Tuna-17 executed 16384 shots in 9.9 to 12.6 s
-(0.60 to 0.77 ms per shot); QX finished 2048 shots in under 0.3 s.
+the API's five batch jobs. Tuna-17 executed 16384 shots in 9.9 to 15.4 s
+(0.60 to 0.94 ms per shot, deeper circuits slower); QX finished 2048 shots
+in 0.03 to 10.4 s.
 Calibration and tuning run between user jobs (Tuna-17 read `calibrating`
 between two reads minutes apart), delay queued jobs and charge the account
 nothing. The general conditions license every uploaded algorithm, datum and
@@ -578,7 +579,10 @@ service's message.
 **Gates.** core-325 (`capture_qi_docs.py --check`), core-326
 (`qi_platform.py check docs/evidence/quantum_inspire --agents AGENTS.md`),
 core-327 (`qi_crosstalk_teleport_cases.py --check results/quantum_inspire/cases`)
-and core-328 (`--replay` of every retained analysis.json).
+core-328 (`--replay` of every retained analysis.json), core-329 and core-330
+(`qi_zero_divisor_cases.py --check` and `--replay`), and core-340
+(`qi_ibm_noise_replay.py --check`, the Kingston-noise replay of the Tuna-17
+cases).
 
 ## Qiskit skills
 

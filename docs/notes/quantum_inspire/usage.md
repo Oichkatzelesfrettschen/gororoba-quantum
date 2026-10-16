@@ -21,9 +21,9 @@ and backend type, beside each job's requested and completed shots and the
 execution seconds its results report.
 
 Observed: the ledger held no row before the first job and still held none
-after twelve jobs on 2026-10-16 (five on QX, two on the Ry emulator, five on
-Tuna-17; 93184 shots completed, 72.24 s of reported execution; snapshot
-2026-10-16T21:47Z). The account
+after twenty-two jobs on 2026-10-16 (ten on QX, two on the Ry emulator, ten
+on Tuna-17; 185344 shots completed, 166.48 s of reported execution; snapshot
+2026-10-16T22:2xZ). The account
 therefore spends no metered seconds, credits or minutes as observed; the
 `change` unit stays unmeasured until a row appears. Recheck with a fresh
 snapshot before stating a quota: `qi_usage` on the MCP server returns the
@@ -54,7 +54,10 @@ account (<https://www.quantum-inspire.com/faq/>), stricter than the API's 5.
 | Backend | Shots per job | Execution per job | Per shot | Source |
 |---|---|---|---|---|
 | Tuna-17 | 16384 | 9.87-12.57 s | 0.60-0.77 ms | runs/2026-10-16T211635Z-tuna_17/results.json |
+| Tuna-17, 66-70 CZ witness | 16384 | 12.58-15.36 s | 0.77-0.94 ms | runs/2026-10-16T221133Z-zero_divisor_tuna_17 |
+| Tuna-17, readout only | 16384 | 10.69-10.88 s | 0.65-0.66 ms | same run, readout-0 and readout-1 |
 | QX emulator | 2048 | 0.028-0.289 s | 14-141 us | runs/2026-10-16T211635Z-QXsinglenodesimulator |
+| QX emulator, two 5-qubit witnesses | 2048 | 0.81-10.39 s | 0.4-5.1 ms | runs/2026-10-16T221133Z-zero_divisor_qx |
 | Ry emulator | 1024 | 16.26 s (2-qubit X-only diagnostic) | 15.9 ms | runs/2026-10-16T213823Z-Rydberg-diagnostic |
 
 A Tuna shot is dominated by the 500 us initialization (KB tuna page), so

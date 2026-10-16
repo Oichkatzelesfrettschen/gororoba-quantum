@@ -175,6 +175,58 @@ phases (-0.03 to -0.12 rad over 840 ns, a frequency offset of 5 to 23 kHz)
 sit at the tens-of-kHz scale of the Heron idle detunings in
 hw-idle-detuning-scale (40.9 kHz between two Kingston work qubits).
 
+## Zero-divisor witness on Tuna-17 (preregistered)
+
+`scripts/qi_zero_divisor_cases.py` builds Design B's fixed-operand LCU for
+a = e1 + e10 (root AGENTS.md, "Zero-product witnesses"): the dark witness
+(e1 + e10)(e4 - e15) = 0 (ideal P(s = 0) = 0), the bright control
+(e1 + e10)(e4 + e15) (ideal 1) and the negative fixture (e1 + e10)(e2 - e13)
+(ideal 1/2). Before writing a circuit, `certify()` computes every product with
+cd_core.cd_multiply and with the retained D = 16 tables of hypercomplex,
+hypercomplex-engine, Cayley-Calculator and cayley-dickson
+(docs/evidence/algebra_packages/tables.json), finds the dark pair in
+cd_core.sedenion_zero_divisor_corpus, and requires SELECT to equal
+cd_sign(16, m, q)|m XOR q> on all 32 inputs.
+
+The SELECT sign function has algebraic degree 4, which needs pi/8 phases that
+Tuna would round to the pi/36 grid. Its ANF factors as
+q0 + Maj(q1, q2, q3) + q1 q2 q3 + a(q0 + q2 + q3) + a(1 + q2) Maj(q0, q1, q3),
+so an in-place majority (Cuccaro MAJ) gives an exact SELECT of two Toffolis
+and two CCZ on five qubits, with every gate in H, S, T, Tdag and CZ. Routed
+onto Tuna-17 a replica takes 66-70 CZ and 26 T. Three disjoint regions,
+{0,1,2,4,5}, {7,8,10,11,13} and {9,12,14,15,16}, run the three cases in a 3x3
+Latin square (latin-1..3); readout-0 and readout-1 prepare every qubit in |0>
+and |1>. The estimators and the comparison were fixed in cases.json before
+submission (claim class: preregistered hardware inference). The QX twin packs
+the same nine replicas two per 10-qubit circuit.
+
+| Region | dark P(s=0) | bright | fixture |
+|---|---|---|---|
+| {0,1,2,4,5} | 0.491 | 0.493 | 0.518 |
+| {7,8,10,11,13} | 0.467 | 0.518 | 0.497 |
+| {9,12,14,15,16} | 0.455 | 0.527 | 0.481 |
+| pooled (95% CI) | 0.471 (0.466-0.475) | 0.512 (0.508-0.517) | 0.499 (0.495-0.504) |
+| readout-corrected mean | 0.457 | 0.501 | 0.484 |
+| QX twin (ideal platform) | 0.000 | 1.000 | 0.490 |
+| Kingston, hw-zero-divisor-floor | 0.182 (0.146-0.217) | 0.828 | -- |
+
+- The platform executes the certified circuits exactly (QX twin).
+- Tuna-17 contracts the witness to a visibility of 0.042 (Kingston 0.646 at
+  about 45 CZ with continuous rotations). Dark stays below bright in every
+  region and in aggregate (difference 0.0415, about 13 standard errors), so
+  the zero-divisor contrast survives at 4 % of its ideal size; the region on
+  qubits 0, 1, 2, 4, 5, where the teleport path 1-0-2-4 and the Q1/Q2
+  simultaneous-drive failure sit, shows none.
+- The fixture law holds: 0.499, z = -0.42.
+- The symmetric contraction law fails: dark + bright - 1 = -0.017, z = -5.3
+  (-0.042 after readout correction). A depolarizing contraction keeps the sum
+  at 1; both witnesses sit below 1/2, a bias of the selector toward 1 that a
+  coherent or non-unital error carries.
+- At about 68 CZ the surviving visibility corresponds to a per-CZ-layer
+  survival of 0.954 (0.042^(1/68)), against 0.990 on Kingston (0.646^(1/45));
+  that figure folds single-qubit, idle, crosstalk and readout error into the
+  CZ count and serves as a scale, not a CZ fidelity.
+
 ## Next cases
 
 - Static-|1> control: hold each driver in |1> (X before and after the
@@ -188,5 +240,9 @@ hw-idle-detuning-scale (40.9 kHz between two Kingston work qubits).
   sphere average, and a direct-SWAP control without the Bell measurement.
 - Ry emulator: rebuild the teleport case in the Rydberg-native form (no bit
   register, RYD blockade gates) and read results leftmost-first.
+- Zero-divisor depth series: the bright and dark witnesses with the SELECT
+  repeated as SELECT, SELECT^dagger, SELECT pairs (identity padding) to fit
+  the per-layer contraction directly, and a selector-only control to locate
+  the bias toward 1.
 - Tuna-5 and Tuna-9 cases are generated and wait for those backends to come
   online.

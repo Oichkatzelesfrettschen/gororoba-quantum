@@ -24,7 +24,7 @@ the research state.
 ## Research state
 
 [RESEARCH_STATE.md](docs/state/RESEARCH_STATE.md) is the current state of every
-registered claim (51 established, 21 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
+registered claim (52 established, 21 exploratory, 3 open, 7 proposed, 2 superseded, 11 withdrawn) with its evidence class,
 boundary, pinned evidence and reproducing gates. Every retained
 acquisition of every provider:
 
@@ -49,10 +49,12 @@ acquisition of every provider:
 | [2026-10-16T211635Z-Rydberg](results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg) | Quantum Inspire | transported-pair teleportation | Rydberg | 1 | 1 | failed | 0 ledger change |
 | [2026-10-16T211635Z-tuna_17](results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17) | Quantum Inspire | spectator-drive additivity and transported-pair teleportation | tuna_17 | 5 | 5 | completed | 0 ledger change |
 | [2026-10-16T213823Z-Rydberg-diagnostic](results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic) | Quantum Inspire | Ry emulator execution diagnostic | Rydberg | 1 | 1 | completed | 0 ledger change |
+| [2026-10-16T221133Z-zero_divisor_tuna_17](results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 5 | 5 | completed | 0 ledger change |
+| [2026-10-16T221133Z-zero_divisor_qx](results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | QXsinglenodesimulator | 5 | 5 | completed | 0 ledger change |
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-16T21:47:01+00:00 lists 12 jobs with 93184 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-16T22:13:45+00:00 lists 22 jobs with 185344 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 <!-- research-state:end -->
 
 ## Contents

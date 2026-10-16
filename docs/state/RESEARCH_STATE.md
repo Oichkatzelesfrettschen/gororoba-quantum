@@ -27,7 +27,7 @@ and neither establishes a theorem or authorizes a QPU run.
 
 The IBM service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 physical jobs with 334 settled seconds; the account then reported 334 of 600 s consumed in the rolling window ending 2026-10-15T07:13:13.771Z. That is an observation, not a current balance or an authorization.
 
-The Quantum Inspire ledger retrieved at 2026-10-16T21:47:01+00:00 lists 12 jobs with 93184 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
+The Quantum Inspire ledger retrieved at 2026-10-16T22:13:45+00:00 lists 22 jobs with 185344 shots done and a total ledger change of 0, and every listed job belongs to a retained run directory. That is an observation, not a quota or an authorization.
 
 An IBM job holds PUBs and charges settled QPU seconds; a Quantum Inspire job holds one
 circuit and charges the account ledger's change.
@@ -53,6 +53,8 @@ circuit and charges the account ledger's change.
 | [2026-10-16T211635Z-Rydberg](../../results/quantum_inspire/runs/2026-10-16T211635Z-Rydberg) | Quantum Inspire | transported-pair teleportation | Rydberg | 1 | 1 | failed | 0 ledger change | qi-ry-emulator-bit-order |
 | [2026-10-16T211635Z-tuna_17](../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17) | Quantum Inspire | spectator-drive additivity and transported-pair teleportation | tuna_17 | 5 | 5 | completed | 0 ledger change | qi-tuna17-neighbor-drive-phase, qi-tuna17-simultaneous-drive-degradation, qi-tuna17-driver-overrotation, qi-tuna17-transported-pair-teleport |
 | [2026-10-16T213823Z-Rydberg-diagnostic](../../results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic) | Quantum Inspire | Ry emulator execution diagnostic | Rydberg | 1 | 1 | completed | 0 ledger change | qi-ry-emulator-bit-order |
+| [2026-10-16T221133Z-zero_divisor_tuna_17](../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | tuna_17 | 5 | 5 | completed | 0 ledger change | qi-tuna17-zero-divisor-contraction |
+| [2026-10-16T221133Z-zero_divisor_qx](../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx) | Quantum Inspire | sedenion zero-divisor witness (Design B, exact Clifford+T) | QXsinglenodesimulator | 5 | 5 | completed | 0 ledger change | qi-tuna17-zero-divisor-contraction |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -73,6 +75,8 @@ circuit and charges the account ledger's change.
 - **qi-rydberg-teleport** (2026-10-16T211635Z-Rydberg, batch job 869576, 0 of 1024 shots done): Does the transported-pair teleport circuit, with its bit register and measurements, execute on the Ry emulator? The job failed at execution.
 - **qi-tuna17-crosstalk-teleport** (2026-10-16T211635Z-tuna_17, batch job 869577, 81920 of 81920 shots done): Does driving a neighbor shift a Tuna-17 target's idle phase, do the pairwise shifts add under simultaneous drive, does simultaneous drive change the drivers' own gates, and how faithfully does a Bell pair whose half a SWAP carries teleport Pauli eigenstates?
 - **qi-rydberg-x-diagnostic** (2026-10-16T213823Z-Rydberg-diagnostic, batch job 869597, 1024 of 1024 shots done): Does an X on q[0] with no bit register and no measurement, the form of the Rydberg code example, execute on the Ry emulator, separating an unavailable backend from an unsupported circuit, and which outcome character carries q[0]?
+- **qi-tuna17-zero-divisor** (2026-10-16T221133Z-zero_divisor_tuna_17, batch job 869643, 81920 of 81920 shots done): What dark floor, bright level and visibility does Tuna-17 give the exact (e1 + e10)(e4 -+ e15) witness across three regions in a Latin square, and does the symmetric contraction law hold?
+- **qi-qx-zero-divisor-twin** (2026-10-16T221133Z-zero_divisor_qx, batch job 869645, 10240 of 10240 shots done): Does the platform execute the nine routed Clifford+T zero-divisor replicas exactly on the ideal QX emulator (dark 0, bright 1, fixture 1/2)?
 
 ## Established claims
 
@@ -311,6 +315,12 @@ circuit and charges the account ledger's change.
   Boundary: Device noise the calibrated model underestimates, not a feature of the algebra; mirror-twin division over-corrects.
   Evidence: [collect.json](../../results/live/2026-10-15T070853.550532Z/collect.json), [ZERO_DIVISOR_AND_CORNER_FINDINGS.md](../../results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md).
   Acquisitions: kingston-zero-divisor-fringe.
+- **qi-tuna17-zero-divisor-contraction** (preregistered hardware inference, hardware). On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 reads P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, a visibility of 0.042 against 0.646 on Kingston; dark lies below bright in every region (no contrast on qubits 0, 1, 2, 4, 5), the fixture law holds (z = -0.42) and the symmetric contraction law fails, dark + bright - 1 = -0.017 (z = -5.3), a bias toward selector 1 that a depolarizing contraction cannot produce; the QX twin reads 0, 1 and 0.490.
+  Boundary: One 16384-shot run per circuit on one Tuna-17 calibration; the three Latin circuits ran as sequential jobs, so drift between them enters the case contrasts; the routed replicas carry 66-70 CZ and 26 T against about 45 CZ with continuous rotations on Kingston, so the visibility gap compares implementations, not devices alone; the readout correction uses the all-|0> and all-|1> circuits, which omit readout crosstalk under the witness's state.
+  Evidence: [analysis.json](../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json), [results.json](../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/results.json), [analysis.json](../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx/analysis.json), [experiments.md](../notes/quantum_inspire/experiments.md).
+  Gates: replayed by core-330; source regenerated by core-329.
+  Acquisitions: qi-tuna17-zero-divisor, qi-qx-zero-divisor-twin.
+  Depends on: hw-zero-divisor-floor.
 
 ## Exploratory claims
 

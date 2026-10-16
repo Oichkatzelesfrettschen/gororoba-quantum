@@ -133,6 +133,20 @@
       "run": "results/quantum_inspire/runs/2026-10-16T213823Z-Rydberg-diagnostic",
       "family": "Ry emulator execution diagnostic",
       "question": "Does an X on q[0] with no bit register and no measurement, the form of the Rydberg code example, execute on the Ry emulator, separating an unavailable backend from an unsupported circuit, and which outcome character carries q[0]?"
+    },
+    {
+      "id": "qi-qx-zero-divisor-twin",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "Does the platform execute the nine routed Clifford+T zero-divisor replicas exactly on the ideal QX emulator (dark 0, bright 1, fixture 1/2)?"
+    },
+    {
+      "id": "qi-tuna17-zero-divisor",
+      "provider": "quantum_inspire",
+      "run": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17",
+      "family": "sedenion zero-divisor witness (Design B, exact Clifford+T)",
+      "question": "What dark floor, bright level and visibility does Tuna-17 give the exact (e1 + e10)(e4 -+ e15) witness across three regions in a Latin square, and does the symmetric contraction law hold?"
     }
   ],
   "claims": [
@@ -2798,6 +2812,45 @@
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "qi-tuna17-zero-divisor-contraction",
+      "statement": "On Tuna-17 the exact Clifford+T Design B witness of (e1 + e10)(e4 - e15) = 0 reads P(s = 0) = 0.471 [0.466, 0.475] dark, 0.512 [0.508, 0.517] bright and 0.499 fixture over three regions in a Latin square, a visibility of 0.042 against 0.646 on Kingston; dark lies below bright in every region (no contrast on qubits 0, 1, 2, 4, 5), the fixture law holds (z = -0.42) and the symmetric contraction law fails, dark + bright - 1 = -0.017 (z = -5.3), a bias toward selector 1 that a depolarizing contraction cannot produce; the QX twin reads 0, 1 and 0.490.",
+      "domain": "hardware",
+      "evidence_class": "preregistered hardware inference",
+      "status": "established",
+      "boundary": "One 16384-shot run per circuit on one Tuna-17 calibration; the three Latin circuits ran as sequential jobs, so drift between them enters the case contrasts; the routed replicas carry 66-70 CZ and 26 T against about 45 CZ with continuous rotations on Kingston, so the visibility gap compares implementations, not devices alone; the readout correction uses the all-|0> and all-|1> circuits, which omit readout crosstalk under the witness's state.",
+      "evidence": [
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/analysis.json",
+          "sha256": "38919adee89a956591cdbe9b244218be5e386582006cd26c62b5ec2c2909fde4"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/results.json",
+          "sha256": "7d046cd51ba7a99430d88b3dd74e82dde9ac79b34f9ef7aa5132d96d845905d8"
+        },
+        {
+          "path": "results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_qx/analysis.json",
+          "sha256": "79ae8ec3779c050c9e446dee2ff265c3f65035ba944694450bf5144843e530ef"
+        }
+      ],
+      "documents": [
+        "docs/notes/quantum_inspire/experiments.md"
+      ],
+      "gates": {
+        "core-330": "replay",
+        "core-329": "freshness"
+      },
+      "acquisitions": [
+        "qi-tuna17-zero-divisor",
+        "qi-qx-zero-divisor-twin"
+      ],
+      "assumptions": [],
+      "depends_on": [
+        "hw-zero-divisor-floor"
+      ],
       "supersedes": [],
       "superseded_by": null
     }
