@@ -309,7 +309,7 @@ def collect(args: argparse.Namespace) -> int:
     """
     import shutil
 
-    run_dir = Path(args.run_dir)
+    run_dir = Path(args.run_dir).resolve()
     submission = submission_of(run_dir)
     require("kernel_version" in submission, f"{run_dir} records no kernel version to collect")
     versioned = kernel_ref(submission)
