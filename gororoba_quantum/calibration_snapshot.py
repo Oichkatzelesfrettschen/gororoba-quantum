@@ -8,10 +8,14 @@ module carries those inputs as JSON:
 
 - ``export`` (``--export BACKEND --out FILE``) fetches the backend once, writes
   T1, T2 and frequency per qubit, (e10, e01) per qubit from
-  live_run.readout_flips, and duration and error for every cz, sx, x, rz,
-  id and measure entry, then builds both simulators (live_run's from the
-  live objects, this module's from the round-tripped data) and requires
-  every gate and readout channel to be equal before writing anything.
+  live_run.readout_flips, duration and error for every cz, sx, x, rz, id,
+  measure and reset entry, and the Target operations it cannot rebuild
+  (``omitted_operations``: measure_2, the measure_reset variants, reset_2,
+  xslow and control flow), then builds both noise models (live_run's from the
+  live objects, this module's from the round-tripped data) and requires every
+  gate, reset and readout channel outside the omitted operations to be equal,
+  and the rebuilt model to carry none of the omitted ones, before writing
+  anything.
 - ``noise_simulator(snapshot, device)`` rebuilds the Target, applies the same
   two noise steps, and returns a density-matrix AerSimulator on CPU or GPU.
 
@@ -30,15 +34,19 @@ from pathlib import Path
 from typing import Any
 
 from qiskit import QuantumCircuit, transpile
-from qiskit.circuit import Delay, Parameter
+from qiskit.circuit import Delay, Parameter, Reset
 from qiskit.circuit.library import CZGate, IGate, Measure, RZGate, SXGate, XGate
 from qiskit.providers import BackendV2, Options, QubitProperties
 from qiskit.transpiler import InstructionProperties, Target
 from qiskit_aer import AerSimulator
 from qiskit_aer.noise import NoiseModel, ReadoutError
 
-SCHEMA = "gororoba-calibration-snapshot-v1"
+SCHEMA = "gororoba-calibration-snapshot-v2"
 GATES = {"cz": CZGate(), "sx": SXGate(), "x": XGate(), "rz": RZGate(Parameter("theta")), "id": IGate()}
+# Non-gate instructions the snapshot carries; every other Target operation is
+# listed in the snapshot's omitted_operations, and a circuit that uses one
+# fails transpilation against the rebuilt Target.
+NON_GATES = {"measure": Measure(), "reset": Reset()}
 PROBE_SHOTS = 2000
 PROBE_SEED = 20261015
 
@@ -78,7 +86,20 @@ def _entries(target: Any, name: str) -> list[dict[str, Any]]:
 
 
 def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str, Any]:
-    """The snapshot of one fetched backend; readout_flips is live_run.readout_flips."""
+    """The snapshot of one fetched backend; readout_flips is live_run.readout_flips.
+
+    The Target and the properties must describe one calibration update, the
+    condition live_run.take_snapshot enforces through
+    check_snapshot_matches_properties: the rebuilt noise model takes gate and
+    coherence data from the Target and readout and the calibration identity
+    from the properties, so a mixed pair would pass the channel comparison.
+    """
+    import live_run
+
+    try:
+        live_run.check_snapshot_matches_properties(target, props, name)
+    except live_run.LiveRunError as error:
+        raise SystemExit(f"Target and properties describe different calibrations: {error}") from None
     qubits = []
     for q in range(target.num_qubits):
         qp = target.qubit_properties[q] if target.qubit_properties else None
@@ -99,7 +120,8 @@ def describe(name: str, target: Any, props: Any, readout_flips: Any) -> dict[str
         "num_qubits": target.num_qubits,
         "dt": target.dt,
         "qubits": qubits,
-        "instructions": {op: _entries(target, op) for op in (*GATES, "measure")},
+        "instructions": {op: _entries(target, op) for op in (*GATES, *NON_GATES)},
+        "omitted_operations": sorted(set(target.operation_names) - set(GATES) - set(NON_GATES) - {"delay"}),
     }
 
 
@@ -120,10 +142,13 @@ def build_target(snapshot: dict[str, Any]) -> Target:
                 gate,
                 {tuple(r["qargs"]): InstructionProperties(duration=r["duration"], error=r["error"]) for r in rows},
             )
-    measure = snapshot["instructions"]["measure"]
-    target.add_instruction(
-        Measure(), {tuple(r["qargs"]): InstructionProperties(duration=r["duration"], error=r["error"]) for r in measure}
-    )
+    for op, instruction in NON_GATES.items():
+        rows = snapshot["instructions"].get(op, [])
+        if rows:
+            target.add_instruction(
+                instruction,
+                {tuple(r["qargs"]): InstructionProperties(duration=r["duration"], error=r["error"]) for r in rows},
+            )
     target.add_instruction(Delay(Parameter("t")), {(q,): None for q in range(snapshot["num_qubits"])})
     return target
 
@@ -131,7 +156,7 @@ def build_target(snapshot: dict[str, Any]) -> Target:
 def round_trip(snapshot: dict[str, Any]) -> None:
     """The rebuilt Target reproduces every instruction entry and every T1 and T2 of the snapshot."""
     target = build_target(snapshot)
-    for op in (*GATES, "measure"):
+    for op in (*GATES, *NON_GATES):
         if _entries(target, op) != snapshot["instructions"].get(op, []):
             raise ValueError(f"rebuilt Target differs from the snapshot on {op}")
     for q, qubit in enumerate(snapshot["qubits"]):
@@ -157,12 +182,11 @@ def noise_simulator(snapshot: dict[str, Any], device: str = "CPU") -> AerSimulat
 
 
 def channel_table(noise: NoiseModel) -> dict[str, Any]:
-    """Every local quantum error on the snapshot's instructions and every readout error, keyed by name and qubits."""
+    """Every local quantum error and every readout error of a noise model, keyed by name and qubits."""
     table: dict[str, Any] = {}
     for name, by_qubits in noise._local_quantum_errors.items():
-        if name in GATES:
-            for qubits, error in by_qubits.items():
-                table[f"{name}{list(qubits)}"] = error
+        for qubits, error in by_qubits.items():
+            table[f"{name}{list(qubits)}"] = error
     for qubits, error in noise._local_readout_errors.items():
         table[f"readout{list(qubits)}"] = error
     return table
@@ -205,14 +229,21 @@ def export(name: str, out: Path) -> None:
     target = backend.target
     snapshot = describe(name, target, props, live_run.readout_flips)
     snapshot = json.loads(json.dumps(snapshot))
-    live = channel_table(live_run._noise_model(name, live_run.TargetView(name, target), target, props))
+    omitted = tuple(snapshot["omitted_operations"])
+    live_all = channel_table(live_run._noise_model(name, live_run.TargetView(name, target), target, props))
+    live = {key: error for key, error in live_all.items() if not key.startswith(tuple(f"{op}[" for op in omitted))}
     rebuilt = channel_table(noise_model(snapshot)[1])
+    if any(key.startswith(tuple(f"{op}[" for op in omitted)) for key in rebuilt):
+        raise SystemExit("the rebuilt noise model carries an operation the snapshot omits")
     shared = live.keys() & rebuilt.keys()
     differing = sorted((live.keys() ^ rebuilt.keys()) | {key for key in shared if not live[key] == rebuilt[key]})
     if differing:
         raise SystemExit(f"rebuilt noise differs from live_run's on {len(differing)} channels, first {differing[:3]}")
     out.write_text(json.dumps(snapshot, indent=1, sort_keys=True) + "\n", encoding="utf-8")
-    print(f"wrote {out}: calibration {snapshot['calibration']}, {len(live)} channels equal to live_run's")
+    print(
+        f"wrote {out}: calibration {snapshot['calibration']}, {len(live)} channels equal to live_run's, "
+        f"omitted {', '.join(omitted) or 'none'}"
+    )
 
 
 def main() -> int:

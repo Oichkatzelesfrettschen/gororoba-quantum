@@ -238,6 +238,18 @@ def main() -> int:
         print(json.dumps(ghz_trial(sys.argv[2], int(sys.argv[3]), device)), flush=True)
         return 0
     OUT.mkdir(parents=True, exist_ok=True)
+    # exit.json marks a finished run on every path; scripts/kaggle_run.py
+    # collect requires it, because `kernels status` reports the slug's latest
+    # version whatever version it names.
+    code = 1
+    try:
+        code = run_entry()
+    finally:
+        write("exit.json", {"returncode": code})
+    return code
+
+
+def run_entry() -> int:
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
     print((REPO / "kaggle_kernel/AGENTS.md").read_text(encoding="utf-8"), flush=True)
     before = {p: sha256(p) for p in REPO.rglob("*") if p.is_file()}
@@ -250,7 +262,7 @@ def main() -> int:
     if job["smoke"]:
         capacity()
         return 0
-    env = dict(os.environ, GOROROBA_AER_DEVICE="GPU", PYTHON=sys.executable)
+    env = dict(os.environ, GOROROBA_AER_DEVICE=job.get("device", "GPU"), PYTHON=sys.executable)
     proc = subprocess.run(
         [sys.executable, "-B", job["entry"], *job["args"]], cwd=REPO, env=env, capture_output=True, text=True
     )
@@ -262,7 +274,6 @@ def main() -> int:
             target = OUT / "repo" / path.relative_to(REPO)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(path.read_bytes())
-    write("exit.json", {"returncode": proc.returncode})
     return proc.returncode
 
 

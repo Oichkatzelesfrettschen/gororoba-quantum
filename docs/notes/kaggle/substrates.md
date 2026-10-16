@@ -48,23 +48,24 @@ circuit at 256 shots, each width tried once in its own process).
 | Substrate | Memory | Statevector, double / single (estimate) | Density matrix, double / single (estimate) | Measured |
 | --- | --- | --- | --- | --- |
 | Kaggle T4 (one GPU) | 15 GiB | 29 / 30 | 14 / 15 | density matrix 14 (1.0 s), 15 killed; statevector 29 (4.4 s), 30 killed, 31 refused by Aer (target maximum 30) |
-| Kaggle 2 x T4, chunked | 2 x 15 GiB | 30 / 31 | 15 / 15 | not measured |
-| Kaggle L4 | 24 GB | 30 / 31 | 15 / 15 | not reachable on this account so far |
-| Kaggle A100, H100 (80 GB) or RTX Pro 6000 (96 GB) | 80 to 96 GB | 32 / 33 | 16 / 16 | restricted IDs; not measured |
 | Kaggle CPU or GPU-session host RAM | 29 to 30 GB | 30 / 31 | 15 / 15 | not measured |
 | Kaggle TPU VM host RAM | 330 GB (documented, v3-8) | 34 / 35 | 17 / 17 | not reachable: TPU pushes ran on 4-core CPU machines |
 | Build host RTX 4070 Ti | 12 GiB | 29 / 30 | 14 / 15 | density matrix 14, statevector 29; one wider fails with `std::bad_alloc` (detail in the untracked `docs/local/`) |
 | Build host RAM | 62 GiB | 31 / 32 | 15 / 16 | density matrix 15 (17 s), statevector 31 (74 s); wider widths need 64 GiB and are not tried |
 
-What goes where by width, under the routing rule:
+Rows list only substrates whose memory was measured or is documented
+(`site/notebooks.md`); Kaggle publishes no memory for the L4, A100, H100 or
+RTX Pro 6000 IDs, none of which this account reached, so this guide states
+no width for them. Single precision and two-GPU chunking are not configured
+in `calibration_snapshot.noise_simulator` and are not measured here.
+
+What goes where by width, under the routing rule (root AGENTS.md: 14 qubits
+or fewer on Kaggle, 15 or more on IBM):
 
 | Width | Noisy simulation | Ideal simulation | Hardware |
 | --- | --- | --- | --- |
-| 1 to 14 qubits | Kaggle GPU, density matrix (double precision fits one T4) | Kaggle GPU | IBM only for a named-device question with an approved case |
-| 15 qubits | Kaggle GPU density matrix in single precision, or 2 x T4 chunked, or the TPU-VM host CPU | Kaggle GPU statevector | IBM for 15 or more qubits after an approved case |
-| 16 to 17 qubits | TPU-VM host CPU density matrix, or statevector trajectories (one noisy shot per trajectory) on a GPU | Kaggle GPU statevector | IBM |
-| 18 to 30 qubits | statevector trajectories on a GPU, cost proportional to shots | Kaggle GPU statevector (29 double, 30 single on one T4) | IBM |
-| beyond 30 qubits | matrix product state or stabilizer methods where the circuit allows | the same, or the TPU-VM host CPU to about 34 qubits | IBM |
+| 1 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14) | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
+| 15 qubits or more | none on Kaggle: the 15-qubit density matrix was killed on a T4, and no measured mode extends it | Kaggle GPU statevector up to the measured 29 qubits, as design support for an IBM case | IBM after an approved case |
 
 ## T4 x2 GPU kernel
 
