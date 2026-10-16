@@ -14,8 +14,8 @@ host. Noise comes from `docs/evidence/calibration/ibm_kingston.json` through
 `calibration_snapshot.noise_model` / `noise_simulator`; nothing contacts IBM.
 The runtime examples run in a network namespace without a route
 (`unshare -rn`). Scripts that start worker processes (qiskit-experiments,
-`transpile` of many circuits) carry a `__main__` guard because workers
-start with spawn.
+`transpile` of several circuits) carry a `__main__` guard because the workers
+re-import the script under the host's `forkserver` start method.
 
 ## Index
 
@@ -76,7 +76,7 @@ that path.
 | --- | --- | --- | --- | --- | --- |
 | Clifford or stabilizer circuit, Pauli noise, detectors, thousands of qubits | stim ([stim.md](stim.md)); Aer `stabilizer` | yes | yes | no gain (CPU only) | kernel from a clean tree, CPU replay of a reduced case |
 | Density-matrix noise replay of a retained job, 14 qubits or fewer | Aer density matrix via `calibration_snapshot.noise_simulator` | yes (CPU or GPU) | yes (small cases) | yes, 14 qubits | kernel from a clean tree, CPU replay gate |
-| Readout error and the readout factor `1 - P(1\|0) - P(0\|1)` | mthree (counts), qiskit-experiments `LocalReadoutError` (circuits) | yes | yes | not needed | CPU replay gate on the retained e10/e01 and raw counts |
+| Readout error and the readout factor `1 - P(1\|0) - P(0\|1)` | mthree (counts), qiskit-experiments `LocalReadoutError` (circuits) | yes | yes | not needed | CPU replay gate; matrices come from the job's own preparation baselines, since the snapshot's e10/e01 are reported values and differ from the measured ones on Kingston qubits 0 and 1 (`results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md`) |
 | T1, T2, RB of a replay; Ramsey fits | qiskit-experiments, lmfit | yes | yes | simulation step only | kernel plus CPU replay of a reduced delay set |
 | Dynamic circuit with mid-circuit measurement and feed-forward | Aer through the local `executor_sampler.Sampler`; stim for Pauli feed-forward only | yes | yes | yes (simulation step) | kernel from a clean tree, CPU replay |
 | Ideal simulation beyond 14 qubits (15 to about 30) | Aer statevector or quimb with cotengra | yes (quimb GPU through torch or cupy) | quimb on CPU | statevector to 29 qubits; quimb on torch (cupy is not installed by the repository) | design support only for an IBM case; noisy results need IBM |
@@ -131,10 +131,29 @@ PYTHON=${PYTHON:-python3}
 | lmfit | via NumPy arrays | none | none |
 | cotengra | `HyperOptimizer(seed=...)` | n/a | `create_study() got an unexpected keyword argument 'seed'` with the default `optuna` |
 
+## Kaggle install compatibility (package metadata only)
+
+The runner holds numpy 2.1.3 and scipy 1.16.3 fixed and stops if pip cannot
+satisfy the constraints. The direct numpy and scipy requirements of the twelve
+group pins, read from the host's package metadata, all admit those versions:
+quimb needs `scipy>=1.16.0` (tightest, met by 1.16.3), numba needs
+`numpy<2.6,>=1.22`, mthree `scipy>=1.11.1`, lmfit `scipy>=1.10.0`. Transitive
+bounds, the wheel availability of each pin for Python 3.13 and the cython build
+of mthree were not checked, so the status stays "metadata-compatible, not
+installed".
+
+## Regenerating an example
+
+Each example block is a complete script: save it to a file outside the
+repository, run `python3 FILE` with the repository root as the working
+directory, and compare the printed text. The sampled digits are seeded; digits of
+GPU and contraction-order floating-point sums are rounded in the scripts
+where they varied between runs.
+
 ## Gaps: useful packages that are not installed
 
 Absent on the build host (`importlib` import failed; `pacman -Qq` shows no
-package) and not installed by this work:
+package) and not installed:
 
 | Package | Why it would help | Currently |
 | --- | --- | --- |
@@ -164,11 +183,3 @@ networkx 3.7 (graphs), opt_einsum 3.4.0 (contraction paths; cotengra's
 sibling), sparse 0.17.0 (sparse arrays), optuna 4.9.0 (cotengra's default
 hyper-optimizer library), optax 0.2.6 and flax (JAX training), tensorflow
 2.21.0, numpy-quaternion 2024.0.13 (Cayley-Calculator), cvxopt 1.3.3.
-
-## Regenerating an example
-
-Each example block is a complete script: save it to a file outside the
-repository, run `python3 FILE` with the repository root as the working
-directory, and compare the printed text. The sampled digits are seeded; digits of
-GPU and contraction-order floating-point sums are rounded in the scripts
-where they varied between runs.

@@ -31,9 +31,12 @@ quasi.expval()                                           # <Z...Z> from quasipro
   against decoherence. `M3Mitigation.single_qubit_cals` holds exactly these
   matrices after any calibration, so the factor is `a[0,0] + a[1,1] - 1` per
   qubit and the same quantity the mitigator inverts.
-- Replay of retained jobs: `cals_from_matrices` builds a mitigator from the
-  e10/e01 pairs of `docs/evidence/calibration/*.json` with no backend, so a
-  retained raw counts file corrects without a service call.
+- Replay of retained jobs: `cals_from_matrices` builds a mitigator from any
+  list of 2 x 2 assignment matrices with no backend. Fed the e10/e01 pairs of
+  `docs/evidence/calibration/*.json` it reproduces the reported readout
+  channel (the replay noise model); fed matrices measured from the job's own
+  preparation baselines it corrects that job's counts. The two differ on
+  Kingston qubits 0 and 1 (see Traps).
 - Aer calibration: `M3Mitigation(AerSimulator)` followed by `cals_from_system`
   measures the assignment matrices the noise model implements, which checks
   that the replay noise reproduces the calibration (example below).
@@ -174,10 +177,10 @@ print("raw <Z0>", round(z0_raw, 4), " corrected <Z0>", round(float(sum(p * (1 if
 Output:
 
 ```text
-qubit 0 measured readout factor 0.9813
-qubit 1 measured readout factor 0.9878
+qubit 0 measured readout factor 0.9827
+qubit 1 measured readout factor 0.9870
 measurement map {0: 0, 1: 1}
-raw <Z0> 0.7946  corrected <Z0> 0.7963  ideal 0.8
+raw <Z0> 0.7946  corrected <Z0> 0.7986  ideal 0.8
 ```
 
 ## INTEROP WITH QISKIT
@@ -202,6 +205,7 @@ boolean that reads False on this host. No GPU path exists in the package.
 
 ## TRAPS
 
+- The snapshot's `e10` and `e01` are reported backend properties, so a replay applies the reported readout channel and not the measured one. `results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md` records Kingston qubits 0 and 1 misassigning the ground state 39 and 27 percent of the time and the excited state 14 and 12 percent on a device run, against reported readout errors below 1 percent, with Ramsey visibilities matching readout factors of 0.47 and 0.60. The examples above use the same qubits and recover the reported factor (about 0.98); they do not reproduce the measured fault. Mitigating or interpreting a retained job needs assignment matrices from that job's own preparation baselines.
 - A calibration from 4000 shots carries sampling error of about 0.002 in each
   matrix element; the example's measured factor for qubit 0 (0.9843) differs
   from the snapshot's (0.9817) by that amount. Use `cals_from_matrices` for the

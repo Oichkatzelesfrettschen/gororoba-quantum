@@ -14,7 +14,7 @@ data = exp.run(backend, shots=1000, seed_simulator=1).block_for_results()
 data.analysis_results(dataframe=True)            # name / value / quality table
 ```
 
-Run every script that calls `.run(...)` under `if __name__ == "__main__":`.
+Run every script that calls `.run(...)` under `if __name__ == "__main__":` (see Traps).
 
 | Substrate | Status |
 | --- | --- |
@@ -133,7 +133,7 @@ def main():
     print("mitigated quasi-probabilities of 9000/600/200/200:", {k: round(float(v), 5) for k, v in quasi.items()})
 
 
-if __name__ == "__main__":  # qiskit-experiments analysis starts spawn workers that re-import this file
+if __name__ == "__main__":  # transpile of several circuits starts worker processes that re-import this file
     main()
 ```
 
@@ -210,9 +210,12 @@ experiments gain nothing from it.
 
 ## TRAPS
 
-- Analysis starts worker processes with the spawn start method. A script
-  without the `__main__` guard re-executes at import in each worker and
-  prints its output twice (observed during this work).
+- The snapshot's `e10` and `e01` are reported backend properties, so the replay applies the reported readout channel and not the measured one. `results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md` records Kingston qubits 0 and 1 misassigning the ground state 39 and 27 percent of the time and the excited state 14 and 12 percent on a device run, against reported readout errors below 1 percent, with Ramsey visibilities near readout factors of 0.47 and 0.60. The readout example recovers the reported matrices (factors 0.9814 and 0.9913) and does not reproduce the measured fault. Mitigating or interpreting a retained job needs assignment matrices from that job's own preparation baselines.
+- `transpile` of several circuits goes through `qiskit.utils.parallel.parallel_map`,
+  which uses a process pool when the start method is `fork` or `forkserver`
+  (`qiskit/utils/parallel.py`). On the 3.14 host the default is `forkserver`,
+  the workers re-import `__main__`, and a script without the `__main__` guard
+  prints its module-level output twice. Python 3.13 on Kaggle was not checked.
 - `ExperimentData.analysis_results()` without `dataframe=True` raises a
   `DeprecationWarning` and returns the legacy list; use `dataframe=True`.
 - `T1(physical_qubits, delays)` takes seconds and has no `unit=` argument

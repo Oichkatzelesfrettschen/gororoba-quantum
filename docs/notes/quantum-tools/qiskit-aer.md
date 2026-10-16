@@ -210,6 +210,7 @@ The 156-qubit Target did not enlarge the state in any example here: 2- to
 - `AerSimulator.available_devices()` lists `GPU` on a CPU-only Kaggle kernel; a
   run then fails (`RuntimeError: No CUDA device available!` is what a host run
   with `CUDA_VISIBLE_DEVICES=""` printed here).
+- The snapshot's `e10` and `e01` are reported backend properties, so the replay applies the reported readout channel and not the measured one. `results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md` records Kingston qubits 0 and 1 misassigning the ground state 39 and 27 percent of the time and the excited state 14 and 12 percent on a device run, against reported readout errors below 1 percent, with Ramsey visibilities near readout factors of 0.47 and 0.60. A replay therefore carries no information about that fault. Mitigating or interpreting a retained job needs assignment matrices from that job's own preparation baselines.
 - A noisy 15-qubit density matrix was killed on a T4 and needs 16 GiB; the
   routing rule sends 15 qubits and more to IBM.
 - `NoiseModel.from_backend` relaxes gates and delays with T1 and T2 but gives

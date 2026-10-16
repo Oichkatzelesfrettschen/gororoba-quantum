@@ -34,9 +34,8 @@ out = samplex.sample(num_randomizations=3, rng=1)   # SamplexOutput
 - Annotations: `Twirl`, `ChangeBasis`, `InjectNoise`, `Tag`.
 - Not covered: running anything on hardware, and dynamic circuits (the root
   AGENTS.md records that boxing rejects `if_else`; a minimal `if_test` inside
-  a box attempted here failed on an unterminated virtual gate, which does not
-  isolate `if_else` as the cause, so the AGENTS.md statement is cited, not
-  reproduced).
+  a box fails on an unterminated virtual gate, which does not isolate `if_else`
+  as the cause, so the AGENTS.md statement is cited, not reproduced).
 
 ## API ENTRY POINTS
 

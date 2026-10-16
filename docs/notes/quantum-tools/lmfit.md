@@ -116,7 +116,7 @@ def main():
           "us, readout factor =", round(1 - q0["e10"] - q0["e01"], 4), "")
 
 
-if __name__ == "__main__":  # transpile of many circuits starts spawn workers
+if __name__ == "__main__":  # transpile of several circuits starts worker processes that re-import this file
     main()
 ```
 
@@ -138,7 +138,7 @@ snapshot: T2 = 366.7 us, T1 = 313.2 us, readout factor = 0.9817
 None needed: lmfit consumes NumPy arrays. The example builds the data from
 Qiskit circuits (`delay` instructions plus an `rz` software detuning)
 simulated by the snapshot density-matrix backend, and it needs the `__main__`
-guard because `transpile` of many circuits starts spawn workers.
+guard because `transpile` of several circuits starts worker processes that re-import the script (see [qiskit-experiments.md](qiskit-experiments.md), Traps).
 
 ## CPU AND GPU
 
@@ -147,13 +147,14 @@ density-matrix simulation that produces its data.
 
 ## TRAPS
 
+- The snapshot's `e10` and `e01` are reported backend properties, so the replay applies the reported readout channel and not the measured one. `results/live/ZERO_DIVISOR_AND_CORNER_FINDINGS.md` records Kingston qubits 0 and 1 misassigning the ground state 39 and 27 percent of the time and the excited state 14 and 12 percent on a device run, against reported readout errors below 1 percent, with Ramsey visibilities near readout factors of 0.47 and 0.60. The example fit recovers the reported factor (about 0.98) from the replay of qubit 0 and does not reproduce the measured fault. Mitigating or interpreting a retained job needs assignment matrices from that job's own preparation baselines.
 - Without `weights`, `redchi` and `stderr` assume unit variance; pass
   `weights = 1 / sigma` with the binomial `sigma = sqrt(p (1 - p) / shots)`
   (the example uses the maximum-variance value `sqrt(shots / 0.25)`).
 - A software detuning that aliases against the delay spacing (25 kHz with 20 us
   steps is exactly one half period per step) produces a flat, unfit-able
-  signal: the first attempt at this example returned its starting values.
-  Choose `omega * step` well below pi.
+  signal, and the fit returns its starting values. Choose `omega * step`
+  well below pi.
 - A fit that does not move keeps the initial values and reports huge
   `stderr`; check `fit.success` and `fit.nfev`.
 - `tau` is a free decay constant only if the data contain the decay; bound it
