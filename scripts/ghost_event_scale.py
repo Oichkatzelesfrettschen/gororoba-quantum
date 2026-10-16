@@ -4,8 +4,8 @@ scripts/ghost_error_scale.py fits one CZ factor c and one readout factor r
 per run; the dynamic-circuit runs (mid-circuit measurement, feed-forward and
 reset) fit c = 5 to 6 while idle relaxation supplies about 2
 (docs/evidence/ghost_error_scale/README.md). This sweep separates three error
-sources on those runs, with the two static runs as controls, on a grid with
-the readout factor fixed at 1:
+sources on those runs, with the two static runs as controls, and carries the
+readout factor r as a fourth axis:
 
 1. Scheduled idle (``pad``). The replay simulates the unscheduled ISA
    circuit, so a qubit that waits stays ideal. With padding on, every replica
@@ -23,17 +23,32 @@ the readout factor fixed at 1:
    measurement gets no channel, since nothing after it reaches a recorded
    bit. On a qubit measured and then reset, the post-measurement channel is
    inert because the reset erases it.
-3. The CZ factor c, applied as ghost_error_scale.scaled does.
+3. The CZ factor c and the readout factor r, applied as
+   ghost_error_scale.scaled does. A static control sweeps the full readout
+   axis STATIC_READOUT; a dynamic run sweeps r = 1 and the factor the
+   retained ghost_error_scale part fitted to it
+   (docs/evidence/ghost_error_scale/part_*.json, bound by digest in the run's
+   ``readout_fit``), since that fit, made at m = 0 without padding, may have
+   absorbed per-event error into r.
 
-Grid: c in CZ_FACTORS, m in EVENT_ERRORS, padding off and on, readout
-factor 1. Every grid point samples every replica with the same seed
-(ghost_run.sample, SEED), so shot noise is common along the grid. At m = 0 no
+Grid: padding off and on, then r, then c in CZ_FACTORS, then m in
+EVENT_ERRORS. Every grid point samples every replica with the same seed
+(ghost_run.sample, SEED), so shot noise is common along the grid; the point
+(padding off, c 1, m 0, r 1) is the unmodified ghost replay. At m = 0 no
 channel is inserted; the self-test requires an inserted zero-probability
 channel to reproduce the unmodified replay's counts exactly under the same
 seed. A static run has no event, so its circuits are identical across m and
 its m = 0 column is computed once and copied to every m. At each padding
 state's minimizing point a second draw under ghost_run.RESAMPLE_SEED gives
-the resample floor.
+the resample floor (the two draws' distance) and the reseeded point's
+distance to hardware.
+
+Resolution. The minimum of 84 or more points that share one seed sits
+inside model shot noise, so every reading uses a near-best set: the points
+of a padding state whose mean lies within one resolution unit of its
+minimum. The unit is the larger of one standard error of the difference of
+two independent model draws, sqrt(2 mean(1/shots) / replicas), and the
+observed shift of the minimum's mean under the reseeded draw.
 
 Padding rule. Each replica qubit keeps a replay clock that starts at its
 first timed operation (sx, x, cz, measure, reset). A timed operation
@@ -64,38 +79,48 @@ absorbs any error there.
 
 Falsifiers, stated before any fit. Each dynamic run is compared with the
 static control on its backend (CONTROLS); "within one grid step" is an index
-distance of at most 1 in CZ_FACTORS, and every verdict reads the padded
-grid:
+distance of at most 1 in CZ_FACTORS between a point's c and some c of the
+control's padded near-best set. Every reading uses padded near-best sets and
+is three-valued: true when every point of the set satisfies it, false when
+none does, and unresolved (null) when the set straddles it; over runs a
+reading is true when every run's is, false when any run's is, and
+unresolved otherwise.
 
-- If padding moves both static runs' best c to within one grid step of 1
-  while every dynamic run keeps its best c >= 4 at m = 0, idle relaxation is
-  not the dynamic excess.
-- If a nonzero m brings every dynamic run's best c to within one grid step of
-  its static control's, the excess is per-event.
-- If neither holds, the excess is elsewhere.
+- Registered first: if padding puts both static runs' c within one grid step
+  of 1 while every dynamic run keeps c >= 4 at m = 0, idle relaxation is not
+  the dynamic excess.
+- Scheduled idle: every near-best point of a dynamic run has m = 0 and c
+  within one grid step of its control.
+- Per-event: every near-best point has m > 0 and c within one grid step of
+  its control.
+- Elsewhere: no near-best point has c within one grid step of its control.
 
-Argmin ties resolve to the first grid point in grid order (m ascending), so
-a static run's best m is 0.
+Argmin ties resolve to the first grid point in grid order, so a static run's
+best m is 0.
 
-``--report FILE...`` gives per run and padding state the minimizing (c, m),
-the best c at m = 0, the paired change from (c, m) = (1, 0) with the
-standard error clustered by executed PUB, a bootstrap over PUBs of the
-minimizing (c, m) (BOOTSTRAP draws, the PUB count beside the quantiles, and
-the fraction of draws at each axis's floor and top), the resample floor and
-the uniform-distribution distance, then the three verdicts.
+``--report FILE...`` gives per run and padding state the minimizing
+(c, m, r), the best point at m = 0, the paired change from the anchor
+(c 1, m 0, r 1) with the standard error clustered by executed PUB, the
+resolution and the near-best set, the profile of each axis, a bootstrap over
+PUBs of the minimizing point (BOOTSTRAP draws, the PUB count beside the
+quantiles, and the fraction of draws at each axis's floor and top), the
+resample floor and the uniform-distribution distance, then the readings.
 
 ``--check FILE...`` validates every run the files hold: members, shots,
 execution snapshots, PUBs, event counts and padding are rebuilt from the
 archived inputs and must match; the grid, coverage, means and floors must
 follow from the retained distances; the (1, 0, padding off) means must agree
-with docs/evidence/ghost_runs/result.json within five standard errors. It
-then reruns the ``--runs`` subset (default every run the files hold) on the
-CPU at (1, 0) and the top corner (6, 0.2) of each padding state and at each
-padding state's minimizing point and floor, each within five standard
-errors.
+with docs/evidence/ghost_runs/result.json within five standard errors; the
+readout axis and its fit must follow from the retained ghost_error_scale
+parts. It then reruns the ``--runs`` subset (default every run the files
+hold) on the CPU at the anchor and the top corner (c 6, m 0.2, largest r) of
+each padding state and at each padding state's minimizing point and floor,
+each within five standard errors.
 
-``--pad off`` or ``--pad on`` sweeps one padding state, so one run's grid
-splits over two kernels; --report and --check merge the halves.
+``--pad off|on`` sweeps one padding state and ``--readout one|other`` the
+readout factor 1 or the others, so one run's grid splits over up to four
+kernels; --report and --check merge parts whose (padding, readout) states
+partition the run's grid.
 
 ``--self-test`` runs on the CPU in well under a minute: it pads every replica
 of every default run (parsing only), requires a dropped row, a relabeled row
@@ -103,27 +128,32 @@ and a pulse inside an if_else block to fail the match, and on a synthetic
 two-qubit dynamic circuit with a synthetic schedule requires the computed
 pads to equal the planted gaps, an inserted m = 0 channel to reproduce the
 unmodified counts, the padding-off m = 0 point to equal the
-ghost_error_scale path at (c, 1), padding and a nonzero m each to change the
-counts, and the pooled grid to equal the serial one.
+ghost_error_scale path at (c, 1), padding, a nonzero m and r = 2 each to
+change the counts, and the pooled grid to equal the serial one. On synthetic
+records it requires parts split by padding and readout to merge into the
+whole record, a missing or doubled part to fail, and the readings to follow
+their definitions.
 
 Kaggle. The full sweep runs on Kaggle CPU kernels; the retained runs come
-from the gororoba-retained-runs dataset and kaggle_run bundles this script's
+from the gororoba-retained-runs dataset, kaggle_run bundles this script's
 imports (ghost_error_scale, ghost_run, calibration_snapshot, packing,
-parallel), so no --include is needed. The pool maps the grid points over the
-kernel's CPUs with one Aer thread each. A dynamic run costs 88 draws (84
-points and two floors of two draws) and a static run 18, each draw about the
-run's replicas times shots times non-virtual operations, and a padded draw
-about 2.4 times an unpadded one; 2026-10-12T055624, the largest, splits into
-its two padding states. One part per kernel:
+parallel), and ``--include`` supplies the ghost_error_scale part that fits
+each dynamic run. The pool maps the grid points over the kernel's CPUs with
+one Aer thread each. A dynamic run costs 44 sampled points and one floor of
+two draws per padding state and readout factor, a static run 14 points per
+readout factor, each draw about the run's replicas times shots times
+non-virtual operations, and a padded draw about 2.4 times an unpadded one.
+One part per kernel:
 
     "$PYTHON" scripts/kaggle_run.py push scripts/ghost_event_scale.py \\
-        --slug gororoba-ghost-event-scale-a --dataset gororoba-retained-runs \\
+        --slug gororoba-ghost-event-scale-d1 --dataset gororoba-retained-runs \\
+        --include docs/evidence/ghost_error_scale/part_b.json \\
         --machine cpu --timeout 43200 -- \\
-        --runs results/live/2026-10-12T055624.091217Z --pad off \\
-        --out results/kaggle_out/ghost_event_scale_a.json
+        --runs results/live/2026-10-13T020454.599853Z \\
+        --out results/kaggle_out/ghost_event_scale_d1.json
 
 Usage:
-    "$PYTHON" scripts/ghost_event_scale.py --runs RUN[,RUN] [--pad off|on] --out FILE
+    "$PYTHON" scripts/ghost_event_scale.py --runs RUN[,RUN] [--pad off|on] [--readout one|other] --out FILE
     "$PYTHON" scripts/ghost_event_scale.py --report FILE...
     "$PYTHON" scripts/ghost_event_scale.py --check FILE... [--runs RUN[,RUN]]
     "$PYTHON" scripts/ghost_event_scale.py --self-test
@@ -135,7 +165,7 @@ import argparse
 import collections
 import hashlib
 import json
-import os
+import math
 import re
 import sys
 import time
@@ -159,11 +189,12 @@ from qiskit_aer.noise import depolarizing_error  # noqa: E402
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
 
-SCHEMA = "ghost-event-scale-v1"
+SCHEMA = "ghost-event-scale-v2"
 CZ_FACTORS = (1.0, 1.5, 2.0, 3.0, 4.0, 5.0, 6.0)
 EVENT_ERRORS = (0.0, 0.01, 0.02, 0.05, 0.1, 0.2)
 PADDING = (False, True)
-READOUT_FACTOR = 1.0
+STATIC_READOUT = ghost_error_scale.READOUT_FACTORS
+ERROR_SCALE_PARTS = ROOT / "docs/evidence/ghost_error_scale"
 SEED = ghost_run.SEED
 BOOTSTRAP = 2000
 DYNAMIC_RUNS = (
@@ -184,12 +215,48 @@ VIRTUAL = ("rz", "barrier")
 CHANNEL_QUBIT = re.compile(r"(\d+)$")
 require = ghost_run.require
 
-Point = tuple[bool, float, float]
+Point = tuple[bool, float, float, float]
 Row = tuple[str, int, int]
 
 
-def full_grid() -> list[Point]:
-    return [(pad, c, m) for pad in PADDING for c in CZ_FACTORS for m in EVENT_ERRORS]
+def axes() -> dict[str, Any]:
+    return {"pad": list(PADDING), "cz": list(CZ_FACTORS), "m": list(EVENT_ERRORS), "static_r": list(STATIC_READOUT)}
+
+
+def readout_fits() -> dict[str, Any]:
+    """Each run's minimizing readout factor in the retained ghost_error_scale parts, with its part's digest.
+
+    The minimum is ghost_error_scale --report's ``best``: the first grid point
+    of least mean TV distance over (c, r). A run's record binds the one part
+    that fits it, so a part added later leaves earlier records valid.
+    """
+    grid = ghost_error_scale.full_grid()
+    fitted = {}
+    for path in sorted(ERROR_SCALE_PARTS.glob("part_*.json")):
+        digest = hashlib.sha256(path.read_bytes()).hexdigest()
+        for run in ghost_error_scale.load([path])["runs"]:
+            if "skipped" not in run:
+                require(run["run"] not in fitted, f"{run['run']}: two ghost_error_scale parts fit it")
+                r = grid[int(np.argmin(run["mean_tvd"]))][1]
+                fitted[run["run"]] = {"r": r, "source": path.relative_to(ROOT).as_posix(), "sha256": digest}
+    return fitted
+
+
+def readout_fit(run_name: str, fits: dict[str, Any]) -> dict[str, Any] | None:
+    return None if run_name in STATIC_RUNS else fits[run_name]
+
+
+def readout_axis(run_name: str, fits: dict[str, Any]) -> tuple[float, ...]:
+    """The run's readout factors: the full static axis on a control, 1 and the fitted factor on a dynamic run."""
+    if run_name in STATIC_RUNS:
+        return tuple(STATIC_READOUT)
+    require(run_name in fits, f"{run_name}: no retained ghost_error_scale part fits its readout factor")
+    return tuple(sorted({1.0, fits[run_name]["r"]}))
+
+
+def run_grid(axis: tuple[float, ...]) -> list[Point]:
+    """Grid order: padding, then readout, then c, then m, so ties go to the lower factors."""
+    return [(pad, c, m, r) for pad in PADDING for r in axis for c in CZ_FACTORS for m in EVENT_ERRORS]
 
 
 def schedule_rows(table: str) -> dict[int, list[Row]]:
@@ -417,31 +484,41 @@ class RunSampler:
                 )
             )
 
-    def simulator(self, snapshot: dict[str, Any], cz: float) -> Any:
-        simulator = calibration_snapshot.noise_simulator(
-            ghost_error_scale.scaled(snapshot, cz, READOUT_FACTOR), self.device
-        )
+    def simulator(self, snapshot: dict[str, Any], cz: float, readout: float) -> Any:
+        simulator = calibration_snapshot.noise_simulator(ghost_error_scale.scaled(snapshot, cz, readout), self.device)
         simulator.set_options(max_parallel_threads=self.threads)
         return simulator
 
-    def __call__(self, item: tuple[bool, float, float, bool]) -> dict[str, list[float]]:
-        """Per member, each replica's TV distance to hardware, or with floor set to a second model draw."""
-        padded, cz, event, floor = item
-        out: dict[str, list[float]] = {}
+    def __call__(self, item: tuple[bool, float, float, float, bool]) -> dict[str, dict[str, list[float]]]:
+        """Per member, each replica's TV distance to hardware; with floor set, also the second draw's.
+
+        The floor item returns ``tvd`` (first draw against hardware),
+        ``floor_tvd`` (first draw against the RESAMPLE_SEED draw) and
+        ``resample_tvd`` (that second draw against hardware).
+        """
+        padded, cz, event, readout, floor = item
+        out: dict[str, dict[str, list[float]]] = {"tvd": {}}
+        if floor:
+            out |= {"floor_tvd": {}, "resample_tvd": {}}
         for snapshot, chosen, circuits, shots, widths in self.groups:
             batch = [with_events(c, event) if event else c for c in circuits[padded]]
-            simulator = self.simulator(snapshot, cz)
+            simulator = self.simulator(snapshot, cz, readout)
             first = iter(ghost_run.sample(simulator, batch, shots, SEED))
             second = iter(ghost_run.sample(simulator, batch, shots, ghost_run.RESAMPLE_SEED)) if floor else None
             position = iter(batch)
             for m, width in zip(chosen, widths, strict=True):
-                row = []
+                rows: dict[str, list[float]] = {key: [] for key in out}
                 for k in range(width):
                     clbits = next(position).num_clbits
                     model = ghost_run.distribution(next(first), clbits)
-                    other = ghost_run.distribution(next(second), clbits) if second is not None else self.measured[m][k]
-                    row.append(round(ghost_run.tv(other, model), 6))
-                out[m] = row
+                    hardware = self.measured[m][k]
+                    rows["tvd"].append(round(ghost_run.tv(hardware, model), 6))
+                    if second is not None:
+                        other = ghost_run.distribution(next(second), clbits)
+                        rows["floor_tvd"].append(round(ghost_run.tv(other, model), 6))
+                        rows["resample_tvd"].append(round(ghost_run.tv(hardware, other), 6))
+                for key, row in rows.items():
+                    out[key][m] = row
         return out
 
 
@@ -451,7 +528,7 @@ class TimedSampler:
     def __init__(self, sampler: RunSampler) -> None:
         self.sampler = sampler
 
-    def __call__(self, item: tuple[bool, float, float, bool]) -> tuple[dict[str, list[float]], float]:
+    def __call__(self, item: tuple[bool, float, float, float, bool]) -> tuple[dict[str, Any], float]:
         start = time.time()
         return self.sampler(item), round(time.time() - start, 1)
 
@@ -471,46 +548,71 @@ def padding_summary(prepared: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def mean_of(rows: dict[str, list[float]]) -> float:
+    return round(float(np.mean([v for row in rows.values() for v in row])), 6)
+
+
 def sweep_run(
     run_name: str,
     device: str,
     index: dict[str, Any],
-    grid: list[Point],
-    floors: dict[bool, tuple[float, float]] | None = None,
+    states: list[tuple[bool, float]],
+    fits: dict[str, Any],
+    floors: dict[bool, Point] | None = None,
+    points_only: list[Point] | None = None,
 ) -> dict[str, Any]:
-    """The run's TV distances at every grid point and the resample floor of each padding state."""
+    """The run's TV distances over the named (padding, readout) states and a resample floor per padding state.
+
+    The floor of a padding state is drawn at that state's minimizing point
+    over the swept states, or at ``floors`` when given; ``points_only``
+    restricts the sampled points (``--check``).
+    """
     start = time.time()
     prepared = prepare(run_name, index)
     members = prepared["members"]
     event_free = all(n == 0 for m in members for n in prepared["events"][m])
+    axis = readout_axis(run_name, fits)
+    grid = [p for p in run_grid(axis) if (p[0], p[3]) in states]
+    if points_only is not None:
+        grid = [p for p in grid if p in points_only]
     # An event-free run's circuits are identical across m, so one m = 0
-    # draw per (padding, c) stands for every m under the common seed.
-    sampled = sorted({(pad, c, 0.0 if event_free else m) for pad, c, m in grid}, key=grid_order)
+    # draw per (padding, c, r) stands for every m under the common seed.
+    sampled = sorted({(pad, c, 0.0 if event_free else m, r) for pad, c, m, r in grid}, key=run_grid(axis).index)
     sampler = TimedSampler(RunSampler(prepared, device, aer_threads(len(sampled))))
-    values = parallel.ordered_map(sampler, [(pad, c, m, False) for pad, c, m in sampled], min_items=1)
-    by_point = {point: tvd for point, (tvd, _) in zip(sampled, values, strict=True)}
+    values = parallel.ordered_map(sampler, [(*point, False) for point in sampled], min_items=1)
+    by_point = {point: result["tvd"] for point, (result, _) in zip(sampled, values, strict=True)}
     seconds = [[*point, elapsed] for point, (_, elapsed) in zip(sampled, values, strict=True)]
-    points = [{"pad": pad, "cz": c, "m": m, "tvd": by_point[pad, c, 0.0 if event_free else m]} for pad, c, m in grid]
+    points = [
+        {"pad": pad, "cz": c, "m": m, "r": r, "tvd": by_point[pad, c, 0.0 if event_free else m, r]}
+        for pad, c, m, r in grid
+    ]
     means = ghost_error_scale.grid_means(points, members)
-    chosen = {}
+    chosen: dict[bool, Point] = {}
     for padded in PADDING:
-        if floors is not None and padded in floors:
-            chosen[padded] = floors[padded]
+        if floors is not None:
+            if padded in floors:
+                chosen[padded] = floors[padded]
             continue
         own = [j for j, p in enumerate(points) if p["pad"] == padded]
         if own:
             best = min(own, key=lambda j: (means[j], j))
-            chosen[padded] = (points[best]["cz"], points[best]["m"])
-    floor_values = parallel.ordered_map(sampler, [(p, c, m, True) for p, (c, m) in chosen.items()], min_items=1)
-    floor_rows = {}
-    for (padded, (c, m)), (tvd, elapsed) in zip(chosen.items(), floor_values, strict=True):
-        seconds.append([padded, c, m, elapsed])
-        floor_rows["padded" if padded else "unpadded"] = {
-            "cz": c,
-            "m": m,
-            "tvd": tvd,
-            "mean_tvd": round(float(np.mean([v for row in tvd.values() for v in row])), 6),
-        }
+            chosen[padded] = point_of(points[best])
+    floor_values = parallel.ordered_map(sampler, [(*point, True) for point in chosen.values()], min_items=1)
+    floor_rows = []
+    for (pad, c, m, r), (result, elapsed) in zip(chosen.values(), floor_values, strict=True):
+        seconds.append([pad, c, m, r, elapsed])
+        floor_rows.append(
+            {
+                "pad": pad,
+                "cz": c,
+                "m": m,
+                "r": r,
+                "floor_tvd": result["floor_tvd"],
+                "mean_floor_tvd": mean_of(result["floor_tvd"]),
+                "resample_tvd": result["resample_tvd"],
+                "mean_resample_tvd": mean_of(result["resample_tvd"]),
+            }
+        )
     out = {
         "run": run_name,
         "backend": prepared["backend"],
@@ -523,20 +625,81 @@ def sweep_run(
         "event_free": event_free,
         "padding": prepared["padding"],
         "padding_total": padding_summary(prepared),
-        "mean_tvd": means,
+        "readout_axis": list(axis),
+        "readout_fit": readout_fit(run_name, fits),
+        "states": [list(s) for s in sorted(set(states))],
         "points": points,
-        "pad_states": sorted({p["pad"] for p in points}),
-        "floor": floor_rows,
+        "mean_tvd": means,
+        "floors": floor_rows,
         # Wall seconds of each sampled point, then of each floor's two draws.
         "draw_seconds": seconds,
         "seconds": round(time.time() - start, 1),
     }
-    print(json.dumps({"run": run_name, "seconds": out["seconds"], "best": best_points(out)}), flush=True)
+    if points_only is None:
+        print(json.dumps({"run": run_name, "seconds": out["seconds"], "floors": chosen}), flush=True)
     return out
 
 
-def grid_order(point: Point) -> int:
-    return full_grid().index(point)
+def point_of(point: dict[str, Any]) -> Point:
+    return (point["pad"], point["cz"], point["m"], point["r"])
+
+
+def step(c: float) -> int:
+    return CZ_FACTORS.index(c)
+
+
+# Fields that one part of a run carries for its own (padding, readout)
+# states; every other field of a run's parts must agree.
+PER_STATE = ("states", "points", "mean_tvd", "floors", "draw_seconds", "seconds")
+
+
+def merge(name: str, parts: list[dict[str, Any]]) -> dict[str, Any]:
+    """One run's record from parts whose (padding, readout) states partition the run's grid.
+
+    A part's floor sits at its padding state's minimizing point over the
+    part's states; the merged floor of a padding state is the part floor at
+    the merged minimum, which is that part's own minimum, since points keep
+    the run grid's order and ties go to the first point.
+    """
+    first = parts[0]
+    shared = set(first) - set(PER_STATE)
+    for part in parts[1:]:
+        require(set(part) - set(PER_STATE) == shared, f"{name}: the parts carry different fields")
+        require(all(part[key] == first[key] for key in shared), f"{name}: the parts disagree outside their states")
+    states = [tuple(s) for part in parts for s in part["states"]]
+    require(len(states) == len(set(states)), f"{name}: two parts sweep one (padding, readout) state")
+    axis = tuple(first["readout_axis"])
+    grid = run_grid(axis)
+    require(set(states) == {(pad, r) for pad in PADDING for r in axis}, f"{name}: the parts leave states unswept")
+    points = sorted((p for part in parts for p in part["points"]), key=lambda p: grid.index(point_of(p)))
+    require([point_of(p) for p in points] == grid, f"{name}: the parts' points differ from the run grid")
+    merged = {key: first[key] for key in shared}
+    run = merged | {
+        "states": [list(s) for s in sorted(states)],
+        "points": points,
+        "mean_tvd": ghost_error_scale.grid_means(points, first["members"]),
+        "draw_seconds": [row for part in parts for row in part["draw_seconds"]],
+        "seconds": round(sum(part["seconds"] for part in parts), 1),
+    }
+    floors = []
+    for padded in PADDING:
+        best = point_of(points[best_index(run, padded)])
+        at = [row for part in parts for row in part["floors"] if point_of(row) == best]
+        require(len(at) == 1, f"{name}: no part floor sits at the {'padded' if padded else 'unpadded'} minimum")
+        floors.append(at[0])
+    return run | {"floors": floors}
+
+
+def load(paths: list[Path]) -> list[dict[str, Any]]:
+    """The runs of every part file, which must share the schema and the module's axes."""
+    parts: dict[str, list[dict[str, Any]]] = {}
+    for path in paths:
+        part = json.loads(path.read_text(encoding="utf-8"))
+        require(part["schema"] == SCHEMA, f"{path}: schema must be {SCHEMA}")
+        require(part["axes"] == axes(), f"{path}: axes differ from the module's")
+        for run in part["runs"]:
+            parts.setdefault(run["run"], []).append(run)
+    return [merge(name, rows) for name, rows in parts.items()]
 
 
 def best_index(run: dict[str, Any], padded: bool, event: float | None = None) -> int:
@@ -545,66 +708,43 @@ def best_index(run: dict[str, Any], padded: bool, event: float | None = None) ->
     return min(own, key=lambda j: (run["mean_tvd"][j], j))
 
 
-def best_points(run: dict[str, Any]) -> dict[str, list[float]]:
-    out = {}
-    for padded in PADDING:
-        j = best_index(run, padded)
-        out["padded" if padded else "unpadded"] = [run["points"][j]["cz"], run["points"][j]["m"], run["mean_tvd"][j]]
-    return out
+def floor_at(run: dict[str, Any], padded: bool) -> dict[str, Any]:
+    return next(row for row in run["floors"] if row["pad"] == padded)
 
 
-# Fields a run's padding-off and padding-on halves carry per padding state;
-# every other field of the two halves must agree.
-PER_STATE = ("points", "mean_tvd", "floor", "draw_seconds", "seconds", "pad_states")
+def resolution(run: dict[str, Any], padded: bool) -> float:
+    """The mean-TV difference the grid cannot resolve: the larger of the analytic and the observed reseed shift.
 
-
-def merge(name: str, halves: list[dict[str, Any]]) -> dict[str, Any]:
-    """One run's record from a full-grid part or from its padding-off and padding-on halves."""
-    if len(halves) == 1:
-        require(halves[0]["pad_states"] == list(PADDING), f"{name}: the parts hold one padding state only")
-        return halves[0]
-    off, on = sorted(halves, key=lambda run: run["pad_states"])
-    require(len(halves) == 2 and (off["pad_states"], on["pad_states"]) == ([False], [True]), f"{name}: parts overlap")
-    shared = set(off) - set(PER_STATE)
-    require(set(on) - set(PER_STATE) == shared, f"{name}: the halves carry different fields")
-    require(all(off[key] == on[key] for key in shared), f"{name}: the halves disagree outside their padding state")
-    merged = {key: off[key] for key in shared}
-    return merged | {
-        "points": off["points"] + on["points"],
-        "mean_tvd": off["mean_tvd"] + on["mean_tvd"],
-        "floor": off["floor"] | on["floor"],
-        "draw_seconds": off["draw_seconds"] + on["draw_seconds"],
-        "seconds": round(off["seconds"] + on["seconds"], 1),
-        "pad_states": list(PADDING),
-    }
-
-
-def load(paths: list[Path]) -> list[dict[str, Any]]:
-    """The runs of every part file, which must share the schema and the module's grid.
-
-    A run occurs once over its full grid, or twice as its padding-off and
-    padding-on halves (``--pad``), which merge into one record.
+    The analytic term is one standard error of the difference of two
+    independent model draws, sqrt(2 mean(1/shots) / replicas), the unit
+    ghost_run --check bounds at five; the observed term is the shift of the
+    minimizing point's mean when its model draw is replaced by the
+    RESAMPLE_SEED draw.
     """
-    halves: dict[str, list[dict[str, Any]]] = {}
-    for path in paths:
-        part = json.loads(path.read_text(encoding="utf-8"))
-        require(part["schema"] == SCHEMA, f"{path}: schema must be {SCHEMA}")
-        require(part["grid"] == [list(p) for p in full_grid()], f"{path}: grid differs from the module's axes")
-        for run in part["runs"]:
-            halves.setdefault(run["run"], []).append(run)
-    return [merge(name, rows) for name, rows in halves.items()]
+    replicas = [(m, k) for m in run["members"] for k in range(len(run["points"][0]["tvd"][m]))]
+    inverse_shots = float(np.mean([1 / run["member_shots"][m] for m, _ in replicas]))
+    analytic = math.sqrt(2.0 * inverse_shots / len(replicas))
+    floor = floor_at(run, padded)
+    observed = abs(floor["mean_resample_tvd"] - run["mean_tvd"][best_index(run, padded)])
+    return round(max(analytic, observed), 6)
+
+
+def near_best(run: dict[str, Any], padded: bool) -> list[int]:
+    """Points of one padding state whose mean lies within the resolution of its minimum, in grid order."""
+    best = run["mean_tvd"][best_index(run, padded)]
+    bound = best + resolution(run, padded)
+    return [j for j, p in enumerate(run["points"]) if p["pad"] == padded and run["mean_tvd"][j] <= bound]
 
 
 def bootstrap(run: dict[str, Any], padded: bool) -> dict[str, Any]:
-    """PUB bootstrap of the minimizing (c, m) of one padding state, seeded by the run name."""
+    """PUB bootstrap of the minimizing (c, m, r) of one padding state, seeded by the run name."""
     pubs, sums, counts = ghost_error_scale.pub_sums(run)
     own = [j for j, p in enumerate(run["points"]) if p["pad"] == padded]
     rng = np.random.default_rng(int(hashlib.sha256(run["run"].encode()).hexdigest()[:8], 16))
     draws = rng.integers(0, len(pubs), size=(BOOTSTRAP, len(pubs)))
     means = sums[draws][:, :, own].sum(axis=1) / counts[draws].sum(axis=1)[:, None]
     picks = [own[j] for j in np.argmin(means, axis=1)]
-    cz = np.array([run["points"][j]["cz"] for j in picks])
-    event = np.array([run["points"][j]["m"] for j in picks])
+    axes_drawn = {key: np.array([run["points"][j][key] for j in picks]) for key in ("cz", "m", "r")}
 
     def quantiles(values: np.ndarray) -> list[float]:
         return [float(np.quantile(values, q, method="inverted_cdf")) for q in (0.16, 0.5, 0.84)]
@@ -612,103 +752,142 @@ def bootstrap(run: dict[str, Any], padded: bool) -> dict[str, Any]:
     return {
         "draws": BOOTSTRAP,
         "pubs": len(pubs),
-        "cz_quantiles_16_50_84": quantiles(cz),
-        "m_quantiles_16_50_84": quantiles(event),
-        "cz_at_floor": round(float(np.mean(cz == CZ_FACTORS[0])), 4),
-        "cz_at_top": round(float(np.mean(cz == CZ_FACTORS[-1])), 4),
-        "m_at_floor": round(float(np.mean(event == EVENT_ERRORS[0])), 4),
-        "m_at_top": round(float(np.mean(event == EVENT_ERRORS[-1])), 4),
+        **{f"{key}_quantiles_16_50_84": quantiles(values) for key, values in axes_drawn.items()},
+        "cz_at_floor": round(float(np.mean(axes_drawn["cz"] == CZ_FACTORS[0])), 4),
+        "cz_at_top": round(float(np.mean(axes_drawn["cz"] == CZ_FACTORS[-1])), 4),
+        "m_at_floor": round(float(np.mean(axes_drawn["m"] == EVENT_ERRORS[0])), 4),
+        "m_at_top": round(float(np.mean(axes_drawn["m"] == EVENT_ERRORS[-1])), 4),
     }
 
 
 def state_report(run: dict[str, Any], padded: bool) -> dict[str, Any]:
     points, means = run["points"], run["mean_tvd"]
-    base = full_grid().index((padded, 1.0, 0.0))
+    anchor = run_grid(tuple(run["readout_axis"])).index((padded, 1.0, 0.0, 1.0))
     best = best_index(run, padded)
     at_zero = best_index(run, padded, 0.0)
-    floor = run["floor"]["padded" if padded else "unpadded"]
+    floor = floor_at(run, padded)
+    own = [j for j, p in enumerate(points) if p["pad"] == padded]
+
+    def profile(key: str, values: list[float]) -> dict[str, float]:
+        return {str(v): min(means[j] for j in own if points[j][key] == v) for v in values}
+
     return {
-        "mean_tvd_at_1_0": means[base],
-        "best": {"cz": points[best]["cz"], "m": points[best]["m"], "mean_tvd": means[best]},
-        "best_cz_at_m0": {"cz": points[at_zero]["cz"], "mean_tvd": means[at_zero]},
-        "best_minus_1_0": ghost_error_scale.clustered_delta(run, best, base),
-        "cz_profile_at_m0": {
-            str(p["cz"]): means[j] for j, p in enumerate(points) if p["pad"] == padded and p["m"] == 0
+        "mean_tvd_at_anchor": means[anchor],
+        "best": {**{key: points[best][key] for key in ("cz", "m", "r")}, "mean_tvd": means[best]},
+        "best_at_m0": {"cz": points[at_zero]["cz"], "r": points[at_zero]["r"], "mean_tvd": means[at_zero]},
+        "best_minus_anchor": ghost_error_scale.clustered_delta(run, best, anchor),
+        "resolution": resolution(run, padded),
+        "near_best": [
+            {key: points[j][key] for key in ("cz", "m", "r")} | {"mean_tvd": means[j]} for j in near_best(run, padded)
+        ],
+        "cz_profile": profile("cz", list(CZ_FACTORS)),
+        "m_profile": profile("m", list(EVENT_ERRORS)),
+        "r_profile": profile("r", run["readout_axis"]),
+        "resample_floor": {
+            "mean_floor_tvd": floor["mean_floor_tvd"],
+            "mean_resample_tvd": floor["mean_resample_tvd"],
         },
-        "m_profile": {
-            str(m): min(means[j] for j, p in enumerate(points) if p["pad"] == padded and p["m"] == m)
-            for m in EVENT_ERRORS
-        },
-        "resample_floor": {"cz": floor["cz"], "m": floor["m"], "mean_tvd": floor["mean_tvd"]},
         "bootstrap": bootstrap(run, padded),
     }
 
 
-def step(c: float) -> int:
-    return CZ_FACTORS.index(c)
+def every(values: list[bool]) -> bool | None:
+    """True when every value holds, False when none does, None when the near-best set straddles the test."""
+    if all(values):
+        return True
+    return False if not any(values) else None
 
 
-def verdicts(rows: list[dict[str, Any]]) -> dict[str, Any]:
-    """The three falsifier readings of the module docstring on the padded grid."""
-    by_run = {row["run"]: row for row in rows}
+def combine(readings: list[bool | None]) -> bool | None:
+    """A reading over runs: True when every run's holds, False when any run's fails, else unresolved."""
+    if any(v is False for v in readings):
+        return False
+    return True if all(v is True for v in readings) else None
+
+
+def verdicts(runs: list[dict[str, Any]]) -> dict[str, Any]:
+    """The falsifier readings of the module docstring, read on each run's padded near-best set."""
+    by_run = {run["run"]: run for run in runs}
     static = [by_run[r] for r in STATIC_RUNS if r in by_run]
     dynamic = [by_run[r] for r in DYNAMIC_RUNS if r in by_run]
     complete = len(static) == len(STATIC_RUNS) and len(dynamic) == len(DYNAMIC_RUNS)
-    static_near_1 = {row["run"]: step(row["padded"]["best"]["cz"]) <= 1 for row in static}
-    dynamic_ge_4 = {row["run"]: row["padded"]["best_cz_at_m0"]["cz"] >= 4.0 for row in dynamic}
-    per_event: dict[str, bool | None] = {}
-    for row in dynamic:
-        control = by_run.get(row["control"])
-        if control is None:
-            per_event[row["run"]] = None
+
+    def near(run: dict[str, Any]) -> list[dict[str, Any]]:
+        return [run["points"][j] for j in near_best(run, True)]
+
+    def near_m0(run: dict[str, Any]) -> list[dict[str, Any]]:
+        best = run["mean_tvd"][best_index(run, True, 0.0)]
+        bound = best + resolution(run, True)
+        return [p for j, p in enumerate(run["points"]) if p["pad"] and p["m"] == 0 and run["mean_tvd"][j] <= bound]
+
+    control_steps = {run["run"]: {step(p["cz"]) for p in near(run)} for run in static}
+
+    def close(point: dict[str, Any], control: str) -> bool:
+        return min(abs(step(point["cz"]) - s) for s in control_steps[control]) <= 1
+
+    static_near_1 = {run["run"]: every([step(p["cz"]) <= 1 for p in near(run)]) for run in static}
+    dynamic_ge_4 = {run["run"]: every([p["cz"] >= 4.0 for p in near_m0(run)]) for run in dynamic}
+    readings: dict[str, dict[str, bool | None]] = {}
+    for run in dynamic:
+        if run["control"] not in control_steps:
             continue
-        best = row["padded"]["best"]
-        per_event[row["run"]] = best["m"] > 0 and abs(step(best["cz"]) - step(control["padded"]["best"]["cz"])) <= 1
-    idle_not_excess = all(static_near_1.values()) and all(dynamic_ge_4.values()) if complete else None
-    excess_per_event = all(v is True for v in per_event.values()) if complete else None
+        points = near(run)
+        readings[run["run"]] = {
+            "idle": every([p["m"] == 0 and close(p, run["control"]) for p in points]),
+            "per_event": every([p["m"] > 0 and close(p, run["control"]) for p in points]),
+            "elsewhere": every([not close(p, run["control"]) for p in points]),
+        }
+    covered = complete and len(readings) == len(dynamic)
+
+    def overall(key: str) -> bool | None:
+        return combine([row[key] for row in readings.values()]) if covered else None
+
     return {
-        "complete": complete,
+        "complete": covered,
         "static_best_cz_within_one_step_of_1": static_near_1,
         "dynamic_best_cz_at_m0_at_least_4": dynamic_ge_4,
-        "dynamic_nonzero_m_best_cz_within_one_step_of_control": per_event,
-        "idle_relaxation_not_the_dynamic_excess": idle_not_excess,
-        "excess_per_event": excess_per_event,
-        "excess_elsewhere": (not idle_not_excess and not excess_per_event) if complete else None,
+        "dynamic_readings": readings,
+        "idle_relaxation_not_the_dynamic_excess": (
+            combine(list(static_near_1.values()) + list(dynamic_ge_4.values())) if complete else None
+        ),
+        "excess_from_scheduled_idle": overall("idle"),
+        "excess_per_event": overall("per_event"),
+        "excess_elsewhere": overall("elsewhere"),
     }
 
 
 def report(paths: list[Path]) -> dict[str, Any]:
-    rows = []
-    for run in load(paths):
-        rows.append(
-            {
-                "run": run["run"],
-                "backend": run["backend"],
-                "control": run["control"],
-                "members": len(run["members"]),
-                "events": sum(n for row in run["events"].values() for n in row),
-                "padding_total": run["padding_total"],
-                "uniform_mean_tvd": ghost_error_scale.uniform_tvd(run),
-                "unpadded": state_report(run, False),
-                "padded": state_report(run, True),
-            }
-        )
+    runs = load(paths)
+    rows = [
+        {
+            "run": run["run"],
+            "backend": run["backend"],
+            "control": run["control"],
+            "members": len(run["members"]),
+            "events": sum(n for row in run["events"].values() for n in row),
+            "padding_total": run["padding_total"],
+            "readout_axis": run["readout_axis"],
+            "uniform_mean_tvd": ghost_error_scale.uniform_tvd(run),
+            "unpadded": state_report(run, False),
+            "padded": state_report(run, True),
+        }
+        for run in runs
+    ]
     return {
-        "schema": "ghost-event-scale-report-v1",
+        "schema": "ghost-event-scale-report-v2",
         "sources": [path.as_posix() for path in paths],
-        "cz_factors": list(CZ_FACTORS),
-        "event_errors": list(EVENT_ERRORS),
+        "axes": axes(),
         "runs": rows,
-        "verdicts": verdicts(rows),
+        "verdicts": verdicts(runs),
     }
 
 
-def validate(run: dict[str, Any], index: dict[str, Any]) -> dict[str, Any]:
+def validate(run: dict[str, Any], index: dict[str, Any], fits: dict[str, Any]) -> dict[str, Any]:
     """Require every field the archived inputs and the retained distances determine; return the rebuild."""
     name = run["run"]
     prepared = prepare(name, index)
     members = prepared["members"]
-    grid = full_grid()
+    grid = run_grid(readout_axis(name, fits))
     require(run["backend"] == prepared["backend"], f"{name}: backend differs")
     require(run["control"] == (None if name in STATIC_RUNS else CONTROLS.get(prepared["backend"])), f"{name}: control")
     require(run["members"] == members, f"{name}: members differ")
@@ -719,65 +898,67 @@ def validate(run: dict[str, Any], index: dict[str, Any]) -> dict[str, Any]:
         ("events", prepared["events"]),
         ("padding", prepared["padding"]),
         ("padding_total", padding_summary(prepared)),
+        ("readout_axis", list(readout_axis(name, fits))),
+        ("readout_fit", readout_fit(name, fits)),
     ):
         require(run[key] == value, f"{name}: {key} differs from the archived inputs")
     event_free = all(n == 0 for m in members for n in prepared["events"][m])
     require(run["event_free"] == event_free, f"{name}: event_free differs")
-    require([(p["pad"], p["cz"], p["m"]) for p in run["points"]] == grid, f"{name}: grid differs")
+    require([point_of(p) for p in run["points"]] == grid, f"{name}: grid differs")
     for point in run["points"]:
-        require(list(point["tvd"]) == members, f"{name}: {point['pad']} {point['cz']} {point['m']} coverage")
+        require(list(point["tvd"]) == members, f"{name}: {point_of(point)} coverage")
         for m, row in point["tvd"].items():
             require(len(row) == len(prepared["replicas"][m]), f"{name}: {m} replica count")
         if event_free:
-            twin = run["points"][grid.index((point["pad"], point["cz"], 0.0))]
+            twin = run["points"][grid.index((point["pad"], point["cz"], 0.0, point["r"]))]
             require(point["tvd"] == twin["tvd"], f"{name}: an event-free run's distances differ across m")
     require(run["mean_tvd"] == ghost_error_scale.grid_means(run["points"], members), f"{name}: means differ")
     for padded in PADDING:
-        floor = run["floor"]["padded" if padded else "unpadded"]
-        best = run["points"][best_index(run, padded)]
-        require((floor["cz"], floor["m"]) == (best["cz"], best["m"]), f"{name}: floor is not at the minimizing point")
-        require(list(floor["tvd"]) == members, f"{name}: floor coverage")
-        require(
-            floor["mean_tvd"] == round(float(np.mean([v for row in floor["tvd"].values() for v in row])), 6),
-            f"{name}: floor mean differs from its distances",
-        )
+        floor = floor_at(run, padded)
+        require(point_of(floor) == point_of(run["points"][best_index(run, padded)]), f"{name}: floor off the minimum")
+        for key in ("floor_tvd", "resample_tvd"):
+            require(list(floor[key]) == members, f"{name}: floor {key} coverage")
+            require(floor[f"mean_{key}"] == mean_of(floor[key]), f"{name}: floor {key} mean differs")
     return prepared
 
 
 def check(paths: list[Path], runs: str, index: dict[str, Any]) -> None:
     retained = load(paths)
+    fits = readout_fits()
     ghosts = {r["run"]: r for r in json.loads(ghost_error_scale.GHOST_RESULT.read_text(encoding="utf-8"))["runs"]}
-    grid = full_grid()
-    base = grid.index((False, 1.0, 0.0))
     for run in retained:
-        validate(run, index)
-        # Padding off at (1, 0) is the unmodified replay, so its execution
-        # means agree with the ghost runs' execution-state means.
+        validate(run, index, fits)
+        # The anchor (padding off, c 1, m 0, r 1) is the unmodified replay,
+        # so its execution means agree with the ghost runs' execution means.
+        anchor = run_grid(tuple(run["readout_axis"])).index((False, 1.0, 0.0, 1.0))
         for relative in sorted(set(run["execution_snapshot"].values())):
             own = [m for m in run["members"] if run["execution_snapshot"][m] == relative]
-            mine = float(np.mean([v for m in own for v in run["points"][base]["tvd"][m]]))
+            mine = float(np.mean([v for m in own for v in run["points"][anchor]["tvd"][m]]))
             theirs = ghosts[run["run"]]["summary"][relative]["execution_mean_tvd"]
             bound = ghost_error_scale.tolerance(run, own)
-            require(abs(mine - theirs) <= bound, f"{run['run']}: (1, 0) {mine} vs ghost {theirs}")
+            require(abs(mine - theirs) <= bound, f"{run['run']}: anchor {mine} vs ghost {theirs}")
     named = [r["run"] for r in retained] if runs == "all" else runs.split(",")
     held = {r["run"]: r for r in retained}
     require(all(n in held for n in named), "--runs names a run the files lack")
     for name in named:
         run = held[name]
-        floors = {p: (run["floor"][s]["cz"], run["floor"][s]["m"]) for p, s in ((False, "unpadded"), (True, "padded"))}
-        picks = sorted(
-            {grid.index((p, 1.0, 0.0)) for p in PADDING}
-            | {grid.index((p, CZ_FACTORS[-1], EVENT_ERRORS[-1])) for p in PADDING}
-            | {grid.index((p, *floors[p])) for p in PADDING}
-        )
-        fresh = sweep_run(name, "CPU", index, [grid[j] for j in picks], floors)
+        axis = tuple(run["readout_axis"])
+        floors = {p: point_of(floor_at(run, p)) for p in PADDING}
+        picks = {(p, 1.0, 0.0, 1.0) for p in PADDING} | {
+            (p, CZ_FACTORS[-1], EVENT_ERRORS[-1], axis[-1]) for p in PADDING
+        }
+        picks |= set(floors.values())
+        states = sorted({(p[0], p[3]) for p in picks})
+        fresh = sweep_run(name, "CPU", index, states, fits, floors, sorted(picks, key=run_grid(axis).index))
         bound = ghost_error_scale.tolerance(run, run["members"])
-        for k, j in enumerate(picks):
-            old, new = run["mean_tvd"][j], fresh["mean_tvd"][k]
-            require(abs(old - new) <= bound, f"{name}: {grid[j]} {old} vs {new}")
-        for state in ("unpadded", "padded"):
-            old, new = run["floor"][state]["mean_tvd"], fresh["floor"][state]["mean_tvd"]
-            require(abs(old - new) <= bound, f"{name}: {state} floor {old} vs {new}")
+        grid = run_grid(axis)
+        for point, mean in zip(fresh["points"], fresh["mean_tvd"], strict=True):
+            old = run["mean_tvd"][grid.index(point_of(point))]
+            require(abs(old - mean) <= bound, f"{name}: {point_of(point)} {old} vs {mean}")
+        for padded in PADDING:
+            old_floor, new_floor = floor_at(run, padded), floor_at(fresh, padded)
+            for key in ("mean_floor_tvd", "mean_resample_tvd"):
+                require(abs(old_floor[key] - new_floor[key]) <= bound, f"{name}: {padded} {key} differs")
     print(f"{len(retained)} runs validated; {len(named)} rerun on the CPU")
 
 
@@ -854,6 +1035,77 @@ def synthetic(snapshot: dict[str, Any]) -> tuple[QuantumCircuit, str, list[int]]
     return circuit, "\n".join(rows), expected
 
 
+def synthetic_run(name: str, axis: tuple[float, ...], best: Point, control: str | None) -> dict[str, Any]:
+    """A run record over the full grid of the axis with mean TV 0.1 everywhere except 0.01 at ``best``."""
+    grid = run_grid(axis)
+    points = [
+        {"pad": p[0], "cz": p[1], "m": p[2], "r": p[3], "tvd": {"x": [0.01 if p[1:] == best[1:] else 0.1]}}
+        for p in grid
+    ]
+    run: dict[str, Any] = {
+        "run": name,
+        "control": control,
+        "members": ["x"],
+        "member_shots": {"x": 8192},
+        "readout_axis": list(axis),
+    }
+    run |= {"states": [[pad, r] for pad in PADDING for r in axis], "points": points, "draw_seconds": [], "seconds": 1.0}
+    run["mean_tvd"] = ghost_error_scale.grid_means(points, ["x"])
+    run["floors"] = []
+    for padded in PADDING:
+        at = point_of(points[best_index(run, padded)])
+        floor = {"pad": at[0], "cz": at[1], "m": at[2], "r": at[3], "floor_tvd": {"x": [0.01]}, "mean_floor_tvd": 0.01}
+        run["floors"].append(floor | {"resample_tvd": {"x": [0.01]}, "mean_resample_tvd": 0.01})
+    return run
+
+
+def record_laws() -> None:
+    """Parts split by padding and readout merge into the full record; the verdicts read the near-best sets."""
+    axis = (1.0, 2.0)
+    whole = synthetic_run("synthetic", axis, (True, 3.0, 0.05, 2.0), None)
+    parts = []
+    for pad in PADDING:
+        for r in axis:
+            own = [j for j, p in enumerate(whole["points"]) if (p["pad"], p["r"]) == (pad, r)]
+            part = {k: v for k, v in whole.items() if k not in PER_STATE}
+            part |= {
+                "states": [[pad, r]],
+                "points": [whole["points"][j] for j in own],
+                "draw_seconds": [],
+                "seconds": 0.25,
+            }
+            part["mean_tvd"] = [whole["mean_tvd"][j] for j in own]
+            sub = part | {"floors": []}
+            for padded in PADDING:
+                if padded == pad:
+                    at = point_of(part["points"][min(range(len(own)), key=lambda j: (part["mean_tvd"][j], j))])
+                    row = {"pad": at[0], "cz": at[1], "m": at[2], "r": at[3], "floor_tvd": {"x": [0.01]}}
+                    sub["floors"].append(
+                        row | {"mean_floor_tvd": 0.01, "resample_tvd": {"x": [0.01]}, "mean_resample_tvd": 0.01}
+                    )
+            parts.append(sub)
+    merged = merge("synthetic", parts)
+    require(
+        {k: merged[k] for k in whole if k != "seconds"} == {k: whole[k] for k in whole if k != "seconds"},
+        "self-test: merge",
+    )
+    expect_failure(lambda: merge("synthetic", parts[:3]), "unswept")
+    expect_failure(lambda: merge("synthetic", [*parts, parts[0]]), "two parts")
+    require(near_best(whole, True) == [run_grid(axis).index((True, 3.0, 0.05, 2.0))], "self-test: near-best set")
+    # Static controls at c = 1 and every dynamic run at c = 1.5 with m > 0
+    # give the per-event reading; moving one dynamic run to c = 5 at m = 0
+    # turns it false and the registered first falsifier true for that run.
+    runs = [synthetic_run(name, STATIC_READOUT, (True, 1.0, 0.0, 1.0), None) for name in STATIC_RUNS]
+    runs += [synthetic_run(name, (1.0,), (True, 1.5, 0.05, 1.0), STATIC_RUNS[0]) for name in DYNAMIC_RUNS]
+    reading = verdicts(runs)
+    require(reading["complete"] and reading["excess_per_event"] is True, f"self-test: per-event reading {reading}")
+    require(reading["excess_from_scheduled_idle"] is False and reading["excess_elsewhere"] is False, "self-test: idle")
+    runs[-1] = synthetic_run(DYNAMIC_RUNS[-1], (1.0,), (True, 5.0, 0.0, 1.0), STATIC_RUNS[0])
+    reading = verdicts(runs)
+    require(reading["excess_per_event"] is False, "self-test: a dynamic run at c = 5 keeps the per-event reading")
+    require(reading["dynamic_best_cz_at_m0_at_least_4"][DYNAMIC_RUNS[-1]] is True, "self-test: m = 0 test")
+
+
 def self_test() -> None:
     start = time.time()
     index = json.loads(ghost_run.INDEX.read_text(encoding="utf-8"))
@@ -922,10 +1174,15 @@ def self_test() -> None:
         "shots": {"synthetic": shots[0]},
     }
     sampler = RunSampler(fake, "CPU", 1)
-    require(sampler((False, 2.0, 0.0, False)) == {"synthetic": [0.0]}, "self-test: (c, 0) differs from the replay")
-    items = [(False, 1.0, 0.1, False), (True, 1.0, 0.0, False), (True, 3.0, 0.05, True)]
+    require(
+        sampler((False, 2.0, 0.0, 1.0, False)) == {"tvd": {"synthetic": [0.0]}},
+        "self-test: (c, 0, 1) differs from the replay",
+    )
+    require(sampler((False, 2.0, 0.0, 2.0, False)) != {"tvd": {"synthetic": [0.0]}}, "self-test: r = 2 changes nothing")
+    items = [(False, 1.0, 0.1, 1.0, False), (True, 1.0, 0.0, 1.5, False), (True, 3.0, 0.05, 1.0, True)]
     serial = [sampler(item) for item in items]
     require(parallel.ordered_map(sampler, items, min_items=1) == serial, "self-test: pooled grid differs")
+    record_laws()
     elapsed = time.time() - start
     print(f"ghost event scale self-test: {len(DEFAULT_RUNS)} runs padded, synthetic laws hold ({elapsed:.1f} s)")
 
@@ -937,6 +1194,12 @@ def main() -> int:
     parser.add_argument("--check", type=Path, nargs="+", help="retained part files")
     parser.add_argument("--report", type=Path, nargs="+", help="print the fitted (c, m) of retained part files")
     parser.add_argument("--pad", choices=("both", "off", "on"), default="both", help="padding states to sweep")
+    parser.add_argument(
+        "--readout",
+        choices=("all", "one", "other"),
+        default="all",
+        help="readout factors to sweep: all, 1, or all but 1",
+    )
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
@@ -951,24 +1214,27 @@ def main() -> int:
         return 0
     require(args.out is not None, "--out is required")
     runs = list(DEFAULT_RUNS) if args.runs == "all" else args.runs.split(",")
-    device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
-    grid = full_grid()
+    device = calibration_snapshot.aer_device()
+    fits = readout_fits()
     out: dict[str, Any] = {
         "schema": SCHEMA,
         "device": device,
         "max_qubits": ghost_run.MAX_QUBITS,
         "seed": SEED,
-        "grid": [list(p) for p in grid],
-        "axes": {"pad": list(PADDING), "cz": list(CZ_FACTORS), "m": list(EVENT_ERRORS), "readout": READOUT_FACTOR},
+        "axes": axes(),
         "versions": {"qiskit": qiskit.__version__, "qiskit_aer": qiskit_aer.__version__},
         "workers": parallel.workers(),
         "runs": [],
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
+    pads = {"both": PADDING, "off": (False,), "on": (True,)}[args.pad]
     for run in runs:
+        axis = readout_axis(run, fits)
+        factors = {"all": axis, "one": (1.0,), "other": tuple(r for r in axis if r != 1.0)}[args.readout]
+        require(bool(factors), f"{run}: --readout {args.readout} leaves no readout factor")
+        states = [(pad, r) for pad in pads for r in factors]
         # Written after every run, so a failure keeps every finished one.
-        states = {"both": PADDING, "off": (False,), "on": (True,)}[args.pad]
-        out["runs"].append(sweep_run(run, device, index, [p for p in grid if p[0] in states]))
+        out["runs"].append(sweep_run(run, device, index, states, fits))
         args.out.write_text(json.dumps(out) + "\n", encoding="utf-8")
     return 0
 
