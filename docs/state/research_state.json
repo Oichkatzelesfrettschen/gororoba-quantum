@@ -2100,6 +2100,54 @@
       "superseded_by": null
     },
     {
+      "id": "cd-sign-row-degree",
+      "statement": "For every n >= 2 and m != 0, the sign row f_m(x) = [cd_sign(2^n, m, x) = -1] of L_{e_m} has algebraic degree exactly n - 1, so octonion left multiplications are Clifford and every sedenion and higher one carries a sign of degree 3 or more.",
+      "boundary": "Written induction from the cd_sign recursion (R), the commutator lemma and the two-point lemma; scripts/cd_phase_degree.py checks every identity it uses and the statement on every row through n = 8, and no proof assistant has checked it.",
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
+      ],
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_phase_degree.md",
+        "docs/notes/left_mult_sign_rank.md"
+      ],
+      "gates": {
+        "core-320": "replay"
+      },
+      "acquisitions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "cd-associator-phase-degree",
+      "statement": "For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).",
+      "boundary": "Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and no proof assistant has checked it. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.",
+      "assumptions": [
+        "cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c))",
+        "recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md"
+      ],
+      "domain": "algebra",
+      "evidence_class": "mathematical theorem",
+      "status": "established",
+      "evidence": [],
+      "documents": [
+        "docs/notes/cd_phase_degree.md",
+        "docs/notes/left_mult_sign_rank.md"
+      ],
+      "gates": {
+        "core-320": "replay"
+      },
+      "acquisitions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "evidence": [
         {
           "path": "docs/evidence/ccz-reduction/normal_form.json",

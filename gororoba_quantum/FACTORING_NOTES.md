@@ -492,7 +492,8 @@ PYTHONDONTWRITEBYTECODE=1 "$PYTHON" scripts/mod15_signed_multiplier_census.py \
 **A certified Toffoli-class benchmark.**
 - Toffoli and CCZ gates make up the 6.5e9-gate core of RSA-2048. A degree-3
   phase with pi coefficients is CCZ-class.
-- The associator phase has degree max(1, bitlen(max(i,j)) - 2), so the ladder
+- The associator phase has degree max(1, bitlen(max(i,j)) - 2) at every
+  dimension (docs/notes/cd_phase_degree.md), so the ladder
   supplies phase circuits of chosen non-Clifford degree with exact answers and
   sign-flip and omitted-block controls:
 
