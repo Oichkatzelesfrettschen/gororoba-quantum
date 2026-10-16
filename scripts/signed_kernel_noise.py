@@ -22,10 +22,12 @@ script replaces that factor with the noise model itself:
 
 Noiseless laws of the same compiled circuits must equal the statevector
 laws s(t) and p(t) to 1e-9, which checks the compile and the register move.
-The entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE``
-recompiles and recomputes the laws at the ``--t`` values on the CPU, and
-requires the CZ counts and layouts to match FILE exactly and each law to
-match it to 1e-8.
+Every arm's law is independent, so the arms run through parallel.ordered_map.
+The entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run
+DIR`` requires FILE to be byte-identical to the result collected in the
+Kaggle run DIR (its collect.json ledger), then recompiles and recomputes the
+laws at the ``--t`` values on the CPU and requires the CZ counts and layouts
+to match FILE exactly and each law to match it to 1e-8.
 """
 
 from __future__ import annotations
@@ -50,10 +52,12 @@ import qiskit_aer  # noqa: E402
 from qiskit import QuantumCircuit, transpile  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
+import parallel  # noqa: E402
 import signed_kernel_probe as probe  # noqa: E402
 import snapshot_laws  # noqa: E402
 
 SNAPSHOT = ROOT / "docs/evidence/calibration/ibm_kingston.json"
+OUTPUT = "results/kaggle_out/signed_kernel_noise.json"
 T_GRID = (-0.2, -0.1, -0.05, 0.0, 0.05, 0.1, 0.2)
 PRICE_T = (0.05, 0.1, 0.2)
 LAYOUT_T = -0.05
@@ -150,31 +154,45 @@ def fit(xs: list[float], ys: list[float]) -> tuple[float, float, float]:
     return float(intercept), float(slope), float(residual)
 
 
+class ArmLaw:
+    """Picklable worker: one compiled arm -> its noiseless check and exact noisy law."""
+
+    def __init__(self, snapshot: dict[str, Any], device: str) -> None:
+        self.snapshot = snapshot
+        self.device = device
+
+    def __call__(self, item: tuple[str, float, float | None, QuantumCircuit]) -> dict[str, Any]:
+        name, t, phase, circuit = item
+        noiseless = readout(name, snapshot_laws.outcome_law(self.snapshot, circuit, self.device, noisy=False))
+        if abs(noiseless - ideal(name, t)) > 1e-9:
+            raise SystemExit(f"{name} at t = {t}: compiled noiseless law {noiseless} against {ideal(name, t)}")
+        law = snapshot_laws.outcome_law(self.snapshot, circuit, self.device)
+        edges = cz_edges(self.snapshot, circuit)
+        return {
+            "t": t,
+            "sign_phase": phase,
+            "law": [float(x) for x in law],
+            "readout": readout(name, law),
+            "ideal": ideal(name, t),
+            "cz": len(edges),
+            "depth": circuit.depth(),
+            "active_qubits": snapshot_laws.active_qubits(circuit),
+            "cz_product": float(np.prod([1.0 - e for e in edges])),
+        }
+
+
 def evaluate(snapshot: dict[str, Any], ts: tuple[float, ...], device: str) -> dict[str, Any]:
     compiled = compile_all(snapshot, ts)
     median_cz = float(np.median([row["error"] for row in snapshot["instructions"]["cz"] if row["error"] < 1.0]))
+    items = [
+        (name, t, phase, circuit)
+        for name, entry in compiled.items()
+        for (t, phase), circuit in entry["circuits"].items()
+    ]
+    laws = parallel.ordered_map(ArmLaw(snapshot, device), items, min_items=1)
     probes: dict[str, Any] = {}
     for name, entry in compiled.items():
-        rows = []
-        for (t, phase), circuit in entry["circuits"].items():
-            noiseless = readout(name, snapshot_laws.outcome_law(snapshot, circuit, device, noisy=False))
-            if abs(noiseless - ideal(name, t)) > 1e-9:
-                raise SystemExit(f"{name} at t = {t}: compiled noiseless law {noiseless} against {ideal(name, t)}")
-            law = snapshot_laws.outcome_law(snapshot, circuit, device)
-            edges = cz_edges(snapshot, circuit)
-            rows.append(
-                {
-                    "t": t,
-                    "sign_phase": phase,
-                    "law": [float(x) for x in law],
-                    "readout": readout(name, law),
-                    "ideal": ideal(name, t),
-                    "cz": len(edges),
-                    "depth": circuit.depth(),
-                    "active_qubits": snapshot_laws.active_qubits(circuit),
-                    "cz_product": float(np.prod([1.0 - e for e in edges])),
-                }
-            )
+        rows = [row for (owner, *_), row in zip(items, laws, strict=True) if owner == name]
         natural = [r for r in rows if r["sign_phase"] in (None, natural_phase(r["t"]))]
         xs = [signal(r["t"]) if kind(name) == "signed" else dark_success(r["t"]) for r in natural]
         intercept, slope, residual = fit(xs, [r["readout"] for r in natural])
@@ -241,6 +259,7 @@ def environment(device: str) -> dict[str, Any]:
         "qiskit": qiskit.__version__,
         "qiskit_aer": qiskit_aer.__version__,
         "device": device,
+        "workers": parallel.workers(),
     }
 
 
@@ -263,10 +282,20 @@ def run(ts: tuple[float, ...], device: str) -> dict[str, Any]:
     }
 
 
-def check(path: Path, ts: tuple[float, ...]) -> int:
+def bound_to_run(path: Path, run_dir: Path) -> list[str]:
+    """FILE must be the byte-identical output that run_dir's collect.json ledger records."""
+    ledger = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
+    recorded = ledger["files"].get(f"output/repo/{OUTPUT}")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    if recorded is None:
+        return [f"{run_dir}/collect.json records no {OUTPUT}"]
+    return [] if digest == recorded else [f"{path} sha256 {digest} differs from the collected {recorded}"]
+
+
+def check(path: Path, run_dir: Path, ts: tuple[float, ...]) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
+    failures = bound_to_run(path, run_dir)
     replay = run(ts, "CPU")
-    failures = []
     for name, fresh in replay["probes"].items():
         kept = retained["probes"][name]
         if fresh["layout"] != kept["layout"]:
@@ -289,9 +318,12 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
     parser.add_argument("--t", default="-0.05,0,0.05", help="comma-separated t values for --check")
+    parser.add_argument("--run", type=Path, help="Kaggle run directory whose collected output --check binds")
     args = parser.parse_args()
     if args.check:
-        return check(args.check, tuple(float(t) for t in args.t.split(",")))
+        if args.run is None:
+            parser.error("--check needs --run")
+        return check(args.check, args.run, tuple(float(t) for t in args.t.split(",")))
     if args.out is None:
         parser.error("--out is required without --check")
     result = run(T_GRID, os.environ.get("GOROROBA_AER_DEVICE", "CPU"))
