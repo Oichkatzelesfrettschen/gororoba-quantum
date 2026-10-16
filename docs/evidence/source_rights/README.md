@@ -14,6 +14,11 @@ missing or duplicate fields, duplicate relevant attributes, malformed nesting
 and generic footer substitutions. The observed URL preserves source spelling;
 HTTP-to-HTTPS normalization checks its registered license agreement.
 
+For Nature-family open-access articles, the article page's DOI, title, PDF link,
+canonical URL and structured-data license must agree with the registry; the
+PDF link must be the canonical article URL with a `.pdf` suffix, and exactly one
+structured-data block must carry the license.
+
 For Dagstuhl, article-specific title, DOI, abstract link, PDF link and license
 must agree with the registry and the captured canonical landing URL. The
 storage URL must identify that DOI's PDF. A footer grant cannot qualify a

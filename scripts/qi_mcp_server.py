@@ -140,7 +140,10 @@ def qi_job(job_id: int) -> dict[str, Any]:
 @server.tool(annotations=READ)
 @reported
 def qi_results(job_id: int, include_raw: bool = False) -> list[dict[str, Any]]:
-    """A job's results: outcome counts keyed by bit string (rightmost character is bit 0) and, on request, every shot."""
+    """A job's results: outcome counts keyed by bit string and, on request, every shot.
+
+    QX and the Tuna backends put qubit 0 at the rightmost character; the Ry emulator puts it at the leftmost.
+    """
     results = client().get(f"/results/job/{job_id}", page=1, size=100)["items"]
     if not include_raw:
         for result in results:

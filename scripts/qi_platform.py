@@ -15,20 +15,29 @@ Subcommands:
   transaction ledger aggregated by domain, backend type and job, beside each
   job's shots and execution seconds). Team, member and user identifiers enter
   only as a 12-hex sha256; names, e-mail addresses and OIDC subjects never do.
-- check DIR (offline) requires both files to carry their schema, the redacted
-  identity form and a ledger whose aggregates equal the sum of its rows.
+- check DIR [--agents FILE] (offline) requires both files to carry their
+  schema, the redacted identity form and a ledger whose aggregates equal the
+  sum of its rows; with --agents it renders the structural backend table
+  (facts_table) from catalogue.json and requires FILE to carry it verbatim
+  between the quantum-inspire-facts markers, so a refreshed catalogue that
+  changes a limit fails until AGENTS.md changes with it. Status, queue and
+  heartbeat change minute to minute and stay out of the table.
 - submit CASE_DIR --backend-type-id N --approval TEXT (network, spends quota)
   creates one project, one algorithm, commit and file per circuit, one batch
-  job holding every circuit of cases.json, and enqueues it. It verifies each
-  circuit's sha256 against cases.json first and writes submission.json; a case
-  directory that already holds submission.json sends nothing.
+  job holding every circuit of cases.json, and enqueues it. It refuses a blank
+  approval, verifies each circuit's sha256 against cases.json, and refuses a
+  batch that would lift the account's queued jobs above queue_limit (three on
+  hardware, per the FAQ). submission.json (each job's circuit sha256 and the
+  cases.json digest) is written before the enqueue and updated after it, and a
+  case directory that already holds one sends nothing.
 - collect CASE_DIR (network, read-only) waits for the batch to finish and
-  writes raw/<file>.json (the shot-ordered bit strings), results.json (shots
+  writes raw/<file>.json (a repeated collection must reproduce the retained
+  raw files byte for byte and writes nothing) (the shot-ordered bit strings), results.json (shots
   requested and done, execution seconds, job timestamps and status) and the
   transactions charged to the batch's jobs.
 
 Usage: "$QI_PYTHON" scripts/qi_platform.py (snapshot --out DIR | submit CASE_DIR ... | collect CASE_DIR)
-       "$PYTHON" scripts/qi_platform.py check DIR
+       "$PYTHON" scripts/qi_platform.py (check DIR [--agents AGENTS.md] | facts DIR)
 """
 
 from __future__ import annotations
@@ -36,6 +45,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import hashlib
+import importlib
 import json
 import sys
 import time
@@ -48,6 +58,9 @@ CATALOGUE_SCHEMA = "qi-catalogue-v1"
 USAGE_SCHEMA = "qi-usage-v1"
 REDACTED = ("email", "full_name", "oidc_sub")
 TERMINAL = {"completed", "failed", "cancelled"}
+REFRESH_MARGIN = 120.0
+# FAQ (quantum-inspire.com/faq): at most three queued jobs per hardware backend.
+HARDWARE_QUEUED_JOBS = 3
 
 
 def digest(value: object) -> str:
@@ -63,31 +76,54 @@ class PlatformError(RuntimeError):
 
 
 class Client:
-    """Bearer-token REST client; the token comes from the quantuminspire SDK's settings and is refreshed once."""
+    """Bearer-token REST client over the quantuminspire SDK's stored OAuth tokens.
+
+    An access token lives expires_in seconds (3600) from generated_at. Every
+    request within REFRESH_MARGIN seconds of expiry calls the SDK's refresh,
+    which exchanges the refresh token once the access token is within 5 s of
+    expiry, so a long collect or a long-lived MCP server keeps a valid token.
+    A request that still answers 401 refreshes once and is sent again; the
+    service rejects a 401 request before creating anything, so the retry
+    cannot duplicate a POST.
+    """
 
     def __init__(self) -> None:
-        import requests
+        # importlib keeps one typing outcome whether or not requests ships stubs.
+        requests = importlib.import_module("requests")
         from quantuminspire.managers.auth_manager import AuthManager
         from quantuminspire.managers.config_manager import ConfigManager
 
-        config = ConfigManager()
-        host = config.get("default_host")
-        if str(host).rstrip("/") != HOST:
-            raise PlatformError(f"default_host is {host}, expected {HOST}")
-        auth = AuthManager(user_settings=config.user_settings)
-        if auth.login_required(host):
+        self.config = ConfigManager()
+        self.host = self.config.get("default_host")
+        if str(self.host).rstrip("/") != HOST:
+            raise PlatformError(f"default_host is {self.host}, expected {HOST}")
+        self.auth = AuthManager(user_settings=self.config.user_settings)
+        if self.auth.login_required(self.host):
             raise PlatformError("no Quantum Inspire login; run `qi login` in the Quantum Inspire environment")
-        auth.refresh_tokens(host)
-        settings = config.user_settings.auths[host]
-        self.member_id = settings.team_member_id
+        self.member_id = self.config.user_settings.auths[self.host].team_member_id
         self.session = requests.Session()
-        self.session.headers["Authorization"] = f"Bearer {settings.tokens.access_token}"
+        self.refresh()
+
+    def refresh(self) -> None:
+        self.auth.refresh_tokens(self.host)
+        tokens = self.config.user_settings.auths[self.host].tokens
+        self.expires = tokens.generated_at + tokens.expires_in
+        self.session.headers["Authorization"] = f"Bearer {tokens.access_token}"
+
+    def request(self, method: str, path: str, **kwargs: Any) -> Any:
+        if time.time() > self.expires - REFRESH_MARGIN:
+            self.refresh()
+        response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
+        if response.status_code == 401:
+            self.refresh()
+            response = self.session.request(method, f"{HOST}{path}", timeout=60, **kwargs)
+        if response.status_code >= 400:
+            raise PlatformError(f"{method} {path}: {response.status_code} {response.text[:500]}")
+        # The compile endpoint answers 204 with no body.
+        return response.json() if response.content else None
 
     def get(self, path: str, **params: Any) -> Any:
-        response = self.session.get(f"{HOST}{path}", params=params, timeout=60)
-        if response.status_code >= 400:
-            raise PlatformError(f"GET {path}: {response.status_code} {response.text[:500]}")
-        return response.json()
+        return self.request("GET", path, params=params)
 
     def pages(self, path: str, **params: Any) -> list[dict[str, Any]]:
         rows: list[dict[str, Any]] = []
@@ -100,17 +136,10 @@ class Client:
             page += 1
 
     def post(self, path: str, body: dict[str, Any]) -> Any:
-        response = self.session.post(f"{HOST}{path}", json=body, timeout=60)
-        if response.status_code >= 400:
-            raise PlatformError(f"POST {path}: {response.status_code} {response.text[:500]}")
-        # The compile endpoint answers 204 with no body.
-        return response.json() if response.content else None
+        return self.request("POST", path, json=body)
 
     def patch(self, path: str) -> Any:
-        response = self.session.patch(f"{HOST}{path}", timeout=60)
-        if response.status_code >= 400:
-            raise PlatformError(f"PATCH {path}: {response.status_code} {response.text[:500]}")
-        return response.json()
+        return self.request("PATCH", path)
 
 
 def ledger(client: Client) -> dict[str, Any]:
@@ -187,7 +216,12 @@ def snapshot(out: Path) -> None:
         "account": {
             "teams": [{"team": digest(t["id"]), "individual_user": t["individual_user"]} for t in teams],
             "members": [
-                {"member": digest(m["id"]), "team": digest(m["team_id"]), "role": m["role"], "is_active": m["is_active"]}
+                {
+                    "member": digest(m["id"]),
+                    "team": digest(m["team_id"]),
+                    "role": m["role"],
+                    "is_active": m["is_active"],
+                }
                 for m in members
             ],
             "projects": len(client.pages("/projects")),
@@ -203,7 +237,35 @@ def snapshot(out: Path) -> None:
     print(f"{len(backend_types)} backend types, {len(catalogue['backends'])} backends -> {out}")
 
 
-def check(directory: Path) -> None:
+def facts_table(catalogue: dict[str, Any]) -> str:
+    """Markdown table of each backend type's structural limits and the backend instances behind them."""
+    lines = [
+        "| Backend type (id) | identifier | is_hardware | qubits | couplings | shots default / max "
+        "| job limit (s) | jobs per batch | batch jobs queued |",
+        "|---|---|---|---|---|---|---|---|---|",
+    ]
+    for b in catalogue["backend_types"]:
+        couplings = len({frozenset(edge) for edge in b["topology"]})
+        lines.append(
+            f"| {b['name']} ({b['id']}) | {b['identifier']} | {str(b['is_hardware']).lower()} | {b['nqubits']} "
+            f"| {couplings} | {b['default_number_of_shots']} / {b['max_number_of_shots']} "
+            f"| {b['job_execution_time_limit']:g} | {b['max_jobs_per_batch_job']} | {b['batchjobs_per_queue_limit']} |"
+        )
+    instances = ", ".join(f"{b['name']} ({b['location']})" for b in catalogue["backends"])
+    return "\n".join(lines) + f"\n\nBackend instances: {instances}.\n"
+
+
+def check_agents(catalogue: dict[str, Any], agents: Path) -> None:
+    text = agents.read_text(encoding="utf-8")
+    begin, end = "<!-- quantum-inspire-facts:begin -->\n", "<!-- quantum-inspire-facts:end -->"
+    if text.count(begin) != 1 or text.count(end) != 1:
+        raise SystemExit(f"{agents}: needs one quantum-inspire-facts section")
+    body = text[text.index(begin) + len(begin) : text.index(end)]
+    if facts_table(catalogue) not in body:
+        raise SystemExit(f"{agents}: the quantum-inspire-facts table differs from facts_table(catalogue.json)")
+
+
+def check(directory: Path, agents: Path | None = None) -> None:
     catalogue = json.loads((directory / "catalogue.json").read_text(encoding="utf-8"))
     usage = json.loads((directory / "usage.json").read_text(encoding="utf-8"))
     if catalogue["schema"] != CATALOGUE_SCHEMA or usage["schema"] != USAGE_SCHEMA:
@@ -241,19 +303,40 @@ def check(directory: Path) -> None:
             raise SystemExit(f"ledger by_{key} differs from its rows")
     if totals["execution_seconds"] != sum(j["execution_time_in_seconds"] for j in usage["jobs"]):
         raise SystemExit("execution seconds differ from the job rows")
+    if totals["shots_done"] != sum(j["shots_done"] for j in usage["jobs"]):
+        raise SystemExit("shots done differ from the job rows")
+    if agents is not None:
+        check_agents(catalogue, agents)
     print(f"qi snapshot: {len(catalogue['backend_types'])} backend types, {len(rows)} transactions consistent")
 
 
+def queue_limit(backend_type: dict[str, Any]) -> int:
+    """Jobs one user may hold queued on a backend type.
+
+    The FAQ allows three queued jobs per hardware backend; the API's batch
+    limits (batchjobs_per_queue_limit batch jobs of max_jobs_per_batch_job
+    jobs) bound the emulators.
+    """
+    if backend_type["is_hardware"]:
+        return HARDWARE_QUEUED_JOBS
+    return int(backend_type["batchjobs_per_queue_limit"]) * int(backend_type["max_jobs_per_batch_job"])
+
+
 def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
-    if (case_dir / "submission.json").exists():
-        raise SystemExit(f"{case_dir}/submission.json exists; this case was submitted")
+    if not approval.strip():
+        raise SystemExit("--approval is blank; a submission records the user's approval of its case")
+    receipt = case_dir / "submission.json"
+    if receipt.exists():
+        raise SystemExit(f"{receipt} exists; this case was submitted, and a created receipt names a batch to reconcile")
     cases = json.loads((case_dir / "cases.json").read_text(encoding="utf-8"))
     if cases["backend_type_id"] != backend_type_id:
         raise SystemExit(f"cases.json names backend type {cases['backend_type_id']}, not {backend_type_id}")
     sources = {}
+    digests = {}
     for row in cases["circuits"]:
         text = (case_dir / row["file"]).read_text(encoding="utf-8")
-        if hashlib.sha256(text.encode()).hexdigest() != row["sha256"]:
+        digests[row["file"]] = hashlib.sha256(text.encode()).hexdigest()
+        if digests[row["file"]] != row["sha256"]:
             raise SystemExit(f"{row['file']} differs from its cases.json sha256")
         sources[row["file"]] = text
     client = Client()
@@ -266,6 +349,12 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
         raise SystemExit(f"{len(sources)} circuits exceed max_jobs_per_batch_job")
     if cases["shots"] > backend_type["max_number_of_shots"]:
         raise SystemExit("shots exceed max_number_of_shots")
+    queued = client.get(f"/backend_types/{backend_type_id}/queue", user_only=True)["number_of_jobs_in_queue"]
+    if queued + len(sources) > queue_limit(backend_type):
+        raise SystemExit(
+            f"{queued} queued jobs plus {len(sources)} new exceed the {queue_limit(backend_type)} this account may "
+            f"hold on {backend_type['name']}; wait for the queue to drain"
+        )
     language = next(lang for lang in client.pages("/languages") if lang["name"] == "cQASM" and lang["version"] == "3.0")
     name = f"gororoba-{case_dir.name}"[:32]
     project = client.post(
@@ -298,22 +387,32 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> None:
                 "raw_data_enabled": True,
             },
         )
-        jobs.append({"file": file_name, "job": job["id"]})
-    client.patch(f"/batch_jobs/{batch['id']}/enqueue")
+        jobs.append({"file": file_name, "job": job["id"], "sha256": digests[file_name]})
     record = {
-        "schema": "qi-submission-v1",
-        "submitted_utc": now(),
+        "schema": "qi-submission-v2",
+        "state": "created",
+        "created_utc": now(),
         "approval": approval,
         "backend": cases["backend"],
         "backend_type_id": backend_type_id,
         "backend_status_at_submit": backend_type["status"],
-        "queue_at_submit": client.get(f"/backend_types/{backend_type_id}/queue"),
+        "user_queue_before": queued,
+        "cases_sha256": hashlib.sha256((case_dir / "cases.json").read_bytes()).hexdigest(),
         "batch_job": batch["id"],
         "project": project["id"],
         "shots": cases["shots"],
         "jobs": jobs,
     }
-    (case_dir / "submission.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    # The receipt exists before the batch can execute, so a failure after
+    # enqueue leaves a receipt that refuses a second submission of the case.
+    receipt.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    client.patch(f"/batch_jobs/{batch['id']}/enqueue")
+    record |= {
+        "state": "enqueued",
+        "submitted_utc": now(),
+        "queue_at_submit": client.get(f"/backend_types/{backend_type_id}/queue"),
+    }
+    receipt.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(f"batch {batch['id']}: jobs {[j['job'] for j in jobs]}")
 
 
@@ -329,8 +428,8 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
             raise SystemExit(f"jobs still running: { {k: v['status'] for k, v in states.items()} }")
         time.sleep(poll)
     raw_dir = case_dir / "raw"
-    raw_dir.mkdir(exist_ok=True)
     rows = []
+    raw_texts: dict[str, str] = {}
     for row in record["jobs"]:
         job = states[row["job"]]
         results = client.get(f"/results/job/{row['job']}", page=1, size=100)["items"]
@@ -338,7 +437,7 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
         if job["status"] != "completed":
             logs = client.get(f"/jobs/{row['job']}/logs")
         for result in results:
-            (raw_dir / f"{row['file']}.json").write_text(json.dumps(result["raw_data"]) + "\n", encoding="utf-8")
+            raw_texts[f"{row['file']}.json"] = json.dumps(result["raw_data"]) + "\n"
         rows.append(
             {
                 "file": row["file"],
@@ -347,6 +446,19 @@ def collect(case_dir: Path, poll: float, timeout: float) -> None:
                 "logs": logs,
             }
         )
+    # Retained raw files are never rewritten: a second collection must
+    # reproduce them byte for byte and then leaves the run untouched.
+    if (case_dir / "results.json").exists() or raw_dir.exists():
+        retained = {path.name: path.read_text(encoding="utf-8") for path in raw_dir.glob("*.json")}
+        if retained != raw_texts:
+            raise SystemExit(
+                f"{case_dir} holds a collection whose raw files differ from the service's; nothing written"
+            )
+        print(f"{case_dir}: already collected; the service returns identical raw files")
+        return
+    raw_dir.mkdir()
+    for name, text in raw_texts.items():
+        (raw_dir / name).write_text(text, encoding="utf-8")
     job_ids = {row["job"] for row in record["jobs"]}
     charged = [
         {
@@ -375,6 +487,9 @@ def main() -> int:
     p.add_argument("--out", type=Path, required=True)
     p = sub.add_parser("check")
     p.add_argument("directory", type=Path)
+    p.add_argument("--agents", type=Path)
+    p = sub.add_parser("facts")
+    p.add_argument("directory", type=Path)
     p = sub.add_parser("submit")
     p.add_argument("case_dir", type=Path)
     p.add_argument("--backend-type-id", type=int, required=True)
@@ -394,7 +509,9 @@ def run(args: argparse.Namespace) -> int:
     if args.command == "snapshot":
         snapshot(args.out)
     elif args.command == "check":
-        check(args.directory)
+        check(args.directory, args.agents)
+    elif args.command == "facts":
+        print(facts_table(json.loads((args.directory / "catalogue.json").read_text(encoding="utf-8"))), end="")
     elif args.command == "submit":
         submit(args.case_dir, args.backend_type_id, args.approval)
     else:

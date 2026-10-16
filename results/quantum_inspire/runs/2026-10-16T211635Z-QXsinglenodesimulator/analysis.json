@@ -1,6 +1,8 @@
 {
- "schema": "qi-crosstalk-teleport-analysis-v1",
+ "schema": "qi-crosstalk-teleport-analysis-v2",
  "backend": "QXsinglenodesimulator",
+ "claim_kind": "exploratory reanalysis, hardware",
+ "config_order_note": "the four configurations ran as sequential jobs, so drift between jobs enters every cross-configuration difference",
  "additivity": [
   {
    "T": 0,
@@ -26,27 +28,58 @@
    "additivity_residual_rad": 0.011743551932101026,
    "residual_sigma_rad": 0.04419417382415922,
    "residual_z": 0.2657262466049605,
-   "driver_p1": {
-    "none": {
-     "1": 0.0,
-     "2": 0.0
-    },
+   "drivers": {
     "A": {
-     "1": 0.0,
-     "2": 0.0
+     "qubit": 1,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
     },
     "B": {
-     "1": 0.0,
-     "2": 0.0
-    },
-    "AB": {
-     "1": 0.0,
-     "2": 0.0
+     "qubit": 2,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
     }
    },
-   "driver_min_overrotation_rad_per_x": {
-    "1": 0.0,
-    "2": 0.0
+   "target_phase_by_driver_outcome": {
+    "none": {},
+    "A": {
+     "1": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.50390625,
+       "target_phase_rad": 0.007812579475042568
+      }
+     }
+    },
+    "B": {
+     "2": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.51171875,
+       "target_phase_rad": 0.02343964629780272
+      }
+     }
+    },
+    "AB": {
+     "1": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.52734375,
+       "target_phase_rad": 0.0547147959424247
+      }
+     },
+     "2": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.52734375,
+       "target_phase_rad": 0.0547147959424247
+      }
+     }
+    }
    }
   },
   {
@@ -73,27 +106,58 @@
    "additivity_residual_rad": 0.0771567552439155,
    "residual_sigma_rad": 0.04419417382415922,
    "residual_z": 1.7458580751143475,
-   "driver_p1": {
-    "none": {
-     "4": 0.0,
-     "5": 0.0
-    },
+   "drivers": {
     "A": {
-     "4": 0.0,
-     "5": 0.0
+     "qubit": 4,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
     },
     "B": {
-     "4": 0.0,
-     "5": 0.0
-    },
-    "AB": {
-     "4": 0.0,
-     "5": 0.0
+     "qubit": 5,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
     }
    },
-   "driver_min_overrotation_rad_per_x": {
-    "4": 0.0,
-    "5": 0.0
+   "target_phase_by_driver_outcome": {
+    "none": {},
+    "A": {
+     "4": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.49072265625,
+       "target_phase_rad": -0.01855575232189835
+      }
+     }
+    },
+    "B": {
+     "5": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4853515625,
+       "target_phase_rad": -0.029301067571118413
+      }
+     }
+    },
+    "AB": {
+     "4": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.51318359375,
+       "target_phase_rad": 0.026370243659930976
+      }
+     },
+     "5": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.51318359375,
+       "target_phase_rad": 0.026370243659930976
+      }
+     }
+    }
    }
   },
   {
@@ -120,27 +184,58 @@
    "additivity_residual_rad": 0.01758749905956607,
    "residual_sigma_rad": 0.04419417382415922,
    "residual_z": 0.3979596751721982,
-   "driver_p1": {
-    "none": {
-     "7": 0.0,
-     "8": 0.0
-    },
+   "drivers": {
     "A": {
-     "7": 0.0,
-     "8": 0.0
+     "qubit": 7,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
     },
     "B": {
-     "7": 0.0,
-     "8": 0.0
-    },
-    "AB": {
-     "7": 0.0,
-     "8": 0.0
+     "qubit": 8,
+     "p1_driven_alone": 0.0,
+     "p1_driven_with_other": 0.0,
+     "simultaneous_change": 0.0,
+     "simultaneous_change_z": 0.0
     }
    },
-   "driver_min_overrotation_rad_per_x": {
-    "7": 0.0,
-    "8": 0.0
+   "target_phase_by_driver_outcome": {
+    "none": {},
+    "A": {
+     "7": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4736328125,
+       "target_phase_rad": -0.05275884726690921
+      }
+     }
+    },
+    "B": {
+     "8": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.50634765625,
+       "target_phase_rad": 0.012695653544018193
+      }
+     }
+    },
+    "AB": {
+     "7": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4765625,
+       "target_phase_rad": -0.04689218313328187
+      }
+     },
+     "8": {
+      "0": {
+       "shots": 2048,
+       "target_p1": 0.4765625,
+       "target_phase_rad": -0.04689218313328187
+      }
+     }
+    }
    }
   }
  ],
