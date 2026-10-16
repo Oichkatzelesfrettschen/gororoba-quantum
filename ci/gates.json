@@ -2272,6 +2272,22 @@
    "name": "core-284",
    "seconds": 1.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/conditional_ramsey_power.py && ruff format --check scripts/conditional_ramsey_power.py && MYPYPATH=gororoba_quantum mypy scripts/conditional_ramsey_power.py",
+   "name": "core-290",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/conditional_ramsey_power.py --check docs/evidence/conditional_ramsey_power/result.json --scenarios split,stark_600 --trials 400",
+   "name": "core-291",
+   "seconds": 30.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
