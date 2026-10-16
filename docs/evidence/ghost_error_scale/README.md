@@ -69,14 +69,15 @@ Readings:
 
 ## Retained parts
 
-`part_b.json` and `part_c.json` are the outputs of sweep parts b and c,
-retained byte for byte from their Kaggle run directories under
+`part_a.json`, `part_b.json` and `part_c.json` are the outputs of the three
+sweep parts, retained byte for byte from their Kaggle run directories under
 `results/kaggle/` (gate core-338 compares them). The kernels ran commit
-2298108; of the 55 files they bundled, four differ from this tree, and only
+2298108; of the 55 files each bundled, four differ from this tree, and only
 in how the Aer device is chosen (`calibration_snapshot.aer_device` reads
-GOROROBA_AER_DEVICE), which leaves the CPU computation unchanged.
-`ghost_error_scale.py --check` requires every audited run, so its CPU replay
-gate joins when part a is retained.
+GOROROBA_AER_DEVICE), which leaves the CPU computation unchanged. Gate
+core-339 runs `ghost_error_scale.py --check` on the three parts: it rebuilds
+every audited run's members, shots, snapshots and diagnostics from the
+archived inputs and reruns 2026-10-13T080216 on the CPU.
 `scripts/ghost_event_scale.py` reads each dynamic run's fitted readout
 factor from these parts.
 
@@ -101,3 +102,26 @@ Three readings make distinct predictions on the sweep grid
 The second reading was recorded first; the per-PUB comparison above,
 recorded before part a's kernel finished as well, added the first and the
 third.
+
+## Part a against the prediction
+
+| Run | Fitted c (16/50/84) | Fitted r | Best mean TV | Resample floor | Unexplained error per PUB |
+| --- | --- | --- | --- | --- | --- |
+| 2026-10-11T152922 | 5.0 / 5.0 / 5.0 | 1.0 | 0.0334 | 0.0094 | 0.99 |
+| 2026-10-12T055624 | 4.0 / 4.0 / 4.0 | 0.5 | 0.0467 | 0.0066 | 0.19 |
+
+- The idle-only reading (c near 2) and the per-broadcast reading (grid point
+  3 on both) fail; the CZ-proportional reading (c >= 4 on 152922, 2 to 5 on
+  055624) holds on both runs.
+- Neither fit reaches its resample floor: the best distances are 3.6 and 7.1
+  times the floor, where 020454 comes within 1.8 times. One CZ factor and one
+  readout factor leave structure in these two runs unexplained.
+- On 152922, 220 CZ per circuit carry the factor to 0.99 of unexplained
+  error per PUB, more than twice the 0.43 of any other run; 055624's 0.19 sits inside the
+  0.06 to 0.43 of the static and the other dynamic runs.
+- The bootstrap resamples 6 and 16 PUBs, so its tight quantiles bound PUB
+  selection, not the model's shot noise.
+
+`scripts/ghost_event_scale.py` separates scheduled idle, a per-event error
+and the CZ factor on these runs and the other dynamic runs.
+

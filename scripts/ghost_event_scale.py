@@ -468,6 +468,7 @@ class RunSampler:
         self.device = device
         self.threads = threads
         self.measured = prepared["measured"]
+        self.members = prepared["members"]
         self.groups = []
         for relative in sorted(set(prepared["execution"].values())):
             chosen = [m for m in prepared["members"] if prepared["execution"][m] == relative]
@@ -519,7 +520,8 @@ class RunSampler:
                         rows["resample_tvd"].append(round(ghost_run.tv(hardware, other), 6))
                 for key, row in rows.items():
                     out[key][m] = row
-        return out
+        # Groups follow execution snapshots; the record keys members in plan order.
+        return {key: {m: rows_by[m] for m in self.members} for key, rows_by in out.items()}
 
 
 class TimedSampler:
