@@ -304,7 +304,11 @@ def collect(args: argparse.Namespace) -> int:
     versioned = kernel_ref(submission)
     reported = kaggle("kernels", "status", versioned).strip()
     out = run_dir / "output"
-    out.mkdir(exist_ok=True)
+    # A refused earlier attempt leaves its partial download here; the ledger
+    # describes one complete download, so every retry starts empty.
+    if out.exists():
+        shutil.rmtree(out)
+    out.mkdir()
     kaggle("kernels", "output", versioned, "-p", str(out))
     for stray in out.iterdir():
         # The kernel's results live in output/ and its log beside it; anything

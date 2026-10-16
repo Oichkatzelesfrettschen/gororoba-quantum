@@ -13,7 +13,7 @@ own environment and these tables describe the probes, not a guarantee.
 | Noise simulation, power analysis, parameter sweeps of 14 qubits or fewer | Kaggle GPU kernel | routing rule (root AGENTS.md); Aer GPU density matrix |
 | Statevector simulation beyond the density-matrix limit | Kaggle GPU kernel, `method="statevector"` | ideal semantics only; a noisy question needs the density matrix or trajectories |
 | Hypercomplex package builds and table extraction | every kernel's CPU, then the host | `docs/notes/kaggle/hypercomplex-stack.md` |
-| Transpilation against a calibration export | kernel CPU | the Design C run spent most of its time here, not on the GPU |
+| Transpilation against a calibration export | kernel CPU | about 0.06 s per Design C pair (three 5-qubit circuits) on the build host; the pair's three 20,000-shot density-matrix simulations take about 4 s on the build host CPU and about 8 s on a Kaggle T4, so a 5-qubit noise run is simulation-bound and the GPU does not speed it up |
 | JAX code | Kaggle TPU v5e-8 | Aer and Qiskit have no TPU backend |
 | Gemma inference | Kaggle GPU or TPU with the model attached | text tasks; never evidence |
 | IBM jobs (15 or more qubits, or a named device qubit) | IBM Heron, after an approved case | the device is the question |
