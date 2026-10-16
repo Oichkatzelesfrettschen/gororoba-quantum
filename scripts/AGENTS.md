@@ -102,7 +102,7 @@ workspace fixtures on the circuit builders of `designs.py`.
 - IBM removed pulse-level control on 3 February 2025; designs use the gate
   set, fractional gates and dynamic circuits.
 
-**Cayley-Dickson packages on the build host.**
+**Cayley-Dickson, quaternion and Clifford packages.**
 `gororoba_quantum/cd_core.py` is the specification. A package result enters
 evidence only through a declared map onto it, identity or a signed
 relabeling checked on every basis pair; majority agreement is never the
@@ -114,10 +114,13 @@ package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
 pinned digest is checked again after the rebuild. A Kaggle kernel builds the
-same eight packages from the same pinned archives (`--fetch` and `--install`
-apply the PKGBUILD recipes) and runs its entry only after `--extract`
-regenerates `tables.json` byte for byte; SageMath stays on the build host
-(`docs/notes/kaggle/hypercomplex-stack.md`).
+same sixteen packages from the same pinned archives (`--fetch` and
+`--install` apply the PKGBUILD recipes) and runs its entry only after
+`--extract` regenerates `tables.json` byte for byte; SageMath stays on the
+build host (`docs/notes/kaggle/hypercomplex-stack.md`). A Clifford algebra
+is associative, so clifford, kingdon and galgebra reach cd_core only through
+Cl(0,1) and Cl(0,2) (the complex numbers and quaternions); an octonion or
+sedenion statement never rests on them.
 
 | Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
 |---|---|---|---|---|---|
@@ -130,7 +133,12 @@ regenerates `tables.json` byte for byte; SageMath stays on the build host
 | python-octonion | `octonion` | 0.1.0 | signed relabeling from a Fano labeling, `pi = (0, 1, 2, 4, 3, 6, 7, 5)` with a flip on e6 | batched octonion tensors in PyTorch | index i is not cd_core e_i; its tensors are float64 while torch defaults to float32; owns the `octonion` module name; AGPL |
 | python-splitoct | `SplitOct` | 0.16 (commit e29e72f) | split octonions: the same 512 associator signs, signature (4, 4) | negative control for associator-only tests; SymPy symbolics | not the octonions; isotropic elements have no inverse; GPL |
 | python-mathdunders | `mathdunders` | 0.4.2 | none | operator plumbing for python-hypercomplex | contributes no algebra evidence |
-
-Octonion-Sedenion and pyoctonion are not installed, so their relation to
-cd_core is unmeasured and no artifact claims one.
+| python-pyoctonion | `pyoctonion` | 3.12 | identical table at D = 8 (doubling over pyquaternion) | a further independent octonion check | `cal_multiply` prints every product, use `*`; imports the undeclared pyquaternion; no license |
+| python-octonion-sedenion | `Octonion_Sedenion` | 1.0.0 (wheel only) | identical tables at D = 8, 16 | a fourth independent sedenion table | `sedenion.py` imports the top-level `octonion`, which python-octonion owns, and fails as installed; no license |
+| python-numpy-quaternion | `quaternion` | 2024.0.13 | identical table at D = 4 | quaternion arrays as a compiled numpy dtype | compiled: Kaggle takes the pinned wheel |
+| python-quaternionic | `quaternionic` | 1.0.18 | identical table at D = 4 | numba quaternion arrays, rotations | `q[1]` on one quaternion raises; read `q.ndarray` |
+| python-pyquaternion | `pyquaternion` | 0.9.9 | identical table at D = 4 | scalar rotation quaternions | the PyPI sdist lacks the VERSION.txt its setup.py reads; the recipe writes it |
+| python-clifford | `clifford` | 1.5.1 | Cl(0,2) on (1, e1, e2, e12) identical at D = 4 | numerical geometric algebra: rotors, spinors, conformal GA | associative; `Cl(p, q)` puts the p positive squares first; numba compiles on first use |
+| python-kingdon | `kingdon` | 3.0.0 | Cl(0,2) identical at D = 4 | geometric algebra on numpy, sympy or torch from one code path | product `keys()` are blade bitmasks; imports anywidget |
+| python-galgebra | `galgebra` | 0.6.0 | Cl(0,2) identical at D = 4 | symbolic geometric algebra and calculus | a one-generator algebra needs coordinates; a scalar needs `sympy.S.One` |
 <!-- algebra-circuit-rules:end -->
