@@ -5,8 +5,9 @@ The repository's algebra lives in `gororoba_quantum/cd_core.py`: the doubling
 `e_p e_q = s(p, q) e_{p xor q}`, and the associator sign
 `omega(p, q, r) = s(p, q) s(p xor q, r) s(q, r) s(p, q xor r)`. Every census,
 proof and circuit in this repository derives from that one specification.
-Nine external Python packages implement related algebra; this directory
-holds one note per package and states how each one relates to `cd_core`.
+Seventeen external Python packages implement related algebra; this
+directory holds one note per package and states how each one relates to
+`cd_core`.
 
 ## Measured relation to cd_core
 
@@ -34,14 +35,22 @@ product samples are
 | [SageMath](sagemath.md) | opposite algebra in natural order; sign flip on e3, e5, e6 is an isomorphism | D = 8 exhaustive, from a retained export | independent; Sage library construction, exact |
 | [splitoct](splitoct.md) | split octonions: same associators, different squares | D = 8 exhaustive | independent; equals the engine's split table |
 | [mathdunders](mathdunders.md) | none | not applicable | operator-method plumbing, not an algebra |
+| [numpy-quaternion](numpy-quaternion.md) | identical table | D = 4 exhaustive | independent compiled dtype; Cayley-Calculator and Octonion-Sedenion build on it |
+| [quaternionic](quaternionic.md) | identical table | D = 4 exhaustive | independent numba arrays |
+| [pyquaternion](pyquaternion.md) | identical table | D = 4 exhaustive | independent scalar class; pyoctonion builds on it |
+| [clifford](clifford.md) | Cl(0,2) identical to the D = 4 table | D = 4 exhaustive | independent geometric algebra; associative, so quaternions and complexes only |
+| [kingdon](kingdon.md) | Cl(0,2) identical to the D = 4 table | D = 4 exhaustive | independent code-generated geometric algebra |
+| [galgebra](galgebra.md) | Cl(0,2) identical to the D = 4 table | D = 4 exhaustive | independent symbolic geometric algebra |
+| [pyoctonion](pyoctonion.md) | identical table | D = 8 exhaustive | doubling over pyquaternion |
+| [Octonion-Sedenion](octonion-sedenion.md) | identical table | D = 8, 16 exhaustive | doubling over numpy-quaternion; sedenions read with its own octonion module bound |
 
 Each package is installed as the Arch package named in the AGENTS.md
 algebra section and rebuilt from its local PKGBUILD when broken; a rebuild
 re-runs `--extract` so the pinned digest binds the reinstalled files.
 
-Octonion-Sedenion 1.0.0 and pyoctonion 3.12 appear in the reviewed package
-roster but are not installed on the build host, so their relation to
-`cd_core` is unmeasured and no note claims one.
+A Kaggle kernel builds every package above except SageMath from the same
+pinned archives and regenerates `tables.json` byte for byte before its entry
+runs (`docs/notes/kaggle/hypercomplex-stack.md`).
 
 ## Rules
 
@@ -50,9 +59,11 @@ roster but are not installed on the build host, so their relation to
    or a signed relabeling `T(e_p) = (-1)^eta(p) e_pi(p)` with
    `T(xy) = T(x) T(y)` checked on every basis pair.
 2. **Agreement is evidence only between independent implementations.**
-   hypercomplex, hypercomplex-engine, Cayley-Calculator, cayley-dickson and
-   octonion are separately written; hypercomplex-algebra repeats its engine,
-   and mathdunders computes no products. Majority agreement is never the
+   hypercomplex, hypercomplex-engine, Cayley-Calculator, cayley-dickson,
+   octonion, pyoctonion and Octonion-Sedenion are separately written octonion
+   or sedenion implementations; hypercomplex-algebra repeats its engine, and
+   mathdunders computes no products. pyoctonion and Octonion-Sedenion double
+   over other packages' quaternions, so a quaternion defect would reach both. Majority agreement is never the
    criterion; the declared map and `cd_core` are.
 3. **Associator signs do not identify the algebra.** The split tables of
    splitoct and hypercomplex-engine carry exactly the associator signs of the
@@ -70,9 +81,14 @@ roster but are not installed on the build host, so their relation to
    it suits exact certificates of products and inverses. The engine returns
    signs and indices only and suits large-dimension sign evaluation.
 6. **Licenses.** cayley-dickson declares all rights reserved, octonion is
-   AGPL-3.0-or-later and splitoct is GPL-3.0-or-later. Repository code does
+   AGPL-3.0-or-later, splitoct is GPL-3.0-or-later, and pyoctonion and
+   Octonion-Sedenion carry no license. Repository code does
    not import them in CI and vendors none of their code; the retained tables
    are mathematical facts read from the installed packages.
 7. **Provenance.** Each note binds its package to the public release by the
-   sha256 of the PyPI sdist or GitHub archive, which equals the digest the
-   local build verified.
+   sha256 of the PyPI sdist, wheel or GitHub archive, which equals the digest
+   the local build verified.
+8. **Clifford algebras are associative.** clifford, kingdon and galgebra
+   reach `cd_core` only through `Cl(0,1)` (the complex numbers) and `Cl(0,2)`
+   (the quaternions). They model rotors, spinors and associative baselines;
+   an octonion or sedenion statement never rests on them.
