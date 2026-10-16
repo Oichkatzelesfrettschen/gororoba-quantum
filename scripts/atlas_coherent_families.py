@@ -5,7 +5,8 @@ k pi/4) on 7 lanes, each a fixed set of 5 physical qubits shared by its 12
 edges: ibm_fez in results/live/2026-10-13T025444.603480Z (observations in
 results/ripple/measured-ripple.json) and ibm_kingston in
 results/live/2026-10-15T031229.371738Z (observations in its collect.json
-family_measurements, ideal probabilities in its record.json). Fitting
+family_measurements, each member's marginal required to equal its raw shot
+bit strings, ideal probabilities in its record.json). Fitting
 a + b cos(phi - phi0) to an edge's 8 points gives a fringe contrast b and
 phase phi0. Each edge yields two observables against the execution replay,
 whose noise model carries every calibrated incoherent channel and no coherent
@@ -56,10 +57,15 @@ parameter shifts the phase only at second order, so no linear model exists
 for it, the column is listed and left out of the fit, and its effect enters
 the family's reach below. A model with no remaining column, or whose design
 falls short of full numerical rank (singular values above 1e-6 of the
-largest), is reported unidentified.
+largest), is reported unidentified. A column whose slope and curvature both
+stay below 1e-12 (a qubit the parameter never reaches) is listed as inert and
+left out.
 
 Each lane fits by least squares on the phase responses the lane mean, each
-family alone, and detuning paired with each other family, scored by
+family alone, detuning paired with each other family, and each family with a
+lane-constant phase term (``<family>_plus_mean``, which absorbs an offset
+shared by every edge of the lane; the constant adds unchanged to the
+resimulated shift). Every model is scored by
 leave-one-edge-out RMS error against the shot-noise floor exactly as
 atlas_detuning_map.py scores detuning and CZ phase: linearly, and by
 resimulating every edge at its fitted (``nonlinear_fit``) and leave-one-out
@@ -157,18 +163,20 @@ FAMILIES: dict[str, dict[str, Any]] = {
     "drive_phase": {"unit": "rad", "step": 0.01, "per": "qubit", "slope": "central", "bound": None},
 }
 GAUGE = "drive_phase"
-MODELS: dict[str, tuple[str, ...]] = {
-    "lane_mean": (),
-    "detuning": ("detuning",),
-    "cz_phase": ("cz_phase",),
-    "zz": ("zz",),
-    "sx_amplitude": ("sx_amplitude",),
-    "axis_tilt": ("axis_tilt",),
-    "detuning_and_cz_phase": ("detuning", "cz_phase"),
-    "detuning_and_zz": ("detuning", "zz"),
-    "detuning_and_sx_amplitude": ("detuning", "sx_amplitude"),
-    "detuning_and_axis_tilt": ("detuning", "axis_tilt"),
+# Model -> (families, lane-constant phase term). The models without the
+# constant match the retained atlas_detuning_map table; each single family
+# also fits with the constant, which absorbs a lane-uniform offset.
+SINGLE = ("detuning", "cz_phase", "zz", "sx_amplitude", "axis_tilt")
+MODELS: dict[str, tuple[tuple[str, ...], bool]] = {
+    "lane_mean": ((), True),
+    **{family: ((family,), False) for family in SINGLE},
+    "detuning_and_cz_phase": (("detuning", "cz_phase"), False),
+    "detuning_and_zz": (("detuning", "zz"), False),
+    "detuning_and_sx_amplitude": (("detuning", "sx_amplitude"), False),
+    "detuning_and_axis_tilt": (("detuning", "axis_tilt"), False),
+    **{f"{family}_plus_mean": ((family,), True) for family in SINGLE},
 }
+INERT = 1e-12
 RANK_RTOL = 1e-6
 GAUGE_TOLERANCE = 1e-9
 REPRODUCTION_TOLERANCE = 1e-9
@@ -355,11 +363,30 @@ def fez_series() -> Series:
     return {key: [points[key][p] for p in range(PHASES)] for key in sorted(points)}
 
 
+def raw_zero_counts(run: Path) -> dict[str, tuple[int, int]]:
+    """Shots and zero outcomes of every single-register member, read from the raw shot bit strings."""
+    record = json.loads((run / "record.json").read_text(encoding="utf-8"))
+    registers = {
+        pub["name"]: {c["member"]: c["registers_by_replica"] for c in pub["components"]}
+        for job in record["submission"]["planned_jobs"]
+        for pub in job["pubs"]
+    }
+    counts: dict[str, tuple[int, int]] = {}
+    for path in sorted(run.glob("raw/*/pub_*.json")):
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for member, by_replica in registers[data["pub_name"]].items():
+            if len(by_replica) == 1 and len(by_replica[0]) == 1:
+                bits = data["registers"][by_replica[0][0]]["bitstrings"]
+                counts[member] = (len(bits), sum(1 for bit in bits if int(bit, 2) == 0))
+    return counts
+
+
 def kingston_series() -> Series:
     run = RUNS["ibm_kingston"]
     record = json.loads((run / "record.json").read_text(encoding="utf-8"))
     members = {m["name"]: m for g in record["groups"] for m in g["members"]}
     measured = json.loads((run / "collect.json").read_text(encoding="utf-8"))[0]["family_measurements"]
+    raw = raw_zero_counts(run)
     points: dict[tuple[int, int, int, int], dict[int, dict[str, Any]]] = defaultdict(dict)
     for name, member in members.items():
         match = atlas.MEMBER.match(name)
@@ -370,9 +397,7 @@ def kingston_series() -> Series:
         require(item["replay_status"] == "calibration_bound", f"{name}: replay {item['replay_status']}")
         shots = int(item["execution"]["shots"])
         hardware = item["replica_probabilities"][0][0]
-        require(
-            abs(hardware * shots - round(hardware * shots)) < 1e-6, f"{name}: hardware marginal is not counts/shots"
-        )
+        require(raw[name] == (shots, round(hardware * shots)), f"{name}: collected marginal differs from the raw shots")
         points[lane, kite, source, target][phase] = {
             "name": name,
             "hardware": hardware,
@@ -488,7 +513,7 @@ def responses_of(results: list[dict[str, Any]], families: tuple[str, ...], colum
 
 
 def fit_models(
-    models: dict[str, tuple[str, ...]],
+    models: dict[str, tuple[tuple[str, ...], bool]],
     prepared: list[list[Timed]],
     bases: list[dict[str, Any]],
     responses: dict[str, dict[str, np.ndarray]],
@@ -503,15 +528,23 @@ def fit_models(
     phase_noise, contrast_noise = measured["phase_noise"], measured["contrast_noise"]
     plans: dict[str, dict[str, Any]] = {}
     items: list[tuple[list[Timed], dict[Column, float], float, float]] = []
-    for name, families in models.items():
-        design = np.hstack([responses[f]["fitted"] for f in families]) if families else np.ones((n, 1))
+    for name, (families, constant) in models.items():
         model_columns = [c for f in families for c in fitted_columns[f]]
-        rank, condition = design_rank(design) if design.shape[1] else (0, math.inf)
-        plan: dict[str, Any] = {"design": design, "columns": model_columns, "rank": rank, "condition": condition}
-        plans[name] = plan
-        if not design.shape[1]:
-            plan["unidentified"] = "every column has an even phase response"
+        if families and not model_columns:
+            plans[name] = {"columns": [], "rank": 0, "condition": math.inf, "constant": constant}
+            plans[name]["unidentified"] = "no column has a linear phase response"
             continue
+        blocks = [responses[f]["fitted"] for f in families] + ([np.ones((n, 1))] if constant else [])
+        design = np.hstack(blocks)
+        rank, condition = design_rank(design)
+        plan: dict[str, Any] = {
+            "design": design,
+            "columns": model_columns,
+            "rank": rank,
+            "condition": condition,
+            "constant": constant,
+        }
+        plans[name] = plan
         if rank < design.shape[1]:
             plan["unidentified"] = f"rank {rank} of {design.shape[1]} columns"
             continue
@@ -526,17 +559,19 @@ def fit_models(
             # the fitted prediction's, propagated from the other edges.
             weights = design[held] @ np.linalg.pinv(design[keep])
             variance.append(phase_noise[held] ** 2 + float(np.sum(np.square(weights) * np.square(phase_noise[keep]))))
-        plan["loo"], plan["loo_variance"] = loo, variance
+        plan["loo"], plan["loo_variance"], plan["loo_parameters"] = loo, variance, loo_parameters
         if families:
             plan["first_item"] = len(items)
             for values in [plan["parameters"]] * n + loo_parameters:
                 e = (len(items) - plan["first_item"]) % n
-                items.append((prepared[e], errors_of(model_columns, values), bases[e]["contrast"], bases[e]["phase"]))
+                errors = errors_of(model_columns, values[: len(model_columns)])
+                items.append((prepared[e], errors, bases[e]["contrast"], bases[e]["phase"]))
     simulated = parallel.ordered_map(Resimulate(), items, min_items=2)
     out: dict[str, Any] = {}
     for name, plan in plans.items():
         entry: dict[str, Any] = {
             "columns": [[family, key if isinstance(key, int) else list(key)] for family, key in plan["columns"]],
+            "lane_constant": plan["constant"],
             "rank": plan["rank"],
             "condition": round(plan["condition"], 3) if math.isfinite(plan["condition"]) else None,
         }
@@ -556,16 +591,21 @@ def fit_models(
         if any(f in bounds for f, _ in plan["columns"]):
             entry["parameters_exceeding_gate_error_bound"] = [
                 [family, key if isinstance(key, int) else list(key)]
-                for (family, key), value in zip(plan["columns"], parameters, strict=True)
+                for (family, key), value in zip(plan["columns"], parameters[: len(plan["columns"])], strict=True)
                 if family in bounds and abs(value) > bounds[family][columns[family].index((family, key))]
             ]
         predicted = np.zeros(n)
         if "first_item" in plan:
             fitted = simulated[plan["first_item"] : plan["first_item"] + n]
             held_out_sims = simulated[plan["first_item"] + n : plan["first_item"] + 2 * n]
-            entry["nonlinear_fit_rms_rad"] = round(rms([atlas.wrap(offsets[e] - fitted[e][0]) for e in range(n)]), 6)
+            # The lane constant adds to the resimulated phase shift unchanged.
+            fit_constant = parameters[-1] if plan["constant"] else 0.0
+            held_constant = [plan["loo_parameters"][e][-1] if plan["constant"] else 0.0 for e in range(n)]
+            entry["nonlinear_fit_rms_rad"] = round(
+                rms([atlas.wrap(offsets[e] - fitted[e][0] - fit_constant) for e in range(n)]), 6
+            )
             entry["nonlinear_leave_one_out_rms_rad"] = round(
-                rms([atlas.wrap(offsets[e] - held_out_sims[e][0]) for e in range(n)]), 6
+                rms([atlas.wrap(offsets[e] - held_out_sims[e][0] - held_constant[e]) for e in range(n)]), 6
             )
             predicted = np.array([held_out_sims[e][1] for e in range(n)])
         residual = contrast - predicted
@@ -656,13 +696,15 @@ def lane_fit(
         r, step = responses[family], FAMILIES[family]["step"]
         odd_part = np.max(np.abs(r["central"]), axis=0) * step
         even_part = np.max(np.abs(r["curvature"]), axis=0) * step * step
-        odd = [j for j in range(len(columns[family])) if odd_part[j] >= even_part[j]]
+        inert = [j for j in range(len(columns[family])) if odd_part[j] < INERT and even_part[j] < INERT]
+        odd = [j for j in range(len(columns[family])) if j not in inert and odd_part[j] >= even_part[j]]
         fitted_columns[family] = [columns[family][j] for j in odd]
         r["fitted"] = r["fitted"][:, odd]
         summary: dict[str, Any] = {
             "linear_part_at_step_rad": [round(float(v), 9) for v in odd_part],
             "quadratic_part_at_step_rad": [round(float(v), 9) for v in even_part],
-            "even_column_positions": [j for j in range(len(columns[family])) if j not in odd],
+            "even_column_positions": [j for j in range(len(columns[family])) if j not in odd and j not in inert],
+            "inert_column_positions": inert,
             "forward_minus_central_max": round(float(np.max(np.abs(r["forward"] - r["central"]))), 9),
             "central_slope": rounded(r["central"]),
             "phase_curvature": rounded(r["curvature"]),
@@ -712,7 +754,7 @@ def lane_fit(
         "contrast_shot_noise_rms": round(rms(measured["contrast_noise"]), 6),
     }
     if fit:
-        models = {name: fams for name, fams in MODELS.items() if set(fams) <= set(families)}
+        models = {name: model for name, model in MODELS.items() if set(model[0]) <= set(families)}
         result["models"] = fit_models(models, prepared, results, responses, columns, fitted_columns, bounds, measured)
     return result
 
@@ -738,7 +780,9 @@ def run(backends: list[str], lanes: list[int], edges: int | None) -> dict[str, A
         "phases": PHASES,
         "edges_per_lane": edges,
         "families": FAMILIES,
-        "models": {name: list(fams) for name, fams in MODELS.items()},
+        "models": {
+            name: {"families": list(fams), "lane_constant": constant} for name, (fams, constant) in MODELS.items()
+        },
         "lanes": fits,
     }
 
