@@ -47,11 +47,20 @@ Readings:
 - 030748 carries resets and no broadcast and fits 3 against 1.68, between
   the static and the dynamic group.
 - The four runs that execute a feed-forward broadcast and a reset in every
-  PUB or nearly every PUB fit c = 5 to 6, with the 16th bootstrap
-  percentile at 5, while idle relaxation supplies 1.8 to 2.3. Their excess
-  is localized in the dynamic-circuit events, which the replay models as a
-  readout flip on the measured bit and a perfect conditional operation.
-  Run 201757 carries those events in 3 of 46 PUBs and fits 2.
+  PUB or every other PUB fit c = 5 to 6 while idle relaxation supplies 1.8
+  to 2.3. The factor exaggerates the difference: these circuits carry 43 to
+  70 CZ, so a fixed error per circuit moves c further than it does on the
+  static runs' 125 to 313 CZ. In absolute terms the unexplained error per
+  PUB, (c - c_idle) E_cz / PUBs, is 0.23 to 0.42 on these four and 0.06 to
+  0.43 on the four ordinary static runs, so the sweep does not localize the
+  excess in the dynamic-circuit events. 201757 carries resets in half its
+  PUBs and broadcasts in 3 of 46 and leaves almost none (0.004 per PUB).
+  An explicit per-event error axis, rather than a CZ factor, is the
+  measurement that separates them.
+- 020454 and 022433 execute the same design twice (identical PUBs, CZ and
+  idle budget), a test-retest pair: c = 5 and 6.
+- The bootstrap resamples PUBs: 2 for 080216, 4 for 020454 and 022433, 8
+  for 083417, so their quantiles bound little.
 - 2026-10-15T070853, the widest static run (313 CZ per circuit over 37
   active qubits), fits 4 against an idle budget of 1.59. Its excess is
   outside both idle relaxation and the dynamic-circuit events; parallel CZ
@@ -67,10 +76,15 @@ Recorded before part a's kernel finished. Part a holds two Kingston runs:
 | 2026-10-11T152922 | 6 | 7 | 29 | 2.00 |
 | 2026-10-12T055624 | 16 | 4 | 12 | 1.91 |
 
-If the excess is localized in the dynamic-circuit events, 152922, which
-carries a broadcast in every PUB and five resets per PUB, fits c >= 4 with
-its 16th bootstrap percentile >= 3, and 055624, which carries broadcasts in
-a quarter of its PUBs, fits c between 2 and 5. A fit of c <= 2.5 on 152922
-refutes the localization; a fit near c_idle on both runs means idle
-relaxation explains the dynamic runs after all and the four runs above are
-the anomaly.
+Three readings make distinct predictions on the sweep grid
+(c = 1.5, 2, 3, 4, 5, ...):
+
+| Reading | 152922 | 055624 |
+| --- | --- | --- |
+| idle relaxation only | c near 2 | c near 2 |
+| excess proportional to CZ error, as in the four dynamic runs | c >= 4 | c between 2 and 5 |
+| fixed error per broadcast, 0.23 to 0.31 per PUB at one broadcast per PUB (020454, 022433) | c = 2.8 to 3.1, grid point 3 | c = 2.5 to 2.8, grid point 3 |
+
+The second reading was recorded first; the per-PUB comparison above,
+recorded before part a's kernel finished as well, added the first and the
+third.
