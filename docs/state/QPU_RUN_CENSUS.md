@@ -34,11 +34,14 @@ Running all five leaves at least 191 s of the 266 s.
 T2 = 75.7 us and P(read 0 | prepared 1) = 0.0085. The noise model predicts
 P(read 0 | X) of 0.012 immediately, 0.080 after 4000 dt (16 us) and 0.245
 after 12500 dt (50 us). Relaxation alone accounts for about 8 of the 11
-percentage points seen in the first-bit disagreement, so the case decides
-whether the rest is a state change or a correlated readout effect. A
-measured 16 us value above about 0.11 contradicts relaxation as the whole
-mechanism; one near 0.08 makes the first-bit effect a property of qubit 79's
-T1 at that calibration, which drifts.
+percentage points seen in the first-bit disagreement. The four-PUB case
+measures isolated relaxation on qubit 79 only: a 16 us value above about
+0.11 contradicts relaxation as the whole mechanism, and one near 0.08
+confirms the isolated decay without showing that the earlier first-bit
+effect came from it. Separating a state change from correlated measurement
+back-action needs the repeated-readout arm that
+`proposed-first-bit-readout-controls` names, which this design lacks and
+which would need its own dry run.
 
 **Submit commands**, valid only for the records above and only after the
 owner approves the case; a calibration change before submission makes the
