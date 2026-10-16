@@ -22,8 +22,8 @@ the only path from the repository to Kaggle:
   changed under the repository root.
 - ``shards [--tier pr] [--count 6] [--only I,J]`` pushes one CPU kernel per
   CI shard for the committed HEAD. The kernel fetches HEAD from the public
-  repository when it is on origin, and otherwise the merge base with
-  origin/main plus the bundled files changed since then with their modes and
+  repository when a branch of REMOTE contains it, and otherwise the merge
+  base with REMOTE's main plus the bundled files changed since then with their modes and
   deletions; it requires git write-tree to equal HEAD's tree, installs CI's
   Python and pins (ci/install_pins.sh), and runs ci/run_gates.py on that
   shard. Shard runs live under the ignored
@@ -75,6 +75,7 @@ DEFAULT_MACHINE = "cpu"
 GPU_MACHINE = "NvidiaTeslaT4"
 SHARDS = ROOT / ".kaggle-shards"
 REMOTE = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum.git"
+REMOTE_REFS = "refs/kaggle-shards/remote"
 # CI's interpreter (.github/workflows/ci.yml), the uv that installs it on the
 # kernel, and the shellcheck the shellcheck gates call when the image lacks one.
 CI_PYTHON = "3.14.7"
@@ -608,12 +609,14 @@ def shards(args: argparse.Namespace) -> int:
 
     revision = git_commit()
     require(not revision.endswith("-dirty"), "shards test a commit: commit or stash the tracked changes first")
-    git("fetch", "-q", "origin")
-    # A commit already on origin is fetched as itself and carries no overlay;
-    # an unpushed commit overlays its changes on the merge base with
-    # origin/main, which has to fit Kaggle's script source limit.
-    pushed = bool(git("branch", "-r", "--contains", revision).strip())
-    base = revision if pushed else git("merge-base", "HEAD", "origin/main").strip()
+    # The kernel fetches its base from REMOTE, so reachability is read from
+    # REMOTE's own branches, mirrored under REMOTE_REFS whatever the local
+    # remotes are named. A commit on one of them is fetched as itself and
+    # carries no overlay; any other commit overlays its changes on the merge
+    # base with REMOTE's main, which has to fit Kaggle's script source limit.
+    git("fetch", "-q", "--prune", REMOTE, f"+refs/heads/*:{REMOTE_REFS}/*")
+    on_remote = bool(git("for-each-ref", "--contains", revision, REMOTE_REFS).strip())
+    base = revision if on_remote else git("merge-base", "HEAD", f"{REMOTE_REFS}/main").strip()
     owner = username()
     # CI runs the pr tier on 6 shards and the full tier on 12
     # (.github/workflows/ci.yml); run_gates assigns gates by the count.
