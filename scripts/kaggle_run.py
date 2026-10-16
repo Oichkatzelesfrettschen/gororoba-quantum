@@ -6,8 +6,9 @@ This script is the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
   (``import X`` and ``from X import`` naming a module under gororoba_quantum/
-  or scripts/, transitively), bundles them with any ``--include`` data files
-  as a zip embedded in a generated ``run.py``, writes kernel-metadata.json
+  or scripts/, transitively), bundles them with any ``--include`` file, or
+  every tracked file of an ``--include`` directory, as a zip embedded in a
+  generated ``run.py``, writes kernel-metadata.json
   (private, GPU, internet for the pinned pip install) and pushes the kernel.
   Every bundle also carries KERNEL_FILES. The kernel installs KERNEL_PINS,
   unpacks the bundle and runs kaggle_kernel/kernel_main.py, which records
@@ -158,8 +159,18 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
     for include in args.include:
         path = (ROOT / include).resolve()
-        require(path.is_file() and path.is_relative_to(ROOT), f"{include} is not a repository file")
-        files.append(path)
+        require(path.is_relative_to(ROOT) and path.exists(), f"{include} is not a repository path")
+        if path.is_dir():
+            tracked = subprocess.run(
+                ["git", "ls-files", "-z", "--", path.relative_to(ROOT).as_posix()],
+                cwd=ROOT,
+                capture_output=True,
+                text=True,
+                check=True,
+            ).stdout
+            files.extend(ROOT / name for name in tracked.split("\0") if name)
+        else:
+            files.append(path)
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
@@ -316,7 +327,7 @@ def main() -> int:
     push_parser.add_argument("entry", nargs="?", help="repository-relative script the kernel runs")
     push_parser.add_argument("--slug", required=True, help="Kaggle kernel slug (lowercase, dashes)")
     push_parser.add_argument("--smoke", action="store_true", help="run the environment probe instead of ENTRY")
-    push_parser.add_argument("--include", action="append", default=[], help="extra repository file to bundle")
+    push_parser.add_argument("--include", action="append", default=[], help="repository file or directory to bundle")
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.set_defaults(func=push)
