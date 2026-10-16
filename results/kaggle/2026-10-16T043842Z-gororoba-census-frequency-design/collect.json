@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-census-frequency-design/2",
+ "state": "KernelWorkerStatus.COMPLETE",
+ "collected_utc": "2026-10-16T045920Z",
+ "files": {
+  "gororoba-census-frequency-design.log": "937d3a54beb7f0abe08aca8a8bb7a70618235ddb1e3f54b3cf9627588ee4804e",
+  "output/environment.json": "8db428b92554d28b76012174b5cb86c72c1f2ad98677d6cd88103f1eab84e3f9",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "bc30cf7d3d3dfa4cb4fc4eca3bd5cc2089f76f62448cfe535bfb3af4dc5ed525",
+  "output/pip.txt": "81aacd07e785e86168490fcf4d2dde48a3b3e9b9c0f840441882ff55b8ead287",
+  "output/repo/results/kaggle_out/census_frequency_design.json": "cc2d90a1c19932494193907717f6a20dbe210fe02dd04804ca019b1e79ff3359",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "23097d2990b9071f8a0a2a5e3edc199a17ca4f86c268813cd8abc7e504d6f410"
+ }
+}

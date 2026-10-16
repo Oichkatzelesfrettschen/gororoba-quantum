@@ -1,0 +1,345 @@
+{
+ "schema": "ghost-calibration-index-v1",
+ "retrieved_utc": "2026-10-16T04:04Z",
+ "jobs": [
+  {
+   "job_id": "db5qmqclf4us73c4e1ug",
+   "run": "results/live/2026-10-11T152922.787095Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-11T15:31:50.399650+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db67fqsvf2bc73d0pk4g",
+   "run": "results/live/2026-10-12T055624.091217Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-12T06:02:55.490780+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db67frimb58s738bci4g",
+   "run": "results/live/2026-10-12T055624.091217Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-12T06:03:23.034275+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6p55clf4us73c5nd9g",
+   "run": "results/live/2026-10-13T020454.599853Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T02:14:21.586305+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1847310700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6pepklf4us73c5nqcg",
+   "run": "results/live/2026-10-13T022433.333775Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T02:32:18.993364+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1915550700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6q2p2mb58s738c75gg",
+   "run": "results/live/2026-10-13T025444.603480Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T03:12:39.222146+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6q2rklf4us73c5oq90",
+   "run": "results/live/2026-10-13T025444.603480Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T03:12:09.468209+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6q9qo4qg6s73c57020",
+   "run": "results/live/2026-10-13T032011.664435Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T03:27:03.022043+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6q9rsvf2bc73d1kpug",
+   "run": "results/live/2026-10-13T032011.664435Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T03:29:21.028740+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6qe7klf4us73c5pdc0",
+   "run": "results/live/kingston-wide-control-result",
+   "backend": "ibm_kingston",
+   "start_source": "job metrics timestamps.running",
+   "windows": [
+    {
+     "start": "2026-10-13T03:35:59.835518Z",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1915550700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6ub8svf2bc73d1rc50",
+   "run": "results/live/2026-10-13T080216.451663Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T08:02:46.740425+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db6uqdkvf2bc73d1sc80",
+   "run": "results/live/2026-10-13T083417.634585Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T08:35:34.497704+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db794cmil99s73fnjlk0",
+   "run": "results/live/2026-10-13T201757.782152Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T21:22:21.303558+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db794dor1c5c738k1a50",
+   "run": "results/live/2026-10-13T201757.782152Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T21:22:41.102428+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db794hmr6oqs73871tbg",
+   "run": "results/live/2026-10-13T201757.782152Z",
+   "backend": "ibm_fez",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-13T21:22:48.689126+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db847nur6oqs7388nen0",
+   "run": "results/live/2026-10-15T030748.903241Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T03:09:24.203587+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db847oiraffc73fbmfk0",
+   "run": "results/live/2026-10-15T030748.903241Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T03:09:27.850488+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db848h6r6oqs7388nfm0",
+   "run": "results/live/2026-10-15T030903.235380Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T03:11:24.781446+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db848hmil99s73fp99tg",
+   "run": "results/live/2026-10-15T030903.235380Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T03:11:29.911685+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db84dt6il99s73fp9gjg",
+   "run": "results/live/2026-10-15T031229.371738Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T03:25:36.958152+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db84dv2raffc73fbmnag",
+   "run": "results/live/2026-10-15T031229.371738Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T03:32:50.400722+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T2025340700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db87o48r1c5c738lu8jg",
+   "run": "results/live/2026-10-15T070847.644554Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T07:10:21.975301+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json"
+    }
+   ]
+  },
+  {
+   "job_id": "db87o8or1c5c738lu910",
+   "run": "results/live/2026-10-15T070853.550532Z",
+   "backend": "ibm_kingston",
+   "start_source": "collect.json pub_timing",
+   "windows": [
+    {
+     "start": "2026-10-15T07:10:24.830084+00:00",
+     "snapshot": "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json"
+    }
+   ]
+  }
+ ],
+ "current": {
+  "ibm_fez": "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json",
+  "ibm_kingston": "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json",
+  "ibm_marrakesh": "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json"
+ },
+ "files": {
+  "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json": {
+   "calibration": "2026-10-12T19:20:46-07:00",
+   "sha256": "f5260cfb997a9d23e2231eea3f0f8b856377a8f448bcb39491e792e492f732dd"
+  },
+  "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json": {
+   "calibration": "2026-10-12T23:27:11-07:00",
+   "sha256": "8a9dba4cb267dc0d710813cac8376705432d47355ef3572b181686a5553337b1"
+  },
+  "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json": {
+   "calibration": "2026-10-13T01:01:23-07:00",
+   "sha256": "23b5cec99ad7428aafe6de707c0681248411a54b549ae19d3b7fc364d916480c"
+  },
+  "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json": {
+   "calibration": "2026-10-13T13:41:52-07:00",
+   "sha256": "5f024c3b6a95a84f2668b8ad7700d9c0c09ddabf6f35346a17ccf3e61ffa9edf"
+  },
+  "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json": {
+   "calibration": "2026-10-15T20:31:28-07:00",
+   "sha256": "b244e7b16f771b3d0ee4e2263d8c63b337476c0445a323c90981ee0ac6c5d684"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json": {
+   "calibration": "2026-10-11T07:57:41-07:00",
+   "sha256": "68f18a24d412e0a753406c660dde6954cbcd67bf2b88d206f6ba7dbbc186f675"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json": {
+   "calibration": "2026-10-11T22:36:25-07:00",
+   "sha256": "184fe35eb5c4aca5b42f37666c99cd2cf3b9d49d8dc022786c4872b8c2304362"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261012T1847310700.json": {
+   "calibration": "2026-10-12T18:47:31-07:00",
+   "sha256": "dd47b94150f3ba4f59933780aa44d1afef70b46b048ea5fb0d0b944f696ad0ff"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261012T1915550700.json": {
+   "calibration": "2026-10-12T19:15:55-07:00",
+   "sha256": "24f3fda21cf2a10f44a660cd8c461e1bbbcd14a142bed0ff01b6ae0cfe333920"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json": {
+   "calibration": "2026-10-14T19:47:44-07:00",
+   "sha256": "211608ee3dfb7297d7671fcb74f0a24570d5b2a5b16918629d964e50605ada84"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261014T2025340700.json": {
+   "calibration": "2026-10-14T20:25:34-07:00",
+   "sha256": "ac3345f4ac23aea6fcce32ef74b86085b92f25fa2bb596dfadd9d2d979f59e92"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json": {
+   "calibration": "2026-10-15T00:03:15-07:00",
+   "sha256": "65cafecb72250647b0801d5a9405964c51bea203821bf672bffd94b99e9daf6e"
+  },
+  "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json": {
+   "calibration": "2026-10-15T20:35:33-07:00",
+   "sha256": "1b96aa950e86733f287b80d4a88bd737276a4f4e136f5cfc1ea180c9f69f1865"
+  },
+  "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json": {
+   "calibration": "2026-10-15T20:46:35-07:00",
+   "sha256": "6c8c75217326e2dbb03b74d7b5d5df47496176790e4a285b58a048c71bbc166c"
+  }
+ }
+}

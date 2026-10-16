@@ -26,11 +26,16 @@ their active qubits, and differentiates the fringe phase by a 1 kHz detuning
 per lane qubit and a 0.01 rad CPhase per lane coupler. Four models per lane
 (lane mean, detunings, CZ phases, both) are fitted by least squares on those
 slopes and compared by leave-one-edge-out RMS error against the shot-noise
-floor, each point's binomial variance propagated through the fringe fit's
-cosine and sine coefficients to its phase. The slopes describe the phase only near zero error, so each physical
-model is also scored by resimulating every edge, held out or fitted, at its
-fitted detunings and CZ phases (``nonlinear_*`` scores); only those scores
-test the static-error model itself.
+floor: each point's binomial variance, for the hardware counts and for the
+equally sampled execution replay the offset subtracts, propagated through
+the fringe fit's cosine and sine coefficients to its phase. Each model also
+reports its leave-one-out noise floor, the RMS over held-out edges of the
+held-out edge's variance plus the fitted prediction's variance propagated
+linearly from the other edges; it applies to the linear scores. The slopes
+describe the phase only near zero error, so each physical model is also
+scored by resimulating every edge, held out or fitted, at its fitted
+detunings and CZ phases (``nonlinear_*`` scores); only those scores test
+the static-error model itself.
 
 Self-check: with no error term each edge's simulated fringe phase must equal
 the fringe phase of the recorded ideal probabilities within 1e-9 rad, so the
@@ -71,7 +76,7 @@ MEASURED = ROOT / "results/ripple/measured-ripple.json"
 BACKEND = "ibm_fez"
 PHASES = 8
 LANES = 7
-SCHEMA = "atlas-detuning-map-v4"
+SCHEMA = "atlas-detuning-map-v6"
 KHZ = 1e3
 CZ_STEP = 0.01
 VIRTUAL = {"rz", "barrier", "delay"}
@@ -239,8 +244,12 @@ def measured_edges() -> dict[int, list[dict[str, Any]]]:
                 "members": [p[0] for p in series],
                 "ideal_phase": ideal,
                 "offset": wrap(hardware - replay),
-                "shot_noise_rad": phase_standard_error(
-                    [p[1] for p in series], [p[1] * (1 - p[1]) / p[2] for p in series]
+                # The offset subtracts the execution replay's phase, and
+                # live_run.replay_entries sampled that replay at the run's own
+                # shots, so both phases carry binomial noise.
+                "shot_noise_rad": math.hypot(
+                    phase_standard_error([p[1] for p in series], [p[1] * (1 - p[1]) / p[2] for p in series]),
+                    phase_standard_error([p[3] for p in series], [p[3] * (1 - p[3]) / p[2] for p in series]),
                 ),
             }
         )
@@ -305,17 +314,22 @@ def lane_fit(lane: int, edges: list[dict[str, Any]], executed: Executed) -> dict
         model is also scored by resimulating every edge at its fitted values.
         """
         parameters, *_ = np.linalg.lstsq(design, measured, rcond=None)
-        loo, loo_nonlinear = [], []
+        loo, loo_nonlinear, loo_variance = [], [], []
         for held in range(len(edges)):
             keep = [k for k in range(len(edges)) if k != held]
             fit, *_ = np.linalg.lstsq(design[keep], measured[keep], rcond=None)
             loo.append(measured[held] - design[held] @ fit)
+            # The held-out residual carries the held-out edge's shot noise and
+            # the fitted prediction's, propagated from the other edges.
+            weights = design[held] @ np.linalg.pinv(design[keep])
+            loo_variance.append(noise[held] ** 2 + float(np.sum(np.square(weights) * np.square(noise[keep]))))
             if columns is not None:
                 loo_nonlinear.append(wrap(measured[held] - simulated(held, columns, fit)))
         model = {
             "parameters": [round(float(v), 6) for v in parameters],
             "fit_rms_rad": round(rms(measured - design @ parameters), 6),
             "leave_one_out_rms_rad": round(rms(loo), 6),
+            "leave_one_out_noise_floor_rad": round(float(math.sqrt(np.mean(loo_variance))), 6),
         }
         if columns is not None:
             residual = [wrap(measured[e] - simulated(e, columns, parameters)) for e in range(len(edges))]
@@ -404,7 +418,7 @@ def main() -> int:
                     np.allclose(model["parameters"], fresh_model["parameters"], rtol=0, atol=1e-6),
                     f"lane {fit['lane']}: {name} parameters differ",
                 )
-                for score in (key for key in fresh_model if key.endswith("rms_rad")):
+                for score in (key for key in fresh_model if key.endswith("_rad")):
                     require(score in model, f"lane {fit['lane']}: {name} lacks {score}")
                     require(
                         abs(model[score] - fresh_model[score]) <= 1e-6, f"lane {fit['lane']}: {name} {score} differs"

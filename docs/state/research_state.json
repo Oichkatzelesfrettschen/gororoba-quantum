@@ -2029,14 +2029,23 @@
     },
     {
       "id": "proposed-census-frequency",
-      "statement": "Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function.",
+      "statement": "Read a per-triple associator witness on the 3360 sedenion triples with i and j nonzero and unequal: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 gives their dark fraction f = 1848/3360, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-; the other 736 triples are bright exactly, so the census is f x 3360/4096 = 231/512, a test of how faithfully hardware carries the sign function.",
       "domain": "algebra",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Tests implementation fidelity, not the census theorem, which is proved.",
-      "evidence": [],
-      "documents": [],
-      "gates": {},
+      "boundary": "Tests implementation fidelity, not the census theorem, which is proved. Under the Kingston noise model the factorized witness compiles to about 434 CZ with V+ = 0.370 and V- = 0.346, so a single visibility misses the census by 0.005 and single-pair references move it by +-0.02; the hardware visibility and shot cost stay unmeasured.",
+      "evidence": [
+        {
+          "path": "docs/evidence/census_frequency_design/result.json",
+          "sha256": "cc2d90a1c19932494193907717f6a20dbe210fe02dd04804ca019b1e79ff3359"
+        }
+      ],
+      "documents": [
+        "docs/evidence/census_frequency_design/README.md"
+      ],
+      "gates": {
+        "core-288": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
@@ -2195,6 +2204,37 @@
       "withdrawn_text": "docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57."
     },
     {
+      "id": "hw-atlas-frame-detuning",
+      "statement": "On the executed Fez ripple atlas circuits and IBM's executed pulse times, a static frame detuning per qubit, resimulated at its leave-one-out fitted values, predicts held-out edge fringe phases better than the lane mean on six of seven lanes (0.086 to 0.120 rad against 0.129 to 0.238 rad); the fitted detunings are mostly 5 to 30 kHz, up to about 60 kHz.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inferred from one run's fringe phases; the detuning model's linear held-out residuals stay 1.8 to 3.0 times its leave-one-out noise floor, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.",
+      "evidence": [
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        },
+        {
+          "path": "docs/evidence/atlas_detuning_map/result.json",
+          "sha256": "fc8768c7d74b1c38e22ab7742c0cefa94a3fc86b111b8181e2d757a5595bd776"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_detuning_map/README.md"
+      ],
+      "gates": {
+        "core-285": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "design-c-cubic-noise-separation",
       "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.1807-0.2534 for the 234 pairs of ideal K = 11/32 and 0.0933-0.1135 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 86 percent of the ideal gap.",
       "domain": "implementation",
@@ -2222,6 +2262,59 @@
       "depends_on": [
         "associator-normal-form-compile"
       ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "hw-ghost-calibration-replay",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Calibration identity explains little of the mismatch; whether the model underestimates noise is not settled (today's CZ error is higher on 10 of 14 runs but readout changes correlate with the opposite sign), and an error-scale sweep per run is the test.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ghost_runs/result.json",
+          "sha256": "8871bae4f9e1a7513d7851ed4b92c9a8bd0591c7e8dbb30eb2ba67a822d0a622"
+        },
+        {
+          "path": "docs/evidence/ghost_runs/report.json",
+          "sha256": "07aa731d95a7c5419fc3ddf18dabb2bdd7c4e580f26dfadec66695057484bfb0"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json",
+          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+        },
+        {
+          "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
+          "sha256": "1ef30f2c540788de0c547ce16e655004b994ac1be5c484e52fc6b11429535b8a"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ghost_runs/README.md"
+      ],
+      "gates": {
+        "core-286": "replay",
+        "core-287": "replay"
+      },
+      "acquisitions": [
+        "kingston-mod15-pilot",
+        "kingston-folded-qpe-ladder",
+        "kingston-correction-first",
+        "kingston-correction-second",
+        "fez-ripple-atlas",
+        "fez-rank-sectors",
+        "fez-n21-orbit-feedback",
+        "fez-n21-orbit-window",
+        "fez-patch-window",
+        "kingston-coherence-window",
+        "kingston-rank-sectors",
+        "kingston-ripple-atlas",
+        "kingston-corner-baseline",
+        "kingston-zero-divisor-fringe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
       "supersedes": [],
       "superseded_by": null
     },
