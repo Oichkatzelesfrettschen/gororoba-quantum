@@ -1,0 +1,31 @@
+{
+ "schema": "qi-submission-v1",
+ "submitted_utc": "2026-10-16T22:45:41+00:00",
+ "approval": "User, 2026-10-16: dry run it on their emulator first! (QX dry run of the coupler ZZ map before any Tuna-17 submission)",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "backend_status_at_submit": "idle",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 2,
+  "min_wait_time_in_queue_secs": 3.0,
+  "avg_wait_time_in_queue_secs": 12556.0,
+  "max_wait_time_in_queue_secs": 25108.0
+ },
+ "batch_job": 869693,
+ "project": 765506,
+ "shots": 2048,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1526873
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1526874
+  },
+  {
+   "file": "targets-P-x-d025.cq",
+   "job": 1526875
+  }
+ ]
+}

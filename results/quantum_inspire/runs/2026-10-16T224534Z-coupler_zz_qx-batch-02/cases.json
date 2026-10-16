@@ -1,0 +1,24 @@
+{
+ "schema": "qi-coupler-zz-cases-v1",
+ "backend": "QXsinglenodesimulator",
+ "backend_type_id": 1,
+ "nqubits": 10,
+ "shots": 2048,
+ "circuits": [
+  {
+   "file": "targets-Q-x-d025.cq",
+   "kind": "ramsey",
+   "sha256": "21d38a892d511dc741edb3fbc09255efc6e60561904c9ca65cb2cdb6a2451a82"
+  },
+  {
+   "file": "targets-Q-x-d100.cq",
+   "kind": "ramsey",
+   "sha256": "0d3c614a08b8c3528ffde59a024c7a9cd527d3617b48f6877efc0dbc4313e6bd"
+  },
+  {
+   "file": "targets-Q-y-d025.cq",
+   "kind": "ramsey",
+   "sha256": "219ffa64232acf31ab90de57217a0709e3e936e6123860d1a6ee6f9a4eb59ccd"
+  }
+ ]
+}
