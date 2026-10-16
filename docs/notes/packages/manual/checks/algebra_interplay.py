@@ -28,6 +28,8 @@ from __future__ import annotations
 
 import argparse
 import importlib
+import importlib.metadata
+import importlib.util
 import itertools
 import json
 import subprocess
@@ -42,6 +44,29 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 from cd_core import cd_sign  # noqa: E402
 
 EVIDENCE = HERE / "interplay_tables.json"
+PINS = ROOT / "scripts/algebra_package_tables.py"
+# Distributions whose tables this file retains; scripts/algebra_package_tables.py pins every one
+# except hyprat (and SageMath, recorded by its own version string).
+DISTRIBUTIONS = (
+    "hypercomplex",
+    "hypercomplex-engine",
+    "hypercomplex-algebra",
+    "Cayley-Calculator",
+    "cayley-dickson",
+    "octonion",
+    "splitoct",
+    "mathdunders",
+    "numpy-quaternion",
+    "quaternionic",
+    "pyquaternion",
+    "clifford",
+    "kingdon",
+    "galgebra",
+    "pyoctonion",
+    "Octonion-Sedenion",
+    "hyprat",
+)
+UNPINNED = {"hyprat": "0.2.0", "sagemath": "10.10"}
 SCHEMA = "algebra-interplay-v1"
 
 Table = dict[str, Any]
@@ -712,7 +737,9 @@ def table(A):
             srow.append(int(terms[0][1])); irow.append(int(terms[0][0]))
         signs.append(srow); index.append(irow)
     return {"labels": [str(b) for b in B], "signs": signs, "index": index}
+from sage.version import version
 print(json.dumps({
+    "sage_version": version,
     "sagemath/octonion(-1,-1,-1)": table(OctonionAlgebra(QQ)),
     "sagemath/octonion(1,1,1)": table(OctonionAlgebra(QQ, 1, 1, 1)),
     "sagemath/quaternion(-1,-1)": table(QuaternionAlgebra(QQ, -1, -1)),
@@ -721,10 +748,11 @@ print(json.dumps({
 """
 
 
-def sage_tables() -> dict[str, Table]:
+def sage_tables() -> tuple[dict[str, Table], str]:
     run = subprocess.run(["sage", "-c", SAGE_PROGRAM], capture_output=True, text=True, check=True)
-    data: dict[str, Table] = json.loads(run.stdout.strip().splitlines()[-1])
-    return data
+    data: dict[str, Any] = json.loads(run.stdout.strip().splitlines()[-1])
+    version = data.pop("sage_version")
+    return data, version
 
 
 def mathdunders_probe() -> dict[str, list[str]]:
@@ -785,7 +813,10 @@ def extract() -> dict[str, Any]:
     tables |= hyprat_tables()
     tables |= quaternion_tables()
     tables |= clifford_tables()
-    tables |= sage_tables()
+    sage, sage_version = sage_tables()
+    tables |= sage
+    versions = {name: importlib.metadata.version(name) for name in DISTRIBUTIONS}
+    versions["sagemath"] = sage_version
     probes = {
         "pyoctonion_pyquaternion_mul_calls_per_product": pyquaternion_calls,
         "octonion_sedenion_half_type": os_half_type,
@@ -793,7 +824,7 @@ def extract() -> dict[str, Any]:
         "mathdunders_generated_dunders": mathdunders_probe(),
         "hypercomplex_algebra_engine_calls_per_two_term_product": expression_engine_calls(),
     }
-    return {"schema": SCHEMA, "tables": tables, "probes": probes}
+    return {"schema": SCHEMA, "versions": versions, "tables": tables, "probes": probes}
 
 
 # --------------------------------------------------------------------------
@@ -1032,6 +1063,7 @@ def check(data: dict[str, Any]) -> list[str]:
             f" nonassociative_triples={inv['nonassociative_triples']}"
             f" alternativity_failures={inv['alternativity_failures']}"
         )
+    lines.append(check_versions(data["versions"]))
     probes = data["probes"]
     require(probes["pyoctonion_pyquaternion_mul_calls_per_product"] > 0, "pyoctonion multiplies without pyquaternion")
     require(
@@ -1052,6 +1084,24 @@ def check(data: dict[str, Any]) -> list[str]:
     for key, value in probes.items():
         lines.append(f"probe {key}: {value}")
     return lines
+
+
+def check_versions(versions: dict[str, str]) -> str:
+    """Retained versions equal the release pins of scripts/algebra_package_tables.py (stdlib and cd_core only)."""
+    spec = importlib.util.spec_from_file_location("algebra_package_tables", PINS)
+    require(spec is not None and spec.loader is not None, "cannot load the release pins")
+    assert spec is not None and spec.loader is not None
+    pins = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(pins)
+    require(set(versions) == set(DISTRIBUTIONS) | {"sagemath"}, "retained version set differs")
+    for name in DISTRIBUTIONS:
+        if name in UNPINNED:
+            require(versions[name] == UNPINNED[name], f"{name}: {versions[name]} differs from {UNPINNED[name]}")
+            continue
+        pinned = pins.RELEASES[name][0]
+        require(pinned.startswith("commit ") or versions[name] == pinned, f"{name}: {versions[name]} is not {pinned}")
+    require(versions["sagemath"] == UNPINNED["sagemath"], f"sagemath {versions['sagemath']} differs")
+    return "versions: " + ", ".join(f"{name} {version}" for name, version in sorted(versions.items()))
 
 
 def main() -> int:

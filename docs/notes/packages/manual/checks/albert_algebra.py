@@ -11,7 +11,7 @@
   pairs, T(B_i o_Sage B_j) == T(B_i) o_cd T(B_j) in exact rationals: the identity, the sign flip on
   e3, e5, e6 (the octonion isomorphism Sage -> cd_core), entrywise conjugation (the transpose, which
   absorbs Sage's opposite octonion product), and the flip composed with conjugation. One failing pair
-  refutes a map. It also checks commutativity and the Jordan identity
+  refutes a map. It also checks the Jordan identity
   (X o Y) o (X o X) == X o (Y o (X o X)) on seeded random rational elements of H3(O), and, as a
   control with teeth, the same identity on the Hermitian 3 x 3 matrices over the cd_core sedenions.
 """
@@ -212,7 +212,7 @@ def check(data: dict[str, Any]) -> list[str]:
     comm, ident = jordan_identity_failures(8, "albert:octonions", 40)
     if comm or ident:
         raise RuntimeError(f"H3(O): {comm} commutativity and {ident} Jordan identity failures")
-    lines.append("H3(O) over cd_core: commutative and Jordan identity on 40 of 40 seeded rational pairs")
+    lines.append("H3(O) over cd_core: Jordan identity on 40 of 40 seeded rational pairs (commutative by construction)")
     comm, ident = jordan_identity_failures(16, "albert:sedenions", 10)
     if comm or not ident:
         raise RuntimeError(f"H3(S) control: {comm} commutativity and {ident} Jordan identity failures")

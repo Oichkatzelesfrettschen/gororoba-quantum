@@ -2414,7 +2414,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null",
    "name": "sources-247",
-   "seconds": 21.0,
+   "seconds": 19.0,
    "tier": "pr"
   },
   {
@@ -2422,7 +2422,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -O -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null",
    "name": "sources-248",
-   "seconds": 21.0,
+   "seconds": 20.0,
    "tier": "pr"
   },
   {
