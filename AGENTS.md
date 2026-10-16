@@ -266,7 +266,11 @@ importing any package), and `docs/notes/packages/` holds one note per
 package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
-pinned digest is checked again after the rebuild.
+pinned digest is checked again after the rebuild. A Kaggle kernel builds the
+same eight packages from the same pinned archives (`--fetch` and `--install`
+apply the PKGBUILD recipes) and runs its entry only after `--extract`
+regenerates `tables.json` byte for byte; SageMath stays on the build host
+(`docs/notes/kaggle/hypercomplex-stack.md`).
 
 | Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
 |---|---|---|---|---|---|
@@ -291,11 +295,15 @@ cd_core is unmeasured and no artifact claims one.
   spent returns 28 days later and no reset date exists.
 - Simulations of 14 qubits or fewer run on Kaggle GPU kernels through
   `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
-  entry's repository imports, installs qiskit 2.5.2 with
-  qiskit-aer-gpu-cu11 0.17.2 and retains the output under
-  results/kaggle/. IBM hardware serves 15 or more qubits, or a smaller run
-  whose question concerns the device itself (a named qubit's readout,
-  detuning or drift); its case states why Aer cannot answer it. A kernel's
+  entry's repository imports with `kaggle_kernel/` (the kernel program and
+  its AGENTS.md), installs qiskit 2.5.2 with qiskit-aer-gpu-cu11 0.17.2,
+  proves the hypercomplex package stack before the entry runs, and retains
+  the output under results/kaggle/. `docs/notes/kaggle/` holds the workflow,
+  the measured substrates and the package-stack guide. Kaggle allows two
+  concurrent GPU batch sessions per account. IBM hardware serves 15 or
+  more qubits, or a smaller run whose question concerns the device itself
+  (a named qubit's readout, detuning or drift); its case states why Aer
+  cannot answer it. A kernel's
   noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
   export, whose `--export` requires every gate and readout channel to equal
   live_run's noise model, and a Kaggle result enters the research state
@@ -431,7 +439,10 @@ python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
 which leaves AOCL in place; a package without a local PKGBUILD comes from
 the distribution repositories through pacman or paru. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack.
+submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2
+and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel stops at
+0.15.1) over the Kaggle image's numpy and scipy, records every version in
+`environment.json`, and holds no IBM credential (`kaggle_kernel/AGENTS.md`).
 <!-- heron-execution-facts:end -->
 
 ## Qiskit skills

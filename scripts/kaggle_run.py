@@ -9,10 +9,12 @@ This script is the only path from the repository to Kaggle:
   or scripts/, transitively), bundles them with any ``--include`` data files
   as a zip embedded in a generated ``run.py``, writes kernel-metadata.json
   (private, GPU, internet for the pinned pip install) and pushes the kernel.
-  The kernel installs the pins in KERNEL_PINS, records the environment, runs
-  ENTRY from the unpacked repository root with ``GOROROBA_AER_DEVICE=GPU``,
-  and copies every file the run created or changed under the repository
-  root into ``/kaggle/working/output``.
+  Every bundle also carries KERNEL_FILES. The kernel installs KERNEL_PINS,
+  unpacks the bundle and runs kaggle_kernel/kernel_main.py, which records
+  the measured substrate, builds the hypercomplex package stack and proves it
+  against the retained tables, then runs ENTRY with
+  ``GOROROBA_AER_DEVICE=GPU`` and returns every file the entry created or
+  changed under the repository root.
 - ``status RUN_DIR`` reports the kernel state.
 - ``collect RUN_DIR`` downloads the kernel output into RUN_DIR/output and
   writes collect.json with the sha256 of every file.
@@ -20,8 +22,8 @@ This script is the only path from the repository to Kaggle:
 ``self-test`` builds the Design C kernel in a temporary directory without
 network access and checks its bundle digests, metadata and generated code.
 
-``--smoke`` replaces ENTRY with an environment probe: the Aer devices, the
-GPU name and the wall time of a 14-qubit density-matrix circuit on the GPU.
+``--smoke`` replaces ENTRY with a capacity probe: the widest density-matrix
+and statevector GHZ circuits the GPU runs.
 
 Each run directory, results/kaggle/<UTC stamp>-<slug>/, holds submission.json
 (entry, arguments, git commit, bundle file digests, pins, machine shape) and
@@ -50,17 +52,20 @@ RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
 KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
 DEFAULT_MACHINE = "NvidiaTeslaT4"
-SMOKE_QUBITS = 14
+# Files every kernel carries: its program and instructions, and the
+# hypercomplex stack check with the tables it must reproduce.
+KERNEL_FILES = (
+    "kaggle_kernel/kernel_main.py",
+    "kaggle_kernel/AGENTS.md",
+    "scripts/algebra_package_tables.py",
+    "docs/evidence/algebra_packages/tables.json",
+)
 
 RUNNER = r"""
-import base64, hashlib, io, json, os, platform, subprocess, sys, time, zipfile
+import base64, io, subprocess, sys, zipfile
 from pathlib import Path
 
 PINS = {pins!r}
-ENTRY = {entry!r}
-ARGS = {args!r}
-SMOKE = {smoke!r}
-SMOKE_QUBITS = {smoke_qubits!r}
 BUNDLE = "{bundle}"
 
 out = Path("/kaggle/working/output")
@@ -69,51 +74,9 @@ pip = subprocess.run([sys.executable, "-m", "pip", "install", "-q", *PINS], capt
 (out / "pip.txt").write_text(pip.stdout + pip.stderr)
 if pip.returncode:
     raise SystemExit(f"pip install failed: {{pip.returncode}}")
-repo = Path("/kaggle/working/repo")
+repo = Path("/tmp/gororoba/repo")
 zipfile.ZipFile(io.BytesIO(base64.b64decode(BUNDLE))).extractall(repo)
-before = {{p: hashlib.sha256(p.read_bytes()).hexdigest() for p in repo.rglob("*") if p.is_file()}}
-
-from importlib.metadata import version
-import qiskit_aer
-env = {{
-    "python": platform.python_version(),
-    "packages": {{name: version(name) for name in ("qiskit", "qiskit-aer-gpu-cu11", "numpy", "scipy")}},
-    "aer_devices": list(qiskit_aer.AerSimulator().available_devices()),
-    "gpu": subprocess.run(["nvidia-smi", "--query-gpu=name,memory.total,driver_version", "--format=csv,noheader"],
-                          capture_output=True, text=True).stdout.strip().splitlines(),
-}}
-(out / "environment.json").write_text(json.dumps(env, indent=1) + "\n")
-print(json.dumps(env), flush=True)
-
-if SMOKE:
-    from qiskit import QuantumCircuit, transpile
-    from qiskit_aer import AerSimulator
-    qc = QuantumCircuit(SMOKE_QUBITS)
-    qc.h(0)
-    for q in range(SMOKE_QUBITS - 1):
-        qc.cx(q, q + 1)
-    qc.measure_all()
-    sim = AerSimulator(method="density_matrix", device="GPU")
-    start = time.time()
-    counts = sim.run(transpile(qc, sim), shots=1024, seed_simulator=7).result().get_counts()
-    smoke = {{"qubits": SMOKE_QUBITS, "method": "density_matrix", "device": "GPU",
-              "wall_seconds": round(time.time() - start, 3), "counts": counts}}
-    (out / "smoke.json").write_text(json.dumps(smoke, indent=1, sort_keys=True) + "\n")
-    print(json.dumps(smoke), flush=True)
-    raise SystemExit(0)
-
-run_env = dict(os.environ, GOROROBA_AER_DEVICE="GPU", PYTHON=sys.executable)
-proc = subprocess.run([sys.executable, "-B", ENTRY, *ARGS], cwd=repo, env=run_env, capture_output=True, text=True)
-(out / "stdout.txt").write_text(proc.stdout)
-(out / "stderr.txt").write_text(proc.stderr)
-print(proc.stdout[-4000:], proc.stderr[-4000:], sep="\n", flush=True)
-for path in repo.rglob("*"):
-    if path.is_file() and before.get(path) != hashlib.sha256(path.read_bytes()).hexdigest():
-        target = out / "repo" / path.relative_to(repo)
-        target.parent.mkdir(parents=True, exist_ok=True)
-        target.write_bytes(path.read_bytes())
-(out / "exit.json").write_text(json.dumps({{"returncode": proc.returncode}}) + "\n")
-raise SystemExit(proc.returncode)
+raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
 """
 
 
@@ -187,6 +150,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         require(entry.is_file() and entry.is_relative_to(ROOT), f"{args.entry} is not a repository file")
         entry_rel = entry.relative_to(ROOT).as_posix()
         files = import_closure(entry)
+    for always in KERNEL_FILES:
+        files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
     for include in args.include:
         path = (ROOT / include).resolve()
         require(path.is_file() and path.is_relative_to(ROOT), f"{include} is not a repository file")
@@ -199,16 +164,11 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             data = path.read_bytes()
             digests[rel] = sha256(data)
             bundle.writestr(rel, data)
+        job = {"entry": entry_rel, "args": list(args.args), "smoke": smoke}
+        bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
-    runner = RUNNER.format(
-        pins=list(KERNEL_PINS),
-        entry=entry_rel,
-        args=list(args.args),
-        smoke=smoke,
-        smoke_qubits=SMOKE_QUBITS,
-        bundle=base64.b64encode(buffer.getvalue()).decode("ascii"),
-    )
+    runner = RUNNER.format(pins=list(KERNEL_PINS), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     kernel_id = f"{owner}/{args.slug}"
     metadata = {
@@ -218,10 +178,11 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "language": "python",
         "kernel_type": "script",
         "is_private": True,
-        "enable_gpu": True,
+        "enable_gpu": args.machine != "cpu",
         "enable_internet": True,
-        "machine_shape": args.machine,
     }
+    if args.machine != "cpu":
+        metadata["machine_shape"] = args.machine
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
     submission = {
         "schema": "kaggle-aer-submission-v1",
@@ -248,7 +209,13 @@ def push(args: argparse.Namespace) -> int:
     push_args = ["kernels", "push", "-p", str(kernel_dir)]
     if args.timeout:
         push_args += ["-t", str(args.timeout)]
-    print(kaggle(*push_args).strip())
+    reply = kaggle(*push_args).strip()
+    if "successfully pushed" not in reply:
+        import shutil
+
+        shutil.rmtree(run_dir)
+        raise SystemExit(f"kaggle refused the push: {reply}")
+    print(reply)
     print(run_dir.relative_to(ROOT))
     return 0
 
@@ -266,7 +233,8 @@ def self_test(args: argparse.Namespace) -> int:
     with tempfile.TemporaryDirectory() as scratch:
         run_dir = Path(scratch) / "run"
         submission = build_kernel(build_args, run_dir, "owner", "2000-01-01T000000Z")
-        for needed in (entry, data, "gororoba_quantum/calibration_snapshot.py", "gororoba_quantum/cd_core.py"):
+        expected = (entry, data, "gororoba_quantum/calibration_snapshot.py", "gororoba_quantum/cd_core.py")
+        for needed in (*expected, *KERNEL_FILES):
             require(needed in submission["bundle"], f"bundle lacks {needed}")
         for rel, digest in submission["bundle"].items():
             require(digest == sha256((ROOT / rel).read_bytes()), f"bundle digest of {rel} differs from the tree")
@@ -299,6 +267,13 @@ def collect(args: argparse.Namespace) -> int:
     out = run_dir / "output"
     out.mkdir(exist_ok=True)
     kaggle("kernels", "output", kernel, "-p", str(out))
+    for stray in out.iterdir():
+        # The kernel's results live in output/ and its log beside it; anything
+        # else under /kaggle/working is scratch that Kaggle also returns.
+        if stray.is_dir() and stray.name != "output":
+            import shutil
+
+            shutil.rmtree(stray)
     files = {p.relative_to(out).as_posix(): sha256(p.read_bytes()) for p in sorted(out.rglob("*")) if p.is_file()}
     record = {
         "schema": "kaggle-aer-collect-v1",
@@ -320,7 +295,7 @@ def main() -> int:
     push_parser.add_argument("--slug", required=True, help="Kaggle kernel slug (lowercase, dashes)")
     push_parser.add_argument("--smoke", action="store_true", help="run the environment probe instead of ENTRY")
     push_parser.add_argument("--include", action="append", default=[], help="extra repository file to bundle")
-    push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="Kaggle machine_shape")
+    push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)

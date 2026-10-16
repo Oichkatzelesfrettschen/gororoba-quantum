@@ -1,0 +1,13 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-substrate-probe-cpu",
+ "state": "KernelWorkerStatus.COMPLETE",
+ "collected_utc": "2026-10-16T025229Z",
+ "files": {
+  "gororoba-substrate-probe-cpu.log": "2c9c39335f527c8c5ef10d8f757eee6db84025c0b4ed2e3143215f27c133b3d3",
+  "output/capacity.json": "647e1a1db6481d14e1d28a2a08f72998e9dd8ad3d59802abc244310025f3325a",
+  "output/environment.json": "aa808af047a850ac41173c5889b03bd5e1221775201d98e3453d95909468eb15",
+  "output/hypercomplex.json": "78b40488f190f577a108f53e2d658ff9eb388863c8aa0bf2799f16a38e83669b",
+  "output/pip.txt": "82f386df807573bca0fa3899711202380798ade5ba6eb87cf78a6904ee81c5b8"
+ }
+}
