@@ -2224,6 +2224,70 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "conditional-ramsey-postselected-power",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, with every idle sliced at 125 dt and the Hamiltonian injected per slice, the conditional Ramsey summary that postselects the conditional arms on B's preparation recovers omega_A, omega_B, J and a zero falsifier residual within 9 Hz on pairs (68, 67) and (67, 66); over 4000 resamples of 1024 shots its spread lies within 0.977 to 1.023 of the delta-method error, coverage is 0.944 to 0.957 (0.927 to 0.973 with plug-in errors), the falsifier rejects 5.0 to 5.5 percent of null trials and 0.885 and 0.943 of trials at a 600 Hz conditional Stark shift. Without the postselection, B's relaxation reads J = 3 kHz 178 and 397 Hz low.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot) with a static diagonal Hamiltonian injected; coherent errors, crosstalk, leakage, B-dependent readout crosstalk and drifting rates are outside it, and no hardware run of the design exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/conditional_ramsey_power/result.json",
+          "sha256": "c3d886412479e5ef4127acdf66af39f4bd24e93b288775ded2f9ab6a8fa968c9"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/evidence/conditional_ramsey_power/README.md",
+        "docs/notes/conditional_ramsey_hamiltonian.md"
+      ],
+      "gates": {
+        "core-301": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "conditional-ramsey-conformance"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "signed-kernel-noise-null-subtraction",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the signed Hadamard readout of the perturbed e1+e10 kernel compiled at 279 CZ has visibility 0.60, within 10 percent of the (1 - e)^CZ factor; the sign phase alone shifts <Z_c> by 0.037 between its two values at t = 0, which exceeds the signal at t = 0.05, and subtracting a null arm per sign restores a constant visibility of 0.601 to 0.602 at t = 0.05, 0.1 and 0.2. The dark count's contrast against a t = 0 control is inverted at every evaluated t = +-0.05, +-0.1 and +-0.2 while its bright control (e4 + e15)/sqrt2 keeps its ideal direction at a transmission of 0.81 to 0.83.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshot); coherent errors, crosstalk and leakage are outside it, the hardware dark floor exceeds the model's, and no hardware run of the probe exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/signed_kernel_noise/result.json",
+          "sha256": "6944cfc28d9509cf92744d93c21facb009c3a1a9be5bddd429a88efdd4be4dec"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/evidence/signed_kernel_noise/README.md",
+        "docs/notes/signed_kernel_probe.md"
+      ],
+      "gates": {
+        "core-304": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "signed-kernel-certificate"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

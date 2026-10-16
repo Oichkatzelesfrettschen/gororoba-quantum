@@ -2312,6 +2312,22 @@
    "name": "core-302",
    "seconds": 30.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/signed_kernel_noise.py && ruff format --check scripts/signed_kernel_noise.py && MYPYPATH=gororoba_quantum mypy scripts/signed_kernel_noise.py",
+   "name": "core-303",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/signed_kernel_noise.py --check docs/evidence/signed_kernel_noise/result.json --run results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise --t=-0.05,0,0.05",
+   "name": "core-304",
+   "seconds": 20.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
