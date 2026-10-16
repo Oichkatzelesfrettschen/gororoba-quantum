@@ -284,8 +284,10 @@ hardware result.
   ([echo_dilation_noise](../evidence/echo_dilation_noise/README.md)), SX
   over-rotation and CZ local phase move the difference negative like the
   conditional phase, so no physical rotation error lands in the
-  inverse-undone class; the pair detects coherent error, and a per-edge
-  2m-CZ Ramsey reference isolates the conditional share.
+  inverse-undone class. The pair detects coherent error together with
+  changes in the incoherent floor; a per-edge 2m-CZ Ramsey reference bounds
+  the conditional share, jointly across edges because their phases add
+  inside the shift, and the residual needs an incoherent control.
 - The dark sector here is an algebraic kernel of one operator. It carries no
   electromagnetic coupling and supports no dark-matter interpretation; a
   dark-photon claim needs a calibrated sensor response such as

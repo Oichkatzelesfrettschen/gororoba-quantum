@@ -5,22 +5,9 @@
  ],
  "affinity_cpus": 4,
  "attached_models": [],
- "cpu_model": "Intel(R) Xeon(R) CPU @ 2.00GHz",
- "cuda_driver_version": "13.0",
- "gpus": [
-  {
-   "compute_capability": "7.5",
-   "driver": "580.178.04",
-   "memory_mib": 15360,
-   "name": "Tesla T4"
-  },
-  {
-   "compute_capability": "7.5",
-   "driver": "580.178.04",
-   "memory_mib": 15360,
-   "name": "Tesla T4"
-  }
- ],
+ "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+ "cuda_driver_version": null,
+ "gpus": [],
  "logical_cpus": 4,
  "packages": {
   "Cayley-Calculator": null,
@@ -38,15 +25,15 @@
   "qiskit-aer-gpu-cu11": "0.17.2",
   "scipy": "1.16.3",
   "sympy": "1.14.0",
-  "torch": "2.11.0+cu128"
+  "torch": "2.11.0+cpu"
  },
  "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
  "python": "3.13.15",
- "ram_available_gib": 30.18,
+ "ram_available_gib": 30.28,
  "ram_total_gib": 31.35,
  "tpus": {
   "devices": [],
-  "error": "RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu', 'cuda']"
+  "error": "RuntimeError: Backend 'tpu' failed to initialize: INTERNAL: Failed to open libtpu.so: libtpu.so: cannot open shared object file: No such file or directory. Available backends are ['cpu']"
  },
  "working_disk_free_gib": 19.5,
  "working_disk_total_gib": 19.52

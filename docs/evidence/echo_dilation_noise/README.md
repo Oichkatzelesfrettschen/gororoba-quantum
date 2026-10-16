@@ -1,14 +1,17 @@
 # Echo-matched dilation pair under the retained calibrations
 
 `result.json` is the output of `scripts/echo_dilation_noise.py`. It ran as
-Kaggle kernel version 1 of `gororoba-echo-dilation-noise` in 114 s, and the
-run is retained under
-`results/kaggle/2026-10-16T153522Z-gororoba-echo-dilation-noise/`.
+Kaggle kernel version 2 of `gororoba-echo-dilation-noise` on a CPU machine
+in 147.5 s, and the run is retained under
+`results/kaggle/2026-10-16T162448Z-gororoba-echo-dilation-noise/`. Version 1
+(GPU, `results/kaggle/2026-10-16T153522Z-gororoba-echo-dilation-noise/`)
+lacked the per-edge sweep and sized the PREP shots on the device baseline;
+it stays as history.
 `arms.qpy` holds the compiled device arms (amplified, echo) of each backend,
 in the order `result.json` lists under `qpy_arms`.
 
-- **Machine and software.** Two Tesla T4 GPUs, Python 3.13.15, qiskit 2.5.2
-  and qiskit-aer-gpu-cu11 0.17.2, with four workers
+- **Machine and software.** A 4-core Kaggle CPU machine, Python 3.13.15,
+  qiskit 2.5.2 and qiskit-aer 0.17.2, with four workers
   (`kaggle_environment.json`).
 - **Stack proof.** The kernel built the hypercomplex package stack and
   regenerated the retained tables byte for byte before its entry ran
@@ -84,14 +87,20 @@ need in shots and in an independent CZ-phase reference.
 
    The target-1 minus target-0 readout carries `2m delta` and cancels each
    qubit's local phase. It runs under every channel.
-5. **Sizing.**
-   - **Pair shots.** The shots per arm that resolve each shift at z = 3.
+5. **Per-edge sweep.** Each of the four edges alone carries a conditional
+   phase of +-0.01 and +-0.02 rad, and the sum of the four single-edge
+   shifts is compared with the uniform shift at the same delta.
+6. **Sizing.**
+   - **Pair shots.** The shots per arm that resolve each shift at z = 3,
+     against the baseline of the shift's own compile (the eps family for
+     PREP, the device compile for the physical channels).
    - **Phase bound.** The conditional phase moves the pair about evenly in
      delta, so the reference must bound |delta| below the magnitude whose
      shift equals the pair's standard error. That magnitude comes from
      power-law interpolation on the delta grid.
    - **Reference shots.** The shots per edge and target state that reach
-     that bound at z = 3 through the reference's own slope.
+     that bound at z = 3 through the reference's own slope, for the uniform
+     bound and for each edge's single-edge bound.
 
 **Algebra.** `cd_core` certifies `(e1 + e10)(e4 - e15) = 0` and
 `(e1 + e10)(e4 + e15) = 2 e5 - 2 e14` on the 32 basis products SELECT
@@ -158,21 +167,42 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
      tolerance the 40,000-shot pair needs is 0.0048 to 0.0057 rad.
    - **Shots.** At m = 24 it reaches that tolerance with 349 to 514 shots
      per edge and target state, so four edges cost about 4,000 shots.
+6. **Edge phases add coherently, not edge by edge.** The four single-edge
+   shifts sum to 0.25 to 0.33 of the uniform shift on every backend (Fez at
+   0.02 rad: -0.0115 against -0.0404). Four comparable edges whose phases
+   add inside the shift, which grows about quadratically, give 1/4. So the
+   pair responds to a weighted sum of the edge phases, and one edge's
+   contribution depends on the others.
+   - Two edges per backend move the pair by less than its 40,000-shot
+     standard error alone, even at 0.02 rad, and the other two need 0.013 to
+     0.020 rad.
+   - Bounding each edge to its single-edge tolerance would therefore under-size
+     the reference about tenfold (30 to 59 shots per target where the joint
+     bound needs 349 to 514). The joint tolerance, 0.0048 to 0.0057 rad on
+     every edge, is the sizing a case uses.
 
 ## Consequences for the proposal
 
 `proposed-echo-matched-dilation` asked the pair to separate inverse-undone
 rotation errors from CZ conditional phases. Under these noise models no
-physical rotation error is inverse-undone. A device case built on the pair
-therefore measures a combined coherent-error signal on the dark probe. It
-attributes the conditional share with the per-edge reference, and the
-remainder to local phase or SX over-rotation together.
+physical rotation error is inverse-undone, so the pair's negative shift is
+a sum of coherent channels and of changes in the incoherent floor: extra
+depolarizing moves the pair the same way on Fez and Marrakesh, and the
+calibrated baseline already misses the matched null there.
+- **Conditional share.** The per-edge reference bounds every edge's
+  conditional phase to the joint tolerance, and the model maps those bounds
+  onto the pair only jointly, through the phases' weighted sum.
+- **Residual.** What remains after the conditional share is unidentified.
+  Attributing it to local phase or SX over-rotation needs an independently
+  measured incoherent control on the same compile, which this run does not
+  design.
 
 ## Limits
 
 - **Channels.** Each channel is injected alone, uniformly on every qubit or
-  edge. Non-uniform, drifting or crosstalk errors are outside the run, and
-  so is leakage.
+  edge; the conditional phase is also swept one edge at a time.
+  Non-uniform local phases and SX over-rotations, drifting or crosstalk
+  errors, and leakage are outside the run.
 - **Model.** The noise model is live_run's (gate depolarizing, thermal
   relaxation, asymmetric readout). The baselines are predictions, and no
   hardware run of the pair exists.
@@ -192,7 +222,7 @@ Gate core-313 checks the result on the CPU:
   device arms to match the retained ones.
 - **Laws.** It recomputes a reduced set of Kingston laws to 1e-8:
   - the baseline;
-  - every channel at 0.002 and 0.02;
+  - every channel at 0.002 and 0.02, and the first edge alone at 0.02;
   - eps = +-0.03;
   - one mixture;
   - one reference edge.

@@ -72,7 +72,7 @@ runs.
 | --- | --- | --- | --- |
 | Readout-adjacent pre-delay discriminator (measure, variable delay, Ramsey) | 1-2 | design only | a design module and dry run; applies only to idles that follow a mid-circuit readout, such as the N21 orbit's |
 | Chip-wide checkerboard detuning map | patch or chip, 15+ | design only | two quadratures, a winding-resolving delay ladder and spectators in both states; the first design in this census that needs 15 or more qubits |
-| Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed; Kaggle sizing done | a device case measures a combined coherent-error signal with a per-edge CZ-phase reference (`docs/evidence/echo_dilation_noise/`) |
+| Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed; Kaggle sizing done | a device case needs a per-edge CZ-phase reference bounding every edge jointly and an incoherent control (`docs/evidence/echo_dilation_noise/`) |
 | Signed kernel probe (`proposed-signed-kernel-probe`) | 7 | proposed | the four-arm null-subtracted readout (`docs/evidence/signed_kernel_noise/`), its dry run and a written case |
 | Census-frequency witness (`proposed-census-frequency`) | 5 (fixed pair) to 13 (three registers) | proposed | Kaggle first: visibility V and the shots that resolve 231/512 |
 | Dim-32 Design C spectral classes | 5 | Kaggle result retained (`docs/evidence/design_c_cubic_noise/`) | the noise model keeps the classes apart (noisy K 0.180-0.253 against 0.093-0.113); a hardware case would test coherent errors and crosstalk the model lacks, about 4.4 s nominal for both class representatives at 4096 shots (2 x 4096 x 260 us plus 2.3 s of job overhead) |
