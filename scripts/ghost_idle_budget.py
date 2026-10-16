@@ -2,10 +2,13 @@
 
 ghost_run replays each executed PUB's ISA circuit under
 NoiseModel.from_backend, which attaches thermal relaxation to every gate
-over its duration and to every explicit ``delay`` (RelaxationNoisePass),
-and to nothing else: a qubit that waits while other qubits run gates, a
-mid-circuit measurement or a feed-forward broadcast decoheres on hardware
-and stays ideal in the replay. The executed schedule is retained: each raw
+and every reset over its duration and to every explicit ``delay``
+(RelaxationNoisePass); a measurement carries its readout flip only. A
+qubit that waits while other qubits run gates, a mid-circuit measurement
+or a feed-forward broadcast decoheres on hardware and stays ideal in the
+replay. The measured qubit's own relaxation over its capture window is
+outside both the replay and this budget, which counts the capture as
+busy time, and a reset relaxes but never fails. The executed schedule is retained: each raw
 PUB under ``results/live/RUN/raw/JOB/pub_NN.json`` carries the
 ``scheduler_timing`` table the backend compiled, one row per pulse with its
 channel, start and duration in dt, and ``isa.qpy`` holds the PUB's circuit
