@@ -16,8 +16,10 @@ This script is the only path from the repository to Kaggle:
   ``GOROROBA_AER_DEVICE=GPU`` and returns every file the entry created or
   changed under the repository root.
 - ``status RUN_DIR`` reports the kernel state.
-- ``collect RUN_DIR`` downloads the kernel output into RUN_DIR/output and
-  writes collect.json with the sha256 of every file.
+- ``collect RUN_DIR`` downloads the run's kernel version into RUN_DIR/output
+  and writes collect.json with the sha256 of every file.
+- ``verify`` checks every retained collect.json against the files under its
+  output/ directory, offline.
 
 ``self-test`` builds the Design C kernel in a temporary directory without
 network access and checks its bundle digests, metadata and generated code.
@@ -220,10 +222,14 @@ def push(args: argparse.Namespace) -> int:
         push_args += ["--accelerator", args.machine]
     if args.timeout:
         push_args += ["-t", str(args.timeout)]
-    reply = kaggle(*push_args).strip()
-    if "successfully pushed" not in reply:
-        import shutil
+    import shutil
 
+    try:
+        reply = kaggle(*push_args).strip()
+    except SystemExit:
+        shutil.rmtree(run_dir)
+        raise
+    if "successfully pushed" not in reply:
         shutil.rmtree(run_dir)
         raise SystemExit(f"kaggle refused the push: {reply}")
     version = re.search(r"Kernel version (\d+) successfully pushed", reply)
@@ -271,21 +277,33 @@ def submission_of(run_dir: Path) -> dict[str, Any]:
     return json.loads(path.read_text(encoding="utf-8"))
 
 
+def kernel_ref(submission: dict[str, Any]) -> str:
+    """owner/slug/version for a run that recorded its version, owner/slug for one that predates it."""
+    version = submission.get("kernel_version")
+    return f"{submission['kernel']}/{version}" if version is not None else submission["kernel"]
+
+
 def status(args: argparse.Namespace) -> int:
-    print(kaggle("kernels", "status", submission_of(Path(args.run_dir))["kernel"]).strip())
+    print(kaggle("kernels", "status", kernel_ref(submission_of(Path(args.run_dir)))).strip())
     return 0
 
 
 def collect(args: argparse.Namespace) -> int:
+    """Download the run's own kernel version and record the sha256 of every returned file.
+
+    `kernels status` reports the slug's latest version whatever version it
+    names, so a later push would hide this run's state. The versioned output
+    carries kaggle_kernel/kernel_main.py's exit.json, written on every exit
+    path, and that file decides completion; a version that died before
+    writing it is accepted only when the reported status is terminal.
+    """
+    import shutil
+
     run_dir = Path(args.run_dir)
     submission = submission_of(run_dir)
-    kernel = submission["kernel"]
-    # An unversioned `kernels output` returns the latest version, which a later
-    # push to the same slug replaces; the run's own version is the one it owns.
     require("kernel_version" in submission, f"{run_dir} records no kernel version to collect")
-    versioned = f"{kernel}/{submission['kernel_version']}"
-    state = kaggle("kernels", "status", kernel)
-    require("COMPLETE" in state or "ERROR" in state, f"{kernel} has not finished: {state.strip()}")
+    versioned = kernel_ref(submission)
+    reported = kaggle("kernels", "status", versioned).strip()
     out = run_dir / "output"
     out.mkdir(exist_ok=True)
     kaggle("kernels", "output", versioned, "-p", str(out))
@@ -293,19 +311,44 @@ def collect(args: argparse.Namespace) -> int:
         # The kernel's results live in output/ and its log beside it; anything
         # else under /kaggle/working is scratch that Kaggle also returns.
         if stray.is_dir() and stray.name != "output":
-            import shutil
-
             shutil.rmtree(stray)
+    exit_file = out / "output" / "exit.json"
+    if exit_file.is_file():
+        returncode = json.loads(exit_file.read_text(encoding="utf-8"))["returncode"]
+        state = "COMPLETE" if returncode == 0 else "ERROR"
+    else:
+        terminal = "COMPLETE" in reported or "ERROR" in reported
+        if not terminal and not any(out.rglob("*")):
+            out.rmdir()
+        require(terminal, f"{versioned} returned no exit.json and reports {reported}")
+        state = reported.rsplit(" ", 1)[-1].strip('"')
     files = {p.relative_to(out).as_posix(): sha256(p.read_bytes()) for p in sorted(out.rglob("*")) if p.is_file()}
     record = {
         "schema": "kaggle-aer-collect-v1",
         "kernel": versioned,
-        "state": state.strip().rsplit(" ", 1)[-1].strip('"'),
+        "state": state,
         "collected_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ"),
         "files": files,
     }
     (run_dir / "collect.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(json.dumps(record, indent=1))
+    return 0
+
+
+def verify(args: argparse.Namespace) -> int:
+    """Every retained collect.json names exactly the files under its output/ with their sha256."""
+    runs = sorted(RESULTS.glob("*/collect.json"))
+    for path in runs:
+        run_dir = path.parent
+        record = json.loads(path.read_text(encoding="utf-8"))
+        out = run_dir / "output"
+        present = {p.relative_to(out).as_posix() for p in out.rglob("*") if p.is_file()}
+        require(present == set(record["files"]), f"{run_dir.name}: output files differ from collect.json")
+        for rel, digest in record["files"].items():
+            require(sha256((out / rel).read_bytes()) == digest, f"{run_dir.name}: {rel} differs from its sha256")
+        require(record["kernel"] == kernel_ref(submission_of(run_dir)), f"{run_dir.name}: kernel differs")
+    require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
+    print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers")
     return 0
 
 
@@ -321,6 +364,7 @@ def main() -> int:
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)
+    sub.add_parser("verify").set_defaults(func=verify)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)
         sub_parser.add_argument("run_dir")
