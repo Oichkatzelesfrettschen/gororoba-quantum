@@ -416,7 +416,12 @@ the generic homology routine certifies only the supplied chain complex.
    decompositions and connected components for `D_(5,4)`, `D_(5,8)`, and
    `D_(5,12)`. Record a covering argument for every real coefficient vector
    and exact admission for boundaries. A list of successful numerical charts
-   does not meet this condition.
+   does not meet this condition. First local slice:
+   [rank_locus_local_dimension](../docs/evidence/rank_locus_local_dimension/README.md)
+   certifies local dimensions 11, 17 and 23 at witnesses of the
+   zero-divisor-only families of `D_(5,16)`, `D_(5,12)` and `D_(5,8)`. Every
+   family with a non-zero-divisor coordinate, and every witness outside
+   `H_5^perp`, sits two below its exact tangent bound; that gap is open.
 4. **Resolve local regularity and links.** Prove which pieces are smooth using
    independent local equations. Construct a suitable stratification, dimensions,
    normal links, and componentwise closure incidences. Keep rank loci and smooth
