@@ -2496,6 +2496,14 @@
    "name": "core-333",
    "seconds": 11.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "cmp docs/evidence/ghost_error_scale/part_b.json results/kaggle/2026-10-16T160706Z-gororoba-ghost-error-scale-b/output/output/repo/results/kaggle_out/ghost_error_scale_b.json && cmp docs/evidence/ghost_error_scale/part_c.json results/kaggle/2026-10-16T160710Z-gororoba-ghost-error-scale-c/output/output/repo/results/kaggle_out/ghost_error_scale_c.json",
+   "name": "core-338",
+   "seconds": 0.1,
+   "tier": "pr"
   }
  ],
  "excluded": [

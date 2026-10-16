@@ -67,6 +67,19 @@ Readings:
   layers of that width are where spectator crosstalk would act, and no
   retained measurement isolates it.
 
+## Retained parts
+
+`part_b.json` and `part_c.json` are the outputs of sweep parts b and c,
+retained byte for byte from their Kaggle run directories under
+`results/kaggle/` (gate core-338 compares them). The kernels ran commit
+2298108; of the 55 files they bundled, four differ from this tree, and only
+in how the Aer device is chosen (`calibration_snapshot.aer_device` reads
+GOROROBA_AER_DEVICE), which leaves the CPU computation unchanged.
+`ghost_error_scale.py --check` requires every audited run, so its CPU replay
+gate joins when part a is retained.
+`scripts/ghost_event_scale.py` reads each dynamic run's fitted readout
+factor from these parts.
+
 ## Prediction for sweep part a
 
 Recorded before part a's kernel finished. Part a holds two Kingston runs:
