@@ -2404,7 +2404,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "ruff check docs/notes/packages/manual/checks/algebra_interplay.py && ruff format --check docs/notes/packages/manual/checks/algebra_interplay.py && MYPYPATH=gororoba_quantum mypy docs/notes/packages/manual/checks/algebra_interplay.py",
+   "cmd": "ruff check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py && ruff format --check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py && MYPYPATH=gororoba_quantum mypy docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py",
    "name": "core-312",
    "seconds": 6.0,
    "tier": "pr"
