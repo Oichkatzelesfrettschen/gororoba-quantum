@@ -95,6 +95,16 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Exact and statevector facts plus a priced FakeFez compile; no hardware visibility.
   Evidence: [result.json](../evidence/signed_kernel_probe/result.json), [signed_kernel_probe.md](../notes/signed_kernel_probe.md).
   Gates: replayed by core-273.
+- **cd-sign-row-degree** (mathematical theorem, algebra). For every n >= 2 and m != 0, the sign row f_m(x) = [cd_sign(2^n, m, x) = -1] of L_{e_m} has algebraic degree exactly n - 1, so octonion left multiplications are Clifford and every sedenion and higher one carries a sign of degree 3 or more.
+  Boundary: Written induction from the cd_sign recursion (R), the commutator lemma and the two-point lemma; scripts/cd_phase_degree.py checks every identity it uses and the statement on every row through n = 8, and no proof assistant has checked it.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md.
+  Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md), [left_mult_sign_rank.md](../notes/left_mult_sign_rank.md).
+  Gates: replayed by core-320.
+- **cd-associator-phase-degree** (mathematical theorem, algebra). For every n >= 3 and distinct nonzero i, j < 2^n, the associator phase g_ij of W_ij = L_{e_i e_j}^dagger L_{e_i} L_{e_j} has algebraic degree exactly max(1, bitlen(max(i, j)) - 2), independent of n: each phase splits as A(y) + c xi over the top index bit with c = N(i') + N(j') + N(i' ^ j'), a pair with an index in the top half has A = g' + delta_u + delta_v + const with u != v, and the census adds 3 2^(b-2) (2^(b-1) - 1) pairs of degree b - 2 at bit length b (84, 360, 1488, 6048, 24384 at dims 16 to 256).
+  Boundary: Written induction (slice Lemma D, involution Lemma A, two-point Lemma B); scripts/cd_phase_degree.py checks every identity on all ordered pairs and the statement through n = 8, and no proof assistant has checked it. Walsh spectra within one degree, which the degree does not determine, stay with scripts/associator_walsh_classes.py.
+  Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); recursion (R) and Lemmas 0 and 1 of docs/notes/left_mult_sign_rank.md.
+  Evidence: [cd_phase_degree.md](../notes/cd_phase_degree.md), [left_mult_sign_rank.md](../notes/left_mult_sign_rank.md).
+  Gates: replayed by core-320.
 - **associator-cubic-normal-form** (exact finite certificate, algebra). Each of the 360 degree-3 dim-32 associator phases is l1 l2 l3 + q with l1, l2, l3 linearly independent linear forms on F_2^5 and deg q <= 2, so W_ij = D_q U_A^dagger (CCZ x I) U_A; the cubic part takes 15 values, 24 pairs each.
   Boundary: Dimension 32 only; degree-4 and degree-5 phases at dims 64 and 128 are not examined.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
