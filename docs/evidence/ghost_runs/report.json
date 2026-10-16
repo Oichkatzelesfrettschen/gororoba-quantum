@@ -1,0 +1,333 @@
+{
+ "schema": "ghost-run-report-v1",
+ "source": "docs/evidence/ghost_runs/result.json",
+ "runs": [
+  {
+   "run": "results/live/2026-10-11T152922.787095Z",
+   "backend": "ibm_kingston",
+   "members": 9,
+   "execution_mean_tvd": [
+    0.10227
+   ],
+   "current_minus_execution": {
+    "replicas": 29,
+    "mean_delta": -0.001709,
+    "standard_error": 0.001712
+   },
+   "distinct_other_states": 4,
+   "other_mean_tvd_range": [
+    0.093624,
+    0.103179
+   ],
+   "self_check": {
+    "pairs": 29,
+    "mean_ghost_minus_recorded_tvd": 0.000362,
+    "sd": 0.003641
+   }
+  },
+  {
+   "run": "results/live/2026-10-12T055624.091217Z",
+   "backend": "ibm_kingston",
+   "members": 16,
+   "execution_mean_tvd": [
+    0.138145
+   ],
+   "current_minus_execution": {
+    "replicas": 16,
+    "mean_delta": -0.018082,
+    "standard_error": 0.001519
+   },
+   "distinct_other_states": 4,
+   "other_mean_tvd_range": [
+    0.120735,
+    0.141502
+   ],
+   "self_check": {
+    "pairs": 16,
+    "mean_ghost_minus_recorded_tvd": 0.001457,
+    "sd": 0.00672
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T020454.599853Z",
+   "backend": "ibm_kingston",
+   "members": 4,
+   "execution_mean_tvd": [
+    0.185516
+   ],
+   "current_minus_execution": {
+    "replicas": 4,
+    "mean_delta": -0.031616,
+    "standard_error": 0.001346
+   },
+   "distinct_other_states": 5,
+   "other_mean_tvd_range": [
+    0.165375,
+    0.185516
+   ],
+   "self_check": {
+    "pairs": 0,
+    "mean_ghost_minus_recorded_tvd": null,
+    "sd": null
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T022433.333775Z",
+   "backend": "ibm_kingston",
+   "members": 4,
+   "execution_mean_tvd": [
+    0.2099
+   ],
+   "current_minus_execution": {
+    "replicas": 4,
+    "mean_delta": -0.031616,
+    "standard_error": 0.001346
+   },
+   "distinct_other_states": 5,
+   "other_mean_tvd_range": [
+    0.189758,
+    0.2099
+   ],
+   "self_check": {
+    "pairs": 0,
+    "mean_ghost_minus_recorded_tvd": null,
+    "sd": null
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T025444.603480Z",
+   "backend": "ibm_fez",
+   "members": 929,
+   "execution_mean_tvd": [
+    0.068711
+   ],
+   "current_minus_execution": {
+    "replicas": 929,
+    "mean_delta": -0.003195,
+    "standard_error": 0.000515
+   },
+   "distinct_other_states": 3,
+   "other_mean_tvd_range": [
+    0.066303,
+    0.06841
+   ],
+   "self_check": {
+    "pairs": 0,
+    "mean_ghost_minus_recorded_tvd": null,
+    "sd": null
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T032011.664435Z",
+   "backend": "ibm_fez",
+   "members": 176,
+   "execution_mean_tvd": [
+    0.039873
+   ],
+   "current_minus_execution": {
+    "replicas": 176,
+    "mean_delta": 0.001996,
+    "standard_error": 0.00069
+   },
+   "distinct_other_states": 3,
+   "other_mean_tvd_range": [
+    0.037575,
+    0.046709
+   ],
+   "self_check": {
+    "pairs": 0,
+    "mean_ghost_minus_recorded_tvd": null,
+    "sd": null
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T080216.451663Z",
+   "backend": "ibm_fez",
+   "members": 2,
+   "execution_mean_tvd": [
+    0.069947
+   ],
+   "current_minus_execution": {
+    "replicas": 2,
+    "mean_delta": -0.013551,
+    "standard_error": 0.005982
+   },
+   "distinct_other_states": 3,
+   "other_mean_tvd_range": [
+    0.068482,
+    0.070801
+   ],
+   "self_check": {
+    "pairs": 2,
+    "mean_ghost_minus_recorded_tvd": 0.001099,
+    "sd": 0.010132
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T083417.634585Z",
+   "backend": "ibm_fez",
+   "members": 8,
+   "execution_mean_tvd": [
+    0.071655
+   ],
+   "current_minus_execution": {
+    "replicas": 8,
+    "mean_delta": -0.011963,
+    "standard_error": 0.002474
+   },
+   "distinct_other_states": 3,
+   "other_mean_tvd_range": [
+    0.071716,
+    0.073517
+   ],
+   "self_check": {
+    "pairs": 8,
+    "mean_ghost_minus_recorded_tvd": -0.00116,
+    "sd": 0.009068
+   }
+  },
+  {
+   "run": "results/live/2026-10-13T201757.782152Z",
+   "backend": "ibm_fez",
+   "members": 46,
+   "execution_mean_tvd": [
+    0.026373
+   ],
+   "current_minus_execution": {
+    "replicas": 46,
+    "mean_delta": -0.00146,
+    "standard_error": 0.000756
+   },
+   "distinct_other_states": 3,
+   "other_mean_tvd_range": [
+    0.025937,
+    0.026155
+   ],
+   "self_check": {
+    "pairs": 24,
+    "mean_ghost_minus_recorded_tvd": 0.00057,
+    "sd": 0.013429
+   }
+  },
+  {
+   "run": "results/live/2026-10-15T030748.903241Z",
+   "backend": "ibm_kingston",
+   "members": 15,
+   "execution_mean_tvd": [
+    0.203321
+   ],
+   "current_minus_execution": {
+    "replicas": 15,
+    "mean_delta": -0.009147,
+    "standard_error": 0.002392
+   },
+   "distinct_other_states": 5,
+   "other_mean_tvd_range": [
+    0.203321,
+    0.204688
+   ],
+   "self_check": {
+    "pairs": 15,
+    "mean_ghost_minus_recorded_tvd": 0.000814,
+    "sd": 0.008663
+   }
+  },
+  {
+   "run": "results/live/2026-10-15T030903.235380Z",
+   "backend": "ibm_kingston",
+   "members": 176,
+   "execution_mean_tvd": [
+    0.070422
+   ],
+   "current_minus_execution": {
+    "replicas": 176,
+    "mean_delta": -0.001071,
+    "standard_error": 0.000468
+   },
+   "distinct_other_states": 5,
+   "other_mean_tvd_range": [
+    0.070422,
+    0.074751
+   ],
+   "self_check": {
+    "pairs": 0,
+    "mean_ghost_minus_recorded_tvd": null,
+    "sd": null
+   }
+  },
+  {
+   "run": "results/live/2026-10-15T031229.371738Z",
+   "backend": "ibm_kingston",
+   "members": 929,
+   "execution_mean_tvd": [
+    0.081814,
+    0.094024
+   ],
+   "current_minus_execution": {
+    "replicas": 929,
+    "mean_delta": -0.001624,
+    "standard_error": 0.000539
+   },
+   "distinct_other_states": 4,
+   "other_mean_tvd_range": [
+    0.082938,
+    0.085194
+   ],
+   "self_check": {
+    "pairs": 0,
+    "mean_ghost_minus_recorded_tvd": null,
+    "sd": null
+   }
+  },
+  {
+   "run": "results/live/2026-10-15T070847.644554Z",
+   "backend": "ibm_kingston",
+   "members": 7,
+   "execution_mean_tvd": [
+    0.434571
+   ],
+   "current_minus_execution": {
+    "replicas": 7,
+    "mean_delta": -0.004185,
+    "standard_error": 0.002446
+   },
+   "distinct_other_states": 4,
+   "other_mean_tvd_range": [
+    0.423829,
+    0.444755
+   ],
+   "self_check": {
+    "pairs": 7,
+    "mean_ghost_minus_recorded_tvd": -0.000976,
+    "sd": 0.022427
+   }
+  },
+  {
+   "run": "results/live/2026-10-15T070853.550532Z",
+   "backend": "ibm_kingston",
+   "members": 14,
+   "execution_mean_tvd": [
+    0.097517
+   ],
+   "current_minus_execution": {
+    "replicas": 105,
+    "mean_delta": -0.002874,
+    "standard_error": 0.001325
+   },
+   "distinct_other_states": 4,
+   "other_mean_tvd_range": [
+    0.09342,
+    0.096745
+   ],
+   "self_check": {
+    "pairs": 105,
+    "mean_ghost_minus_recorded_tvd": -0.000177,
+    "sd": 0.011242
+   }
+  },
+  {
+   "run": "results/live/kingston-wide-control-result",
+   "skipped": "the run keeps no record.json, isa.qpy, collect.json"
+  }
+ ]
+}

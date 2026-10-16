@@ -29,21 +29,21 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 
 | Run | Family | Backend | Jobs | PUBs | Settled s | Claims |
 | --- | --- | --- | ---: | ---: | ---: | --- |
-| [2026-10-11T152922.787095Z](../../results/live/2026-10-11T152922.787095Z) | hybrid Shor and folded QPE, mod 15 | ibm_kingston | 1 | 6 | 9 | hw-mod15-pilot, hw-corner-fault-predates-discovery |
-| [2026-10-12T055624.091217Z](../../results/live/2026-10-12T055624.091217Z) | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | 40 | hw-folded-qpe-ladder, hw-charge-prediction-residuals |
-| [2026-10-13T020454.599853Z](../../results/live/2026-10-13T020454.599853Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation |
-| [2026-10-13T022433.333775Z](../../results/live/2026-10-13T022433.333775Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation |
-| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-atlas-frame-detuning |
-| [2026-10-13T032011.664435Z](../../results/live/2026-10-13T032011.664435Z) | rank sectors | ibm_fez | 2 | 36 | 31 | hw-fez-rank-sectors, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-charge-prediction-residuals |
+| [2026-10-11T152922.787095Z](../../results/live/2026-10-11T152922.787095Z) | hybrid Shor and folded QPE, mod 15 | ibm_kingston | 1 | 6 | 9 | hw-mod15-pilot, hw-corner-fault-predates-discovery, hw-ghost-calibration-replay |
+| [2026-10-12T055624.091217Z](../../results/live/2026-10-12T055624.091217Z) | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | 40 | hw-folded-qpe-ladder, hw-charge-prediction-residuals, hw-ghost-calibration-replay |
+| [2026-10-13T020454.599853Z](../../results/live/2026-10-13T020454.599853Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation, hw-ghost-calibration-replay |
+| [2026-10-13T022433.333775Z](../../results/live/2026-10-13T022433.333775Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation, hw-ghost-calibration-replay |
+| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-atlas-frame-detuning, hw-ghost-calibration-replay |
+| [2026-10-13T032011.664435Z](../../results/live/2026-10-13T032011.664435Z) | rank sectors | ibm_fez | 2 | 36 | 31 | hw-fez-rank-sectors, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-charge-prediction-residuals, hw-ghost-calibration-replay |
 | [kingston-wide-control-result](../../results/live/kingston-wide-control-result) | wide Ramsey and carpet control | ibm_kingston | 1 | 2 | 2 | hw-wide-control |
-| [2026-10-13T080216.451663Z](../../results/live/2026-10-13T080216.451663Z) | N=21 orbit feed-forward | ibm_fez | 1 | 2 | 4 | hw-n21-orbit-phase, hw-idle-detuning-scale |
-| [2026-10-13T083417.634585Z](../../results/live/2026-10-13T083417.634585Z) | N=21 orbit window arms | ibm_fez | 1 | 8 | 11 | hw-n21-orbit-phase |
-| [2026-10-13T201757.782152Z](../../results/live/2026-10-13T201757.782152Z) | patch-window Ramsey characterization | ibm_fez | 3 | 46 | 25 | hw-patch-window-nondetection |
-| [2026-10-15T030748.903241Z](../../results/live/2026-10-15T030748.903241Z) | branch-signed coherence window | ibm_kingston | 2 | 15 | 13 | hw-coherence-window, hw-coherence-idle-rotation, hw-idle-detuning-scale |
-| [2026-10-15T030903.235380Z](../../results/live/2026-10-15T030903.235380Z) | rank sectors | ibm_kingston | 2 | 36 | 31 | hw-kingston-rank-transfer, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-corner-explains-weak-lane |
-| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane, hw-walk-scaffold-floor, hw-box-kite-executed-pairs |
-| [2026-10-15T070847.644554Z](../../results/live/2026-10-15T070847.644554Z) | corner qubit baseline | ibm_kingston | 1 | 7 | 4 | hw-corner-readout-fault, hw-corner-explains-weak-lane, hw-corner-fault-predates-discovery |
-| [2026-10-15T070853.550532Z](../../results/live/2026-10-15T070853.550532Z) | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | 10 | hw-zero-divisor-floor, hw-idle-detuning-scale |
+| [2026-10-13T080216.451663Z](../../results/live/2026-10-13T080216.451663Z) | N=21 orbit feed-forward | ibm_fez | 1 | 2 | 4 | hw-n21-orbit-phase, hw-idle-detuning-scale, hw-ghost-calibration-replay |
+| [2026-10-13T083417.634585Z](../../results/live/2026-10-13T083417.634585Z) | N=21 orbit window arms | ibm_fez | 1 | 8 | 11 | hw-n21-orbit-phase, hw-ghost-calibration-replay |
+| [2026-10-13T201757.782152Z](../../results/live/2026-10-13T201757.782152Z) | patch-window Ramsey characterization | ibm_fez | 3 | 46 | 25 | hw-patch-window-nondetection, hw-ghost-calibration-replay |
+| [2026-10-15T030748.903241Z](../../results/live/2026-10-15T030748.903241Z) | branch-signed coherence window | ibm_kingston | 2 | 15 | 13 | hw-coherence-window, hw-coherence-idle-rotation, hw-idle-detuning-scale, hw-ghost-calibration-replay |
+| [2026-10-15T030903.235380Z](../../results/live/2026-10-15T030903.235380Z) | rank sectors | ibm_kingston | 2 | 36 | 31 | hw-kingston-rank-transfer, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-corner-explains-weak-lane, hw-ghost-calibration-replay |
+| [2026-10-15T031229.371738Z](../../results/live/2026-10-15T031229.371738Z) | ripple box-kite atlas | ibm_kingston | 2 | 146 | 66 | hw-kingston-ripple-transfer, hw-corner-explains-weak-lane, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-ghost-calibration-replay |
+| [2026-10-15T070847.644554Z](../../results/live/2026-10-15T070847.644554Z) | corner qubit baseline | ibm_kingston | 1 | 7 | 4 | hw-corner-readout-fault, hw-corner-explains-weak-lane, hw-corner-fault-predates-discovery, hw-ghost-calibration-replay |
+| [2026-10-15T070853.550532Z](../../results/live/2026-10-15T070853.550532Z) | zero-divisor fringe (Design B and D) | ibm_kingston | 1 | 14 | 10 | hw-zero-divisor-floor, hw-idle-detuning-scale, hw-ghost-calibration-replay |
 
 - **kingston-mod15-pilot** (2026-10-11T152922.787095Z): Do the hybrid Shor and folded-QPE witnesses beat their exact nulls, and does packing change them against isolated references?
 - **kingston-folded-qpe-ladder** (2026-10-12T055624.091217Z): How do delay, no-feed-forward and coherent two-control arms change terminal accuracy against the archived dynamic QPE?
@@ -342,6 +342,11 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Evidence: [measured-ripple.json](../../results/ripple/measured-ripple.json), [result.json](../evidence/atlas_detuning_map/result.json), [README.md](../evidence/atlas_detuning_map/README.md).
   Gates: replayed by core-285.
   Acquisitions: fez-ripple-atlas.
+- **hw-ghost-calibration-replay** (exploratory reanalysis, hardware). Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, the noise model reproduces each run's recorded replay distance to within 0.0015 TV on average, the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.
+  Boundary: Calibration identity explains little of the mismatch; whether the model underestimates noise is not settled (today's CZ error is higher on 10 of 14 runs but readout changes correlate with the opposite sign), and an error-scale sweep per run is the test.
+  Evidence: [result.json](../evidence/ghost_runs/result.json), [report.json](../evidence/ghost_runs/report.json), [qpu-job-retention-audit.json](../../results/live/qpu-job-retention-audit.json), [collect.json](../../results/kaggle/2026-10-16T052709Z-gororoba-ghost-runs/collect.json), [README.md](../evidence/ghost_runs/README.md).
+  Gates: replayed by core-286, core-287.
+  Acquisitions: kingston-mod15-pilot, kingston-folded-qpe-ladder, kingston-correction-first, kingston-correction-second, fez-ripple-atlas, fez-rank-sectors, fez-n21-orbit-feedback, fez-n21-orbit-window, fez-patch-window, kingston-coherence-window, kingston-rank-sectors, kingston-ripple-atlas, kingston-corner-baseline, kingston-zero-divisor-fringe.
 
 ## Open claims
 

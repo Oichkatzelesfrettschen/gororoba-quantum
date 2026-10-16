@@ -2264,6 +2264,59 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "hw-ghost-calibration-replay",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, the noise model reproduces each run's recorded replay distance to within 0.0015 TV on average, the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Calibration identity explains little of the mismatch; whether the model underestimates noise is not settled (today's CZ error is higher on 10 of 14 runs but readout changes correlate with the opposite sign), and an error-scale sweep per run is the test.",
+      "evidence": [
+        {
+          "path": "docs/evidence/ghost_runs/result.json",
+          "sha256": "19e5ca970eb2b1d637054e2879d1ad0ef41d8fb7901de57e457aeb79636d6cf6"
+        },
+        {
+          "path": "docs/evidence/ghost_runs/report.json",
+          "sha256": "d6fae2e9a3f9805435e9f356f4eaaa37ba78bb246aebdd7a2800e89ea116c0aa"
+        },
+        {
+          "path": "results/live/qpu-job-retention-audit.json",
+          "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
+        },
+        {
+          "path": "results/kaggle/2026-10-16T052709Z-gororoba-ghost-runs/collect.json",
+          "sha256": "ea80686f2cfc6fff18b46cea512929b76dec6a8e7652972c98bbde6f8c66a908"
+        }
+      ],
+      "documents": [
+        "docs/evidence/ghost_runs/README.md"
+      ],
+      "gates": {
+        "core-286": "replay",
+        "core-287": "replay"
+      },
+      "acquisitions": [
+        "kingston-mod15-pilot",
+        "kingston-folded-qpe-ladder",
+        "kingston-correction-first",
+        "kingston-correction-second",
+        "fez-ripple-atlas",
+        "fez-rank-sectors",
+        "fez-n21-orbit-feedback",
+        "fez-n21-orbit-window",
+        "fez-patch-window",
+        "kingston-coherence-window",
+        "kingston-rank-sectors",
+        "kingston-ripple-atlas",
+        "kingston-corner-baseline",
+        "kingston-zero-divisor-fringe"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
