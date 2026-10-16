@@ -24,7 +24,10 @@ preimage of the rank-(32 - k) matrix manifold under x -> L_x.
 Each witness sits on a smooth family whose nullity Theorem 1.5 of
 math/0702075 fixes ([source note](../../notes/math-0702075.md)). The family
 dimensions use one more published fact: the unit zero divisors of A_4 form
-V_2(R^7), of dimension 11 (Theorem 15.7 at n = 4). Where a family's
+V_2(R^7), of dimension 11 (Theorem 15.7 of math/0511691 at n = 4,
+[source note](../../notes/math-0511691.md)). The 17-dimensional family is
+Theorem 7.5's S^5 bundle over V_2(R^7) together with the length ratio. Where
+a family's
 dimension meets the bound, D_(5,k) has exactly that local dimension at the
 witness.
 
@@ -62,9 +65,10 @@ would have been either failure.
   not state them.
 - **Families with a non-zero-divisor.** Every such family has a gap of
   exactly 2.
-- **Points outside H_5^perp.** Proposition 8.2's witnesses, at nullity 12,
-  reach the same bound of 15 as {a, 0}. Moreno's element, at nullity 4,
-  reaches the same bound of 27 as the nullity-4 families.
+- **Points outside H_5^perp.** These carry upper bounds only, since no
+  family through them is constructed. Proposition 8.2's witnesses, at
+  nullity 12, have the same bound of 15 as {a, 0}. Moreno's element, at
+  nullity 4, has the same bound of 27 as the nullity-4 families.
 - **Where the 2 points.** A unit zero-product pair has x_0 = x_16 = 0, which
   leaves two coordinates of H_5 free: e_8 and e_24.
 
@@ -87,6 +91,7 @@ This is a local slice of roadmap item 3 in
 ## Replay
 
 `"$PYTHON" scripts/rank_locus_local_dimension.py --check docs/evidence/rank_locus_local_dimension/result.json`
-recomputes every witness and requires the record byte for byte. It runs in
+recomputes every witness and requires the retained file to equal, byte for
+byte, the text `--out` writes. It runs in
 about 4 s on 12 CPUs, and serially with `GOROROBA_WORKERS=1`. The gate is
 core-328, in normal and `-O` mode.

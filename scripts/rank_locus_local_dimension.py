@@ -20,12 +20,13 @@ The lower bounds come from smooth families through the witnesses, in the
 bracket coordinates {a, b} = (a + b, e_8 (b - a)) of H_5^perp
 (math/0702075, docs/notes/math-0702075.md). Theorem 1.5 fixes the nullity of
 each family, and the unit zero divisors of A_4 form V_2(R^7), a manifold of
-dimension 11 (Theorem 15.7 at n = 4), so their cone Z has dimension 12. A
+dimension 11 (Theorem 15.7 of math/0511691 at n = 4), so their cone Z has
+dimension 12. A
 family's dimension at unit norm is its cone dimension minus one:
 
   zd-axis              {a, 0}, a in Z                       nullity 16   12 - 1 = 11
   nonzd-axis           {a, 0}, a in C_4^perp outside Z      nullity 12   14 - 1 = 13
-  zd-zd-locus          a, b in Z, b in V(a)                 nullity 12   16 + 1 = 17 (Theorem 7.5 plus the ratio)
+  zd-zd-locus          a, b in Z, b in V(a)                 nullity 12   16 + 1 = 17 (Theorem 7.5 + ratio)
   zd-zd-generic        a, b in Z off the D-locus            nullity  8   24 - 1 = 23
   zd-nonzd-locus       a in Z, b in the D-locus space W(a)  nullity  8   12 + dim W(a) - 1
   zd-nonzd-generic     a in Z, b outside Z off the locus    nullity  4   26 - 1 = 25
@@ -46,6 +47,9 @@ from its family's, or a family dimension above the tangent bound.
 Usage:
     "$PYTHON" scripts/rank_locus_local_dimension.py --out PATH
     "$PYTHON" scripts/rank_locus_local_dimension.py --check PATH
+
+--check recomputes every witness and requires the retained file to equal,
+byte for byte, the text --out writes.
 """
 
 from __future__ import annotations
@@ -244,12 +248,12 @@ def main() -> int:
     mode.add_argument("--check", type=Path)
     args = parser.parse_args()
     record = run()
+    text = json.dumps(record, indent=1) + "\n"
     if args.out:
         args.out.parent.mkdir(parents=True, exist_ok=True)
-        args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+        args.out.write_text(text, encoding="utf-8")
     else:
-        retained = json.loads(args.check.read_text(encoding="utf-8"))
-        _require(retained == json.loads(json.dumps(record)), "the recomputed certificate differs from the record")
+        _require(args.check.read_text(encoding="utf-8") == text, "the retained file differs from the recomputed text")
     for entry in record["summary"]:
         print(json.dumps(entry))
     _require(not record["violations"], f"witnesses {record['violations']} contradict their family")
