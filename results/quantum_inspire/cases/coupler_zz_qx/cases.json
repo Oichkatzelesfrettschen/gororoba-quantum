@@ -1,0 +1,89 @@
+{
+ "schema": "qi-coupler-zz-map-v2",
+ "backend": "QXsinglenodesimulator",
+ "profile": "qx",
+ "edges": [
+  [
+   0,
+   1
+  ],
+  [
+   0,
+   2
+  ],
+  [
+   1,
+   4
+  ],
+  [
+   2,
+   4
+  ],
+  [
+   2,
+   5
+  ],
+  [
+   3,
+   5
+  ],
+  [
+   3,
+   6
+  ],
+  [
+   4,
+   7
+  ],
+  [
+   4,
+   8
+  ],
+  [
+   5,
+   8
+  ],
+  [
+   5,
+   9
+  ],
+  [
+   6,
+   9
+  ]
+ ],
+ "parts": {
+  "P": [
+   0,
+   4,
+   5,
+   6
+  ],
+  "Q": [
+   1,
+   2,
+   3,
+   7,
+   8,
+   9
+  ]
+ },
+ "delays_cycles": [
+  25,
+  100
+ ],
+ "cycle_seconds": 2e-08,
+ "quadratures": [
+  "x",
+  "y"
+ ],
+ "shots": 2048,
+ "batch_limit": 3,
+ "circuits": 10,
+ "batches": [
+  "batch-00",
+  "batch-01",
+  "batch-02",
+  "batch-03"
+ ]
+}

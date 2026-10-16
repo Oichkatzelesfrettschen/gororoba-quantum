@@ -35,13 +35,15 @@ circuits; with two readout-calibration circuits the case is 10 circuits,
 submitted in batches of at most BATCH = 3, one batch at a time, which keeps
 the account within the FAQ's three queued jobs per hardware backend.
 
---write DIR writes DIR/batch-NN/ case directories and cases.json; --check DIR
-regenerates and compares bytes; --conformance schedules the emitted circuits
+--write DIR writes DIR/coupler_zz_tuna_17/ and the QX dry run DIR/coupler_zz_qx/
+(batch-NN/ case directories and cases.json); --check DIR regenerates both and
+compares bytes; --conformance schedules the emitted circuits
 ALAP, evolves all 17 qubits under injected omega_q and every J_ab per cycle,
 and requires the analysis to recover them; --analyze OUT RUN_DIR... analyzes
 collected batches.
 
 Usage: "$PYTHON" scripts/qi_coupler_zz_map.py (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR...)
+       (DIR is the cases root, results/quantum_inspire/cases)
 """
 
 from __future__ import annotations
@@ -60,23 +62,30 @@ import numpy as np
 
 ROOT = Path(__file__).resolve().parents[1]
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
-BACKEND = "tuna_17"
 CYCLE_SECONDS = 20e-9
+# The QX dry run keeps Tuna-17's coupling map restricted to qubits 0-9 (12
+# couplers, still bipartite), since QX serves this account 10 qubits; QX has
+# no residual coupling or detuning, so every rate it returns must vanish.
+PROFILES: dict[str, dict[str, Any]] = {
+    "tuna_17": {"identifier": "tuna_17", "qubits": 17, "shots": 16384, "directory": "coupler_zz_tuna_17"},
+    "qx": {"identifier": "QXsinglenodesimulator", "qubits": 10, "shots": 2048, "directory": "coupler_zz_qx"},
+}
 DELAYS = (25, 100)
 QUADRATURES = ("x", "y")
-SHOTS = 16384
 BATCH = 3
 ROLES = ("P", "Q")
 Table = dict[tuple[str, str, int, int, tuple[int, ...]], tuple[float, float]]
 
 
-def tuna17() -> dict[str, Any]:
+def backend_type(identifier: str) -> dict[str, Any]:
     catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
-    return next(b for b in catalogue["backend_types"] if b["identifier"] == BACKEND)
+    return next(b for b in catalogue["backend_types"] if b["identifier"] == identifier)
 
 
-def edges(backend: dict[str, Any]) -> list[tuple[int, int]]:
-    return sorted({(min(e), max(e)) for e in backend["topology"]})
+def edges(qubits: int) -> list[tuple[int, int]]:
+    """Tuna-17's couplers among qubits 0 .. qubits - 1."""
+    tuna = backend_type("tuna_17")
+    return sorted({(min(e), max(e)) for e in tuna["topology"] if max(e) < qubits})
 
 
 def neighbors(pairs: list[tuple[int, int]]) -> dict[int, list[int]]:
@@ -124,21 +133,24 @@ def readout_lines(nqubits: int, prepared: int) -> list[str]:
     return [*header(nqubits), *flips, "", "barrier q", "b = measure q", ""]
 
 
-def members() -> tuple[dict[str, Any], list[tuple[str, str]]]:
-    backend = tuna17()
-    n = backend["nqubits"]
-    pairs = edges(backend)
+def members(profile: str) -> tuple[dict[str, Any], list[tuple[str, str]]]:
+    settings = PROFILES[profile]
+    backend = backend_type(str(settings["identifier"]))
+    n = int(settings["qubits"])
+    if n > backend["nqubits"]:
+        raise SystemExit(f"{profile} needs {n} qubits; the backend type serves {backend['nqubits']}")
+    pairs = edges(n)
     split = parts(pairs, n)
     out = [("readout-0.cq", "\n".join(readout_lines(n, 0))), ("readout-1.cq", "\n".join(readout_lines(n, 1)))]
     for role, quadrature, delay in itertools.product(ROLES, QUADRATURES, DELAYS):
         name = f"targets-{role}-{quadrature}-d{delay:03d}.cq"
         out.append((name, "\n".join(circuit_lines(n, split[role], quadrature, delay))))
-    meta = {"backend": backend, "nqubits": n, "pairs": pairs, "parts": split}
+    meta = {"backend": backend, "nqubits": n, "pairs": pairs, "parts": split, "shots": int(settings["shots"])}
     return meta, out
 
 
-def build() -> dict[str, str]:
-    meta, ordered = members()
+def build(profile: str) -> dict[str, str]:
+    meta, ordered = members(profile)
     files: dict[str, str] = {}
     batches = []
     for start in range(0, len(ordered), BATCH):
@@ -155,23 +167,24 @@ def build() -> dict[str, str]:
             )
         case = {
             "schema": "qi-coupler-zz-cases-v1",
-            "backend": BACKEND,
+            "backend": meta["backend"]["identifier"],
             "backend_type_id": meta["backend"]["id"],
             "nqubits": meta["nqubits"],
-            "shots": SHOTS,
+            "shots": meta["shots"],
             "circuits": rows,
         }
         files[f"{directory}/cases.json"] = json.dumps(case, indent=1) + "\n"
         batches.append(directory)
     summary = {
         "schema": "qi-coupler-zz-map-v2",
-        "backend": BACKEND,
+        "backend": meta["backend"]["identifier"],
+        "profile": profile,
         "edges": [list(e) for e in meta["pairs"]],
         "parts": meta["parts"],
         "delays_cycles": list(DELAYS),
         "cycle_seconds": CYCLE_SECONDS,
         "quadratures": list(QUADRATURES),
-        "shots": SHOTS,
+        "shots": meta["shots"],
         "batch_limit": BATCH,
         "circuits": len(ordered),
         "batches": batches,
@@ -330,9 +343,9 @@ def exact_probabilities(lines: list[str], nqubits: int, omega: Any, coupling: di
     return np.abs(state) ** 2
 
 
-def conformance() -> str:
+def conformance(profile: str) -> str:
     """Recover injected omega_q and every J_ab from exact probabilities of the emitted circuits."""
-    meta, ordered = members()
+    meta, ordered = members(profile)
     n = meta["nqubits"]
     rng = random.Random(11)
     scale = 2 * math.pi * CYCLE_SECONDS
@@ -365,7 +378,8 @@ def conformance() -> str:
         worst = max(worst, abs(row["omega_hz"] - float(omega[row["target"]]) * to_hz))
     if worst > 1.0:
         raise SystemExit(f"conformance: recovered rates differ from the injected ones by {worst:.3g} Hz")
-    return f"conformance: {len(report['edges'])} couplers from both ends and {n} frequencies within {worst:.2g} Hz"
+    couplers = len(report["edges"])
+    return f"conformance {profile}: {couplers} couplers from both ends and {n} frequencies within {worst:.2g} Hz"
 
 
 def main() -> int:
@@ -377,11 +391,14 @@ def main() -> int:
     mode.add_argument("--analyze", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
     args = parser.parse_args()
     if args.conformance:
-        print(conformance())
+        for profile in PROFILES:
+            print(conformance(profile))
         return 0
     if args.analyze:
         out, *runs = args.analyze
-        meta, _ = members()
+        backend = json.loads((runs[0] / "cases.json").read_text(encoding="utf-8"))["backend"]
+        profile = next(name for name, settings in PROFILES.items() if settings["identifier"] == backend)
+        meta, _ = members(profile)
         shots: dict[str, list[str]] = {}
         for run in runs:
             for row in json.loads((run / "cases.json").read_text(encoding="utf-8"))["circuits"]:
@@ -393,6 +410,7 @@ def main() -> int:
         }
         report = {
             "schema": "qi-coupler-zz-analysis-v1",
+            "profile": profile,
             "runs": [r.as_posix() for r in runs],
             "readout_assignment": {str(q): list(v) for q, v in assignment.items()},
             **analyze_table(meta, tabulate(meta, shots), assignment),
@@ -400,15 +418,17 @@ def main() -> int:
         out.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
         print(f"{len(report['edges'])} couplers -> {out}")
         return 0
-    files = build()
-    for name, text in files.items():
-        path = (args.write or args.check) / name
-        if args.write:
-            path.parent.mkdir(parents=True, exist_ok=True)
-            path.write_text(text, encoding="utf-8")
-        elif path.read_text(encoding="utf-8") != text:
-            raise SystemExit(f"{path} differs from its regeneration")
-    print(f"qi coupler zz map: {len(files)} files {'written' if args.write else 'match their regeneration'}")
+    count = 0
+    for profile, settings in PROFILES.items():
+        for name, text in build(profile).items():
+            path = (args.write or args.check) / str(settings["directory"]) / name
+            if args.write:
+                path.parent.mkdir(parents=True, exist_ok=True)
+                path.write_text(text, encoding="utf-8")
+            elif path.read_text(encoding="utf-8") != text:
+                raise SystemExit(f"{path} differs from its regeneration")
+            count += 1
+    print(f"qi coupler zz map: {count} files {'written' if args.write else 'match their regeneration'}")
     return 0
 
 
