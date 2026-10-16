@@ -1,0 +1,24 @@
+{
+ "schema": "qi-coupler-zz-cases-v1",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "nqubits": 17,
+ "shots": 16384,
+ "circuits": [
+  {
+   "file": "targets-P-x-d100.cq",
+   "kind": "ramsey",
+   "sha256": "f742a39b1784de0a5da2ce7e6b7b4f484f374d5464308ed915e2e68e8f3628e9"
+  },
+  {
+   "file": "targets-P-y-d025.cq",
+   "kind": "ramsey",
+   "sha256": "3be8d5cb6f6cd483a0e3a0b045e07e95ec79f948433357eb850a6933a1758124"
+  },
+  {
+   "file": "targets-P-y-d100.cq",
+   "kind": "ramsey",
+   "sha256": "bcc898a07aafc4c8cfd33f75d5c004dfd6d2bf00ea77cad2135f27742fb121ac"
+  }
+ ]
+}
