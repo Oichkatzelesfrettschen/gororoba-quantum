@@ -2316,7 +2316,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/signed_kernel_noise.py --check docs/evidence/signed_kernel_noise/result.json --t=-0.05,0,0.05",
+   "cmd": "\"$PYTHON\" -B -W error scripts/signed_kernel_noise.py --check docs/evidence/signed_kernel_noise/result.json --run results/kaggle/2026-10-16T064039Z-gororoba-signed-kernel-noise --t=-0.05,0,0.05",
    "name": "core-304",
    "seconds": 20.0,
    "tier": "pr"
