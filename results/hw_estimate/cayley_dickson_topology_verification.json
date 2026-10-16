@@ -15,7 +15,7 @@
       ],
       "path": "results/hw_estimate/annihilator_strata.json",
       "serial_parallel_bytes_equal": true,
-      "sha256": "30b3fde6d72f11b5dfcae5ace8f47c80fa35d9aaf782d34c08b299151234af77"
+      "sha256": "3e7064c2c99a71519b221420cb70793818400f0dc4df59d46ad8a32f40ca151b"
     },
     "sedenion_bundle": {
       "commands": [
@@ -33,7 +33,7 @@
   "source_ledger": "literature/notes/cayley_dickson_annihilator_sources.md",
   "source_sha256": {
     "gororoba_quantum/CLAIM_BOUNDARIES.md": "1bf8d5e04d2376afd37946461d199806224262570ecaf228d707acc26e425b65",
-    "gororoba_quantum/annihilator_strata.py": "af9eb133bf69d277ee0108899bc1a87abe5edc01455d43f9483d7e8f067b518c",
+    "gororoba_quantum/annihilator_strata.py": "82c284cccf1406d8c468b2396e3f4ff4084ec47a6a6ced72df18f0f170673ab2",
     "gororoba_quantum/cd_core.py": "3e28db5844f9a50c0e5e95ee24147e26601bc11bb7115aa7ac2b9d666471bfc1",
     "gororoba_quantum/parallel.py": "9de69d2e33806695d7565b1148296ef97d9361defc1ea6868135aaf8684bb4b3",
     "gororoba_quantum/sedenion_bundle.py": "6908c8d9a5f411875a121cf8720698234ed5c016ff203ce86ca236b67912142c",

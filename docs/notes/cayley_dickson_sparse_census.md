@@ -31,7 +31,7 @@ fraction-free elimination and full-matrix kernel checks verify representatives
 of every occurring stratum.
 
 The retained file has SHA-256
-`30b3fde6d72f11b5dfcae5ace8f47c80fa35d9aaf782d34c08b299151234af77`.
+`3e7064c2c99a71519b221420cb70793818400f0dc4df59d46ad8a32f40ca151b`.
 The ordered dimension-32 row digest is
 `9d21744b5e2c5494fb6a006732bdbc603fece830bf6ca1721678607e40a0dcf8`.
 The [verification manifest](../../results/hw_estimate/cayley_dickson_topology_verification.json)
