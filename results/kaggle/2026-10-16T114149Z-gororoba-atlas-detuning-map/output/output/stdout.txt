@@ -1,0 +1,7 @@
+{"lane": 0, "shot_noise_rms_rad": 0.04106, "loo": {"lane_mean": [0.15408, null], "detuning": [0.180273, 0.186128], "cz_phase": [0.213544, 0.213665], "detuning_and_cz_phase": [0.336958, 0.313635]}}
+{"lane": 1, "shot_noise_rms_rad": 0.029548, "loo": {"lane_mean": [0.237993, null], "detuning": [0.120025, 0.119529], "cz_phase": [0.180219, 0.179703], "detuning_and_cz_phase": [0.153678, 0.116012]}}
+{"lane": 2, "shot_noise_rms_rad": 0.026665, "loo": {"lane_mean": [0.212169, null], "detuning": [0.092917, 0.093433], "cz_phase": [0.136314, 0.13318], "detuning_and_cz_phase": [0.247228, 0.23973]}}
+{"lane": 3, "shot_noise_rms_rad": 0.033893, "loo": {"lane_mean": [0.172815, null], "detuning": [0.113562, 0.116841], "cz_phase": [0.164523, 0.163639], "detuning_and_cz_phase": [0.078662, 0.080944]}}
+{"lane": 4, "shot_noise_rms_rad": 0.028789, "loo": {"lane_mean": [0.136317, null], "detuning": [0.103212, 0.104108], "cz_phase": [0.091286, 0.091183], "detuning_and_cz_phase": [0.264389, 0.304407]}}
+{"lane": 5, "shot_noise_rms_rad": 0.034786, "loo": {"lane_mean": [0.129892, null], "detuning": [0.113313, 0.108305], "cz_phase": [0.130073, 0.130756], "detuning_and_cz_phase": [0.323747, 0.339028]}}
+{"lane": 6, "shot_noise_rms_rad": 0.028582, "loo": {"lane_mean": [0.129022, null], "detuning": [0.074279, 0.085782], "cz_phase": [0.15116, 0.150696], "detuning_and_cz_phase": [0.073487, 0.076558]}}

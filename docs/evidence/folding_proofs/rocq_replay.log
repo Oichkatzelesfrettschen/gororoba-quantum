@@ -1,5 +1,5 @@
-The Rocq Prover, version 9.1.1
-compiled with OCaml 5.4.0
+The Rocq Prover, version 9.2
+compiled with OCaml 5.5.0
 compile_pass theories/GF2Algebra.v
 compile_pass theories/SignCodeProjection.v
 compile_pass theories/SchreierSignCode.v

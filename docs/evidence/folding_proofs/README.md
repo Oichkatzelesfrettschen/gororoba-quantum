@@ -20,16 +20,16 @@ The script derives its repository root from its own path. Its explicit runtime c
 
 ## Rocq replay
 
-Set `GOROROBA_ROOT` to an `open_gororoba` checkout with the source bytes in `source_hashes.sha256`. The audited commit is `abbf13cada78d9b106fc610a36f6eea54567ecfc`. The script verifies all listed source hashes before copying the proof closure into a freshly created temporary directory.
+Set `GOROROBA_ROOT` to an `open_gororoba` checkout with the source bytes in `source_hashes.sha256`, which pin commit `7d95d228db6be8a5b2f613430f04f2385d6ae48a`. The script verifies all listed source hashes before copying the proof closure into a freshly created temporary directory.
 
-The retained receipt requires **Rocq 9.1.1 compiled with OCaml 5.4.0**. The replay compares both version lines before checking source hashes or creating proof objects. `ROCQ` defaults to `rocq` and accepts an executable path for a selected installation. An incompatible compiler version fails admission.
+The retained receipt requires the build in `toolchain.txt`, **Rocq 9.2 compiled with OCaml 5.5.0**. The replay compares both version lines before checking source hashes or creating proof objects. `ROCQ` defaults to `rocq` and accepts an executable path for a selected installation; any other build fails admission (`check_compiler_gate.py`).
 
 ```sh
 export GOROROBA_ROOT
 ROCQ="${ROCQ:-rocq}" sh docs/evidence/folding_proofs/replay_rocq.sh
 ```
 
-`replay_rocq.sh` compiles all proof bodies with `-q -w +all`, requires seven globally closed assumption queries, and runs the independent kernel checker. Its cleanup removes only its own freshly created temporary directory. It never reads cached sister-repository proof objects. `rocq_replay.log` retains the complete successful stdout; `assumptions.log` and `kernel-check.log` retain the initial audit's individual outputs.
+`replay_rocq.sh` compiles all proof bodies with `-q -w +all`, requires seven globally closed assumption queries, and runs the independent kernel checker. Its cleanup removes only its own freshly created temporary directory. It never reads cached sister-repository proof objects. `rocq_replay.log` is its complete stdout, and a second run reproduces it byte for byte.
 
 The independent import probe uses the same compiler and warning policy:
 
@@ -37,6 +37,8 @@ The independent import probe uses the same compiler and warning policy:
 ROCQ="${ROCQ:-rocq}" sh docs/evidence/folding_proofs/replay_rocq.sh --probe-deprecation
 ```
 
-The recorded environment returns exit 1 for that probe because the transitive `Stdlib.ZArith.ZArith_base` library carries a deprecation. `homotopy_import_deprecation.log` retains the diagnostic with its machine-specific installation prefix replaced by `<ROCQ_PREFIX>`. `verification_receipt.json` records the original diagnostic hash and the redaction. The failure remains distinct from the successful sign-code closure. The script propagates an import failure; an installation with repaired library imports can return success without altering the historical receipt.
+It returns exit 1 under Rocq 9.2 as under 9.1.1: the transitive `Stdlib.ZArith.ZArith_base` library carries a deprecation, now tagged `deprecated-transitive-library-file-since-Stdlib-9.0`. `homotopy_import_deprecation.log` retains the diagnostic with its machine-specific installation prefix replaced by `<ROCQ_PREFIX>`, and `verification_receipt.json` records the original diagnostic hash and the redaction. The failure remains distinct from the successful sign-code closure.
 
-The source audit identifies a separate sister-repository follow-up for stale Stiefel prose, C881 proof-scope wording, and the deprecated import path. The present bundle owns evidence and replay only.
+The pin moved from the audited commit `abbf13c` to `7d95d228` because `SchreierSignCode.v` at `abbf13c` fails under Rocq 9.2 (`bad-template-constraint` in `cube_equal_spec`), which open_gororoba's merged re-proof repairs. Four pinned sources differ between the two commits: `SchreierSignCode.v`, `C881_GF2CubicMinDegree.v`, `crates/algebra_analysis/src/stiefel.rs` and `crates/algebra_analysis/src/exact_annihilator.rs`. The re-pin establishes compilation and kernel replay of the closure at `7d95d228` only. The [source audit](../../notes/open_gororoba_folding_proofs.md) and its line locators describe `abbf13c`, and `history/abbf13c-rocq-9.1.1/` keeps that commit's hashes, the Rocq 9.1.1 receipt and logs, and the initial audit's individual `assumptions.log` and `kernel-check.log`.
+
+The deprecated `ZArith_base` import in `HomotopyTransferAssociator.v` remains an open_gororoba follow-up.

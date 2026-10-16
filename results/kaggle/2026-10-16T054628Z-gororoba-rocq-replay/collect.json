@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-rocq-replay/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T062032Z",
+ "files": {
+  "gororoba-rocq-replay.log": "7ddeef96c527363ba7244837622c5383b456e5bca8b7c45185b12b6a67b39081",
+  "output/environment.json": "2d45f22c2c308b957c0d149df6ba7c5cfafe2d9ff5723302280c0d13aae2eda7",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "9161fe0143513d313ff1c55ce4f347bcfa910e9f05412254e625b75cda4e7e35",
+  "output/pip.txt": "970df0295f0024099cb84b5632b06b3e7402cdba7435065523ebd06b921e7e4d",
+  "output/repo/results/kaggle_out/rocq_replay.json": "5e6055b6dd3910a66a3fb6fad0e5a23607e9337cd0ad3a7a00f63bace7c914e8",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "49c3902d26fa7abf5b6f57b49a402238a668f7726df32180a6ac9ff13c786b21"
+ }
+}

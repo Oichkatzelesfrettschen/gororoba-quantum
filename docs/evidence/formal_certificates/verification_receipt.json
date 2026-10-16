@@ -1,8 +1,8 @@
 {
   "schema": "formal-certificate-verification-v1",
   "compiler": {
-    "rocq": "9.1.1",
-    "ocaml": "5.4.0",
+    "rocq": "9.2",
+    "ocaml": "5.5.0",
     "flags": [
       "-q",
       "-w",
