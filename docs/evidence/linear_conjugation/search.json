@@ -18,14 +18,15 @@
  "cosets": 83328,
  "coset_order": "sorted column tuples of GL(5,2), lexicographic",
  "sources": {
-  "scripts/linear_conjugation_search.py": "17895c93a1304f3458c1288de40fce3b5058285c07107396a8c8267234f28a7e",
-  "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc"
+  "scripts/linear_conjugation_search.py": "8c057fcd810192b36b2b3ccd2ac55b49abd4cf9f4143e0bcf260e8af47b2cbcc",
+  "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
+  "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725"
  },
  "shards": [
   {
    "start": 0,
    "stop": 16665,
-   "seconds": 945.924,
+   "seconds": 1041.117,
    "environment": {
     "python": "3.13.15",
     "machine": "x86_64",
@@ -38,7 +39,7 @@
   {
    "start": 16665,
    "stop": 33331,
-   "seconds": 899.274,
+   "seconds": 933.711,
    "environment": {
     "python": "3.13.15",
     "machine": "x86_64",
@@ -51,7 +52,7 @@
   {
    "start": 33331,
    "stop": 49996,
-   "seconds": 1087.294,
+   "seconds": 1093.798,
    "environment": {
     "python": "3.13.15",
     "machine": "x86_64",
@@ -64,7 +65,7 @@
   {
    "start": 49996,
    "stop": 66662,
-   "seconds": 1115.898,
+   "seconds": 785.046,
    "environment": {
     "python": "3.13.15",
     "machine": "x86_64",
@@ -77,7 +78,7 @@
   {
    "start": 66662,
    "stop": 83328,
-   "seconds": 985.939,
+   "seconds": 920.952,
    "environment": {
     "python": "3.13.15",
     "machine": "x86_64",
