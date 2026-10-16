@@ -301,9 +301,10 @@ cd_core is unmeasured and no artifact claims one.
 - Simulations of 14 qubits or fewer run on Kaggle kernels through
   `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
   entry's repository imports with `kaggle_kernel/` (the kernel program and
-  its AGENTS.md), installs qiskit 2.5.2 with qiskit-aer 0.17.2 (or
-  qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the hypercomplex package
-  stack before the entry runs, and retains the output under results/kaggle/.
+  its AGENTS.md), installs qiskit 2.5.2 and qiskit-ibm-runtime 0.50.0 with
+  qiskit-aer 0.17.2 (or qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the
+  hypercomplex package stack before the entry runs, and retains the output
+  under results/kaggle/.
   A kernel runs on a CPU machine by default; a case requests a GPU
   (`--machine NvidiaTeslaT4`) when its widest density matrix reaches
   `local_compute.GPU_MIN_ACTIVE_QUBITS`, since narrower replays run slower
@@ -450,10 +451,12 @@ python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
 which leaves AOCL in place; a package without a local PKGBUILD comes from
 the distribution repositories through pacman or paru. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2
-and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel stops at
-0.15.1) over the Kaggle image's numpy and scipy, records every version in
-`environment.json`, and holds no IBM credential (`kaggle_kernel/AGENTS.md`).
+submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2,
+qiskit-ibm-runtime 0.50.0 (its fake backends, such as FakeFez, need no
+account) and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel
+stops at 0.15.1) over the Kaggle image's numpy and scipy, records every
+version in `environment.json`, and holds no IBM credential
+(`kaggle_kernel/AGENTS.md`).
 <!-- heron-execution-facts:end -->
 
 ## Qiskit skills

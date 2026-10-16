@@ -46,6 +46,7 @@ REPORTED_PACKAGES = (
     "qiskit",
     "qiskit-aer",
     "qiskit-aer-gpu-cu11",
+    "qiskit-ibm-runtime",
     "numpy",
     "scipy",
     "sympy",
