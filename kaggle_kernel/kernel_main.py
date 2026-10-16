@@ -203,7 +203,9 @@ def ghz_trial(method: str, width: int, device: str = "GPU") -> dict[str, Any]:
 def capacity() -> dict[str, Any]:
     """Each width runs in its own process, so an allocation the host kills ends that trial only."""
     if not gpus():
-        return {"skipped": "no GPU attached"}
+        skipped = {"skipped": "no GPU attached"}
+        write("capacity.json", skipped)
+        return skipped
     result: dict[str, Any] = {
         "shots": 256,
         "circuit": "GHZ: H then a CX chain, measured on every qubit",

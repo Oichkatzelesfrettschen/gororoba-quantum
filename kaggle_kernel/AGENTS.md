@@ -11,11 +11,11 @@ and what it must prove before its output counts.
 | --- | --- | --- |
 | Kaggle GPU kernel (Aer on GPU) | every simulation of 14 qubits or fewer: noise simulations under a retained calibration export, design power analyses, parameter sweeps | IBM jobs; anything needing an IBM credential |
 | Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |
-| Kaggle TPU (v5e-8 shape) | JAX code only; Aer has no TPU backend, so no repository simulation uses it | Qiskit or Aer |
+| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. Batch pushes requesting either ID ran on 4-core CPU machines without libtpu, so this account reaches no TPU through the CLI | Qiskit or Aer |
 | Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |
 | IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 15 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
 | GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |
-| Build host (Arch, RTX 4070 Ti 12 GB) | development, dry runs, calibration exports, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |
+| Build host (Arch, RTX 4070 Ti 12 GB; guide in the untracked `docs/local/`) | development, dry runs, calibration exports, CPU replays, the Arch-packaged hypercomplex stack and SageMath | runs the routing rule sends to Kaggle |
 
 ## Every kernel's phases
 
@@ -57,5 +57,7 @@ and what it must prove before its output counts.
 - An output is a numerical simulation. It enters
   `docs/state/research_state.json` only after a CPU replay gate re-derives
   a reduced case.
-- Measured limits of each machine shape are in
-  `docs/notes/kaggle/substrates.md`.
+- The push selects hardware with `--accelerator`; `environment.json`
+  records what actually ran.
+- Measured limits of each machine shape, the qubit size guide and the
+  captured Kaggle documentation are in `docs/notes/kaggle/`.

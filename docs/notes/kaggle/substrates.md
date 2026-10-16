@@ -32,7 +32,7 @@ Kaggle session with the build host.
 | CPU only | Kaggle CPU session (4 cores, 30 GB); build host (Ryzen 5 5600X3D, 12 threads, 62 GiB) | transpilation, package builds, Aer CPU methods (stabilizer, matrix product state, extended stabilizer are CPU-only in Aer), the CPU replay of a reduced case |
 | GPU (with its host CPU) | Kaggle GPU sessions (4 cores, 29 GB RAM); build host RTX 4070 Ti | Aer `device="GPU"` statevector, density matrix, unitary, superop and tensor network; the host CPU transpiles meanwhile |
 | Two GPUs in one session | Kaggle `NvidiaTeslaT4` (2 x T4) | either independent experiments on separate GPUs (one process per GPU through `CUDA_VISIBLE_DEVICES`), or one state split across both with Aer chunking (`blocking_enable`, `blocking_qubits`), which moves the double-precision density matrix from 14 to 15 qubits and the statevector from 29 to 30 (estimate, not measured) |
-| TPU (with its host CPU) | Kaggle `TpuV5E8`, `TpuV6E8` | JAX only; Aer has no TPU backend, so a TPU session serves the repository as a large CPU host (96 cores and 330 GB RAM on the documented v3-8 VM) unless a JAX simulator is written |
+| TPU (with its host CPU) | Kaggle `TpuV5E8`, `TpuV6E8` | JAX only; Aer has no TPU backend, so a TPU session would serve the repository as a large CPU host (96 cores and 330 GB RAM on the documented v3-8 VM). Batch pushes with either ID, through `--accelerator` or metadata, ran on 4-core Xeon CPU machines whose JAX found no libtpu, so no TPU is reachable from the CLI on this account |
 | CPU + GPU + TPU at once | not inside one Kaggle session | across sessions: Kaggle GPU kernels for Aer, a Kaggle TPU session for CPU-heavy Aer or JAX, the build host for dry runs, calibration exports and replay gates |
 | Any of the above + IBM | only after an approved case | IBM answers device questions; every substrate above feeds its design, never its result |
 
@@ -47,14 +47,14 @@ circuit at 256 shots, each width tried once in its own process).
 
 | Substrate | Memory | Statevector, double / single (estimate) | Density matrix, double / single (estimate) | Measured |
 | --- | --- | --- | --- | --- |
-| Kaggle T4 (one GPU) | 15 GiB | 29 / 30 | 14 / 15 | see below |
+| Kaggle T4 (one GPU) | 15 GiB | 29 / 30 | 14 / 15 | density matrix 14 (1.0 s), 15 killed; statevector 29 (4.4 s), 30 killed, 31 refused by Aer (target maximum 30) |
 | Kaggle 2 x T4, chunked | 2 x 15 GiB | 30 / 31 | 15 / 15 | not measured |
 | Kaggle L4 | 24 GB | 30 / 31 | 15 / 15 | not reachable on this account so far |
 | Kaggle A100, H100 (80 GB) or RTX Pro 6000 (96 GB) | 80 to 96 GB | 32 / 33 | 16 / 16 | restricted IDs; not measured |
 | Kaggle CPU or GPU-session host RAM | 29 to 30 GB | 30 / 31 | 15 / 15 | not measured |
-| Kaggle TPU VM host RAM | 330 GB (documented, v3-8) | 34 / 35 | 17 / 17 | see below |
-| Build host RTX 4070 Ti | 12 GiB | 29 / 30 | 14 / 15 | `docs/local/` (untracked) |
-| Build host RAM | 62 GiB | 31 / 32 | 15 / 16 | `docs/local/` (untracked) |
+| Kaggle TPU VM host RAM | 330 GB (documented, v3-8) | 34 / 35 | 17 / 17 | not reachable: TPU pushes ran on 4-core CPU machines |
+| Build host RTX 4070 Ti | 12 GiB | 29 / 30 | 14 / 15 | density matrix 14, statevector 29; one wider fails with `std::bad_alloc` (detail in the untracked `docs/local/`) |
+| Build host RAM | 62 GiB | 31 / 32 | 15 / 16 | density matrix 15 (17 s), statevector 31 (74 s); wider widths need 64 GiB and are not tried |
 
 What goes where by width, under the routing rule:
 
@@ -65,6 +65,26 @@ What goes where by width, under the routing rule:
 | 16 to 17 qubits | TPU-VM host CPU density matrix, or statevector trajectories (one noisy shot per trajectory) on a GPU | Kaggle GPU statevector | IBM |
 | 18 to 30 qubits | statevector trajectories on a GPU, cost proportional to shots | Kaggle GPU statevector (29 double, 30 single on one T4) | IBM |
 | beyond 30 qubits | matrix product state or stabilizer methods where the circuit allows | the same, or the TPU-VM host CPU to about 34 qubits | IBM |
+
+## T4 x2 GPU kernel
+
+`results/kaggle/2026-10-16T025758Z-gororoba-substrate-probe-t4`
+
+| Quantity | Measured |
+| --- | --- |
+| CPU | Intel Xeon @ 2.00 GHz, 4 logical CPUs |
+| RAM | 31.35 GiB total |
+| GPUs | 2 x Tesla T4, 15,360 MiB each, compute capability 7.5, driver 580.178.04, CUDA 13.0 |
+| Working disk | 19.52 GiB |
+| Image packages | numpy 2.1.3, scipy 1.16.3, torch 2.11.0+cu128 |
+| Hypercomplex stack | built and proved byte-identical |
+| Density matrix (one GPU, double) | 12 to 14 qubits in under 1 s; 15 killed (signal 9) |
+| Statevector (one GPU, double) | 26 to 29 qubits in under 5 s; 30 killed (signal 9); 31 refused by Aer, whose GPU target reports 30 qubits at most |
+
+Each width ran in its own process, so the killed trials ended only
+themselves. Both failures sit where the state first exceeds one T4's 15 GiB
+(16 GiB at density matrix 15 and statevector 30), which places the single-GPU
+limits exactly at the memory estimate.
 
 ## CPU-only kernel
 
