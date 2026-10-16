@@ -134,7 +134,7 @@ bright control `(e4 + e15)/sqrt2` of both dark forms.
   therefore needs four arms: `+t`, `-t` and both nulls. The price above
   assumes two arms with no sign-dependent offset, so it understates the
   cost.
-- **Dark count.** Its contrast against a `t = 0` control is inverted: its
+- **Dark count.** At the evaluated `t`, its contrast against a `t = 0` control is inverted: its
   background falls with `|t|` faster than `p(t)` rises, so a resolved
   contrast (about 404,000 equal-arm shots at `t = 0.05`) measures that
   background rather than `p(t)`. The bright control keeps its ideal

@@ -88,7 +88,8 @@ of extra arm:
    `t`. A z = 3 resolution over its four equal arms needs 166,687 shots at
    `t = 0.05`, 43,810 at 0.1 and 12,025 at 0.2 under this model.
 5. **The dark contrast is inverted.** The selector-00 rate at `t`
-   minus the `t = 0` arm is negative at every `|t| <= 0.2`: -0.0029, -0.0047
+   minus the `t = 0` arm is negative at every evaluated `t` = +-0.05,
+   +-0.1 and +-0.2: -0.0029, -0.0047
    and -0.0054 at `t` = 0.05, 0.1 and 0.2, against ideal +0.0006, +0.0023 and
    +0.0083. The matched form gives -0.0028 to -0.0044.
    - Such a contrast is resolvable: 404,180, 156,745 and 118,841 equal-arm

@@ -2247,8 +2247,7 @@
         "docs/notes/conditional_ramsey_hamiltonian.md"
       ],
       "gates": {
-        "core-301": "replay",
-        "core-302": "admission"
+        "core-301": "replay"
       },
       "acquisitions": [],
       "assumptions": [],
@@ -2260,7 +2259,7 @@
     },
     {
       "id": "signed-kernel-noise-null-subtraction",
-      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the signed Hadamard readout of the perturbed e1+e10 kernel compiled at 279 CZ has visibility 0.60, within 10 percent of the (1 - e)^CZ factor; the sign phase alone shifts <Z_c> by 0.037 between its two values at t = 0, which exceeds the signal at t = 0.05, and subtracting a null arm per sign restores a constant visibility of 0.601 to 0.602 at t = 0.05, 0.1 and 0.2. The dark count's contrast against a t = 0 control is inverted at every |t| <= 0.2 while its bright control (e4 + e15)/sqrt2 keeps its ideal direction at a transmission of 0.81 to 0.83.",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the signed Hadamard readout of the perturbed e1+e10 kernel compiled at 279 CZ has visibility 0.60, within 10 percent of the (1 - e)^CZ factor; the sign phase alone shifts <Z_c> by 0.037 between its two values at t = 0, which exceeds the signal at t = 0.05, and subtracting a null arm per sign restores a constant visibility of 0.601 to 0.602 at t = 0.05, 0.1 and 0.2. The dark count's contrast against a t = 0 control is inverted at every evaluated t = +-0.05, +-0.1 and +-0.2 while its bright control (e4 + e15)/sqrt2 keeps its ideal direction at a transmission of 0.81 to 0.83.",
       "domain": "implementation",
       "evidence_class": "numerical or stochastic simulation",
       "status": "established",
@@ -2280,8 +2279,7 @@
         "docs/notes/signed_kernel_probe.md"
       ],
       "gates": {
-        "core-304": "replay",
-        "core-302": "admission"
+        "core-304": "replay"
       },
       "acquisitions": [],
       "assumptions": [],
