@@ -208,7 +208,9 @@ def noise_simulator(
     samples trajectories of the same channel. batched_shots enables Aer's
     batched_shots_gpu on a GPU device and is ignored on the CPU; a seeded
     batched run draws different samples than an unbatched one, so a record
-    states which sampler produced its counts.
+    states which sampler produced its counts. qiskit-aer-gpu-cu11 0.17.2
+    aborts a batched run of a circuit with control flow (its if_else lowers
+    to jump), so only static circuits batch (results/kaggle aer-gpu-probe).
     """
     view, noise = noise_model(snapshot)
     options: dict[str, Any] = {}

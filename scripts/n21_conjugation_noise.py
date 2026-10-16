@@ -21,7 +21,9 @@ compiles at optimization level 3 on the snapshot Target over the transpiler
 seeds, and the seed with the fewest routed CZ (then the least depth) runs.
 Sampling uses Aer statevector trajectories under the snapshot's noise model,
 an unbiased sample of the density-matrix channel live_run evaluates, on the
-device GOROROBA_AER_DEVICE names; a GPU batches shots (batched_shots_gpu).
+device GOROROBA_AER_DEVICE names. On a T4 host these 7-qubit dynamic
+circuits sample 1.5 to 8 times faster on the CPU than on the GPU
+(scripts/aer_gpu_probe.py), so the CPU is the default device for them.
 Aer carries the noise of the circuit's active qubits only
 (snapshot_laws.restrict_circuit and restrict), the same channel on each.
 
@@ -34,6 +36,7 @@ reads no IBM service and submits nothing.
 
 Usage:
     "$PYTHON" scripts/n21_conjugation_noise.py --challenger CHALLENGER.json --snapshots SNAP... --out PATH
+    "$PYTHON" scripts/n21_conjugation_noise.py --merge RECORD... --out PATH
     "$PYTHON" scripts/n21_conjugation_noise.py --check PATH
 
 --check recompiles every circuit's chosen seed on its retained snapshot and
@@ -361,8 +364,10 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
                 optimization_level=OPTIMIZATION_LEVEL, target=backend.target, seed_transpiler=chosen["seed_transpiler"]
             )
             active, qubits = snapshot_laws.restrict_circuit(manager.run(built[name]))
+            # Dynamic circuits stay unbatched: Aer's batched GPU sampler
+            # aborts on if_else (calibration_snapshot.noise_simulator).
             simulator = calibration_snapshot.noise_simulator(
-                snapshot_laws.restrict(snapshot, qubits), DEVICE, method="statevector", batched_shots=True
+                snapshot_laws.restrict(snapshot, qubits), DEVICE, method="statevector"
             )
             simulator.set_options(max_parallel_threads=parallel.workers())
             shots = TWO_ROUND_SHOTS if name.startswith("two_round") else TEN_ROUND_SHOTS
@@ -400,7 +405,6 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
         "simulation": {
             "method": "statevector trajectories",
             "device": DEVICE,
-            "batched_shots_gpu": DEVICE == "GPU",
             "seed_base": SIMULATOR_SEED,
             "workers": parallel.workers(),
         },
@@ -422,6 +426,23 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
     }
 
 
+def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
+    """One record holding every backend of per-backend records that agree on everything else."""
+    shared = [key for key in records[0] if key not in ("backends", "compile_seconds")]
+    for record in records[1:]:
+        differing = [key for key in shared if record.get(key) != records[0].get(key)]
+        _require(not differing, f"records disagree on {differing}")
+    merged = {key: records[0][key] for key in shared}
+    merged["backends"] = [
+        {**backend, "compile_seconds": record["compile_seconds"]}
+        for record in records
+        for backend in record["backends"]
+    ]
+    names = [backend["backend"] for backend in merged["backends"]]
+    _require(len(set(names)) == len(names), f"a backend repeats: {names}")
+    return merged
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
@@ -430,9 +451,16 @@ def main() -> int:
     parser.add_argument("--snapshots", type=Path, nargs="+")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path, help="retained record to replay without sampling")
+    parser.add_argument("--merge", type=Path, nargs="+", help="per-backend records to combine into --out")
     args = parser.parse_args()
     if args.check:
         print(f"n21_conjugation_noise: {check(json.loads(args.check.read_text(encoding='utf-8')))}")
+        return 0
+    if args.merge:
+        _require(args.out is not None, "--merge needs --out")
+        merged = merge([json.loads(path.read_text(encoding="utf-8")) for path in args.merge])
+        args.out.parent.mkdir(parents=True, exist_ok=True)
+        args.out.write_text(json.dumps(merged, indent=1) + "\n", encoding="utf-8")
         return 0
     _require(args.challenger and args.snapshots and args.out, "--challenger, --snapshots and --out are required")
     challenger = json.loads(args.challenger.read_text(encoding="utf-8"))

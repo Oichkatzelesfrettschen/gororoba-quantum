@@ -317,7 +317,11 @@ cd_core is unmeasured and no artifact claims one.
   A kernel runs on a CPU machine by default; a case requests a GPU
   (`--machine NvidiaTeslaT4`) when its widest density matrix reaches
   `local_compute.GPU_MIN_ACTIVE_QUBITS`, since narrower replays run slower
-  on a GPU and the weekly GPU quota is scarce. `kaggle_run.py shards`
+  on a GPU and the weekly GPU quota is scarce (7-qubit dynamic circuits
+  sample 1.5 to 8 times faster on the CPU, and Aer's batched GPU shots abort
+  on control flow: `docs/notes/kaggle/substrates.md`). An entry whose record
+  a CI gate recompiles is pushed with `--ci-env`, which runs it under CI's
+  interpreter and pins. `kaggle_run.py shards`
   replicates the CI gate shards for a commit on Kaggle CPU kernels in place
   of the build host. `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU
