@@ -156,8 +156,18 @@ def _sign_diagonal(t: float, controlled: bool, drop_sign: bool) -> DiagonalGate:
     return DiagonalGate(entries)
 
 
-def _load_u(circuit: QuantumCircuit) -> None:
-    circuit.compose(sparse_pair_prep(4, 4, 15, math.pi), [0, 1, 2, 3], inplace=True)
+def _load_u(circuit: QuantumCircuit, bright: bool = False) -> None:
+    """Load u = (e4 - e15)/sqrt2 on the data, or the bright control (e4 + e15)/sqrt2."""
+    circuit.compose(sparse_pair_prep(4, 4, 15, 0.0 if bright else math.pi), [0, 1, 2, 3], inplace=True)
+
+
+def bright_success(t: float) -> float:
+    """||B(t) u'||^2 for u' = (e4 + e15)/sqrt2: (4 + t^2) / (2 + |t|)^2.
+
+    L_e2 u' is orthogonal to (L_e1 + L_e10) u', whose norm is 2, so the bright
+    control reads 1 at t = 0 and stays near 1 at small t.
+    """
+    return (4.0 + t * t) / (2.0 + abs(t)) ** 2
 
 
 def _bits(mask: int) -> list[int]:
@@ -179,9 +189,9 @@ def block_encoding(t: float) -> QuantumCircuit:
     return circuit
 
 
-def dark_probe(t: float) -> QuantumCircuit:
-    circuit = QuantumCircuit(6, 2, name="kernel_dark")
-    _load_u(circuit)
+def dark_probe(t: float, *, bright: bool = False) -> QuantumCircuit:
+    circuit = QuantumCircuit(6, 2, name="kernel_bright" if bright else "kernel_dark")
+    _load_u(circuit, bright)
     circuit.compose(block_encoding(t), range(6), inplace=True)
     circuit.measure([4, 5], [0, 1])
     return circuit
@@ -254,9 +264,9 @@ def _phase_on_zero(circuit: QuantumCircuit, qubits: list[int]) -> None:
     circuit.x(qubits)
 
 
-def matched_dark_probe() -> QuantumCircuit:
-    circuit = QuantumCircuit(6, 2, name="kernel_dark_matched")
-    _load_u(circuit)
+def matched_dark_probe(*, bright: bool = False) -> QuantumCircuit:
+    circuit = QuantumCircuit(6, 2, name="kernel_bright_matched" if bright else "kernel_dark_matched")
+    _load_u(circuit, bright)
     circuit.compose(_matched_prep(), [4, 5], inplace=True)
     circuit.append(_sign_diagonal(1.0, controlled=False, drop_sign=True), range(6))
     _phase_on_zero(circuit, [4, 5])

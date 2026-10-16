@@ -9,25 +9,30 @@ perturbed sedenion kernel B(t) u = t v / (2 + |t|):
 It scales the signed visibility by (1 - e)^CZ at a median CZ error. This
 script replaces that factor with the noise model itself:
 
-1. It compiles both probes to the snapshot Target at optimization level 3,
-   with the layout pinned by the t = -1/20 compile.
-2. For each t of T_GRID it computes the exact noisy outcome law
-   (snapshot_laws.outcome_law: gate, idle and assignment noise of
-   live_run's model).
-3. It fits <Z_c> = c0 + V s(t) and P(selector = 00) = b + g p(t) by least
-   squares, and compares V with the median-error factor and with the product
-   of (1 - e) over the CZ edges the compile actually uses.
-4. It prices shots for a z = 3 resolution at t = 1/20, 1/10 and 1/5,
-   reporting the offset c0 against the signal V s.
+1. It compiles every probe to the snapshot Target at optimization level 3,
+   with the layout pinned by the LAYOUT_T compile: the retained dark and
+   signed probes, their structure-matched forms (one parametrized compile,
+   bound per t), and the bright control u' = (e4 + e15)/sqrt2 of both dark
+   forms, whose ideal success is (4 + t^2)/(2 + |t|)^2.
+2. Each arm's exact noisy law comes from snapshot_laws.outcome_law (gate,
+   idle and assignment noise of live_run's model), arm by arm through
+   parallel.ordered_map. The matched signed probe also runs a null arm at
+   t = 0 with each sign phase, and six term arms: the selector loaded with
+   one LCU term (e2, e1 or e10) at each phase, which separate the terms'
+   contributions to the readout.
+3. It fits each probe's readout against its ideal law by least squares and
+   compares the signed visibility with the median-error factor and with the
+   product of (1 - e) over the CZ edges the compile uses.
+4. It prices a z = 3 resolution of each contrast at t = 1/20, 1/10 and 1/5,
+   with the direction of every dark contrast against its t = 0 arm.
 
-Noiseless laws of the same compiled circuits must equal the statevector
-laws s(t) and p(t) to 1e-9, which checks the compile and the register move.
-Every arm's law is independent, so the arms run through parallel.ordered_map.
-The entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run
-DIR`` requires FILE to be byte-identical to the result collected in the
-Kaggle run DIR (its collect.json ledger), then recompiles and recomputes the
-laws at the ``--t`` values on the CPU and requires the CZ counts and layouts
-to match FILE exactly and each law to match it to 1e-8.
+Noiseless laws of the same compiled circuits must equal their ideal laws to
+1e-9, which checks the compile and the register move. The entry reads
+GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run DIR`` requires
+FILE to be byte-identical to the result collected in the Kaggle run DIR (its
+collect.json ledger), then recompiles and recomputes the laws at the ``--t``
+values (LAYOUT_T is always included) on the CPU, and requires the layouts
+and CZ counts to match FILE exactly and each law to match it to 1e-8.
 """
 
 from __future__ import annotations
@@ -62,6 +67,9 @@ T_GRID = (-0.2, -0.1, -0.05, 0.0, 0.05, 0.1, 0.2)
 PRICE_T = (0.05, 0.1, 0.2)
 LAYOUT_T = -0.05
 Z_SCORE = probe.Z_SCORE
+# Selector RY angles (prep_high, prep_low) that load one LCU term: s = 00 is
+# e2, s = 01 is e1 and s = 10 is e10 (signed_kernel_probe.SELECTOR_UNITS).
+TERM_ANGLES = {"e2": (0.0, 0.0), "e1": (0.0, math.pi), "e10": (math.pi, 0.0)}
 
 
 def signal(t: float) -> float:
@@ -74,15 +82,31 @@ def dark_success(t: float) -> float:
 
 # Retained probes synthesize sign(t) inside a diagonal, so each t compiles to
 # its own circuit; matched probes compile once with parameters and bind t.
-PER_T: dict[str, Callable[[float], QuantumCircuit]] = {"dark": probe.dark_probe, "signed": probe.signed_probe}
+PER_T: dict[str, Callable[[float], QuantumCircuit]] = {
+    "dark": probe.dark_probe,
+    "dark_bright": lambda t: probe.dark_probe(t, bright=True),
+    "signed": probe.signed_probe,
+}
 MATCHED: dict[str, Callable[[], QuantumCircuit]] = {
     "dark_matched": probe.matched_dark_probe,
+    "dark_matched_bright": lambda: probe.matched_dark_probe(bright=True),
     "signed_matched": probe.matched_signed_probe,
 }
 
 
 def kind(name: str) -> str:
     return name.split("_")[0]
+
+
+def ideal(name: str, t: float) -> float:
+    if kind(name) == "signed":
+        return signal(t)
+    return probe.bright_success(t) if name.endswith("bright") else dark_success(t)
+
+
+def readout(name: str, law: np.ndarray) -> float:
+    """P(selector = 00) for a dark or bright probe, <Z_c> for a signed probe."""
+    return float(law[0]) if kind(name) == "dark" else float(law[0] - law[1])
 
 
 def compile_circuit(view: Any, circuit: QuantumCircuit, layout: list[int] | None) -> QuantumCircuit:
@@ -98,35 +122,52 @@ def arm_phase(name: str, t: float) -> float | None:
     return natural_phase(t) if name in MATCHED else None
 
 
-def bind(compiled: QuantumCircuit, t: float, phase: float) -> QuantumCircuit:
-    values = {parameter.name: value for parameter, value in probe.matched_values(t).items()}
-    values[probe.SIGN_PHASE.name] = phase
+def bind(compiled: QuantumCircuit, values: dict[str, float]) -> QuantumCircuit:
     return compiled.assign_parameters({parameter: values[parameter.name] for parameter in compiled.parameters})
 
 
-def compile_all(snapshot: dict[str, Any], ts: tuple[float, ...]) -> dict[str, Any]:
-    """Circuits keyed by (t, sign phase); the phase is None for the per-t probes.
+def t_values(t: float, phase: float) -> dict[str, float]:
+    values = {parameter.name: value for parameter, value in probe.matched_values(t).items()}
+    values[probe.SIGN_PHASE.name] = phase
+    return values
 
-    A matched probe also runs the null arm (0, pi): at t = 0 the phase acts
-    on a zero amplitude, so both null arms ideally read 0, and their
-    difference is the offset the sign phase alone induces under noise.
+
+def compile_all(snapshot: dict[str, Any], ts: tuple[float, ...]) -> tuple[dict[str, list[int]], list[Any]]:
+    """Layouts per probe and every arm as (metadata, circuit).
+
+    A matched signed probe adds the null arm (0, pi): at t = 0 the phase
+    multiplies a zero amplitude, so both null arms ideally read 0. Its term
+    arms load one LCU term at phase 0 or pi; the e2 term ideally reads
+    +1 or -1 and the e1 and e10 terms 0.
     """
     view, _ = calibration_snapshot.noise_model(snapshot)
-    out: dict[str, Any] = {}
+    layouts: dict[str, list[int]] = {}
+    arms: list[Any] = []
     for name, builder in PER_T.items():
         width = builder(LAYOUT_T).num_qubits
         reference = compile_circuit(view, builder(LAYOUT_T), None)
-        layout = list(reference.layout.initial_index_layout(filter_ancillas=True)[:width])
-        circuits = {(t, None): compile_circuit(view, builder(t), layout) for t in ts}
-        out[name] = {"layout": layout, "circuits": circuits}
+        layouts[name] = list(reference.layout.initial_index_layout(filter_ancillas=True)[:width])
+        for t in ts:
+            meta = {"probe": name, "t": t, "sign_phase": None, "ideal": ideal(name, t)}
+            arms.append((meta, compile_circuit(view, builder(t), layouts[name])))
     for name, matched in MATCHED.items():
-        layout = out[kind(name)]["layout"]
+        layout = layouts[name.replace("_matched", "")]
+        layouts[name] = layout
         compiled = compile_circuit(view, matched(), layout)
         keys = [(t, natural_phase(t)) for t in ts]
-        if 0.0 in ts:
+        if name == "signed_matched":
             keys.append((0.0, math.pi))
-        out[name] = {"layout": layout, "circuits": {(t, phase): bind(compiled, t, phase) for t, phase in keys}}
-    return out
+        for t, phase in keys:
+            meta = {"probe": name, "t": t, "sign_phase": phase, "ideal": ideal(name, t)}
+            arms.append((meta, bind(compiled, t_values(t, phase))))
+        if name == "signed_matched":
+            for term, (high, low) in TERM_ANGLES.items():
+                for phase in (0.0, math.pi):
+                    expected = (1.0 if phase == 0.0 else -1.0) if term == "e2" else 0.0
+                    values = {"prep_high": high, "prep_low": low, "sign_phase": phase}
+                    meta = {"probe": "signed_matched_terms", "term": term, "sign_phase": phase, "ideal": expected}
+                    arms.append((meta, bind(compiled, values)))
+    return layouts, arms
 
 
 def cz_edges(snapshot: dict[str, Any], compiled: QuantumCircuit) -> list[float]:
@@ -138,13 +179,30 @@ def cz_edges(snapshot: dict[str, Any], compiled: QuantumCircuit) -> list[float]:
     ]
 
 
-def readout(name: str, law: np.ndarray) -> float:
-    """P(selector = 00) for the dark probe, <Z_c> for the signed probe."""
-    return float(law[0]) if kind(name) == "dark" else float(law[0] - law[1])
+class ArmLaw:
+    """Picklable worker: one compiled arm -> its noiseless check and exact noisy law."""
 
+    def __init__(self, snapshot: dict[str, Any], device: str) -> None:
+        self.snapshot = snapshot
+        self.device = device
 
-def ideal(name: str, t: float) -> float:
-    return dark_success(t) if kind(name) == "dark" else signal(t)
+    def __call__(self, item: tuple[dict[str, Any], QuantumCircuit]) -> dict[str, Any]:
+        meta, circuit = item
+        name = meta["probe"]
+        noiseless = readout(name, snapshot_laws.outcome_law(self.snapshot, circuit, self.device, noisy=False))
+        if abs(noiseless - meta["ideal"]) > 1e-9:
+            raise SystemExit(f"{meta}: compiled noiseless readout {noiseless} against {meta['ideal']}")
+        law = snapshot_laws.outcome_law(self.snapshot, circuit, self.device)
+        edges = cz_edges(self.snapshot, circuit)
+        return {
+            **meta,
+            "law": [float(x) for x in law],
+            "readout": readout(name, law),
+            "cz": len(edges),
+            "depth": circuit.depth(),
+            "active_qubits": snapshot_laws.active_qubits(circuit),
+            "cz_product": float(np.prod([1.0 - e for e in edges])),
+        }
 
 
 def fit(xs: list[float], ys: list[float]) -> tuple[float, float, float]:
@@ -154,59 +212,27 @@ def fit(xs: list[float], ys: list[float]) -> tuple[float, float, float]:
     return float(intercept), float(slope), float(residual)
 
 
-class ArmLaw:
-    """Picklable worker: one compiled arm -> its noiseless check and exact noisy law."""
-
-    def __init__(self, snapshot: dict[str, Any], device: str) -> None:
-        self.snapshot = snapshot
-        self.device = device
-
-    def __call__(self, item: tuple[str, float, float | None, QuantumCircuit]) -> dict[str, Any]:
-        name, t, phase, circuit = item
-        noiseless = readout(name, snapshot_laws.outcome_law(self.snapshot, circuit, self.device, noisy=False))
-        if abs(noiseless - ideal(name, t)) > 1e-9:
-            raise SystemExit(f"{name} at t = {t}: compiled noiseless law {noiseless} against {ideal(name, t)}")
-        law = snapshot_laws.outcome_law(self.snapshot, circuit, self.device)
-        edges = cz_edges(self.snapshot, circuit)
-        return {
-            "t": t,
-            "sign_phase": phase,
-            "law": [float(x) for x in law],
-            "readout": readout(name, law),
-            "ideal": ideal(name, t),
-            "cz": len(edges),
-            "depth": circuit.depth(),
-            "active_qubits": snapshot_laws.active_qubits(circuit),
-            "cz_product": float(np.prod([1.0 - e for e in edges])),
-        }
-
-
 def evaluate(snapshot: dict[str, Any], ts: tuple[float, ...], device: str) -> dict[str, Any]:
-    compiled = compile_all(snapshot, ts)
+    layouts, arms = compile_all(snapshot, ts)
     median_cz = float(np.median([row["error"] for row in snapshot["instructions"]["cz"] if row["error"] < 1.0]))
-    items = [
-        (name, t, phase, circuit)
-        for name, entry in compiled.items()
-        for (t, phase), circuit in entry["circuits"].items()
-    ]
-    laws = parallel.ordered_map(ArmLaw(snapshot, device), items, min_items=1)
+    rows = parallel.ordered_map(ArmLaw(snapshot, device), arms, min_items=1)
     probes: dict[str, Any] = {}
-    for name, entry in compiled.items():
-        rows = [row for (owner, *_), row in zip(items, laws, strict=True) if owner == name]
-        natural = [r for r in rows if r["sign_phase"] in (None, natural_phase(r["t"]))]
-        xs = [signal(r["t"]) if kind(name) == "signed" else dark_success(r["t"]) for r in natural]
-        intercept, slope, residual = fit(xs, [r["readout"] for r in natural])
+    for name in (*PER_T, *MATCHED):
+        own = [row for row in rows if row["probe"] == name]
+        natural = [r for r in own if r["sign_phase"] == arm_phase(name, r["t"])]
+        intercept, slope, residual = fit([r["ideal"] for r in natural], [r["readout"] for r in natural])
         reference = next(r for r in natural if r["t"] == LAYOUT_T)
         probes[name] = {
-            "layout": entry["layout"],
-            "rows": rows,
+            "layout": layouts[name],
+            "rows": own,
             "intercept": intercept,
             "slope": slope,
             "max_fit_residual": residual,
             "median_cz_factor": (1.0 - median_cz) ** reference["cz"],
             "edge_cz_factor": reference["cz_product"],
         }
-    return {"median_cz_error": median_cz, "probes": probes}
+    terms = [row for row in rows if row["probe"] == "signed_matched_terms"]
+    return {"median_cz_error": median_cz, "probes": probes, "signed_matched_terms": terms}
 
 
 def _shots(variances: list[float], difference: float) -> int:
@@ -217,12 +243,14 @@ def _shots(variances: list[float], difference: float) -> int:
 def price(result: dict[str, Any]) -> list[dict[str, Any]]:
     """Readout contrasts and the shots that resolve them at z = Z_SCORE, from the model's laws.
 
-    - dark_minus_zero: P(00) at t minus the t = 0 arm; dark_shots is None
-      when it is not positive, since no shot count then resolves p(t).
+    - minus_zero (dark and bright probes): the selector-00 rate at t minus
+      the t = 0 arm, its ideal value, whether its sign is inverted against
+      the ideal, and the shots that resolve it. A resolved inverted contrast
+      detects a t-dependent background, not p(t).
     - raw_differential: <Z_c>(t) - <Z_c>(-t), two arms.
     - null_subtracted (matched probe): (<Z_c>(t) - N_0) - (<Z_c>(-t) - N_pi),
       four arms, with N_phi the t = 0 arm at sign phase phi; ideally 2 s(t).
-    - visibility: each contrast divided by its ideal 2 s(t).
+    - visibility: each signed contrast divided by its ideal 2 s(t).
     """
     rows = []
     for t in PRICE_T:
@@ -232,8 +260,11 @@ def price(result: dict[str, Any]) -> list[dict[str, Any]]:
             plus, minus, zero = (got[(x, arm_phase(name, x))] for x in (t, -t, 0.0))
             if kind(name) == "dark":
                 d = plus - zero
+                expected = ideal(name, t) - ideal(name, 0.0)
                 row[f"{name}_minus_zero"] = d
-                row[f"{name}_shots"] = _shots([plus * (1.0 - plus), zero * (1.0 - zero)], d) if d > 0 else None
+                row[f"{name}_ideal_minus_zero"] = expected
+                row[f"{name}_inverted"] = bool(d * expected < 0)
+                row[f"{name}_shots"] = _shots([plus * (1.0 - plus), zero * (1.0 - zero)], d) if d else None
                 continue
             raw = plus - minus
             row[f"{name}_raw_differential"] = raw
@@ -264,13 +295,14 @@ def environment(device: str) -> dict[str, Any]:
 
 
 def run(ts: tuple[float, ...], device: str) -> dict[str, Any]:
+    ts = tuple(sorted(set(ts) | {LAYOUT_T, 0.0}))
     snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
     started = time.time()
     result = evaluate(snapshot, ts, device)
-    if set(PRICE_T) <= set(ts):
+    if all(t in ts and -t in ts for t in PRICE_T):
         result["shots"] = price(result)
     return {
-        "schema": "gororoba-signed-kernel-noise-v1",
+        "schema": "gororoba-signed-kernel-noise-v2",
         "snapshot": str(SNAPSHOT.relative_to(ROOT)),
         "snapshot_sha256": hashlib.sha256(SNAPSHOT.read_bytes()).hexdigest(),
         "calibration": snapshot["calibration"],
@@ -292,24 +324,35 @@ def bound_to_run(path: Path, run_dir: Path) -> list[str]:
     return [] if digest == recorded else [f"{path} sha256 {digest} differs from the collected {recorded}"]
 
 
+def _row_key(row: dict[str, Any]) -> tuple[Any, ...]:
+    return (row["probe"], row.get("t"), row.get("term"), row["sign_phase"])
+
+
 def check(path: Path, run_dir: Path, ts: tuple[float, ...]) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
     failures = bound_to_run(path, run_dir)
     replay = run(ts, "CPU")
+    kept_rows = {
+        _row_key(row): row
+        for row in [r for entry in retained["probes"].values() for r in entry["rows"]]
+        + retained["signed_matched_terms"]
+    }
     for name, fresh in replay["probes"].items():
-        kept = retained["probes"][name]
-        if fresh["layout"] != kept["layout"]:
-            failures.append(f"{name} layout {fresh['layout']} against {kept['layout']}")
-        by_key = {(row["t"], row["sign_phase"]): row for row in kept["rows"]}
-        for row in fresh["rows"]:
-            old = by_key[(row["t"], row["sign_phase"])]
-            if row["cz"] != old["cz"]:
-                failures.append(f"{name} t = {row['t']}: {row['cz']} CZ against {old['cz']}")
-            if not np.allclose(row["law"], old["law"], rtol=1e-8, atol=1e-10):
-                failures.append(f"{name} t = {row['t']}: law {row['law']} against {old['law']}")
+        if fresh["layout"] != retained["probes"][name]["layout"]:
+            failures.append(f"{name} layout {fresh['layout']} against {retained['probes'][name]['layout']}")
+    fresh_rows = [r for entry in replay["probes"].values() for r in entry["rows"]] + replay["signed_matched_terms"]
+    for row in fresh_rows:
+        old = kept_rows.get(_row_key(row))
+        if old is None:
+            failures.append(f"{_row_key(row)} is absent from {path}")
+            continue
+        if row["cz"] != old["cz"]:
+            failures.append(f"{_row_key(row)}: {row['cz']} CZ against {old['cz']}")
+        if not np.allclose(row["law"], old["law"], rtol=1e-8, atol=1e-10):
+            failures.append(f"{_row_key(row)}: law {row['law']} against {old['law']}")
     for failure in failures:
         print(failure)
-    print(f"signed kernel noise replay: t = {list(ts)}, {len(failures)} departures")
+    print(f"signed kernel noise replay: t = {sorted(set(ts) | {LAYOUT_T, 0.0})}, {len(failures)} departures")
     return 1 if failures else 0
 
 
