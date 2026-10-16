@@ -303,6 +303,8 @@ def check(directory: Path, agents: Path | None = None) -> None:
             raise SystemExit(f"ledger by_{key} differs from its rows")
     if totals["execution_seconds"] != sum(j["execution_time_in_seconds"] for j in usage["jobs"]):
         raise SystemExit("execution seconds differ from the job rows")
+    if totals["shots_done"] != sum(j["shots_done"] for j in usage["jobs"]):
+        raise SystemExit("shots done differ from the job rows")
     if agents is not None:
         check_agents(catalogue, agents)
     print(f"qi snapshot: {len(catalogue['backend_types'])} backend types, {len(rows)} transactions consistent")
