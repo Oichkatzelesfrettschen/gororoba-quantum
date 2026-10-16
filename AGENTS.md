@@ -564,7 +564,12 @@ metered quota. `"$QI_PYTHON" scripts/qi_platform.py submit CASE_DIR
 --backend-type-id N --approval TEXT` verifies every circuit against its
 cases.json digest, refuses an offline backend or a limit breach, records the
 approval in submission.json and sends one batch; `collect CASE_DIR` writes
-the raw shots, job records and charged transactions. Runs live under
+the raw shots, job records and charged transactions. On hardware a batch
+holds at most three circuits and goes in only when none of the account's
+batches is queued, so at most three jobs are ever queued (the FAQ's limit
+under either reading of "job"); a series runs a QX dry run first, then
+submits each hardware batch only after the previous one is collected, passes
+its sanity checks and a pause. Runs live under
 results/quantum_inspire/runs/. A question about the Tuna devices themselves
 (their crosstalk, coherent error, readout) is a hardware question; any
 simulation of 14 qubits or fewer still runs on Kaggle.

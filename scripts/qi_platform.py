@@ -61,7 +61,12 @@ CATALOGUE_SCHEMA = "qi-catalogue-v1"
 USAGE_SCHEMA = "qi-usage-v1"
 SUBMISSION_STATE_SCHEMA = "qi-submission-state-v1"
 SUBMISSION_SCHEMA = "qi-submission-v2"
-HARDWARE_QUEUE_LIMIT = 3  # Conservative FAQ cap; queue-unit evidence is in usage.md.
+# The FAQ allows three queued jobs per hardware backend, and the API counts
+# its queue in batches. On hardware a batch holds at most three circuits and
+# waits for the account's queue to be empty, so at most three jobs are queued
+# under either reading of "job".
+HARDWARE_BATCH_CIRCUITS = 3
+HARDWARE_QUEUED_BATCHES = 1
 REDACTED = ("email", "full_name", "oidc_sub")
 TERMINAL = {"completed", "failed", "cancelled"}
 ENQUEUED_BATCH_STATUSES = {"queued", "reserved", "running", "finished"}
@@ -431,7 +436,9 @@ def submit(case_dir: Path, backend_type_id: int, approval: str) -> dict[str, Any
     if type(queue_limit) is not int or queue_limit < 0 or type(queued) is not int or queued < 0:
         raise PlatformError("queue capacity or current-user queue count is invalid")
     if backend_type["is_hardware"]:
-        queue_limit = min(queue_limit, HARDWARE_QUEUE_LIMIT)
+        if len(sources) > HARDWARE_BATCH_CIRCUITS:
+            raise SystemExit(f"{len(sources)} circuits exceed the {HARDWARE_BATCH_CIRCUITS} a hardware batch may hold")
+        queue_limit = min(queue_limit, HARDWARE_QUEUED_BATCHES)
     if queued + 1 > queue_limit:
         raise SystemExit(f"current-user queue has {queued} batches; adding one exceeds the limit {queue_limit}")
     language = next(lang for lang in client.pages("/languages") if lang["name"] == "cQASM" and lang["version"] == "3.0")

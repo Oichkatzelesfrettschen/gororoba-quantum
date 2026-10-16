@@ -193,7 +193,7 @@ class RetentionChecks(unittest.TestCase):
             record["cases_sha256"], hashlib.sha256((self.case_dir / "cases.json").read_bytes()).hexdigest()
         )
         self.assertTrue(record["queue_user_only"])
-        self.assertEqual(record["queue_limit_at_submit"], 3)
+        self.assertEqual(record["queue_limit_at_submit"], 1)
         self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
         self.assert_retry_blocked()
         record["schema"] = "qi-submission-v1"
@@ -211,7 +211,8 @@ class RetentionChecks(unittest.TestCase):
         self.assertFalse((self.case_dir / "submission-state.json").exists())
 
     def test_queue_limits_refuse_before_remote_creation(self) -> None:
-        for hardware, limit, queued in ((True, 5, 3), (True, 2, 2), (False, 5, 5)):
+        # Hardware admits one queued batch of the account at a time; emulators use the API capacity.
+        for hardware, limit, queued in ((True, 5, 1), (True, 2, 1), (False, 5, 5)):
             with self.subTest(hardware=hardware, limit=limit, queued=queued):
                 client = FakeClient(self.case_dir)
                 client.backend.update(is_hardware=hardware, batchjobs_per_queue_limit=limit)
@@ -230,10 +231,12 @@ class RetentionChecks(unittest.TestCase):
         self.assertEqual(record["queue_limit_at_submit"], 5)
         self.assertEqual(record["queue_at_submit"]["number_of_jobs_in_queue"], 4)
 
-    def test_hardware_queue_counts_batches_with_independent_circuit_cap(self) -> None:
+    def test_hardware_batch_holds_at_most_three_circuits(self) -> None:
         source = (self.case_dir / "one.cq").read_bytes()
         circuit_digest = hashlib.sha256(source).hexdigest()
-        for count in (6, 5):
+        # Six breaks the API batch limit, four and five the hardware cap of three
+        # circuits per batch; three submits.
+        for count, refusal in ((6, "max_jobs_per_batch_job"), (5, "hardware batch"), (4, "hardware batch"), (3, None)):
             with self.subTest(circuits=count):
                 self.cases["circuits"] = []
                 for index in range(count):
@@ -242,15 +245,15 @@ class RetentionChecks(unittest.TestCase):
                     self.cases["circuits"].append({"file": filename, "sha256": circuit_digest})
                 (self.case_dir / "cases.json").write_text(json.dumps(self.cases))
                 client = FakeClient(self.case_dir)
-                if count == 6:
-                    with self.assertRaisesRegex(SystemExit, "max_jobs_per_batch_job"):
+                if refusal:
+                    with self.assertRaisesRegex(SystemExit, refusal):
                         self.submit(client)
                     self.assertTrue(all(method == "GET" for method, _ in client.calls))
                     self.assertFalse((self.case_dir / "submission-state.json").exists())
                 else:
                     self.submit(client)
                     record = json.loads((self.case_dir / "submission.json").read_text())
-                    self.assertEqual(len(record["jobs"]), 5)
+                    self.assertEqual(len(record["jobs"]), 3)
                     self.assertEqual(sum(method == "PATCH" for method, _ in client.calls), 1)
 
     def test_source_bytes_are_the_uploaded_program(self) -> None:

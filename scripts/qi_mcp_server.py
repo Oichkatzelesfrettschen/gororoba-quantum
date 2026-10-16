@@ -164,8 +164,7 @@ def qi_run_local(cqasm: str, shots: int = 1024) -> dict[str, Any]:
     """Run cQASM 3.0 on the local qxelarator emulator (no account, no queue); returns outcome counts."""
     import qxelarator
 
-    match = re.search(r"qubit\[(\d+)\]", cqasm)
-    qubits = int(match.group(1)) if match else 1
+    qubits = declared_qubits(cqasm)
     if qubits > LOCAL_MAX_QUBITS:
         raise ValueError(f"{qubits} qubits exceed the local bound of {LOCAL_MAX_QUBITS}")
     if not 1 <= shots <= LOCAL_MAX_SHOTS:
@@ -177,6 +176,16 @@ def qi_run_local(cqasm: str, shots: int = 1024) -> dict[str, Any]:
     if isinstance(result, qxelarator.SimulationError):
         raise ValueError(str(result))
     return {"shots": result.shots_done, "counts": dict(result.results)}
+
+
+# Every qubit declaration of a cQASM 3.0 program: `qubit[n] name` or the scalar `qubit name`.
+QUBIT_DECLARATION = re.compile(r"^\s*qubit\s*(?:\[\s*(\d+)\s*\])?\s+[A-Za-z_]\w*", re.MULTILINE)
+COMPILE_STAGES = ("none", "decomposition", "mapping", "optimization", "routing")
+
+
+def declared_qubits(cqasm: str) -> int:
+    """Total width of every qubit register the program declares; the emulator allocates their sum."""
+    return sum(int(size) if size else 1 for size in QUBIT_DECLARATION.findall(cqasm)) or 1
 
 
 def _commit(name: str) -> dict[str, Any]:
@@ -203,6 +212,9 @@ def qi_compile(cqasm: str, backend_type_id: int, stage: str = "decomposition") -
 
     Creates a project, algorithm, commit and file in the account; executes nothing.
     """
+    # The stage is checked before the first mutation, so a rejected value leaves no remote resource.
+    if stage not in COMPILE_STAGES:
+        raise ValueError(f"stage must be one of {', '.join(COMPILE_STAGES)}, not {stage!r}")
     commit = _commit("mcp-compile")
     client().post(
         "/files",

@@ -111,17 +111,22 @@ From the general conditions of use (6 Feb 2025,
   raw-string `qi_submit` refuses execution and names this replacement.
 - Before creating any remote resource, the runner reads the current user's
   queue with `user_only=true`. It refuses a batch that would exceed the API's
-  `batchjobs_per_queue_limit` and applies a conservative cap of three on
-  hardware from the FAQ. The receipt records that scoped queue and the
-  applied limit. The count is interpreted as batches: the API endpoint names
+  `batchjobs_per_queue_limit`. On hardware it also refuses a batch of more
+  than three circuits and any batch while one of the account's batches is
+  still queued, so at most three jobs are queued whether the FAQ's "jobs"
+  means batches or circuits. The receipt records that scoped queue and the
+  applied limit. The queue count is in batches: the API endpoint names
   "(batch) job queue statistics", and both retained five-circuit Tuna-17
   receipts reported queue count 2 before their first child-job `queued_at`
   timestamps (21:16:52 versus 21:17:29, and 22:11:41 versus 22:11:56 UTC on
   2026-10-16; [first run](../../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/),
   [witness run](../../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/)).
   This is an inference from the API and retained runs; the FAQ itself says
-  "jobs" without distinguishing batches from their circuits. The separate
-  `max_jobs_per_batch_job` check still limits circuits within a batch.
+  "jobs" without distinguishing batches from their circuits, which is why the
+  hardware rule bounds both. Those two five-circuit Tuna-17 batches predate
+  the rule and held five queued circuits. Between hardware batches a series
+  collects the previous batch, passes its sanity checks and pauses before
+  submitting the next.
 - The case directory acquires an exclusive `submission-state.json` before
   the client creates any remote resource. It checkpoints the batch and job
   IDs and the enqueue intent; either this state or `submission.json` blocks
