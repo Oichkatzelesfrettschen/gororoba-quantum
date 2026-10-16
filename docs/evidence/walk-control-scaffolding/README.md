@@ -95,22 +95,32 @@ rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
 `scripts/local_member_cz_conformance.py --check` (gate core-289) enumerates
 every member live_run can plan, the registered groups and the family groups
 rebuilt from each distinct retained `family_configuration`, and recomputes
-[local_member_conformance.json](local_member_conformance.json). A member is
-local when its bound unitary has operator Schmidt rank 1 across every
-single-qubit cut, so its law needs no two-qubit gate. Its circuit object is
-lowered as live_run compiles it, unbound for a shared template and without
-routing, and cut at every barrier and delay. CZ inside a segment whose own
-bound unitary is local is scaffold. Cancellation across a barrier or an
-idle is what Design A, Design C, the conditional-Ramsey Bell arms and the
-spectator wavefront ask the device to perform, and it passes.
+[local_member_conformance.json](local_member_conformance.json). Two kinds of
+member have a law that needs no two-qubit gate:
 
-Of the distinct members, 280 are local and 3894 entangling; 62 member names carry
-mid-circuit measurement, reset or control flow and stay unchecked. Ten local
-members execute scaffold CZ, 144 each before routing, and each matches a
-declaration in `SCAFFOLD_CONTROLS` that names the measurement requiring it:
+- A **local unitary** has operator Schmidt rank 1 across every single-qubit
+  cut. Its circuit object is lowered as live_run compiles it, unbound for a
+  shared template and without routing; the DAG is cut at every barrier,
+  delay and measurement on the wires each touches and split into connected
+  components, and CZ inside a component whose own unitary is local is
+  scaffold. Cancellation across a barrier or an idle is what Design A,
+  Design C, the conditional-Ramsey Bell arms and the spectator wavefront ask
+  the device to perform, and it passes.
+- A **product output** has an entangling unitary that maps its prepared
+  input to a product state, so every CZ it executes is optional for its law.
+
+Of 1304 distinct members, 272 are local unitaries, 20 product outputs and
+950 entangling; 62 member names carry mid-circuit measurement, reset or
+control flow and stay unchecked. Thirty members execute CZ their law does
+not need, and each matches a declaration naming what it measures. Ten local
+unitaries carry 144 scaffold CZ each before routing (`SCAFFOLD_CONTROLS`):
 the four walk readout controls, the four depth-0 walk points and the two
-template arms of the scaffold A/B campaign. A new member that executes CZ
-its bound law does not need fails the gate until it states why.
+template arms of the scaffold A/B campaign. Twenty product outputs execute
+17 to 24 CZ, or 144 for walk points (`PRODUCT_OUTPUT_PROBES`): the sixteen
+rank-sector endpoint probes at parameter one with their references, and the
+four depth-1 walk points, where the walk sends its input to a product
+state. A new member that executes CZ its law does not need fails the gate
+until it states why.
 
 ## Files
 

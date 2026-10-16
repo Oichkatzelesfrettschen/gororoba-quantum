@@ -27,13 +27,21 @@ A barrier or a delay states a cancellation the design asks the device to
 perform: designs.design_a_associator and design_c_associator_spectrum
 separate their multiplication blocks with barriers so the device composes W,
 and a conditional-Ramsey Bell arm brackets its measured idle with CX. The
-bound ISA is therefore cut at every barrier and delay, and only the CZ inside
-a segment whose own bound unitary is local counts as scaffold. A member with
-scaffold CZ fails unless SCAFFOLD_CONTROLS names it with the measurement that
-requires the scaffold, and every declared pattern must match at least one
-such member. Members with mid-circuit measurement, reset or control flow,
-and members wider than MAX_WIDTH qubits, are listed as unchecked with that
-reason.
+bound ISA's DAG is therefore cut at every barrier, delay and measurement on
+the wires each one touches, and split into connected components; only the CZ
+inside a component whose own bound unitary is local counts as scaffold. A
+member with scaffold CZ fails unless SCAFFOLD_CONTROLS names it with the
+measurement that requires the scaffold.
+
+A member whose unitary entangles can still map its prepared input to a
+product state, so its observed law needs no two-qubit gate either. Such a
+member that executes CZ fails unless PRODUCT_OUTPUT_PROBES names it with
+what its circuit tests. Every declared pattern must match at least one
+member that executes CZ. Members with mid-circuit measurement, reset or
+control flow, and members wider than MAX_WIDTH qubits, are listed as
+unchecked with that reason. The per-member classification runs through
+parallel.ordered_map, so GOROROBA_WORKERS caps it and the order is the
+serial one.
 
 ``--write`` stores the census in
 docs/evidence/walk-control-scaffolding/local_member_conformance.json;
@@ -57,8 +65,10 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 import numpy as np  # noqa: E402
 from qiskit import QuantumCircuit, transpile  # noqa: E402
 from qiskit.circuit.library import get_standard_gate_name_mapping  # noqa: E402
-from qiskit.quantum_info import Operator  # noqa: E402
+from qiskit.converters import circuit_to_dag  # noqa: E402
+from qiskit.quantum_info import Operator, Statevector, partial_trace  # noqa: E402
 
+import parallel  # noqa: E402
 from diagnostic_experiments import record_groups  # noqa: E402
 from experiments import Group, Member, all_experiment_groups  # noqa: E402
 from live_run import OPT_LEVEL  # noqa: E402
@@ -69,6 +79,7 @@ SEED = 11
 MAX_WIDTH = 10
 TOLERANCE = 1e-9
 STANDARD = set(get_standard_gate_name_mapping()) | {"barrier", "delay", "measure", "reset"}
+CUTS = ("barrier", "delay", "measure")
 # Members that execute a CZ scaffold their bound law does not need, each with
 # the measurement that requires the scaffold.
 SCAFFOLD_CONTROLS: dict[str, str] = {
@@ -84,6 +95,19 @@ SCAFFOLD_CONTROLS: dict[str, str] = {
     r"scaffold_template_readout[01]": (
         "scaffold A/B arm: the template-bound readout against scaffold_measure_only and "
         "scaffold_x_measure isolates the scaffold's loss (diagnostic_controls.scaffold_ab_group)"
+    ),
+}
+# Members whose entangling circuit maps the prepared input to a product state,
+# each with what the circuit tests at that point.
+PRODUCT_OUTPUT_PROBES: dict[str, str] = {
+    r"rank_sector_\d+_(bright|kernel)_at_one_t\d+d\d+(_reference)?": (
+        "rank-sector endpoint probes at parameter one: each prepared probe and the sector circuit at its "
+        "endpoint compose to a product output, and the probe reads the compiled sector circuit there "
+        "(rank_sector_experiments.sector_probes)"
+    ),
+    r"ripple_walk_lane\d+_pair\d+_\d+_depth1_packed": (
+        "depth-1 point of the walk depth axis, where the walk sends its input to a product state; like "
+        "every depth it executes the shared walk template"
     ),
 }
 
@@ -120,8 +144,9 @@ def planned_groups() -> tuple[list[tuple[str, Group]], list[dict[str, str]]]:
 def structure(circuit: QuantumCircuit) -> list[Any]:
     """Canonical instruction list with every custom gate expanded into its definition.
 
-    QPY serializes custom gates under names derived from object identity, so
-    its bytes differ between processes; this form depends on the circuit alone.
+    QPY serializes custom gates under names derived from object identity, and
+    lazily built definitions carry counter-numbered circuit names, so both
+    vary between processes; this form depends on the circuit alone.
     """
     out: list[Any] = [circuit.num_qubits, circuit.num_clbits, str(circuit.global_phase)]
     for instruction in circuit.data:
@@ -132,7 +157,10 @@ def structure(circuit: QuantumCircuit) -> list[Any]:
         params += [
             np.asarray(param).round(12).tobytes().hex() for param in operation.params if isinstance(param, np.ndarray)
         ]
-        row: list[Any] = [operation.name, qubits, clbits, params]
+        # Qiskit names an unnamed circuit-to-gate conversion circuit-N from a
+        # process-wide counter; the expanded definition below carries its content.
+        name = re.sub(r"^circuit-\d+$", "circuit", operation.name)
+        row: list[Any] = [name, qubits, clbits, params]
         definition = getattr(operation, "definition", None)
         if operation.name not in STANDARD and definition is not None:
             row.append(structure(definition))
@@ -157,15 +185,65 @@ def unitary_part(member: Member) -> QuantumCircuit | str:
     return bound
 
 
-def segments(circuit: QuantumCircuit) -> list[QuantumCircuit]:
-    """The circuit cut at every barrier and delay, each piece on the full register."""
-    pieces = [circuit.copy_empty_like()]
+def components(circuit: QuantumCircuit) -> list[QuantumCircuit]:
+    """Connected pieces of the circuit's DAG once every barrier, delay and measurement is removed.
+
+    Removing a barrier or delay cuts only the wires it touches, so operations on
+    other qubits stay joined; each piece acts on its own qubits.
+    """
+    dag = circuit_to_dag(circuit)
+    nodes = [node for node in dag.topological_op_nodes() if node.op.name not in CUTS]
+    parent = {node._node_id: node._node_id for node in nodes}
+
+    def root(index: int) -> int:
+        while parent[index] != index:
+            parent[index] = parent[parent[index]]
+            index = parent[index]
+        return index
+
+    for node in nodes:
+        for successor in dag.op_successors(node):
+            if successor._node_id in parent:
+                parent[root(successor._node_id)] = root(node._node_id)
+    grouped: dict[int, list[Any]] = {}
+    for node in nodes:
+        grouped.setdefault(root(node._node_id), []).append(node)
+    pieces = []
+    for group in grouped.values():
+        qubits = sorted({circuit.find_bit(q).index for node in group for q in node.qargs})
+        position = {q: k for k, q in enumerate(qubits)}
+        piece = QuantumCircuit(len(qubits))
+        for node in group:
+            piece.append(node.op, [position[circuit.find_bit(q).index] for q in node.qargs])
+        pieces.append(piece)
+    return pieces
+
+
+def product_output(circuit: QuantumCircuit) -> bool:
+    """Every single-qubit reduced state of circuit|0...0> is pure."""
+    bare = circuit.copy_empty_like()
     for instruction in circuit.data:
-        if instruction.operation.name in ("barrier", "delay"):
-            pieces.append(circuit.copy_empty_like())
-        elif instruction.operation.name != "measure":
-            pieces[-1].append(instruction)
-    return [piece for piece in pieces if piece.data]
+        if instruction.operation.name not in CUTS:
+            bare.append(instruction)
+    state = Statevector(bare)
+    n = bare.num_qubits
+    return all(abs(partial_trace(state, [k for k in range(n) if k != q]).purity() - 1) < TOLERANCE for q in range(n))
+
+
+def classify(member: Member) -> str:
+    """local, product, entangling, or the reason the member has no unitary to classify."""
+    if member.circuit.num_qubits > MAX_WIDTH:
+        return f"wider than {MAX_WIDTH} qubits"
+    part = unitary_part(member)
+    if isinstance(part, str):
+        return part
+    bare = part.copy_empty_like()
+    for instruction in part.data:
+        if instruction.operation.name not in CUTS:
+            bare.append(instruction)
+    if is_local(bare):
+        return "local"
+    return "product" if product_output(part) else "entangling"
 
 
 def is_local(circuit: QuantumCircuit) -> bool:
@@ -185,12 +263,12 @@ def is_local(circuit: QuantumCircuit) -> bool:
 
 
 def scaffold_cz(member: Member, isa: QuantumCircuit) -> tuple[int, int]:
-    """Total CZ of the bound ISA and the CZ inside segments whose bound unitary is local."""
+    """Total CZ of the bound ISA and the CZ inside components whose bound unitary is local."""
     binding = {p: v for p, v in (member.binding or {}).items() if isa.has_parameter(p)}
     bound = isa.assign_parameters(binding) if binding else isa
     total = int(bound.count_ops().get("cz", 0))
     local = 0
-    for piece in segments(bound):
+    for piece in components(bound):
         cz = int(piece.count_ops().get("cz", 0))
         if cz and is_local(piece):
             local += cz
@@ -203,42 +281,40 @@ def census() -> dict[str, Any]:
     for source, group in groups:
         for member in group.members:
             members.setdefault((member.name, digest(member)), (f"{source}/{group.name}", member))
+    ordered = sorted(members.items())
+    kinds = parallel.ordered_map(classify, [member for _, (_source, member) in ordered], min_items=2)
     unchecked: dict[str, list[str]] = {}
-    local: list[tuple[str, str, Member]] = []
+    checked: list[tuple[str, str, str, Member]] = []
     entangling = 0
-    for (name, key), (_source, member) in sorted(members.items()):
-        if member.circuit.num_qubits > MAX_WIDTH:
-            unchecked.setdefault(f"wider than {MAX_WIDTH} qubits", []).append(name)
-            continue
-        part = unitary_part(member)
-        if isinstance(part, str):
-            unchecked.setdefault(part, []).append(name)
-            continue
-        if is_local(part.remove_final_measurements(inplace=False)):
-            local.append((name, key, member))
-        else:
+    for ((name, key), (_source, member)), kind in zip(ordered, kinds, strict=True):
+        if kind in ("local", "product"):
+            checked.append((kind, name, key, member))
+        elif kind == "entangling":
             entangling += 1
+        else:
+            unchecked.setdefault(kind, []).append(name)
     compiled: dict[int, QuantumCircuit] = {}
     rows = []
-    for name, key, member in local:
+    for kind, name, key, member in checked:
         if id(member.circuit) not in compiled:
             compiled[id(member.circuit)] = transpile(
                 member.circuit, basis_gates=BASIS, optimization_level=OPT_LEVEL, seed_transpiler=SEED
             )
         total, scaffold = scaffold_cz(member, compiled[id(member.circuit)])
-        declared = next((pattern for pattern in SCAFFOLD_CONTROLS if re.fullmatch(pattern, name)), None)
+        patterns = SCAFFOLD_CONTROLS if kind == "local" else PRODUCT_OUTPUT_PROBES
         rows.append(
             {
                 "member": name,
                 "digest": key,
+                "kind": "local_unitary" if kind == "local" else "product_output",
                 "templated": bool(member.binding),
                 "cz": total,
-                "cz_in_local_segments": scaffold,
-                "declared_scaffold": declared,
+                "cz_in_local_components": scaffold,
+                "declared": next((pattern for pattern in patterns if re.fullmatch(pattern, name)), None),
             }
         )
     return {
-        "schema": "local-member-cz-conformance-v1",
+        "schema": "local-member-cz-conformance-v2",
         "basis": BASIS,
         "optimization_level": OPT_LEVEL,
         "seed_transpiler": SEED,
@@ -247,18 +323,23 @@ def census() -> dict[str, Any]:
         "distinct_members": len(members),
         "entangling_members": entangling,
         "unchecked": {reason: sorted(set(names)) for reason, names in sorted(unchecked.items())},
-        "local_members": rows,
+        "members": rows,
     }
 
 
+def needs_declaration(row: dict[str, Any]) -> bool:
+    """A local unitary needs one for scaffold CZ, a product output for any CZ."""
+    return bool(row["cz_in_local_components"] if row["kind"] == "local_unitary" else row["cz"])
+
+
 def enforce(result: dict[str, Any]) -> None:
-    rows = result["local_members"]
-    violations = [r["member"] for r in rows if r["cz_in_local_segments"] and not r["declared_scaffold"]]
-    require(not violations, f"local members executing CZ without a declaration: {violations}")
-    for pattern in SCAFFOLD_CONTROLS:
+    rows = result["members"]
+    violations = [r["member"] for r in rows if needs_declaration(r) and not r["declared"]]
+    require(not violations, f"members executing CZ their law does not need, undeclared: {violations}")
+    for pattern in (*SCAFFOLD_CONTROLS, *PRODUCT_OUTPUT_PROBES):
         require(
-            any(r["declared_scaffold"] == pattern and r["cz_in_local_segments"] for r in rows),
-            f"declared scaffold {pattern} matches no local member that executes CZ",
+            any(r["declared"] == pattern and needs_declaration(r) for r in rows),
+            f"declaration {pattern} matches no member that executes CZ",
         )
 
 
@@ -275,10 +356,12 @@ def main() -> int:
         OUTPUT.write_text(text, encoding="utf-8")
     else:
         require(OUTPUT.read_text(encoding="utf-8") == text, f"{OUTPUT.relative_to(ROOT)} differs from the census")
-    scaffolds = sum(1 for r in result["local_members"] if r["cz_in_local_segments"])
+    rows = result["members"]
+    local = sum(r["kind"] == "local_unitary" for r in rows)
+    declared = sum(needs_declaration(r) for r in rows)
     print(
-        f"local-member conformance: {len(result['local_members'])} local members, "
-        f"{scaffolds} declared scaffold controls, {result['entangling_members']} entangling"
+        f"local-member conformance: {local} local unitaries, {len(rows) - local} product outputs, "
+        f"{declared} declared CZ executions, {result['entangling_members']} entangling"
     )
     return 0
 
