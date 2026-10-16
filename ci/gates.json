@@ -2272,14 +2272,6 @@
    "name": "core-284",
    "seconds": 1.0,
    "tier": "pr"
-  },
-  {
-   "suite": "core",
-   "cwd": "gororoba_quantum",
-   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_detuning_map.py --check ../docs/evidence/atlas_detuning_map/result.json --lanes 4",
-   "name": "core-285",
-   "seconds": 25.0,
-   "tier": "pr"
   }
  ],
  "excluded": [

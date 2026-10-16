@@ -232,6 +232,25 @@ def capacity() -> dict[str, Any]:
     return result
 
 
+def unpack_datasets(datasets: list[dict[str, Any]]) -> dict[str, Any]:
+    """Extract each attached dataset archive into the repository root and verify every file's sha256."""
+    import tarfile
+
+    report: dict[str, Any] = {}
+    for entry in datasets:
+        slug = entry["ref"].split("/")[1]
+        candidates = [p for p in Path("/kaggle/input").rglob(entry["archive"]) if slug in p.parts]
+        if len(candidates) != 1:
+            raise SystemExit(f"dataset {entry['ref']}: {len(candidates)} archives named {entry['archive']}")
+        with tarfile.open(candidates[0]) as archive:
+            archive.extractall(REPO, filter="data")
+        mismatched = [rel for rel, digest in entry["files"].items() if sha256(REPO / rel) != digest]
+        report[entry["ref"]] = {"archive": str(candidates[0]), "files": len(entry["files"]), "mismatched": mismatched}
+        if mismatched:
+            raise SystemExit(f"dataset {entry['ref']}: {len(mismatched)} files differ from the manifest")
+    return report
+
+
 def main() -> int:
     if len(sys.argv) in (4, 5) and sys.argv[1] == "--trial":
         device = sys.argv[4] if len(sys.argv) == 5 else "GPU"
@@ -240,6 +259,8 @@ def main() -> int:
     OUT.mkdir(parents=True, exist_ok=True)
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
     print((REPO / "kaggle_kernel/AGENTS.md").read_text(encoding="utf-8"), flush=True)
+    if job.get("datasets"):
+        write("datasets.json", unpack_datasets(job["datasets"]))
     before = {p: sha256(p) for p in REPO.rglob("*") if p.is_file()}
     write("environment.json", environment())
     stack = hypercomplex()

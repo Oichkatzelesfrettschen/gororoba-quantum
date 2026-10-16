@@ -33,7 +33,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 | [2026-10-12T055624.091217Z](../../results/live/2026-10-12T055624.091217Z) | folded-QPE intervention ladder | ibm_kingston | 2 | 16 | 40 | hw-folded-qpe-ladder, hw-charge-prediction-residuals |
 | [2026-10-13T020454.599853Z](../../results/live/2026-10-13T020454.599853Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation |
 | [2026-10-13T022433.333775Z](../../results/live/2026-10-13T022433.333775Z) | folded correction | ibm_kingston | 1 | 4 | 11 | hw-correction-decision, hw-first-bit-disagreement, hw-charge-prediction-residuals, hw-first-bit-correlation |
-| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs, hw-atlas-coherent-phase-fit |
+| [2026-10-13T025444.603480Z](../../results/live/2026-10-13T025444.603480Z) | ripple box-kite atlas | ibm_fez | 2 | 146 | 66 | hw-fez-ripple, hw-fez-walk-control-discrepancy, hw-charge-prediction-residuals, hw-walk-scaffold-floor, hw-box-kite-executed-pairs |
 | [2026-10-13T032011.664435Z](../../results/live/2026-10-13T032011.664435Z) | rank sectors | ibm_fez | 2 | 36 | 31 | hw-fez-rank-sectors, hw-rank-endpoint-decomposition, hw-rank-block-homogeneity, hw-charge-prediction-residuals |
 | [kingston-wide-control-result](../../results/live/kingston-wide-control-result) | wide Ramsey and carpet control | ibm_kingston | 1 | 2 | 2 | hw-wide-control |
 | [2026-10-13T080216.451663Z](../../results/live/2026-10-13T080216.451663Z) | N=21 orbit feed-forward | ibm_fez | 1 | 2 | 4 | hw-n21-orbit-phase, hw-idle-detuning-scale |
@@ -332,11 +332,6 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Evidence: [coherence-analysis.json](../../results/live/2026-10-15T030748.903241Z/coherence-analysis.json), [rca-mechanism-fit.json](../../results/live/2026-10-13T080216.451663Z/rca-mechanism-fit.json), [exposure.json](../evidence/walk-control-scaffolding/exposure.json), [REPORT.md](../evidence/novel-insights/REPORT.md), [README.md](../evidence/ghost-frequency/README.md).
   Acquisitions: kingston-coherence-window, fez-n21-orbit-feedback, kingston-zero-divisor-fringe.
   Supersedes: withdrawn-common-ghost-detuning.
-- **hw-atlas-coherent-phase-fit** (exploratory reanalysis, hardware). The Fez ripple atlas fringe phases sit +0.13 rad (spread 0.22 rad) from the ideal against 0.06 rad for the calibrated replay, 3 to 10 times the shot noise on every lane; per-qubit detuning or per-coupler CZ phase predicts held-out edges better than the lane mean only on lanes 3 and 4.
-  Boundary: Durations from a Target two days after the run; about 9 parameters on 12 edges per lane overfit; no single coherent family explains the offsets across lanes.
-  Evidence: [measured-ripple.json](../../results/ripple/measured-ripple.json), [result.json](../evidence/atlas_detuning_map/result.json), [README.md](../evidence/atlas_detuning_map/README.md).
-  Gates: replayed by core-285.
-  Acquisitions: fez-ripple-atlas.
 
 ## Open claims
 

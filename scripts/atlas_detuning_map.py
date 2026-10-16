@@ -1,43 +1,46 @@
-"""Fit per-qubit idle detunings to the ripple atlas fringe phases on ibm_fez.
+"""Fit coherent frame and CZ-phase errors to the Fez ripple atlas fringes, on the circuits and times that ran.
 
 The atlas ran each of the 84 box-kite edges as an 8-point phase sweep
-(designs.design_d_phase_sweep, phase k pi/4) on one of 7 lanes, every lane a
-fixed set of 5 physical qubits shared by its 12 edges
-(results/ripple/measured-ripple.json). Fitting a + b cos(phi - phi0) to each
-edge's 8 points gives a fringe phase; the hardware fringe phases sit
-+0.13 rad from the ideal on average (spread 0.22 rad), while the calibrated
-execution replay, whose noise model has no coherent term, sits within 0.06
-rad of it. A frame detuning delta_q on qubit q is coherent: it adds
-RZ(2 pi delta_q tau) over every interval tau the qubit spends in the scheduled
-circuit, and moves the fringe phase.
+(phase k pi/4) on one of 7 lanes, each lane a fixed set of 5 physical
+qubits shared by its 12 edges (results/ripple/measured-ripple.json). Fitting
+a + b cos(phi - phi0) to each edge's 8 measured points gives a fringe phase;
+the hardware fringe phases sit about +0.13 rad from the ideal with a 0.22
+rad spread, while the calibrated execution replay, whose noise model has no
+coherent term, sits within 0.06 rad of it.
 
-For every edge this script compiles the circuit onto its lane's 5-qubit
-sub-target of ibm_fez (coupling, gate durations and dt from
-docs/evidence/heron_platform/targets.json; the snapshot postdates the run by
-two days, and gate durations are fixed by the calibrated pulse shapes),
-schedules it as late as possible, inserts those rotations and simulates the
-5-qubit statevector. The response of each edge's fringe phase to a 1 kHz
-detuning on each lane qubit forms a 12 x 5 matrix per lane; least squares on
-the measured offsets (hardware minus replay fringe phase) gives the lane's
-detunings. Each fit reports its residual, its leave-one-edge-out prediction
-error and the error of predicting every edge by the lane mean, so a map that
-only fits noise loses to the mean.
+Every quantity here comes from the run itself:
 
-``--lanes all`` runs the 7 lanes; ``--lanes 0`` one. ``--check FILE`` reruns
-the lanes FILE names and requires every response to agree to 1e-9 and every
-fitted parameter to 1e-6, since the computation is deterministic statevector
-algebra.
+- the circuit of each phase point is the executed replica, rebuilt from
+  isa.qpy as live_run.collect does (packing.extract on the member's fused-PUB
+  component, packing.split on its replica);
+- the time of each pulse is the hardware's executed schedule, the
+  ``scheduler_timing`` table IBM returned with the PUB
+  (raw/<job>/pub_NN.json): each qubit's play rows, in start order, pair one
+  to one with the replica's non-virtual instructions on that qubit.
 
-Four models compete per lane by leave-one-edge-out error: the lane mean, the
-5 detunings, a CPhase(epsilon_c) error after every CZ on each lane coupler
-c, and both together. Each lane also reports the shot-noise floor of its
-measured offsets, the binomial variance of the 8 points propagated through
-the fringe fit, so no model is credited below it.
+A frame detuning delta_q on qubit q enters as RZ(2 pi delta_q (t_i - t_{i-1}))
+before each executed pulse i on q, where t is the pulse start in seconds; a
+CZ phase error epsilon_c enters as CPhase(epsilon_c) after every CZ on
+coupler c. For every edge the script simulates the 8 replicas, compacted to
+their active qubits, and differentiates the fringe phase by a 1 kHz detuning
+per lane qubit and a 0.01 rad CPhase per lane coupler. Four models per lane
+(lane mean, detunings, CZ phases, both) are compared by leave-one-edge-out
+RMS error against the shot-noise floor, the binomial variance of the 8
+points propagated through the fringe fit.
+
+Self-check: with no error term each edge's simulated fringe phase must equal
+the fringe phase of the recorded ideal probabilities within 1e-9 rad, so the
+extraction and timing pairing preserve the circuit.
+
+``--lanes all`` or ``--lanes 0,4``. ``--check FILE`` reruns the named lanes on
+the CPU and requires every response to 1e-9 and every fitted parameter to
+1e-6, since the computation is deterministic statevector algebra.
 """
 
 from __future__ import annotations
 
 import argparse
+import io
 import json
 import math
 import re
@@ -50,22 +53,26 @@ ROOT = Path(__file__).resolve().parent.parent
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 
 import numpy as np  # noqa: E402
-from qiskit import QuantumCircuit, transpile  # noqa: E402
-from qiskit.circuit import Delay, Parameter  # noqa: E402
-from qiskit.circuit.library import CZGate, Measure, RZGate, SXGate, XGate  # noqa: E402
+from qiskit import QuantumCircuit, qpy  # noqa: E402
 from qiskit.quantum_info import Statevector  # noqa: E402
-from qiskit.transpiler import InstructionProperties, Target  # noqa: E402
 
-from designs import design_d_phase_sweep  # noqa: E402
-from ripple_dynamics import box_kites  # noqa: E402
+import packing  # noqa: E402
 
+RUN = ROOT / "results/live/2026-10-13T025444.603480Z"
 MEASURED = ROOT / "results/ripple/measured-ripple.json"
 TARGETS = ROOT / "docs/evidence/heron_platform/targets.json"
 BACKEND = "ibm_fez"
 PHASES = 8
-SEED = 11
 KHZ = 1e3
+CZ_STEP = 0.01
+VIRTUAL = {"rz", "barrier", "delay"}
 MEMBER = re.compile(r"ripple_atlas_lane(\d+)_kite(\d+)_edge(\d+)_(\d+)_phase(\d)_atlas$")
+Timed = tuple[QuantumCircuit, list[float], int]
+
+
+def require(condition: bool, message: str) -> None:
+    if not condition:
+        raise SystemExit(message)
 
 
 def fringe(points: list[float]) -> tuple[float, float]:
@@ -80,10 +87,102 @@ def wrap(angle: float) -> float:
     return (angle + math.pi) % (2 * math.pi) - math.pi
 
 
+class Executed:
+    """The run's archived circuits, its executed schedules, and its member map."""
+
+    def __init__(self) -> None:
+        record = json.loads((RUN / "record.json").read_text(encoding="utf-8"))
+        self.isas = {c.name: c for c in qpy.load(io.BytesIO((RUN / "isa.qpy").read_bytes()))}
+        self.components: dict[str, tuple[str, dict[str, Any]]] = {}
+        for job in record["submission"]["planned_jobs"]:
+            for pub in job["pubs"]:
+                for component in pub["components"]:
+                    self.components[component["member"]] = (pub["name"], component)
+        self.members = {m["name"]: m for g in record["groups"] for m in g["members"]}
+        self.timing: dict[str, list[list[str]]] = {}
+        for path in sorted(RUN.glob("raw/*/pub_*.json")):
+            data = json.loads(path.read_text(encoding="utf-8"))
+            table = data["metadata"]["compilation"]["scheduler_timing"]["timing"]
+            self.timing[data["pub_name"]] = [row.split(",") for row in table.splitlines()]
+        self.dt = float(json.loads(TARGETS.read_text(encoding="utf-8"))["backends"][BACKEND]["dt"])
+
+    def replica(self, name: str) -> tuple[QuantumCircuit, list[list[str]]]:
+        pub_name, component = self.components[name]
+        member = self.members[name]
+        qubits = sorted({q for replica in member["replica_qubits"] for q in replica})
+        packed = packing.extract(self.isas[pub_name], component["register_prefix"], qubits, name)
+        prefix = component["register_prefix"] + member["replica_prefixes"][0]
+        return packing.split(packed, prefix, member["replica_qubits"][0], name), self.timing[pub_name]
+
+    def physical(self, name: str) -> list[int]:
+        return list(self.members[name]["replica_qubits"][0])
+
+
+def timed_compact(circuit: QuantumCircuit, rows: list[list[str]], dt: float) -> Timed:
+    """The replica on its active qubits, each instruction's executed start (nan if virtual), and the measured qubit."""
+    active = sorted({circuit.find_bit(q).index for inst in circuit.data for q in inst.qubits})
+    index = {q: k for k, q in enumerate(active)}
+    plays: dict[int, list[tuple[int, str]]] = defaultdict(list)
+    for row in rows:
+        if row[5] != "play" or row[1].startswith(("INIT", "FINI")) or not row[2].startswith("Qubit "):
+            continue
+        qubit = int(row[2].split()[1])
+        if qubit in index:
+            plays[qubit].append((int(row[3]), row[1].split("_")[0]))
+    for qubit in plays:
+        plays[qubit].sort()
+    cursor: dict[int, int] = defaultdict(int)
+    compact = QuantumCircuit(len(active))
+    starts: list[float] = []
+    measured = -1
+    for inst in circuit.data:
+        name = inst.operation.name
+        qubits = [circuit.find_bit(q).index for q in inst.qubits]
+        if name in VIRTUAL:
+            if name == "rz":
+                compact.append(inst.operation, [index[q] for q in qubits])
+                starts.append(math.nan)
+            continue
+        times = []
+        for q in qubits:
+            start, label = plays[q][cursor[q]]
+            require(label == name, f"qubit {q}: executed {label} where the circuit has {name}")
+            cursor[q] += 1
+            times.append(start)
+        require(len(set(times)) == 1, f"{name} on {qubits} starts at different times {times}")
+        if name == "measure":
+            measured = index[qubits[0]]
+            continue
+        compact.append(inst.operation, [index[q] for q in qubits])
+        starts.append(times[0] * dt)
+    require(all(cursor[q] == len(plays[q]) for q in plays), "executed pulses remain unpaired")
+    require(measured >= 0, "replica has no measurement")
+    return compact, starts, measured
+
+
+def probability(timed: Timed, detuning_hz: list[float], cz_phase: dict[tuple[int, int], float]) -> float:
+    """P(measured qubit reads 0) with frame rotations from executed times and CPhase after each CZ."""
+    compact, starts, measured = timed
+    out = QuantumCircuit(compact.num_qubits)
+    last: dict[int, float] = {}
+    for inst, start in zip(compact.data, starts, strict=True):
+        qubits = [compact.find_bit(q).index for q in inst.qubits]
+        if not math.isnan(start):
+            for q in qubits:
+                if q in last and detuning_hz[q]:
+                    out.rz(2 * math.pi * detuning_hz[q] * (start - last[q]), q)
+                last[q] = start
+        out.append(inst.operation, qubits)
+        if inst.operation.name == "cz":
+            epsilon = cz_phase.get((min(qubits), max(qubits)), 0.0)
+            if epsilon:
+                out.cp(epsilon, qubits[0], qubits[1])
+    return float(Statevector(out).probabilities([measured])[0])
+
+
 def measured_edges() -> dict[int, list[dict[str, Any]]]:
     data = json.loads(MEASURED.read_text(encoding="utf-8"))
     points: dict[tuple[int, int, int, int], dict[int, Any]] = defaultdict(dict)
-    layouts: dict[tuple[int, int, int, int], list[int]] = {}
     for name, member in data["members"].items():
         match = MEMBER.match(name)
         if match is None:
@@ -91,137 +190,65 @@ def measured_edges() -> dict[int, list[dict[str, Any]]]:
         lane, kite, source, target, phase = (int(group) for group in match.groups())
         counts = member["counts"]
         points[lane, kite, source, target][phase] = (
+            name,
             counts[0] / sum(counts),
             sum(counts),
             member["execution_replay"]["probabilities"][0],
             member["ideal_probabilities"][0],
         )
-        layouts[lane, kite, source, target] = list(member["physical_qubits"])
     lanes: dict[int, list[dict[str, Any]]] = defaultdict(list)
     for key in sorted(points):
         series = [points[key][phase] for phase in range(PHASES)]
-        amplitude, hardware = fringe([p[0] for p in series])
-        _, replay = fringe([p[2] for p in series])
-        _, ideal = fringe([p[3] for p in series])
-        # Binomial variance of each point through the 3-parameter fit: the cosine
-        # and sine coefficients each carry 2/PHASES of the mean point variance.
-        variance = float(np.mean([p[0] * (1 - p[0]) / p[1] for p in series])) * 2 / PHASES
+        amplitude, hardware = fringe([p[1] for p in series])
+        _, replay = fringe([p[3] for p in series])
+        _, ideal = fringe([p[4] for p in series])
+        variance = float(np.mean([p[1] * (1 - p[1]) / p[2] for p in series])) * 2 / PHASES
         lanes[key[0]].append(
             {
                 "kite": key[1],
                 "source": key[2],
                 "target": key[3],
-                "physical_qubits": layouts[key],
-                "hardware_offset": wrap(hardware - ideal),
-                "replay_offset": wrap(replay - ideal),
+                "members": [p[0] for p in series],
+                "ideal_phase": ideal,
+                "offset": wrap(hardware - replay),
                 "shot_noise_rad": math.sqrt(variance) / amplitude,
             }
         )
     return lanes
 
 
-def lane_target(physical: list[int]) -> Target:
-    """The 5-qubit sub-target of BACKEND on these physical qubits, in this order."""
-    backend = json.loads(TARGETS.read_text(encoding="utf-8"))["backends"][BACKEND]
-    index = {q: k for k, q in enumerate(physical)}
-    target = Target(num_qubits=len(physical), dt=backend["dt"])
+def lane_fit(lane: int, edges: list[dict[str, Any]], executed: Executed) -> dict[str, Any]:
+    prepared = [[timed_compact(*executed.replica(name), executed.dt) for name in edge["members"]] for edge in edges]
+    physical = sorted({q for edge in edges for name in edge["members"] for q in executed.physical(name)})
+    require(len(physical) == 5, f"lane {lane} spans {len(physical)} qubits")
+    width = prepared[0][0][0].num_qubits
+    couplers: set[tuple[int, int]] = set()
+    for points in prepared:
+        for compact, _, _ in points:
+            for inst in compact.data:
+                if inst.operation.name == "cz":
+                    pair = [compact.find_bit(q).index for q in inst.qubits]
+                    couplers.add((min(pair), max(pair)))
+    ordered = sorted(couplers)
 
-    def rows(name: str, width: int) -> dict[tuple[int, ...], InstructionProperties]:
-        out = {}
-        for qargs, duration in zip(
-            backend["instructions"][name]["qargs"], backend["instructions"][name]["duration"], strict=True
-        ):
-            if len(qargs) == width and all(q in index for q in qargs):
-                out[tuple(index[q] for q in qargs)] = InstructionProperties(duration=duration)
-        return out
+    def phase(points: list[Timed], detuning: list[float], cz: dict[tuple[int, int], float]) -> float:
+        return fringe([probability(timed, detuning, cz) for timed in points])[1]
 
-    target.add_instruction(CZGate(), rows("cz", 2))
-    target.add_instruction(SXGate(), rows("sx", 1))
-    target.add_instruction(XGate(), rows("x", 1))
-    target.add_instruction(Measure(), rows("measure", 1))
-    target.add_instruction(
-        RZGate(Parameter("theta")), {(k,): InstructionProperties(duration=0.0) for k in range(len(physical))}
-    )
-    target.add_instruction(Delay(Parameter("t")), {(k,): None for k in range(len(physical))})
-    return target
-
-
-def vertex_pairs() -> dict[tuple[int, int], tuple[int, int]]:
-    graphs, _, _ = box_kites()
-    return {(g["id"], v["id"]): (v["low"], v["high"]) for g in graphs for v in g["vertices"]}
-
-
-def scheduled(edge: dict[str, Any], phase: float, target: Target, pairs: dict[Any, Any]) -> tuple[QuantumCircuit, int]:
-    kite_constant = edge["kite"]
-    circuit = design_d_phase_sweep(pairs[kite_constant, edge["source"]], pairs[kite_constant, edge["target"]], phase)
-    compiled = transpile(
-        circuit,
-        target=target,
-        initial_layout=list(range(5)),
-        optimization_level=1,
-        seed_transpiler=SEED,
-        scheduling_method="alap",
-    )
-    selector = compiled.layout.final_index_layout()[4] if compiled.layout else 4
-    return compiled, selector
-
-
-def detuned_probability(
-    compiled: QuantumCircuit,
-    selector: int,
-    target: Target,
-    detuning_hz: list[float],
-    cz_phase: dict[tuple[int, int], float] | None = None,
-) -> float:
-    """P(selector reads 0) with RZ(2 pi delta_q tau) after every timed interval on qubit q
-    and CPhase(epsilon_c) after every CZ on coupler c."""
-    dt = target.dt
-    out = QuantumCircuit(compiled.num_qubits)
-    for instruction in compiled.data:
-        name = instruction.operation.name
-        if name in ("measure", "barrier"):
-            continue
-        qubits = [compiled.find_bit(q).index for q in instruction.qubits]
-        out.append(instruction.operation, qubits)
-        if name == "delay":
-            seconds = instruction.operation.duration * dt
-        elif name == "rz":
-            continue
-        else:
-            seconds = target[name][tuple(qubits)].duration or 0.0
-        for q in qubits:
-            if detuning_hz[q]:
-                out.rz(2 * math.pi * detuning_hz[q] * seconds, q)
-        if name == "cz" and cz_phase:
-            epsilon = cz_phase.get(tuple(sorted(qubits)), 0.0)
-            if epsilon:
-                out.cp(epsilon, qubits[0], qubits[1])
-    return float(Statevector(out).probabilities([selector])[0])
-
-
-CZ_STEP = 0.01
-
-
-def lane_fit(lane: int, edges: list[dict[str, Any]], pairs: dict[Any, Any]) -> dict[str, Any]:
-    physical = edges[0]["physical_qubits"]
-    target = lane_target(physical)
-    couplers = sorted({tuple(sorted(qargs)) for qargs in target["cz"]})
-    detuning_response = np.zeros((len(edges), 5))
-    coupler_response = np.zeros((len(edges), len(couplers)))
-    compiled_cz = []
-    for e, edge in enumerate(edges):
-        circuits = [scheduled(edge, k * math.pi / 4, target, pairs) for k in range(PHASES)]
-        compiled_cz.append(int(circuits[0][0].count_ops().get("cz", 0)))
-        base = fringe([detuned_probability(c, s, target, [0.0] * 5) for c, s in circuits])[1]
-        for q in range(5):
-            shift = [0.0] * 5
+    zero = [0.0] * width
+    detuning_response = np.zeros((len(edges), width))
+    coupler_response = np.zeros((len(edges), len(ordered)))
+    ideal_mismatch = 0.0
+    for e, points in enumerate(prepared):
+        base = phase(points, zero, {})
+        ideal_mismatch = max(ideal_mismatch, abs(wrap(base - edges[e]["ideal_phase"])))
+        for q in range(width):
+            shift = list(zero)
             shift[q] = KHZ
-            moved = fringe([detuned_probability(c, s, target, shift) for c, s in circuits])[1]
-            detuning_response[e, q] = wrap(moved - base)
-        for k, coupler in enumerate(couplers):
-            moved = fringe([detuned_probability(c, s, target, [0.0] * 5, {coupler: CZ_STEP}) for c, s in circuits])[1]
-            coupler_response[e, k] = wrap(moved - base) / CZ_STEP
-    measured = np.array([edge["hardware_offset"] - edge["replay_offset"] for edge in edges])
+            detuning_response[e, q] = wrap(phase(points, shift, {}) - base)
+        for k, coupler in enumerate(ordered):
+            coupler_response[e, k] = wrap(phase(points, zero, {coupler: CZ_STEP}) - base) / CZ_STEP
+    require(ideal_mismatch < 1e-9, f"lane {lane}: executed replicas miss the ideal fringe by {ideal_mismatch:.2e} rad")
+    measured = np.array([edge["offset"] for edge in edges])
     noise = np.array([edge["shot_noise_rad"] for edge in edges])
 
     def rms(values: Any) -> float:
@@ -240,9 +267,8 @@ def lane_fit(lane: int, edges: list[dict[str, Any]], pairs: dict[Any, Any]) -> d
             "leave_one_out_rms_rad": round(rms(loo), 6),
         }
 
-    ones = np.ones((len(edges), 1))
     models = {
-        "lane_mean": evaluate(ones),
+        "lane_mean": evaluate(np.ones((len(edges), 1))),
         "detuning": evaluate(detuning_response),
         "cz_phase": evaluate(coupler_response),
         "detuning_and_cz_phase": evaluate(np.hstack([detuning_response, coupler_response])),
@@ -250,12 +276,13 @@ def lane_fit(lane: int, edges: list[dict[str, Any]], pairs: dict[Any, Any]) -> d
     return {
         "lane": lane,
         "physical_qubits": physical,
-        "couplers": [[physical[a], physical[b]] for a, b in couplers],
+        "couplers_compact": [list(c) for c in ordered],
+        "executed_cz": [int(points[0][0].count_ops().get("cz", 0)) for points in prepared],
+        "ideal_mismatch_rad": ideal_mismatch,
         "detuning_response_rad_per_khz": [[round(float(v), 9) for v in row] for row in detuning_response],
         "cz_phase_response_rad_per_rad": [[round(float(v), 9) for v in row] for row in coupler_response],
         "measured_offset_rad": [round(float(v), 6) for v in measured],
         "shot_noise_rms_rad": round(rms(noise), 6),
-        "compiled_cz": compiled_cz,
         "models": models,
         "edges": [{k: edge[k] for k in ("kite", "source", "target")} for edge in edges],
     }
@@ -263,13 +290,19 @@ def lane_fit(lane: int, edges: list[dict[str, Any]], pairs: dict[Any, Any]) -> d
 
 def run(lanes: list[int]) -> dict[str, Any]:
     edges = measured_edges()
-    pairs = vertex_pairs()
-    fits = [lane_fit(lane, edges[lane], pairs) for lane in lanes]
+    executed = Executed()
+    fits = [lane_fit(lane, edges[lane], executed) for lane in lanes]
     for fit in fits:
         summary = {name: model["leave_one_out_rms_rad"] for name, model in fit["models"].items()}
         line = {"lane": fit["lane"], "shot_noise_rms_rad": fit["shot_noise_rms_rad"], "loo": summary}
         print(json.dumps(line), flush=True)
-    return {"schema": "atlas-detuning-map-v1", "backend": BACKEND, "phases": PHASES, "lanes": fits}
+    return {
+        "schema": "atlas-detuning-map-v2",
+        "backend": BACKEND,
+        "run": RUN.relative_to(ROOT).as_posix(),
+        "phases": PHASES,
+        "lanes": fits,
+    }
 
 
 def main() -> int:
@@ -288,15 +321,15 @@ def main() -> int:
                 continue
             other = fresh[fit["lane"]]
             for key in ("measured_offset_rad", "detuning_response_rad_per_khz", "cz_phase_response_rad_per_rad"):
-                if not np.allclose(fit[key], other[key], atol=1e-9):
-                    raise SystemExit(f"lane {fit['lane']}: {key} differs from a fresh computation")
+                require(np.allclose(fit[key], other[key], atol=1e-9), f"lane {fit['lane']}: {key} differs")
             for name, model in fit["models"].items():
-                if not np.allclose(model["parameters"], other["models"][name]["parameters"], atol=1e-6):
-                    raise SystemExit(f"lane {fit['lane']}: {name} parameters differ")
+                require(
+                    np.allclose(model["parameters"], other["models"][name]["parameters"], atol=1e-6),
+                    f"lane {fit['lane']}: {name} parameters differ",
+                )
         print(f"{args.check}: lanes {lanes} reproduced")
         return 0
-    if args.out is None:
-        parser.error("--out is required")
+    require(args.out is not None, "--out is required")
     lanes = list(range(7)) if args.lanes == "all" else [int(v) for v in args.lanes.split(",")]
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(run(lanes), indent=1) + "\n", encoding="utf-8")
