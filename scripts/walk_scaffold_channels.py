@@ -94,6 +94,9 @@ from ripple_dynamics import PAIRS  # noqa: E402
 from ripple_experiments import _walk_ideal  # noqa: E402
 
 OUTPUT = "results/kaggle_out/walk_scaffold_channels.json"
+EVIDENCE = ROOT / "docs/evidence/walk_scaffold_channels"
+EXTRACT_JSON = EVIDENCE / "members.json"
+EXTRACT_QPY = EVIDENCE / "members.qpy"
 HISTORY = ROOT / "docs/evidence/calibration/history"
 RUNS = ("results/live/2026-10-13T025444.603480Z", "results/live/2026-10-15T031229.371738Z")
 FIT_MEMBER = "readout0"
@@ -160,7 +163,7 @@ def local_circuit(component: QuantumCircuit) -> tuple[QuantumCircuit, list[int]]
     return out, qubits
 
 
-def load_lanes() -> list[dict[str, Any]]:
+def extract_lanes() -> list[dict[str, Any]]:
     """Every walk member of both runs, grouped by lane, with its circuit, counts and snapshot."""
     files = snapshot_files()
     lanes: dict[tuple[str, str], dict[str, Any]] = {}
@@ -203,6 +206,56 @@ def load_lanes() -> list[dict[str, Any]]:
                     "snapshot": str(files[execution["calibration"]].relative_to(ROOT)),
                 }
     return [lanes[key] for key in sorted(lanes)]
+
+
+def write_extract(json_path: Path, qpy_path: Path) -> None:
+    """The walk members as a compact extract: lane metadata in JSON, local circuits in QPY order.
+
+    The retained runs carry about 77 MB of record, collection and QPY; the
+    extract holds only what the fits read, with the sha256 of every source
+    file, so a kernel bundle stays small and the replay gate re-derives the
+    extract byte for byte from the retained runs.
+    """
+    lanes = extract_lanes()
+    circuits: list[QuantumCircuit] = []
+    meta = []
+    for lane in lanes:
+        members = {}
+        for name, entry in lane["members"].items():
+            members[name] = {key: value for key, value in entry.items() if key != "circuit"} | {
+                "qpy_index": len(circuits)
+            }
+            circuits.append(entry["circuit"])
+        meta.append({key: value for key, value in lane.items() if key != "members"} | {"members": members})
+    sources = {
+        f"{run}/{name}": hashlib.sha256((ROOT / run / name).read_bytes()).hexdigest()
+        for run in RUNS
+        for name in ("record.json", "collect.json", "isa.qpy")
+    }
+    json_path.parent.mkdir(parents=True, exist_ok=True)
+    json_path.write_text(
+        json.dumps({"schema": "walk-scaffold-members-v1", "sources": sources, "lanes": meta}, indent=1, sort_keys=True)
+        + "\n",
+        encoding="utf-8",
+    )
+    with qpy_path.open("wb") as stream:
+        qpy.dump(circuits, stream)
+
+
+def load_lanes() -> list[dict[str, Any]]:
+    """The lanes from the retained extract (EXTRACT_JSON and EXTRACT_QPY)."""
+    data = json.loads(EXTRACT_JSON.read_text(encoding="utf-8"))
+    with EXTRACT_QPY.open("rb") as stream:
+        circuits = qpy.load(stream)
+    lanes = []
+    for lane in data["lanes"]:
+        members = {
+            name: {key: value for key, value in entry.items() if key != "qpy_index"}
+            | {"circuit": circuits[entry["qpy_index"]]}
+            for name, entry in lane["members"].items()
+        }
+        lanes.append(lane | {"members": members})
+    return lanes
 
 
 def schedule(circuit: QuantumCircuit, snapshot: dict[str, Any]) -> QuantumCircuit:
@@ -572,9 +625,23 @@ def bound_to_run(path: Path, run_dir: Path) -> list[str]:
     return [] if digest == recorded else [f"{path} sha256 {digest} differs from the collected {recorded}"]
 
 
+def extract_matches() -> list[str]:
+    """Re-derive the extract from the retained runs and require identical bytes."""
+    import tempfile
+
+    with tempfile.TemporaryDirectory() as scratch:
+        fresh_json, fresh_qpy = Path(scratch) / "members.json", Path(scratch) / "members.qpy"
+        write_extract(fresh_json, fresh_qpy)
+        return [
+            f"{kept.relative_to(ROOT)} differs from its re-derivation"
+            for kept, fresh in ((EXTRACT_JSON, fresh_json), (EXTRACT_QPY, fresh_qpy))
+            if kept.read_bytes() != fresh.read_bytes()
+        ]
+
+
 def check(path: Path, run_dir: Path) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
-    failures = bound_to_run(path, run_dir)
+    failures = bound_to_run(path, run_dir) + extract_matches()
     algebra = retained["algebra"]
     products = [tuple(p) for p in algebra["products"]]
     signs = [cd_sign(DIM, a, b) for a, b in products]
@@ -624,9 +691,14 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
     parser.add_argument("--run", type=Path, help="Kaggle run directory whose collected output --check binds")
+    parser.add_argument("--extract", action="store_true", help="write the members extract from the retained runs")
     parser.add_argument("--lanes", help="comma-separated lane indices (default all four)")
     parser.add_argument("--channels", help="comma-separated names from CHANNELS (default all)")
     args = parser.parse_args()
+    if args.extract:
+        write_extract(EXTRACT_JSON, EXTRACT_QPY)
+        print(f"wrote {EXTRACT_JSON.relative_to(ROOT)} and {EXTRACT_QPY.relative_to(ROOT)}")
+        return 0
     if args.check:
         if args.run is None:
             parser.error("--check needs --run")
