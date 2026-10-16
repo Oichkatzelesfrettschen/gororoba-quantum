@@ -183,7 +183,9 @@ def aer_device() -> str:
     """The Aer device GOROROBA_AER_DEVICE names, CPU when it is unset.
 
     CI runners carry no GPU and keep the CPU; ``ci/run_gates.py --device GPU``
-    exports GPU, so a local run computes every replay on the other device.
+    exports GPU, so a local run computes every exact-law replay on the other
+    device. Contracts that compare seeded shot counts keep Aer's CPU sampler,
+    whose counts their retained records hold.
     """
     device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
     if device not in AER_DEVICES:

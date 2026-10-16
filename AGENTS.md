@@ -36,7 +36,8 @@ every replica of a choice in one call and parallelize experiments itself.
 `ci/run_gates.py --device GPU` exports `GOROROBA_AER_DEVICE=GPU` to every
 gate, so a local run computes the simulation replays on the GPU while CI's
 runners keep the CPU; a gate that passes locally and fails on CI exposes a
-device-dependent result.
+device-dependent result. Contracts that compare seeded shot counts keep
+Aer's CPU sampler, whose counts their records retain.
 
 A change to live_run.py or experiments.py also gets a dry run,
 `"$PYTHON" live_run.py --out ../results/live`, whose audit record lands under
