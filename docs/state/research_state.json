@@ -2209,7 +2209,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Inferred from one run's fringe phases; the detuning model's held-out residuals stay 2.7 to 4.1 times its leave-one-out noise floor, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.",
+      "boundary": "Inferred from one run's fringe phases; the detuning model's linear held-out residuals stay 1.8 to 3.0 times its leave-one-out noise floor, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.",
       "evidence": [
         {
           "path": "results/ripple/measured-ripple.json",
@@ -2217,7 +2217,7 @@
         },
         {
           "path": "docs/evidence/atlas_detuning_map/result.json",
-          "sha256": "d120670bd8fb77643333f0e742fe9b7ace00d090c79b1bf6e2ceb57e5c6534da"
+          "sha256": "fc8768c7d74b1c38e22ab7742c0cefa94a3fc86b111b8181e2d757a5595bd776"
         }
       ],
       "documents": [
@@ -2279,7 +2279,7 @@
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "32fc723be501cafc694cf8ed745454f480d7a3189abb69d0276e5bca2385657d"
+          "sha256": "07aa731d95a7c5419fc3ddf18dabb2bdd7c4e580f26dfadec66695057484bfb0"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",

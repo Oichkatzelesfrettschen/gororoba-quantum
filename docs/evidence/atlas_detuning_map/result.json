@@ -1,5 +1,5 @@
 {
- "schema": "atlas-detuning-map-v5",
+ "schema": "atlas-detuning-map-v6",
  "backend": "ibm_fez",
  "run": "results/live/2026-10-13T025444.603480Z",
  "phases": 8,
@@ -220,7 +220,7 @@
     -0.183527,
     -0.099266
    ],
-   "shot_noise_rms_rad": 0.035676,
+   "shot_noise_rms_rad": 0.04106,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -228,7 +228,7 @@
      ],
      "fit_rms_rad": 0.14124,
      "leave_one_out_rms_rad": 0.15408,
-     "leave_one_out_noise_floor_rad": 0.037263
+     "leave_one_out_noise_floor_rad": 0.042886
     },
     "detuning": {
      "parameters": [
@@ -240,7 +240,7 @@
      ],
      "fit_rms_rad": 0.114388,
      "leave_one_out_rms_rad": 0.180273,
-     "leave_one_out_noise_floor_rad": 0.048853,
+     "leave_one_out_noise_floor_rad": 0.056081,
      "nonlinear_fit_rms_rad": 0.122189,
      "nonlinear_leave_one_out_rms_rad": 0.186128
     },
@@ -253,7 +253,7 @@
      ],
      "fit_rms_rad": 0.128734,
      "leave_one_out_rms_rad": 0.213544,
-     "leave_one_out_noise_floor_rad": 0.0448,
+     "leave_one_out_noise_floor_rad": 0.051652,
      "nonlinear_fit_rms_rad": 0.128833,
      "nonlinear_leave_one_out_rms_rad": 0.213665
     },
@@ -271,7 +271,7 @@
      ],
      "fit_rms_rad": 0.067276,
      "leave_one_out_rms_rad": 0.336958,
-     "leave_one_out_noise_floor_rad": 0.098061,
+     "leave_one_out_noise_floor_rad": 0.113356,
      "nonlinear_fit_rms_rad": 0.084535,
      "nonlinear_leave_one_out_rms_rad": 0.313635
     }
@@ -555,7 +555,7 @@
     -0.075899,
     0.37551
    ],
-   "shot_noise_rms_rad": 0.021624,
+   "shot_noise_rms_rad": 0.029548,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -563,7 +563,7 @@
      ],
      "fit_rms_rad": 0.21816,
      "leave_one_out_rms_rad": 0.237993,
-     "leave_one_out_noise_floor_rad": 0.022585
+     "leave_one_out_noise_floor_rad": 0.030861
     },
     "detuning": {
      "parameters": [
@@ -575,7 +575,7 @@
      ],
      "fit_rms_rad": 0.065306,
      "leave_one_out_rms_rad": 0.120025,
-     "leave_one_out_noise_floor_rad": 0.029005,
+     "leave_one_out_noise_floor_rad": 0.039643,
      "nonlinear_fit_rms_rad": 0.065336,
      "nonlinear_leave_one_out_rms_rad": 0.119529
     },
@@ -588,7 +588,7 @@
      ],
      "fit_rms_rad": 0.111302,
      "leave_one_out_rms_rad": 0.180219,
-     "leave_one_out_noise_floor_rad": 0.027165,
+     "leave_one_out_noise_floor_rad": 0.037153,
      "nonlinear_fit_rms_rad": 0.11054,
      "nonlinear_leave_one_out_rms_rad": 0.179703
     },
@@ -606,7 +606,7 @@
      ],
      "fit_rms_rad": 0.021542,
      "leave_one_out_rms_rad": 0.153678,
-     "leave_one_out_noise_floor_rad": 0.071312,
+     "leave_one_out_noise_floor_rad": 0.096964,
      "nonlinear_fit_rms_rad": 0.040368,
      "nonlinear_leave_one_out_rms_rad": 0.116012
     }
@@ -890,7 +890,7 @@
     0.175825,
     0.283285
    ],
-   "shot_noise_rms_rad": 0.020474,
+   "shot_noise_rms_rad": 0.026665,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -898,7 +898,7 @@
      ],
      "fit_rms_rad": 0.194488,
      "leave_one_out_rms_rad": 0.212169,
-     "leave_one_out_noise_floor_rad": 0.021384
+     "leave_one_out_noise_floor_rad": 0.027851
     },
     "detuning": {
      "parameters": [
@@ -910,7 +910,7 @@
      ],
      "fit_rms_rad": 0.043347,
      "leave_one_out_rms_rad": 0.092917,
-     "leave_one_out_noise_floor_rad": 0.027509,
+     "leave_one_out_noise_floor_rad": 0.035826,
      "nonlinear_fit_rms_rad": 0.042957,
      "nonlinear_leave_one_out_rms_rad": 0.093433
     },
@@ -923,7 +923,7 @@
      ],
      "fit_rms_rad": 0.082223,
      "leave_one_out_rms_rad": 0.136314,
-     "leave_one_out_noise_floor_rad": 0.025659,
+     "leave_one_out_noise_floor_rad": 0.033434,
      "nonlinear_fit_rms_rad": 0.080803,
      "nonlinear_leave_one_out_rms_rad": 0.13318
     },
@@ -941,7 +941,7 @@
      ],
      "fit_rms_rad": 0.040977,
      "leave_one_out_rms_rad": 0.247228,
-     "leave_one_out_noise_floor_rad": 0.049398,
+     "leave_one_out_noise_floor_rad": 0.064294,
      "nonlinear_fit_rms_rad": 0.040553,
      "nonlinear_leave_one_out_rms_rad": 0.23973
     }
@@ -1225,7 +1225,7 @@
     0.120043,
     -0.245356
    ],
-   "shot_noise_rms_rad": 0.027554,
+   "shot_noise_rms_rad": 0.033893,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -1233,7 +1233,7 @@
      ],
      "fit_rms_rad": 0.158413,
      "leave_one_out_rms_rad": 0.172815,
-     "leave_one_out_noise_floor_rad": 0.028779
+     "leave_one_out_noise_floor_rad": 0.0354
     },
     "detuning": {
      "parameters": [
@@ -1245,7 +1245,7 @@
      ],
      "fit_rms_rad": 0.054306,
      "leave_one_out_rms_rad": 0.113562,
-     "leave_one_out_noise_floor_rad": 0.037787,
+     "leave_one_out_noise_floor_rad": 0.046488,
      "nonlinear_fit_rms_rad": 0.05533,
      "nonlinear_leave_one_out_rms_rad": 0.116841
     },
@@ -1258,7 +1258,7 @@
      ],
      "fit_rms_rad": 0.106317,
      "leave_one_out_rms_rad": 0.164523,
-     "leave_one_out_noise_floor_rad": 0.034017,
+     "leave_one_out_noise_floor_rad": 0.041886,
      "nonlinear_fit_rms_rad": 0.106286,
      "nonlinear_leave_one_out_rms_rad": 0.163639
     },
@@ -1276,7 +1276,7 @@
      ],
      "fit_rms_rad": 0.0199,
      "leave_one_out_rms_rad": 0.078662,
-     "leave_one_out_noise_floor_rad": 0.069012,
+     "leave_one_out_noise_floor_rad": 0.084442,
      "nonlinear_fit_rms_rad": 0.031266,
      "nonlinear_leave_one_out_rms_rad": 0.080944
     }
@@ -1560,7 +1560,7 @@
     0.02401,
     0.086162
    ],
-   "shot_noise_rms_rad": 0.022782,
+   "shot_noise_rms_rad": 0.028789,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -1568,7 +1568,7 @@
      ],
      "fit_rms_rad": 0.124957,
      "leave_one_out_rms_rad": 0.136317,
-     "leave_one_out_noise_floor_rad": 0.023795
+     "leave_one_out_noise_floor_rad": 0.030069
     },
     "detuning": {
      "parameters": [
@@ -1580,7 +1580,7 @@
      ],
      "fit_rms_rad": 0.049565,
      "leave_one_out_rms_rad": 0.103212,
-     "leave_one_out_noise_floor_rad": 0.034817,
+     "leave_one_out_noise_floor_rad": 0.04416,
      "nonlinear_fit_rms_rad": 0.0496,
      "nonlinear_leave_one_out_rms_rad": 0.104108
     },
@@ -1593,7 +1593,7 @@
      ],
      "fit_rms_rad": 0.061537,
      "leave_one_out_rms_rad": 0.091286,
-     "leave_one_out_noise_floor_rad": 0.030364,
+     "leave_one_out_noise_floor_rad": 0.038537,
      "nonlinear_fit_rms_rad": 0.063,
      "nonlinear_leave_one_out_rms_rad": 0.091183
     },
@@ -1611,7 +1611,7 @@
      ],
      "fit_rms_rad": 0.04745,
      "leave_one_out_rms_rad": 0.264389,
-     "leave_one_out_noise_floor_rad": 0.060086,
+     "leave_one_out_noise_floor_rad": 0.075961,
      "nonlinear_fit_rms_rad": 0.047904,
      "nonlinear_leave_one_out_rms_rad": 0.304407
     }
@@ -1895,7 +1895,7 @@
     0.001989,
     -0.007506
    ],
-   "shot_noise_rms_rad": 0.02831,
+   "shot_noise_rms_rad": 0.034786,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -1903,7 +1903,7 @@
      ],
      "fit_rms_rad": 0.119068,
      "leave_one_out_rms_rad": 0.129892,
-     "leave_one_out_noise_floor_rad": 0.029569
+     "leave_one_out_noise_floor_rad": 0.036333
     },
     "detuning": {
      "parameters": [
@@ -1915,7 +1915,7 @@
      ],
      "fit_rms_rad": 0.062573,
      "leave_one_out_rms_rad": 0.113313,
-     "leave_one_out_noise_floor_rad": 0.040676,
+     "leave_one_out_noise_floor_rad": 0.049918,
      "nonlinear_fit_rms_rad": 0.060723,
      "nonlinear_leave_one_out_rms_rad": 0.108305
     },
@@ -1928,7 +1928,7 @@
      ],
      "fit_rms_rad": 0.095295,
      "leave_one_out_rms_rad": 0.130073,
-     "leave_one_out_noise_floor_rad": 0.036599,
+     "leave_one_out_noise_floor_rad": 0.044985,
      "nonlinear_fit_rms_rad": 0.096667,
      "nonlinear_leave_one_out_rms_rad": 0.130756
     },
@@ -1946,7 +1946,7 @@
      ],
      "fit_rms_rad": 0.057405,
      "leave_one_out_rms_rad": 0.323747,
-     "leave_one_out_noise_floor_rad": 0.076071,
+     "leave_one_out_noise_floor_rad": 0.093149,
      "nonlinear_fit_rms_rad": 0.05396,
      "nonlinear_leave_one_out_rms_rad": 0.339028
     }
@@ -2230,7 +2230,7 @@
     0.343016,
     0.16357
    ],
-   "shot_noise_rms_rad": 0.021848,
+   "shot_noise_rms_rad": 0.028582,
    "models": {
     "lane_mean": {
      "parameters": [
@@ -2238,7 +2238,7 @@
      ],
      "fit_rms_rad": 0.118271,
      "leave_one_out_rms_rad": 0.129022,
-     "leave_one_out_noise_floor_rad": 0.02282
+     "leave_one_out_noise_floor_rad": 0.029853
     },
     "detuning": {
      "parameters": [
@@ -2250,7 +2250,7 @@
      ],
      "fit_rms_rad": 0.028629,
      "leave_one_out_rms_rad": 0.074279,
-     "leave_one_out_noise_floor_rad": 0.031718,
+     "leave_one_out_noise_floor_rad": 0.041611,
      "nonlinear_fit_rms_rad": 0.029054,
      "nonlinear_leave_one_out_rms_rad": 0.085782
     },
@@ -2263,7 +2263,7 @@
      ],
      "fit_rms_rad": 0.079619,
      "leave_one_out_rms_rad": 0.15116,
-     "leave_one_out_noise_floor_rad": 0.027923,
+     "leave_one_out_noise_floor_rad": 0.036524,
      "nonlinear_fit_rms_rad": 0.080427,
      "nonlinear_leave_one_out_rms_rad": 0.150696
     },
@@ -2281,7 +2281,7 @@
      ],
      "fit_rms_rad": 0.014433,
      "leave_one_out_rms_rad": 0.073487,
-     "leave_one_out_noise_floor_rad": 0.052181,
+     "leave_one_out_noise_floor_rad": 0.068669,
      "nonlinear_fit_rms_rad": 0.011562,
      "nonlinear_leave_one_out_rms_rad": 0.076558
     }

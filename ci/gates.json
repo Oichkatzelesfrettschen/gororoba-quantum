@@ -2324,6 +2324,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "cmp docs/evidence/atlas_detuning_map/result.json results/kaggle/2026-10-16T114149Z-gororoba-atlas-detuning-map/output/output/repo/results/kaggle_out/atlas_detuning_map.json && cmp docs/evidence/ghost_runs/result.json results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/output/output/repo/results/kaggle_out/ghost_runs.json && cmp docs/evidence/census_frequency_design/result.json results/kaggle/2026-10-16T043842Z-gororoba-census-frequency-design/output/output/repo/results/kaggle_out/census_frequency_design.json",
+   "name": "core-293",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check && \"$PYTHON\" -B -O -W error scripts/compare_submitted_circuits.py --check",
    "name": "core-281",
    "seconds": 1.0,

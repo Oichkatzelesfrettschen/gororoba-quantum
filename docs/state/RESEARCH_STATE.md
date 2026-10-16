@@ -348,7 +348,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Acquisitions: kingston-coherence-window, fez-n21-orbit-feedback, kingston-zero-divisor-fringe.
   Supersedes: withdrawn-common-ghost-detuning.
 - **hw-atlas-frame-detuning** (exploratory reanalysis, hardware). On the executed Fez ripple atlas circuits and IBM's executed pulse times, a static frame detuning per qubit, resimulated at its leave-one-out fitted values, predicts held-out edge fringe phases better than the lane mean on six of seven lanes (0.086 to 0.120 rad against 0.129 to 0.238 rad); the fitted detunings are mostly 5 to 30 kHz, up to about 60 kHz.
-  Boundary: Inferred from one run's fringe phases; the detuning model's held-out residuals stay 2.7 to 4.1 times its leave-one-out noise floor, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.
+  Boundary: Inferred from one run's fringe phases; the detuning model's linear held-out residuals stay 1.8 to 3.0 times its leave-one-out noise floor, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.
   Evidence: [measured-ripple.json](../../results/ripple/measured-ripple.json), [result.json](../evidence/atlas_detuning_map/result.json), [README.md](../evidence/atlas_detuning_map/README.md).
   Gates: replayed by core-285.
   Acquisitions: fez-ripple-atlas.

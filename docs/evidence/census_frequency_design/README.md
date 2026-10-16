@@ -11,7 +11,8 @@ each. [result.json](result.json) is the output of a Kaggle T4 kernel
 (qiskit 2.5.2, qiskit-aer 0.17.2); the kernel's measured substrate
 ([kaggle_environment.json](kaggle_environment.json)) and its hypercomplex
 stack proof ([kaggle_hypercomplex.json](kaggle_hypercomplex.json),
-`identical: true`) sit beside it. Gate core-288 requires every ordered pair exactly once, recomputes the
+`identical: true`) sit beside it. Gate core-293 requires `result.json` to equal the kernel's retained output
+byte for byte. Gate core-288 requires every ordered pair exactly once, recomputes the
 summary from the retained records exactly and reruns pairs (1, 2) and (2, 1)
 on the CPU.
 
