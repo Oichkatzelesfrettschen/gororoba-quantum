@@ -240,41 +240,43 @@ class QuantumInspireRuns:
             self.records[directory.relative_to(ROOT).as_posix()] = {
                 "submission": load_json(submission),
                 "cases": cases,
+                "cases_sha256": digest(directory / "cases.json") if cases is not None else None,
                 "results": _optional_json(directory / "results.json"),
                 "circuits": circuits,
-                "cases_digest": digest(directory / "cases.json") if (directory / "cases.json").is_file() else None,
                 "raw": raw,
             }
 
     def _run(self, run: str, record: dict[str, Any]) -> tuple[dict[str, Any], dict[int, tuple[Any, ...]]]:
         owner = f"Quantum Inspire run {run}"
         submission = record["submission"]
-        schema = submission.get("schema")
-        require(schema in ("qi-submission-v1", "qi-submission-v2"), f"{owner}: submission.json schema differs")
-        # A v2 receipt binds the uploaded bytes: each job's circuit sha256 and
-        # the cases.json digest, recorded before the enqueue. v1 receipts
-        # predate the binding and rest on cases.json alone.
-        if schema == "qi-submission-v2":
+        require(
+            submission.get("schema") in {"qi-submission-v1", "qi-submission-v2"},
+            f"{owner}: submission.json schema differs",
+        )
+        require(
+            isinstance(submission.get("approval"), str) and submission["approval"].strip(),
+            f"{owner}: submission.json records no approval",
+        )
+        cases = record["cases"]
+        require(isinstance(cases, dict), f"{owner}: cases.json is missing")
+        if submission["schema"] == "qi-submission-v2" or "cases_sha256" in submission:
             require(
-                submission.get("state") == "enqueued", f"{owner}: submission.json state is {submission.get('state')}"
+                submission.get("cases_sha256") == record["cases_sha256"],
+                f"{owner}: cases.json digest differs from submission.json",
             )
-            require(
-                submission.get("cases_sha256") == record["cases_digest"], f"{owner}: cases.json changed after upload"
-            )
+        if submission["schema"] == "qi-submission-v2":
+            require(submission.get("state") == "enqueued", f"{owner}: v2 submission was not confirmed enqueued")
             for row in submission["jobs"]:
                 require(
                     row.get("sha256") == record["circuits"].get(row["file"]),
                     f"{owner}: circuit {row['file']} differs from the bytes its receipt uploaded",
                 )
-        require(
-            isinstance(submission.get("approval"), str) and submission["approval"],
-            f"{owner}: submission.json records no approval",
-        )
-        cases = record["cases"]
-        require(isinstance(cases, dict), f"{owner}: cases.json is missing")
         for field, key in (("backend", "backend"), ("backend_type_id", "backend_type_id"), ("shots", "shots")):
             require(cases.get(key) == submission[field], f"{owner}: cases.json and submission.json differ in {field}")
         files = [row["file"] for row in submission["jobs"]]
+        require(len(set(files)) == len(files), f"{owner}: submitted circuit files repeat")
+        submitted_ids = [row["job"] for row in submission["jobs"]]
+        require(len(set(submitted_ids)) == len(submitted_ids), f"{owner}: submitted job ids repeat")
         require(files == [row["file"] for row in cases["circuits"]], f"{owner}: submitted files differ from cases.json")
         for row in cases["circuits"]:
             require(
@@ -355,11 +357,13 @@ class QuantumInspireRuns:
         retained: dict[int, tuple[Any, ...]] = {}
         for run, record in self.records.items():
             facts[run], jobs = self._run(run, record)
-            shared = set(jobs) & set(retained)
-            require(not shared, f"Quantum Inspire jobs {sorted(shared)} are retained in two run directories")
+            require(
+                not (set(retained) & set(jobs)),
+                f"Quantum Inspire job ids repeat across retained runs: {sorted(set(retained) & set(jobs))}",
+            )
             retained.update(jobs)
         ledger_ids = [job["job"] for job in self.ledger["jobs"]]
-        require(len(ledger_ids) == len(set(ledger_ids)), "the Quantum Inspire ledger lists a job twice")
+        require(len(set(ledger_ids)) == len(ledger_ids), "the Quantum Inspire ledger job ids repeat")
         ledger = {
             job["job"]: (job["backend_type_id"], job["batch_job"], job["status"], job["shots_done"], job["charged"])
             for job in self.ledger["jobs"]
@@ -369,6 +373,10 @@ class QuantumInspireRuns:
             "the Quantum Inspire ledger and the retained run directories record different jobs "
             f"(ledger only {sorted(set(ledger) - set(retained))}, runs only {sorted(set(retained) - set(ledger))}, "
             f"differing {sorted(job for job in set(ledger) & set(retained) if ledger[job] != retained[job])})",
+        )
+        require(
+            self.ledger["totals"]["shots_done"] == sum(job[3] for job in retained.values()),
+            "the Quantum Inspire ledger aggregate shots_done differs from its retained jobs",
         )
         return facts
 
@@ -900,6 +908,13 @@ def _qi_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], 
     def record(records: dict[str, dict[str, Any]], suffix: str) -> dict[str, Any]:
         return next(value for run, value in records.items() if run.endswith(suffix))
 
+    def bind_v2(target: dict[str, Any]) -> None:
+        target["submission"].update(
+            {"schema": "qi-submission-v2", "state": "enqueued", "cases_sha256": target["cases_sha256"]}
+        )
+        for row in target["submission"]["jobs"]:
+            row["sha256"] = target["circuits"][row["file"]]
+
     def circuit_digest(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         record(records, "-tuna_17")["circuits"]["teleport.cq"] = "0" * 64
 
@@ -925,25 +940,48 @@ def _qi_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], 
     def ledger_extra_job(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
         ledger["jobs"].append({**ledger["jobs"][0], "job": 1})
 
-    def ledger_duplicate(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
-        ledger["jobs"].append(dict(ledger["jobs"][0]))
+    def ledger_duplicate_job(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        ledger["jobs"].append(copy.deepcopy(ledger["jobs"][0]))
 
-    def retained_twice(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
-        records["results/quantum_inspire/runs/~copy"] = copy.deepcopy(record(records, "-Rydberg-diagnostic"))
+    def retained_duplicate_job(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        source = next(iter(records))
+        records[source + "-duplicate"] = copy.deepcopy(records[source])
 
-    def receipt_digest(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
-        target = record(records, "-Rydberg-diagnostic")
-        target["submission"] = {
-            **target["submission"],
-            "schema": "qi-submission-v2",
-            "state": "enqueued",
-            "cases_sha256": target["cases_digest"],
-            "jobs": [{**row, "sha256": "0" * 64} for row in target["submission"]["jobs"]],
-        }
+    def submitted_duplicate_job(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        jobs = record(records, "-tuna_17")["submission"]["jobs"]
+        jobs[1]["job"] = jobs[0]["job"]
 
-    yield "ledger listing one job twice", ledger_duplicate, "lists a job twice"
-    yield "one job retained in two run directories", retained_twice, "retained in two run directories"
-    yield "v2 receipt whose uploaded bytes differ from the circuit", receipt_digest, "bytes its receipt uploaded"
+    def aggregate_shots(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        ledger["totals"]["shots_done"] += 1
+
+    def receipt_manifest_changed(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-tuna_17")
+        bind_v2(target)
+        target["cases_sha256"] = "0" * 64
+
+    def receipt_manifest_missing(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-tuna_17")
+        bind_v2(target)
+        del target["submission"]["cases_sha256"]
+
+    def receipt_not_enqueued(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-tuna_17")
+        bind_v2(target)
+        target["submission"]["state"] = "created"
+
+    def receipt_job_changed(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-tuna_17")
+        bind_v2(target)
+        target["submission"]["jobs"][0]["sha256"] = "0" * 64
+
+    def receipt_job_digest_missing(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        target = record(records, "-tuna_17")
+        bind_v2(target)
+        del target["submission"]["jobs"][0]["sha256"]
+
+    def legacy_receipt_manifest_changed(records: dict[str, dict[str, Any]], ledger: dict[str, Any]) -> None:
+        record(records, "-tuna_17")["submission"]["cases_sha256"] = "0" * 64
+
     yield "circuit differing from its cases.json digest", circuit_digest, "digest differs from cases.json"
     yield "raw shot list shorter than shots done", raw_short, "length differs"
     yield "raw shots differing from the recorded histogram", raw_altered, "outcome histogram"
@@ -952,6 +990,16 @@ def _qi_mutations() -> Iterable[tuple[str, Callable[[dict[str, dict[str, Any]], 
     yield "submitted run never collected", uncollected, "results.json is missing"
     yield "transaction charging a job outside the run", foreign_transaction, "charges another job"
     yield "ledger job without a retained run", ledger_extra_job, "ledger and the retained run directories"
+    yield "ledger repeats a job id", ledger_duplicate_job, "ledger job ids repeat"
+    yield "two retained runs repeat a job id", retained_duplicate_job, "job ids repeat across retained runs"
+    yield "submission repeats a job id", submitted_duplicate_job, "submitted job ids repeat"
+    yield "ledger aggregate shots changed", aggregate_shots, "aggregate shots_done differs"
+    yield "v2 receipt with altered manifest", receipt_manifest_changed, "cases.json digest differs from submission"
+    yield "v2 receipt without manifest digest", receipt_manifest_missing, "cases.json digest differs from submission"
+    yield "v2 receipt never confirmed enqueued", receipt_not_enqueued, "not confirmed enqueued"
+    yield "v2 receipt with altered uploaded bytes", receipt_job_changed, "bytes its receipt uploaded"
+    yield "v2 receipt without uploaded byte digest", receipt_job_digest_missing, "bytes its receipt uploaded"
+    yield "v1 receipt with altered manifest binding", legacy_receipt_manifest_changed, "cases.json digest differs"
 
 
 def _rejects(name: str, expected: str, registry: dict[str, Any], context: Context) -> None:
@@ -973,6 +1021,17 @@ def self_test(registry: dict[str, Any], context: Context) -> int:
     if not isinstance(qi, QuantumInspireRuns):
         raise ValueError("the quantum_inspire provider is not the run-directory adapter")
     records, ledger = qi.records, qi.ledger
+    qi.records = copy.deepcopy(records)
+    for record in qi.records.values():
+        record["submission"]["schema"] = "qi-submission-v2"
+        record["submission"]["state"] = "enqueued"
+        record["submission"]["cases_sha256"] = record["cases_sha256"]
+        for row in record["submission"]["jobs"]:
+            row["sha256"] = record["circuits"][row["file"]]
+    try:
+        validate(copy.deepcopy(registry), context)
+    finally:
+        qi.records = records
     for name, mutate_files, expected in _qi_mutations():
         qi.records, qi.ledger = copy.deepcopy(records), copy.deepcopy(ledger)
         mutate_files(qi.records, qi.ledger)

@@ -37,10 +37,11 @@ retained catalogue and compares bytes, offline. --analyze RESULTS writes the
 additivity and teleportation estimates from collected raw shots.
 
 --replay RUN_DIR... recomputes each retained analysis.json from its raw
-shots and compares bytes, offline.
+shots and compares bytes, offline. --self-test checks the additivity-only
+case and both retained backend bit-order conventions using synthetic shots.
 
 Usage: "$PYTHON" scripts/qi_crosstalk_teleport_cases.py
-       (--write DIR | --check DIR | --analyze RUN_DIR | --replay RUN_DIR...) [--catalogue FILE]
+       (--write DIR | --check DIR | --analyze RUN_DIR | --replay RUN_DIR... | --self-test) [--catalogue FILE]
 """
 
 from __future__ import annotations
@@ -51,10 +52,14 @@ import itertools
 import json
 import math
 import sys
+import tempfile
 from pathlib import Path
 from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from parallel import ordered_map  # noqa: E402
+
 CATALOGUE = ROOT / "docs/evidence/quantum_inspire/catalogue.json"
 DRIVE_PULSES = 40
 WAIT_CYCLES = DRIVE_PULSES
@@ -257,14 +262,13 @@ def check(directory: Path, catalogue: dict[str, Any]) -> None:
     print(f"qi cases: {count} files match their regeneration")
 
 
-# Result-string order per backend: QX and Tuna put qubit 0 at the rightmost
-# character; the Ry emulator puts it at the leftmost (X on q[0] reads "10").
+# The retained Ry diagnostic puts Q0 leftmost; QX and Tuna put it rightmost.
 LEFTMOST_QUBIT_ZERO = {"Rydberg"}
 
 
 def bit(shot: str, qubit: int, backend: str = "tuna_17") -> int:
-    """Bit of qubit in a result string, in the backend's character order."""
-    return int(shot[qubit] if backend in LEFTMOST_QUBIT_ZERO else shot[len(shot) - 1 - qubit])
+    """The retained Ry diagnostic puts Q0 leftmost; QX and Tuna put it rightmost."""
+    return int(shot[qubit if backend in LEFTMOST_QUBIT_ZERO else len(shot) - 1 - qubit])
 
 
 def wilson(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, float]:
@@ -277,8 +281,17 @@ def wilson(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, float]:
 
 
 def phase_of(p1: float) -> float:
-    """X90, Rz(phi), Y90 gives P1 = (1 + sin phi)/2; the binomial standard error of phi is 1/sqrt(n) at every P1."""
+    """X90, Rz(phi), Y90 gives P1 = (1 + sin phi)/2; the binomial standard error of phi is 1/sqrt(n) at every P1.
+
+    One quadrature reads sin(phi) only, so the phase is its principal branch,
+    |phi| <= pi/2: a rotation beyond pi/2 folds back. star_report records each
+    star's distance from the fold, and a phase whose |2 P1 - 1| exceeds
+    BRANCH_LIMIT is flagged as branch-ambiguous rather than read as unique.
+    """
     return math.asin(max(-1.0, min(1.0, 2 * p1 - 1)))
+
+
+BRANCH_LIMIT = math.sin(1.2)
 
 
 def two_proportion_z(k1: int, n1: int, k2: int, n2: int) -> float:
@@ -288,7 +301,7 @@ def two_proportion_z(k1: int, n1: int, k2: int, n2: int) -> float:
     return (p2 - p1) / se if se else 0.0
 
 
-def star_report(star: dict[str, int], raw: dict[str, list[str]]) -> dict[str, Any]:
+def star_report(star: dict[str, int], raw: dict[str, list[str]], backend: str) -> dict[str, Any]:
     """Target phases, pairwise residual, driver crosstalk and driver-conditioned target phases for one star."""
     counts: dict[str, dict[str, int]] = {}
     n: dict[str, int] = {}
@@ -296,7 +309,7 @@ def star_report(star: dict[str, int], raw: dict[str, list[str]]) -> dict[str, An
     for config in CONFIGS:
         shots = raw[f"additivity-{config}.cq"]
         n[config] = len(shots)
-        counts[config] = {role: sum(bit(s, star[role]) for s in shots) for role in ("T", "A", "B")}
+        counts[config] = {role: sum(bit(s, star[role], backend) for s in shots) for role in ("T", "A", "B")}
         # A driver-conditioned target phase separates a ZZ phase, which follows
         # the driver's state, from a drive-induced shift, which does not.
         conditioned[config] = {}
@@ -305,9 +318,9 @@ def star_report(star: dict[str, int], raw: dict[str, list[str]]) -> dict[str, An
                 continue
             split = {}
             for outcome in (0, 1):
-                sub = [s for s in shots if bit(s, star[role]) == outcome]
+                sub = [s for s in shots if bit(s, star[role], backend) == outcome]
                 if sub:
-                    p1 = sum(bit(s, star["T"]) for s in sub) / len(sub)
+                    p1 = sum(bit(s, star["T"], backend) for s in sub) / len(sub)
                     split[str(outcome)] = {"shots": len(sub), "target_p1": p1, "target_phase_rad": phase_of(p1)}
             conditioned[config][str(star[role])] = split
     p = {c: counts[c]["T"] / n[c] for c in CONFIGS}
@@ -334,9 +347,15 @@ def star_report(star: dict[str, int], raw: dict[str, list[str]]) -> dict[str, An
         if p_single > 0.5:
             row["overrotation_lower_bound_rad_per_x"] = 2 * math.asin(math.sqrt(p_single)) / DRIVE_PULSES
         drivers[role] = row
+    largest = max(abs(2 * value - 1) for value in p.values())
     return {
         **star,
         "p1": p,
+        "principal_branch": {
+            "max_abs_sin_phi": largest,
+            "margin_rad": math.pi / 2 - math.asin(min(1.0, largest)),
+            "branch_ambiguous": largest > BRANCH_LIMIT,
+        },
         "phase_rad": phase,
         "phase_shift_rad": shift,
         "additivity_residual_rad": residual,
@@ -350,6 +369,9 @@ def star_report(star: dict[str, int], raw: dict[str, list[str]]) -> dict[str, An
 def analyze(run_dir: Path) -> dict[str, Any]:
     """Estimates from raw shots in run_dir/raw/<file>.json (a list of bit strings per circuit)."""
     cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+    backend = cases["backend"]
+    if backend not in BACKENDS:
+        raise ValueError(f"unknown result bit order for backend {backend}")
     raw = {row["file"]: json.loads((run_dir / "raw" / f"{row['file']}.json").read_text()) for row in cases["circuits"]}
     report: dict[str, Any] = {
         "schema": "qi-crosstalk-teleport-analysis-v2",
@@ -362,15 +384,15 @@ def analyze(run_dir: Path) -> dict[str, Any]:
         "cross-configuration difference",
     }
     if "stars" in cases:
-        report["additivity"] = [star_report(star, raw) for star in cases["stars"]]
+        report["additivity"] = [star_report(star, raw, backend) for star in cases["stars"]]
     tele = []
-    # A star coupling map (Tuna-5) has no four-qubit path and so no teleport circuit.
-    shots = raw.get("teleport.cq", [])
-    for path in cases["paths"] if shots else []:
+    # Tuna-5's star graph has no four-qubit path. Missing teleport data is
+    # optional only when the manifest declares no teleportation paths.
+    shots = raw["teleport.cq"] if cases["paths"] else []
+    for path in cases["paths"]:
         _, _, flips = INPUTS[path["input"]]
         corrected = post = post_ok = 0
         for s in shots:
-            backend = cases["backend"]
             m_i, m_p1, d = bit(s, path["I"], backend), bit(s, path["P1"], backend), bit(s, path["D"], backend)
             flip = (m_p1 if "x" in flips else 0) ^ (m_i if "z" in flips else 0)
             # Inputs 0, + and +i map to outcome 0 after the basis rotation; input 1 maps to 1.
@@ -401,6 +423,76 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     return report
 
 
+def regression_fixture(backend: str) -> str:
+    """Synthetic decoder inputs, without simulating or claiming circuit execution."""
+    with tempfile.TemporaryDirectory(prefix="qi-teleport-analysis-fixture-") as scratch:
+        directory = Path(scratch)
+        (directory / "raw").mkdir()
+        if backend == "tuna_5":
+            catalogue = json.loads(CATALOGUE.read_text(encoding="utf-8"))
+            selected = [row for row in catalogue["backend_types"] if row["identifier"] == backend]
+            cases = json.loads(build({"backend_types": selected})[backend]["cases.json"])
+            if cases["paths"] or len(cases["circuits"]) != 4:
+                raise AssertionError("the Tuna-5 fixture no longer represents four additivity-only circuits")
+            shots = ["00000", "00001", "00010", "00100", "01000", "10000"]
+            cases["shots"] = len(shots)
+            (directory / "cases.json").write_text(json.dumps(cases))
+            for row in cases["circuits"]:
+                (directory / "raw" / f"{row['file']}.json").write_text(json.dumps(shots))
+            report = analyze(directory)
+            if report["teleport"] or len(report["additivity"]) != len(cases["stars"]):
+                raise AssertionError("an additivity-only manifest did not produce its complete analysis")
+            # A declared teleportation path still requires the corresponding
+            # acquisition; do not silently skip a genuinely missing circuit.
+            cases["paths"] = [{"I": 0, "P1": 1, "P2": 2, "D": 3, "input": "0"}]
+            (directory / "cases.json").write_text(json.dumps(cases))
+            try:
+                analyze(directory)
+            except KeyError as error:
+                if error.args != ("teleport.cq",):
+                    raise
+            else:
+                raise AssertionError("a declared teleportation path accepted an absent acquisition")
+            return backend
+        paths: list[dict[str, Any]] = [
+            {"I": 4 * index, "P1": 4 * index + 1, "P2": 4 * index + 2, "D": 4 * index + 3, "input": label}
+            for index, label in enumerate(INPUT_ORDER)
+        ]
+        shots = []
+        for m_i, m_p1, spectator in itertools.product((0, 1), repeat=3):
+            state = [0] * 17
+            state[16] = 1  # A nonsymmetric marker makes bit reversal observable.
+            for path in paths:
+                flips = INPUTS[path["input"]][2]
+                flip = (m_p1 if "x" in flips else 0) ^ (m_i if "z" in flips else 0)
+                state[path["I"]], state[path["P1"]], state[path["P2"]] = m_i, m_p1, spectator
+                state[path["D"]] = int(path["input"] == "1") ^ flip
+            encoded = "".join(map(str, state))
+            shots.append(encoded if backend == "Rydberg" else encoded[::-1])
+        cases = {
+            "schema": "qi-crosstalk-teleport-cases-v1",
+            "backend": backend,
+            "nqubits": 17,
+            "shots": len(shots),
+            "paths": paths,
+            "circuits": [{"file": "teleport.cq", "kind": "teleport"}],
+        }
+        (directory / "cases.json").write_text(json.dumps(cases))
+        (directory / "raw/teleport.cq.json").write_text(json.dumps(shots))
+        report = analyze(directory)
+        for row in report["teleport"]:
+            if (row["corrected_fidelity"], row["postselected_fidelity"], row["postselected_fraction"]) != (1, 1, 0.25):
+                raise AssertionError(f"{backend} decoded a known teleportation outcome incorrectly")
+        return backend
+
+
+def self_test() -> None:
+    backends = ["tuna_5", "tuna_17", "QXsinglenodesimulator", "Rydberg"]
+    if ordered_map(regression_fixture, backends, min_items=1) != backends:
+        raise AssertionError("the decoder regressions did not complete")
+    print("qi crosstalk/teleport self-test: Tuna-5 additivity-only, missing acquisition and QX/Tuna/Ry bit order pass")
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -408,8 +500,12 @@ def main() -> int:
     mode.add_argument("--check", type=Path)
     mode.add_argument("--analyze", type=Path)
     mode.add_argument("--replay", type=Path, nargs="+", help="recompute each run's analysis.json and compare bytes")
+    mode.add_argument("--self-test", action="store_true")
     parser.add_argument("--catalogue", type=Path, default=CATALOGUE)
     args = parser.parse_args()
+    if args.self_test:
+        self_test()
+        return 0
     if args.analyze:
         text = json.dumps(analyze(args.analyze), indent=1) + "\n"
         (args.analyze / "analysis.json").write_text(text, encoding="utf-8")
