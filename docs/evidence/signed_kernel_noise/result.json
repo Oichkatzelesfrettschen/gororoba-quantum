@@ -44,6 +44,7 @@
       0.7106163226480822,
       0.08683379972542479
      ],
+     "probe": "dark",
      "readout": 0.10216552311815129,
      "sign_phase": null,
      "t": -0.2
@@ -67,6 +68,7 @@
       0.7669589153502002,
       0.06317306717026046
      ],
+     "probe": "dark",
      "readout": 0.10275742519065491,
      "sign_phase": null,
      "t": -0.1
@@ -90,6 +92,7 @@
       0.8001877239932542,
       0.04747817100080338
      ],
+     "probe": "dark",
      "readout": 0.10445582757390394,
      "sign_phase": null,
      "t": -0.05
@@ -113,6 +116,7 @@
       0.8378561622080715,
       0.027221390002419632
      ],
+     "probe": "dark",
      "readout": 0.10850991440727577,
      "sign_phase": null,
      "t": 0.0
@@ -136,6 +140,7 @@
       0.7990567050997034,
       0.04760956434308376
      ],
+     "probe": "dark",
      "readout": 0.10559203038881435,
      "sign_phase": null,
      "t": 0.05
@@ -159,6 +164,7 @@
       0.7658839123144014,
       0.06334167255579927
      ],
+     "probe": "dark",
      "readout": 0.10384136875164587,
      "sign_phase": null,
      "t": 0.1
@@ -182,12 +188,198 @@
       0.7096407484573762,
       0.08703744584156865
      ],
+     "probe": "dark",
      "readout": 0.10315598163132088,
      "sign_phase": null,
      "t": 0.2
     }
    ],
    "slope": -0.4160692236901581
+  },
+  "dark_bright": {
+   "edge_cz_factor": 0.8662094513182255,
+   "intercept": 0.03854998535477734,
+   "layout": [
+    143,
+    142,
+    144,
+    136,
+    141,
+    140
+   ],
+   "max_fit_residual": 0.000811233108362952,
+   "median_cz_factor": 0.8005582189897946,
+   "rows": [
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 327,
+     "ideal": 0.8347107438016528,
+     "law": [
+      0.7118489519842736,
+      0.10140027785871471,
+      0.10093411830085768,
+      0.08581665185615404
+     ],
+     "probe": "dark_bright",
+     "readout": 0.7118489519842736,
+     "sign_phase": null,
+     "t": -0.2
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 327,
+     "ideal": 0.909297052154195,
+     "law": [
+      0.7717083604515664,
+      0.06833963303347512,
+      0.09800862811017307,
+      0.06194337840478525
+     ],
+     "probe": "dark_bright",
+     "readout": 0.7717083604515664,
+     "sign_phase": null,
+     "t": -0.1
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 326,
+     "ideal": 0.9524092801903631,
+     "law": [
+      0.806379236463151,
+      0.049484958863196406,
+      0.0982646220287779,
+      0.04587118264487466
+     ],
+     "probe": "dark_bright",
+     "readout": 0.806379236463151,
+     "sign_phase": null,
+     "t": -0.05
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 328,
+     "ideal": 1.0,
+     "law": [
+      0.8448929272897181,
+      0.02762020829115011,
+      0.1014731300023404,
+      0.026013734416791418
+     ],
+     "probe": "dark_bright",
+     "readout": 0.8448929272897181,
+     "sign_phase": null,
+     "t": 0.0
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 328,
+     "ideal": 0.9524092801903631,
+     "law": [
+      0.8052483480779398,
+      0.049616316095783854,
+      0.09940044483391748,
+      0.045734890992358834
+     ],
+     "probe": "dark_bright",
+     "readout": 0.8052483480779398,
+     "sign_phase": null,
+     "t": 0.05
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 329,
+     "ideal": 0.909297052154195,
+     "law": [
+      0.7706337977249497,
+      0.06850800672149254,
+      0.09909167346881943,
+      0.06176652208473823
+     ],
+     "probe": "dark_bright",
+     "readout": 0.7706337977249497,
+     "sign_phase": null,
+     "t": 0.1
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 110,
+     "cz_product": 0.8662094513182255,
+     "depth": 329,
+     "ideal": 0.8347107438016528,
+     "law": [
+      0.7108746754807509,
+      0.10160296997023521,
+      0.1019224810073931,
+      0.0855998735416208
+     ],
+     "probe": "dark_bright",
+     "readout": 0.7108746754807509,
+     "sign_phase": null,
+     "t": 0.2
+    }
+   ],
+   "slope": 0.8058611059292903
   },
   "dark_matched": {
    "edge_cz_factor": 0.8619335859217424,
@@ -222,6 +414,7 @@
       0.7055115357680596,
       0.0938216179337114
      ],
+     "probe": "dark_matched",
      "readout": 0.10041105391633834,
      "sign_phase": 3.141592653589793,
      "t": -0.2
@@ -245,6 +438,7 @@
       0.761246784555879,
       0.0708844886673496
      ],
+     "probe": "dark_matched",
      "readout": 0.10048312774057398,
      "sign_phase": 3.141592653589793,
      "t": -0.1
@@ -268,6 +462,7 @@
       0.7942482597044194,
       0.0553386033228152
      ],
+     "probe": "dark_matched",
      "readout": 0.10203659252684713,
      "sign_phase": 3.141592653589793,
      "t": -0.05
@@ -291,6 +486,7 @@
       0.831509916170563,
       0.034175185306801484
      ],
+     "probe": "dark_matched",
      "readout": 0.10485590865820293,
      "sign_phase": 0.0,
      "t": 0.0
@@ -314,6 +510,7 @@
       0.7942182154542601,
       0.05341041413549555
      ],
+     "probe": "dark_matched",
      "readout": 0.1020700489803981,
      "sign_phase": 0.0,
      "t": 0.05
@@ -337,6 +534,7 @@
       0.7612204043152384,
       0.06907061827384213
      ],
+     "probe": "dark_matched",
      "readout": 0.10051561841952744,
      "sign_phase": 0.0,
      "t": 0.1
@@ -360,9 +558,51 @@
       0.7054906386639269,
       0.0921922635599778
      ],
+     "probe": "dark_matched",
      "readout": 0.10044235263538685,
      "sign_phase": 0.0,
      "t": 0.2
+    }
+   ],
+   "slope": -0.29436024195996735
+  },
+  "dark_matched_bright": {
+   "edge_cz_factor": 0.8619335859217424,
+   "intercept": 0.04215185501867298,
+   "layout": [
+    143,
+    142,
+    144,
+    136,
+    141,
+    140
+   ],
+   "max_fit_residual": 0.0001765438023055843,
+   "median_cz_factor": 0.7941086668215537,
+   "rows": [
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 114,
+     "cz_product": 0.8619335859217424,
+     "depth": 353,
+     "ideal": 0.8347107438016528,
+     "law": [
+      0.7044775064669702,
+      0.10775743963514264,
+      0.10144425614929721,
+      0.08632079774859001
+     ],
+     "probe": "dark_matched_bright",
+     "readout": 0.7044775064669702,
+     "sign_phase": 3.141592653589793,
+     "t": -0.2
     },
     {
      "active_qubits": [
@@ -376,19 +616,140 @@
      "cz": 114,
      "cz_product": 0.8619335859217424,
      "depth": 353,
-     "ideal": 0.0,
+     "ideal": 0.909297052154195,
      "law": [
-      0.10481962870800189,
-      0.02734358627216411,
-      0.8315461965419663,
-      0.0362905884778677
+      0.7634484341341701,
+      0.07564522265484,
+      0.09828094987171444,
+      0.06262539333927565
      ],
-     "readout": 0.10481962870800189,
+     "probe": "dark_matched_bright",
+     "readout": 0.7634484341341701,
      "sign_phase": 3.141592653589793,
+     "t": -0.1
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 114,
+     "cz_product": 0.8619335859217424,
+     "depth": 353,
+     "ideal": 0.9524092801903631,
+     "law": [
+      0.7977355348339487,
+      0.05707039991391036,
+      0.09854899012345686,
+      0.04664507512868413
+     ],
+     "probe": "dark_matched_bright",
+     "readout": 0.7977355348339487,
+     "sign_phase": 3.141592653589793,
+     "t": -0.05
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 114,
+     "cz_product": 0.8619335859217424,
+     "depth": 353,
+     "ideal": 1.0,
+     "law": [
+      0.8356989636403127,
+      0.03445988771671764,
+      0.10066684231985709,
+      0.029174306323112464
+     ],
+     "probe": "dark_matched_bright",
+     "readout": 0.8356989636403127,
+     "sign_phase": 0.0,
      "t": 0.0
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 114,
+     "cz_product": 0.8619335859217424,
+     "depth": 353,
+     "ideal": 0.9524092801903631,
+     "law": [
+      0.7977062088114695,
+      0.055141891047267654,
+      0.09858213253559513,
+      0.048569767605667676
+     ],
+     "probe": "dark_matched_bright",
+     "readout": 0.7977062088114695,
+     "sign_phase": 0.0,
+     "t": 0.05
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 114,
+     "cz_product": 0.8619335859217424,
+     "depth": 353,
+     "ideal": 0.909297052154195,
+     "law": [
+      0.7634234268289704,
+      0.07383063928743791,
+      0.09831280746602063,
+      0.0644331264175711
+     ],
+     "probe": "dark_matched_bright",
+     "readout": 0.7634234268289704,
+     "sign_phase": 0.0,
+     "t": 0.1
+    },
+    {
+     "active_qubits": [
+      136,
+      140,
+      141,
+      142,
+      143,
+      144
+     ],
+     "cz": 114,
+     "cz_product": 0.8619335859217424,
+     "depth": 353,
+     "ideal": 0.8347107438016528,
+     "law": [
+      0.704459352615437,
+      0.1061264199431321,
+      0.1014740839132312,
+      0.08794014352819951
+     ],
+     "probe": "dark_matched_bright",
+     "readout": 0.704459352615437,
+     "sign_phase": 0.0,
+     "t": 0.2
     }
    ],
-   "slope": -0.29436024195996735
+   "slope": 0.7933705648193341
   },
   "signed": {
    "edge_cz_factor": 0.671152418953731,
@@ -423,6 +784,7 @@
       0.46757208403807254,
       0.5324279159619275
      ],
+     "probe": "signed",
      "readout": -0.06485583192385497,
      "sign_phase": null,
      "t": -0.2
@@ -445,6 +807,7 @@
       0.48060290940357886,
       0.5193970905964211
      ],
+     "probe": "signed",
      "readout": -0.03879418119284228,
      "sign_phase": null,
      "t": -0.1
@@ -467,6 +830,7 @@
       0.4875983491843127,
       0.5124016508156873
      ],
+     "probe": "signed",
      "readout": -0.02480330163137462,
      "sign_phase": null,
      "t": -0.05
@@ -489,6 +853,7 @@
       0.5137032980794128,
       0.4862967019205871
      ],
+     "probe": "signed",
      "readout": 0.027406596158825736,
      "sign_phase": null,
      "t": 0.0
@@ -511,6 +876,7 @@
       0.521236670846979,
       0.478763329153021
      ],
+     "probe": "signed",
      "readout": 0.042473341693958,
      "sign_phase": null,
      "t": 0.05
@@ -533,6 +899,7 @@
       0.5283737362113605,
       0.47162626378863953
      ],
+     "probe": "signed",
      "readout": 0.05674747242272099,
      "sign_phase": null,
      "t": 0.1
@@ -555,6 +922,7 @@
       0.5416614430373617,
       0.45833855696263825
      ],
+     "probe": "signed",
      "readout": 0.08332288607472349,
      "sign_phase": null,
      "t": 0.2
@@ -595,6 +963,7 @@
       0.4673925777167817,
       0.5326074222832183
      ],
+     "probe": "signed_matched",
      "readout": -0.06521484456643661,
      "sign_phase": 3.141592653589793,
      "t": -0.2
@@ -617,6 +986,7 @@
       0.4803125692512681,
       0.5196874307487319
      ],
+     "probe": "signed_matched",
      "readout": -0.03937486149746383,
      "sign_phase": 3.141592653589793,
      "t": -0.1
@@ -639,6 +1009,7 @@
       0.48725034339370765,
       0.5127496566062925
      ],
+     "probe": "signed_matched",
      "readout": -0.025499313212584807,
      "sign_phase": 3.141592653589793,
      "t": -0.05
@@ -661,6 +1032,7 @@
       0.5131969515487759,
       0.4868030484512241
      ],
+     "probe": "signed_matched",
      "readout": 0.026393903097551796,
      "sign_phase": 0.0,
      "t": 0.0
@@ -683,6 +1055,7 @@
       0.5205864656918914,
       0.47941353430810857
      ],
+     "probe": "signed_matched",
      "readout": 0.04117293138378281,
      "sign_phase": 0.0,
      "t": 0.05
@@ -705,6 +1078,7 @@
       0.5276050952541952,
       0.4723949047458048
      ],
+     "probe": "signed_matched",
      "readout": 0.05521019050839038,
      "sign_phase": 0.0,
      "t": 0.1
@@ -727,6 +1101,7 @@
       0.540673985964737,
       0.4593260140352629
      ],
+     "probe": "signed_matched",
      "readout": 0.08134797192947413,
      "sign_phase": 0.0,
      "t": 0.2
@@ -749,6 +1124,7 @@
       0.4945510820824305,
       0.5054489179175695
      ],
+     "probe": "signed_matched",
      "readout": -0.010897835835139036,
      "sign_phase": 3.141592653589793,
      "t": 0.0
@@ -757,15 +1133,27 @@
    "slope": 0.8741904287455508
   }
  },
- "schema": "gororoba-signed-kernel-noise-v1",
- "seconds": 17.7,
+ "schema": "gororoba-signed-kernel-noise-v2",
+ "seconds": 21.2,
  "seed_transpiler": 20261015,
  "shots": [
   {
+   "dark_bright_ideal_minus_zero": -0.04759071980963692,
+   "dark_bright_inverted": false,
+   "dark_bright_minus_zero": -0.03964457921177833,
+   "dark_bright_shots": 3297,
+   "dark_ideal_minus_zero": 0.0005948839976204643,
+   "dark_inverted": true,
+   "dark_matched_bright_ideal_minus_zero": -0.04759071980963692,
+   "dark_matched_bright_inverted": false,
+   "dark_matched_bright_minus_zero": -0.037992754828843234,
+   "dark_matched_bright_shots": 3725,
+   "dark_matched_ideal_minus_zero": 0.0005948839976204643,
+   "dark_matched_inverted": true,
    "dark_matched_minus_zero": -0.002785859677804828,
-   "dark_matched_shots": null,
+   "dark_matched_shots": 430258,
    "dark_minus_zero": -0.0029178840184614224,
-   "dark_shots": null,
+   "dark_shots": 404180,
    "ideal_differential": 0.04878048780487806,
    "null_offset_difference": 0.03729173893269083,
    "signed_matched_null_subtracted": 0.02938050566367678,
@@ -780,10 +1168,22 @@
    "t": 0.05
   },
   {
+   "dark_bright_ideal_minus_zero": -0.09070294784580502,
+   "dark_bright_inverted": false,
+   "dark_bright_minus_zero": -0.07425912956476843,
+   "dark_bright_shots": 1005,
+   "dark_ideal_minus_zero": 0.0022675736961451243,
+   "dark_inverted": true,
+   "dark_matched_bright_ideal_minus_zero": -0.09070294784580502,
+   "dark_matched_bright_inverted": false,
+   "dark_matched_bright_minus_zero": -0.07227553681134236,
+   "dark_matched_bright_shots": 1096,
+   "dark_matched_ideal_minus_zero": 0.0022675736961451243,
+   "dark_matched_inverted": true,
    "dark_matched_minus_zero": -0.004340290238675493,
-   "dark_matched_shots": null,
+   "dark_matched_shots": 176075,
    "dark_minus_zero": -0.004668545655629894,
-   "dark_shots": null,
+   "dark_shots": 156745,
    "ideal_differential": 0.09523809523809523,
    "null_offset_difference": 0.03729173893269083,
    "signed_matched_null_subtracted": 0.05729331307316338,
@@ -798,10 +1198,22 @@
    "t": 0.1
   },
   {
+   "dark_bright_ideal_minus_zero": -0.16528925619834722,
+   "dark_bright_inverted": false,
+   "dark_bright_minus_zero": -0.1340182518089672,
+   "dark_bright_shots": 338,
+   "dark_ideal_minus_zero": 0.008264462809917356,
+   "dark_inverted": true,
+   "dark_matched_bright_ideal_minus_zero": -0.16528925619834722,
+   "dark_matched_bright_inverted": false,
+   "dark_matched_bright_minus_zero": -0.1312396110248757,
+   "dark_matched_bright_shots": 362,
+   "dark_matched_ideal_minus_zero": 0.008264462809917356,
+   "dark_matched_inverted": true,
    "dark_matched_minus_zero": -0.004413556022816081,
-   "dark_matched_shots": null,
+   "dark_matched_shots": 170224,
    "dark_minus_zero": -0.005353932775954889,
-   "dark_shots": null,
+   "dark_shots": 118841,
    "ideal_differential": 0.18181818181818182,
    "null_offset_difference": 0.03729173893269083,
    "signed_matched_null_subtracted": 0.10927107756321991,
@@ -814,6 +1226,146 @@
    "signed_raw_shots": 1631,
    "signed_raw_visibility": 0.8149829489921815,
    "t": 0.2
+  }
+ ],
+ "signed_matched_terms": [
+  {
+   "active_qubits": [
+    122,
+    123,
+    136,
+    141,
+    142,
+    143,
+    144
+   ],
+   "cz": 279,
+   "cz_product": 0.663235153907354,
+   "depth": 738,
+   "ideal": 1.0,
+   "law": [
+    0.8140369467429601,
+    0.18596305325703993
+   ],
+   "probe": "signed_matched_terms",
+   "readout": 0.6280738934859202,
+   "sign_phase": 0.0,
+   "term": "e2"
+  },
+  {
+   "active_qubits": [
+    122,
+    123,
+    136,
+    141,
+    142,
+    143,
+    144
+   ],
+   "cz": 279,
+   "cz_product": 0.663235153907354,
+   "depth": 738,
+   "ideal": -1.0,
+   "law": [
+    0.19701090694485887,
+    0.8029890930551411
+   ],
+   "probe": "signed_matched_terms",
+   "readout": -0.6059781861102822,
+   "sign_phase": 3.141592653589793,
+   "term": "e2"
+  },
+  {
+   "active_qubits": [
+    122,
+    123,
+    136,
+    141,
+    142,
+    143,
+    144
+   ],
+   "cz": 279,
+   "cz_product": 0.663235153907354,
+   "depth": 738,
+   "ideal": 0.0,
+   "law": [
+    0.5140684548341637,
+    0.4859315451658362
+   ],
+   "probe": "signed_matched_terms",
+   "readout": 0.028136909668327548,
+   "sign_phase": 0.0,
+   "term": "e1"
+  },
+  {
+   "active_qubits": [
+    122,
+    123,
+    136,
+    141,
+    142,
+    143,
+    144
+   ],
+   "cz": 279,
+   "cz_product": 0.663235153907354,
+   "depth": 738,
+   "ideal": 0.0,
+   "law": [
+    0.49201243019997964,
+    0.5079875698000204
+   ],
+   "probe": "signed_matched_terms",
+   "readout": -0.01597513960004071,
+   "sign_phase": 3.141592653589793,
+   "term": "e1"
+  },
+  {
+   "active_qubits": [
+    122,
+    123,
+    136,
+    141,
+    142,
+    143,
+    144
+   ],
+   "cz": 279,
+   "cz_product": 0.663235153907354,
+   "depth": 738,
+   "ideal": 0.0,
+   "law": [
+    0.5132656920114909,
+    0.48673430798850903
+   ],
+   "probe": "signed_matched_terms",
+   "readout": 0.02653138402298183,
+   "sign_phase": 0.0,
+   "term": "e10"
+  },
+  {
+   "active_qubits": [
+    122,
+    123,
+    136,
+    141,
+    142,
+    143,
+    144
+   ],
+   "cz": 279,
+   "cz_product": 0.663235153907354,
+   "depth": 738,
+   "ideal": 0.0,
+   "law": [
+    0.49629126915596217,
+    0.5037087308440378
+   ],
+   "probe": "signed_matched_terms",
+   "readout": -0.007417461688075611,
+   "sign_phase": 3.141592653589793,
+   "term": "e10"
   }
  ],
  "snapshot": "docs/evidence/calibration/ibm_kingston.json",

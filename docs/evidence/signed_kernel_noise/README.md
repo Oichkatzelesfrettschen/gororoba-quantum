@@ -1,8 +1,11 @@
 # Signed kernel probe under the Kingston noise model
 
 `result.json` is the output of `scripts/signed_kernel_noise.py`. It ran as
-Kaggle kernel version 2 of `gororoba-signed-kernel-noise`, and the run is
-retained under `results/kaggle/2026-10-16T064039Z-gororoba-signed-kernel-noise/`.
+Kaggle kernel version 3 of `gororoba-signed-kernel-noise`, and the run is
+retained under `results/kaggle/2026-10-16T071913Z-gororoba-signed-kernel-noise/`.
+Version 2 lacked the bright control and the term arms. It is retained under
+`results/kaggle/2026-10-16T064039Z-gororoba-signed-kernel-noise/` as history
+only, and its laws for the probes it shared equal version 3's.
 
 - **Machine and software.** Two Tesla T4 GPUs, Python 3.13.15, qiskit 2.5.2
   and qiskit-aer-gpu-cu11 0.17.2 (`kaggle_environment.json`).
@@ -43,11 +46,19 @@ probe is pinned by its `t = -0.05` compile. The four probes are:
   the same 114 or 279 CZ, so the probes differ between `t` only in rotation
   angles.
 
+Both dark forms also run the bright control `u' = (e4 + e15)/sqrt2`, whose
+ideal success is `(4 + t^2)/(2 + |t|)^2`. It separates attenuation of the
+whole success channel from behavior specific to the dark witness.
+
 `snapshot_laws.outcome_law` gives each arm's exact law under live_run's
 gate, idle and assignment noise. The noiseless law of every compiled arm
-equals the statevector law `s(t)` or `p(t)` to 1e-9. The matched signed
-probe also runs a null arm at `t = 0` with each phase. At `t = 0` the phase
-multiplies a zero amplitude, so both null arms ideally read 0.
+equals its ideal law to 1e-9. The matched signed probe also runs two kinds
+of extra arm:
+
+- **Null arms**, at `t = 0` with each phase. At `t = 0` the phase
+  multiplies a zero amplitude, so both null arms ideally read 0.
+- **Six term arms**, which load the selector with one LCU term (e2, e1 or
+  e10) at each phase. Ideally e2 reads +1 or -1 and the other two read 0.
 
 ## Result
 
@@ -62,13 +73,12 @@ multiplies a zero amplitude, so both null arms ideally read 0.
 2. **Sign-phase offset (falsifier b is triggered).** The null arms read
    +0.0264 at `phi = 0` and -0.0109 at `phi = pi`, a difference of 0.037. The
    ideal signal `0.60 s` is 0.015 at `t = 0.05`. The offset survives the
-   structure-matched compile, so it does not come from synthesis:
-   - Pauli errors inside the multi-controlled phase propagate differently at
-     its two angles. The e1 and e10 selector terms, whose ideal overlap is 0,
-     read +0.028 and +0.027 at `phi = 0`, and -0.016 and -0.007 at
-     `phi = pi`.
-   - A symmetric `phi = +-pi/2` with a Y readout leaves the asymmetry in
-     place (local test, -0.009 against +0.028).
+   structure-matched compile, so it does not come from synthesis. The term
+   arms (`signed_matched_terms`) locate it: Pauli errors inside the
+   multi-controlled phase propagate differently at its two angles.
+   - The e1 and e10 terms, whose ideal overlap is 0, read +0.028 and +0.027
+     at `phi = 0`, and -0.016 and -0.007 at `phi = pi`.
+   - The e2 term reads +0.628 and -0.606, nearly symmetric.
 3. **The raw differential is biased.** `<Z_c>(t) - <Z_c>(-t)` reads a
    visibility of 1.37 at `t = 0.05`, 0.99 at 0.1 and 0.81 at 0.2, because
    the phase offset adds to every sign difference.
@@ -77,11 +87,18 @@ multiplies a zero amplitude, so both null arms ideally read 0.
    the three values of `t`: an unbiased first-order signed readout at every
    `t`. A z = 3 resolution over its four equal arms needs 166,687 shots at
    `t = 0.05`, 43,810 at 0.1 and 12,025 at 0.2 under this model.
-5. **The dark count cannot resolve `t`.** Its background depends on `t`: the
-   selector-00 rate falls from 0.1085 at `t = 0` to 0.102 to 0.103 at `|t| = 0.2`
-   (0.1049 to 0.1004 matched). The rate at `t` minus the `t = 0` arm is
-   negative at every `|t| <= 0.2` (-0.0028 to -0.0054). So no shot count
-   resolves `p(t)` against a `t = 0` control under this noise model.
+5. **The dark contrast is inverted.** The selector-00 rate at `t`
+   minus the `t = 0` arm is negative at every `|t| <= 0.2`: -0.0029, -0.0047
+   and -0.0054 at `t` = 0.05, 0.1 and 0.2, against ideal +0.0006, +0.0023 and
+   +0.0083. The matched form gives -0.0028 to -0.0044.
+   - Such a contrast is resolvable: 404,180, 156,745 and 118,841 equal-arm
+     shots at z = 3. What it resolves, though, is a background that falls
+     with `|t|` faster than `p(t)` rises, not `p(t)`.
+   - The bright control moves in its ideal direction. Its contrast is
+     -0.040, -0.074 and -0.134 against ideal -0.048, -0.091 and -0.165, a
+     transmission of 0.81 to 0.83. So the success channel as a whole is
+     attenuated, not inverted, and the inversion belongs to the dark
+     witness's background.
 
 ## Limits
 
