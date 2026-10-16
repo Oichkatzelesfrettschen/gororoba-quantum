@@ -1,0 +1,54 @@
+{
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "evidence_kind": "exact_finite_integer_check",
+  "experiment": "census",
+  "forbidden_inference": "Counts or a programmed oracle are not hardware discovery or a physical nonassociativity cost.",
+  "independent_vector_basis_products": 320,
+  "law_scope": "finite validation; proof/novelty status remains separately reviewed",
+  "profile": "smoke",
+  "qpu_jobs_submitted": 0,
+  "rows": [
+    {
+      "all_triples": 512,
+      "defective_ordered_triples": 168,
+      "dimension": 8,
+      "formula": 168,
+      "fraction_all": 0.328125,
+      "independent_denominator": 168,
+      "pair_failures": 0,
+      "toggle_failures": 0
+    },
+    {
+      "all_triples": 4096,
+      "defective_ordered_triples": 1848,
+      "dimension": 16,
+      "formula": 1848,
+      "fraction_all": 0.451171875,
+      "independent_denominator": 2520,
+      "pair_failures": 0,
+      "toggle_failures": 0
+    },
+    {
+      "all_triples": 32768,
+      "defective_ordered_triples": 15960,
+      "dimension": 32,
+      "formula": 15960,
+      "fraction_all": 0.487060546875,
+      "independent_denominator": 26040,
+      "pair_failures": 0,
+      "toggle_failures": 0
+    },
+    {
+      "all_triples": 262144,
+      "defective_ordered_triples": 130200,
+      "dimension": 64,
+      "formula": 130200,
+      "fraction_all": 0.496673583984375,
+      "independent_denominator": 234360,
+      "pair_failures": 0,
+      "toggle_failures": 0
+    }
+  ],
+  "seed": 20261015,
+  "wall_seconds": 0.4854290640000727
+}

@@ -12,3 +12,8 @@ docs/source_archives/*.tar.gz binary
 # Preserve the imported Ramsey viewer build byte for byte, CRLF included.
 results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data/*.csv -text
 results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data/*.md -text
+# Preserve the verbatim bytes of captured upstream Kaggle CLI documentation.
+docs/notes/kaggle/cli/*.md -text -whitespace
+# Preserve the verbatim bytes of the retained Reality Ripple kernel outputs.
+docs/evidence/simulation-notebook-audit/reality_ripple/** -text -whitespace
+docs/evidence/simulation-notebook-audit/kaggle_sources/*.txt -text -whitespace

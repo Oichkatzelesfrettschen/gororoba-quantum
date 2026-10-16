@@ -1,0 +1,12999 @@
+{
+  "scope": "All 360 unordered nonzero pairs first appearing in dimension 32; exact finite Boolean proof certificates",
+  "claim": "Every W_ij admits Clifford+one-CCZ synthesis, up to no uncontrolled discarded phases.",
+  "meaning": "For |+>^5 input, every phase state is Clifford-equivalent to |CCZ> tensor |+>^2. The two Walsh collision classes do not establish different amounts of non-Clifford resource.",
+  "novelty": "Derived in this audit; no publication-priority claim or Rocq-kernel replay.",
+  "checked_pairs": 360,
+  "basis_inputs_checked": 11520,
+  "distinct_homogeneous_cubic_parts": 15,
+  "cubic_counts": {
+    "(14,)": 24,
+    "(13,)": 24,
+    "(13, 14)": 24,
+    "(11,)": 24,
+    "(11, 14)": 24,
+    "(11, 13)": 24,
+    "(11, 13, 14)": 24,
+    "(7,)": 24,
+    "(7, 14)": 24,
+    "(7, 13)": 24,
+    "(7, 13, 14)": 24,
+    "(7, 11)": 24,
+    "(7, 11, 14)": 24,
+    "(7, 11, 13)": 24,
+    "(7, 11, 13, 14)": 24
+  },
+  "examples": [
+    {
+      "i": 1,
+      "j": 16,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    }
+  ],
+  "certificates": [
+    {
+      "i": 1,
+      "j": 16,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 17,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 18,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 19,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 20,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 21,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 22,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 23,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 24,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 25,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 26,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 27,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 28,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 29,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 30,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 1,
+      "j": 31,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 2,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 3,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 4,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 5,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 6,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 7,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 8,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 9,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 20,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 21,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 22,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 23,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 28,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 29,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 30,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 10,
+      "j": 31,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 20,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 21,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 22,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 23,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 28,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 29,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 30,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 11,
+      "j": 31,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        6,
+        8,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 18,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 19,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 22,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 23,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 26,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 27,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 30,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 12,
+      "j": 31,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 18,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 19,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 22,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 23,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 26,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 27,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 30,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 13,
+      "j": 31,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        5,
+        6,
+        8,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 18,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 19,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 20,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 21,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 26,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 27,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 28,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 29,
+      "f_anf_masks": [
+        3,
+        5,
+        6,
+        7,
+        8,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 14,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        6,
+        8,
+        9,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 16,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 17,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 18,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 19,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 20,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 21,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 26,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 27,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 28,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 29,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        7,
+        8,
+        10,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        7,
+        8,
+        9,
+        11,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        8,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 15,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 17,
+      "f_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        5,
+        8,
+        9,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        8,
+        9,
+        10
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        10,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 16,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        3,
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        6,
+        8,
+        10,
+        12
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 18,
+      "f_anf_masks": [
+        1,
+        2,
+        5,
+        6,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 19,
+      "f_anf_masks": [
+        1,
+        5,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 20,
+      "f_anf_masks": [
+        1,
+        3,
+        4,
+        6,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 21,
+      "f_anf_masks": [
+        1,
+        3,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 22,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 23,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 24,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 25,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 26,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 27,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 17,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        3,
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 19,
+      "f_anf_masks": [
+        2,
+        6,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 20,
+      "f_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        4,
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 21,
+      "f_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 22,
+      "f_anf_masks": [
+        2,
+        3,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 23,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 24,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        8,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        6,
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 25,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 26,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 27,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 28,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 29,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        5,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 30,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        3,
+        6,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 18,
+      "j": 31,
+      "f_anf_masks": [
+        2,
+        3,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 20,
+      "f_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 21,
+      "f_anf_masks": [
+        3,
+        5,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 22,
+      "f_anf_masks": [
+        3,
+        6,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 23,
+      "f_anf_masks": [
+        3,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 24,
+      "f_anf_masks": [
+        3,
+        7,
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 25,
+      "f_anf_masks": [
+        3,
+        7,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 26,
+      "f_anf_masks": [
+        3,
+        7,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 27,
+      "f_anf_masks": [
+        3,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 28,
+      "f_anf_masks": [
+        3,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        5,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 29,
+      "f_anf_masks": [
+        3,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 30,
+      "f_anf_masks": [
+        3,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 19,
+      "j": 31,
+      "f_anf_masks": [
+        3,
+        7,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 21,
+      "f_anf_masks": [
+        4,
+        6,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 22,
+      "f_anf_masks": [
+        4,
+        5,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        5,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 23,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 24,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        5,
+        6,
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 25,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 26,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        4,
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 27,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        4,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 28,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        5,
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 29,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        5,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 30,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        5,
+        6,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 20,
+      "j": 31,
+      "f_anf_masks": [
+        4,
+        5,
+        6,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 22,
+      "f_anf_masks": [
+        5,
+        6,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 23,
+      "f_anf_masks": [
+        5,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 24,
+      "f_anf_masks": [
+        5,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        5,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 25,
+      "f_anf_masks": [
+        5,
+        7,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 26,
+      "f_anf_masks": [
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 27,
+      "f_anf_masks": [
+        5,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 28,
+      "f_anf_masks": [
+        5,
+        7,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 29,
+      "f_anf_masks": [
+        5,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 30,
+      "f_anf_masks": [
+        5,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 21,
+      "j": 31,
+      "f_anf_masks": [
+        5,
+        7,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 23,
+      "f_anf_masks": [
+        6,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 24,
+      "f_anf_masks": [
+        6,
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 25,
+      "f_anf_masks": [
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 26,
+      "f_anf_masks": [
+        6,
+        7,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 27,
+      "f_anf_masks": [
+        6,
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 28,
+      "f_anf_masks": [
+        6,
+        7,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 29,
+      "f_anf_masks": [
+        6,
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        6,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 30,
+      "f_anf_masks": [
+        6,
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 22,
+      "j": 31,
+      "f_anf_masks": [
+        6,
+        7,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        6,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 24,
+      "f_anf_masks": [
+        7,
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        3,
+        5,
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 25,
+      "f_anf_masks": [
+        7,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 26,
+      "f_anf_masks": [
+        7,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        3,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 27,
+      "f_anf_masks": [
+        7,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        12
+      ],
+      "clifford_residual_anf_masks": [
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        12,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 28,
+      "f_anf_masks": [
+        7,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        5,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 29,
+      "f_anf_masks": [
+        7,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        10
+      ],
+      "clifford_residual_anf_masks": [
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        10,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 30,
+      "f_anf_masks": [
+        7,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        9
+      ],
+      "clifford_residual_anf_masks": [
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        9,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 23,
+      "j": 31,
+      "f_anf_masks": [
+        7,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        4
+      ],
+      "clifford_residual_anf_masks": [
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        4,
+        8,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 25,
+      "f_anf_masks": [
+        8,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 26,
+      "f_anf_masks": [
+        8,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 27,
+      "f_anf_masks": [
+        8,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 28,
+      "f_anf_masks": [
+        8,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 29,
+      "f_anf_masks": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 30,
+      "f_anf_masks": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 24,
+      "j": 31,
+      "f_anf_masks": [
+        8,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        8,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 25,
+      "j": 26,
+      "f_anf_masks": [
+        4,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 25,
+      "j": 27,
+      "f_anf_masks": [
+        4,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 25,
+      "j": 28,
+      "f_anf_masks": [
+        2,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 25,
+      "j": 29,
+      "f_anf_masks": [
+        2,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 25,
+      "j": 30,
+      "f_anf_masks": [
+        2,
+        4,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 25,
+      "j": 31,
+      "f_anf_masks": [
+        2,
+        4,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 26,
+      "j": 27,
+      "f_anf_masks": [
+        4,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        4,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 26,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 26,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        4,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 26,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 26,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        4,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 27,
+      "j": 28,
+      "f_anf_masks": [
+        1,
+        2,
+        9,
+        10,
+        11,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 27,
+      "j": 29,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        9,
+        10,
+        11,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        6,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        6,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 27,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        9,
+        10,
+        11,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        5,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        5,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 27,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        9,
+        10,
+        11,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        2,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        9,
+        10,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        2,
+        8,
+        4,
+        16
+      ]
+    },
+    {
+      "i": 28,
+      "j": 29,
+      "f_anf_masks": [
+        2,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 28,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 28,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        2,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 29,
+      "j": 30,
+      "f_anf_masks": [
+        1,
+        2,
+        4,
+        9,
+        10,
+        12,
+        13,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        3,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        2,
+        4,
+        9,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        3,
+        4,
+        8,
+        1,
+        16
+      ]
+    },
+    {
+      "i": 29,
+      "j": 31,
+      "f_anf_masks": [
+        1,
+        4,
+        9,
+        12,
+        13,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        1,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        1,
+        4,
+        9,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        1,
+        4,
+        8,
+        2,
+        16
+      ]
+    },
+    {
+      "i": 30,
+      "j": 31,
+      "f_anf_masks": [
+        2,
+        4,
+        10,
+        12,
+        14,
+        16
+      ],
+      "ccz_linear_form_masks": [
+        2,
+        4,
+        8
+      ],
+      "clifford_residual_anf_masks": [
+        2,
+        4,
+        10,
+        12,
+        16
+      ],
+      "invertible_linear_map_rows": [
+        2,
+        4,
+        8,
+        1,
+        16
+      ]
+    }
+  ]
+}

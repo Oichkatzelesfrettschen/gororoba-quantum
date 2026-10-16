@@ -1,0 +1,32 @@
+[{"stream_name":"stderr","time":6.6890949840000005,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.689162304,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.7747484799999995,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.77478466,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.77478889,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.77479227,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.443704577,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.443750837,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.443755497,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.443758747,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.143779952,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 36.6/36.6 MB 51.3 MB/s eta 0:00:00\r\n"}
+,{"stream_name":"stdout","time":15.285373988,"data":"Z3 version: 5.3.1\n"}
+,{"stream_name":"stdout","time":15.285415618,"data":"Z3 basic check: sat\n"}
+,{"stream_name":"stdout","time":15.285419248,"data":"Z3 works on Kaggle!\n"}
+,{"stream_name":"stdout","time":24.246302376,"data":"W: Skipping acquire of configured file 'main/source/Sources' as repository 'https://r2u.stat.illinois.edu/ubuntu noble InRelease' does not seem to provide it (sources.list entry misspelt?)\r\n"}
+,{"stream_name":"stdout","time":55.849464745,"data":"Setting up libfindlib-ocaml-dev (1.9.6-1build4) ...\r\r\n"}
+,{"stream_name":"stdout","time":55.849500255,"data":"Setting up coq (8.18.0+dfsg-1build2) ...\r\r\n"}
+,{"stream_name":"stdout","time":55.849506285,"data":"Processing triggers for man-db (2.12.0-4build2) ...\r\r\n"}
+,{"stream_name":"stdout","time":55.998459493,"data":"/usr/bin/coqc\r\n"}
+,{"stream_name":"stdout","time":55.998492733,"data":"The Coq Proof Assistant, version 8.18.0\r\n"}
+,{"stream_name":"stdout","time":55.998497013,"data":"compiled with OCaml 4.14.1\r\n"}
+,{"stream_name":"stdout","time":59.179390375,"data":"Modus ponens valid (unsat expected): True\n"}
+,{"stream_name":"stdout","time":59.179429235,"data":"SymPy logic works!\n"}
+,{"stream_name":"stderr","time":62.251503815,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":62.251542955,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":62.454019829,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":62.454063429,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":63.182336163,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":63.255012207,"data":"[NbConvertApp] Writing 6448 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":65.91411474,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":66.404697621,"data":"[NbConvertApp] Writing 281988 bytes to __results__.html\n"}
+]

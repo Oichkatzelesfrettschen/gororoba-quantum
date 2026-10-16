@@ -1,0 +1,5 @@
+dimension,defective_ordered_triples,all_triples,fraction_all,independent_denominator,formula,pair_failures,toggle_failures
+8,168,512,0.328125,168,168,0,0
+16,1848,4096,0.451171875,2520,1848,0,0
+32,15960,32768,0.487060546875,26040,15960,0,0
+64,130200,262144,0.496673583984375,234360,130200,0,0

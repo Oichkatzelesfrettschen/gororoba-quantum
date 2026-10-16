@@ -1,0 +1,22 @@
+{
+ "schema": "kaggle-aer-submission-v1",
+ "kernel": "probablyeric/gororoba-substrate-probe-tpuv6e8",
+ "machine_shape": "TpuV6E8",
+ "entry": null,
+ "args": [],
+ "smoke": true,
+ "git_commit": "0461adc42c2c35e8e8401541f7a7436bcba5dfda-dirty",
+ "pins": [
+  "qiskit==2.5.2",
+  "qiskit-aer-gpu-cu11==0.17.2"
+ ],
+ "bundle": {
+  "docs/evidence/algebra_packages/tables.json": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",
+  "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+  "kaggle_kernel/AGENTS.md": "52b3e7af98bf0f857c80d6d191a6f7cea23435451a1dd660ab654be920c2a053",
+  "kaggle_kernel/kernel_main.py": "abcfaa6dbd3370b7ec52562293568cad703d3a49cc710c3cbeff41035c801ef5",
+  "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528"
+ },
+ "run_py_sha256": "fe67e4f9f349447f08094c29253ea0fca8ff41015144ab65ca7eece4841f96ae",
+ "pushed_utc": "2026-10-16T030548Z"
+}

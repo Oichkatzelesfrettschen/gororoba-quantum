@@ -1,0 +1,12 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-substrate-probe-l4",
+ "state": "KernelWorkerStatus.COMPLETE",
+ "collected_utc": "2026-10-16T030534Z",
+ "files": {
+  "gororoba-substrate-probe-l4.log": "f36476af2189271dd4247bf2e8a8a496f335cf09eb7359919b0722e4725ea4ac",
+  "output/environment.json": "35ae2eeb3728b8252ae47447dc380b5771eb4bbf387de94f93bd657fe07dc6ae",
+  "output/hypercomplex.json": "0d3cbcaa582c465adc0c75f9844fa9317a98d9191f9f31582ef0f75abf7c1fca",
+  "output/pip.txt": "a45e7563815064f024037ede4c27aa6a57ec646a0e81ad2b8f872c5f43770ce3"
+ }
+}

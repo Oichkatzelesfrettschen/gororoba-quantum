@@ -1,0 +1,13 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-substrate-probe-tpu",
+ "state": "KernelWorkerStatus.COMPLETE",
+ "collected_utc": "2026-10-16T025934Z",
+ "files": {
+  "gororoba-substrate-probe-tpu.log": "a6ed5699d32d791a048536963e81a6621ce021cf7d4707a849541961daecc5a0",
+  "output/capacity.json": "647e1a1db6481d14e1d28a2a08f72998e9dd8ad3d59802abc244310025f3325a",
+  "output/environment.json": "f94d7afc1ecb6aa1896f6c369e1184e0aaea9347c69631dca539dddbaa1621c6",
+  "output/hypercomplex.json": "542d6d14bc3eecefba1e55ce64948ee0d295242bc0fa8cbaa5d7bf085e411e4c",
+  "output/pip.txt": "0117359a2190ae7c3c2b7063dfc3e848720f1d121855102a2cf174f5ad678d0b"
+ }
+}
