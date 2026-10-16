@@ -41,6 +41,7 @@ from __future__ import annotations
 import argparse
 import datetime
 import hashlib
+import importlib
 import json
 import sys
 import time
@@ -81,7 +82,8 @@ class Client:
     """
 
     def __init__(self) -> None:
-        import requests  # type: ignore[import-untyped]
+        # importlib keeps one typing outcome whether or not requests ships stubs.
+        requests = importlib.import_module("requests")
         from quantuminspire.managers.auth_manager import AuthManager
         from quantuminspire.managers.config_manager import ConfigManager
 

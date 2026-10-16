@@ -335,5 +335,112 @@
   ],
   "bright": 0.828,
   "claim": "hw-zero-divisor-floor"
+ },
+ "secondary": {
+  "claim_kind": "secondary analysis, fixed after the data",
+  "endpoint_midpoint": 0.5,
+  "raw": {
+   "contrast_B_minus_D": {
+    "value": 1.0,
+    "se": 0.0,
+    "z": null
+   },
+   "sum_residual_D_plus_B_minus_1": {
+    "value": 0.0,
+    "se": 0.0,
+    "z": null
+   },
+   "fixture_minus_endpoint_midpoint_H": {
+    "value": -0.010416666666666685,
+    "se": 0.006376674948507849,
+    "z": -1.6335577320127004
+   },
+   "fixture_minus_half": {
+    "value": -0.010416666666666685,
+    "se": 0.006376674948507849,
+    "z": -1.6335577320127004
+   }
+  },
+  "raw_covariance": {
+   "dark,dark": 0.0,
+   "dark,bright": 0.0,
+   "dark,fixture": 0.0,
+   "bright,dark": 0.0,
+   "bright,bright": 0.0,
+   "bright,fixture": 0.0,
+   "fixture,dark": 0.0,
+   "fixture,bright": 0.0,
+   "fixture,fixture": 4.066198339892758e-05
+  },
+  "readout_corrected_bootstrap": {
+   "contrast_B_minus_D": {
+    "mean": 1.0,
+    "se": 0.0,
+    "ci95": [
+     1.0,
+     1.0
+    ]
+   },
+   "sum_residual_D_plus_B_minus_1": {
+    "mean": 0.0,
+    "se": 0.0,
+    "ci95": [
+     0.0,
+     0.0
+    ]
+   },
+   "fixture_minus_endpoint_midpoint_H": {
+    "mean": -0.010373453776041666,
+    "se": 0.006395485187436393,
+    "ci95": [
+     -0.0224609375,
+     0.00244140625
+    ]
+   },
+   "fixture_minus_half": {
+    "mean": -0.010373453776041666,
+    "se": 0.006395485187436393,
+    "ci95": [
+     -0.0224609375,
+     0.00244140625
+    ]
+   }
+  },
+  "by_region_raw": {
+   "[0, 1, 2, 4, 5]": {
+    "contrast": 1.0,
+    "contrast_ci95": [
+     1.0,
+     1.0
+    ],
+    "H": -0.0185546875,
+    "H_se": 0.01104093332899361,
+    "H_z": -1.6805361419287979
+   },
+   "[7, 8, 10, 11, 13]": {
+    "contrast": 1.0,
+    "contrast_ci95": [
+     1.0,
+     1.0
+    ],
+    "H": 0.00048828125,
+    "H_se": 0.011048538187682486,
+    "H_z": 0.04419419489759854
+   },
+   "[9, 12, 14, 15, 16]": {
+    "contrast": 1.0,
+    "contrast_ci95": [
+     1.0,
+     1.0
+    ],
+    "H": -0.01318359375,
+    "H_se": 0.011044702156707902,
+    "H_z": -1.1936576978667606
+   }
+  },
+  "bootstrap": {
+   "draws": 4000,
+   "seed": 20261016
+  }
  }
 }

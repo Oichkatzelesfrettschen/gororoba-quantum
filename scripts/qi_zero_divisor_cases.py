@@ -387,6 +387,147 @@ def wilson(k: int, n: int, z: float = 1.959963984540054) -> list[float]:
     return [centre - half, centre + half]
 
 
+BOOTSTRAP_DRAWS = 4000
+BOOTSTRAP_SEED = 20261016
+
+
+def linear(weights: dict[str, float], mean: dict[str, float], cov: dict[tuple[str, str], float]) -> dict[str, float]:
+    """Value and standard error of sum_k w_k X_k from the means and covariances of the X_k."""
+    value = sum(w * mean[k] for k, w in weights.items())
+    variance = sum(wi * wj * cov[(i, j)] for i, wi in weights.items() for j, wj in weights.items())
+    return {"value": value, "se": math.sqrt(max(variance, 0.0))}
+
+
+def secondary(replicas: list[dict[str, Any]], raw: dict[str, list[str]]) -> dict[str, Any]:
+    """Secondary analysis, fixed after the data: same-shot covariance and the common-affine fixture test.
+
+    The three replicas of a Latin circuit share every shot, so their selector
+    outcomes can correlate; the pooled dark (D), bright (B) and fixture (F)
+    means each average three replicas from three circuits, and Cov(D, B)
+    collects the same-shot covariances of the dark and bright replicas that
+    share a circuit. The contrast B - D and the sum residual D + B - 1 take
+    that covariance with opposite signs. H = F - (D + B)/2 tests one affine
+    response p_obs = u + v p_ideal for all three preparations, which places an
+    ideal-1/2 fixture at the endpoint midpoint; F = 1/2 tests the fixture
+    against its ideal instead. Raw quantities use the exact delta-method
+    covariance from the per-circuit joint selector distribution. The
+    readout-corrected quantities resample each circuit's joint selector
+    outcomes and the joint selector readout of both calibration circuits
+    (multinomial, BOOTSTRAP_DRAWS draws, BOOTSTRAP_SEED), so the calibration's
+    own sampling error propagates.
+    """
+    import numpy as np
+
+    names = list(CASES)
+    files = sorted({r["file"] for r in replicas})
+    selectors = sorted({r["roles"]["selector"] for r in replicas})
+
+    def indicator(shots: list[str], qubits: list[int]) -> Any:
+        return np.array([[1 - bit(s, q) for q in qubits] for s in shots], dtype=float)
+
+    # Raw: per-circuit covariance of the three selector-zero indicators.
+    mean: dict[str, float] = {}
+    cov: dict[tuple[str, str], float] = {(a, b): 0.0 for a in names for b in names}
+    per_replica: dict[tuple[str, str], tuple[float, float]] = {}
+    for name in names:
+        rows = [r for r in replicas if r["case"] == name]
+        mean[name] = sum(r["p_selector_zero"] for r in rows) / len(rows)
+    for file in files:
+        rows = [r for r in replicas if r["file"] == file]
+        z = indicator(raw[file], [r["roles"]["selector"] for r in rows])
+        c = np.atleast_2d(np.cov(z, rowvar=False, bias=True)) / len(z)
+        for i, ri in enumerate(rows):
+            for j, rj in enumerate(rows):
+                cov[(ri["case"], rj["case"])] += float(c[i, j]) / 9
+            per_replica[(ri["case"], str(ri["region"]))] = (float(z[:, i].mean()), float(c[i, i]))
+    tests = {
+        "contrast_B_minus_D": {"bright": 1.0, "dark": -1.0},
+        "sum_residual_D_plus_B_minus_1": {"dark": 1.0, "bright": 1.0},
+        "fixture_minus_endpoint_midpoint_H": {"fixture": 1.0, "dark": -0.5, "bright": -0.5},
+        "fixture_minus_half": {"fixture": 1.0},
+    }
+    offsets = {"sum_residual_D_plus_B_minus_1": -1.0, "fixture_minus_half": -0.5}
+    raw_tests = {}
+    for key, weights in tests.items():
+        result: dict[str, Any] = linear(weights, mean, cov)
+        result["value"] += offsets.get(key, 0.0)
+        result["z"] = result["value"] / result["se"] if result["se"] else None
+        raw_tests[key] = result
+    by_region = {}
+    for region in REGIONS:
+        d, b, f = (per_replica[(n, str(list(region)))] for n in ("dark", "bright", "fixture"))
+        h = f[0] - (d[0] + b[0]) / 2
+        se = math.sqrt(f[1] + (d[1] + b[1]) / 4)
+        contrast = b[0] - d[0]
+        cse = math.sqrt(b[1] + d[1])
+        by_region[str(list(region))] = {
+            "contrast": contrast,
+            "contrast_ci95": [contrast - 1.959963984540054 * cse, contrast + 1.959963984540054 * cse],
+            "H": h,
+            "H_se": se,
+            "H_z": h / se if se else None,
+        }
+
+    # Readout-corrected: parametric bootstrap of circuits and calibrations together.
+    rng = np.random.default_rng(BOOTSTRAP_SEED)
+    have_readout = "readout-0.cq" in raw
+
+    def joint_counts(shots: list[str], qubits: list[int]) -> tuple[Any, int]:
+        codes = np.zeros(len(shots), dtype=int)
+        for position, q in enumerate(qubits):
+            codes += np.array([bit(s, q) for s in shots]) << position
+        return np.bincount(codes, minlength=1 << len(qubits)), len(shots)
+
+    circuit_counts = {}
+    for file in files:
+        rows = [r for r in replicas if r["file"] == file]
+        circuit_counts[file] = (rows, *joint_counts(raw[file], [r["roles"]["selector"] for r in rows]))
+    calibration = {}
+    if have_readout:
+        for name in ("readout-0.cq", "readout-1.cq"):
+            calibration[name] = joint_counts(raw[name], selectors)
+    draws: dict[str, list[float]] = {k: [] for k in tests}
+    for _ in range(BOOTSTRAP_DRAWS):
+        e01: dict[int, float] = {q: 0.0 for q in selectors}
+        e10: dict[int, float] = {q: 0.0 for q in selectors}
+        if have_readout:
+            for name, (counts, n) in calibration.items():
+                sample = rng.multinomial(n, counts / n)
+                for position, q in enumerate(selectors):
+                    ones = sum(int(sample[code]) for code in range(len(sample)) if code >> position & 1) / n
+                    if name == "readout-0.cq":
+                        e01[q] = ones
+                    else:
+                        e10[q] = 1 - ones
+        corrected: dict[str, list[float]] = {n: [] for n in names}
+        for members, counts, total in circuit_counts.values():
+            sample = rng.multinomial(total, counts / total)
+            for position, member in enumerate(members):
+                p_zero = sum(int(sample[code]) for code in range(len(sample)) if not code >> position & 1) / total
+                q = member["roles"]["selector"]
+                corrected[member["case"]].append((p_zero - e10[q]) / (1 - e01[q] - e10[q]))
+        m = {n: sum(v) / len(v) for n, v in corrected.items()}
+        for key, weights in tests.items():
+            draws[key].append(sum(w * m[k] for k, w in weights.items()) + offsets.get(key, 0.0))
+    corrected_tests = {}
+    for key, values in draws.items():
+        array = np.array(values)
+        corrected_tests[key] = {
+            "mean": float(array.mean()),
+            "se": float(array.std(ddof=1)),
+            "ci95": [float(np.quantile(array, 0.025)), float(np.quantile(array, 0.975))],
+        }
+    return {
+        "claim_kind": "secondary analysis, fixed after the data",
+        "endpoint_midpoint": (mean["dark"] + mean["bright"]) / 2,
+        "raw": raw_tests,
+        "raw_covariance": {f"{a},{b}": v for (a, b), v in cov.items()},
+        "readout_corrected_bootstrap": corrected_tests,
+        "by_region_raw": by_region,
+        "bootstrap": {"draws": BOOTSTRAP_DRAWS, "seed": BOOTSTRAP_SEED},
+    }
+
+
 def analyze(run_dir: Path) -> dict[str, Any]:
     cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
     raw = {row["file"]: json.loads((run_dir / "raw" / f"{row['file']}.json").read_text()) for row in cases["circuits"]}
@@ -447,6 +588,10 @@ def analyze(run_dir: Path) -> dict[str, Any]:
             "fixture_z": z(fixture_residual, fixture["variance"]),
         },
         "kingston_comparison": KINGSTON,
+        # The preregistered z-scores above use raw counts and treat replicas as
+        # independent; the secondary block carries the same-shot covariance and
+        # the readout-corrected uncertainty.
+        "secondary": secondary(replicas, raw),
     }
 
 

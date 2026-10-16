@@ -200,32 +200,81 @@ and |1>. The estimators and the comparison were fixed in cases.json before
 submission (claim class: preregistered hardware inference). The QX twin packs
 the same nine replicas two per 10-qubit circuit.
 
-| Region | dark P(s=0) | bright | fixture |
-|---|---|---|---|
-| {0,1,2,4,5} | 0.491 | 0.493 | 0.518 |
-| {7,8,10,11,13} | 0.467 | 0.518 | 0.497 |
-| {9,12,14,15,16} | 0.455 | 0.527 | 0.481 |
-| pooled (95% CI) | 0.471 (0.466-0.475) | 0.512 (0.508-0.517) | 0.499 (0.495-0.504) |
-| readout-corrected mean | 0.457 | 0.501 | 0.484 |
-| QX twin (ideal platform) | 0.000 | 1.000 | 0.490 |
-| Kingston, hw-zero-divisor-floor | 0.182 (0.146-0.217) | 0.828 | -- |
+| Region | dark P(s=0) | bright | fixture | endpoint contrast B - D (95%) |
+|---|---|---|---|---|
+| {0,1,2,4,5} | 0.491 | 0.493 | 0.518 | 0.002 (-0.009 to 0.013) |
+| {7,8,10,11,13} | 0.467 | 0.518 | 0.497 | 0.051 (0.040 to 0.062) |
+| {9,12,14,15,16} | 0.455 | 0.527 | 0.481 | 0.072 (0.061 to 0.083) |
+| pooled (95% CI) | 0.471 (0.466-0.475) | 0.512 (0.508-0.517) | 0.499 (0.495-0.504) | 0.0415 +- 0.0032 |
+| readout-corrected mean | 0.457 | 0.501 | 0.484 | 0.0435 (0.037 to 0.050) |
+| QX twin (ideal platform) | 0.000 | 1.000 | 0.490 | 1.000 |
+| Kingston, hw-zero-divisor-floor | 0.182 (0.146-0.217) | 0.828 | -- | 0.646 |
 
-- The platform executes the certified circuits exactly (QX twin).
-- Tuna-17 contracts the witness to a visibility of 0.042 (Kingston 0.646 at
-  about 45 CZ with continuous rotations). Dark stays below bright in every
-  region and in aggregate (difference 0.0415, about 13 standard errors), so
-  the zero-divisor contrast survives at 4 % of its ideal size; the region on
-  qubits 0, 1, 2, 4, 5, where the teleport path 1-0-2-4 and the Q1/Q2
-  simultaneous-drive failure sit, shows none.
-- The fixture law holds: 0.499, z = -0.42.
-- The symmetric contraction law fails: dark + bright - 1 = -0.017, z = -5.3
-  (-0.042 after readout correction). A depolarizing contraction keeps the sum
-  at 1; both witnesses sit below 1/2, a bias of the selector toward 1 that a
-  coherent or non-unital error carries.
-- At about 68 CZ the surviving visibility corresponds to a per-CZ-layer
-  survival of 0.954 (0.042^(1/68)), against 0.990 on Kingston (0.646^(1/45));
-  that figure folds single-qubit, idle, crosstalk and readout error into the
-  CZ count and serves as a scale, not a CZ fidelity.
+Kingston's 0.646 is the endpoint contrast; its fitted fringe visibility is
+0.678 with offset 0.502 and phase 0.197 rad
+(results/live/2026-10-15T070853.550532Z/collect.json), and the two need not
+coincide. Every comparison below uses the endpoint contrast B - D.
+
+**Preregistered results** (raw counts, replicas treated as independent):
+
+- The platform executes the certified circuits as specified: the QX twin
+  reads dark 0, bright 1 and fixture 0.490. The exact SELECT identity itself
+  rests on the full-operator certificate (signed output amplitude on all 32
+  inputs, no global phase allowed), not on finite QX samples.
+- Tuna-17 keeps an endpoint contrast of 0.042, 4.2 % of the ideal and 6.5 %
+  of Kingston's 0.646. Dark lies below bright by about 13 standard errors;
+  statistical resolution and retained contrast answer different questions.
+- Dark and bright straddle 1/2: their midpoint is 0.4915 and the sum
+  residual dark + bright - 1 is -0.017 (z = -5.3). That rejects the
+  preregistered shared symmetric-contraction model,
+  p_obs = 1/2 + lambda (p_ideal - 1/2) with one lambda for every
+  preparation. It does not exclude depolarizing noise in general: separate
+  contractions lambda_D = 0.058 and lambda_B = 0.024 reproduce both endpoints.
+- The fixture agrees with its ideal: 0.499, z = -0.42.
+- The region on qubits 0, 1, 2, 4, 5 shows no resolved endpoint contrast at
+  this precision (0.002, 95 % interval -0.009 to 0.013). The teleport path
+  1-0-2-4 and the Q1/Q2 simultaneous-drive failure sit in the same region,
+  a repeated spatial association whose shared cause these acquisitions do
+  not identify.
+- The routed depths differ (66-70 CZ and 26 T here, about 45 CZ with
+  continuous rotations on Kingston), so the contrast ratio compares two
+  implementations of one witness, not two devices alone.
+
+**Secondary analysis** (fixed after the data; `secondary` in analysis.json):
+the three replicas of a Latin circuit share every shot, so the raw
+uncertainties use the delta-method covariance of the per-circuit joint
+selector outcomes; the readout-corrected values come from a seeded
+multinomial bootstrap (4000 draws) of each circuit's joint selector outcomes
+and of the joint selector readout in both calibration circuits, which carries
+the calibration's own sampling error. The same-shot covariances between
+regions measure about 1 % of the variances, so the preregistered z-scores
+stand.
+
+| Test | Null | raw | readout-corrected (95%) |
+|---|---|---|---|
+| endpoint contrast B - D | 0 | 0.0415 +- 0.0032 | 0.0435 (0.037 to 0.050) |
+| shared symmetric contraction D + B - 1 | 0 | -0.0169 +- 0.0032 | -0.042 (-0.049 to -0.036) |
+| common affine response H = F - (D + B)/2 | 0 | +0.0075 +- 0.0028 (z 2.7) | +0.0047 (-0.001 to 0.011) |
+| fixture against its ideal F - 1/2 | 0 | -0.001 +- 0.002 | -0.016 (-0.021 to -0.012) |
+
+- Readout asymmetry runs the other way. Every selector misreads |1> as 0
+  (2.7-5.2 %) more often than |0> as 1 (0.5-1.8 %), which alone would raise
+  the raw sum residual by e10 - e01; correcting for it deepens the residual
+  from -0.017 to -0.042. Under the all-|0>/all-|1> calibration model readout
+  hides part of the asymmetry rather than producing it.
+- After correction H is consistent with zero while the fixture sits 0.016
+  below 1/2: all three preparations follow one affine response
+  p = u + v p_ideal with u + v/2 = 0.479, an additive shift toward
+  selector 1 common to the circuits. Circuit-dependent symmetric contractions
+  would hold an ideal-1/2 fixture at 1/2 and are disfavored by that
+  corrected fixture. The calibration model omits readout crosstalk under the
+  witness's state, which bounds this conclusion.
+- By region the common affine response holds on {7,8,10,11,13}
+  (H = 0.005 +- 0.005) and {9,12,14,15,16} (H = -0.010 +- 0.005) and fails on
+  {0,1,2,4,5} (H = 0.027 +- 0.005, z 5.6), the region without resolved
+  contrast. A common response with a shifted midpoint is a probability-level
+  description; it identifies no unique channel acting on the five-qubit
+  circuit.
 
 ## Next cases
 
