@@ -82,6 +82,12 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
     ),
 }
 DEFAULT_MACHINE = "NvidiaTeslaT4"
+# A TPU session needs Kaggle's TPU-VM image, which carries libtpu: a script
+# kernel pushed with a Tpu machine shape receives the CPU image and runs on a
+# 4-core CPU machine whose JAX finds no libtpu.so. Public notebooks that ran
+# on TpuV5E8 record this image digest and kernel_type notebook in their
+# server metadata (`kaggle kernels pull -m`), so a TPU push uses both.
+TPU_DOCKER_IMAGE = "gcr.io/kaggle-images/python@sha256:dafd4ce5668bbf1ad422e4c109e0f18c9623c3a7c7f48b0235f13142755c40b9"
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
@@ -254,13 +260,23 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         pins=list(KERNEL_PINS), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
     )
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
+    tpu = args.machine.startswith("Tpu")
+    if tpu:
+        # The same program as the notebook's single code cell.
+        notebook = {
+            "cells": [{"cell_type": "code", "execution_count": None, "metadata": {}, "outputs": [], "source": runner}],
+            "metadata": {"kernelspec": {"display_name": "Python 3", "language": "python", "name": "python3"}},
+            "nbformat": 4,
+            "nbformat_minor": 5,
+        }
+        (kernel_dir / "run.ipynb").write_text(json.dumps(notebook, indent=1) + "\n", encoding="utf-8")
     kernel_id = f"{owner}/{args.slug}"
     metadata = {
         "id": kernel_id,
         "title": args.slug,
-        "code_file": "run.py",
+        "code_file": "run.ipynb" if tpu else "run.py",
         "language": "python",
-        "kernel_type": "script",
+        "kernel_type": "notebook" if tpu else "script",
         "is_private": True,
         "enable_gpu": args.machine != "cpu" and not args.machine.startswith("Tpu"),
         "enable_tpu": args.machine.startswith("Tpu"),
@@ -268,6 +284,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     }
     if args.machine != "cpu":
         metadata["machine_shape"] = args.machine
+    if tpu:
+        metadata["docker_image"] = TPU_DOCKER_IMAGE
     if datasets:
         metadata["dataset_sources"] = [d["ref"] for d in datasets]
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
