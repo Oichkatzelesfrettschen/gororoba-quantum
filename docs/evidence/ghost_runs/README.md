@@ -95,7 +95,9 @@ under two calibrations, hence two execution means.
 - **Whether a noisier model fits better is not settled.** On the qubits
   each run used, today's mean CZ error is higher on 10 of 14 runs, and its
   change correlates with the distance change at -0.31. The readout change
-  correlates at +0.32, the opposite sign. Fourteen runs cannot separate
+  correlates at +0.32, the opposite sign (report.json `correlations` and
+  each run's `calibration_change`, taken on the qubits of the ghosted
+  members, against the snapshot most of them ran under). Fourteen runs cannot separate
   these. A sweep that scales the model's gate and readout errors by a
   factor per run, and finds the minimizing factor, would. The walk
   scaffold's hardware loss of 1.8 to 4.4 times the calibrated per-CZ loss
@@ -103,10 +105,14 @@ under two calibrations, hence two execution means.
 
 ## Gates
 
+- core-293: `result.json` equals the kernel's retained output byte for byte.
 - core-286: `scripts/ghost_calibrations.py --check`, the snapshot hashes,
   round trips and the execution identity of every executed member.
 - core-287: `scripts/ghost_run.py --check result.json --runs
   results/live/2026-10-13T080216.451663Z` reruns that run's execution-state
-  ghost on the CPU (about 7 s) and requires each execution mean within five
-  standard errors. `--report result.json` must also reproduce
-  [report.json](report.json) byte for byte.
+  ghost on the CPU and requires each execution mean within five standard
+  errors. Before that it rebuilds every run's skip reason, members, width
+  exclusions, shots and execution snapshots from the archived inputs, and
+  recomputes every summary and recorded-replay agreement from the retained
+  distances. `--report result.json` must reproduce
+  [report.json](report.json), correlations included, byte for byte.

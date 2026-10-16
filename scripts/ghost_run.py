@@ -36,12 +36,16 @@ skipped with the record's reason.
 directories. ``--states execution`` restricts each execution snapshot to the
 members that ran under it; ``execution,current`` adds the export-time
 snapshot over every member, and ``all`` (the default) every snapshot. The
-entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` requires FILE to
-hold every audited run exactly once and each ghosted run to cover every
-member under every snapshot of its backend, reruns the execution-state ghost of the
-runs FILE names (or of the ``--runs`` subset)
-on the CPU and requires each execution mean TV distance to agree within five
-standard errors.
+entry reads GOROROBA_AER_DEVICE (CPU by default).
+
+``--check FILE`` requires FILE to hold every audited run exactly once. It
+rebuilds every run's skip reason, members, width exclusions, shots and
+execution snapshots from the archived inputs and requires them, full
+snapshot coverage, and the summaries and recorded-replay agreement
+recomputed from the retained distances. It then reruns the execution-state
+ghost of the runs FILE names (or of the ``--runs`` subset) on the CPU and
+requires each execution mean TV distance to agree within five standard
+errors.
 """
 
 from __future__ import annotations
@@ -161,32 +165,84 @@ def sample(simulator: Any, circuits: list[QuantumCircuit], shots: list[int], see
     return counts
 
 
-def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) -> dict[str, Any]:
+def prepare(run_name: str, index: dict[str, Any]) -> dict[str, Any]:
+    """Everything a ghost of the run derives from its archived inputs before simulating, or its skip reason."""
     run = ROOT / run_name
     missing = [name for name in ("record.json", "isa.qpy", "collect.json") if not (run / name).is_file()]
     if missing:
         # A recovered acquisition keeps its submitted circuits and raw counts
         # without a planning record, so its members cannot be rebuilt.
-        return {"run": run_name, "skipped": f"the run keeps no {', '.join(missing)}"}
+        return {"skipped": f"the run keeps no {', '.join(missing)}"}
     record = json.loads((run / "record.json").read_text(encoding="utf-8"))
     isas = {c.name: c for c in qpy.load(io.BytesIO((run / "isa.qpy").read_bytes()))}
     try:
         replicas = member_replicas(record, isas)
     except SystemExit as reason:
-        return {"run": run_name, "skipped": str(reason)}
+        return {"skipped": str(reason)}
     measured, executed, recorded = measured_members(run)
     starts = {w["start"]: w["snapshot"] for job in index["jobs"] if job["run"] == run_name for w in job["windows"]}
     backends = {b for b, _ in replicas.values()}
     require(len(backends) == 1, f"{run_name}: members span backends {sorted(backends)}")
-    backend = backends.pop()
     members = [
         name for name in replicas if name in measured and all(active_width(r) <= MAX_QUBITS for r in replicas[name][1])
     ]
-    skipped = sorted(set(replicas) - set(members))
     # live_run.collect replays each job at its own shot count (pub_shots
     # tiers), which collect.json records per executed member.
     shots = {m: int(executed.get(m, {}).get("shots") or record["shots"]) for m in members}
-    execution = {m: starts[executed[m]["start"]] for m in members if executed.get(m, {}).get("start") in starts}
+    return {
+        "backend": backends.pop(),
+        "replicas": replicas,
+        "measured": measured,
+        "recorded": recorded,
+        "members": members,
+        "skipped_width": sorted(set(replicas) - set(members)),
+        "shots": shots,
+        "execution": {m: starts[executed[m]["start"]] for m in members if executed.get(m, {}).get("start") in starts},
+    }
+
+
+def summarize(results: dict[str, Any], execution: dict[str, str]) -> dict[str, Any]:
+    """Per snapshot: mean TV distance over all members and over the members that ran under it."""
+    summary = {}
+    for relative, entry in results.items():
+        own_values = [v for m, row in entry["tvd"].items() if execution.get(m) == relative for v in row]
+        summary[relative] = {
+            "calibration": entry["calibration"],
+            "current": entry["current"],
+            "members": len(entry["tvd"]),
+            "mean_tvd": round(float(np.mean([v for row in entry["tvd"].values() for v in row])), 6),
+            "execution_members": sum(execution.get(m) == relative for m in entry["tvd"]),
+            "execution_mean_tvd": round(float(np.mean(own_values)), 6) if own_values else None,
+        }
+    return summary
+
+
+def recorded_agreement(
+    results: dict[str, Any], execution: dict[str, str], recorded: dict[str, list[float]]
+) -> dict[str, Any]:
+    """Ghost minus recorded replay distance, under each member's execution snapshot."""
+    deltas = [
+        g - r
+        for m in sorted(recorded)
+        if m in execution and execution[m] in results and m in results[execution[m]]["tvd"]
+        for g, r in zip(results[execution[m]]["tvd"][m], recorded[m], strict=True)
+    ]
+    return {
+        "pairs": len(deltas),
+        "mean_abs_ghost_minus_recorded_tvd": round(float(np.mean(np.abs(deltas))), 6) if deltas else None,
+        "max_abs_ghost_minus_recorded_tvd": round(float(np.max(np.abs(deltas))), 6) if deltas else None,
+        "mean_ghost_minus_recorded_tvd": round(float(np.mean(deltas)), 6) if deltas else None,
+        "sd": round(float(np.std(deltas)), 6) if deltas else None,
+    }
+
+
+def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) -> dict[str, Any]:
+    prepared = prepare(run_name, index)
+    if "skipped" in prepared:
+        return {"run": run_name, "skipped": prepared["skipped"]}
+    backend, replicas, measured = prepared["backend"], prepared["replicas"], prepared["measured"]
+    recorded, members, shots = prepared["recorded"], prepared["members"], prepared["shots"]
+    execution = prepared["execution"]
     same_backend = sorted(f for f in index["files"] if f.startswith(f"docs/evidence/calibration/history/{backend}/"))
     current = index["current"][backend]
     # all: every snapshot over every member. execution: each execution
@@ -236,29 +292,18 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
             "tvd": distances,
             "seconds": round(time.time() - start, 2),
         }
-    summary = {}
-    for relative, entry in results.items():
-        own_values = [v for m, row in entry["tvd"].items() if execution.get(m) == relative for v in row]
-        summary[relative] = {
-            "calibration": entry["calibration"],
-            "current": entry["current"],
-            "members": len(entry["tvd"]),
-            "mean_tvd": round(float(np.mean([v for row in entry["tvd"].values() for v in row])), 6),
-            "execution_members": sum(execution.get(m) == relative for m in entry["tvd"]),
-            "execution_mean_tvd": round(float(np.mean(own_values)), 6) if own_values else None,
-        }
-    deltas, scatter = [], []
-    for m, rows in resample.items():
-        ghost = results[execution[m]]["tvd"][m]
-        deltas += [g - r for g, r in zip(ghost, recorded[m], strict=True)]
-        scatter += [abs(g - h) for g, h in zip(ghost, rows, strict=True)]
+    summary = summarize(results, execution)
+    scatter = [
+        abs(g - h) for m, rows in resample.items() for g, h in zip(results[execution[m]]["tvd"][m], rows, strict=True)
+    ]
+    agreement = recorded_agreement(results, execution, recorded)
     self_check = {
-        "pairs": len(deltas),
-        "mean_abs_ghost_minus_recorded_tvd": round(float(np.mean(np.abs(deltas))), 6) if deltas else None,
-        "max_abs_ghost_minus_recorded_tvd": round(float(np.max(np.abs(deltas))), 6) if deltas else None,
+        "pairs": agreement["pairs"],
+        "mean_abs_ghost_minus_recorded_tvd": agreement["mean_abs_ghost_minus_recorded_tvd"],
+        "max_abs_ghost_minus_recorded_tvd": agreement["max_abs_ghost_minus_recorded_tvd"],
         "mean_abs_ghost_minus_resampled_tvd": round(float(np.mean(scatter)), 6) if scatter else None,
-        "mean_ghost_minus_recorded_tvd": round(float(np.mean(deltas)), 6) if deltas else None,
-        "sd": round(float(np.std(deltas)), 6) if deltas else None,
+        "mean_ghost_minus_recorded_tvd": agreement["mean_ghost_minus_recorded_tvd"],
+        "sd": agreement["sd"],
     }
     print(json.dumps({"run": run_name, "summary": summary, "self_check": self_check}), flush=True)
     return {
@@ -266,7 +311,7 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
         "backend": backend,
         "shots": {str(n): sum(1 for m in members if shots[m] == n) for n in sorted(set(shots.values()))},
         "members_ghosted": len(members),
-        "members_skipped_width": skipped,
+        "members_skipped_width": prepared["skipped_width"],
         "member_shots": shots,
         "execution_snapshot": execution,
         "summary": summary,
@@ -275,14 +320,44 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
     }
 
 
-def planned_measured(run_name: str) -> set[str]:
-    """Members the run's submission plan placed and its collection measured: the ghost's candidates."""
-    record = json.loads((ROOT / run_name / "record.json").read_text(encoding="utf-8"))
-    placed = {
-        c["member"] for job in record["submission"]["planned_jobs"] for pub in job["pubs"] for c in pub["components"]
-    }
-    grouped = {m["name"] for group in record["groups"] for m in group["members"]}
-    return placed & grouped & set(measured_members(ROOT / run_name)[0])
+def validate(run: dict[str, Any], index: dict[str, Any]) -> None:
+    """Require every field of a retained run that its archived inputs and its own TV distances determine.
+
+    Only the simulated distances and the resampled scatter come from Aer;
+    the skip reason, members, width exclusions, shots, execution snapshots,
+    snapshot coverage, summaries and recorded-replay agreement are rebuilt
+    here (prepare, summarize, recorded_agreement) and must match.
+    """
+    name = run["run"]
+    prepared = prepare(name, index)
+    if "skipped" in prepared:
+        require(run.get("skipped") == prepared["skipped"], f"{name}: skip reason differs")
+        return
+    require("skipped" not in run, f"{name}: marked skipped although its inputs rebuild")
+    members, shots, execution = prepared["members"], prepared["shots"], prepared["execution"]
+    require(run["backend"] == prepared["backend"], f"{name}: backend differs")
+    require(run["members_ghosted"] == len(members), f"{name}: member count differs")
+    require(run["members_skipped_width"] == prepared["skipped_width"], f"{name}: width exclusions differ")
+    require(run["member_shots"] == shots, f"{name}: member shots differ")
+    require(run["execution_snapshot"] == execution, f"{name}: execution snapshots differ")
+    tiers = {str(n): sum(1 for m in members if shots[m] == n) for n in sorted(set(shots.values()))}
+    require(run["shots"] == tiers, f"{name}: shot tiers differ")
+    prefix = f"docs/evidence/calibration/history/{prepared['backend']}/"
+    expected = sorted(f for f in index["files"] if f.startswith(prefix))
+    require(sorted(run["snapshots"]) == expected, f"{name}: snapshots differ from the index")
+    current = index["current"][prepared["backend"]]
+    for relative, entry in run["snapshots"].items():
+        require(entry["calibration"] == index["files"][relative]["calibration"], f"{name}: {relative} identity")
+        require(entry["current"] == (relative == current), f"{name}: {relative} current flag")
+        require(set(entry["tvd"]) == set(members), f"{name}: {relative} lacks ghosted members")
+        for m, row in entry["tvd"].items():
+            require(len(row) == len(prepared["replicas"][m][1]), f"{name}: {relative} {m} replica count")
+    require(run["summary"] == summarize(run["snapshots"], execution), f"{name}: summary differs from its distances")
+    agreement = recorded_agreement(run["snapshots"], execution, prepared["recorded"])
+    require(
+        all(run["self_check"][key] == value for key, value in agreement.items()),
+        f"{name}: recorded-replay agreement differs from its distances",
+    )
 
 
 def content_key(relative: str) -> str:
@@ -329,6 +404,41 @@ def paired(run: dict[str, Any], relative: str) -> dict[str, Any] | None:
     }
 
 
+def error_means(relative: str, qubits: set[int]) -> tuple[float, float]:
+    """Mean CZ error over couplers inside qubits, and mean readout assignment error over qubits."""
+    snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    cz = [e["error"] for e in snapshot["instructions"]["cz"] if set(e["qargs"]) <= qubits and e["error"] is not None]
+    readout = [(snapshot["qubits"][q]["e01"] + snapshot["qubits"][q]["e10"]) / 2 for q in sorted(qubits)]
+    return float(np.mean(cz)), float(np.mean(readout))
+
+
+def calibration_change(run: dict[str, Any], current: str) -> dict[str, Any]:
+    """Current minus execution mean CZ and readout error on the qubits the run's ghosted members used.
+
+    A run whose members ran under several snapshots takes the one most of
+    them ran under as its execution calibration.
+    """
+    record = json.loads((ROOT / run["run"] / "record.json").read_text(encoding="utf-8"))
+    qubits = {
+        q
+        for group in record["groups"]
+        for member in group["members"]
+        if member["name"] in run["member_shots"]
+        for replica in member["replica_qubits"]
+        for q in replica
+    }
+    owners = sorted(run["execution_snapshot"].values())
+    execution = max(sorted(set(owners)), key=owners.count)
+    cz_before, readout_before = error_means(execution, qubits)
+    cz_now, readout_now = error_means(current, qubits)
+    return {
+        "qubits": len(qubits),
+        "execution_snapshot": execution,
+        "cz_error_change": round(cz_now - cz_before, 9),
+        "readout_error_change": round(readout_now - readout_before, 9),
+    }
+
+
 def report(path: Path) -> dict[str, Any]:
     """Per run: execution means, paired current-minus-execution difference, and every distinct state's mean."""
     retained = json.loads(path.read_text(encoding="utf-8"))
@@ -356,9 +466,22 @@ def report(path: Path) -> dict[str, Any]:
                 "distinct_states": len(means),
                 "state_mean_tvd_range": [min(means.values()), max(means.values())],
                 "self_check": run["self_check"],
+                "calibration_change": calibration_change(run, current[0]) if current else None,
             }
         )
-    return {"schema": "ghost-run-report-v3", "source": path.as_posix(), "runs": rows}
+    changed = [r for r in rows if r.get("calibration_change") and r.get("current_minus_execution")]
+    distance = [r["current_minus_execution"]["mean_delta"] for r in changed]
+    correlations = {
+        "runs": len(changed),
+        "cz_error_higher_now": sum(r["calibration_change"]["cz_error_change"] > 0 for r in changed),
+        "cz_error_change_vs_distance_change": round(
+            float(np.corrcoef([r["calibration_change"]["cz_error_change"] for r in changed], distance)[0, 1]), 4
+        ),
+        "readout_error_change_vs_distance_change": round(
+            float(np.corrcoef([r["calibration_change"]["readout_error_change"] for r in changed], distance)[0, 1]), 4
+        ),
+    }
+    return {"schema": "ghost-run-report-v4", "source": path.as_posix(), "runs": rows, "correlations": correlations}
 
 
 def audited_runs() -> list[str]:
@@ -385,21 +508,7 @@ def main() -> int:
             f"{args.check}: runs are not each audited run exactly once",
         )
         for run in retained["runs"]:
-            if "skipped" in run:
-                continue
-            # Every retained snapshot of the backend covers every ghosted member.
-            prefix = f"docs/evidence/calibration/history/{run['backend']}/"
-            expected = sorted(f for f in index["files"] if f.startswith(prefix))
-            require(sorted(run["snapshots"]) == expected, f"{run['run']}: snapshots differ from the index")
-            members = set(run["member_shots"])
-            require(len(members) == run["members_ghosted"], f"{run['run']}: member count differs")
-            skipped = set(run["members_skipped_width"])
-            require(
-                not members & skipped and members | skipped == planned_measured(run["run"]),
-                f"{run['run']}: ghosted and width-skipped members differ from the planned, measured members",
-            )
-            for relative, entry in run["snapshots"].items():
-                require(set(entry["tvd"]) == members, f"{run['run']}: {relative} lacks ghosted members")
+            validate(run, index)
         named = None if args.runs == "all" else set(args.runs.split(","))
         checked = 0
         for run in retained["runs"]:

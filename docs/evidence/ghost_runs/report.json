@@ -1,5 +1,5 @@
 {
- "schema": "ghost-run-report-v3",
+ "schema": "ghost-run-report-v4",
  "source": "docs/evidence/ghost_runs/result.json",
  "runs": [
   {
@@ -30,6 +30,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.003763,
     "mean_ghost_minus_recorded_tvd": 0.000362,
     "sd": 0.003641
+   },
+   "calibration_change": {
+    "qubits": 45,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T0757410700.json",
+    "cz_error_change": -6.4918e-05,
+    "readout_error_change": 0.000447591
    }
   },
   {
@@ -60,6 +66,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.003624,
     "mean_ghost_minus_recorded_tvd": 0.001457,
     "sd": 0.00672
+   },
+   "calibration_change": {
+    "qubits": 6,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261011T2236250700.json",
+    "cz_error_change": 0.000188793,
+    "readout_error_change": -0.000996908
    }
   },
   {
@@ -90,6 +102,12 @@
     "mean_abs_ghost_minus_resampled_tvd": null,
     "mean_ghost_minus_recorded_tvd": null,
     "sd": null
+   },
+   "calibration_change": {
+    "qubits": 5,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1847310700.json",
+    "cz_error_change": 0.00039873,
+    "readout_error_change": -0.001293945
    }
   },
   {
@@ -120,6 +138,12 @@
     "mean_abs_ghost_minus_resampled_tvd": null,
     "mean_ghost_minus_recorded_tvd": null,
     "sd": null
+   },
+   "calibration_change": {
+    "qubits": 5,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261012T1915550700.json",
+    "cz_error_change": 0.00039873,
+    "readout_error_change": -0.001293945
    }
   },
   {
@@ -151,6 +175,12 @@
     "mean_abs_ghost_minus_resampled_tvd": null,
     "mean_ghost_minus_recorded_tvd": null,
     "sd": null
+   },
+   "calibration_change": {
+    "qubits": 55,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json",
+    "cz_error_change": 0.000561829,
+    "readout_error_change": 0.000266335
    }
   },
   {
@@ -182,6 +212,12 @@
     "mean_abs_ghost_minus_resampled_tvd": null,
     "mean_ghost_minus_recorded_tvd": null,
     "sd": null
+   },
+   "calibration_change": {
+    "qubits": 32,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T1920460700.json",
+    "cz_error_change": 0.000283338,
+    "readout_error_change": 0.000209808
    }
   },
   {
@@ -212,6 +248,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.006835,
     "mean_ghost_minus_recorded_tvd": 0.001099,
     "sd": 0.010132
+   },
+   "calibration_change": {
+    "qubits": 4,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_fez/20261012T2327110700.json",
+    "cz_error_change": 0.001999486,
+    "readout_error_change": 0.001617432
    }
   },
   {
@@ -242,6 +284,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.007904,
     "mean_ghost_minus_recorded_tvd": -0.00116,
     "sd": 0.009068
+   },
+   "calibration_change": {
+    "qubits": 4,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T0101230700.json",
+    "cz_error_change": 0.001774162,
+    "readout_error_change": 0.001617432
    }
   },
   {
@@ -273,6 +321,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.008057,
     "mean_ghost_minus_recorded_tvd": 0.002808,
     "sd": 0.013497
+   },
+   "calibration_change": {
+    "qubits": 6,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_fez/20261013T1341520700.json",
+    "cz_error_change": -0.000515319,
+    "readout_error_change": 0.00177002
    }
   },
   {
@@ -303,6 +357,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.011198,
     "mean_ghost_minus_recorded_tvd": 0.000814,
     "sd": 0.008663
+   },
+   "calibration_change": {
+    "qubits": 6,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json",
+    "cz_error_change": 0.000331651,
+    "readout_error_change": -0.001261393
    }
   },
   {
@@ -334,6 +394,12 @@
     "mean_abs_ghost_minus_resampled_tvd": null,
     "mean_ghost_minus_recorded_tvd": null,
     "sd": null
+   },
+   "calibration_change": {
+    "qubits": 32,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json",
+    "cz_error_change": -4.9117e-05,
+    "readout_error_change": -0.001316071
    }
   },
   {
@@ -366,6 +432,12 @@
     "mean_abs_ghost_minus_resampled_tvd": null,
     "mean_ghost_minus_recorded_tvd": null,
     "sd": null
+   },
+   "calibration_change": {
+    "qubits": 55,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json",
+    "cz_error_change": 7.9785e-05,
+    "readout_error_change": -0.001635742
    }
   },
   {
@@ -396,6 +468,12 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.009068,
     "mean_ghost_minus_recorded_tvd": -0.000976,
     "sd": 0.022427
+   },
+   "calibration_change": {
+    "qubits": 6,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json",
+    "cz_error_change": 9.2714e-05,
+    "readout_error_change": -6.1035e-05
    }
   },
   {
@@ -426,11 +504,23 @@
     "mean_abs_ghost_minus_resampled_tvd": 0.009129,
     "mean_ghost_minus_recorded_tvd": -0.000177,
     "sd": 0.011242
+   },
+   "calibration_change": {
+    "qubits": 40,
+    "execution_snapshot": "docs/evidence/calibration/history/ibm_kingston/20261015T0003150700.json",
+    "cz_error_change": -5.1903e-05,
+    "readout_error_change": 4.8828e-05
    }
   },
   {
    "run": "results/live/kingston-wide-control-result",
    "skipped": "the run keeps no record.json, isa.qpy, collect.json"
   }
- ]
+ ],
+ "correlations": {
+  "runs": 14,
+  "cz_error_higher_now": 10,
+  "cz_error_change_vs_distance_change": -0.3091,
+  "readout_error_change_vs_distance_change": 0.3185
+ }
 }
