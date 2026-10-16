@@ -1,0 +1,94 @@
+{
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "casimir_rows": [
+    {
+      "a": 0.5,
+      "em_energy_per_area": -0.10966227112314139,
+      "finite_difference_pressure": -0.32898682433557536,
+      "scalar_energy_per_area": -0.054831135561570696,
+      "scalar_pressure": -0.32898681336942415
+    },
+    {
+      "a": 1.0,
+      "em_energy_per_area": -0.013707783890392674,
+      "finite_difference_pressure": -0.02056167652097346,
+      "scalar_energy_per_area": -0.006853891945196337,
+      "scalar_pressure": -0.02056167583558901
+    },
+    {
+      "a": 2.0,
+      "em_energy_per_area": -0.0017134729862990842,
+      "finite_difference_pressure": -0.0012851047825608412,
+      "scalar_energy_per_area": -0.0008567364931495421,
+      "scalar_pressure": -0.001285104739724313
+    },
+    {
+      "a": 4.0,
+      "em_energy_per_area": -0.00021418412328738553,
+      "finite_difference_pressure": -8.031904891005258e-05,
+      "scalar_energy_per_area": -0.00010709206164369277,
+      "scalar_pressure": -8.031904623276957e-05
+    }
+  ],
+  "evidence_kind": "physical_model_reference_not_lab_measurement",
+  "experiment": "casimir_qet",
+  "limits": "Natural units; ideal plates, zero temperature, one scalar polarization or EM factor two. QET is Hotta spin-model energy, not measured extractable laboratory work.",
+  "positive_quadrature_error": 5.017309721970781e-11,
+  "profile": "smoke",
+  "qet_rows": [
+    {
+      "extracted_EB_formula": 4.998625356153545e-05,
+      "extracted_EB_matrix": 4.998625356145148e-05,
+      "final_energy": 0.9999000174961266,
+      "injected_EA": 0.9999500037496877,
+      "k_over_h": 0.01
+    },
+    {
+      "extracted_EB_formula": 0.001241461539855129,
+      "extracted_EB_matrix": 0.0012414615398550488,
+      "final_energy": 0.9975108773379895,
+      "injected_EA": 0.9987523388778446,
+      "k_over_h": 0.05
+    },
+    {
+      "extracted_EB_formula": 0.018005831680707032,
+      "extracted_EB_matrix": 0.01800583168070724,
+      "final_energy": 0.9625748440102126,
+      "injected_EA": 0.9805806756909201,
+      "k_over_h": 0.2
+    },
+    {
+      "extracted_EB_formula": 0.11474763394014711,
+      "extracted_EB_matrix": 0.11474763394014731,
+      "final_energy": 0.5923591472464,
+      "injected_EA": 0.7071067811865475,
+      "k_over_h": 1.0
+    },
+    {
+      "extracted_EB_formula": 0.04795272907350465,
+      "extracted_EB_matrix": 0.047952729073503675,
+      "final_energy": 0.14816340606468176,
+      "injected_EA": 0.19611613513818404,
+      "k_over_h": 5.0
+    },
+    {
+      "extracted_EB_formula": 0.012466875427434024,
+      "extracted_EB_matrix": 0.012466875427433854,
+      "final_energy": 0.03747074151645857,
+      "injected_EA": 0.04993761694389223,
+      "k_over_h": 20.0
+    },
+    {
+      "extracted_EB_formula": 0.002499734400192966,
+      "extracted_EB_matrix": 0.002499734400218556,
+      "final_energy": 0.007499765637297595,
+      "injected_EA": 0.009999500037496875,
+      "k_over_h": 100.0
+    }
+  ],
+  "qpu_jobs_submitted": 0,
+  "scalar_constant": -0.006853891945196337,
+  "scalar_target": -0.006853891945200943,
+  "seed": 20261015,
+  "wall_seconds": 0.014810801000066931
+}

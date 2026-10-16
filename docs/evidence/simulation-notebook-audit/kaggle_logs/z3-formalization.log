@@ -1,0 +1,36 @@
+[{"stream_name":"stderr","time":7.672455687,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.672518442,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.895769189,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.895818266,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.895825146,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.895829617,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.698334115,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.698375151,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.698379982,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.698383113,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":19.916800875,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 36.6/36.6 MB 9.0 MB/s eta 0:00:00\r\n"}
+,{"stream_name":"stdout","time":20.049479989,"data":"Z3 5.3.1\n"}
+,{"stream_name":"stdout","time":20.088312053,"data":"Anticommutativity consistent: True\n"}
+,{"stream_name":"stdout","time":20.113830513,"data":"Zero divisor structure consistent: True\n"}
+,{"stream_name":"stdout","time":20.113867253,"data":"  ||a||² = 2 \u003e 0, ||b||² = 2 \u003e 0, but a·b = 0\n"}
+,{"stream_name":"stdout","time":20.113873586,"data":"  ∴ Zero divisors exist in sedenions. QED\n"}
+,{"stream_name":"stdout","time":20.13869121,"data":"Census arithmetic consistent: True\n"}
+,{"stream_name":"stdout","time":20.138731934,"data":"  1848/4096 = 0.451171875 = 45.1171875%\n"}
+,{"stream_name":"stdout","time":20.166748455,"data":"CCZ certificate counting consistent: True\n"}
+,{"stream_name":"stdout","time":20.166789057,"data":"  15 forms × 24 each = 360 pairs\n"}
+,{"stream_name":"stdout","time":20.166796354,"data":"  360 × 32 = 11,520 comparisons: True\n"}
+,{"stream_name":"stdout","time":20.193458729,"data":"Norm multiplicativity FAILS (as expected): True\n"}
+,{"stream_name":"stdout","time":20.193500823,"data":"  ||a·b|| = 0 ≠ √2·√2 = 2 = ||a||·||b||\n"}
+,{"stream_name":"stdout","time":20.193506921,"data":"  ∴ Sedenions are not a composition algebra. QED\n"}
+,{"stream_name":"stdout","time":20.215039908,"data":"Power-associativity framework: True\n"}
+,{"stream_name":"stdout","time":20.215079033,"data":"  Every sedenion generates an associative subalgebra\n"}
+,{"stream_name":"stdout","time":20.215084629,"data":"  (isomorphic to R, C, or quaternions)\n"}
+,{"stream_name":"stderr","time":23.710710582,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":23.710761551,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":23.924772796,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":23.924822523,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":24.858783585,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":24.956781973,"data":"[NbConvertApp] Writing 16612 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":28.216757303,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":28.879573222,"data":"[NbConvertApp] Writing 301257 bytes to __results__.html\n"}
+]

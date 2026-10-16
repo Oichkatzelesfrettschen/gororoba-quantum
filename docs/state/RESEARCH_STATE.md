@@ -98,8 +98,8 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 - **associator-cubic-normal-form** (exact finite certificate, algebra). Each of the 360 degree-3 dim-32 associator phases is l1 l2 l3 + q with l1, l2, l3 linearly independent linear forms on F_2^5 and deg q <= 2, so W_ij = D_q U_A^dagger (CCZ x I) U_A; the cubic part takes 15 values, 24 pairs each.
   Boundary: Dimension 32 only; degree-4 and degree-5 phases at dims 64 and 128 are not examined.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)).
-  Evidence: [normal_form.json](../evidence/ccz-reduction/normal_form.json), [README.md](../evidence/ccz-reduction/README.md), [README.md](../evidence/simulation-notebook-audit/README.md).
-  Gates: replayed by core-278.
+  Evidence: [normal_form.json](../evidence/ccz-reduction/normal_form.json), [cubic_core_certificates.json](../evidence/ccz-reduction/independent_package/cubic_core_certificates.json), [README.md](../evidence/ccz-reduction/README.md), [README.md](../evidence/simulation-notebook-audit/README.md), [README.md](../evidence/ccz-reduction/independent_package/README.md).
+  Gates: replayed by core-278, core-284.
 - **four-support-topology** (mathematical theorem, geometry). On support {1, 10, 18, 25} exact sector identities classify every real tuple; the unit base has 96 connected smooth strata; a 1,200-cell CW model with explicit attaching maps gives torsion-free integral homology and a square-zero positive-degree cohomology ideal, and ordinary doubling preserves the five-factor model for every n >= 5.
   Boundary: The first operand stays on the four-coordinate support; other supports, a wedge decomposition, homotopy type and unrestricted topology remain open.
   Assumptions: cd_core.cd_sign doubling convention (a, b)(c, d) = (ac - conj(d) b, da + b conj(c)); operand on the zero-padded support {1, 10, 18, 25}.
@@ -429,7 +429,7 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Superseded by: hw-box-kite-executed-pairs.
   Withdrawn text: docs/evidence/simulation/qiskit-aer-simulation.ipynb at commit fa6783e.
 - **withdrawn-interleaving-verified** (withdrawn claim, hardware). GPU simulation verifies that interleaved differential Ramsey cancels drift and reaches 50 Hz in about 72 s.
-  Boundary: The kernel printed SNR 0.0 against the expected 1.18e-03 and assumed a 10 kHz shot rate, about 2.6 times the Heron rate at the 250 us repetition delay.
+  Boundary: The kernel printed SNR 0.0 against the expected 1.18e-03; two sampled arms at SNR 2 need 4/dP^2 shots in total, about 2.9 million (about 750 s) at 50 Hz, and IBM guarantees no PUB order, so one job does not interleave matched pairs.
   Superseded by: proposed-conditional-ramsey-hamiltonian.
   Withdrawn text: docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a.
 - **withdrawn-algebraic-detuning-test** (withdrawn claim, hardware). Ramsey on 20 defective and 20 clean triples detects a sedenion-structure-dependent detuning down to about 5 kHz.

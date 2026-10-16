@@ -1,0 +1,72 @@
+#!/usr/bin/env python3
+"""Exact Clifford+one-CCZ synthesis certificates for dimension-32 associator phases.
+Imports the independent recursive convention; no source-repository or Qiskit imports.
+Clifford equivalence is checked algebraically as f(x)=l1(x)l2(x)l3(x)+q(x),
+where the three linear forms are independent and q has Boolean degree <=2.
+"""
+from __future__ import annotations
+from itertools import combinations
+from collections import Counter
+from pathlib import Path
+import ast, json
+# Reuse only function definitions/imports, not the first script's top-level replay.
+source=Path(__file__).with_name('recheck.py').read_text()
+module=ast.parse(source)
+namespace={}
+exec(compile(ast.Module(body=[n for n in module.body if isinstance(n,(ast.Import,ast.ImportFrom,ast.FunctionDef))],type_ignores=[]),'recheck_definitions','exec'),namespace)
+mul,anf,require,fwht=(namespace[k] for k in ('mul','anf','require','fwht'))
+
+def parity(x: int) -> int: return x.bit_count()&1
+
+def rank(masks: list[int]) -> int:
+    pivots={}
+    for m in masks:
+        while m:
+            b=m.bit_length()-1
+            if b in pivots: m ^= pivots[b]
+            else:
+                pivots[b]=m; break
+    return len(pivots)
+
+# Find all decomposable homogeneous cubic forms on five binary variables.
+cores={}
+for forms in combinations(range(1,32),3):
+    if rank(list(forms)) != 3: continue
+    truth=[parity(x&forms[0])*parity(x&forms[1])*parity(x&forms[2]) for x in range(32)]
+    masks=anf(truth)
+    cubic=tuple(m for m in masks if m.bit_count()==3)
+    cores.setdefault(cubic,(forms,truth))
+require(len(cores)==155,'wrong number of decomposable cubic forms')
+S=[[mul(32,i,j)[0] for j in range(32)] for i in range(32)]
+rows=[]; observed_cores=Counter()
+for i,j in combinations(range(1,32),2):
+    if j<16: continue
+    f=[int(S[i][j]*S[i^j][x]*S[j][x]*S[i][j^x]<0) for x in range(32)]
+    masks=anf(f); cubic=tuple(m for m in masks if m.bit_count()==3)
+    require(bool(cubic),'new-rung phase lacks cubic component')
+    require(cubic in cores,f'non-decomposable cubic for {i},{j}')
+    forms,core_truth=cores[cubic]
+    residual=[a^b for a,b in zip(f,core_truth)]
+    q=anf(residual)
+    require(all(m.bit_count()<=2 for m in q),'residual not Clifford')
+    completed=list(forms)
+    for mask in range(1,32):
+        if rank(completed+[mask])>len(completed): completed.append(mask)
+        if len(completed)==5: break
+    require(rank(completed)==5,'linear forms do not extend to invertible binary map')
+    for x in range(32):
+        qval=sum(int(x&m==m) for m in q)%2
+        require(f[x]==(core_truth[x]^qval),'phase synthesis mismatch')
+    observed_cores[str(cubic)]+=1
+    rows.append({'i':i,'j':j,'f_anf_masks':masks,'ccz_linear_form_masks':list(forms),
+      'clifford_residual_anf_masks':q,'invertible_linear_map_rows':completed})
+require(len(rows)==360,'wrong new-rung pair count')
+result={'scope':'All 360 unordered nonzero pairs first appearing in dimension 32; exact finite Boolean proof certificates',
+ 'claim':'Every W_ij admits Clifford+one-CCZ synthesis, up to no uncontrolled discarded phases.',
+ 'meaning':'For |+>^5 input, every phase state is Clifford-equivalent to |CCZ> tensor |+>^2. The two Walsh collision classes do not establish different amounts of non-Clifford resource.',
+ 'novelty':'Derived in this audit; no publication-priority claim or Rocq-kernel replay.',
+ 'checked_pairs':len(rows),'basis_inputs_checked':len(rows)*32,
+ 'distinct_homogeneous_cubic_parts':len(observed_cores),'cubic_counts':dict(observed_cores),
+ 'examples':[r for r in rows if (r['i'],r['j']) in ((1,16),(9,18))], 'certificates':rows}
+Path(__file__).with_name('cubic_core_certificates.json').write_text(json.dumps(result,indent=2)+'\n')
+print(json.dumps({k:v for k,v in result.items() if k!='certificates'},indent=2))

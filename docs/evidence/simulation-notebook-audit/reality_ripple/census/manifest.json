@@ -1,0 +1,22 @@
+{
+  "created_utc": "2026-10-16T03:18:51.410628+00:00",
+  "files": [
+    {
+      "bytes": 509,
+      "path": "environment.json",
+      "sha256": "5db7d02579a235c58e2ac537a1ee2f76cdb3aa66bbb56d2b8df3e40064b77efe"
+    },
+    {
+      "bytes": 1555,
+      "path": "result.json",
+      "sha256": "334943dc00cff10511720f9d859fd1facc2d96daa6d3896f65a386830d077a16"
+    },
+    {
+      "bytes": 297,
+      "path": "rows.csv",
+      "sha256": "54af31be16422fceb52dd72ecacffeb03a18d4fac157a6de3ccaa1c2e0e87c25"
+    }
+  ],
+  "hardware_measurements_generated": false,
+  "library_sha256": "8ec000f8c3b44413b376765d8269e465380430ce7ca35806199d6a170c0b6d57"
+}

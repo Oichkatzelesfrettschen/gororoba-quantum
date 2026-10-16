@@ -2268,6 +2268,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/associator_cubic_normal_form.py --cross-check",
+   "name": "core-284",
+   "seconds": 1.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check && \"$PYTHON\" -B -O -W error scripts/compare_submitted_circuits.py --check",
    "name": "core-281",
    "seconds": 1.0,

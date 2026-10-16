@@ -1,0 +1,51 @@
+[{"stream_name":"stderr","time":5.40039954,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":5.400484411,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":6.193223494,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.193260523,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.193266379,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.193270801,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":6.7861792990000005,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":6.786222765,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":6.78622851,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":6.786232557,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":7.86509424,"data":"Found 148 record files\n"}
+,{"stream_name":"stdout","time":8.148768912,"data":"Parsed 0 calibration snapshots\n"}
+,{"stream_name":"stderr","time":8.418752744,"data":"/tmp/ipykernel_22/613895758.py:18: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.\n"}
+,{"stream_name":"stderr","time":8.418789551,"data":"  ax.legend(fontsize=8)\n"}
+,{"stream_name":"stderr","time":8.418793479,"data":"\n"}
+,{"stream_name":"stderr","time":8.418796123,"data":"/tmp/ipykernel_22/613895758.py:18: UserWarning: No artists with labels found to put in legend.  Note that artists whose label start with an underscore are ignored when legend() is called with no argument.\n"}
+,{"stream_name":"stderr","time":8.418799015,"data":"  ax.legend(fontsize=8)\n"}
+,{"stream_name":"stdout","time":8.643678382000001,"data":"Saved drift plot\n"}
+,{"stream_name":"stdout","time":46.035827246,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 139.1/139.1 MB 12.7 MB/s eta 0:00:00\r\n"}
+,{"stream_name":"stderr","time":48.803436222,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":48.804083227,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":48.804095045,"data":"    import sys;import papermill as pm;pm.execute_notebook(\"__notebook__.ipynb\",\"__notebook__.ipynb\",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=43200)\n"}
+,{"stream_name":"stderr","time":48.804099421,"data":"                                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":48.804103384,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":48.804123894,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":48.804139701,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":48.804144667,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":48.804148671,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":48.804152891,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":48.804157089,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":48.804160856,"data":"Exception encountered at \"In [5]\":\n"}
+,{"stream_name":"stderr","time":48.804164532,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":48.804168191,"data":"IndexError                                Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":48.804171849,"data":"/tmp/ipykernel_22/3038639699.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":48.804180862,"data":"     23 # Pick earliest and latest snapshots for ibm_fez\n"}
+,{"stream_name":"stderr","time":48.804184093,"data":"     24 fez = sorted(by_backend['ibm_fez'], key=lambda x: x['timestamp'])\n"}
+,{"stream_name":"stderr","time":48.804186603,"data":"---\u003e 25 early, late = fez[0], fez[-1]\n"}
+,{"stream_name":"stderr","time":48.804189,"data":"     26 print(f\"Early: {early['timestamp'][:16]} | T1={early['t1_us']:.0f}us T2={early['t2_us']:.0f}us\")\n"}
+,{"stream_name":"stderr","time":48.804191481,"data":"     27 print(f\"Late:  {late['timestamp'][:16]} | T1={late['t1_us']:.0f}us T2={late['t2_us']:.0f}us\")\n"}
+,{"stream_name":"stderr","time":48.804194011,"data":"\n"}
+,{"stream_name":"stderr","time":48.804196322,"data":"IndexError: list index out of range\n"}
+,{"stream_name":"stderr","time":48.804198645,"data":"\n"}
+,{"stream_name":"stderr","time":50.983597153,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":50.983629014,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":51.149152332,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":51.149196014,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":52.976239132,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":53.055733614,"data":"[NbConvertApp] Writing 16310 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":55.588559241,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":56.123630933,"data":"[NbConvertApp] Writing 310406 bytes to __results__.html\n"}
+]

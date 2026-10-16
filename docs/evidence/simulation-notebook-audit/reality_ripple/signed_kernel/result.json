@@ -1,0 +1,85 @@
+{
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "evidence_kind": "exact_small_operator_reference",
+  "experiment": "signed_kernel",
+  "limits": "The signed element needs an explicit interferometric/Pauli measurement construction; its reference value is not already a hardware measurement. Ideal dark rare-event and background-limited sample scaling differ.",
+  "max_error": 2.7755575615628914e-17,
+  "profile": "smoke",
+  "qpu_jobs_submitted": 0,
+  "rows": [
+    {
+      "LCU_alpha": 2.5,
+      "analytic_dark_probability": 0.04,
+      "analytic_signed_element": -0.2,
+      "dark_probability": 0.04,
+      "perturbation_t": -0.5,
+      "signed_matrix_element": -0.19999999999999998
+    },
+    {
+      "LCU_alpha": 2.2,
+      "analytic_dark_probability": 0.008264462809917356,
+      "analytic_signed_element": -0.09090909090909091,
+      "dark_probability": 0.008264462809917352,
+      "perturbation_t": -0.2,
+      "signed_matrix_element": -0.09090909090909088
+    },
+    {
+      "LCU_alpha": 2.05,
+      "analytic_dark_probability": 0.0005948839976204641,
+      "analytic_signed_element": -0.02439024390243903,
+      "dark_probability": 0.0005948839976204641,
+      "perturbation_t": -0.05,
+      "signed_matrix_element": -0.024390243902439025
+    },
+    {
+      "LCU_alpha": 2.01,
+      "analytic_dark_probability": 2.4751862577658976e-05,
+      "analytic_signed_element": -0.0049751243781094535,
+      "dark_probability": 2.4751862577658976e-05,
+      "perturbation_t": -0.01,
+      "signed_matrix_element": -0.004975124378109453
+    },
+    {
+      "LCU_alpha": 2.0,
+      "analytic_dark_probability": 0.0,
+      "analytic_signed_element": 0.0,
+      "dark_probability": 0.0,
+      "perturbation_t": 0.0,
+      "signed_matrix_element": 0.0
+    },
+    {
+      "LCU_alpha": 2.01,
+      "analytic_dark_probability": 2.4751862577658976e-05,
+      "analytic_signed_element": 0.0049751243781094535,
+      "dark_probability": 2.4751862577658976e-05,
+      "perturbation_t": 0.01,
+      "signed_matrix_element": 0.004975124378109453
+    },
+    {
+      "LCU_alpha": 2.05,
+      "analytic_dark_probability": 0.0005948839976204641,
+      "analytic_signed_element": 0.02439024390243903,
+      "dark_probability": 0.0005948839976204641,
+      "perturbation_t": 0.05,
+      "signed_matrix_element": 0.024390243902439025
+    },
+    {
+      "LCU_alpha": 2.2,
+      "analytic_dark_probability": 0.008264462809917356,
+      "analytic_signed_element": 0.09090909090909091,
+      "dark_probability": 0.008264462809917352,
+      "perturbation_t": 0.2,
+      "signed_matrix_element": 0.09090909090909088
+    },
+    {
+      "LCU_alpha": 2.5,
+      "analytic_dark_probability": 0.04,
+      "analytic_signed_element": 0.2,
+      "dark_probability": 0.04,
+      "perturbation_t": 0.5,
+      "signed_matrix_element": 0.19999999999999998
+    }
+  ],
+  "seed": 20261015,
+  "wall_seconds": 0.04499657900009879
+}

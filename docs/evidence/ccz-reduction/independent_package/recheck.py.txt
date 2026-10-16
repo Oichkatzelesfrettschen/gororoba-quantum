@@ -1,0 +1,127 @@
+#!/usr/bin/env python3
+"""Independent finite CD / Boolean / inference checks; no repository imports or QPU calls.
+Python 3.10+, standard library only. Basis convention matches the stated recursive
+pair product (a,b)(c,d)=(ac-conj(d)b, da+b conj(c)). Output is local JSON.
+These executable checks are not a Rocq proof-kernel replay.
+"""
+from __future__ import annotations
+from collections import Counter
+from fractions import Fraction
+from functools import lru_cache
+from itertools import combinations
+import json, math
+from pathlib import Path
+
+@lru_cache(None)
+def mul(d: int, i: int, j: int) -> tuple[int, int]:
+    if d < 1 or d & (d-1) or not (0 <= i < d and 0 <= j < d):
+        raise ValueError('dimension must be a power of two; indices must be in range')
+    if d == 1: return 1, 0
+    h = d // 2
+    if i < h and j < h: return mul(h,i,j)
+    if i < h <= j:
+        s,k=mul(h,j-h,i); return s,k+h
+    if j < h <= i:
+        s,k=mul(h,i-h,j); return s*(1 if j==0 else -1),k+h
+    s,k=mul(h,j-h,i-h); return -s*(1 if j==h else -1),k
+
+def anf(values: list[int]) -> list[int]:
+    a=values.copy(); d=len(a)
+    if d == 0 or d & (d-1): raise ValueError('power-of-two truth table required')
+    bit=1
+    while bit < d:
+        for x in range(d):
+            if x&bit: a[x]^=a[x^bit]
+        bit <<= 1
+    return [m for m,v in enumerate(a) if v]
+
+def fwht(values: list[int]) -> list[int]:
+    a=values.copy(); step=1
+    while step < len(a):
+        for start in range(0,len(a),2*step):
+            for k in range(step):
+                u,v=a[start+k],a[start+k+step]
+                a[start+k],a[start+k+step]=u+v,u-v
+        step *= 2
+    return a
+
+def require(test: bool, message: str) -> None:
+    if not test: raise AssertionError(message)
+
+out={'date':'2026-10-15','repository_source_pin':'e8df46efb1c63329f8eea868ac9584e18398ea22',
+     'scope':'Independent finite recursive-algebra checks, no QPY, raw-shot, or Rocq replay',
+     'phase_census':{}}
+for d in (8,16,32,64,128):
+    S=[[mul(d,i,j)[0] for j in range(d)] for i in range(d)]
+    left_degrees=Counter(max((m.bit_count() for m in anf([int(s<0) for s in S[i]])),default=0) for i in range(1,d))
+    degrees=Counter(); new_degrees=Counter(); new_classes=Counter(); examples={}
+    z_counts=Counter()
+    for i,j in combinations(range(1,d),2):
+        signs=[S[i][j]*S[i^j][x]*S[j][x]*S[i][j^x] for x in range(d)]
+        masks=anf([int(v<0) for v in signs]); degree=max((m.bit_count() for m in masks),default=0)
+        degrees[degree]+=1
+        if d==8:
+            require(bool(masks) and all(m.bit_count()==1 for m in masks),'Fano phase not linear')
+            z_counts[sum(masks)]+=1
+        if max(i,j)>=d//2 or d==8:
+            new_degrees[degree]+=1
+            spectrum=fwht(signs)
+            K=Fraction(sum(w**4 for w in spectrum),d**4)
+            new_classes[str(K)]+=1
+        if (d,i,j) in [(32,1,16),(32,9,18)]:
+            spectrum=fwht(signs)
+            examples[f'{i},{j}']={'anf_masks':masks,'walsh_absolute_counts':dict(Counter(abs(w) for w in spectrum)),
+                                  'collision_probability':str(Fraction(sum(w**4 for w in spectrum),d**4))}
+    if d==8:
+        require(dict(z_counts)=={i:3 for i in range(1,8)}, 'not seven Fano Z strings occurring three times each')
+    out['phase_census'][str(d)]={'left_multiplier_degree_counts':dict(left_degrees),
+      'all_pair_degree_counts':dict(degrees),'new_pair_degree_counts':dict(new_degrees),
+      'new_pair_collision_counts':dict(new_classes),'examples':examples,'fano_Z_mask_counts':dict(z_counts) if d==8 else {}}
+
+H=[int(mul(16,8,x)[0]<0) for x in range(16)]
+expected=[((x>>3)&1) ^ int(bool(x&7)) for x in range(16)]
+require(H==expected,'H != x3 XOR OR(x0,x1,x2)')
+require(anf(H)==list(range(1,9)),'unexpected H polynomial')
+monomials=[m for m in range(16) if m.bit_count()<=2]
+require(len(monomials)==11,'wrong monomial count')
+vals=[[int(x&m==m) for x in range(16)] for m in monomials]
+fits=[]; min_distance=16
+for coeff in range(1<<11):
+    truth=[sum(vals[k][x] for k in range(11) if coeff>>k&1)%2 for x in range(16)]
+    distance=sum(truth[x]!=H[x] for x in range(1,16))
+    min_distance=min(min_distance,distance)
+    if distance==0: fits.append(coeff)
+require(not fits,'a degree-two interpolant exists on the 15 nonzero inputs')
+# Exact diagonal equivalence: D_H = -Z_3 X_0 X_1 X_2 CCZ_012 X_0 X_1 X_2.
+left=[(-1)**v for v in H]
+right=[-((-1)**((x>>3)&1))*((-1)**int((x&7)==0)) for x in range(16)]
+require(left==right,'controlled-negative CCZ equivalence failed')
+out['c881_bridge']={'truth_table':H,'anf_masks':anf(H),'degree2_monomials':monomials,
+  'candidate_polynomials':1<<11,'fits_on_15_nonzero_labels':len(fits),
+  'minimum_disagreement_on_15_labels':min_distance,
+  'simplified_boolean_function':'x3 XOR OR(x0,x1,x2)',
+  'diagonal_identity':'D_H = - Z3 (X0 X1 X2) CCZ012 (X0 X1 X2)',
+  'phase_state':'D_H |+>^4 = - |->_3 tensor (X0 X1 X2) CCZ012 |+>^3',
+  'identity_domain':'all 16 computational basis states, including global sign'}
+
+n=8192;alpha=.01
+out['multinomial_bounds']={'n_per_distribution':n,'alpha':alpha,'radii':{
+ str(k):math.sqrt(2*(k*math.log(2)+math.log(4/alpha))/n) for k in (2,16,32,1024,2**156)}}
+out['shared_binary_channel']={'raw_hardware_separation':str(Fraction(4911-2964,8192)),
+ 'raw_replay_separation':str(Fraction(4067-4057,8192)),
+ 'radius_robust_margin':str(Fraction(4911-2964-4067+4057,8192)-4*Fraction(21,1000))}
+require(out['shared_binary_channel']['radius_robust_margin']=='156109/1024000','wrong robust separation')
+# Exact valid density matrices showing that one coherence does not determine purity.
+# rho_A has populations .5,.5 in 00,01 and coherence .2; purity .58.
+# rho_B has populations .5,.1,.4 in 00,01,10 and the same coherence .2; purity .5.
+out['purity_counterexample']={'coherence':str(Fraction(1,5)),
+ 'rho_A_populations':['1/2','1/2','0','0'],'rho_A_purity':str(Fraction(29,50)),
+ 'rho_B_populations':['1/2','1/10','2/5','0'],'rho_B_purity':str(Fraction(1,2)),
+ 'both_have_rho_00_01':'1/5',
+ 'positive_2x2_block_determinants':[str(Fraction(1,4)-Fraction(1,25)),str(Fraction(1,20)-Fraction(1,25))]}
+out['ramsey_identifiability']={'cosine_even_in_frequency':True,
+ 'delays_microseconds':[1,2,4,8], 'frequency_alias_spacing_hz':1000000,
+ 'note':'Adding Y quadrature fixes cosine sign ambiguity locally; commensurate delays still require an alias prior or additional delays.'}
+path=Path(__file__).with_name('checks.json')
+path.write_text(json.dumps(out,indent=2)+'\n')
+print(json.dumps(out,indent=2))
