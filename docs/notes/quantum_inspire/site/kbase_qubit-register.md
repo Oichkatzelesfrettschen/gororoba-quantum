@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/qubit-register/](https://www.quantum-inspire.com/kbase/qubit-register/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 76aab8241541535d79a284ffeacbe3a57dc5b2d2d87af45cff39397271202b21.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 eae8d9951be0364b5eab495ee55bcf7c927a0a7d85813d8dea79f45474a79dd7.
 
 # Qubit register
 

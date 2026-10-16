@@ -25,6 +25,7 @@ import json
 import re
 import subprocess
 import sys
+import urllib.parse
 import urllib.request
 from datetime import UTC, datetime
 from html.parser import HTMLParser
@@ -113,6 +114,25 @@ class Subtree(HTMLParser):
             self.parts.append(f"&#{name};")
 
 
+def absolute_links(markdown: str, page: str) -> str:
+    """Resolve every Markdown link target against the page URL.
+
+    The captured copy lives outside quantum-inspire.com, so a root-relative,
+    page-relative or bare-host target (`quantify-os.org`) would resolve inside
+    the repository; each becomes an absolute URL. Fragments stay local.
+    """
+
+    def resolve(match: re.Match[str]) -> str:
+        target = match.group(1)
+        if re.match(r"[a-zA-Z][a-zA-Z0-9+.-]*:", target) or target.startswith("#"):
+            return match.group(0)
+        if re.match(r"(www\.)?[a-z0-9-]+(\.[a-z0-9-]+)+(/|$)", target):
+            return f"](https://{target})"
+        return f"]({urllib.parse.urljoin(page, target)})"
+
+    return re.sub(r"\]\(([^)\s]+)\)", resolve, markdown)
+
+
 def sha256(data: bytes) -> str:
     return hashlib.sha256(data).hexdigest()
 
@@ -154,8 +174,7 @@ def capture_site() -> list[dict[str, Any]]:
         ).stdout
         # Inline SVG icons arrive as base64 data URIs and carry no text.
         markdown = re.sub(r"!\[\]\(data:image/[^)]*\)", "", markdown)
-        # Root-relative links point at quantum-inspire.com; the captured copy lives elsewhere.
-        markdown = re.sub(r"\]\(/(?!/)", f"]({SITE}/", markdown)
+        markdown = absolute_links(markdown, url)
         header = (
             f"> Full piece: [{url}]({url})\n"
             f"> Retrieved {stamp} by scripts/capture_qi_docs.py --site (urllib, pandoc);\n"

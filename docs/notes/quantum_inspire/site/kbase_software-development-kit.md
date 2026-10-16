@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/software-development-kit/](https://www.quantum-inspire.com/kbase/software-development-kit/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 aade8826461914a8fafe8f0357a70887ca38323115dec1b005a0422c7b10ff86.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 d1c5e156727e906301f0e09d4e5e1b875146eaa67cf0b2977f5826284f3cfc11.
 
 # Software Development Kit
 

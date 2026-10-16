@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/managing-your-account/](https://www.quantum-inspire.com/kbase/managing-your-account/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 7769141ca14f20a25d18f3ac5c82450bf6cf60d0ddda0761fd2b4b9c86f7517d.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 95842b6819ce2c7c0d62a3d82a2c71723ffe2b536ae262725d0534a1a4e78b46.
 
 # Managing your account
 
@@ -14,7 +14,7 @@ Creating an account can be done by clicking on the `MyQI` button which brings yo
 
 ## Log in to your account
 
-Simply click on `My QI` to log in to your account. The login screen also provides a link to reset your password if you have lost it. When using the [QI tool](kbase/software-development-kit/), you can login through the Command Line Interface (CLI).
+Simply click on `My QI` to log in to your account. The login screen also provides a link to reset your password if you have lost it. When using the [QI tool](https://www.quantum-inspire.com/kbase/managing-your-account/kbase/software-development-kit/), you can login through the Command Line Interface (CLI).
 
 ## Managing newsletters
 

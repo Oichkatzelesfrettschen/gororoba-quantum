@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/](https://www.quantum-inspire.com/kbase/code-example-getting-started-with-transmons/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 ae5bae4d90b11a6a385b51ef16bac5edaf90fb74e74227adbdd929f46b761d1f.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 2ae97a4dca55b7099ece6b5154c4cd8be7fdac4244720f79a1f5a972923a7367.
 
 # Code example: Getting started with the transmon backends
 

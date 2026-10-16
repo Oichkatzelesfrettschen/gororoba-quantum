@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/opensquirrel/](https://www.quantum-inspire.com/kbase/opensquirrel/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 51c2e89c6d3e371af915faa7645ee666cbcd3fb8b6579390757fd4aaf332c09e.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 74dd2ceda932776d299c2cf53882e4c6a6fde53788f0d9f1a81503d7bde55885.
 
 # OpenSquirrel compiler
 

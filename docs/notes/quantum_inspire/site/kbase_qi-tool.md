@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/qi-tool/](https://www.quantum-inspire.com/kbase/qi-tool/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 18d5dad61549e4a2e880748b4cd1e0e7f708abed5e81a033107169a683e64faf.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 a15c7b93725e5604dc01736a21b82a136abc10bffafa41bdee5c076f47e728f0.
 
 # QI Tool
 

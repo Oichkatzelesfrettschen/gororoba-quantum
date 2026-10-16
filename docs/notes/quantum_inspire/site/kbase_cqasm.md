@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm/](https://www.quantum-inspire.com/kbase/cqasm/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 15d4afcf61db266f6bebf884fd406bfa425ff140f2321145bbb35e7ea5ca93eb.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 933dc9f8133e02b3ad614a0770c2d7edfa9f4e050cbcb404ea2893f8b6a65c8c.
 
 # cQASM: A Quantum Programming Language
 

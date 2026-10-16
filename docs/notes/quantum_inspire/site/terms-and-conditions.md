@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/terms-and-conditions/](https://www.quantum-inspire.com/terms-and-conditions/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 525fc972622b273c2e6dba5a4f572dcd3b3c4526db0ce12b38945b921f287dbd.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 b738eed5c67bf6672be34166732a12087444be9e07c28e608b9afd51ea899b9d.
 
 # General conditions of use
 
@@ -88,7 +88,7 @@ a\. To assign priority to particular jobs without regard to the order of the que
 
 ## Privacy policy
 
-This privacy notice discloses the privacy practices for [www.quantum-inspire.com](www.quantum-inspire.com). This privacy notice applies solely to information collected by this website. It will notify you of the following:
+This privacy notice discloses the privacy practices for [www.quantum-inspire.com](https://www.quantum-inspire.com). This privacy notice applies solely to information collected by this website. It will notify you of the following:
 
 - What personally identifiable information is collected from you through the website, how it is used and with whom it may be shared.
 - What choices are available to you regarding the use of your data.

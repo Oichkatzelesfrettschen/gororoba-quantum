@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/managing-your-projects/](https://www.quantum-inspire.com/kbase/managing-your-projects/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 4fa1d80fa7ff1b2526b67958db3f1755943d600c0b3f074dd6a2f839a2f01309.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 07f14ca2bf7baba53a136584124d8c6d1bcdedea9daaa2cfe95e4c2bc990d61f.
 
 # Managing your projects and algorithms
 

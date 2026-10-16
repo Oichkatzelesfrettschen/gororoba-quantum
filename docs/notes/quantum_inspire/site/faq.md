@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/faq/](https://www.quantum-inspire.com/faq/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 838da023769bfb8c85be8f11f6913a527e256ad2fa6fb48d357b6b456164be21.
+> Retrieved 2026-10-16T22:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 064cd0f3d30eeba106c3e7196a0d6a5edc6b25933e0d466f62cf936e427705bc.
 
 # FAQ
 
