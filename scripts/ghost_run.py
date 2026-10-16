@@ -9,20 +9,23 @@ them under a calibration snapshot from docs/evidence/calibration/history/
 distribution with the hardware distribution that collect.json retains
 (``measured``) by total-variation distance.
 
-Calibration states per run:
+Each member is sampled at the shot count its job ran with (collect.json
+``executed[m]["shots"]``, the pub_shots tier), as live_run.collect replays it.
+With ``--states all`` every retained snapshot of the run's backend covers
+every member; per member, the snapshot in force when its PUB began
+(index.json maps every job's execution start to it) is its execution
+snapshot. Under that snapshot the TV distance to the hardware should match
+the record's own ``tvd_measured_to_replayed`` up to sampling noise, since
+both use live_run's noise model for that calibration. ``self_check`` reports
+the mean absolute and maximum difference, the signed mean as a bias
+diagnostic, and the mean absolute difference between two independent ghost
+draws, which is the scatter the first reaches when the models agree.
 
-- ``execution``: the snapshot in force when the member's PUB began
-  (index.json maps every job's execution start to it). Its TV distance to
-  the hardware should match the record's own ``tvd_measured_to_replayed`` up
-  to sampling noise, since both use live_run's noise model for that
-  calibration; ``self_check`` reports the mean difference.
-- ``current``: the backend's calibration at export time.
-- every other retained snapshot of the same backend, earlier or later.
-
-For each run and state the output gives the mean TV distance over members
-and the per-member values, so a reader sees whether the hardware sits closest
-to its own execution calibration, how far calibration drift alone moves the
-prediction, and how large the floor no calibration explains is.
+For each run and snapshot the output gives the mean TV distance over all
+members and over the members that ran under it, so a reader sees whether the
+hardware sits closest to its own execution calibration, how far calibration
+drift alone moves the prediction, and how large the floor no calibration
+explains is.
 
 Members wider than MAX_QUBITS active qubits are skipped with that reason: a
 density matrix beyond 14 qubits leaves a 15 GiB T4 (docs/notes/kaggle/
@@ -30,11 +33,13 @@ substrates.md). Runs whose record predates the fused-PUB submission plan are
 skipped with the record's reason.
 
 ``--runs all`` ghosts every audited run; ``--runs RUN[,RUN]`` names run
-directories. ``--states execution,current`` or ``all``. The entry reads
-GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` reruns the
+directories. ``--states execution`` restricts each execution snapshot to the
+members that ran under it; ``execution,current`` adds the export-time
+snapshot over every member, and ``all`` (the default) every snapshot. The
+entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` reruns the
 execution-state ghost of the runs FILE names (or of the ``--runs`` subset)
-on the CPU and requires each mean TV distance to agree within five standard
-errors.
+on the CPU and requires each execution mean TV distance to agree within five
+standard errors.
 """
 
 from __future__ import annotations
@@ -65,6 +70,9 @@ AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 INDEX = ROOT / "docs/evidence/calibration/history/index.json"
 MAX_QUBITS = 14
 SEED = 20261016
+# Seed blocks of the main draw and the independent resample never overlap.
+SEED_STRIDE = 100_000
+RESAMPLE_SEED = SEED + 50 * SEED_STRIDE
 
 
 def require(condition: bool, message: str) -> None:
@@ -133,6 +141,24 @@ def tv(left: np.ndarray, right: np.ndarray) -> float:
     return float(0.5 * np.abs(left - right).sum())
 
 
+def sample(simulator: Any, circuits: list[QuantumCircuit], shots: list[int], seed: int) -> list[dict[str, int]]:
+    """Counts of each circuit at its own shot count; one Aer call per shot tier, in input order.
+
+    Aer seeds experiment k of a call with seed_simulator + k, so tier t starts
+    at seed + t * SEED_STRIDE and no two circuits of one draw share a seed.
+    """
+    require(len(circuits) < SEED_STRIDE, f"{len(circuits)} circuits exceed the seed stride")
+    counts: list[dict[str, int]] = [{} for _ in circuits]
+    for offset, tier in enumerate(sorted(set(shots))):
+        positions = [k for k, n in enumerate(shots) if n == tier]
+        result = simulator.run(
+            [circuits[k] for k in positions], shots=tier, seed_simulator=seed + offset * SEED_STRIDE
+        ).result()
+        for index, k in enumerate(positions):
+            counts[k] = result.get_counts(index)
+    return counts
+
+
 def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) -> dict[str, Any]:
     run = ROOT / run_name
     missing = [name for name in ("record.json", "isa.qpy", "collect.json") if not (run / name).is_file()]
@@ -142,7 +168,6 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
         return {"run": run_name, "skipped": f"the run keeps no {', '.join(missing)}"}
     record = json.loads((run / "record.json").read_text(encoding="utf-8"))
     isas = {c.name: c for c in qpy.load(io.BytesIO((run / "isa.qpy").read_bytes()))}
-    shots = int(record["shots"])
     try:
         replicas = member_replicas(record, isas)
     except SystemExit as reason:
@@ -152,64 +177,81 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
     backends = {b for b, _ in replicas.values()}
     require(len(backends) == 1, f"{run_name}: members span backends {sorted(backends)}")
     backend = backends.pop()
-    same_backend = sorted(f for f in index["files"] if f.startswith(f"docs/evidence/calibration/history/{backend}/"))
-    plan: dict[str, list[str]] = {"execution": []}
-    if states in ("current", "all", "execution,current"):
-        plan["current"] = [index["current"][backend]]
-    if states == "all":
-        plan["other"] = [f for f in same_backend if f not in set(starts.values()) | {index["current"][backend]}]
     members = [
         name for name in replicas if name in measured and all(active_width(r) <= MAX_QUBITS for r in replicas[name][1])
     ]
     skipped = sorted(set(replicas) - set(members))
+    # live_run.collect replays each job at its own shot count (pub_shots
+    # tiers), which collect.json records per executed member.
+    shots = {m: int(executed.get(m, {}).get("shots") or record["shots"]) for m in members}
+    execution = {m: starts[executed[m]["start"]] for m in members if executed.get(m, {}).get("start") in starts}
+    same_backend = sorted(f for f in index["files"] if f.startswith(f"docs/evidence/calibration/history/{backend}/"))
+    plan = sorted(set(execution.values()))
+    if states in ("current", "all", "execution,current"):
+        plan = sorted(set(plan) | {index["current"][backend]})
+    if states == "all":
+        plan = same_backend
     results: dict[str, Any] = {}
-    snapshots_used = {executed[m]["start"]: starts.get(executed[m]["start"]) for m in members if m in executed}
-    execution_files = sorted({f for f in snapshots_used.values() if f})
-    state_files = [("execution", f) for f in execution_files]
-    state_files += [(kind, f) for kind in ("current", "other") for f in plan.get(kind, [])]
-    for kind, relative in state_files:
+    resample: dict[str, list[float]] = {}
+    for relative in plan:
         snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
         simulator = calibration_snapshot.noise_simulator(snapshot, device=device)
-        if kind == "execution":
-            chosen = [m for m in members if starts.get(executed.get(m, {}).get("start", "")) == relative]
-        else:
-            chosen = members
-        circuits = [replica for m in chosen for replica in replicas[m][1]]
-        if not circuits:
+        # Every snapshot covers every member, except in --states execution,
+        # where each execution snapshot covers the members that ran under it.
+        chosen = [m for m in members if states != "execution" or execution.get(m) == relative]
+        if not chosen:
             continue
         start = time.time()
-        result = simulator.run(circuits, shots=shots, seed_simulator=SEED).result()
-        position = 0
-        distances: dict[str, list[float]] = {}
-        for m in chosen:
-            row = []
-            for k, replica in enumerate(replicas[m][1]):
-                ghost = distribution(result.get_counts(position), replica.num_clbits)
-                row.append(round(tv(measured[m][k], ghost), 6))
-                position += 1
-            distances[m] = row
-        entry = results.setdefault(relative, {"state": kind, "calibration": snapshot["calibration"], "tvd": {}})
-        entry["tvd"].update(distances)
-        entry["seconds"] = round(entry.get("seconds", 0) + time.time() - start, 2)
+        circuits = [replica for m in chosen for replica in replicas[m][1]]
+        circuit_shots = [shots[m] for m in chosen for _ in replicas[m][1]]
+        counts = iter(sample(simulator, circuits, circuit_shots, SEED))
+        distances = {
+            m: [
+                round(tv(measured[m][k], distribution(next(counts), r.num_clbits)), 6)
+                for k, r in enumerate(replicas[m][1])
+            ]
+            for m in chosen
+        }
+        # An independent second draw of the members with a recorded replay
+        # distance gives the sampling scatter of |ghost - recorded| when the
+        # two models agree.
+        own = [m for m in chosen if execution.get(m) == relative and m in recorded]
+        if own:
+            circuits = [replica for m in own for replica in replicas[m][1]]
+            circuit_shots = [shots[m] for m in own for _ in replicas[m][1]]
+            counts = iter(sample(simulator, circuits, circuit_shots, RESAMPLE_SEED))
+            for m in own:
+                resample[m] = [
+                    round(tv(measured[m][k], distribution(next(counts), r.num_clbits)), 6)
+                    for k, r in enumerate(replicas[m][1])
+                ]
+        results[relative] = {
+            "calibration": snapshot["calibration"],
+            "current": relative == index["current"][backend],
+            "tvd": distances,
+            "seconds": round(time.time() - start, 2),
+        }
     summary = {}
     for relative, entry in results.items():
-        values = [v for row in entry["tvd"].values() for v in row]
+        own_values = [v for m, row in entry["tvd"].items() if execution.get(m) == relative for v in row]
         summary[relative] = {
-            "state": entry["state"],
             "calibration": entry["calibration"],
+            "current": entry["current"],
             "members": len(entry["tvd"]),
-            "mean_tvd": round(float(np.mean(values)), 6),
+            "mean_tvd": round(float(np.mean([v for row in entry["tvd"].values() for v in row])), 6),
+            "execution_members": sum(execution.get(m) == relative for m in entry["tvd"]),
+            "execution_mean_tvd": round(float(np.mean(own_values)), 6) if own_values else None,
         }
-    deltas = [
-        ghost - recorded_value
-        for entry in results.values()
-        if entry["state"] == "execution"
-        for m, row in entry["tvd"].items()
-        if m in recorded
-        for ghost, recorded_value in zip(row, recorded[m], strict=False)
-    ]
+    deltas, scatter = [], []
+    for m, rows in resample.items():
+        ghost = results[execution[m]]["tvd"][m]
+        deltas += [g - r for g, r in zip(ghost, recorded[m], strict=True)]
+        scatter += [abs(g - h) for g, h in zip(ghost, rows, strict=True)]
     self_check = {
         "pairs": len(deltas),
+        "mean_abs_ghost_minus_recorded_tvd": round(float(np.mean(np.abs(deltas))), 6) if deltas else None,
+        "max_abs_ghost_minus_recorded_tvd": round(float(np.max(np.abs(deltas))), 6) if deltas else None,
+        "mean_abs_ghost_minus_resampled_tvd": round(float(np.mean(scatter)), 6) if scatter else None,
         "mean_ghost_minus_recorded_tvd": round(float(np.mean(deltas)), 6) if deltas else None,
         "sd": round(float(np.std(deltas)), 6) if deltas else None,
     }
@@ -217,12 +259,14 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
     return {
         "run": run_name,
         "backend": backend,
-        "shots": shots,
+        "shots": {str(n): sum(1 for m in members if shots[m] == n) for n in sorted(set(shots.values()))},
         "members_ghosted": len(members),
         "members_skipped_width": skipped,
+        "member_shots": shots,
+        "execution_snapshot": execution,
         "summary": summary,
         "self_check": self_check,
-        "states": results,
+        "snapshots": results,
     }
 
 
@@ -233,60 +277,53 @@ def content_key(relative: str) -> str:
     return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()[:12]
 
 
-def paired(states: dict[str, Any], kind: str) -> dict[str, Any] | None:
-    """Per-replica TV distance under one calibration state minus under the execution state, on shared members."""
-    execution: dict[str, list[float]] = {}
-    for entry in states.values():
-        if entry["state"] == "execution":
-            execution.update(entry["tvd"])
-    rows = [entry for entry in states.values() if entry["state"] == kind]
-    if not rows or not execution:
+def paired(run: dict[str, Any], relative: str) -> dict[str, Any] | None:
+    """Per-replica TV distance under one snapshot minus under each member's execution snapshot."""
+    snapshots, execution = run["snapshots"], run["execution_snapshot"]
+    other = snapshots[relative]["tvd"]
+    deltas = [
+        b - a
+        for m, own in execution.items()
+        if m in other and m in snapshots[own]["tvd"]
+        for a, b in zip(snapshots[own]["tvd"][m], other[m], strict=True)
+    ]
+    if not deltas:
         return None
-    other = rows[0]["tvd"]
-    deltas = [b - a for m in execution if m in other for a, b in zip(execution[m], other[m], strict=True)]
     mean = float(np.mean(deltas))
     error = float(np.std(deltas, ddof=1) / math.sqrt(len(deltas))) if len(deltas) > 1 else math.nan
     return {"replicas": len(deltas), "mean_delta": round(mean, 6), "standard_error": round(error, 6)}
 
 
 def report(path: Path) -> dict[str, Any]:
-    """Per run: execution mean, paired current-minus-execution difference, and the distinct other states."""
+    """Per run: execution means, paired current-minus-execution difference, and every distinct state's mean."""
     retained = json.loads(path.read_text(encoding="utf-8"))
     rows = []
     for run in retained["runs"]:
         if "skipped" in run:
             rows.append({"run": run["run"], "skipped": run["skipped"]})
             continue
-        states = run["states"]
+        summary = run["summary"]
         by_content: dict[str, list[str]] = {}
-        for relative, entry in states.items():
-            if entry["state"] == "other":
-                by_content.setdefault(content_key(relative), []).append(relative)
-        others = {
-            key: {
-                "calibrations": [states[r]["calibration"] for r in sorted(group)],
-                "mean_tvd": run["summary"][sorted(group)[0]]["mean_tvd"],
-            }
-            for key, group in sorted(by_content.items())
-        }
-        execution = [v for v in run["summary"].values() if v["state"] == "execution"]
+        for relative in summary:
+            by_content.setdefault(content_key(relative), []).append(relative)
+        means = {key: summary[sorted(group)[0]]["mean_tvd"] for key, group in sorted(by_content.items())}
+        current = [relative for relative, entry in summary.items() if entry["current"]]
         rows.append(
             {
                 "run": run["run"],
                 "backend": run["backend"],
                 "members": run["members_ghosted"],
-                "execution_mean_tvd": [v["mean_tvd"] for v in execution],
-                "current_minus_execution": paired(states, "current"),
-                "distinct_other_states": len(others),
-                "other_mean_tvd_range": (
-                    [min(o["mean_tvd"] for o in others.values()), max(o["mean_tvd"] for o in others.values())]
-                    if others
-                    else None
-                ),
+                "shots": run["shots"],
+                "execution_mean_tvd": [
+                    v["execution_mean_tvd"] for _, v in sorted(summary.items()) if v["execution_members"]
+                ],
+                "current_minus_execution": paired(run, current[0]) if current else None,
+                "distinct_states": len(means),
+                "state_mean_tvd_range": [min(means.values()), max(means.values())],
                 "self_check": run["self_check"],
             }
         )
-    return {"schema": "ghost-run-report-v1", "source": path.as_posix(), "runs": rows}
+    return {"schema": "ghost-run-report-v2", "source": path.as_posix(), "runs": rows}
 
 
 def audited_runs() -> list[str]:
@@ -315,12 +352,13 @@ def main() -> int:
             checked += 1
             fresh = ghost_run(run["run"], "execution", "CPU", index)
             for relative, summary in run["summary"].items():
-                if summary["state"] != "execution":
+                if not summary["execution_members"]:
                     continue
-                old, new = summary["mean_tvd"], fresh["summary"][relative]["mean_tvd"]
-                pairs = max(1, summary["members"])
+                old, new = summary["execution_mean_tvd"], fresh["summary"][relative]["execution_mean_tvd"]
+                own = [m for m, snapshot in run["execution_snapshot"].items() if snapshot == relative]
+                inverse_shots = float(np.mean([1 / run["member_shots"][m] for m in own]))
                 require(
-                    abs(old - new) <= 5 * math.sqrt(2.0 / (pairs * run["shots"])) + 1e-3,
+                    abs(old - new) <= 5 * math.sqrt(2.0 * inverse_shots / len(own)) + 1e-3,
                     f"{run['run']}: {old} vs {new}",
                 )
         require(checked > 0 and (named is None or checked == len(named)), "--runs names a run FILE lacks")
@@ -330,7 +368,7 @@ def main() -> int:
     runs = audited_runs() if args.runs == "all" else args.runs.split(",")
     device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
     out: dict[str, Any] = {
-        "schema": "ghost-run-v1",
+        "schema": "ghost-run-v2",
         "device": device,
         "max_qubits": MAX_QUBITS,
         "seed": SEED,
