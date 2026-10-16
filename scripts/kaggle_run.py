@@ -59,6 +59,7 @@ import json
 import re
 import subprocess
 import sys
+import time
 import zipfile
 from datetime import UTC, datetime
 from pathlib import Path
@@ -78,6 +79,7 @@ REMOTE = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum.git"
 CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
+SLOT_POLL_SECONDS = 90
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
@@ -542,12 +544,18 @@ def shards(args: argparse.Namespace) -> int:
         push_args = ["kernels", "push", "-p", str(run_dir / "kernel")]
         if args.timeout:
             push_args += ["-t", str(args.timeout)]
-        try:
-            reply = kaggle(*push_args).strip()
-        except SystemExit:
-            shutil.rmtree(run_dir)
-            raise
-        if "successfully pushed" not in reply:
+        waited = 0
+        while True:
+            proc = subprocess.run(["kaggle", *push_args], capture_output=True, text=True)
+            reply = (proc.stdout + proc.stderr).strip()
+            # The account runs a fixed number of batch CPU sessions (five,
+            # shared with every other kernel); a full account refuses the push
+            # with this message, and the shard waits for a session to end.
+            if "session count" not in reply or waited >= args.slot_wait:
+                break
+            time.sleep(SLOT_POLL_SECONDS)
+            waited += SLOT_POLL_SECONDS
+        if proc.returncode or "successfully pushed" not in reply:
             shutil.rmtree(run_dir)
             raise SystemExit(f"kaggle refused shard {shard}: {reply}")
         version = re.search(r"Kernel version (\d+) successfully pushed", reply)
@@ -704,6 +712,9 @@ def main() -> int:
     shards_parser.add_argument("--count", type=int, default=6)
     shards_parser.add_argument("--only", help="comma-separated shard indices (all by default)")
     shards_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
+    shards_parser.add_argument(
+        "--slot-wait", type=int, default=0, help="seconds to wait for a free CPU session before giving up"
+    )
     shards_parser.set_defaults(func=shards)
     report_parser = sub.add_parser("shards-report")
     report_parser.add_argument("run_dirs", nargs="+")
