@@ -51,7 +51,7 @@ FULL_SHOTS = {"two_round_encoded_ff": 32768, "ten_round_encoded": 8192}
 PILOT_SHOTS = 32
 # Wall-time budget per configuration and circuit; a slower configuration
 # runs the shot count the pilot predicts fits it.
-BUDGET_SECONDS = 240.0
+BUDGET_SECONDS = 120.0
 CONFIGURATIONS = {
     "cpu_statevector": ("CPU", "statevector", False),
     "cpu_density_matrix": ("CPU", "density_matrix", False),
@@ -100,58 +100,92 @@ def planned_shots(simulator: Any, isa: Any, full: int) -> int:
         trial = larger
 
 
+def measure(snapshot_path: Path, name: str, label: str) -> dict[str, Any]:
+    """One configuration on one circuit, in this process."""
+    snapshot = json.loads(snapshot_path.read_text(encoding="utf-8"))
+    device, method, batched = CONFIGURATIONS[label]
+    compiled = generate_preset_pass_manager(
+        optimization_level=3, target=_backend(snapshot).target, seed_transpiler=0
+    ).run(circuits(COLUMNS, COLUMNS)[name])
+    isa, qubits = snapshot_laws.restrict_circuit(compiled)
+    reduced = snapshot_laws.restrict(snapshot, qubits)
+    simulator = calibration_snapshot.noise_simulator(reduced, device, method=method, batched_shots=batched)
+    simulator.set_options(max_parallel_threads=parallel.workers())
+    full = FULL_SHOTS[name]
+    shots = planned_shots(simulator, isa, full)
+    counts, seconds, metadata = sample(simulator, isa, shots)
+    row: dict[str, Any] = {
+        "circuit": name,
+        "configuration": label,
+        "device": device,
+        "method": method,
+        "batched_shots_gpu": batched,
+        "shots": shots,
+        "reduced": shots < full,
+        "seconds": round(seconds, 3),
+        "microseconds_per_shot": round(1e6 * seconds / shots, 2),
+        "routed_cz": int(isa.count_ops().get("cz", 0)),
+        "metadata": metadata,
+    }
+    if name.startswith("two_round"):
+        row["distribution"] = labeled(counts)
+    return row
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--snapshot", type=Path, required=True)
-    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--one", nargs=2, metavar=("CIRCUIT", "CONFIGURATION"), help=argparse.SUPPRESS)
     args = parser.parse_args()
+    if args.one:
+        print(json.dumps(measure(args.snapshot, *args.one)), flush=True)
+        return 0
     snapshot = json.loads(args.snapshot.read_text(encoding="utf-8"))
-    backend = _backend(snapshot)
-    built = circuits(COLUMNS, COLUMNS)
     gpus = gpu_count()
-    rows = []
-    reference: dict[str, list[float]] = {}
-    for name, full in FULL_SHOTS.items():
-        compiled = generate_preset_pass_manager(optimization_level=3, target=backend.target, seed_transpiler=0).run(
-            built[name]
-        )
-        isa, qubits = snapshot_laws.restrict_circuit(compiled)
-        reduced = snapshot_laws.restrict(snapshot, qubits)
-        for label, (device, method, batched) in CONFIGURATIONS.items():
+    rows: list[dict[str, Any]] = []
+    for name in FULL_SHOTS:
+        reference = None
+        for label, (device, _, _) in CONFIGURATIONS.items():
             if device == "GPU" and gpus == 0:
                 rows.append({"circuit": name, "configuration": label, "skipped": "no GPU on this machine"})
                 continue
-            simulator = calibration_snapshot.noise_simulator(reduced, device, method=method, batched_shots=batched)
-            simulator.set_options(max_parallel_threads=parallel.workers())
-            shots = planned_shots(simulator, isa, full)
-            counts, seconds, metadata = sample(simulator, isa, shots)
-            row: dict[str, Any] = {
-                "circuit": name,
-                "configuration": label,
-                "device": device,
-                "method": method,
-                "batched_shots_gpu": batched,
-                "shots": shots,
-                "reduced": shots < full,
-                "seconds": round(seconds, 3),
-                "microseconds_per_shot": round(1e6 * seconds / shots, 2),
-                "routed_cz": int(isa.count_ops().get("cz", 0)),
-                "metadata": metadata,
-            }
-            if name.startswith("two_round"):
-                distribution = labeled(counts)
-                if label == "cpu_statevector":
-                    reference = {"distribution": distribution, "shots": [shots]}
-                row["distribution"] = distribution
-                if reference:
-                    row["tvd_to_cpu_statevector"] = 0.5 * sum(
-                        abs(a - b) for a, b in zip(distribution, reference["distribution"], strict=True)
-                    )
-                    # Four outcomes: the expected total variation of two
-                    # independent samples is of order sqrt(2 / shots).
-                    row["sampling_scale"] = math.sqrt(1 / shots + 1 / reference["shots"][0])
+            # Each configuration runs in its own process, so an Aer abort
+            # ends only that configuration and becomes its row.
+            proc = subprocess.run(
+                [sys.executable, "-B", __file__, "--snapshot", str(args.snapshot), "--one", name, label],
+                capture_output=True,
+                text=True,
+            )
+            if proc.returncode != 0:
+                row = {
+                    "circuit": name,
+                    "configuration": label,
+                    "failed": proc.returncode,
+                    "stderr_tail": proc.stderr.strip().splitlines()[-3:],
+                }
+            else:
+                row = json.loads(proc.stdout.strip().splitlines()[-1])
+                if "distribution" in row:
+                    if label == "cpu_statevector":
+                        reference = row
+                    if reference is not None:
+                        row["tvd_to_cpu_statevector"] = 0.5 * sum(
+                            abs(a - b) for a, b in zip(row["distribution"], reference["distribution"], strict=True)
+                        )
+                        # Four outcomes: two independent samples differ in
+                        # total variation on the scale sqrt(1/n1 + 1/n2).
+                        row["sampling_scale"] = math.sqrt(1 / row["shots"] + 1 / reference["shots"])
             rows.append(row)
-            print(json.dumps({key: row[key] for key in ("circuit", "configuration", "shots", "microseconds_per_shot")}))
+            print(
+                json.dumps(
+                    {
+                        key: row.get(key)
+                        for key in ("circuit", "configuration", "shots", "microseconds_per_shot", "failed")
+                    }
+                ),
+                flush=True,
+            )
     record = {
         "schema": "aer-gpu-probe-v1",
         "snapshot": str(args.snapshot),
@@ -162,8 +196,11 @@ def main() -> int:
         "budget_seconds": BUDGET_SECONDS,
         "rows": rows,
     }
-    args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    out_path = args.out
+    if out_path is None:
+        raise SystemExit("aer_gpu_probe: --out is required")
+    out_path.parent.mkdir(parents=True, exist_ok=True)
+    out_path.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     return 0
 
 
