@@ -36,7 +36,7 @@ Enumerated in EXAMPLES 1.
 | Capability | API | Behavior |
 |---|---|---|
 | construction | `Algebra(p=0, q=0, r=0, signature=None, start_index=None, ..., pretty_blade=...)`, `alg.multivector(...)`, `alg.scalar`, `vector`, `bivector`, `trivector`, `pseudoscalar`, `evenmv`, `oddmv`, `alg.blades`, `fromname`, `frommatrix` | |
-| products | `*` / `gp`, `|` / `ip`, `^` / `op`, `&` / `rp`, `>>` / `sw` (sandwich), `<<` / `proj`, `lc`, `rc`, `sp`, `cp`, `acp`, `div` | |
+| products | `*` / `gp`, `|` / `ip`, `^` / `op`, `&` / `rp` (regressive), `>>` / `sw` (sandwich), `proj`, `lc`, `rc`, `sp`, `cp`, `acp`, `div` | operator aliases from `kingdon/multivector.py` |
 | involutions, norm, inverse | `reverse()`, `involute()`, `conjugate()`, `dual()`, `undual()`, `hodge()`, `polarity()`, `normsq()`, `norm()`, `normalized()`, `inv()`, `sqrt()` | |
 | exp, trigonometry | `exp()`, `outerexp()`, `outersin()`, `outercos()`, `outertan()` | |
 | rotations | sandwich `R >> x`, `Bireflection`, `Translation`, `alg.bireflection` | |
@@ -44,7 +44,7 @@ Enumerated in EXAMPLES 1.
 | associator | none; associative | |
 | symbolic support | SymPy symbols as values; `alg.vector(name="v")` | |
 | dimension range | any (p, q, r) | |
-| dtype, batching, GPU | numpy arrays, torch tensors or JAX arrays as values; device follows the values | |
+| dtype, batching, GPU | numpy arrays as values (EXAMPLES 3); torch and JAX values per the package note, not run here | |
 
 ## EXAMPLES
 

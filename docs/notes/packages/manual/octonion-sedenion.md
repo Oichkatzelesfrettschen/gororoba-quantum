@@ -103,8 +103,9 @@ Sedenion mismatches 0
 (e1 + e10)(e4 - e15) = [0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0, 0.0]
 ```
 
-3. Functions and identities. `log` and `exp` call `polar()`, which writes the real part of the
-   argument to zero in place, so `exp(log x)` does not return the original `x`.
+3. Functions and identities. At the octonion level `log`, `exp` and `sin` write the real part
+   of their argument to zero in place and compute from the zeroed value; the sedenion level
+   does not.
 
 <!-- example -->
 ```python
@@ -118,6 +119,17 @@ before = x.components.copy()
 y = O.exp(O.log(x))
 print("x.e0 before log:", before[0], " after log:", x.e0, " exp(log x) == original x:", np.allclose(y.components, before))
 x = O.Octonion(*before)
+import Cayley_Calculator, sedenion as calc
+ours = O.exp(O.Octonion(*before)).components
+theirs = calc.exp(calc.Octonion(*before)).components
+print("O.exp(x) == Cayley-Calculator exp(x):", np.allclose(ours, theirs),
+      " ratio", round(float(theirs[1] / ours[1]), 6), " e^0.3 =", round(float(np.exp(0.3)), 6))
+z = O.Octonion(*before)
+O.sin(z)
+print("x.e0 after sin:", z.e0)
+w = S.Sedenion(*before, *[0.2] * 8)
+sb = w.components.copy()
+print("sedenion exp(log w) == w:", np.allclose(S.exp(S.log(w)).components, sb), " w.e0 after:", w.e0)
 print("x ~x == 1:", np.allclose((x * ~x).components, np.eye(8)[0]))
 print("L_x matches *:", np.allclose(O.left_matrix(x) @ O.e3.components, (x * O.e3).components))
 a, b, c = (O.Octonion(*np.arange(1, 9) ** k) for k in (1, 2, 3))
@@ -128,6 +140,9 @@ print("sedenion moufang1 nonzero:", np.abs(S.moufang1(p, q, r).components).max()
 
 ```text
 x.e0 before log: 0.3  after log: 0.0  exp(log x) == original x: False
+O.exp(x) == Cayley-Calculator exp(x): False  ratio 1.349859  e^0.3 = 1.349859
+x.e0 after sin: 0.0
+sedenion exp(log w) == w: True  w.e0 after: 0.3
 x ~x == 1: True
 L_x matches *: True
 octonion moufang1 max: 0.0
@@ -147,11 +162,16 @@ and [checks](checks/interplay_tables.json)).
   `sys.modules["octonion"]` to `Octonion_Sedenion.octonion` for the import, as
   `scripts/algebra_package_tables.py` does.
 - Products run through numpy-quaternion; a numpy-quaternion defect reaches both levels.
-- `polar()` (behind `exp`, `log`, `**` and `sqrt`) runs `w = copy.deepcopy(self); w.z1.w = 0`,
-  and `copy.deepcopy` of a numpy-quaternion scalar shares its storage, so the call zeroes the
-  real part of the argument: after `log(x)`, `x.e0` reads 0 and `exp(log x)` differs from the
-  original `x` whenever its real part is nonzero (EXAMPLES 3). Pass a fresh copy built from
-  `x.components` and treat these functions as unverified.
+- At the octonion level, `polar()` (called by `exp`, `log`, `**`, `arcsin`, `arccos`,
+  `arctan`) and `decomp()` (called by `sin`, `cos`, `tan`) run
+  `w = copy.deepcopy(self)` and then zero the real part of `w`; a numpy-quaternion scalar's
+  deepcopy shares storage, so the call zeroes the real part of the argument itself and the
+  function is evaluated on that zeroed value. `O.exp(x)` for a real part 0.3 differs from
+  Cayley-Calculator's `exp` by the factor `e^0.3`, `x.e0` reads 0 after `log(x)` or
+  `sin(x)`, and `exp(log x)` misses `x` (EXAMPLES 3). `sqrt` leaves the argument intact. The
+  sedenion level, whose halves are Python `Octonion` objects, round-trips `exp(log x)`
+  with its argument intact (EXAMPLES 3). Treat the octonion-level transcendental
+  functions as wrong for any argument with a nonzero real part.
 - `components` is an attribute; `conj` is a property on `Sedenion` and a method on `Octonion`.
 - Importing `Octonion_Sedenion.octonion` computes module test values (`a`, `a10`, `A`, ...).
 - `uniform` and `random_ball` draw from the global numpy generator.

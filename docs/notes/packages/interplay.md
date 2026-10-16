@@ -190,8 +190,8 @@ entries 12, 13, 23), the entrywise e3, e5, e6 sign flip carries all 729 Sage bas
 onto `cd_core`'s exactly, and so does entrywise conjugation, which is the transpose and
 absorbs Sage's opposite octonion product; the identity and the flip followed by conjugation
 each fail on 252 pairs. The falsifier of either map is one basis pair `(i, j)` with
-`T(B_i o_Sage B_j) != T(B_i) o_cd T(B_j)` in exact rationals. The `cd_core` product is
-commutative and satisfies the Jordan identity on 40 seeded rational pairs; the same builder
+`T(B_i o_Sage B_j) != T(B_i) o_cd T(B_j)` in exact rationals. The `cd_core` product,
+commutative by construction, satisfies the Jordan identity on 40 seeded rational pairs; the same builder
 over the sedenions breaks the identity on 10 of 10, the control that shows the test detects
 a failure.
 

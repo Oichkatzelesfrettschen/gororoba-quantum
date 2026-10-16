@@ -33,10 +33,10 @@ Enumerated in EXAMPLES 1.
 | Capability | API | Behavior |
 |---|---|---|
 | construction | `Ga(bases, *, wedge=True, g=..., coords=..., norm=...)`, `Ga.build(...)`, `ga.mv(value, kind)` (`"scalar"`, `"vector"`, `"bivector"`, `"mv"`, ...), `ga.basis`, `ga.blades` | |
-| products | `*`, `|` (inner), `^` (outer), `<` and `>` (contractions), `Com`, `ga.dot`, `ga.wedge` | |
+| products | `*`, `|` (inner), `^` (outer), `<` and `>` (left and right contractions), `>>` (commutator), `<<` (anticommutator) | dunders in `galgebra/mv.py` |
 | involutions, norm, inverse | `rev()`, `even()`, `odd()`, `dual()`, `norm()`, `norm2()`, `inv()`, `grade(k)`, `get_grade` | |
-| exp, trigonometry | `exp()` for blades with constant square, SymPy functions of coefficients | |
-| calculus | `ga.grad`, `galgebra.dop` operators, `lt.Lt` linear transformations | |
+| exp, trigonometry | `exp()`; SymPy functions of coefficients | |
+| calculus | `galgebra.dop` (`Pdop`, `Sdop`), `galgebra.lt.Lt` linear transformations | |
 | coefficients | `blade_coefs(blades)`, `obj` (the SymPy expression), `simplify()`, `trigsimp()` | |
 | associator | none; associative | |
 | symbolic support | full SymPy | |

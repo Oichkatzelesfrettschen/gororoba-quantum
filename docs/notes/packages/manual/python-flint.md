@@ -84,8 +84,7 @@ None: no multiplication table. Integer matrices from `cd_core.left_mult_matrix` 
 
 - `fmpq` is not registered as a `numbers.Number`, so [hypercomplex](hypercomplex.md)
   refuses it as a base (EXAMPLES 1, 2).
-- `nullspace()` returns a matrix and the nullity; the kernel vectors are the first `nullity`
-  columns.
+- `nullspace()` returns a pair, a matrix and the nullity (EXAMPLES 1).
 
 ## LICENSE
 

@@ -175,7 +175,8 @@ to `cd_core` at D = 2 and 4.
 - The package owns the top-level module name `octonion`, shadowing
   [Cayley-Calculator](cayley-calculator.md)'s `octonion.py` and breaking
   [Octonion-Sedenion](octonion-sedenion.md)'s `from octonion import Octonion`.
-- Constructors and `STRUCTURE_CONSTANTS` are float64 while torch defaults to float32;
+- The random constructors and `STRUCTURE_CONSTANTS` are float64 while torch defaults to float32
+  (`OctonionLinear` defaults to float32);
   `octonion_mul` promotes a mixed pair to float64 (EXAMPLES 3).
 - `import octonion.baselines` pulls in the plotting and training stack.
 

@@ -23,7 +23,7 @@ m.conjugate("e1 + e10"), m.norm("e1 + e10"), m.inverse("e1 + e10")
 
 ## DESCRIPTION
 
-Expressions are strings of integer or rational coefficients times basis labels `e<k>`
+Expressions are strings of integer or decimal coefficients times basis labels `e<k>`
 (`1` and `e0` are the identity; `eps` is the dual unit; `e[i,j,...]` is a tensor-slot label).
 `ExpressionMultiplier(kind, dim=None, slots=None, resolver=None)` holds a parser, a formatter
 and a sparse multiplier; its resolver adapters (`StandardResolver`, `SplitResolver`,
@@ -41,7 +41,7 @@ Enumerated in EXAMPLES 1.
 | conjugate, norm, inverse | `ExpressionMultiplier.conjugate(expr, mode="hypercomplex")`, `.norm(expr, mode=...)`, `.inverse(expr, mode=...)` | `norm` is `x x*`; dual modes `hypercomplex`, `dual`, `total` |
 | resolvers | `create_resolver(kind, dim)`, `create_tensor_resolver(slots)`, `BasisProductResolver`, `SparseMultiplier`, `DualResolver`, `DualSparseMultiplier`, `TensorResolver`, `TensorSparseMultiplier` | |
 | exp, log, rotations, matrices | none | |
-| symbolic support | rational coefficients in the string; no symbols | |
+| symbolic support | none; decimal coefficients only (`0.5e1` parses, `1/2e1` raises `ValueError`, EXAMPLES 5) | |
 | dimension range | any index for `standard` and `dual`; fixed exponent for `split` | |
 | dtype, batching, GPU | strings and Python numbers only | |
 
@@ -126,6 +126,11 @@ print([ha.multiply_split_expressions(f"e{k}", f"e{k}", 2) for k in range(4)])
 print(ha.multiply_dual_expressions("eps", "eps"), "|", ha.multiply_dual_expressions("e1 + eps", "e1 - eps"))
 print(ha.multiply_tensor_expressions("e[1,2]", "e[1,2]", ["standard", "standard"]),
       ha.multiply_tensor_expressions("e[1,0]", "e[2,0]", ["standard", "standard"]))
+for text in ("0.5e1", "1/2e1"):
+    try:
+        print(text, "->", ha.multiply_expressions(text, "e1"))
+    except ValueError as e:
+        print(text, "-> ValueError:", e)
 try:
     ha.multiply_split_expressions("e5", "e1", 2)
 except ValueError as e:
@@ -136,6 +141,8 @@ except ValueError as e:
 ['1', '-1', '1', '1']
 0 | -1
 1 e[3,0]
+0.5e1 -> -0.5
+1/2e1 -> ValueError: could not convert string to float: '1/2'
 ValueError: Index out of range for split dim=2 (valid: 0..3). Split dimensions cannot be mixed. Create a new SplitResolver with the dimension you need.
 ```
 
@@ -154,6 +161,7 @@ inherit the engine's maps.
 - `multiply_many_*` folds from the left; state the bracketing (EXAMPLES 3).
 - `inverse` returns `x* / N(x)` for zero divisors as well (EXAMPLES 4).
 - A split multiplier is pinned to one exponent and rejects larger indices (EXAMPLES 5).
+- Coefficients parse as floats: fractions such as `1/2e1` raise `ValueError` (EXAMPLES 5).
 - Tensor products multiply slot by slot with the signs multiplied; the result is not a
   Cayley-Dickson level.
 
