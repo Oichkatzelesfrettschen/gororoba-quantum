@@ -277,7 +277,7 @@ def main() -> int:
     snapshot = json.loads(args.check.read_text(encoding="utf-8"))
     round_trip(snapshot)
     qubits = probe_qubits(snapshot)
-    counts = probe_counts(noise_simulator(snapshot), qubits)
+    counts = probe_counts(noise_simulator(snapshot, aer_device()), qubits)
     print(f"{args.check}: {snapshot['backend']} calibration {snapshot['calibration']}, probe on {qubits}: {counts}")
     return 0
 
