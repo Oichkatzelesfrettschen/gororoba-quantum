@@ -80,6 +80,10 @@ CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
+# Six shards outnumber the five CPU sessions, so a default run waits for the
+# first shards to finish (a pr shard takes about 5 to 10 minutes there).
+SLOT_WAIT_SECONDS = 7200
+CI_SHARDS = {"pr": 6, "full": 12}
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
@@ -275,6 +279,10 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
 
 
 def push(args: argparse.Namespace) -> int:
+    # The smoke probe measures the widest circuits a GPU runs; on a CPU
+    # machine it would record only that no GPU is attached.
+    if args.smoke and args.machine == "cpu":
+        args.machine = GPU_MACHINE
     revision = git_commit()
     stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
     run_dir = RESULTS / f"{stamp}-{args.slug}"
@@ -327,11 +335,60 @@ def self_test(args: argparse.Namespace) -> int:
         require(job["modes"] == {} and job["deleted"] == [], "HEAD against itself carries an overlay")
         require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
         py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
+    _overlay_self_test()
     print(
         f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU and GPU kernels, "
-        "a shard kernel bound to HEAD's tree, run.py compiles"
+        "a shard kernel bound to HEAD's tree, an overlay that rebuilds a directory-to-file change, run.py compiles"
     )
     return 0
+
+
+def _overlay_self_test() -> None:
+    """A commit that turns a directory into a file and adds a symlink: the kernel's overlay rebuilds its tree."""
+    import os
+    import tempfile
+
+    sys.path.insert(0, str(ROOT / "kaggle_kernel"))
+    import kernel_main
+
+    identity = ["-c", "user.name=self-test", "-c", "user.email=self-test@localhost"]
+    with tempfile.TemporaryDirectory() as scratch:
+        repo, overlay = Path(scratch) / "repo", Path(scratch) / "overlay"
+        repo.mkdir()
+
+        def run(*args: str) -> str:
+            return subprocess.run(["git", *args], cwd=repo, check=True, capture_output=True, text=True).stdout
+
+        run("init", "-q")
+        (repo / "node").mkdir()
+        (repo / "node/child").write_text("child", encoding="utf-8")
+        (repo / "kept").write_text("kept", encoding="utf-8")
+        run("add", "-A")
+        run(*identity, "commit", "-qm", "base")
+        base = run("rev-parse", "HEAD").strip()
+        (repo / "node/child").unlink()
+        (repo / "node").rmdir()
+        (repo / "node").write_text("now a file", encoding="utf-8")
+        os.symlink("kept", repo / "link")
+        run("add", "-A")
+        run(*identity, "commit", "-qm", "head")
+        expected = run("rev-parse", "HEAD^{tree}").strip()
+        changes = run("diff", "--no-renames", "--name-status", "-z", base, "HEAD").split("\0")
+        modes: dict[str, str] = {}
+        deleted: list[str] = []
+        for code, rel in zip(changes[0:-1:2], changes[1::2], strict=True):
+            if code == "D":
+                deleted.append(rel)
+                continue
+            mode, _, blob = run("ls-tree", "HEAD", "--", rel).split()[:3]
+            data = subprocess.run(["git", "cat-file", "blob", blob], cwd=repo, check=True, capture_output=True).stdout
+            (overlay / rel).parent.mkdir(parents=True, exist_ok=True)
+            (overlay / rel).write_bytes(data)
+            modes[rel] = mode
+        run("checkout", "-q", base)
+        kernel_main.apply_overlay(repo, overlay, modes, deleted)
+        run("add", "-A")
+        require(run("write-tree").strip() == expected, "the overlay does not rebuild a directory-to-file change")
 
 
 def bundled_job(run_py: Path) -> dict[str, Any]:
@@ -550,6 +607,9 @@ def shards(args: argparse.Namespace) -> int:
     git("fetch", "-q", "origin", "main")
     base = git("merge-base", "HEAD", "origin/main").strip()
     owner = username()
+    # CI runs the pr tier on 6 shards and the full tier on 12
+    # (.github/workflows/ci.yml); run_gates assigns gates by the count.
+    args.count = args.count or CI_SHARDS[args.tier]
     only = [int(x) for x in args.only.split(",")] if args.only else list(range(args.count))
     require(all(0 <= i < args.count for i in only), f"--only {args.only} lies outside 0..{args.count - 1}")
     machines = args.machine.split(",")
@@ -726,7 +786,7 @@ def main() -> int:
     sub.add_parser("verify").set_defaults(func=verify)
     shards_parser = sub.add_parser("shards")
     shards_parser.add_argument("--tier", choices=("pr", "full"), default="pr")
-    shards_parser.add_argument("--count", type=int, default=6)
+    shards_parser.add_argument("--count", type=int, help="shard count (CI's: 6 for pr, 12 for full)")
     shards_parser.add_argument("--only", help="comma-separated shard indices (all by default)")
     shards_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     shards_parser.add_argument(
@@ -735,7 +795,10 @@ def main() -> int:
         help="machines in preference order, comma-separated (cpu, NvidiaTeslaT4, TpuV5E8); a full pool falls through",
     )
     shards_parser.add_argument(
-        "--slot-wait", type=int, default=0, help="seconds to wait for a free CPU session before giving up"
+        "--slot-wait",
+        type=int,
+        default=SLOT_WAIT_SECONDS,
+        help="seconds to wait for a free session before giving up",
     )
     shards_parser.set_defaults(func=shards)
     report_parser = sub.add_parser("shards-report")

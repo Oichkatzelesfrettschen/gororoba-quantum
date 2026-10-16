@@ -59,8 +59,11 @@ GPU matters for sweeps and batched trials, not for single circuits.
   replays ran slower on a GPU than on the CPU on the build host
   (ghost-run replay 67 s on the CPU, 106 s on the RTX 4070 Ti), and the
   weekly GPU quota goes to the runs that need it.
-- `shards [--tier pr] [--count 6] [--only I,J] [--slot-wait S]` pushes one
-  CPU kernel per CI shard of the committed HEAD. The kernel fetches the
+- `shards [--tier pr] [--count N] [--only I,J] [--machine M,...]
+  [--slot-wait S]` pushes one kernel per CI shard of the committed HEAD,
+  with CI's shard count by default (6 for pr, 12 for full), on the first
+  machine in the list with a free session; a default run waits up to two
+  hours for sessions, since six shards outnumber the five CPU sessions. The kernel fetches the
   merge base with origin/main from the public repository, applies the
   bundled files changed since then with their modes and deletions, and runs
   no gate unless `git write-tree` equals HEAD's tree. It then installs CI's
@@ -82,7 +85,8 @@ GPU matters for sweeps and batched trials, not for single circuits.
   probes of 2026-10-16T025230Z and T025231Z ended in ERROR because a
   capacity trial killed the kernel, which led to one process per trial,
   and the P100 probe is the record that a P100 request ran on two T4s.
-- `push --smoke` probes the environment and measures the widest
+- `push --smoke` (always on a GPU, `NvidiaTeslaT4` unless `--machine`
+  names another accelerator) probes the environment and measures the widest
   density-matrix and statevector circuits the GPU runs.
 - `--machine` names the accelerator, passed to the push as
   `--accelerator`: `cpu` (the default, none), `NvidiaTeslaT4` (two T4s),

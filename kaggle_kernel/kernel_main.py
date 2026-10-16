@@ -281,6 +281,28 @@ def checked(name: str, *cmd: str, cwd: Path | None = None, env: dict[str, str] |
     return proc.stdout
 
 
+def apply_overlay(tree: Path, overlay: Path, modes: dict[str, str], deleted: list[str]) -> None:
+    """Apply a commit's changed files (with their git modes) and deletions to a checkout of its base."""
+    # Deletions come first and prune the directories they empty, so a commit
+    # that replaces a directory with a file or symlink finds the path free.
+    for rel in deleted:
+        (tree / rel).unlink()
+        parent = (tree / rel).parent
+        while parent != tree and not any(parent.iterdir()):
+            parent.rmdir()
+            parent = parent.parent
+    for rel, mode in modes.items():
+        source, target = overlay / rel, tree / rel
+        target.parent.mkdir(parents=True, exist_ok=True)
+        if target.is_symlink() or target.is_file():
+            target.unlink()
+        if mode == "120000":
+            target.symlink_to(source.read_text(encoding="utf-8"))
+        else:
+            shutil.copyfile(source, target)
+            target.chmod(0o755 if mode == "100755" else 0o644)
+
+
 def run_shard(job: dict[str, Any]) -> int:
     """One CI shard on the tree job["tree"], under CI's interpreter and pins.
 
@@ -295,19 +317,7 @@ def run_shard(job: dict[str, Any]) -> int:
     checked("git-init", "git", "init", "-q", str(CI_TREE))
     checked("git-fetch", "git", "fetch", "-q", "--depth", "1", job["remote"], job["base"], cwd=CI_TREE)
     checked("git-checkout", "git", "checkout", "-q", "FETCH_HEAD", cwd=CI_TREE)
-    overlay = REPO / "kaggle_kernel/overlay"
-    for rel, mode in job["modes"].items():
-        source, target = overlay / rel, CI_TREE / rel
-        target.parent.mkdir(parents=True, exist_ok=True)
-        if target.is_symlink() or target.exists():
-            target.unlink()
-        if mode == "120000":
-            target.symlink_to(source.read_text(encoding="utf-8"))
-        else:
-            shutil.copyfile(source, target)
-            target.chmod(0o755 if mode == "100755" else 0o644)
-    for rel in job["deleted"]:
-        (CI_TREE / rel).unlink()
+    apply_overlay(CI_TREE, REPO / "kaggle_kernel/overlay", job["modes"], job["deleted"])
     checked("git-add", "git", "add", "-A", cwd=CI_TREE)
     tree = checked("git-write-tree", "git", "write-tree", cwd=CI_TREE).strip()
     write("tree.json", {"base": job["base"], "head": job["head"], "expected_tree": job["tree"], "tree": tree})
