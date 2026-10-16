@@ -443,7 +443,7 @@ def git(*args: str) -> str:
 
 
 def build_shard_kernel(
-    run_dir: Path, owner: str, stamp: str, base: str, head: str, tier: str, shard: int, count: int
+    run_dir: Path, owner: str, stamp: str, base: str, head: str, tier: str, shard: int, count: int, machine: str = "cpu"
 ) -> dict[str, Any]:
     """The kernel of one CI shard of head: KERNEL_FILES, and the files changed since base as an overlay."""
     changes = git("diff", "--no-renames", "--name-status", "-z", base, head).split("\0")
@@ -490,7 +490,8 @@ def build_shard_kernel(
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
-    runner = RUNNER.format(pins=list(CPU_KERNEL_PINS), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    pins = kernel_pins(machine)
+    runner = RUNNER.format(pins=list(pins), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     slug = f"gororoba-ci-shard-{shard}-of-{count}"
     metadata = {
@@ -500,15 +501,17 @@ def build_shard_kernel(
         "language": "python",
         "kernel_type": "script",
         "is_private": True,
-        "enable_gpu": False,
-        "enable_tpu": False,
+        "enable_gpu": machine != "cpu" and not machine.startswith("Tpu"),
+        "enable_tpu": machine.startswith("Tpu"),
         "enable_internet": True,
     }
+    if machine != "cpu":
+        metadata["machine_shape"] = machine
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
     submission = {
         "schema": "kaggle-ci-shard-v1",
         "kernel": metadata["id"],
-        "machine_shape": "cpu",
+        "machine_shape": machine,
         "base": base,
         "head": head,
         "tree": job["tree"],
@@ -517,7 +520,7 @@ def build_shard_kernel(
         "count": count,
         "overlay_files": len(modes),
         "deleted_files": len(deleted),
-        "pins": list(CPU_KERNEL_PINS),
+        "pins": list(pins),
         "bundle": digests,
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
         "pushed_utc": stamp,
@@ -526,8 +529,20 @@ def build_shard_kernel(
     return submission
 
 
+def push_shard(run_dir: Path, machine: str, timeout: int) -> tuple[bool, str]:
+    """Push a built shard kernel; (pushed, reply). A full session pool refuses with "session count"."""
+    push_args = ["kernels", "push", "-p", str(run_dir / "kernel")]
+    if machine != "cpu":
+        push_args += ["--accelerator", machine]
+    if timeout:
+        push_args += ["-t", str(timeout)]
+    proc = subprocess.run(["kaggle", *push_args], capture_output=True, text=True)
+    reply = (proc.stdout + proc.stderr).strip()
+    return proc.returncode == 0 and "successfully pushed" in reply, reply
+
+
 def shards(args: argparse.Namespace) -> int:
-    """Push one CPU kernel per CI shard of the committed HEAD; print each run directory."""
+    """Push one kernel per CI shard of the committed HEAD on the first machine with a free session."""
     import shutil
 
     revision = git_commit()
@@ -537,34 +552,36 @@ def shards(args: argparse.Namespace) -> int:
     owner = username()
     only = [int(x) for x in args.only.split(",")] if args.only else list(range(args.count))
     require(all(0 <= i < args.count for i in only), f"--only {args.only} lies outside 0..{args.count - 1}")
+    machines = args.machine.split(",")
     for shard in only:
-        stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
-        run_dir = SHARDS / f"{stamp}-{revision[:12]}-shard-{shard}-of-{args.count}"
-        build_shard_kernel(run_dir, owner, stamp, base, revision, args.tier, shard, args.count)
-        push_args = ["kernels", "push", "-p", str(run_dir / "kernel")]
-        if args.timeout:
-            push_args += ["-t", str(args.timeout)]
         waited = 0
         while True:
-            proc = subprocess.run(["kaggle", *push_args], capture_output=True, text=True)
-            reply = (proc.stdout + proc.stderr).strip()
-            # The account runs a fixed number of batch CPU sessions (five,
-            # shared with every other kernel); a full account refuses the push
-            # with this message, and the shard waits for a session to end.
-            if "session count" not in reply or waited >= args.slot_wait:
+            pushed = False
+            for machine in machines:
+                stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
+                run_dir = SHARDS / f"{stamp}-{revision[:12]}-shard-{shard}-of-{args.count}"
+                build_shard_kernel(run_dir, owner, stamp, base, revision, args.tier, shard, args.count, machine)
+                pushed, reply = push_shard(run_dir, machine, args.timeout)
+                if pushed:
+                    break
+                shutil.rmtree(run_dir)
+                # Each machine type has its own batch session pool (five CPU,
+                # two GPU); a full pool refuses the push, and the next machine
+                # in the preference list takes the shard.
+                if "session count" not in reply:
+                    raise SystemExit(f"kaggle refused shard {shard} on {machine}: {reply}")
+            if pushed or waited >= args.slot_wait:
                 break
             time.sleep(SLOT_POLL_SECONDS)
             waited += SLOT_POLL_SECONDS
-        if proc.returncode or "successfully pushed" not in reply:
-            shutil.rmtree(run_dir)
-            raise SystemExit(f"kaggle refused shard {shard}: {reply}")
+        require(pushed, f"every machine in {machines} stayed full for {waited} s: {reply}")
         version = re.search(r"Kernel version (\d+) successfully pushed", reply)
         require(version is not None, f"push reply names no kernel version: {reply}")
         assert version is not None
         submission = submission_of(run_dir)
         submission["kernel_version"] = int(version.group(1))
         (run_dir / "submission.json").write_text(json.dumps(submission, indent=1) + "\n", encoding="utf-8")
-        print(run_dir)
+        print(f"{run_dir} on {machine}", flush=True)
     return 0
 
 
@@ -712,6 +729,11 @@ def main() -> int:
     shards_parser.add_argument("--count", type=int, default=6)
     shards_parser.add_argument("--only", help="comma-separated shard indices (all by default)")
     shards_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
+    shards_parser.add_argument(
+        "--machine",
+        default=DEFAULT_MACHINE,
+        help="machines in preference order, comma-separated (cpu, NvidiaTeslaT4, TpuV5E8); a full pool falls through",
+    )
     shards_parser.add_argument(
         "--slot-wait", type=int, default=0, help="seconds to wait for a free CPU session before giving up"
     )
