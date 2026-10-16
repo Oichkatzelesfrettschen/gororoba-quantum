@@ -2193,6 +2193,37 @@
       "status": "withdrawn",
       "boundary": "The power restates hand-set inputs (a 0.01 kHz shift at 0.1 contrast per kHz against a 0.02 standard error); it measures nothing about the device.",
       "withdrawn_text": "docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57."
+    },
+    {
+      "id": "hw-atlas-coherent-phase-fit",
+      "statement": "The Fez ripple atlas fringe phases sit +0.13 rad (spread 0.22 rad) from the ideal against 0.06 rad for the calibrated replay, 3 to 10 times the shot noise on every lane; per-qubit detuning or per-coupler CZ phase predicts held-out edges better than the lane mean only on lanes 3 and 4.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Durations from a Target two days after the run; about 9 parameters on 12 edges per lane overfit; no single coherent family explains the offsets across lanes.",
+      "evidence": [
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        },
+        {
+          "path": "docs/evidence/atlas_detuning_map/result.json",
+          "sha256": "9e0128d2239862e62f4b8d3866ec5f9da3b40de2760eca8a34c5b0181c696b72"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_detuning_map/README.md"
+      ],
+      "gates": {
+        "core-285": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }
