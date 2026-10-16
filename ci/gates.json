@@ -2288,6 +2288,14 @@
    "name": "core-286",
    "seconds": 15.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_design/result.json --pairs \"1,2;2,1\" && \"$PYTHON\" -B -O -W error scripts/census_frequency_design.py --check docs/evidence/census_frequency_design/result.json --pairs \"1,2;2,1\"",
+   "name": "core-288",
+   "seconds": 30.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

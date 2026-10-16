@@ -2029,14 +2029,23 @@
     },
     {
       "id": "proposed-census-frequency",
-      "statement": "Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function.",
+      "statement": "Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 with f = 231/512, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-, as a test of how faithfully hardware carries the sign function.",
       "domain": "algebra",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "Tests implementation fidelity, not the census theorem, which is proved.",
-      "evidence": [],
-      "documents": [],
-      "gates": {},
+      "boundary": "Tests implementation fidelity, not the census theorem, which is proved. Under the Kingston noise model the factorized witness compiles to about 434 CZ with V+ = 0.370 and V- = 0.346, so a single visibility misses the census by 0.005 and single-pair references move it by +-0.02; the hardware visibility and shot cost stay unmeasured.",
+      "evidence": [
+        {
+          "path": "docs/evidence/census_frequency_design/result.json",
+          "sha256": "cc2d90a1c19932494193907717f6a20dbe210fe02dd04804ca019b1e79ff3359"
+        }
+      ],
+      "documents": [
+        "docs/evidence/census_frequency_design/README.md"
+      ],
+      "gates": {
+        "core-288": "replay"
+      },
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [

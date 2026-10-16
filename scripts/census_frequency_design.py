@@ -33,9 +33,10 @@ over pairs is the reference-mismatch systematic); and the shots a hardware
 run needs to resolve the census frequency to +-0.01 at 2 sigma given the
 measured visibility.
 
-``--pairs all`` or ``--pairs I,J;I,J``. ``--check FILE`` reruns the named
-pairs of FILE on the CPU and requires each P(c = 1) within five binomial
-standard errors and the CZ counts exactly.
+``--pairs all`` or ``--pairs I,J;I,J``. ``--check FILE`` recomputes FILE's
+summary from its records exactly, reruns the named pairs on the CPU and
+requires each P(c = 1) within five binomial standard errors and the CZ
+counts exactly.
 """
 
 from __future__ import annotations
@@ -238,6 +239,8 @@ def main() -> int:
     args = parser.parse_args()
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
+        require(retained["schema"] == "census-frequency-design-v2", f"{args.check}: unexpected schema")
+        require(summarize(retained) == retained["summary"], f"{args.check}: summary differs from its records")
         named = {tuple(r["pair"]): r for r in retained["records"]}
         subset = list(named) if args.pairs == "all" else pairs_of(args.pairs)
         fresh = run(subset, "CPU", retained["shots"])

@@ -69,7 +69,7 @@ proposed work, in dependency order:
 - **proposed-first-bit-readout-controls** (proposed, proposed experiment). Read qubit 79 prepared in |1> immediately and after 4000 and 12500 dt idles (readout_delay in gororoba_quantum/diagnostic_controls.py), and add a repeated readout, to separate preparation, relaxation and measurement back-action behind the first-bit correlation. Depends on hw-first-bit-correlation.
 - **proposed-echo-matched-dilation** (proposed, proposed experiment). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases. Depends on singular-sector-split.
 - **proposed-scaffold-ab** (proposed, proposed experiment). Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss. Depends on hw-walk-scaffold-floor.
-- **proposed-census-frequency** (proposed, proposed experiment). Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function. Depends on cd-associator-census.
+- **proposed-census-frequency** (proposed, proposed experiment). Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 with f = 231/512, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-, as a test of how faithfully hardware carries the sign function. Depends on cd-associator-census.
 <!-- research-state:end -->
 
 The correction pilot, coherence window, ripple and rank-sector transfers,

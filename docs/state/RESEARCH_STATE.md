@@ -358,8 +358,10 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 
 ## Proposed claims
 
-- **proposed-census-frequency** (proposed experiment, algebra). Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = 1/2 - V (1/2 - 231/512), with bright and dark references fixing V, as a test of how faithfully hardware carries the sign function.
-  Boundary: Tests implementation fidelity, not the census theorem, which is proved.
+- **proposed-census-frequency** (proposed experiment, algebra). Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 with f = 231/512, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-, as a test of how faithfully hardware carries the sign function.
+  Boundary: Tests implementation fidelity, not the census theorem, which is proved. Under the Kingston noise model the factorized witness compiles to about 434 CZ with V+ = 0.370 and V- = 0.346, so a single visibility misses the census by 0.005 and single-pair references move it by +-0.02; the hardware visibility and shot cost stay unmeasured.
+  Evidence: [result.json](../evidence/census_frequency_design/result.json), [README.md](../evidence/census_frequency_design/README.md).
+  Gates: replayed by core-288.
   Depends on: cd-associator-census.
 - **proposed-signed-kernel-probe** (proposed experiment, implementation). Perturb the certified kernel u = (e4 - e15)/sqrt2 of L_(e1+e10) by t L_e2: the dark probability t^2/(2+|t|)^2 is even in t, while the Hermitian dilation reference reads Re<v|B(t)|u> = t/(2+|t|), signed and first order.
   Boundary: Priced against direct counting before any hardware case; no universal speedup follows.
