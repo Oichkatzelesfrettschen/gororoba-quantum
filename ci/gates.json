@@ -2308,6 +2308,14 @@
   {
    "suite": "core",
    "cwd": ".",
+   "cmd": "cmp docs/evidence/rocq_kaggle_replay/result.json results/kaggle/2026-10-16T085651Z-gororoba-rocq-replay/output/output/repo/results/kaggle_out/rocq_replay.json && cmp docs/evidence/rocq_kaggle_replay/result-b977e43f.json results/kaggle/2026-10-16T034219Z-gororoba-rocq-replay/output/output/repo/results/kaggle_out/rocq_replay.json",
+   "name": "core-292",
+   "seconds": 0.1,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/compare_submitted_circuits.py --check && \"$PYTHON\" -B -O -W error scripts/compare_submitted_circuits.py --check",
    "name": "core-281",
    "seconds": 1.0,
