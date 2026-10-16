@@ -4,34 +4,43 @@ The held conditional Ramsey case (gororoba_quantum/conditional_ramsey.py,
 docs/notes/conditional_ramsey_hamiltonian.md) quotes delta-method standard
 errors computed from noisy laws with every rate at zero, because live_run's
 noise model carries no detuning and no Z Z term. This script asks whether
-those errors hold once the rates the case is meant to find are present:
+those errors, and the intervals a collected run reports, hold once the rates
+the case is meant to find are present.
 
-- For each pair and scenario it compiles every arm to the snapshot Target
-  (calibration_snapshot.build_target) on the named physical qubits, inserts
-  the reduced Hamiltonian exp(-i H t) of the scenario as a noise-free
-  diagonal unitary right after each idle, and computes the exact noisy law of
-  each circuit: Aer density matrix with the snapshot's gate, idle and
-  measurement relaxation noise, then the snapshot's per-qubit assignment
-  channel. The Hamiltonian is diagonal and the relaxation channels are phase
-  covariant, so placing exp(-i H t) after the idle equals evolving under it
-  during the idle.
-- It reports the noise-free recovery of every parameter from the exact laws
-  (the systematic error the noise leaves), the delta-method standard error at
-  ``--shots`` (conditional_ramsey.one_shot_standard_errors on the same laws),
-  and the Monte Carlo spread, 95 percent interval coverage of the injected
-  value, unwrap slips and falsifier rejection rate over ``--trials``
-  multinomial resamples of the whole job.
+Laws. Each arm is compiled to the snapshot Target on the pair's physical
+qubits with every idle cut into slices of at most SLICE_DT, and each slice is
+followed by its share of the reduced Hamiltonian exp(-i H dt_k) as a
+noise-free diagonal unitary. Amplitude damping on B does not commute with
+Z_A Z_B, so a slice bounds the error of placing the Hamiltonian after its
+relaxation; ``slice_convergence`` records the unconditioned estimator's J
+bias at longer slices. snapshot_laws.outcome_law gives the exact noisy law
+of every arm (gate, idle and assignment noise of live_run's model).
+
+Statistics, over ``--trials`` multinomial resamples of the whole job at
+``--shots`` per circuit, drawn in BLOCKS seeded blocks through
+parallel.ordered_map:
+
+- systematic error: the exact-law estimate against the injected value;
+- the delta-method standard error of the exact law (the figure a case
+  quotes) against the Monte Carlo spread;
+- 95 percent coverage of the injected value with that standard error, and
+  with each trial's own plug-in error from
+  conditional_ramsey.summarize_distributions, which is what a collected run
+  reports (computed on ``--plugin-trials`` of the resamples);
+- unwrap slips and falsifier rejection, the latter with both errors.
 
 Scenario rates are in Hz; omega is each qubit's frame detuning, J the Z Z
 rate of H / hbar = (omega_A Z_A + omega_B Z_B + J Z_A Z_B) / 2 and stark a
 detuning added to A on the conditional arms only, which the falsifier must
 see as residual -2 stark.
 
-The entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE``
-reruns a reduced case of FILE on the CPU: its first pair and the scenarios
-``--scenarios`` names, at ``--trials`` resamples. Exact-law quantities must
-match FILE to 1e-8 relative, and each spread-to-SE ratio within five standard
-errors of the difference of two independent spread estimates.
+The entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run
+DIR`` requires FILE to be byte-identical to the result collected in the
+Kaggle run DIR (its collect.json ledger), then reruns a reduced case on the
+CPU: the first pair and the ``--scenarios`` named, at ``--trials``
+resamples. Exact-law estimates and delta-method errors must match FILE to
+1e-8 relative, and each spread-to-error ratio must agree within five
+standard errors of the difference of two independent spread estimates.
 """
 
 from __future__ import annotations
@@ -53,12 +62,16 @@ import numpy as np  # noqa: E402
 import qiskit  # noqa: E402
 import qiskit_aer  # noqa: E402
 from qiskit import QuantumCircuit, transpile  # noqa: E402
+from qiskit.circuit import Instruction  # noqa: E402
 from qiskit.circuit.library import UnitaryGate  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import conditional_ramsey as cr  # noqa: E402
+import parallel  # noqa: E402
+import snapshot_laws  # noqa: E402
 
 SNAPSHOT = ROOT / "docs/evidence/calibration/ibm_kingston.json"
+OUTPUT = "results/kaggle_out/conditional_ramsey_power.json"
 # (A, B) physical qubits of the two held records; the coherence window's work
 # qubits are 68 and 66 with 67 between them.
 PAIRS = ((68, 67), (67, 66))
@@ -83,6 +96,12 @@ Z95 = 1.959963984540054
 # A sector rate further than this many standard errors from its exact-law
 # value is a phase-unwrap slip, not sampling noise.
 SLIP_SE = 8.0
+# Longest idle slice in dt (0.5 us); slice_convergence records how far the
+# unconditioned J bias moves at longer slices and with the idle unsliced.
+SLICE_DT = 125
+CONVERGENCE_SLICES = (10000, 500, 250)
+CONVERGENCE_CASE = ((67, 66), "split")
+BLOCKS = 16
 
 
 def injected(scenario: dict[str, float]) -> dict[str, float]:
@@ -96,10 +115,20 @@ def injected(scenario: dict[str, float]) -> dict[str, float]:
     }
 
 
-def marked_idle(circuit: QuantumCircuit, sector: str, delay: int) -> None:
-    """The design's idle followed by a labeled barrier where the Hamiltonian goes."""
-    cr.idle(circuit, sector, delay)
-    circuit.barrier([0, 1], label=f"H:{sector}:{delay}")
+def sliced_idle(slice_dt: int) -> cr.Evolution:
+    """The design's idle cut into slices of at most slice_dt, each followed by a labeled barrier."""
+
+    def evolve(circuit: QuantumCircuit, sector: str, delay: int) -> None:
+        if not delay:
+            return
+        count = math.ceil(delay / slice_dt)
+        base, extra = divmod(delay, count)
+        for index in range(count):
+            length = base + (1 if index < extra else 0)
+            circuit.delay(length, [0, 1], unit="dt")
+            circuit.barrier([0, 1], label=f"H:{sector}:{length}")
+
+    return evolve
 
 
 def hamiltonian_unitary(rates: dict[str, float], sector: str, delay: int) -> UnitaryGate:
@@ -114,163 +143,148 @@ def hamiltonian_unitary(rates: dict[str, float], sector: str, delay: int) -> Uni
     return UnitaryGate(np.diag(phases), label="hamiltonian")
 
 
-_COMPILED: dict[tuple[str, tuple[int, int]], dict[str, QuantumCircuit]] = {}
+_COMPILED: dict[tuple[str, tuple[int, int], int], dict[str, QuantumCircuit]] = {}
 
 
-def compiled_arms(snapshot: dict[str, Any], pair: tuple[int, int]) -> dict[str, QuantumCircuit]:
+def compiled_arms(snapshot: dict[str, Any], pair: tuple[int, int], slice_dt: int) -> dict[str, QuantumCircuit]:
     """Every member of the design compiled to the snapshot Target with A on pair[0], B on pair[1]."""
-    key = (snapshot["calibration"], pair)
+    key = (snapshot["calibration"], pair, slice_dt)
     if key not in _COMPILED:
-        _COMPILED[key] = _compile_arms(snapshot, pair)
+        view, _ = calibration_snapshot.noise_model(snapshot)
+        arms = {}
+        for name, circuit, _ in cr.circuits(sliced_idle(slice_dt)):
+            compiled = transpile(
+                circuit, view, initial_layout=list(pair), optimization_level=1, seed_transpiler=SEED_TRANSPILER
+            )
+            final = compiled.layout.final_index_layout() if compiled.layout else [0, 1]
+            if [final[0], final[1]] != list(pair):
+                raise SystemExit(f"{name}: routing moved the pair to {final[:2]}")
+            arms[name] = compiled
+        _COMPILED[key] = arms
     return _COMPILED[key]
 
 
-def _compile_arms(snapshot: dict[str, Any], pair: tuple[int, int]) -> dict[str, QuantumCircuit]:
-    view, _ = calibration_snapshot.noise_model(snapshot)
-    out = {}
-    for name, circuit, _ in cr.circuits(marked_idle):
-        compiled = transpile(
-            circuit, view, initial_layout=list(pair), optimization_level=1, seed_transpiler=SEED_TRANSPILER
-        )
-        final = compiled.layout.final_index_layout() if compiled.layout else [0, 1]
-        if [final[0], final[1]] != list(pair):
-            raise SystemExit(f"{name}: routing moved the pair to {final[:2]}")
-        out[name] = compiled
-    return out
-
-
-def pair_snapshot(snapshot: dict[str, Any], pair: tuple[int, int]) -> dict[str, Any]:
-    """The snapshot restricted to the pair, renumbered (pair[0], pair[1]) -> (0, 1).
-
-    live_run's noise is local: each gate error and relaxation channel reads
-    only its own qubits' entries, so the restriction carries the same channels
-    on a two-qubit register that Aer simulates without the idle 154 qubits.
-    """
-    index = {q: k for k, q in enumerate(pair)}
-    instructions = {
-        op: [dict(row, qargs=[index[q] for q in row["qargs"]]) for row in rows if all(q in index for q in row["qargs"])]
-        for op, rows in snapshot["instructions"].items()
-    }
-    return dict(snapshot, num_qubits=2, qubits=[snapshot["qubits"][q] for q in pair], instructions=instructions)
-
-
-def law(
-    simulator: Any,
-    compiled: QuantumCircuit,
-    pair: tuple[int, int],
-    rates: dict[str, float],
-    flips: dict[int, tuple[float, float]],
-) -> np.ndarray:
-    """Exact four-outcome law (index b << 1 | a) of one compiled arm with the Hamiltonian inserted.
-
-    The arm is moved onto a two-qubit register (physical pair[k] -> k) and
-    simulated against pair_snapshot's noise; live_run's model attaches no
-    quantum error to measure, so the pre-measurement probabilities followed by
-    the assignment channel are the outcome law.
-    """
-    index = {q: k for k, q in enumerate(pair)}
-    body = QuantumCircuit(2)
-    measured: list[int] = []
-    for instruction in compiled.data:
-        op = instruction.operation
-        qubits = [compiled.find_bit(q).index for q in instruction.qubits]
-        if op.name == "barrier" and (op.label or "").startswith("H:"):
-            _, sector, delay = op.label.split(":")
-            if qubits != list(pair):
-                raise SystemExit(f"Hamiltonian marker on {qubits}, expected {list(pair)}")
-            body.append(hamiltonian_unitary(rates, sector, int(delay)), [0, 1])
-            continue
-        if op.name == "barrier":
-            continue
-        if any(q not in index for q in qubits):
-            raise SystemExit(f"{op.name} acts on {qubits} outside the pair {list(pair)}")
-        if op.name == "measure":
-            measured.append(qubits[0])
-            continue
-        body.append(op, [index[q] for q in qubits])
-    if sorted(measured) != sorted(pair):
-        raise SystemExit(f"measured {measured}, expected {list(pair)}")
-    body.save_probabilities([0, 1], label="p")
-    probs = np.asarray(simulator.run(body).result().data(0)["p"], dtype=float)
-
-    def channel(q: int) -> np.ndarray:
-        e10, e01 = flips[q]
-        return np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])
-
-    out = np.kron(channel(pair[1]), channel(pair[0])) @ probs
-    return np.clip(out, 0.0, None) / out.sum()
-
-
 def exact_laws(
-    snapshot: dict[str, Any], pair: tuple[int, int], scenario: dict[str, float], device: str
+    snapshot: dict[str, Any], pair: tuple[int, int], scenario: dict[str, float], device: str, slice_dt: int
 ) -> dict[str, np.ndarray]:
+    """Exact noisy law of every arm, with each slice's exp(-i H dt_k) in place of its labeled barrier."""
     to_rad = 2.0 * math.pi * snapshot["dt"]
     rates = {key: value * to_rad for key, value in scenario.items()}
-    reduced = pair_snapshot(snapshot, pair)
-    simulator = calibration_snapshot.noise_simulator(reduced, device)
-    _, noise = calibration_snapshot.noise_model(reduced)
-    if noise._local_quantum_errors.get("measure"):
-        raise SystemExit("the noise model attaches a quantum error to measure; law() would drop it")
-    flips = {q: (snapshot["qubits"][q]["e10"], snapshot["qubits"][q]["e01"]) for q in pair}
-    arms = compiled_arms(snapshot, pair)
-    return {name: law(simulator, compiled, pair, rates, flips) for name, compiled in arms.items()}
+
+    def insert(operation: Instruction, qubits: list[int]) -> Instruction | None:
+        if operation.name != "barrier":
+            return operation
+        label = operation.label or ""
+        if not label.startswith("H:"):
+            return None
+        if qubits != list(pair):
+            raise SystemExit(f"Hamiltonian marker on {qubits}, expected {list(pair)}")
+        _, sector, length = label.split(":")
+        return hamiltonian_unitary(rates, sector, int(length))
+
+    return {
+        name: snapshot_laws.outcome_law(snapshot, compiled, device, insert)
+        for name, compiled in compiled_arms(snapshot, pair, slice_dt).items()
+    }
+
+
+class LawTask:
+    """Picklable worker: (pair, scenario name, slice) -> exact laws and their summaries."""
+
+    def __init__(self, snapshot: dict[str, Any], device: str) -> None:
+        self.snapshot = snapshot
+        self.device = device
+
+    def __call__(self, item: tuple[tuple[int, int], str, int]) -> dict[str, Any]:
+        pair, name, slice_dt = item
+        laws = exact_laws(self.snapshot, pair, SCENARIOS[name], self.device, slice_dt)
+        return {
+            "laws": {member: [float(x) for x in law] for member, law in laws.items()},
+            "summary": cr.summarize_distributions(laws),
+            "unconditioned": cr.point_summary(laws, postselect=False),
+        }
+
+
+def sample_block(item: dict[str, Any]) -> dict[str, Any]:
+    """One seeded block of whole-job resamples: point estimates, and plug-in errors on its first trials."""
+    rng = np.random.default_rng(item["seed"])
+    laws = {member: np.asarray(law) for member, law in item["laws"].items()}
+    shots = item["shots"]
+    estimates: dict[str, list[float]] = {key: [] for key in (*KEYS, *RATE_KEYS)}
+    plugin: dict[str, list[float]] = {key: [] for key in KEYS}
+    for trial in range(item["trials"]):
+        sampled = {member: rng.multinomial(shots, law / law.sum()) / shots for member, law in laws.items()}
+        if trial < item["plugin_trials"]:
+            summary = cr.summarize_distributions(sampled)
+            for key in KEYS:
+                plugin[key].append(cr.standard_error(summary, key, shots))
+        else:
+            summary = cr.point_summary(sampled)
+        for key in estimates:
+            estimates[key].append(summary[key])
+    return {"estimates": estimates, "plugin_se": plugin}
 
 
 def to_hz(value: float, dt: float) -> float:
     return cr.rate_hz(value, dt)
 
 
-def evaluate(
-    snapshot: dict[str, Any], pair: tuple[int, int], name: str, shots: int, trials: int, device: str
+def aggregate(
+    pair: tuple[int, int], name: str, exact: dict[str, Any], blocks: list[dict[str, Any]], shots: int, dt: float
 ) -> dict[str, Any]:
-    dt = snapshot["dt"]
-    scenario = SCENARIOS[name]
-    laws = exact_laws(snapshot, pair, scenario, device)
-    exact = cr.summarize_distributions(laws)
-    expected = injected(scenario)
-    rng = np.random.default_rng([SEED_SAMPLES, pair[0], pair[1], list(SCENARIOS).index(name)])
-    draws: dict[str, list[float]] = {key: [] for key in (*KEYS, *RATE_KEYS)}
-    for _ in range(trials):
-        sampled = {member: rng.multinomial(shots, p) / shots for member, p in laws.items()}
-        values = cr.point_summary(sampled)
-        for key in draws:
-            draws[key].append(values[key])
-    rate_se = {key: cr.standard_error(exact, key, shots) for key in RATE_KEYS}
+    summary, unconditioned = exact["summary"], exact["unconditioned"]
+    expected = injected(SCENARIOS[name])
+    draws = {key: np.concatenate([block["estimates"][key] for block in blocks]) for key in (*KEYS, *RATE_KEYS)}
+    starts = np.cumsum([0] + [len(block["estimates"][KEYS[0]]) for block in blocks[:-1]])
+    plugin_index = np.concatenate(
+        [start + np.arange(len(block["plugin_se"][KEYS[0]])) for start, block in zip(starts, blocks, strict=True)]
+    ).astype(int)
+    plugin_se = {key: np.concatenate([block["plugin_se"][key] for block in blocks]) for key in KEYS}
+    trials = len(draws[KEYS[0]])
     slipped = np.zeros(trials, dtype=bool)
     for key in RATE_KEYS:
-        slipped |= np.abs(np.asarray(draws[key]) - exact[key]) > SLIP_SE * rate_se[key]
+        slipped |= np.abs(draws[key] - summary[key]) > SLIP_SE * cr.standard_error(summary, key, shots)
+    kept = ~slipped
+    plugin_kept = kept[plugin_index]
     keys: dict[str, Any] = {}
     for key in KEYS:
-        values = np.asarray(draws[key])[~slipped]
-        se = cr.standard_error(exact, key, shots)
+        kept_draws = draws[key][kept]
+        se = cr.standard_error(summary, key, shots)
         truth = expected[key] * 2.0 * math.pi * dt
-        spread = float(np.std(values, ddof=1))
+        spread = float(np.std(kept_draws, ddof=1))
+        plugin_draws = draws[key][plugin_index][plugin_kept]
+        plugin_errors = plugin_se[key][plugin_kept]
         keys[key] = {
             "injected_hz": expected[key],
-            "exact_law_hz": to_hz(exact[key], dt),
-            "systematic_hz": to_hz(exact[key] - truth, dt),
+            "exact_law_hz": to_hz(summary[key], dt),
+            "systematic_hz": to_hz(summary[key] - truth, dt),
+            "unconditioned_systematic_hz": to_hz(unconditioned[key] - truth, dt),
             "delta_se_hz": to_hz(se, dt),
             "monte_carlo_sd_hz": to_hz(spread, dt),
             "sd_to_se": spread / se,
-            "monte_carlo_bias_hz": to_hz(float(np.mean(values)) - exact[key], dt),
-            "coverage_95": float(np.mean(np.abs(values - truth) <= Z95 * se)),
+            "monte_carlo_bias_hz": to_hz(float(np.mean(kept_draws)) - summary[key], dt),
+            "coverage_95": float(np.mean(np.abs(kept_draws - truth) <= Z95 * se)),
+            "coverage_95_plugin": float(np.mean(np.abs(plugin_draws - truth) <= Z95 * plugin_errors)),
+            "plugin_se_hz_median": to_hz(float(np.median(plugin_errors)), dt),
         }
-    unconditioned = cr.point_summary(laws, postselect=False)
-    unconditioned_systematic = {key: to_hz(unconditioned[key] - expected[key] * 2.0 * math.pi * dt, dt) for key in KEYS}
-    residual = np.asarray(draws["falsifier_residual"])
-    residual_se = cr.standard_error(exact, "falsifier_residual", shots)
+    residual = draws["falsifier_residual"][kept]
+    residual_se = cr.standard_error(summary, "falsifier_residual", shots)
+    plugin_residual = draws["falsifier_residual"][plugin_index][plugin_kept]
     return {
         "pair": list(pair),
         "scenario": name,
-        "rates_hz": scenario,
+        "rates_hz": SCENARIOS[name],
         "trials": trials,
+        "plugin_trials": len(plugin_index),
         "slips": int(slipped.sum()),
         "falsifier_rejection_rate": float(np.mean(np.abs(residual) > Z95 * residual_se)),
+        "falsifier_rejection_rate_plugin": float(
+            np.mean(np.abs(plugin_residual) > Z95 * plugin_se["falsifier_residual"][plugin_kept])
+        ),
         "visibility_10000dt": {
-            sector: float(exact[f"{sector}_{cr.DELAYS_DT[-1]}dt_visibility"]) for sector in cr.SECTORS
+            sector: float(summary[f"{sector}_{cr.DELAYS_DT[-1]}dt_visibility"]) for sector in cr.SECTORS
         },
         "keys": keys,
-        "unconditioned_systematic_hz": unconditioned_systematic,
     }
 
 
@@ -281,20 +295,68 @@ def environment(device: str) -> dict[str, Any]:
         "qiskit": qiskit.__version__,
         "qiskit_aer": qiskit_aer.__version__,
         "device": device,
+        "workers": parallel.workers(),
     }
 
 
-def run(pairs: tuple[tuple[int, int], ...], names: list[str], shots: int, trials: int, device: str) -> dict[str, Any]:
+def run(
+    pairs: tuple[tuple[int, int], ...],
+    names: list[str],
+    shots: int,
+    trials: int,
+    plugin_trials: int,
+    device: str,
+    convergence: bool = True,
+) -> dict[str, Any]:
+    if trials % BLOCKS or plugin_trials % BLOCKS or plugin_trials > trials:
+        raise SystemExit(f"--trials and --plugin-trials must be multiples of {BLOCKS}, plugin at most trials")
     snapshot = json.loads(SNAPSHOT.read_text(encoding="utf-8"))
+    dt = snapshot["dt"]
     started = time.time()
-    results = [evaluate(snapshot, pair, name, shots, trials, device) for pair in pairs for name in names]
+    cases = [(pair, name) for pair in pairs for name in names]
+    extra = [(CONVERGENCE_CASE[0], CONVERGENCE_CASE[1], s) for s in CONVERGENCE_SLICES] if convergence else []
+    items = [(pair, name, SLICE_DT) for pair, name in cases] + extra
+    exact = parallel.ordered_map(LawTask(snapshot, device), items, min_items=1)
+    blocks = [
+        {
+            "seed": [SEED_SAMPLES, pair[0], pair[1], list(SCENARIOS).index(name), block],
+            "laws": exact[index]["laws"],
+            "shots": shots,
+            "trials": trials // BLOCKS,
+            "plugin_trials": plugin_trials // BLOCKS,
+        }
+        for index, (pair, name) in enumerate(cases)
+        for block in range(BLOCKS)
+    ]
+    sampled = parallel.ordered_map(sample_block, blocks, min_items=1)
+    results = [
+        aggregate(pair, name, exact[index], sampled[index * BLOCKS : (index + 1) * BLOCKS], shots, dt)
+        for index, (pair, name) in enumerate(cases)
+    ]
+    expected_j = injected(SCENARIOS[CONVERGENCE_CASE[1]])["zz_j"]
+    convergence_rows = [
+        {
+            "slice_dt": slice_dt,
+            "unconditioned_zz_j_bias_hz": to_hz(row["unconditioned"]["zz_j"], dt) - expected_j,
+            "postselected_zz_j_bias_hz": to_hz(row["summary"]["zz_j"], dt) - expected_j,
+        }
+        for (_, _, slice_dt), row in zip(extra, exact[len(cases) :], strict=True)
+    ]
     return {
-        "schema": "gororoba-conditional-ramsey-power-v1",
+        "schema": "gororoba-conditional-ramsey-power-v2",
         "snapshot": str(SNAPSHOT.relative_to(ROOT)),
         "snapshot_sha256": hashlib.sha256(SNAPSHOT.read_bytes()).hexdigest(),
         "calibration": snapshot["calibration"],
         "shots": shots,
         "trials": trials,
+        "plugin_trials": plugin_trials,
+        "blocks": BLOCKS,
+        "slice_dt": SLICE_DT,
+        "slice_convergence": {
+            "pair": list(CONVERGENCE_CASE[0]),
+            "scenario": CONVERGENCE_CASE[1],
+            "rows": convergence_rows,
+        },
         "slip_threshold_se": SLIP_SE,
         "seed_samples": SEED_SAMPLES,
         "seed_transpiler": SEED_TRANSPILER,
@@ -304,17 +366,27 @@ def run(pairs: tuple[tuple[int, int], ...], names: list[str], shots: int, trials
     }
 
 
-def check(path: Path, names: list[str], trials: int) -> int:
+def bound_to_run(path: Path, run_dir: Path) -> list[str]:
+    """FILE must be the byte-identical output that run_dir's collect.json ledger records."""
+    ledger = json.loads((run_dir / "collect.json").read_text(encoding="utf-8"))
+    recorded = ledger["files"].get(f"output/repo/{OUTPUT}")
+    digest = hashlib.sha256(path.read_bytes()).hexdigest()
+    if recorded is None:
+        return [f"{run_dir}/collect.json records no {OUTPUT}"]
+    return [] if digest == recorded else [f"{path} sha256 {digest} differs from the collected {recorded}"]
+
+
+def check(path: Path, run_dir: Path, names: list[str], trials: int, plugin_trials: int) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
+    failures = bound_to_run(path, run_dir)
     pair = tuple(retained["results"][0]["pair"])
-    replay = run((pair,), names, retained["shots"], trials, "CPU")
+    replay = run((pair,), names, retained["shots"], trials, plugin_trials, "CPU", convergence=False)
     by_key = {(tuple(r["pair"]), r["scenario"]): r for r in retained["results"]}
-    failures = []
     for result in replay["results"]:
         old = by_key[(tuple(result["pair"]), result["scenario"])]
         for key, fresh in result["keys"].items():
             kept = old["keys"][key]
-            for field in ("exact_law_hz", "delta_se_hz"):
+            for field in ("exact_law_hz", "delta_se_hz", "unconditioned_systematic_hz"):
                 if not math.isclose(fresh[field], kept[field], rel_tol=1e-8, abs_tol=1e-6):
                     failures.append(f"{result['scenario']} {key} {field}: {fresh[field]} against {kept[field]}")
             tolerance = 5.0 * math.sqrt(1.0 / (2 * (trials - 1)) + 1.0 / (2 * (retained["trials"] - 1)))
@@ -334,18 +406,23 @@ def main() -> int:
     parser.add_argument("--scenarios", default="all", help="comma-separated names from SCENARIOS, or all")
     parser.add_argument("--shots", type=int, default=1024)
     parser.add_argument("--trials", type=int, default=4000)
+    parser.add_argument("--plugin-trials", type=int, default=400)
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
+    parser.add_argument("--run", type=Path, help="Kaggle run directory whose collected output --check binds")
     args = parser.parse_args()
     names = list(SCENARIOS) if args.scenarios == "all" else args.scenarios.split(",")
     unknown = sorted(set(names) - set(SCENARIOS))
     if unknown:
         parser.error(f"unknown scenarios {unknown}")
     if args.check:
-        return check(args.check, names, args.trials)
+        if args.run is None:
+            parser.error("--check needs --run")
+        return check(args.check, args.run, names, args.trials, args.plugin_trials)
     if args.out is None:
         parser.error("--out is required without --check")
-    result = run(PAIRS, names, args.shots, args.trials, os.environ.get("GOROROBA_AER_DEVICE", "CPU"))
+    device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
+    result = run(PAIRS, names, args.shots, args.trials, args.plugin_trials, device)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(f"wrote {args.out}: {len(result['results'])} pair-scenarios in {result['seconds']} s")
