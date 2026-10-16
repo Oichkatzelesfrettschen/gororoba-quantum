@@ -1,0 +1,38 @@
+{
+ "schema": "qi-submission-v2",
+ "state": "enqueued",
+ "created_utc": "2026-10-16T22:49:30+00:00",
+ "approval": "User, 2026-10-16: do your dry runs on qx ... to test for success; and then and only then run on a real quantum processor tuna (QX dry run of the coupler ZZ map passed: 10 jobs completed, all rates consistent with zero)",
+ "backend": "tuna_17",
+ "backend_type_id": 7,
+ "backend_status_at_submit": "executing",
+ "user_queue_before": 0,
+ "cases_sha256": "eb309db2da7babcf0c2b4477a750d06d084899da6b7367859962f16d4da203f3",
+ "batch_job": 869702,
+ "project": 765515,
+ "shots": 16384,
+ "jobs": [
+  {
+   "file": "readout-0.cq",
+   "job": 1526888,
+   "sha256": "a36928ee64d24ae0e45618bfb9192a49f1d6993a9b320bae474cd5ea7a75a74d"
+  },
+  {
+   "file": "readout-1.cq",
+   "job": 1526889,
+   "sha256": "1ed49e3399392d2e15913d90631fa7088899da51a6644baf1d74671e8673a6ff"
+  },
+  {
+   "file": "targets-P-x-d025.cq",
+   "job": 1526890,
+   "sha256": "5fbab405cc913452b798caf40cf532855bc93af27fdb9abb1fbc779e1f560af9"
+  }
+ ],
+ "submitted_utc": "2026-10-16T22:49:30+00:00",
+ "queue_at_submit": {
+  "number_of_jobs_in_queue": 5,
+  "min_wait_time_in_queue_secs": 3.0,
+  "avg_wait_time_in_queue_secs": 81.0,
+  "max_wait_time_in_queue_secs": 164.0
+ }
+}

@@ -42,7 +42,11 @@ ALAP, evolves all 17 qubits under injected omega_q and every J_ab per cycle,
 and requires the analysis to recover them; --analyze OUT RUN_DIR... analyzes
 collected batches.
 
-Usage: "$PYTHON" scripts/qi_coupler_zz_map.py (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR...)
+--sanity RUN_DIR checks one collected batch (completion, readout errors,
+spectator populations) before the next is submitted.
+
+Usage: "$PYTHON" scripts/qi_coupler_zz_map.py
+       (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... | --sanity RUN_DIR)
        (DIR is the cases root, results/quantum_inspire/cases)
 """
 
@@ -382,6 +386,48 @@ def conformance(profile: str) -> str:
     return f"conformance {profile}: {couplers} couplers from both ends and {n} frequencies within {worst:.2g} Hz"
 
 
+SANITY_READOUT_ERROR = 0.2
+SANITY_SPECTATOR = (0.3, 0.7)
+
+
+def sanity(run: Path) -> list[str]:
+    """Checks one collected batch must pass before the next batch is submitted.
+
+    Every job completed with its requested shots; in a readout circuit every
+    qubit's assignment error stays below SANITY_READOUT_ERROR; in a Ramsey
+    circuit every spectator, prepared in |+>, reads 1 with a probability inside
+    SANITY_SPECTATOR. A failure stops the series before it spends more device
+    time.
+    """
+    case = json.loads((run / "cases.json").read_text(encoding="utf-8"))
+    collected = json.loads((run / "results.json").read_text(encoding="utf-8"))
+    problems = []
+    for row in collected["jobs"]:
+        done = sum(r["shots_done"] for r in row["results"])
+        if row["job"]["status"] != "completed" or done != case["shots"]:
+            problems.append(f"{row['file']}: {row['job']['status']}, {done} of {case['shots']} shots")
+    backend = case["backend"]
+    profile = next(name for name, settings in PROFILES.items() if settings["identifier"] == backend)
+    meta, _ = members(profile)
+    for row in case["circuits"]:
+        path = run / "raw" / f"{row['file']}.json"
+        if not path.exists():
+            continue
+        shots = json.loads(path.read_text(encoding="utf-8"))
+        ones = [sum(bit(s, q) for s in shots) / len(shots) for q in range(meta["nqubits"])]
+        if row["file"] in ("readout-0.cq", "readout-1.cq"):
+            error = ones if row["file"] == "readout-0.cq" else [1 - p for p in ones]
+            problems += [f"{row['file']} q{q}: error {e:.3f}" for q, e in enumerate(error) if e > SANITY_READOUT_ERROR]
+        else:
+            role = row["file"].split("-")[1]
+            spectators = meta["parts"]["Q" if role == "P" else "P"]
+            low, high = SANITY_SPECTATOR
+            problems += [
+                f"{row['file']} spectator q{q}: P1 {ones[q]:.3f}" for q in spectators if not low <= ones[q] <= high
+            ]
+    return problems
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -389,7 +435,14 @@ def main() -> int:
     mode.add_argument("--check", type=Path)
     mode.add_argument("--conformance", action="store_true")
     mode.add_argument("--analyze", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
+    mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
     args = parser.parse_args()
+    if args.sanity:
+        problems = sanity(args.sanity)
+        for problem in problems:
+            print(problem)
+        print(f"sanity {args.sanity.name}: {'FAIL' if problems else 'pass'}")
+        return 1 if problems else 0
     if args.conformance:
         for profile in PROFILES:
             print(conformance(profile))
