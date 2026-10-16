@@ -134,6 +134,12 @@ RELEASES: dict[str, tuple[str, str, str]] = {
         PYPI + "pyoctonion/3.12/",
         "a0ed5c58dc0f19368cc794eb076403b48a7cc6e35cf0a8bfe1e45f7d6b906d0c",
     ),
+    # Released only as a GitHub tag.
+    "hyprat": (
+        "0.2.0",
+        GITHUB + "alreich/hyper_rationals/archive/refs/tags/v0.2.0.tar.gz",
+        "17ae936c3fc540172c7d4b6c918620e0a96808c2bccc6e5bf8953dcec24c715f",
+    ),
     # PyPI publishes this release only as a wheel.
     "Octonion-Sedenion": (
         "1.0.0",
@@ -159,6 +165,7 @@ ARCHIVE_URLS = {
     "kingdon": SDIST.format("k", "kingdon", "3.0.0"),
     "galgebra": SDIST.format("g", "galgebra", "0.6.0"),
     "pyoctonion": SDIST.format("p", "pyoctonion", "3.12"),
+    "hyprat": RELEASES["hyprat"][1],
     "Octonion-Sedenion": "https://files.pythonhosted.org/packages/b2/57/"
     "92944779eda89a8adf6ba3284df0e15793a7494a14e83a5b5532c3d2dea0/octonion_sedenion-1.0.0-py3-none-any.whl",
 }
@@ -256,6 +263,9 @@ RELATIONS: dict[str, dict[str, dict[str, Any]]] = {
     "galgebra": {"4": IDENTICAL},
     "pyoctonion": {"8": IDENTICAL},
     "Octonion-Sedenion": {"8": IDENTICAL, "16": IDENTICAL},
+    # Doubling (a, b)(c, d) = (ac + mu conj(d) b, da + b conj(c)): mu = -1 at
+    # every level is cd_core; signs (-1, -1, +1) are the split octonions.
+    "hyprat": {"8": IDENTICAL, "16": IDENTICAL, "split-8": SPLIT},
 }
 # Basis squares of the split octonion tables: e1, e2, e3 square to -1, e4 to e7 to +1.
 SPLIT_SQUARES = [1, -1, -1, -1, 1, 1, 1, 1]
@@ -433,6 +443,8 @@ def extract(archives: Path) -> dict[str, Any]:
     put("octonion", 8, unit_table(8, lambda i, j: constants[i, j]), RELATIONS["octonion"]["8"])
     for name, dim, table in quaternion_and_clifford_tables():
         put(name, dim, table, RELATIONS[name][str(dim)])
+    for key, table in hyprat_tables().items():
+        put("hyprat", key, table, RELATIONS["hyprat"][key])
     for name, dim, table, note in octonion_and_sedenion_tables():
         put(name, dim, table, RELATIONS[name][str(dim)])
         if note:
@@ -547,6 +559,19 @@ def quaternion_and_clifford_tables() -> list[tuple[str, int, Table]]:
             unit_table(4, lambda p, q: [float(c) for c in (ga_basis[p] * ga_basis[q]).blade_coefs(ga_basis)]),
         ),
     ]
+
+
+def hyprat_tables() -> dict[str, Table]:
+    """hyprat's exact rational tables at D = 8 and 16 (mu = -1) and its split octonions (signs -1, -1, +1)."""
+    import hyprat
+
+    require_bound(hyprat, "hyprat")
+
+    def table(dim: int, signs: tuple[int, ...] | None) -> Table:
+        units = [hyprat.Hy.from_array(basis(k, dim), signs=signs) for k in range(dim)]
+        return unit_table(dim, lambda p, q: [float(c) for c in (units[p] * units[q]).to_array()])
+
+    return {"8": table(8, None), "16": table(16, None), "split-8": table(8, (-1, -1, 1))}
 
 
 def octonion_and_sedenion_tables() -> list[tuple[str, int, Table, str | None]]:
@@ -668,10 +693,14 @@ def check(data: dict[str, Any]) -> int:
         for key, table in entry["tables"].items():
             check_table(name, int(str(key).rsplit("-", 1)[-1]), table)
             checked += 1
-    split = packages["splitoct"]["tables"]["8"], packages["hypercomplex-engine"]["tables"]["split-8"]
+    split = (
+        packages["splitoct"]["tables"]["8"],
+        packages["hypercomplex-engine"]["tables"]["split-8"],
+        packages["hyprat"]["tables"]["split-8"],
+    )
     require(
-        (split[0]["signs"], split[0]["index"]) == (split[1]["signs"], split[1]["index"]),
-        "the splitoct and hypercomplex-engine split tables differ",
+        all((t["signs"], t["index"]) == (split[0]["signs"], split[0]["index"]) for t in split[1:]),
+        "the splitoct, hypercomplex-engine and hyprat split tables differ",
     )
     expressions = packages["hypercomplex-algebra"]["expression_samples"]
     require(

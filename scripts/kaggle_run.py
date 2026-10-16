@@ -80,6 +80,7 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
         "qiskit-qasm3-import==0.6.0",
         "openqasm3==1.0.1",
         "antlr4-python3-runtime==4.13.2",
+        "qiskit-addon-utils==0.4.0",
         "qiskit-experiments==0.14.2",
         "lmfit==1.3.4",
         "quimb==1.15.0",
@@ -89,6 +90,10 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
         "galois==0.4.11",
         "numba==0.68.0",
     ),
+    # Exact arithmetic beside cd_core: FLINT integers, rationals and
+    # matrices (exact rank and nullspace) and p-adic fields; neither defines
+    # a Cayley-Dickson table, so neither enters tables.json.
+    "exact-arithmetic": ("python-flint==0.9.0", "pyadic==0.3.0"),
 }
 DEFAULT_MACHINE = "NvidiaTeslaT4"
 # A TPU session needs Kaggle's TPU-VM image, which carries libtpu: a script
