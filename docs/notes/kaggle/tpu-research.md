@@ -168,6 +168,12 @@ Stated items carry their source; inferences are marked.
   30 s after a process dies; `--xla_tpu_use_dynamic_smem_negotiation` is
   rejected by the v5litepod runtime. https://github.com/Kitkitkittt/kaggle-tpu-lab ,
   https://github.com/YLiu95/kaggle-tpu-inference
+- Kaggle forum topic 745817 (2026-10-04): a TPU v5e-8 notebook queued
+  for more than 14 hours; a reply attributes the shortage to public
+  notebooks that serve GLM-5.3-Flash as an API from the free TPUs, several
+  of which the Kaggle search lists. A queue of hours is therefore the
+  expected wait for a v5e-8 batch session.
+  https://www.kaggle.com/discussions/general/745817
 - Inferred: on a TPU VM, reinstalling jax or libtpu replaces the image's
   matched pair; `pip install "jax[tpu]"` is a repair for a TPU VM whose
   libtpu is missing, a state no source describes. On a CPU session it
