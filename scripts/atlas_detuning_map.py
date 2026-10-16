@@ -24,9 +24,13 @@ CZ phase error epsilon_c enters as CPhase(epsilon_c) after every CZ on
 coupler c. For every edge the script simulates the 8 replicas, compacted to
 their active qubits, and differentiates the fringe phase by a 1 kHz detuning
 per lane qubit and a 0.01 rad CPhase per lane coupler. Four models per lane
-(lane mean, detunings, CZ phases, both) are compared by leave-one-edge-out
-RMS error against the shot-noise floor, the binomial variance of the 8
-points propagated through the fringe fit.
+(lane mean, detunings, CZ phases, both) are fitted by least squares on those
+slopes and compared by leave-one-edge-out RMS error against the shot-noise
+floor, the binomial variance of the 8 points propagated through the fringe
+fit. The slopes describe the phase only near zero error, so each physical
+model is also scored by resimulating every edge, held out or fitted, at its
+fitted detunings and CZ phases (``nonlinear_*`` scores); only those scores
+test the static-error model itself.
 
 Self-check: with no error term each edge's simulated fringe phase must equal
 the fringe phase of the recorded ideal probabilities within 1e-9 rad, so the
@@ -248,8 +252,10 @@ def lane_fit(lane: int, edges: list[dict[str, Any]], executed: Executed) -> dict
     detuning_response = np.zeros((len(edges), width))
     coupler_response = np.zeros((len(edges), len(ordered)))
     ideal_mismatch = 0.0
+    bases = []
     for e, points in enumerate(prepared):
         base = phase(points, zero, {})
+        bases.append(base)
         ideal_mismatch = max(ideal_mismatch, abs(wrap(base - edges[e]["ideal_phase"])))
         for q in range(width):
             shift = list(zero)
@@ -264,24 +270,52 @@ def lane_fit(lane: int, edges: list[dict[str, Any]], executed: Executed) -> dict
     def rms(values: Any) -> float:
         return float(math.sqrt(np.mean(np.square(values))))
 
-    def evaluate(design: np.ndarray) -> dict[str, Any]:
+    def simulated(e: int, columns: list[tuple[str, Any]], values: np.ndarray) -> float:
+        """Fringe-phase offset of edge e resimulated with the error terms at the given values."""
+        detuning = list(zero)
+        cz: dict[tuple[int, int], float] = {}
+        for (kind, key), value in zip(columns, values, strict=True):
+            if kind == "detuning":
+                detuning[key] = float(value) * KHZ
+            else:
+                cz[key] = float(value)
+        return wrap(phase(prepared[e], detuning, cz) - bases[e])
+
+    def evaluate(design: np.ndarray, columns: list[tuple[str, Any]] | None) -> dict[str, Any]:
+        """Least squares on the responses, scored linearly and, for a physical model, by resimulation.
+
+        The responses are slopes at 1 kHz and 0.01 rad; the fringe phase is
+        not linear in the error terms over the fitted range, so a physical
+        model is also scored by resimulating every edge at its fitted values.
+        """
         parameters, *_ = np.linalg.lstsq(design, measured, rcond=None)
-        loo = []
+        loo, loo_nonlinear = [], []
         for held in range(len(edges)):
             keep = [k for k in range(len(edges)) if k != held]
             fit, *_ = np.linalg.lstsq(design[keep], measured[keep], rcond=None)
             loo.append(measured[held] - design[held] @ fit)
-        return {
+            if columns is not None:
+                loo_nonlinear.append(wrap(measured[held] - simulated(held, columns, fit)))
+        model = {
             "parameters": [round(float(v), 6) for v in parameters],
             "fit_rms_rad": round(rms(measured - design @ parameters), 6),
             "leave_one_out_rms_rad": round(rms(loo), 6),
         }
+        if columns is not None:
+            residual = [wrap(measured[e] - simulated(e, columns, parameters)) for e in range(len(edges))]
+            model["nonlinear_fit_rms_rad"] = round(rms(residual), 6)
+            model["nonlinear_leave_one_out_rms_rad"] = round(rms(loo_nonlinear), 6)
+        return model
 
+    detuning_columns: list[tuple[str, Any]] = [("detuning", q) for q in range(width)]
+    coupler_columns: list[tuple[str, Any]] = [("cz", coupler) for coupler in ordered]
     models = {
-        "lane_mean": evaluate(np.ones((len(edges), 1))),
-        "detuning": evaluate(detuning_response),
-        "cz_phase": evaluate(coupler_response),
-        "detuning_and_cz_phase": evaluate(np.hstack([detuning_response, coupler_response])),
+        "lane_mean": evaluate(np.ones((len(edges), 1)), None),
+        "detuning": evaluate(detuning_response, detuning_columns),
+        "cz_phase": evaluate(coupler_response, coupler_columns),
+        "detuning_and_cz_phase": evaluate(
+            np.hstack([detuning_response, coupler_response]), detuning_columns + coupler_columns
+        ),
     }
     return {
         "lane": lane,
@@ -303,11 +337,14 @@ def run(lanes: list[int]) -> dict[str, Any]:
     executed = Executed()
     fits = [lane_fit(lane, edges[lane], executed) for lane in lanes]
     for fit in fits:
-        summary = {name: model["leave_one_out_rms_rad"] for name, model in fit["models"].items()}
+        summary = {
+            name: [model["leave_one_out_rms_rad"], model.get("nonlinear_leave_one_out_rms_rad")]
+            for name, model in fit["models"].items()
+        }
         line = {"lane": fit["lane"], "shot_noise_rms_rad": fit["shot_noise_rms_rad"], "loo": summary}
         print(json.dumps(line), flush=True)
     return {
-        "schema": "atlas-detuning-map-v2",
+        "schema": "atlas-detuning-map-v3",
         "backend": BACKEND,
         "run": RUN.relative_to(ROOT).as_posix(),
         "phases": PHASES,
@@ -340,7 +377,7 @@ def main() -> int:
                     np.allclose(model["parameters"], fresh_model["parameters"], rtol=0, atol=1e-6),
                     f"lane {fit['lane']}: {name} parameters differ",
                 )
-                for score in ("fit_rms_rad", "leave_one_out_rms_rad"):
+                for score in (key for key in model if key.endswith("rms_rad")):
                     require(
                         abs(model[score] - fresh_model[score]) <= 1e-6, f"lane {fit['lane']}: {name} {score} differs"
                     )
