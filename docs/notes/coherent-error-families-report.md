@@ -303,14 +303,17 @@ From a clean tree at the branch head:
 - The dataset supplies both run directories, `measured-ripple.json` and the
   calibration snapshots. The `--include` supplies the retained map the Fez
   lanes are checked against.
-- The run `results/kaggle/2026-10-16T215315Z-gororoba-atlas-coherent-families`
-  took about 24 minutes on four Kaggle cores and is retained, with its output
+- The run `results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families`
+  took about 19 minutes on four Kaggle cores and is retained, with its output
   as `docs/evidence/atlas_coherent_families/result.json` (gate core-334
   compares the bytes; core-329 recomputes lane 4 of both runs on CPU). The
   evidence README carries the per-lane table: the partner-in-0 ZZ frame
   scores below the symmetric frame on 13 of 14 lanes (14 of 14
   resimulated), `zz` is the best single family on 7 lanes, and only two
   lanes reach the 1.5x-floor criterion with any single family.
+- An earlier kernel session, on the same Xeon 2.20 GHz CPU model, ran the
+  script before its `--check` tolerance changed and wrote the same bytes, so
+  the 14-lane fit repeats across sessions.
 
 ## Calibration drift (part 2)
 

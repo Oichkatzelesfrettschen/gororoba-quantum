@@ -12,7 +12,7 @@
   "results/kaggle_out/atlas_coherent_families.json"
  ],
  "smoke": false,
- "git_commit": "d79b3a1784d9916b18bba4b6f205543495355ff4",
+ "git_commit": "46aa6aaed637044c79d61bea392f5c880c8089bc",
  "untracked_inputs": [],
  "pins": [
   "qiskit==2.5.2",
@@ -73,14 +73,14 @@
   "kaggle_kernel/AGENTS.md": "2dfd07c07c3df08682378a697aa11e9757baceff13d6ef38958650d55407aa56",
   "kaggle_kernel/kernel_main.py": "2904d5ded959b771840eb526a0bab34ad19e5284f7daf2dcb1127fb069373f9c",
   "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528",
-  "scripts/atlas_coherent_families.py": "1d0815b47118fe4df327a54b754234563065a8b23629aabc50f0add05057eb40",
+  "scripts/atlas_coherent_families.py": "9ab433460f254593bc528d393d86f72aaec623acd19475e6c51a1ecb6500876e",
   "scripts/atlas_detuning_map.py": "9ec68432c6be0340710c2bac73915504515dcd5d6dece1864ac53b3a0ad63877",
   "scripts/ghost_calibrations.py": "298a9924581b453ed003476f09f2d20b0c10d4b7ba2f49b875d962dd382d8e28"
  },
  "datasets": {
   "probablyeric/gororoba-retained-runs": "3c89bc011d1ee8ce3b4ea5646876501d40ce1129f91a4c091530ab2a718b3df8"
  },
- "run_py_sha256": "0591364610cd0583c39db98456d82f220aceab989fa035c6ac10ce4acc06ef2e",
- "pushed_utc": "2026-10-16T215315Z",
- "kernel_version": 2
+ "run_py_sha256": "517ba226c6948c85e964d5e73b0a2d00c59c42525a3f31a6b25afab456782e00",
+ "pushed_utc": "2026-10-16T222749Z",
+ "kernel_version": 3
 }

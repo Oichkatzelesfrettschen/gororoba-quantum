@@ -1,15 +1,15 @@
 {
  "schema": "kaggle-aer-collect-v1",
- "kernel": "probablyeric/gororoba-atlas-coherent-families/2",
+ "kernel": "probablyeric/gororoba-atlas-coherent-families/3",
  "state": "COMPLETE",
- "collected_utc": "2026-10-16T221706Z",
+ "collected_utc": "2026-10-16T224822Z",
  "files": {
-  "gororoba-atlas-coherent-families.log": "1edd397c96dc2e85ba70d2b1da8369e119cd8ae89e3e96ae3801d608607f4649",
+  "gororoba-atlas-coherent-families.log": "9487b021167731683263d7bbc7fc8349f4498f047b87ba0db61fb951f94bb5e5",
   "output/datasets.json": "7695e461f9ca08e4d882c1f066436be2a350665d2672fa27a346482e2081153a",
-  "output/environment.json": "d53e5a0d03a3d73b196270577560708fbba4075a409b7eca8be6a2701a2cbdd7",
+  "output/environment.json": "77b3ed96f20645851df23fd751a3ccc2e97967b1f3fd29043bda8dd753103027",
   "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
-  "output/hypercomplex.json": "0368b6bb687f8264e7592b0141e6c1c3fd0dc29446e26cdbfcb81a5563e91464",
-  "output/pip.txt": "0d3ce934a84019244e3cbdeb43f1cd6b17b7a9c79bac8ab0a38b5d4192badff6",
+  "output/hypercomplex.json": "171e86202d9cff0abe1effc14011749696231eb5d4c78ddebff2ef54edee712b",
+  "output/pip.txt": "68d0249d6b19ae779d35f6257c6d45534de0d676aff0511967a296dcdcc94eca",
   "output/repo/results/kaggle_out/atlas_coherent_families.json": "73e7ca24f89b57716316afe69945d5b0db2431aa5129ad578a0c22a9ecc21645",
   "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
   "output/stdout.txt": "f86fdb4e2423d1348183580e50cd89fe3f53673b80f7eddba7979902bbdc3221"

@@ -2484,7 +2484,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "cmp docs/evidence/atlas_coherent_families/result.json results/kaggle/2026-10-16T215315Z-gororoba-atlas-coherent-families/output/output/repo/results/kaggle_out/atlas_coherent_families.json",
+   "cmd": "cmp docs/evidence/atlas_coherent_families/result.json results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families/output/output/repo/results/kaggle_out/atlas_coherent_families.json",
    "name": "core-334",
    "seconds": 0.1,
    "tier": "pr"

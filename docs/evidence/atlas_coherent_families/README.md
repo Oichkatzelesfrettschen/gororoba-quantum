@@ -2,7 +2,7 @@
 
 `result.json` is the output of `scripts/atlas_coherent_families.py --runs
 ibm_fez,ibm_kingston --lanes all` on a Kaggle CPU kernel, retained byte for
-byte from `results/kaggle/2026-10-16T215315Z-gororoba-atlas-coherent-families`
+byte from `results/kaggle/2026-10-16T222749Z-gororoba-atlas-coherent-families`
 (gate core-334 compares the two). It fits the frame-detuning, CZ-phase,
 static-ZZ (two frames), SX-amplitude and axis-tilt families to the fringe
 phase offsets of all 14 lanes; gate core-329 recomputes lane 4 of both runs
