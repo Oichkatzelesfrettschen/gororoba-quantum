@@ -32,6 +32,11 @@ reads no IBM service and submits nothing.
 
 Usage:
     "$PYTHON" scripts/n21_conjugation_noise.py --search SEARCH.json --snapshots SNAP... --out PATH
+    "$PYTHON" scripts/n21_conjugation_noise.py --check PATH
+
+--check recompiles every circuit's chosen seed on its retained snapshot and
+re-derives the distributions, contrasts, recovery rates and seconds from
+the retained counts; it samples nothing.
 """
 
 from __future__ import annotations
@@ -221,6 +226,86 @@ def seconds_estimate(duration_dt: int, dt: float, stages: int, shots: int) -> fl
     return shots * per_shot
 
 
+def circuit_entry(
+    name: str, chosen: dict[str, Any], runs: list[dict[str, Any]], counts: dict[str, int], shots: int, dt: float
+) -> dict[str, Any]:
+    """Every field of one circuit's result that the compile choice and the counts determine."""
+    entry: dict[str, Any] = {
+        "shots": shots,
+        "chosen": chosen,
+        "per_seed_routed_cz": [run["routed_cz"] for run in runs],
+        "counts": counts,
+        "seconds_by_shots": {
+            str(tier): seconds_estimate(chosen["duration_dt"], dt, chosen["classical_stages"], tier)
+            for tier in SHOT_TIERS
+        },
+    }
+    if name.startswith("two_round"):
+        entry["distribution"] = _labeled(counts, shots)
+    else:
+        entry["order_recovery_rate"] = ten_round_recovery(counts)
+    return entry
+
+
+def backend_summary(results: dict[str, dict[str, Any]]) -> dict[str, Any]:
+    """The two-round contrasts and the job-seconds estimates one backend's circuit results determine."""
+    encodings = ("baseline", "encoded")
+    return {
+        "two_round": {encoding: two_round_summary(results, encoding) for encoding in encodings},
+        "two_round_job_seconds": {
+            encoding: {
+                str(tier): JOB_OVERHEAD_SECONDS
+                + sum(results[f"two_round_{encoding}_{arm}"]["seconds_by_shots"][str(tier)] for arm in ("ff", "noff"))
+                for tier in SHOT_TIERS
+            }
+            for encoding in encodings
+        },
+        "ten_round_job_seconds": {
+            encoding: {
+                str(tier): JOB_OVERHEAD_SECONDS + results[f"ten_round_{encoding}"]["seconds_by_shots"][str(tier)]
+                for tier in SHOT_TIERS
+            }
+            for encoding in encodings
+        },
+    }
+
+
+def check(record: dict[str, Any]) -> str:
+    """Recompile each chosen seed on its snapshot and re-derive every summary from the retained counts."""
+    _require(record.get("schema") == SCHEMA, "not an n21-conjugation-noise record")
+    two_round = tuple(record["encodings"]["two_round"]["columns"])
+    ten_round = tuple(record["encodings"]["ten_round"]["columns"])
+    _require(record["ten_round_reference"]["uniform_recovery_rate"] == uniform_recovery_rate(), "uniform floor")
+    jobs = []
+    for backend in record["backends"]:
+        path = ROOT / backend["snapshot"]
+        _require(hashlib.sha256(path.read_bytes()).hexdigest() == backend["snapshot_sha256"], f"{path} changed")
+        jobs += [
+            (str(path), name, backend["circuits"][name]["chosen"]["seed_transpiler"], two_round, ten_round)
+            for name in CIRCUIT_NAMES
+        ]
+    recompiled = iter(parallel.ordered_map(compile_job, jobs, min_items=2))
+    for backend in record["backends"]:
+        snapshot = json.loads((ROOT / backend["snapshot"]).read_text(encoding="utf-8"))
+        for name in CIRCUIT_NAMES:
+            retained = backend["circuits"][name]
+            _require(next(recompiled) == retained["chosen"], f"{backend['backend']} {name}: compile differs")
+            expected = circuit_entry(
+                name, retained["chosen"], [], retained["counts"], retained["shots"], snapshot["dt"]
+            )
+            expected["per_seed_routed_cz"] = retained["per_seed_routed_cz"]
+            _require(
+                min(retained["per_seed_routed_cz"]) == retained["chosen"]["routed_cz"],
+                f"{backend['backend']} {name}: the chosen seed is not the fewest-CZ seed",
+            )
+            _require(sum(retained["counts"].values()) == retained["shots"], f"{name}: counts do not sum to shots")
+            derived = {key: retained[key] for key in expected}
+            _require(derived == expected, f"{backend['backend']} {name}: derived fields differ")
+        summary = backend_summary(backend["circuits"])
+        _require(all(backend[key] == value for key, value in summary.items()), f"{backend['backend']}: summary")
+    return f"{len(jobs)} chosen compilations and every derived field reproduced"
+
+
 def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
     two_round_index = search["summary"]["s4_winners"][0]["index"]
     two_round = tuple(search["summary"]["s4_winners"][0]["columns"])
@@ -255,34 +340,12 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
             shots = TWO_ROUND_SHOTS if name.startswith("two_round") else TEN_ROUND_SHOTS
             sampled = time.perf_counter()
             counts = simulator.run(isa, shots=shots, seed_simulator=SIMULATOR_SEED + index).result().get_counts()
-            entry: dict[str, Any] = {
-                "shots": shots,
-                "chosen": chosen,
-                "per_seed_routed_cz": [run["routed_cz"] for run in runs],
-                "simulation_seconds": round(time.perf_counter() - sampled, 3),
-                "counts": dict(sorted(counts.items())),
-                "seconds_by_shots": {
-                    str(tier): seconds_estimate(chosen["duration_dt"], snapshot["dt"], chosen["classical_stages"], tier)
-                    for tier in SHOT_TIERS
-                },
-            }
-            if name.startswith("two_round"):
-                entry["distribution"] = _labeled(counts, shots)
-            else:
-                entry["order_recovery_rate"] = ten_round_recovery(counts)
+            entry = circuit_entry(name, chosen, runs, dict(sorted(counts.items())), shots, snapshot["dt"])
+            entry["simulation_seconds"] = round(time.perf_counter() - sampled, 3)
             results[name] = entry
             print(
                 f"{snapshot['backend']} {name}: cz={chosen['routed_cz']} sim={entry['simulation_seconds']}s", flush=True
             )
-        two_round_pair = {encoding: two_round_summary(results, encoding) for encoding in ("baseline", "encoded")}
-        job_seconds = {
-            encoding: {
-                str(tier): JOB_OVERHEAD_SECONDS
-                + sum(results[f"two_round_{encoding}_{arm}"]["seconds_by_shots"][str(tier)] for arm in ("ff", "noff"))
-                for tier in SHOT_TIERS
-            }
-            for encoding in ("baseline", "encoded")
-        }
         backends.append(
             {
                 "backend": snapshot["backend"],
@@ -290,16 +353,7 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
                 "snapshot": str(path.relative_to(ROOT)),
                 "snapshot_sha256": hashlib.sha256(path.read_bytes()).hexdigest(),
                 "circuits": results,
-                "two_round": two_round_pair,
-                "two_round_job_seconds": job_seconds,
-                "ten_round_job_seconds": {
-                    encoding: {
-                        str(tier): JOB_OVERHEAD_SECONDS
-                        + results[f"ten_round_{encoding}"]["seconds_by_shots"][str(tier)]
-                        for tier in SHOT_TIERS
-                    }
-                    for encoding in ("baseline", "encoded")
-                },
+                **backend_summary(results),
             }
         )
     return {
@@ -340,10 +394,15 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--search", type=Path, required=True)
-    parser.add_argument("--snapshots", type=Path, nargs="+", required=True)
-    parser.add_argument("--out", type=Path, required=True)
+    parser.add_argument("--search", type=Path)
+    parser.add_argument("--snapshots", type=Path, nargs="+")
+    parser.add_argument("--out", type=Path)
+    parser.add_argument("--check", type=Path, help="retained record to replay without sampling")
     args = parser.parse_args()
+    if args.check:
+        print(f"n21_conjugation_noise: {check(json.loads(args.check.read_text(encoding='utf-8')))}")
+        return 0
+    _require(args.search and args.snapshots and args.out, "--search, --snapshots and --out are required")
     search = json.loads(args.search.read_text(encoding="utf-8"))
     _require(search.get("mode") == "exhaustive", "--search must be a merged exhaustive record")
     record = run(search, [path.resolve() for path in args.snapshots])
