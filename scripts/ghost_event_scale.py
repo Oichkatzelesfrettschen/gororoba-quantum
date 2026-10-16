@@ -94,6 +94,9 @@ CPU at (1, 0) and the top corner (6, 0.2) of each padding state and at each
 padding state's minimizing point and floor, each within five standard
 errors.
 
+``--pad off`` or ``--pad on`` sweeps one padding state, so one run's grid
+splits over two kernels; --report and --check merge the halves.
+
 ``--self-test`` runs on the CPU in well under a minute: it pads every replica
 of every default run (parsing only), requires a dropped row, a relabeled row
 and a pulse inside an if_else block to fail the match, and on a synthetic
@@ -106,16 +109,20 @@ counts, and the pooled grid to equal the serial one.
 Kaggle. The full sweep runs on Kaggle CPU kernels; the retained runs come
 from the gororoba-retained-runs dataset and kaggle_run bundles this script's
 imports (ghost_error_scale, ghost_run, calibration_snapshot, packing,
-parallel), so no --include is needed. One part per kernel, for example:
+parallel), so no --include is needed. The pool maps the grid points over the
+kernel's CPUs with one Aer thread each. A dynamic run costs 88 draws (84
+points and two floors of two draws) and a static run 18, each draw about the
+run's replicas times shots times non-virtual operations; 2026-10-12T055624,
+the largest, splits into its two padding states. One part per kernel:
 
     "$PYTHON" scripts/kaggle_run.py push scripts/ghost_event_scale.py \\
         --slug gororoba-ghost-event-scale-a --dataset gororoba-retained-runs \\
         --machine cpu --timeout 43200 -- \\
-        --runs results/live/2026-10-11T152922.787095Z \\
+        --runs results/live/2026-10-12T055624.091217Z --pad off \\
         --out results/kaggle_out/ghost_event_scale_a.json
 
 Usage:
-    "$PYTHON" scripts/ghost_event_scale.py --runs RUN[,RUN] --out FILE
+    "$PYTHON" scripts/ghost_event_scale.py --runs RUN[,RUN] [--pad off|on] --out FILE
     "$PYTHON" scripts/ghost_event_scale.py --report FILE...
     "$PYTHON" scripts/ghost_event_scale.py --check FILE... [--runs RUN[,RUN]]
     "$PYTHON" scripts/ghost_event_scale.py --self-test
@@ -517,6 +524,7 @@ def sweep_run(
         "padding_total": padding_summary(prepared),
         "mean_tvd": means,
         "points": points,
+        "pad_states": sorted({p["pad"] for p in points}),
         "floor": floor_rows,
         # Wall seconds of each sampled point, then of each floor's two draws.
         "draw_seconds": seconds,
@@ -544,17 +552,46 @@ def best_points(run: dict[str, Any]) -> dict[str, list[float]]:
     return out
 
 
+# Fields a run's padding-off and padding-on halves carry per padding state;
+# every other field of the two halves must agree.
+PER_STATE = ("points", "mean_tvd", "floor", "draw_seconds", "seconds", "pad_states")
+
+
+def merge(name: str, halves: list[dict[str, Any]]) -> dict[str, Any]:
+    """One run's record from a full-grid part or from its padding-off and padding-on halves."""
+    if len(halves) == 1:
+        require(halves[0]["pad_states"] == list(PADDING), f"{name}: the parts hold one padding state only")
+        return halves[0]
+    off, on = sorted(halves, key=lambda run: run["pad_states"])
+    require(len(halves) == 2 and (off["pad_states"], on["pad_states"]) == ([False], [True]), f"{name}: parts overlap")
+    shared = set(off) - set(PER_STATE)
+    require(set(on) - set(PER_STATE) == shared, f"{name}: the halves carry different fields")
+    require(all(off[key] == on[key] for key in shared), f"{name}: the halves disagree outside their padding state")
+    merged = {key: off[key] for key in shared}
+    return merged | {
+        "points": off["points"] + on["points"],
+        "mean_tvd": off["mean_tvd"] + on["mean_tvd"],
+        "floor": off["floor"] | on["floor"],
+        "draw_seconds": off["draw_seconds"] + on["draw_seconds"],
+        "seconds": round(off["seconds"] + on["seconds"], 1),
+        "pad_states": list(PADDING),
+    }
+
+
 def load(paths: list[Path]) -> list[dict[str, Any]]:
-    """The runs of every part file, which must share the schema and the module's grid; a run occurs once."""
-    runs: list[dict[str, Any]] = []
+    """The runs of every part file, which must share the schema and the module's grid.
+
+    A run occurs once over its full grid, or twice as its padding-off and
+    padding-on halves (``--pad``), which merge into one record.
+    """
+    halves: dict[str, list[dict[str, Any]]] = {}
     for path in paths:
         part = json.loads(path.read_text(encoding="utf-8"))
         require(part["schema"] == SCHEMA, f"{path}: schema must be {SCHEMA}")
         require(part["grid"] == [list(p) for p in full_grid()], f"{path}: grid differs from the module's axes")
-        runs += part["runs"]
-    names = [run["run"] for run in runs]
-    require(len(set(names)) == len(names), "a run occurs in more than one part")
-    return runs
+        for run in part["runs"]:
+            halves.setdefault(run["run"], []).append(run)
+    return [merge(name, rows) for name, rows in halves.items()]
 
 
 def bootstrap(run: dict[str, Any], padded: bool) -> dict[str, Any]:
@@ -898,6 +935,7 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path, nargs="+", help="retained part files")
     parser.add_argument("--report", type=Path, nargs="+", help="print the fitted (c, m) of retained part files")
+    parser.add_argument("--pad", choices=("both", "off", "on"), default="both", help="padding states to sweep")
     parser.add_argument("--self-test", action="store_true")
     args = parser.parse_args()
     if args.self_test:
@@ -928,7 +966,8 @@ def main() -> int:
     args.out.parent.mkdir(parents=True, exist_ok=True)
     for run in runs:
         # Written after every run, so a failure keeps every finished one.
-        out["runs"].append(sweep_run(run, device, index, grid))
+        states = {"both": PADDING, "off": (False,), "on": (True,)}[args.pad]
+        out["runs"].append(sweep_run(run, device, index, [p for p in grid if p[0] in states]))
         args.out.write_text(json.dumps(out) + "\n", encoding="utf-8")
     return 0
 
