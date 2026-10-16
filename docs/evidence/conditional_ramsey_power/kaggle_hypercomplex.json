@@ -16,7 +16,7 @@
   "qiskit-aer-gpu-cu11": "0.17.2",
   "scipy": "1.16.3",
   "sympy": "1.14.0",
-  "torch": "2.11.0+cpu"
+  "torch": "2.11.0+cu128"
  },
  "steps": {
   "--extract": {
@@ -29,7 +29,7 @@
   },
   "--install": {
    "returncode": 0,
-   "tail": "   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 190.9/190.9 kB 5.8 MB/s eta 0:00:00\nhypercomplex: installed from hypercomplex-04241e5d01b3.tar.gz\nhypercomplex-engine: installed from hypercomplex-engine-05634d7421e1.tar.gz\nhypercomplex-algebra: installed from hypercomplex-algebra-aa043b53a004.tar.gz\nCayley-Calculator: installed from Cayley-Calculator-65922fc90cc0.tar.gz\ncayley-dickson: installed from cayley-dickson-446b43f2c955.tar.gz\noctonion: installed from octonion-01788b55497d.tar.gz\nsplitoct: installed from splitoct-a192a1d5d973.tar.gz\nmathdunders: installed from mathdunders-ff9b624725fa.tar.gz\n"
+   "tail": "   \u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501\u2501 190.9/190.9 kB 4.4 MB/s eta 0:00:00\nhypercomplex: installed from hypercomplex-04241e5d01b3.tar.gz\nhypercomplex-engine: installed from hypercomplex-engine-05634d7421e1.tar.gz\nhypercomplex-algebra: installed from hypercomplex-algebra-aa043b53a004.tar.gz\nCayley-Calculator: installed from Cayley-Calculator-65922fc90cc0.tar.gz\ncayley-dickson: installed from cayley-dickson-446b43f2c955.tar.gz\noctonion: installed from octonion-01788b55497d.tar.gz\nsplitoct: installed from splitoct-a192a1d5d973.tar.gz\nmathdunders: installed from mathdunders-ff9b624725fa.tar.gz\n"
   }
  },
  "tables_regenerated_sha256": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",

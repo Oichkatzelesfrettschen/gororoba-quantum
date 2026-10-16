@@ -109,11 +109,12 @@ fails:
 
 - **Relaxation.** B in `|1>` relaxes during the idle, and a shot whose B
   decayed carries A's phase at `omega_A + J` from the jump onward, pulling
-  the `A | B = 1` rate toward `A | B = 0` in proportion to `J`. Under the
+  the `A | B = 1` rate toward `A | B = 0` by an amount that grows with `J`
+  while `J` times the idle stays small. Under the
   retained Kingston calibration of 2026-10-15 19:42 PDT the unconditioned
-  summary reads `J = 3 kHz` 304 Hz low on (68, 67) and 715 Hz low on
-  (67, 66), where qubit 66 has T1 = 121 us, and its falsifier rejects a
-  static model that holds
+  summary reads `J = 3 kHz` 178 Hz low on (68, 67) and 397 Hz low on
+  (67, 66), where qubit 66 has T1 = 121 us, and its falsifier residual
+  moves by 2.3 standard errors there, so it rejects a static model that holds
   ([conditional_ramsey_power](../evidence/conditional_ramsey_power/README.md)).
 - **Preparation.** A B left in the wrong state at the start mixes the two
   conditional coherences for the whole idle.
