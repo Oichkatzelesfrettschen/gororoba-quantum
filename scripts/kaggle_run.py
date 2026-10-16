@@ -1,21 +1,34 @@
-"""Run a repository simulation as a private Kaggle GPU kernel and retain its output.
+"""Run a repository simulation, or a CI shard, as a private Kaggle kernel and retain its output.
 
-Simulations of 14 qubits or fewer run on Kaggle's Aer GPU kernels; IBM
-hardware serves 15 or more qubits or a question about the device itself.
-This script is the only path from the repository to Kaggle:
+Simulations of 14 qubits or fewer run on Kaggle; IBM hardware serves 15 or
+more qubits or a question about the device itself. A kernel runs on a CPU
+machine unless ``--machine`` names an accelerator, which a case requests when
+its widest density matrix reaches local_compute.GPU_MIN_ACTIVE_QUBITS: below
+that width a GPU spends its per-call overhead on states the CPU evolves
+faster, and the weekly GPU quota goes to the runs that need it. This script is
+the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
   (``import X`` and ``from X import`` naming a module under gororoba_quantum/
   or scripts/, transitively), bundles them with any ``--include`` file, or
   every tracked file of an ``--include`` directory, as a zip embedded in a
   generated ``run.py``, writes kernel-metadata.json
-  (private, GPU, internet for the pinned pip install) and pushes the kernel.
+  (private, internet for the pinned pip install) and pushes the kernel.
   Every bundle also carries KERNEL_FILES. The kernel installs KERNEL_PINS,
   unpacks the bundle and runs kaggle_kernel/kernel_main.py, which records
   the measured substrate, builds the hypercomplex package stack and proves it
-  against the retained tables, then runs ENTRY with
-  ``GOROROBA_AER_DEVICE=GPU`` and returns every file the entry created or
+  against the retained tables, then runs ENTRY with GOROROBA_AER_DEVICE set
+  to the machine's device and returns every file the entry created or
   changed under the repository root.
+- ``shards [--tier pr] [--count 6] [--only I,J]`` pushes one CPU kernel per
+  CI shard for the committed HEAD. The kernel fetches the merge base with
+  origin/main from the public repository, applies the bundled files changed
+  since then with their modes and deletions, requires git write-tree to
+  equal HEAD's tree, installs CI's Python and pins (ci/install_pins.sh), and
+  runs ci/run_gates.py on that shard. Shard runs live under the ignored
+  .kaggle-shards/ and are iteration records, never evidence;
+  ``shards-report RUN_DIR...`` prints each collected shard's summary and
+  failures.
 - ``status RUN_DIR`` reports the kernel state.
 - ``collect RUN_DIR`` downloads the run's kernel version into RUN_DIR/output
   and writes collect.json with the sha256 of every file.
@@ -55,7 +68,16 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
 KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
-DEFAULT_MACHINE = "NvidiaTeslaT4"
+CPU_KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer==0.17.2")
+DEFAULT_MACHINE = "cpu"
+GPU_MACHINE = "NvidiaTeslaT4"
+SHARDS = ROOT / ".kaggle-shards"
+REMOTE = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum.git"
+# CI's interpreter (.github/workflows/ci.yml), the uv that installs it on the
+# kernel, and the shellcheck the shellcheck gates call when the image lacks one.
+CI_PYTHON = "3.14.7"
+UV_PIN = "uv==0.13.0"
+SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
 KERNEL_FILES = (
@@ -82,6 +104,10 @@ repo = Path("/tmp/gororoba/repo")
 zipfile.ZipFile(io.BytesIO(base64.b64decode(BUNDLE))).extractall(repo)
 raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
 """
+
+
+def kernel_pins(machine: str) -> tuple[str, ...]:
+    return CPU_KERNEL_PINS if machine == "cpu" else KERNEL_PINS
 
 
 def require(condition: bool, message: str) -> None:
@@ -206,7 +232,9 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
-    runner = RUNNER.format(pins=list(KERNEL_PINS), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    runner = RUNNER.format(
+        pins=list(kernel_pins(args.machine)), bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
+    )
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     kernel_id = f"{owner}/{args.slug}"
     metadata = {
@@ -234,7 +262,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "smoke": smoke,
         "git_commit": revision,
         "untracked_inputs": untracked,
-        "pins": list(KERNEL_PINS),
+        "pins": list(kernel_pins(args.machine)),
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -279,14 +307,46 @@ def push(args: argparse.Namespace) -> int:
 
 
 def self_test(args: argparse.Namespace) -> int:
-    """Build the Design C kernel offline and check its bundle, metadata and generated code."""
+    """Build the Design C kernel (CPU and GPU) and a shard kernel offline, and check bundles, metadata and code."""
     import py_compile
     import tempfile
 
     entry = "scripts/design_c_cubic_noise.py"
     data = "docs/evidence/calibration/ibm_kingston.json"
+    for machine in (DEFAULT_MACHINE, GPU_MACHINE):
+        submission = _self_test_kernel(entry, data, machine)
+    with tempfile.TemporaryDirectory() as scratch:
+        head = subprocess.run(["git", "rev-parse", "HEAD"], cwd=ROOT, capture_output=True, text=True, check=True)
+        shard = build_shard_kernel(
+            Path(scratch) / "shard", "owner", "2000-01-01T000000Z", head.stdout.strip(), head.stdout.strip(), "pr", 2, 6
+        )
+        job = bundled_job(Path(scratch) / "shard/kernel/run.py")
+        require(job["mode"] == "shards" and job["shard"] == 2 and job["count"] == 6, f"shard job {job}")
+        require(job["modes"] == {} and job["deleted"] == [], "HEAD against itself carries an overlay")
+        require(shard["tree"] == job["tree"] and job["python"] == CI_PYTHON, "shard job lacks the tree or CI's Python")
+        py_compile.compile(str(Path(scratch) / "shard/kernel/run.py"), doraise=True)
+    print(
+        f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private CPU and GPU kernels, "
+        "a shard kernel bound to HEAD's tree, run.py compiles"
+    )
+    return 0
+
+
+def bundled_job(run_py: Path) -> dict[str, Any]:
+    """The kernel_job.json inside a generated run.py's embedded bundle."""
+    found = re.search(r'BUNDLE = "([^"]+)"', run_py.read_text(encoding="utf-8"))
+    require(found is not None, f"{run_py} embeds no bundle")
+    assert found is not None
+    archive = zipfile.ZipFile(io.BytesIO(base64.b64decode(found.group(1))))
+    return dict(json.loads(archive.read("kaggle_kernel/kernel_job.json")))
+
+
+def _self_test_kernel(entry: str, data: str, machine: str) -> dict[str, Any]:
+    import py_compile
+    import tempfile
+
     build_args = argparse.Namespace(
-        entry=entry, smoke=False, include=[data], args=["--pairs", "1,16"], slug="self-test", machine=DEFAULT_MACHINE
+        entry=entry, smoke=False, include=[data], args=["--pairs", "1,16"], slug="self-test", machine=machine
     )
     with tempfile.TemporaryDirectory() as scratch:
         run_dir = Path(scratch) / "run"
@@ -297,14 +357,17 @@ def self_test(args: argparse.Namespace) -> int:
         for rel, digest in submission["bundle"].items():
             require(digest == sha256((ROOT / rel).read_bytes()), f"bundle digest of {rel} differs from the tree")
         metadata = json.loads((run_dir / "kernel/kernel-metadata.json").read_text(encoding="utf-8"))
-        require(metadata["is_private"] is True and metadata["enable_gpu"] is True, "kernel is not a private GPU kernel")
+        gpu = machine != "cpu"
+        require(
+            metadata["is_private"] is True and metadata["enable_gpu"] is gpu, f"{machine}: kernel metadata {metadata}"
+        )
+        require(("machine_shape" in metadata) is gpu, f"{machine}: machine_shape {metadata.get('machine_shape')}")
         require(metadata["id"] == "owner/self-test", f"kernel id {metadata['id']}")
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
-        require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
+        require(all(pin in runner for pin in kernel_pins(machine)), f"{machine}: run.py lacks a pin")
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
-    print(f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private GPU kernel, run.py compiles")
-    return 0
+    return submission
 
 
 DATASETS = RESULTS / "datasets"
@@ -371,6 +434,154 @@ def dataset(args: argparse.Namespace) -> int:
     (DATASETS / f"{args.slug}.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     print(f"{ref}: {len(manifest)} files, archive {archive_sha256[:12]}")
     return 0
+
+
+def git(*args: str) -> str:
+    return subprocess.run(["git", *args], cwd=ROOT, capture_output=True, text=True, check=True).stdout
+
+
+def build_shard_kernel(
+    run_dir: Path, owner: str, stamp: str, base: str, head: str, tier: str, shard: int, count: int
+) -> dict[str, Any]:
+    """The kernel of one CI shard of head: KERNEL_FILES, and the files changed since base as an overlay."""
+    changes = git("diff", "--no-renames", "--name-status", "-z", base, head).split("\0")
+    modes: dict[str, str] = {}
+    deleted: list[str] = []
+    buffer = io.BytesIO()
+    digests: dict[str, str] = {}
+    with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
+        for always in KERNEL_FILES:
+            for path in import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always]:
+                rel = path.relative_to(ROOT).as_posix()
+                data = path.read_bytes()
+                digests[rel] = sha256(data)
+                bundle.writestr(rel, data)
+        for status_code, rel in zip(changes[0:-1:2], changes[1::2], strict=True):
+            if status_code == "D":
+                deleted.append(rel)
+                continue
+            mode, _, blob = git("ls-tree", head, "--", rel).split(maxsplit=3)[:3]
+            data = subprocess.run(["git", "cat-file", "blob", blob], cwd=ROOT, capture_output=True, check=True).stdout
+            modes[rel] = mode
+            digests[f"overlay/{rel}"] = sha256(data)
+            bundle.writestr(f"kaggle_kernel/overlay/{rel}", data)
+        job = {
+            "mode": "shards",
+            "remote": REMOTE,
+            "base": base,
+            "head": head,
+            "tree": git("rev-parse", f"{head}^{{tree}}").strip(),
+            "modes": modes,
+            "deleted": deleted,
+            "tier": tier,
+            "shard": shard,
+            "count": count,
+            "python": CI_PYTHON,
+            "uv": UV_PIN,
+            "shellcheck": SHELLCHECK_PIN,
+            "entry": None,
+            "args": [],
+            "smoke": False,
+            "device": "CPU",
+            "datasets": [],
+        }
+        bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
+    kernel_dir = run_dir / "kernel"
+    kernel_dir.mkdir(parents=True)
+    runner = RUNNER.format(pins=list(CPU_KERNEL_PINS), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
+    slug = f"gororoba-ci-shard-{shard}-of-{count}"
+    metadata = {
+        "id": f"{owner}/{slug}",
+        "title": slug,
+        "code_file": "run.py",
+        "language": "python",
+        "kernel_type": "script",
+        "is_private": True,
+        "enable_gpu": False,
+        "enable_tpu": False,
+        "enable_internet": True,
+    }
+    (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
+    submission = {
+        "schema": "kaggle-ci-shard-v1",
+        "kernel": metadata["id"],
+        "machine_shape": "cpu",
+        "base": base,
+        "head": head,
+        "tree": job["tree"],
+        "tier": tier,
+        "shard": shard,
+        "count": count,
+        "overlay_files": len(modes),
+        "deleted_files": len(deleted),
+        "pins": list(CPU_KERNEL_PINS),
+        "bundle": digests,
+        "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
+        "pushed_utc": stamp,
+    }
+    (run_dir / "submission.json").write_text(json.dumps(submission, indent=1) + "\n", encoding="utf-8")
+    return submission
+
+
+def shards(args: argparse.Namespace) -> int:
+    """Push one CPU kernel per CI shard of the committed HEAD; print each run directory."""
+    import shutil
+
+    revision = git_commit()
+    require(not revision.endswith("-dirty"), "shards test a commit: commit or stash the tracked changes first")
+    git("fetch", "-q", "origin", "main")
+    base = git("merge-base", "HEAD", "origin/main").strip()
+    owner = username()
+    only = [int(x) for x in args.only.split(",")] if args.only else list(range(args.count))
+    require(all(0 <= i < args.count for i in only), f"--only {args.only} lies outside 0..{args.count - 1}")
+    for shard in only:
+        stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
+        run_dir = SHARDS / f"{stamp}-{revision[:12]}-shard-{shard}-of-{args.count}"
+        build_shard_kernel(run_dir, owner, stamp, base, revision, args.tier, shard, args.count)
+        push_args = ["kernels", "push", "-p", str(run_dir / "kernel")]
+        if args.timeout:
+            push_args += ["-t", str(args.timeout)]
+        try:
+            reply = kaggle(*push_args).strip()
+        except SystemExit:
+            shutil.rmtree(run_dir)
+            raise
+        if "successfully pushed" not in reply:
+            shutil.rmtree(run_dir)
+            raise SystemExit(f"kaggle refused shard {shard}: {reply}")
+        version = re.search(r"Kernel version (\d+) successfully pushed", reply)
+        require(version is not None, f"push reply names no kernel version: {reply}")
+        assert version is not None
+        submission = submission_of(run_dir)
+        submission["kernel_version"] = int(version.group(1))
+        (run_dir / "submission.json").write_text(json.dumps(submission, indent=1) + "\n", encoding="utf-8")
+        print(run_dir)
+    return 0
+
+
+def shards_report(args: argparse.Namespace) -> int:
+    """Each collected shard's summary line and failing gates; nonzero when any shard failed or is missing."""
+    bad = 0
+    for name in args.run_dirs:
+        run_dir = Path(name).resolve()
+        out = run_dir / "output" / "output"
+        submission = submission_of(run_dir)
+        label = f"shard {submission['shard']}/{submission['count']} at {submission['head'][:12]}"
+        result = out / "shard.json"
+        if not result.is_file():
+            exit_file = out / "exit.json"
+            code = json.loads(exit_file.read_text())["returncode"] if exit_file.is_file() else "none"
+            print(f"{label}: no gate result (kernel exit {code}); see {out}")
+            bad += 1
+            continue
+        shard = json.loads(result.read_text(encoding="utf-8"))
+        print(f"{label}: {' '.join(shard['summary'])} in {shard['seconds']} s")
+        for line in (out / "gates.txt").read_text(encoding="utf-8").splitlines():
+            if line.startswith("FAIL "):
+                print(f"  {line[:160]}")
+        bad += shard["returncode"] != 0
+    return 1 if bad else 0
 
 
 def submission_of(run_dir: Path) -> dict[str, Any]:
@@ -488,6 +699,15 @@ def main() -> int:
     dataset_parser.add_argument("--include", action="append", required=True, help="repository file or directory")
     dataset_parser.set_defaults(func=dataset)
     sub.add_parser("verify").set_defaults(func=verify)
+    shards_parser = sub.add_parser("shards")
+    shards_parser.add_argument("--tier", choices=("pr", "full"), default="pr")
+    shards_parser.add_argument("--count", type=int, default=6)
+    shards_parser.add_argument("--only", help="comma-separated shard indices (all by default)")
+    shards_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
+    shards_parser.set_defaults(func=shards)
+    report_parser = sub.add_parser("shards-report")
+    report_parser.add_argument("run_dirs", nargs="+")
+    report_parser.set_defaults(func=shards_report)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)
         sub_parser.add_argument("run_dir")

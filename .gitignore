@@ -32,3 +32,7 @@ qiskit-ibm.json
 # Workstation-specific guides: this host's hardware, drivers and measured
 # limits. docs/notes/kaggle/substrates.md carries the shared routing.
 /docs/local/
+
+# Kaggle CPU replicas of the CI shards (scripts/kaggle_run.py shards): iteration
+# runs bound to a commit's tree, never evidence.
+/.kaggle-shards/
