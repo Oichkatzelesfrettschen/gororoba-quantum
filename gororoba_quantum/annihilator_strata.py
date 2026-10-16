@@ -328,6 +328,34 @@ def _upstream_regression_checks() -> dict[str, object]:
     }
 
 
+def _bcdi_regression_checks() -> dict[str, object]:
+    """Exact A_5 nullities that Biss-Christensen-Dugger-Isaksen (math/0702075) fix.
+
+    {e_1, 0} has nullity dim Ann(e_1) + 12 = 12 (Proposition 5.11); sqrt 2 times
+    it is e_1 - e_8 e_1 on the second half, e_1 + e_25 in cd_core. The element
+    (i_4, e_1) = e_8 + e_17 has nullity 12 (Proposition 8.2) outside H_5^perp,
+    Moreno's e_1 + e_10 + 2 e_24 has nullity 4 outside H_5^perp, and a fixed
+    integer element of H_5^perp, every coordinate off {0, 8, 16, 24} nonzero
+    but four, is invertible.
+    """
+    generic = {k: (7 * k) % 11 - 5 for k in range(32) if k not in (0, 8, 16, 24) and (7 * k) % 11 != 5}
+    fixtures = (
+        ("bracket_e1_0", {1: 1, 25: -cd_sign(16, 8, 1)}, 12),
+        ("i4_e1", {8: 1, 17: 1}, 12),
+        ("moreno_unequal_norm", {1: 1, 10: 1, 24: 2}, 4),
+        ("generic_h5_perp", generic, 0),
+    )
+    for name, coefficients, expected_nullity in fixtures:
+        _require(
+            32 - _integer_rank(_left_action_matrix(32, coefficients)) == expected_nullity,
+            f"A_5 nullity fixture {name} changed",
+        )
+    return {
+        "source": "math/0702075 Proposition 5.11, Proposition 8.2; math/0512517 Section 5",
+        "fixtures": {name: expected for name, _, expected in fixtures},
+    }
+
+
 def audit_annihilator_strata(maximum_dimension: int = 128) -> dict[str, object]:
     """Return exact finite strata up to one supported power-of-two dimension."""
     if maximum_dimension not in ALLOWED_DIMENSIONS:
@@ -353,6 +381,7 @@ def audit_annihilator_strata(maximum_dimension: int = 128) -> dict[str, object]:
             "topology, and completeness require separate theorems."
         ),
         "upstream_certificate_regressions": _upstream_regression_checks(),
+        "bcdi_nullity_regressions": _bcdi_regression_checks(),
         "dimensions": parallel.ordered_map(_dimension_census, dimensions, min_items=2),
     }
 

@@ -82,6 +82,10 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: A selected finite family; it is not a universal nullity theorem for A_5.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
   Gates: replayed by core-267.
+- **a5-d-locus-nullity** (exact finite certificate, algebra). On 1000 exact rational pairs of sedenion zero divisors (200 Cayley-frame a's, each with five b's under independent rational scale factors, |b|/|a| from 0.18 to 508 on the 200 members), the A_5 element (a + b, e_8 (b - a)) has nullity 12 exactly when b lies in V(a) = span{(a1, -a2), (a2, a1)} + Eig_2(a) and 8 otherwise, reproducing Theorem 1.5 with Corollary 7.4 of Biss-Christensen-Dugger-Isaksen (math/0702075); b drawn from Ann(a), b a positive multiple of a and b a positive multiple of (a2, -a1) all fall outside V(a) with nullity 8, and dim Ann(a) = dim Eig_2(a) = 4 with Ann(a) orthogonal to V(a) on every frame.
+  Boundary: Known theorems reproduced on sampled exact points: the certificate covers its 1000 pairs only, decomposes neither D_(5,8) nor D_(5,12), and says nothing about ZD_12(A_5) outside H_5^perp or the bracket-axis limits.
+  Evidence: [result.json](../evidence/d_locus_nullity/result.json), [README.md](../evidence/d_locus_nullity/README.md), [math-0702075.md](../notes/math-0702075.md).
+  Gates: replayed by core-323, core-324.
 - **a6-stiefel-witness** (exact finite certificate, algebra). The retained integer A_6 Stiefel element (pure halves, a.b = 0, |a|^2 = |b|^2 = 62) has an invertible left multiplication: det L_v is 810824905836647058 modulo 2^61 - 1 and 486680426 modulo 10^9 + 7, so not every A_6 Stiefel element is a zero divisor.
   Boundary: One witness; the 24 Cayley-transform and 7 other integer elements are further full-rank points of the same family.
   Evidence: [nullity.json](../evidence/moreno_stiefel/nullity.json), [README.md](../evidence/moreno_stiefel/README.md).
