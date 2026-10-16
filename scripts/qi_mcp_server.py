@@ -8,10 +8,12 @@ call raises, so the MCP result carries isError instead of an error string
 inside a successful payload.
 
 Tools that change remote state are qi_compile (creates a project, algorithm,
-commit and file, and runs the remote compiler; no execution) and qi_submit
-(creates and enqueues a batch job, which executes on the backend). Each tool
+commit and file, and runs the remote compiler; no execution) and qi_submit_case
+(creates and enqueues a batch job from a retained case directory). Each tool
 annotation states which, and the client's permission rules ask before either.
-qi_submit takes the user's approval text and refuses an empty one.
+qi_submit_case uses qi_platform.submit's durable submission guard and requires
+the user's approval text. The legacy raw-string qi_submit refuses execution
+and names the case-directory replacement.
 
 qi_run_local runs cQASM 3.0 on the local qxelarator state-vector emulator,
 bounded to LOCAL_MAX_QUBITS qubits and LOCAL_MAX_SHOTS shots.
@@ -33,7 +35,7 @@ sys.path.insert(0, str(Path(__file__).resolve().parent))
 from mcp.server.mcpserver import MCPServer  # noqa: E402
 from mcp.server.mcpserver.exceptions import ToolError  # noqa: E402
 from mcp.types import ToolAnnotations  # noqa: E402
-from qi_platform import Client, PlatformError, ledger  # noqa: E402
+from qi_platform import Client, PlatformError, ledger, submit  # noqa: E402
 
 LOCAL_MAX_QUBITS = 24
 LOCAL_MAX_SHOTS = 100_000
@@ -69,6 +71,10 @@ def reported[**P, R](function: Callable[P, R]) -> Callable[P, R]:
         try:
             return function(*args, **kwargs)
         except (PlatformError, ValueError, RuntimeError) as error:
+            raise ToolError(f"{function.__name__}: {error}") from error
+        except SystemExit as error:
+            # The case-directory CLI rejects invalid or repeated submissions
+            # with SystemExit. A tool failure must not terminate stdio serving.
             raise ToolError(f"{function.__name__}: {error}") from error
 
     return wrapper
@@ -216,37 +222,26 @@ def qi_compile(cqasm: str, backend_type_id: int, stage: str = "decomposition") -
 
 @server.tool(annotations=MUTATE)
 @reported
-def qi_submit(cqasm: str, backend_type_id: int, shots: int, approval: str, raw_data: bool = True) -> dict[str, Any]:
-    """Submit one cQASM 3.0 circuit as a batch job; it executes on the backend and counts against its queue limits.
+def qi_submit_case(case_dir: str, backend_type_id: int, approval: str) -> dict[str, Any]:
+    """Submit a retained case directory as one batch, recording durable state and enabling raw shots.
 
-    approval is the user's own approval of this run, quoted; an empty approval is refused.
+    The directory contains cases.json and every cQASM file whose digest it
+    names. The manifest supplies the shots. Existing submission state blocks
+    another run, including after an uncertain response. Use qi_platform.py
+    reconcile for read-only recovery and collect to retain the results.
     """
-    if not approval.strip():
-        raise ValueError("qi_submit needs the user's approval text")
-    backend_type = client().get(f"/backend_types/{backend_type_id}")
-    if backend_type["status"] == "offline":
-        raise RuntimeError(f"{backend_type['name']} is offline")
-    if not 1 <= shots <= backend_type["max_number_of_shots"]:
-        raise ValueError(f"shots must lie in 1..{backend_type['max_number_of_shots']}")
-    commit = _commit("mcp-submit")
-    file = client().post(
-        "/files",
-        {
-            "commit_id": commit["id"],
-            "content": cqasm,
-            "language_id": _language(),
-            "compile_stage": "none",
-            "compile_properties": {},
-            "name": "input.cq",
-        },
+    return submit(Path(case_dir), backend_type_id, approval)
+
+
+@server.tool(annotations=MUTATE)
+@reported
+def qi_submit(cqasm: str, backend_type_id: int, shots: int, approval: str, raw_data: bool = True) -> dict[str, Any]:
+    """Legacy raw-string submission: refused; migrate to qi_submit_case with a retained manifest."""
+    raise ValueError(
+        "raw-string qi_submit no longer executes: retain the cQASM files and their sha256 digests in cases.json, "
+        "then call qi_submit_case(case_dir, backend_type_id, approval). The manifest supplies the shots; "
+        "raw shot retention is always enabled."
     )
-    batch = client().post("/batch_jobs", {"backend_type_id": backend_type_id})
-    job = client().post(
-        "/jobs",
-        {"file_id": file["id"], "batch_job_id": batch["id"], "number_of_shots": shots, "raw_data_enabled": raw_data},
-    )
-    client().patch(f"/batch_jobs/{batch['id']}/enqueue")
-    return {"batch_job": batch["id"], "job": job["id"], "backend": backend_type["name"], "approval": approval}
 
 
 if __name__ == "__main__":

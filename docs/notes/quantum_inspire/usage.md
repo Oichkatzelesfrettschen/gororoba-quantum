@@ -107,8 +107,50 @@ From the general conditions of use (6 Feb 2025,
 
 - A submission waits for the user's approval of a written case and goes
   through `scripts/qi_platform.py submit`, which records the approval text;
-  the MCP `qi_submit` tool asks before running.
+  the MCP `qi_submit_case` tool invokes the same guarded runner. The legacy
+  raw-string `qi_submit` refuses execution and names this replacement.
+- Before creating any remote resource, the runner reads the current user's
+  queue with `user_only=true`. It refuses a batch that would exceed the API's
+  `batchjobs_per_queue_limit` and applies a conservative cap of three on
+  hardware from the FAQ. The receipt records that scoped queue and the
+  applied limit. The count is interpreted as batches: the API endpoint names
+  "(batch) job queue statistics", and both retained five-circuit Tuna-17
+  receipts reported queue count 2 before their first child-job `queued_at`
+  timestamps (21:16:52 versus 21:17:29, and 22:11:41 versus 22:11:56 UTC on
+  2026-10-16; [first run](../../../results/quantum_inspire/runs/2026-10-16T211635Z-tuna_17/),
+  [witness run](../../../results/quantum_inspire/runs/2026-10-16T221133Z-zero_divisor_tuna_17/)).
+  This is an inference from the API and retained runs; the FAQ itself says
+  "jobs" without distinguishing batches from their circuits. The separate
+  `max_jobs_per_batch_job` check still limits circuits within a batch.
+- The case directory acquires an exclusive `submission-state.json` before
+  the client creates any remote resource. It checkpoints the batch and job
+  IDs and the enqueue intent; either this state or `submission.json` blocks
+  a repeat submission, including after a timeout or local write failure.
+  `"$QI_PYTHON" scripts/qi_platform.py reconcile CASE_DIR` reads the recorded
+  batch and jobs and recovers the receipt when the service confirms the
+  complete batch was enqueued. Reconciliation never enqueues a planned
+  batch, creates a resource or clears the submission guard. If creation was
+  interrupted before its IDs were retained, its outcome remains unknown;
+  inspect the account records without resubmitting the case.
+  The checkpoint's candidate receipt has `state: created`; only an accepted
+  enqueue response or successful read-only reconciliation sets
+  `state: enqueued` and publishes the final receipt. A recovered `submitted_utc`
+  records the local confirmation time when no earlier confirmation was
+  retained; the job timestamps remain the execution chronology.
 - Every run keeps its circuits, cases.json digests, submission.json,
   raw shots and results.json under results/quantum_inspire/runs/.
+  New receipts use `qi-submission-v2` and carry `cases_sha256`, the SHA-256 of
+  the exact manifest bytes checked before upload. That manifest binds each
+  circuit digest to its submitted job, and each `jobs` entry also carries
+  its uploaded circuit's `sha256`. Collection, reconciliation and the
+  research-state check reject a missing or changed v2 digest, including an
+  edit that changes a circuit and its manifest digest together. Historical
+  `qi-submission-v1` receipts remain readable without changing their bytes;
+  they predate this extra receipt binding.
+- Collection compares all returned raw shots with the retained ordered
+  lists before publishing new files. Identical recollection preserves the
+  existing bytes and timestamps; a different order, histogram or retained
+  result rejects the collection. An updated collection timestamp alone is
+  ignored, so it does not rewrite a prior result or break its evidence hash.
 - A simulation of 14 qubits or fewer runs on Kaggle (root AGENTS.md); a
   Quantum Inspire hardware run answers a question about the device.

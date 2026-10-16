@@ -573,7 +573,8 @@ simulation of 14 qubits or fewer still runs on Kaggle.
 `quantum-inspire` for Claude Code and `quantum_inspire` for Codex, serves
 catalogue, queue, hardware status, usage ledger, jobs, results and local
 qxelarator emulation as read tools and asks before qi_compile (creates remote
-resources) and qi_submit (executes). Failures return isError with the
+resources) and qi_submit_case (executes through the retained-case runner).
+The legacy raw-string qi_submit refuses execution. Failures return isError with the
 service's message.
 
 **Gates.** core-325 (`capture_qi_docs.py --check`), core-326
