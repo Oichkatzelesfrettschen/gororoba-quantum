@@ -2400,6 +2400,22 @@
    "name": "core-311",
    "seconds": 30.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/ghost_idle_budget.py && ruff format --check scripts/ghost_idle_budget.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_idle_budget.py",
+   "name": "core-330",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json && \"$PYTHON\" -O -B -W error scripts/ghost_idle_budget.py --check docs/evidence/ghost_error_scale/idle_budget.json",
+   "name": "core-331",
+   "seconds": 6.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
