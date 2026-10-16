@@ -113,7 +113,11 @@ importing any package), and `docs/notes/packages/` holds one note per
 package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
-pinned digest is checked again after the rebuild.
+pinned digest is checked again after the rebuild. A Kaggle kernel builds the
+same eight packages from the same pinned archives (`--fetch` and `--install`
+apply the PKGBUILD recipes) and runs its entry only after `--extract`
+regenerates `tables.json` byte for byte; SageMath stays on the build host
+(`docs/notes/kaggle/hypercomplex-stack.md`).
 
 | Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
 |---|---|---|---|---|---|

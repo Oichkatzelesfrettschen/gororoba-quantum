@@ -24,6 +24,11 @@ qiskit-ibm.json
 !docs/evidence/folding_proofs/kernel-check.log
 !docs/evidence/folding_proofs/rocq_replay.log
 !docs/evidence/simulation-notebook-audit/kaggle_logs/*.log
+!results/kaggle/*/output/*.log
 
 # Personal reading copies with external-only redistribution status.
 /docs/local_source_cache/
+
+# Workstation-specific guides: this host's hardware, drivers and measured
+# limits. docs/notes/kaggle/substrates.md carries the shared routing.
+/docs/local/
