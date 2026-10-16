@@ -52,6 +52,12 @@ A Kaggle kernel builds every package above except SageMath from the same
 pinned archives and regenerates `tables.json` byte for byte before its entry
 runs (`docs/notes/kaggle/hypercomplex-stack.md`).
 
+## Manual and interplay
+
+[manual/](manual/README.md) holds one manpage per package with its API by capability and
+examples replayed on the build host; [interplay.md](interplay.md) maps which package reaches
+which algebra through which map onto `cd_core`, with the checks that verify each claim.
+
 ## Rules
 
 1. **One specification.** `cd_core` is the reference. A package result enters
