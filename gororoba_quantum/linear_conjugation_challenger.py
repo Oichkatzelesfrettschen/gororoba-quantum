@@ -27,7 +27,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import math
 import shlex
 import statistics
 import sys
@@ -36,7 +35,7 @@ from pathlib import Path
 from typing import Any
 
 import numpy as np
-from qiskit import ClassicalRegister, QuantumCircuit, QuantumRegister
+from qiskit import QuantumCircuit
 from qiskit.quantum_info import Operator
 from qiskit_ibm_runtime.fake_provider import FakeFez
 
@@ -57,8 +56,13 @@ from compile_evidence import (
     candidate_pass_manager,
 )
 from live_run import _gate_time_view
-from modular_arithmetic import _append_controlled_target_flips, modular_permutation
-from order_finding import order_finding_plan
+from modular_arithmetic import (
+    _append_controlled_target_flips,
+    conjugated_permutation,
+    linear_encoding,
+    modular_permutation,
+)
+from order_finding import ENCODED_STRATEGY, factor_order_finding, order_finding_plan
 from target_flip import CONTROLLED_CX_COST, TargetCube, target_flip_network
 
 BASELINE = "target_flip_one_clean"
@@ -88,63 +92,9 @@ def _baseline_candidate() -> Candidate:
     return next(candidate for candidate in SELECTABLE_CANDIDATES if candidate.name == BASELINE)
 
 
-def linear_table(columns: tuple[int, ...]) -> tuple[int, ...]:
-    """x -> B x for the matrix whose column i is columns[i]."""
-    table = []
-    for value in range(SIZE):
-        image = 0
-        for bit, column in enumerate(columns):
-            if value >> bit & 1:
-                image ^= column
-        table.append(image)
-    if sorted(table) != list(range(SIZE)):
-        raise ValueError(f"columns {columns} are linearly dependent")
-    return tuple(table)
-
-
-def conjugated_permutation(columns: tuple[int, ...], multiplier: int) -> tuple[int, ...]:
-    table = linear_table(columns)
-    inverse = [0] * SIZE
-    for value, image in enumerate(table):
-        inverse[image] = value
-    permutation = modular_permutation(MODULUS, multiplier)
-    return tuple(inverse[permutation[table[value]]] for value in range(SIZE))
-
-
 def _schedule() -> tuple[int, ...]:
     plan = order_finding_plan(MODULUS, BASE, PHASE_BITS, multiplier_strategy=_baseline_candidate().multiplier_strategy)
     return tuple(resource.multiplier for resource in plan.rounds[plan.leading_identity_rounds :])
-
-
-def conjugated_order_finding(columns: tuple[int, ...]) -> QuantumCircuit:
-    """factor_order_finding's ten-round circuit with every multiplier conjugated by B."""
-    plan = order_finding_plan(MODULUS, BASE, PHASE_BITS, multiplier_strategy=_baseline_candidate().multiplier_strategy)
-    control_register = QuantumRegister(1, "ctrl")
-    work_register = QuantumRegister(plan.work_qubits, "w")
-    scratch_register = QuantumRegister(plan.scratch_qubits, "scratch")
-    phase_register = ClassicalRegister(plan.phase_bits, "phase")
-    circuit = QuantumCircuit(control_register, work_register, scratch_register, phase_register)
-    circuit.name = f"shor_order_N{MODULUS}_a{BASE}_conjugated"
-    control_qubit = 0
-    work_qubits = list(range(1, 1 + plan.work_qubits))
-    scratch_qubits = list(range(1 + plan.work_qubits, plan.quantum_qubits))
-    initial = linear_table(columns).index(1)
-    for bit, qubit in enumerate(work_qubits):
-        if initial >> bit & 1:
-            circuit.x(qubit)
-    for resource in plan.rounds[plan.leading_identity_rounds :]:
-        circuit.h(control_qubit)
-        network = target_flip_network(conjugated_permutation(columns, resource.multiplier))
-        _append_controlled_target_flips(circuit, control_qubit, work_qubits, scratch_qubits, network)
-        for prior_round in range(plan.leading_identity_rounds, resource.round_index):
-            feedback_angle = -math.pi / (1 << (resource.round_index - prior_round))
-            with circuit.if_test((phase_register[prior_round], 1)):
-                circuit.p(feedback_angle, control_qubit)
-        circuit.h(control_qubit)
-        circuit.measure(control_qubit, phase_register[resource.round_index])
-        if resource.round_index + 1 < plan.phase_bits:
-            circuit.reset(control_qubit)
-    return circuit
 
 
 def _controlled_network_maps(network: tuple[TargetCube, ...], permutation: tuple[int, ...]) -> bool:
@@ -164,11 +114,11 @@ def _controlled_network_maps(network: tuple[TargetCube, ...], permutation: tuple
 
 
 def equivalence_checks(columns: tuple[int, ...]) -> dict[str, Any]:
-    table = linear_table(columns)
+    table = linear_encoding(columns)
     checks: dict[str, Any] = {"initial_value": table.index(1)}
     for multiplier in sorted(set(_schedule())):
         f = modular_permutation(MODULUS, multiplier)
-        g = conjugated_permutation(columns, multiplier)
+        g = conjugated_permutation(f, columns)
         network = target_flip_network(g)
         checks[str(multiplier)] = {
             "conjugation_exhaustive": all(table[g[value]] == f[table[value]] for value in range(SIZE)),
@@ -205,7 +155,9 @@ def _backend() -> FakeFez:
 
 
 def _source(columns: tuple[int, ...] | None) -> QuantumCircuit:
-    return _build_source(_baseline_candidate())[0] if columns is None else conjugated_order_finding(columns)
+    if columns is None:
+        return _build_source(_baseline_candidate())[0]
+    return factor_order_finding(MODULUS, BASE, PHASE_BITS, multiplier_strategy=ENCODED_STRATEGY, work_columns=columns)
 
 
 def _active_physical_qubits(circuit: QuantumCircuit) -> int:
