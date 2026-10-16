@@ -3,9 +3,10 @@
 Simulations of 14 qubits or fewer run on Kaggle; IBM hardware serves 15 or
 more qubits or a question about the device itself. A kernel runs on a CPU
 machine unless ``--machine`` names an accelerator, which a case requests when
-its widest density matrix reaches local_compute.GPU_MIN_ACTIVE_QUBITS: below
-that width a GPU spends its per-call overhead on states the CPU evolves
-faster, and the weekly GPU quota goes to the runs that need it. This script is
+its widest density matrix reaches 12 qubits, or 8 with mid-circuit
+measurement: below those widths a T4 is at most 3 times faster than the
+kernel's 4 CPUs (docs/notes/kaggle/substrates.md), and the weekly GPU quota
+goes to the runs that need it. This script is
 the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports

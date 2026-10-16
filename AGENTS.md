@@ -314,9 +314,12 @@ sedenion statement never rests on them.
   qiskit-aer-gpu-cu11 0.17.2 on a GPU), proves the hypercomplex package
   stack before the entry runs, and retains the output under results/kaggle/.
   A kernel runs on a CPU machine by default; a case requests a GPU
-  (`--machine NvidiaTeslaT4`) when its widest density matrix reaches
-  `local_compute.GPU_MIN_ACTIVE_QUBITS`, since narrower replays run slower
-  on a GPU and the weekly GPU quota is scarce. `kaggle_run.py shards`
+  (`--machine NvidiaTeslaT4`) when its widest density matrix reaches 12
+  qubits, or 8 in a circuit with mid-circuit measurement, where a T4 ran
+  13 to 28 times faster than the 4-core Kaggle CPU; narrower replays ran
+  at most 3 times faster, the CPU is unmetered and five sessions wide, and
+  the weekly GPU quota goes to the wide runs
+  (`docs/notes/kaggle/substrates.md`, "CPU against T4"). `kaggle_run.py shards`
   replicates the CI gate shards for a commit on Kaggle CPU kernels in place
   of the build host. `docs/notes/kaggle/` holds the workflow, the measured
   substrates and the package-stack guide. Kaggle allows two concurrent GPU

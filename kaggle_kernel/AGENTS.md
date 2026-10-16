@@ -9,10 +9,10 @@ and what it must prove before its output counts.
 
 | Substrate | Runs | Never runs |
 | --- | --- | --- |
-| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below `local_compute.GPU_MIN_ACTIVE_QUBITS`, and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |
-| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches `local_compute.GPU_MIN_ACTIVE_QUBITS` | IBM jobs; narrow replays the CPU runs faster |
+| Kaggle CPU kernel (the default) | every simulation of 14 qubits or fewer whose widest density matrix stays below 12 qubits (8 with mid-circuit measurement), and the CI gate shards (`kaggle_run.py shards`) | IBM jobs; anything needing an IBM credential |
+| Kaggle GPU kernel (Aer on GPU, `--machine NvidiaTeslaT4`) | simulations whose widest density matrix reaches 12 qubits, or 8 with mid-circuit measurement (docs/notes/kaggle/substrates.md, "CPU against T4") | IBM jobs; narrow replays, which the T4 speeds up by at most 3 times |
 | Kaggle CPU in the same kernel | transpilation, package builds, the hypercomplex table extraction | |
-| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. Every batch request for either ID, through any interface, ran on a 4-core CPU machine without libtpu on an account without Persona identity verification (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |
+| Kaggle TPU (`TpuV5E8`, `TpuV6E8`) | JAX code only; Aer has no TPU backend. An account without Persona identity verification gets a 4-core CPU machine for every TPU request; a verified account's request queues for a TPU, one batch session at a time (docs/notes/kaggle/tpu-research.md) | Qiskit or Aer |
 | Kaggle Gemma models (attached through `model_sources`) | text tasks on request | evidence: a language-model answer supports no physical or mathematical claim |
 | IBM Heron (ibm_fez, ibm_kingston, ibm_marrakesh) | 15 or more qubits, or a question about a named device qubit, only after the owner approves a written case | simulations |
 | GitHub Actions CPU | the CPU replay gate that re-derives a reduced case of each Kaggle result | GPU work |
