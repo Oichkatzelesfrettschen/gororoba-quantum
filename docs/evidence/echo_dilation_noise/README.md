@@ -137,8 +137,11 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
    from a CZ conditional phase by its sign. Physically realized rotation
    errors survive the compiled inverse, because the inverse reverses the
    gate order but applies the same SX and CZ pulses.
-2. **What the pair does detect.** A negative shift beyond the incoherent
-   floor is a coherent-error signal.
+2. **What the pair does detect.** A negative shift beyond the modeled
+   incoherent floor is an error-channel signal whose source stays
+   unidentified: the coherent channels move the pair strongly, but an
+   unmeasured rise in the incoherent floor moves it the same way, and the
+   one depolarizing magnitude tested bounds no incoherent change in general.
    - It is very sensitive to CZ phases: about 7,100 to 12,700 shots per arm
      resolve a 0.01 rad local phase at z = 3, and 43,500 to 88,400 a
      0.01 rad conditional phase.
@@ -165,6 +168,11 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
    - **Cross-sensitivity.** SX over-rotation, CZ local phase and extra
      depolarizing bias its delta estimate by at most 8.3e-4 rad. The
      tolerance the 40,000-shot pair needs is 0.0048 to 0.0057 rad.
+   - **Visibility.** On hardware the Y-basis readout difference is
+     `V [sin(theta + 2m delta) - sin(theta)]`, with an unknown visibility V
+     and common phase theta. The slope here comes from the model's known
+     deltas, so the device case adds an X-quadrature arm for each edge and
+     depth to measure V and theta before its counts bound any phase.
    - **Shots.** At m = 24 it reaches that tolerance with 349 to 514 shots
      per edge and target state, so four edges cost about 4,000 shots.
 6. **Edge phases add coherently, not edge by edge.** The four single-edge
@@ -179,7 +187,10 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
    - Bounding each edge to its single-edge tolerance would therefore under-size
      the reference about tenfold (30 to 59 shots per target where the joint
      bound needs 349 to 514). The joint tolerance, 0.0048 to 0.0057 rad on
-     every edge, is the sizing a case uses.
+     every edge, is the sizing a case uses under the uniform-phase model.
+   - Mixed phase vectors, with unequal or opposite-signed phases across
+     edges, are untested. The response is nonlinear, so the joint tolerance
+     bounds equal phases on every edge, not an arbitrary mix.
 
 ## Consequences for the proposal
 
@@ -189,9 +200,11 @@ physical rotation error is inverse-undone, so the pair's negative shift is
 a sum of coherent channels and of changes in the incoherent floor: extra
 depolarizing moves the pair the same way on Fez and Marrakesh, and the
 calibrated baseline already misses the matched null there.
-- **Conditional share.** The per-edge reference bounds every edge's
-  conditional phase to the joint tolerance, and the model maps those bounds
-  onto the pair only jointly, through the phases' weighted sum.
+- **Conditional share.** Under the uniform-phase model, the per-edge
+  reference, with X-quadrature arms that calibrate its visibility and
+  common phase, bounds every edge's conditional phase to the joint
+  tolerance. The model maps those bounds onto the pair only jointly, and
+  mixed phase vectors need their own sweep before they bound anything.
 - **Residual.** What remains after the conditional share is unidentified.
   Attributing it to local phase or SX over-rotation needs an independently
   measured incoherent control on the same compile, which this run does not
