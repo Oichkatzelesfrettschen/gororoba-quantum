@@ -266,7 +266,11 @@ importing any package), and `docs/notes/packages/` holds one note per
 package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
-pinned digest is checked again after the rebuild.
+pinned digest is checked again after the rebuild. A Kaggle kernel builds the
+same eight packages from the same pinned archives (`--fetch` and `--install`
+apply the PKGBUILD recipes) and runs its entry only after `--extract`
+regenerates `tables.json` byte for byte; SageMath stays on the build host
+(`docs/notes/kaggle/hypercomplex-stack.md`).
 
 | Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
 |---|---|---|---|---|---|
@@ -289,6 +293,21 @@ cd_core is unmeasured and no artifact claims one.
 - The plan allows 600 s of quantum time on a rolling 28-day window: usage()
   reports a usage_period that ends at the moment of the call, so each second
   spent returns 28 days later and no reset date exists.
+- Simulations of 14 qubits or fewer run on Kaggle GPU kernels through
+  `scripts/kaggle_run.py` (`push`, `status`, `collect`), which bundles the
+  entry's repository imports with `kaggle_kernel/` (the kernel program and
+  its AGENTS.md), installs qiskit 2.5.2 with qiskit-aer-gpu-cu11 0.17.2,
+  proves the hypercomplex package stack before the entry runs, and retains
+  the output under results/kaggle/. `docs/notes/kaggle/` holds the workflow,
+  the measured substrates and the package-stack guide. Kaggle allows two
+  concurrent GPU batch sessions per account. IBM hardware serves 15 or
+  more qubits, or a smaller run whose question concerns the device itself
+  (a named qubit's readout, detuning or drift); its case states why Aer
+  cannot answer it. A kernel's
+  noise comes from a retained `gororoba_quantum/calibration_snapshot.py`
+  export, whose `--export` requires every gate and readout channel to equal
+  live_run's noise model, and a Kaggle result enters the research state
+  only through a CPU replay gate on a reduced case.
 - Every `--submit` waits for the user's approval of a written case: what the
   run measures, why noise simulation cannot answer it, and its expected
   seconds. The case is written against a submit-free dry run, and the
@@ -420,7 +439,10 @@ python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
 which leaves AOCL in place; a package without a local PKGBUILD comes from
 the distribution repositories through pacman or paru. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack.
+submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2
+and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel stops at
+0.15.1) over the Kaggle image's numpy and scipy, records every version in
+`environment.json`, and holds no IBM credential (`kaggle_kernel/AGENTS.md`).
 <!-- heron-execution-facts:end -->
 
 ## Qiskit skills
@@ -474,19 +496,9 @@ Codex, the chatgpt-codex-connector app, supplies the default pull-request
 review. It reviews on open, and an issue comment `@codex review` requests a
 review of the current head.
 
-When the hosted Codex app reports exhausted code-review quota, request Copilot
-instead. The user authorizes that substitution. Submit a REST review request
-to `pulls/PR/requested_reviewers` with
-`{"reviewers":["copilot-pull-request-reviewer[bot]"]}` and verify that the
-`copilot-pull-request-reviewer` check starts. An empty `requested_reviewers`
-response can accompany an accepted request; the check confirms execution.
-Read the completed Copilot review and every review thread. Admission requires
-a review by that app on the current commit, zero open findings, a successful
-current-commit Copilot check, and resolved review threads. General expert-review
-cautions retain their scientific scope; concrete findings require the same
-triage and fixes below. The Codex status script reports Codex clean signals;
-Copilot admission uses its REST reviews/checks and GraphQL review threads.
-Return to the default reviewer when hosted Codex review becomes available.
+Codex is the only hosted reviewer. Copilot reviews are billed to the owner,
+so no pull request requests one; when the Codex app reports exhausted
+code-review quota, the owner decides how the PR proceeds.
 
 - *Progress.* The bot keeps one summary comment per PR, marked
   `codex-pull-request-review-summary`, which reads Running while a review is in
@@ -506,8 +518,8 @@ Return to the default reviewer when hosted Codex review becomes available.
   PR update marker, and summary to reject a changing snapshot.
 
 **One round, per PR:**
-1. Wait until the selected review completes: the Codex summary stops reading
-   Running, or the Copilot check completes. Then read every unresolved thread
+1. Wait until the Codex review completes: its summary stops reading
+   Running. Then read every unresolved thread
    in full from `codex_review_status.sh` or the GraphQL thread connection.
    Threads can arrive between rounds and attach to the newest commit, so the
    open-thread list,
@@ -533,10 +545,9 @@ Return to the default reviewer when hosted Codex review becomes available.
    those markers, and lists every other open thread as unanswered. A comment
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
-6. Request the selected reviewer again and start at step 1. A PR leaves the
-   loop when the current-head Codex status reports `verdict=clean-comment...`
-   or `verdict=clean-reaction...`, or the authorized Copilot admission above
-   passes, and every review thread is resolved.
+6. Request Codex again and start at step 1. A PR leaves the loop when the
+   current-head Codex status reports `verdict=clean-comment...` or
+   `verdict=clean-reaction...` and every review thread is resolved.
 
 **Stacked PRs.**
 - Each branch builds on the one below it, so a fix lands on the lowest branch

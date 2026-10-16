@@ -1,0 +1,100 @@
+{
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "evidence_kind": "exact_arithmetic_and_resource_reference",
+  "experiment": "shor_resources",
+  "limits": "No Shor circuit execution or scalable modular-arithmetic implementation. Matrix costs exclude workspace. Coherent work state cannot be checkpointed into classical bits.",
+  "memory_rows": [
+    {
+      "density_matrix_gib": 3.814697265625e-06,
+      "qubits": 4,
+      "statevector_gib": 2.384185791015625e-07
+    },
+    {
+      "density_matrix_gib": 0.0009765625,
+      "qubits": 8,
+      "statevector_gib": 3.814697265625e-06
+    },
+    {
+      "density_matrix_gib": 0.015625,
+      "qubits": 10,
+      "statevector_gib": 1.52587890625e-05
+    },
+    {
+      "density_matrix_gib": 0.25,
+      "qubits": 12,
+      "statevector_gib": 6.103515625e-05
+    },
+    {
+      "density_matrix_gib": 1.0,
+      "qubits": 13,
+      "statevector_gib": 0.0001220703125
+    },
+    {
+      "density_matrix_gib": 4.0,
+      "qubits": 14,
+      "statevector_gib": 0.000244140625
+    },
+    {
+      "density_matrix_gib": 16.0,
+      "qubits": 15,
+      "statevector_gib": 0.00048828125
+    },
+    {
+      "density_matrix_gib": 64.0,
+      "qubits": 16,
+      "statevector_gib": 0.0009765625
+    },
+    {
+      "density_matrix_gib": 67108864.0,
+      "qubits": 26,
+      "statevector_gib": 1.0
+    },
+    {
+      "density_matrix_gib": 1073741824.0,
+      "qubits": 28,
+      "statevector_gib": 4.0
+    }
+  ],
+  "permutations": [
+    {
+      "N": 15,
+      "a": 2,
+      "classical_reference_order": 4,
+      "data_qubits": 4,
+      "matrix_dimension": 16,
+      "orbit_length": 4,
+      "resource_note": "Orbit compression exposes this order; cannot claim order discovery from that compressed oracle."
+    },
+    {
+      "N": 21,
+      "a": 2,
+      "classical_reference_order": 6,
+      "data_qubits": 5,
+      "matrix_dimension": 32,
+      "orbit_length": 6,
+      "resource_note": "Orbit compression exposes this order; cannot claim order discovery from that compressed oracle."
+    },
+    {
+      "N": 21,
+      "a": 4,
+      "classical_reference_order": 3,
+      "data_qubits": 5,
+      "matrix_dimension": 32,
+      "orbit_length": 3,
+      "resource_note": "Orbit compression exposes this order; cannot claim order discovery from that compressed oracle."
+    },
+    {
+      "N": 33,
+      "a": 2,
+      "classical_reference_order": 10,
+      "data_qubits": 6,
+      "matrix_dimension": 64,
+      "orbit_length": 10,
+      "resource_note": "Orbit compression exposes this order; cannot claim order discovery from that compressed oracle."
+    }
+  ],
+  "profile": "smoke",
+  "qpu_jobs_submitted": 0,
+  "seed": 20261015,
+  "wall_seconds": 0.00017145500009974057
+}

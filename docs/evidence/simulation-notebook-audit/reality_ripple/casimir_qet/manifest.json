@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-10-16T03:18:51.572373+00:00",
+  "files": [
+    {
+      "bytes": 464,
+      "path": "casimir_rows.csv",
+      "sha256": "4e5ec040b7360ca75fc70668df31ed2fda6019fe11eefaa88fbd345b394fc0d1"
+    },
+    {
+      "bytes": 509,
+      "path": "environment.json",
+      "sha256": "5db7d02579a235c58e2ac537a1ee2f76cdb3aa66bbb56d2b8df3e40064b77efe"
+    },
+    {
+      "bytes": 680,
+      "path": "qet_rows.csv",
+      "sha256": "256be72071e3aec9b4e4ff9800440dbb6629e0a020105a53c88f57a0ec1a0cbb"
+    },
+    {
+      "bytes": 3169,
+      "path": "result.json",
+      "sha256": "c0fb953618125d90f0e8f9772b3e60231741cf310ddd92ac719f7c9bfab47c8a"
+    }
+  ],
+  "hardware_measurements_generated": false,
+  "library_sha256": "8ec000f8c3b44413b376765d8269e465380430ce7ca35806199d6a170c0b6d57"
+}

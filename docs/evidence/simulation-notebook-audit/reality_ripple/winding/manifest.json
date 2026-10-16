@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-10-16T03:18:50.911827+00:00",
+  "files": [
+    {
+      "bytes": 509,
+      "path": "environment.json",
+      "sha256": "5db7d02579a235c58e2ac537a1ee2f76cdb3aa66bbb56d2b8df3e40064b77efe"
+    },
+    {
+      "bytes": 364,
+      "path": "predelay_rows.csv",
+      "sha256": "318e91ffbec5654a7b313d235b220a7168495e19aa5bb3d69764e4a055e5f95f"
+    },
+    {
+      "bytes": 401394,
+      "path": "profile_rows.csv",
+      "sha256": "da923adb83333eb1fb3cf473171f1bf725ebb8271d868f63d0495d9765dc7fc2"
+    },
+    {
+      "bytes": 986933,
+      "path": "result.json",
+      "sha256": "4d5d80402ad2f4a8c44b790e23561aa6fd6305dfea5ff2ff502b9d54e9fa28b3"
+    }
+  ],
+  "hardware_measurements_generated": false,
+  "library_sha256": "8ec000f8c3b44413b376765d8269e465380430ce7ca35806199d6a170c0b6d57"
+}

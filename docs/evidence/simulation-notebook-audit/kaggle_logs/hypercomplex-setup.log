@@ -1,0 +1,30 @@
+[{"stream_name":"stderr","time":7.659807118,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.6598731860000004,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.788131331,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.788166349,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.788172216,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.788176761999999,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.547144668,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.547201221,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.547208702,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.547214036,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.977818168,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 85.2/85.2 kB 1.8 MB/s eta 0:00:00\r\n"}
+,{"stream_name":"stdout","time":17.977870229,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 156.6/156.6 kB 4.8 MB/s eta 0:00:00\r\n"}
+,{"stream_name":"stdout","time":18.080511392,"data":"Installed\n"}
+,{"stream_name":"stdout","time":18.101932038,"data":"cd_sign(16,1,4) = 1\n"}
+,{"stream_name":"stdout","time":18.101975094,"data":"Reference loaded.\n"}
+,{"stream_name":"stdout","time":18.153011053,"data":"Sedenion algebra created\n"}
+,{"stream_name":"stdout","time":19.339192384,"data":"Mismatches vs cd_sign: 0/256\n"}
+,{"stream_name":"stdout","time":19.339234455,"data":"hypercomplex matches reference: True\n"}
+,{"stream_name":"stdout","time":19.363682657,"data":"Engine import: cannot import name 'cayley_dickson_sign' from 'hypercomplex_engine' (/usr/local/lib/python3.13/dist-packages/hypercomplex_engine/__init__.py)\n"}
+,{"stream_name":"stdout","time":19.389244359,"data":"(e1+e10)(e4-e15) = 0: True\n"}
+,{"stream_name":"stdout","time":22.998976341,"data":"octonion: cannot import name 'OctonionTensor' from 'octonion' (/usr/local/lib/python3.13/dist-packages/octonion/__init__.py)\n"}
+,{"stream_name":"stderr","time":26.810290059,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":26.810351717,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":27.021175052,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":27.021207912,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":27.944559564,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":28.041366363,"data":"[NbConvertApp] Writing 13806 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":31.343909516,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":32.029156376,"data":"[NbConvertApp] Writing 298030 bytes to __results__.html\n"}
+]

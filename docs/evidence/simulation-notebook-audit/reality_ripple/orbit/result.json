@@ -1,0 +1,283 @@
+{
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "evidence_kind": "analytic_and_synthetic_reference",
+  "experiment": "orbit",
+  "hardware_refit": false,
+  "maximum_identity_error": 2.220446049250313e-16,
+  "profile": "smoke",
+  "qpu_jobs_submitted": 0,
+  "ranks": {
+    "arm_bias": {
+      "rank": 5,
+      "singular_values": [
+        0.7154840765658428,
+        0.5175738512806597,
+        0.41715628001010113,
+        0.19575279008914764,
+        0.1265277973146536
+      ]
+    },
+    "bias": {
+      "rank": 3,
+      "singular_values": [
+        0.7249051132206191,
+        0.6585827998680928,
+        0.2631413653668613
+      ]
+    },
+    "phase": {
+      "rank": 4,
+      "singular_values": [
+        0.725771808188434,
+        0.6939815350830302,
+        0.2514287645106479,
+        0.10042392571060249
+      ]
+    },
+    "two_phase": {
+      "rank": 4,
+      "singular_values": [
+        0.7261152559905194,
+        0.6976324096318481,
+        0.26932293390021794,
+        0.1318285929591359,
+        1.984764390837463e-17
+      ]
+    }
+  },
+  "required_next": "Fit held-out real count data only after validating its outcome map and provenance.",
+  "seed": 20261015,
+  "synthetic_fits": {
+    "arm_bias": {
+      "counts": [
+        [
+          1549,
+          1047,
+          612,
+          888
+        ],
+        [
+          1496,
+          808,
+          687,
+          1105
+        ]
+      ],
+      "evidence_kind": "synthetic_multinomial",
+      "fits": {
+        "arm_bias": {
+          "attempted_starts": 8,
+          "deviance": 0.23719883520243457,
+          "effective_parameters": 5,
+          "interval": null,
+          "model": "arm_bias",
+          "negative_log_likelihood": 10948.232948294599,
+          "p_value": null,
+          "parameters": [
+            0.1878608399038679,
+            0.3636753516536754,
+            0.06054687515100103,
+            0.08217057318753712,
+            0.12358782217500082
+          ],
+          "probabilities": [
+            [
+              0.38009880741897606,
+              0.25416213165016605,
+              0.1501746301565245,
+              0.2155644307743335
+            ],
+            [
+              0.36339397941815843,
+              0.19839993166934206,
+              0.16687945815734212,
+              0.2713266307551575
+            ]
+          ],
+          "scope": "Exploratory fitted probability model. No automatic chi-square inference.",
+          "starts_within_1e-5_nll": 8,
+          "successful_starts": 8
+        },
+        "bias": {
+          "attempted_starts": 8,
+          "deviance": 7.236082749670459,
+          "effective_parameters": 3,
+          "interval": null,
+          "model": "bias",
+          "negative_log_likelihood": 10951.732390251833,
+          "p_value": null,
+          "parameters": [
+            0.3217845755270776,
+            0.06054795439542592,
+            0.12235969223246151
+          ],
+          "probabilities": [
+            [
+              0.37198271815664263,
+              0.26360077719297653,
+              0.15829125904107033,
+              0.2061252456093105
+            ],
+            [
+              0.36747772939600615,
+              0.19370211672022458,
+              0.1627962478017068,
+              0.27602390608206245
+            ]
+          ],
+          "scope": "Exploratory fitted probability model. No automatic chi-square inference.",
+          "starts_within_1e-5_nll": 8,
+          "successful_starts": 8
+        },
+        "phase": {
+          "attempted_starts": 8,
+          "deviance": 3.370315359090455,
+          "effective_parameters": 4,
+          "interval": null,
+          "model": "phase",
+          "negative_log_likelihood": 10949.799506556543,
+          "p_value": null,
+          "parameters": [
+            0.3103862385418818,
+            0.0621932824721433,
+            0.13613671470468527,
+            0.175690527216447
+          ],
+          "probabilities": [
+            [
+              0.37420986740587997,
+              0.2541628031025001,
+              0.1568867738301917,
+              0.2147405556614283
+            ],
+            [
+              0.3704593442234779,
+              0.19760901312886472,
+              0.16063729701259372,
+              0.27129434563506366
+            ]
+          ],
+          "scope": "Exploratory fitted probability model. No automatic chi-square inference.",
+          "starts_within_1e-5_nll": 6,
+          "successful_starts": 8
+        }
+      }
+    },
+    "phase": {
+      "counts": [
+        [
+          1497,
+          893,
+          689,
+          1017
+        ],
+        [
+          1526,
+          735,
+          682,
+          1153
+        ]
+      ],
+      "evidence_kind": "synthetic_multinomial",
+      "fits": {
+        "arm_bias": {
+          "attempted_starts": 8,
+          "deviance": 8.293513241882465,
+          "effective_parameters": 5,
+          "interval": null,
+          "model": "arm_bias",
+          "negative_log_likelihood": 10969.750750961652,
+          "p_value": null,
+          "parameters": [
+            0.20696690511247787,
+            0.27857653915547503,
+            0.07275390637848597,
+            0.0,
+            0.10238277562994766
+          ],
+          "probabilities": [
+            [
+              0.36731761345556174,
+              0.2318115234053785,
+              0.16905933973368123,
+              0.2318115234053785
+            ],
+            [
+              0.3707025385124976,
+              0.18048884930247616,
+              0.16567441467674532,
+              0.28313419750828084
+            ]
+          ],
+          "scope": "Exploratory fitted probability model. No automatic chi-square inference.",
+          "starts_within_1e-5_nll": 8,
+          "successful_starts": 8
+        },
+        "bias": {
+          "attempted_starts": 8,
+          "deviance": 37.6129253422514,
+          "effective_parameters": 3,
+          "interval": null,
+          "model": "bias",
+          "negative_log_likelihood": 10984.410457011836,
+          "p_value": null,
+          "parameters": [
+            0.30687686122466756,
+            0.06496432441750064,
+            0.053976565421517166
+          ],
+          "probabilities": [
+            [
+              0.3625757017777582,
+              0.24637642247425764,
+              0.16990646043099208,
+              0.22114141531699202
+            ],
+            [
+              0.3572509761853674,
+              0.1697373065253912,
+              0.17523118602338295,
+              0.29778053126585846
+            ]
+          ],
+          "scope": "Exploratory fitted probability model. No automatic chi-square inference.",
+          "starts_within_1e-5_nll": 8,
+          "successful_starts": 8
+        },
+        "phase": {
+          "attempted_starts": 8,
+          "deviance": 0.9221220549698046,
+          "effective_parameters": 4,
+          "interval": null,
+          "model": "phase",
+          "negative_log_likelihood": 10966.065055368195,
+          "p_value": null,
+          "parameters": [
+            0.21158544398556375,
+            0.07227331344502075,
+            0.0965308440030753,
+            0.4737517428314169
+          ],
+          "probabilities": [
+            [
+              0.37024139724457267,
+              0.21663423663137932,
+              0.16589525947793773,
+              0.24722910664611028
+            ],
+            [
+              0.36745090929959445,
+              0.1808145127019432,
+              0.16868574742291595,
+              0.2830488305755464
+            ]
+          ],
+          "scope": "Exploratory fitted probability model. No automatic chi-square inference.",
+          "starts_within_1e-5_nll": 5,
+          "successful_starts": 8
+        }
+      }
+    }
+  },
+  "wall_seconds": 1.6312760649998381
+}

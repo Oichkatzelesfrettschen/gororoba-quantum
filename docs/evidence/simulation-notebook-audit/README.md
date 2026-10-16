@@ -69,3 +69,32 @@ structural claim behind the CCZ notebooks from `cd_core`:
   relative one.
 - The 84/84 sedenion ripple circuits are dim 16, where every associator
   phase has degree at most 2, so the CCZ normal form does not apply to them.
+
+## Second batch: kernels run without a repository notebook
+
+Twenty-one more kernels ran on the account between 2026-10-15T23:00Z and
+2026-10-16T03:20Z; none was committed. `kaggle kernels pull` returned their
+sources, retained byte for byte as `kaggle_sources/<kernel>.ipynb.txt` (the
+`.txt` suffix keeps them outside the notebook lint gates; `retrieval.json`
+names each one), so every reading below can be checked against the code it
+describes, and their logs sit in `kaggle_logs/`. The first batch's
+`census-4096` source is retained the same way. Read against their own
+code and output:
+
+| Kernel | Reading |
+| --- | --- |
+| `gpu-density-84-84` | An invented 12-qubit circuit whose bright and dark arms differ by `ry(pi/12)` per qubit; it shows no contrast even before the noise sweep (P(1) 0.499 against 0.503), so it measures nothing about the 84/84 pairs. |
+| `correlated-coherent` | Bright and dark differ by a full RY(pi) per qubit, unlike the repository pairs (one virtual RZ). The "correlated over-rotation" test adds RZZ after CZ with no later non-diagonal gate before a Z measurement, so populations cannot change and the constant 0.0670 holds by construction: the test is blind to the error it names. |
+| `z3-formalization`, `z3-exhaustive`, `z3-exhaustive-all-30-evidence-directories` | Z3 checks typed-in constants (1848 = 1848, 15 x 24 = 360) and asserted relations rather than the algebra computed from `cd_sign`; the last crashed on `import z3`. They add no proof beyond the repository's Rocq certificates and exact replays. |
+| `formalization-probe` | Z3 5.3.1 and Coq 8.18 install on a Kaggle CPU kernel; the repository pins Rocq 9.1.1 and 9.2, so the probe shows a route, not a usable kernel checker. |
+| `ccz-verify` | Lists the independent certificate package now retained in `docs/evidence/ccz-reduction/independent_package/` (gate core-284 compares it with `normal_form.json`: all 360 pairs agree). |
+| `hypercomplex-setup` (committed as `docs/evidence/libraries/hypercomplex-setup.ipynb`) | Installs six packages at the pinned versions from PyPI without the sha256 check, leaves out cayley-dickson and SplitOct, which build only through the PKGBUILD recipes, and fails on the engine and octonion APIs it calls; its 256 of 256 sign matches cover `hypercomplex` only. Every kernel now builds all eight from the hash-pinned archives and proves them against `tables.json` (`docs/notes/kaggle/hypercomplex-stack.md`). |
+| `calibration-drift-cpu`, `calibration-drift-ghost` | Both crash before any analysis (`NameError` and an empty snapshot list) on the private dataset of run records. |
+| `hw-estimate-analysis`, `local-compute-analysis`, `run-pipeline-timeline` | File listings and counts over private copies of repository results (147 records, 14 submitted); descriptive only. |
+| `quantum-resource-guide` | An unmeasured qubit table; its own kernel had no Aer. The measured limits are in `docs/notes/kaggle/substrates.md` (one T4: density matrix 14, statevector 29). |
+| `gemma-4-starter-guide`, `gemma-4-ketgpt-first-look` | Language-model setup; no evidence content. |
+| `reality-ripple-kaggle-lab-master` and `reality-ripple-01` to `-04` | A self-contained reference library (`reality_ripple/rr_lab.py.txt`) running ten analytic, finite or synthetic studies, each labeled with its evidence class, limits and zero QPU jobs. Its results, retained in `reality_ripple/`, agree with the repository where they overlap: the conditional-Ramsey design rank rises from 2 to 3 with J unidentified without conditionals (rate error 1.1e-16, as `gororoba_quantum/conditional_ramsey.py` states), and the signed-kernel reference reproduces to 2.8e-17. They are design references, not results. |
+
+Ferret also placed private copies of repository data on Kaggle as datasets
+(run records, Target snapshots, evidence results, the certificate package);
+the repository remains the authority for each.

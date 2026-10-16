@@ -1,0 +1,54 @@
+{
+ "circuit": "GHZ: H then a CX chain, measured on every qubit",
+ "density_matrix": [
+  {
+   "ok": true,
+   "wall_seconds": 0.666,
+   "width": 12
+  },
+  {
+   "ok": true,
+   "wall_seconds": 0.633,
+   "width": 13
+  },
+  {
+   "ok": true,
+   "wall_seconds": 0.961,
+   "width": 14
+  },
+  {
+   "error": "exit -9: ",
+   "ok": false,
+   "width": 15
+  }
+ ],
+ "shots": 256,
+ "statevector": [
+  {
+   "ok": true,
+   "wall_seconds": 2.719,
+   "width": 26
+  },
+  {
+   "ok": true,
+   "wall_seconds": 2.544,
+   "width": 28
+  },
+  {
+   "ok": true,
+   "wall_seconds": 4.378,
+   "width": 29
+  },
+  {
+   "error": "exit -9: ",
+   "ok": false,
+   "width": 30
+  },
+  {
+   "error": "CircuitTooWideForTarget: 'Number of qubits (31) in circuit-46 is greater than maximum (30) in the coupling_map'",
+   "ok": false,
+   "width": 31
+  }
+ ],
+ "trial_timeout_seconds": 600
+}

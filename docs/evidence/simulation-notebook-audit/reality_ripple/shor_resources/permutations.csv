@@ -1,0 +1,5 @@
+N,a,data_qubits,matrix_dimension,classical_reference_order,orbit_length,resource_note
+15,2,4,16,4,4,Orbit compression exposes this order; cannot claim order discovery from that compressed oracle.
+21,2,5,32,6,6,Orbit compression exposes this order; cannot claim order discovery from that compressed oracle.
+21,4,5,32,3,3,Orbit compression exposes this order; cannot claim order discovery from that compressed oracle.
+33,2,6,64,10,10,Orbit compression exposes this order; cannot claim order discovery from that compressed oracle.

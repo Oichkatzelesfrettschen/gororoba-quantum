@@ -1,0 +1,716 @@
+{
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "evidence_kind": "finite_hamiltonian_simulation",
+  "experiment": "dilation",
+  "limits": "theta is modeled evolution, not Heron elapsed time. No gate compilation, physical force, or QPU execution.",
+  "matrix_dimension": 32,
+  "max_probability_error": 5.273559366969494e-16,
+  "profile": "smoke",
+  "qpu_jobs_submitted": 0,
+  "rows": [
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.08432271217719621,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.08432271217719622,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.30884956955311177,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.3088495695531117,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.5978497178455077,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.5978497178455076,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.8538460517598774,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.8538460517598772,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.9904933505639054,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.9904933505639051,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.9617017308702179,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.9617017308702179,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.7771823425209996,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.7771823425209999,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.4991718866157847,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.4991718866157845,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.22144074577675857,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.2214407457767591,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.03766509221037548,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.03766509221037562,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.009830772080053002,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.009830772080052824,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.14732604684577894,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.14732604684577882,
+      "input_phase_rad": 0.0
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.07197393688286656,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.07197393688286656,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.2636195972753317,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.2636195972753317,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.5102966537322651,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.5102966537322651,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.7288031925243232,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.728803192524323,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.8454389577339135,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.8454389577339133,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.8208637731236945,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.8208637731236946,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.6633666235680222,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.6633666235680225,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.42606985630974425,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.42606985630974414,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.18901149937325543,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.18901149937325584,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.03214916716317429,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.03214916716317441,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.00839108884107893,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.008391088841078777,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.1257506468079181,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.125750646807918,
+      "input_phase_rad": 0.7853981633974483
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.042161356088598105,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.042161356088598105,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.15442478477655588,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.15442478477655586,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.29892485892275383,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.2989248589227538,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.4269230258799387,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.4269230258799386,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.4952466752819527,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.49524667528195265,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.48085086543510897,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.48085086543510897,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.3885911712604998,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.3885911712605,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.24958594330789236,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.2495859433078923,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.11072037288837928,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.11072037288837955,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.01883254610518774,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.018832546105187815,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.004915386040026501,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.004915386040026412,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.07366302342288947,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.07366302342288941,
+      "input_phase_rad": 1.5707963267948966
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.012348775294329654,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.012348775294329655,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.0452299722777801,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.045229972277780084,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.08755306411324257,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.08755306411324255,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.12504285923555414,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.1250428592355541,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.14505439282999186,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.1450543928299918,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.14083795774652338,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.1408379577465234,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.11381571895297737,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.11381571895297744,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.07310203030604047,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.07310203030604044,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.03242924640350313,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.03242924640350321,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.005515925047201186,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.005515925047201207,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.001439683238974072,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.0014396832389740456,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.021575400037860844,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.02157540003786083,
+      "input_phase_rad": 2.356194490192345
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 1.8569034867306144e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 1.1580004082704574e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.625,
+      "flag_probability": 2.241577407251078e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 3.201409922535196e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 3.713755230424343e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 1.25,
+      "flag_probability": 3.605803947188626e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 1.523991869684813e-32,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 1.1886430511268121e-32,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 1.875,
+      "flag_probability": 1.6006417896514737e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 1.412214762684294e-34,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 3.685949149544569e-35,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 2.5,
+      "flag_probability": 7.48573199978869e-33,
+      "input_phase_rad": 3.141592653589793
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.012348775294329645,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.01234877529432965,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.04522997227778006,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.04522997227778005,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.0875530641132425,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.08755306411324246,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.12504285923555405,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.125042859235554,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.14505439282999175,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.1450543928299917,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.14083795774652327,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.14083795774652327,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.11381571895297729,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.11381571895297733,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.07310203030604041,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.0731020303060404,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.03242924640350311,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.032429246403503184,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.005515925047201182,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.005515925047201201,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.001439683238974071,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.0014396832389740443,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.021575400037860827,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.021575400037860806,
+      "input_phase_rad": 3.9269908169872414
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.0421613560885981,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.042161356088598105,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.15442478477655586,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.1544247847765558,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.2989248589227538,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.2989248589227537,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.4269230258799386,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.4269230258799385,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.4952466752819526,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.49524667528195243,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.48085086543510885,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.48085086543510885,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.3885911712604997,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.3885911712604999,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.2495859433078923,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.24958594330789224,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.11072037288837926,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.11072037288837953,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.018832546105187736,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.01883254610518781,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.0049153860400265,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.00491538604002641,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.07366302342288945,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.07366302342288938,
+      "input_phase_rad": 4.71238898038469
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.07197393688286656,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.07197393688286656,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.2636195972753317,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.26361959727533146,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.5102966537322651,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.510296653732265,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.7288031925243232,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.7288031925243228,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.8454389577339135,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.8454389577339132,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.8208637731236945,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.8208637731236945,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.6633666235680222,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.6633666235680225,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.42606985630974425,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.4260698563097441,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.18901149937325543,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.18901149937325587,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.03214916716317429,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.03214916716317441,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.00839108884107893,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.008391088841078777,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.1257506468079181,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.125750646807918,
+      "input_phase_rad": 5.497787143782138
+    },
+    {
+      "analytic_probability": 0.0,
+      "evolution_theta": 0.0,
+      "flag_probability": 0.0,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.08432271217719621,
+      "evolution_theta": 0.20833333333333334,
+      "flag_probability": 0.08432271217719622,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.30884956955311177,
+      "evolution_theta": 0.4166666666666667,
+      "flag_probability": 0.3088495695531117,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.5978497178455077,
+      "evolution_theta": 0.625,
+      "flag_probability": 0.5978497178455076,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.8538460517598774,
+      "evolution_theta": 0.8333333333333334,
+      "flag_probability": 0.8538460517598772,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.9904933505639054,
+      "evolution_theta": 1.0416666666666667,
+      "flag_probability": 0.9904933505639051,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.9617017308702179,
+      "evolution_theta": 1.25,
+      "flag_probability": 0.9617017308702179,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.7771823425209996,
+      "evolution_theta": 1.4583333333333335,
+      "flag_probability": 0.7771823425209999,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.4991718866157847,
+      "evolution_theta": 1.6666666666666667,
+      "flag_probability": 0.4991718866157845,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.22144074577675857,
+      "evolution_theta": 1.875,
+      "flag_probability": 0.2214407457767591,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.03766509221037548,
+      "evolution_theta": 2.0833333333333335,
+      "flag_probability": 0.03766509221037562,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.009830772080053002,
+      "evolution_theta": 2.291666666666667,
+      "flag_probability": 0.009830772080052824,
+      "input_phase_rad": 6.283185307179586
+    },
+    {
+      "analytic_probability": 0.14732604684577894,
+      "evolution_theta": 2.5,
+      "flag_probability": 0.14732604684577882,
+      "input_phase_rad": 6.283185307179586
+    }
+  ],
+  "seed": 20261015,
+  "wall_seconds": 0.07161452300010751
+}

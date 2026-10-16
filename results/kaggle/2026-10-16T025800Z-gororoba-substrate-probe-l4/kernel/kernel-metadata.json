@@ -1,0 +1,12 @@
+{
+ "id": "probablyeric/gororoba-substrate-probe-l4",
+ "title": "gororoba-substrate-probe-l4",
+ "code_file": "run.py",
+ "language": "python",
+ "kernel_type": "script",
+ "is_private": true,
+ "enable_gpu": true,
+ "enable_tpu": false,
+ "enable_internet": true,
+ "machine_shape": "NvidiaL4"
+}

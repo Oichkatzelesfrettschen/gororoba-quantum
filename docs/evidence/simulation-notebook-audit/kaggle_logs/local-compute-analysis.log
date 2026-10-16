@@ -1,0 +1,98 @@
+[{"stream_name":"stderr","time":7.3212401,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.321410795,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.402243656,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.402282399,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.402287049,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.402290152,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.128014638,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.128051562,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.128057651,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.128092504,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.442398314,"data":"Files: 10\n"}
+,{"stream_name":"stdout","time":10.442434231,"data":"  GPU_INVENTORY_OBSERVATIONS.json\n"}
+,{"stream_name":"stdout","time":10.442439653,"data":"  cpu_branching_execution_mode_audit.json\n"}
+,{"stream_name":"stdout","time":10.442444134,"data":"  manifest.json\n"}
+,{"stream_name":"stdout","time":10.442447961,"data":"  record.json\n"}
+,{"stream_name":"stdout","time":10.442451918,"data":"  registry_detection.json\n"}
+,{"stream_name":"stdout","time":10.442456038,"data":"  result-optimized.json\n"}
+,{"stream_name":"stdout","time":10.442459762,"data":"  result.json\n"}
+,{"stream_name":"stdout","time":10.442463276,"data":"  status.json\n"}
+,{"stream_name":"stdout","time":10.442466857,"data":"  summary.json\n"}
+,{"stream_name":"stdout","time":10.442469832,"data":"  validation.json\n"}
+,{"stream_name":"stdout","time":10.461107025,"data":"\n"}
+,{"stream_name":"stdout","time":10.461145503000001,"data":"result.json: \u003cclass 'dict'\u003e\n"}
+,{"stream_name":"stdout","time":10.461151482,"data":"  Keys: ['checkout_label', 'compile_options', 'elapsed_seconds', 'limitations', 'loaded_qiskit', 'operator_check', 'probe_sha256', 'results']\n"}
+,{"stream_name":"stdout","time":10.461155933,"data":"\n"}
+,{"stream_name":"stdout","time":10.461159684,"data":"result-optimized.json: \u003cclass 'dict'\u003e\n"}
+,{"stream_name":"stdout","time":10.461163625,"data":"  Keys: ['versions', 'execution', 'job_type', 'pub_count', 'shots_per_pub', 'counts_in_submitted_order', 'twirling_gates', 'twirling_measure']\n"}
+,{"stream_name":"stdout","time":10.46116776,"data":"\n"}
+,{"stream_name":"stdout","time":10.461171258,"data":"summary.json: \u003cclass 'dict'\u003e\n"}
+,{"stream_name":"stdout","time":10.461175123,"data":"  Keys: ['case_timings', 'circuit_count', 'failed_bins', 'familywise_alpha', 'fresh_instance_replay', 'full_family_replay', 'noise_semantic_sha256', 'noiseless_oracle_check']\n"}
+,{"stream_name":"stdout","time":10.474784006,"data":"{\n"}
+,{"stream_name":"stdout","time":10.474817112,"data":"  \"aer_probe\": {\n"}
+,{"stream_name":"stdout","time":10.474837815,"data":"    \"available_devices\": [\n"}
+,{"stream_name":"stdout","time":10.474841968,"data":"      \"CPU\"\n"}
+,{"stream_name":"stdout","time":10.47484577,"data":"    ],\n"}
+,{"stream_name":"stdout","time":10.474849338,"data":"    \"available_methods\": [\n"}
+,{"stream_name":"stdout","time":10.474852815,"data":"      \"automatic\",\n"}
+,{"stream_name":"stdout","time":10.47485642,"data":"      \"statevector\",\n"}
+,{"stream_name":"stdout","time":10.474860575,"data":"      \"density_matrix\",\n"}
+,{"stream_name":"stdout","time":10.474863351,"data":"      \"stabilizer\",\n"}
+,{"stream_name":"stdout","time":10.474865851,"data":"      \"matrix_product_state\",\n"}
+,{"stream_name":"stdout","time":10.474868229,"data":"      \"extended_stabilizer\",\n"}
+,{"stream_name":"stdout","time":10.474870557,"data":"      \"unitary\",\n"}
+,{"stream_name":"stdout","time":10.474872849,"data":"      \"superop\"\n"}
+,{"stream_name":"stdout","time":10.474875481,"data":"    ],\n"}
+,{"stream_name":"stdout","time":10.474877819,"data":"    \"default_precision\": \"double\",\n"}
+,{"stream_name":"stdout","time":10.474880186,"data":"    \"execution_surface\": \"host outside sandbox\"\n"}
+,{"stream_name":"stdout","time":10.474882583,"data":"  },\n"}
+,{"stream_name":"stdout","time":10.474885081,"data":"  \"cuda_driver\": {\n"}
+,{"stream_name":"stdout","time":10.474887508,"data":"    \"compute_capability\": [\n"}
+,{"stream_name":"stdout","time":10.474889877,"data":"      8,\n"}
+,{"stream_name":"stdout","time":10.474892162,"data":"      9\n"}
+,{"stream_name":"stdout","time":10.474894347,"data":"    ],\n"}
+,{"stream_name":"stdout","time":10.474896587,"data":"    \"cuInit_name\": \"CUDA_SUCCESS\",\n"}
+,{"stream_name":"stdout","time":10.474898927,"data":"    \"cuInit_status\": 0,\n"}
+,{"stream_name":"stdout","time":10.474901236000001,"data":"    \"cuda_visible_total_bytes\": 12513574912,\n"}
+,{"stream_name":"stdout","time":10.474903809,"data":"    \"device_count\": 1,\n"}
+,{"stream_name":"stdout","time":10.474906232,"data":"    \"device_name\": \"NVIDIA GeForce RTX 4070 Ti\",\n"}
+,{"stream_name":"stdout","time":10.474908654,"data":"    \"loaded_library\": \"libcuda.so.615.78.08\"\n"}
+,{"stream_name":"stdout","time":10.474911027,"data":"  },\n"}
+,{"stream_name":"stdout","time":10.474913185,"data":"  \"cupy_probe\": {\n"}
+,{"stream_name":"stdout","time":10.474915432,"data":"    \"dtype\": \"float64\",\n"}
+,{"stream_name":"stdout","time":10.47491777,"data":"    \"elementwise_elements\": 4096,\n"}
+,{"stream_name":"stdout","time":10.474920087,"data":"    \"elementwise_max_abs_error\": 0.0,\n"}
+,{"stream_name":"stdout","time":10.474922568,"data":"    \"elementwise_tolerance\": {\n"}
+,{"stream_name":"stdout","time":10.474924904,"data":"      \"atol\": 1e-14,\n"}
+,{"stream_name":"stdout","time":10.47492723,"data":"      \"rtol\": 1e-14\n"}
+,{"stream_name":"stdout","time":10.474929526,"data":"    },\n"}
+,{"stream_name":"stdout","time":10.474931704,"data":"    \"free_bytes_during_probe\": 787808256,\n"}
+,{"stream_name":"stdout","time":10.474934163,"data":"    \"limitation\": \"Tiny arithmetic verifies neither application speedup nor simulator parity; free memory is a point-in-time snapshot.\",\n"}
+,{"stream_name":"stdout","time":10.474936819,"data":"    \"matrix_max_abs_error\": 1.0658141036401503e-14,\n"}
+,{"stream_name":"stdout","time":10.474939141,"data":"    \"matrix_shape\": [\n"}
+,{"stream_name":"stdout","time":10.474941601,"data":"      32,\n"}
+,{"stream_name":"stdout","time":10.474944076,"data":"      32\n"}
+,{"stream_name":"stdout","time":10.474949264,"data":"    ],\n"}
+,{"stream_name":"stdout","time":10.474952329,"data":"    \"matrix_tolerance\": {\n"}
+,{"stream_name":"stdout","time":10.474955955,"data":"      \"atol\": 1e-12,\n"}
+,{"stream_name":"stdout","time":10.474959598,"data":"      \"rtol\": 1e-12\n"}
+,{"stream_name":"stdout","time":10.474963048,"data":"    },\n"}
+,{"stream_name":"stdout","time":10.474966797,"data":"    \"status\": \"pass\",\n"}
+,{"stream_name":"stdout","time":10.474970489,"data":"    \"total_bytes\": 12513574912\n"}
+,{"stream_name":"stdout","time":10.474974141,"data":"  },\n"}
+,{"stream_name":"stdout","time":10.474977543,"data":"  \"module_inventory\": {\n"}
+,{"stream_name":"stdout","time":10.474981199,"data":"    \"active_kernel\": \"7.2.5-1-cachyos\",\n"}
+,{"stream_name":"stdout","time":10.474984801,"data":"    \"installed_matching_modules\": [\n"}
+,{"stream_name":"stdout","time":10.47498846,"data":"      {\n"}
+,{"stream_name":"stdout","time":10.474992043,"data":"        \"kernel\": \"7.2.9-2-cachyos\",\n"}
+,{"stream_name":"stdout","time":10.474996022,"data":"        \"module_version\": \"615.78.08\",\n"}
+,{"stream_name":"stdout","time":10.475000191,"data":"        \"owner\": \"linux-cachyos-nvidia-open 7.2.9-2\"\n"}
+,{"stream_name":"stderr","time":13.690351437,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":13.690390666999999,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":13.892264807,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":13.892295039,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":14.783883699,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":14.875054092,"data":"[NbConvertApp] Writing 7961 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":17.903205831,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":18.495636611,"data":"[NbConvertApp] Writing 282289 bytes to __results__.html\n"}
+]

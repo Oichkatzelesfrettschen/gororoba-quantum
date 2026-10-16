@@ -2050,14 +2050,20 @@
         {
           "path": "docs/evidence/ccz-reduction/normal_form.json",
           "sha256": "a63e5b9507f604528fd767a35079811b39776f7754ac05b35e4297859aa4dddf"
+        },
+        {
+          "path": "docs/evidence/ccz-reduction/independent_package/cubic_core_certificates.json",
+          "sha256": "ac4d82cd32b100544f272b63e621197c35d18c0657ba05b1e4c770486b378bd1"
         }
       ],
       "documents": [
         "docs/evidence/ccz-reduction/README.md",
-        "docs/evidence/simulation-notebook-audit/README.md"
+        "docs/evidence/simulation-notebook-audit/README.md",
+        "docs/evidence/ccz-reduction/independent_package/RETENTION.md"
       ],
       "gates": {
-        "core-278": "replay"
+        "core-278": "replay",
+        "core-284": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -2187,6 +2193,37 @@
       "status": "withdrawn",
       "boundary": "The power restates hand-set inputs (a 0.01 kHz shift at 0.1 contrast per kHz against a 0.02 standard error); it measures nothing about the device.",
       "withdrawn_text": "docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57."
+    },
+    {
+      "id": "design-c-cubic-noise-separation",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.1807-0.2534 for the 234 pairs of ideal K = 11/32 and 0.0933-0.1135 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 86 percent of the ideal gap.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (depolarizing and thermal relaxation from the Target, asymmetric readout); coherent errors, crosstalk and leakage are outside it, and no hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/design_c_cubic_noise/result.json",
+          "sha256": "d3df6cd6134dc9d2b81c3f85ba9a56baa512287e724614a520f6951508a31591"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/evidence/design_c_cubic_noise/README.md"
+      ],
+      "gates": {
+        "core-282": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "associator-normal-form-compile"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

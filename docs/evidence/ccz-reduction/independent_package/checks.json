@@ -1,0 +1,269 @@
+{
+  "date": "2026-10-15",
+  "repository_source_pin": "e8df46efb1c63329f8eea868ac9584e18398ea22",
+  "scope": "Independent finite recursive-algebra checks, no QPY, raw-shot, or Rocq replay",
+  "phase_census": {
+    "8": {
+      "left_multiplier_degree_counts": {
+        "2": 7
+      },
+      "all_pair_degree_counts": {
+        "1": 21
+      },
+      "new_pair_degree_counts": {
+        "1": 21
+      },
+      "new_pair_collision_counts": {
+        "1": 21
+      },
+      "examples": {},
+      "fano_Z_mask_counts": {
+        "4": 3,
+        "2": 3,
+        "6": 3,
+        "1": 3,
+        "5": 3,
+        "3": 3,
+        "7": 3
+      }
+    },
+    "16": {
+      "left_multiplier_degree_counts": {
+        "3": 15
+      },
+      "all_pair_degree_counts": {
+        "1": 21,
+        "2": 84
+      },
+      "new_pair_degree_counts": {
+        "2": 84
+      },
+      "new_pair_collision_counts": {
+        "1/4": 84
+      },
+      "examples": {},
+      "fano_Z_mask_counts": {}
+    },
+    "32": {
+      "left_multiplier_degree_counts": {
+        "4": 31
+      },
+      "all_pair_degree_counts": {
+        "1": 21,
+        "2": 84,
+        "3": 360
+      },
+      "new_pair_degree_counts": {
+        "3": 360
+      },
+      "new_pair_collision_counts": {
+        "11/32": 234,
+        "5/32": 126
+      },
+      "examples": {
+        "1,16": {
+          "anf_masks": [
+            2,
+            4,
+            6,
+            8,
+            10,
+            12,
+            14
+          ],
+          "walsh_absolute_counts": {
+            "24": 1,
+            "0": 24,
+            "8": 7
+          },
+          "collision_probability": "11/32"
+        },
+        "9,18": {
+          "anf_masks": [
+            1,
+            2,
+            3,
+            5,
+            6,
+            7,
+            8,
+            10,
+            14,
+            16
+          ],
+          "walsh_absolute_counts": {
+            "0": 22,
+            "8": 8,
+            "16": 2
+          },
+          "collision_probability": "5/32"
+        }
+      },
+      "fano_Z_mask_counts": {}
+    },
+    "64": {
+      "left_multiplier_degree_counts": {
+        "5": 63
+      },
+      "all_pair_degree_counts": {
+        "1": 21,
+        "2": 84,
+        "3": 360,
+        "4": 1488
+      },
+      "new_pair_degree_counts": {
+        "4": 1488
+      },
+      "new_pair_collision_counts": {
+        "151/256": 354,
+        "55/256": 252,
+        "43/256": 252,
+        "85/256": 252,
+        "37/256": 126,
+        "49/256": 252
+      },
+      "examples": {},
+      "fano_Z_mask_counts": {}
+    },
+    "128": {
+      "left_multiplier_degree_counts": {
+        "6": 127
+      },
+      "all_pair_degree_counts": {
+        "1": 21,
+        "2": 84,
+        "3": 360,
+        "4": 1488,
+        "5": 6048
+      },
+      "new_pair_degree_counts": {
+        "5": 6048
+      },
+      "new_pair_collision_counts": {
+        "1583/2048": 594,
+        "431/2048": 252,
+        "911/2048": 396,
+        "527/2048": 252,
+        "407/2048": 252,
+        "311/2048": 252,
+        "683/2048": 504,
+        "299/2048": 252,
+        "515/2048": 252,
+        "323/2048": 252,
+        "1205/2048": 396,
+        "437/2048": 126,
+        "341/2048": 126,
+        "677/2048": 252,
+        "389/2048": 126,
+        "365/2048": 252,
+        "317/2048": 252,
+        "905/2048": 252,
+        "521/2048": 252,
+        "329/2048": 252,
+        "401/2048": 252,
+        "305/2048": 252
+      },
+      "examples": {},
+      "fano_Z_mask_counts": {}
+    }
+  },
+  "c881_bridge": {
+    "truth_table": [
+      0,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      1,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "anf_masks": [
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      7,
+      8
+    ],
+    "degree2_monomials": [
+      0,
+      1,
+      2,
+      3,
+      4,
+      5,
+      6,
+      8,
+      9,
+      10,
+      12
+    ],
+    "candidate_polynomials": 2048,
+    "fits_on_15_nonzero_labels": 0,
+    "minimum_disagreement_on_15_labels": 1,
+    "simplified_boolean_function": "x3 XOR OR(x0,x1,x2)",
+    "diagonal_identity": "D_H = - Z3 (X0 X1 X2) CCZ012 (X0 X1 X2)",
+    "phase_state": "D_H |+>^4 = - |->_3 tensor (X0 X1 X2) CCZ012 |+>^3",
+    "identity_domain": "all 16 computational basis states, including global sign"
+  },
+  "multinomial_bounds": {
+    "n_per_distribution": 8192,
+    "alpha": 0.01,
+    "radii": {
+      "2": 0.04244067236689436,
+      "16": 0.06457837155935857,
+      "32": 0.08293354114784234,
+      "1024": 0.41803056711104586,
+      "91343852333181432387730302044767688728495783936": 3.931627990889682e+21
+    }
+  },
+  "shared_binary_channel": {
+    "raw_hardware_separation": "1947/8192",
+    "raw_replay_separation": "5/4096",
+    "radius_robust_margin": "156109/1024000"
+  },
+  "purity_counterexample": {
+    "coherence": "1/5",
+    "rho_A_populations": [
+      "1/2",
+      "1/2",
+      "0",
+      "0"
+    ],
+    "rho_A_purity": "29/50",
+    "rho_B_populations": [
+      "1/2",
+      "1/10",
+      "2/5",
+      "0"
+    ],
+    "rho_B_purity": "1/2",
+    "both_have_rho_00_01": "1/5",
+    "positive_2x2_block_determinants": [
+      "21/100",
+      "1/100"
+    ]
+  },
+  "ramsey_identifiability": {
+    "cosine_even_in_frequency": true,
+    "delays_microseconds": [
+      1,
+      2,
+      4,
+      8
+    ],
+    "frequency_alias_spacing_hz": 1000000,
+    "note": "Adding Y quadrature fixes cosine sign ambiguity locally; commensurate delays still require an alias prior or additional delays."
+  }
+}

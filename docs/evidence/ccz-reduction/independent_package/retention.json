@@ -1,0 +1,11 @@
+{
+ "schema": "independent-package-retention-v1",
+ "source": "Kaggle dataset probablyeric/ccz-certificates, retrieved 2026-10-16",
+ "not_shipped": [
+  "README.md"
+ ],
+ "renamed": {
+  "recheck.py": "recheck.py.txt",
+  "cubic_core_check.py": "cubic_core_check.py.txt"
+ }
+}
