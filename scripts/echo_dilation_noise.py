@@ -42,8 +42,9 @@ retained calibration's noise, which class each physical channel falls in:
    amplified - echo at z = Z_SCORE. The conditional phase moves the pair
    about evenly in delta, so the reference must bound |delta| below the
    magnitude whose shift equals the pair's standard error at each budget,
-   for the more responsive sign (power-law interpolation on each sign's
-   delta grid); its shots per edge and
+   for the more responsive sign (power-law interpolation between two
+   sampled points of each sign's delta grid that bracket it; a level below
+   the smallest sampled response stops the run); its shots per edge and
    target state reach that bound at z = Z_SCORE through the reference's own
    slope in delta.
 
@@ -123,13 +124,30 @@ EPS = (-0.1, -0.06, -0.03, -0.01, 0.01, 0.03, 0.06, 0.1)
 CHANNELS: dict[str, tuple[float, ...]] = {
     "sx_overrotation": (-0.04, -0.02, -0.01, 0.01, 0.02, 0.04),
     "cz_local_phase": (-0.05, -0.02, -0.01, 0.01, 0.02, 0.05),
-    "cz_conditional_phase": (-0.1, -0.05, -0.02, -0.01, 0.01, 0.02, 0.05, 0.1),
+    # The magnitudes below 0.01 bracket the uniform-phase tolerance, which
+    # sign_tolerance reads by interpolation between sampled points only.
+    "cz_conditional_phase": (
+        -0.1,
+        -0.05,
+        -0.02,
+        -0.01,
+        -0.007,
+        -0.005,
+        -0.003,
+        0.003,
+        0.005,
+        0.007,
+        0.01,
+        0.02,
+        0.05,
+        0.1,
+    ),
     "extra_depolarizing": (0.002, 0.005, 0.01),
 }
 ROTATIONS = ("sx_overrotation", "cz_local_phase")
 # Each edge alone carries a conditional phase of these magnitudes, which
 # tests whether the edges' shifts of amplified - echo add up to the uniform one.
-EDGE_DELTA = (-0.02, -0.01, 0.01, 0.02)
+EDGE_DELTA = (-0.02, -0.01, -0.005, 0.005, 0.01, 0.02)
 EDGE_CHANNEL = "cz_conditional_phase"
 MIX_EPS = (0.03, 0.06)
 MIX_DELTA = (-0.02, -0.01, 0.01, 0.02)
@@ -399,18 +417,21 @@ def _key(row: dict[str, Any]) -> tuple[Any, ...]:
 
 
 def magnitude_at(level: float, points: list[tuple[float, float]]) -> float | None:
-    """The magnitude x where a rising response y(x) reaches level, power-law between grid points.
+    """The smallest sampled crossing x where a response y(x) reaches level, power-law between grid points.
 
-    Below the first point the first two points' exponent extrapolates;
-    beyond the last point the grid gives no answer.
+    The answer comes from two sampled points that bracket level, the first
+    such pair in x, so a response that already exceeds level at the smallest
+    sampled magnitude raises: the grid has to extend below it. A response
+    that stays below level on the whole grid gives no answer.
     """
+    if points and points[0][1] > level:
+        raise ValueError(f"response {points[0][1]:.3g} at |x| = {points[0][0]} already exceeds {level:.3g}")
     pairs = list(zip(points, points[1:], strict=False))
     for (x0, y0), (x1, y1) in pairs:
-        if y0 <= level <= y1 and y0 > 0 and y1 > y0:
+        if y0 <= level <= y1 and y1 > y0:
+            if y0 <= 0:
+                return x0 + (x1 - x0) * (level - y0) / (y1 - y0)
             return x0 * (level / y0) ** (math.log(x1 / x0) / math.log(y1 / y0))
-    (x0, y0), (x1, y1) = points[0], points[1]
-    if level < y0 and y0 > 0 and y1 > y0:
-        return x0 * (level / y0) ** (math.log(x1 / x0) / math.log(y1 / y0))
     return None
 
 
