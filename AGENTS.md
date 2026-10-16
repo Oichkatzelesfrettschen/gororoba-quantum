@@ -496,19 +496,9 @@ Codex, the chatgpt-codex-connector app, supplies the default pull-request
 review. It reviews on open, and an issue comment `@codex review` requests a
 review of the current head.
 
-When the hosted Codex app reports exhausted code-review quota, request Copilot
-instead. The user authorizes that substitution. Submit a REST review request
-to `pulls/PR/requested_reviewers` with
-`{"reviewers":["copilot-pull-request-reviewer[bot]"]}` and verify that the
-`copilot-pull-request-reviewer` check starts. An empty `requested_reviewers`
-response can accompany an accepted request; the check confirms execution.
-Read the completed Copilot review and every review thread. Admission requires
-a review by that app on the current commit, zero open findings, a successful
-current-commit Copilot check, and resolved review threads. General expert-review
-cautions retain their scientific scope; concrete findings require the same
-triage and fixes below. The Codex status script reports Codex clean signals;
-Copilot admission uses its REST reviews/checks and GraphQL review threads.
-Return to the default reviewer when hosted Codex review becomes available.
+Codex is the only hosted reviewer. Copilot reviews are billed to the owner,
+so no pull request requests one; when the Codex app reports exhausted
+code-review quota, the owner decides how the PR proceeds.
 
 - *Progress.* The bot keeps one summary comment per PR, marked
   `codex-pull-request-review-summary`, which reads Running while a review is in
@@ -528,8 +518,8 @@ Return to the default reviewer when hosted Codex review becomes available.
   PR update marker, and summary to reject a changing snapshot.
 
 **One round, per PR:**
-1. Wait until the selected review completes: the Codex summary stops reading
-   Running, or the Copilot check completes. Then read every unresolved thread
+1. Wait until the Codex review completes: its summary stops reading
+   Running. Then read every unresolved thread
    in full from `codex_review_status.sh` or the GraphQL thread connection.
    Threads can arrive between rounds and attach to the newest commit, so the
    open-thread list,
@@ -555,10 +545,9 @@ Return to the default reviewer when hosted Codex review becomes available.
    those markers, and lists every other open thread as unanswered. A comment
    such as "will fix" or a question resolves nothing. Never resolve a thread
    whose finding has not been read and answered.
-6. Request the selected reviewer again and start at step 1. A PR leaves the
-   loop when the current-head Codex status reports `verdict=clean-comment...`
-   or `verdict=clean-reaction...`, or the authorized Copilot admission above
-   passes, and every review thread is resolved.
+6. Request Codex again and start at step 1. A PR leaves the loop when the
+   current-head Codex status reports `verdict=clean-comment...` or
+   `verdict=clean-reaction...` and every review thread is resolved.
 
 **Stacked PRs.**
 - Each branch builds on the one below it, so a fix lands on the lowest branch

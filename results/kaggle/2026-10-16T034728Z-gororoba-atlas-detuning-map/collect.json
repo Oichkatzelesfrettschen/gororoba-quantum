@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-atlas-detuning-map/2",
+ "state": "KernelWorkerStatus.COMPLETE",
+ "collected_utc": "2026-10-16T035340Z",
+ "files": {
+  "gororoba-atlas-detuning-map.log": "c35824126354e892628ab9d6b9a7f6edb7edb6d66c68e5416e0b45a770d5e2d6",
+  "output/environment.json": "8ec48ef493afcfa619f08511eff9dbd90d7bd2403221047181c0168d67eb23ff",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "3fffb83a5b94fa5f45619c04ed4a9f232bc69c77dcc323def5559a346f7f0ed2",
+  "output/pip.txt": "61276b821ce5f5d09d668aac64a66164cc7e4548bdd7398b98ad6a671d757c4d",
+  "output/repo/results/kaggle_out/atlas_detuning_map.json": "9e0128d2239862e62f4b8d3866ec5f9da3b40de2760eca8a34c5b0181c696b72",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "333cc6cbf72bf52930787118eca45e2771eea913f9e88b1999028b1840a85f64"
+ }
+}
