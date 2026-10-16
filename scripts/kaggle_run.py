@@ -162,6 +162,15 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         path = (ROOT / include).resolve()
         require(path.is_file() and path.is_relative_to(ROOT), f"{include} is not a repository file")
         files.append(path)
+    bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
+    listed = subprocess.run(
+        ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
+    )
+    # git status above ignores untracked files so that run directories stay
+    # clean; a bundled input outside the index makes the revision irreproducible.
+    untracked = sorted(set(bundled) - set(filter(None, listed.stdout.split("\0"))))
+    if untracked and not revision.endswith("-dirty"):
+        revision += "-dirty"
     buffer = io.BytesIO()
     digests: dict[str, str] = {}
     with zipfile.ZipFile(buffer, "w", zipfile.ZIP_DEFLATED) as bundle:
@@ -200,6 +209,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "args": list(args.args),
         "smoke": smoke,
         "git_commit": revision,
+        "untracked_inputs": untracked,
         "pins": list(KERNEL_PINS),
         "bundle": digests,
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -267,6 +277,7 @@ def self_test(args: argparse.Namespace) -> int:
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
         require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
+        require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
     print(f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private GPU kernel, run.py compiles")
     return 0
 
