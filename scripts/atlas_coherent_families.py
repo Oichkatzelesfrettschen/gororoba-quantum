@@ -65,7 +65,13 @@ parameter shifts the phase only at second order, so no linear model exists
 for it, the column is listed and left out of the fit, and its effect enters
 the family's reach below. A model with no remaining column, or whose design
 falls short of full numerical rank (singular values above 1e-6 of the
-largest), is reported unidentified. A column whose slope and curvature both
+largest), is reported unidentified, and so is a model whose leave-one-out
+training set has no more edges than the model has columns (n - 1 <= p) or
+whose design on any leave-one-out fold falls short of full rank: such a fold
+interpolates its training edges, or picks a minimum-norm solution, and its
+held-out residual is no least-squares score. Each model reports the smallest
+fold rank and the largest fold condition number beside those of the full
+design. A column whose slope and curvature both
 stay below 1e-12 (a qubit the parameter never reaches) is listed as inert and
 left out.
 
@@ -496,6 +502,10 @@ class Resimulate:
         return atlas.wrap(phase - base_phase), math.log(contrast / base_contrast)
 
 
+def finite(value: float) -> float | None:
+    return round(value, 3) if math.isfinite(value) else None
+
+
 def rms(values: Any) -> float:
     return float(math.sqrt(np.mean(np.square(values)))) if len(values) else 0.0
 
@@ -556,21 +566,32 @@ def fit_models(
         model_columns = [c for f in families for c in fitted_columns[f]]
         if families and not model_columns:
             plans[name] = {"columns": [], "rank": 0, "condition": math.inf, "constant": constant}
+            plans[name] |= {"fold_rank_min": 0, "fold_condition_max": math.inf}
             plans[name]["unidentified"] = "no column has a linear phase response"
             continue
         blocks = [responses[f]["fitted"] for f in families] + ([np.ones((n, 1))] if constant else [])
         design = np.hstack(blocks)
+        p = design.shape[1]
         rank, condition = design_rank(design)
+        folds = [design_rank(design[[k for k in range(n) if k != held]]) for held in range(n)]
+        fold_rank = min(r for r, _ in folds)
         plan: dict[str, Any] = {
             "design": design,
             "columns": model_columns,
             "rank": rank,
             "condition": condition,
+            "fold_rank_min": fold_rank,
+            "fold_condition_max": max(c for _, c in folds),
             "constant": constant,
         }
         plans[name] = plan
-        if rank < design.shape[1]:
-            plan["unidentified"] = f"rank {rank} of {design.shape[1]} columns"
+        if rank < p:
+            plan["unidentified"] = f"rank {rank} of {p} columns"
+        elif n - 1 <= p:
+            plan["unidentified"] = f"{n - 1} training edges per fold for {p} columns"
+        elif fold_rank < p:
+            plan["unidentified"] = f"leave-one-out fold rank {fold_rank} of {p} columns"
+        if "unidentified" in plan:
             continue
         plan["parameters"] = np.linalg.lstsq(design, offsets, rcond=None)[0]
         loo, variance, loo_parameters = [], [], []
@@ -597,7 +618,9 @@ def fit_models(
             "columns": [[family, key if isinstance(key, int) else list(key)] for family, key in plan["columns"]],
             "lane_constant": plan["constant"],
             "rank": plan["rank"],
-            "condition": round(plan["condition"], 3) if math.isfinite(plan["condition"]) else None,
+            "condition": finite(plan["condition"]),
+            "fold_rank_min": plan["fold_rank_min"],
+            "fold_condition_max": finite(plan["fold_condition_max"]),
         }
         out[name] = entry
         if "unidentified" in plan:
