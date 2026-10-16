@@ -304,7 +304,7 @@ From a clean tree at the branch head:
   calibration snapshots. The `--include` supplies the retained map the Fez
   lanes are checked against.
 - The pre-fix 14-lane run took 1330 s on four Kaggle cores. The second ZZ
-  frame adds 4 columns to 28 per lane.
+  frame raises the columns per lane from 28 to 32.
 - Afterwards, `"$PYTHON" scripts/kaggle_run.py collect RUN_DIR` retains the
   output.
 

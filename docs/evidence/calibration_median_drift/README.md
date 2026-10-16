@@ -63,7 +63,7 @@ Over the pairs in which the quantity changed at all:
 
 The signed median of T1 moves by at most 7.8 percent between snapshots,
 while the typical qubit's T1 moves by 15 to 25 percent and one qubit in ten
-by half or more. On the Fez pair over 55 hours (2026-10-13 13:41 to
+by 50 to 76 percent or more. On the Fez pair over 55 hours (2026-10-13 13:41 to
 2026-10-15 20:31), T1 has signed median 0.078, median absolute change 0.224
 and 90th percentile 0.735; on the Kingston pair over 12.6 hours
 (2026-10-15 20:35 to 2026-10-16 09:09), T2 has -0.023, 0.141 and 0.472.
