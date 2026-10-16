@@ -23,6 +23,8 @@ seeds, and the seed with the fewest routed CZ (then the least depth) runs.
 Sampling uses Aer statevector trajectories under the snapshot's noise model,
 an unbiased sample of the density-matrix channel live_run evaluates, on the
 device GOROROBA_AER_DEVICE names; a GPU batches shots (batched_shots_gpu).
+Aer carries the noise of the circuit's active qubits only
+(snapshot_laws.restrict_circuit and restrict), the same channel on each.
 
 Timing follows live_run's planning model: the Target duration of the
 gate-time view (each if_else replaced by its true branch), plus the declared
@@ -62,6 +64,7 @@ from qiskit.transpiler import generate_preset_pass_manager  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
+import snapshot_laws  # noqa: E402
 from factoring import decode_counts  # noqa: E402
 from order_finding import ENCODED_STRATEGY, factor_order_finding  # noqa: E402
 from qpe_diagnostics import n21_labeled_law  # noqa: E402
@@ -329,8 +332,6 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
     for position, path in enumerate(snapshot_paths):
         snapshot = json.loads(path.read_text(encoding="utf-8"))
         backend = _backend(snapshot)
-        simulator = calibration_snapshot.noise_simulator(snapshot, DEVICE, method="statevector", batched_shots=True)
-        simulator.set_options(max_parallel_threads=parallel.workers())
         results: dict[str, dict[str, Any]] = {}
         for index, name in enumerate(names):
             start = (position * len(names) + index) * len(TRANSPILER_SEEDS)
@@ -339,10 +340,14 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
             manager = generate_preset_pass_manager(
                 optimization_level=OPTIMIZATION_LEVEL, target=backend.target, seed_transpiler=chosen["seed_transpiler"]
             )
-            isa = manager.run(built[name])
+            active, qubits = snapshot_laws.restrict_circuit(manager.run(built[name]))
+            simulator = calibration_snapshot.noise_simulator(
+                snapshot_laws.restrict(snapshot, qubits), DEVICE, method="statevector", batched_shots=True
+            )
+            simulator.set_options(max_parallel_threads=parallel.workers())
             shots = TWO_ROUND_SHOTS if name.startswith("two_round") else TEN_ROUND_SHOTS
             sampled = time.perf_counter()
-            counts = simulator.run(isa, shots=shots, seed_simulator=SIMULATOR_SEED + index).result().get_counts()
+            counts = simulator.run(active, shots=shots, seed_simulator=SIMULATOR_SEED + index).result().get_counts()
             entry = circuit_entry(name, chosen, runs, dict(sorted(counts.items())), shots, snapshot["dt"])
             entry["simulation_seconds"] = round(time.perf_counter() - sampled, 3)
             results[name] = entry

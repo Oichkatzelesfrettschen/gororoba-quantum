@@ -43,6 +43,7 @@ from qiskit.transpiler import generate_preset_pass_manager  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
+import snapshot_laws  # noqa: E402
 
 COLUMNS = (1, 2, 5, 13, 25)
 SEED = 20261016
@@ -111,14 +112,16 @@ def main() -> int:
     rows = []
     reference: dict[str, list[float]] = {}
     for name, full in FULL_SHOTS.items():
-        isa = generate_preset_pass_manager(optimization_level=3, target=backend.target, seed_transpiler=0).run(
+        compiled = generate_preset_pass_manager(optimization_level=3, target=backend.target, seed_transpiler=0).run(
             built[name]
         )
+        isa, qubits = snapshot_laws.restrict_circuit(compiled)
+        reduced = snapshot_laws.restrict(snapshot, qubits)
         for label, (device, method, batched) in CONFIGURATIONS.items():
             if device == "GPU" and gpus == 0:
                 rows.append({"circuit": name, "configuration": label, "skipped": "no GPU on this machine"})
                 continue
-            simulator = calibration_snapshot.noise_simulator(snapshot, device, method=method, batched_shots=batched)
+            simulator = calibration_snapshot.noise_simulator(reduced, device, method=method, batched_shots=batched)
             simulator.set_options(max_parallel_threads=parallel.workers())
             shots = planned_shots(simulator, isa, full)
             counts, seconds, metadata = sample(simulator, isa, shots)
