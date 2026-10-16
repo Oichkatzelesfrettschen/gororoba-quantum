@@ -247,12 +247,17 @@ def cross_check() -> int:
     """The retained independent package names the same cubic part and linear forms for every pair."""
     package = INDEPENDENT / "cubic_core_certificates.json"
     manifest = json.loads((INDEPENDENT / "MANIFEST.json").read_text(encoding="utf-8"))
-    # The package's scripts are retained as .py.txt: same bytes, outside the
-    # Python lint gates, and never imported or run here.
-    for name in ("cubic_core_certificates.json", "checks.json", "recheck.py", "cubic_core_check.py"):
-        retained = INDEPENDENT / (name + ".txt" if name.endswith(".py") else name)
+    retention = json.loads((INDEPENDENT / "retention.json").read_text(encoding="utf-8"))
+    # Every manifest entry is either retained (under its recorded .txt name for
+    # the scripts, never imported or run) with its shipped sha256, or listed
+    # as not shipped and absent under its manifest name.
+    for name, entry in manifest.items():
+        if name in retention["not_shipped"]:
+            require(not (INDEPENDENT / name).exists(), f"{name} is listed as not shipped but is present")
+            continue
+        retained = INDEPENDENT / retention["renamed"].get(name, name)
         digest = hashlib.sha256(retained.read_bytes()).hexdigest()
-        require(manifest[name]["sha256"] == digest, f"{name} differs from the package manifest")
+        require(entry["sha256"] == digest, f"{name} differs from the package manifest")
     theirs = {(r["i"], r["j"]): r for r in json.loads(package.read_text(encoding="utf-8"))["certificates"]}
     ours = {tuple(r["pair"]): r for r in json.loads(OUT.read_text(encoding="utf-8"))["records"]}
     require(set(theirs) == set(ours) and len(ours) == 360, "the package covers other pairs")

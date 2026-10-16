@@ -25,7 +25,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 01:58:50.943000",
    "status": "error",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/calibration-drift-cpu.ipynb.txt"
   },
   {
    "kernel": "probablyeric/calibration-drift-ghost",
@@ -33,7 +34,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:16:28.713000",
    "status": "error",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/calibration-drift-ghost.ipynb.txt"
   },
   {
    "kernel": "probablyeric/ccz-optimization",
@@ -49,7 +51,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:11:51.637000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/ccz-verify.ipynb.txt"
   },
   {
    "kernel": "probablyeric/census-4096",
@@ -57,7 +60,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-15 20:44:48.433000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/census-4096.ipynb.txt"
   },
   {
    "kernel": "probablyeric/census-4096-repaired",
@@ -73,7 +77,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 01:06:24.260000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/correlated-coherent.ipynb.txt"
   },
   {
    "kernel": "probablyeric/differential-interleaved",
@@ -113,7 +118,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:16:45.037000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/formalization-probe.ipynb.txt"
   },
   {
    "kernel": "probablyeric/gemma-4-ketgpt-first-look",
@@ -121,7 +127,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-15 17:41:29.417000",
    "status": "error",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/gemma-4-ketgpt-first-look.ipynb.txt"
   },
   {
    "kernel": "probablyeric/gemma-4-starter-guide",
@@ -129,7 +136,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-15 23:02:18.193000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/gemma-4-starter-guide.ipynb.txt"
   },
   {
    "kernel": "probablyeric/gemma-falsification-review",
@@ -161,7 +169,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 01:06:21.317000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/gpu-density-84-84.ipynb.txt"
   },
   {
    "kernel": "probablyeric/hw-estimate-analysis",
@@ -169,7 +178,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:15:16.607000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/hw-estimate-analysis.ipynb.txt"
   },
   {
    "kernel": "probablyeric/hypercomplex-setup",
@@ -177,7 +187,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-15 23:11:11.267000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/hypercomplex-setup.ipynb.txt"
   },
   {
    "kernel": "probablyeric/local-compute-analysis",
@@ -185,7 +196,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:15:18.840000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/local-compute-analysis.ipynb.txt"
   },
   {
    "kernel": "probablyeric/pre-delay-84-84",
@@ -209,7 +221,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 01:14:06.827000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/quantum-resource-guide.ipynb.txt"
   },
   {
    "kernel": "probablyeric/reality-ripple-01-conditional-hamiltonian",
@@ -217,7 +230,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:18:37.170000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/reality-ripple-01-conditional-hamiltonian.ipynb.txt"
   },
   {
    "kernel": "probablyeric/reality-ripple-02-orbit-identifiability",
@@ -225,7 +239,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:18:41.210000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/reality-ripple-02-orbit-identifiability.ipynb.txt"
   },
   {
    "kernel": "probablyeric/reality-ripple-03-coherence-discrimination",
@@ -233,7 +248,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:18:39.870000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/reality-ripple-03-coherence-discrimination.ipynb.txt"
   },
   {
    "kernel": "probablyeric/reality-ripple-04-ramsey-winding",
@@ -241,7 +257,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:18:46.903000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/reality-ripple-04-ramsey-winding.ipynb.txt"
   },
   {
    "kernel": "probablyeric/reality-ripple-kaggle-lab-master",
@@ -249,7 +266,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:18:32.563000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/reality-ripple-kaggle-lab-master.ipynb.txt"
   },
   {
    "kernel": "probablyeric/run-pipeline-timeline",
@@ -257,7 +275,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:03:58.783000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/run-pipeline-timeline.ipynb.txt"
   },
   {
    "kernel": "probablyeric/z3-exhaustive",
@@ -265,7 +284,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:26:24.507000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/z3-exhaustive.ipynb.txt"
   },
   {
    "kernel": "probablyeric/z3-exhaustive-all-30-evidence-directories",
@@ -273,7 +293,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 03:14:54.680000",
    "status": "error",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/z3-exhaustive-all-30-evidence-directories.ipynb.txt"
   },
   {
    "kernel": "probablyeric/z3-formalization",
@@ -281,7 +302,8 @@
    "notebook": null,
    "last_run_utc": "2026-10-16 02:23:11.480000",
    "status": "complete",
-   "code_cells_identical_to_commit": null
+   "code_cells_identical_to_commit": null,
+   "source": "kaggle_sources/z3-formalization.ipynb.txt"
   }
  ]
 }
