@@ -29,4 +29,11 @@ small associativity, Moufang and zero-divisor test scripts.
   `Octonion_Sedenion.octonion` for that import and restores it, and retains
   the as-installed failure in `import_note`.
 - `components` is an attribute holding the coefficient array, not a method.
+- The octonion level's `polar()` (behind `exp`, `log`, `**` and the inverse
+  trigonometric functions) and `decomp()` (behind `sin`, `cos`, `tan`) copy
+  the argument with `copy.deepcopy` and zero the copy's real part; a
+  numpy-quaternion scalar's deepcopy shares storage, so the argument's own
+  real part is zeroed and the function is evaluated on that value, and
+  `exp(log x)` misses `x`. The sedenion level and `sqrt` are unaffected
+  ([manual](manual/octonion-sedenion.md) TRAPS, EXAMPLES 3).
 - No license accompanies the code: read and cross-check only, vendor nothing.
