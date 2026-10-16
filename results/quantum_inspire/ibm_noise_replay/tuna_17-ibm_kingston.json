@@ -6,7 +6,7 @@
  "source_run": {
   "backend": "tuna_17",
   "cases_sha256": "fccf64ee4f5e8d98bd0f7aca9c8d333da5d6b49d7b6ace5aa1202bc8c4e6e8fc",
-  "analysis_sha256": "725579862a43842f4d128955f4c0f4e1f8cf4111ecf1bc08587b3e957f3b758a",
+  "analysis_sha256": "4d67e170748e30a9b08dbce0190d47fc5ea030fd9238e85a93fde7ef31784f51",
   "circuits": {
    "additivity-none.cq": "04d932ba87693ceee8842a28849a04757c376d5ab348855eb5ccbb017e440409",
    "additivity-A.cq": "fb05d345bf309036d7824fcbf47d6c4bd643f20a0fc3a5450dd99571978aefc9",
@@ -141,6 +141,11 @@
      "A": 0.42535400390625,
      "B": 0.5552978515625,
      "AB": 0.50341796875
+    },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.1492919921875,
+     "margin_rad": 1.4209441250645916,
+     "branch_ambiguous": false
     },
     "phase_rad": {
      "none": -0.02783562572021688,
@@ -329,6 +334,11 @@
      "A": 0.47662353515625,
      "B": 0.46966552734375,
      "AB": 0.48028564453125
+    },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.1204833984375,
+     "margin_rad": 1.450019513099054,
+     "branch_ambiguous": false
     },
     "phase_rad": {
      "none": -0.1207768136958425,
@@ -519,6 +529,11 @@
      "B": 0.49786376953125,
      "AB": 0.8067626953125
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.613525390625,
+     "margin_rad": 0.9102790803317908,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.03430848801182409,
      "A": 0.5985880308451321,
@@ -708,6 +723,11 @@
      "B": 0.538330078125,
      "AB": 0.51837158203125
     },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.07666015625,
+     "margin_rad": 1.4940608854727635,
+     "branch_ambiguous": false
+    },
     "phase_rad": {
      "none": -0.0760008784509689,
      "A": -0.062418452832733444,
@@ -895,6 +915,11 @@
      "A": 0.45770263671875,
      "B": 0.46075439453125,
      "AB": 0.44989013671875
+    },
+    "principal_branch": {
+     "max_abs_sin_phi": 0.1002197265625,
+     "margin_rad": 1.470408069676502,
+     "branch_ambiguous": false
     },
     "phase_rad": {
      "none": -0.04176018350399324,

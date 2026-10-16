@@ -281,8 +281,17 @@ def wilson(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, float]:
 
 
 def phase_of(p1: float) -> float:
-    """X90, Rz(phi), Y90 gives P1 = (1 + sin phi)/2; the binomial standard error of phi is 1/sqrt(n) at every P1."""
+    """X90, Rz(phi), Y90 gives P1 = (1 + sin phi)/2; the binomial standard error of phi is 1/sqrt(n) at every P1.
+
+    One quadrature reads sin(phi) only, so the phase is its principal branch,
+    |phi| <= pi/2: a rotation beyond pi/2 folds back. star_report records each
+    star's distance from the fold, and a phase whose |2 P1 - 1| exceeds
+    BRANCH_LIMIT is flagged as branch-ambiguous rather than read as unique.
+    """
     return math.asin(max(-1.0, min(1.0, 2 * p1 - 1)))
+
+
+BRANCH_LIMIT = math.sin(1.2)
 
 
 def two_proportion_z(k1: int, n1: int, k2: int, n2: int) -> float:
@@ -338,9 +347,15 @@ def star_report(star: dict[str, int], raw: dict[str, list[str]], backend: str) -
         if p_single > 0.5:
             row["overrotation_lower_bound_rad_per_x"] = 2 * math.asin(math.sqrt(p_single)) / DRIVE_PULSES
         drivers[role] = row
+    largest = max(abs(2 * value - 1) for value in p.values())
     return {
         **star,
         "p1": p,
+        "principal_branch": {
+            "max_abs_sin_phi": largest,
+            "margin_rad": math.pi / 2 - math.asin(min(1.0, largest)),
+            "branch_ambiguous": largest > BRANCH_LIMIT,
+        },
         "phase_rad": phase,
         "phase_shift_rad": shift,
         "additivity_residual_rad": residual,

@@ -68,6 +68,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parents[1]
 sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+import parallel  # noqa: E402
 from cd_core import _lmat, cd_multiply, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
 from select_lcu import anf_coefficients, joint_select_signs, sparse_pair_prep  # noqa: E402
 
@@ -226,24 +227,34 @@ def logical(case: str) -> Any:
     return qc
 
 
-def routed(case: str, region: tuple[int, ...]) -> tuple[Any, dict[str, int], int]:
-    """Fewest-CZ routing of a case onto a region; returns the circuit on region-local indices, roles, seed."""
-    from qiskit import transpile
-    from qiskit.transpiler import CouplingMap
+class Route:
+    """One seeded routing of a case onto a region; a module-level callable the process pool can pickle."""
 
-    local = {q: n for n, q in enumerate(region)}
-    edges = [[local[a], local[b]] for a, b in TUNA17 if a in local and b in local]
-    coupling = CouplingMap(edges + [[b, a] for a, b in edges])
-    best = None
-    for seed in SEEDS:
+    def __init__(self, case: str, region: tuple[int, ...]) -> None:
+        self.case = case
+        self.region = region
+
+    def __call__(self, seed: int) -> tuple[int, int, Any]:
+        from qiskit import transpile
+        from qiskit.transpiler import CouplingMap
+
+        local = {q: n for n, q in enumerate(self.region)}
+        edges = [[local[a], local[b]] for a, b in TUNA17 if a in local and b in local]
+        coupling = CouplingMap(edges + [[b, a] for a, b in edges])
         circuit = transpile(
-            logical(case), coupling_map=coupling, basis_gates=BASIS, optimization_level=2, seed_transpiler=seed
+            logical(self.case), coupling_map=coupling, basis_gates=BASIS, optimization_level=2, seed_transpiler=seed
         )
-        count = circuit.count_ops().get("cz", 0)
-        if best is None or count < best[0]:
-            best = (count, seed, circuit)
-    assert best is not None
-    _, seed, circuit = best
+        return circuit.count_ops().get("cz", 0), seed, circuit
+
+
+def routed(case: str, region: tuple[int, ...]) -> tuple[Any, dict[str, int], int]:
+    """Fewest-CZ routing of a case onto a region; returns the circuit on region-local indices, roles, seed.
+
+    The seeds route independently through parallel.ordered_map; the first
+    seed in SEEDS order among the fewest-CZ routings wins, as in a serial scan.
+    """
+    candidates = parallel.ordered_map(Route(case, region), list(SEEDS))
+    _, seed, circuit = min(candidates, key=lambda candidate: (candidate[0], candidate[1]))
     final = circuit.layout.final_index_layout()
     roles = {f"d{b}": region[final[b]] for b in DATA}
     roles["selector"] = region[final[SELECTOR]]

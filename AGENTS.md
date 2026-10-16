@@ -502,7 +502,9 @@ used; scripts/qi_mcp_server.py serves the same role on SDK 4.1.
 
 **Login.** `"$QI_ENV/bin/qi" login` runs the OAuth device flow: it prints a
 verification URL and code that the user approves in a browser, then stores
-access and refresh tokens in `~/.quantuminspire/config.json` (mode 600). The
+access and refresh tokens in `~/.quantuminspire/config.json`, which the CLI
+writes mode 644; `chmod 600` it after login, and scripts/qi_platform.py's
+client narrows it to mode 600 before reading it. The
 access token lives 3600 s; scripts/qi_platform.py renews it before expiry.
 An agent that finds no login prompts the user to run `qi login` and approve
 the code; tokens never enter a commit, a log or memory.

@@ -14,6 +14,11 @@
     "B": 0.51171875,
     "AB": 0.52734375
    },
+   "principal_branch": {
+    "max_abs_sin_phi": 0.0546875,
+    "margin_rad": 1.5160815308524718,
+    "branch_ambiguous": false
+   },
    "phase_rad": {
     "none": -0.011719018237478385,
     "A": 0.007812579475042568,
@@ -92,6 +97,11 @@
     "B": 0.4853515625,
     "AB": 0.51318359375
    },
+   "principal_branch": {
+    "max_abs_sin_phi": 0.029296875,
+    "margin_rad": 1.541495259223778,
+    "branch_ambiguous": false
+   },
    "phase_rad": {
     "none": 0.002929691690967773,
     "A": -0.01855575232189835,
@@ -169,6 +179,11 @@
     "A": 0.4736328125,
     "B": 0.50634765625,
     "AB": 0.4765625
+   },
+   "principal_branch": {
+    "max_abs_sin_phi": 0.052734375,
+    "margin_rad": 1.5180374795279874,
+    "branch_ambiguous": false
    },
    "phase_rad": {
     "none": 0.024416488469956924,

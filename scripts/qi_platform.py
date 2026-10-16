@@ -103,6 +103,11 @@ class Client:
         from quantuminspire.managers.auth_manager import AuthManager
         from quantuminspire.managers.config_manager import ConfigManager
 
+        # qi login writes the token file readable by every local user (mode 644);
+        # the client narrows it to the owner before reading tokens from it.
+        tokens = Path.home() / ".quantuminspire" / "config.json"
+        if tokens.exists() and tokens.stat().st_mode & 0o077:
+            tokens.chmod(0o600)
         self.config = ConfigManager()
         self.host = self.config.get("default_host")
         if str(self.host).rstrip("/") != HOST:
