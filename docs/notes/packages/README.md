@@ -5,9 +5,12 @@ The repository's algebra lives in `gororoba_quantum/cd_core.py`: the doubling
 `e_p e_q = s(p, q) e_{p xor q}`, and the associator sign
 `omega(p, q, r) = s(p, q) s(p xor q, r) s(q, r) s(p, q xor r)`. Every census,
 proof and circuit in this repository derives from that one specification.
-Seventeen external Python packages implement related algebra; this
-directory holds one note per package and states how each one relates to
-`cd_core`.
+Eighteen external Python packages implement related algebra, and
+python-flint and pyadic serve as exact-arithmetic backends with no
+Cayley-Dickson table; this directory holds one note per package and states
+how each one relates to `cd_core`. The [manual](manual/README.md) documents
+every package's API with run examples, and [interplay.md](interplay.md) maps
+where they overlap and where they stay isolated.
 
 ## Measured relation to cd_core
 
@@ -35,7 +38,7 @@ product samples are
 | [SageMath](sagemath.md) | opposite algebra in natural order; sign flip on e3, e5, e6 is an isomorphism | D = 8 exhaustive, from a retained export | independent; Sage library construction, exact |
 | [splitoct](splitoct.md) | split octonions: same associators, different squares | D = 8 exhaustive | independent; equals the engine's split table |
 | [mathdunders](mathdunders.md) | none | not applicable | operator-method plumbing, not an algebra |
-| [numpy-quaternion](numpy-quaternion.md) | identical table | D = 4 exhaustive | independent compiled dtype; Cayley-Calculator and Octonion-Sedenion build on it |
+| [numpy-quaternion](numpy-quaternion.md) | identical table | D = 4 exhaustive | independent compiled dtype; Octonion-Sedenion builds on it (Cayley-Calculator multiplies without it) |
 | [quaternionic](quaternionic.md) | identical table | D = 4 exhaustive | independent numba arrays |
 | [pyquaternion](pyquaternion.md) | identical table | D = 4 exhaustive | independent scalar class; pyoctonion builds on it |
 | [clifford](clifford.md) | Cl(0,2) identical to the D = 4 table | D = 4 exhaustive | independent geometric algebra; associative, so quaternions and complexes only |

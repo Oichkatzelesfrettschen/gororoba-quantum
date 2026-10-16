@@ -67,7 +67,13 @@ def kernel_pins(machine: str) -> tuple[str, ...]:
 # Usage guides every bundle carries, so an agent or author inside a kernel
 # reads the same package manuals, workflow and substrate notes as the host:
 # every tracked file under each directory.
-KERNEL_DOCS = ("docs/notes/kaggle", "docs/notes/packages")
+KERNEL_DOCS = (
+    "docs/notes/kaggle",
+    "docs/notes/packages",
+    "docs/notes/quantum-tools",
+    "docs/notes/qiskit-ecosystem.md",
+    "docs/notes/qiskit-ecosystem-install-plan.md",
+)
 # Opt-in package groups (``push --with GROUP``), each pinned to the version of
 # the build host's Arch package, so a kernel and the host import the same
 # releases. The kernel installs them under a constraints file that holds

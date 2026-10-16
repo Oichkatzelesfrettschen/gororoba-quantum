@@ -6,8 +6,10 @@
 ## What it implements
 
 A `quaternion` numpy dtype with vectorized arithmetic, `as_float_array`,
-rotations, slerp and squad. Cayley-Calculator and Octonion-Sedenion build
-their higher levels on it.
+rotations, slerp and squad. Octonion-Sedenion builds its higher levels on
+it; Cayley-Calculator accepts its quaternions as constructor input and
+multiplies without it (with `import quaternion` blocked its D = 16 table is
+still identical to `cd_core`, interplay.md).
 
 ## Relation to cd_core
 
@@ -19,7 +21,7 @@ pairs.
 
 - Large arrays of quaternions: rotations, rotor fields, batched products.
 - The quaternion coefficient algebra beneath an octonion or sedenion
-  doubling, as Cayley-Calculator uses it.
+  doubling, as Octonion-Sedenion uses it.
 
 ## Pitfalls
 

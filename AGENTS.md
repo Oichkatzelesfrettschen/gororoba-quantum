@@ -267,7 +267,7 @@ package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
 pinned digest is checked again after the rebuild. A Kaggle kernel builds the
-same sixteen packages from the same pinned archives (`--fetch` and
+same seventeen packages from the same pinned archives (`--fetch` and
 `--install` apply the PKGBUILD recipes) and runs its entry only after
 `--extract` regenerates `tables.json` byte for byte; SageMath stays on the
 build host (`docs/notes/kaggle/hypercomplex-stack.md`). A Clifford algebra
@@ -294,6 +294,7 @@ sedenion statement never rests on them.
 | python-clifford | `clifford` | 1.5.1 | Cl(0,2) on (1, e1, e2, e12) identical at D = 4 | numerical geometric algebra: rotors, spinors, conformal GA | associative; `Cl(p, q)` puts the p positive squares first; numba compiles on first use |
 | python-kingdon | `kingdon` | 3.0.0 | Cl(0,2) identical at D = 4 | geometric algebra on numpy, sympy or torch from one code path | product `keys()` are blade bitmasks; imports anywidget |
 | python-galgebra | `galgebra` | 0.6.0 | Cl(0,2) identical at D = 4 | symbolic geometric algebra and calculus | a one-generator algebra needs coordinates; a scalar needs `sympy.S.One` |
+| python-hyprat | `hyprat` | 0.2.0 (GitHub tag) | identical at D = 8, 16 (measured to 32) at mu = -1; signs (-1, -1, +1) give the split octonions | exact rational Cayley-Dickson algebras with a doubling parameter, Hurwitz quaternions | `Hy.from_array(coeffs, signs=...)` names the algebra, lowest level first |
 <!-- algebra-circuit-rules:end -->
 
 ## QPU time and calibration

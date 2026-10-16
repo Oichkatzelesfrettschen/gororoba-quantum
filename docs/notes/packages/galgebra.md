@@ -26,6 +26,6 @@ have no Clifford image (see [clifford](clifford.md)).
 - A one-generator `Ga.build("e1", g=[-1])` raises
   `ValueError: coords must be entered`; build `Cl(0, 2)` and use its
   (1, e1) block for the complex numbers.
-- `ga.mv(1, "scalar")` holds a Python int and fails in products; pass
-  `sympy.S.One`.
+- `ga.mv(1, "scalar")` holds a Python int: `s * e1` works, while `e1 * s`
+  and `blade_coefs` fail; pass `sympy.S.One`.
 - Read coefficients with `mv.blade_coefs(basis)`.

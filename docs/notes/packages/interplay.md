@@ -223,7 +223,9 @@ a failure.
   `Fraction` are the exact rational routes, hyprat with exact zero-divisor and annihilator
   tests.
 
-## Statements in the existing notes that the measurements revise
+## Statements the measurements revised
+
+The notes below now carry the measured statements.
 
 - [README.md](README.md) and [numpy-quaternion.md](numpy-quaternion.md) say
   Cayley-Calculator builds on numpy-quaternion; it multiplies without it (table above).
