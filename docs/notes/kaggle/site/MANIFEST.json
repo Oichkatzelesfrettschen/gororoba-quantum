@@ -1,47 +1,72 @@
 {
  "schema": "kaggle-docs-capture-v1",
  "kind": "site",
- "retrieved_utc": "2026-10-16T03:14Z",
+ "retrieved_utc": "2026-10-16T21:28Z",
  "files": [
   {
-   "path": "docs/notes/kaggle/site/notebooks.md",
-   "source": "https://www.kaggle.com/docs/notebooks",
-   "sha256": "ebc16f2b6f6947a1f18038d95d7c190ff7e620bf15cde76a0f6c90e3521b710f"
-  },
-  {
-   "path": "docs/notes/kaggle/site/tpu.md",
-   "source": "https://www.kaggle.com/docs/tpu",
-   "sha256": "2e520b6f2f22c4409f4281a3aad45111fbbdb6b9ee84133127ca44129f0d3b4e"
-  },
-  {
-   "path": "docs/notes/kaggle/site/api.md",
-   "source": "https://www.kaggle.com/docs/api",
-   "sha256": "88a916d6ce0782dff4d118df8b9e7c5a1a73f4b56951aa504d7f2c58964d5c59"
-  },
-  {
-   "path": "docs/notes/kaggle/site/mcp.md",
-   "source": "https://www.kaggle.com/docs/mcp",
-   "sha256": "995353a7a8fbccc3a12dd44deb2da21f4ff3b73b79f43b0ccf324b96840f214d"
-  },
-  {
-   "path": "docs/notes/kaggle/site/models.md",
-   "source": "https://www.kaggle.com/docs/models",
-   "sha256": "ad14223bf45d8127ffc072d5cd0dc801660b2a984a9b6f7154190cd7ee849c6c"
+   "path": "docs/notes/kaggle/site/competitions.md",
+   "source": "https://www.kaggle.com/docs/competitions.md",
+   "sha256": "b4814f8ecf0b7801f67c18bb6624dc187d62105e82e557a279cdf9d85c326b16"
   },
   {
    "path": "docs/notes/kaggle/site/datasets.md",
-   "source": "https://www.kaggle.com/docs/datasets",
-   "sha256": "8ae1acede576012154bed8c9f518a8ee7dc497e8d26ab00e1e1695271933bcd3"
+   "source": "https://www.kaggle.com/docs/datasets.md",
+   "sha256": "db345c396efd4c4438907b7b5d6aba631c97e89859f790afcaf80a6c595a0a32"
+  },
+  {
+   "path": "docs/notes/kaggle/site/efficient-gpu-usage.md",
+   "source": "https://www.kaggle.com/docs/efficient-gpu-usage.md",
+   "sha256": "0705984c4fd61c5bf86563b285a9ede7133aa12059f00bf20a90ba88b3616c55"
+  },
+  {
+   "path": "docs/notes/kaggle/site/tpu.md",
+   "source": "https://www.kaggle.com/docs/tpu.md",
+   "sha256": "a0e6e68fa2471d6b71a149418bae5790694b9f4127a86793b8b2d15d5307a5cc"
+  },
+  {
+   "path": "docs/notes/kaggle/site/models.md",
+   "source": "https://www.kaggle.com/docs/models.md",
+   "sha256": "fd913121131be192dbbdf8d90fc179cad18aa996de448d22a6fee9f24ae3504f"
+  },
+  {
+   "path": "docs/notes/kaggle/site/competitions-setup.md",
+   "source": "https://www.kaggle.com/docs/competitions-setup.md",
+   "sha256": "7bc1ee3062255a316fb861e0ae47673eea603b8a62cc9c45647cc718369190d8"
+  },
+  {
+   "path": "docs/notes/kaggle/site/organizations.md",
+   "source": "https://www.kaggle.com/docs/organizations.md",
+   "sha256": "ccee33b5cb5379094178cc85d1f85923ea218df071e60b0ede6c0fee695c552d"
+  },
+  {
+   "path": "docs/notes/kaggle/site/groups.md",
+   "source": "https://www.kaggle.com/docs/groups.md",
+   "sha256": "2a329849fadd580d12a6bfe8773b7d965e65107a822af716d6add72c185e706f"
   },
   {
    "path": "docs/notes/kaggle/site/packages.md",
-   "source": "https://www.kaggle.com/docs/packages",
-   "sha256": "b980c9c0c11da1a8c5c58969cb1896c28b81a0efe37aa435a1e1d2ad689424b9"
+   "source": "https://www.kaggle.com/docs/packages.md",
+   "sha256": "5006ad771a0918cacb4f78dff32e6b7dad176c804efafe2c088547e5c8d8b931"
+  },
+  {
+   "path": "docs/notes/kaggle/site/notebooks.md",
+   "source": "https://www.kaggle.com/docs/notebooks.md",
+   "sha256": "ff8cf2a66a61871e1ce756140aebfd58defcda87196ca86a703c0d13f873a5c5"
+  },
+  {
+   "path": "docs/notes/kaggle/site/mcp.md",
+   "source": "https://www.kaggle.com/docs/mcp.md",
+   "sha256": "c3c1e42be085797df864fb024e820408349057763152e6cdcc9431f74e0d6f10"
   },
   {
    "path": "docs/notes/kaggle/site/benchmarks.md",
-   "source": "https://www.kaggle.com/docs/benchmarks",
-   "sha256": "1e02e901a31cd68e90b3d107a000b81be7a667d3112931abfc2200765da15274"
+   "source": "https://www.kaggle.com/docs/benchmarks.md",
+   "sha256": "9f03c481700565062a7aa3eae3fd735052d2f4aa4f1e357fea872d6ab8ad0ca1"
+  },
+  {
+   "path": "docs/notes/kaggle/site/api.md",
+   "source": "https://www.kaggle.com/docs/api.md",
+   "sha256": "039570003cb0e10e834557bcc73b076e619577d3649c8cfe296ed089e75d110c"
   }
  ]
 }

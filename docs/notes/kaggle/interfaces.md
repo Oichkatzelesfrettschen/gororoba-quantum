@@ -154,8 +154,13 @@ entries read `<area>.<method>`, reached as `kaggle.<area>.<client>.<method>`
   (`dataset_load`), and Kaggle Packages (`package_import`) and utility
   scripts.
 - **Web only.** `ListKernelVersions` (every version with session id and
-  status), the editor's interactive TPU sessions, and the version page's
-  Stop button.
+  status, and `run.isTpuEnabled` on a version the server classified as a
+  TPU session), `GetKernelSessionLog` (request `{"sessionId": N}`; empty
+  while the session is queued), the editor's interactive TPU sessions, and
+  the version page's Stop button. Batch sessions are capped per account at
+  five CPU, two GPU and one TPU, each refused at push time with "Maximum
+  batch CPU/GPU/TPU session count of N reached"; the caps are separate from
+  the weekly GPU and TPU quotas.
 
 ## Authentication
 

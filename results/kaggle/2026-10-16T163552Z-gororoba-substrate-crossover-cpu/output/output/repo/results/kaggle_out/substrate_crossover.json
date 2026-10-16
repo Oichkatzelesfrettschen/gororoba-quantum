@@ -1,0 +1,104 @@
+{
+ "schema": "substrate-crossover-v1",
+ "machine": {
+  "cpu": "Intel(R) Xeon(R) CPU @ 2.20GHz",
+  "logical_cpus": 4,
+  "gpus": [],
+  "python": "3.13.15"
+ },
+ "versions": {
+  "qiskit": "2.5.2",
+  "qiskit_aer": "0.17.2"
+ },
+ "snapshot": "docs/evidence/calibration/ibm_kingston.json",
+ "workload": {
+  "layers": 8,
+  "batch": 8,
+  "shots": 2048,
+  "repeats": 2,
+  "budget": 180.0
+ },
+ "runs": [
+  {
+   "device": "CPU",
+   "dynamic": false,
+   "noise_model_build_seconds": 6.78,
+   "widths": [
+    {
+     "width": 2,
+     "seconds": 2.945,
+     "seconds_per_circuit": 0.3681
+    },
+    {
+     "width": 4,
+     "seconds": 3.012,
+     "seconds_per_circuit": 0.3765
+    },
+    {
+     "width": 6,
+     "seconds": 3.089,
+     "seconds_per_circuit": 0.3862
+    },
+    {
+     "width": 8,
+     "seconds": 3.362,
+     "seconds_per_circuit": 0.4202
+    },
+    {
+     "width": 10,
+     "seconds": 8.513,
+     "seconds_per_circuit": 1.0642
+    },
+    {
+     "width": 12,
+     "seconds": 105.436,
+     "seconds_per_circuit": 13.1795
+    },
+    {
+     "width": 14,
+     "seconds": 1955.243,
+     "seconds_per_circuit": 244.4054
+    }
+   ]
+  },
+  {
+   "device": "CPU",
+   "dynamic": true,
+   "noise_model_build_seconds": 7.321,
+   "widths": [
+    {
+     "width": 2,
+     "seconds": 4.342,
+     "seconds_per_circuit": 0.5428
+    },
+    {
+     "width": 4,
+     "seconds": 7.309,
+     "seconds_per_circuit": 0.9136
+    },
+    {
+     "width": 6,
+     "seconds": 69.58,
+     "seconds_per_circuit": 8.6975
+    },
+    {
+     "width": 8,
+     "seconds": 548.291,
+     "seconds_per_circuit": 68.5363
+    },
+    {
+     "width": 10,
+     "not_run": "the previous width took 548.3 s"
+    },
+    {
+     "width": 12,
+     "not_run": "the previous width took 548.3 s"
+    },
+    {
+     "width": 14,
+     "not_run": "the previous width took 548.3 s"
+    }
+   ]
+  }
+ ]
+}

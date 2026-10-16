@@ -3,9 +3,10 @@
 Simulations of 14 qubits or fewer run on Kaggle; IBM hardware serves 15 or
 more qubits or a question about the device itself. A kernel runs on a CPU
 machine unless ``--machine`` names an accelerator, which a case requests when
-its widest density matrix reaches local_compute.GPU_MIN_ACTIVE_QUBITS: below
-that width a GPU spends its per-call overhead on states the CPU evolves
-faster, and the weekly GPU quota goes to the runs that need it. This script is
+its widest density matrix reaches 12 qubits, or 8 with mid-circuit
+measurement: below those widths a T4 is at most 3 times faster than the
+kernel's 4 CPUs (docs/notes/kaggle/substrates.md), and the weekly GPU quota
+goes to the runs that need it. This script is
 the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
@@ -21,11 +22,12 @@ the only path from the repository to Kaggle:
   to the machine's device and returns every file the entry created or
   changed under the repository root.
 - ``shards [--tier pr] [--count 6] [--only I,J]`` pushes one CPU kernel per
-  CI shard for the committed HEAD. The kernel fetches the merge base with
-  origin/main from the public repository, applies the bundled files changed
-  since then with their modes and deletions, requires git write-tree to
-  equal HEAD's tree, installs CI's Python and pins (ci/install_pins.sh), and
-  runs ci/run_gates.py on that shard. Shard runs live under the ignored
+  CI shard for the committed HEAD. The kernel fetches HEAD from the public
+  repository when a branch of REMOTE contains it, and otherwise the merge
+  base with REMOTE's main plus the bundled files changed since then with their modes and
+  deletions; it requires git write-tree to equal HEAD's tree, installs CI's
+  Python and pins (ci/install_pins.sh), and runs ci/run_gates.py on that
+  shard. Shard runs live under the ignored
   .kaggle-shards/ and are iteration records, never evidence;
   ``shards-report RUN_DIR...`` prints each collected shard's summary and
   failures.
@@ -132,12 +134,16 @@ GPU_MACHINE = "NvidiaTeslaT4"
 TPU_MACHINE = "TpuV5E8"
 SHARDS = ROOT / ".kaggle-shards"
 REMOTE = "https://github.com/Oichkatzelesfrettschen/gororoba-quantum.git"
+REMOTE_REFS = "refs/kaggle-shards/remote"
 # CI's interpreter (.github/workflows/ci.yml), the uv that installs it on the
 # kernel, and the shellcheck the shellcheck gates call when the image lacks one.
 CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
+# Kaggle's SaveKernel accepts a 706,414-byte run.py and refuses a 1,662,849-byte
+# one with HTTP 400 (2026-10-16); the guard sits between the two.
+KERNEL_SOURCE_LIMIT = 1_000_000
 # Six shards outnumber the five CPU sessions, so a default run waits for the
 # first shards to finish (a pr shard takes about 5 to 10 minutes there).
 SLOT_WAIT_SECONDS = 7200
@@ -756,8 +762,14 @@ def shards(args: argparse.Namespace) -> int:
 
     revision = git_commit()
     require(not revision.endswith("-dirty"), "shards test a commit: commit or stash the tracked changes first")
-    git("fetch", "-q", "origin", "main")
-    base = git("merge-base", "HEAD", "origin/main").strip()
+    # The kernel fetches its base from REMOTE, so reachability is read from
+    # REMOTE's own branches, mirrored under REMOTE_REFS whatever the local
+    # remotes are named. A commit on one of them is fetched as itself and
+    # carries no overlay; any other commit overlays its changes on the merge
+    # base with REMOTE's main, which has to fit Kaggle's script source limit.
+    git("fetch", "-q", "--prune", REMOTE, f"+refs/heads/*:{REMOTE_REFS}/*")
+    on_remote = bool(git("for-each-ref", "--contains", revision, REMOTE_REFS).strip())
+    base = revision if on_remote else git("merge-base", "HEAD", f"{REMOTE_REFS}/main").strip()
     owner = username()
     # CI runs the pr tier on 6 shards and the full tier on 12
     # (.github/workflows/ci.yml); run_gates assigns gates by the count.
@@ -778,6 +790,13 @@ def shards(args: argparse.Namespace) -> int:
                 stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
                 run_dir = SHARDS / f"{stamp}-{revision[:12]}-shard-{shard}-of-{args.count}"
                 build_shard_kernel(run_dir, owner, stamp, base, revision, args.tier, shard, args.count, machine)
+                size = (run_dir / "kernel/run.py").stat().st_size
+                if size > KERNEL_SOURCE_LIMIT:
+                    shutil.rmtree(run_dir)
+                    raise SystemExit(
+                        f"shard {shard}: the overlay makes run.py {size} bytes, above Kaggle's script limit "
+                        f"(KERNEL_SOURCE_LIMIT {KERNEL_SOURCE_LIMIT}); push the branch so the kernel fetches HEAD"
+                    )
                 pushed, reply = push_shard(run_dir, machine, args.timeout)
                 if pushed:
                     break

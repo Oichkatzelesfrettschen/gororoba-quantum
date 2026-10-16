@@ -261,6 +261,8 @@ def check_w_is_signed_z_string() -> dict[tuple[float, ...], int]:
 def check_associator_degree_rule(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) -> dict[int, dict[int, int]]:
     """deg omega_ij = max(1, bitlen(max(i,j)) - 2) for every pair, dims 8 through 128.
 
+    docs/notes/cd_phase_degree.md proves it for every dim >= 8.
+
     omega_ij is the diagonal of W = L_{e_i e_j}^dagger L_{e_i} L_{e_j}. The
     degree depends only on the doubling level where the pair first appears:
     octonion pairs carry linear phases (Z-strings), sedenion pairs quadratic
@@ -400,6 +402,9 @@ def check_associator_walsh_hierarchy(
 
 def check_left_mult_sign_degree(dims: tuple[int, ...] = (8, 16, 32, 64, 128)) -> None:
     """f_m(x) = [cd_sign(dim,m,x) = -1] has degree log2(dim) - 1 for every m != 0.
+
+    docs/notes/cd_phase_degree.md proves it for every dim >= 4, and
+    scripts/cd_phase_degree.py checks the proof's identities through dim 256.
 
     L_{e_m} is that sign diagonal followed by X gates, so octonion left
     multiplications are Clifford (degree 2: Z and CZ) and sedenion ones carry a

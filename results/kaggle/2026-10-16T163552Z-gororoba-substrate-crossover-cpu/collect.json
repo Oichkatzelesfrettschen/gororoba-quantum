@@ -1,0 +1,17 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-substrate-crossover-cpu/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T202021Z",
+ "files": {
+  "gororoba-substrate-crossover-cpu.log": "7d2d96afb6220b93cff6210a1f2c4022935d037b6f931bc6e867836b145d2158",
+  "output/environment.json": "25637f7df94d26077b3355b7d17880ec07314fb295796e000a1dde4d0b5c8616",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "2c769e237b85c010d6052023df109f7bf8addf9a70facfbe2421ee8fee486d06",
+  "output/pin_groups.json": "a97fe4c19340a3f6bd566dbb7bf3c7380263d5fd57fa48578a5e5ebfad852677",
+  "output/pip.txt": "430eb27a3535535c9d94f54748c496e560147046db8c6daae8cd36a587664636",
+  "output/repo/results/kaggle_out/substrate_crossover.json": "4f97bfbb9cd79045f6336c2909a47b3a3f5dec945d17763fbcd72b17aa562142",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "3096f7641fe3875d3014df714d7cef576fe695f490f96be5c8f028d61bdce2c9"
+ }
+}

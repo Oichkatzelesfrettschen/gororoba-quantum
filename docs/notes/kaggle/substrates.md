@@ -10,7 +10,7 @@ own environment and these tables describe the probes, not a guarantee.
 
 | Work | Substrate | Reason |
 | --- | --- | --- |
-| Noise simulation, power analysis, parameter sweeps of 14 qubits or fewer | Kaggle GPU kernel | routing rule (root AGENTS.md); Aer GPU density matrix |
+| Noise simulation, power analysis, parameter sweeps of 14 qubits or fewer | Kaggle CPU kernel; a T4 kernel from 12 density-matrix qubits, or 8 with mid-circuit measurement | measured crossover, "CPU against T4" below |
 | Statevector simulation beyond the density-matrix limit | Kaggle GPU kernel, `method="statevector"` | ideal semantics only; a noisy question needs the density matrix or trajectories |
 | Hypercomplex package builds and table extraction | every kernel's CPU, then the host | `docs/notes/kaggle/hypercomplex-stack.md` |
 | Transpilation against a calibration export | kernel CPU | about 0.06 s per Design C pair (three 5-qubit circuits) on the build host; the pair's three 20,000-shot density-matrix simulations take about 4 s on the build host CPU and about 8 s on a Kaggle T4, so a 5-qubit noise run is simulation-bound and the GPU does not speed it up |
@@ -66,6 +66,41 @@ or fewer on Kaggle, 15 or more on IBM):
 | --- | --- | --- | --- |
 | 1 to 14 qubits | Kaggle GPU, double-precision density matrix (measured on one T4 to 14) | Kaggle GPU statevector | IBM only for a named-device question with an approved case |
 | 15 qubits or more | none on Kaggle: the 15-qubit density matrix was killed on a T4, and no measured mode extends it | Kaggle GPU statevector up to the measured 29 qubits, as design support for an IBM case | IBM after an approved case |
+
+## CPU against T4
+
+`scripts/substrate_crossover.py` times Aer density-matrix runs of one
+workload by active width on each device of a kernel: ISA circuits on a
+connected chain of physical qubits, 8 layers of rz and sx on every qubit
+and CZ on alternating pairs, under the noise rebuilt from the retained
+`ibm_kingston` snapshot; a batch of 8 circuits at 2048 shots, the best of
+2 repeats, and no wider width once one exceeds 180 s. The dynamic variant
+adds one mid-circuit measurement with a conditioned X, which makes Aer
+simulate shot by shot.
+Runs `results/kaggle/2026-10-16T163552Z-gororoba-substrate-crossover-cpu`
+(Intel Xeon 2.20 GHz, 4 CPUs) and
+`results/kaggle/2026-10-16T212614Z-gororoba-substrate-crossover-t4-gpu`
+(2 x Tesla T4; Intel Xeon 2.00 GHz, 4 CPUs), both qiskit 2.5.2 and
+qiskit-aer 0.17.2:
+
+| Active qubits | Static, CPU | Static, T4 | Dynamic, CPU | Dynamic, T4 |
+| --- | --- | --- | --- | --- |
+| 2 | 2.9 s | 2.4 s | 4.3 s | 6.1 s |
+| 4 | 3.0 s | 2.5 s | 7.3 s | 9.2 s |
+| 6 | 3.1 s | 2.6 s | 69.6 s | 24.3 s |
+| 8 | 3.4 s | 2.6 s | 548.3 s | 19.4 s |
+| 10 | 8.5 s | 3.0 s | not run | 309.3 s |
+| 12 | 105.4 s | 8.3 s | not run | not run |
+| 14 | 1955.2 s | 110.8 s | not run | not run |
+
+Static circuits through 8 qubits cost the per-call overhead on both
+devices; the T4 is 2.8 times faster at 10 qubits, 12.8 at 12 and 17.7 at
+14. With mid-circuit measurement the CPU leads through 4 qubits and the T4
+is 2.9 times faster at 6 and 28 at 8. The routing rule takes the widths
+where the gain passes 10: 12 static qubits and 8 dynamic ones. The build
+host's crossover is a different measurement on different hardware and
+sets `local_compute.GPU_MIN_ACTIVE_QUBITS` for local runs only
+(`gororoba_quantum/LOCAL_COMPUTE.md`).
 
 ## T4 x2 GPU kernel
 

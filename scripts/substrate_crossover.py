@@ -16,7 +16,13 @@ BUDGET_SECONDS on a device and workload, the wider widths there are not run
 and record why. The output names the machine (CPU model, cores, GPU) so a
 row is read against the substrate that produced it. A kernel on a GPU
 machine passes ``--devices GPU`` so its accelerator session times only the
-GPU; the CPU column comes from a CPU kernel.
+GPU; the CPU column comes from a CPU kernel. The snapshot is a data file
+that import resolution does not bundle, so a kernel push names it:
+
+    "$PYTHON" scripts/kaggle_run.py push scripts/substrate_crossover.py --slug SLUG \
+        --machine NvidiaTeslaT4 --timeout 2400 \
+        --include docs/evidence/calibration/ibm_kingston.json \
+        -- --out results/kaggle_out/substrate_crossover.json --devices GPU
 """
 
 from __future__ import annotations
