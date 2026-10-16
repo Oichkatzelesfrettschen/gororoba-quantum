@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-signed-kernel-noise/2",
+ "state": "COMPLETE",
+ "collected_utc": "2026-10-16T064418Z",
+ "files": {
+  "gororoba-signed-kernel-noise.log": "3cba06fe68671f7ba8ca28a0f2b433767a26b5ff48a6d3394b01a8ae0a152645",
+  "output/environment.json": "1657491a78ef996c1f2815236dff74c6eb5fac0e29d75b10f87ae9a1510ef6c6",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "16d3743393dec6ea5cfa44baf27c6c44cb4358cf6b8ab2793e15b0ce92cd370e",
+  "output/pip.txt": "78eeeed904240cac0ae8656b08225811097c67bff0002e625563ffb4258a8327",
+  "output/repo/results/kaggle_out/signed_kernel_noise.json": "1fd3c6f1d1f69bd39c7371ac6522587f083c8d79557e4628aaf47f2c552b5302",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "f9e86f07fa130b262dff44098290f446d0fafd0b60820d766866b60ad9c0441e"
+ }
+}

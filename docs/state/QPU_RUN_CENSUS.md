@@ -15,7 +15,10 @@ rolling 28-day window; every dry run below confirmed the 266 s.
 Each case asks about named qubits of ibm_kingston, so noise simulation
 cannot answer it: the simulator only replays the calibration the question
 tests. All five were dry-run again against the calibration of
-2026-10-15T15:29:07-07:00. Nominal seconds are the sum over PUBs of shots x
+2026-10-15T15:29:07-07:00. The two conditional Ramsey records carry the
+summary that predates postselecting the conditional arms on B
+(`docs/evidence/conditional_ramsey_power/README.md`), so their submit
+commands are valid only after a fresh dry run under the current summary. Nominal seconds are the sum over PUBs of shots x
 (250 us repetition delay + scheduled circuit duration) plus 2.3 s of job
 overhead; the ceiling is the `max_execution_time` the service enforces.
 
@@ -70,7 +73,7 @@ runs.
 | Readout-adjacent pre-delay discriminator (measure, variable delay, Ramsey) | 1-2 | design only | a design module and dry run; applies only to idles that follow a mid-circuit readout, such as the N21 orbit's |
 | Chip-wide checkerboard detuning map | patch or chip, 15+ | design only | two quadratures, a winding-resolving delay ladder and spectators in both states; the first design in this census that needs 15 or more qubits |
 | Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed | a Kaggle noise run that sizes the rotation-error contrast, then a device case |
-| Signed kernel probe (`proposed-signed-kernel-probe`) | 7 | proposed | Kaggle first: the sign-odd signal against the calibrated noise floor |
+| Signed kernel probe (`proposed-signed-kernel-probe`) | 7 | proposed | the four-arm null-subtracted readout (`docs/evidence/signed_kernel_noise/`), its dry run and a written case |
 | Census-frequency witness (`proposed-census-frequency`) | 5 (fixed pair) to 13 (three registers) | proposed | Kaggle first: visibility V and the shots that resolve 231/512 |
 | Dim-32 Design C spectral classes | 5 | Kaggle result retained (`docs/evidence/design_c_cubic_noise/`) | the noise model keeps the classes apart (noisy K 0.180-0.253 against 0.093-0.113); a hardware case would test coherent errors and crosstalk the model lacks, about 4.4 s nominal for both class representatives at 4096 shots (2 x 4096 x 260 us plus 2.3 s of job overhead) |
 
@@ -90,8 +93,8 @@ sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
 | `gororoba-design-c-cubic-noise` | 5 | does the 11/32 against 5/32 collision separation survive the compiled factorized circuit under the Kingston calibration | complete: yes, ranges 0.180-0.253 and 0.093-0.113 at 20,000 shots; CPU replay gate core-282 |
 | Census-frequency witness | 5-13 | V and shot count for the 231/512 test | to design |
 | Walk scaffold under coherent and leakage models | 4 | which loss channel reproduces the retained readout0 floors | to design |
-| Signed kernel probe at calibrated noise | 7 | the detectable t range | to design |
-| Conditional Ramsey power at calibrated noise | 2-3 | the delta-method precision the case quotes | to design |
+| `gororoba-signed-kernel-noise` | 7 | the detectable t range | complete: a sign-phase offset needs a null arm per sign; null-subtracted visibility 0.60, 12,025 shots at t = 0.2 (`docs/evidence/signed_kernel_noise/`) |
+| `gororoba-conditional-ramsey-power` | 2 | the delta-method precision the case quotes | complete: holds once the conditional arms are postselected on B (`docs/evidence/conditional_ramsey_power/`) |
 
 ## Checks that need no QPU
 

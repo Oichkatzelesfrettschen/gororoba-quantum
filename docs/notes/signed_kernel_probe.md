@@ -110,7 +110,33 @@ It establishes the following:
 - mutation sensitivity;
 - a compiled cost and a shot price under stated scenarios.
 
-It establishes no hardware performance, and it carries no noise-model
-prediction of the signed visibility beyond the scenario arithmetic. A
-hardware case at `t = +-0.2` is affordable, and it would need its own written
-case and approval.
+It establishes no hardware performance. A hardware case at `t = +-0.2` is
+affordable, and it would need its own written case and approval.
+
+## Under the noise model
+
+[signed_kernel_noise](../evidence/signed_kernel_noise/README.md) evaluates
+both readouts under live_run's noise model for the Kingston calibration. It
+adds structure-matched probes (`matched_dark_probe`, `matched_signed_probe`)
+that compile once with parameters, so every `t` runs the same gates, and the
+bright control `(e4 + e15)/sqrt2` of both dark forms.
+
+- **Gate factor.** The signed visibility is 0.60, within 10 percent of the
+  `(1 - e)^CZ` factor the price above uses.
+- **Sign-phase offset.** Under noise, the sign phase itself shifts
+  `<Z_c>`. Two null arms at `t = 0`, which ideally both read 0, differ by
+  0.037 between `phi = 0` and `phi = pi`. That exceeds the signal at
+  `t = 0.05`, and it inflates the raw differential `<Z_c>(t) - <Z_c>(-t)` by
+  a factor of 2.3 there. Term arms trace the offset to the e1 and e10 terms,
+  whose ideal overlap is 0.
+- **Null subtraction.** Subtracting each sign's null arm restores a
+  constant visibility of 0.601 to 0.602 at every `t`. The signed readout
+  therefore needs four arms: `+t`, `-t` and both nulls. The price above
+  assumes two arms with no sign-dependent offset, so it understates the
+  cost.
+- **Dark count.** At the evaluated `t`, its contrast against a `t = 0` control is inverted: its
+  background falls with `|t|` faster than `p(t)` rises, so a resolved
+  contrast (about 404,000 equal-arm shots at `t = 0.05`) measures that
+  background rather than `p(t)`. The bright control keeps its ideal
+  direction at a transmission of 0.81 to 0.83, so the inversion belongs to
+  the dark witness, not to the whole success channel.
