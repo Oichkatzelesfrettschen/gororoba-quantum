@@ -2193,6 +2193,37 @@
       "status": "withdrawn",
       "boundary": "The power restates hand-set inputs (a 0.01 kHz shift at 0.1 contrast per kHz against a 0.02 standard error); it measures nothing about the device.",
       "withdrawn_text": "docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57."
+    },
+    {
+      "id": "hw-atlas-frame-detuning",
+      "statement": "On the executed Fez ripple atlas circuits and IBM's executed pulse times, a static frame detuning per qubit predicts held-out edge fringe phases better than the lane mean on six of seven lanes (leave-one-out 0.074 to 0.120 rad against 0.129 to 0.238 rad); the fitted detunings are mostly 5 to 30 kHz, up to about 60 kHz.",
+      "domain": "hardware",
+      "evidence_class": "exploratory reanalysis",
+      "status": "exploratory",
+      "boundary": "Inferred from one run's fringe phases; residuals stay 3 to 5 times the shot noise, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.",
+      "evidence": [
+        {
+          "path": "results/ripple/measured-ripple.json",
+          "sha256": "066825757ae961e0b74652682248cf9d000674cb5f94589931f4c984d1f115b7"
+        },
+        {
+          "path": "docs/evidence/atlas_detuning_map/result.json",
+          "sha256": "4c8c8ffe49a7d91e8fb0a537163fe9b8be7ac6286342170d215bbc8b8313f1a6"
+        }
+      ],
+      "documents": [
+        "docs/evidence/atlas_detuning_map/README.md"
+      ],
+      "gates": {
+        "core-285": "replay"
+      },
+      "acquisitions": [
+        "fez-ripple-atlas"
+      ],
+      "assumptions": [],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

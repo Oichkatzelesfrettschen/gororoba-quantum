@@ -1,0 +1,33 @@
+{
+ "schema": "kaggle-aer-submission-v1",
+ "kernel": "probablyeric/gororoba-atlas-detuning-map",
+ "machine_shape": "cpu",
+ "entry": "scripts/atlas_detuning_map.py",
+ "args": [
+  "--lanes",
+  "all",
+  "--out",
+  "results/kaggle_out/atlas_detuning_map.json"
+ ],
+ "smoke": false,
+ "git_commit": "d70692c68b16d8ccb46b96237e3c5adc101b6038",
+ "pins": [
+  "qiskit==2.5.2",
+  "qiskit-aer-gpu-cu11==0.17.2"
+ ],
+ "bundle": {
+  "docs/evidence/algebra_packages/tables.json": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",
+  "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+  "gororoba_quantum/packing.py": "40b41063eba2bff438c7a3fc32785423d3455823712bccf8c0b313e81be6d0cf",
+  "kaggle_kernel/AGENTS.md": "18298a1309d59914f5f9f407ac2a5d98c768e48ba1b3110d2e50e3d5a9839afa",
+  "kaggle_kernel/kernel_main.py": "608117263601776a980e42b6c3a3779e692d65362caefed79af133a0c1fd1bac",
+  "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528",
+  "scripts/atlas_detuning_map.py": "6eb077a93ead105fc81f8c83e9a0cdfb464b595cf1f7e85734209d714e07fbf2"
+ },
+ "datasets": {
+  "probablyeric/gororoba-retained-runs": "3c89bc011d1ee8ce3b4ea5646876501d40ce1129f91a4c091530ab2a718b3df8"
+ },
+ "run_py_sha256": "d7644b9eea2066bb6939b099ac72663f77f0282080fcb2e41d61b1c656244a28",
+ "pushed_utc": "2026-10-16T040810Z",
+ "kernel_version": 3
+}
