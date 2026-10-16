@@ -340,7 +340,11 @@ def collect(args: argparse.Namespace) -> int:
 
 
 def verify(args: argparse.Namespace) -> int:
-    """Every retained collect.json names exactly the files under its output/ with their sha256."""
+    """Every retained collect.json names exactly the files under its output/ with their sha256.
+
+    A versioned run's ledger must include the exit.json collection required;
+    an earlier, unversioned run keeps the status Kaggle reported then.
+    """
     runs = sorted(RESULTS.glob("*/collect.json"))
     for path in runs:
         run_dir = path.parent
@@ -350,7 +354,15 @@ def verify(args: argparse.Namespace) -> int:
         require(present == set(record["files"]), f"{run_dir.name}: output files differ from collect.json")
         for rel, digest in record["files"].items():
             require(sha256((out / rel).read_bytes()) == digest, f"{run_dir.name}: {rel} differs from its sha256")
-        require(record["kernel"] == kernel_ref(submission_of(run_dir)), f"{run_dir.name}: kernel differs")
+        submission = submission_of(run_dir)
+        require(record["kernel"] == kernel_ref(submission), f"{run_dir.name}: kernel differs")
+        # Runs pushed before push recorded kernel versions also predate
+        # exit.json and keep the status Kaggle reported; every versioned run
+        # was collected on its exit.json.
+        require(
+            "kernel_version" not in submission or "output/exit.json" in record["files"],
+            f"{run_dir.name}: a versioned run's ledger lacks output/exit.json",
+        )
     require(bool(runs), f"no collect.json under {RESULTS.relative_to(ROOT)}")
     print(f"kaggle runs: {len(runs)} collected outputs match their sha256 ledgers")
     return 0
