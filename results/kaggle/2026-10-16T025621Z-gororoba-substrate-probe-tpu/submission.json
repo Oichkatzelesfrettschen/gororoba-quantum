@@ -1,11 +1,11 @@
 {
  "schema": "kaggle-aer-submission-v1",
- "kernel": "probablyeric/gororoba-substrate-probe-p100",
- "machine_shape": "NvidiaTeslaP100",
+ "kernel": "probablyeric/gororoba-substrate-probe-tpu",
+ "machine_shape": "TpuV5E8",
  "entry": null,
  "args": [],
  "smoke": true,
- "git_commit": "601143328615cfcaaddc8a493712ddefc21f6339-dirty",
+ "git_commit": "17c7fc4689c02bc0ebeb0508395fe68590fd5876-dirty",
  "pins": [
   "qiskit==2.5.2",
   "qiskit-aer-gpu-cu11==0.17.2"
@@ -17,6 +17,6 @@
   "kaggle_kernel/kernel_main.py": "0640d2e88ef29cfff182ca92fa35e9e9bbc114cc1c21b0aaed6917e14d4edd44",
   "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528"
  },
- "run_py_sha256": "3a5b6d6da281cc3e0be45846bb4927ed0f6c3b379d027ce7dedbd063a32cd995",
- "pushed_utc": "2026-10-16T025231Z"
+ "run_py_sha256": "28d79450a0f917a25dc0c7ddc31d758f79cb9656da1a269e41aa80a6870ab0e8",
+ "pushed_utc": "2026-10-16T025621Z"
 }

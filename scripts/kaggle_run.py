@@ -178,7 +178,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "language": "python",
         "kernel_type": "script",
         "is_private": True,
-        "enable_gpu": args.machine != "cpu",
+        "enable_gpu": args.machine != "cpu" and not args.machine.startswith("Tpu"),
+        "enable_tpu": args.machine.startswith("Tpu"),
         "enable_internet": True,
     }
     if args.machine != "cpu":

@@ -1,0 +1,22 @@
+{
+ "schema": "kaggle-aer-submission-v1",
+ "kernel": "probablyeric/gororoba-substrate-probe-t4",
+ "machine_shape": "NvidiaTeslaT4",
+ "entry": null,
+ "args": [],
+ "smoke": true,
+ "git_commit": "17c7fc4689c02bc0ebeb0508395fe68590fd5876-dirty",
+ "pins": [
+  "qiskit==2.5.2",
+  "qiskit-aer-gpu-cu11==0.17.2"
+ ],
+ "bundle": {
+  "docs/evidence/algebra_packages/tables.json": "3cefd88cfc84399c48a9eef488571c33e3a7e3b67f377be396ae0812f36194b2",
+  "gororoba_quantum/cd_core.py": "5ee4f9ff6744b8a8847d1396c000d91c4de1e84b2de110c017e1143e50fb9427",
+  "kaggle_kernel/AGENTS.md": "52b3e7af98bf0f857c80d6d191a6f7cea23435451a1dd660ab654be920c2a053",
+  "kaggle_kernel/kernel_main.py": "689a380cf7b96365e93df721e68bf397ddf995f3ad866c0dd485547f004287ee",
+  "scripts/algebra_package_tables.py": "983dc4d74e81f616bd95f1d0c10fd400f2a5e4abccff2bc1b5e27c87509b1528"
+ },
+ "run_py_sha256": "e5d401fb6bf985ec603fa32c15e35b355b1ea6cb6e4b744f5f7801b9c3d84b88",
+ "pushed_utc": "2026-10-16T025758Z"
+}

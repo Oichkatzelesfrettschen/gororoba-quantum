@@ -56,8 +56,20 @@ GPU matters for sweeps and batched trials, not for single circuits.
   returns every file the run created under the repository root.
 - `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download its
   output with a sha256 manifest.
-- `push --smoke` probes the environment and times a 14-qubit
-  density-matrix circuit on the GPU.
+- `push --smoke` probes the environment and measures the widest
+  density-matrix and statevector circuits the GPU runs.
+- `--machine` selects the accelerator: `NvidiaTeslaT4` (the default),
+  another GPU shape, `TpuV5E8` (the kernel sets `enable_tpu` and clears
+  `enable_gpu`; a TPU shape with `enable_gpu` set silently runs on CPU), or
+  `cpu` for no accelerator. `NvidiaTeslaP100` returned two T4s in this
+  account, so a kernel's `environment.json`, not the requested shape, says
+  what ran.
+- The account runs at most two GPU batch sessions at once; a third push
+  fails with "Maximum batch GPU session count of 2 reached", and `push`
+  exits with that message and removes the unsent run directory. The limit
+  was reached once with a single kernel listed as running, after a second
+  version of it had been pushed, so a superseded version appears to keep
+  its session until it ends.
 
 A kernel holds no IBM credential, so its noise model comes from a retained
 calibration export (`gororoba_quantum/calibration_snapshot.py --export
