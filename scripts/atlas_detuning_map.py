@@ -26,15 +26,16 @@ their active qubits, and differentiates the fringe phase by a 1 kHz detuning
 per lane qubit and a 0.01 rad CPhase per lane coupler. Four models per lane
 (lane mean, detunings, CZ phases, both) are fitted by least squares on those
 slopes and compared by leave-one-edge-out RMS error against the shot-noise
-floor, each point's binomial variance propagated through the fringe fit's
-cosine and sine coefficients to its phase. Each model also reports its
-leave-one-out noise floor: the RMS over held-out edges of the expected
-residual from shot noise alone, the held-out edge's variance plus the
-fitted prediction's variance propagated from the other edges. The slopes
-describe the phase only near zero error, so each physical
-model is also scored by resimulating every edge, held out or fitted, at its
-fitted detunings and CZ phases (``nonlinear_*`` scores); only those scores
-test the static-error model itself.
+floor: each point's binomial variance, for the hardware counts and for the
+equally sampled execution replay the offset subtracts, propagated through
+the fringe fit's cosine and sine coefficients to its phase. Each model also
+reports its leave-one-out noise floor, the RMS over held-out edges of the
+held-out edge's variance plus the fitted prediction's variance propagated
+linearly from the other edges; it applies to the linear scores. The slopes
+describe the phase only near zero error, so each physical model is also
+scored by resimulating every edge, held out or fitted, at its fitted
+detunings and CZ phases (``nonlinear_*`` scores); only those scores test
+the static-error model itself.
 
 Self-check: with no error term each edge's simulated fringe phase must equal
 the fringe phase of the recorded ideal probabilities within 1e-9 rad, so the
@@ -75,7 +76,7 @@ MEASURED = ROOT / "results/ripple/measured-ripple.json"
 BACKEND = "ibm_fez"
 PHASES = 8
 LANES = 7
-SCHEMA = "atlas-detuning-map-v5"
+SCHEMA = "atlas-detuning-map-v6"
 KHZ = 1e3
 CZ_STEP = 0.01
 VIRTUAL = {"rz", "barrier", "delay"}
@@ -243,8 +244,12 @@ def measured_edges() -> dict[int, list[dict[str, Any]]]:
                 "members": [p[0] for p in series],
                 "ideal_phase": ideal,
                 "offset": wrap(hardware - replay),
-                "shot_noise_rad": phase_standard_error(
-                    [p[1] for p in series], [p[1] * (1 - p[1]) / p[2] for p in series]
+                # The offset subtracts the execution replay's phase, and
+                # live_run.replay_entries sampled that replay at the run's own
+                # shots, so both phases carry binomial noise.
+                "shot_noise_rad": math.hypot(
+                    phase_standard_error([p[1] for p in series], [p[1] * (1 - p[1]) / p[2] for p in series]),
+                    phase_standard_error([p[3] for p in series], [p[3] * (1 - p[3]) / p[2] for p in series]),
                 ),
             }
         )
