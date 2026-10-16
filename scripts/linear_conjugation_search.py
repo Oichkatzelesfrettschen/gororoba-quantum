@@ -242,6 +242,16 @@ def summarize(s4: list[int], s2: list[int]) -> dict[str, Any]:
             }
             for index in ranked[:WINNERS]
         ],
+        "s4_winners": [
+            {
+                "index": index,
+                "columns": list(coset_columns()[index]),
+                "s4": s4[index],
+                "s2": s2[index],
+                "cost": totals[index],
+            }
+            for index in sorted(range(len(s4)), key=lambda index: (s4[index], totals[index], index))[:WINNERS]
+        ],
         "minimum_s4": best4,
         "minimum_s4_cosets": [index for index, value in enumerate(s4) if value == best4][:WINNERS],
         "minimum_s2": best2,
@@ -289,7 +299,11 @@ def check(record: dict[str, Any], limit: int) -> str:
     _require(record["summary"] == summarize(record["s4"], record["s2"]), "the retained summary differs from the costs")
     _require(record["summary"]["baseline_cost"] == BASELINE_COST, "the baseline coset does not cost 2,556")
     indices = sorted(
-        {record["summary"]["baseline_index"], *(winner["index"] for winner in record["summary"]["winners"])}
+        {
+            record["summary"]["baseline_index"],
+            *(winner["index"] for winner in record["summary"]["winners"]),
+            *(winner["index"] for winner in record["summary"]["s4_winners"]),
+        }
         | set(range(min(limit, COSETS)))
     )
     recomputed = parallel.ordered_map(shard_item, indices, min_items=2)
@@ -300,6 +314,19 @@ def check(record: dict[str, Any], limit: int) -> str:
     ]
     _require(not differing, f"recomputed costs differ at cosets {differing[:10]}")
     return f"{len(indices)} cosets recomputed; minimum {record['summary']['minimum_cost']} against baseline 2556"
+
+
+def dump(record: dict[str, Any]) -> str:
+    """The record as JSON: every field indented except the per-coset cost arrays, one line each."""
+    arrays = {key: record[key] for key in ("s4", "s2") if key in record}
+    rest = {key: value for key, value in record.items() if key not in arrays}
+    text = json.dumps(rest, indent=1)
+    if not arrays:
+        return text + "\n"
+    tail = ",\n".join(
+        f" {json.dumps(key)}: {json.dumps(value, separators=(',', ':'))}" for key, value in arrays.items()
+    )
+    return text[:-2] + ",\n" + tail + "\n}\n"
 
 
 def main() -> int:
@@ -329,7 +356,7 @@ def main() -> int:
         record = run_shard(args.start, args.stop)
         print(json.dumps({"start": args.start, "stop": args.stop, "seconds": record["seconds"]}))
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    args.out.write_text(dump(record), encoding="utf-8")
     return 0
 
 

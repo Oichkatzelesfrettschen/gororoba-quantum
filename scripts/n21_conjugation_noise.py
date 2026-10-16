@@ -222,8 +222,9 @@ def seconds_estimate(duration_dt: int, dt: float, stages: int, shots: int) -> fl
 
 
 def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
-    two_round_index = search["summary"]["minimum_s4_cosets"][0]
-    two_round = coset_columns()[two_round_index]
+    two_round_index = search["summary"]["s4_winners"][0]["index"]
+    two_round = tuple(search["summary"]["s4_winners"][0]["columns"])
+    _require(coset_columns()[two_round_index] == two_round, "the s4 winner's columns differ from its coset index")
     ten_round = tuple(search["summary"]["winners"][0]["columns"])
     built = circuits(two_round, ten_round)
     names = list(CIRCUIT_NAMES)

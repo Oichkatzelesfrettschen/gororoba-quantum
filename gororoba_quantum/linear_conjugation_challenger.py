@@ -13,14 +13,20 @@ independent check, Aer samples both complete circuits with one simulator seed
 and the phase-register distributions must agree within a total variation of
 SAMPLED_TV_BOUND.
 
-Both circuits compile with the baseline's preset pass manager on the
-captured FakeFez target over the same transpiler seeds, as
-``affine_residual_challenger`` compiles its candidates. Admission requires
-the checks, no logical-qubit increase, no per-seed regression in routed CZ,
-depth or scheduled duration, and a strictly lower median routed CZ. The
-cosets come from ``scripts/linear_conjugation_search.py``; a lower surrogate
-there is a filter, and this rule decides. The module submits no quantum
-work.
+Two problems are admitted separately. The ten-round circuit
+factor_order_finding(21, 2, 10) takes the cosets of least schedule surrogate;
+the two-round n21-feedback diagnostic factor_order_finding(21, 4, 2), whose
+multipliers are 16 and 4, takes the cosets of least s(4) and compiles both
+its feed-forward and its no-feed-forward arm. Every circuit compiles with the
+baseline's preset pass manager on the captured FakeFez target over the same
+transpiler seeds, as ``affine_residual_challenger`` compiles its candidates.
+Admission requires the checks, no logical-qubit increase, no per-seed
+regression in routed CZ, depth or scheduled duration on any arm, and a
+strictly lower median routed CZ on every arm. The cosets come from
+``scripts/linear_conjugation_search.py``; a lower surrogate there is a
+filter, and this rule decides. ``--check`` recompiles the baseline and the
+best admitted coset of each problem and requires the retained runs. The
+module submits no quantum work.
 """
 
 from __future__ import annotations
@@ -84,6 +90,11 @@ SOURCE_PATHS = (
 SAMPLED_SHOTS = 4000
 SAMPLED_SEED = 7
 SAMPLED_TV_BOUND = 0.02
+# (base, phase bits, feed-forward arms, search ranking) per admitted problem.
+PROBLEMS = {
+    "ten_round": (BASE, PHASE_BITS, (True,), "winners"),
+    "two_round": (4, 2, (True, False), "s4_winners"),
+}
 SKELETON_OPERATIONS = ("h", "if_else", "measure", "reset")
 COMPARED_METRICS = ("routed_cz", "depth", "scheduled_duration_dt")
 
@@ -92,8 +103,9 @@ def _baseline_candidate() -> Candidate:
     return next(candidate for candidate in SELECTABLE_CANDIDATES if candidate.name == BASELINE)
 
 
-def _schedule() -> tuple[int, ...]:
-    plan = order_finding_plan(MODULUS, BASE, PHASE_BITS, multiplier_strategy=_baseline_candidate().multiplier_strategy)
+def _schedule(problem: str) -> tuple[int, ...]:
+    base, phase_bits, _, _ = PROBLEMS[problem]
+    plan = order_finding_plan(MODULUS, base, phase_bits, multiplier_strategy=ENCODED_STRATEGY)
     return tuple(resource.multiplier for resource in plan.rounds[plan.leading_identity_rounds :])
 
 
@@ -113,10 +125,11 @@ def _controlled_network_maps(network: tuple[TargetCube, ...], permutation: tuple
     return True
 
 
-def equivalence_checks(columns: tuple[int, ...]) -> dict[str, Any]:
+def equivalence_checks(job: tuple[str, tuple[int, ...]]) -> dict[str, Any]:
+    problem, columns = job
     table = linear_encoding(columns)
     checks: dict[str, Any] = {"initial_value": table.index(1)}
-    for multiplier in sorted(set(_schedule())):
+    for multiplier in sorted(set(_schedule(problem))):
         f = modular_permutation(MODULUS, multiplier)
         g = conjugated_permutation(f, columns)
         network = target_flip_network(g)
@@ -133,13 +146,25 @@ def equivalence_checks(columns: tuple[int, ...]) -> dict[str, Any]:
     return checks
 
 
-def phase_counts(columns: tuple[int, ...] | None) -> dict[str, int]:
+def source(problem: str, columns: tuple[int, ...] | None, feed_forward: bool) -> QuantumCircuit:
+    base, phase_bits, _, _ = PROBLEMS[problem]
+    return factor_order_finding(
+        MODULUS,
+        base,
+        phase_bits,
+        multiplier_strategy=ENCODED_STRATEGY,
+        feed_forward=feed_forward,
+        work_columns=columns,
+    )
+
+
+def phase_counts(job: tuple[str, tuple[int, ...] | None, bool]) -> dict[str, int]:
     """Seeded Aer statevector counts of the phase register for one complete circuit."""
     from qiskit import transpile
     from qiskit_aer import AerSimulator
 
     simulator = AerSimulator(method="statevector")
-    circuit = transpile(_source(columns), simulator, optimization_level=0)
+    circuit = transpile(source(*job), simulator, optimization_level=0)
     counts = simulator.run(circuit, shots=SAMPLED_SHOTS, seed_simulator=SAMPLED_SEED).result().get_counts()
     return dict(sorted(counts.items()))
 
@@ -154,25 +179,19 @@ def _backend() -> FakeFez:
     return FakeFez()
 
 
-def _source(columns: tuple[int, ...] | None) -> QuantumCircuit:
-    if columns is None:
-        return _build_source(_baseline_candidate())[0]
-    return factor_order_finding(MODULUS, BASE, PHASE_BITS, multiplier_strategy=ENCODED_STRATEGY, work_columns=columns)
-
-
 def _active_physical_qubits(circuit: QuantumCircuit) -> int:
     return len({circuit.find_bit(qubit).index for instruction in circuit.data for qubit in instruction.qubits})
 
 
-def compile_job(job: tuple[tuple[int, ...] | None, int]) -> dict[str, Any]:
-    """Compile the baseline (columns None) or one conjugated circuit at one transpiler seed."""
-    columns, seed = job
-    source = _source(columns)
+def compile_job(job: tuple[str, tuple[int, ...] | None, bool, int]) -> dict[str, Any]:
+    """Compile one arm of the baseline (columns None) or of one encoded circuit at one transpiler seed."""
+    problem, columns, feed_forward, seed = job
+    circuit = source(problem, columns, feed_forward)
     backend = _backend()
-    compiled = candidate_pass_manager(_baseline_candidate(), seed, backend).run(source)
+    compiled = candidate_pass_manager(_baseline_candidate(), seed, backend).run(circuit)
     return {
         "seed_transpiler": seed,
-        "logical_qubits": source.num_qubits,
+        "logical_qubits": circuit.num_qubits,
         "active_physical_qubits": _active_physical_qubits(compiled),
         "routed_cz": int(compiled.count_ops().get("cz", 0)),
         "depth": compiled.depth(),
@@ -180,39 +199,55 @@ def compile_job(job: tuple[tuple[int, ...] | None, int]) -> dict[str, Any]:
     }
 
 
-def _record(name: str, columns: tuple[int, ...] | None, runs: list[dict[str, Any]]) -> dict[str, Any]:
-    source = _source(columns)
-    return {
-        "name": name,
-        "columns": list(columns) if columns is not None else None,
-        "logical_qubits": source.num_qubits,
-        "source_operations": dict(sorted((key, int(value)) for key, value in source.count_ops().items())),
-        "runs": runs,
-        "medians": {metric: statistics.median(run[metric] for run in runs) for metric in COMPARED_METRICS},
-    }
+def _arm_name(feed_forward: bool) -> str:
+    return "feed_forward" if feed_forward else "no_feed_forward"
+
+
+def _record(problem: str, name: str, columns: tuple[int, ...] | None, runs: dict[str, list[Any]]) -> dict[str, Any]:
+    arms = {}
+    for feed_forward in PROBLEMS[problem][2]:
+        circuit = source(problem, columns, feed_forward)
+        arm_runs = runs[_arm_name(feed_forward)]
+        arms[_arm_name(feed_forward)] = {
+            "logical_qubits": circuit.num_qubits,
+            "source_operations": dict(sorted((key, int(value)) for key, value in circuit.count_ops().items())),
+            "runs": arm_runs,
+            "medians": {metric: statistics.median(run[metric] for run in arm_runs) for metric in COMPARED_METRICS},
+        }
+    return {"name": name, "columns": list(columns) if columns is not None else None, "arms": arms}
 
 
 def admission(baseline: dict[str, Any], challenger: dict[str, Any], checks_pass: bool) -> dict[str, Any]:
     regressions = [
         {
+            "arm": arm,
             "seed_transpiler": challenger_run["seed_transpiler"],
             "metric": metric,
             "baseline": baseline_run[metric],
             "challenger": challenger_run[metric],
         }
-        for baseline_run, challenger_run in zip(baseline["runs"], challenger["runs"], strict=True)
+        for arm, base_arm in baseline["arms"].items()
+        for baseline_run, challenger_run in zip(base_arm["runs"], challenger["arms"][arm]["runs"], strict=True)
         for metric in COMPARED_METRICS
         if challenger_run[metric] > baseline_run[metric]
     ]
+    arms = list(baseline["arms"])
     clauses = {
         "logical_equivalence_and_workspace_checks_pass": checks_pass,
         "shared_dynamic_skeleton": all(
-            baseline["source_operations"].get(name) == challenger["source_operations"].get(name)
+            baseline["arms"][arm]["source_operations"].get(name)
+            == challenger["arms"][arm]["source_operations"].get(name)
+            for arm in arms
             for name in SKELETON_OPERATIONS
         ),
-        "logical_qubits_not_increased": challenger["logical_qubits"] <= baseline["logical_qubits"],
+        "logical_qubits_not_increased": all(
+            challenger["arms"][arm]["logical_qubits"] <= baseline["arms"][arm]["logical_qubits"] for arm in arms
+        ),
         "every_seed_no_worse_in_cz_depth_duration": not regressions,
-        "median_routed_cz_strictly_lower": challenger["medians"]["routed_cz"] < baseline["medians"]["routed_cz"],
+        "median_routed_cz_strictly_lower": all(
+            challenger["arms"][arm]["medians"]["routed_cz"] < baseline["arms"][arm]["medians"]["routed_cz"]
+            for arm in arms
+        ),
     }
     return {
         "clauses": clauses,
@@ -221,29 +256,73 @@ def admission(baseline: dict[str, Any], challenger: dict[str, Any], checks_pass:
     }
 
 
-def capture(search_path: Path, top: int, seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
-    search = json.loads(search_path.read_text(encoding="utf-8"))
-    winners = search["summary"]["winners"][:top]
+def _problem_record(problem: str, winners: list[dict[str, Any]], seeds: tuple[int, ...]) -> dict[str, Any]:
+    arms = PROBLEMS[problem][2]
     cosets = [tuple(winner["columns"]) for winner in winners]
-    checks = parallel.ordered_map(equivalence_checks, cosets, min_items=2)
-    counts = parallel.ordered_map(phase_counts, [None, *cosets], min_items=2)
-    for check, coset_counts in zip(checks, counts[1:], strict=True):
-        check["sampled_phase_total_variation"] = total_variation(counts[0], coset_counts)
+    checks = parallel.ordered_map(equivalence_checks, [(problem, columns) for columns in cosets], min_items=2)
+    count_jobs = [(problem, columns, feed_forward) for columns in [None, *cosets] for feed_forward in arms]
+    counts = parallel.ordered_map(phase_counts, count_jobs, min_items=2)
+    for position, check in enumerate(checks):
+        variations = [
+            total_variation(counts[arm], counts[len(arms) * (position + 1) + arm]) for arm in range(len(arms))
+        ]
+        check["sampled_phase_total_variation"] = max(variations)
         check["pass"] = check["pass"] and check["sampled_phase_total_variation"] <= SAMPLED_TV_BOUND
-    jobs: list[tuple[tuple[int, ...] | None, int]] = [(None, seed) for seed in seeds]
-    jobs += [(columns, seed) for columns in cosets for seed in seeds]
+    jobs = [
+        (problem, columns, feed_forward, seed) for columns in [None, *cosets] for feed_forward in arms for seed in seeds
+    ]
     runs = parallel.ordered_map(compile_job, jobs, min_items=2)
-    baseline = _record(BASELINE, None, runs[: len(seeds)])
+    per_circuit = len(arms) * len(seeds)
+
+    def arm_runs(position: int) -> dict[str, list[Any]]:
+        block = runs[position * per_circuit : (position + 1) * per_circuit]
+        return {
+            _arm_name(feed_forward): block[index * len(seeds) : (index + 1) * len(seeds)]
+            for index, feed_forward in enumerate(arms)
+        }
+
+    baseline = _record(problem, BASELINE, None, arm_runs(0))
     challengers = []
     for position, (winner, columns, check) in enumerate(zip(winners, cosets, checks, strict=True)):
-        start = len(seeds) * (position + 1)
-        record = _record(f"conjugated_coset_{winner['index']}", columns, runs[start : start + len(seeds)])
+        record = _record(problem, f"encoded_coset_{winner['index']}", columns, arm_runs(position + 1))
         record["coset_index"] = winner["index"]
-        record["surrogate_cx"] = winner["cost"]
+        record["surrogate"] = {"s4": winner["s4"], "s2": winner["s2"], "ten_round_cost": winner["cost"]}
         record["checks"] = check
         record["admission"] = admission(baseline, record, check["pass"])
         challengers.append(record)
     admitted = [record for record in challengers if record["admission"]["verdict"] == "admitted"]
+    best = min(
+        admitted,
+        key=lambda record: (
+            sum(arm["medians"]["routed_cz"] for arm in record["arms"].values()),
+            record["coset_index"],
+        ),
+        default=None,
+    )
+    base, phase_bits, _, ranking = PROBLEMS[problem]
+    return {
+        "circuit": f"factor_order_finding({MODULUS}, {base}, {phase_bits})",
+        "round_multipliers": list(_schedule(problem)),
+        "ranking": ranking,
+        "arms": [_arm_name(feed_forward) for feed_forward in arms],
+        "baseline": baseline,
+        "challengers": challengers,
+        "admitted_coset_indices": [record["coset_index"] for record in admitted],
+        "best_admitted": best["coset_index"] if best is not None else None,
+    }
+
+
+def capture(search_path: Path, top: int, seeds: tuple[int, ...], output_path: Path | None) -> dict[str, Any]:
+    search = json.loads(search_path.read_text(encoding="utf-8"))
+    baseline_source = _build_source(_baseline_candidate())[0]
+    _require(
+        dict(baseline_source.count_ops()) == dict(source("ten_round", None, True).count_ops()),
+        "factor_order_finding's ten-round baseline differs from compile_evidence's target_flip_one_clean source",
+    )
+    problems = {
+        problem: _problem_record(problem, search["summary"][ranking][:top], seeds)
+        for problem, (_, _, _, ranking) in PROBLEMS.items()
+    }
     arguments = ['"$PYTHON"', "gororoba_quantum/linear_conjugation_challenger.py", "--search", str(search_path)]
     if top != DEFAULT_TOP:
         arguments.extend(("--top", str(top)))
@@ -254,11 +333,11 @@ def capture(search_path: Path, top: int, seeds: tuple[int, ...], output_path: Pa
         arguments.extend(("--out", portable_output))
     backend = _backend()
     return {
-        "schema_version": 1,
+        "schema_version": 2,
         "capture": "n21-linear-conjugation-challenger",
         "qpu_executed": False,
         "replay_command": " ".join(arguments[:1] + [shlex.quote(argument) for argument in arguments[1:]]),
-        "problem": {"modulus": MODULUS, "base": BASE, "phase_bits": PHASE_BITS, "round_multipliers": list(_schedule())},
+        "modulus": MODULUS,
         "compiler": {
             "target": "qiskit_ibm_runtime.fake_provider.FakeFez",
             "optimization_level": OPTIMIZATION_LEVEL,
@@ -280,41 +359,70 @@ def capture(search_path: Path, top: int, seeds: tuple[int, ...], output_path: Pa
         },
         "rule": (
             "admit a coset only when its equivalence and workspace checks pass, the dynamic skeleton matches, "
-            "logical qubits do not increase, every seed is no worse in routed CZ, depth, and scheduled duration, "
-            "and the median routed CZ is strictly lower"
+            "logical qubits do not increase, every seed of every arm is no worse in routed CZ, depth, and "
+            "scheduled duration, and the median routed CZ is strictly lower on every arm"
         ),
-        "baseline": baseline,
-        "challengers": challengers,
-        "admitted_coset_indices": [record["coset_index"] for record in admitted],
-        "best_admitted": min(admitted, key=lambda record: (record["medians"]["routed_cz"], record["coset_index"]))[
-            "coset_index"
-        ]
-        if admitted
-        else None,
+        "problems": problems,
     }
+
+
+def _require(ok: bool, message: str) -> None:
+    if not ok:
+        raise SystemExit(f"linear_conjugation_challenger: {message}")
+
+
+def check(record: dict[str, Any]) -> str:
+    """Recompile the baseline and the best admitted coset of every problem; require the retained runs."""
+    _require(record.get("capture") == "n21-linear-conjugation-challenger", "not a challenger record")
+    seeds = tuple(record["compiler"]["seeds"])
+    replayed = 0
+    for problem, entry in record["problems"].items():
+        arms = PROBLEMS[problem][2]
+        circuits: list[tuple[dict[str, Any], tuple[int, ...] | None]] = [(entry["baseline"], None)]
+        best = next((c for c in entry["challengers"] if c["coset_index"] == entry["best_admitted"]), None)
+        if best is not None:
+            circuits.append((best, tuple(best["columns"])))
+            _require(equivalence_checks((problem, tuple(best["columns"])))["pass"], f"{problem}: best coset fails")
+        for retained, columns in circuits:
+            jobs = [(problem, columns, feed_forward, seed) for feed_forward in arms for seed in seeds]
+            runs = parallel.ordered_map(compile_job, jobs, min_items=2)
+            expected = [run for feed_forward in arms for run in retained["arms"][_arm_name(feed_forward)]["runs"]]
+            _require(runs == expected, f"{problem} {retained['name']}: recompiled runs differ from the record")
+            replayed += len(runs)
+        for challenger in entry["challengers"]:
+            verdict = admission(entry["baseline"], challenger, challenger["checks"]["pass"])
+            _require(verdict == challenger["admission"], f"{problem} {challenger['name']}: admission differs")
+    return f"{replayed} compilations replayed; best admitted " + ", ".join(
+        f"{problem}={entry['best_admitted']}" for problem, entry in record["problems"].items()
+    )
 
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--search", type=Path, required=True, help="merged linear_conjugation_search record")
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--search", type=Path, help="merged linear_conjugation_search record")
+    mode.add_argument("--check", type=Path, help="retained challenger record to replay")
     parser.add_argument("--top", type=int, default=DEFAULT_TOP)
     parser.add_argument("--seeds", nargs="+", type=int, default=list(DEFAULT_SEEDS))
     parser.add_argument("--out", type=Path, default=DEFAULT_OUTPUT)
     args = parser.parse_args()
+    if args.check:
+        print(f"linear_conjugation_challenger: {check(json.loads(args.check.read_text(encoding='utf-8')))}")
+        return 0
     seeds = tuple(args.seeds)
     if not seeds or len(set(seeds)) != len(seeds) or args.top < 1:
         raise SystemExit("transpiler seeds must form a nonempty set and --top must be positive")
     record = capture(args.search, args.top, seeds, args.out)
     _write_atomic(args.out, json.dumps(record, indent=2, sort_keys=True) + "\n")
-    base = record["baseline"]["medians"]
-    print(f"baseline: median_cz={base['routed_cz']} depth={base['depth']} dt={base['scheduled_duration_dt']}")
-    for challenger in record["challengers"]:
-        medians = challenger["medians"]
-        print(
-            f"coset {challenger['coset_index']}: surrogate={challenger['surrogate_cx']} "
-            f"median_cz={medians['routed_cz']} depth={medians['depth']} dt={medians['scheduled_duration_dt']} "
-            f"{challenger['admission']['verdict']}"
-        )
+    for problem, entry in record["problems"].items():
+        for candidate in [entry["baseline"], *entry["challengers"]]:
+            medians = "; ".join(
+                f"{arm} cz={values['medians']['routed_cz']} depth={values['medians']['depth']} "
+                f"dt={values['medians']['scheduled_duration_dt']}"
+                for arm, values in candidate["arms"].items()
+            )
+            verdict = candidate.get("admission", {}).get("verdict", "baseline")
+            print(f"{problem} {candidate['name']}: {medians} {verdict}")
     return 0
 
 
