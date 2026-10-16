@@ -1,0 +1,585 @@
+"""Reality Ripple: offline Kaggle design-validation experiments.
+
+Every generated sample is SYNTHETIC unless separately identified as an input
+measurement. No IBM Runtime, network, credential access, or QPU submissions.
+Basis convention for explicit two-qubit matrices: |ab> = 00,01,10,11.
+Orbit outcome index: b0 + 2*b1; arm order: feedback, no_feedback.
+"""
+from __future__ import annotations
+import csv
+import hashlib
+import importlib.metadata as md
+import itertools
+import json
+import math
+import os
+from pathlib import Path
+import platform
+import subprocess
+import time
+from datetime import datetime, timezone
+from functools import lru_cache
+from typing import Callable
+import numpy as np
+from scipy.linalg import expm
+from scipy.optimize import minimize
+from scipy.integrate import quad
+
+SEED = 20261015
+I = np.eye(2, dtype=complex)
+X = np.array([[0, 1], [1, 0]], complex)
+Y = np.array([[0, -1j], [1j, 0]], complex)
+Z = np.diag([1., -1.]).astype(complex)
+PAULI = {'I': I, 'X': X, 'Y': Y, 'Z': Z}
+BASIS_ORDER = 'two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1'
+
+
+def require(ok: bool, message: str) -> None:
+    if not ok:
+        raise ValueError(message)
+
+
+def sha256(path: Path) -> str:
+    h = hashlib.sha256()
+    with path.open('rb') as stream:
+        for block in iter(lambda: stream.read(1048576), b''):
+            h.update(block)
+    return h.hexdigest()
+
+
+def write_json(path: Path, data: object) -> None:
+    """Exclusive creation prevents overwriting prior evidence."""
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('x', encoding='utf8') as f:
+        json.dump(data, f, indent=2, sort_keys=True, allow_nan=False)
+        f.write('\n')
+
+
+def write_rows(path: Path, rows: list[dict]) -> None:
+    if not rows:
+        return
+    path.parent.mkdir(parents=True, exist_ok=True)
+    with path.open('x', newline='', encoding='utf8') as f:
+        w = csv.DictWriter(f, fieldnames=list(rows[0]))
+        w.writeheader()
+        w.writerows(rows)
+
+
+def environment() -> dict:
+    versions = {}
+    for name in ('numpy','scipy','qiskit','qiskit-aer','qiskit-aer-gpu','cupy-cuda12x',
+                 'sympy','numba','hypercomplex','hypercomplex-engine','hypercomplex-algebra'):
+        try:
+            versions[name] = md.version(name)
+        except md.PackageNotFoundError:
+            versions[name] = None
+    try:
+        result = subprocess.run(['nvidia-smi','--query-gpu=name,memory.total,driver_version',
+                                 '--format=csv,noheader'], capture_output=True, text=True,
+                                timeout=10, check=True)
+        gpu = result.stdout.strip().splitlines()
+    except (OSError, subprocess.SubprocessError):
+        gpu = []
+    try:
+        affinity = len(os.sched_getaffinity(0))
+    except AttributeError:
+        affinity = os.cpu_count()
+    return {'python': platform.python_version(), 'platform': platform.platform(),
+            'logical_cpus': os.cpu_count(), 'affinity_cpus': affinity,
+            'gpu_inventory': gpu, 'packages': versions,
+            'seed': SEED, 'no_environment_secrets_dumped': True}
+
+
+def probability_vector(v: np.ndarray) -> np.ndarray:
+    v = np.asarray(v, float)
+    require(np.all(np.isfinite(v)), 'nonfinite probability')
+    require(float(v.min()) >= -1e-12, 'negative probability')
+    require(abs(float(v.sum())-1) < 1e-10, 'probability mass differs')
+    # Numerical cleanup only after validating the tolerance; record tolerance above.
+    v = np.maximum(v, 0)
+    return v/v.sum()
+
+
+def density_check(rho: np.ndarray, atol: float = 1e-10) -> None:
+    require(np.max(abs(rho-rho.conj().T)) < atol, 'non-Hermitian state')
+    require(abs(np.trace(rho)-1) < atol, 'state trace differs')
+    require(float(np.linalg.eigvalsh(rho).min()) >= -atol, 'state not positive')
+
+
+def partial_trace_b(rho: np.ndarray) -> np.ndarray:
+    return np.trace(rho.reshape(2,2,2,2), axis1=1, axis2=3)
+
+
+def expect(rho: np.ndarray, labels: str) -> float:
+    op = np.array([[1.]], complex)
+    for label in labels:
+        op = np.kron(op, PAULI[label])
+    return float(np.trace(rho@op).real)
+
+
+def measurement_probabilities(rho: np.ndarray, basis: str) -> np.ndarray:
+    """Joint +-1 outcomes in order ++,+-,-+,-- for two Pauli axes."""
+    require(len(basis) == 2, 'two measured Pauli axes required')
+    p=[]
+    for a,b in itertools.product((1,-1),repeat=2):
+        proj=np.kron((I+a*PAULI[basis[0]])/2,(I+b*PAULI[basis[1]])/2)
+        p.append(float(np.trace(rho@proj).real))
+    return probability_vector(np.array(p))
+
+
+def readout_matrix(e01: float, e10: float) -> np.ndarray:
+    require(0 <= e01 <= 1 and 0 <= e10 <= 1,'invalid readout parameter')
+    return np.array([[1-e01,e10],[e01,1-e10]])
+
+
+def damping(rho: np.ndarray, gamma: float, qubit: int) -> np.ndarray:
+    require(0 <= gamma <= 1 and qubit in (0,1), 'invalid damping request')
+    ops=[np.diag([1, math.sqrt(1-gamma)]),np.array([[0,math.sqrt(gamma)],[0,0]])]
+    full=[np.kron(k,I) if qubit==0 else np.kron(I,k) for k in ops]
+    out=sum(k@rho@k.conj().T for k in full)
+    density_check(out)
+    return out
+
+
+def odd_state(phase: float = 0., visibility: float = 1.) -> np.ndarray:
+    require(0 <= visibility <= 1, 'invalid visibility')
+    rho=np.zeros((4,4), complex)
+    rho[1,1]=rho[2,2]=.5
+    rho[1,2]=visibility*np.exp(-1j*phase)/2
+    rho[2,1]=rho[1,2].conjugate()
+    density_check(rho)
+    return rho
+
+
+def selected_coherence(rho: np.ndarray) -> complex:
+    return (expect(rho,'XX')+expect(rho,'YY')+1j*(expect(rho,'XY')-expect(rho,'YX')))/4
+
+
+def orbit_matrix_law(phi1: float, phi2: float, feedback: bool) -> np.ndarray:
+    U=np.array([[0,0,1],[1,0,0],[0,1,0]],complex)
+    e=np.array([1,0,0],complex); p=np.zeros(4)
+    for b0,b1 in itertools.product((0,1),repeat=2):
+        c=(-1j)**b0 if feedback else 1
+        v=(np.eye(3)+(-1)**b1*c*np.exp(1j*phi2)*U)@(np.eye(3)+(-1)**b0*np.exp(1j*phi1)*U@U)@e
+        p[b0+2*b1]=float(np.vdot(v,v).real)/16
+    return probability_vector(p)
+
+
+def orbit_law(phi: float, feedback: bool) -> np.ndarray:
+    p=np.zeros(4)
+    for b0,b1 in itertools.product((0,1),repeat=2):
+        c=(-1j)**b0 if feedback else 1
+        p[b0+2*b1]=.25+(-1)**(b0+b1)*np.real(c*np.exp(1j*phi))/8
+    return probability_vector(p)
+
+
+def observe_orbit(p: np.ndarray, depol: float, e0: float, e1: float) -> np.ndarray:
+    """Retained one-way 1->0 flip model, not a complete device model."""
+    require(all(0 <= x <= 1 for x in (depol,e0,e1)), 'invalid orbit nuisance')
+    return probability_vector(np.kron(readout_matrix(0,e1),readout_matrix(0,e0))@((1-depol)*p+depol/4))
+
+
+def orbit_model(theta: np.ndarray, model: str) -> np.ndarray:
+    if model in ('phase', 'two_phase', 'bias'):
+        l,e0,e1=theta[:3]
+        phi=sum(theta[3:]) if model != 'bias' else 0.
+        return np.stack([observe_orbit(orbit_law(phi,f),l,e0,e1) for f in (True,False)])
+    require(model == 'arm_bias','unknown model')
+    lf,ln,e0,ef,en=theta
+    return np.stack([observe_orbit(orbit_law(0,f),l,e0,e1) for f,l,e1 in ((True,lf,ef),(False,ln,en))])
+
+
+def differential_rank(fn: Callable, theta: list[float]) -> dict:
+    theta=np.asarray(theta,float); d=1e-5
+    J=np.column_stack([(fn(theta+d*v).ravel()-fn(theta-d*v).ravel())/(2*d) for v in np.eye(len(theta))])
+    sv=np.linalg.svd(J,compute_uv=False)
+    return {'singular_values':sv.tolist(),'rank':int(np.sum(sv>1e-7))}
+
+
+def fit_orbit(counts: np.ndarray, model: str, seed: int=SEED, starts: int=16) -> dict:
+    counts=np.asarray(counts)
+    require(counts.shape==(2,4) and np.issubdtype(counts.dtype,np.integer), 'counts must be integer 2x4')
+    require(np.all(counts>=0) and np.all(counts.sum(1)>0),'invalid counts')
+    bounds=[(0,.999)]*(3 if model=='bias' else 5 if model=='arm_bias' else 4)
+    if model=='phase': bounds[-1]=(-math.pi,math.pi)
+    require(model in ('bias','phase','arm_bias'),'fit only reduced models')
+    def objective(x):
+        return float(-np.sum(counts*np.log(np.maximum(orbit_model(x,model),1e-300))))
+    rng=np.random.default_rng(seed); trials=[]
+    for _ in range(starts):
+        initial=np.array([rng.uniform(a,b) for a,b in bounds])
+        trials.append(minimize(objective,initial,bounds=bounds,method='L-BFGS-B',options={'maxiter':3000,'ftol':1e-12}))
+    good=[r for r in trials if r.success and np.isfinite(r.fun)]
+    require(bool(good),f'all optimizers failed for {model}')
+    best=min(good,key=lambda r:r.fun); predicted=orbit_model(best.x,model)
+    empirical=counts/counts.sum(1)[:,None]
+    sat=-float(np.sum(counts*np.log(np.maximum(empirical,1e-300))))
+    return {'model':model,'effective_parameters':len(bounds),'parameters':best.x.tolist(),
+            'negative_log_likelihood':float(best.fun),'deviance':2*float(best.fun-sat),
+            'probabilities':predicted.tolist(),'successful_starts':len(good),'attempted_starts':starts,
+            'starts_within_1e-5_nll':sum(abs(r.fun-best.fun)<1e-5 for r in good),
+            'p_value':None,'interval':None,
+            'scope':'Exploratory fitted probability model. No automatic chi-square inference.'}
+
+
+def experiment_orbit(profile='smoke') -> dict:
+    rng=np.random.default_rng(SEED); errors=[]
+    for a,b,t in rng.uniform(-7,7,(100 if profile=='smoke' else 2000,3)):
+        for f in (False,True):
+            errors.extend([np.max(abs(orbit_matrix_law(a,b,f)-orbit_law(a+b,f))),
+                           np.max(abs(orbit_matrix_law(a+t,b-t,f)-orbit_matrix_law(a,b,f)))])
+    require(max(errors)<1e-13,'phase identity failed')
+    cases={'bias':[.2,.07,.09],'two_phase':[.2,.07,.09,.17,.32],
+           'phase':[.2,.07,.09,.49],'arm_bias':[.2,.31,.07,.09,.12]}
+    ranks={m:differential_rank(lambda x,m=m:orbit_model(x,m),t) for m,t in cases.items()}
+    require([ranks[m]['rank'] for m in cases]==[3,4,4,5], 'model rank check failed')
+    synthetic={}
+    for truth in ('phase','arm_bias'):
+        p=orbit_model(np.array(cases[truth]),truth)
+        counts=np.stack([rng.multinomial(4096,v) for v in p])
+        synthetic[truth]={'evidence_kind':'synthetic_multinomial','counts':counts.tolist(),
+                          'fits':{m:fit_orbit(counts,m,SEED+1,8) for m in ('bias','phase','arm_bias')}}
+    return {'evidence_kind':'analytic_and_synthetic_reference','maximum_identity_error':float(max(errors)),
+            'ranks':ranks,'synthetic_fits':synthetic,'hardware_refit':False,
+            'required_next':'Fit held-out real count data only after validating its outcome map and provenance.'}
+
+
+def wilson(k: int,n: int,z=1.959963984540054) -> list[float]:
+    p=k/n; den=1+z*z/n; center=(p+z*z/(2*n))/den
+    half=z*math.sqrt(p*(1-p)/n+z*z/(4*n*n))/den
+    return [max(0.,center-half),min(1.,center+half)]
+
+
+def experiment_coherence(profile='smoke') -> dict:
+    rng=np.random.default_rng(SEED+20); maxerr=0.
+    for _ in range(100):
+        A=rng.normal(size=(4,4))+1j*rng.normal(size=(4,4));rho=A@A.conj().T;rho/=np.trace(rho)
+        maxerr=max(maxerr,abs(selected_coherence(rho)-rho[1,2]))
+    require(maxerr<1e-12,'coherence formula failed')
+    rho_phase=odd_state(.6,.85); rho_loss=odd_state(0,.85*math.cos(.6))
+    identical_z=np.max(abs(np.diag(rho_phase)-np.diag(rho_loss)))
+    identical_xx=abs(expect(rho_phase,'XX')-expect(rho_loss,'XX'))
+    require(identical_z<1e-12 and identical_xx<1e-12,'matched alternatives failed')
+    require(np.max(abs(partial_trace_b(rho_phase)-I/2))<1e-12,'marginal check failed')
+    examples=[]
+    for name,rho in [('phase',rho_phase),('matched_X_loss',rho_loss),('incoherent',odd_state(0,0))]:
+        examples.append({'model':name,**{b:expect(rho,b) for b in ('XX','XY','YX','YY','ZZ')},
+                         'coherence_real':float(rho[1,2].real),'coherence_imag':float(rho[1,2].imag)})
+    # Held-out Monte Carlo for one frozen two-sided, two-quadrature statistic.
+    # Symmetric readout is explicitly FIXED, not fitted to the same samples.
+    parity=np.array([1.,-1.,-1.,1.]); rows=[]; reps=2000 if profile=='smoke' else 50000
+    null=odd_state(0,.85); M=np.kron(readout_matrix(.02,.02),readout_matrix(.02,.02))
+    def sample_stat(rho,shots,reps,rng):
+        xx=[]
+        for b in ('XY','YX'):
+            p=probability_vector(M@measurement_probabilities(rho,b))
+            xx.append(rng.multinomial(shots,p,size=reps)@parity/shots)
+        return np.abs((xx[0]-xx[1])/4)
+    for shots in (256,1024,4096,16384):
+        calibration_rng=np.random.default_rng(SEED+shots)
+        cal=sample_stat(null,shots,reps,calibration_rng)
+        threshold=float(np.quantile(cal,.95,method='higher'))
+        for phase in (0.,.05,.1,.3,.6):
+            test_rng=np.random.default_rng(SEED+100000+shots+round(phase*1000))
+            stat=sample_stat(odd_state(phase,.85),shots,reps,test_rng)
+            detections=int(np.count_nonzero(stat>threshold)); lo,hi=wilson(detections,reps)
+            rows.append({'phase_rad':phase,'shots_per_basis':shots,'total_shots_two_bases':2*shots,
+                         'simulated_trials':reps,'rejection_fraction':detections/reps,
+                         'mc_low':lo,'mc_high':hi,'frozen_threshold':threshold})
+    return {'evidence_kind':'synthetic_design_power','formula_error':float(maxerr),'examples':examples,
+            'power_rows':rows,'assumptions':{'visibility':.85,'fixed_symmetric_readout_per_qubit':.02,
+             'independent_shots':True,'statistic':'abs((XY-YX)/4)','decision':'strictly above training-null 95th quantile'},
+            'limits':'Monte Carlo uncertainty only. Not robust power under unknown analyzer error, drift, or leakage. Not a QPU admission.'}
+
+
+def experiment_winding(profile='smoke') -> dict:
+    # All times here are MODEL times, not requested/returned hardware timing.
+    designs={'uniform_without_anchor':np.array([3.604,5.604,7.604]),
+             'uniform_with_anchor':np.array([.004,3.604,5.604,7.604]),
+             'nonuniform_candidate':.004+np.array([0,32,96,257,769,2049])*0.004}
+    freq=np.linspace(-.6,.6,2401); nu=.0409; phi=.13; T2=80.; rows=[]; diagnostics={}
+    for name,t in designs.items():
+        signal=.90*np.exp(-t/T2)*np.exp(1j*(phi+2*np.pi*nu*t))
+        basis=np.exp(-t[:,None]/T2)*np.exp(2j*np.pi*t[:,None]*freq[None,:])
+        amp=(basis.conj()*signal[:,None]).sum(0)/(abs(basis)**2).sum(0)
+        residual=(abs(signal[:,None]-basis*amp[None,:])**2).sum(0)
+        ticks=np.round((t-t[0])/.004).astype(int)
+        g=0
+        for value in ticks: g=math.gcd(g,int(value))
+        exact_period=1/(g*.004)
+        alias_t=nu+.5
+        other=np.exp(-t/T2)*np.exp(2j*np.pi*alias_t*t)
+        A=np.vdot(other,signal)/np.vdot(other,other)
+        diagnostics[name]={'times_us':t.tolist(),'exact_alias_period_mhz':exact_period,
+                           'residual_at_plus_500khz':float(np.sum(abs(signal-A*other)**2))}
+        rows += [{'design':name,'frequency_khz':float(f*1000),'profile_residual':float(r)} for f,r in zip(freq,residual)]
+    require(diagnostics['uniform_without_anchor']['residual_at_plus_500khz']<1e-25,'alias check failed')
+    require(diagnostics['nonuniform_candidate']['residual_at_plus_500khz']>.01,'candidate fails exact alias test')
+    # Static versus decaying readout-adjacent frequency shift, both specified models.
+    predelay=[]
+    for pre in (0.,.25,.5,1.,2.,5.,10.):
+        tau=4.; tau_r=1.5; delta=.04; A=.03
+        phase_static=2*math.pi*delta*tau
+        phase_stark=phase_static+2*math.pi*A*tau_r*math.exp(-pre/tau_r)*(1-math.exp(-tau/tau_r))
+        predelay.append({'predelay_us':pre,'static_phase_rad':phase_static,'static_plus_transient_phase_rad':phase_stark})
+    return {'evidence_kind':'analytic_synthetic_design','designs':diagnostics,'profile_rows':rows,
+            'predelay_rows':predelay,'limits':'Exact alias analysis and specified classical coherence models only; no coverage, scheduler, or mechanism certificate.'}
+
+
+@lru_cache(None)
+def sign_table(d: int) -> np.ndarray:
+    require(d>=1 and d&(d-1)==0,'dimension must be power of two')
+    if d==1:return np.ones((1,1),np.int8)
+    s=sign_table(d//2); r=np.ones(d//2,np.int8);r[1:]=-1
+    return np.block([[s,s.T],[s*r[None,:],-s.T*r[None,:]]]).astype(np.int8)
+
+
+def cd_mul(a: np.ndarray,b: np.ndarray) -> np.ndarray:
+    require(a.shape==b.shape and a.ndim==1,'CD operands differ')
+    if len(a)==1:return a*b
+    h=len(a)//2; x,y=a[:h],a[h:];u,v=b[:h],b[h:]
+    def conj(w):
+        z=w.copy();z[1:]=-z[1:];return z
+    return np.r_[cd_mul(x,u)-cd_mul(conj(v),y), cd_mul(v,x)+cd_mul(y,conj(u))]
+
+
+def left_matrix(a: np.ndarray) -> np.ndarray:
+    return np.column_stack([cd_mul(a,np.eye(len(a),dtype=a.dtype)[:,i]) for i in range(len(a))])
+
+
+def experiment_census(profile='smoke') -> dict:
+    # Both counts include all indices; defective dependent/zero triples contribute 0.
+    dims=(8,16,32,64) if profile=='smoke' else (8,16,32,64,128,256,512)
+    rows=[]
+    for d in dims:
+        S=sign_table(d); c=np.arange(d); total=0; wrong_pair=0; wrong_toggle=0
+        for a in range(d):
+            for b in range(d):
+                defect=S[a,b]*S[a^b,c]*S[b,c]*S[a,b^c] == -1
+                total+=int(np.count_nonzero(defect))
+                lowera=a%(d//2); lowerb=b%(d//2)
+                flips=(lowera!=0 and lowerb!=0 and lowera!=lowerb)
+                wrong_toggle+=int(np.count_nonzero(defect[c^(d//2)] != (defect ^ flips)))
+                if a and b and a!=b:
+                    exceptional=d//2 in (a,b,a^b)
+                    expected=d-4 if exceptional else d//2
+                    wrong_pair+=int(np.count_nonzero(defect)!=expected)
+        target=(d-2)*(d-4)*(d+6)//2
+        require(total==target and wrong_pair==0 and wrong_toggle==0,'census identity failed')
+        rows.append({'dimension':d,'defective_ordered_triples':total,'all_triples':d**3,
+                     'fraction_all':total/d**3,'independent_denominator':(d-1)*(d-2)*(d-4),
+                     'formula':target,'pair_failures':wrong_pair,'toggle_failures':wrong_toggle})
+    for d in (8,16):
+        E=np.eye(d,dtype=int);S=sign_table(d)
+        for a,b in itertools.product(range(d),repeat=2):
+            expected=S[a,b]*E[a^b]
+            require(np.array_equal(cd_mul(E[a],E[b]),expected),'independent product mismatch')
+    E=np.eye(16,dtype=int)
+    require(not np.any(cd_mul(E[1]+E[10],E[4]-E[15])),'zero-product test failed')
+    return {'evidence_kind':'exact_finite_integer_check','rows':rows,
+            'independent_vector_basis_products':8**2+16**2,'law_scope':'finite validation; proof/novelty status remains separately reviewed',
+            'forbidden_inference':'Counts or a programmed oracle are not hardware discovery or a physical nonassociativity cost.'}
+
+
+def experiment_dilation(profile='smoke') -> dict:
+    E=np.eye(16);L=left_matrix((E[1]+E[10])/math.sqrt(2)).astype(complex)
+    H=np.block([[np.zeros((16,16)),L.conj().T],[L,np.zeros((16,16))]])
+    require(np.max(abs(H-H.conj().T))<1e-12,'dilation not Hermitian')
+    rows=[];err=0.
+    for phase in np.linspace(0,2*math.pi,9):
+        b=(E[4]+np.exp(1j*phase)*E[15])/math.sqrt(2)
+        initial=np.r_[b,np.zeros(16)]
+        for theta in np.linspace(0,2.5,13):
+            state=expm(-1j*theta*H)@initial
+            measured=float(np.sum(abs(state[16:])**2))
+            exact=(1+math.cos(phase))/2*math.sin(math.sqrt(2)*theta)**2
+            err=max(err,abs(measured-exact))
+            rows.append({'input_phase_rad':float(phase),'evolution_theta':float(theta),
+                         'flag_probability':measured,'analytic_probability':exact})
+    require(err<1e-12,'dilation observation law mismatch')
+    return {'evidence_kind':'finite_hamiltonian_simulation','matrix_dimension':32,
+            'max_probability_error':err,'rows':rows,
+            'limits':'theta is modeled evolution, not Heron elapsed time. No gate compilation, physical force, or QPU execution.'}
+
+
+def pair_hamiltonian(d: int) -> np.ndarray:
+    H=np.zeros((d,d),complex)
+    for n in range(d-1):H[n+1,n]=1j*(n+1);H[n,n+1]=-1j*(n+1)
+    return H
+
+
+def experiment_field(profile='smoke') -> dict:
+    rows=[]
+    for d in (4,8,16):
+        H=pair_hamiltonian(d)
+        A=np.diag(np.sqrt(np.arange(1,d)),1)
+        comm=A@A.conj().T-A.conj().T@A
+        target=np.eye(d);target[-1,-1]-=d
+        require(np.max(abs(comm-target))<1e-12,'truncated commutator failed')
+        for r in (.1,.2,.4,.6,.8):
+            psi=expm(-1j*r*H)[:,0];p=abs(psi)**2
+            ab=sum((n+1)*psi[n].conjugate()*psi[n+1] for n in range(d-1))
+            exact=math.sinh(r)*math.cosh(r)
+            rows.append({'cutoff_d':d,'encoded_qubits':int(math.log2(d)),'r':r,
+                         'mean_pairs':float(p@np.arange(d)),'pair_coherence':float(ab.real),
+                         'infinite_pair_coherence':exact,'coherence_absolute_error':abs(float(ab.real)-exact),
+                         'top_population':float(p[-1]),'commutator_expectation':float(1-d*p[-1]),
+                         'infinite_tail_probability':math.tanh(r)**(2*d)})
+    return {'evidence_kind':'finite_bosonic_model','rows':rows,
+            'limits':'Equal-occupation sector only. The encoding enforces pair equality; this is not its independent verification. No physical photons detected.'}
+
+
+def experiment_casimir_qet(profile='smoke') -> dict:
+    # Dimensionless integral for ONE massless Dirichlet scalar polarization at T=0.
+    # E/A = [hbar*c/(4*pi^2)] int_0^inf k^2 log(1-exp(-2ak)) dk.
+    integral,quadrature_error=quad(lambda x:x*x*np.log(-np.expm1(-x)),0,np.inf,epsabs=1e-11)
+    scalar=integral/(32*math.pi**2)
+    require(abs(scalar+math.pi**2/1440)<1e-11,'scalar normalization failed')
+    rows=[]
+    for a in (.5,1.,2.,4.):
+        energy=scalar/a**3; pressure=3*scalar/a**4
+        step=a*1e-4
+        finite=-(scalar/(a+step)**3-scalar/(a-step)**3)/(2*step)
+        require(abs(pressure-finite)<1e-7,'energy-force derivative failed')
+        rows.append({'a':a,'scalar_energy_per_area':energy,'scalar_pressure':pressure,
+                     'em_energy_per_area':2*energy,'finite_difference_pressure':finite})
+    # Semantic regression: crossing one plate twice is not intersecting both plates.
+    require(len(set([0,0]))==1 and len(set([0,1]))==2,'surface identity regression failed')
+    qet=[]
+    for ratio in (.01,.05,.2,1.,5.,20.,100.):
+        h=1.;k=ratio;rr=math.hypot(h,k); s=math.sqrt(h*h+4*k*k)
+        HB=h*np.kron(I,Z)+(h*h/rr)*np.eye(4)
+        V=2*k*np.kron(X,X)+(2*k*k/rr)*np.eye(4)
+        HA=h*np.kron(Z,I)+(h*h/rr)*np.eye(4)
+        H=HA+HB+V; eigen,vec=np.linalg.eigh(H);g=vec[:,0];rho=np.outer(g,g.conj())
+        EA=h*h/rr; EB=(h*h*k*k)/(rr*(rr*s+h*h+2*k*k))
+        branches=[]
+        for mu in (-1,1):
+            P=np.kron((I+mu*X)/2,I);branches.append((mu,P@rho@P))
+        before=sum(branch for _,branch in branches)
+        def energy(theta):
+            return float(sum(np.trace(H@(np.kron(I,expm(1j*mu*theta*Y))@branch@np.kron(I,expm(-1j*mu*theta*Y)))).real for mu,branch in branches))
+        theta=.5*math.atan2(h*k,h*h+2*k*k)
+        after=min(energy(theta),energy(-theta))
+        extracted=float(np.trace(H@before).real)-after
+        require(abs(float(eigen[0]))<1e-8 and abs(extracted-EB)<1e-8,'QET reference mismatch')
+        require(EA>=EB>=0,'QET energy ledger failed')
+        qet.append({'k_over_h':ratio,'injected_EA':EA,'extracted_EB_formula':EB,
+                    'extracted_EB_matrix':extracted,'final_energy':after})
+    return {'evidence_kind':'physical_model_reference_not_lab_measurement','scalar_constant':float(scalar),
+            'scalar_target':-math.pi**2/1440,'positive_quadrature_error':float(abs(quadrature_error)/(32*math.pi**2)),
+            'casimir_rows':rows,'qet_rows':qet,
+            'limits':'Natural units; ideal plates, zero temperature, one scalar polarization or EM factor two. QET is Hotta spin-model energy, not measured extractable laboratory work.'}
+
+
+def experiment_shor_resources(profile='smoke') -> dict:
+    # Exact modular permutations and their powers; no precomputed order is an input to construction.
+    rows=[]
+    for N,a in ((15,2),(21,2),(21,4),(33,2)):
+        require(math.gcd(a,N)==1,'multiplier not invertible')
+        n=(N-1).bit_length();D=1<<n
+        perm=np.array([(a*x)%N if x<N else x for x in range(D)],int)
+        require(len(set(perm))==D,'not a permutation on full encoding')
+        cur=1;orbit=[]
+        while cur not in orbit:
+            orbit.append(cur);cur=(a*cur)%N
+        order=len(orbit)
+        require(cur==1,'orbit failed to close')
+        rows.append({'N':N,'a':a,'data_qubits':n,'matrix_dimension':D,
+                     'classical_reference_order':order,'orbit_length':order,
+                     'resource_note':'Orbit compression exposes this order; cannot claim order discovery from that compressed oracle.'})
+    memory=[{'qubits':n,'statevector_gib':16*2**n/2**30,'density_matrix_gib':16*4**n/2**30}
+            for n in (4,8,10,12,13,14,15,16,26,28)]
+    return {'evidence_kind':'exact_arithmetic_and_resource_reference','permutations':rows,'memory_rows':memory,
+            'limits':'No Shor circuit execution or scalable modular-arithmetic implementation. Matrix costs exclude workspace. Coherent work state cannot be checkpointed into classical bits.'}
+
+
+
+def experiment_conditional_hamiltonian(profile='smoke') -> dict:
+    # Rates are angular frequencies in rad/us, inferred from -arg(rho_ij)/t.
+    design=np.array([[1,-1,0],[1,1,0],[1,0,1],[1,0,-1]],float)
+    closure=np.array([1.,1.,-1.,-1.])
+    require(np.linalg.matrix_rank(design[:2])==2,'odd/even rank should be 2')
+    require(np.linalg.matrix_rank(design)==3,'conditional design rank should be 3')
+    require(np.max(abs(closure@design))<1e-12,'closure identity failed')
+    rng=np.random.default_rng(SEED+300);err=0.
+    probes=[(np.array([0,1,1,0])/math.sqrt(2),1,2),
+            (np.array([1,0,0,1])/math.sqrt(2),0,3),
+            (np.array([1,0,1,0])/math.sqrt(2),0,2),
+            (np.array([0,1,0,1])/math.sqrt(2),1,3)]
+    rows=[]
+    for _ in range(100):
+        angular=rng.uniform(-.2,.2,3);t=.4
+        H=(angular[0]*np.kron(Z,I)+angular[1]*np.kron(I,Z)+angular[2]*np.kron(Z,Z))/2
+        for row,(probe,i,j) in zip(design,probes):
+            evolved=expm(-1j*H*t)@probe
+            actual=-np.angle(evolved[i]*evolved[j].conjugate())/t
+            err=max(err,abs(actual-row@angular))
+    require(err<1e-12,'Hamiltonian rate law failed')
+    truths=[(.03,.01,0.),(.03,.01,.006),(-.02,.035,-.012)]
+    for truth in truths:
+        # These are MHz (cycles/us); design linearity is unchanged by 2*pi.
+        rates=design@np.array(truth)
+        rows.append({'nu_A_khz':1000*truth[0],'nu_B_khz':1000*truth[1],
+                     'J_khz':1000*truth[2],'odd_khz':1000*rates[0],
+                     'even_khz':1000*rates[1],'A_given_0_khz':1000*rates[2],
+                     'A_given_1_khz':1000*rates[3],'closure_khz':float(1000*closure@rates)})
+    return {'evidence_kind':'exact_design_rank_and_matrix_check','design_matrix':design.tolist(),
+            'rank_odd_even':2,'rank_with_conditionals':3,'maximum_rate_error':err,'rows':rows,
+            'unidentified_without_conditionals':'J','phase_rate_convention':'rate = -arg(rho_ij)/t; no wrapped finite-time frequency estimate is certified',
+            'limits':'Diagonal two-qubit Hamiltonian only. Non-Markovian changes, spectator interactions, analyzer drift and frequency aliases require expanded checks.'}
+
+
+def experiment_signed_kernel(profile='smoke') -> dict:
+    E=np.eye(16);u=(E[4]-E[15])/math.sqrt(2)
+    L0=left_matrix(E[1]+E[10]);L2=left_matrix(E[2]);v=L2@u
+    require(np.linalg.norm(L0@u)<1e-12 and abs(np.linalg.norm(v)-1)<1e-12,'reference witness fails')
+    rows=[];error=0.
+    for t in (-.5,-.2,-.05,-.01,0.,.01,.05,.2,.5):
+        alpha=2+abs(t);B=(L0+t*L2)/alpha
+        q=float(np.vdot(B@u,B@u).real);signed=float(np.vdot(v,B@u).real)
+        error=max(error,abs(q-t*t/alpha**2),abs(signed-t/alpha))
+        require(np.linalg.norm(B,2)<=1+1e-12,'LCU normalization insufficient')
+        rows.append({'perturbation_t':t,'LCU_alpha':alpha,'dark_probability':q,
+                     'signed_matrix_element':signed,'analytic_dark_probability':t*t/alpha**2,
+                     'analytic_signed_element':t/alpha})
+    require(error<1e-12,'signed-kernel identity fails')
+    return {'evidence_kind':'exact_small_operator_reference','rows':rows,'max_error':error,
+            'limits':'The signed element needs an explicit interferometric/Pauli measurement construction; its reference value is not already a hardware measurement. Ideal dark rare-event and background-limited sample scaling differ.'}
+
+EXPERIMENTS={'conditional_hamiltonian':experiment_conditional_hamiltonian,'signed_kernel':experiment_signed_kernel,'orbit':experiment_orbit,'coherence':experiment_coherence,'winding':experiment_winding,
+             'census':experiment_census,'dilation':experiment_dilation,'field':experiment_field,
+             'casimir_qet':experiment_casimir_qet,'shor_resources':experiment_shor_resources}
+
+
+def run_experiment(name: str, destination: str|Path, profile='smoke') -> dict:
+    require(name in EXPERIMENTS and profile in ('smoke','extended'),'unknown experiment/profile')
+    root=Path(destination);root.mkdir(parents=True,exist_ok=True)
+    require(not (root/'result.json').exists(),'result already exists; use a new directory')
+    t=time.perf_counter();result=EXPERIMENTS[name](profile)
+    result.update({'experiment':name,'profile':profile,'seed':SEED,'basis_order':BASIS_ORDER,
+                   'wall_seconds':time.perf_counter()-t,'qpu_jobs_submitted':0})
+    write_json(root/'result.json',result);write_json(root/'environment.json',environment())
+    for key,rows in result.items():
+        if isinstance(rows,list) and rows and isinstance(rows[0],dict):
+            if all(not isinstance(v,(dict,list)) for row in rows for v in row.values()):
+                write_rows(root/(key+'.csv'),rows)
+    sources=[{'path':p.name,'sha256':sha256(p),'bytes':p.stat().st_size} for p in sorted(root.iterdir()) if p.is_file()]
+    write_json(root/'manifest.json',{'files':sources,'library_sha256':sha256(Path(__file__)),
+                                    'created_utc':datetime.now(timezone.utc).isoformat(),
+                                    'hardware_measurements_generated':False})
+    return result
+
+
+if __name__=='__main__':
+    import argparse
+    parser=argparse.ArgumentParser(description=__doc__)
+    parser.add_argument('experiment',choices=[*EXPERIMENTS,'all'])
+    parser.add_argument('--out',type=Path,required=True)
+    parser.add_argument('--profile',choices=['smoke','extended'],default='smoke')
+    args=parser.parse_args()
+    names=list(EXPERIMENTS) if args.experiment=='all' else [args.experiment]
+    for name in names:
+        out=run_experiment(name,args.out/name,args.profile)
+        print(json.dumps({'experiment':name,'status':'passed','seconds':round(out['wall_seconds'],3),
+                          'evidence_kind':out['evidence_kind']}))

@@ -1,0 +1,92 @@
+[{"stream_name":"stderr","time":10.691823818,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.691982712,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.691990678,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.69199336,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":11.532859942,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.532895861,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.532901691,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.532905993,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":14.38409702,"data":"Output directory: /kaggle/working/reality_ripple_20261016T031855.366108Z\n"}
+,{"stream_name":"stdout","time":14.384133025,"data":"Evidence: analytic/finite/synthetic only; no IBM service or credentials\n"}
+,{"stream_name":"stdout","time":14.3841385,"data":"{\n"}
+,{"stream_name":"stdout","time":14.384142402,"data":"  \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":14.38414638,"data":"  \"platform\": \"Linux-6.18.48+-x86_64-with-glibc2.39\",\n"}
+,{"stream_name":"stdout","time":14.384150351,"data":"  \"logical_cpus\": 4,\n"}
+,{"stream_name":"stdout","time":14.38415385,"data":"  \"affinity_cpus\": 4,\n"}
+,{"stream_name":"stdout","time":14.3841579,"data":"  \"gpu_inventory\": [],\n"}
+,{"stream_name":"stdout","time":14.384161584,"data":"  \"packages\": {\n"}
+,{"stream_name":"stdout","time":14.38416522,"data":"    \"numpy\": \"2.1.3\",\n"}
+,{"stream_name":"stdout","time":14.384168988,"data":"    \"scipy\": \"1.16.3\",\n"}
+,{"stream_name":"stdout","time":14.384172957,"data":"    \"qiskit\": null,\n"}
+,{"stream_name":"stdout","time":14.384176725,"data":"    \"qiskit-aer\": null,\n"}
+,{"stream_name":"stdout","time":14.384180414,"data":"    \"qiskit-aer-gpu\": null,\n"}
+,{"stream_name":"stdout","time":14.384184212,"data":"    \"cupy-cuda12x\": null,\n"}
+,{"stream_name":"stdout","time":14.384187813,"data":"    \"sympy\": \"1.14.0\",\n"}
+,{"stream_name":"stdout","time":14.384191527,"data":"    \"numba\": \"0.61.2\",\n"}
+,{"stream_name":"stdout","time":14.384195162,"data":"    \"hypercomplex\": null,\n"}
+,{"stream_name":"stdout","time":14.384198864,"data":"    \"hypercomplex-engine\": null,\n"}
+,{"stream_name":"stdout","time":14.384202801,"data":"    \"hypercomplex-algebra\": null\n"}
+,{"stream_name":"stdout","time":14.384206584,"data":"  },\n"}
+,{"stream_name":"stdout","time":14.384210122,"data":"  \"seed\": 20261015,\n"}
+,{"stream_name":"stdout","time":14.384213865,"data":"  \"no_environment_secrets_dumped\": true\n"}
+,{"stream_name":"stdout","time":14.384217566,"data":"}\n"}
+,{"stream_name":"stdout","time":14.539643774,"data":"{\n"}
+,{"stream_name":"stdout","time":14.539678558,"data":"  \"evidence_kind\": \"synthetic_design_power\",\n"}
+,{"stream_name":"stdout","time":14.539684591,"data":"  \"formula_error\": 3.1031676915590914e-17,\n"}
+,{"stream_name":"stdout","time":14.539688687,"data":"  \"examples\": [\n"}
+,{"stream_name":"stdout","time":14.53970623,"data":"    {\n"}
+,{"stream_name":"stdout","time":14.539711102,"data":"      \"model\": \"phase\",\n"}
+,{"stream_name":"stdout","time":14.539733542,"data":"      \"XX\": 0.7015352726732266,\n"}
+,{"stream_name":"stdout","time":14.539737594,"data":"      \"XY\": -0.47994610238578006,\n"}
+,{"stream_name":"stdout","time":14.539741516,"data":"      \"YX\": 0.47994610238578006,\n"}
+,{"stream_name":"stdout","time":14.539744978,"data":"      \"YY\": 0.7015352726732266,\n"}
+,{"stream_name":"stdout","time":14.539768902,"data":"      \"ZZ\": -1.0,\n"}
+,{"stream_name":"stdout","time":14.539773143,"data":"      \"coherence_real\": 0.3507676363366133,\n"}
+,{"stream_name":"stdout","time":14.539776687,"data":"      \"coherence_imag\": -0.23997305119289003\n"}
+,{"stream_name":"stdout","time":14.539780535,"data":"    },\n"}
+,{"stream_name":"stdout","time":14.539784185,"data":"    {\n"}
+,{"stream_name":"stdout","time":14.539787425,"data":"      \"model\": \"matched_X_loss\",\n"}
+,{"stream_name":"stdout","time":14.539791047,"data":"      \"XX\": 0.7015352726732266,\n"}
+,{"stream_name":"stdout","time":14.539794291,"data":"      \"XY\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539797655,"data":"      \"YX\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539801694,"data":"      \"YY\": 0.7015352726732266,\n"}
+,{"stream_name":"stdout","time":14.539804168,"data":"      \"ZZ\": -1.0,\n"}
+,{"stream_name":"stdout","time":14.539806557,"data":"      \"coherence_real\": 0.3507676363366133,\n"}
+,{"stream_name":"stdout","time":14.539808832,"data":"      \"coherence_imag\": 0.0\n"}
+,{"stream_name":"stdout","time":14.539811575,"data":"    },\n"}
+,{"stream_name":"stdout","time":14.539815796,"data":"    {\n"}
+,{"stream_name":"stdout","time":14.539819294,"data":"      \"model\": \"incoherent\",\n"}
+,{"stream_name":"stdout","time":14.539822750999999,"data":"      \"XX\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539826758,"data":"      \"XY\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539830324,"data":"      \"YX\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539833929,"data":"      \"YY\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539837185,"data":"      \"ZZ\": -1.0,\n"}
+,{"stream_name":"stdout","time":14.53984055,"data":"      \"coherence_real\": 0.0,\n"}
+,{"stream_name":"stdout","time":14.539843967,"data":"      \"coherence_imag\": 0.0\n"}
+,{"stream_name":"stdout","time":14.539847567,"data":"    }\n"}
+,{"stream_name":"stdout","time":14.539851,"data":"  ],\n"}
+,{"stream_name":"stdout","time":14.539855097,"data":"  \"assumptions\": {\n"}
+,{"stream_name":"stdout","time":14.539858904,"data":"    \"visibility\": 0.85,\n"}
+,{"stream_name":"stdout","time":14.539862555,"data":"    \"fixed_symmetric_readout_per_qubit\": 0.02,\n"}
+,{"stream_name":"stdout","time":14.539866077,"data":"    \"independent_shots\": true,\n"}
+,{"stream_name":"stdout","time":14.539869589,"data":"    \"statistic\": \"abs((XY-YX)/4)\",\n"}
+,{"stream_name":"stdout","time":14.539873064,"data":"    \"decision\": \"strictly above training-null 95th quantile\"\n"}
+,{"stream_name":"stdout","time":14.539877114,"data":"  },\n"}
+,{"stream_name":"stdout","time":14.539880925,"data":"  \"limits\": \"Monte Carlo uncertainty only. Not robust power under unknown analyzer error, drift, or leakage. Not a QPU admission.\",\n"}
+,{"stream_name":"stdout","time":14.539885287,"data":"  \"experiment\": \"coherence\",\n"}
+,{"stream_name":"stdout","time":14.539889368,"data":"  \"profile\": \"smoke\",\n"}
+,{"stream_name":"stdout","time":14.539893021,"data":"  \"seed\": 20261015,\n"}
+,{"stream_name":"stdout","time":14.539896729,"data":"  \"basis_order\": \"two-qubit |ab\u003e=00,01,10,11; orbit cell index b0+2*b1\",\n"}
+,{"stream_name":"stdout","time":14.539907842,"data":"  \"wall_seconds\": 0.12495614500005559,\n"}
+,{"stream_name":"stdout","time":14.53991184,"data":"  \"qpu_jobs_submitted\": 0\n"}
+,{"stream_name":"stdout","time":14.539915347,"data":"}\n"}
+,{"stream_name":"stdout","time":14.539918602,"data":"Complete result and CSV tables: /kaggle/working/reality_ripple_20261016T031855.366108Z/coherence\n"}
+,{"stream_name":"stderr","time":17.91913404,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":17.919171183,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":18.136436146,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":18.136463996,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":19.071505239,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":19.162546664,"data":"[NbConvertApp] Writing 46171 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":22.341568647,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":22.990864864,"data":"[NbConvertApp] Writing 389012 bytes to __results__.html\n"}
+]

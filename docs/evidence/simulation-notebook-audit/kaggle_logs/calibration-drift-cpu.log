@@ -1,0 +1,198 @@
+[{"stream_name":"stderr","time":7.888941158,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.889090094,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":9.113849402,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.113885029,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.113891212,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.113895991,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.920227988,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.920269699,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.920276086,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.92028087,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":11.576344063,"data":"input/\n"}
+,{"stream_name":"stdout","time":11.576385221,"data":"  datasets/\n"}
+,{"stream_name":"stdout","time":11.576396847,"data":"    probablyeric/\n"}
+,{"stream_name":"stdout","time":11.576400487,"data":"      gororoba-qpu-runs/\n"}
+,{"stream_name":"stdout","time":11.576403387,"data":"        index.json\n"}
+,{"stream_name":"stdout","time":11.576406388,"data":"        ibm-runs/\n"}
+,{"stream_name":"stdout","time":11.699569594,"data":"          ibm-runs/\n"}
+,{"stream_name":"stdout","time":11.699612555,"data":"            2026-10-12T215030.995079Z.json\n"}
+,{"stream_name":"stdout","time":11.699619281,"data":"            2026-10-13T074504.229783Z.json\n"}
+,{"stream_name":"stdout","time":11.699624466,"data":"            2026-10-10T220438.712726Z.json\n"}
+,{"stream_name":"stdout","time":11.699628474,"data":"            2026-10-12T014450.672483Z.json\n"}
+,{"stream_name":"stdout","time":11.699632469,"data":"            2026-10-13T185452.264685Z.json\n"}
+,{"stream_name":"stdout","time":11.69963649,"data":"            2026-10-12T221651.485791Z.json\n"}
+,{"stream_name":"stdout","time":11.699640676,"data":"            2026-10-11T095547.705434Z.json\n"}
+,{"stream_name":"stdout","time":11.699651057,"data":"            2026-10-10T183549.443333Z.json\n"}
+,{"stream_name":"stdout","time":11.699654128,"data":"            2026-10-13T074651.134471Z.json\n"}
+,{"stream_name":"stdout","time":11.699656942,"data":"            2026-10-10T174036.860138Z.json\n"}
+,{"stream_name":"stdout","time":11.699676485,"data":"            2026-10-12T062505.552988Z.json\n"}
+,{"stream_name":"stdout","time":11.699681089,"data":"            2026-10-15T013528.988943Z.json\n"}
+,{"stream_name":"stdout","time":11.699685985,"data":"            2026-10-13T185600.943502Z.json\n"}
+,{"stream_name":"stdout","time":11.699690434,"data":"            2026-10-12T225019.585504Z.json\n"}
+,{"stream_name":"stdout","time":11.699695183,"data":"            2026-10-12T203301.342941Z.json\n"}
+,{"stream_name":"stdout","time":11.699699948,"data":"            2026-10-12T215031.046514Z.json\n"}
+,{"stream_name":"stdout","time":11.699722917,"data":"            2026-10-12T213459.470118Z.json\n"}
+,{"stream_name":"stdout","time":11.699727139,"data":"            2026-10-11T163812.041836Z.json\n"}
+,{"stream_name":"stdout","time":11.699730856,"data":"            2026-10-12T014428.093689Z.json\n"}
+,{"stream_name":"stdout","time":11.699734653,"data":"            2026-10-12T163354.210407Z.json\n"}
+,{"stream_name":"stdout","time":11.699738605,"data":"            2026-10-13T083417.634585Z.json\n"}
+,{"stream_name":"stdout","time":11.699742516,"data":"            2026-10-15T013256.246642Z.json\n"}
+,{"stream_name":"stdout","time":11.699746644,"data":"            2026-10-13T201314.868415Z.json\n"}
+,{"stream_name":"stdout","time":11.69975168,"data":"            2026-10-11T085437.294823Z.json\n"}
+,{"stream_name":"stdout","time":11.699756496,"data":"            2026-10-11T203535.690679Z.json\n"}
+,{"stream_name":"stdout","time":11.699761,"data":"            2026-10-10T183023.567277Z.json\n"}
+,{"stream_name":"stdout","time":11.699764886,"data":"            2026-10-11T091019.824103Z.json\n"}
+,{"stream_name":"stdout","time":11.699768965,"data":"            2026-10-12T055624.091217Z.json\n"}
+,{"stream_name":"stdout","time":11.699772841,"data":"            2026-10-12T020459.130482Z.json\n"}
+,{"stream_name":"stdout","time":11.699777045,"data":"            2026-10-12T202752.126072Z.json\n"}
+,{"stream_name":"stdout","time":11.699781162,"data":"            2026-10-13T074533.144752Z.json\n"}
+,{"stream_name":"stdout","time":11.699785303,"data":"            2026-10-13T020454.599853Z.json\n"}
+,{"stream_name":"stdout","time":11.69978902,"data":"            2026-10-15T013255.787315Z.json\n"}
+,{"stream_name":"stdout","time":11.699792846,"data":"            2026-10-13T022433.333775Z.json\n"}
+,{"stream_name":"stdout","time":11.699796632,"data":"            2026-10-13T201228.119505Z.json\n"}
+,{"stream_name":"stdout","time":11.699800717,"data":"            2026-10-10T220435.034757Z.json\n"}
+,{"stream_name":"stdout","time":11.69980507,"data":"            2026-10-13T022211.257292Z.json\n"}
+,{"stream_name":"stdout","time":11.699809757,"data":"            2026-10-10T175925.891919Z.json\n"}
+,{"stream_name":"stdout","time":11.699813554,"data":"            2026-10-12T170742.727534Z.json\n"}
+,{"stream_name":"stdout","time":11.699817601,"data":"            2026-10-12T200830.246684Z.json\n"}
+,{"stream_name":"stdout","time":11.69982188,"data":"            2026-10-11T113111.266543Z.json\n"}
+,{"stream_name":"stdout","time":11.699826086,"data":"            2026-10-11T095108.705673Z.json\n"}
+,{"stream_name":"stdout","time":11.699830271,"data":"            2026-10-12T153635.004894Z.json\n"}
+,{"stream_name":"stdout","time":11.699834116,"data":"            2026-10-10T222132.627032Z.json\n"}
+,{"stream_name":"stdout","time":11.699838394,"data":"            2026-10-10T171827_0000.json\n"}
+,{"stream_name":"stdout","time":11.699842965,"data":"            2026-10-11T091715.073826Z.json\n"}
+,{"stream_name":"stdout","time":11.699846871,"data":"            2026-10-11T095541.923847Z.json\n"}
+,{"stream_name":"stdout","time":11.699854671,"data":"            2026-10-12T210111.066250Z.json\n"}
+,{"stream_name":"stdout","time":11.699859122,"data":"            2026-10-10T230646.694665Z.json\n"}
+,{"stream_name":"stdout","time":11.699862926,"data":"            2026-10-13T201757.782152Z.json\n"}
+,{"stream_name":"stdout","time":11.699866964,"data":"            2026-10-13T201059.920197Z.json\n"}
+,{"stream_name":"stdout","time":11.699870956,"data":"            2026-10-11T111555.975109Z.json\n"}
+,{"stream_name":"stdout","time":11.699882637,"data":"            2026-10-12T163354.247043Z.json\n"}
+,{"stream_name":"stdout","time":11.699886771,"data":"            2026-10-15T030903.235380Z.json\n"}
+,{"stream_name":"stdout","time":11.699895276,"data":"            2026-10-13T190357.049286Z.json\n"}
+,{"stream_name":"stdout","time":11.699899573,"data":"            2026-10-12T163354.310138Z.json\n"}
+,{"stream_name":"stdout","time":11.699904085,"data":"            2026-10-13T020255.180301Z.json\n"}
+,{"stream_name":"stdout","time":11.699908783,"data":"            2026-10-11T093336.320234Z.json\n"}
+,{"stream_name":"stdout","time":11.699912647,"data":"            2026-10-11T090500.749224Z.json\n"}
+,{"stream_name":"stdout","time":11.699916679,"data":"            2026-10-10T200646.447516Z.json\n"}
+,{"stream_name":"stdout","time":11.699920646,"data":"            2026-10-13T080216.451663Z.json\n"}
+,{"stream_name":"stdout","time":11.699924795,"data":"            2026-10-13T190549.596960Z.json\n"}
+,{"stream_name":"stdout","time":11.699929024,"data":"            2026-10-10T195204.086678Z.json\n"}
+,{"stream_name":"stdout","time":11.699933183,"data":"            2026-10-15T070828.397109Z.json\n"}
+,{"stream_name":"stdout","time":11.699937191,"data":"            2026-10-12T055017.711575Z-prepared.json\n"}
+,{"stream_name":"stdout","time":11.699942013,"data":"            2026-10-14T204144.526374Z.json\n"}
+,{"stream_name":"stdout","time":11.69994645,"data":"            2026-10-12T055017.711575Z.json\n"}
+,{"stream_name":"stdout","time":11.699950571,"data":"            2026-10-13T201529.748272Z.json\n"}
+,{"stream_name":"stdout","time":11.699954378,"data":"            2026-10-10T221412.255180Z.json\n"}
+,{"stream_name":"stdout","time":11.699958443,"data":"            2026-10-12T062505.208379Z.json\n"}
+,{"stream_name":"stdout","time":11.699962537,"data":"            2026-10-15T070828.127101Z.json\n"}
+,{"stream_name":"stdout","time":11.699967263,"data":"            2026-10-11T203420.747793Z.json\n"}
+,{"stream_name":"stdout","time":11.699971683,"data":"            2026-10-13T190502.456251Z.json\n"}
+,{"stream_name":"stdout","time":11.699976235,"data":"            2026-10-11T094055.608273Z.json\n"}
+,{"stream_name":"stdout","time":11.699980922,"data":"            2026-10-14T113012.109467Z.json\n"}
+,{"stream_name":"stdout","time":11.699984974,"data":"            2026-10-15T030638.321696Z.json\n"}
+,{"stream_name":"stdout","time":11.699988884,"data":"            2026-10-12T195828.029302Z.json\n"}
+,{"stream_name":"stdout","time":11.699992846,"data":"            2026-10-12T074042.840320Z.json\n"}
+,{"stream_name":"stdout","time":11.699996791,"data":"            2026-10-12T210815.657132Z.json\n"}
+,{"stream_name":"stdout","time":11.700000626,"data":"            2026-10-15T024845.723885Z.json\n"}
+,{"stream_name":"stdout","time":11.700004927,"data":"            2026-10-14T103147.847414Z.json\n"}
+,{"stream_name":"stdout","time":11.700008724,"data":"            2026-10-13T072413.099286Z.json\n"}
+,{"stream_name":"stdout","time":11.700017043,"data":"            2026-10-12T185136.764695Z.json\n"}
+,{"stream_name":"stdout","time":11.700019702,"data":"            2026-10-13T160858.135475Z.json\n"}
+,{"stream_name":"stdout","time":11.700022343,"data":"            2026-10-12T210733.761428Z.json\n"}
+,{"stream_name":"stdout","time":11.700024958,"data":"            2026-10-15T031229.371738Z.json\n"}
+,{"stream_name":"stdout","time":11.700027483,"data":"            2026-10-15T030638.929111Z.json\n"}
+,{"stream_name":"stdout","time":11.700030086,"data":"            2026-10-10T173416.028543Z.json\n"}
+,{"stream_name":"stdout","time":11.700036753,"data":"            2026-10-11T093445.248590Z.json\n"}
+,{"stream_name":"stdout","time":11.700039411,"data":"            2026-10-12T024756.245948Z.json\n"}
+,{"stream_name":"stdout","time":11.700042022,"data":"            2026-10-11T062204.877756Z.json\n"}
+,{"stream_name":"stdout","time":11.700044549,"data":"            2026-10-11T100158.375275Z.json\n"}
+,{"stream_name":"stdout","time":11.700047212,"data":"            index.json\n"}
+,{"stream_name":"stdout","time":11.700049762,"data":"            2026-10-10T214318.070235Z.json\n"}
+,{"stream_name":"stdout","time":11.700052492,"data":"            2026-10-13T201455.521932Z.json\n"}
+,{"stream_name":"stdout","time":11.700055687999999,"data":"            2026-10-13T024407.448597Z.json\n"}
+,{"stream_name":"stdout","time":11.700058289,"data":"            2026-10-13T025444.603480Z.json\n"}
+,{"stream_name":"stdout","time":11.700060815,"data":"            2026-10-15T030748.903241Z.json\n"}
+,{"stream_name":"stdout","time":11.700063352,"data":"            2026-10-13T192048.384019Z.json\n"}
+,{"stream_name":"stdout","time":11.700065874,"data":"            2026-10-13T185653.169839Z.json\n"}
+,{"stream_name":"stdout","time":11.700068403,"data":"            2026-10-13T195251.183877Z.json\n"}
+,{"stream_name":"stdout","time":11.700071109,"data":"            2026-10-15T013647.977610Z.json\n"}
+,{"stream_name":"stdout","time":11.700073693,"data":"            2026-10-10T223619.798923Z.json\n"}
+,{"stream_name":"stdout","time":11.700076231,"data":"            2026-10-10T232219.919322Z.json\n"}
+,{"stream_name":"stdout","time":11.700078767,"data":"            2026-10-11T200341.410400Z.json\n"}
+,{"stream_name":"stdout","time":11.700081292,"data":"            2026-10-12T174739.912595Z.json\n"}
+,{"stream_name":"stdout","time":11.700083823,"data":"            2026-10-10T183325.225102Z.json\n"}
+,{"stream_name":"stdout","time":11.70008785,"data":"            2026-10-10T172316_0000.json\n"}
+,{"stream_name":"stdout","time":11.700090405,"data":"            2026-10-10T215434.847324Z.json\n"}
+,{"stream_name":"stdout","time":11.70009296,"data":"            2026-10-11T120803.085652Z.json\n"}
+,{"stream_name":"stdout","time":11.700095477,"data":"            2026-10-11T121402.617901Z.json\n"}
+,{"stream_name":"stdout","time":11.700098078,"data":"            2026-10-10T193949.352436Z.json\n"}
+,{"stream_name":"stdout","time":11.700100615,"data":"            2026-10-13T082319.041879Z.json\n"}
+,{"stream_name":"stdout","time":11.700103303,"data":"            2026-10-12T210043.972363Z.json\n"}
+,{"stream_name":"stdout","time":11.70010582,"data":"            2026-10-12T011110.481425Z.json\n"}
+,{"stream_name":"stdout","time":11.700108347,"data":"            2026-10-15T070853.550532Z.json\n"}
+,{"stream_name":"stdout","time":11.700110877,"data":"            2026-10-11T111237.410777Z.json\n"}
+,{"stream_name":"stdout","time":11.700113489,"data":"            2026-10-12T195043.912458Z.json\n"}
+,{"stream_name":"stdout","time":11.700116004,"data":"            2026-10-13T163154.032617Z.json\n"}
+,{"stream_name":"stdout","time":11.700118524,"data":"            2026-10-12T205014.933900Z.json\n"}
+,{"stream_name":"stdout","time":11.700121041,"data":"            2026-10-13T201720.224397Z.json\n"}
+,{"stream_name":"stdout","time":11.700123679,"data":"            2026-10-12T011109.792785Z.json\n"}
+,{"stream_name":"stdout","time":11.700126306,"data":"            2026-10-12T174740.017449Z.json\n"}
+,{"stream_name":"stdout","time":11.70012893,"data":"            2026-10-14T055711.938217Z.json\n"}
+,{"stream_name":"stdout","time":11.700131497,"data":"            2026-10-14T113945.518703Z.json\n"}
+,{"stream_name":"stdout","time":11.700136462,"data":"            2026-10-15T070847.644554Z.json\n"}
+,{"stream_name":"stdout","time":11.700178841,"data":"            2026-10-11T114958.902835Z.json\n"}
+,{"stream_name":"stdout","time":11.700189983,"data":"            2026-10-13T190634.658358Z.json\n"}
+,{"stream_name":"stdout","time":11.700194771,"data":"            2026-10-10T165944_0000.json\n"}
+,{"stream_name":"stdout","time":11.700199496,"data":"            2026-10-13T032011.664435Z.json\n"}
+,{"stream_name":"stdout","time":11.700203421,"data":"            2026-10-10T213145.298421Z.json\n"}
+,{"stream_name":"stdout","time":11.700207304,"data":"            2026-10-13T031726.380783Z.json\n"}
+,{"stream_name":"stdout","time":11.700211121,"data":"            2026-10-11T100526.684788Z.json\n"}
+,{"stream_name":"stdout","time":11.70021508,"data":"            2026-10-11T102037.475268Z.json\n"}
+,{"stream_name":"stdout","time":11.700218898,"data":"            2026-10-10T194700.095769Z.json\n"}
+,{"stream_name":"stdout","time":11.700222727,"data":"            2026-10-14T060826.976518Z.json\n"}
+,{"stream_name":"stdout","time":11.700226544,"data":"            2026-10-14T055754.499747Z.json\n"}
+,{"stream_name":"stdout","time":11.700230474,"data":"            2026-10-12T202604.294879Z.json\n"}
+,{"stream_name":"stdout","time":11.700234388,"data":"            2026-10-12T054229.702537Z.json\n"}
+,{"stream_name":"stdout","time":11.700238303,"data":"            2026-10-12T215030.944608Z.json\n"}
+,{"stream_name":"stdout","time":11.700242235,"data":"            2026-10-10T174235.045010Z.json\n"}
+,{"stream_name":"stdout","time":11.700249843,"data":"            2026-10-11T101630.331262Z.json\n"}
+,{"stream_name":"stdout","time":11.700253308,"data":"            2026-10-13T185758.378350Z.json\n"}
+,{"stream_name":"stdout","time":11.700255988,"data":"            2026-10-15T030638.132007Z.json\n"}
+,{"stream_name":"stdout","time":11.700258531,"data":"            2026-10-11T082455.919602Z.json\n"}
+,{"stream_name":"stdout","time":11.700261079,"data":"            2026-10-11T114048.080610Z.json\n"}
+,{"stream_name":"stdout","time":11.7002636,"data":"            2026-10-11T152922.787095Z.json\n"}
+,{"stream_name":"stdout","time":11.700266248,"data":"            2026-10-11T071616.724800Z.json\n"}
+,{"stream_name":"stdout","time":11.714012994,"data":"Found 148 record files\n"}
+,{"stream_name":"stderr","time":12.174697363,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":12.175619369,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":12.17564774,"data":"    import sys;import papermill as pm;pm.execute_notebook(\"__notebook__.ipynb\",\"__notebook__.ipynb\",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=43200)\n"}
+,{"stream_name":"stderr","time":12.175659532,"data":"                                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":12.175663036,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":12.175666036,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":12.175668832,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":12.175671773,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":12.175686643,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":12.17568942,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":12.175692145,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":12.175694943,"data":"Exception encountered at \"In [3]\":\n"}
+,{"stream_name":"stderr","time":12.175697593,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":12.175700794,"data":"NameError                                 Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":12.175703502,"data":"/tmp/ipykernel_16/2187767264.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":12.175706293,"data":"      5 \n"}
+,{"stream_name":"stderr","time":12.175708813,"data":"      6 by_backend = defaultdict(list)\n"}
+,{"stream_name":"stderr","time":12.175711532,"data":"----\u003e 7 for s in snapshots:\n"}
+,{"stream_name":"stderr","time":12.175714183,"data":"      8     by_backend[s['backend']].append(s)\n"}
+,{"stream_name":"stderr","time":12.175716764,"data":"      9 \n"}
+,{"stream_name":"stderr","time":12.175719371,"data":"\n"}
+,{"stream_name":"stderr","time":12.175721958,"data":"NameError: name 'snapshots' is not defined\n"}
+,{"stream_name":"stderr","time":12.175724742,"data":"\n"}
+,{"stream_name":"stderr","time":15.191000236,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":15.191045268,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":15.414598212,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":15.414635866,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":16.377172189,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":16.475414766,"data":"[NbConvertApp] Writing 18734 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":19.817220876,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":20.498078079,"data":"[NbConvertApp] Writing 301348 bytes to __results__.html\n"}
+]

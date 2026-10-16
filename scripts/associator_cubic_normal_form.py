@@ -31,11 +31,18 @@ as substitutes for it.
 
 --write regenerates docs/evidence/ccz-reduction/normal_form.json; --check
 recomputes every value and requires equality with the retained file.
+--cross-check compares the retained file with an independent package
+(docs/evidence/ccz-reduction/independent_package/, its own recursive
+Cayley-Dickson product and Boolean code, standard library only), whose
+retained certificates must name the same cubic part and the same three
+linear forms for every pair; the package is compared as data and its
+scripts are not run.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import itertools
 import json
 import sys
@@ -59,6 +66,7 @@ from predict import associator_phase  # noqa: E402
 from select_lcu import phase_oracle_from_truth_table  # noqa: E402
 
 OUT = ROOT / "docs/evidence/ccz-reduction/normal_form.json"
+INDEPENDENT = ROOT / "docs/evidence/ccz-reduction/independent_package"
 SNAPSHOT = ROOT / "docs/evidence/heron_platform/targets.json"
 BACKEND = "ibm_kingston"
 BASIS = ["cz", "rz", "sx", "x"]
@@ -235,12 +243,41 @@ def render(data: dict[str, Any]) -> str:
     return json.dumps(data, indent=1, sort_keys=True) + "\n"
 
 
+def cross_check() -> int:
+    """The retained independent package names the same cubic part and linear forms for every pair."""
+    package = INDEPENDENT / "cubic_core_certificates.json"
+    manifest = json.loads((INDEPENDENT / "MANIFEST.json").read_text(encoding="utf-8"))
+    retention = json.loads((INDEPENDENT / "retention.json").read_text(encoding="utf-8"))
+    # Every manifest entry is either retained (under its recorded .txt name for
+    # the scripts, never imported or run) with its shipped sha256, or listed
+    # as not shipped and absent under its manifest name.
+    for name, entry in manifest.items():
+        if name in retention["not_shipped"]:
+            require(not (INDEPENDENT / name).exists(), f"{name} is listed as not shipped but is present")
+            continue
+        retained = INDEPENDENT / retention["renamed"].get(name, name)
+        digest = hashlib.sha256(retained.read_bytes()).hexdigest()
+        require(entry["sha256"] == digest, f"{name} differs from the package manifest")
+    theirs = {(r["i"], r["j"]): r for r in json.loads(package.read_text(encoding="utf-8"))["certificates"]}
+    ours = {tuple(r["pair"]): r for r in json.loads(OUT.read_text(encoding="utf-8"))["records"]}
+    require(set(theirs) == set(ours) and len(ours) == 360, "the package covers other pairs")
+    for pair, record in ours.items():
+        cubic = sorted(m for m in theirs[pair]["f_anf_masks"] if m.bit_count() == 3)
+        require(cubic == record["cubic_monomials"], f"pair {pair}: cubic part differs from the package")
+        require(list(theirs[pair]["ccz_linear_form_masks"]) == record["forms"], f"pair {pair}: forms differ")
+    print("independent package: 360 pairs agree on cubic part and linear forms")
+    return 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--cross-check", action="store_true")
     args = parser.parse_args()
+    if args.cross_check:
+        return cross_check()
     text = render(compute())
     if args.write:
         OUT.write_text(text, encoding="utf-8")

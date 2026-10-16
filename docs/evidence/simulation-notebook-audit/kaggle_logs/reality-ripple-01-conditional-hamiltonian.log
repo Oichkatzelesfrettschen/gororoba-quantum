@@ -1,0 +1,79 @@
+[{"stream_name":"stderr","time":8.17976829,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.17981844,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.179825401,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.179830095,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.943149548,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.943184119,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.943190698,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.943195853,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":11.241069764,"data":"Output directory: /kaggle/working/reality_ripple_20261016T031849.280331Z\n"}
+,{"stream_name":"stdout","time":11.241111044,"data":"Evidence: analytic/finite/synthetic only; no IBM service or credentials\n"}
+,{"stream_name":"stdout","time":11.241117285,"data":"{\n"}
+,{"stream_name":"stdout","time":11.241122075,"data":"  \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":11.241126794,"data":"  \"platform\": \"Linux-6.18.48+-x86_64-with-glibc2.39\",\n"}
+,{"stream_name":"stdout","time":11.241131784,"data":"  \"logical_cpus\": 4,\n"}
+,{"stream_name":"stdout","time":11.241136292,"data":"  \"affinity_cpus\": 4,\n"}
+,{"stream_name":"stdout","time":11.24114047,"data":"  \"gpu_inventory\": [],\n"}
+,{"stream_name":"stdout","time":11.241145102,"data":"  \"packages\": {\n"}
+,{"stream_name":"stdout","time":11.241149684,"data":"    \"numpy\": \"2.1.3\",\n"}
+,{"stream_name":"stdout","time":11.24115423,"data":"    \"scipy\": \"1.16.3\",\n"}
+,{"stream_name":"stdout","time":11.241158862,"data":"    \"qiskit\": null,\n"}
+,{"stream_name":"stdout","time":11.241163364,"data":"    \"qiskit-aer\": null,\n"}
+,{"stream_name":"stdout","time":11.241168149,"data":"    \"qiskit-aer-gpu\": null,\n"}
+,{"stream_name":"stdout","time":11.241172486,"data":"    \"cupy-cuda12x\": null,\n"}
+,{"stream_name":"stdout","time":11.241176779,"data":"    \"sympy\": \"1.14.0\",\n"}
+,{"stream_name":"stdout","time":11.241181302,"data":"    \"numba\": \"0.61.2\",\n"}
+,{"stream_name":"stdout","time":11.241185741,"data":"    \"hypercomplex\": null,\n"}
+,{"stream_name":"stdout","time":11.241190049,"data":"    \"hypercomplex-engine\": null,\n"}
+,{"stream_name":"stdout","time":11.241194402,"data":"    \"hypercomplex-algebra\": null\n"}
+,{"stream_name":"stdout","time":11.241198956,"data":"  },\n"}
+,{"stream_name":"stdout","time":11.241203159,"data":"  \"seed\": 20261015,\n"}
+,{"stream_name":"stdout","time":11.241207502,"data":"  \"no_environment_secrets_dumped\": true\n"}
+,{"stream_name":"stdout","time":11.241211997,"data":"}\n"}
+,{"stream_name":"stdout","time":11.335699676,"data":"{\n"}
+,{"stream_name":"stdout","time":11.335733952,"data":"  \"evidence_kind\": \"exact_design_rank_and_matrix_check\",\n"}
+,{"stream_name":"stdout","time":11.335740432,"data":"  \"design_matrix\": [\n"}
+,{"stream_name":"stdout","time":11.335745547,"data":"    [\n"}
+,{"stream_name":"stdout","time":11.335750579,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":11.335753716,"data":"      -1.0,\n"}
+,{"stream_name":"stdout","time":11.335756896,"data":"      0.0\n"}
+,{"stream_name":"stdout","time":11.33577024,"data":"    ],\n"}
+,{"stream_name":"stdout","time":11.335773484,"data":"    [\n"}
+,{"stream_name":"stdout","time":11.335776469,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":11.335779647,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":11.335782528,"data":"      0.0\n"}
+,{"stream_name":"stdout","time":11.335785356,"data":"    ],\n"}
+,{"stream_name":"stdout","time":11.335788156,"data":"    [\n"}
+,{"stream_name":"stdout","time":11.335790948,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":11.335793793,"data":"      0.0,\n"}
+,{"stream_name":"stdout","time":11.335796595,"data":"      1.0\n"}
+,{"stream_name":"stdout","time":11.335799385,"data":"    ],\n"}
+,{"stream_name":"stdout","time":11.335802194,"data":"    [\n"}
+,{"stream_name":"stdout","time":11.335805056,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":11.335807839,"data":"      0.0,\n"}
+,{"stream_name":"stdout","time":11.335810661,"data":"      -1.0\n"}
+,{"stream_name":"stdout","time":11.335813803,"data":"    ]\n"}
+,{"stream_name":"stdout","time":11.335816787,"data":"  ],\n"}
+,{"stream_name":"stdout","time":11.335819652,"data":"  \"rank_odd_even\": 2,\n"}
+,{"stream_name":"stdout","time":11.335822626,"data":"  \"rank_with_conditionals\": 3,\n"}
+,{"stream_name":"stdout","time":11.335825774,"data":"  \"maximum_rate_error\": 1.1102230246251565e-16,\n"}
+,{"stream_name":"stdout","time":11.335828986,"data":"  \"unidentified_without_conditionals\": \"J\",\n"}
+,{"stream_name":"stdout","time":11.335832305,"data":"  \"phase_rate_convention\": \"rate = -arg(rho_ij)/t; no wrapped finite-time frequency estimate is certified\",\n"}
+,{"stream_name":"stdout","time":11.335835908,"data":"  \"limits\": \"Diagonal two-qubit Hamiltonian only. Non-Markovian changes, spectator interactions, analyzer drift and frequency aliases require expanded checks.\",\n"}
+,{"stream_name":"stdout","time":11.335839436,"data":"  \"experiment\": \"conditional_hamiltonian\",\n"}
+,{"stream_name":"stdout","time":11.335842653,"data":"  \"profile\": \"smoke\",\n"}
+,{"stream_name":"stdout","time":11.335845703,"data":"  \"seed\": 20261015,\n"}
+,{"stream_name":"stdout","time":11.335848712,"data":"  \"basis_order\": \"two-qubit |ab\u003e=00,01,10,11; orbit cell index b0+2*b1\",\n"}
+,{"stream_name":"stdout","time":11.335852747,"data":"  \"wall_seconds\": 0.06170962699991378,\n"}
+,{"stream_name":"stdout","time":11.335855932,"data":"  \"qpu_jobs_submitted\": 0\n"}
+,{"stream_name":"stdout","time":11.335858993,"data":"}\n"}
+,{"stream_name":"stdout","time":11.335861836,"data":"Complete result and CSV tables: /kaggle/working/reality_ripple_20261016T031849.280331Z/conditional_hamiltonian\n"}
+,{"stream_name":"stderr","time":14.650068158,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":14.650105958,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":14.855234925,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":14.855263535,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":15.755195545,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":15.85419617,"data":"[NbConvertApp] Writing 45508 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":19.125714723,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":19.802679056,"data":"[NbConvertApp] Writing 388315 bytes to __results__.html\n"}
+]

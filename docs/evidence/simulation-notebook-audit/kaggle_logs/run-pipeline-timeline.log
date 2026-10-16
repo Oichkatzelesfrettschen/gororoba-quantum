@@ -1,0 +1,55 @@
+[{"stream_name":"stderr","time":7.312972454,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":7.313036084,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":8.482739957,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.482780087,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.482784687,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.482788187,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":9.155467047,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":9.155499497,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":9.155503997,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":9.155507397,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":10.47642149,"data":"Total records: 147\n"}
+,{"stream_name":"stdout","time":10.489628887,"data":"State breakdown:\n"}
+,{"stream_name":"stdout","time":10.489666427,"data":"  planned: 106\n"}
+,{"stream_name":"stdout","time":10.489671427,"data":"  submitted: 14\n"}
+,{"stream_name":"stdout","time":10.489674947,"data":"  None: 13\n"}
+,{"stream_name":"stdout","time":10.489678107,"data":"  approval_required: 7\n"}
+,{"stream_name":"stdout","time":10.489681367,"data":"  design_infeasible: 6\n"}
+,{"stream_name":"stdout","time":10.489684717,"data":"  budget_infeasible: 1\n"}
+,{"stream_name":"stdout","time":10.489687797,"data":"\n"}
+,{"stream_name":"stdout","time":10.489691217,"data":"Runs per day:\n"}
+,{"stream_name":"stdout","time":10.489694767,"data":"  2026-10-10: 24\n"}
+,{"stream_name":"stdout","time":10.489697937,"data":"  2026-10-11: 29\n"}
+,{"stream_name":"stdout","time":10.489701427,"data":"  2026-10-12: 38\n"}
+,{"stream_name":"stdout","time":10.489704857,"data":"  2026-10-13: 34\n"}
+,{"stream_name":"stdout","time":10.489708267,"data":"  2026-10-14: 7\n"}
+,{"stream_name":"stdout","time":10.489711777,"data":"  2026-10-15: 15\n"}
+,{"stream_name":"stdout","time":10.500589835,"data":"Backend mentions across all records:\n"}
+,{"stream_name":"stdout","time":10.500622995,"data":"  ibm_kingston: 122\n"}
+,{"stream_name":"stdout","time":10.500627275,"data":"  ibm_fez: 105\n"}
+,{"stream_name":"stdout","time":10.500630595,"data":"  ibm_marrakesh: 65\n"}
+,{"stream_name":"stdout","time":10.511096163,"data":"Unique experiments: 75\n"}
+,{"stream_name":"stdout","time":10.511130734,"data":"\n"}
+,{"stream_name":"stdout","time":10.511135103,"data":"Most-planned experiments:\n"}
+,{"stream_name":"stdout","time":10.511138254,"data":"  91e64dab6f8a: 12 records\n"}
+,{"stream_name":"stdout","time":10.511141783,"data":"  aa49bbd65c82: 7 records\n"}
+,{"stream_name":"stdout","time":10.511144943,"data":"  f288c2024bee: 6 records\n"}
+,{"stream_name":"stdout","time":10.511148114000001,"data":"  38487fe3aecb: 6 records\n"}
+,{"stream_name":"stdout","time":10.511168763,"data":"  a8d281df7ce6: 6 records\n"}
+,{"stream_name":"stdout","time":10.511172823999999,"data":"  8f7de1ed0888: 5 records\n"}
+,{"stream_name":"stdout","time":10.511176324000001,"data":"  7ef53372c68e: 4 records\n"}
+,{"stream_name":"stdout","time":10.511179384,"data":"  a8fca2f05f04: 4 records\n"}
+,{"stream_name":"stdout","time":10.511182613,"data":"  4d9fafa97c54: 4 records\n"}
+,{"stream_name":"stdout","time":10.511209344,"data":"  8d7979af7d27: 4 records\n"}
+,{"stream_name":"stdout","time":10.744439313,"data":"Saved\n"}
+,{"stream_name":"stderr","time":16.41424347,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":16.41428668,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":16.605890936,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":16.605929615,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":17.453335905,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":17.524846282,"data":"[NbConvertApp] Writing 43855 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":20.325800166,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":20.898794714,"data":"[NbConvertApp] Support files will be in __results___files/\n"}
+,{"stream_name":"stderr","time":20.898833384,"data":"[NbConvertApp] Making directory __results___files\n"}
+,{"stream_name":"stderr","time":20.899541644,"data":"[NbConvertApp] Writing 289480 bytes to __results__.html\n"}
+]
