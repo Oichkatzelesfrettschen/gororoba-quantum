@@ -16,7 +16,11 @@ fetches the calibration at each start, and exports it once per calibration
 identity (backend and properties last_update_date) to
 docs/evidence/calibration/history/<backend>/<calibration>.json; before writing,
 every gate, reset and readout channel the snapshot rebuilds must equal
-live_run's noise model built from the same fetch. It also exports each
+live_run's noise model built from the same fetch. ``properties(datetime=S)``
+returns the update the service held at S, which trails its last_update_date
+stamp by some minutes (at the stamp itself it still returns the previous
+update), so the fetch at a PUB start names the calibration the service
+published for that execution. It also exports each
 backend's current calibration, and writes index.json mapping every job and
 PUB start to its snapshot. ``--check`` needs no network: every indexed file
 exists with its recorded sha256, rebuilds its Target, and the index covers
