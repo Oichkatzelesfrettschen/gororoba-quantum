@@ -25,7 +25,8 @@ Five sources, each retained with its identity:
 - ``--releases`` retains the release list (name, tag, date, body) of every
   component the release-notes page links, from the GitHub REST API and the
   GitLab releases API, as releases/<component>.json plus a rendered
-  releases/<component>.md, newest first.
+  releases/<component>.md, newest first. Rendered Markdown drops pictographs
+  (PICTOGRAPH); the JSON keeps them as escapes.
 
 Each writes MANIFEST.json beside the files (path, source URL, sha256); the
 site and spec manifests also list every unreachable URL with the pages that
@@ -186,6 +187,9 @@ SKIP_CLASSES = {"code-visualizer", "headerlink", "linenos"}
 # 403, 429 and 999 come from bot filters, which answer before the resource.
 BLOCKED = {403, 429, 999}
 USER_AGENT = "Mozilla/5.0 (capture_qi_docs)"
+# Pictographs (and their variation selector and joiner) carry no text; the
+# rendered Markdown drops them, and the release JSON keeps the escaped originals.
+PICTOGRAPH = re.compile("[\U0001f000-\U0001faff\u2600-\u27bf\ufe0f\u200d] ?")
 
 
 # A scheme-less target whose first segment ends in one of these TLDs names a
@@ -427,6 +431,7 @@ def to_markdown(fragment: str, math: list[tuple[bool, str]]) -> str:
     ).stdout
     # Inline SVG icons arrive as base64 data URIs and carry no text.
     markdown = re.sub(r"!\[\]\(data:image/[^)]*\)", "", markdown)
+    markdown = PICTOGRAPH.sub("", markdown)
     # pandoc's GFM writer drops a fence language it cannot highlight, so the
     # language travels in a marker paragraph ahead of the block.
     markdown = re.sub(r"QICODE([\w-]+)Z\n\n(`{3,}|~{3,})[^\n]*\n", r"\2\1\n", markdown)
@@ -729,7 +734,7 @@ def gitlab_releases(project: str) -> list[dict[str, Any]]:
 
 
 def render_releases(name: str, page: str, stamp: str, releases: list[dict[str, Any]], tree: str) -> str:
-    """Release bodies verbatim except relative links, which resolve against tree/<tag>/."""
+    """Release bodies verbatim except relative links, which resolve against tree/<tag>/, and pictographs."""
     lines = [
         f"> Full piece: [{page}]({page})\n"
         f"> Retrieved {stamp} by scripts/capture_qi_docs.py --releases (urllib, REST API);\n"
@@ -741,7 +746,8 @@ def render_releases(name: str, page: str, stamp: str, releases: list[dict[str, A
         lines.append(f"## {item['name']}\n\nTag `{item['tag']}`, {item['date']}{flag}: <{item['url']}>\n")
         if item["body"].strip():
             body = item["body"].replace("\r\n", "\n").strip()
-            lines.append(absolute_links(body, f"{tree}/{urllib.parse.quote(item['tag'])}/") + "\n")
+            body = PICTOGRAPH.sub("", absolute_links(body, f"{tree}/{urllib.parse.quote(item['tag'])}/"))
+            lines.append(body + "\n")
     return "\n".join(lines)
 
 

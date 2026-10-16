@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/quantum-classification/](https://www.quantum-inspire.com/kbase/quantum-classification/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 c8c3cd80342d0fe9242d727f5ce80b68bc7dd7d188a293d273b248bc4d3231aa.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 1005951522cd25a489adedb58c5c11f3629e1e8012244ef8e6bf9f217f772363.
 
 # Code example: Quantum classification
 

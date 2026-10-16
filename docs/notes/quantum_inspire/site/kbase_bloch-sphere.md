@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/bloch-sphere/](https://www.quantum-inspire.com/kbase/bloch-sphere/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 a39faebbaa3b939d840530c8904f0793db6168c68f9ab8324cafd457937bde55.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 53b503edc4169975579de5633acdd883ca1cc6c6f47dd79ddbd598cfc0fa819b.
 
 # Bloch sphere
 

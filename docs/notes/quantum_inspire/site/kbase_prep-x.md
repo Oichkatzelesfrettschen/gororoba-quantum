@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/prep-x/](https://www.quantum-inspire.com/kbase/prep-x/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 75b4bf1c542b555c846a748d56784c687698300ff013711888d89a49743be555.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 4c00a5c28e6170d7d9c733db41288791a40f10bfa67be0619d16d21f626ed687.
 
 # Prep_x
 

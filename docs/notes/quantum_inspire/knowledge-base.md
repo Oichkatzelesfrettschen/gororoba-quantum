@@ -54,7 +54,7 @@ Three link defects cause most of them: retired backend pages (`/backends/spin-2/
 - Covers: the chip overview. Available processors are Tuna-17 (17 transmons, 24 flux-tunable couplers), Tuna-9 (9, 12 couplers), Tuna-5 (5, 4 couplers), the QX emulator "up to 26 qubits" and the Rydberg emulator; legacy backends no longer available are Starmon-5, Starmon-7, Spin-2+ and Spin-2.
 - Stale: the web-portal card still says algorithms run "on one of our quantum processors, Spin-2 and Starmon-7, or on our QX simulator" and describes ProjectQ and OpenQL as the transpilers and a ProjectQ SDK backend (QI 1.0 stack); the Spin-2+ and Spin-2 entries link the retired `/backends/spin-2/` page.
 - Contradiction: QX "26-qubit" against the API description and this account's catalogue (C3).
-- Links: 20 distinct links; unresolved: `http://quantumdelft.nl/` client-observed TLS failure; `https://api.quantum-inspire.com/` HTTP 404; `https://www.quantum-inspire.com/backends/spin-2/` HTTP 404; `https://www.tudelft.nl/ewi/onderzoek/quantum-computing/` HTTP 404.
+- Links: 20 distinct links; unresolved: `http://quantumdelft.nl/` client-observed TLS failure; `https://api.quantum-inspire.com/` HTTP 404; `https://medium.com/qiskit/quantum-inspire-and-qiskit-f1be608f8955` blocked:403 (bot filter; not dead); `https://www.quantum-inspire.com/backends/spin-2/` HTTP 404; `https://www.tudelft.nl/ewi/onderzoek/quantum-computing/` HTTP 404.
 
 #### backends/qx-simulator
 
@@ -242,7 +242,7 @@ Three link defects cause most of them: retired backend pages (`/backends/spin-2/
 [capture](site/kbase_qubit-register.md) | [live](https://www.quantum-inspire.com/kbase/qubit-register/)
 
 - Covers: virtual qubit registers map onto physical qubits in declaration order; a state vector of n qubits takes 2^n x 16 bytes (10 qubits 16 kB, 37 qubits over 2 TB).
-- Errors: the example declares `version 3` and `qubit north[2]`, while cQASM 3.0 writes `qubit[2] north` ([spec](cqasm-spec/language_specification/statements/variable_declarations/qubit_register_declaration.md)); the last comment names the `south` register 'north'.
+- Errors: the example declares `version 3` and `qubit north[2]`, while cQASM 3.0 writes `qubit[2] north` ([spec](cqasm-spec/language_specification/statements/variable_declarations/qubit_register_declaration.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/variable_declarations/qubit_register_declaration.html))); the last comment names the `south` register 'north'.
 - Links: 4 distinct links; all resolve.
 
 #### kbase/binary-register
@@ -299,7 +299,7 @@ Three link defects cause most of them: retired backend pages (`/backends/spin-2/
 [capture](site/kbase_software-development-kit.md) | [live](https://www.quantum-inspire.com/kbase/software-development-kit/)
 
 - Covers: `qi login` stores credentials in `~/.quantuminspire/config.json`, read by both plugins; Qiskit `QIProvider().get_backend("QX emulator")`.
-- Stale: `qi files upload` and `qi results get` are absent from the SDK README from 4.0.0 on, which uses `qi run --file ... --backend-type-id N` and `qi jobs results` ([sdk/README.md](sdk/README.md)); the Python example passes `backend_type_id=3` (Starmon-7, absent from this account's catalogue), writes `raw_data_enabled=true` (Python spells it `True`) and omits the `Path` and `sleep` imports; the PennyLane snippet imports `pennylane_quantuminspire2.qi_device.QI2Device`, while plugin 0.15.5 documents `pennylane_quantuminspire.qi_device.QIDevice` built from a Qiskit `QIProvider` backend ([submitting.rst](sdk/pennylane-quantuminspire/docs/getting_started/submitting.rst)) (C16).
+- Stale: `qi files upload` and `qi results get` are absent from the SDK README from 4.0.0 on, which uses `qi run --file ... --backend-type-id N` and `qi jobs results` ([sdk/README.md](sdk/README.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/quantuminspire/054a4f0be22983a5d515c31a24881bc0d875463d/README.md))); the Python example passes `backend_type_id=3` (Starmon-7, absent from this account's catalogue), writes `raw_data_enabled=true` (Python spells it `True`) and omits the `Path` and `sleep` imports; the PennyLane snippet imports `pennylane_quantuminspire2.qi_device.QI2Device`, while plugin 0.15.5 documents `pennylane_quantuminspire.qi_device.QIDevice` built from a Qiskit `QIProvider` backend ([submitting.rst](sdk/pennylane-quantuminspire/docs/getting_started/submitting.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/submitting.rst))) (C16).
 - Links: 11 distinct links; all resolve.
 
 #### kbase/qi-tool
@@ -563,7 +563,7 @@ Three link defects cause most of them: retired backend pages (`/backends/spin-2/
 
 ## Contradictions and their reconciliation
 
-The live API catalogue ([catalogue.json](../../evidence/quantum_inspire/catalogue.json)) is the authority for what this account can use, because the compute job manager enforces it on submission and reports it per backend type; the cQASM specification is the authority for syntax and semantics; retained runs under [results/quantum_inspire/runs/](../../../results/quantum_inspire/runs/) settle what a backend accepted. OpenAPI field descriptions come from [api/openapi.json](api/openapi.json).
+The live API catalogue ([catalogue.json](../../evidence/quantum_inspire/catalogue.json)) is the authority for what this account can use, because the compute job manager enforces it on submission and reports it per backend type; the cQASM specification is the authority for syntax and semantics; retained runs under [results/quantum_inspire/runs/](../../../results/quantum_inspire/runs/) settle what a backend accepted. OpenAPI field descriptions come from [api/openapi.json](api/openapi.json) ([live](https://api.quantum-inspire.com/openapi.json)).
 
 ### C1 Queue limit
 
@@ -578,7 +578,7 @@ The live API catalogue ([catalogue.json](../../evidence/quantum_inspire/catalogu
 ### C3 QX qubit count
 
 - Sources: emulator-backends, backends and backends/qx-simulator: 26 qubits; the catalogue's QX description: "up to 34 qubits (on the Lisa supercomputer)"; terms: free up to 26 and in principle 37 on the national supercomputer; catalogue `nqubits`: 10.
-- Reconciliation: This account declares at most the catalogue's 10 qubits on QX (every retained QX run declared `qubit[10]`); a wider declaration is untested. The 34-qubit description text is a QI 1.0 remnant (Lisa hosted QX from 2021-05-26 per release-notes-old).
+- Reconciliation: This account declares at most the catalogue's 10 qubits on QX (every retained QX run declared `qubit[10]`); a wider declaration is untested. Inference: the 34-qubit description dates from QI 1.0, when QX ran on SURF Lisa (from 2021-05-26 per release-notes-old); no source dates the text.
 
 ### C4 Ry emulator gate set
 
@@ -699,7 +699,7 @@ Captured from https://qutech-delft.github.io/cQASM-spec/latest/appendices/ (MkDo
 | [language_specification/tokens/raw_text_string](cqasm-spec/language_specification/tokens/raw_text_string.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/raw_text_string.html)) | Triple-quoted raw text for `asm` bodies. |
 | [language_specification/tokens/whitespace_and_comments](cqasm-spec/language_specification/tokens/whitespace_and_comments.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/tokens/whitespace_and_comments.html)) | `//` and `/* */` comments; only comments precede `version`. |
 | [language_specification/types](cqasm-spec/language_specification/types.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/types.html)) | Types Qubit, QubitArray, Bit, BitArray. |
-| [standard_gate_set/index](cqasm-spec/standard_gate_set/index.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/index.html)) | The 36 named gates, single- and multi-qubit. |
+| [standard_gate_set/index](cqasm-spec/standard_gate_set/index.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/index.html)) | The 37 named gates: 20 single-qubit, 17 multi-qubit. |
 | [standard_gate_set/multi_qubit/mq_CCX](cqasm-spec/standard_gate_set/multi_qubit/mq_CCX.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CCX.html)) | Gate `CCX`: identifier, matrix, properties, examples. |
 | [standard_gate_set/multi_qubit/mq_CNOT](cqasm-spec/standard_gate_set/multi_qubit/mq_CNOT.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CNOT.html)) | Gate `CNOT`: identifier, matrix, properties, examples. |
 | [standard_gate_set/multi_qubit/mq_CR](cqasm-spec/standard_gate_set/multi_qubit/mq_CR.md) ([live](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CR.html)) | Gate `CR`: identifier, matrix, properties, examples. |
@@ -744,36 +744,36 @@ Verbatim sources at the commits the release tags resolve to: quantuminspire 4.1.
 
 | File | Content |
 |---|---|
-| [README.md](sdk/README.md) | quantuminspire 4.1.0 CLI: `qi login/logout`, `qi run`, projects, algorithms, jobs, backends, `qi files compile` (default stage Decomposition), config. |
-| [qiskit-quantuminspire/README.md](sdk/qiskit-quantuminspire/README.md) | Plugin overview and doc links. |
-| [qiskit-quantuminspire/docs/index.rst](sdk/qiskit-quantuminspire/docs/index.rst) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/contributing.md](sdk/qiskit-quantuminspire/docs/contributing.md) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/api/modules.rst](sdk/qiskit-quantuminspire/docs/api/modules.rst) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/getting_started/index.rst](sdk/qiskit-quantuminspire/docs/getting_started/index.rst) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/getting_started/installation.md](sdk/qiskit-quantuminspire/docs/getting_started/installation.md) | Install with pip and log in with `qi login`. |
-| [qiskit-quantuminspire/docs/getting_started/submitting.md](sdk/qiskit-quantuminspire/docs/getting_started/submitting.md) | Fetch a backend from `QIProvider` and run a circuit. |
-| [qiskit-quantuminspire/docs/hybrid/index.rst](sdk/qiskit-quantuminspire/docs/hybrid/index.rst) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/hybrid/basics.md](sdk/qiskit-quantuminspire/docs/hybrid/basics.md) | Hybrid-algorithm file format (`execute` with a `QuantumInterface`, `finalize`). |
-| [qiskit-quantuminspire/docs/hybrid/leveraging_qiskit.md](sdk/qiskit-quantuminspire/docs/hybrid/leveraging_qiskit.md) | Hybrid use of Qiskit features. |
-| [qiskit-quantuminspire/docs/hybrid/hqca_circuit.py](sdk/qiskit-quantuminspire/docs/hybrid/hqca_circuit.py) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/hybrid/hydrogen.py](sdk/qiskit-quantuminspire/docs/hybrid/hydrogen.py) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/notebooks/index.rst](sdk/qiskit-quantuminspire/docs/notebooks/index.rst) | Sphinx index, example script or notebook. |
-| [qiskit-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb](sdk/qiskit-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb) | Sphinx index, example script or notebook. |
+| [README.md](sdk/README.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/quantuminspire/054a4f0be22983a5d515c31a24881bc0d875463d/README.md)) | quantuminspire 4.1.0 CLI: `qi login/logout`, `qi run`, projects, algorithms, jobs, backends, `qi files compile` (default stage Decomposition), config. |
+| [qiskit-quantuminspire/README.md](sdk/qiskit-quantuminspire/README.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/README.md)) | Plugin overview and doc links. |
+| [qiskit-quantuminspire/docs/index.rst](sdk/qiskit-quantuminspire/docs/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/index.rst)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/contributing.md](sdk/qiskit-quantuminspire/docs/contributing.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/contributing.md)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/api/modules.rst](sdk/qiskit-quantuminspire/docs/api/modules.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/api/modules.rst)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/getting_started/index.rst](sdk/qiskit-quantuminspire/docs/getting_started/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/getting_started/index.rst)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/getting_started/installation.md](sdk/qiskit-quantuminspire/docs/getting_started/installation.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/getting_started/installation.md)) | Install with pip and log in with `qi login`. |
+| [qiskit-quantuminspire/docs/getting_started/submitting.md](sdk/qiskit-quantuminspire/docs/getting_started/submitting.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/getting_started/submitting.md)) | Fetch a backend from `QIProvider` and run a circuit. |
+| [qiskit-quantuminspire/docs/hybrid/index.rst](sdk/qiskit-quantuminspire/docs/hybrid/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/index.rst)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/hybrid/basics.md](sdk/qiskit-quantuminspire/docs/hybrid/basics.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/basics.md)) | Hybrid-algorithm file format (`execute` with a `QuantumInterface`, `finalize`). |
+| [qiskit-quantuminspire/docs/hybrid/leveraging_qiskit.md](sdk/qiskit-quantuminspire/docs/hybrid/leveraging_qiskit.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/leveraging_qiskit.md)) | Hybrid use of Qiskit features. |
+| [qiskit-quantuminspire/docs/hybrid/hqca_circuit.py](sdk/qiskit-quantuminspire/docs/hybrid/hqca_circuit.py) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/hqca_circuit.py)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/hybrid/hydrogen.py](sdk/qiskit-quantuminspire/docs/hybrid/hydrogen.py) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/hybrid/hydrogen.py)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/notebooks/index.rst](sdk/qiskit-quantuminspire/docs/notebooks/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/notebooks/index.rst)) | Sphinx index, example script or notebook. |
+| [qiskit-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb](sdk/qiskit-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb) ([live](https://raw.githubusercontent.com/QuTech-Delft/qiskit-quantuminspire/fbe5256e6671a45cf2fc6557a111f0dc705cf6ac/docs/notebooks/basic_circuit_execution.ipynb)) | Sphinx index, example script or notebook. |
 | `sdk/qiskit-quantuminspire/docs/notebooks/Super Dense Coding.ipynb` | Sphinx index, example script or notebook. |
 | `sdk/qiskit-quantuminspire/docs/notebooks/QI2 Performance Test.ipynb` | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/README.md](sdk/pennylane-quantuminspire/README.md) | Plugin overview and doc links. |
-| [pennylane-quantuminspire/docs/index.rst](sdk/pennylane-quantuminspire/docs/index.rst) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/contributing.md](sdk/pennylane-quantuminspire/docs/contributing.md) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/api/modules.rst](sdk/pennylane-quantuminspire/docs/api/modules.rst) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/getting_started/index.rst](sdk/pennylane-quantuminspire/docs/getting_started/index.rst) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/getting_started/installation.md](sdk/pennylane-quantuminspire/docs/getting_started/installation.md) | Install with pip and log in with `qi login`. |
-| [pennylane-quantuminspire/docs/getting_started/submitting.rst](sdk/pennylane-quantuminspire/docs/getting_started/submitting.rst) | `QIDevice` from a `QIProvider` backend; `Asm` instruction for assembly declarations; non-expval measurements need per-shot backends. |
-| [pennylane-quantuminspire/docs/hybrid/index.rst](sdk/pennylane-quantuminspire/docs/hybrid/index.rst) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/hybrid/basics.md](sdk/pennylane-quantuminspire/docs/hybrid/basics.md) | Hybrid-algorithm file format (`execute` with a `QuantumInterface`, `finalize`). |
-| [pennylane-quantuminspire/docs/hybrid/leveraging_pennylane.md](sdk/pennylane-quantuminspire/docs/hybrid/leveraging_pennylane.md) | Hybrid use of PennyLane features. |
-| [pennylane-quantuminspire/docs/hybrid/simple.py](sdk/pennylane-quantuminspire/docs/hybrid/simple.py) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/notebooks/index.rst](sdk/pennylane-quantuminspire/docs/notebooks/index.rst) | Sphinx index, example script or notebook. |
-| [pennylane-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb](sdk/pennylane-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/README.md](sdk/pennylane-quantuminspire/README.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/README.md)) | Plugin overview and doc links. |
+| [pennylane-quantuminspire/docs/index.rst](sdk/pennylane-quantuminspire/docs/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/index.rst)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/contributing.md](sdk/pennylane-quantuminspire/docs/contributing.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/contributing.md)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/api/modules.rst](sdk/pennylane-quantuminspire/docs/api/modules.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/api/modules.rst)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/getting_started/index.rst](sdk/pennylane-quantuminspire/docs/getting_started/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/index.rst)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/getting_started/installation.md](sdk/pennylane-quantuminspire/docs/getting_started/installation.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/installation.md)) | Install with pip and log in with `qi login`. |
+| [pennylane-quantuminspire/docs/getting_started/submitting.rst](sdk/pennylane-quantuminspire/docs/getting_started/submitting.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/getting_started/submitting.rst)) | `QIDevice` from a `QIProvider` backend; `Asm` instruction for assembly declarations; non-expval measurements need per-shot backends. |
+| [pennylane-quantuminspire/docs/hybrid/index.rst](sdk/pennylane-quantuminspire/docs/hybrid/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/index.rst)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/hybrid/basics.md](sdk/pennylane-quantuminspire/docs/hybrid/basics.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/basics.md)) | Hybrid-algorithm file format (`execute` with a `QuantumInterface`, `finalize`). |
+| [pennylane-quantuminspire/docs/hybrid/leveraging_pennylane.md](sdk/pennylane-quantuminspire/docs/hybrid/leveraging_pennylane.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/leveraging_pennylane.md)) | Hybrid use of PennyLane features. |
+| [pennylane-quantuminspire/docs/hybrid/simple.py](sdk/pennylane-quantuminspire/docs/hybrid/simple.py) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/hybrid/simple.py)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/notebooks/index.rst](sdk/pennylane-quantuminspire/docs/notebooks/index.rst) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/notebooks/index.rst)) | Sphinx index, example script or notebook. |
+| [pennylane-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb](sdk/pennylane-quantuminspire/docs/notebooks/basic_circuit_execution.ipynb) ([live](https://raw.githubusercontent.com/QuTech-Delft/pennylane-quantuminspire/0f7a6fffd39613bc9e14f6a735cc81cb667803ad/docs/notebooks/basic_circuit_execution.ipynb)) | Sphinx index, example script or notebook. |
 
 ## Component release histories
 

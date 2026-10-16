@@ -1,97 +1,97 @@
 {
  "schema": "qi-docs-capture-v2",
  "kind": "releases",
- "retrieved_utc": "2026-10-16T22:00Z",
+ "retrieved_utc": "2026-10-16T22:27Z",
  "files": [
   {
    "path": "docs/notes/quantum_inspire/releases/quantuminspire.json",
    "source": "https://github.com/QuTech-Delft/quantuminspire/releases",
-   "sha256": "5f7aaf3709bee54117acee0c69559ebc560b8d1a4262c850599737808cd8df24"
+   "sha256": "6ac28a86b621ec7e2282543426d7b476f927f46de14d138da9868f70b81a194e"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/quantuminspire.md",
    "source": "https://github.com/QuTech-Delft/quantuminspire/releases",
-   "sha256": "a78fe6b50979a89415f3a2e5a71e40fd938376206267312cc8abba3259ba4232"
+   "sha256": "8c80b5f17f713c7b25f13b8abd00be3382ada37df61bd8910fdc47d7064aef10"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/cQASM-spec.json",
    "source": "https://github.com/QuTech-Delft/cQASM-spec/releases",
-   "sha256": "a79129fac1cd07c359088b93a53e8a5b28d9fa252c14639284e4967cbe22ec7d"
+   "sha256": "e88e3239949a290e3e394aa52202cda6e56870d4cec25c8818bc4b390b57057c"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/cQASM-spec.md",
    "source": "https://github.com/QuTech-Delft/cQASM-spec/releases",
-   "sha256": "bb30d5f147efaac26727dd6fedf17c2e0338bc919c8bb7a3ccdb65d9de2cadf4"
+   "sha256": "902a46687a09477955265eaea0f298e0e7638532b7d99ff323859df88f401bf6"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/libqasm.json",
    "source": "https://github.com/QuTech-Delft/libqasm/releases",
-   "sha256": "1a6a611435b2fc6ef49841699548e6847986a1ca7167695ff0e6fcb66b603085"
+   "sha256": "f77e6bdce6b1d7143975cd5bdc9ad551fddc1a198b375efd22de491338625e02"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/libqasm.md",
    "source": "https://github.com/QuTech-Delft/libqasm/releases",
-   "sha256": "de304817736d146a6c6a466f076e4ed43bb3f45f1b22370c094c3db565db64b6"
+   "sha256": "eadb5e32d1059bbb5875a1c04b2fdec0645063c844abd1aee36fba07caf7a130"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/OpenSquirrel.json",
    "source": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
-   "sha256": "b9e7b6832e01bc3bc9d8e68329e348054309d9b5c1e64e73fe4329f7a48d5108"
+   "sha256": "a6199ed9a59eb96626d49f96ada0ff21da92ab75fd8dcc9c43687dc1db672bb2"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/OpenSquirrel.md",
    "source": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
-   "sha256": "c523d595e1cca38518ce1ebc727f3f609187bfea1e07d91cc86a1a682b275c42"
+   "sha256": "bb98f306d88622f12e23704b839a290474f7b4840c8b94d2ce02a8d59bdc3554"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/OpenQL.json",
    "source": "https://github.com/QuTech-Delft/OpenQL/releases",
-   "sha256": "569a5e56c2d91453c7ca3ce8409b76cb237c9caf8068799cda3e23bb94b79935"
+   "sha256": "6277e1481114e5bcbf9da3fb4b6f07ccaa728147aa94c174735877ab30186887"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/OpenQL.md",
    "source": "https://github.com/QuTech-Delft/OpenQL/releases",
-   "sha256": "12e1caeb3ca1cd5052afd791c4938abfc2e2fc95d96223a0ccaf0254c5d196b1"
+   "sha256": "d769f47b98c24ad3e4408e799d2a438012ca7967935abbfc94f11c7daf699b8f"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/qx-simulator.json",
    "source": "https://github.com/QuTech-Delft/qx-simulator/releases",
-   "sha256": "65ef539aea84af743360227368899c32be493b1d662f53202961bc78e350042c"
+   "sha256": "2468e16a53563ebc49f43831adebf221d25bf117e23c85f8523a81d6183a3013"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/qx-simulator.md",
    "source": "https://github.com/QuTech-Delft/qx-simulator/releases",
-   "sha256": "c6c82a8a06e1376c39120d787001e91c0cae23dd2773fc8cf34ecb0459c84282"
+   "sha256": "5bb403758b2f6764c2002c8e0908d2ddb8bf8d5a329fccdc8686793aa0883604"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/qiskit-quantuminspire.json",
    "source": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
-   "sha256": "beaf63ecb8458f6f31fc700695b9b4b7c0a111fa41a2443cbb968323b70872e0"
+   "sha256": "fae0353185a4611f9cfbbebb8469e1a3e0cd686e160736656c45206ef63fd5bf"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/qiskit-quantuminspire.md",
    "source": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
-   "sha256": "29cb3c5093e00474da7918de30b15bb8c125e35138e3d10bc346599a973071c2"
+   "sha256": "a55901ad8426698c1418ba3b9d26c5a0f7c523edc671abc9e37609944bd2d3a8"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/pennylane-quantuminspire.json",
    "source": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
-   "sha256": "aaa5413f93df8b63b4f5c5515e2c7f9fc84868c88b0534ef3971ea92f1f7b04f"
+   "sha256": "78aefc790205de1f9796ddc163045c4f90c1cdca04721467f34fe2ff19944264"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/pennylane-quantuminspire.md",
    "source": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
-   "sha256": "bfdfd300e2361a6988be42cdeedd45d63ee82982924560a77f30c19efeda0c7c"
+   "sha256": "48a4b2011cab6e17a5039f760717b4ff852c6df03940de5db103b94c382022d7"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/quantify-scheduler.json",
    "source": "https://gitlab.com/quantify-os/quantify-scheduler/-/releases",
-   "sha256": "18e90e2c4fbeb248cc131b77407f2435a90a0188ee4a6622ea91b82b711a50a6"
+   "sha256": "1f61c2e524f1152acd5370c581c0b1065a396e7b24fe83517160bb5a6be2ff76"
   },
   {
    "path": "docs/notes/quantum_inspire/releases/quantify-scheduler.md",
    "source": "https://gitlab.com/quantify-os/quantify-scheduler/-/releases",
-   "sha256": "84eefd5d9f6331e110a3442e7c55c90802ba68c0cff9f160c09dc5ebecc56e47"
+   "sha256": "d5f1c2ff1e5e240a89c8ceeb2810796ae45509e4a7d9493278ded042488d97d0"
   }
  ]
 }

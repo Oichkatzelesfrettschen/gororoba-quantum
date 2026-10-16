@@ -1,5 +1,5 @@
 > Full piece: [https://www.quantum-inspire.com/backends/](https://www.quantum-inspire.com/backends/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
 > fetched HTML sha256 53b1723afde0909013262a606e42c02307e330c99f04ea335d118e177c9c382b.
 
 # Chip Overview

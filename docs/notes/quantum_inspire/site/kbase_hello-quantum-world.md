@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/hello-quantum-world/](https://www.quantum-inspire.com/kbase/hello-quantum-world/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 5a80e4e0303585b4edb3f088dcb71fc277c89d3927f355f48e670ca4f624cacd.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 4acd4fa43768e73555dec3f954425853e160f963ac428beb82cb313250dcff3d.
 
 # Hello quantum world
 

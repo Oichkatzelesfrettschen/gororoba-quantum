@@ -1,5 +1,5 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/](https://www.quantum-inspire.com/kbase/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
 > fetched HTML sha256 300ad5cf9072b7737709ecc261e72a4d0b129153c620a0e9bd37f6c24ba02145.
 
 Select a page 

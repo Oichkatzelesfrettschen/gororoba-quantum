@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/measure-y/](https://www.quantum-inspire.com/kbase/measure-y/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 c1d4c114f8e65b397cdf181db3605c3a29a6b9e10c4aa1cef5f5b057eb035f5e.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 c1a55010fefd378c1fc879e203a7188aa2c1a01f5af1981e2e9f31ea27d27624.
 
 # Measure_y
 

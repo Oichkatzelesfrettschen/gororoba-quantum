@@ -1,7 +1,7 @@
 {
  "component": "cQASM-spec",
  "source": "https://github.com/QuTech-Delft/cQASM-spec/releases",
- "retrieved_utc": "2026-10-16T22:00Z",
+ "retrieved_utc": "2026-10-16T22:27Z",
  "releases": [
   {
    "name": "Feature release 3.0-beta2",

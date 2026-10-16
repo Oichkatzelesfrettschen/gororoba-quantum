@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/superposition-and-entanglement/](https://www.quantum-inspire.com/kbase/superposition-and-entanglement/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 33fbb4eac7e5874349dee43a275851790cb2d63544db3beb2aee59c14076d74c.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 5202cd3946d9c89354befcd736c46a43ce388e4ea8e31fc93f3b3836c6fabb2f.
 
 # Superposition and entanglement
 

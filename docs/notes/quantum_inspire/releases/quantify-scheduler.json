@@ -1,7 +1,7 @@
 {
  "component": "quantify-scheduler",
  "source": "https://gitlab.com/quantify-os/quantify-scheduler/-/releases",
- "retrieved_utc": "2026-10-16T22:00Z",
+ "retrieved_utc": "2026-10-16T22:27Z",
  "releases": [
   {
    "name": "Release v0.28.0",

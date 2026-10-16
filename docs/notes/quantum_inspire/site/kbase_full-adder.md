@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/full-adder/](https://www.quantum-inspire.com/kbase/full-adder/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 c80c741cbfac340a5193fe874cd1829ce1a5ef5b1c75c9de39856b1a12d8619a.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 f3fa233f7e3a78e8070c0adebc231bcc1f2ca7b9e58da3f5a2a388cd04fe14cc.
 
 # Code example: Quantum full adder
 

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/managing-your-projects/](https://www.quantum-inspire.com/kbase/managing-your-projects/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 102520c025e85f50d60f4560ed46ca3b24842cc9f704c0bb60330cba00c57b84.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 d812d692855ae11c01f2b092b3765d8d0bac4ce47e67f995394332a68fb10b9a.
 
 # Managing your projects and algorithms
 
@@ -38,7 +38,7 @@ You can also choose to Rename your agorithm or Delete your algorithm (and its re
 
 You can find all your projects in the `My QI` home menu. You can find this button in the top right corner. You can also sort your projects by name or date of creation. You can also rename or delete a project.
 
-❗Note that deleting a project will also delete all its algorithms and results.
+Note that deleting a project will also delete all its algorithms and results.
 
 ![](https://www.datocms-assets.com/119587/1742828485-projects-snapshot.jpg)
 

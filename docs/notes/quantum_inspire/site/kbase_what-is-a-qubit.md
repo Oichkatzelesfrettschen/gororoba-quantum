@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/what-is-a-qubit/](https://www.quantum-inspire.com/kbase/what-is-a-qubit/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 d2dda935202300a5db8f95c78f87a48c86297be644aa028f6db623c23d08cb65.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 27a1b3fb2566e5cda95ab46f047b90cf8e51647cb2d8dc7089b17e1bc84e8cb9.
 
 # What is a qubit?
 

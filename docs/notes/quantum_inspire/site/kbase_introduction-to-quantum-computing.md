@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/](https://www.quantum-inspire.com/kbase/introduction-to-quantum-computing/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 a88add86e951f2bc26f293977d56dc2628efb419f0bb3c5eb1ea98f94918d176.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 45d27d0dfc1d962a33d01eab37aff403a149118b76a763ae18be070d8743a24d.
 
 # The basics of Quantum Computing
 

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/compilation/](https://www.quantum-inspire.com/kbase/compilation/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 64acdd5a7dd4afe1566a864da8edc2ce04dc57965d7fe4389535436c56f12eec.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 cf50298dfe7ec6cd468a4b9dac02850344ccb548ceb378d461fcaf51a2e6dc0c.
 
 # Compilation
 

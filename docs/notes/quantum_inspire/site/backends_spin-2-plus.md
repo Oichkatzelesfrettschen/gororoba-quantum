@@ -1,5 +1,5 @@
 > Full piece: [https://www.quantum-inspire.com/backends/spin-2-plus/](https://www.quantum-inspire.com/backends/spin-2-plus/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
 > fetched HTML sha256 5492dd7c9aba557b16ca4409cbc04381ee4eac61b7b397c01c201f966852e913.
 
 # Spin-2+

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/number-of-shots/](https://www.quantum-inspire.com/kbase/number-of-shots/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 7e4fac431260e014a7c9be1ec46755b33d12bb23b0b819e2dd51840236f34275.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 79f75d88d982446311b979468a1f465d447a10348da037a0f5002a0cf9d8fcc2.
 
 # Number of shots
 

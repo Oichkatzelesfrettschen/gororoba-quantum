@@ -24,8 +24,8 @@ the change is read from the source at the tag, as stated in the row.
 | Starmon-5 (5 transmons, 5 fixed couplers) | April 2020 to December 2025 | same |
 | Spin-2+ (2 data qubits in a 6-dot array) | taken offline; no dates stated | [backends](site/backends.md) ([live](https://www.quantum-inspire.com/backends/)) |
 | Spin-2 | QI launch, 20 April 2020; superseded by Spin-2+ | Spin-2+ fact sheet (site manifest `hosted_documents`) |
-| Ry emulator (TU Eindhoven, 9 qubits) | listed as new; no date stated | [backends](site/backends.md) |
-| QX emulator | since the first public release, 2018-09-04 | [release-notes-old](site/release-notes-old.md) |
+| Ry emulator (TU Eindhoven, 9 qubits) | listed as new; no date stated | [backends](site/backends.md) ([live](https://www.quantum-inspire.com/backends/)) |
+| QX emulator | since the first public release, 2018-09-04 | [release-notes-old](site/release-notes-old.md) ([live](https://www.quantum-inspire.com/release-notes-old/)) |
 
 The transmons page says Starmon-7 "replaced the original Starmon-5 in
 February 2025" and that Starmon-5 "was available from April 2020 to
@@ -42,7 +42,7 @@ Starmon-7 and Spin-2+ appear as offline backends without a type.
 | 2026-10-14 | libqasm 1.6.0 | Python 3.14 support. | None on the platform API. |
 | 2026-10-05 | qiskit-quantuminspire 0.18.5, pennylane-quantuminspire 0.15.5 | Title-only releases; the docs at these tags are retained under [sdk/](sdk/MANIFEST.json). | PennyLane devices are `pennylane_quantuminspire.qi_device.QIDevice` built from a `qiskit_quantuminspire` `QIProvider` backend. |
 | 2026-10-02 | libqasm 1.5.0 | `CCX`, `CCNOT`, `CSWAP`. | Spec-level only until QX or a compiler integrates libqasm 1.5; the QX catalogue gateset omits them. |
-| 2026-09-25 | quantuminspire 4.1.0 | Title-only release; the README at this tag is [sdk/README.md](sdk/README.md). | Current CLI reference. |
+| 2026-09-25 | quantuminspire 4.1.0 | Title-only release; the README at this tag is [sdk/README.md](sdk/README.md) ([live](https://raw.githubusercontent.com/QuTech-Delft/quantuminspire/054a4f0be22983a5d515c31a24881bc0d875463d/README.md)). | Current CLI reference. |
 | 2026-08-07 | quantuminspire 4.0.0 | Title-only release. The README at 4.0.0 replaces `qi files upload` and `qi results get` (last present at 3.5.3) with `qi run --file F --backend-type-id N`, `qi projects init/list/delete`, `qi algorithms init/status/logs/results/final-result`, `qi jobs inspect/status/logs/results/final-result`, `qi backends list/get`, `qi files compile` and `qi config get/set`. | The kbase software-development-kit and qi-tool pages still teach the removed commands. |
 | 2026-07-30 | OpenSquirrel 0.9.1 | `SingleQubitGate.__mul__` fix. | None. |
 | 2026-06-05 / 06-15 | libqasm 1.4.0, 1.4.1 | `CV`, `CY`, `DCNOT`, `ECR`, `ISWAP`, `InvSqrtSWAP`, `M`, `MS`, `SqrtISWAP`, `SqrtSWAP`; `measureX/Y/Z` aliases. | Spec-level; absent from every catalogue gateset. |
@@ -64,7 +64,7 @@ Starmon-7 and Spin-2+ appear as offline backends without a type.
 | 2025-05-28 | OpenSquirrel 0.5.0 | `asm_filter`; routing validator ignores `asm`. | |
 | May 2025 | platform | Tuna-5 available. | First flux-tunable-coupler backend. |
 | 2025-04-28 | OpenSquirrel 0.4.0 | `asm` declarations, `Rn`, `SWAP2CZDecomposer`, `CZDecomposer`, routers and mappers; libqasm 1.1.0. | The Tuna default passes (`SWAP2CZDecomposer`, `CZDecomposer`) exist from here. |
-| 2025-04-08 | qx-simulator 0.9.0 | Fix: pi-half rotation gates were defined incorrectly. | QX results with `X90`-family gates before this release are suspect. |
+| 2025-04-08 | qx-simulator 0.9.0 | Fix: pi-half rotation gates were defined incorrectly. | No source dates when the platform QX adopted 0.9.0; a QX run with pi-half rotation gates on an older build would carry the defect. |
 | 2025-03-26 | qx-simulator 0.8.0 | `pow` modifier with fractional exponents. | |
 | 2025-03-13 | libqasm 1.1.0 | Assembly declaration, `Rn`. | |
 | 2025-02-18 | cQASM-spec 3.0-beta2 | `init`, `SWAP`, `barrier`, `wait`, gate modifiers `inv`, `pow`, `ctrl`. | Current language baseline. |

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/quick-guide/](https://www.quantum-inspire.com/kbase/quick-guide/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 3732aca776a81b5bda5880abfd6333b2b55beea7eabd9d7a66f8f5606827c8fc.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 b4e5e3e7a5d9101bbb86f32108e6a2f69dd556bd8a0b1542f898f3f7fe319a25.
 
 # Introduction quick guide
 

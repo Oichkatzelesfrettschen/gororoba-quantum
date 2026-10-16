@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/contact/](https://www.quantum-inspire.com/contact/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 b598729e273eb110db12abe45fb87a7b72beeba3b4306955cedbba94a3cb1fa8.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 08e3cc349cad200fb63aba00629e2fad1f1fb430ea53077210730912aa95fff6.
 
 # Contact
 

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/emulator-backends/](https://www.quantum-inspire.com/kbase/emulator-backends/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 29facaf7c0e06c0208a2fb5f48cfbfe7175319706c9399617889a0d272af7487.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 737b2804d55df947f1596c895779073489b17e27653e8b25333207caf82ce047.
 
 # Emulator backends
 

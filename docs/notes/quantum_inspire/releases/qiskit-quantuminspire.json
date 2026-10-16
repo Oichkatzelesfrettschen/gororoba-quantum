@@ -1,7 +1,7 @@
 {
  "component": "qiskit-quantuminspire",
  "source": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
- "retrieved_utc": "2026-10-16T22:00Z",
+ "retrieved_utc": "2026-10-16T22:27Z",
  "releases": [
   {
    "name": "Release 0.18.5",

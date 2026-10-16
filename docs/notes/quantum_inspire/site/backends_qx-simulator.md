@@ -1,5 +1,5 @@
 > Full piece: [https://www.quantum-inspire.com/backends/qx-simulator/](https://www.quantum-inspire.com/backends/qx-simulator/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
 > fetched HTML sha256 ab70ee6042a2453ff7e3f50dd79c5fc1712e506e016acee84723ccef6da93b76.
 
 # QX Quantum Computer Simulator

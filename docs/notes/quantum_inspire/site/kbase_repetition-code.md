@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/repetition-code/](https://www.quantum-inspire.com/kbase/repetition-code/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 9a4dfaa51610a73f7463ce904dd20ec4d06e0c9d21120608d8ae08405971a37e.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 5f15306fa9a6d7e05a521ccd6cb5058d473d3169356e0bc9ebbeb76652e7f2e6.
 
 # Code example: Repetition code
 

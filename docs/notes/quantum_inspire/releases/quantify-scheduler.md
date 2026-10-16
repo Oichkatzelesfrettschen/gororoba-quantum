@@ -1,5 +1,5 @@
 > Full piece: [https://gitlab.com/quantify-os/quantify-scheduler/-/releases](https://gitlab.com/quantify-os/quantify-scheduler/-/releases)
-> Retrieved 2026-10-16T22:00Z by scripts/capture_qi_docs.py --releases (urllib, REST API);
+> Retrieved 2026-10-16T22:27Z by scripts/capture_qi_docs.py --releases (urllib, REST API);
 > 43 releases, newest first, bodies verbatim; data in [quantify-scheduler.json](quantify-scheduler.json).
 
 # quantify-scheduler releases
@@ -28,7 +28,7 @@ Tag `v0.27.1`, 2026-02-09T15:15:14.141Z: <https://gitlab.com/quantify-os/quantif
 
 ## Release v0.27.1 (2026-02-09)
 
-### 🐛 Bug Fixes and Closed Issues
+### Bug Fixes and Closed Issues
 
 - Fix: add compatibility with qblox-instruments v1.1.0 ([!1314](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1314) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 
@@ -40,19 +40,19 @@ Tag `v0.27.0`, 2026-02-04T17:39:09.380Z: <https://gitlab.com/quantify-os/quantif
 
 ## Release v0.27.0 (2026-02-04)
 
-### 🚀 Enhancements
+### Enhancements
 
 - Feat: add gate merging pass for Rz gates ([!1312](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1312) by [@Mark](https://gitlab.com/mqxc))
 - Feat[qblox]: add support for the new qblox read and control module (the QRC).
 
-### 🐛 Bug Fixes and Closed Issues
+### Bug Fixes and Closed Issues
 
 - Fix: fix failing tests in preperation before 0.27 release ([!1315](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1315) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz))
 - Fix the dependency issue of pydantic when testing unified quantify with python 3.14 ([!1306](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1306) by [@Mahmut Çetin](https://gitlab.com/cetin-oqs))
 - Fix: unset properties for operations do not raise an error in hardware compilation ([!1305](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1305) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 
 
-### 🔧 Other
+### Other
 
 - Chore: replace deprecated QRC freq parameters ([!1314](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1314) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 - [DOC-935] Correct the RampPulse formula in description ([!1308](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1308) by [@Qingzhen Wang](https://gitlab.com/qwang7))
@@ -98,16 +98,16 @@ Tag `v0.24.0`, 2025-06-03T22:00:00.000Z: <https://gitlab.com/quantify-os/quantif
 
 ## Release v0.24.0 (2025-06-04)
 
-### 🐛 Bug Fixes
+### Bug Fixes
 - Allow >100 µs integration time when measuring spin qubits ([!1248](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1248) by [@Nicolas Piot](https://gitlab.com/npiot))
 - Allow offsets on unrelated ports when using pulse compensation ([!1247](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1247) by [@Nicolas Piot](https://gitlab.com/npiot))
 - Update QTM api changes from qblox-instruments v0.17.0 ([!1250](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1250) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz) and [!1251](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1251) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 - ``InstrumentCoordinator`` now returns an empty DataArray when no timetags are recorded in ``TimetagTrace`` acquisitions ([!1238](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1238) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 
-### ♻️ Refactoring
+### Refactoring
 - Chore: clean up StrEnum ([!1241](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1241) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 
-### 🔧 Other
+### Other
 - Fix: windows tests require garbage collection on weakref qcodes behavior ([!1240](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1240) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 - Feat: add Qblox custom sequencer allocation logic ([!1237](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1237) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 - Chore: prevent networkx FutureWarning (QTFY-724) ([!1221](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1221) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz))
@@ -118,20 +118,20 @@ Tag `v0.23.1`, 2025-04-28T13:04:30.330Z: <https://gitlab.com/quantify-os/quantif
 
 ## Release v0.23.1 (2025-04-28)
 
-### 🐛 Bug Fixes and Closed Issues
+### Bug Fixes and Closed Issues
 
 * Fix: normalize negative absolute timings in schedules (SE-715) ([!1231](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1231) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz))
 * Fix: cluster object should not be garbage collected ([!1226](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1226) by [@Fabio Grigolo](https://gitlab.com/fgrigolo))
 
-### ✨ New Features
+### New Features
 
 * Feat: add InlineQ1ASM operation for Q1ASM injection (QAE-1323) ([!1073](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1073) by [@Axel E. Andersson](https://gitlab.com/axelandersson))
 
-### 💥 Breaking Changes
+### Breaking Changes
 
 * Deprecation: use LongTimeTrace instead of long time trace schedules ([!1025](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1025) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 
-### 🚀 Enhancements
+### Enhancements
 
 * Enhancement: new acq_index in Qblox OpInfo and strategy ([!1183](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1183) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 
@@ -232,11 +232,11 @@ schedule.add(IdlePulse(duration=200e-9))
 
 ## Release v0.22.3 (2025-03-19)
 
-### ✨ New Features
+### New Features
 - Add ``WeightedThresholdedAcquisition`` operation ([!1193](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1193) by [@Rohit Navarathna](https://gitlab.com/rnavarathna))
 - Add ``RFSwitchToggle`` operation ([!1162](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1162) by [@Leon Wubben](https://gitlab.com/LeonQblox))
 
-### 🚀 Enhancements
+### Enhancements
 - Rename "qubit" references to device element where appropriate ([!1148](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1148) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 
 ## Release v0.22.2
@@ -308,29 +308,29 @@ This release adds compatibility with qblox-instruments v0.15.0. For more informa
 
 # Full Changelog v0.22.2 (2025-01-17)
 
-### 🐛 Bug Fixes and Closed Issues
+### Bug Fixes and Closed Issues
 - Hotfix in channel_name_measure ([!1164](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1164) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 - Perform an upd_param instruction instead of a wait when amplitude of a pulse is too low ([!1145](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1145) by [@Leon Wubben](https://gitlab.com/LeonQblox))
 - Nv element fix (SE-638) ([!1130](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1130) by [@Vatshal Srivastav](https://gitlab.com/vsrivastav1))
 
-### ✨ New Features
+### New Features
 - Add thresholded trigger count acquisition (SE-422) ([!1107](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1107) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 - Add bin mode SUM for TriggerCount (and fix docs for bin mode DISTRIBUTION) ([!1144](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1144) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 
-### 🚀 Enhancements
+### Enhancements
 - Introduce new acquisition channels mapping for future use ([!1110](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1110) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 - Add thresholded trigger count acquisition (SE-422) ([!1107](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1107) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 
-### 📚 Documentation
+### Documentation
 - Add tutorial for device overrides feature ([!1152](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1152) by [@Gábor Oszkár Dénes](https://gitlab.com/gdenes))
 - Update conditional playback documentation ([!1138](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1138) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz))
 
-### ♻️ Refactoring
+### Refactoring
 - Remove all instances of from_dict and to_dict ([!1149](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1149) by [@Leon Wubben](https://gitlab.com/LeonQblox))
 - Add bin mode SUM for TriggerCount (and fix docs for bin mode DISTRIBUTION) ([!1144](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1144) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 - Refactoring: create get_used_port_clocks attribute instead of _extract_port_clocks_used ([!1147](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1147) by [@Leon Wubben](https://gitlab.com/LeonQblox))
 
-### 🔧 Other
+### Other
 - Improving profiling to run on hardware ([!1165](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1165) by [@Nicolas Piot](https://gitlab.com/npiot))
 - Remove prospector from dev requirements ([!1163](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1163) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
 - Fix failing mpl test ([!1161](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1161) by [@Thomas Middelburg](https://gitlab.com/ThomasMiddelburg))
@@ -342,7 +342,7 @@ Tag `v0.21.2`, 2024-10-14T18:56:49.219Z: <https://gitlab.com/quantify-os/quantif
 
 # Release Notes
 
-## 🐛 Bug Fixes
+## Bug Fixes
 
 This release comes with a temporary fix when long schedules cannot compile due to accumulating floating point errors. 
 
@@ -362,11 +362,11 @@ constants.GRID_TIME_TOLERANCE_TIME = 0.1e-2
 
 # Changelog
 
-## 🐛 Bug Fixes and Closed Issues
+## Bug Fixes and Closed Issues
 
 Allow user to change `rel_tolerance` in `to_grid_time` function ([!1102](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1102) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz))
 
-## 🚀 Enhancements
+## Enhancements
 
 Allow user to change `rel_tolerance` in `to_grid_time` function ([!1102](https://gitlab.com/quantify-os/quantify-scheduler/-/merge_requests/1102) by [@Robert Sokolewicz](https://gitlab.com/rsokolewicz))
 

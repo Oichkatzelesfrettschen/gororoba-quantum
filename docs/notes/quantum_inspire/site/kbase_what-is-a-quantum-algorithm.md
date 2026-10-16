@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/](https://www.quantum-inspire.com/kbase/what-is-a-quantum-algorithm/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 fe8f0a73356c0debba2e5e01cfc2c9383c2620cf48ffd6771c2cb43e0ea49196.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 c9ec0c131e1de4066e60b5da8053ee02bf59bb713b325025fc9378b73d69f38b.
 
 # What is a quantum algorithm?
 

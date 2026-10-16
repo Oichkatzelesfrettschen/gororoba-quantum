@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/low-level-api/](https://www.quantum-inspire.com/kbase/low-level-api/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 5aeb3920ba789eabf3b2673c3df16cb4fd69749c33e2f0aaf60d215a02f9213d.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 ee57cad5a0adf3459393e11f7860778b4dd706c1d1cdcf6ea99848b5bc4f2764.
 
 # Low-level API
 

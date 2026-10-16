@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/optimization-of-simulations/](https://www.quantum-inspire.com/kbase/optimization-of-simulations/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 de80aeb01dab34280d7136fd9dabb5fb478415238538ba19a1c210140e32abfa.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 2f1cb6c60652e48f7ef22892cedf5e39ec2528a4c0f96f617b8cde9a338af976.
 
 # Optimization of simulations
 

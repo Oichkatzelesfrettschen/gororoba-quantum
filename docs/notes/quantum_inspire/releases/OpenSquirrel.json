@@ -1,7 +1,7 @@
 {
  "component": "OpenSquirrel",
  "source": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
- "retrieved_utc": "2026-10-16T22:00Z",
+ "retrieved_utc": "2026-10-16T22:27Z",
  "releases": [
   {
    "name": "Bug fix release 0.9.1",

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm-error-models/](https://www.quantum-inspire.com/kbase/cqasm-error-models/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 630402b50476c5fcdc698f2f4c49c56f3ee8a3fbe34338d6edada47358e6b12f.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 7dd8e2b1e77413fcf3093bc176a205b46114ec085d741a70c8fdd90c8c4b10b2.
 
 # cQASM: Error models
 

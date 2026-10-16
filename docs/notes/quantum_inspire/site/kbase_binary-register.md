@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/binary-register/](https://www.quantum-inspire.com/kbase/binary-register/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 b21a9ef7037e8e129931bddc95ecbf41c302ebfa65972fc111f3cceda3d900fb.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 e24cd8e65671ec1665fa79333ff79492ddc11e9df31557e187d4e00ed244b0cd.
 
 # Bit register
 

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/qubit-basis-states/](https://www.quantum-inspire.com/kbase/qubit-basis-states/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 2b4fabb5e69183a8b08b6f284d9755098aa9f665df5210af1a94e561a8c2c981.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 8573cb724d021feb7e8d877e0aca1174cf713fcd1e8414b60e0fd662807fafdd.
 
 # Qubit basis states
 

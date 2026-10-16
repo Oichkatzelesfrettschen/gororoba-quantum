@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/](https://www.quantum-inspire.com/kbase/code-example-getting-started-with-the-neutral-atom-platform/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 c495d0343f7b31418139cb68bb4feec2b3780ebca10c288d4d5867b5e1ca3f9f.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 0b5a3eede2b964622262281c79057818ad16620183e578a37e1daa15aeb12653.
 
 # Code example: Getting started with the neutral atom platform
 

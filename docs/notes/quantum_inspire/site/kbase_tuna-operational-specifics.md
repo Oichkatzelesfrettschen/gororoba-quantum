@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/tuna-operational-specifics/](https://www.quantum-inspire.com/kbase/tuna-operational-specifics/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 5a4ce91d391f793f58c3258142c4ed21e2302829b71ffcfc2cf95f79953f5dc4.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 ad01d233899fd4658297cb989ab095086f4b7a9a3999b8d2619da07cabfcabb1.
 
 # Tuna backends: Operational specifics
 

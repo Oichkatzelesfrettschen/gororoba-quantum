@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/working-with-the-editor/](https://www.quantum-inspire.com/kbase/working-with-the-editor/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 7c27ad7c01f71b9eb91a60a654ab1b7175dc1e45bd4c289c8a825f1e9363202c.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 946c6c3d7144f95211c86cb1d4017da122faa875591e0c9cc69102c86833f3c3.
 
 # Working with the editor
 

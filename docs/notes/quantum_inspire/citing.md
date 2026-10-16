@@ -65,7 +65,7 @@ The transmons page links the Tuna-5 publication as "Physical Review Letters
 ([site/backends_transmons.md](site/backends_transmons.md),
 [live](https://www.quantum-inspire.com/backends/transmons/)). It appeared as
 Phys. Rev. Lett. 136, 200801 on 18 May 2026, so "in press" is stale. The
-journal author order swaps Stavenga and Brulleman relative to arXiv v1's
+journal author order swaps Stavenga and Brulleman relative to the arXiv
 DataCite record; the entry follows the journal.
 
 ```bibtex
@@ -250,7 +250,8 @@ cQASM 3.0, libqasm, OpenSquirrel, the SDK and the two plugins have no paper
 and no `CITATION.cff` in their repositories (GitHub contents API,
 2026-10-16). Cite them as software at the release used; the version and date
 come from the retained release histories ([releases/](releases/MANIFEST.json))
-and the license from the GitHub repository metadata.
+and the license from the GitHub repository metadata. `@software` is a
+biblatex entry type; classic BibTeX styles treat it as unknown.
 
 ```bibtex
 @software{cQASMspec3beta2,

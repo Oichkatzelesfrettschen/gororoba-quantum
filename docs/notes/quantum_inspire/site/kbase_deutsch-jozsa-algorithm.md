@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/](https://www.quantum-inspire.com/kbase/deutsch-jozsa-algorithm/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 80ad03931345ee18e85a782b964c9ac01e5273bee08d800e50bc5f5f1a2cc9cc.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 6e319106b755e0b101724c443c5df7309c92afed7ef25bf78242139fe170ecdf.
 
 # Code example: Deutsch-Jozsa algorithm
 

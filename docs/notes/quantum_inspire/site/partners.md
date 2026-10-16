@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/partners/](https://www.quantum-inspire.com/partners/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 f8d82bd77a4f48ac4ed8f710af5156be80e784077d24558c8b8f571544e44360.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 e3af11036ccc97aceceafda54d352af7502601fcdd4c78ed6c62cfd95776f42e.
 
 # Partners
 

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/](https://www.quantum-inspire.com/kbase/code-example-the-maximum-independent-set/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 83221667a9621c07f75223fb0c392aa5ef9f01d8d3099ee0297057d590e62992.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 70531ff37c26cd5bf3ac91ea67f43464c92c76c9f75735358aa1a18bd3c99ed4.
 
 # Code example: the Maximum Independent Set
 

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/creating-a-new-project/](https://www.quantum-inspire.com/kbase/creating-a-new-project/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 adc04b3750172934a7e56842b638dac682aa01525830abf23cb18d20081b98a9.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 10b9ddf2eeb0b35a4842bc585c57c6c75dc8836acd472e044520d72e7f9eb7d4.
 
 # Creating a new project
 

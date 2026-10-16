@@ -1,5 +1,5 @@
 > Full piece: [https://www.quantum-inspire.com/](https://www.quantum-inspire.com/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
 > fetched HTML sha256 408e4349a04c1b809cc1885a933942720e872152d41c086adf716a04e1f3870f.
 
 ## The multi hardware Quantum Technology platform

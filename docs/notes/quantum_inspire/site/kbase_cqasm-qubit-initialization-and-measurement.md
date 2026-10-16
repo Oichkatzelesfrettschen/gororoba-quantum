@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/](https://www.quantum-inspire.com/kbase/cqasm-qubit-initialization-and-measurement/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 adb9f414826587a10b6039e3958651c74ddc3bb0e880e2ef4e8d3b84dee1a3e6.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 3d9b736fb9dcf8c147d4fa6d3a80f0a68405eeb5ee1cf233f62eaa4cc25f3195.
 
 # cQASM: Qubit initialization and measurement
 

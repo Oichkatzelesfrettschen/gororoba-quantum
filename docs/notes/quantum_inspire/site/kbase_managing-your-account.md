@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/managing-your-account/](https://www.quantum-inspire.com/kbase/managing-your-account/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 178d19e6d1b661b1cb8f98afb931068ecb81398a02fc01b5889bbf61a7aa51eb.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 df03307616bf478367649d00225d78108094390c2f2c7e1a94f36013ce5a9c69.
 
 # Managing your account
 

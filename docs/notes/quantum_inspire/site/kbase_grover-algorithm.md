@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/grover-algorithm/](https://www.quantum-inspire.com/kbase/grover-algorithm/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 676edb66647121952b72fb4af2615da4d2d7194ff55473a35244a152b6d45ba3.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 9f816d7316be73ced874b25abec6b326a75383d7b4f2f5d18c2653fe0e7fc9c0.
 
 # Code example: Grover's algorithm
 

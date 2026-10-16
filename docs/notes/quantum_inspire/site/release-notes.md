@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/release-notes/](https://www.quantum-inspire.com/release-notes/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 4c4396c73763f394ce79d882b43cf22e7046d720986e907381a5575a893901ed.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 b4050acba69cf2645660214192fb8fdc8f5a012b37dd98a4958b74ffd4a8c15a.
 
 # Release notes
 

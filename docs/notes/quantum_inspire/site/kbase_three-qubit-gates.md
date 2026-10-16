@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/three-qubit-gates/](https://www.quantum-inspire.com/kbase/three-qubit-gates/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 b6ce84c099ce6b9a2319009824f34ac085e9aea15cf483068b5026326d4969fd.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 430edd01405551312fe9ece82228fdb906076a28f2d2d5972d84f417b33492b4.
 
 # Three-qubit gates
 

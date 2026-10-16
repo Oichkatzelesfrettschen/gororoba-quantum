@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/](https://www.quantum-inspire.com/kbase/starmon-7-operational-specifics/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 928d2ddb2d661f7141ebce01b4d531a5a5b3eab43494a129c181e70d377619b0.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 805fb476fcff629fee341827786d6fde3d6937e00b2f2bbf339cfd424e7cced0.
 
 # Starmon-7: Operational specifics
 

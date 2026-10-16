@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/](https://www.quantum-inspire.com/kbase/cqasm-binary-controlled-gates/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 49bf842b105c27221c2aa6d43965d8748c0014327feea6ccdb4e32624137a7ec.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 cce0b786636179080251011b57a78477994855e91053091e9ca80039a43fbb5c.
 
 # cQASM: Binary controlled gates
 

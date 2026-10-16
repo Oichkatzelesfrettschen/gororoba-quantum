@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/](https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 40f7621155916da54c804cda56f8a65522d2d81ce1cd67740d95e2a5f5a8eb84.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 6e067abc8530ac1e8e7c477e1a66f7cc6c9c7035d61f7a5ecf0ecb7fcab16c95.
 
 # cQASM: Single Gate Multiple-Qubits
 

@@ -1,5 +1,5 @@
 > Full piece: [https://github.com/QuTech-Delft/qiskit-quantuminspire/releases](https://github.com/QuTech-Delft/qiskit-quantuminspire/releases)
-> Retrieved 2026-10-16T22:00Z by scripts/capture_qi_docs.py --releases (urllib, REST API);
+> Retrieved 2026-10-16T22:27Z by scripts/capture_qi_docs.py --releases (urllib, REST API);
 > 32 releases, newest first, bodies verbatim; data in [qiskit-quantuminspire.json](qiskit-quantuminspire.json).
 
 # qiskit-quantuminspire releases

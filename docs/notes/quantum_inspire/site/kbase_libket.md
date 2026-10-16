@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/libket/](https://www.quantum-inspire.com/kbase/libket/)
-> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 4f4b5bbae12f282faeb4a8d721894a6502916a6246c957908e182aa5de4590c6.
+> Retrieved 2026-10-16T22:24Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 96c9d88abc2aa71465f5d847395ee96f84f5a9eef92aa765a785ee475beb8bd9.
 
 # LibKet
 
