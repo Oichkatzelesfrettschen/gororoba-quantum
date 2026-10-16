@@ -1,0 +1,47 @@
+{
+ "schema": "kaggle-docs-capture-v1",
+ "kind": "site",
+ "retrieved_utc": "2026-10-16T03:05Z",
+ "files": [
+  {
+   "path": "docs/notes/kaggle/site/notebooks.md",
+   "source": "https://www.kaggle.com/docs/notebooks",
+   "sha256": "307c66f5532327a73adb2bc19b718fab7efc81335046fa2c98e75f1ed94d591c"
+  },
+  {
+   "path": "docs/notes/kaggle/site/tpu.md",
+   "source": "https://www.kaggle.com/docs/tpu",
+   "sha256": "1a90fad98f64d5bf1ed9a143fc3daae793a8152f3bb63830583766cce853870e"
+  },
+  {
+   "path": "docs/notes/kaggle/site/api.md",
+   "source": "https://www.kaggle.com/docs/api",
+   "sha256": "f89ac5a7b7859a83398807688a5f68c3a658985f661734b3bd8bb8911f881986"
+  },
+  {
+   "path": "docs/notes/kaggle/site/mcp.md",
+   "source": "https://www.kaggle.com/docs/mcp",
+   "sha256": "2c807ad5f11d85eb0f4f27ba0485bad286ff704bf85510dc5affb84cfff702c8"
+  },
+  {
+   "path": "docs/notes/kaggle/site/models.md",
+   "source": "https://www.kaggle.com/docs/models",
+   "sha256": "5d1adaf5014f58c2fa359ffbc461c1061afb440d11785a529c8fa95cbeb93571"
+  },
+  {
+   "path": "docs/notes/kaggle/site/datasets.md",
+   "source": "https://www.kaggle.com/docs/datasets",
+   "sha256": "2e52befefdde3fe363c0cadb73513531cc26c0e0ec663ffa56c3d4c741d7a79e"
+  },
+  {
+   "path": "docs/notes/kaggle/site/packages.md",
+   "source": "https://www.kaggle.com/docs/packages",
+   "sha256": "cd74fdb732a08df98626d90b70d9e1f88f6c9e3c34aecccadfbd67867f19d5bb"
+  },
+  {
+   "path": "docs/notes/kaggle/site/benchmarks.md",
+   "source": "https://www.kaggle.com/docs/benchmarks",
+   "sha256": "dc6c1296caafd2ef837e96b0760231a71ff290aaf2f56557bc7474b392df0e28"
+  }
+ ]
+}

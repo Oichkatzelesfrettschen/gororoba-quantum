@@ -58,12 +58,13 @@ GPU matters for sweeps and batched trials, not for single circuits.
   output with a sha256 manifest.
 - `push --smoke` probes the environment and measures the widest
   density-matrix and statevector circuits the GPU runs.
-- `--machine` selects the accelerator: `NvidiaTeslaT4` (the default),
-  another GPU shape, `TpuV5E8` (the kernel sets `enable_tpu` and clears
-  `enable_gpu`; a TPU shape with `enable_gpu` set silently runs on CPU), or
-  `cpu` for no accelerator. `NvidiaTeslaP100` returned two T4s in this
-  account, so a kernel's `environment.json`, not the requested shape, says
-  what ran.
+- `--machine` names the accelerator, passed to the push as
+  `--accelerator`: `NvidiaTeslaT4` (the default, two T4s), another ID from
+  [cli/kernels.md](cli/kernels.md), or `cpu` for none. `machine_shape` in
+  kernel-metadata.json alone does not select hardware: probes that set only
+  it for `NvidiaL4` and `TpuV5E8` ran on 4-core CPU machines, and
+  `NvidiaTeslaP100`, absent from the current list, returned two T4s. A
+  kernel's `environment.json`, not the request, records what ran.
 - The account runs at most two GPU batch sessions at once; a third push
   fails with "Maximum batch GPU session count of 2 reached", and `push`
   exits with that message and removes the unsent run directory. The limit

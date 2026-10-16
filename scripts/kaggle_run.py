@@ -208,6 +208,10 @@ def push(args: argparse.Namespace) -> int:
     build_kernel(args, run_dir, username(), stamp)
     kernel_dir = run_dir / "kernel"
     push_args = ["kernels", "push", "-p", str(kernel_dir)]
+    if args.machine != "cpu":
+        # kernel-metadata.json's machine_shape alone runs the kernel on a CPU
+        # machine; the push's --accelerator selects the hardware.
+        push_args += ["--accelerator", args.machine]
     if args.timeout:
         push_args += ["-t", str(args.timeout)]
     reply = kaggle(*push_args).strip()

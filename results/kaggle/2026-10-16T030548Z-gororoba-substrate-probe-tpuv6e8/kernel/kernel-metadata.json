@@ -1,6 +1,6 @@
 {
- "id": "probablyeric/gororoba-substrate-probe-tpu",
- "title": "gororoba-substrate-probe-tpu",
+ "id": "probablyeric/gororoba-substrate-probe-tpuv6e8",
+ "title": "gororoba-substrate-probe-tpuv6e8",
  "code_file": "run.py",
  "language": "python",
  "kernel_type": "script",
@@ -8,5 +8,5 @@
  "enable_gpu": false,
  "enable_tpu": true,
  "enable_internet": true,
- "machine_shape": "TpuV5E8"
+ "machine_shape": "TpuV6E8"
 }

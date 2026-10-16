@@ -20,6 +20,52 @@ own environment and these tables describe the probes, not a guarantee.
 | CPU replay of a reduced case of every Kaggle result | GitHub Actions | the gate that admits a Kaggle result |
 | Dry runs, calibration exports, SageMath, Arch-packaged stack | build host | IBM credential and Sage live there |
 
+## Substrate permutations
+
+A Kaggle session has one accelerator or none, and always a CPU host beside
+it. Combinations beyond one session come from running sessions in
+parallel (at most two GPU batch sessions per account) or from pairing a
+Kaggle session with the build host.
+
+| Permutation | Where it exists | What it runs here |
+| --- | --- | --- |
+| CPU only | Kaggle CPU session (4 cores, 30 GB); build host (Ryzen 5 5600X3D, 12 threads, 62 GiB) | transpilation, package builds, Aer CPU methods (stabilizer, matrix product state, extended stabilizer are CPU-only in Aer), the CPU replay of a reduced case |
+| GPU (with its host CPU) | Kaggle GPU sessions (4 cores, 29 GB RAM); build host RTX 4070 Ti | Aer `device="GPU"` statevector, density matrix, unitary, superop and tensor network; the host CPU transpiles meanwhile |
+| Two GPUs in one session | Kaggle `NvidiaTeslaT4` (2 x T4) | either independent experiments on separate GPUs (one process per GPU through `CUDA_VISIBLE_DEVICES`), or one state split across both with Aer chunking (`blocking_enable`, `blocking_qubits`), which moves the double-precision density matrix from 14 to 15 qubits and the statevector from 29 to 30 (estimate, not measured) |
+| TPU (with its host CPU) | Kaggle `TpuV5E8`, `TpuV6E8` | JAX only; Aer has no TPU backend, so a TPU session serves the repository as a large CPU host (96 cores and 330 GB RAM on the documented v3-8 VM) unless a JAX simulator is written |
+| CPU + GPU + TPU at once | not inside one Kaggle session | across sessions: Kaggle GPU kernels for Aer, a Kaggle TPU session for CPU-heavy Aer or JAX, the build host for dry runs, calibration exports and replay gates |
+| Any of the above + IBM | only after an approved case | IBM answers device questions; every substrate above feeds its design, never its result |
+
+## Qubit size guide
+
+Exact state memory is 16 x 2^n bytes for a double-precision statevector,
+8 x 2^n in single precision (`precision="single"`), 16 x 4^n for a
+double-precision density matrix and 8 x 4^n in single. The estimates below
+allow 90 percent of the device or host memory for the state and ignore
+Aer's workspace; the measured columns come from `capacity.json` (a GHZ
+circuit at 256 shots, each width tried once in its own process).
+
+| Substrate | Memory | Statevector, double / single (estimate) | Density matrix, double / single (estimate) | Measured |
+| --- | --- | --- | --- | --- |
+| Kaggle T4 (one GPU) | 15 GiB | 29 / 30 | 14 / 15 | see below |
+| Kaggle 2 x T4, chunked | 2 x 15 GiB | 30 / 31 | 15 / 15 | not measured |
+| Kaggle L4 | 24 GB | 30 / 31 | 15 / 15 | not reachable on this account so far |
+| Kaggle A100, H100 (80 GB) or RTX Pro 6000 (96 GB) | 80 to 96 GB | 32 / 33 | 16 / 16 | restricted IDs; not measured |
+| Kaggle CPU or GPU-session host RAM | 29 to 30 GB | 30 / 31 | 15 / 15 | not measured |
+| Kaggle TPU VM host RAM | 330 GB (documented, v3-8) | 34 / 35 | 17 / 17 | see below |
+| Build host RTX 4070 Ti | 12 GiB | 29 / 30 | 14 / 15 | `docs/local/` (untracked) |
+| Build host RAM | 62 GiB | 31 / 32 | 15 / 16 | `docs/local/` (untracked) |
+
+What goes where by width, under the routing rule:
+
+| Width | Noisy simulation | Ideal simulation | Hardware |
+| --- | --- | --- | --- |
+| 1 to 14 qubits | Kaggle GPU, density matrix (double precision fits one T4) | Kaggle GPU | IBM only for a named-device question with an approved case |
+| 15 qubits | Kaggle GPU density matrix in single precision, or 2 x T4 chunked, or the TPU-VM host CPU | Kaggle GPU statevector | IBM for 15 or more qubits after an approved case |
+| 16 to 17 qubits | TPU-VM host CPU density matrix, or statevector trajectories (one noisy shot per trajectory) on a GPU | Kaggle GPU statevector | IBM |
+| 18 to 30 qubits | statevector trajectories on a GPU, cost proportional to shots | Kaggle GPU statevector (29 double, 30 single on one T4) | IBM |
+| beyond 30 qubits | matrix product state or stabilizer methods where the circuit allows | the same, or the TPU-VM host CPU to about 34 qubits | IBM |
+
 ## CPU-only kernel
 
 `results/kaggle/2026-10-15T232053Z-gororoba-substrate-probe-cpu`

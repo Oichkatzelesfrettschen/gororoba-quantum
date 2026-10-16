@@ -122,14 +122,14 @@ def cuda_version() -> str | None:
     return None
 
 
-def tpus() -> list[str]:
+def tpus() -> dict[str, Any]:
     """JAX's TPU devices, the only TPU access a kernel has; Aer has no TPU backend."""
     try:
         import jax
 
-        return [str(device) for device in jax.devices("tpu")]
-    except Exception:  # no jax, or no TPU attached
-        return []
+        return {"jax": jax.__version__, "devices": [str(device) for device in jax.devices("tpu")]}
+    except Exception as error:  # no jax, or no TPU attached
+        return {"devices": [], "error": f"{type(error).__name__}: {str(error)[:200]}"}
 
 
 def attached_models() -> list[str]:
@@ -181,7 +181,7 @@ def hypercomplex() -> dict[str, Any]:
     }
 
 
-def ghz_trial(method: str, width: int) -> dict[str, Any]:
+def ghz_trial(method: str, width: int, device: str = "GPU") -> dict[str, Any]:
     from qiskit import QuantumCircuit, transpile
     from qiskit_aer import AerSimulator
 
@@ -190,7 +190,7 @@ def ghz_trial(method: str, width: int) -> dict[str, Any]:
     for q in range(width - 1):
         circuit.cx(q, q + 1)
     circuit.measure_all()
-    simulator = AerSimulator(method=method, device="GPU")
+    simulator = AerSimulator(method=method, device=device)
     start = time.time()
     try:
         counts = simulator.run(transpile(circuit, simulator), shots=256, seed_simulator=7).result().get_counts()
@@ -231,8 +231,9 @@ def capacity() -> dict[str, Any]:
 
 
 def main() -> int:
-    if len(sys.argv) == 4 and sys.argv[1] == "--trial":
-        print(json.dumps(ghz_trial(sys.argv[2], int(sys.argv[3]))), flush=True)
+    if len(sys.argv) in (4, 5) and sys.argv[1] == "--trial":
+        device = sys.argv[4] if len(sys.argv) == 5 else "GPU"
+        print(json.dumps(ghz_trial(sys.argv[2], int(sys.argv[3]), device)), flush=True)
         return 0
     OUT.mkdir(parents=True, exist_ok=True)
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
