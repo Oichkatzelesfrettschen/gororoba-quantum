@@ -72,7 +72,7 @@ runs.
 | --- | --- | --- | --- |
 | Readout-adjacent pre-delay discriminator (measure, variable delay, Ramsey) | 1-2 | design only | a design module and dry run; applies only to idles that follow a mid-circuit readout, such as the N21 orbit's |
 | Chip-wide checkerboard detuning map | patch or chip, 15+ | design only | two quadratures, a winding-resolving delay ladder and spectators in both states; the first design in this census that needs 15 or more qubits |
-| Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed | a Kaggle noise run that sizes the rotation-error contrast, then a device case |
+| Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed; Kaggle sizing done | a device case measures a combined coherent-error signal with a per-edge CZ-phase reference (`docs/evidence/echo_dilation_noise/`) |
 | Signed kernel probe (`proposed-signed-kernel-probe`) | 7 | proposed | the four-arm null-subtracted readout (`docs/evidence/signed_kernel_noise/`), its dry run and a written case |
 | Census-frequency witness (`proposed-census-frequency`) | 5 (fixed pair) to 13 (three registers) | proposed | Kaggle first: visibility V and the shots that resolve 231/512 |
 | Dim-32 Design C spectral classes | 5 | Kaggle result retained (`docs/evidence/design_c_cubic_noise/`) | the noise model keeps the classes apart (noisy K 0.180-0.253 against 0.093-0.113); a hardware case would test coherent errors and crosstalk the model lacks, about 4.4 s nominal for both class representatives at 4096 shots (2 x 4096 x 260 us plus 2.3 s of job overhead) |
@@ -92,6 +92,7 @@ sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
 | `gororoba-aer-gpu-smoke` | 14 | qiskit 2.5.2 and qiskit-aer-gpu-cu11 0.17.2 on the Kaggle GPU | complete: 2 x T4, a 14-qubit density-matrix GHZ in 1.6 s |
 | `gororoba-design-c-cubic-noise` | 5 | does the 11/32 against 5/32 collision separation survive the compiled factorized circuit under the Kingston calibration | complete: yes, ranges 0.180-0.253 and 0.093-0.113 at 20,000 shots; CPU replay gate core-282 |
 | Census-frequency witness | 5-13 | V and shot count for the 231/512 test | to design |
+| `gororoba-echo-dilation-noise` | 5 | which error class each physical channel lands in for the amplified/echo pair, and the shots and CZ-phase reference a case needs | complete: every physical coherent channel survives the compiled inverse, so the pair detects coherent error but does not separate rotation from CZ phase; reference 349-514 shots per edge and target (`docs/evidence/echo_dilation_noise/`) |
 | `gororoba-walk-scaffold-channels` | 4 | which loss channel reproduces the retained readout0 floors | complete: none of six single channels reproduces the floor and transfers to the depth members (`docs/evidence/walk_scaffold_channels/`) |
 | `gororoba-signed-kernel-noise` | 7 | the detectable t range | complete: a sign-phase offset needs a null arm per sign; null-subtracted visibility 0.60, 12,025 shots at t = 0.2 (`docs/evidence/signed_kernel_noise/`) |
 | `gororoba-conditional-ramsey-power` | 2 | the delta-method precision the case quotes | complete: holds once the conditional arms are postselected on B (`docs/evidence/conditional_ramsey_power/`) |

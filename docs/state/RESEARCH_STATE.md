@@ -202,6 +202,11 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Boundary: Tested circuit and statistics infrastructure, not a demonstrated hardware mitigation.
   Evidence: [heron_spatial_multiprogramming.md](../notes/heron_spatial_multiprogramming.md).
   Gates: replayed by core-256.
+- **echo-pair-coherent-sign** (numerical or stochastic simulation, implementation). Under the retained ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-15, the echo-matched pair U Z U^dagger Z U and U U^dagger U on the dark input of e1+e10, compiled once at 141 CZ with a symbolic ancilla reflection so both arms share every non-virtual gate, moves amplified - echo positive only for a PREP angle error (+0.012 to +0.019 at 0.03 rad) and negative for SX over-rotation, CZ local phase and CZ conditional phase at both signs (-0.009 to -0.012 for a 0.01 rad conditional phase, -0.024 to -0.029 for a 0.01 rad local phase), so it separates no physical rotation error from a CZ phase. A per-edge 2m-CZ Y-basis reference cancels local phase and SX over-rotation to 8.3e-4 rad and bounds the conditional phase for a 40,000-shot pair with 349 to 514 shots per edge and target state at m = 24.
+  Boundary: A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshots) with each channel injected alone and uniformly at seed-7 compiles; the matched null holds on Kingston only (the incoherent baseline is 1.3 to 1.5 standard errors at 40,000 shots on Fez and Marrakesh), mixtures cancel, leakage and crosstalk are outside it, and no hardware run of the pair exists.
+  Evidence: [result.json](../evidence/echo_dilation_noise/result.json), [arms.qpy](../evidence/echo_dilation_noise/arms.qpy), [20261015T2031280700.json](../evidence/calibration/history/ibm_fez/20261015T2031280700.json), [20261015T2035330700.json](../evidence/calibration/history/ibm_kingston/20261015T2035330700.json), [20261015T2046350700.json](../evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json), [README.md](../evidence/echo_dilation_noise/README.md), [singular_sector_dynamics.md](../notes/singular_sector_dynamics.md).
+  Gates: replayed by core-313.
+  Depends on: singular-sector-split.
 - **conditional-ramsey-conformance** (circuit-conformance check, implementation). The conditional Ramsey design recovers injected omega_A, omega_B and J exactly, shows a planted conditional-arm detuning as falsifier residual -2 delta, unwraps 40.9 and 268.6 kHz detunings on its geometric delay ladder, undoes asymmetric assignment with its in-job calibration, and matches its propagated J error to multinomial resampling.
   Boundary: Ideal and noise-model semantics only; it measures no hardware rate.
   Evidence: [conditional_ramsey_hamiltonian.md](../notes/conditional_ramsey_hamiltonian.md).
@@ -402,9 +407,9 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
 - **proposed-first-bit-readout-controls** (proposed experiment, hardware). Read qubit 79 prepared in |1> immediately and after 4000 and 12500 dt idles (readout_delay in gororoba_quantum/diagnostic_controls.py), and add a repeated readout, to separate preparation, relaxation and measurement back-action behind the first-bit correlation.
   Boundary: Falsifier: one symmetric assignment model reproduces both labels' strata within their binomial intervals.
   Depends on: hw-first-bit-correlation.
-- **proposed-echo-matched-dilation** (proposed experiment, hardware). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases.
-  Boundary: A mixture can cancel, so it needs an independent CZ-phase reference before a priced case.
-  Depends on: singular-sector-split.
+- **proposed-echo-matched-dilation** (proposed experiment, hardware). Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration, with a per-edge CZ-phase reference, to measure the coherent error the dark probe carries and attribute its conditional-phase share.
+  Boundary: Every physical coherent channel moves the pair the same way under the retained noise models (echo-pair-coherent-sign), so the pair alone separates no rotation error from a CZ phase; mixtures cancel, and the case binds the retained device compile.
+  Depends on: echo-pair-coherent-sign, singular-sector-split.
 - **proposed-scaffold-ab** (proposed experiment, hardware). Run the walk template bound to readout0 and readout1 beside measure-only and X-then-measure circuits on one tile under one calibration, isolating the scaffold's loss.
   Boundary: Design in gororoba_quantum/diagnostic_controls.py; needs its own written case.
   Depends on: hw-walk-scaffold-floor.

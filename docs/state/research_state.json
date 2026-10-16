@@ -1633,18 +1633,63 @@
       "superseded_by": null
     },
     {
+      "id": "echo-pair-coherent-sign",
+      "statement": "Under the retained ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-15, the echo-matched pair U Z U^dagger Z U and U U^dagger U on the dark input of e1+e10, compiled once at 141 CZ with a symbolic ancilla reflection so both arms share every non-virtual gate, moves amplified - echo positive only for a PREP angle error (+0.012 to +0.019 at 0.03 rad) and negative for SX over-rotation, CZ local phase and CZ conditional phase at both signs (-0.009 to -0.012 for a 0.01 rad conditional phase, -0.024 to -0.029 for a 0.01 rad local phase), so it separates no physical rotation error from a CZ phase. A per-edge 2m-CZ Y-basis reference cancels local phase and SX over-rotation to 8.3e-4 rad and bounds the conditional phase for a 40,000-shot pair with 349 to 514 shots per edge and target state at m = 24.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (gate depolarizing, thermal relaxation and asymmetric readout from the retained snapshots) with each channel injected alone and uniformly at seed-7 compiles; the matched null holds on Kingston only (the incoherent baseline is 1.3 to 1.5 standard errors at 40,000 shots on Fez and Marrakesh), mixtures cancel, leakage and crosstalk are outside it, and no hardware run of the pair exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/echo_dilation_noise/result.json",
+          "sha256": "7fa3b7194a8c7a48f5623ed5d94e479c0f326f38a8ad9830bad566755a17e7c6"
+        },
+        {
+          "path": "docs/evidence/echo_dilation_noise/arms.qpy",
+          "sha256": "a1d90f080e6da7baf0a08dd935ca757d8a46e61b9f01d522f148eb950768743b"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_fez/20261015T2031280700.json",
+          "sha256": "b244e7b16f771b3d0ee4e2263d8c63b337476c0445a323c90981ee0ac6c5d684"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_kingston/20261015T2035330700.json",
+          "sha256": "1b96aa950e86733f287b80d4a88bd737276a4f4e136f5cfc1ea180c9f69f1865"
+        },
+        {
+          "path": "docs/evidence/calibration/history/ibm_marrakesh/20261015T2046350700.json",
+          "sha256": "6c8c75217326e2dbb03b74d7b5d5df47496176790e4a285b58a048c71bbc166c"
+        }
+      ],
+      "documents": [
+        "docs/evidence/echo_dilation_noise/README.md",
+        "docs/notes/singular_sector_dynamics.md"
+      ],
+      "gates": {
+        "core-313": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "singular-sector-split"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
       "id": "proposed-echo-matched-dilation",
-      "statement": "Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration to separate rotation errors the compiled inverse undoes from conditional CZ phases.",
+      "statement": "Compare U Z U^dagger Z U against U U^dagger U at equal non-virtual gates and duration, with a per-edge CZ-phase reference, to measure the coherent error the dark probe carries and attribute its conditional-phase share.",
       "domain": "hardware",
       "evidence_class": "proposed experiment",
       "status": "proposed",
-      "boundary": "A mixture can cancel, so it needs an independent CZ-phase reference before a priced case.",
+      "boundary": "Every physical coherent channel moves the pair the same way under the retained noise models (echo-pair-coherent-sign), so the pair alone separates no rotation error from a CZ phase; mixtures cancel, and the case binds the retained device compile.",
       "evidence": [],
       "documents": [],
       "gates": {},
       "acquisitions": [],
       "assumptions": [],
       "depends_on": [
+        "echo-pair-coherent-sign",
         "singular-sector-split"
       ],
       "supersedes": [],
