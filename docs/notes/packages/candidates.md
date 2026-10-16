@@ -62,6 +62,20 @@ packages already recorded except hyprat.
 3. A retained Sage export of the Albert algebra, which needs no install.
 4. pyadic 0.3.0, on demand.
 
+## Status of the install order
+
+- python-flint 0.9.0 builds against the installed FLINT 3.6.0 from a local
+  PKGBUILD that supplies Cython 3.2.9 (the sdist requires `cython >=3.1,<3.3`)
+  and is the `exact-arithmetic` Kaggle pin group with pyadic.
+- hyprat v0.2.0 is installed from a local PKGBUILD over the GitHub tag. Its
+  falsifier did not fire: at mu = -1 its tables are identical to `cd_core` on
+  every basis pair from D = 2 to D = 32, and its split octonions
+  (signs -1, -1, +1) equal the splitoct and hypercomplex-engine split tables.
+  `scripts/algebra_package_tables.py` retains its D = 8, 16 and split-8
+  tables.
+- The Sage Albert export is not yet made.
+- pyadic 0.3.0 is installed from a local PKGBUILD.
+
 ## Falsifiers
 
 - hyprat at mu = -1 differs from `cd_core` on any basis pair at D = 8 or 16,
