@@ -33,8 +33,11 @@ the fringe phase of the recorded ideal probabilities within 1e-9 rad, so the
 extraction and timing pairing preserve the circuit.
 
 ``--lanes all`` or ``--lanes 0,4``. ``--check FILE`` reruns the named lanes on
-the CPU and requires every response to 1e-9 and every fitted parameter to
-1e-6, since the computation is deterministic statevector algebra.
+the CPU and requires every response to 1e-9 and every fitted parameter and
+model score (fit and leave-one-out RMS) to 1e-6 in absolute terms, since the
+computation is deterministic statevector algebra. Pulse times use the dt the
+run's record.json carries, so a refreshed Target snapshot leaves the replay
+unchanged.
 """
 
 from __future__ import annotations
@@ -60,7 +63,6 @@ import packing  # noqa: E402
 
 RUN = ROOT / "results/live/2026-10-13T025444.603480Z"
 MEASURED = ROOT / "results/ripple/measured-ripple.json"
-TARGETS = ROOT / "docs/evidence/heron_platform/targets.json"
 BACKEND = "ibm_fez"
 PHASES = 8
 KHZ = 1e3
@@ -104,7 +106,13 @@ class Executed:
             data = json.loads(path.read_text(encoding="utf-8"))
             table = data["metadata"]["compilation"]["scheduler_timing"]["timing"]
             self.timing[data["pub_name"]] = [row.split(",") for row in table.splitlines()]
-        self.dt = float(json.loads(TARGETS.read_text(encoding="utf-8"))["backends"][BACKEND]["dt"])
+        # scheduler_timing counts ticks of the dt the run was planned and
+        # executed under, which the record binds into its configuration.
+        self.dt = float(record["family_configuration"]["dt_seconds"])
+        require(
+            self.dt == float(record["fusion_placement"]["configuration"]["dt_seconds"]),
+            "record.json carries two dt values",
+        )
 
     def replica(self, name: str) -> tuple[QuantumCircuit, list[list[str]]]:
         pub_name, component = self.components[name]
@@ -323,10 +331,15 @@ def main() -> int:
             for key in ("measured_offset_rad", "detuning_response_rad_per_khz", "cz_phase_response_rad_per_rad"):
                 require(np.allclose(fit[key], other[key], rtol=0, atol=1e-9), f"lane {fit['lane']}: {key} differs")
             for name, model in fit["models"].items():
+                fresh_model = other["models"][name]
                 require(
-                    np.allclose(model["parameters"], other["models"][name]["parameters"], rtol=0, atol=1e-6),
+                    np.allclose(model["parameters"], fresh_model["parameters"], rtol=0, atol=1e-6),
                     f"lane {fit['lane']}: {name} parameters differ",
                 )
+                for score in ("fit_rms_rad", "leave_one_out_rms_rad"):
+                    require(
+                        abs(model[score] - fresh_model[score]) <= 1e-6, f"lane {fit['lane']}: {name} {score} differs"
+                    )
         print(f"{args.check}: lanes {lanes} reproduced")
         return 0
     require(args.out is not None, "--out is required")
