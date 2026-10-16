@@ -2400,6 +2400,46 @@
    "name": "core-311",
    "seconds": 30.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && ruff format --check docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py && MYPYPATH=gororoba_quantum mypy docs/notes/packages/manual/checks/algebra_interplay.py docs/notes/packages/manual/checks/run_examples.py docs/notes/packages/manual/checks/albert_algebra.py",
+   "name": "core-312",
+   "seconds": 6.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null",
+   "name": "sources-247",
+   "seconds": 19.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -O -W error ../docs/notes/packages/manual/checks/algebra_interplay.py --check >/dev/null",
+   "name": "sources-248",
+   "seconds": 20.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ../docs/notes/packages/manual/checks/albert_algebra.py --check >/dev/null",
+   "name": "sources-249",
+   "seconds": 11.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "sources",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -O -W error ../docs/notes/packages/manual/checks/albert_algebra.py --check >/dev/null",
+   "name": "sources-250",
+   "seconds": 11.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
