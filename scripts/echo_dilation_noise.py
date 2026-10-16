@@ -126,6 +126,10 @@ CHANNELS: dict[str, tuple[float, ...]] = {
     "extra_depolarizing": (0.002, 0.005, 0.01),
 }
 ROTATIONS = ("sx_overrotation", "cz_local_phase")
+# Each edge alone carries a conditional phase of these magnitudes, which
+# tests whether the edges' shifts of amplified - echo add up to the uniform one.
+EDGE_DELTA = (-0.02, -0.01, 0.01, 0.02)
+EDGE_CHANNEL = "cz_conditional_phase"
 MIX_EPS = (0.03, 0.06)
 MIX_DELTA = (-0.02, -0.01, 0.01, 0.02)
 REFERENCE_M = (8, 24)
@@ -311,7 +315,12 @@ class LawTask:
             local, qubits = local_circuit(compiled)
             _MODELS[(backend, key)] = LaneModel(local, snapshot, qubits, self.device)
         model = _MODELS[(backend, key)]
-        size = len(model.edges) if channel == "cz_conditional_phase" else model.scheduled.num_qubits
+        name, _, edge = (channel or "").partition("@")
+        if edge:
+            params = np.zeros(len(model.edges))
+            params[int(edge)] = magnitude
+            return float(model.law(name, params)[0])
+        size = len(model.edges) if channel == EDGE_CHANNEL else model.scheduled.num_qubits
         return float(model.law(channel, np.full(size, magnitude))[0])
 
 
@@ -339,6 +348,9 @@ def law_items(backend: str, compiled: dict[str, Any], reduced: bool = False) -> 
 
     items = pair("device", 0.0, None, 0.0)
     items += [row for name, values in channels.items() for v in values for row in pair("device", 0.0, name, v)]
+    edge_count = len(edges(compiled["pairs"][("device", 0.0)]["echo"]))
+    edge_sweep = [(0, max(EDGE_DELTA))] if reduced else [(k, d) for k in range(edge_count) for d in EDGE_DELTA]
+    items += [row for k, d in edge_sweep for row in pair("device", 0.0, f"{EDGE_CHANNEL}@{k}", d)]
     items += [row for eps in eps_grid for row in pair("family", eps, None, 0.0)]
     items += [row for eps, delta in mixtures for row in pair("family", eps, "cz_conditional_phase", delta)]
     refs = sorted(compiled["reference"])
@@ -436,6 +448,8 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
         base = diff("device", 0.0, None, 0.0)
         base_var = variance("device", 0.0, None, 0.0)
         family_base = diff("family", 0.0, None, 0.0)
+        # Each sweep's shots compare it with its own compile's baseline arm pair.
+        family_var = variance("family", 0.0, None, 0.0)
         se = {n: math.sqrt(base_var / n) for n in BUDGETS}
         sweeps = {
             "prep_eps": [
@@ -453,7 +467,11 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
                     {
                         "magnitude": v,
                         "shift": s,
-                        "shots_per_arm": math.ceil(Z_SCORE**2 * (var + base_var) / s**2) if s else None,
+                        "shots_per_arm": (
+                            math.ceil(Z_SCORE**2 * (var + (family_var if name == "prep_eps" else base_var)) / s**2)
+                            if s
+                            else None
+                        ),
                     }
                     for v, s, var in sweep
                 ],
@@ -465,6 +483,36 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
             for d in sorted({abs(v) for v in CHANNELS["cz_conditional_phase"]})
         ]
         tolerance = {n: magnitude_at(se[n], delta_points) for n in BUDGETS}
+        reference_edges = sorted(
+            {tuple(r["edge"]) for r in rows if r["backend"] == backend and r["kind"] == "reference"}
+        )
+        swept = sorted(
+            {
+                int(r["channel"].split("@")[1])
+                for r in rows
+                if r["backend"] == backend and r["kind"] == "pair" and "@" in (r["channel"] or "")
+            }
+        )
+        per_edge: list[dict[str, Any]] = []
+        for k in swept:
+            shifts = {d: diff("device", 0.0, f"{EDGE_CHANNEL}@{k}", d) - base for d in EDGE_DELTA}
+            points = [(d, -0.5 * (shifts[d] + shifts[-d])) for d in sorted({abs(d) for d in EDGE_DELTA})]
+            per_edge.append(
+                {
+                    "edge": list(reference_edges[k]),
+                    "shifts": {str(d): v for d, v in shifts.items()},
+                    "delta_tolerance": {str(n): magnitude_at(se[n], points) for n in BUDGETS},
+                }
+            )
+        additivity = [
+            {
+                "delta": d,
+                "uniform_shift": diff("device", 0.0, EDGE_CHANNEL, d) - base,
+                "sum_of_edge_shifts": sum(e["shifts"][str(d)] for e in per_edge),
+            }
+            for d in EDGE_DELTA
+        ]
+        edge_tolerance = {tuple(e["edge"]): e["delta_tolerance"] for e in per_edge}
         mixtures = []
         for eps in MIX_EPS:
             alone = diff("family", eps, None, 0.0) - family_base
@@ -518,7 +566,12 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
                         for name, values in CHANNELS.items()
                         if name != "cz_conditional_phase"
                     },
-                    "shots_per_target": {str(n): _reference_shots(ref_var, tolerance[n], slope) for n in BUDGETS},
+                    "shots_per_target_uniform": {
+                        str(n): _reference_shots(ref_var, tolerance[n], slope) for n in BUDGETS
+                    },
+                    "shots_per_target_edge": {
+                        str(n): _reference_shots(ref_var, edge_tolerance[edge][str(n)], slope) for n in BUDGETS
+                    },
                 }
             )
         undone = [n for n in ROTATIONS if classes[n]["verdict"] == "undone"]
@@ -529,6 +582,8 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
             "baseline_is_null": abs(base) <= se[max(BUDGETS)],
             "classes": classes,
             "delta_tolerance": {str(n): v for n, v in tolerance.items()},
+            "per_edge": per_edge,
+            "additivity": additivity,
             "mixtures": mixtures,
             "reference": reference,
             "undone_rotations": undone,
