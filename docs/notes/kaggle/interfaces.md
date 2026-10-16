@@ -19,12 +19,13 @@ CLI), kagglesdk 0.1.37 and the Kaggle MCP server at
   version. Measured: `kaggle kernels output
   probablyeric/gororoba-atlas-detuning-map/3` and `.../5` both wrote the log
   of version 8 (sha256 prefix `cf5204b8884d`; version 3's log is
-  `dbbffe800a05`). `scripts/kaggle_run.py collect` passes `OWNER/SLUG/N` to
-  `kaggle kernels output`, so a run collected after a newer version of its
-  slug exists receives the newer version's files, and the newer version's
-  own `exit.json` satisfies the completion check. Every retained versioned
-  run under results/kaggle/ (18 runs) holds its own version's log: each was
-  collected before its slug's next push.
+  `dbbffe800a05`). `scripts/kaggle_run.py collect` therefore reads a run's
+  version through kagglesdk `ListKernelSessionOutput` with `version_label
+  vN` and writes the CLI's layout (`download_version`): on one kernel,
+  version 1 returns its exit code 3 where `kernels output .../1` returned
+  version 2's 0. Every retained versioned run under results/kaggle/ (18
+  runs) holds its own version's log: each was collected before its slug's
+  next push, under the earlier CLI path.
 - **Per-version reads exist outside the CLI.** kagglesdk's `version_label`
   and the MCP tools' `versionLabel` select a version when given as `vN`:
   `get_kernel`, `get_kernel_session_status` and
@@ -180,7 +181,8 @@ client does not send.
 | --- | --- | --- |
 | Bundle and push a kernel; refuse a GPU or TPU push without `--timeout` or over a live version | CLI `kernels push --accelerator -t`, `kernels status`, `config view` | `scripts/kaggle_run.py push` |
 | Poll a run | CLI `kernels status OWNER/SLUG/N` (answers for the latest version) | `scripts/kaggle_run.py status` |
-| Download and ledger a run's output | CLI `kernels output OWNER/SLUG/N` (downloads the latest version) | `scripts/kaggle_run.py collect` |
+| Replicate CI's gate shards for a commit | CLI `kernels push` per shard, retried while the batch session pool is full | `scripts/kaggle_run.py shards`, `shards-report` |
+| Download and ledger a run's output | kagglesdk `list_kernel_session_output` with `version_label vN` (the CLI's `kernels output` downloads the latest version) | `scripts/kaggle_run.py collect` |
 | Retain repository files as a dataset | CLI `datasets create`, `datasets version` | `scripts/kaggle_run.py dataset` |
 | A kernel's numeric id | CLI `kernels pull -m` (`id_no`) | `scripts/kaggle_sessions.py` |
 | Every version's session id and status | web API `ListKernelVersions` through headless Firefox | `scripts/kaggle_sessions.py versions` |
