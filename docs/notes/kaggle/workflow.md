@@ -50,10 +50,30 @@ GPU matters for sweeps and batched trials, not for single circuits.
 `scripts/kaggle_run.py` is the path from the repository to Kaggle:
 
 - `push ENTRY --slug SLUG [--include FILE] [-- ARGS]` bundles ENTRY with
-  its repository imports and named data files, writes a private GPU kernel
-  (machine shape `NvidiaTeslaT4` by default) and pushes it. The kernel
-  records its environment, runs ENTRY with `GOROROBA_AER_DEVICE=GPU`, and
-  returns every file the run created under the repository root.
+  its repository imports and named data files, writes a private kernel (a
+  CPU machine by default) and pushes it. The kernel records its
+  environment, runs ENTRY with `GOROROBA_AER_DEVICE` set to its device, and
+  returns every file the run created under the repository root. A case
+  passes `--machine NvidiaTeslaT4` only when its widest density matrix
+  reaches `local_compute.GPU_MIN_ACTIVE_QUBITS` (11): the 2- to 7-qubit
+  replays ran slower on a GPU than on the CPU on the build host
+  (ghost-run replay 67 s on the CPU, 106 s on the RTX 4070 Ti), and the
+  weekly GPU quota goes to the runs that need it.
+- `shards [--tier pr] [--count N] [--only I,J] [--machine M,...]
+  [--slot-wait S]` pushes one kernel per CI shard of the committed HEAD,
+  with CI's shard count by default (6 for pr, 12 for full), on the first
+  machine in the list with a free session; a default run waits up to two
+  hours for sessions, since six shards outnumber the five CPU sessions. The kernel fetches the
+  merge base with origin/main from the public repository, applies the
+  bundled files changed since then with their modes and deletions, and runs
+  no gate unless `git write-tree` equals HEAD's tree. It then installs CI's
+  Python through uv and CI's pins through `ci/install_pins.sh` (the script
+  `.github/workflows/ci.yml` runs), and runs `ci/run_gates.py` on its
+  shard with the CPU device. Shard runs live under the ignored
+  `.kaggle-shards/`, iteration records and never evidence;
+  `shards-report RUN_DIR...` prints each collected shard's summary and
+  failing gates. CI stays the merge authority: a shard that passes on
+  Kaggle and fails on CI exposes an environment difference.
 - `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
   run's own version with a sha256 manifest. `kernels status` reports the
   slug's latest version whatever version it names, so `collect` decides
@@ -65,15 +85,24 @@ GPU matters for sweeps and batched trials, not for single circuits.
   probes of 2026-10-16T025230Z and T025231Z ended in ERROR because a
   capacity trial killed the kernel, which led to one process per trial,
   and the P100 probe is the record that a P100 request ran on two T4s.
-- `push --smoke` probes the environment and measures the widest
+- `push --smoke` (always on a GPU, `NvidiaTeslaT4` unless `--machine`
+  names another accelerator) probes the environment and measures the widest
   density-matrix and statevector circuits the GPU runs.
 - `--machine` names the accelerator, passed to the push as
-  `--accelerator`: `NvidiaTeslaT4` (the default, two T4s), another ID from
-  [cli/kernels.md](cli/kernels.md), or `cpu` for none. `machine_shape` in
+  `--accelerator`: `cpu` (the default, none), `NvidiaTeslaT4` (two T4s),
+  or another ID from [cli/kernels.md](cli/kernels.md). `machine_shape` in
   kernel-metadata.json alone does not select hardware: probes that set only
   it for `NvidiaL4` and `TpuV5E8` ran on 4-core CPU machines, and
   `NvidiaTeslaP100`, absent from the current list, returned two T4s. A
   kernel's `environment.json`, not the request, records what ran.
+- The account runs at most five CPU batch sessions at once, shared by
+  every kernel it pushes; a sixth push fails with "Maximum batch CPU session
+  count of 5 reached", and `shards --slot-wait` retries until a session
+  ends. A `TpuV5E8` request draws on the same pool: with five CPU sessions
+  running, it fails with the same CPU-count message (2026-10-16), so the
+  GPU pool is the only capacity beyond the five. `shards --machine
+  cpu,NvidiaTeslaT4` falls through to a GPU session when the CPU pool is
+  full; a GPU session runs the shard on its 4-core host.
 - The account runs at most two GPU batch sessions at once; a third push
   fails with "Maximum batch GPU session count of 2 reached", and `push`
   exits with that message and removes the unsent run directory, as it does

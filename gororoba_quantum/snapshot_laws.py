@@ -128,6 +128,7 @@ def self_check(snapshot_path: str) -> str:
 
     snapshot = json.loads(Path(snapshot_path).read_text(encoding="utf-8"))
     view, _ = calibration_snapshot.noise_model(snapshot)
+    device = calibration_snapshot.aer_device()
     circuit = QuantumCircuit(3, 3)
     circuit.h(0)
     circuit.cx(0, 2)
@@ -137,15 +138,15 @@ def self_check(snapshot_path: str) -> str:
     circuit.measure([0, 1, 2], [2, 0, 1])
     compiled = transpile(circuit, view, optimization_level=1, seed_transpiler=7)
     ideal = Statevector(circuit.remove_final_measurements(inplace=False)).probabilities([1, 2, 0])
-    law = outcome_law(snapshot, compiled, noisy=False)
+    law = outcome_law(snapshot, compiled, device, noisy=False)
     if not np.allclose(law, ideal, atol=1e-10):
         raise SystemExit(f"restricted noiseless law {law} differs from the statevector law {ideal}")
-    full = calibration_snapshot.noise_simulator(snapshot)
+    full = calibration_snapshot.noise_simulator(snapshot, device)
     probe = compiled.remove_final_measurements(inplace=False)
     physical = compiled.layout.final_index_layout()[:3]
     probe.save_probabilities(physical, label="p")
     whole = np.asarray(full.run(probe).result().data(0)["p"], dtype=float)
-    restricted = outcome_law(snapshot, compiled, noisy=True)
+    restricted = outcome_law(snapshot, compiled, device, noisy=True)
     channel = np.ones((1, 1))
     for q in physical:
         e10, e01 = snapshot["qubits"][q]["e10"], snapshot["qubits"][q]["e01"]

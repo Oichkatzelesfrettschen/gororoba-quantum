@@ -22,7 +22,11 @@ stamp by some minutes (at the stamp itself it still returns the previous
 update), so the fetch at a PUB start names the calibration the service
 published for that execution. It also exports each
 backend's current calibration, and writes index.json mapping every job and
-PUB start to its snapshot. ``--check`` needs no network: every indexed file
+PUB start to its snapshot. ``--append`` reads each backend's current calibration (read-only) and
+records each new identity in history/appended.json, outside the index whose
+snapshot set retained ghost results bind; it reads the service only and
+submits nothing.
+``--check`` needs no network: every indexed file
 exists with its recorded sha256, rebuilds its Target, the index covers
 exactly the audited jobs, and every executed member's start maps to a
 snapshot carrying the calibration identity its collect.json records.
@@ -46,6 +50,9 @@ import calibration_snapshot  # noqa: E402
 AUDIT = ROOT / "results/live/qpu-job-retention-audit.json"
 HISTORY = ROOT / "docs/evidence/calibration/history"
 INDEX = HISTORY / "index.json"
+# Calibrations read after the index was written. ghost_run binds the index's
+# snapshot set, so these stay outside it until a ghost run is regenerated.
+APPENDED = HISTORY / "appended.json"
 BACKENDS = ("ibm_fez", "ibm_kingston", "ibm_marrakesh")
 
 
@@ -74,7 +81,7 @@ def file_name(calibration: str) -> str:
     return calibration.replace(":", "").replace("+", "p").replace("-", "") + ".json"
 
 
-def export(backend: Any, name: str, props: Any, target: Any, written: dict[str, str]) -> str:
+def export(backend: Any, name: str, props: Any, target: Any, written: dict[str, str], base: Path = HISTORY) -> str:
     """Snapshot of one fetched calibration, verified against live_run's noise model; returns its path."""
     import live_run
 
@@ -144,6 +151,34 @@ def write() -> int:
     return 0
 
 
+def append() -> int:
+    """Read each backend's current calibration and record each new identity in APPENDED."""
+    from qiskit_ibm_runtime import QiskitRuntimeService
+
+    service = QiskitRuntimeService()
+    index = json.loads(INDEX.read_text(encoding="utf-8"))
+    record = json.loads(APPENDED.read_text(encoding="utf-8")) if APPENDED.is_file() else {"files": {}}
+    # export() returns a known identity without verifying or rewriting it, so
+    # a retained snapshot keeps the bytes its recorded sha256 names.
+    written = {relative: entry["calibration"] for relative, entry in index["files"].items()}
+    written |= {relative: entry["calibration"] for relative, entry in record["files"].items()}
+    for name in BACKENDS:
+        backend = service.backend(name)
+        backend.refresh()
+        relative = export(backend, name, backend.properties(), backend.target, written)
+        if relative not in index["files"] and relative not in record["files"]:
+            record["files"][relative] = {
+                "backend": name,
+                "calibration": written[relative],
+                "sha256": sha256(ROOT / relative),
+                "retrieved_utc": datetime.now(UTC).strftime("%Y-%m-%dT%H:%MZ"),
+            }
+    record = {"schema": "ghost-calibration-appended-v1", "files": dict(sorted(record["files"].items()))}
+    APPENDED.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    print(f"appended: {len(record['files'])} snapshots outside the index")
+    return 0
+
+
 def check() -> int:
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     require(index.get("schema") == "ghost-calibration-index-v1", "unexpected index schema")
@@ -159,6 +194,17 @@ def check() -> int:
         require(sha256(path) == entry["sha256"], f"{relative} differs from its recorded sha256")
         snapshot = json.loads(path.read_text(encoding="utf-8"))
         require(snapshot["calibration"] == entry["calibration"], f"{relative}: calibration identity differs")
+        calibration_snapshot.round_trip(snapshot)
+    appended = json.loads(APPENDED.read_text(encoding="utf-8"))["files"] if APPENDED.is_file() else {}
+    on_disk = {path.relative_to(ROOT).as_posix() for name in BACKENDS for path in (HISTORY / name).glob("*.json")}
+    unlisted = sorted(on_disk - set(index["files"]) - set(appended))
+    require(not unlisted, f"retained snapshots neither indexed nor appended: {unlisted}")
+    for relative, entry in appended.items():
+        require(relative not in index["files"], f"{relative} is both indexed and appended")
+        require(sha256(ROOT / relative) == entry["sha256"], f"{relative} differs from its recorded sha256")
+        snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+        require(snapshot["calibration"] == entry["calibration"], f"{relative}: calibration identity differs")
+        require(snapshot["backend"] == entry["backend"], f"{relative}: backend differs")
         calibration_snapshot.round_trip(snapshot)
     # live_run --collect records the calibration identity each member's PUB
     # ran under; the snapshot its start maps to must carry that identity.
@@ -180,7 +226,8 @@ def check() -> int:
                 )
                 members += recorded is not None
     print(
-        f"ghost calibrations: {len(index['jobs'])} jobs, {len(index['files'])} snapshots round-trip, "
+        f"ghost calibrations: {len(index['jobs'])} jobs, {len(index['files'])} indexed and {len(appended)} appended "
+        "snapshots round-trip, "
         f"{members} executed members map to their recorded calibration"
     )
     return 0
@@ -191,7 +238,10 @@ def main() -> int:
     mode = parser.add_mutually_exclusive_group(required=True)
     mode.add_argument("--write", action="store_true")
     mode.add_argument("--check", action="store_true")
+    mode.add_argument("--append", action="store_true")
     args = parser.parse_args()
+    if args.append:
+        return append()
     return write() if args.write else check()
 
 
