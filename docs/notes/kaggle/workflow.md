@@ -63,10 +63,14 @@ GPU matters for sweeps and batched trials, not for single circuits.
   [--slot-wait S]` pushes one kernel per CI shard of the committed HEAD,
   with CI's shard count by default (6 for pr, 12 for full), on the first
   machine in the list with a free session; a default run waits up to two
-  hours for sessions, since six shards outnumber the five CPU sessions. The kernel fetches the
-  merge base with origin/main from the public repository, applies the
-  bundled files changed since then with their modes and deletions, and runs
-  no gate unless `git write-tree` equals HEAD's tree. It then installs CI's
+  hours for sessions, since six shards outnumber the five CPU sessions. A
+  commit already on origin is fetched as itself. An unpushed commit is
+  rebuilt from the merge base with origin/main plus the bundled files
+  changed since then, with their modes and deletions; Kaggle refuses a
+  script near 1.7 MB (HTTP 400 on SaveKernel) and accepts 706 KB, so
+  `shards` stops above `KERNEL_SOURCE_LIMIT` (1 MB) and asks for a push.
+  Either way the kernel runs no gate unless `git write-tree` equals HEAD's
+  tree. It then installs CI's
   Python through uv and CI's pins through `ci/install_pins.sh` (the script
   `.github/workflows/ci.yml` runs), and runs `ci/run_gates.py` on its
   shard with the CPU device. Shard runs live under the ignored

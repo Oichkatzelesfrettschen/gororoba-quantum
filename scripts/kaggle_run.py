@@ -21,11 +21,12 @@ the only path from the repository to Kaggle:
   to the machine's device and returns every file the entry created or
   changed under the repository root.
 - ``shards [--tier pr] [--count 6] [--only I,J]`` pushes one CPU kernel per
-  CI shard for the committed HEAD. The kernel fetches the merge base with
-  origin/main from the public repository, applies the bundled files changed
-  since then with their modes and deletions, requires git write-tree to
-  equal HEAD's tree, installs CI's Python and pins (ci/install_pins.sh), and
-  runs ci/run_gates.py on that shard. Shard runs live under the ignored
+  CI shard for the committed HEAD. The kernel fetches HEAD from the public
+  repository when it is on origin, and otherwise the merge base with
+  origin/main plus the bundled files changed since then with their modes and
+  deletions; it requires git write-tree to equal HEAD's tree, installs CI's
+  Python and pins (ci/install_pins.sh), and runs ci/run_gates.py on that
+  shard. Shard runs live under the ignored
   .kaggle-shards/ and are iteration records, never evidence;
   ``shards-report RUN_DIR...`` prints each collected shard's summary and
   failures.
@@ -80,6 +81,9 @@ CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
+# Kaggle's SaveKernel accepts a 706,414-byte run.py and refuses a 1,662,849-byte
+# one with HTTP 400 (2026-10-16); the guard sits between the two.
+KERNEL_SOURCE_LIMIT = 1_000_000
 # Six shards outnumber the five CPU sessions, so a default run waits for the
 # first shards to finish (a pr shard takes about 5 to 10 minutes there).
 SLOT_WAIT_SECONDS = 7200
@@ -604,8 +608,12 @@ def shards(args: argparse.Namespace) -> int:
 
     revision = git_commit()
     require(not revision.endswith("-dirty"), "shards test a commit: commit or stash the tracked changes first")
-    git("fetch", "-q", "origin", "main")
-    base = git("merge-base", "HEAD", "origin/main").strip()
+    git("fetch", "-q", "origin")
+    # A commit already on origin is fetched as itself and carries no overlay;
+    # an unpushed commit overlays its changes on the merge base with
+    # origin/main, which has to fit Kaggle's script source limit.
+    pushed = bool(git("branch", "-r", "--contains", revision).strip())
+    base = revision if pushed else git("merge-base", "HEAD", "origin/main").strip()
     owner = username()
     # CI runs the pr tier on 6 shards and the full tier on 12
     # (.github/workflows/ci.yml); run_gates assigns gates by the count.
@@ -621,6 +629,13 @@ def shards(args: argparse.Namespace) -> int:
                 stamp = datetime.now(UTC).strftime("%Y-%m-%dT%H%M%SZ")
                 run_dir = SHARDS / f"{stamp}-{revision[:12]}-shard-{shard}-of-{args.count}"
                 build_shard_kernel(run_dir, owner, stamp, base, revision, args.tier, shard, args.count, machine)
+                size = (run_dir / "kernel/run.py").stat().st_size
+                if size > KERNEL_SOURCE_LIMIT:
+                    shutil.rmtree(run_dir)
+                    raise SystemExit(
+                        f"shard {shard}: the overlay makes run.py {size} bytes, above Kaggle's script limit "
+                        f"(KERNEL_SOURCE_LIMIT {KERNEL_SOURCE_LIMIT}); push the branch so the kernel fetches HEAD"
+                    )
                 pushed, reply = push_shard(run_dir, machine, args.timeout)
                 if pushed:
                     break
