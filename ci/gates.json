@@ -2472,6 +2472,14 @@
    "name": "core-326",
    "seconds": 5.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": "gororoba_quantum",
+   "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4 && \"$PYTHON\" -B -O -W error ../scripts/atlas_coherent_families.py --check ../docs/evidence/atlas_coherent_families/result.json --runs ibm_fez,ibm_kingston --lanes 4",
+   "name": "core-329",
+   "seconds": 363.0,
+   "tier": "full"
   }
  ],
  "excluded": [

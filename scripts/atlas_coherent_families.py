@@ -139,13 +139,21 @@ injected value within 10 percent, and the ZZ frame anchor: on a two-qubit
 Ramsey fringe of one qubit, a ``zz`` term leaves the fringe phase unchanged
 with the partner in |0> and shifts it as a detuning of -zeta with the partner
 in |1>, while ``zz_symmetric`` shifts it as detunings of +zeta/2 and -zeta/2.
-``--check FILE`` reruns every lane FILE holds (or the ``--runs``/``--lanes``
-subset) and requires every number to agree within 1e-6.
+
+The result names every file it read with its sha256 (``inputs``): each run's
+record.json, isa.qpy and raw PUB files, the Fez measured-ripple.json, the
+Kingston collect.json, the retained detuning map, and the calibration
+snapshots the gate bounds read. ``--check FILE`` requires each named file to
+hold its recorded sha256, reruns every lane FILE holds (or the
+``--runs``/``--lanes`` subset), requires the rerun to read only named files,
+and requires every number to agree within 1e-6, or 1e-9 relative for larger
+values.
 """
 
 from __future__ import annotations
 
 import argparse
+import hashlib
 import json
 import math
 import sys
@@ -205,6 +213,7 @@ RANK_RTOL = 1e-6
 GAUGE_TOLERANCE = 1e-9
 REPRODUCTION_TOLERANCE = 1e-9
 CHECK_TOLERANCE = 1e-6
+CHECK_RELATIVE = 1e-9
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
 Column = tuple[str, Any]
@@ -217,6 +226,26 @@ Timed = tuple[QuantumCircuit, list[float], list[float], int, list[int]]
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise SystemExit(message)
+
+
+def sha256(path: Path) -> str:
+    return hashlib.sha256(path.read_bytes()).hexdigest()
+
+
+def snapshot_path(backend: str, calibration: str) -> Path:
+    return ghost_calibrations.HISTORY / backend / ghost_calibrations.file_name(calibration)
+
+
+def run_inputs(backend: str) -> list[Path]:
+    """The files series_for and atlas_detuning_map.Executed read for one run."""
+    run = RUNS[backend]
+    paths = [run / "record.json", run / "isa.qpy", *sorted(run.glob("raw/*/pub_*.json"))]
+    paths.append(atlas.MEASURED if backend == "ibm_fez" else run / "collect.json")
+    return paths
+
+
+def digests(paths: list[Path]) -> dict[str, str]:
+    return {path.relative_to(ROOT).as_posix(): sha256(path) for path in sorted(set(paths))}
 
 
 def timed_replica(circuit: QuantumCircuit, rows: list[list[str]], dt: float) -> Timed:
@@ -456,7 +485,7 @@ def gate_bounds(
     sx = [0.0] * len(physical)
     cz = [0.0] * len(couplers)
     for calibration in calibrations:
-        path = ghost_calibrations.HISTORY / backend / ghost_calibrations.file_name(calibration)
+        path = snapshot_path(backend, calibration)
         snapshot = json.loads(path.read_text(encoding="utf-8"))
         require(snapshot["calibration"] == calibration, f"{path}: calibration {snapshot['calibration']}")
         errors = {tuple(r["qargs"]): r["error"] for op in ("sx", "cz") for r in snapshot["instructions"][op]}
@@ -813,12 +842,15 @@ def lane_fit(
 def run(backends: list[str], lanes: list[int], edges: int | None) -> dict[str, Any]:
     retained = {fit["lane"]: fit for fit in json.loads(RETAINED_DETUNING.read_text(encoding="utf-8"))["lanes"]}
     fits = []
+    paths = [RETAINED_DETUNING]
     for backend in backends:
+        paths += run_inputs(backend)
         series = series_for(backend)
         executed = atlas.Executed(RUNS[backend])
         for lane in lanes:
             fit = lane_fit(backend, lane, series, executed, edges, retained[lane] if backend == "ibm_fez" else None)
             fits.append(fit)
+            paths += [snapshot_path(backend, calibration) for calibration in fit["calibrations"]]
             summary = {
                 name: [model.get("leave_one_out_rms_rad"), model.get("nonlinear_leave_one_out_rms_rad")]
                 for name, model in fit["models"].items()
@@ -828,6 +860,7 @@ def run(backends: list[str], lanes: list[int], edges: int | None) -> dict[str, A
     return {
         "schema": SCHEMA,
         "runs": {b: RUNS[b].relative_to(ROOT).as_posix() for b in backends},
+        "inputs": digests(paths),
         "phases": PHASES,
         "edges_per_lane": edges,
         "families": FAMILIES,
@@ -984,8 +1017,9 @@ def compare(retained: Any, fresh: Any, path: str) -> None:
         require(isinstance(fresh, list) and len(retained) == len(fresh), f"{path}: lengths differ")
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
             compare(a, b, f"{path}[{k}]")
-    elif isinstance(retained, float) and isinstance(fresh, (int, float)):
-        require(abs(retained - fresh) <= CHECK_TOLERANCE, f"{path}: {retained} against {fresh}")
+    elif isinstance(retained, float) and isinstance(fresh, (int, float)) and not isinstance(fresh, bool):
+        tolerance = max(CHECK_TOLERANCE, CHECK_RELATIVE * abs(retained))
+        require(abs(retained - fresh) <= tolerance, f"{path}: {retained} against {fresh}")
     else:
         require(retained == fresh, f"{path}: {retained!r} against {fresh!r}")
 
@@ -1011,8 +1045,13 @@ def main() -> int:
         require(len(set(named)) == len(named), f"{args.check}: a lane appears twice")
         selected = [(b, lane) for b, lane in named if b in backends and lane in lanes]
         require(bool(selected), f"{args.check}: holds none of the selected lanes")
+        for name, digest in retained["inputs"].items():
+            path = ROOT / name
+            require(path.is_file() and sha256(path) == digest, f"{name}: sha256 differs from {args.check}")
         for backend in sorted({b for b, _ in selected}):
             fresh = run([backend], [lane for b, lane in selected if b == backend], retained["edges_per_lane"])
+            unnamed = sorted(set(fresh["inputs"]) - set(retained["inputs"]))
+            require(not unnamed, f"{args.check}: the rerun read files the result does not name: {unnamed}")
             by_lane = {fit["lane"]: fit for fit in fresh["lanes"]}
             for fit in retained["lanes"]:
                 if fit["backend"] == backend and fit["lane"] in by_lane:
