@@ -2400,6 +2400,22 @@
    "name": "core-311",
    "seconds": 30.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/echo_dilation_noise.py && ruff format --check scripts/echo_dilation_noise.py && MYPYPATH=gororoba_quantum mypy scripts/echo_dilation_noise.py",
+   "name": "core-312",
+   "seconds": 8.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/result.json --arms docs/evidence/echo_dilation_noise/arms.qpy --run results/kaggle/2026-10-16T182806Z-gororoba-echo-dilation-noise",
+   "name": "core-313",
+   "seconds": 15.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
