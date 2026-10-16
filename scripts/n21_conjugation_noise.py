@@ -198,8 +198,8 @@ def two_round_summary(results: dict[str, dict[str, Any]], encoding: str) -> dict
     variance = (ff[1] + ff[3] - (ff[1] - ff[3]) ** 2) + (noff[1] + noff[3] - (noff[1] - noff[3]) ** 2)
     standard_error = math.sqrt(variance / shots)
     # Shots per arm for a two-sided 0.05 test with power 0.8 under the
-    # normal approximation, at the modeled contrast.
-    required = math.ceil(((1.959964 + 0.841621) ** 2) * variance / contrast**2) if contrast > 0 else None
+    # normal approximation, at the modeled contrast's magnitude.
+    required = math.ceil(((1.959964 + 0.841621) ** 2) * variance / contrast**2) if contrast != 0 else None
     return {
         "contrast_difference": contrast,
         "ideal_contrast_difference": 0.25,
@@ -289,6 +289,15 @@ def check(record: dict[str, Any]) -> str:
     two_round = tuple(record["encodings"]["two_round"]["columns"])
     ten_round = tuple(record["encodings"]["ten_round"]["columns"])
     _require(record["ten_round_reference"]["uniform_recovery_rate"] == uniform_recovery_rate(), "uniform floor")
+    # The noiseless reference is a seeded sample; another host's floating
+    # point may move single outcomes, so it must agree within four binomial
+    # standard errors.
+    retained_ideal = record["ten_round_reference"]["ideal_recovery_rate"]
+    ideal = ideal_recovery_rate(circuits(two_round, ten_round)["ten_round_baseline"], TEN_ROUND_SHOTS)
+    _require(
+        abs(ideal - retained_ideal) <= 4 * math.sqrt(retained_ideal * (1 - retained_ideal) / TEN_ROUND_SHOTS),
+        f"noiseless recovery {ideal} against the retained {retained_ideal}",
+    )
     jobs = []
     for backend in record["backends"]:
         path = ROOT / backend["snapshot"]
@@ -426,8 +435,25 @@ def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any
     }
 
 
+def rederive(backend: dict[str, Any]) -> dict[str, Any]:
+    """A backend entry with every field the compile choices and counts determine computed afresh."""
+    snapshot = json.loads((ROOT / backend["snapshot"]).read_text(encoding="utf-8"))
+    circuits_out = {}
+    for name, retained in backend["circuits"].items():
+        entry = circuit_entry(name, retained["chosen"], [], retained["counts"], retained["shots"], snapshot["dt"])
+        entry["per_seed_routed_cz"] = retained["per_seed_routed_cz"]
+        if "simulation_seconds" in retained:
+            entry["simulation_seconds"] = retained["simulation_seconds"]
+        circuits_out[name] = entry
+    return {**backend, "circuits": circuits_out, **backend_summary(circuits_out)}
+
+
 def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
-    """One record holding every backend of per-backend records that agree on everything else."""
+    """One record holding every backend of per-backend records that agree on everything else.
+
+    Every derived field is computed afresh from each backend's compile choices
+    and counts, so the merged record follows this script's derivations.
+    """
     shared = [key for key in records[0] if key not in ("backends", "compile_seconds")]
     for record in records[1:]:
         differing = [key for key in shared if record.get(key) != records[0].get(key)]
@@ -435,7 +461,7 @@ def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
     merged = {key: records[0][key] for key in shared}
     merged["backends"] = sorted(
         (
-            {**backend, "compile_seconds": record["compile_seconds"]}
+            {**rederive(backend), "compile_seconds": record["compile_seconds"]}
             for record in records
             for backend in record["backends"]
         ),

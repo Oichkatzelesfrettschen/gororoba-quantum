@@ -2394,7 +2394,7 @@
      "sampling_standard_error": 0.005449987963865942,
      "feedback_tvd_to_ideal": 0.1124267578125,
      "no_feedback_tvd_to_ideal": 0.235321044921875,
-     "shots_per_arm_for_power_0_8": null
+     "shots_per_arm_for_power_0_8": 364558
     },
     "encoded": {
      "contrast_difference": 0.019775390625,
@@ -7152,7 +7152,7 @@
      "sampling_standard_error": 0.005510557132625298,
      "feedback_tvd_to_ideal": 0.112335205078125,
      "no_feedback_tvd_to_ideal": 0.23822021484375,
-     "shots_per_arm_for_power_0_8": null
+     "shots_per_arm_for_power_0_8": 2492829
     },
     "encoded": {
      "contrast_difference": 0.0135498046875,

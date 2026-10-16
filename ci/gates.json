@@ -2478,7 +2478,7 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json && \"$PYTHON\" -B -O -W error scripts/n21_conjugation_noise.py --check docs/evidence/linear_conjugation/noise.json",
    "name": "core-327",
-   "seconds": 82.4,
+   "seconds": 227.4,
    "tier": "full"
   },
   {

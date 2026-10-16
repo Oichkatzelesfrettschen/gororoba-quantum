@@ -164,7 +164,11 @@ def environment() -> dict[str, Any]:
 
 
 def source_digests() -> dict[str, str]:
-    paths = ("scripts/linear_conjugation_search.py", "gororoba_quantum/target_flip.py")
+    paths = (
+        "scripts/linear_conjugation_search.py",
+        "gororoba_quantum/target_flip.py",
+        "gororoba_quantum/modular_arithmetic.py",
+    )
     return {path: hashlib.sha256((ROOT / path).read_bytes()).hexdigest() for path in paths}
 
 
@@ -270,6 +274,12 @@ def merge(shards: list[dict[str, Any]]) -> dict[str, Any]:
     _require(
         len({json.dumps(shard["sources"], sort_keys=True) for shard in shards}) == 1, "shards ran different sources"
     )
+    for shard in shards:
+        width = shard["stop"] - shard["start"]
+        _require(
+            len(shard["s4"]) == len(shard["s2"]) == width,
+            f"shard [{shard['start']}, {shard['stop']}) holds {len(shard['s4'])} and {len(shard['s2'])} costs",
+        )
     s4 = [value for shard in shards for value in shard["s4"]]
     s2 = [value for shard in shards for value in shard["s2"]]
     return {

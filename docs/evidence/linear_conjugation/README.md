@@ -81,9 +81,11 @@ surrogate does not see.
 - **Contrast.** The encoding moves its modeled contrast above sampling noise
   on all three backends, from zero within one standard error to 2.5 to 7.6
   standard errors.
-- **Shot cost.** It cuts the shots a 0.8-power test needs on Kingston by a
-  factor of 39 (174,337 per arm unencoded). The baseline contrast on Fez and
-  Marrakesh is not positive, so no shot count detects it.
+- **Shot cost.** It cuts the shots a two-sided 0.8-power test needs per arm
+  on every backend: Kingston from 174,337 to 4,454 (a factor of 39), Fez
+  from 364,558 to 20,048, and Marrakesh from 2,492,829 to 42,972. The
+  unencoded Fez and Marrakesh contrasts are negative and within one
+  standard error of zero.
 - **Fidelity.** The modeled contrast stays a sixth of the ideal at best,
   with both arms' total variation from their ideal laws at 0.10 to 0.23.
 
