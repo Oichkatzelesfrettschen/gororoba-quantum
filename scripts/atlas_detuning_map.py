@@ -26,8 +26,8 @@ their active qubits, and differentiates the fringe phase by a 1 kHz detuning
 per lane qubit and a 0.01 rad CPhase per lane coupler. Four models per lane
 (lane mean, detunings, CZ phases, both) are fitted by least squares on those
 slopes and compared by leave-one-edge-out RMS error against the shot-noise
-floor, the binomial variance of the 8 points propagated through the fringe
-fit. The slopes describe the phase only near zero error, so each physical
+floor, each point's binomial variance propagated through the fringe fit's
+cosine and sine coefficients to its phase. The slopes describe the phase only near zero error, so each physical
 model is also scored by resimulating every edge, held out or fitted, at its
 fitted detunings and CZ phases (``nonlinear_*`` scores); only those scores
 test the static-error model itself.
@@ -71,7 +71,7 @@ MEASURED = ROOT / "results/ripple/measured-ripple.json"
 BACKEND = "ibm_fez"
 PHASES = 8
 LANES = 7
-SCHEMA = "atlas-detuning-map-v3"
+SCHEMA = "atlas-detuning-map-v4"
 KHZ = 1e3
 CZ_STEP = 0.01
 VIRTUAL = {"rz", "barrier", "delay"}
@@ -90,6 +90,20 @@ def fringe(points: list[float]) -> tuple[float, float]:
     design = np.column_stack([np.ones(PHASES), np.cos(phi), np.sin(phi)])
     _, c, s = np.linalg.lstsq(design, np.array(points), rcond=None)[0]
     return math.hypot(c, s), math.atan2(s, c)
+
+
+def phase_standard_error(points: list[float], variances: list[float]) -> float:
+    """Standard error of the fringe phase atan2(s, c), each point's variance propagated through c and s.
+
+    c and s are linear in the points (rows of the least-squares
+    pseudo-inverse), so the phase gradient is (c ds/dp_k - s dc/dp_k) / (c^2 + s^2).
+    """
+    phi = np.arange(PHASES) * math.pi / 4
+    design = np.column_stack([np.ones(PHASES), np.cos(phi), np.sin(phi)])
+    rows = np.linalg.pinv(design)
+    c, s = rows[1] @ np.array(points), rows[2] @ np.array(points)
+    gradient = (c * rows[2] - s * rows[1]) / (c * c + s * s)
+    return float(math.sqrt(np.sum(np.square(gradient) * np.array(variances))))
 
 
 def wrap(angle: float) -> float:
@@ -214,10 +228,9 @@ def measured_edges() -> dict[int, list[dict[str, Any]]]:
     lanes: dict[int, list[dict[str, Any]]] = defaultdict(list)
     for key in sorted(points):
         series = [points[key][phase] for phase in range(PHASES)]
-        amplitude, hardware = fringe([p[1] for p in series])
+        _, hardware = fringe([p[1] for p in series])
         _, replay = fringe([p[3] for p in series])
         _, ideal = fringe([p[4] for p in series])
-        variance = float(np.mean([p[1] * (1 - p[1]) / p[2] for p in series])) * 2 / PHASES
         lanes[key[0]].append(
             {
                 "kite": key[1],
@@ -226,7 +239,9 @@ def measured_edges() -> dict[int, list[dict[str, Any]]]:
                 "members": [p[0] for p in series],
                 "ideal_phase": ideal,
                 "offset": wrap(hardware - replay),
-                "shot_noise_rad": math.sqrt(variance) / amplitude,
+                "shot_noise_rad": phase_standard_error(
+                    [p[1] for p in series], [p[1] * (1 - p[1]) / p[2] for p in series]
+                ),
             }
         )
     return lanes
@@ -362,6 +377,11 @@ def main() -> int:
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
         require(retained.get("schema") == SCHEMA, f"{args.check}: schema {retained.get('schema')}, expected {SCHEMA}")
+        provenance = {"backend": BACKEND, "run": RUN.relative_to(ROOT).as_posix(), "phases": PHASES}
+        require(
+            all(retained.get(key) == value for key, value in provenance.items()),
+            f"{args.check}: provenance differs from {provenance}",
+        )
         named = [fit["lane"] for fit in retained["lanes"]]
         require(sorted(named) == list(range(LANES)), f"{args.check}: lanes {named} are not each of 0..{LANES - 1} once")
         lanes = named if args.lanes == "all" else [int(v) for v in args.lanes.split(",")]
@@ -373,6 +393,10 @@ def main() -> int:
             other = fresh[fit["lane"]]
             for key in ("measured_offset_rad", "detuning_response_rad_per_khz", "cz_phase_response_rad_per_rad"):
                 require(np.allclose(fit[key], other[key], rtol=0, atol=1e-9), f"lane {fit['lane']}: {key} differs")
+            require(
+                abs(fit["shot_noise_rms_rad"] - other["shot_noise_rms_rad"]) <= 1e-6,
+                f"lane {fit['lane']}: shot-noise floor differs",
+            )
             require(set(fit["models"]) == set(other["models"]), f"lane {fit['lane']}: model set differs")
             for name, model in fit["models"].items():
                 fresh_model = other["models"][name]
