@@ -257,9 +257,14 @@ def check(directory: Path, catalogue: dict[str, Any]) -> None:
     print(f"qi cases: {count} files match their regeneration")
 
 
-def bit(shot: str, qubit: int) -> int:
-    """Bit of a QX or Tuna result string, whose rightmost character is qubit 0 (the Ry emulator reverses it)."""
-    return int(shot[len(shot) - 1 - qubit])
+# Result-string order per backend: QX and Tuna put qubit 0 at the rightmost
+# character; the Ry emulator puts it at the leftmost (X on q[0] reads "10").
+LEFTMOST_QUBIT_ZERO = {"Rydberg"}
+
+
+def bit(shot: str, qubit: int, backend: str = "tuna_17") -> int:
+    """Bit of qubit in a result string, in the backend's character order."""
+    return int(shot[qubit] if backend in LEFTMOST_QUBIT_ZERO else shot[len(shot) - 1 - qubit])
 
 
 def wilson(k: int, n: int, z: float = 1.959963984540054) -> tuple[float, float]:
@@ -359,12 +364,14 @@ def analyze(run_dir: Path) -> dict[str, Any]:
     if "stars" in cases:
         report["additivity"] = [star_report(star, raw) for star in cases["stars"]]
     tele = []
-    shots = raw["teleport.cq"]
-    for path in cases["paths"]:
+    # A star coupling map (Tuna-5) has no four-qubit path and so no teleport circuit.
+    shots = raw.get("teleport.cq", [])
+    for path in cases["paths"] if shots else []:
         _, _, flips = INPUTS[path["input"]]
         corrected = post = post_ok = 0
         for s in shots:
-            m_i, m_p1, d = bit(s, path["I"]), bit(s, path["P1"]), bit(s, path["D"])
+            backend = cases["backend"]
+            m_i, m_p1, d = bit(s, path["I"], backend), bit(s, path["P1"], backend), bit(s, path["D"], backend)
             flip = (m_p1 if "x" in flips else 0) ^ (m_i if "z" in flips else 0)
             # Inputs 0, + and +i map to outcome 0 after the basis rotation; input 1 maps to 1.
             want = 1 if path["input"] == "1" else 0
