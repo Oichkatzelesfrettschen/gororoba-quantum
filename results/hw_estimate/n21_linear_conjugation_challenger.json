@@ -3083,15 +3083,15 @@
     "total_variation_bound": 0.02
   },
   "schema_version": 2,
-  "search_record_sha256": "f0445cb21cbd6c4a230ac94aa5c6b5f2580608e457b3ac62d81063ccf40dea5f",
+  "search_record_sha256": "910f86c8f0631fa59e560d49ff479fb4aacce65765bf7b2f2b2b84e0a9058df3",
   "source_files_sha256": {
     "gororoba_quantum/compile_evidence.py": "f07e02204118623c79c6e99507f66f6320761ed704a219ee301f234547612635",
-    "gororoba_quantum/linear_conjugation_challenger.py": "38b3ca787a61c762fe1fe3a492f9583646a11818e27edead0551b617af771598",
+    "gororoba_quantum/linear_conjugation_challenger.py": "b694a775a228fe71f321433b3c9e0174cab40e0cf356464c9aee2b2fc4abe1ed",
     "gororoba_quantum/live_run.py": "ae359c9daf222b80fc08f556ed6c1c5179f49179f561b585dc60f2136128dcc6",
     "gororoba_quantum/modular_arithmetic.py": "bb402d6c57b0d81fb3c53fee30e0c7764028aad3117b967d9670508b35b54725",
     "gororoba_quantum/order_finding.py": "ef4661fe5e1fce3695ab56d22585aee8f2aae800828d7ae217aac047d619f412",
     "gororoba_quantum/target_flip.py": "a609d56f188bca8b686c326964900dad9fd5312d1168adb0917e2e902b0e5fdc",
     "requirements.txt": "e6e01e231c9c91dc77f5d5a30594760f6b0732d8c904d13654c327e24a5974eb",
-    "scripts/linear_conjugation_search.py": "dbf49c3e506daff66b40f8fc0c0cb20b68de9c57aaf1e6c485a2cd1a06784f72"
+    "scripts/linear_conjugation_search.py": "8c057fcd810192b36b2b3ccd2ac55b49abd4cf9f4143e0bcf260e8af47b2cbcc"
   }
 }
