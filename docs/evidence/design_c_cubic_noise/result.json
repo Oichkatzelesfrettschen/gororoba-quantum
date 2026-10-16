@@ -3,7 +3,7 @@
  "records": [
   {
    "factorized": {
-    "collision": 0.252433,
+    "collision": 0.253327,
     "cz": 99,
     "final_layout": [
      141,
@@ -12,7 +12,7 @@
      144,
      143
     ],
-    "tv": 0.1188
+    "tv": 0.11735
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -118,16 +118,16 @@
     18
    ],
    "reed_muller": {
-    "collision": 0.31993,
+    "collision": 0.321123,
     "cz": 10,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.0242
+    "tv": 0.0234
    }
   },
   {
@@ -161,21 +161,21 @@
     19
    ],
    "reed_muller": {
-    "collision": 0.317371,
+    "collision": 0.318179,
     "cz": 10,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.0268
+    "tv": 0.02595
    }
   },
   {
    "factorized": {
-    "collision": 0.228244,
+    "collision": 0.228334,
     "cz": 108,
     "final_layout": [
      144,
@@ -184,7 +184,7 @@
      143,
      136
     ],
-    "tv": 0.13755
+    "tv": 0.1383
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -218,7 +218,7 @@
   },
   {
    "factorized": {
-    "collision": 0.222059,
+    "collision": 0.221366,
     "cz": 113,
     "final_layout": [
      136,
@@ -227,7 +227,7 @@
      143,
      142
     ],
-    "tv": 0.1528
+    "tv": 0.1542
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -261,16 +261,16 @@
   },
   {
    "factorized": {
-    "collision": 0.209668,
+    "collision": 0.210268,
     "cz": 111,
     "final_layout": [
      141,
-     136,
      144,
+     136,
      143,
      142
     ],
-    "tv": 0.1581
+    "tv": 0.1597
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -290,21 +290,21 @@
     22
    ],
    "reed_muller": {
-    "collision": 0.30631,
+    "collision": 0.30708,
     "cz": 11,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.0388
+    "tv": 0.03795
    }
   },
   {
    "factorized": {
-    "collision": 0.218721,
+    "collision": 0.217611,
     "cz": 111,
     "final_layout": [
      141,
@@ -313,7 +313,7 @@
      143,
      142
     ],
-    "tv": 0.1542
+    "tv": 0.15605
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -333,21 +333,21 @@
     23
    ],
    "reed_muller": {
-    "collision": 0.314539,
+    "collision": 0.313976,
     "cz": 11,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.02985
+    "tv": 0.03045
    }
   },
   {
    "factorized": {
-    "collision": 0.233128,
+    "collision": 0.232347,
     "cz": 116,
     "final_layout": [
      141,
@@ -356,7 +356,7 @@
      143,
      142
     ],
-    "tv": 0.1423
+    "tv": 0.1438
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -390,7 +390,7 @@
   },
   {
    "factorized": {
-    "collision": 0.231364,
+    "collision": 0.228604,
     "cz": 114,
     "final_layout": [
      141,
@@ -399,7 +399,7 @@
      144,
      143
     ],
-    "tv": 0.14145
+    "tv": 0.1458
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -433,7 +433,7 @@
   },
   {
    "factorized": {
-    "collision": 0.215619,
+    "collision": 0.215023,
     "cz": 114,
     "final_layout": [
      141,
@@ -442,7 +442,7 @@
      144,
      143
     ],
-    "tv": 0.16065
+    "tv": 0.16305
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -462,21 +462,21 @@
     26
    ],
    "reed_muller": {
-    "collision": 0.318786,
+    "collision": 0.319709,
     "cz": 10,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.02645
+    "tv": 0.02755
    }
   },
   {
    "factorized": {
-    "collision": 0.215111,
+    "collision": 0.215357,
     "cz": 116,
     "final_layout": [
      141,
@@ -485,7 +485,7 @@
      143,
      142
     ],
-    "tv": 0.16375
+    "tv": 0.1634
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -505,16 +505,16 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.318563,
+    "collision": 0.320359,
     "cz": 10,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.0271
+    "tv": 0.0253
    }
   },
   {
@@ -634,16 +634,16 @@
     30
    ],
    "reed_muller": {
-    "collision": 0.308163,
+    "collision": 0.308425,
     "cz": 11,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.0368
+    "tv": 0.0365
    }
   },
   {
@@ -677,30 +677,30 @@
     31
    ],
    "reed_muller": {
-    "collision": 0.31031,
+    "collision": 0.309656,
     "cz": 11,
     "final_layout": [
      154,
-     47,
-     48,
+     45,
+     44,
      46,
      148
     ],
-    "tv": 0.03435
+    "tv": 0.03505
    }
   },
   {
    "factorized": {
-    "collision": 0.240786,
+    "collision": 0.241184,
     "cz": 115,
     "final_layout": [
      141,
-     136,
      144,
+     136,
      143,
      142
     ],
-    "tv": 0.1438
+    "tv": 0.1449
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -734,7 +734,7 @@
   },
   {
    "factorized": {
-    "collision": 0.235437,
+    "collision": 0.23584,
     "cz": 100,
     "final_layout": [
      141,
@@ -743,7 +743,7 @@
      136,
      143
     ],
-    "tv": 0.14255
+    "tv": 0.1423
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -763,16 +763,16 @@
     17
    ],
    "reed_muller": {
-    "collision": 0.314505,
+    "collision": 0.316603,
     "cz": 10,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.0299
+    "tv": 0.02775
    }
   },
   {
@@ -849,16 +849,16 @@
     19
    ],
    "reed_muller": {
-    "collision": 0.317285,
+    "collision": 0.319278,
     "cz": 10,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.027
+    "tv": 0.02595
    }
   },
   {
@@ -906,16 +906,16 @@
   },
   {
    "factorized": {
-    "collision": 0.209387,
+    "collision": 0.209014,
     "cz": 119,
     "final_layout": [
      141,
-     136,
      144,
+     136,
      143,
      142
     ],
-    "tv": 0.17265
+    "tv": 0.1737
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -935,16 +935,16 @@
     21
    ],
    "reed_muller": {
-    "collision": 0.313682,
+    "collision": 0.313318,
     "cz": 11,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.0307
+    "tv": 0.0311
    }
   },
   {
@@ -1021,16 +1021,16 @@
     23
    ],
    "reed_muller": {
-    "collision": 0.31723,
+    "collision": 0.317027,
     "cz": 11,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.02885
+    "tv": 0.02725
    }
   },
   {
@@ -1107,16 +1107,16 @@
     25
    ],
    "reed_muller": {
-    "collision": 0.317326,
+    "collision": 0.31988,
     "cz": 10,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.0268
+    "tv": 0.02445
    }
   },
   {
@@ -1193,16 +1193,16 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.314449,
+    "collision": 0.315772,
     "cz": 10,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.02985
+    "tv": 0.0288
    }
   },
   {
@@ -1279,16 +1279,16 @@
     29
    ],
    "reed_muller": {
-    "collision": 0.310231,
+    "collision": 0.309708,
     "cz": 11,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.03445
+    "tv": 0.035
    }
   },
   {
@@ -1365,21 +1365,21 @@
     31
    ],
    "reed_muller": {
-    "collision": 0.312135,
+    "collision": 0.31253,
     "cz": 11,
     "final_layout": [
-     47,
+     45,
      154,
-     48,
+     44,
      46,
      148
     ],
-    "tv": 0.03245
+    "tv": 0.032
    }
   },
   {
    "factorized": {
-    "collision": 0.242363,
+    "collision": 0.240986,
     "cz": 105,
     "final_layout": [
      141,
@@ -1388,7 +1388,7 @@
      143,
      142
     ],
-    "tv": 0.14715
+    "tv": 0.14925
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1451,7 +1451,7 @@
     17
    ],
    "reed_muller": {
-    "collision": 0.302024,
+    "collision": 0.302328,
     "cz": 26,
     "final_layout": [
      37,
@@ -1460,7 +1460,7 @@
      44,
      148
     ],
-    "tv": 0.0501
+    "tv": 0.04955
    }
   },
   {
@@ -1494,7 +1494,7 @@
     18
    ],
    "reed_muller": {
-    "collision": 0.292477,
+    "collision": 0.292793,
     "cz": 26,
     "final_layout": [
      37,
@@ -1503,12 +1503,12 @@
      44,
      148
     ],
-    "tv": 0.05825
+    "tv": 0.05765
    }
   },
   {
    "factorized": {
-    "collision": 0.231691,
+    "collision": 0.231059,
     "cz": 109,
     "final_layout": [
      141,
@@ -1517,7 +1517,7 @@
      143,
      144
     ],
-    "tv": 0.15595
+    "tv": 0.1562
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1623,7 +1623,7 @@
     21
    ],
    "reed_muller": {
-    "collision": 0.292722,
+    "collision": 0.292593,
     "cz": 21,
     "final_layout": [
      44,
@@ -1632,7 +1632,7 @@
      47,
      148
     ],
-    "tv": 0.0575
+    "tv": 0.05765
    }
   },
   {
@@ -1666,7 +1666,7 @@
     22
    ],
    "reed_muller": {
-    "collision": 0.295963,
+    "collision": 0.295794,
     "cz": 21,
     "final_layout": [
      44,
@@ -1675,7 +1675,7 @@
      47,
      148
     ],
-    "tv": 0.05275
+    "tv": 0.05295
    }
   },
   {
@@ -1723,7 +1723,7 @@
   },
   {
    "factorized": {
-    "collision": 0.21845,
+    "collision": 0.218733,
     "cz": 118,
     "final_layout": [
      141,
@@ -1732,7 +1732,7 @@
      136,
      143
     ],
-    "tv": 0.1752
+    "tv": 0.175
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1766,7 +1766,7 @@
   },
   {
    "factorized": {
-    "collision": 0.1922,
+    "collision": 0.193396,
     "cz": 124,
     "final_layout": [
      141,
@@ -1775,7 +1775,7 @@
      144,
      143
     ],
-    "tv": 0.2
+    "tv": 0.19705
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1795,7 +1795,7 @@
     25
    ],
    "reed_muller": {
-    "collision": 0.292854,
+    "collision": 0.293297,
     "cz": 26,
     "final_layout": [
      37,
@@ -1804,12 +1804,12 @@
      44,
      148
     ],
-    "tv": 0.0557
+    "tv": 0.0556
    }
   },
   {
    "factorized": {
-    "collision": 0.197127,
+    "collision": 0.198794,
     "cz": 124,
     "final_layout": [
      141,
@@ -1818,7 +1818,7 @@
      144,
      143
     ],
-    "tv": 0.2
+    "tv": 0.19805
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1838,7 +1838,7 @@
     26
    ],
    "reed_muller": {
-    "collision": 0.295276,
+    "collision": 0.295474,
     "cz": 26,
     "final_layout": [
      37,
@@ -1847,12 +1847,12 @@
      44,
      148
     ],
-    "tv": 0.05485
+    "tv": 0.0547
    }
   },
   {
    "factorized": {
-    "collision": 0.216485,
+    "collision": 0.216159,
     "cz": 118,
     "final_layout": [
      141,
@@ -1861,7 +1861,7 @@
      136,
      143
     ],
-    "tv": 0.1834
+    "tv": 0.1846
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1895,7 +1895,7 @@
   },
   {
    "factorized": {
-    "collision": 0.186343,
+    "collision": 0.186812,
     "cz": 132,
     "final_layout": [
      141,
@@ -1904,7 +1904,7 @@
      143,
      142
     ],
-    "tv": 0.21055
+    "tv": 0.21
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1938,7 +1938,7 @@
   },
   {
    "factorized": {
-    "collision": 0.180401,
+    "collision": 0.180754,
     "cz": 132,
     "final_layout": [
      141,
@@ -1947,7 +1947,7 @@
      143,
      142
     ],
-    "tv": 0.2178
+    "tv": 0.2177
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -1967,7 +1967,7 @@
     29
    ],
    "reed_muller": {
-    "collision": 0.295658,
+    "collision": 0.295647,
     "cz": 21,
     "final_layout": [
      44,
@@ -1981,7 +1981,7 @@
   },
   {
    "factorized": {
-    "collision": 0.181853,
+    "collision": 0.183229,
     "cz": 132,
     "final_layout": [
      141,
@@ -1990,7 +1990,7 @@
      143,
      142
     ],
-    "tv": 0.20965
+    "tv": 0.20695
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2010,7 +2010,7 @@
     30
    ],
    "reed_muller": {
-    "collision": 0.296883,
+    "collision": 0.296781,
     "cz": 21,
     "final_layout": [
      44,
@@ -2019,12 +2019,12 @@
      47,
      148
     ],
-    "tv": 0.05235
+    "tv": 0.05245
    }
   },
   {
    "factorized": {
-    "collision": 0.189008,
+    "collision": 0.190397,
     "cz": 132,
     "final_layout": [
      141,
@@ -2033,7 +2033,7 @@
      143,
      142
     ],
-    "tv": 0.2122
+    "tv": 0.21005
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2110,7 +2110,7 @@
   },
   {
    "factorized": {
-    "collision": 0.225462,
+    "collision": 0.226084,
     "cz": 107,
     "final_layout": [
      141,
@@ -2119,7 +2119,7 @@
      143,
      142
     ],
-    "tv": 0.1481
+    "tv": 0.14755
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2139,16 +2139,16 @@
     17
    ],
    "reed_muller": {
-    "collision": 0.314798,
+    "collision": 0.317423,
     "cz": 10,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.0295
+    "tv": 0.0267
    }
   },
   {
@@ -2209,32 +2209,32 @@
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.307913,
+    "collision": 0.30923,
     "cz": 15,
     "final_layout": [
      50,
      49,
-     48,
      38,
+     48,
      148
     ],
-    "tv": 0.03835
+    "tv": 0.03685
    },
    "pair": [
     4,
     19
    ],
    "reed_muller": {
-    "collision": 0.314806,
+    "collision": 0.314709,
     "cz": 11,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.02955
+    "tv": 0.02965
    }
   },
   {
@@ -2311,16 +2311,16 @@
     21
    ],
    "reed_muller": {
-    "collision": 0.320955,
+    "collision": 0.32278,
     "cz": 10,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.0236
+    "tv": 0.0247
    }
   },
   {
@@ -2381,37 +2381,37 @@
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.313218,
+    "collision": 0.314475,
     "cz": 15,
     "final_layout": [
      50,
      49,
-     48,
      38,
+     48,
      148
     ],
-    "tv": 0.0322
+    "tv": 0.03065
    },
    "pair": [
     4,
     23
    ],
    "reed_muller": {
-    "collision": 0.319711,
+    "collision": 0.320495,
     "cz": 11,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.0243
+    "tv": 0.024
    }
   },
   {
    "factorized": {
-    "collision": 0.210633,
+    "collision": 0.210509,
     "cz": 136,
     "final_layout": [
      141,
@@ -2420,7 +2420,7 @@
      136,
      143
     ],
-    "tv": 0.1758
+    "tv": 0.178
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2454,7 +2454,7 @@
   },
   {
    "factorized": {
-    "collision": 0.194904,
+    "collision": 0.197134,
     "cz": 136,
     "final_layout": [
      141,
@@ -2463,7 +2463,7 @@
      136,
      143
     ],
-    "tv": 0.1957
+    "tv": 0.19255
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2483,16 +2483,16 @@
     25
    ],
    "reed_muller": {
-    "collision": 0.31759,
+    "collision": 0.31958,
     "cz": 10,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.0266
+    "tv": 0.0249
    }
   },
   {
@@ -2540,7 +2540,7 @@
   },
   {
    "factorized": {
-    "collision": 0.186956,
+    "collision": 0.188547,
     "cz": 136,
     "final_layout": [
      141,
@@ -2549,41 +2549,41 @@
      136,
      143
     ],
-    "tv": 0.19665
+    "tv": 0.19445
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.305031,
+    "collision": 0.306558,
     "cz": 15,
     "final_layout": [
      50,
      49,
-     48,
      38,
+     48,
      148
     ],
-    "tv": 0.04075
+    "tv": 0.0388
    },
    "pair": [
     4,
     27
    ],
    "reed_muller": {
-    "collision": 0.311414,
+    "collision": 0.311633,
     "cz": 11,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.0337
+    "tv": 0.0329
    }
   },
   {
    "factorized": {
-    "collision": 0.21697,
+    "collision": 0.215272,
     "cz": 129,
     "final_layout": [
      141,
@@ -2592,7 +2592,7 @@
      136,
      143
     ],
-    "tv": 0.17555
+    "tv": 0.17805
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2626,7 +2626,7 @@
   },
   {
    "factorized": {
-    "collision": 0.195098,
+    "collision": 0.194186,
     "cz": 139,
     "final_layout": [
      141,
@@ -2635,7 +2635,7 @@
      136,
      143
     ],
-    "tv": 0.196
+    "tv": 0.1986
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2655,21 +2655,21 @@
     29
    ],
    "reed_muller": {
-    "collision": 0.319437,
+    "collision": 0.321662,
     "cz": 10,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.0246
+    "tv": 0.02225
    }
   },
   {
    "factorized": {
-    "collision": 0.197864,
+    "collision": 0.197741,
     "cz": 139,
     "final_layout": [
      141,
@@ -2678,7 +2678,7 @@
      136,
      143
     ],
-    "tv": 0.19455
+    "tv": 0.19505
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2712,7 +2712,7 @@
   },
   {
    "factorized": {
-    "collision": 0.194512,
+    "collision": 0.194152,
     "cz": 129,
     "final_layout": [
      141,
@@ -2721,36 +2721,36 @@
      136,
      143
     ],
-    "tv": 0.1953
+    "tv": 0.19645
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.308909,
+    "collision": 0.310669,
     "cz": 15,
     "final_layout": [
      50,
      49,
-     48,
      38,
+     48,
      148
     ],
-    "tv": 0.0372
+    "tv": 0.0346
    },
    "pair": [
     4,
     31
    ],
    "reed_muller": {
-    "collision": 0.314368,
+    "collision": 0.314468,
     "cz": 11,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      154,
      46,
      148
     ],
-    "tv": 0.02995
+    "tv": 0.02985
    }
   },
   {
@@ -2884,7 +2884,7 @@
   },
   {
    "factorized": {
-    "collision": 0.204824,
+    "collision": 0.202324,
     "cz": 120,
     "final_layout": [
      141,
@@ -2893,7 +2893,7 @@
      143,
      142
     ],
-    "tv": 0.1787
+    "tv": 0.1819
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -2913,7 +2913,7 @@
     19
    ],
    "reed_muller": {
-    "collision": 0.291014,
+    "collision": 0.290903,
     "cz": 21,
     "final_layout": [
      44,
@@ -3042,7 +3042,7 @@
     22
    ],
    "reed_muller": {
-    "collision": 0.291307,
+    "collision": 0.291128,
     "cz": 21,
     "final_layout": [
      44,
@@ -3051,7 +3051,7 @@
      45,
      148
     ],
-    "tv": 0.05395
+    "tv": 0.0541
    }
   },
   {
@@ -3099,7 +3099,7 @@
   },
   {
    "factorized": {
-    "collision": 0.213407,
+    "collision": 0.213748,
     "cz": 121,
     "final_layout": [
      141,
@@ -3108,7 +3108,7 @@
      143,
      142
     ],
-    "tv": 0.18745
+    "tv": 0.18565
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3185,7 +3185,7 @@
   },
   {
    "factorized": {
-    "collision": 0.201725,
+    "collision": 0.202371,
     "cz": 122,
     "final_layout": [
      141,
@@ -3194,7 +3194,7 @@
      143,
      142
     ],
-    "tv": 0.20015
+    "tv": 0.1999
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3257,7 +3257,7 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.300182,
+    "collision": 0.29963,
     "cz": 21,
     "final_layout": [
      44,
@@ -3266,7 +3266,7 @@
      45,
      148
     ],
-    "tv": 0.0523
+    "tv": 0.05275
    }
   },
   {
@@ -3357,7 +3357,7 @@
   },
   {
    "factorized": {
-    "collision": 0.187331,
+    "collision": 0.187333,
     "cz": 128,
     "final_layout": [
      141,
@@ -3366,7 +3366,7 @@
      143,
      142
     ],
-    "tv": 0.21765
+    "tv": 0.2177
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3386,7 +3386,7 @@
     30
    ],
    "reed_muller": {
-    "collision": 0.301169,
+    "collision": 0.300943,
     "cz": 21,
     "final_layout": [
      44,
@@ -3395,12 +3395,12 @@
      45,
      148
     ],
-    "tv": 0.0515
+    "tv": 0.0518
    }
   },
   {
    "factorized": {
-    "collision": 0.195529,
+    "collision": 0.195745,
     "cz": 128,
     "final_layout": [
      141,
@@ -3443,7 +3443,7 @@
   },
   {
    "factorized": {
-    "collision": 0.229848,
+    "collision": 0.230664,
     "cz": 125,
     "final_layout": [
      141,
@@ -3452,7 +3452,7 @@
      143,
      142
     ],
-    "tv": 0.1679
+    "tv": 0.16655
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3529,7 +3529,7 @@
   },
   {
    "factorized": {
-    "collision": 0.212173,
+    "collision": 0.212804,
     "cz": 114,
     "final_layout": [
      136,
@@ -3538,7 +3538,7 @@
      142,
      143
     ],
-    "tv": 0.1789
+    "tv": 0.1778
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3744,7 +3744,7 @@
   },
   {
    "factorized": {
-    "collision": 0.216631,
+    "collision": 0.217707,
     "cz": 115,
     "final_layout": [
      136,
@@ -3753,7 +3753,7 @@
      144,
      143
     ],
-    "tv": 0.18085
+    "tv": 0.17845
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3787,7 +3787,7 @@
   },
   {
    "factorized": {
-    "collision": 0.205092,
+    "collision": 0.204618,
     "cz": 134,
     "final_layout": [
      141,
@@ -3796,7 +3796,7 @@
      136,
      143
     ],
-    "tv": 0.18735
+    "tv": 0.1895
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3830,7 +3830,7 @@
   },
   {
    "factorized": {
-    "collision": 0.188775,
+    "collision": 0.190596,
     "cz": 135,
     "final_layout": [
      141,
@@ -3839,7 +3839,7 @@
      136,
      143
     ],
-    "tv": 0.2081
+    "tv": 0.20445
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3916,16 +3916,16 @@
   },
   {
    "factorized": {
-    "collision": 0.180491,
+    "collision": 0.182375,
     "cz": 134,
     "final_layout": [
      141,
-     144,
-     142,
      136,
+     142,
+     144,
      143
     ],
-    "tv": 0.22225
+    "tv": 0.22195
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -3959,7 +3959,7 @@
   },
   {
    "factorized": {
-    "collision": 0.199641,
+    "collision": 0.1989,
     "cz": 137,
     "final_layout": [
      141,
@@ -3968,7 +3968,7 @@
      136,
      143
     ],
-    "tv": 0.1978
+    "tv": 0.1994
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4002,7 +4002,7 @@
   },
   {
    "factorized": {
-    "collision": 0.187288,
+    "collision": 0.188403,
     "cz": 134,
     "final_layout": [
      141,
@@ -4011,7 +4011,7 @@
      143,
      142
     ],
-    "tv": 0.2201
+    "tv": 0.21855
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4088,7 +4088,7 @@
   },
   {
    "factorized": {
-    "collision": 0.192401,
+    "collision": 0.192048,
     "cz": 137,
     "final_layout": [
      141,
@@ -4097,7 +4097,7 @@
      136,
      143
     ],
-    "tv": 0.19535
+    "tv": 0.19645
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4260,7 +4260,7 @@
   },
   {
    "factorized": {
-    "collision": 0.203768,
+    "collision": 0.203903,
     "cz": 124,
     "final_layout": [
      141,
@@ -4269,7 +4269,7 @@
      143,
      136
     ],
-    "tv": 0.20275
+    "tv": 0.20135
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4389,7 +4389,7 @@
   },
   {
    "factorized": {
-    "collision": 0.214719,
+    "collision": 0.215735,
     "cz": 109,
     "final_layout": [
      136,
@@ -4398,7 +4398,7 @@
      144,
      143
     ],
-    "tv": 0.18505
+    "tv": 0.1829
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4475,7 +4475,7 @@
   },
   {
    "factorized": {
-    "collision": 0.208496,
+    "collision": 0.209549,
     "cz": 134,
     "final_layout": [
      141,
@@ -4484,7 +4484,7 @@
      143,
      142
     ],
-    "tv": 0.1963
+    "tv": 0.1942
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4518,7 +4518,7 @@
   },
   {
    "factorized": {
-    "collision": 0.187607,
+    "collision": 0.188521,
     "cz": 132,
     "final_layout": [
      141,
@@ -4527,7 +4527,7 @@
      136,
      143
     ],
-    "tv": 0.2133
+    "tv": 0.2122
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4561,16 +4561,16 @@
   },
   {
    "factorized": {
-    "collision": 0.185452,
+    "collision": 0.184039,
     "cz": 132,
     "final_layout": [
      141,
-     144,
-     142,
      136,
+     142,
+     144,
      143
     ],
-    "tv": 0.21785
+    "tv": 0.21515
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4647,16 +4647,16 @@
   },
   {
    "factorized": {
-    "collision": 0.191734,
+    "collision": 0.192742,
     "cz": 125,
     "final_layout": [
      141,
-     144,
      136,
+     144,
      143,
      142
     ],
-    "tv": 0.2097
+    "tv": 0.2106
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4690,7 +4690,7 @@
   },
   {
    "factorized": {
-    "collision": 0.190199,
+    "collision": 0.191102,
     "cz": 128,
     "final_layout": [
      141,
@@ -4699,7 +4699,7 @@
      136,
      143
     ],
-    "tv": 0.2134
+    "tv": 0.21135
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -4948,16 +4948,16 @@
   },
   {
    "factorized": {
-    "collision": 0.215308,
+    "collision": 0.21495,
     "cz": 126,
     "final_layout": [
      141,
-     136,
-     142,
      144,
+     142,
+     136,
      143
     ],
-    "tv": 0.17425
+    "tv": 0.1703
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5077,16 +5077,16 @@
   },
   {
    "factorized": {
-    "collision": 0.207922,
+    "collision": 0.209206,
     "cz": 130,
     "final_layout": [
      141,
-     144,
-     142,
      136,
+     142,
+     144,
      143
     ],
-    "tv": 0.16645
+    "tv": 0.167
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5120,7 +5120,7 @@
   },
   {
    "factorized": {
-    "collision": 0.216196,
+    "collision": 0.217591,
     "cz": 130,
     "final_layout": [
      141,
@@ -5129,7 +5129,7 @@
      144,
      143
     ],
-    "tv": 0.15955
+    "tv": 0.15785
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5163,7 +5163,7 @@
   },
   {
    "factorized": {
-    "collision": 0.233196,
+    "collision": 0.234541,
     "cz": 121,
     "final_layout": [
      141,
@@ -5172,7 +5172,7 @@
      144,
      143
     ],
-    "tv": 0.15775
+    "tv": 0.15815
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5292,7 +5292,7 @@
   },
   {
    "factorized": {
-    "collision": 0.207125,
+    "collision": 0.206673,
     "cz": 126,
     "final_layout": [
      144,
@@ -5301,7 +5301,7 @@
      142,
      143
     ],
-    "tv": 0.18285
+    "tv": 0.183
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5335,16 +5335,16 @@
   },
   {
    "factorized": {
-    "collision": 0.206998,
+    "collision": 0.209812,
     "cz": 129,
     "final_layout": [
-     144,
      136,
+     144,
      141,
      142,
      143
     ],
-    "tv": 0.1754
+    "tv": 0.1757
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5378,7 +5378,7 @@
   },
   {
    "factorized": {
-    "collision": 0.21774,
+    "collision": 0.21917,
     "cz": 128,
     "final_layout": [
      141,
@@ -5387,7 +5387,7 @@
      143,
      142
     ],
-    "tv": 0.16685
+    "tv": 0.1673
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5421,7 +5421,7 @@
   },
   {
    "factorized": {
-    "collision": 0.205013,
+    "collision": 0.208006,
     "cz": 128,
     "final_layout": [
      141,
@@ -5430,7 +5430,7 @@
      143,
      142
     ],
-    "tv": 0.1697
+    "tv": 0.16575
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5464,7 +5464,7 @@
   },
   {
    "factorized": {
-    "collision": 0.216515,
+    "collision": 0.21843,
     "cz": 128,
     "final_layout": [
      141,
@@ -5473,7 +5473,7 @@
      143,
      142
     ],
-    "tv": 0.16615
+    "tv": 0.16295
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5679,7 +5679,7 @@
   },
   {
    "factorized": {
-    "collision": 0.107937,
+    "collision": 0.107658,
     "cz": 122,
     "final_layout": [
      141,
@@ -5688,7 +5688,7 @@
      143,
      142
     ],
-    "tv": 0.15245
+    "tv": 0.1535
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -5808,7 +5808,7 @@
   },
   {
    "factorized": {
-    "collision": 0.103209,
+    "collision": 0.103259,
     "cz": 123,
     "final_layout": [
      141,
@@ -5851,7 +5851,7 @@
   },
   {
    "factorized": {
-    "collision": 0.215999,
+    "collision": 0.217065,
     "cz": 125,
     "final_layout": [
      136,
@@ -5860,7 +5860,7 @@
      144,
      143
     ],
-    "tv": 0.1781
+    "tv": 0.17755
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -5937,16 +5937,16 @@
   },
   {
    "factorized": {
-    "collision": 0.108697,
+    "collision": 0.108332,
     "cz": 122,
     "final_layout": [
      141,
-     136,
-     142,
      144,
+     142,
+     136,
      143
     ],
-    "tv": 0.1503
+    "tv": 0.15185
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6023,7 +6023,7 @@
   },
   {
    "factorized": {
-    "collision": 0.105207,
+    "collision": 0.105641,
     "cz": 131,
     "final_layout": [
      141,
@@ -6032,7 +6032,7 @@
      143,
      142
     ],
-    "tv": 0.1644
+    "tv": 0.1637
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6109,7 +6109,7 @@
   },
   {
    "factorized": {
-    "collision": 0.099225,
+    "collision": 0.099934,
     "cz": 133,
     "final_layout": [
      141,
@@ -6118,7 +6118,7 @@
      143,
      142
     ],
-    "tv": 0.1807
+    "tv": 0.1784
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6367,16 +6367,16 @@
   },
   {
    "factorized": {
-    "collision": 0.107504,
+    "collision": 0.104551,
     "cz": 123,
     "final_layout": [
      141,
-     136,
-     142,
      144,
+     142,
+     136,
      143
     ],
-    "tv": 0.1534
+    "tv": 0.15705
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6453,7 +6453,7 @@
   },
   {
    "factorized": {
-    "collision": 0.105773,
+    "collision": 0.106073,
     "cz": 127,
     "final_layout": [
      141,
@@ -6462,7 +6462,7 @@
      143,
      142
     ],
-    "tv": 0.16015
+    "tv": 0.1593
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6496,7 +6496,7 @@
   },
   {
    "factorized": {
-    "collision": 0.100957,
+    "collision": 0.101265,
     "cz": 127,
     "final_layout": [
      141,
@@ -6505,7 +6505,7 @@
      143,
      142
     ],
-    "tv": 0.1683
+    "tv": 0.16765
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6582,7 +6582,7 @@
   },
   {
    "factorized": {
-    "collision": 0.107557,
+    "collision": 0.107736,
     "cz": 127,
     "final_layout": [
      141,
@@ -6591,7 +6591,7 @@
      136,
      143
     ],
-    "tv": 0.1515
+    "tv": 0.15065
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6711,7 +6711,7 @@
   },
   {
    "factorized": {
-    "collision": 0.103295,
+    "collision": 0.103839,
     "cz": 129,
     "final_layout": [
      141,
@@ -6720,7 +6720,7 @@
      143,
      142
     ],
-    "tv": 0.17185
+    "tv": 0.17025
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -6754,7 +6754,7 @@
   },
   {
    "factorized": {
-    "collision": 0.099311,
+    "collision": 0.09995,
     "cz": 129,
     "final_layout": [
      141,
@@ -6763,7 +6763,7 @@
      143,
      142
     ],
-    "tv": 0.1801
+    "tv": 0.1779
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7184,7 +7184,7 @@
   },
   {
    "factorized": {
-    "collision": 0.102221,
+    "collision": 0.102333,
     "cz": 120,
     "final_layout": [
      141,
@@ -7193,7 +7193,7 @@
      144,
      143
     ],
-    "tv": 0.16235
+    "tv": 0.1617
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7270,7 +7270,7 @@
   },
   {
    "factorized": {
-    "collision": 0.110627,
+    "collision": 0.110177,
     "cz": 120,
     "final_layout": [
      136,
@@ -7279,7 +7279,7 @@
      142,
      143
     ],
-    "tv": 0.1438
+    "tv": 0.14525
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7356,7 +7356,7 @@
   },
   {
    "factorized": {
-    "collision": 0.216776,
+    "collision": 0.21604,
     "cz": 115,
     "final_layout": [
      141,
@@ -7365,7 +7365,7 @@
      144,
      143
     ],
-    "tv": 0.1905
+    "tv": 0.19155
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -7614,7 +7614,7 @@
   },
   {
    "factorized": {
-    "collision": 0.097069,
+    "collision": 0.097442,
     "cz": 158,
     "final_layout": [
      144,
@@ -7623,7 +7623,7 @@
      142,
      143
     ],
-    "tv": 0.19085
+    "tv": 0.1911
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7657,16 +7657,16 @@
   },
   {
    "factorized": {
-    "collision": 0.102028,
+    "collision": 0.101818,
     "cz": 135,
     "final_layout": [
      141,
-     144,
-     142,
      136,
+     142,
+     144,
      143
     ],
-    "tv": 0.16195
+    "tv": 0.16565
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7729,16 +7729,16 @@
     19
    ],
    "reed_muller": {
-    "collision": 0.142142,
+    "collision": 0.14186,
     "cz": 22,
     "final_layout": [
-     46,
      45,
-     47,
+     46,
      44,
+     47,
      148
     ],
-    "tv": 0.03675
+    "tv": 0.035
    }
   },
   {
@@ -7786,16 +7786,16 @@
   },
   {
    "factorized": {
-    "collision": 0.104331,
+    "collision": 0.105174,
     "cz": 133,
     "final_layout": [
-     136,
      144,
+     136,
      141,
      142,
      143
     ],
-    "tv": 0.1658
+    "tv": 0.1623
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7829,7 +7829,7 @@
   },
   {
    "factorized": {
-    "collision": 0.102089,
+    "collision": 0.102202,
     "cz": 126,
     "final_layout": [
      136,
@@ -7838,7 +7838,7 @@
      142,
      143
     ],
-    "tv": 0.16595
+    "tv": 0.1655
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -7901,16 +7901,16 @@
     23
    ],
    "reed_muller": {
-    "collision": 0.14274,
+    "collision": 0.144233,
     "cz": 22,
     "final_layout": [
-     46,
      45,
-     47,
+     46,
      44,
+     47,
      148
     ],
-    "tv": 0.03745
+    "tv": 0.0347
    }
   },
   {
@@ -7958,7 +7958,7 @@
   },
   {
    "factorized": {
-    "collision": 0.103828,
+    "collision": 0.104249,
     "cz": 135,
     "final_layout": [
      144,
@@ -7967,7 +7967,7 @@
      142,
      143
     ],
-    "tv": 0.1642
+    "tv": 0.1627
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8001,7 +8001,7 @@
   },
   {
    "factorized": {
-    "collision": 0.098709,
+    "collision": 0.098661,
     "cz": 135,
     "final_layout": [
      141,
@@ -8010,7 +8010,7 @@
      143,
      142
     ],
-    "tv": 0.1866
+    "tv": 0.18755
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8073,21 +8073,21 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.139467,
+    "collision": 0.144857,
     "cz": 22,
     "final_layout": [
-     46,
      45,
-     47,
+     46,
      44,
+     47,
      148
     ],
-    "tv": 0.0401
+    "tv": 0.0305
    }
   },
   {
    "factorized": {
-    "collision": 0.215078,
+    "collision": 0.214704,
     "cz": 125,
     "final_layout": [
      141,
@@ -8096,7 +8096,7 @@
      143,
      142
     ],
-    "tv": 0.18715
+    "tv": 0.189
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -8130,7 +8130,7 @@
   },
   {
    "factorized": {
-    "collision": 0.105197,
+    "collision": 0.105299,
     "cz": 127,
     "final_layout": [
      141,
@@ -8139,7 +8139,7 @@
      142,
      143
     ],
-    "tv": 0.15985
+    "tv": 0.15925
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8173,7 +8173,7 @@
   },
   {
    "factorized": {
-    "collision": 0.099767,
+    "collision": 0.100437,
     "cz": 133,
     "final_layout": [
      144,
@@ -8182,7 +8182,7 @@
      142,
      143
     ],
-    "tv": 0.1765
+    "tv": 0.1743
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8216,7 +8216,7 @@
   },
   {
    "factorized": {
-    "collision": 0.096299,
+    "collision": 0.096721,
     "cz": 135,
     "final_layout": [
      144,
@@ -8225,7 +8225,7 @@
      142,
      143
     ],
-    "tv": 0.18695
+    "tv": 0.1856
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8245,21 +8245,21 @@
     31
    ],
    "reed_muller": {
-    "collision": 0.141108,
+    "collision": 0.143854,
     "cz": 22,
     "final_layout": [
-     46,
      45,
-     47,
+     46,
      44,
+     47,
      148
     ],
-    "tv": 0.0379
+    "tv": 0.03475
    }
   },
   {
    "factorized": {
-    "collision": 0.197663,
+    "collision": 0.199625,
     "cz": 146,
     "final_layout": [
      136,
@@ -8268,11 +8268,11 @@
      141,
      142
     ],
-    "tv": 0.2262
+    "tv": 0.22315
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.290937,
+    "collision": 0.290885,
     "cz": 42,
     "final_layout": [
      140,
@@ -8281,7 +8281,7 @@
      142,
      148
     ],
-    "tv": 0.0566
+    "tv": 0.0565
    },
    "pair": [
     13,
@@ -8388,7 +8388,7 @@
   },
   {
    "factorized": {
-    "collision": 0.099249,
+    "collision": 0.099245,
     "cz": 128,
     "final_layout": [
      141,
@@ -8397,7 +8397,7 @@
      136,
      143
     ],
-    "tv": 0.1702
+    "tv": 0.1703
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8431,16 +8431,16 @@
   },
   {
    "factorized": {
-    "collision": 0.106684,
+    "collision": 0.107627,
     "cz": 125,
     "final_layout": [
      141,
-     144,
-     142,
      136,
+     142,
+     144,
      143
     ],
-    "tv": 0.1537
+    "tv": 0.1527
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8474,7 +8474,7 @@
   },
   {
    "factorized": {
-    "collision": 0.211767,
+    "collision": 0.214618,
     "cz": 121,
     "final_layout": [
      141,
@@ -8483,11 +8483,11 @@
      143,
      142
     ],
-    "tv": 0.19985
+    "tv": 0.1946
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.285009,
+    "collision": 0.285126,
     "cz": 42,
     "final_layout": [
      140,
@@ -8496,7 +8496,7 @@
      142,
      148
     ],
-    "tv": 0.06005
+    "tv": 0.0607
    },
    "pair": [
     13,
@@ -8603,7 +8603,7 @@
   },
   {
    "factorized": {
-    "collision": 0.210561,
+    "collision": 0.212025,
     "cz": 131,
     "final_layout": [
      144,
@@ -8612,11 +8612,11 @@
      142,
      143
     ],
-    "tv": 0.2041
+    "tv": 0.2015
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.294617,
+    "collision": 0.294597,
     "cz": 42,
     "final_layout": [
      140,
@@ -8625,7 +8625,7 @@
      142,
      148
     ],
-    "tv": 0.0593
+    "tv": 0.05895
    },
    "pair": [
     13,
@@ -8646,7 +8646,7 @@
   },
   {
    "factorized": {
-    "collision": 0.108509,
+    "collision": 0.108465,
     "cz": 124,
     "final_layout": [
      144,
@@ -8655,7 +8655,7 @@
      142,
      143
     ],
-    "tv": 0.15885
+    "tv": 0.1591
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8732,7 +8732,7 @@
   },
   {
    "factorized": {
-    "collision": 0.095236,
+    "collision": 0.095156,
     "cz": 135,
     "final_layout": [
      141,
@@ -8741,7 +8741,7 @@
      143,
      142
     ],
-    "tv": 0.18755
+    "tv": 0.18815
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -8818,7 +8818,7 @@
   },
   {
    "factorized": {
-    "collision": 0.203062,
+    "collision": 0.203805,
     "cz": 128,
     "final_layout": [
      141,
@@ -8827,11 +8827,11 @@
      143,
      144
     ],
-    "tv": 0.2021
+    "tv": 0.201
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.28738,
+    "collision": 0.28734,
     "cz": 42,
     "final_layout": [
      140,
@@ -8840,7 +8840,7 @@
      142,
      148
     ],
-    "tv": 0.05595
+    "tv": 0.0559
    },
    "pair": [
     13,
@@ -8990,16 +8990,16 @@
   },
   {
    "factorized": {
-    "collision": 0.096351,
+    "collision": 0.095707,
     "cz": 145,
     "final_layout": [
      141,
-     144,
      136,
+     144,
      143,
      142
     ],
-    "tv": 0.1847
+    "tv": 0.18985
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9062,7 +9062,7 @@
     18
    ],
    "reed_muller": {
-    "collision": 0.143919,
+    "collision": 0.143899,
     "cz": 29,
     "final_layout": [
      46,
@@ -9071,12 +9071,12 @@
      44,
      148
     ],
-    "tv": 0.0357
+    "tv": 0.03615
    }
   },
   {
    "factorized": {
-    "collision": 0.099524,
+    "collision": 0.09956,
     "cz": 133,
     "final_layout": [
      141,
@@ -9085,7 +9085,7 @@
      136,
      143
     ],
-    "tv": 0.17865
+    "tv": 0.17875
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9105,7 +9105,7 @@
     19
    ],
    "reed_muller": {
-    "collision": 0.138073,
+    "collision": 0.13793,
     "cz": 29,
     "final_layout": [
      46,
@@ -9114,12 +9114,12 @@
      44,
      148
     ],
-    "tv": 0.04415
+    "tv": 0.0445
    }
   },
   {
    "factorized": {
-    "collision": 0.103251,
+    "collision": 0.103467,
     "cz": 134,
     "final_layout": [
      141,
@@ -9128,7 +9128,7 @@
      136,
      143
     ],
-    "tv": 0.16325
+    "tv": 0.16295
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9148,7 +9148,7 @@
     20
    ],
    "reed_muller": {
-    "collision": 0.1445,
+    "collision": 0.144513,
     "cz": 29,
     "final_layout": [
      46,
@@ -9157,12 +9157,12 @@
      44,
      148
     ],
-    "tv": 0.03275
+    "tv": 0.0329
    }
   },
   {
    "factorized": {
-    "collision": 0.100578,
+    "collision": 0.101252,
     "cz": 123,
     "final_layout": [
      141,
@@ -9171,7 +9171,7 @@
      143,
      142
     ],
-    "tv": 0.16975
+    "tv": 0.1676
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9191,7 +9191,7 @@
     21
    ],
    "reed_muller": {
-    "collision": 0.140239,
+    "collision": 0.140051,
     "cz": 29,
     "final_layout": [
      46,
@@ -9200,7 +9200,7 @@
      44,
      148
     ],
-    "tv": 0.0403
+    "tv": 0.04095
    }
   },
   {
@@ -9248,7 +9248,7 @@
   },
   {
    "factorized": {
-    "collision": 0.102682,
+    "collision": 0.102726,
     "cz": 124,
     "final_layout": [
      136,
@@ -9257,7 +9257,7 @@
      142,
      143
     ],
-    "tv": 0.169
+    "tv": 0.16885
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9334,7 +9334,7 @@
   },
   {
    "factorized": {
-    "collision": 0.09949,
+    "collision": 0.099346,
     "cz": 130,
     "final_layout": [
      141,
@@ -9343,7 +9343,7 @@
      143,
      136
     ],
-    "tv": 0.18105
+    "tv": 0.1816
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9377,7 +9377,7 @@
   },
   {
    "factorized": {
-    "collision": 0.099172,
+    "collision": 0.098726,
     "cz": 141,
     "final_layout": [
      136,
@@ -9386,7 +9386,7 @@
      143,
      142
     ],
-    "tv": 0.1809
+    "tv": 0.1825
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9406,7 +9406,7 @@
     26
    ],
    "reed_muller": {
-    "collision": 0.143636,
+    "collision": 0.143672,
     "cz": 29,
     "final_layout": [
      46,
@@ -9415,7 +9415,7 @@
      44,
      148
     ],
-    "tv": 0.0345
+    "tv": 0.03455
    }
   },
   {
@@ -9449,7 +9449,7 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.13714,
+    "collision": 0.137053,
     "cz": 29,
     "final_layout": [
      46,
@@ -9458,12 +9458,12 @@
      44,
      148
     ],
-    "tv": 0.0479
+    "tv": 0.04795
    }
   },
   {
    "factorized": {
-    "collision": 0.100756,
+    "collision": 0.10099,
     "cz": 131,
     "final_layout": [
      144,
@@ -9472,7 +9472,7 @@
      142,
      143
     ],
-    "tv": 0.17125
+    "tv": 0.1702
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9492,7 +9492,7 @@
     28
    ],
    "reed_muller": {
-    "collision": 0.144382,
+    "collision": 0.144456,
     "cz": 29,
     "final_layout": [
      46,
@@ -9501,7 +9501,7 @@
      44,
      148
     ],
-    "tv": 0.0375
+    "tv": 0.03765
    }
   },
   {
@@ -9535,7 +9535,7 @@
     29
    ],
    "reed_muller": {
-    "collision": 0.139307,
+    "collision": 0.139125,
     "cz": 29,
     "final_layout": [
      46,
@@ -9544,12 +9544,12 @@
      44,
      148
     ],
-    "tv": 0.04575
+    "tv": 0.0461
    }
   },
   {
    "factorized": {
-    "collision": 0.209771,
+    "collision": 0.20833,
     "cz": 130,
     "final_layout": [
      141,
@@ -9558,7 +9558,7 @@
      143,
      144
     ],
-    "tv": 0.1889
+    "tv": 0.19155
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -9635,7 +9635,7 @@
   },
   {
    "factorized": {
-    "collision": 0.204256,
+    "collision": 0.202546,
     "cz": 143,
     "final_layout": [
      141,
@@ -9644,7 +9644,7 @@
      143,
      142
     ],
-    "tv": 0.21695
+    "tv": 0.21775
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -9678,7 +9678,7 @@
   },
   {
    "factorized": {
-    "collision": 0.098474,
+    "collision": 0.098539,
     "cz": 140,
     "final_layout": [
      136,
@@ -9687,7 +9687,7 @@
      141,
      142
     ],
-    "tv": 0.18165
+    "tv": 0.18145
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9721,7 +9721,7 @@
   },
   {
    "factorized": {
-    "collision": 0.09338,
+    "collision": 0.093347,
     "cz": 148,
     "final_layout": [
      144,
@@ -9764,7 +9764,7 @@
   },
   {
    "factorized": {
-    "collision": 0.093697,
+    "collision": 0.093457,
     "cz": 152,
     "final_layout": [
      144,
@@ -9773,7 +9773,7 @@
      142,
      143
     ],
-    "tv": 0.2039
+    "tv": 0.20435
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9807,7 +9807,7 @@
   },
   {
    "factorized": {
-    "collision": 0.104328,
+    "collision": 0.104283,
     "cz": 125,
     "final_layout": [
      141,
@@ -9816,7 +9816,7 @@
      143,
      142
     ],
-    "tv": 0.16215
+    "tv": 0.16335
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -9936,7 +9936,7 @@
   },
   {
    "factorized": {
-    "collision": 0.206324,
+    "collision": 0.206498,
     "cz": 130,
     "final_layout": [
      136,
@@ -9945,7 +9945,7 @@
      141,
      142
     ],
-    "tv": 0.22185
+    "tv": 0.22155
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -9979,7 +9979,7 @@
   },
   {
    "factorized": {
-    "collision": 0.216944,
+    "collision": 0.21714,
     "cz": 120,
     "final_layout": [
      141,
@@ -9988,7 +9988,7 @@
      143,
      142
     ],
-    "tv": 0.19995
+    "tv": 0.1999
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -10280,7 +10280,7 @@
   },
   {
    "factorized": {
-    "collision": 0.202517,
+    "collision": 0.202216,
     "cz": 133,
     "final_layout": [
      141,
@@ -10289,7 +10289,7 @@
      142,
      143
     ],
-    "tv": 0.20645
+    "tv": 0.2061
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -10366,7 +10366,7 @@
   },
   {
    "factorized": {
-    "collision": 0.231251,
+    "collision": 0.230245,
     "cz": 117,
     "final_layout": [
      141,
@@ -10375,7 +10375,7 @@
      143,
      142
     ],
-    "tv": 0.1532
+    "tv": 0.1536
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -10409,7 +10409,7 @@
   },
   {
    "factorized": {
-    "collision": 0.211142,
+    "collision": 0.212184,
     "cz": 125,
     "final_layout": [
      136,
@@ -10418,7 +10418,7 @@
      144,
      143
     ],
-    "tv": 0.18105
+    "tv": 0.18015
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -10452,7 +10452,7 @@
   },
   {
    "factorized": {
-    "collision": 0.236078,
+    "collision": 0.236316,
     "cz": 115,
     "final_layout": [
      141,
@@ -10461,7 +10461,7 @@
      143,
      142
     ],
-    "tv": 0.14395
+    "tv": 0.14355
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -10538,7 +10538,7 @@
   },
   {
    "factorized": {
-    "collision": 0.223503,
+    "collision": 0.224071,
     "cz": 115,
     "final_layout": [
      141,
@@ -10547,7 +10547,7 @@
      143,
      142
     ],
-    "tv": 0.17565
+    "tv": 0.17455
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -10839,7 +10839,7 @@
   },
   {
    "factorized": {
-    "collision": 0.197351,
+    "collision": 0.197522,
     "cz": 128,
     "final_layout": [
      141,
@@ -10848,11 +10848,11 @@
      136,
      143
     ],
-    "tv": 0.21555
+    "tv": 0.2148
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.290744,
+    "collision": 0.290773,
     "cz": 42,
     "final_layout": [
      140,
@@ -10861,7 +10861,7 @@
      142,
      148
     ],
-    "tv": 0.0584
+    "tv": 0.0577
    },
    "pair": [
     16,
@@ -10882,7 +10882,7 @@
   },
   {
    "factorized": {
-    "collision": 0.195733,
+    "collision": 0.196942,
     "cz": 130,
     "final_layout": [
      141,
@@ -10891,7 +10891,7 @@
      136,
      143
     ],
-    "tv": 0.2107
+    "tv": 0.20935
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -11083,7 +11083,7 @@
     20
    ],
    "reed_muller": {
-    "collision": 0.304307,
+    "collision": 0.304158,
     "cz": 20,
     "final_layout": [
      47,
@@ -11092,12 +11092,12 @@
      46,
      148
     ],
-    "tv": 0.04855
+    "tv": 0.0487
    }
   },
   {
    "factorized": {
-    "collision": 0.216898,
+    "collision": 0.215981,
     "cz": 124,
     "final_layout": [
      141,
@@ -11106,7 +11106,7 @@
      143,
      142
     ],
-    "tv": 0.1643
+    "tv": 0.16445
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -11298,21 +11298,21 @@
     25
    ],
    "reed_muller": {
-    "collision": 0.329763,
+    "collision": 0.333358,
     "cz": 10,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      46,
      154,
      148
     ],
-    "tv": 0.0157
+    "tv": 0.012
    }
   },
   {
    "factorized": {
-    "collision": 0.106924,
+    "collision": 0.107076,
     "cz": 122,
     "final_layout": [
      141,
@@ -11321,7 +11321,7 @@
      144,
      143
     ],
-    "tv": 0.15105
+    "tv": 0.151
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -11398,7 +11398,7 @@
   },
   {
    "factorized": {
-    "collision": 0.102689,
+    "collision": 0.102973,
     "cz": 123,
     "final_layout": [
      141,
@@ -11407,7 +11407,7 @@
      144,
      143
     ],
-    "tv": 0.1612
+    "tv": 0.16015
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -11441,7 +11441,7 @@
   },
   {
    "factorized": {
-    "collision": 0.102353,
+    "collision": 0.102797,
     "cz": 127,
     "final_layout": [
      141,
@@ -11450,7 +11450,7 @@
      144,
      143
     ],
-    "tv": 0.16355
+    "tv": 0.1619
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -11484,7 +11484,7 @@
   },
   {
    "factorized": {
-    "collision": 0.101127,
+    "collision": 0.10177,
     "cz": 127,
     "final_layout": [
      141,
@@ -11493,7 +11493,7 @@
      144,
      143
     ],
-    "tv": 0.16995
+    "tv": 0.16775
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -11613,7 +11613,7 @@
   },
   {
    "factorized": {
-    "collision": 0.214897,
+    "collision": 0.214172,
     "cz": 126,
     "final_layout": [
      141,
@@ -11622,7 +11622,7 @@
      136,
      143
     ],
-    "tv": 0.18505
+    "tv": 0.1849
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -11685,7 +11685,7 @@
     21
    ],
    "reed_muller": {
-    "collision": 0.278333,
+    "collision": 0.278038,
     "cz": 42,
     "final_layout": [
      140,
@@ -11694,7 +11694,7 @@
      143,
      148
     ],
-    "tv": 0.0775
+    "tv": 0.0778
    }
   },
   {
@@ -11957,7 +11957,7 @@
   },
   {
    "factorized": {
-    "collision": 0.10044,
+    "collision": 0.100006,
     "cz": 129,
     "final_layout": [
      141,
@@ -11966,7 +11966,7 @@
      144,
      143
     ],
-    "tv": 0.17305
+    "tv": 0.1752
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -12000,7 +12000,7 @@
   },
   {
    "factorized": {
-    "collision": 0.095657,
+    "collision": 0.095751,
     "cz": 134,
     "final_layout": [
      141,
@@ -12009,7 +12009,7 @@
      136,
      143
     ],
-    "tv": 0.18295
+    "tv": 0.1824
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -12086,7 +12086,7 @@
   },
   {
    "factorized": {
-    "collision": 0.094123,
+    "collision": 0.093955,
     "cz": 134,
     "final_layout": [
      141,
@@ -12095,11 +12095,11 @@
      136,
      143
     ],
-    "tv": 0.1901
+    "tv": 0.19075
    },
    "ideal_collision": 0.15625,
    "normal_form": {
-    "collision": 0.134974,
+    "collision": 0.135198,
     "cz": 41,
     "final_layout": [
      143,
@@ -12108,7 +12108,7 @@
      141,
      148
     ],
-    "tv": 0.0493
+    "tv": 0.0489
    },
    "pair": [
     18,
@@ -12158,7 +12158,7 @@
     20
    ],
    "reed_muller": {
-    "collision": 0.271722,
+    "collision": 0.271476,
     "cz": 42,
     "final_layout": [
      140,
@@ -12167,7 +12167,7 @@
      143,
      148
     ],
-    "tv": 0.0786
+    "tv": 0.07885
    }
   },
   {
@@ -12301,7 +12301,7 @@
   },
   {
    "factorized": {
-    "collision": 0.211779,
+    "collision": 0.211425,
     "cz": 121,
     "final_layout": [
      141,
@@ -12310,7 +12310,7 @@
      142,
      143
     ],
-    "tv": 0.1891
+    "tv": 0.18895
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -12459,21 +12459,21 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.327772,
+    "collision": 0.332123,
     "cz": 11,
     "final_layout": [
-     47,
-     48,
+     45,
+     44,
      46,
      154,
      148
     ],
-    "tv": 0.01895
+    "tv": 0.015
    }
   },
   {
    "factorized": {
-    "collision": 0.096174,
+    "collision": 0.095954,
     "cz": 133,
     "final_layout": [
      136,
@@ -12482,7 +12482,7 @@
      141,
      142
     ],
-    "tv": 0.18595
+    "tv": 0.18665
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -12516,7 +12516,7 @@
   },
   {
    "factorized": {
-    "collision": 0.094962,
+    "collision": 0.094833,
     "cz": 135,
     "final_layout": [
      136,
@@ -12525,7 +12525,7 @@
      141,
      142
     ],
-    "tv": 0.18775
+    "tv": 0.1883
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -12559,7 +12559,7 @@
   },
   {
    "factorized": {
-    "collision": 0.096681,
+    "collision": 0.096303,
     "cz": 125,
     "final_layout": [
      136,
@@ -12568,7 +12568,7 @@
      141,
      142
     ],
-    "tv": 0.1852
+    "tv": 0.1865
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -12701,7 +12701,7 @@
    },
    "ideal_collision": 0.34375,
    "normal_form": {
-    "collision": 0.297169,
+    "collision": 0.297344,
     "cz": 37,
     "final_layout": [
      141,
@@ -12710,7 +12710,7 @@
      142,
      148
     ],
-    "tv": 0.04785
+    "tv": 0.0477
    },
    "pair": [
     20,
@@ -12830,7 +12830,7 @@
    },
    "ideal_collision": 0.15625,
    "normal_form": {
-    "collision": 0.136372,
+    "collision": 0.136435,
     "cz": 42,
     "final_layout": [
      140,
@@ -12839,7 +12839,7 @@
      142,
      148
     ],
-    "tv": 0.04965
+    "tv": 0.04955
    },
    "pair": [
     20,
@@ -12860,7 +12860,7 @@
   },
   {
    "factorized": {
-    "collision": 0.103892,
+    "collision": 0.104386,
     "cz": 121,
     "final_layout": [
      141,
@@ -12869,7 +12869,7 @@
      144,
      143
     ],
-    "tv": 0.16725
+    "tv": 0.1656
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -12932,7 +12932,7 @@
     27
    ],
    "reed_muller": {
-    "collision": 0.13996,
+    "collision": 0.139976,
     "cz": 39,
     "final_layout": [
      140,
@@ -12941,12 +12941,12 @@
      141,
      148
     ],
-    "tv": 0.05045
+    "tv": 0.0504
    }
   },
   {
    "factorized": {
-    "collision": 0.212598,
+    "collision": 0.211794,
     "cz": 135,
     "final_layout": [
      141,
@@ -12955,7 +12955,7 @@
      136,
      143
     ],
-    "tv": 0.16725
+    "tv": 0.16865
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13032,7 +13032,7 @@
   },
   {
    "factorized": {
-    "collision": 0.101159,
+    "collision": 0.101681,
     "cz": 123,
     "final_layout": [
      141,
@@ -13041,7 +13041,7 @@
      144,
      143
     ],
-    "tv": 0.1609
+    "tv": 0.15925
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -13161,7 +13161,7 @@
   },
   {
    "factorized": {
-    "collision": 0.213753,
+    "collision": 0.213932,
     "cz": 107,
     "final_layout": [
      141,
@@ -13170,7 +13170,7 @@
      143,
      142
     ],
-    "tv": 0.165
+    "tv": 0.16535
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13204,7 +13204,7 @@
   },
   {
    "factorized": {
-    "collision": 0.201407,
+    "collision": 0.202957,
     "cz": 120,
     "final_layout": [
      141,
@@ -13213,7 +13213,7 @@
      136,
      143
     ],
-    "tv": 0.2021
+    "tv": 0.1994
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13247,7 +13247,7 @@
   },
   {
    "factorized": {
-    "collision": 0.102728,
+    "collision": 0.102864,
     "cz": 124,
     "final_layout": [
      141,
@@ -13256,7 +13256,7 @@
      136,
      143
     ],
-    "tv": 0.16735
+    "tv": 0.16725
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -13290,7 +13290,7 @@
   },
   {
    "factorized": {
-    "collision": 0.100291,
+    "collision": 0.100578,
     "cz": 120,
     "final_layout": [
      141,
@@ -13299,7 +13299,7 @@
      136,
      143
     ],
-    "tv": 0.1716
+    "tv": 0.17085
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -13405,7 +13405,7 @@
     28
    ],
    "reed_muller": {
-    "collision": 0.144918,
+    "collision": 0.144878,
     "cz": 22,
     "final_layout": [
      44,
@@ -13414,7 +13414,7 @@
      45,
      148
     ],
-    "tv": 0.03015
+    "tv": 0.03025
    }
   },
   {
@@ -13548,7 +13548,7 @@
   },
   {
    "factorized": {
-    "collision": 0.22783,
+    "collision": 0.228425,
     "cz": 98,
     "final_layout": [
      142,
@@ -13557,7 +13557,7 @@
      144,
      143
     ],
-    "tv": 0.1433
+    "tv": 0.1432
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13591,7 +13591,7 @@
   },
   {
    "factorized": {
-    "collision": 0.213481,
+    "collision": 0.215471,
     "cz": 121,
     "final_layout": [
      141,
@@ -13600,7 +13600,7 @@
      144,
      143
     ],
-    "tv": 0.19645
+    "tv": 0.19305
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13677,20 +13677,20 @@
   },
   {
    "factorized": {
-    "collision": 0.096871,
+    "collision": 0.099171,
     "cz": 128,
     "final_layout": [
      141,
      142,
-     144,
      136,
+     144,
      143
     ],
-    "tv": 0.1786
+    "tv": 0.17445
    },
    "ideal_collision": 0.15625,
    "normal_form": {
-    "collision": 0.145333,
+    "collision": 0.145343,
     "cz": 19,
     "final_layout": [
      37,
@@ -13699,7 +13699,7 @@
      45,
      148
     ],
-    "tv": 0.0359
+    "tv": 0.03615
    },
    "pair": [
     22,
@@ -13733,7 +13733,7 @@
    },
    "ideal_collision": 0.15625,
    "normal_form": {
-    "collision": 0.133328,
+    "collision": 0.133759,
     "cz": 41,
     "final_layout": [
      143,
@@ -13742,7 +13742,7 @@
      141,
      148
     ],
-    "tv": 0.0527
+    "tv": 0.05165
    },
    "pair": [
     22,
@@ -13763,7 +13763,7 @@
   },
   {
    "factorized": {
-    "collision": 0.099002,
+    "collision": 0.099469,
     "cz": 130,
     "final_layout": [
      141,
@@ -13772,7 +13772,7 @@
      144,
      143
     ],
-    "tv": 0.17515
+    "tv": 0.17315
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -13849,7 +13849,7 @@
   },
   {
    "factorized": {
-    "collision": 0.20677,
+    "collision": 0.20701,
     "cz": 135,
     "final_layout": [
      141,
@@ -13858,7 +13858,7 @@
      136,
      143
     ],
-    "tv": 0.165
+    "tv": 0.16445
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13935,7 +13935,7 @@
   },
   {
    "factorized": {
-    "collision": 0.211469,
+    "collision": 0.212189,
     "cz": 126,
     "final_layout": [
      141,
@@ -13944,7 +13944,7 @@
      144,
      143
     ],
-    "tv": 0.2004
+    "tv": 0.1991
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -13978,7 +13978,7 @@
   },
   {
    "factorized": {
-    "collision": 0.101076,
+    "collision": 0.101821,
     "cz": 121,
     "final_layout": [
      141,
@@ -13987,7 +13987,7 @@
      144,
      143
     ],
-    "tv": 0.17335
+    "tv": 0.1711
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -14064,7 +14064,7 @@
   },
   {
    "factorized": {
-    "collision": 0.095569,
+    "collision": 0.096143,
     "cz": 130,
     "final_layout": [
      141,
@@ -14073,7 +14073,7 @@
      144,
      143
     ],
-    "tv": 0.18975
+    "tv": 0.188
    },
    "ideal_collision": 0.15625,
    "normal_form": {
@@ -14236,7 +14236,7 @@
   },
   {
    "factorized": {
-    "collision": 0.205015,
+    "collision": 0.205568,
     "cz": 131,
     "final_layout": [
      141,
@@ -14245,7 +14245,7 @@
      144,
      143
     ],
-    "tv": 0.169
+    "tv": 0.16805
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14322,7 +14322,7 @@
   },
   {
    "factorized": {
-    "collision": 0.214436,
+    "collision": 0.215052,
     "cz": 121,
     "final_layout": [
      141,
@@ -14331,7 +14331,7 @@
      144,
      143
     ],
-    "tv": 0.167
+    "tv": 0.16695
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14365,7 +14365,7 @@
   },
   {
    "factorized": {
-    "collision": 0.203089,
+    "collision": 0.203337,
     "cz": 124,
     "final_layout": [
      136,
@@ -14374,7 +14374,7 @@
      144,
      143
     ],
-    "tv": 0.1918
+    "tv": 0.1916
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14408,7 +14408,7 @@
   },
   {
    "factorized": {
-    "collision": 0.21496,
+    "collision": 0.215228,
     "cz": 127,
     "final_layout": [
      141,
@@ -14417,7 +14417,7 @@
      144,
      143
     ],
-    "tv": 0.17915
+    "tv": 0.17935
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14451,7 +14451,7 @@
   },
   {
    "factorized": {
-    "collision": 0.204053,
+    "collision": 0.205187,
     "cz": 128,
     "final_layout": [
      144,
@@ -14460,7 +14460,7 @@
      143,
      142
     ],
-    "tv": 0.19505
+    "tv": 0.1934
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14480,7 +14480,7 @@
     29
    ],
    "reed_muller": {
-    "collision": 0.316209,
+    "collision": 0.316014,
     "cz": 17,
     "final_layout": [
      47,
@@ -14489,12 +14489,12 @@
      46,
      148
     ],
-    "tv": 0.0336
+    "tv": 0.0338
    }
   },
   {
    "factorized": {
-    "collision": 0.212399,
+    "collision": 0.212863,
     "cz": 125,
     "final_layout": [
      141,
@@ -14503,7 +14503,7 @@
      144,
      143
     ],
-    "tv": 0.17755
+    "tv": 0.1783
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14523,21 +14523,21 @@
     30
    ],
    "reed_muller": {
-    "collision": 0.323376,
+    "collision": 0.324418,
     "cz": 15,
     "final_layout": [
-     46,
-     44,
-     47,
      45,
+     47,
+     44,
+     46,
      148
     ],
-    "tv": 0.02795
+    "tv": 0.0263
    }
   },
   {
    "factorized": {
-    "collision": 0.196965,
+    "collision": 0.198152,
     "cz": 132,
     "final_layout": [
      141,
@@ -14546,7 +14546,7 @@
      143,
      142
     ],
-    "tv": 0.201
+    "tv": 0.1995
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14580,7 +14580,7 @@
   },
   {
    "factorized": {
-    "collision": 0.191909,
+    "collision": 0.192294,
     "cz": 135,
     "final_layout": [
      136,
@@ -14589,7 +14589,7 @@
      144,
      143
     ],
-    "tv": 0.2035
+    "tv": 0.20225
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14666,7 +14666,7 @@
   },
   {
    "factorized": {
-    "collision": 0.195176,
+    "collision": 0.19522,
     "cz": 131,
     "final_layout": [
      136,
@@ -14675,7 +14675,7 @@
      144,
      143
     ],
-    "tv": 0.2
+    "tv": 0.1997
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14695,7 +14695,7 @@
     28
    ],
    "reed_muller": {
-    "collision": 0.306591,
+    "collision": 0.306474,
     "cz": 17,
     "final_layout": [
      47,
@@ -14704,7 +14704,7 @@
      46,
      148
     ],
-    "tv": 0.0429
+    "tv": 0.0431
    }
   },
   {
@@ -14752,7 +14752,7 @@
   },
   {
    "factorized": {
-    "collision": 0.185816,
+    "collision": 0.188223,
     "cz": 137,
     "final_layout": [
      141,
@@ -14761,7 +14761,7 @@
      143,
      142
     ],
-    "tv": 0.2151
+    "tv": 0.2114
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14795,7 +14795,7 @@
   },
   {
    "factorized": {
-    "collision": 0.188853,
+    "collision": 0.192097,
     "cz": 137,
     "final_layout": [
      141,
@@ -14804,7 +14804,7 @@
      136,
      143
     ],
-    "tv": 0.20225
+    "tv": 0.1968
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14824,7 +14824,7 @@
     31
    ],
    "reed_muller": {
-    "collision": 0.309309,
+    "collision": 0.309461,
     "cz": 15,
     "final_layout": [
      46,
@@ -14833,12 +14833,12 @@
      45,
      148
     ],
-    "tv": 0.04
+    "tv": 0.0399
    }
   },
   {
    "factorized": {
-    "collision": 0.209505,
+    "collision": 0.208897,
     "cz": 119,
     "final_layout": [
      143,
@@ -14847,7 +14847,7 @@
      141,
      142
     ],
-    "tv": 0.16865
+    "tv": 0.1702
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -14924,7 +14924,7 @@
   },
   {
    "factorized": {
-    "collision": 0.182067,
+    "collision": 0.182895,
     "cz": 137,
     "final_layout": [
      141,
@@ -14933,7 +14933,7 @@
      143,
      142
     ],
-    "tv": 0.2231
+    "tv": 0.22185
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -15039,7 +15039,7 @@
     31
    ],
    "reed_muller": {
-    "collision": 0.30079,
+    "collision": 0.30082,
     "cz": 17,
     "final_layout": [
      47,
@@ -15139,7 +15139,7 @@
   },
   {
    "factorized": {
-    "collision": 0.189764,
+    "collision": 0.190692,
     "cz": 128,
     "final_layout": [
      144,
@@ -15148,7 +15148,7 @@
      143,
      142
     ],
-    "tv": 0.2101
+    "tv": 0.2085
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -15168,7 +15168,7 @@
     30
    ],
    "reed_muller": {
-    "collision": 0.298911,
+    "collision": 0.298786,
     "cz": 17,
     "final_layout": [
      47,
@@ -15177,7 +15177,7 @@
      46,
      148
     ],
-    "tv": 0.04985
+    "tv": 0.04995
    }
   },
   {
@@ -15225,7 +15225,7 @@
   },
   {
    "factorized": {
-    "collision": 0.205389,
+    "collision": 0.204842,
     "cz": 129,
     "final_layout": [
      143,
@@ -15234,7 +15234,7 @@
      141,
      142
     ],
-    "tv": 0.17485
+    "tv": 0.17545
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -15268,7 +15268,7 @@
   },
   {
    "factorized": {
-    "collision": 0.204397,
+    "collision": 0.20374,
     "cz": 129,
     "final_layout": [
      141,
@@ -15277,7 +15277,7 @@
      136,
      143
     ],
-    "tv": 0.1744
+    "tv": 0.1757
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -15397,7 +15397,7 @@
   },
   {
    "factorized": {
-    "collision": 0.197396,
+    "collision": 0.198411,
     "cz": 129,
     "final_layout": [
      141,
@@ -15406,7 +15406,7 @@
      136,
      143
     ],
-    "tv": 0.1776
+    "tv": 0.1762
    },
    "ideal_collision": 0.34375,
    "normal_form": {
@@ -15486,7 +15486,7 @@
  "seed_transpiler": 11,
  "shots": 20000,
  "snapshot": {
-  "calibration": "2026-10-15T15:29:07-07:00",
+  "calibration": "2026-10-15T19:42:21-07:00",
   "path": "docs/evidence/calibration/ibm_kingston.json"
  },
  "versions": {
