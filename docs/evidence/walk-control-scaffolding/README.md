@@ -89,9 +89,28 @@ rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
   shared template (252 CZ) against a measure-only circuit (0 CZ). If the
   scaffold carries the loss, the measure-only arm reads near 0.95 and the
   template arm stays at the table's floor.
-- **Conformance gate.** Check the compiled CZ count of every member whose
-  bound law is a point mass on its input. It would have flagged these
-  controls before submission.
+
+## Local-member conformance
+
+`scripts/local_member_cz_conformance.py --check` (gate core-289) enumerates
+every member live_run can plan, the registered groups and the family groups
+rebuilt from each distinct retained `family_configuration`, and recomputes
+[local_member_conformance.json](local_member_conformance.json). A member is
+local when its bound unitary has operator Schmidt rank 1 across every
+single-qubit cut, so its law needs no two-qubit gate. Its circuit object is
+lowered as live_run compiles it, unbound for a shared template and without
+routing, and cut at every barrier and delay. CZ inside a segment whose own
+bound unitary is local is scaffold. Cancellation across a barrier or an
+idle is what Design A, Design C, the conditional-Ramsey Bell arms and the
+spectator wavefront ask the device to perform, and it passes.
+
+Of the distinct members, 280 are local and 3894 entangling; 62 member names carry
+mid-circuit measurement, reset or control flow and stay unchecked. Ten local
+members execute scaffold CZ, 144 each before routing, and each matches a
+declaration in `SCAFFOLD_CONTROLS` that names the measurement requiring it:
+the four walk readout controls, the four depth-0 walk points and the two
+template arms of the scaffold A/B campaign. A new member that executes CZ
+its bound law does not need fails the gate until it states why.
 
 ## Files
 

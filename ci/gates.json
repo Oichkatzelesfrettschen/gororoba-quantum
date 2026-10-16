@@ -2232,6 +2232,14 @@
    "name": "sources-246",
    "seconds": 0.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/local_member_cz_conformance.py --check && \"$PYTHON\" -B -O -W error scripts/local_member_cz_conformance.py --check",
+   "name": "core-289",
+   "seconds": 120.0,
+   "tier": "full"
   }
  ],
  "excluded": [
