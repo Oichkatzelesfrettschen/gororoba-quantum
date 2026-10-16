@@ -29,11 +29,11 @@ omega = +1 triples) and V- (mean 2P - 1 over omega = -1 triples); the census
 a two-reference estimator recovers, f = (P - (1 - V+)/2) / ((V+ + V-)/2) over
 the simulated triples, when V+ and V- come from all simulated triples and
 when they come from the bright and dark triples of one pair alone (the range
-over pairs is the reference-mismatch systematic); and the census shots a
-hardware run needs to resolve the census frequency to +-0.01 at 2 sigma
-given the measured visibility, with the references known exactly.
-reference_allocation adds the bright and dark reference shots that sampled
-references cost at the same precision.
+over pairs is the reference-mismatch systematic); and the census shots that
+resolve f to +-0.01 at 2 sigma given the measured visibility, with the
+references known exactly. reference_allocation states the target on the
+4096-triple census instead and adds the bright and dark reference shots
+that sampled references cost.
 
 ``--pairs all`` or ``--pairs I,J;I,J``. ``--check FILE`` requires FILE to hold
 every ordered pair exactly once, recomputes its summary from its records
@@ -241,7 +241,8 @@ def reference_allocation(result: dict[str, Any]) -> dict[str, Any]:
     df/dV- = -f/(2V); P(c = 1) carries variance 1/4 per shot and V+ or V-
     carries 1 - V^2 per reference shot. Var f = sum_i a_i / N_i is smallest
     for a fixed total at N_i proportional to sqrt(a_i), where the total is
-    (sum_i sqrt(a_i))^2 / sigma^2.
+    (sum_i sqrt(a_i))^2 / sigma^2, with sigma the standard error of f that
+    resolves the 4096-triple census to +-0.01 at 2 sigma.
     """
     summary = result["summary"]
     v_plus, v_minus = summary["bright_visibility"], summary["dark_visibility"]
@@ -253,10 +254,15 @@ def reference_allocation(result: dict[str, Any]) -> dict[str, Any]:
         "bright": (1 - f) * math.sqrt(1 - v_plus**2) / (2 * visibility),
         "dark": f * math.sqrt(1 - v_minus**2) / (2 * visibility),
     }
-    sigma = 0.01 / 2
+    # The census is (exact dark triples + f * simulated triples) / 16^3, so
+    # +-0.01 at 2 sigma on the census allows f a standard error larger by the
+    # inverse simulated fraction.
+    simulated_fraction = len(signs) / DIM**3
+    sigma = 0.01 / 2 / simulated_fraction
     total = sum(weights.values()) ** 2 / sigma**2
     return {
         "dark_fraction": round(f, 6),
+        "simulated_fraction": round(simulated_fraction, 6),
         "census_only_shots": round(weights["census"] ** 2 / sigma**2, 1),
         "total_shots": round(total, 1),
         "split": {name: round(total * w / sum(weights.values()), 1) for name, w in weights.items()},

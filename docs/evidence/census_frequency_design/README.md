@@ -32,8 +32,9 @@ i = 0, j = 0 or i = j have W = +-I and enter the census at their exact value.
 | Common-visibility prediction 1/2 - V (1/2 - 231/512) | 0.424786 |
 | Two-reference census, V+ and V- pooled over all pairs | 0.451172 |
 | Two-reference census, V+ and V- from one pair, range over 210 pairs | 0.4299 to 0.4699 |
-| Census shots for +-0.01 at 2 sigma, references known exactly | 78,601 |
-| Census plus sampled bright and dark references, optimal split | 292,054 (151,000 census, 63,128 bright, 77,926 dark) |
+| Census shots for f to +-0.01 at 2 sigma, references known exactly (retained summary) | 78,601 |
+| Census shots for the 4096-triple census to +-0.01 at 2 sigma, references known exactly | 52,535 |
+| Same target, census plus sampled bright and dark references, optimal split | 196,527 (101,610 census, 42,479 bright, 52,438 dark) |
 
 ## Readings
 
@@ -52,26 +53,36 @@ i = 0, j = 0 or i = j have W = +-I and enter the census at their exact value.
   references taken from one pair move the census over 0.430 to 0.470, twice
   the +-0.01 target. A hardware design pools its references over many pairs,
   or interleaves references from the same compiled circuits it samples.
-- **Sampling the references costs more than the census itself.** The
-  bright and dark references enter the estimator through V+ and V-, so
-  their binomial error propagates into f with df/dV+ = (1 - f)/(2V) and
-  df/dV- = -f/(2V), V = (V+ + V-)/2, f = 0.55 the dark fraction of the
-  simulated triples. Splitting shots in proportion to each term's standard
-  deviation, the census needs 292,054 shots in all at the simulated
-  visibilities, 3.7 times the 78,601 it needs with exact references
-  (`reference_allocation`, printed by `--check`; its census-only figure,
-  78,071, uses V rather than the per-pair mean visibility). As the
+- **The census tolerates a wider error on f than on the census itself.**
+  The census is (exact dark triples + f x 3360) / 4096, since the 3360
+  simulated triples are 82.0 percent of all triples and the rest enter at
+  their exact value. A census resolved to +-0.01 at 2 sigma therefore allows
+  f a standard error of 0.005 / 0.820. The retained summary's 78,601 sets
+  that error to 0.005 on f, and its census-scale equivalent is 52,535 shots
+  (`reference_allocation`, printed by `--check`; it uses V = (V+ + V-)/2
+  rather than the per-pair mean visibility).
+- **Sampling the references costs more than the census itself.** The bright
+  and dark references enter the estimator through V+ and V-, so their
+  binomial error propagates into f with df/dV+ = (1 - f)/(2V) and
+  df/dV- = -f/(2V), where V = (V+ + V-)/2 and f = 0.55 is the dark fraction
+  of the simulated triples. Splitting shots in proportion to each term's
+  standard deviation, the census needs 196,527 shots in all at the simulated
+  visibilities, 3.7 times what it needs with exact references. As the
   visibility falls the ratio approaches 4.
 - **The shot cost depends on the hardware visibility, which simulation does
-  not give.** The walk scaffold measured hardware loss per CZ 1.8 to 4.4
-  times the calibrated model's on the same backends
-  (`docs/evidence/walk-control-scaffolding/README.md`). If that ratio holds
-  over 434 CZ and visibility decays exponentially in the CZ count (an
-  assumption; confirming it needs one bright and one dark pair on hardware),
-  V falls to 0.156 to 0.011, the census-only shots to about 409k to 87
-  million, and the total with sampled references to about 1.6 million to
-  350 million. At the 250 us default repetition delay, 409k shots already
-  exceed 100 s, against 266 s left at the last recorded service inventory.
+  not give.**
+  - The walk scaffold measured hardware loss per CZ at 1.8 to 4.4 times the
+    calibrated model's on the same backends
+    (`docs/evidence/walk-control-scaffolding/README.md`).
+  - If that ratio holds over 434 CZ, and visibility decays exponentially in
+    the CZ count, V falls to 0.157 to 0.011. That decay is an assumption;
+    confirming it needs one bright and one dark pair on hardware.
+  - At those visibilities the census-only shots rise to about 274k to 58
+    million, and the total with sampled references to about 1.1 million to
+    230 million.
+  - At the 250 us default repetition delay, the 1.1 million shots of the
+    favorable case already take about 270 s, against 266 s left at the last
+    recorded service inventory.
 
 ## Consequence for the proposed experiment
 

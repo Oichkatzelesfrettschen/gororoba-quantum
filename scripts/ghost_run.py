@@ -36,8 +36,9 @@ skipped with the record's reason.
 directories. ``--states execution`` restricts each execution snapshot to the
 members that ran under it; ``execution,current`` adds the export-time
 snapshot over every member, and ``all`` (the default) every snapshot. The
-entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` reruns the
-execution-state ghost of the runs FILE names (or of the ``--runs`` subset)
+entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` requires FILE to
+hold every audited run exactly once, reruns the execution-state ghost of the
+runs FILE names (or of the ``--runs`` subset)
 on the CPU and requires each execution mean TV distance to agree within five
 standard errors.
 """
@@ -344,6 +345,11 @@ def main() -> int:
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
+        listed = [run["run"] for run in retained["runs"]]
+        require(
+            sorted(listed) == audited_runs() and len(set(listed)) == len(listed),
+            f"{args.check}: runs are not each audited run exactly once",
+        )
         named = None if args.runs == "all" else set(args.runs.split(","))
         checked = 0
         for run in retained["runs"]:
