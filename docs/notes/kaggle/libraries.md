@@ -38,9 +38,10 @@ Why the local recipes exist:
   under a pinned sha256, depending on python-requests and python-protobuf.
 
 A broken or missing package is rebuilt the way the root AGENTS.md
-prescribes for the Python stack: `makepkg -si --nocheck` in the package
-directory, python-kagglesdk first, then python-jupytext, kaggle-api and
-python-kagglehub.
+prescribes for the Python stack: python-kagglesdk first, from the AUR
+through paru, since `~/Github/PKGBUILDs` holds no recipe for it; then
+`makepkg -si --nocheck` in `~/Github/PKGBUILDs/python-jupytext`,
+`kaggle-api` and `python-kagglehub`, in that order.
 
 ## kaggle: the CLI
 
