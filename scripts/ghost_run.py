@@ -43,7 +43,7 @@ rebuilds every run's skip reason, members, width exclusions, shots and
 execution snapshots from the archived inputs and requires them, full
 snapshot coverage, and the summaries and recorded-replay agreement
 recomputed from the retained distances. It then reruns the execution-state
-ghost of the runs FILE names (or of the ``--runs`` subset) on the CPU and
+ghost of the runs FILE names (or of the ``--runs`` subset) on GOROROBA_AER_DEVICE and
 requires each execution mean TV distance to agree within five standard
 errors.
 """
@@ -55,7 +55,6 @@ import hashlib
 import io
 import json
 import math
-import os
 import sys
 import time
 from pathlib import Path
@@ -515,7 +514,7 @@ def main() -> int:
             if "skipped" in run or (named is not None and run["run"] not in named):
                 continue
             checked += 1
-            fresh = ghost_run(run["run"], "execution", "CPU", index)
+            fresh = ghost_run(run["run"], "execution", calibration_snapshot.aer_device(), index)
             for relative, summary in run["summary"].items():
                 if not summary["execution_members"]:
                     continue
@@ -527,11 +526,12 @@ def main() -> int:
                     f"{run['run']}: {old} vs {new}",
                 )
         require(checked > 0 and (named is None or checked == len(named)), "--runs names a run FILE lacks")
-        print(f"{args.check}: execution-state ghosts of {checked} runs reproduced on the CPU")
+        device = calibration_snapshot.aer_device()
+        print(f"{args.check}: execution-state ghosts of {checked} runs reproduced on {device}")
         return 0
     require(args.out is not None, "--out is required")
     runs = audited_runs() if args.runs == "all" else args.runs.split(",")
-    device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
+    device = calibration_snapshot.aer_device()
     out: dict[str, Any] = {
         "schema": "ghost-run-v2",
         "device": device,
