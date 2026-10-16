@@ -147,8 +147,11 @@ def write() -> int:
 def check() -> int:
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     require(index.get("schema") == "ghost-calibration-index-v1", "unexpected index schema")
-    audited = {(job["job_id"], job["run"]) for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]}
-    require({(job["job_id"], job["run"]) for job in index["jobs"]} == audited, "index jobs differ from the audit")
+    audited = sorted(
+        (job["job_id"], job["run"], job["backend"]) for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]
+    )
+    indexed = sorted((job["job_id"], job["run"], job["backend"]) for job in index["jobs"])
+    require(indexed == audited, "index jobs differ from the audit or repeat one")
     referenced = {w["snapshot"] for job in index["jobs"] for w in job["windows"]} | set(index["current"].values())
     require(referenced == set(index["files"]), "index references and files differ")
     for relative, entry in index["files"].items():

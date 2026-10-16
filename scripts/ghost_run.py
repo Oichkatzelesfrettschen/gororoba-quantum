@@ -37,7 +37,8 @@ directories. ``--states execution`` restricts each execution snapshot to the
 members that ran under it; ``execution,current`` adds the export-time
 snapshot over every member, and ``all`` (the default) every snapshot. The
 entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE`` requires FILE to
-hold every audited run exactly once, reruns the execution-state ghost of the
+hold every audited run exactly once and each ghosted run to cover every
+member under every snapshot of its backend, reruns the execution-state ghost of the
 runs FILE names (or of the ``--runs`` subset)
 on the CPU and requires each execution mean TV distance to agree within five
 standard errors.
@@ -350,6 +351,17 @@ def main() -> int:
             sorted(listed) == audited_runs() and len(set(listed)) == len(listed),
             f"{args.check}: runs are not each audited run exactly once",
         )
+        for run in retained["runs"]:
+            if "skipped" in run:
+                continue
+            # Every retained snapshot of the backend covers every ghosted member.
+            prefix = f"docs/evidence/calibration/history/{run['backend']}/"
+            expected = sorted(f for f in index["files"] if f.startswith(prefix))
+            require(sorted(run["snapshots"]) == expected, f"{run['run']}: snapshots differ from the index")
+            members = set(run["member_shots"])
+            require(len(members) == run["members_ghosted"], f"{run['run']}: member count differs")
+            for relative, entry in run["snapshots"].items():
+                require(set(entry["tvd"]) == members, f"{run['run']}: {relative} lacks ghosted members")
         named = None if args.runs == "all" else set(args.runs.split(","))
         checked = 0
         for run in retained["runs"]:
