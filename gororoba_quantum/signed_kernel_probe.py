@@ -48,7 +48,8 @@ from typing import Any
 
 import numpy as np
 from qiskit import QuantumCircuit, transpile
-from qiskit.circuit.library import DiagonalGate, StatePreparation
+from qiskit.circuit import Parameter
+from qiskit.circuit.library import DiagonalGate, MCPhaseGate, StatePreparation
 from qiskit.quantum_info import Operator, Statevector
 
 from cd_core import cd_multiply, cd_sign
@@ -207,6 +208,78 @@ def signed_probe(t: float, *, drop_sign: bool = False, branch_prep: bool = False
         circuit.x(bit)
     # ctrl_state reads the last-listed control first: "01" is control 6 at 0
     # and the selector bit at 1.
+    for bit in _bits(S0_FLIP):
+        circuit.ccx(4, 6, bit, ctrl_state="01")
+    for bit in _bits(S1_FLIP):
+        circuit.ccx(5, 6, bit, ctrl_state="01")
+    circuit.h(6)
+    circuit.measure(6, 0)
+    return circuit
+
+
+# Structure-matched probes: one parametrized circuit for every t. The selector
+# amplitudes (sqrt(|t|/alpha), sqrt(1/alpha), sqrt(1/alpha), 0) come from two
+# RY angles, and sign(t) is a phase SIGN_PHASE = pi on selector 00 (and control
+# 0 in the signed probe) instead of an entry of the synthesized diagonal, so a
+# compile at bound parameters differs between t only in rotation angles.
+PREP_HIGH = Parameter("prep_high")
+PREP_LOW = Parameter("prep_low")
+SIGN_PHASE = Parameter("sign_phase")
+
+
+def matched_values(t: float) -> dict[Parameter, float]:
+    alpha = 2.0 + abs(t)
+    a0, a1, a2 = math.sqrt(abs(t) / alpha), math.sqrt(1.0 / alpha), math.sqrt(1.0 / alpha)
+    return {
+        PREP_HIGH: 2.0 * math.atan2(a2, math.hypot(a0, a1)),
+        PREP_LOW: 2.0 * math.atan2(a1, a0),
+        SIGN_PHASE: math.pi if t < 0 else 0.0,
+    }
+
+
+def _matched_prep() -> QuantumCircuit:
+    """Selector 4-5 (s0, s1) from |00>: RY on s1, then RY on s0 controlled on s1 = 0."""
+    prep = QuantumCircuit(2, name="prep")
+    prep.ry(PREP_HIGH, 1)
+    prep.x(1)
+    prep.cry(PREP_LOW, 1, 0)
+    prep.x(1)
+    return prep
+
+
+def _phase_on_zero(circuit: QuantumCircuit, qubits: list[int]) -> None:
+    """Phase exp(i SIGN_PHASE) on the all-zero state of ``qubits``."""
+    circuit.x(qubits)
+    circuit.append(MCPhaseGate(SIGN_PHASE, len(qubits) - 1), qubits)
+    circuit.x(qubits)
+
+
+def matched_dark_probe() -> QuantumCircuit:
+    circuit = QuantumCircuit(6, 2, name="kernel_dark_matched")
+    _load_u(circuit)
+    circuit.compose(_matched_prep(), [4, 5], inplace=True)
+    circuit.append(_sign_diagonal(1.0, controlled=False, drop_sign=True), range(6))
+    _phase_on_zero(circuit, [4, 5])
+    for bit in _bits(COMMON_FLIP):
+        circuit.x(bit)
+    for bit in _bits(S0_FLIP):
+        circuit.cx(4, bit)
+    for bit in _bits(S1_FLIP):
+        circuit.cx(5, bit)
+    circuit.compose(_matched_prep().inverse(), [4, 5], inplace=True)
+    circuit.measure([4, 5], [0, 1])
+    return circuit
+
+
+def matched_signed_probe() -> QuantumCircuit:
+    circuit = QuantumCircuit(7, 1, name="kernel_signed_matched")
+    _load_u(circuit)
+    circuit.h(6)
+    circuit.compose(_matched_prep(), [4, 5], inplace=True)
+    circuit.append(_sign_diagonal(1.0, controlled=True, drop_sign=True), range(7))
+    _phase_on_zero(circuit, [4, 5, 6])
+    for bit in _bits(COMMON_FLIP):
+        circuit.x(bit)
     for bit in _bits(S0_FLIP):
         circuit.ccx(4, 6, bit, ctrl_state="01")
     for bit in _bits(S1_FLIP):

@@ -53,10 +53,12 @@ import numpy as np  # noqa: E402
 import qiskit  # noqa: E402
 import qiskit_aer  # noqa: E402
 from qiskit import QuantumCircuit, transpile  # noqa: E402
+from qiskit.circuit import Instruction  # noqa: E402
 from qiskit.circuit.library import UnitaryGate  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import conditional_ramsey as cr  # noqa: E402
+import snapshot_laws  # noqa: E402
 
 SNAPSHOT = ROOT / "docs/evidence/calibration/ibm_kingston.json"
 # (A, B) physical qubits of the two held records; the coherence window's work
@@ -139,81 +141,27 @@ def _compile_arms(snapshot: dict[str, Any], pair: tuple[int, int]) -> dict[str, 
     return out
 
 
-def pair_snapshot(snapshot: dict[str, Any], pair: tuple[int, int]) -> dict[str, Any]:
-    """The snapshot restricted to the pair, renumbered (pair[0], pair[1]) -> (0, 1).
-
-    live_run's noise is local: each gate error and relaxation channel reads
-    only its own qubits' entries, so the restriction carries the same channels
-    on a two-qubit register that Aer simulates without the idle 154 qubits.
-    """
-    index = {q: k for k, q in enumerate(pair)}
-    instructions = {
-        op: [dict(row, qargs=[index[q] for q in row["qargs"]]) for row in rows if all(q in index for q in row["qargs"])]
-        for op, rows in snapshot["instructions"].items()
-    }
-    return dict(snapshot, num_qubits=2, qubits=[snapshot["qubits"][q] for q in pair], instructions=instructions)
-
-
-def law(
-    simulator: Any,
-    compiled: QuantumCircuit,
-    pair: tuple[int, int],
-    rates: dict[str, float],
-    flips: dict[int, tuple[float, float]],
-) -> np.ndarray:
-    """Exact four-outcome law (index b << 1 | a) of one compiled arm with the Hamiltonian inserted.
-
-    The arm is moved onto a two-qubit register (physical pair[k] -> k) and
-    simulated against pair_snapshot's noise; live_run's model attaches no
-    quantum error to measure, so the pre-measurement probabilities followed by
-    the assignment channel are the outcome law.
-    """
-    index = {q: k for k, q in enumerate(pair)}
-    body = QuantumCircuit(2)
-    measured: list[int] = []
-    for instruction in compiled.data:
-        op = instruction.operation
-        qubits = [compiled.find_bit(q).index for q in instruction.qubits]
-        if op.name == "barrier" and (op.label or "").startswith("H:"):
-            _, sector, delay = op.label.split(":")
-            if qubits != list(pair):
-                raise SystemExit(f"Hamiltonian marker on {qubits}, expected {list(pair)}")
-            body.append(hamiltonian_unitary(rates, sector, int(delay)), [0, 1])
-            continue
-        if op.name == "barrier":
-            continue
-        if any(q not in index for q in qubits):
-            raise SystemExit(f"{op.name} acts on {qubits} outside the pair {list(pair)}")
-        if op.name == "measure":
-            measured.append(qubits[0])
-            continue
-        body.append(op, [index[q] for q in qubits])
-    if sorted(measured) != sorted(pair):
-        raise SystemExit(f"measured {measured}, expected {list(pair)}")
-    body.save_probabilities([0, 1], label="p")
-    probs = np.asarray(simulator.run(body).result().data(0)["p"], dtype=float)
-
-    def channel(q: int) -> np.ndarray:
-        e10, e01 = flips[q]
-        return np.array([[1.0 - e10, e01], [e10, 1.0 - e01]])
-
-    out = np.kron(channel(pair[1]), channel(pair[0])) @ probs
-    return np.clip(out, 0.0, None) / out.sum()
-
-
 def exact_laws(
     snapshot: dict[str, Any], pair: tuple[int, int], scenario: dict[str, float], device: str
 ) -> dict[str, np.ndarray]:
+    """Exact noisy law of every arm, with exp(-i H t) in place of each labeled barrier."""
     to_rad = 2.0 * math.pi * snapshot["dt"]
     rates = {key: value * to_rad for key, value in scenario.items()}
-    reduced = pair_snapshot(snapshot, pair)
-    simulator = calibration_snapshot.noise_simulator(reduced, device)
-    _, noise = calibration_snapshot.noise_model(reduced)
-    if noise._local_quantum_errors.get("measure"):
-        raise SystemExit("the noise model attaches a quantum error to measure; law() would drop it")
-    flips = {q: (snapshot["qubits"][q]["e10"], snapshot["qubits"][q]["e01"]) for q in pair}
-    arms = compiled_arms(snapshot, pair)
-    return {name: law(simulator, compiled, pair, rates, flips) for name, compiled in arms.items()}
+
+    def insert(operation: Instruction, qubits: list[int]) -> Instruction | None:
+        if operation.name != "barrier":
+            return operation
+        if not (operation.label or "").startswith("H:"):
+            return None
+        if qubits != list(pair):
+            raise SystemExit(f"Hamiltonian marker on {qubits}, expected {list(pair)}")
+        _, sector, delay = operation.label.split(":")
+        return hamiltonian_unitary(rates, sector, int(delay))
+
+    return {
+        name: snapshot_laws.outcome_law(snapshot, compiled, device, insert)
+        for name, compiled in compiled_arms(snapshot, pair).items()
+    }
 
 
 def to_hz(value: float, dt: float) -> float:
