@@ -63,10 +63,16 @@ GPU matters for sweeps and batched trials, not for single circuits.
   [--slot-wait S]` pushes one kernel per CI shard of the committed HEAD,
   with CI's shard count by default (6 for pr, 12 for full), on the first
   machine in the list with a free session; a default run waits up to two
-  hours for sessions, since six shards outnumber the five CPU sessions. The kernel fetches the
-  merge base with origin/main from the public repository, applies the
-  bundled files changed since then with their modes and deletions, and runs
-  no gate unless `git write-tree` equals HEAD's tree. It then installs CI's
+  hours for sessions, since six shards outnumber the five CPU sessions. A
+  commit that a branch of the canonical repository (`REMOTE`, whose branches
+  `shards` mirrors under `refs/kaggle-shards/remote/`) contains is fetched as
+  itself. Any other commit, a fork-only one included, is rebuilt from the
+  merge base with that repository's main plus the bundled files
+  changed since then, with their modes and deletions; Kaggle refuses a
+  script near 1.7 MB (HTTP 400 on SaveKernel) and accepts 706 KB, so
+  `shards` stops above `KERNEL_SOURCE_LIMIT` (1 MB) and asks for a push.
+  Either way the kernel runs no gate unless `git write-tree` equals HEAD's
+  tree. It then installs CI's
   Python through uv and CI's pins through `ci/install_pins.sh` (the script
   `.github/workflows/ci.yml` runs), and runs `ci/run_gates.py` on its
   shard with the CPU device. Shard runs live under the ignored
@@ -100,7 +106,14 @@ GPU matters for sweeps and batched trials, not for single circuits.
   count of 5 reached", and `shards --slot-wait` retries until a session
   ends. A `TpuV5E8` request draws on the same pool: with five CPU sessions
   running, it fails with the same CPU-count message (2026-10-16), so the
-  GPU pool is the only capacity beyond the five. `shards --machine
+  GPU pool is the only capacity beyond the five. Neither a script nor a
+  notebook kernel pushed with `--accelerator TpuV5E8` (plus
+  `machine_shape`) receives a TPU: both ran on 4-core Xeon machines with no
+  `/dev/accel*`, no TPU environment and JAX reporting only `cpu:0`, and
+  `kaggle quota` kept TPU use at 0.00 h. The batch push exposes no docker
+  image, while the MCP `create_notebook_session` call takes `docker_image`
+  and `machine_shape`; whether a TPU VM image through that call reaches the
+  TPU is untested. `shards --machine
   cpu,NvidiaTeslaT4` falls through to a GPU session when the CPU pool is
   full; a GPU session runs the shard on its 4-core host.
 - The account runs at most two GPU batch sessions at once; a third push

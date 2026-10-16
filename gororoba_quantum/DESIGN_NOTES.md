@@ -47,8 +47,11 @@ matches every registry record under registry/data/project_csv that pins it.
 
 ## Phase degree along the ladder
 
-Two finite results, checked exhaustively by `verify.py` for dims 8 through 128
-and stated as conjectures beyond:
+Two theorems, proved for every dimension in
+[cd_phase_degree.md](../docs/notes/cd_phase_degree.md) by induction on the
+doubling level; `verify.py` checks them exhaustively for dims 8 through 128
+and `scripts/cd_phase_degree.py` checks every identity of the proof through
+dim 256:
 
 - The sign function f_m(x) = [cd_sign(dim,m,x) = -1] of L_{e_m} has algebraic
   degree log2(dim) - 1 for every m != 0. Octonion left multiplications are

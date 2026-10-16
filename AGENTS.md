@@ -25,13 +25,22 @@ run is fixed in the next change. A new module, evidence
 replay or contract joins the gate list in ci/gates.json in the same change.
 
 
-CPU-bound loops over independent items (embedding scores in replica
-placement, operator checks, registry parsing) run through parallel.py, an
-order-preserving process pool started with spawn on every platform, so a
-parallel run returns exactly what the serial loop returns.
+Every CPU-bound loop over independent items (embedding scores in replica
+placement, operator checks, registry parsing, exact certificates, synthesis
+searches) runs through parallel.py, an order-preserving process pool started
+with spawn on every platform, so a parallel run returns exactly what the
+serial loop returns; a serial loop over such items is a defect review
+rejects. Items that share a seeded generator draw every item's inputs first,
+in the generator's order, and then map, so pooled and serial runs write the
+same bytes. The worker count comes from the host the process runs on:
+`parallel.available_cpus()` takes the scheduler affinity mask bounded by the
+CPU quota of the process's cgroup and every ancestor, so the build host, a
+CI runner and a Kaggle kernel each use every CPU they grant.
 `GOROROBA_WORKERS=N` caps the worker count and `GOROROBA_WORKERS=1` runs
-serially; the default is every CPU available to the process
-(`parallel.default_threads()`), which also sets `--simulation-threads`. Aer runs batch
+serially; the default (`parallel.default_threads()`) also sets
+`--simulation-threads`. A search too long for one host shards by item range
+across Kaggle CPU sessions (five run concurrently), each running the same
+pool, and merges the shard records in index order. Aer runs batch
 every replica of a choice in one call and parallelize experiments itself.
 `ci/run_gates.py --device GPU` exports `GOROROBA_AER_DEVICE=GPU` to every
 gate, so a local run computes the simulation replays on the GPU while CI's
