@@ -213,10 +213,16 @@ the agent session; a session with the Kaggle MCP loaded can call
 CANCEL_REQUESTED, then CANCEL_ACKNOWLEDGED, and the quota's reserved time
 for it returns to zero. The version page in the web UI also stops a run.
 
-**TPU.** Batch pushes never reach a TPU on this account: script and
-notebook kernels with `TpuV5E8` or `TpuV6E8`, on the default image or the
-TPU-VM image public TPU notebooks record, all ran on 4-core CPU machines
-without `libtpu.so`, and the TPU quota stayed at zero. A TPU run starts
+**TPU.** No API route reaches a TPU on this account. Each of these ran
+on a 4-core CPU machine without `libtpu.so`, JAX reported only the `cpu`
+backend, and the TPU quota stayed at zero:
+the CLI push of a script or of a notebook with `TpuV5E8` or `TpuV6E8`, on
+the default image or the TPU-VM image public TPU notebooks record;
+kagglesdk `create_kernel_session` with `TpuV5E8`, which returned a session
+id and no observable execution; and the MCP's `save_notebook` with
+`machineShape TpuV5E8`, `enableTpu`, `kernelExecutionType SaveAndRunAll`
+and every presence flag set (2026-10-16). A TPU request also counts
+against the five-session CPU pool. A TPU run starts
 from the Kaggle editor with the accelerator set to TPU and "Save Version";
 `kaggle_run.py collect` then retrieves it like any run.
 
