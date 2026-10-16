@@ -838,6 +838,52 @@ def status(args: argparse.Namespace) -> int:
     return 0
 
 
+def download_version(owner: str, slug: str, version: int, target: Path) -> list[str]:
+    """Every output file and the log of one kernel version, laid out as `kaggle kernels output` lays them out.
+
+    The Kaggle CLI parses OWNER/SLUG/N and then sends no version, so it
+    returns the slug's latest version whatever N says; kagglesdk's
+    ListKernelSessionOutput takes the version as version_label "vN".
+    """
+    import urllib.request
+
+    from kaggle.api.kaggle_api_extended import KaggleApi
+    from kagglesdk.kernels.types.kernels_api_service import ApiListKernelSessionOutputRequest
+
+    api = KaggleApi()
+    api.authenticate()
+    written: list[str] = []
+    token: str | None = None
+    log: str | None = None
+    with api.build_kaggle_client() as client:
+        while True:
+            request = ApiListKernelSessionOutputRequest()
+            request.user_name = owner
+            request.kernel_slug = slug
+            request.version_label = f"v{version}"
+            request.page_size = 50
+            if token:
+                request.page_token = token
+            response = client.kernels.kernels_api_client.list_kernel_session_output(request)
+            for item in response.files or []:
+                path = target / item.file_name
+                require(
+                    path.resolve().is_relative_to(target.resolve()), f"output path {item.file_name} escapes {target}"
+                )
+                path.parent.mkdir(parents=True, exist_ok=True)
+                with urllib.request.urlopen(item.url, timeout=300) as download:
+                    path.write_bytes(download.read())
+                written.append(item.file_name)
+            log = log or response.log
+            token = response.next_page_token
+            if not token:
+                break
+    if log:
+        (target / f"{slug}.log").write_text(log, encoding="utf-8")
+        written.append(f"{slug}.log")
+    return written
+
+
 def collect(args: argparse.Namespace) -> int:
     """Download the run's own kernel version and record the sha256 of every returned file.
 
@@ -859,7 +905,8 @@ def collect(args: argparse.Namespace) -> int:
     if out.exists():
         shutil.rmtree(out)
     out.mkdir()
-    kaggle("kernels", "output", versioned, "-p", str(out))
+    owner, slug = submission["kernel"].split("/")
+    download_version(owner, slug, int(submission["kernel_version"]), out)
     for stray in out.iterdir():
         # The kernel's results live in output/ and its log beside it; anything
         # else under /kaggle/working is scratch that Kaggle also returns.

@@ -87,7 +87,10 @@ GPU matters for sweeps and batched trials, not for single circuits.
   Kaggle and fails on CI exposes an environment difference. A machine list
   that names an accelerator needs `--timeout`, as `push` does.
 - `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
-  run's own version with a sha256 manifest. `kernels status` reports the
+  run's own version with a sha256 manifest; `collect` reads that version
+  through kagglesdk's `ListKernelSessionOutput` with `version_label vN`,
+  because the CLI's `kernels output OWNER/SLUG/N` returns the latest
+  version. `kernels status` reports the
   slug's latest version whatever version it names, so `collect` decides
   completion from the `exit.json` the kernel writes on every exit path; a
   version that returns none is not collected.
@@ -167,18 +170,18 @@ shared with every other session on the account.
   GPU at CPU speed.
 - Before and after an accelerator push, read the quota:
   `"$PYTHON" scripts/kaggle_sessions.py quota` prints used and reserved
-  hours, and reserved time above the expected timeout means a session is
-  running that should not be.
+  hours (`kaggle quota` prints no reserved time), and reserved time above the
+  expected timeout means a session is running that should not be.
 
 **Finding a running version.** Each kernel version runs as one session
 whose id is the version's `scriptVersionId`; its page is
 `https://www.kaggle.com/code/OWNER/SLUG?scriptVersionId=ID`, while
-`https://www.kaggle.com/code/OWNER/SLUG` shows only the kernel. No public
-interface returns that id for a running batch version: `kaggle kernels
-status`, kagglesdk (`get_kernel`, `get_kernel_session_status`,
-`list_kernel_session_output`) and the Kaggle MCP (`get_notebook_info`,
-`get_notebook_session_status`, `list_notebook_session_output`) report only
-the latest version's status. Kaggle's web API returns every version's id
+`https://www.kaggle.com/code/OWNER/SLUG` shows only the kernel. The Kaggle
+CLI parses `OWNER/SLUG/N` and sends no version, so `kernels status`,
+`output` and `logs` answer for the slug's latest version whatever N says;
+kagglesdk and the Kaggle MCP take a version as the label `vN`
+(`version_label`, `versionLabel`) and answer for it. None of them returns a
+running version's session id. Kaggle's web API returns every version's id
 and status through `kernels.KernelsService/ListKernelVersions`, which needs a
 signed-in browser session:
 

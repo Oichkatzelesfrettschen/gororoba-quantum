@@ -6,8 +6,9 @@ version's ``scriptVersionId`` (the number in
 new version does not end the old version's session, so a re-push can leave
 several versions of one kernel running, each billing its machine.
 
-No public interface returns a running version's id: the Kaggle CLI,
-kagglesdk and the Kaggle MCP report only a status for the latest version.
+No public interface returns a running version's id: the Kaggle CLI answers
+for the slug's latest version only, and kagglesdk and the Kaggle MCP answer
+for a version named as ``vN`` without its session id.
 Kaggle's web API does, through
 ``kernels.KernelsService/ListKernelVersions``, which needs a signed-in
 browser session. ``versions`` therefore copies the session files of the
