@@ -96,15 +96,38 @@ single replica.
 - Over 40 multinomial resamplings at 1024 shots, the spread of `J` and of the
   falsifier residual lies within 0.7 to 1.4 times the propagated standard
   error (about 89 Hz for `J`), with no resolved bias.
+- With 10 percent of the `A | B = 1` shots replaced by `A | B = 0` shots
+  that read B as 0 (B decayed at the start of the idle), the postselected
+  summary recovers `J` and a zero falsifier residual to 1e-12, and the
+  unconditioned phases move.
+
+## B in the wrong state
+
+A conditional arm keeps only the shots whose B readout equals B's
+preparation, because B's outcome heralds the two ways the conditioning
+fails:
+
+- **Relaxation.** B in `|1>` relaxes during the idle, and a shot whose B
+  decayed carries A's phase at `omega_A + J` from the jump onward, pulling
+  the `A | B = 1` rate toward `A | B = 0` by an amount that grows with `J`
+  while `J` times the idle stays small. Under the
+  retained Kingston calibration of 2026-10-15 19:42 PDT the unconditioned
+  summary reads `J = 3 kHz` 178 Hz low on (68, 67) and 397 Hz low on
+  (67, 66), where qubit 66 has T1 = 121 us, and its falsifier residual
+  moves by 2.3 standard errors there, so it rejects a static model that holds
+  ([conditional_ramsey_power](../evidence/conditional_ramsey_power/README.md)).
+- **Preparation.** A B left in the wrong state at the start mixes the two
+  conditional coherences for the whole idle.
+
+A failure that B's readout misassigns to the prepared state survives, at
+B's assignment error of a few tenths of a percent to one percent. Each
+conditional phase then moves by at most `arcsin(eps / (1 - eps))` at every
+delay for a surviving fraction `eps`, because
+`|arg(1 + r exp(i theta))| <= arcsin r` for `r < 1`. The summary reports
+the raw `P(B != prepared)` per sector, which is the discarded fraction.
 
 ## Nuisances the design leaves in place
 
-- **B preparation error.** A fraction `eps` of B in the wrong state mixes the
-  two conditional coherences. Each conditional phase moves by at most
-  `arcsin(eps / (1 - eps))` at every delay, because
-  `|arg(1 + r exp(i theta))| <= arcsin r` for `r < 1`. The summary reports
-  the measured `P(B != prepared)` per sector. B in `|1>` also relaxes during
-  the idle, which ends the conditioning partway through the exposure.
 - **Readout.** The in-job calibration corrects A's assignment channel,
   including its asymmetric offset. The correction assumes that the channel
   measured with both qubits in one basis state also holds for the Ramsey arms.

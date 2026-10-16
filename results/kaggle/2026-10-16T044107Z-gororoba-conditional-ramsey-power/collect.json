@@ -1,0 +1,16 @@
+{
+ "schema": "kaggle-aer-collect-v1",
+ "kernel": "probablyeric/gororoba-conditional-ramsey-power/1",
+ "state": "KernelWorkerStatus.COMPLETE",
+ "collected_utc": "2026-10-16T044625Z",
+ "files": {
+  "gororoba-conditional-ramsey-power.log": "1356fa5af58325929d71e6e0cb970c72cef827ebe0b67e7f654665edacb852b7",
+  "output/environment.json": "fc88b23ae2746dcf31dbccd5f30935ccbf3d42b2fd72d415d9d09cce71c83ed2",
+  "output/exit.json": "babdc9230427fd0c3f70bf7e626570f86722f7769967535d16973b283a32adbb",
+  "output/hypercomplex.json": "3b54a5488a7cbc5baae5f1d596cda482e2985e13468820f5f8c1355a45e2b860",
+  "output/pip.txt": "aefeb1595f10ba0b192e1dc530fe0320b6233e327d21e0e1b2e6048f3a613b3d",
+  "output/repo/results/kaggle_out/conditional_ramsey_power.json": "683500fd683181a3411969a390a058f486fc522a21dc603e588c76806160c60a",
+  "output/stderr.txt": "e3b0c44298fc1c149afbf4c8996fb92427ae41e4649b934ca495991b7852b855",
+  "output/stdout.txt": "c9ca08d094422cb21b287c2619c630971c323a5128d633f58b11ba8050a71fea"
+ }
+}

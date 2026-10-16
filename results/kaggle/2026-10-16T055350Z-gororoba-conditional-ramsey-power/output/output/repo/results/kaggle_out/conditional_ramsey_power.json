@@ -1,0 +1,1323 @@
+{
+ "blocks": 16,
+ "calibration": "2026-10-15T19:42:21-07:00",
+ "environment": {
+  "device": "GPU",
+  "numpy": "2.1.3",
+  "python": "3.13.15",
+  "qiskit": "2.5.2",
+  "qiskit_aer": "0.17.2",
+  "workers": 4
+ },
+ "plugin_trials": 400,
+ "results": [
+  {
+   "falsifier_rejection_rate": 0.0505,
+   "falsifier_rejection_rate_plugin": 0.04,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9495,
+     "coverage_95_plugin": 0.96,
+     "delta_se_hz": 398.07150991376335,
+     "exact_law_hz": -0.9411786600678904,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -0.6750215523173891,
+     "monte_carlo_sd_hz": 398.00663034465856,
+     "plugin_se_hz_median": 396.9737930216915,
+     "sd_to_se": 0.9998370152912505,
+     "systematic_hz": -0.9411786600678904,
+     "unconditioned_systematic_hz": -0.9411786600697916
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.952,
+     "coverage_95_plugin": 0.965,
+     "delta_se_hz": 148.43704501788955,
+     "exact_law_hz": -1.1348997420557156,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": -4.31714276920928,
+     "monte_carlo_sd_hz": 146.79587204538575,
+     "plugin_se_hz_median": 147.99014617048726,
+     "sd_to_se": 0.988943642927505,
+     "systematic_hz": -1.1348997420557156,
+     "unconditioned_systematic_hz": -1.1348997420557156
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94925,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 133.63732782300875,
+     "exact_law_hz": -0.6643104120217703,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": -3.979631993050587,
+     "monte_carlo_sd_hz": 134.65443436629138,
+     "plugin_se_hz_median": 133.4501778915844,
+     "sd_to_se": 1.0076109464312974,
+     "systematic_hz": -0.6643104120217703,
+     "unconditioned_systematic_hz": -0.6643104120208199
+    },
+    "omega_b": {
+     "coverage_95": 0.95125,
+     "coverage_95_plugin": 0.9625,
+     "delta_se_hz": 147.63703459185632,
+     "exact_law_hz": 6.151340798014685e-13,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": -0.928604155335871,
+     "monte_carlo_sd_hz": 146.66856117946372,
+     "plugin_se_hz_median": 147.19767517833102,
+     "sd_to_se": 0.9934401729547742,
+     "systematic_hz": 6.151340798014685e-13,
+     "unconditioned_systematic_hz": 6.151340798014685e-13
+    },
+    "zz_j": {
+     "coverage_95": 0.95275,
+     "coverage_95_plugin": 0.945,
+     "delta_se_hz": 133.33341106036568,
+     "exact_law_hz": 3.1405079665412583e-13,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": 3.6174475074126433,
+     "monte_carlo_sd_hz": 132.8735178203876,
+     "plugin_se_hz_median": 133.1488323319683,
+     "sd_to_se": 0.9965508027108836,
+     "systematic_hz": 3.1405079665412583e-13,
+     "unconditioned_systematic_hz": -7.464548384107707e-14
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": 0.0,
+    "omega_b": 0.0,
+    "stark": 0.0,
+    "zz": 0.0
+   },
+   "scenario": "zero",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.750924389561468,
+    "a_given_b1": 0.7509243895614672,
+    "even": 0.6360521394400003,
+    "odd": 0.6360521394400007
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.05475,
+   "falsifier_rejection_rate_plugin": 0.035,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.94525,
+     "coverage_95_plugin": 0.965,
+     "delta_se_hz": 358.18220764878424,
+     "exact_law_hz": 1.3604605747674923,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -2.623913414618002,
+     "monte_carlo_sd_hz": 365.08295846063646,
+     "plugin_se_hz_median": 358.2257118256201,
+     "sd_to_se": 1.0192660346172715,
+     "systematic_hz": 1.3604605747674923,
+     "unconditioned_systematic_hz": 1.3604605747674923
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.94425,
+     "coverage_95_plugin": 0.9725,
+     "delta_se_hz": 165.0393437770436,
+     "exact_law_hz": -40892.95820873995,
+     "injected_hz": -40900.0,
+     "monte_carlo_bias_hz": -3.7295036560125943,
+     "monte_carlo_sd_hz": 166.64584081228946,
+     "plugin_se_hz_median": 165.53647895242077,
+     "sd_to_se": 1.0097340246178883,
+     "systematic_hz": 7.041791260055919,
+     "unconditioned_systematic_hz": 7.041791260055919
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94775,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 145.8624273822932,
+     "exact_law_hz": -40893.63843902732,
+     "injected_hz": -40900.0,
+     "monte_carlo_bias_hz": -2.417546948715837,
+     "monte_carlo_sd_hz": 147.39431598325515,
+     "plugin_se_hz_median": 146.1536457696443,
+     "sd_to_se": 1.0105022837508868,
+     "systematic_hz": 6.361560972676487,
+     "unconditioned_systematic_hz": 6.361560972676487
+    },
+    "omega_b": {
+     "coverage_95": 0.951,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 134.68079760287532,
+     "exact_law_hz": -4.313903376550994e-12,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": 0.3708193443404678,
+     "monte_carlo_sd_hz": 132.49956936702853,
+     "plugin_se_hz_median": 134.47183882075973,
+     "sd_to_se": 0.9838044600665462,
+     "systematic_hz": -4.313903376550994e-12,
+     "unconditioned_systematic_hz": -4.313903376550994e-12
+    },
+    "zz_j": {
+     "coverage_95": 0.952,
+     "coverage_95_plugin": 0.9725,
+     "delta_se_hz": 117.68516922413578,
+     "exact_law_hz": 4.313903376550994e-12,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": 0.31547027800476807,
+     "monte_carlo_sd_hz": 118.13184410289566,
+     "plugin_se_hz_median": 117.8516504658871,
+     "sd_to_se": 1.003795506958988,
+     "systematic_hz": 4.313903376550994e-12,
+     "unconditioned_systematic_hz": 4.313903376550994e-12
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -40900.0,
+    "omega_b": 0.0,
+    "stark": 0.0,
+    "zz": 0.0
+   },
+   "scenario": "window_on_a",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.7513837790731507,
+    "a_given_b1": 0.7513837790731512,
+    "even": 0.6365115597178841,
+    "odd": 0.6365115597178843
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.0545,
+   "falsifier_rejection_rate_plugin": 0.0575,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9455,
+     "coverage_95_plugin": 0.9425,
+     "delta_se_hz": 385.18101635321074,
+     "exact_law_hz": -5.211643754494601,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": 4.947585567682432,
+     "monte_carlo_sd_hz": 387.0260203792755,
+     "plugin_se_hz_median": 385.28962619654544,
+     "sd_to_se": 1.0047899661399016,
+     "systematic_hz": -5.211643754494601,
+     "unconditioned_systematic_hz": -363.9281261970057
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.94975,
+     "coverage_95_plugin": 0.9475,
+     "delta_se_hz": 143.271776879612,
+     "exact_law_hz": -20448.603979649637,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": 0.2123009990034219,
+     "monte_carlo_sd_hz": 143.73925652793463,
+     "plugin_se_hz_median": 143.14036942676924,
+     "sd_to_se": 1.0032628872099174,
+     "systematic_hz": 1.3960203503636952,
+     "unconditioned_systematic_hz": 1.3960203503636952
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.95125,
+     "coverage_95_plugin": 0.9425,
+     "delta_se_hz": 135.98426311599917,
+     "exact_law_hz": -20445.99815777239,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": -2.26149178483482,
+     "monte_carlo_sd_hz": 135.16688710414584,
+     "plugin_se_hz_median": 135.8469148738504,
+     "sd_to_se": 0.9939891867402622,
+     "systematic_hz": 4.001842227610996,
+     "unconditioned_systematic_hz": 183.3600834488644
+    },
+    "omega_b": {
+     "coverage_95": 0.95675,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 148.49170747445126,
+     "exact_law_hz": 14996.091710248718,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": -3.843805681429646,
+     "monte_carlo_sd_hz": 146.5822791581021,
+     "plugin_se_hz_median": 148.30557423864295,
+     "sd_to_se": 0.9871411787982995,
+     "systematic_hz": -3.908289751282489,
+     "unconditioned_systematic_hz": -3.908289751282489
+    },
+    "zz_j": {
+     "coverage_95": 0.95125,
+     "coverage_95_plugin": 0.935,
+     "delta_se_hz": 128.69989519466947,
+     "exact_law_hz": 3001.6572093275545,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": 3.4155585096262695,
+     "monte_carlo_sd_hz": 126.4567638146949,
+     "plugin_se_hz_median": 128.6365952784462,
+     "sd_to_se": 0.982570837555216,
+     "systematic_hz": 1.6572093275548259,
+     "unconditioned_systematic_hz": -177.70103189370076
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 0.0,
+    "zz": 3000.0
+   },
+   "scenario": "split",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.7511147528866142,
+    "a_given_b1": 0.750716631906137,
+    "even": 0.6367814317667146,
+    "odd": 0.6370776052803789
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.0535,
+   "falsifier_rejection_rate_plugin": 0.06,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9465,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 385.168548604718,
+     "exact_law_hz": -8.887823120589767,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -6.384471742598962,
+     "monte_carlo_sd_hz": 383.1378566050475,
+     "plugin_se_hz_median": 385.1630097394175,
+     "sd_to_se": 0.994727783441751,
+     "systematic_hz": -8.887823120589767,
+     "unconditioned_systematic_hz": -102.63989097178155
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.95275,
+     "coverage_95_plugin": 0.9375,
+     "delta_se_hz": 140.89046986386072,
+     "exact_law_hz": 186783.60048989012,
+     "injected_hz": 186786.7030965392,
+     "monte_carlo_bias_hz": -0.6715756512533385,
+     "monte_carlo_sd_hz": 138.27481067582391,
+     "plugin_se_hz_median": 140.70188926063986,
+     "sd_to_se": 0.9814348039965778,
+     "systematic_hz": -3.1026066490875954,
+     "unconditioned_systematic_hz": -3.1026066490875954
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.944,
+     "coverage_95_plugin": 0.945,
+     "delta_se_hz": 125.59671651502251,
+     "exact_law_hz": 186788.0444014504,
+     "injected_hz": 186786.7030965392,
+     "monte_carlo_bias_hz": 2.5206602200164325,
+     "monte_carlo_sd_hz": 126.86205019012878,
+     "plugin_se_hz_median": 125.67824307607621,
+     "sd_to_se": 1.0100745760734513,
+     "systematic_hz": 1.3413049112072877,
+     "unconditioned_systematic_hz": 48.21733883680319
+    },
+    "omega_b": {
+     "coverage_95": 0.953,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 137.12312465314596,
+     "exact_law_hz": -9999.482490307015,
+     "injected_hz": -10000.0,
+     "monte_carlo_bias_hz": 1.8377009877157755,
+     "monte_carlo_sd_hz": 136.22718439837894,
+     "plugin_se_hz_median": 136.94407087408513,
+     "sd_to_se": 0.9934661622025218,
+     "systematic_hz": 0.5175096929860377,
+     "unconditioned_systematic_hz": 0.5175096929860377
+    },
+    "zz_j": {
+     "coverage_95": 0.9505,
+     "coverage_95_plugin": 0.965,
+     "delta_se_hz": 126.32840265731474,
+     "exact_law_hz": 20001.57327323118,
+     "injected_hz": 20000.0,
+     "monte_carlo_bias_hz": -0.6380069723200066,
+     "monte_carlo_sd_hz": 125.88455794372877,
+     "plugin_se_hz_median": 126.49813796010203,
+     "sd_to_se": 0.9964865801811017,
+     "systematic_hz": 1.5732732311788216,
+     "unconditioned_systematic_hz": -45.302760694417074
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": 186786.7030965392,
+    "omega_b": -10000.0,
+    "stark": 0.0,
+    "zz": 20000.0
+   },
+   "scenario": "wound",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.7509974981251192,
+    "a_given_b1": 0.7519643279013634,
+    "even": 0.6357046287357108,
+    "odd": 0.6363999907714256
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.35,
+   "falsifier_rejection_rate_plugin": 0.3675,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.95025,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 383.01824102365964,
+     "exact_law_hz": -605.5011728366337,
+     "injected_hz": -600.0,
+     "monte_carlo_bias_hz": 0.8772604627515036,
+     "monte_carlo_sd_hz": 382.6965409951071,
+     "plugin_se_hz_median": 383.5021238470823,
+     "sd_to_se": 0.9991600921468055,
+     "systematic_hz": -5.501172836633697,
+     "unconditioned_systematic_hz": -364.2362611463103
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.94625,
+     "coverage_95_plugin": 0.9375,
+     "delta_se_hz": 143.271776879612,
+     "exact_law_hz": -20448.603979649637,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": 1.1570445965858993,
+     "monte_carlo_sd_hz": 146.50237419063413,
+     "plugin_se_hz_median": 143.51486293871577,
+     "sd_to_se": 1.0225487348686737,
+     "systematic_hz": 1.3960203503636952,
+     "unconditioned_systematic_hz": 1.3960203503636952
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.95,
+     "coverage_95_plugin": 0.955,
+     "delta_se_hz": 134.72417189798648,
+     "exact_law_hz": -20145.85339323132,
+     "injected_hz": -20150.0,
+     "monte_carlo_bias_hz": 0.7184143652126416,
+     "monte_carlo_sd_hz": 134.20278553943265,
+     "plugin_se_hz_median": 134.48125079873805,
+     "sd_to_se": 0.9961299716954384,
+     "systematic_hz": 4.146606768684352,
+     "unconditioned_systematic_hz": 183.51415092351834
+    },
+    "omega_b": {
+     "coverage_95": 0.951,
+     "coverage_95_plugin": 0.9625,
+     "delta_se_hz": 148.49170747445126,
+     "exact_law_hz": 14996.091710248718,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": 1.3957908548518807,
+     "monte_carlo_sd_hz": 147.38100958642048,
+     "plugin_se_hz_median": 148.60352659368357,
+     "sd_to_se": 0.992520135252523,
+     "systematic_hz": -3.908289751282489,
+     "unconditioned_systematic_hz": -3.908289751282489
+    },
+    "zz_j": {
+     "coverage_95": 0.9525,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 126.36937309277438,
+     "exact_law_hz": 3001.584626363002,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": 4.070606398425988,
+     "monte_carlo_sd_hz": 123.51804522686396,
+     "plugin_se_hz_median": 126.15360515703826,
+     "sd_to_se": 0.9774365592221692,
+     "systematic_hz": 1.584626363001823,
+     "unconditioned_systematic_hz": -177.7829177918365
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 300.0,
+    "zz": 3000.0
+   },
+   "scenario": "stark_300",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.7511642886975128,
+    "a_given_b1": 0.7506976035897183,
+    "even": 0.6367814317667146,
+    "odd": 0.6370776052803789
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.885,
+   "falsifier_rejection_rate_plugin": 0.8775,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9465,
+     "coverage_95_plugin": 0.9475,
+     "delta_se_hz": 380.99116875560986,
+     "exact_law_hz": -1205.7780185352935,
+     "injected_hz": -1200.0,
+     "monte_carlo_bias_hz": 0.7771251412513811,
+     "monte_carlo_sd_hz": 382.53749726759906,
+     "plugin_se_hz_median": 381.1782331497297,
+     "sd_to_se": 1.0040586990954141,
+     "systematic_hz": -5.778018535293432,
+     "unconditioned_systematic_hz": -364.5301986798016
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.9465,
+     "coverage_95_plugin": 0.96,
+     "delta_se_hz": 143.271776879612,
+     "exact_law_hz": -20448.603979649637,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": -0.1648522205116689,
+     "monte_carlo_sd_hz": 143.9007966840483,
+     "plugin_se_hz_median": 143.40387139510761,
+     "sd_to_se": 1.00439039577882,
+     "systematic_hz": 1.3960203503636952,
+     "unconditioned_systematic_hz": 1.3960203503636952
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.953,
+     "coverage_95_plugin": 0.965,
+     "delta_se_hz": 133.5455652941346,
+     "exact_law_hz": -19845.714970381992,
+     "injected_hz": -19850.0,
+     "monte_carlo_bias_hz": -0.5534147911357418,
+     "monte_carlo_sd_hz": 131.32712066496913,
+     "plugin_se_hz_median": 133.6301314664098,
+     "sd_to_se": 0.9833881070907945,
+     "systematic_hz": 4.285029618007243,
+     "unconditioned_systematic_hz": 183.6611196902635
+    },
+    "omega_b": {
+     "coverage_95": 0.951,
+     "coverage_95_plugin": 0.955,
+     "delta_se_hz": 148.49170747445126,
+     "exact_law_hz": 14996.091710248718,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": 0.3645768743232416,
+     "monte_carlo_sd_hz": 148.16515489624,
+     "plugin_se_hz_median": 148.6596980245609,
+     "sd_to_se": 0.9978008699356665,
+     "systematic_hz": -3.908289751282489,
+     "unconditioned_systematic_hz": -3.908289751282489
+    },
+    "zz_j": {
+     "coverage_95": 0.94625,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 124.07961983261933,
+     "exact_law_hz": 3001.5002090948137,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": 1.8157805420417743,
+     "monte_carlo_sd_hz": 124.86108446214917,
+     "plugin_se_hz_median": 124.17671614684176,
+     "sd_to_se": 1.0062980901342542,
+     "systematic_hz": 1.5002090948138262,
+     "unconditioned_systematic_hz": -177.87588097744026
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 600.0,
+    "zz": 3000.0
+   },
+   "scenario": "stark_600",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.7512153510407026,
+    "a_given_b1": 0.7506824600220404,
+    "even": 0.6367814317667146,
+    "odd": 0.6370776052803789
+   }
+  },
+  {
+   "falsifier_rejection_rate": 1.0,
+   "falsifier_rejection_rate_plugin": 1.0,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9475,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 378.25242009771955,
+     "exact_law_hz": -2406.286351010497,
+     "injected_hz": -2400.0,
+     "monte_carlo_bias_hz": -4.111939751168885,
+     "monte_carlo_sd_hz": 374.8278403189979,
+     "plugin_se_hz_median": 378.5938571938043,
+     "sd_to_se": 0.9909463109903252,
+     "systematic_hz": -6.286351010496827,
+     "unconditioned_systematic_hz": -365.0677793069039
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.95375,
+     "coverage_95_plugin": 0.93,
+     "delta_se_hz": 143.271776879612,
+     "exact_law_hz": -20448.603979649637,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": 1.5868499397322253,
+     "monte_carlo_sd_hz": 143.79852653092775,
+     "plugin_se_hz_median": 143.2757398988963,
+     "sd_to_se": 1.0036765765232212,
+     "systematic_hz": 1.3960203503636952,
+     "unconditioned_systematic_hz": 1.3960203503636952
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.95025,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 132.07923704021246,
+     "exact_law_hz": -19245.460804144386,
+     "injected_hz": -19250.0,
+     "monte_carlo_bias_hz": 3.6428198153208466,
+     "monte_carlo_sd_hz": 132.43577425203847,
+     "plugin_se_hz_median": 131.96457744753369,
+     "sd_to_se": 1.002699419074608,
+     "systematic_hz": 4.539195855612244,
+     "unconditioned_systematic_hz": 183.9299100038158
+    },
+    "omega_b": {
+     "coverage_95": 0.9555,
+     "coverage_95_plugin": 0.945,
+     "delta_se_hz": 148.49170747445126,
+     "exact_law_hz": 14996.091710248718,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": 3.921616180487633,
+     "monte_carlo_sd_hz": 148.7209948996746,
+     "plugin_se_hz_median": 148.50542276753643,
+     "sd_to_se": 1.0015441092915087,
+     "systematic_hz": -3.908289751282489,
+     "unconditioned_systematic_hz": -3.908289751282489
+    },
+    "zz_j": {
+     "coverage_95": 0.94625,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 120.39560085420892,
+     "exact_law_hz": 3001.2978180331484,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": 1.9336785230295908,
+     "monte_carlo_sd_hz": 121.61137477348248,
+     "plugin_se_hz_median": 120.23414000125649,
+     "sd_to_se": 1.0100981589912557,
+     "systematic_hz": 1.297818033148605,
+     "unconditioned_systematic_hz": -178.09289611505494
+    }
+   },
+   "pair": [
+    68,
+    67
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 1200.0,
+    "zz": 3000.0
+   },
+   "scenario": "stark_1200",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.7513208866443504,
+    "a_given_b1": 0.7506641496539562,
+    "even": 0.6367814317667146,
+    "odd": 0.6370776052803789
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.051,
+   "falsifier_rejection_rate_plugin": 0.055,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.949,
+     "coverage_95_plugin": 0.945,
+     "delta_se_hz": 365.9189152686076,
+     "exact_law_hz": -0.807930907939493,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -9.03262667641022,
+     "monte_carlo_sd_hz": 365.54745623600184,
+     "plugin_se_hz_median": 365.4826571192761,
+     "sd_to_se": 0.9989848597131606,
+     "systematic_hz": -0.807930907939493,
+     "unconditioned_systematic_hz": -0.8079309079390142
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.949,
+     "coverage_95_plugin": 0.9475,
+     "delta_se_hz": 136.86151568545674,
+     "exact_law_hz": -0.6298475307120309,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": -4.417393029284775,
+     "monte_carlo_sd_hz": 136.871762217927,
+     "plugin_se_hz_median": 136.67258257000174,
+     "sd_to_se": 1.0000748678868487,
+     "systematic_hz": -0.6298475307120309,
+     "unconditioned_systematic_hz": -0.6298475307120309
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94575,
+     "coverage_95_plugin": 0.9625,
+     "delta_se_hz": 121.53454772552612,
+     "exact_law_hz": -0.2258820767422845,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": 0.09892030892033496,
+     "monte_carlo_sd_hz": 122.24972492617968,
+     "plugin_se_hz_median": 121.37187517826618,
+     "sd_to_se": 1.0058845588685508,
+     "systematic_hz": -0.2258820767422845,
+     "unconditioned_systematic_hz": -0.2258820767425238
+    },
+    "omega_b": {
+     "coverage_95": 0.95175,
+     "coverage_95_plugin": 0.96,
+     "delta_se_hz": 136.72106563917745,
+     "exact_law_hz": -9.347141715549334e-14,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": 1.1246194631301145,
+     "monte_carlo_sd_hz": 135.93624162452957,
+     "plugin_se_hz_median": 136.52466094315068,
+     "sd_to_se": 0.9942596701468147,
+     "systematic_hz": -9.347141715549334e-14,
+     "unconditioned_systematic_hz": -9.347141715549334e-14
+    },
+    "zz_j": {
+     "coverage_95": 0.9555,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 121.51421854147286,
+     "exact_law_hz": -1.471845695490726e-13,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": 1.330463696945152,
+     "monte_carlo_sd_hz": 120.36798278847637,
+     "plugin_se_hz_median": 121.35360727649632,
+     "sd_to_se": 0.990567064770241,
+     "systematic_hz": -1.471845695490726e-13,
+     "unconditioned_systematic_hz": 2.209743291485853e-13
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": 0.0,
+    "omega_b": 0.0,
+    "stark": 0.0,
+    "zz": 0.0
+   },
+   "scenario": "zero",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.8507081065714596,
+    "a_given_b1": 0.8507081065714598,
+    "even": 0.668676103243707,
+    "odd": 0.6686761032437072
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.05175,
+   "falsifier_rejection_rate_plugin": 0.0425,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.94825,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 319.3943258132569,
+     "exact_law_hz": 1.1648139896927878,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -1.0411163907168293,
+     "monte_carlo_sd_hz": 321.4776368445468,
+     "plugin_se_hz_median": 320.7405657356915,
+     "sd_to_se": 1.0065226926808586,
+     "systematic_hz": 1.1648139896927878,
+     "unconditioned_systematic_hz": 1.1648139896927878
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.95,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 129.9646496312798,
+     "exact_law_hz": -40895.61111518758,
+     "injected_hz": -40900.0,
+     "monte_carlo_bias_hz": -0.6726183414743839,
+     "monte_carlo_sd_hz": 130.58984134770603,
+     "plugin_se_hz_median": 130.46780836256727,
+     "sd_to_se": 1.0048104751422788,
+     "systematic_hz": 4.388884812421085,
+     "unconditioned_systematic_hz": 4.388884812421085
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94475,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 108.8313858839817,
+     "exact_law_hz": -40896.193522182424,
+     "injected_hz": -40900.0,
+     "monte_carlo_bias_hz": -0.15206014610566673,
+     "monte_carlo_sd_hz": 110.74780059840936,
+     "plugin_se_hz_median": 109.17603274885862,
+     "sd_to_se": 1.0176090260990576,
+     "systematic_hz": 3.8064778175746907,
+     "unconditioned_systematic_hz": 3.8064778175746907
+    },
+    "omega_b": {
+     "coverage_95": 0.94975,
+     "coverage_95_plugin": 0.97,
+     "delta_se_hz": 122.58717976566737,
+     "exact_law_hz": 0.0,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": -1.461201252923234,
+     "monte_carlo_sd_hz": 121.13478889683867,
+     "plugin_se_hz_median": 123.09958190101699,
+     "sd_to_se": 0.9881521797662282,
+     "systematic_hz": 0.0,
+     "unconditioned_systematic_hz": 0.0
+    },
+    "zz_j": {
+     "coverage_95": 0.9435,
+     "coverage_95_plugin": 0.9325,
+     "delta_se_hz": 102.1898130074865,
+     "exact_law_hz": 0.0,
+     "injected_hz": 0.0,
+     "monte_carlo_bias_hz": -2.6403618530232413,
+     "monte_carlo_sd_hz": 103.94523537317977,
+     "plugin_se_hz_median": 102.47901256892153,
+     "sd_to_se": 1.017178056344664,
+     "systematic_hz": 0.0,
+     "unconditioned_systematic_hz": 0.0
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -40900.0,
+    "omega_b": 0.0,
+    "stark": 0.0,
+    "zz": 0.0
+   },
+   "scenario": "window_on_a",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.8510031530019976,
+    "a_given_b1": 0.8510031530019991,
+    "even": 0.6689711665838634,
+    "odd": 0.6689711665838635
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.0495,
+   "falsifier_rejection_rate_plugin": 0.0575,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9505,
+     "coverage_95_plugin": 0.9425,
+     "delta_se_hz": 345.8505660342765,
+     "exact_law_hz": -5.51350478877155,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -6.293504551956019,
+     "monte_carlo_sd_hz": 344.49798779352517,
+     "plugin_se_hz_median": 345.79640659013677,
+     "sd_to_se": 0.9960891252651087,
+     "systematic_hz": -5.51350478877155,
+     "unconditioned_systematic_hz": -799.86001671059
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.9555,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 130.5931843826794,
+     "exact_law_hz": -20449.068646660697,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": -1.0948638879923425,
+     "monte_carlo_sd_hz": 129.4534917537773,
+     "plugin_se_hz_median": 130.40982154542755,
+     "sd_to_se": 0.9912729547541896,
+     "systematic_hz": 0.9313533393021667,
+     "unconditioned_systematic_hz": 0.9313533393021667
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94475,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 115.18978316705554,
+     "exact_law_hz": -20446.311894266313,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": 2.0518883879862644,
+     "monte_carlo_sd_hz": 116.46430434546554,
+     "plugin_se_hz_median": 115.39321140517244,
+     "sd_to_se": 1.011064533184871,
+     "systematic_hz": 3.6881057336879413,
+     "unconditioned_systematic_hz": 400.861361694595
+    },
+    "omega_b": {
+     "coverage_95": 0.9505,
+     "coverage_95_plugin": 0.93,
+     "delta_se_hz": 131.7097914706694,
+     "exact_law_hz": 14997.613493369212,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": -0.918820292262409,
+     "monte_carlo_sd_hz": 131.14484604639708,
+     "plugin_se_hz_median": 131.61624665331482,
+     "sd_to_se": 0.9957106801402983,
+     "systematic_hz": -2.3865066307890044,
+     "unconditioned_systematic_hz": -2.3865066307890044
+    },
+    "zz_j": {
+     "coverage_95": 0.9445,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 113.3720977503199,
+     "exact_law_hz": 2999.7071057131984,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": -1.7439720050917709,
+     "monte_carlo_sd_hz": 115.25402349965607,
+     "plugin_se_hz_median": 113.46741970159538,
+     "sd_to_se": 1.0165995495071527,
+     "systematic_hz": -0.29289428680154317,
+     "unconditioned_systematic_hz": -397.46615024771074
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 0.0,
+    "zz": 3000.0
+   },
+   "scenario": "split",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.8508303593938135,
+    "a_given_b1": 0.8502708245066944,
+    "even": 0.6691492783103824,
+    "odd": 0.669339640523717
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.0515,
+   "falsifier_rejection_rate_plugin": 0.0475,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9485,
+     "coverage_95_plugin": 0.9525,
+     "delta_se_hz": 334.05971784439936,
+     "exact_law_hz": -5.911775875891645,
+     "injected_hz": -0.0,
+     "monte_carlo_bias_hz": -6.411301624639394,
+     "monte_carlo_sd_hz": 335.2600310140271,
+     "plugin_se_hz_median": 333.86365272919073,
+     "sd_to_se": 1.0035931095714652,
+     "systematic_hz": -5.911775875891645,
+     "unconditioned_systematic_hz": -242.36370064314207
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.9465,
+     "coverage_95_plugin": 0.9675,
+     "delta_se_hz": 124.42490356130988,
+     "exact_law_hz": 186784.80158399788,
+     "injected_hz": 186786.7030965392,
+     "monte_carlo_bias_hz": -1.9832300709423423,
+     "monte_carlo_sd_hz": 125.0847889645338,
+     "plugin_se_hz_median": 124.40763361447972,
+     "sd_to_se": 1.0053034833408472,
+     "systematic_hz": -1.9015125413062288,
+     "unconditioned_systematic_hz": -1.9015125413062288
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94725,
+     "coverage_95_plugin": 0.96,
+     "delta_se_hz": 110.19498510459262,
+     "exact_law_hz": 186787.75747193582,
+     "injected_hz": 186786.7030965392,
+     "monte_carlo_bias_hz": 1.2224207414126087,
+     "monte_carlo_sd_hz": 110.75453778053269,
+     "plugin_se_hz_median": 110.11471409137792,
+     "sd_to_se": 1.0050778415679167,
+     "systematic_hz": 1.054375396622338,
+     "unconditioned_systematic_hz": 119.2803377802648
+    },
+    "omega_b": {
+     "coverage_95": 0.95425,
+     "coverage_95_plugin": 0.95,
+     "delta_se_hz": 123.59433839713871,
+     "exact_law_hz": -9999.6362452051,
+     "injected_hz": -10000.0,
+     "monte_carlo_bias_hz": 0.4684077525816469,
+     "monte_carlo_sd_hz": 121.59222678930817,
+     "plugin_se_hz_median": 123.47023483772531,
+     "sd_to_se": 0.9838009440092857,
+     "systematic_hz": 0.3637547949013697,
+     "unconditioned_systematic_hz": 0.3637547949013697
+    },
+    "zz_j": {
+     "coverage_95": 0.95025,
+     "coverage_95_plugin": 0.9475,
+     "delta_se_hz": 110.32046906655185,
+     "exact_law_hz": 20000.60935572129,
+     "injected_hz": 20000.0,
+     "monte_carlo_bias_hz": -2.7240566936388415,
+     "monte_carlo_sd_hz": 110.75941654155243,
+     "plugin_se_hz_median": 110.18082080369494,
+     "sd_to_se": 1.0039788398174394,
+     "systematic_hz": 0.6093557212887396,
+     "unconditioned_systematic_hz": -117.61660666233647
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": 186786.7030965392,
+    "omega_b": -10000.0,
+    "stark": 0.0,
+    "zz": 20000.0
+   },
+   "scenario": "wound",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.850755055877799,
+    "a_given_b1": 0.8504923633763439,
+    "even": 0.6684577089503001,
+    "odd": 0.6689043804156137
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.42975,
+   "falsifier_rejection_rate_plugin": 0.4075,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.9505,
+     "coverage_95_plugin": 0.965,
+     "delta_se_hz": 342.5898386115567,
+     "exact_law_hz": -605.6753939268884,
+     "injected_hz": -600.0,
+     "monte_carlo_bias_hz": -5.794657329019929,
+     "monte_carlo_sd_hz": 341.35176902033663,
+     "plugin_se_hz_median": 342.58089307917953,
+     "sd_to_se": 0.9963861461967534,
+     "systematic_hz": -5.675393926888403,
+     "unconditioned_systematic_hz": -800.0424698339044
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.95025,
+     "coverage_95_plugin": 0.955,
+     "delta_se_hz": 130.5931843826794,
+     "exact_law_hz": -20449.068646660697,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": -3.0950761331042798,
+     "monte_carlo_sd_hz": 129.4747875447568,
+     "plugin_se_hz_median": 130.50682429300457,
+     "sd_to_se": 0.9914360244509747,
+     "systematic_hz": 0.9313533393021667,
+     "unconditioned_systematic_hz": 0.9313533393021667
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.94175,
+     "coverage_95_plugin": 0.9525,
+     "delta_se_hz": 112.79217789121277,
+     "exact_law_hz": -20146.230949697252,
+     "injected_hz": -20150.0,
+     "monte_carlo_bias_hz": -0.1977474686027409,
+     "monte_carlo_sd_hz": 114.71139853419308,
+     "plugin_se_hz_median": 112.58758752525021,
+     "sd_to_se": 1.0170155473443503,
+     "systematic_hz": 3.7690503027501765,
+     "unconditioned_systematic_hz": 400.95258825625814
+    },
+    "omega_b": {
+     "coverage_95": 0.955,
+     "coverage_95_plugin": 0.9475,
+     "delta_se_hz": 131.7097914706694,
+     "exact_law_hz": 14997.613493369212,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": -2.0172780711805753,
+     "monte_carlo_sd_hz": 130.42428092636302,
+     "plugin_se_hz_median": 131.62150177990839,
+     "sd_to_se": 0.9902398255288967,
+     "systematic_hz": -2.3865066307890044,
+     "unconditioned_systematic_hz": -2.3865066307890044
+    },
+    "zz_j": {
+     "coverage_95": 0.9475,
+     "coverage_95_plugin": 0.9425,
+     "delta_se_hz": 110.73003107946712,
+     "exact_law_hz": 2999.6658018325957,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": 0.2102427428084918,
+     "monte_carlo_sd_hz": 111.08727973589454,
+     "plugin_se_hz_median": 110.77535894789692,
+     "sd_to_se": 1.003226303225464,
+     "systematic_hz": -0.3341981674044084,
+     "unconditioned_systematic_hz": -397.5177361209124
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 300.0,
+    "zz": 3000.0
+   },
+   "scenario": "stark_300",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.8508621738808327,
+    "a_given_b1": 0.8502586249687445,
+    "even": 0.6691492783103824,
+    "odd": 0.669339640523717
+   }
+  },
+  {
+   "falsifier_rejection_rate": 0.9425,
+   "falsifier_rejection_rate_plugin": 0.9425,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.953,
+     "coverage_95_plugin": 0.96,
+     "delta_se_hz": 339.4883910101445,
+     "exact_law_hz": -1205.8300591050647,
+     "injected_hz": -1200.0,
+     "monte_carlo_bias_hz": 10.185085481377492,
+     "monte_carlo_sd_hz": 339.17205283142556,
+     "plugin_se_hz_median": 339.2578775046394,
+     "sd_to_se": 0.9990681914695885,
+     "systematic_hz": -5.83005910506453,
+     "unconditioned_systematic_hz": -800.2156283806223
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.94725,
+     "coverage_95_plugin": 0.9575,
+     "delta_se_hz": 130.5931843826794,
+     "exact_law_hz": -20449.068646660697,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": 3.8126817812344846,
+     "monte_carlo_sd_hz": 132.0070765705439,
+     "plugin_se_hz_median": 130.59786849706484,
+     "sd_to_se": 1.0108266920249172,
+     "systematic_hz": 0.9313533393021667,
+     "unconditioned_systematic_hz": 0.9313533393021667
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.95275,
+     "coverage_95_plugin": 0.9525,
+     "delta_se_hz": 110.48601772209285,
+     "exact_law_hz": -19846.153617108164,
+     "injected_hz": -19850.0,
+     "monte_carlo_bias_hz": -1.2798609594523735,
+     "monte_carlo_sd_hz": 108.3394708526948,
+     "plugin_se_hz_median": 110.33154114524596,
+     "sd_to_se": 0.9805717780977744,
+     "systematic_hz": 3.84638289183342,
+     "unconditioned_systematic_hz": 401.0391675296123
+    },
+    "omega_b": {
+     "coverage_95": 0.9505,
+     "coverage_95_plugin": 0.9425,
+     "delta_se_hz": 131.7097914706694,
+     "exact_law_hz": 14997.613493369212,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": 0.8120015574844451,
+     "monte_carlo_sd_hz": 131.2471033321225,
+     "plugin_se_hz_median": 131.67477035651314,
+     "sd_to_se": 0.9964870634644506,
+     "systematic_hz": -2.3865066307890044,
+     "unconditioned_systematic_hz": -2.3865066307890044
+    },
+    "zz_j": {
+     "coverage_95": 0.949,
+     "coverage_95_plugin": 0.9475,
+     "delta_se_hz": 108.16782096515593,
+     "exact_law_hz": 2999.617810730632,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": -1.2181480587659659,
+     "monte_carlo_sd_hz": 108.54318345273742,
+     "plugin_se_hz_median": 108.2631805835485,
+     "sd_to_se": 1.0034701862738125,
+     "systematic_hz": -0.38218926936781766,
+     "unconditioned_systematic_hz": -397.57497390714667
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 600.0,
+    "zz": 3000.0
+   },
+   "scenario": "stark_600",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.8508949697375459,
+    "a_given_b1": 0.8502489204448266,
+    "even": 0.6691492783103824,
+    "odd": 0.669339640523717
+   }
+  },
+  {
+   "falsifier_rejection_rate": 1.0,
+   "falsifier_rejection_rate_plugin": 1.0,
+   "keys": {
+    "falsifier_residual": {
+     "coverage_95": 0.952,
+     "coverage_95_plugin": 0.9275,
+     "delta_se_hz": 334.91513227419256,
+     "exact_law_hz": -2406.1135836382537,
+     "injected_hz": -2400.0,
+     "monte_carlo_bias_hz": 6.629499131065269,
+     "monte_carlo_sd_hz": 332.19054794201685,
+     "plugin_se_hz_median": 335.24865081253864,
+     "sd_to_se": 0.9918648515112626,
+     "systematic_hz": -6.113583638253709,
+     "unconditioned_systematic_hz": -800.5295036502824
+    },
+    "omega_a_bell": {
+     "coverage_95": 0.94675,
+     "coverage_95_plugin": 0.945,
+     "delta_se_hz": 130.5931843826794,
+     "exact_law_hz": -20449.068646660697,
+     "injected_hz": -20450.0,
+     "monte_carlo_bias_hz": 1.9340109542755308,
+     "monte_carlo_sd_hz": 131.92137561452068,
+     "plugin_se_hz_median": 130.70881327596834,
+     "sd_to_se": 1.0101704483133611,
+     "systematic_hz": 0.9313533393021667,
+     "unconditioned_systematic_hz": 0.9313533393021667
+    },
+    "omega_a_conditional": {
+     "coverage_95": 0.9515,
+     "coverage_95_plugin": 0.94,
+     "delta_se_hz": 107.05915607656448,
+     "exact_law_hz": -19246.01185484157,
+     "injected_hz": -19250.0,
+     "monte_carlo_bias_hz": -1.380738611257643,
+     "monte_carlo_sd_hz": 106.31649461768481,
+     "plugin_se_hz_median": 107.06484948030126,
+     "sd_to_se": 0.9930630738547149,
+     "systematic_hz": 3.988145158429156,
+     "unconditioned_systematic_hz": 401.1961051644435
+    },
+    "omega_b": {
+     "coverage_95": 0.95125,
+     "coverage_95_plugin": 0.965,
+     "delta_se_hz": 131.7097914706694,
+     "exact_law_hz": 14997.613493369212,
+     "injected_hz": 15000.0,
+     "monte_carlo_bias_hz": 0.39290760661086604,
+     "monte_carlo_sd_hz": 131.7892402849054,
+     "plugin_se_hz_median": 131.90258149971203,
+     "sd_to_se": 1.0006032111458751,
+     "systematic_hz": -2.3865066307890044,
+     "unconditioned_systematic_hz": -2.3865066307890044
+    },
+    "zz_j": {
+     "coverage_95": 0.95325,
+     "coverage_95_plugin": 0.945,
+     "delta_se_hz": 104.23119132380978,
+     "exact_law_hz": 2999.5028674039886,
+     "injected_hz": 3000.0,
+     "monte_carlo_bias_hz": 2.5838187367708794,
+     "monte_carlo_sd_hz": 103.29842586030531,
+     "plugin_se_hz_median": 104.1431567480926,
+     "sd_to_se": 0.9910509948926258,
+     "systematic_hz": -0.4971325960112654,
+     "unconditioned_systematic_hz": -397.7050926020256
+    }
+   },
+   "pair": [
+    67,
+    66
+   ],
+   "plugin_trials": 400,
+   "rates_hz": {
+    "omega_a": -20450.0,
+    "omega_b": 15000.0,
+    "stark": 1200.0,
+    "zz": 3000.0
+   },
+   "scenario": "stark_1200",
+   "slips": 0,
+   "trials": 4000,
+   "visibility_10000dt": {
+    "a_given_b0": 0.8509627552426137,
+    "a_given_b1": 0.8502372028436715,
+    "even": 0.6691492783103824,
+    "odd": 0.669339640523717
+   }
+  }
+ ],
+ "schema": "gororoba-conditional-ramsey-power-v2",
+ "seconds": 1858.2,
+ "seed_samples": 20261016,
+ "seed_transpiler": 11,
+ "shots": 1024,
+ "slice_convergence": {
+  "pair": [
+   67,
+   66
+  ],
+  "rows": [
+   {
+    "postselected_zz_j_bias_hz": -1.0267766454417142,
+    "slice_dt": 10000,
+    "unconditioned_zz_j_bias_hz": -714.9760968940641
+   },
+   {
+    "postselected_zz_j_bias_hz": -0.33138901330903536,
+    "slice_dt": 500,
+    "unconditioned_zz_j_bias_hz": -410.6787229195147
+   },
+   {
+    "postselected_zz_j_bias_hz": -0.3058220276502652,
+    "slice_dt": 250,
+    "unconditioned_zz_j_bias_hz": -401.8819312660462
+   }
+  ],
+  "scenario": "split"
+ },
+ "slice_dt": 125,
+ "slip_threshold_se": 8.0,
+ "snapshot": "docs/evidence/calibration/ibm_kingston.json",
+ "snapshot_sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346",
+ "trials": 4000
+}
