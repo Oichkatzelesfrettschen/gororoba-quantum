@@ -37,10 +37,12 @@ steps whose median changed and takes the median relative change over those.
 The medians and snapshots carry no qubit frequency, so neither constrains a
 frame detuning.
 
-``--out FILE`` writes the result, naming every record read with its
-sha256. ``--check FILE`` recomputes from exactly the records FILE names,
-requires each to hold its recorded sha256, and requires the recomputed result
-to equal FILE byte for byte, so records added later leave the check unchanged.
+``--out FILE`` writes the result, naming every record and every snapshot
+(docs/evidence/calibration/history/<backend>/*.json) read with its sha256.
+``--check FILE`` recomputes from exactly the records and snapshots FILE
+names, requires each to hold its recorded sha256, and requires the
+recomputed result to equal FILE byte for byte, so records and snapshots
+added later leave the check unchanged.
 """
 
 from __future__ import annotations
@@ -144,7 +146,7 @@ def admitted(read: dict[str, Any]) -> int | None:
     return read["num_qubits"] - len(read["excluded_qubits"]) if read["num_qubits"] else None
 
 
-def compute(paths: list[Path]) -> dict[str, Any]:
+def compute(paths: list[Path], snapshot_paths: list[Path]) -> dict[str, Any]:
     reads: dict[tuple[str, str], list[dict[str, Any]]] = defaultdict(list)
     thresholds_seen = set()
     for path in paths:
@@ -165,10 +167,9 @@ def compute(paths: list[Path]) -> dict[str, Any]:
     require(len(thresholds_seen) == 1, f"records carry {len(thresholds_seen)} policy threshold sets")
     thresholds = dict(zip(THRESHOLDS, next(iter(thresholds_seen)), strict=True))
     snapshots: dict[tuple[str, str], dict[str, Any]] = {}
-    for path in sorted(ghost_calibrations.HISTORY.glob("*/*.json")):
+    for path in snapshot_paths:
         data = json.loads(path.read_text(encoding="utf-8"))
-        if "backend" in data:
-            snapshots[data["backend"], data["calibration"]] = data | {"_file": path.relative_to(ROOT).as_posix()}
+        snapshots[data["backend"], data["calibration"]] = data | {"_file": path.relative_to(ROOT).as_posix()}
     backends: dict[str, Any] = {}
     for backend in sorted({b for b, _ in reads}):
         identities = sorted((c for b, c in reads if b == backend), key=datetime.fromisoformat)
@@ -253,6 +254,7 @@ def compute(paths: list[Path]) -> dict[str, Any]:
         "schema": SCHEMA,
         "policy_thresholds": thresholds,
         "records": {path.parent.name: sha256(path) for path in paths},
+        "snapshots": {path.relative_to(ROOT).as_posix(): sha256(path) for path in snapshot_paths},
         "backends": backends,
     }
 
@@ -274,12 +276,16 @@ def main() -> int:
         paths = [LIVE / name / "record.json" for name in retained["records"]]
         for path, digest in zip(paths, retained["records"].values(), strict=True):
             require(path.is_file() and sha256(path) == digest, f"{path.relative_to(ROOT)}: sha256 differs")
-        require(encode(compute(paths)) == retained_text, f"{args.check}: recomputed result differs")
-        print(f"{args.check}: {len(paths)} records reproduce the drift result")
+        snapshot_paths = [ROOT / name for name in retained["snapshots"]]
+        for path, digest in zip(snapshot_paths, retained["snapshots"].values(), strict=True):
+            require(path.is_file() and sha256(path) == digest, f"{path.relative_to(ROOT)}: sha256 differs")
+        require(encode(compute(paths, snapshot_paths)) == retained_text, f"{args.check}: recomputed result differs")
+        print(f"{args.check}: {len(paths)} records and {len(snapshot_paths)} snapshots reproduce the drift result")
         return 0
     paths = sorted(LIVE.glob("*/record.json"))
+    snapshot_paths = sorted(ghost_calibrations.HISTORY.glob("*/*.json"))
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(encode(compute(paths)), encoding="utf-8")
+    args.out.write_text(encode(compute(paths, snapshot_paths)), encoding="utf-8")
     return 0
 
 

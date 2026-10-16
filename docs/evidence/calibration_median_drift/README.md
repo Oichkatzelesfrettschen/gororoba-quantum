@@ -60,5 +60,6 @@ atlas fringes (`docs/evidence/atlas_detuning_map/`) are a separate
 observable.
 
 Gate core-326 runs `--check result.json` in normal and optimized Python: it
-recomputes from the 157 named records, requires each sha256, and requires
-the result byte for byte.
+recomputes from the 157 named records and 17 named snapshots, requires each
+sha256, and requires the result byte for byte, so records and snapshots
+exported later leave it unchanged.
