@@ -8,7 +8,7 @@
     "team": "61cec6179092"
    }
   ],
-  "projects": 6,
+  "projects": 7,
   "reservations": 0,
   "teams": [
    {
@@ -81,9 +81,9 @@
    "nqubits": 10,
    "protocol_version": null,
    "queue": {
-    "avg_wait_time_in_queue_secs": 20258.0,
-    "max_wait_time_in_queue_secs": 20258.0,
-    "min_wait_time_in_queue_secs": 20258.0,
+    "avg_wait_time_in_queue_secs": 21582.0,
+    "max_wait_time_in_queue_secs": 21582.0,
+    "min_wait_time_in_queue_secs": 21582.0,
     "number_of_jobs_in_queue": 1
    },
    "status": "idle",
@@ -515,9 +515,9 @@
    "nqubits": 5,
    "protocol_version": 2,
    "queue": {
-    "avg_wait_time_in_queue_secs": 2360420.0,
-    "max_wait_time_in_queue_secs": 7460244.0,
-    "min_wait_time_in_queue_secs": 629595.0,
+    "avg_wait_time_in_queue_secs": 2361744.0,
+    "max_wait_time_in_queue_secs": 7461568.0,
+    "min_wait_time_in_queue_secs": 630918.0,
     "number_of_jobs_in_queue": 8
    },
    "status": "offline",
@@ -969,9 +969,9 @@
    "nqubits": 9,
    "protocol_version": 2,
    "queue": {
-    "avg_wait_time_in_queue_secs": 3375972.0,
-    "max_wait_time_in_queue_secs": 4706739.0,
-    "min_wait_time_in_queue_secs": 987483.0,
+    "avg_wait_time_in_queue_secs": 3377296.0,
+    "max_wait_time_in_queue_secs": 4708062.0,
+    "min_wait_time_in_queue_secs": 988807.0,
     "number_of_jobs_in_queue": 8
    },
    "status": "offline",
@@ -1139,12 +1139,12 @@
    "nqubits": 17,
    "protocol_version": 2,
    "queue": {
-    "avg_wait_time_in_queue_secs": 141.0,
-    "max_wait_time_in_queue_secs": 213.0,
-    "min_wait_time_in_queue_secs": 47.0,
+    "avg_wait_time_in_queue_secs": 1464.0,
+    "max_wait_time_in_queue_secs": 1537.0,
+    "min_wait_time_in_queue_secs": 1371.0,
     "number_of_jobs_in_queue": 8
    },
-   "status": "calibrating",
+   "status": "benchmarking",
    "supports_raw_data": true,
    "topology": [
     [
@@ -1346,7 +1346,7 @@
   {
    "backend_type_id": 1,
    "id": 1,
-   "last_heartbeat": "2026-10-16T21:24:50.810759Z",
+   "last_heartbeat": "2026-10-16T21:46:56.799443Z",
    "location": "Cloud",
    "message": {
     "content": ""
@@ -1390,7 +1390,7 @@
   {
    "backend_type_id": 5,
    "id": 5,
-   "last_heartbeat": "2026-10-16T21:24:53.330699Z",
+   "last_heartbeat": "2026-10-16T21:46:54.830045Z",
    "location": "TU/eindhoven",
    "message": {
     "content": ""
@@ -1401,7 +1401,7 @@
   {
    "backend_type_id": 6,
    "id": 6,
-   "last_heartbeat": "2026-10-16T21:24:52.924117Z",
+   "last_heartbeat": "2026-10-16T21:46:54.056124Z",
    "location": "TU Delft",
    "message": {
     "content": "Please be aware that Q8 is affected by a spurious two-level system (TLS)"
@@ -1412,13 +1412,13 @@
   {
    "backend_type_id": 7,
    "id": 7,
-   "last_heartbeat": "2026-10-16T21:24:46.773378Z",
+   "last_heartbeat": "2026-10-16T21:46:51.859520Z",
    "location": "TU Delft",
    "message": {
     "content": ""
    },
    "name": "Tuna-17",
-   "status": "calibrating"
+   "status": "benchmarking"
   }
  ],
  "host": "https://api.quantum-inspire.com",
@@ -1434,6 +1434,6 @@
    "version": "3.0"
   }
  ],
- "retrieved_utc": "2026-10-16T21:24:53+00:00",
+ "retrieved_utc": "2026-10-16T21:46:57+00:00",
  "schema": "qi-catalogue-v1"
 }
