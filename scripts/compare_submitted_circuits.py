@@ -77,16 +77,17 @@ def qpy_digest(circuit: Any) -> str:
     return hashlib.sha256(buffer.getvalue()).hexdigest()
 
 
-def expected_circuits(row: dict[str, Any]) -> list[Any]:
-    """The retained circuits a job's items must equal, in order, rebuilt from the retained file."""
+def expected_circuits(path: Path, names: list[str] | None) -> list[Any]:
+    """The retained circuits a job's items must equal, in order: the file's own order, or the named PUBs."""
     from qiskit import qpy
 
-    with (ROOT / row["retained_file"]).open("rb") as stream:
+    with path.open("rb") as stream:
         retained = list(qpy.load(stream))
-    if row["order_source"] == "retained submission order":
+    if names is None:
         return retained
     by_name = {circuit.name: circuit for circuit in retained}
-    return [by_name[name] for name in row["expected_pubs"]]
+    require(all(name in by_name for name in names), f"{path}: a PUB name is missing")
+    return [by_name[name] for name in names]
 
 
 def write() -> int:
@@ -142,12 +143,21 @@ def check() -> int:
     require({(r["job_id"], r["run"]) for r in rows} == {(j, a["run"]) for j, a in audited.items()}, "jobs differ")
     require(len(rows) == len(audited), "a job appears twice")
     for row in rows:
-        path = ROOT / row["retained_file"]
+        # The file and PUB order come from the audited job's record, not from
+        # the receipt, so a changed record fails even when the receipt follows it.
+        path, names = expected_order(audited[row["job_id"]])
+        require(path.relative_to(ROOT).as_posix() == row["retained_file"], f"{row['job_id']}: retained file differs")
         require(hashlib.sha256(path.read_bytes()).hexdigest() == row["retained_sha256"], f"{path} changed")
+        circuits = expected_circuits(path, names)
+        source = "retained submission order" if names is None else "record.json submission.jobs[].pubs"
+        require(row["order_source"] == source, f"{row['job_id']}: order source differs from the record")
+        require(
+            row["expected_pubs"] == [c.name for c in circuits], f"{row['job_id']}: PUB order differs from the record"
+        )
         pub_count = audited[row["job_id"]]["pub_count"]
         counts_agree = row["items"] == pub_count == len(row["expected_pubs"])
         require(counts_agree, f"{row['job_id']}: item and PUB counts differ")
-        expected = [qpy_digest(circuit) for circuit in expected_circuits(row)]
+        expected = [qpy_digest(circuit) for circuit in circuits]
         require(len(row["submitted_qpy_sha256"]) == row["items"], f"{row['job_id']}: item digests are incomplete")
         mismatched = [
             k for k, (got, want) in enumerate(zip(row["submitted_qpy_sha256"], expected, strict=True)) if got != want
