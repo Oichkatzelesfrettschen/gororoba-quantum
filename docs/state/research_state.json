@@ -2571,7 +2571,7 @@
       "evidence": [
         {
           "path": "docs/evidence/linear_conjugation/search.json",
-          "sha256": "f0445cb21cbd6c4a230ac94aa5c6b5f2580608e457b3ac62d81063ccf40dea5f"
+          "sha256": "910f86c8f0631fa59e560d49ff479fb4aacce65765bf7b2f2b2b84e0a9058df3"
         }
       ],
       "documents": [
@@ -2600,7 +2600,7 @@
       "evidence": [
         {
           "path": "results/hw_estimate/n21_linear_conjugation_challenger.json",
-          "sha256": "5b428d1cb0a093fbeaba88be80d498c47901690b56eae688510f5e300d3f8557"
+          "sha256": "a5c3a47a2a0448760c335b879773cee35b4ecc30a3af0b82f16600e7ef59434e"
         }
       ],
       "documents": [
@@ -2631,7 +2631,7 @@
       "evidence": [
         {
           "path": "docs/evidence/linear_conjugation/noise.json",
-          "sha256": "e25748219593081ddc6ef3879707609ccdc3217f6728b3bcb7e3b74040282db7"
+          "sha256": "dcc1a50436339a5edf980b7df3f01fb45d0c8f01c18d9fa24f321cec746feada"
         }
       ],
       "documents": [
