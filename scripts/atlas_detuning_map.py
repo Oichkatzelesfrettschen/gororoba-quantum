@@ -321,10 +321,10 @@ def main() -> int:
                 continue
             other = fresh[fit["lane"]]
             for key in ("measured_offset_rad", "detuning_response_rad_per_khz", "cz_phase_response_rad_per_rad"):
-                require(np.allclose(fit[key], other[key], atol=1e-9), f"lane {fit['lane']}: {key} differs")
+                require(np.allclose(fit[key], other[key], rtol=0, atol=1e-9), f"lane {fit['lane']}: {key} differs")
             for name, model in fit["models"].items():
                 require(
-                    np.allclose(model["parameters"], other["models"][name]["parameters"], atol=1e-6),
+                    np.allclose(model["parameters"], other["models"][name]["parameters"], rtol=0, atol=1e-6),
                     f"lane {fit['lane']}: {name} parameters differ",
                 )
         print(f"{args.check}: lanes {lanes} reproduced")
