@@ -55,6 +55,28 @@ ROOT = Path(__file__).resolve().parent.parent
 RESULTS = ROOT / "results/kaggle"
 MODULE_DIRS = ("gororoba_quantum", "scripts")
 KERNEL_PINS = ("qiskit==2.5.2", "qiskit-aer-gpu-cu11==0.17.2")
+# Opt-in package groups (``push --with GROUP``), each pinned to the version of
+# the build host's Arch package, so a kernel and the host import the same
+# releases. The kernel installs them under a constraints file that holds
+# KERNEL_PINS and the image's numpy and scipy fixed, and stops unless every
+# pin is installed at its version. The algebra packages are not a group: every
+# kernel builds them through scripts/algebra_package_tables.py.
+PIN_GROUPS: dict[str, tuple[str, ...]] = {
+    "quantum-tools": (
+        "stim==1.16.0",
+        "mthree==3.0.0",
+        "runningman==2.3.0",
+        "qiskit-ibm-runtime==0.50.0",
+        "qiskit-experiments==0.14.2",
+        "lmfit==1.3.4",
+        "quimb==1.15.0",
+        "cotengra==0.8.2",
+        "autoray==0.11.0",
+        "pyzx==0.10.7",
+        "galois==0.4.11",
+        "numba==0.68.0",
+    ),
+}
 DEFAULT_MACHINE = "NvidiaTeslaT4"
 # Files every kernel carries: its program and instructions, and the
 # hypercomplex stack check with the tables it must reproduce.
@@ -69,15 +91,29 @@ RUNNER = r"""
 import base64, io, subprocess, sys, zipfile
 from pathlib import Path
 
+import importlib.metadata as metadata
+
 PINS = {pins!r}
+EXTRA = {extra!r}
 BUNDLE = "{bundle}"
 
 out = Path("/kaggle/working/output")
 out.mkdir(parents=True, exist_ok=True)
-pip = subprocess.run([sys.executable, "-m", "pip", "install", "-q", *PINS], capture_output=True, text=True)
+# The image's numpy and scipy stay fixed while the pins install.
+frozen = [f"{{name}}=={{metadata.version(name)}}" for name in ("numpy", "scipy")]
+Path("/tmp/constraints.txt").write_text("\n".join([*PINS, *frozen]) + "\n")
+pip = subprocess.run(
+    [sys.executable, "-m", "pip", "install", "-q", "-c", "/tmp/constraints.txt", *PINS, *EXTRA],
+    capture_output=True,
+    text=True,
+)
 (out / "pip.txt").write_text(pip.stdout + pip.stderr)
 if pip.returncode:
     raise SystemExit(f"pip install failed: {{pip.returncode}}")
+for pin in [*PINS, *EXTRA, *frozen]:
+    name, wanted = pin.split("==")
+    if metadata.version(name) != wanted:
+        raise SystemExit(f"{{name}} is {{metadata.version(name)}}, pinned {{wanted}}")
 repo = Path("/tmp/gororoba/repo")
 zipfile.ZipFile(io.BytesIO(base64.b64decode(BUNDLE))).extractall(repo)
 raise SystemExit(subprocess.run([sys.executable, "-B", "kaggle_kernel/kernel_main.py"], cwd=repo).returncode)
@@ -201,12 +237,16 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             "args": list(args.args),
             "smoke": smoke,
             "device": device,
+            "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
             "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
         }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
-    runner = RUNNER.format(pins=list(KERNEL_PINS), bundle=base64.b64encode(buffer.getvalue()).decode("ascii"))
+    extra = [pin for group in getattr(args, "with_groups", []) for pin in PIN_GROUPS[group]]
+    runner = RUNNER.format(
+        pins=list(KERNEL_PINS), extra=extra, bundle=base64.b64encode(buffer.getvalue()).decode("ascii")
+    )
     (kernel_dir / "run.py").write_text(runner, encoding="utf-8")
     kernel_id = f"{owner}/{args.slug}"
     metadata = {
@@ -235,6 +275,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "git_commit": revision,
         "untracked_inputs": untracked,
         "pins": list(KERNEL_PINS),
+        "pin_groups": {group: list(PIN_GROUPS[group]) for group in getattr(args, "with_groups", [])},
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -286,7 +327,13 @@ def self_test(args: argparse.Namespace) -> int:
     entry = "scripts/design_c_cubic_noise.py"
     data = "docs/evidence/calibration/ibm_kingston.json"
     build_args = argparse.Namespace(
-        entry=entry, smoke=False, include=[data], args=["--pairs", "1,16"], slug="self-test", machine=DEFAULT_MACHINE
+        entry=entry,
+        smoke=False,
+        include=[data],
+        args=["--pairs", "1,16"],
+        slug="self-test",
+        machine=DEFAULT_MACHINE,
+        with_groups=["quantum-tools"],
     )
     with tempfile.TemporaryDirectory() as scratch:
         run_dir = Path(scratch) / "run"
@@ -302,6 +349,11 @@ def self_test(args: argparse.Namespace) -> int:
         py_compile.compile(str(run_dir / "kernel/run.py"), doraise=True)
         runner = (run_dir / "kernel/run.py").read_text(encoding="utf-8")
         require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
+        require(all(pin in runner for pin in PIN_GROUPS["quantum-tools"]), "run.py lacks a group pin")
+        require(
+            submission["pin_groups"] == {"quantum-tools": list(PIN_GROUPS["quantum-tools"])},
+            "submission does not record the pin group",
+        )
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
     print(f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private GPU kernel, run.py compiles")
     return 0
@@ -481,6 +533,14 @@ def main() -> int:
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.add_argument("--dataset", action="append", default=[], help="retained dataset slug to attach")
+    push_parser.add_argument(
+        "--with",
+        dest="with_groups",
+        action="append",
+        default=[],
+        choices=sorted(PIN_GROUPS),
+        help="opt-in package group the kernel installs at the host's versions",
+    )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)
     dataset_parser = sub.add_parser("dataset")
