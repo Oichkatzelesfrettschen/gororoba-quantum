@@ -15,13 +15,14 @@ zero divisors a = (a1, a2) and b, on the D-locus exactly when b lies in
 Each zero divisor a comes from a Cayley frame (an exactly rational orthonormal
 pure pair, scripts/moreno_stiefel_nullity.py) times a seeded positive rational,
 and is paired with five b's, each times its own seeded positive rational so
-the length ratio |b|/|a| varies:
+the length ratio |b|/|a| varies; every b below is that positive rational
+times the listed vector:
 
   locus      a seeded rational combination of a basis of V(a)
   generic    an independent Cayley-frame zero divisor
   annihilator a seeded rational combination of a basis of Ann(a)
-  self       b = a
-  swap       b = (a2, -a1), inside <<a1, a2>>^2 and outside span{(a1, -a2), (a2, a1)}
+  self       a
+  swap       (a2, -a1), inside <<a1, a2>>^2 and outside span{(a1, -a2), (a2, a1)}
 
 Before the table the run asserts, and stops at the first failure: L_v against
 cd_core.cd_multiply; |(a + b, e_8 (b - a))|^2 = 2 (|a|^2 + |b|^2) (Lemma 3.5);
@@ -38,7 +39,8 @@ Usage:
     "$PYTHON" scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json [--limit K]
 
 --check recomputes every pair, or the pairs of the first K frames, and requires
-them to equal the retained rows; every other field (seed, frame count, kinds,
+them to equal the retained rows, which number exactly five per frame; every
+other field (seed, frame count, kinds,
 source, convention, certificate method, summary) must equal what this script
 writes for those rows.
 """
@@ -61,6 +63,7 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from moreno_stiefel_nullity import PRIME, cayley_frame, check_left_matrix, rank_mod, rational_kernel  # noqa: E402
 
+import parallel  # noqa: E402
 from cd_core import cd_sign  # noqa: E402
 
 SCHEMA = "d-locus-nullity-v1"
@@ -150,40 +153,71 @@ def frame_spaces(a: Vector) -> tuple[list[Vector], list[Vector]]:
     return span, annihilator
 
 
-def combination(rng: random.Random, basis: list[Vector]) -> Vector:
+def combination_weights(rng: random.Random, count: int) -> list[Fraction]:
+    """Weights of a nonzero combination of count independent vectors: redraw while every numerator is zero."""
     while True:
         weights = [
             Fraction(rng.randint(-COMBINATION_RANGE, COMBINATION_RANGE), rng.randint(1, COMBINATION_RANGE))
-            for _ in basis
+            for _ in range(count)
         ]
-        vector = [sum((w * v[k] for w, v in zip(weights, basis, strict=True)), Fraction(0)) for k in range(16)]
-        if any(vector):
-            return vector
+        if any(weights):
+            return weights
+
+
+def combination(weights: list[Fraction], basis: list[Vector]) -> Vector:
+    vector = [sum((w * v[k] for w, v in zip(weights, basis, strict=True)), Fraction(0)) for k in range(16)]
+    _require(any(vector), "a nonzero combination of the basis vanished")
+    return vector
 
 
 def scale(rng: random.Random) -> Fraction:
     return Fraction(rng.randint(1, SCALE_RANGE), rng.randint(1, SCALE_RANGE))
 
 
+def frame_draws(frames: int) -> list[dict[str, Any]]:
+    """Every seeded draw of every frame, in the order one sequential generator makes them.
+
+    dim V(a) = 6 and dim Ann(a) = 4 (asserted per frame in frame_spaces) fix the
+    weight counts, and a combination of independent vectors vanishes only when
+    every weight does, so the draws need none of the frame's linear algebra.
+    """
+    rng = random.Random(SEED)
+    draws = []
+    for frame in range(frames):
+        a_scale = scale(rng)
+        locus_weights = combination_weights(rng, 6)
+        annihilator_weights = combination_weights(rng, 4)
+        b_scales = [scale(rng) for _ in KINDS]
+        draws.append(
+            {
+                "frame": frame,
+                "a_scale": a_scale,
+                "locus_weights": locus_weights,
+                "annihilator_weights": annihilator_weights,
+                "b_scales": b_scales,
+            }
+        )
+    return draws
+
+
 def digest(values: Vector) -> str:
     return hashlib.sha256(json.dumps([str(x) for x in values]).encode()).hexdigest()
 
 
-def frame_rows(frame: int, rng: random.Random) -> list[dict[str, Any]]:
-    a_scale = scale(rng)
+def frame_rows(draw: dict[str, Any]) -> list[dict[str, Any]]:
+    frame, a_scale = draw["frame"], draw["a_scale"]
     a = [x * a_scale for x in zero_divisor(A_SEED_BASE + frame)]
     _require(nullity(16, a) == 4, f"frame {frame}: a is not a zero divisor of A_4")
     span, annihilator = frame_spaces(a)
     candidates = {
-        "locus": combination(rng, span),
+        "locus": combination(draw["locus_weights"], span),
         "generic": zero_divisor(B_SEED_BASE + frame),
-        "annihilator": combination(rng, annihilator),
+        "annihilator": combination(draw["annihilator_weights"], annihilator),
         "self": a[:],
         "swap": a[8:] + [-x for x in a[:8]],
     }
     rows = []
-    for kind in KINDS:
-        b_scale = scale(rng)
+    for kind, b_scale in zip(KINDS, draw["b_scales"], strict=True):
         b = [x * b_scale for x in candidates[kind]]
         element = bracket(a, b)
         _require(dot(element, element) == 2 * (dot(a, a) + dot(b, b)), f"frame {frame} {kind}: Lemma 3.5 norm")
@@ -226,11 +260,8 @@ def summarize(rows: list[dict[str, Any]]) -> dict[str, Any]:
 
 
 def run(frames: int) -> list[dict[str, Any]]:
-    rng = random.Random(SEED)
-    rows: list[dict[str, Any]] = []
-    for frame in range(frames):
-        rows += frame_rows(frame, rng)
-    return rows
+    """Every frame's rows in frame order; frames run independently on the process pool."""
+    return [row for rows in parallel.ordered_map(frame_rows, frame_draws(frames), min_items=2) for row in rows]
 
 
 def result(rows: list[dict[str, Any]]) -> dict[str, Any]:
@@ -267,6 +298,10 @@ def main() -> int:
         return 0
     retained = json.loads(args.check.read_text(encoding="utf-8"))
     _require(retained.get("schema") == SCHEMA, "schema differs")
+    _require(
+        len(retained["rows"]) == FRAMES * len(KINDS),
+        f"{len(retained['rows'])} retained rows, expected {FRAMES * len(KINDS)}",
+    )
     _require(retained["summary"] == summarize(retained["rows"]), "the retained summary differs from its rows")
     _require(retained["summary"]["violations"] == 0, "the retained rows contradict Theorem 1.5")
     frames = FRAMES if args.limit is None else min(args.limit, FRAMES)

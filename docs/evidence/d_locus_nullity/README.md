@@ -1,7 +1,7 @@
 # Nullity across the A_5 D-locus of two sedenion zero divisors
 
 `result.json` is the output of `scripts/d_locus_nullity.py --out`, exact
-rational arithmetic on the build host in about 62 s. It reproduces, on 1000
+rational arithmetic spread over the process pool. It reproduces, on 1000
 exact pairs, the nullity table that Biss, Christensen, Dugger and Isaksen
 (math/0702075; [source note](../../notes/math-0702075.md)) give for brackets
 {a, b} of two sedenion zero divisors.
@@ -24,16 +24,16 @@ The two results it reproduces:
 - **Checks on a.** The run asserts dim Ann(a) = 4, dim Eig_2(a) = 4,
   dim V(a) = 6, and Ann(a) orthogonal to V(a). Eig_2(a) is the kernel of
   L_a^2 + 2 |a|^2 I, which is scale-free.
-- **The five b's.** Each frame pairs a with five b's, each times its own
-  seeded positive rational:
+- **The five b's.** Each frame pairs a with five b's, each the listed vector
+  times its own seeded positive rational:
 
   | kind | b |
   | --- | --- |
   | locus | a rational combination of a basis of V(a) |
   | generic | an independent Cayley-frame zero divisor |
   | annihilator | a rational combination of a basis of Ann(a) |
-  | self | a |
-  | swap | (a2, -a1), inside <<a1, a2>>^2 and outside span{(a1, -a2), (a2, a1)} |
+  | self | a (so b is a positive multiple of a) |
+  | swap | (a2, -a1), a positive multiple of it as b, inside <<a1, a2>>^2 and outside span{(a1, -a2), (a2, a1)} |
 
   Each b is asserted to have nullity 4 in A_4. On V(a) that is Theorem 7.5's
   content, since the theorem's fiber is the whole unit sphere of V(a).
@@ -87,8 +87,10 @@ bracket-axis limits. Those remain roadmap item 3 of
 - `"$PYTHON" scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json --limit 20`
   recomputes the first 20 frames (100 pairs) in about 6 s (gate core-323,
   pr tier).
-- Without `--limit` the same command recomputes all 1000 pairs in about
-  62 s (gate core-324, full tier).
+- Without `--limit` the same command recomputes all 1000 pairs (gate
+  core-324, pr tier). The frames run independently through `parallel.py`'s
+  process pool, so a 2-CPU runner replays them in about 32 s per mode and
+  `GOROROBA_WORKERS=1` reproduces the same rows serially.
 
-Both gates run in normal and `-O` mode, and both re-derive the summary from
-the rows.
+Both gates run in normal and `-O` mode, re-derive the summary from the
+rows, and require exactly five retained rows per frame.

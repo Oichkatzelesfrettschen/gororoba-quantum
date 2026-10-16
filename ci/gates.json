@@ -2454,8 +2454,8 @@
    "cwd": ".",
    "cmd": "\"$PYTHON\" -B -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json && \"$PYTHON\" -B -O -W error scripts/d_locus_nullity.py --check docs/evidence/d_locus_nullity/result.json",
    "name": "core-324",
-   "seconds": 125.0,
-   "tier": "full"
+   "seconds": 65.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
