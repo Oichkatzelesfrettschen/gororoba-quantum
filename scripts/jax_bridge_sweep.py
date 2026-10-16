@@ -148,15 +148,26 @@ class SnapshotState:
         return self.simulator
 
 
-def aer_probabilities(circuit: QuantumCircuit, program: jax_bridge.Program, simulator: Any) -> np.ndarray:
-    """Aer's density matrix on the program's qubits, with the terminal measurements replaced by save_density_matrix."""
-    body = QuantumCircuit(*circuit.qregs, *circuit.cregs)
-    for instruction in circuit.data:
-        if instruction.operation.name != "measure":
-            body.append(instruction.operation, instruction.qubits, instruction.clbits)
-    body.save_density_matrix(qubits=[body.qubits[q] for q in program.physical])
-    rho = np.asarray(simulator.run(body, shots=1).result().data(0)["density_matrix"])
-    return jax_bridge.probabilities(program, np.diag(rho))
+def aer_probabilities(pairs: list[tuple[QuantumCircuit, jax_bridge.Program]], simulator: Any) -> list[np.ndarray]:
+    """Per (circuit, program), Aer's distribution from the density matrix on the program's qubits.
+
+    Each circuit's terminal measurements become save_density_matrix, and
+    every circuit goes to Aer in one run call, which parallelizes the
+    experiments itself.
+    """
+    bodies = []
+    for circuit, program in pairs:
+        body = QuantumCircuit(*circuit.qregs, *circuit.cregs)
+        for instruction in circuit.data:
+            if instruction.operation.name != "measure":
+                body.append(instruction.operation, instruction.qubits, instruction.clbits)
+        body.save_density_matrix(qubits=[body.qubits[q] for q in program.physical])
+        bodies.append(body)
+    result = simulator.run(bodies, shots=1).result()
+    return [
+        jax_bridge.probabilities(program, np.diag(np.asarray(result.data(k)["density_matrix"])))
+        for k, (_, program) in enumerate(pairs)
+    ]
 
 
 def parity_labels(labels: list[str], sample: int | None, seed: int, run_name: str) -> list[str]:
@@ -274,11 +285,17 @@ def sweep_run(
     base = ghost_error_scale.CZ_FACTORS.index(1.0)
     checked: dict[str, float] = {}
     start = time.perf_counter()
+    chosen: dict[str, list[str]] = {}
     for label in parity_labels(labels, parity_sample, parity_seed, run_name):
-        relative, replica, programs = built[label]
-        reference = aer_probabilities(replica, programs[base], states[relative].aer())
-        model = jax_bridge.probabilities(programs[base], by_label[label][base])
-        checked[label] = float(np.max(np.abs(model - reference)))
+        chosen.setdefault(built[label][0], []).append(label)
+    for relative, group in chosen.items():
+        pairs = [(built[label][1], built[label][2][base]) for label in group]
+        for label, (_, program), reference in zip(
+            group, pairs, aer_probabilities(pairs, states[relative].aer()), strict=True
+        ):
+            model = jax_bridge.probabilities(program, by_label[label][base])
+            checked[label] = float(np.max(np.abs(model - reference)))
+    checked = dict(sorted(checked.items()))
     seconds["parity"] += time.perf_counter() - start
     tvd: dict[str, list[list[list[float]]]] = {}
     for label in labels:
@@ -367,6 +384,7 @@ def self_test(device: str | None) -> dict[str, Any]:
     replicas: list[tuple[str, str, QuantumCircuit]] = []
     for run, chosen_members in REDUCED.items():
         prepared = ghost_run.prepare(run, index)
+        require("skipped" not in prepared, f"{run}: {prepared.get('skipped')}")
         execution = prepared["execution"]
         for m in prepared["members"]:
             if m in execution and (chosen_members is None or m in chosen_members):
@@ -471,11 +489,11 @@ def self_test(device: str | None) -> dict[str, Any]:
     require(parity_labels(labels, None, PARITY_SEED, "self-test") == sorted(labels), "a full parity misses labels")
     by_label = {label: replica for _, label, replica in replicas}
     base = ghost_error_scale.CZ_FACTORS.index(1.0)
-    parity = {}
-    for label in chosen:
-        program = restructured[label][base]
-        model = jax_bridge.probabilities(program, diagonal(program))
-        parity[label] = float(np.max(np.abs(model - aer_probabilities(by_label[label], program, state.aer()))))
+    pairs = [(by_label[label], restructured[label][base]) for label in chosen]
+    parity = {
+        label: float(np.max(np.abs(jax_bridge.probabilities(program, diagonal(program)) - reference)))
+        for label, (_, program), reference in zip(chosen, pairs, aer_probabilities(pairs, state.aer()), strict=True)
+    }
     require(max(parity.values()) <= PARITY_TOLERANCE, f"parity against Aer {parity}")
     timing["parity"] = time.perf_counter() - clock
 
