@@ -1,4 +1,4 @@
-"""Contract for ci/run_gates.py: every CPU, keep-going past a launch failure, one child worker by default."""
+"""Contract for ci/run_gates.py: every CPU, keep-going past a launch failure, one child worker by default, --device."""
 
 from __future__ import annotations
 
@@ -47,7 +47,28 @@ def main() -> None:
                 raise RuntimeError(f"a launch failure stopped the shard or lost a passing gate:\n{text}")
             if "could not start" not in text or "1 passed, 1 failed of 2" not in text:
                 raise RuntimeError(f"the launch diagnostic or the keep-going denominator is missing:\n{text}")
-    print("run_gates: every CPU, a launch failure keeps going with its diagnostic, child workers default to one")
+        for flag, expected_device in (([], "CPU"), (["--device", "GPU"], "GPU")):
+            gates = {
+                "gates": [
+                    {"name": "device", "cwd": ".", "cmd": f'test "${{GOROROBA_AER_DEVICE:-CPU}}" = {expected_device}'}
+                ]
+            }
+            (root / "ci/gates.json").write_text(json.dumps(gates))
+            output = io.StringIO()
+            with (
+                patch.object(run_gates, "ROOT", root),
+                patch.dict(os.environ),
+                contextlib.redirect_stdout(output),
+            ):
+                os.environ.pop("GOROROBA_AER_DEVICE", None)
+                status = run_gates.main(flag)
+            text = output.getvalue()
+            if status != 0 or f"gates in shard 0/1 on {expected_device}" not in text:
+                raise RuntimeError(f"{flag} did not give every gate GOROROBA_AER_DEVICE={expected_device}:\n{text}")
+    print(
+        "run_gates: every CPU, a launch failure keeps going with its diagnostic, child workers default to one, "
+        "--device GPU reaches every gate"
+    )
 
 
 if __name__ == "__main__":

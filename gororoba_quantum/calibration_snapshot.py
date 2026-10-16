@@ -29,6 +29,7 @@ from __future__ import annotations
 
 import argparse
 import json
+import os
 import sys
 from pathlib import Path
 from typing import Any
@@ -173,6 +174,21 @@ def noise_model(snapshot: dict[str, Any]) -> tuple[SnapshotBackend, NoiseModel]:
         e10, e01 = qubit["e10"], qubit["e01"]
         noise.add_readout_error(ReadoutError([[1.0 - e10, e10], [e01, 1.0 - e01]]), [q])
     return view, noise
+
+
+AER_DEVICES = ("CPU", "GPU")
+
+
+def aer_device() -> str:
+    """The Aer device GOROROBA_AER_DEVICE names, CPU when it is unset.
+
+    CI runners carry no GPU and keep the CPU; ``ci/run_gates.py --device GPU``
+    exports GPU, so a local run computes every replay on the other device.
+    """
+    device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
+    if device not in AER_DEVICES:
+        raise SystemExit(f"GOROROBA_AER_DEVICE={device!r} is not one of {AER_DEVICES}")
+    return device
 
 
 def noise_simulator(snapshot: dict[str, Any], device: str = "CPU") -> AerSimulator:

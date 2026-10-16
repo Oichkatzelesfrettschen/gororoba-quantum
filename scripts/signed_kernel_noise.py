@@ -31,7 +31,7 @@ Noiseless laws of the same compiled circuits must equal their ideal laws to
 GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run DIR`` requires
 FILE to be byte-identical to the result collected in the Kaggle run DIR (its
 collect.json ledger), then recompiles and recomputes the laws at the ``--t``
-values (LAYOUT_T is always included) on the CPU, and requires the layouts
+values (LAYOUT_T is always included) on GOROROBA_AER_DEVICE, and requires the layouts
 and CZ counts to match FILE exactly and each law to match it to 1e-8.
 """
 
@@ -41,7 +41,6 @@ import argparse
 import hashlib
 import json
 import math
-import os
 import sys
 import time
 from collections.abc import Callable
@@ -331,7 +330,7 @@ def _row_key(row: dict[str, Any]) -> tuple[Any, ...]:
 def check(path: Path, run_dir: Path, ts: tuple[float, ...]) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
     failures = bound_to_run(path, run_dir)
-    replay = run(ts, "CPU")
+    replay = run(ts, calibration_snapshot.aer_device())
     kept_rows = {
         _row_key(row): row
         for row in [r for entry in retained["probes"].values() for r in entry["rows"]]
@@ -369,7 +368,7 @@ def main() -> int:
         return check(args.check, args.run, tuple(float(t) for t in args.t.split(",")))
     if args.out is None:
         parser.error("--out is required without --check")
-    result = run(T_GRID, os.environ.get("GOROROBA_AER_DEVICE", "CPU"))
+    result = run(T_GRID, calibration_snapshot.aer_device())
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
     print(f"wrote {args.out}: {len(T_GRID)} t values per probe in {result['seconds']} s")

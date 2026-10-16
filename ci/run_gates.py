@@ -8,6 +8,11 @@ available to the process, each gate's own process pool limited to one worker
 so the two levels never oversubscribe the runner; every gate runs regardless
 of earlier failures, and the exit status is nonzero when any gate fails,
 listing each failure with its output tail.
+
+``--device GPU`` exports GOROROBA_AER_DEVICE=GPU to every gate, so the
+replays that simulate run on the local GPU while CI's runners, which carry
+no GPU, keep the CPU. A gate that passes on one device and fails on the
+other exposes a device-dependent result.
 """
 
 from __future__ import annotations
@@ -68,6 +73,11 @@ def main(argv: list[str] | None = None) -> int:
         default="full",
         help="pr runs the gates that fit pull-request CI; full adds the long simulation contracts",
     )
+    parser.add_argument(
+        "--device",
+        choices=("CPU", "GPU"),
+        help="Aer device for every gate (GOROROBA_AER_DEVICE); unset keeps the environment's, CPU by default",
+    )
     arguments = parser.parse_args(argv)
     shard, count = (int(part) for part in arguments.shard.split("/"))
     if not 0 <= shard < count:
@@ -81,6 +91,8 @@ def main(argv: list[str] | None = None) -> int:
             print(f"{gate['name']}\t{gate['cwd']}\t{gate['cmd']}")
         return 0
     environment = dict(os.environ)
+    if arguments.device:
+        environment["GOROROBA_AER_DEVICE"] = arguments.device
     environment.setdefault("PYTHON", sys.executable)
     environment.setdefault("GOROROBA_WORKERS", "1")
     failures = []
@@ -94,7 +106,8 @@ def main(argv: list[str] | None = None) -> int:
         tail = "\n".join(output.splitlines()[-TAIL_LINES:])
         print(f"\n=== {gate['name']} exit {status} in {gate['cwd']}\n{gate['cmd']}\n{tail}")
     passed = len(selected) - len(failures)
-    print(f"\n{passed} passed, {len(failures)} failed of {len(selected)} gates in shard {shard}/{count}")
+    device = environment.get("GOROROBA_AER_DEVICE", "CPU")
+    print(f"\n{passed} passed, {len(failures)} failed of {len(selected)} gates in shard {shard}/{count} on {device}")
     return 1 if failures else 0
 
 

@@ -36,8 +36,8 @@ see as residual -2 stark.
 
 The entry reads GOROROBA_AER_DEVICE (CPU by default). ``--check FILE --run
 DIR`` requires FILE to be byte-identical to the result collected in the
-Kaggle run DIR (its collect.json ledger), then reruns a reduced case on the
-CPU: the first pair and the ``--scenarios`` named, at ``--trials``
+Kaggle run DIR (its collect.json ledger), then reruns a reduced case on
+GOROROBA_AER_DEVICE: the first pair and the ``--scenarios`` named, at ``--trials``
 resamples. Exact-law estimates and delta-method errors must match FILE to
 1e-8 relative, and each spread-to-error ratio must agree within five
 standard errors of the difference of two independent spread estimates.
@@ -49,7 +49,6 @@ import argparse
 import hashlib
 import json
 import math
-import os
 import sys
 import time
 from pathlib import Path
@@ -380,7 +379,9 @@ def check(path: Path, run_dir: Path, names: list[str], trials: int, plugin_trial
     retained = json.loads(path.read_text(encoding="utf-8"))
     failures = bound_to_run(path, run_dir)
     pair = tuple(retained["results"][0]["pair"])
-    replay = run((pair,), names, retained["shots"], trials, plugin_trials, "CPU", convergence=False)
+    replay = run(
+        (pair,), names, retained["shots"], trials, plugin_trials, calibration_snapshot.aer_device(), convergence=False
+    )
     by_key = {(tuple(r["pair"]), r["scenario"]): r for r in retained["results"]}
     for result in replay["results"]:
         old = by_key[(tuple(result["pair"]), result["scenario"])]
@@ -421,7 +422,7 @@ def main() -> int:
         return check(args.check, args.run, names, args.trials, args.plugin_trials)
     if args.out is None:
         parser.error("--out is required without --check")
-    device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
+    device = calibration_snapshot.aer_device()
     result = run(PAIRS, names, args.shots, args.trials, args.plugin_trials, device)
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(result, indent=1, sort_keys=True) + "\n", encoding="utf-8")
