@@ -2416,6 +2416,22 @@
    "name": "core-331",
    "seconds": 6.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "ruff check scripts/ghost_event_scale.py && ruff format --check scripts/ghost_event_scale.py && MYPYPATH=gororoba_quantum mypy scripts/ghost_event_scale.py",
+   "name": "core-332",
+   "seconds": 4.0,
+   "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/ghost_event_scale.py --self-test && \"$PYTHON\" -O -B -W error scripts/ghost_event_scale.py --self-test",
+   "name": "core-333",
+   "seconds": 11.0,
+   "tier": "pr"
   }
  ],
  "excluded": [
