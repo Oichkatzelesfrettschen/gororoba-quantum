@@ -52,8 +52,12 @@ replacement readout and context-dependent instruments have different models.
 
 ## Replay
 
-Use Rocq 9.1.1 with OCaml 5.4.0. Set `ROCQ` to that toolchain's executable
-when another version is first on PATH, then run from the repository root:
+Use the toolchain `toolchain.txt` records, Rocq 9.2 with OCaml 5.5.0. The
+receipts were first recorded under Rocq 9.1.1 with OCaml 5.4.0; a fresh
+compile and kernel check under 9.2 reproduce every compile and kernel
+receipt byte for byte, so the pin moved forward with the files unchanged.
+Set `ROCQ` to that toolchain's executable when another version is first on
+PATH, then run from the repository root:
 
 ```sh
 ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh

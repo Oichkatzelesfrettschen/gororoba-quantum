@@ -79,7 +79,7 @@ modular_arithmetic.py establish Qiskit phase and clean-workspace behavior.
 Changes to `proofs/FoldAverageDescent.v`, `proofs/TerminalChannelSeparation.v`,
 `proofs/TerminalChannelSeparationReal.v`, or their receipts also run
 `ROCQ="${ROCQ:-rocq}" sh docs/evidence/formal_certificates/replay_rocq.sh` with the
-pinned Rocq 9.1.1 toolchain. The replay compiles in temporary storage,
+toolchain its `toolchain.txt` pins, Rocq 9.2 with OCaml 5.5.0. The replay compiles in temporary storage,
 treats warnings as errors, kernel-checks, and compares raw assumptions.
 The [bundle](docs/evidence/formal_certificates/README.md) distinguishes
 real foundations, deterministic interval premises and unproved coverage.
