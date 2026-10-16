@@ -31,13 +31,21 @@ Error families, each entering the replica at its executed times:
   pulse on q over the interval since its previous pulse start;
 - ``cz_phase``: conditional phase epsilon_c (rad), CPhase(epsilon_c) after
   every CZ on coupler c;
-- ``zz``: static ZZ rate zeta_c (kHz) on each CZ coupler,
-  RZZ(pi zeta_c dt) before each pulse on either qubit over the interval since
-  the previous pulse start on either, so the conditional phase grows as
-  2 pi zeta_c t;
+- ``zz``: static ZZ rate zeta_c (kHz) on each CZ coupler, the |11> energy
+  shift zeta = f11 - f10 - f01 + f00, entering as CPhase(-2 pi zeta_c dt)
+  before each pulse on either qubit over the interval since the previous
+  pulse start on either. This is the frame of qubit frequencies calibrated
+  with the partner in |0>: a partner in |0> leaves the qubit's phase
+  unchanged and a partner in |1> detunes it by -zeta_c;
+- ``zz_symmetric``: the same rate in the partner-averaged frame,
+  RZZ(pi zeta_c dt) over the same intervals, a Hamiltonian
+  (2 pi zeta_c / 4) Z Z. RZZ(pi zeta dt) equals CPhase(-2 pi zeta dt) times
+  RZ(pi zeta dt) on both qubits up to a global phase, so it is ``zz`` plus a zeta_c/2 frame
+  detuning on each qubit of the coupler, and the two families differ only by
+  a vector in the detuning span;
 - ``sx_amplitude``: drive amplitude error eta_q (fraction), RX(eta_q pi/2)
   after each sx and RX(eta_q pi) after each x on q (one drive scale for both
-  pulses; x is 2 percent of the single-qubit pulses);
+  pulses);
 - ``axis_tilt``: polar tilt beta_q (rad) of the drive axis toward Z,
   RY(-beta_q) R RY(beta_q) for each sx or x pulse R on q, the axis
   cos(beta) X + sin(beta) Z;
@@ -46,8 +54,8 @@ Error families, each entering the replica at its executed times:
   only RZ on |0> and RZ before a Z readout remain: its response is identically
   zero. It is computed as a gauge null and never fitted.
 
-Each parameter is shifted by +h and -h (1 kHz, 0.01 rad, 1 kHz, 0.01,
-0.01 rad), giving the central slope (s+ - s-)/2h and the curvature
+Each parameter is shifted by +h and -h (1 kHz, 0.01 rad, 1 kHz, 1 kHz,
+0.01, 0.01 rad), giving the central slope (s+ - s-)/2h and the curvature
 (s+ + s-)/2h^2 of the phase and of the log contrast. Detuning and CZ phase
 fit on the forward slope s+/h, the definition of the retained
 atlas_detuning_map table; the other families fit on the central slope. A
@@ -65,7 +73,10 @@ Each lane fits by least squares on the phase responses the lane mean, each
 family alone, detuning paired with each other family, and each family with a
 lane-constant phase term (``<family>_plus_mean``, which absorbs an offset
 shared by every edge of the lane; the constant adds unchanged to the
-resimulated shift). Every model is scored by
+resimulated shift). The ``_plus_mean`` models and the two ZZ frames widen the
+model set, so the smallest score over it is an exploratory selection, never
+a confirmed model; a confirming test scores a named model on lanes it was
+not selected on. Every model is scored by
 leave-one-edge-out RMS error against the shot-noise floor exactly as
 atlas_detuning_map.py scores detuning and CZ phase: linearly, and by
 resimulating every edge at its fitted (``nonlinear_fit``) and leave-one-out
@@ -88,15 +99,16 @@ log contrast ratio with no further parameter, and a held-out constant (the
 mean residual over the other edges, each also at its own held-out values)
 absorbs uniform incoherent loss.
 
-Falsifiers, fixed before any fit:
+Falsifiers:
 
 - a family is refuted on a lane when its resimulated leave-one-out phase RMS
   is at or above the lane mean's leave-one-out RMS;
 - it accounts for a lane's phase offsets when its linear leave-one-out RMS is
   at most 1.5 times its own leave-one-out noise floor;
 - a bounded family cannot account for the offsets when its phase reach at
-  the calibration bound is below the lane's shot-noise RMS, and a fit is
-  inconsistent with the calibration when a fitted value exceeds its bound;
+  the calibration bound is below the RMS of the lane's measured offsets
+  (``phase_reach_covers_offset_rms``), and a fit is inconsistent with the
+  calibration when a fitted value exceeds its bound;
 - its phase-fitted values are refuted by the contrast when the held-out
   contrast residual RMS is at or above the lane mean's leave-one-out contrast
   RMS, and contradicted on an edge when the predicted log ratio lies more
@@ -113,10 +125,14 @@ docs/evidence/atlas_detuning_map/result.json lane within 1e-9.
 work, ``--edges N`` keeps the first N edges of each lane for a reduced case.
 Edges are simulated through parallel.ordered_map (GOROROBA_WORKERS caps the
 pool). ``--self-test`` runs the reduced contract on Fez lane 4 (6 edges) and
-two Kingston edges: the self-checks, recovery of injected detuning, ZZ,
-SX-amplitude and axis-tilt values on their odd columns from the simulated
-phase offsets within 10 percent of the largest injected value, and for each even column a phase shift
-equal to its curvature times the squared injected value within 10 percent.
+two Kingston edges: the self-checks, recovery of injected detuning, ZZ (both
+frames), SX-amplitude and axis-tilt values on their odd columns from the
+simulated phase offsets within 10 percent of the largest injected value, for
+each even column a phase shift equal to its curvature times the squared
+injected value within 10 percent, and the ZZ frame anchor: on a two-qubit
+Ramsey fringe of one qubit, a ``zz`` term leaves the fringe phase unchanged
+with the partner in |0> and shifts it as a detuning of -zeta with the partner
+in |1>, while ``zz_symmetric`` shifts it as detunings of +zeta/2 and -zeta/2.
 ``--check FILE`` reruns every lane FILE holds (or the ``--runs``/``--lanes``
 subset) and requires every number to agree within 1e-6.
 """
@@ -143,7 +159,7 @@ from qiskit.quantum_info import Statevector  # noqa: E402
 
 import parallel  # noqa: E402
 
-SCHEMA = "atlas-coherent-families-v1"
+SCHEMA = "atlas-coherent-families-v2"
 RUNS = {
     "ibm_fez": ROOT / "results/live/2026-10-13T025444.603480Z",
     "ibm_kingston": ROOT / "results/live/2026-10-15T031229.371738Z",
@@ -158,6 +174,7 @@ FAMILIES: dict[str, dict[str, Any]] = {
     "detuning": {"unit": "kHz", "step": 1.0, "per": "qubit", "slope": "forward", "bound": None},
     "cz_phase": {"unit": "rad", "step": 0.01, "per": "coupler", "slope": "forward", "bound": "cz"},
     "zz": {"unit": "kHz", "step": 1.0, "per": "coupler", "slope": "central", "bound": None},
+    "zz_symmetric": {"unit": "kHz", "step": 1.0, "per": "coupler", "slope": "central", "bound": None},
     "sx_amplitude": {"unit": "fraction", "step": 0.01, "per": "qubit", "slope": "central", "bound": "sx"},
     "axis_tilt": {"unit": "rad", "step": 0.01, "per": "qubit", "slope": "central", "bound": "sx"},
     "drive_phase": {"unit": "rad", "step": 0.01, "per": "qubit", "slope": "central", "bound": None},
@@ -166,12 +183,13 @@ GAUGE = "drive_phase"
 # Model -> (families, lane-constant phase term). The models without the
 # constant match the retained atlas_detuning_map table; each single family
 # also fits with the constant, which absorbs a lane-uniform offset.
-SINGLE = ("detuning", "cz_phase", "zz", "sx_amplitude", "axis_tilt")
+SINGLE = ("detuning", "cz_phase", "zz", "zz_symmetric", "sx_amplitude", "axis_tilt")
 MODELS: dict[str, tuple[tuple[str, ...], bool]] = {
     "lane_mean": ((), True),
     **{family: ((family,), False) for family in SINGLE},
     "detuning_and_cz_phase": (("detuning", "cz_phase"), False),
     "detuning_and_zz": (("detuning", "zz"), False),
+    "detuning_and_zz_symmetric": (("detuning", "zz_symmetric"), False),
     "detuning_and_sx_amplitude": (("detuning", "sx_amplitude"), False),
     "detuning_and_axis_tilt": (("detuning", "axis_tilt"), False),
     **{f"{family}_plus_mean": ((family,), True) for family in SINGLE},
@@ -266,21 +284,27 @@ def probability(timed: Timed, errors: dict[Column, float]) -> float:
     for (family, key), value in errors.items():
         if value:
             by_family[family][key] = value
-    detuning, cz_phase, zz = by_family["detuning"], by_family["cz_phase"], by_family["zz"]
+    detuning, cz_phase = by_family["detuning"], by_family["cz_phase"]
     amplitude, tilt, drive = by_family["sx_amplitude"], by_family["axis_tilt"], by_family[GAUGE]
+    pairs = [("zz", pair, rate) for pair, rate in by_family["zz"].items()]
+    pairs += [("zz_symmetric", pair, rate) for pair, rate in by_family["zz_symmetric"].items()]
     out = QuantumCircuit(compact.num_qubits)
     last: dict[int, float] = {}
-    last_pair: dict[tuple[int, int], float] = {}
+    last_pair: dict[tuple[str, tuple[int, int]], float] = {}
     for k in sorted(range(len(compact.data)), key=lambda i: (order[i], i)):
         inst, start = compact.data[k], starts[k]
         name = inst.operation.name
         qubits = [compact.find_bit(q).index for q in inst.qubits]
         if not math.isnan(start):
-            for pair, rate in zz.items():
+            for family, pair, rate in pairs:
                 if pair[0] in qubits or pair[1] in qubits:
-                    if pair in last_pair:
-                        out.rzz(math.pi * rate * atlas.KHZ * (start - last_pair[pair]), pair[0], pair[1])
-                    last_pair[pair] = start
+                    if (family, pair) in last_pair:
+                        interval = start - last_pair[family, pair]
+                        if family == "zz":
+                            out.cp(-2 * math.pi * rate * atlas.KHZ * interval, pair[0], pair[1])
+                        else:
+                            out.rzz(math.pi * rate * atlas.KHZ * interval, pair[0], pair[1])
+                    last_pair[family, pair] = start
             for q in qubits:
                 if q in last and q in detuning:
                     out.rz(2 * math.pi * detuning[q] * atlas.KHZ * (start - last[q]), q)
@@ -688,6 +712,8 @@ def lane_fit(
     calibrations = sorted({c for key in included for c in summaries[key]["calibrations"]})
     bounds_all = gate_bounds(backend, calibrations, physical, ordered)
     bounds = {f: bounds_all[f] for f in families if FAMILIES[f]["bound"] is not None}
+    offsets = np.array([summaries[key]["offset"] for key in included])
+    offset_rms = rms(offsets)
     family_summary: dict[str, Any] = {}
     fitted_columns: dict[str, list[Column]] = {}
     for family in families:
@@ -717,9 +743,10 @@ def lane_fit(
             summary["gate_error_bound"] = [round(float(v), 6) for v in b]
             summary["phase_reach_at_bound_rad"] = round(float(np.max(reach)), 6)
             summary["contrast_reach_at_bound"] = round(float(np.max(np.abs(r["contrast_curvature"]) @ np.square(b))), 6)
+            summary["phase_reach_covers_offset_rms"] = bool(np.max(reach) >= offset_rms)
         family_summary[family] = summary
     measured = {
-        "offset": np.array([summaries[key]["offset"] for key in included]),
+        "offset": offsets,
         "contrast": np.array([summaries[key]["log_contrast_ratio"] for key in included]),
         "phase_noise": np.array([summaries[key]["phase_noise"] for key in included]),
         "contrast_noise": np.array([summaries[key]["contrast_noise"] for key in included]),
@@ -750,6 +777,7 @@ def lane_fit(
         "measured_log_contrast_ratio": [round(float(v), 6) for v in measured["contrast"]],
         "phase_noise_rad": [round(float(v), 6) for v in measured["phase_noise"]],
         "contrast_noise": [round(float(v), 6) for v in measured["contrast_noise"]],
+        "offset_rms_rad": round(offset_rms, 6),
         "shot_noise_rms_rad": round(rms(measured["phase_noise"]), 6),
         "contrast_shot_noise_rms": round(rms(measured["contrast_noise"]), 6),
     }
@@ -792,14 +820,69 @@ def run(backends: list[str], lanes: list[int], edges: int | None) -> dict[str, A
 INJECTED: dict[str, list[float]] = {
     "detuning": [3.0, -2.0, 4.0, -1.5, 2.5],
     "zz": [2.0, -1.5, 1.0, -2.5],
+    "zz_symmetric": [2.0, -1.5, 1.0, -2.5],
     "sx_amplitude": [0.004, -0.003, 0.002, -0.005, 0.003],
     "axis_tilt": [0.004, -0.003, 0.005, -0.002, 0.003],
 }
 RECOVERY_RTOL = 0.1
+# ZZ frame anchor: a Ramsey fringe of qubit 0, sx - RZ(phi) - sx with the
+# second sx ANCHOR_SECONDS after the first, beside a partner qubit 1 left in
+# |0> or flipped to |1> by an x at the first pulse, under a ZZ rate of
+# ANCHOR_KHZ (a 0.63 rad conditional phase over the interval).
+ANCHOR_SECONDS = 2e-6
+ANCHOR_KHZ = 50.0
+ANCHOR_TOLERANCE = 1e-9
+
+
+def anchor_phase(partner: int, errors: dict[Column, float]) -> float:
+    """Fringe phase of the two-qubit Ramsey anchor with the partner prepared in |partner>."""
+    probabilities = []
+    for k in range(PHASES):
+        circuit = QuantumCircuit(2)
+        starts: list[float] = []
+        if partner:
+            circuit.x(1)
+            starts.append(0.0)
+        circuit.sx(0)
+        starts.append(0.0)
+        circuit.rz(k * math.pi / 4, 0)
+        starts.append(math.nan)
+        circuit.sx(0)
+        starts.append(ANCHOR_SECONDS)
+        order = [ANCHOR_SECONDS if math.isnan(start) else start for start in starts]
+        probabilities.append(probability((circuit, starts, order, 0, [0, 1]), errors))
+    return atlas.fringe(probabilities)[1]
+
+
+def zz_frame_anchor() -> None:
+    """A partner in |0> leaves the qubit's phase unchanged under zz; zz_symmetric adds a zeta/2 detuning."""
+    for partner in (0, 1):
+        base = anchor_phase(partner, {})
+
+        def shift(errors: dict[Column, float], base: float = base, partner: int = partner) -> float:
+            return atlas.wrap(anchor_phase(partner, errors) - base)
+
+        zz = shift({("zz", (0, 1)): ANCHOR_KHZ})
+        symmetric = shift({("zz_symmetric", (0, 1)): ANCHOR_KHZ})
+        sign = 1 - 2 * partner
+        expected_zz = shift({("detuning", 0): -ANCHOR_KHZ}) if partner else 0.0
+        expected_symmetric = shift({("detuning", 0): sign * ANCHOR_KHZ / 2})
+        print(
+            f"ZZ frame anchor, partner |{partner}>: zz shift {zz:+.6f} rad (expected {expected_zz:+.6f}), "
+            f"zz_symmetric shift {symmetric:+.6f} rad (detuning {sign * ANCHOR_KHZ / 2:+.0f} kHz gives "
+            f"{expected_symmetric:+.6f})"
+        )
+        require(abs(zz - expected_zz) < ANCHOR_TOLERANCE, f"zz with the partner in |{partner}> shifts {zz:.3e} rad")
+        require(
+            abs(symmetric - expected_symmetric) < ANCHOR_TOLERANCE,
+            f"zz_symmetric, partner |{partner}>: {symmetric - expected_symmetric:.3e} rad from the detuning",
+        )
+        require(abs(symmetric) > 0.1, f"zz_symmetric with the partner in |{partner}> leaves the phase unchanged")
 
 
 def self_test() -> int:
     """Self-checks on Fez lane 4 (6 edges) and two Kingston edges; recovery of injected family values."""
+    zz_frame_anchor()
     retained = {fit["lane"]: fit for fit in json.loads(RETAINED_DETUNING.read_text(encoding="utf-8"))["lanes"]}
     series = fez_series()
     executed = atlas.Executed(RUNS["ibm_fez"])

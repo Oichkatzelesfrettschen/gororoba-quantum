@@ -2462,7 +2462,7 @@
    "cwd": "gororoba_quantum",
    "cmd": "\"$PYTHON\" -B -W error ../scripts/atlas_coherent_families.py --self-test && \"$PYTHON\" -B -O -W error ../scripts/atlas_coherent_families.py --self-test",
    "name": "core-325",
-   "seconds": 65.0,
+   "seconds": 71.0,
    "tier": "pr"
   },
   {
