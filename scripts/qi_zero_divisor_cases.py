@@ -1,0 +1,489 @@
+"""Exact Clifford+T zero-divisor witness for Tuna-17: Design B's dark, bright and fixture cases in a Latin square.
+
+The fixed-operand LCU of Design B (root AGENTS.md, "Zero-product
+witnesses") applies (L_{e1} + L_{e10})/2 to b = (e_k + e^{i phase} e_l)/sqrt2
+and reads the selector: P(s = 0) = ||(e1 + e10)(e_k +- e_l)||^2 / 8, which is
+||x y||^2 / 2 for the normalized operands x and y. The cases are the
+dark witness (e1 + e10)(e4 - e15) = 0 (P = 0), its bright control
+(e1 + e10)(e4 + e15) (P = 1) and the negative fixture (e1 + e10)(e2 - e13),
+whose four product terms land on four labels (P = 1/2).
+
+The SELECT sign function of (1, 10), built from cd_core.cd_sign by
+select_lcu.joint_select_signs, has algebraic degree 4: the selector times
+degree-3 terms of the left-multiplication signs. A degree-4 phase monomial
+needs pi/8 rotations, which Tuna quantizes to the nearest pi/36 (20 or 25
+degrees). The sign ANF factors through majorities (select_exact), so the
+whole SELECT is Z, CZ, CX, two Toffolis and two CCZ on the five qubits
+(data 0-3, selector 4): every gate decomposes into H, S, T, Tdag and CZ, on
+Tuna's angle grid, and the replica is exact with no workspace. Every corpus
+pair (cd_core.sedenion_zero_divisors) has a degree-4 SELECT of similar
+size, so (1, 10) keeps the comparison with the Kingston run.
+
+Before any circuit is written, certify() computes each case's product with
+cd_core.cd_multiply and with the retained D = 16 tables of the packages
+identical to cd_core (docs/evidence/algebra_packages/tables.json), requires
+the dark pair in cd_core.sedenion_zero_divisor_corpus, and requires SELECT to
+equal cd_sign(16, m, q)|m XOR q> on all 32 basis inputs.
+
+Three disjoint 5-qubit regions of Tuna-17 (REGIONS, chosen for the fewest
+routed CZ, 67-70 per replica) run a replica each; circuits 1-3 rotate the
+three cases through the three regions (Latin square), so case and region
+separate. Circuit 4 measures every qubit prepared in |0> and circuit 5 every
+qubit prepared in |1>, giving each selector's readout assignment. Routing
+seeds are searched over SEEDS and the fewest-CZ result kept, so the circuits
+regenerate byte for byte under the pinned Qiskit.
+
+Preregistered analysis (fixed in cases.json before submission):
+- P(s = 0) per case and region, raw with a Wilson 95% interval, and corrected
+  for the selector's readout assignment from circuits 4 and 5.
+- Contraction law: a visibility contraction V gives dark (1 - V)/2, bright
+  (1 + V)/2 and fixture 1/2, so dark + bright - 1 and fixture - 1/2 are each
+  consistent with zero at |z| < 3; a violation names a coherent or biased
+  error outside the contraction.
+- The Kingston Design B dark value 0.182 [0.146, 0.217] at bright 0.828
+  (hw-zero-divisor-floor) is the comparison; Kingston ran the same witness
+  with continuous rotations in about 45 CZ, so the routed depths differ.
+
+The QX twin packs the same nine routed replicas two per 10-qubit circuit and
+runs them on the ideal emulator, which checks the platform's handling of the
+emitted cQASM.
+
+--write DIR writes DIR/zero_divisor_tuna_17/ and DIR/zero_divisor_qx/ (circuits
+and cases.json); --check DIR regenerates both and compares bytes; --analyze RUN_DIR writes analysis.json from raw shots;
+--replay RUN_DIR... recomputes retained analyses. Bit strings put qubit 0 at
+the rightmost character (Tuna).
+
+Usage: "$PYTHON" scripts/qi_zero_divisor_cases.py (--write DIR | --check DIR | --analyze RUN_DIR | --replay RUN_DIR...)
+"""
+
+from __future__ import annotations
+
+import argparse
+import hashlib
+import json
+import math
+import sys
+from pathlib import Path
+from typing import Any
+
+ROOT = Path(__file__).resolve().parents[1]
+sys.path.insert(0, str(ROOT / "gororoba_quantum"))
+from cd_core import _lmat, cd_multiply, cd_sign, sedenion_zero_divisor_corpus  # noqa: E402
+from select_lcu import anf_coefficients, joint_select_signs, sparse_pair_prep  # noqa: E402
+
+PACKAGE_TABLES = ROOT / "docs/evidence/algebra_packages/tables.json"
+# Packages whose retained D = 16 table is identical to cd_core
+# (root AGENTS.md, "Cayley-Dickson packages on the build host").
+IDENTICAL_PACKAGES = ("hypercomplex", "hypercomplex-engine", "Cayley-Calculator", "cayley-dickson")
+
+BACKEND = "tuna_17"
+BACKEND_TYPE_ID = 7
+QX_BACKEND_TYPE_ID = 1
+QX_QUBITS = 10
+QX_SHOTS = 2048
+NQUBITS = 17
+SHOTS = 16384
+TUNA17 = (
+    (0, 1), (0, 2), (1, 4), (2, 4), (2, 5), (3, 5), (3, 6), (4, 7), (4, 8), (5, 8), (5, 9), (6, 9),
+    (7, 10), (7, 11), (8, 11), (8, 12), (9, 12), (10, 13), (11, 13), (11, 14), (12, 14), (12, 15),
+    (14, 16), (15, 16),
+)  # fmt: skip
+REGIONS = ((0, 1, 2, 4, 5), (7, 8, 10, 11, 13), (9, 12, 14, 15, 16))
+SEEDS = range(16)
+A_PAIR = (1, 10)
+CASES = {
+    "dark": ((4, 15), math.pi, 0.0),
+    "bright": ((4, 15), 0.0, 1.0),
+    "fixture": ((2, 13), math.pi, 0.5),
+}
+LATIN = (("dark", "bright", "fixture"), ("bright", "fixture", "dark"), ("fixture", "dark", "bright"))
+DATA, SELECTOR = (0, 1, 2, 3), 4
+ANF_MONOMIALS = {0b1, 0b110, 0b1010, 0b1100, 0b1110, 0b10001, 0b10100, 0b11000}
+ANF_MONOMIALS |= {0b10011, 0b11001, 0b11010, 0b10111, 0b11101, 0b11110}
+BASIS = ["cz", "h", "s", "sdg", "t", "tdg", "x", "y", "z", "sx", "sxdg"]
+CQASM = {"h": "H", "s": "S", "sdg": "Sdag", "t": "T", "tdg": "Tdag", "x": "X", "y": "Y", "z": "Z", "sx": "X90"}
+CQASM["sxdg"] = "mX90"
+KINGSTON = {"dark": 0.182, "dark_ci95": [0.146, 0.217], "bright": 0.828, "claim": "hw-zero-divisor-floor"}
+
+
+def vector(terms: dict[int, int]) -> list[float]:
+    out = [0.0] * 16
+    for index, coefficient in terms.items():
+        out[index] = float(coefficient)
+    return out
+
+
+def table_product(table: dict[str, list[list[int]]], x: dict[int, int], y: dict[int, int]) -> dict[int, int]:
+    out: dict[int, int] = {}
+    for p, a in x.items():
+        for q, b in y.items():
+            r = table["index"][p][q]
+            out[r] = out.get(r, 0) + table["signs"][p][q] * a * b
+    return {r: c for r, c in sorted(out.items()) if c}
+
+
+def certify() -> dict[str, Any]:
+    """Every case's product from cd_core, the retained package tables, and the SELECT action.
+
+    The products (e1 + e10) b come from cd_core.cd_multiply and from each
+    retained D = 16 table of the packages identical to cd_core; all must
+    agree term for term. The dark pair must be a row of
+    cd_core.sedenion_zero_divisor_corpus. The routed circuits implement
+    select_exact, whose action on |q>|a>|w=0> must equal
+    cd_sign(16, m_a, q)|m_a XOR q>|a>|0> with m_0 = 1 and m_1 = 10, the
+    left-multiplication matrices cd_core._lmat builds.
+    """
+    from qiskit.quantum_info import Statevector
+
+    packages = json.loads(PACKAGE_TABLES.read_text(encoding="utf-8"))["packages"]
+    a = {A_PAIR[0]: 1, A_PAIR[1]: 1}
+    rows: dict[str, Any] = {}
+    for name, ((k, el), phase, ideal) in CASES.items():
+        b = {k: 1, el: 1 if phase == 0.0 else -1}
+        reference = {r: round(c) for r, c in enumerate(cd_multiply(16, vector(a), vector(b))) if c}
+        for package in IDENTICAL_PACKAGES:
+            if table_product(packages[package]["tables"]["16"], a, b) != reference:
+                raise SystemExit(f"{package} disagrees with cd_core on {name}")
+        norm = sum(c * c for c in reference.values())
+        if abs(norm / 8 - ideal) > 1e-12:
+            raise SystemExit(f"{name}: ||ab||^2/8 = {norm / 8} against the ideal {ideal}")
+        rows[name] = {"b": {str(i): c for i, c in b.items()}, "product": {str(i): c for i, c in reference.items()}}
+    dark_b = CASES["dark"][0]
+    if (A_PAIR[0], A_PAIR[1], 1, dark_b[0], dark_b[1], -1) not in sedenion_zero_divisor_corpus():
+        raise SystemExit("the dark pair is not a row of the sedenion zero-divisor corpus")
+    select = select_exact(*A_PAIR)
+    for selector in (0, 1):
+        m = A_PAIR[selector]
+        matrix = _lmat(16, m)
+        for q in range(16):
+            state = Statevector.from_int(q + 16 * selector, 32).evolve(select)
+            target = (m ^ q) + 16 * selector
+            if abs(state.data[target] - matrix[m ^ q][q]) > 1e-9 or abs(abs(state.data[target]) - 1) > 1e-9:
+                raise SystemExit(f"SELECT on |{q}>|{selector}> differs from cd_sign(16, {m}, {q})")
+            if matrix[m ^ q][q] != cd_sign(16, m, q):
+                raise SystemExit("cd_core._lmat disagrees with cd_sign")
+    return {
+        "products": rows,
+        "package_tables": list(IDENTICAL_PACKAGES),
+        "dark_in_cd_core_corpus": True,
+        "select_equals_left_multiplication": True,
+    }
+
+
+def select_exact(i: int, j: int) -> Any:
+    """SELECT of (L_e1, L_e10) on data 0-3 and selector 4 from the factored sign function.
+
+    The ANF of the joint sign (-1)^f(q, a), a the selector, is
+    f = q0 + Maj(q1, q2, q3) + q1 q2 q3 + a (q0 + q2 + q3) + a (1 + q2) Maj(q0, q1, q3),
+    since q0 q1 + q0 q3 + q1 q3 = Maj(q0, q1, q3) and likewise for (q1, q2, q3).
+    The in-place Cuccaro MAJ (CX q3->q1, CX q3->q0, CCX q0 q1 -> q3) leaves
+    Maj(q0, q1, q3) on q3, the phase a (1 + q2) Maj becomes a CCZ between X
+    layers on q2, and the MAJ is undone: four three-qubit gates, no workspace.
+    ANF_MONOMIALS is the monomial set this construction implements; the sign
+    table from cd_core must have exactly that ANF.
+    """
+    from qiskit import QuantumCircuit
+
+    truth = [0 if sign > 0 else 1 for sign in joint_select_signs(16, i, j)]
+    if (i, j) != A_PAIR or set(anf_coefficients(truth)) != ANF_MONOMIALS:
+        raise ValueError(f"the factored SELECT implements (1, 10) only; ({i}, {j}) has another sign ANF")
+    q0, q1, q2, q3 = DATA
+    qc = QuantumCircuit(5)
+    qc.z(q0)
+    qc.cz(q1, q2)
+    qc.cz(q1, q3)
+    qc.cz(q2, q3)
+    qc.ccz(q1, q2, q3)
+    for q in (q0, q2, q3):
+        qc.cz(SELECTOR, q)
+    qc.cx(q3, q1)
+    qc.cx(q3, q0)
+    qc.ccx(q0, q1, q3)
+    qc.x(q2)
+    qc.ccz(SELECTOR, q2, q3)
+    qc.x(q2)
+    qc.ccx(q0, q1, q3)
+    qc.cx(q3, q0)
+    qc.cx(q3, q1)
+    for b in DATA:
+        if i >> b & 1:
+            qc.x(b)
+    for b in DATA:
+        if (i ^ j) >> b & 1:
+            qc.cx(SELECTOR, b)
+    return qc
+
+
+def logical(case: str) -> Any:
+    from qiskit import QuantumCircuit
+
+    (k, el), phase, _ = CASES[case]
+    qc = QuantumCircuit(5)
+    qc.compose(sparse_pair_prep(4, k, el, phase), list(DATA), inplace=True)
+    qc.h(SELECTOR)
+    qc.compose(select_exact(*A_PAIR), range(5), inplace=True)
+    qc.h(SELECTOR)
+    return qc
+
+
+def routed(case: str, region: tuple[int, ...]) -> tuple[Any, dict[str, int], int]:
+    """Fewest-CZ routing of a case onto a region; returns the circuit on region-local indices, roles, seed."""
+    from qiskit import transpile
+    from qiskit.transpiler import CouplingMap
+
+    local = {q: n for n, q in enumerate(region)}
+    edges = [[local[a], local[b]] for a, b in TUNA17 if a in local and b in local]
+    coupling = CouplingMap(edges + [[b, a] for a, b in edges])
+    best = None
+    for seed in SEEDS:
+        circuit = transpile(
+            logical(case), coupling_map=coupling, basis_gates=BASIS, optimization_level=2, seed_transpiler=seed
+        )
+        count = circuit.count_ops().get("cz", 0)
+        if best is None or count < best[0]:
+            best = (count, seed, circuit)
+    assert best is not None
+    _, seed, circuit = best
+    final = circuit.layout.final_index_layout()
+    roles = {f"d{b}": region[final[b]] for b in DATA}
+    roles["selector"] = region[final[SELECTOR]]
+    return circuit, roles, seed
+
+
+def ideal_selector_zero(circuit: Any, roles: dict[str, int], region: tuple[int, ...]) -> float:
+    from qiskit.quantum_info import Statevector
+
+    probabilities = Statevector(circuit).probabilities_dict()
+    sel = region.index(roles["selector"])
+    return sum(p for bits, p in probabilities.items() if bits[len(bits) - 1 - sel] == "0")
+
+
+def emit(circuit: Any, place: dict[int, int]) -> list[str]:
+    """cQASM lines of a routed replica; place maps region-local qubit indices to register indices."""
+    lines = []
+    for instruction in circuit.data:
+        name = instruction.operation.name
+        qubits = [place[circuit.find_bit(q).index] for q in instruction.qubits]
+        if name == "cz":
+            lines.append(f"CZ q[{qubits[0]}], q[{qubits[1]}]")
+        elif name in CQASM:
+            lines.append(f"{CQASM[name]} q[{qubits[0]}]")
+        elif name != "barrier":
+            raise ValueError(f"{name} is outside the Tuna gate map")
+    return lines
+
+
+def header(nqubits: int) -> list[str]:
+    return ["version 3.0", "", f"qubit[{nqubits}] q", f"bit[{nqubits}] b", ""]
+
+
+def finish(cases: dict[str, Any], files: dict[str, str]) -> dict[str, str]:
+    for row in cases["circuits"]:
+        row["sha256"] = hashlib.sha256(files[row["file"]].encode()).hexdigest()
+    files["cases.json"] = json.dumps(cases, indent=1) + "\n"
+    return files
+
+
+def build() -> dict[str, dict[str, str]]:
+    """Case directory name -> files: the Tuna-17 Latin square and its QX twin."""
+    common = {
+        "a_pair": list(A_PAIR),
+        "cases": {
+            name: {"b_pair": list(b), "phase": ph, "ideal_p_selector_zero": p} for name, (b, ph, p) in CASES.items()
+        },
+        "certificate": certify(),
+        "preregistered": {
+            "estimators": "P(s=0) raw with Wilson 95%; readout-corrected with the selector's assignment from "
+            "readout-0 and readout-1; contraction residuals dark+bright-1 and fixture-1/2 with |z| < 3 as "
+            "consistency",
+            "comparison": KINGSTON,
+        },
+    }
+    replicas = []
+    for index, assignment in enumerate(LATIN, start=1):
+        for region, case in zip(REGIONS, assignment, strict=True):
+            circuit, roles, seed = routed(case, region)
+            p0 = ideal_selector_zero(circuit, roles, region)
+            if abs(p0 - CASES[case][2]) > 1e-9:
+                raise SystemExit(f"{case} on {region}: ideal P(s=0) {p0}")
+            replicas.append((index, region, case, circuit, roles, seed, p0))
+
+    def row(file: str, case: str, region: tuple[int, ...], roles: dict[str, int], seed: int, circuit: Any, p0: float):
+        ops = circuit.count_ops()
+        return {
+            "file": file,
+            "case": case,
+            "region": list(region),
+            "roles": roles,
+            "seed": seed,
+            "cz": ops.get("cz", 0),
+            "t_count": ops.get("t", 0) + ops.get("tdg", 0),
+            "ideal_p_selector_zero": round(p0, 12),
+        }
+
+    tuna: dict[str, str] = {}
+    cases: dict[str, Any] = {
+        "schema": "qi-zero-divisor-cases-v1",
+        "backend": BACKEND,
+        "backend_type_id": BACKEND_TYPE_ID,
+        "nqubits": NQUBITS,
+        "shots": SHOTS,
+        **common,
+        "regions": [list(r) for r in REGIONS],
+        "circuits": [],
+        "replicas": [],
+    }
+    for index in range(1, len(LATIN) + 1):
+        name = f"latin-{index}.cq"
+        lines = header(NQUBITS)
+        for _, region, case, circuit, roles, seed, p0 in (r for r in replicas if r[0] == index):
+            lines.append(f"// region {list(region)} case {case} seed {seed} roles {roles}")
+            lines += emit(circuit, dict(enumerate(region)))
+            cases["replicas"].append(row(name, case, region, roles, seed, circuit, p0))
+        tuna[name] = "\n".join(lines + ["", "barrier q", "b = measure q", ""])
+        cases["circuits"].append({"file": name, "kind": "witness"})
+    tuna["readout-0.cq"] = "\n".join(header(NQUBITS) + ["barrier q", "b = measure q", ""])
+    tuna["readout-1.cq"] = "\n".join(
+        header(NQUBITS) + [f"X q[{q}]" for q in range(NQUBITS)] + ["", "barrier q", "b = measure q", ""]
+    )
+    cases["circuits"] += [{"file": "readout-0.cq", "kind": "readout"}, {"file": "readout-1.cq", "kind": "readout"}]
+
+    # QX serves 10 qubits, so its twin packs the nine routed replicas two per
+    # circuit (register slots 0-4 and 5-9) into five circuits, one batch job.
+    qx: dict[str, str] = {}
+    twin: dict[str, Any] = {
+        "schema": "qi-zero-divisor-cases-v1",
+        "backend": "QXsinglenodesimulator",
+        "backend_type_id": QX_BACKEND_TYPE_ID,
+        "nqubits": QX_QUBITS,
+        "shots": QX_SHOTS,
+        **common,
+        "twin_of": BACKEND,
+        "circuits": [],
+        "replicas": [],
+    }
+    for start in range(0, len(replicas), 2):
+        name = f"twin-{start // 2 + 1}.cq"
+        lines = header(QX_QUBITS)
+        for slot, (_, region, case, circuit, roles, seed, p0) in enumerate(replicas[start : start + 2]):
+            place = {local: 5 * slot + local for local in range(5)}
+            slot_roles = {role: place[region.index(q)] for role, q in roles.items()}
+            lines.append(f"// tuna region {list(region)} case {case} seed {seed} slot {slot} roles {slot_roles}")
+            lines += emit(circuit, place)
+            twin["replicas"].append(row(name, case, region, slot_roles, seed, circuit, p0))
+        qx[name] = "\n".join(lines + ["", "b = measure q", ""])
+        twin["circuits"].append({"file": name, "kind": "witness"})
+    return {"zero_divisor_tuna_17": finish(cases, tuna), "zero_divisor_qx": finish(twin, qx)}
+
+
+def bit(shot: str, qubit: int) -> int:
+    return int(shot[len(shot) - 1 - qubit])
+
+
+def wilson(k: int, n: int, z: float = 1.959963984540054) -> list[float]:
+    p = k / n
+    centre = (p + z * z / (2 * n)) / (1 + z * z / n)
+    half = z * math.sqrt(p * (1 - p) / n + z * z / (4 * n * n)) / (1 + z * z / n)
+    return [centre - half, centre + half]
+
+
+def analyze(run_dir: Path) -> dict[str, Any]:
+    cases = json.loads((run_dir / "cases.json").read_text(encoding="utf-8"))
+    raw = {row["file"]: json.loads((run_dir / "raw" / f"{row['file']}.json").read_text()) for row in cases["circuits"]}
+    # Without readout circuits (the ideal QX twin) the assignment is taken as exact.
+    zero, one = raw.get("readout-0.cq", ["0" * cases["nqubits"]]), raw.get("readout-1.cq", ["1" * cases["nqubits"]])
+    replicas = []
+    for replica in cases["replicas"]:
+        sel = replica["roles"]["selector"]
+        shots = raw[replica["file"]]
+        n = len(shots)
+        k = sum(1 - bit(s, sel) for s in shots)
+        # Assignment: e01 = P(read 1 | prepared 0), e10 = P(read 0 | prepared 1).
+        e01 = sum(bit(s, sel) for s in zero) / len(zero)
+        e10 = sum(1 - bit(s, sel) for s in one) / len(one)
+        p_raw = k / n
+        p_corrected = (p_raw - e10) / (1 - e01 - e10)
+        replicas.append(
+            {
+                **replica,
+                "shots": n,
+                "selector_zero_count": k,
+                "p_selector_zero": p_raw,
+                "p_selector_zero_ci95": wilson(k, n),
+                "selector_e01": e01,
+                "selector_e10": e10,
+                "p_selector_zero_readout_corrected": p_corrected,
+            }
+        )
+    by_case: dict[str, dict[str, Any]] = {}
+    for name in CASES:
+        rows = [r for r in replicas if r["case"] == name]
+        k = sum(r["selector_zero_count"] for r in rows)
+        n = sum(r["shots"] for r in rows)
+        by_case[name] = {
+            "p_selector_zero": k / n,
+            "ci95": wilson(k, n),
+            "readout_corrected": sum(r["p_selector_zero_readout_corrected"] for r in rows) / len(rows),
+            "variance": (k / n) * (1 - k / n) / n,
+        }
+    dark, bright, fixture = by_case["dark"], by_case["bright"], by_case["fixture"]
+    sum_residual = dark["p_selector_zero"] + bright["p_selector_zero"] - 1
+    fixture_residual = fixture["p_selector_zero"] - 0.5
+
+    def z(residual: float, variance: float) -> float | None:
+        # An ideal or saturated case has zero binomial variance; its residual is then exact.
+        return residual / math.sqrt(variance) if variance > 0 else (0.0 if residual == 0 else None)
+
+    return {
+        "schema": "qi-zero-divisor-analysis-v1",
+        "claim_kind": "preregistered hardware inference",
+        "replicas": replicas,
+        "by_case": by_case,
+        "visibility": bright["p_selector_zero"] - dark["p_selector_zero"],
+        "contraction": {
+            "dark_plus_bright_minus_one": sum_residual,
+            "z": z(sum_residual, dark["variance"] + bright["variance"]),
+            "fixture_minus_half": fixture_residual,
+            "fixture_z": z(fixture_residual, fixture["variance"]),
+        },
+        "kingston_comparison": KINGSTON,
+    }
+
+
+def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
+    mode = parser.add_mutually_exclusive_group(required=True)
+    mode.add_argument("--write", type=Path)
+    mode.add_argument("--check", type=Path)
+    mode.add_argument("--analyze", type=Path)
+    mode.add_argument("--replay", type=Path, nargs="+")
+    args = parser.parse_args()
+    if args.analyze:
+        text = json.dumps(analyze(args.analyze), indent=1) + "\n"
+        (args.analyze / "analysis.json").write_text(text, encoding="utf-8")
+        print(text, end="")
+        return 0
+    if args.replay:
+        for run in args.replay:
+            if (run / "analysis.json").read_text(encoding="utf-8") != json.dumps(analyze(run), indent=1) + "\n":
+                raise SystemExit(f"{run}/analysis.json differs from its recomputation")
+        print(f"qi zero-divisor analyses: {len(args.replay)} runs reproduce their analysis.json")
+        return 0
+    directories = build()
+    count = 0
+    for directory, files in directories.items():
+        if args.write:
+            (args.write / directory).mkdir(parents=True, exist_ok=True)
+        for name, text in files.items():
+            path = (args.write or args.check) / directory / name
+            if args.write:
+                path.write_text(text, encoding="utf-8")
+            elif path.read_text(encoding="utf-8") != text:
+                raise SystemExit(f"{path} differs from its regeneration")
+            count += 1
+    print(f"qi zero-divisor cases: {count} files {'written' if args.write else 'match their regeneration'}")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())

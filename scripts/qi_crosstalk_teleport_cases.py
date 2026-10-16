@@ -15,7 +15,7 @@ Two experiments, each a transmon translation of a spin-qubit result:
   coherent rotation error that its excursions out of |0> carry into the
   target through any residual ZZ coupling. Every
   disjoint (T, A, B) star the coupling map admits runs in parallel.
-- Transported-pair teleportation (Matsumoto et al., Nature 653, 392,
+- Transported-pair teleportation (Matsumoto et al., Nature 653, 391-397,
   doi:10.1038/s41586-026-10423-9). On a path I - P1 - P2 - D, P1 and P2 form
   a Bell pair, SWAP carries P2's half to D (the gate-based counterpart of
   conveyor shuttling), and I and P1 take a Bell-state measurement. The

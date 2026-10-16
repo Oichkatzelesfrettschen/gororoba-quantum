@@ -15,7 +15,7 @@ below were chosen after the Tuna-17 data arrived.
   exponent 1.91(5)) and compensates with pairwise phase calibrations whose
   sum predicts the simultaneous-drive phase (its Fig. 4d).
 - Matsumoto et al., "Two-qubit logic and teleportation with mobile spin
-  qubits in silicon", Nature 653, 392 (2026), doi:10.1038/s41586-026-10423-9.
+  qubits in silicon", Nature 653, 391-397 (2026), doi:10.1038/s41586-026-10423-9.
   Two electron spins carried towards each other in conveyor potentials form a
   CZ (98.86 +- 0.29 %); a Bell pair created that way and separated supports a
   conditional, post-selected teleportation with 86.7 +- 0.9 % average gate
