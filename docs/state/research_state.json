@@ -2205,7 +2205,7 @@
     },
     {
       "id": "hw-atlas-frame-detuning",
-      "statement": "On the executed Fez ripple atlas circuits and IBM's executed pulse times, a static frame detuning per qubit predicts held-out edge fringe phases better than the lane mean on six of seven lanes (leave-one-out 0.074 to 0.120 rad against 0.129 to 0.238 rad); the fitted detunings are mostly 5 to 30 kHz, up to about 60 kHz.",
+      "statement": "On the executed Fez ripple atlas circuits and IBM's executed pulse times, a static frame detuning per qubit, resimulated at its leave-one-out fitted values, predicts held-out edge fringe phases better than the lane mean on six of seven lanes (0.086 to 0.120 rad against 0.129 to 0.238 rad); the fitted detunings are mostly 5 to 30 kHz, up to about 60 kHz.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -2217,7 +2217,7 @@
         },
         {
           "path": "docs/evidence/atlas_detuning_map/result.json",
-          "sha256": "4c8c8ffe49a7d91e8fb0a537163fe9b8be7ac6286342170d215bbc8b8313f1a6"
+          "sha256": "cec74cea5bafe0b216a57d664c17498f10dd28063dc8d3341a376445ecd039bd"
         }
       ],
       "documents": [

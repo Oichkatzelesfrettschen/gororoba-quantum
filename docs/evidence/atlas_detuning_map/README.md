@@ -1,9 +1,11 @@
 # Frame detunings fitted to the Fez ripple atlas, on the executed circuits
 
-`result.json` is the output of `scripts/atlas_detuning_map.py --lanes all`,
-run as the Kaggle kernel `gororoba-atlas-detuning-map` (CPU kernel, stack
-proof passed, every file of the `gororoba-retained-runs` dataset matched its
-manifest). It replaces the notebook `correlated-coherent`, whose
+`result.json` (schema v3) is the output of `scripts/atlas_detuning_map.py
+--lanes all` at its committed revision, run as the Kaggle CPU kernel
+`gororoba-atlas-detuning-map` (run directory
+results/kaggle/2026-10-16T104230Z-gororoba-atlas-detuning-map; the stack
+proof passed and every file of the `gororoba-retained-runs` dataset matched
+its manifest). It replaces the notebook `correlated-coherent`, whose
 over-rotation test could not change a Z-basis population
 (`docs/evidence/simulation-notebook-audit/README.md`).
 
@@ -15,23 +17,31 @@ coherent term. Each phase point is simulated as its executed replica,
 rebuilt from the run's `isa.qpy`, with every pulse at the start time IBM's
 `scheduler_timing` reported for that PUB; with no error term every edge's
 simulated fringe phase equals the recorded ideal fringe phase to within
-6e-15 rad. Leave-one-edge-out RMS error (rad) of four models against the
-hardware-minus-replay offsets:
+6e-15 rad.
+
+The models are least-squares fits to fringe-phase slopes taken at 1 kHz
+detuning and 0.01 rad CZ phase, so each physical model is scored twice: by
+the linear prediction of those slopes, and by resimulating every held-out
+edge at its leave-one-out fitted detunings and CZ phases. Only the second
+tests the static-error model itself. Leave-one-edge-out RMS error (rad),
+linear / resimulated, against the hardware-minus-replay offsets:
 
 | Lane | Qubits | Executed CZ | Shot noise | Lane mean | Detuning | CZ phase | Both |
 | ---: | --- | --- | ---: | ---: | ---: | ---: | ---: |
-| 0 | 112-115, 119 | 36-50 | 0.035 | 0.154 | 0.180 | 0.214 | 0.337 |
-| 1 | 86-89, 97 | 33-53 | 0.020 | 0.238 | 0.120 | 0.180 | 0.154 |
-| 2 | 24-26, 37, 45 | 36-50 | 0.019 | 0.212 | 0.093 | 0.136 | 0.247 |
-| 3 | 130-132, 138, 151 | 35-51 | 0.026 | 0.173 | 0.114 | 0.165 | 0.079 |
-| 4 | 50-52, 58, 71 | 36-46 | 0.021 | 0.136 | 0.103 | 0.091 | 0.264 |
-| 5 | 126-128, 137, 147 | 33-50 | 0.027 | 0.130 | 0.113 | 0.130 | 0.324 |
-| 6 | 103-106, 117 | 36-50 | 0.020 | 0.129 | 0.074 | 0.151 | 0.073 |
+| 0 | 112, 113, 114, 115, 119 | 36-50 | 0.035 | 0.154 | 0.180 / 0.186 | 0.214 / 0.214 | 0.337 / 0.314 |
+| 1 | 86, 87, 88, 89, 97 | 33-53 | 0.020 | 0.238 | 0.120 / 0.120 | 0.180 / 0.180 | 0.154 / 0.116 |
+| 2 | 24, 25, 26, 37, 45 | 36-50 | 0.019 | 0.212 | 0.093 / 0.093 | 0.136 / 0.133 | 0.247 / 0.240 |
+| 3 | 130, 131, 132, 138, 151 | 35-51 | 0.026 | 0.173 | 0.114 / 0.117 | 0.165 / 0.164 | 0.079 / 0.081 |
+| 4 | 50, 51, 52, 58, 71 | 36-46 | 0.021 | 0.136 | 0.103 / 0.104 | 0.091 / 0.091 | 0.264 / 0.304 |
+| 5 | 126, 127, 128, 137, 147 | 33-50 | 0.027 | 0.130 | 0.113 / 0.108 | 0.130 / 0.131 | 0.324 / 0.339 |
+| 6 | 103, 104, 105, 106, 117 | 36-50 | 0.020 | 0.129 | 0.074 / 0.086 | 0.151 / 0.151 | 0.073 / 0.077 |
 
-- A static frame detuning per qubit predicts held-out edges better than
-  the lane mean on six of seven lanes, often halving the error (lane 2:
-  0.212 to 0.093 rad). Lane 0, where no model beats the mean, is the
-  exception.
+- Resimulated at its fitted values, a static frame detuning per qubit
+  predicts held-out edges better than the lane mean on six of seven lanes,
+  often halving the error (lane 2: 0.212 to 0.093 rad). Lane 0, where no
+  model beats the mean, is the exception. The single-term models are close
+  to linear over the fitted range: resimulation moves their held-out error
+  by at most 0.012 rad.
 - The fitted detunings are mostly 5 to 30 kHz, with qubits 105, 127 and 131
   at 30 to 60 kHz: the scale of the 40.9 kHz detuning difference behind the
   Kingston coherence-window rotation (`hw-idle-detuning-scale`), here on a
@@ -49,5 +59,7 @@ phases of one run. The conditional-Ramsey design
 (`proposed-conditional-ramsey-hamiltonian`) measures detunings and ZZ on
 named qubits directly and is the test that would confirm them.
 
-Gate core-285 recomputes lane 4 on the CPU from the retained run and
-requires every response to agree to 1e-9 and every fitted parameter to 1e-6.
+Gate core-285 requires the retained file to hold lanes 0 to 6 once each,
+recomputes lane 4 on the CPU from the retained run, and requires every
+response to agree to 1e-9 and every fitted parameter and score, linear and
+resimulated, to 1e-6.
