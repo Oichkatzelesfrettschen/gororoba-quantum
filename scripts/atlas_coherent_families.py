@@ -146,8 +146,11 @@ Kingston collect.json, the retained detuning map, and the calibration
 snapshots the gate bounds read. ``--check FILE`` requires each named file to
 hold its recorded sha256, reruns every lane FILE holds (or the
 ``--runs``/``--lanes`` subset), requires the rerun to read only named files,
-and requires every number to agree within 1e-6, or 1e-9 relative for larger
-values.
+and requires every number to agree within 1.5e-6 (one unit of the six
+retained decimals plus roundoff), or 1e-9 relative for larger values. A
+condition number agrees within 1e-6 relative: an SVD on a condition-kappa
+design carries relative roundoff of order kappa times the machine epsilon,
+which differs between BLAS builds at fold conditions near 5e5.
 """
 
 from __future__ import annotations
@@ -212,8 +215,12 @@ INERT = 1e-12
 RANK_RTOL = 1e-6
 GAUGE_TOLERANCE = 1e-9
 REPRODUCTION_TOLERANCE = 1e-9
-CHECK_TOLERANCE = 1e-6
+# Results keep six decimals; roundoff that carries a value across a rounding
+# boundary moves it by one unit of the last place, 1e-6.
+CHECK_TOLERANCE = 1.5e-6
 CHECK_RELATIVE = 1e-9
+CONDITION_RELATIVE = 1e-6
+CONDITION_KEYS = frozenset({"condition", "fold_condition_max"})
 CONTRADICTION_SIGMA = 3.0
 # A Column names one error parameter: (family, compact qubit index or coupler pair).
 Column = tuple[str, Any]
@@ -1018,7 +1025,8 @@ def compare(retained: Any, fresh: Any, path: str) -> None:
         for k, (a, b) in enumerate(zip(retained, fresh, strict=True)):
             compare(a, b, f"{path}[{k}]")
     elif isinstance(retained, float) and isinstance(fresh, (int, float)) and not isinstance(fresh, bool):
-        tolerance = max(CHECK_TOLERANCE, CHECK_RELATIVE * abs(retained))
+        relative = CONDITION_RELATIVE if path.rsplit(".", 1)[-1] in CONDITION_KEYS else CHECK_RELATIVE
+        tolerance = max(CHECK_TOLERANCE, relative * abs(retained))
         require(abs(retained - fresh) <= tolerance, f"{path}: {retained} against {fresh}")
     else:
         require(retained == fresh, f"{path}: {retained!r} against {fresh!r}")

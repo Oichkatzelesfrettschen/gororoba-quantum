@@ -1,9 +1,12 @@
-# Coherent error families on lane 4 of the Fez and Kingston atlas runs
+# Coherent error families on the Fez and Kingston atlas runs
 
-`result.json` is `scripts/atlas_coherent_families.py --runs
-ibm_fez,ibm_kingston --lanes 4 --out` (run from `gororoba_quantum/`). It fits
-the frame-detuning, CZ-phase, static-ZZ (two frames), SX-amplitude and
-axis-tilt families to the fringe phase offsets of lane 4. The data are the
+`result.json` is the output of `scripts/atlas_coherent_families.py --runs
+ibm_fez,ibm_kingston --lanes all` on a Kaggle CPU kernel, retained byte for
+byte from `results/kaggle/2026-10-16T215315Z-gororoba-atlas-coherent-families`
+(gate core-334 compares the two). It fits the frame-detuning, CZ-phase,
+static-ZZ (two frames), SX-amplitude and axis-tilt families to the fringe
+phase offsets of all 14 lanes; gate core-329 recomputes lane 4 of both runs
+on CPU. The lane-4 tables below describe the gated case. The data are the
 Fez run `results/live/2026-10-13T025444.603480Z` (12 edges, qubits 50, 51,
 52, 58, 71) and the Kingston run `results/live/2026-10-15T031229.371738Z`
 (10 edges, qubits 138, 150-153; 2 edges span a calibration identity change
@@ -72,6 +75,54 @@ The rows without a constant equal the retained detuning map's lane 4 where
 the two overlap (detuning, CZ phase, detuning + CZ phase on Fez). The
 `_plus_mean` rows and the two ZZ frames widen the model set, so the lowest
 score in each column is an exploratory selection.
+
+## All 14 lanes
+
+Leave-one-out phase RMS in rad of the lane mean and each single family
+(linear), with the best single family's ratio to its own noise floor:
+
+| Backend | Lane | Edges | lane mean | `detuning` | `cz_phase` | `zz` | `zz_symmetric` | `sx_amplitude` | `axis_tilt` | best single, LOO / floor |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| fez | 0 | 12 | 0.154 | 0.180 | 0.214 | 0.201 | 0.195 | 0.174 | 0.151 | `axis_tilt`, 2.70 |
+| fez | 1 | 12 | 0.238 | 0.120 | 0.180 | 0.091 | 0.379 | 0.345 | 0.078 | `axis_tilt`, 1.97 |
+| fez | 2 | 12 | 0.212 | 0.093 | 0.136 | 0.059 | 0.467 | 0.437 | 0.101 | `zz`, 1.78 |
+| fez | 3 | 12 | 0.173 | 0.114 | 0.165 | 0.125 | 0.192 | 0.184 | 0.124 | `detuning`, 2.44 |
+| fez | 4 | 12 | 0.136 | 0.103 | 0.091 | 0.076 | 0.182 | 0.192 | 0.118 | `zz`, 1.98 |
+| fez | 5 | 12 | 0.130 | 0.113 | 0.130 | 0.144 | 0.202 | 0.208 | 0.062 | `axis_tilt`, 1.31 |
+| fez | 6 | 12 | 0.129 | 0.074 | 0.151 | 0.074 | 0.110 | 0.288 | 0.122 | `zz`, 2.05 |
+| kingston | 0 | 10 | 0.159 | 0.100 | 0.216 | 0.136 | 1.125 | 0.581 | 0.287 | `detuning`, 2.30 |
+| kingston | 1 | 10 | 0.077 | 0.063 | 0.098 | 0.077 | 0.394 | 0.234 | 0.092 | `detuning`, 1.68 |
+| kingston | 2 | 10 | 0.119 | 0.049 | 0.054 | 0.048 | 0.169 | 0.131 | 0.094 | `zz`, 1.38 |
+| kingston | 3 | 10 | 0.111 | 0.151 | 0.174 | 0.148 | 0.165 | 0.247 | 0.163 | `zz`, 4.01 |
+| kingston | 4 | 10 | 0.060 | 0.109 | 0.082 | 0.068 | 0.160 | 0.241 | 0.099 | `zz`, 1.85 |
+| kingston | 5 | 10 | 0.230 | 0.164 | 0.178 | 0.163 | 0.371 | 0.325 | 0.266 | `zz`, 4.28 |
+| kingston | 6 | 10 | 0.075 | 0.106 | 0.406 | 0.127 | 0.338 | 1.031 | 0.295 | `detuning`, 2.77 |
+
+- The partner-in-0 ZZ frame scores below the symmetric frame on 13 of 14
+  lanes in the linear fit and on all 14 resimulated, by a median factor of
+  2.4, and the symmetric frame beats the lane mean on one lane. The offsets
+  carry no zeta/2 detuning alongside the coupler term, which is the frame in
+  which qubit frequencies are calibrated with the partner in |0>; rated
+  likely, since it compares two fitted models, and a conditional Ramsey with
+  the partner in |0> measures it directly.
+- The best single family is `zz` on 7 lanes, `detuning` on 4 and
+  `axis_tilt` on 3; `cz_phase` and `sx_amplitude` are never best, and
+  `sx_amplitude` never beats the lane mean.
+- Two lanes reach the 1.5x-floor criterion with a single family (Fez lane 5
+  with `axis_tilt`, Kingston lane 2 with `zz`); the other twelve stay at 1.7
+  to 4.3 times their floor, so no single coherent family accounts for the
+  offsets.
+- The selection over families is exploratory: the lowest score in a row is
+  chosen after the fact.
+
+## Cross-substrate agreement
+
+The host recompute of lane 4 and the Kaggle kernel's lane 4 differ in four
+numbers: two below 5e-16 rad and two by one unit of the last retained
+decimal (a fold condition number near 4.4e5 and a predicted log contrast in
+the ill-conditioned `axis_tilt_plus_mean` model). `--check` therefore allows
+one rounding unit, 1.5e-6, and 1e-6 relative on condition numbers. The host
+also reproduced all seven Fez lanes of the Kaggle result under that check.
 
 ## Gate
 

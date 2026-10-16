@@ -303,10 +303,14 @@ From a clean tree at the branch head:
 - The dataset supplies both run directories, `measured-ripple.json` and the
   calibration snapshots. The `--include` supplies the retained map the Fez
   lanes are checked against.
-- The pre-fix 14-lane run took 1330 s on four Kaggle cores. The second ZZ
-  frame raises the columns per lane from 28 to 32.
-- Afterwards, `"$PYTHON" scripts/kaggle_run.py collect RUN_DIR` retains the
-  output.
+- The run `results/kaggle/2026-10-16T215315Z-gororoba-atlas-coherent-families`
+  took about 24 minutes on four Kaggle cores and is retained, with its output
+  as `docs/evidence/atlas_coherent_families/result.json` (gate core-334
+  compares the bytes; core-329 recomputes lane 4 of both runs on CPU). The
+  evidence README carries the per-lane table: the partner-in-0 ZZ frame
+  scores below the symmetric frame on 13 of 14 lanes (14 of 14
+  resimulated), `zz` is the best single family on 7 lanes, and only two
+  lanes reach the 1.5x-floor criterion with any single family.
 
 ## Calibration drift (part 2)
 
@@ -332,15 +336,7 @@ From a clean tree at the branch head:
 
 ## Remaining
 
-- **The full 14-lane fit** is the Kaggle run above. The untracked
-  submission `results/kaggle/2026-10-16T210638Z-gororoba-atlas-coherent-families/`
-  binds the pre-fix script by sha256: its `zz` column is the symmetric
-  frame, it has no partner-in-0 frame and no fold checks, and it serves only
-  as the rank survey quoted above. After a fresh run is collected:
-  - extend `docs/evidence/atlas_coherent_families/` with its result and a
-    per-lane table;
-  - add a byte-identity gate against the kernel output (as core-293 does).
-- **research_state.json** gains claims only after that replay gate exists.
+- **research_state.json** claims: the replay gate core-329 now exists, so the ZZ-frame comparison and the no-single-family result can enter as claims bound to `docs/evidence/atlas_coherent_families/result.json`.
 - **The x-versus-sx relative axis phase is not modeled.** x is 33 of 1765
   single-qubit pulses in the sampled replicas, too few to identify it.
 - **Joint nonlinear fits are not attempted.** Examples are a quadratic
