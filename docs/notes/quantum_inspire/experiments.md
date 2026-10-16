@@ -144,8 +144,32 @@ gororoba_quantum/calibration_snapshot.py), whose recorded boundary excludes
 coherent error, crosstalk and leakage. That model class predicts, for these
 cases, a zero neighbor-dependent target shift, an additivity residual of
 zero, driver P1 below 1/2 after an even X count, and no change of a driver's
-P1 when its partner is driven. Every Tuna-17 signal above is therefore
-outside the model class: the drive-induced target shifts, the Q1/Q2
+P1 when its partner is driven.
+
+`scripts/qi_ibm_noise_replay.py` checks that prediction numerically: it
+rebuilds every star and path from the retained cQASM as a Qiskit circuit on
+the lowest-error disjoint Kingston embeddings (stars on qubits 10/9/11,
+47/46/48, 136/123/143, 147/137/148, 22/21/23; paths 48-47-46-45,
+109-118-129-128, 42-41-36-21, 149-148-147-137), transpiles at level 0 against
+docs/evidence/calibration/ibm_kingston.json, inserts ALAP delays and saves
+exact Aer probabilities beside 16384-shot samples. It ran on a Kaggle CPU
+kernel (results/kaggle/2026-10-16T214611Z-qi-ibm-noise-replay) and is retained
+as results/quantum_inspire/ibm_noise_replay/tuna_17-ibm_kingston.json; gate
+core-340 replays one star and one path.
+
+| Quantity | Kingston model (exact) | Tuna-17 measured |
+|---|---|---|
+| largest target phase shift from a driven neighbor | 1.2e-14 rad | 0.695 rad |
+| largest pairwise residual | 1.3e-15 rad | 0.054 rad |
+| largest driver P1 after 40 X | 0.012 | 0.893 |
+| teleport corrected fidelity, inputs 0 / 1 / + / +i | 0.986 / 0.981 / 0.982 / 0.971 | 0.746 / 0.827 / 0.844 / 0.862 |
+| teleport post-selected fidelity | 0.988 / 0.974 / 0.983 / 0.969 | 0.768 / 0.782 / 0.846 / 0.864 |
+| post-selected fraction | 0.252-0.253 | 0.230-0.268 |
+
+Kingston's X lasts 32 ns, so the replay's driver train spans 1.3 us against
+the target's 0.93 us window; under independent channels that changes no
+target outcome. Every Tuna-17 signal above is therefore outside the model
+class: the drive-induced target shifts, the Q1/Q2
 simultaneous-drive degradation and the Q6/Q8/Q9 over-rotation. The idle
 phases (-0.03 to -0.12 rad over 840 ns, a frequency offset of 5 to 23 kHz)
 sit at the tens-of-kHz scale of the Heron idle detunings in
