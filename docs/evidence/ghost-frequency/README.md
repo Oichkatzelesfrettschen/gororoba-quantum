@@ -69,6 +69,12 @@ drift, two-level-system coupling, Stark shifts and Z Z.
 - `ac-stark-discriminator.ipynb`: a residual-photon Stark model and its
   pre-delay signature.
 - `ghost-falsification-suite.ipynb`: the three hypotheses together.
+- `algebraic-frequency.ipynb`, `differential-interleaved.ipynb` and
+  `predelay-84-84.ipynb`: a triple-dependent detuning test, an interleaved
+  differential Ramsey and a pre-delay sweep on the 84/84 pairs. Their
+  kernel logs contradict two of their verdicts (a sign-flipped fit and a
+  failed interleaving check), and the third verdict restates its inputs;
+  `docs/evidence/simulation-notebook-audit/README.md` reads each one.
 
 The notebooks ran in their own environment. Their outputs are retained as
 produced and are not replayed in CI; CI checks only that their code passes

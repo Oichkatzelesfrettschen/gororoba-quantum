@@ -1,0 +1,47 @@
+[{"stream_name":"stderr","time":6.946624156,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.946660958,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.93840249,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.938430008,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.938438843,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.938442645,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":8.579925038,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":8.579949601,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":8.579958209,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":8.579962503,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":17.148183097,"data":"device: cuda\n"}
+,{"stream_name":"stdout","time":17.163292021,"data":"  Pre-delay (us)       nbar  Stark (kHz)        Δ\n"}
+,{"stream_name":"stdout","time":17.163316965,"data":"               0     0.0100        0.010    0.591\n"}
+,{"stream_name":"stdout","time":17.163322732,"data":"               1     0.0082        0.008    0.591\n"}
+,{"stream_name":"stdout","time":17.163326966,"data":"               2     0.0067        0.007    0.591\n"}
+,{"stream_name":"stdout","time":17.163330547,"data":"               5     0.0037        0.004    0.590\n"}
+,{"stream_name":"stdout","time":17.163334574,"data":"              10     0.0014        0.001    0.590\n"}
+,{"stream_name":"stdout","time":17.16333819,"data":"              20     0.0002        0.000    0.590\n"}
+,{"stream_name":"stdout","time":17.163341976,"data":"              50     0.0000        0.000    0.590\n"}
+,{"stream_name":"stdout","time":17.177513666,"data":"Photonic model measurements:\n"}
+,{"stream_name":"stdout","time":17.177532467,"data":"    0 us: Δ = 0.588\n"}
+,{"stream_name":"stdout","time":17.177538449,"data":"    1 us: Δ = 0.632\n"}
+,{"stream_name":"stdout","time":17.17754314,"data":"    2 us: Δ = 0.596\n"}
+,{"stream_name":"stdout","time":17.177547424,"data":"    5 us: Δ = 0.617\n"}
+,{"stream_name":"stdout","time":17.177551242,"data":"   10 us: Δ = 0.587\n"}
+,{"stream_name":"stdout","time":17.177556744,"data":"   20 us: Δ = 0.589\n"}
+,{"stream_name":"stdout","time":17.177583418,"data":"   50 us: Δ = 0.605\n"}
+,{"stream_name":"stdout","time":17.177604735,"data":"\n"}
+,{"stream_name":"stdout","time":17.177609558,"data":"Null model measurements:\n"}
+,{"stream_name":"stdout","time":17.177613323,"data":"    0 us: Δ = 0.607\n"}
+,{"stream_name":"stdout","time":17.177617253,"data":"    1 us: Δ = 0.588\n"}
+,{"stream_name":"stdout","time":17.177620991,"data":"    2 us: Δ = 0.543\n"}
+,{"stream_name":"stdout","time":17.177624597,"data":"    5 us: Δ = 0.587\n"}
+,{"stream_name":"stdout","time":17.177628269,"data":"   10 us: Δ = 0.604\n"}
+,{"stream_name":"stdout","time":17.177643017,"data":"   20 us: Δ = 0.590\n"}
+,{"stream_name":"stdout","time":17.177647102,"data":"   50 us: Δ = 0.599\n"}
+,{"stream_name":"stdout","time":17.216091366,"data":"Detection power: 11%\n"}
+,{"stream_name":"stdout","time":17.216141848,"data":"The pre-delay sweep distinguishes photonic from null: False\n"}
+,{"stream_name":"stderr","time":22.393749752,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":22.393793709,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":22.575591902,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":22.57562248,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":23.323933947,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":23.399395564,"data":"[NbConvertApp] Writing 11292 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":25.835013614,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":26.361643969,"data":"[NbConvertApp] Writing 291568 bytes to __results__.html\n"}
+]

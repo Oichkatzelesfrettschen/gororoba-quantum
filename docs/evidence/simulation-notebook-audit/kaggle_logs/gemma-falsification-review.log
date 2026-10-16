@@ -1,0 +1,37 @@
+[{"stream_name":"stderr","time":6.153521642,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.153559399,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.054992939,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.055018037,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.055023509,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.055027492,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.647263003,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.64729576,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.647300965,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.6473047990000005,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":23.188373358,"data":"transformers: 5.16.1\n"}
+,{"stream_name":"stdout","time":23.201745226,"data":"model at: /kaggle/input/models/google/gemma-4/transformers/gemma-4-e2b-it/1\n"}
+,{"stream_name":"stdout","time":132.874568313,"data":"loaded\n"}
+,{"stream_name":"stdout","time":135.024348631,"data":"2 + 2 equals 4.\n"}
+,{"stream_name":"stdout","time":135.224518244,"data":"=== Q1: Transpiler ===\n"}
+,{"stream_name":"stdout","time":143.729370317,"data":"Yes, the transpiler could have introduced a systematic difference. If the optimization process involves choices based on the rotation angle, the choice between $0$ and $\\pi$ could be arbitrary or biased. This systematic choice, even if seemingly minor, could lead to functionally different quantum operations on the hardware. Therefore, the difference in the rotation angle might be an artifact of the transpiler's optimization strategy rather than a true physical difference in the intended circuit.\n"}
+,{"stream_name":"stdout","time":143.930331882,"data":"=== Q2: Readout linearity ===\n"}
+,{"stream_name":"stdout","time":154.968379756,"data":"No, if the true population difference $dp=0$, readout error alone cannot produce a nonzero measured contrast $dM$. The measured contrast is given by $dM = (1-e_0-e_1)dp$. If $dp=0$, then $dM$ must be zero, regardless of the error rates $e_0$ and $e_1$. This result relies on the assumption that the readout error is modeled purely as a classical bit-flip channel acting on the measured outcomes, which preserves the zero difference when the true difference is zero.\n"}
+,{"stream_name":"stdout","time":155.169278117,"data":"=== Q3: AC Stark vs intrinsic ===\n"}
+,{"stream_name":"stdout","time":169.655266915,"data":"The key to distinguishing between an AC Stark shift and an intrinsic qubit frequency offset lies in the **dependence of the shift on the readout resonator's properties**.\n"}
+,{"stream_name":"stdout","time":169.655312278,"data":"\n"}
+,{"stream_name":"stdout","time":169.655339552,"data":"An **AC Stark shift** ($\\propto 2\\chi\\bar{n}$) will exhibit a strong dependence on the **readout resonator's photon number ($\\bar{n}$)**, as the shift is directly proportional to the residual photon population.\n"}
+,{"stream_name":"stdout","time":169.655360592,"data":"\n"}
+,{"stream_name":"stdout","time":169.655364413,"data":"An **intrinsic qubit frequency offset** is a static property of the qubit and will show **no significant dependence** on the instantaneous photon number in the readout resonator.\n"}
+,{"stream_name":"stdout","time":169.65536824,"data":"\n"}
+,{"stream_name":"stdout","time":169.655371428,"data":"Therefore, by varying the photon number in the resonator while keeping the qubit state fixed, one can measure the shift's dependence on $\\bar{n}$ to differentiate the two effects.\n"}
+,{"stream_name":"stdout","time":169.856936123,"data":"=== Q4: Quantum measurement backaction ===\n"}
+,{"stream_name":"stdout","time":179.167831015,"data":"Yes, the measurement process can introduce differential effects beyond classical readout error if the pre-measurement quantum states differ. The interaction between the qubit and the readout resonator is a unitary evolution that is state-dependent, meaning the evolution itself is different for each initial state. This state-dependent evolution can lead to different final states or different measurement outcomes, even if the readout apparatus is identical. Therefore, the measurement process acts as a non-trivial quantum channel whose effect depends on the input quantum state.\n"}
+,{"stream_name":"stderr","time":184.367839438,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":184.3678714,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":184.530672847,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":184.530697557,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":185.2435354,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":185.32120714,"data":"[NbConvertApp] Writing 25607 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":187.676372284,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":188.165969897,"data":"[NbConvertApp] Writing 300161 bytes to __results__.html\n"}
+]

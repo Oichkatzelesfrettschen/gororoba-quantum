@@ -1,5 +1,9 @@
 # Handoff Notes: Chat Session 2026-10-15 (Ferreton → Claude Code)
 
+> Audit: `docs/evidence/simulation-notebook-audit/README.md` reads every
+> notebook named here against its retained Kaggle log, and
+> `docs/state/research_state.json` carries the resulting claim status.
+
 These notes capture decisions, framings, and falsification results from the
 2026-10-15 chat session that are not yet in the repository. Written in
 declarative style per the project style guide.
