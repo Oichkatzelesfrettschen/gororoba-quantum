@@ -66,12 +66,13 @@ runs.
 | Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed | a Kaggle noise run that sizes the rotation-error contrast, then a device case |
 | Signed kernel probe (`proposed-signed-kernel-probe`) | 7 | proposed | Kaggle first: the sign-odd signal against the calibrated noise floor |
 | Census-frequency witness (`proposed-census-frequency`) | 5 (fixed pair) to 13 (three registers) | proposed | Kaggle first: visibility V and the shots that resolve 231/512 |
-| Dim-32 Design C spectral classes | 5 | Kaggle run in progress | the noisy K separation from `scripts/design_c_cubic_noise.py`; a device case only for a device question |
+| Dim-32 Design C spectral classes | 5 | Kaggle result retained (`docs/evidence/design_c_cubic_noise/`) | the noise model keeps the classes apart (noisy K 0.180-0.253 against 0.093-0.113); a hardware case would test coherent errors and crosstalk the model lacks, about 3 s for both class representatives at 4096 shots |
 
 Withdrawn as QPU candidates (`docs/evidence/simulation-notebook-audit/README.md`):
 the triple-dependent detuning Ramsey (no circuit sets a frequency from a
-triple label), the interleaved differential Ramsey below 500 Hz (its 50 Hz
-tier alone needs more shots than the remaining quota buys), the pre-delay
+triple label), the interleaved differential Ramsey below 500 Hz (two arms at SNR 2
+need 4/dP^2 shots, about 2.9 million or 750 s at 50 Hz, nearly three times
+the remaining quota), the pre-delay
 sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
 84/84 circuits (dim 16 has no cubic phase).
 
@@ -80,7 +81,7 @@ sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
 | Run | Qubits | Question | State |
 | --- | --- | --- | --- |
 | `gororoba-aer-gpu-smoke` | 14 | qiskit 2.5.2 and qiskit-aer-gpu-cu11 0.17.2 on the Kaggle GPU | complete: 2 x T4, a 14-qubit density-matrix GHZ in 1.6 s |
-| `gororoba-design-c-cubic-noise` | 5 | does the 11/32 against 5/32 collision separation survive the compiled factorized circuit under the Kingston calibration | running |
+| `gororoba-design-c-cubic-noise` | 5 | does the 11/32 against 5/32 collision separation survive the compiled factorized circuit under the Kingston calibration | complete: yes, ranges 0.180-0.253 and 0.093-0.113 at 20,000 shots; CPU replay gate core-282 |
 | Census-frequency witness | 5-13 | V and shot count for the 231/512 test | to design |
 | Walk scaffold under coherent and leakage models | 4 | which loss channel reproduces the retained readout0 floors | to design |
 | Signed kernel probe at calibrated noise | 7 | the detectable t range | to design |
