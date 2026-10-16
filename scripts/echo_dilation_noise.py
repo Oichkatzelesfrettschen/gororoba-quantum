@@ -41,8 +41,9 @@ retained calibration's noise, which class each physical channel falls in:
 5. Sizing. Shots per arm that resolve each channel's shift of
    amplified - echo at z = Z_SCORE. The conditional phase moves the pair
    about evenly in delta, so the reference must bound |delta| below the
-   magnitude whose shift equals the pair's standard error at each budget
-   (power-law interpolation on the delta grid); its shots per edge and
+   magnitude whose shift equals the pair's standard error at each budget,
+   for the more responsive sign (power-law interpolation on each sign's
+   delta grid); its shots per edge and
    target state reach that bound at z = Z_SCORE through the reference's own
    slope in delta.
 
@@ -413,6 +414,23 @@ def magnitude_at(level: float, points: list[tuple[float, float]]) -> float | Non
     return None
 
 
+def sign_tolerance(level: float, shifts: dict[float, float]) -> float | None:
+    """The |delta| below which both signs of the conditional phase shift the pair by less than level.
+
+    The reference bounds |delta|, so the sign whose response grows faster sets
+    the bound: each sign's |shift| curve gives its own magnitude, and the
+    smaller one holds for both. A sign that stays below level on the whole
+    grid imposes no bound within it.
+    """
+    bounds = []
+    for sign in (1.0, -1.0):
+        points = sorted((abs(v), abs(s)) for v, s in shifts.items() if v * sign > 0)
+        bound = magnitude_at(level, points)
+        if bound is not None:
+            bounds.append(bound)
+    return min(bounds) if bounds else None
+
+
 def _reference_shots(variance: float, tolerance: float | None, slope: float) -> int | None:
     """Shots per target state that bound delta to tolerance at z = Z_SCORE through the reference slope."""
     return math.ceil(Z_SCORE**2 * variance / (tolerance * slope) ** 2) if tolerance else None
@@ -478,11 +496,8 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
             }
             for name, sweep in sweeps.items()
         }
-        delta_points = [
-            (d, -0.5 * sum(s for v, s, _ in sweeps["cz_conditional_phase"] if abs(v) == d))
-            for d in sorted({abs(v) for v in CHANNELS["cz_conditional_phase"]})
-        ]
-        tolerance = {n: magnitude_at(se[n], delta_points) for n in BUDGETS}
+        uniform = {v: s for v, s, _ in sweeps["cz_conditional_phase"]}
+        tolerance = {n: sign_tolerance(se[n], uniform) for n in BUDGETS}
         reference_edges = sorted(
             {tuple(r["edge"]) for r in rows if r["backend"] == backend and r["kind"] == "reference"}
         )
@@ -496,12 +511,11 @@ def analyze(rows: list[dict[str, Any]]) -> dict[str, Any]:
         per_edge: list[dict[str, Any]] = []
         for k in swept:
             shifts = {d: diff("device", 0.0, f"{EDGE_CHANNEL}@{k}", d) - base for d in EDGE_DELTA}
-            points = [(d, -0.5 * (shifts[d] + shifts[-d])) for d in sorted({abs(d) for d in EDGE_DELTA})]
             per_edge.append(
                 {
                     "edge": list(reference_edges[k]),
                     "shifts": {str(d): v for d, v in shifts.items()},
-                    "delta_tolerance": {str(n): magnitude_at(se[n], points) for n in BUDGETS},
+                    "delta_tolerance": {str(n): sign_tolerance(se[n], shifts) for n in BUDGETS},
                 }
             )
         additivity = [
