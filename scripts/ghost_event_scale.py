@@ -112,8 +112,9 @@ imports (ghost_error_scale, ghost_run, calibration_snapshot, packing,
 parallel), so no --include is needed. The pool maps the grid points over the
 kernel's CPUs with one Aer thread each. A dynamic run costs 88 draws (84
 points and two floors of two draws) and a static run 18, each draw about the
-run's replicas times shots times non-virtual operations; 2026-10-12T055624,
-the largest, splits into its two padding states. One part per kernel:
+run's replicas times shots times non-virtual operations, and a padded draw
+about 2.4 times an unpadded one; 2026-10-12T055624, the largest, splits into
+its two padding states. One part per kernel:
 
     "$PYTHON" scripts/kaggle_run.py push scripts/ghost_event_scale.py \\
         --slug gororoba-ghost-event-scale-a --dataset gororoba-retained-runs \\
