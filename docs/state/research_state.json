@@ -2209,7 +2209,7 @@
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "Inferred from one run's fringe phases; residuals stay 3 to 5 times the shot noise, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.",
+      "boundary": "Inferred from one run's fringe phases; residuals stay 2.9 to 5.4 times the shot noise, lane 0 is unexplained, and only a direct measurement such as conditional Ramsey confirms per-qubit detunings.",
       "evidence": [
         {
           "path": "results/ripple/measured-ripple.json",
@@ -2217,7 +2217,7 @@
         },
         {
           "path": "docs/evidence/atlas_detuning_map/result.json",
-          "sha256": "cec74cea5bafe0b216a57d664c17498f10dd28063dc8d3341a376445ecd039bd"
+          "sha256": "044d66d0b712cbe0dceccbcf01eab4fcadacda654fa51b2e944faa7009983faf"
         }
       ],
       "documents": [
