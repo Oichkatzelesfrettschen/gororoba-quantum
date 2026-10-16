@@ -1,5 +1,5 @@
 {
- "schema": "ghost-run-report-v2",
+ "schema": "ghost-run-report-v3",
  "source": "docs/evidence/ghost_runs/result.json",
  "runs": [
   {
@@ -14,8 +14,9 @@
    ],
    "current_minus_execution": {
     "replicas": 29,
+    "pubs": 6,
     "mean_delta": -0.001709,
-    "standard_error": 0.001712
+    "standard_error": 0.001303
    },
    "distinct_states": 6,
    "state_mean_tvd_range": [
@@ -43,6 +44,7 @@
    ],
    "current_minus_execution": {
     "replicas": 16,
+    "pubs": 16,
     "mean_delta": -0.018082,
     "standard_error": 0.001519
    },
@@ -72,6 +74,7 @@
    ],
    "current_minus_execution": {
     "replicas": 4,
+    "pubs": 4,
     "mean_delta": -0.031616,
     "standard_error": 0.001346
    },
@@ -101,6 +104,7 @@
    ],
    "current_minus_execution": {
     "replicas": 4,
+    "pubs": 4,
     "mean_delta": -0.031616,
     "standard_error": 0.001346
    },
@@ -131,8 +135,9 @@
    ],
    "current_minus_execution": {
     "replicas": 929,
+    "pubs": 146,
     "mean_delta": -0.003391,
-    "standard_error": 0.000524
+    "standard_error": 0.000382
    },
    "distinct_states": 5,
    "state_mean_tvd_range": [
@@ -161,8 +166,9 @@
    ],
    "current_minus_execution": {
     "replicas": 176,
+    "pubs": 36,
     "mean_delta": 0.002276,
-    "standard_error": 0.000683
+    "standard_error": 0.000595
    },
    "distinct_states": 5,
    "state_mean_tvd_range": [
@@ -190,6 +196,7 @@
    ],
    "current_minus_execution": {
     "replicas": 2,
+    "pubs": 2,
     "mean_delta": -0.013551,
     "standard_error": 0.005982
    },
@@ -219,6 +226,7 @@
    ],
    "current_minus_execution": {
     "replicas": 8,
+    "pubs": 8,
     "mean_delta": -0.011963,
     "standard_error": 0.002474
    },
@@ -249,6 +257,7 @@
    ],
    "current_minus_execution": {
     "replicas": 46,
+    "pubs": 46,
     "mean_delta": -0.000881,
     "standard_error": 0.00091
    },
@@ -278,6 +287,7 @@
    ],
    "current_minus_execution": {
     "replicas": 15,
+    "pubs": 15,
     "mean_delta": -0.009147,
     "standard_error": 0.002392
    },
@@ -308,8 +318,9 @@
    ],
    "current_minus_execution": {
     "replicas": 176,
+    "pubs": 36,
     "mean_delta": -0.001483,
-    "standard_error": 0.000489
+    "standard_error": 0.000346
    },
    "distinct_states": 6,
    "state_mean_tvd_range": [
@@ -339,8 +350,9 @@
    ],
    "current_minus_execution": {
     "replicas": 929,
+    "pubs": 146,
     "mean_delta": -0.001784,
-    "standard_error": 0.000522
+    "standard_error": 0.000427
    },
    "distinct_states": 6,
    "state_mean_tvd_range": [
@@ -368,6 +380,7 @@
    ],
    "current_minus_execution": {
     "replicas": 7,
+    "pubs": 7,
     "mean_delta": -0.004185,
     "standard_error": 0.002446
    },
@@ -397,8 +410,9 @@
    ],
    "current_minus_execution": {
     "replicas": 105,
+    "pubs": 14,
     "mean_delta": -0.002874,
-    "standard_error": 0.001325
+    "standard_error": 0.001246
    },
    "distinct_states": 6,
    "state_mean_tvd_range": [

@@ -36,7 +36,9 @@ The table gives, for each run:
 
 - the mean TV distance under the execution calibration;
 - the paired per-replica difference of today's calibration from it on the
-  same members, with its standard error in parentheses;
+  same members, with its standard error and the number of executed PUBs in
+  parentheses. Members of one PUB share its shots, so the error is clustered
+  by PUB; a run with few PUBs has few degrees of freedom;
 - the mean distance over all members under each distinct state;
 - the replay self-check: the number of replicas whose collection recorded
   its own replay distance, the mean |ghost - recorded|, and the mean
@@ -44,20 +46,20 @@ The table gives, for each run:
 
 | Run | Backend | Members (shots) | Execution TVD | Current minus execution | States, range | Self-check: pairs, recorded / resampled |
 | --- | --- | --- | ---: | --- | --- | --- |
-| 2026-10-11T152922 | Kingston | 9 (9x4096) | 0.102 | -0.0017 (0.0017) | 6, 0.094-0.103 | 29: 0.0027 / 0.0038 |
-| 2026-10-12T055624 | Kingston | 16 (16x8192) | 0.138 | -0.0181 (0.0015) | 6, 0.120-0.142 | 16: 0.0052 / 0.0036 |
-| 2026-10-13T020454 | Kingston | 4 (4x8192) | 0.186 | -0.0316 (0.0013) | 6, 0.154-0.186 | 0 |
-| 2026-10-13T022433 | Kingston | 4 (4x8192) | 0.210 | -0.0316 (0.0013) | 6, 0.178-0.210 | 0 |
-| 2026-10-13T025444 | Fez | 929 (856x1024, 73x4096) | 0.069 | -0.0034 (0.0005) | 5, 0.066-0.069 | 0 |
-| 2026-10-13T032011 | Fez | 176 (120x1024, 56x4096) | 0.041 | +0.0023 (0.0007) | 5, 0.039-0.048 | 0 |
-| 2026-10-13T080216 | Fez | 2 (2x4096) | 0.070 | -0.0136 (0.0060) | 5, 0.056-0.071 | 2: 0.0101 / 0.0068 |
-| 2026-10-13T083417 | Fez | 8 (8x4096) | 0.072 | -0.0120 (0.0025) | 5, 0.060-0.074 | 8: 0.0081 / 0.0079 |
-| 2026-10-13T201757 | Fez | 46 (40x1024, 6x4096) | 0.027 | -0.0009 (0.0009) | 5, 0.026-0.027 | 24: 0.0096 / 0.0081 |
-| 2026-10-15T030748 | Kingston | 15 (15x2048) | 0.203 | -0.0091 (0.0024) | 6, 0.194-0.205 | 15: 0.0063 / 0.0112 |
-| 2026-10-15T030903 | Kingston | 176 (120x1024, 56x4096) | 0.072 | -0.0015 (0.0005) | 6, 0.070-0.076 | 0 |
-| 2026-10-15T031229 | Kingston | 929 (856x1024, 73x4096) | 0.083, 0.093 | -0.0018 (0.0005) | 6, 0.082-0.086 | 0 |
-| 2026-10-15T070847 | Kingston | 7 (7x1024) | 0.435 | -0.0042 (0.0024) | 6, 0.424-0.445 | 7: 0.0186 / 0.0091 |
-| 2026-10-15T070853 | Kingston | 14 (14x2048) | 0.098 | -0.0029 (0.0013) | 6, 0.093-0.098 | 105: 0.0084 / 0.0091 |
+| 2026-10-11T152922 | Kingston | 9 (9x4096) | 0.102 | -0.0017 (0.0013, 6 PUBs) | 6, 0.094-0.103 | 29: 0.0027 / 0.0038 |
+| 2026-10-12T055624 | Kingston | 16 (16x8192) | 0.138 | -0.0181 (0.0015, 16 PUBs) | 6, 0.120-0.142 | 16: 0.0052 / 0.0036 |
+| 2026-10-13T020454 | Kingston | 4 (4x8192) | 0.186 | -0.0316 (0.0013, 4 PUBs) | 6, 0.154-0.186 | 0 |
+| 2026-10-13T022433 | Kingston | 4 (4x8192) | 0.210 | -0.0316 (0.0013, 4 PUBs) | 6, 0.178-0.210 | 0 |
+| 2026-10-13T025444 | Fez | 929 (856x1024, 73x4096) | 0.069 | -0.0034 (0.0004, 146 PUBs) | 5, 0.066-0.069 | 0 |
+| 2026-10-13T032011 | Fez | 176 (120x1024, 56x4096) | 0.041 | +0.0023 (0.0006, 36 PUBs) | 5, 0.039-0.048 | 0 |
+| 2026-10-13T080216 | Fez | 2 (2x4096) | 0.070 | -0.0136 (0.0060, 2 PUBs) | 5, 0.056-0.071 | 2: 0.0101 / 0.0068 |
+| 2026-10-13T083417 | Fez | 8 (8x4096) | 0.072 | -0.0120 (0.0025, 8 PUBs) | 5, 0.060-0.074 | 8: 0.0081 / 0.0079 |
+| 2026-10-13T201757 | Fez | 46 (40x1024, 6x4096) | 0.027 | -0.0009 (0.0009, 46 PUBs) | 5, 0.026-0.027 | 24: 0.0096 / 0.0081 |
+| 2026-10-15T030748 | Kingston | 15 (15x2048) | 0.203 | -0.0091 (0.0024, 15 PUBs) | 6, 0.194-0.205 | 15: 0.0063 / 0.0112 |
+| 2026-10-15T030903 | Kingston | 176 (120x1024, 56x4096) | 0.072 | -0.0015 (0.0003, 36 PUBs) | 6, 0.070-0.076 | 0 |
+| 2026-10-15T031229 | Kingston | 929 (856x1024, 73x4096) | 0.083, 0.093 | -0.0018 (0.0004, 146 PUBs) | 6, 0.082-0.086 | 0 |
+| 2026-10-15T070847 | Kingston | 7 (7x1024) | 0.435 | -0.0042 (0.0024, 7 PUBs) | 6, 0.424-0.445 | 7: 0.0186 / 0.0091 |
+| 2026-10-15T070853 | Kingston | 14 (14x2048) | 0.098 | -0.0029 (0.0012, 14 PUBs) | 6, 0.093-0.098 | 105: 0.0084 / 0.0091 |
 
 The recovered Kingston wide-control acquisition keeps its submitted circuits
 and raw counts but no planning record, so its members cannot be rebuilt and
@@ -87,7 +89,9 @@ under two calibrations, hence two execution means.
 - **The execution calibration is rarely the best predictor.** Today's
   calibration fits the old hardware data better by more than two standard
   errors on 10 of 14 runs, within two standard errors on 3, and worse on
-  one (2026-10-13T032011, +0.0023, 3.3 standard errors).
+  one (2026-10-13T032011, +0.0023, 3.8 standard errors). The
+  2 standard error mark is a normal approximation; 2026-10-13T080216 rests
+  on 2 PUBs, so its -2.3 is the weakest of the ten.
 - **Whether a noisier model fits better is not settled.** On the qubits
   each run used, today's mean CZ error is higher on 10 of 14 runs, and its
   change correlates with the distance change at -0.31. The readout change

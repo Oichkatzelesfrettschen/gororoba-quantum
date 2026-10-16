@@ -2029,7 +2029,7 @@
     },
     {
       "id": "proposed-census-frequency",
-      "statement": "Read a per-triple associator witness on uniformly sampled sedenion triples: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 with f = 231/512, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-, as a test of how faithfully hardware carries the sign function.",
+      "statement": "Read a per-triple associator witness on the 3360 sedenion triples with i and j nonzero and unequal: P(c = 1) = (1 - V+)/2 + f (V+ + V-)/2 gives their dark fraction f = 1848/3360, where pooled bright (omega = +1) and dark (omega = -1) references fix V+ and V-; the other 736 triples are bright exactly, so the census is f x 3360/4096 = 231/512, a test of how faithfully hardware carries the sign function.",
       "domain": "algebra",
       "evidence_class": "proposed experiment",
       "status": "proposed",
@@ -2279,7 +2279,7 @@
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "e4933b62081298ca460398d33017b2c68dea875b91876c1bb6ffa9ba31f08a71"
+          "sha256": "32fc723be501cafc694cf8ed745454f480d7a3189abb69d0276e5bca2385657d"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",

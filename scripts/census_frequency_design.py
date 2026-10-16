@@ -171,6 +171,9 @@ def summarize(result: dict[str, Any]) -> dict[str, Any]:
     by_pair = {tuple(r["pair"]): r for r in result["records"]}
     for (i, j), record in by_pair.items():
         require(record["omega"] == [omega(i, j, k) for k in range(DIM)], f"pair {(i, j)}: recorded signs differ")
+        # p1 holds exact multiples of 1/shots; visibility is rounded to 6 decimals.
+        visibility = sum(w * (1 - 2 * p) for w, p in zip(record["omega"], record["p1"], strict=True)) / DIM
+        require(abs(record["visibility"] - visibility) <= 5e-7 + 1e-12, f"pair {(i, j)}: recorded visibility differs")
     total = Fraction(0)
     noisy = 0.0
     exact_dark = 0

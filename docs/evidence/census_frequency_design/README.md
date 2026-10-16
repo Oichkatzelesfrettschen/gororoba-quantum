@@ -40,10 +40,13 @@ i = 0, j = 0 or i = j have W = +-I and enter the census at their exact value.
 
 - **One visibility does not describe the witness.** Bright triples keep more
   contrast than dark ones, so the common-visibility formula misses the noisy
-  census by 0.0049, about half the target resolution. The estimator
-  `f = (P - (1 - V+)/2) / ((V+ + V-)/2)` with separate bright and dark
-  references recovers 231/512 when the references are pooled over every
-  pair (by construction here, since they come from the same triples). A
+  census by 0.0049, about half the target resolution. The design is
+  stratified. The 736 triples with i = 0, j = 0 or i = j are bright
+  exactly, and the 3360 simulated triples estimate their own dark fraction
+  `f = (P - (1 - V+)/2) / ((V+ + V-)/2)`, ideally 1848/3360 = 0.55, with
+  separate bright and dark references. The census is then f x 3360/4096,
+  which recovers 231/512 when the references are pooled over every pair (by
+  construction here, since they come from the same triples). A
   bias toward outcome 0 explains the split: P(c = 1) = 1/2 - V omega / 2 - b
   gives V+ - V- = 4b, so b is about 0.006 (inferred; control relaxation and
   readout asymmetry both produce it, and a run with the control's readout

@@ -188,19 +188,22 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
     shots = {m: int(executed.get(m, {}).get("shots") or record["shots"]) for m in members}
     execution = {m: starts[executed[m]["start"]] for m in members if executed.get(m, {}).get("start") in starts}
     same_backend = sorted(f for f in index["files"] if f.startswith(f"docs/evidence/calibration/history/{backend}/"))
-    plan = sorted(set(execution.values()))
-    if states in ("current", "all", "execution,current"):
-        plan = sorted(set(plan) | {index["current"][backend]})
-    if states == "all":
-        plan = same_backend
+    current = index["current"][backend]
+    # all: every snapshot over every member. execution: each execution
+    # snapshot over the members that ran under it. current: the export-time
+    # snapshot over every member. execution,current: both of the latter.
+    plan = same_backend if states == "all" else []
+    if states in ("execution", "execution,current"):
+        plan = sorted(set(plan) | set(execution.values()))
+    if states in ("current", "execution,current"):
+        plan = sorted(set(plan) | {current})
     results: dict[str, Any] = {}
     resample: dict[str, list[float]] = {}
     for relative in plan:
         snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
         simulator = calibration_snapshot.noise_simulator(snapshot, device=device)
-        # Every snapshot covers every member, except in --states execution,
-        # where each execution snapshot covers the members that ran under it.
-        chosen = [m for m in members if states != "execution" or execution.get(m) == relative]
+        covers_all = states == "all" or (relative == current and states != "execution")
+        chosen = [m for m in members if covers_all or execution.get(m) == relative]
         if not chosen:
             continue
         start = time.time()
@@ -229,7 +232,7 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
                 ]
         results[relative] = {
             "calibration": snapshot["calibration"],
-            "current": relative == index["current"][backend],
+            "current": relative == current,
             "tvd": distances,
             "seconds": round(time.time() - start, 2),
         }
@@ -272,6 +275,16 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
     }
 
 
+def planned_measured(run_name: str) -> set[str]:
+    """Members the run's submission plan placed and its collection measured: the ghost's candidates."""
+    record = json.loads((ROOT / run_name / "record.json").read_text(encoding="utf-8"))
+    placed = {
+        c["member"] for job in record["submission"]["planned_jobs"] for pub in job["pubs"] for c in pub["components"]
+    }
+    grouped = {m["name"] for group in record["groups"] for m in group["members"]}
+    return placed & grouped & set(measured_members(ROOT / run_name)[0])
+
+
 def content_key(relative: str) -> str:
     """Digest of a snapshot's noise-relevant content; distinct calibration identities can share it."""
     snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
@@ -280,20 +293,40 @@ def content_key(relative: str) -> str:
 
 
 def paired(run: dict[str, Any], relative: str) -> dict[str, Any] | None:
-    """Per-replica TV distance under one snapshot minus under each member's execution snapshot."""
+    """Per-replica TV distance under one snapshot minus under each member's execution snapshot.
+
+    Members of one PUB share its shots, so the standard error is clustered by
+    executed PUB: the deviations summed within each PUB enter as one term,
+    with the G / (G - 1) small-sample factor; it is undefined below two PUBs.
+    """
     snapshots, execution = run["snapshots"], run["execution_snapshot"]
+    executed = measured_members(ROOT / run["run"])[1]
     other = snapshots[relative]["tvd"]
-    deltas = [
-        b - a
+    pairs = [
+        (executed[m]["pub"], b - a)
         for m, own in execution.items()
         if m in other and m in snapshots[own]["tvd"]
         for a, b in zip(snapshots[own]["tvd"][m], other[m], strict=True)
     ]
-    if not deltas:
+    if not pairs:
         return None
-    mean = float(np.mean(deltas))
-    error = float(np.std(deltas, ddof=1) / math.sqrt(len(deltas))) if len(deltas) > 1 else math.nan
-    return {"replicas": len(deltas), "mean_delta": round(mean, 6), "standard_error": round(error, 6)}
+    deltas = np.array([d for _, d in pairs])
+    mean = float(deltas.mean())
+    sums: dict[str, float] = {}
+    for pub, d in pairs:
+        sums[pub] = sums.get(pub, 0.0) + d - mean
+    clusters = len(sums)
+    error = (
+        math.sqrt(clusters / (clusters - 1) * sum(v * v for v in sums.values())) / len(pairs)
+        if clusters > 1
+        else math.nan
+    )
+    return {
+        "replicas": len(pairs),
+        "pubs": clusters,
+        "mean_delta": round(mean, 6),
+        "standard_error": round(error, 6) if clusters > 1 else None,
+    }
 
 
 def report(path: Path) -> dict[str, Any]:
@@ -325,7 +358,7 @@ def report(path: Path) -> dict[str, Any]:
                 "self_check": run["self_check"],
             }
         )
-    return {"schema": "ghost-run-report-v2", "source": path.as_posix(), "runs": rows}
+    return {"schema": "ghost-run-report-v3", "source": path.as_posix(), "runs": rows}
 
 
 def audited_runs() -> list[str]:
@@ -360,6 +393,11 @@ def main() -> int:
             require(sorted(run["snapshots"]) == expected, f"{run['run']}: snapshots differ from the index")
             members = set(run["member_shots"])
             require(len(members) == run["members_ghosted"], f"{run['run']}: member count differs")
+            skipped = set(run["members_skipped_width"])
+            require(
+                not members & skipped and members | skipped == planned_measured(run["run"]),
+                f"{run['run']}: ghosted and width-skipped members differ from the planned, measured members",
+            )
             for relative, entry in run["snapshots"].items():
                 require(set(entry["tvd"]) == members, f"{run['run']}: {relative} lacks ghosted members")
         named = None if args.runs == "all" else set(args.runs.split(","))
