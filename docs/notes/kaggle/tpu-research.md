@@ -11,9 +11,12 @@ no error; every route measured here (CLI, MCP, the editor's commit and the
 editor's interactive session) did exactly that, and the TPU quota's
 `time_used` stayed at zero. Phone verification is the gate for GPUs, which
 is why GPU sessions run. An image pin is a second, independent cause of a
-CPU image (kaggle-api issue 1197) and explains one recorded version. No TPU
-session after verification has been observed, so the cause stays an
-inference until one runs (section 3).
+CPU image (kaggle-api issue 1197) and explains one recorded version. After
+the owner completed Persona verification the server began classifying the
+same request as a TPU session: the version carries `isTpuEnabled`, holds
+the account's single TPU batch slot and waits in the queue (section 3,
+"After verification"). No TPU VM has executed yet, so the hardware marker
+of section 1 is still the outstanding confirmation.
 
 ## 1. How a session is judged
 
@@ -102,6 +105,30 @@ returned "Maximum batch TPU session count of 1 reached", and phone
 verification because GPU sessions run. That leaves the account gate the
 editor names.
 
+### After verification
+
+`gororoba-tpu-probe-verified` v1 (session 359130889), pushed at 20:07:39
+UTC on 2026-10-16 with `kaggle_run.py push --machine TpuV5E8` from the
+committed tree, differs from every earlier version on four server-side
+counts:
+
+| Observation | Before verification (ten versions above) | After verification |
+|---|---|---|
+| `run.isTpuEnabled` in ListKernelVersions | absent | `true` |
+| `docker_image` in `kaggle kernels pull -m` seconds after the push | `gcr.io/kaggle-images/python@sha256:81b1e7c4...` | empty |
+| a second TPU push while the first is live | accepted: `-tpuv5e8` and `-tpuv6e8` went in 1.8 s apart and both ran | refused: "Maximum batch TPU session count of 1 reached" (a TpuV6E8 probe at 21:31 UTC) |
+| status | ran on the CPU worker | `QUEUED`, with an empty session log, for at least 1 h 40 min |
+
+`tpu_quota.time_used` and `time_reserved` stay at 0 while the version
+queues. The web method `kernels.KernelsService/GetKernelSessionLog` takes
+`{"sessionId": N}` and answers 200 with an empty body for the queued
+session; `kernelSessionId`, `kernelRunId` and `kernelVersionId` are
+refused with "Permission 'kernelSessions.get' was denied". The version page
+reads "Queued..." with accelerator "TPU v5e-8" and shows no queue position.
+The four rows together move the identity gate from the leading cause to
+the measured one for allocation; a TPU VM's hardware block, when the
+session starts, closes it.
+
 ## 4. Sources
 
 Stated items carry their source; inferences are marked.
@@ -178,7 +205,10 @@ output through `cell.model.outputs.toJSON()`.
    no `docker_image` and no notebook `kaggle` block, and pushes it with
    `--accelerator TpuV5E8`. Push only from a committed tree, never from a
    `kaggle kernels pull -m` copy, and check `kaggle quota` and that no TPU
-   session is queued or running first.
+   session is queued or running first: a queued TPU version holds the
+   account's one TPU batch slot, so a second TPU push is refused until it
+   ends; cancelling a queued version to try the other TPU type presumably
+   starts its wait over (inferred: Kaggle shows no queue position).
 2. `kaggle kernels pull -m OWNER/SLUG` seconds after the push names an
    image; every CPU session here showed `gcr.io/kaggle-images/python`
    there, and what it shows for a real TPU VM is unobserved, so it is a hint
