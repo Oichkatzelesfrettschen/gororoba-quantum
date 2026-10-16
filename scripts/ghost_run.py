@@ -134,6 +134,11 @@ def tv(left: np.ndarray, right: np.ndarray) -> float:
 
 def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) -> dict[str, Any]:
     run = ROOT / run_name
+    missing = [name for name in ("record.json", "isa.qpy", "collect.json") if not (run / name).is_file()]
+    if missing:
+        # A recovered acquisition keeps its submitted circuits and raw counts
+        # without a planning record, so its members cannot be rebuilt.
+        return {"run": run_name, "skipped": f"the run keeps no {', '.join(missing)}"}
     record = json.loads((run / "record.json").read_text(encoding="utf-8"))
     isas = {c.name: c for c in qpy.load(io.BytesIO((run / "isa.qpy").read_bytes()))}
     shots = int(record["shots"])
@@ -254,16 +259,19 @@ def main() -> int:
     require(args.out is not None, "--out is required")
     runs = audited_runs() if args.runs == "all" else args.runs.split(",")
     device = os.environ.get("GOROROBA_AER_DEVICE", "CPU")
-    out = {
+    out: dict[str, Any] = {
         "schema": "ghost-run-v1",
         "device": device,
         "max_qubits": MAX_QUBITS,
         "seed": SEED,
         "versions": {"qiskit": qiskit.__version__, "qiskit_aer": qiskit_aer.__version__},
-        "runs": [ghost_run(run, args.states, device, index) for run in runs],
+        "runs": [],
     }
     args.out.parent.mkdir(parents=True, exist_ok=True)
-    args.out.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
+    for run in runs:
+        # Written after every run, so a failure keeps every finished one.
+        out["runs"].append(ghost_run(run, args.states, device, index))
+        args.out.write_text(json.dumps(out, indent=1) + "\n", encoding="utf-8")
     return 0
 
 
