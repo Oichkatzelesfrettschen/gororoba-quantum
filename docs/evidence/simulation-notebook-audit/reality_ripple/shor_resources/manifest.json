@@ -1,0 +1,27 @@
+{
+  "created_utc": "2026-10-16T03:18:51.594531+00:00",
+  "files": [
+    {
+      "bytes": 509,
+      "path": "environment.json",
+      "sha256": "5db7d02579a235c58e2ac537a1ee2f76cdb3aa66bbb56d2b8df3e40064b77efe"
+    },
+    {
+      "bytes": 310,
+      "path": "memory_rows.csv",
+      "sha256": "c501569e08de6c392c7e93de27c745e0771eb50d076a90fc11c2b1fd9458c518"
+    },
+    {
+      "bytes": 533,
+      "path": "permutations.csv",
+      "sha256": "8bd44c185e5d99896762a9a8d951ee1f685742eaa7e540fb1e8a6970a4d4b17b"
+    },
+    {
+      "bytes": 2733,
+      "path": "result.json",
+      "sha256": "aa4a4e7e1492b9dfe77e0f316f818beaa5d17fa780fa48d26f221e46a4363a23"
+    }
+  ],
+  "hardware_measurements_generated": false,
+  "library_sha256": "8ec000f8c3b44413b376765d8269e465380430ce7ca35806199d6a170c0b6d57"
+}

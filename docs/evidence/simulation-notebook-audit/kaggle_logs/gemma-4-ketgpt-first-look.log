@@ -1,0 +1,157 @@
+[{"stream_name":"stderr","time":6.166043844,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":6.16610028,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":7.062684842,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.062710923,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.062716043,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.062720365,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":7.660334366,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":7.660389508,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":7.660394727,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":7.660398399,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":15.642763664,"data":"CUDA available: True\n"}
+,{"stream_name":"stdout","time":15.64279667,"data":"GPU: Tesla T4\n"}
+,{"stream_name":"stdout","time":15.642800704,"data":"VRAM GB: 15.6\n"}
+,{"stream_name":"stdout","time":27.888629142,"data":"transformers 5.16.1\n"}
+,{"stream_name":"stdout","time":27.888655477,"data":"accelerate 1.14.0\n"}
+,{"stream_name":"stdout","time":39.969900941,"data":"model at: None\n"}
+,{"stream_name":"stdout","time":39.969965889,"data":"top-level inputs: ['datasets']\n"}
+,{"stream_name":"stderr","time":52.267233399,"data":"Traceback (most recent call last):\n"}
+,{"stream_name":"stderr","time":52.26798612,"data":"  File \"\u003cstring\u003e\", line 1, in \u003cmodule\u003e\n"}
+,{"stream_name":"stderr","time":52.268000976,"data":"    import sys;import papermill as pm;pm.execute_notebook(\"__notebook__.ipynb\",\"__notebook__.ipynb\",progress_bar=False,log_output=True,stdout_file=sys.stdout,stderr_file=sys.stderr,allow_errors=False,timeout=43200)\n"}
+,{"stream_name":"stderr","time":52.268010319,"data":"                                      ~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":52.268019807,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 131, in execute_notebook\n"}
+,{"stream_name":"stderr","time":52.268023567,"data":"    raise_for_execution_errors(nb, output_path)\n"}
+,{"stream_name":"stderr","time":52.268026987,"data":"    ~~~~~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^\n"}
+,{"stream_name":"stderr","time":52.268030435,"data":"  File \"/usr/local/lib/python3.13/dist-packages/papermill/execute.py\", line 251, in raise_for_execution_errors\n"}
+,{"stream_name":"stderr","time":52.268034004,"data":"    raise error\n"}
+,{"stream_name":"stderr","time":52.268197323,"data":"papermill.exceptions.PapermillExecutionError: \n"}
+,{"stream_name":"stderr","time":52.268207236,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":52.268224418,"data":"Exception encountered at \"In [4]\":\n"}
+,{"stream_name":"stderr","time":52.268230991,"data":"---------------------------------------------------------------------------\n"}
+,{"stream_name":"stderr","time":52.268234829,"data":"HTTPStatusError                           Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":52.268239807,"data":"HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/None/resolve/main/config.json'\n"}
+,{"stream_name":"stderr","time":52.268244424,"data":"For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401\n"}
+,{"stream_name":"stderr","time":52.268248751,"data":"\n"}
+,{"stream_name":"stderr","time":52.268252896999996,"data":"The above exception was the direct cause of the following exception:\n"}
+,{"stream_name":"stderr","time":52.268257401,"data":"\n"}
+,{"stream_name":"stderr","time":52.268261523,"data":"RepositoryNotFoundError                   Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":52.268265946,"data":"RepositoryNotFoundError: 401 Client Error. (Request ID: Root=1-6ad10f1a-759530fc0b0bdfb954e7cdf7;0c4904d4-cd87-4dfa-8ca6-cdd1b798616a)\n"}
+,{"stream_name":"stderr","time":52.268270078,"data":"\n"}
+,{"stream_name":"stderr","time":52.268274068,"data":"Repository Not Found for url: https://huggingface.co/None/resolve/main/config.json.\n"}
+,{"stream_name":"stderr","time":52.268278031,"data":"Please make sure you specified the correct `repo_id` and `repo_type`.\n"}
+,{"stream_name":"stderr","time":52.268281874,"data":"If you are trying to access a private or gated repo, make sure you are authenticated and your token has the required permissions.\n"}
+,{"stream_name":"stderr","time":52.268285964,"data":"For more details, see https://huggingface.co/docs/huggingface_hub/authentication\n"}
+,{"stream_name":"stderr","time":52.268289824,"data":"Invalid username or password.\n"}
+,{"stream_name":"stderr","time":52.268293487,"data":"\n"}
+,{"stream_name":"stderr","time":52.268297006,"data":"The above exception was the direct cause of the following exception:\n"}
+,{"stream_name":"stderr","time":52.268300842,"data":"\n"}
+,{"stream_name":"stderr","time":52.268304376,"data":"OSError                                   Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":52.268308195,"data":"OSError: None is not a local folder and is not a valid model identifier listed on 'https://huggingface.co/models'\n"}
+,{"stream_name":"stderr","time":52.268312177,"data":"If this is a private repository, make sure to pass a token having permission to this repo either by logging in with `hf auth login` or by passing `token=\u003cyour_token\u003e`\n"}
+,{"stream_name":"stderr","time":52.268316555,"data":"\n"}
+,{"stream_name":"stderr","time":52.268322212,"data":"During handling of the above exception, another exception occurred:\n"}
+,{"stream_name":"stderr","time":52.26833036,"data":"\n"}
+,{"stream_name":"stderr","time":52.268332759,"data":"HTTPStatusError                           Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":52.268335297,"data":"HTTPStatusError: Client error '401 Unauthorized' for url 'https://huggingface.co/None/resolve/main/config.json'\n"}
+,{"stream_name":"stderr","time":52.268371849,"data":"For more information check: https://developer.mozilla.org/en-US/docs/Web/HTTP/Status/401\n"}
+,{"stream_name":"stderr","time":52.268376682,"data":"\n"}
+,{"stream_name":"stderr","time":52.268381036,"data":"The above exception was the direct cause of the following exception:\n"}
+,{"stream_name":"stderr","time":52.268385021,"data":"\n"}
+,{"stream_name":"stderr","time":52.268394814,"data":"RepositoryNotFoundError                   Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":52.268401852,"data":"/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py in cached_files(path_or_repo_id, filenames, cache_dir, force_download, proxies, token, revision, local_files_only, subfolder, repo_type, user_agent, _raise_exceptions_for_gated_repo, _raise_exceptions_for_missing_entries, _raise_exceptions_for_connection_errors, _commit_hash, tqdm_class, **deprecated_kwargs)\n"}
+,{"stream_name":"stderr","time":52.268406759,"data":"    437             # This is slightly better for only 1 file\n"}
+,{"stream_name":"stderr","time":52.268410544,"data":"--\u003e 438             hf_hub_download(\n"}
+,{"stream_name":"stderr","time":52.268414346,"data":"    439                 path_or_repo_id,\n"}
+,{"stream_name":"stderr","time":52.268418071,"data":"\n"}
+,{"stream_name":"stderr","time":52.268421656,"data":"/usr/local/lib/python3.13/dist-packages/huggingface_hub/utils/_validators.py in _inner_fn(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268425653,"data":"     87 \n"}
+,{"stream_name":"stderr","time":52.26842926,"data":"---\u003e 88         return fn(*args, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268433091,"data":"     89 \n"}
+,{"stream_name":"stderr","time":52.268436764,"data":"\n"}
+,{"stream_name":"stderr","time":52.268446344,"data":"/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py in hf_hub_download(repo_id, filename, subfolder, repo_type, revision, library_name, library_version, cache_dir, local_dir, user_agent, force_download, etag_timeout, token, local_files_only, headers, endpoint, tqdm_class, dry_run)\n"}
+,{"stream_name":"stderr","time":52.26844964,"data":"   1026     else:\n"}
+,{"stream_name":"stderr","time":52.268452053,"data":"-\u003e 1027         return _hf_hub_download_to_cache_dir(\n"}
+,{"stream_name":"stderr","time":52.268454591,"data":"   1028             # Destination\n"}
+,{"stream_name":"stderr","time":52.268457006,"data":"\n"}
+,{"stream_name":"stderr","time":52.268459372,"data":"/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py in _hf_hub_download_to_cache_dir(cache_dir, repo_id, filename, repo_type, revision, endpoint, etag_timeout, headers, token, local_files_only, force_download, tqdm_class, dry_run)\n"}
+,{"stream_name":"stderr","time":52.268462201,"data":"   1173         if head_call_error is not None:\n"}
+,{"stream_name":"stderr","time":52.268464662,"data":"-\u003e 1174             _raise_on_head_call_error(head_call_error, force_download, local_files_only)\n"}
+,{"stream_name":"stderr","time":52.26846727,"data":"   1175 \n"}
+,{"stream_name":"stderr","time":52.268469641,"data":"\n"}
+,{"stream_name":"stderr","time":52.268471959,"data":"/usr/local/lib/python3.13/dist-packages/huggingface_hub/file_download.py in _raise_on_head_call_error(head_call_error, force_download, local_files_only)\n"}
+,{"stream_name":"stderr","time":52.268474593,"data":"   1912         # Unauthorized =\u003e likely a token issue =\u003e let's raise the actual error\n"}
+,{"stream_name":"stderr","time":52.268477439,"data":"-\u003e 1913         raise head_call_error\n"}
+,{"stream_name":"stderr","time":52.268479973,"data":"   1914     else:\n"}
+,{"stream_name":"stderr","time":52.268482356,"data":"\n"}
+,{"stream_name":"stderr","time":52.268484664,"data":"RepositoryNotFoundError: 401 Client Error. (Request ID: Root=1-6ad10f1a-0f3c3e6d06c429d1547c6111;733a90ae-9a27-44dd-ad8c-4b225a0b0e74)\n"}
+,{"stream_name":"stderr","time":52.268487278,"data":"\n"}
+,{"stream_name":"stderr","time":52.268489945,"data":"Repository Not Found for url: https://huggingface.co/None/resolve/main/config.json.\n"}
+,{"stream_name":"stderr","time":52.268495226,"data":"Please make sure you specified the correct `repo_id` and `repo_type`.\n"}
+,{"stream_name":"stderr","time":52.268497866,"data":"If you are trying to access a private or gated repo, make sure you are authenticated and your token has the required permissions.\n"}
+,{"stream_name":"stderr","time":52.268500452,"data":"For more details, see https://huggingface.co/docs/huggingface_hub/authentication\n"}
+,{"stream_name":"stderr","time":52.268502982,"data":"Invalid username or password.\n"}
+,{"stream_name":"stderr","time":52.268505398,"data":"\n"}
+,{"stream_name":"stderr","time":52.268507743,"data":"The above exception was the direct cause of the following exception:\n"}
+,{"stream_name":"stderr","time":52.268510198,"data":"\n"}
+,{"stream_name":"stderr","time":52.26851252,"data":"OSError                                   Traceback (most recent call last)\n"}
+,{"stream_name":"stderr","time":52.268515021,"data":"/tmp/ipykernel_23/3718024122.py in \u003ccell line: 0\u003e()\n"}
+,{"stream_name":"stderr","time":52.268517622,"data":"      1 import torch\n"}
+,{"stream_name":"stderr","time":52.268520083,"data":"      2 from transformers import AutoTokenizer, AutoModelForCausalLM\n"}
+,{"stream_name":"stderr","time":52.268522585,"data":"----\u003e 3 tok = AutoTokenizer.from_pretrained(MODEL_PATH)\n"}
+,{"stream_name":"stderr","time":52.26852515,"data":"      4 model = AutoModelForCausalLM.from_pretrained(\n"}
+,{"stream_name":"stderr","time":52.268527624,"data":"      5     MODEL_PATH, dtype=torch.bfloat16, device_map='auto')\n"}
+,{"stream_name":"stderr","time":52.268530093,"data":"\n"}
+,{"stream_name":"stderr","time":52.268532395,"data":"/usr/local/lib/python3.13/dist-packages/transformers/models/auto/tokenization_auto.py in from_pretrained(cls, pretrained_model_name_or_path, *inputs, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.26853517,"data":"    775                 )\n"}
+,{"stream_name":"stderr","time":52.268547785,"data":"    776             except (ValueError, OSError):\n"}
+,{"stream_name":"stderr","time":52.268550413,"data":"--\u003e 777                 config = PreTrainedConfig.from_pretrained(pretrained_model_name_or_path, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268553092,"data":"    778 \n"}
+,{"stream_name":"stderr","time":52.268555456,"data":"    779         config_model_type = config.model_type\n"}
+,{"stream_name":"stderr","time":52.26855793,"data":"\n"}
+,{"stream_name":"stderr","time":52.268560291,"data":"/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py in from_pretrained(cls, pretrained_model_name_or_path, cache_dir, force_download, local_files_only, token, revision, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268563047,"data":"    704         kwargs[\"revision\"] = revision\n"}
+,{"stream_name":"stderr","time":52.268565662,"data":"    705 \n"}
+,{"stream_name":"stderr","time":52.26856801,"data":"--\u003e 706         config_dict, kwargs = cls.get_config_dict(pretrained_model_name_or_path, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268570632,"data":"    707         if cls.base_config_key and cls.base_config_key in config_dict:\n"}
+,{"stream_name":"stderr","time":52.268573163,"data":"    708             config_dict = config_dict[cls.base_config_key]\n"}
+,{"stream_name":"stderr","time":52.268575657,"data":"\n"}
+,{"stream_name":"stderr","time":52.268577957,"data":"/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py in get_config_dict(cls, pretrained_model_name_or_path, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268580725,"data":"    745         original_kwargs = copy.deepcopy(kwargs)\n"}
+,{"stream_name":"stderr","time":52.268586156,"data":"    746         # Get config dict associated with the base config file\n"}
+,{"stream_name":"stderr","time":52.268589238,"data":"--\u003e 747         config_dict, kwargs = cls._get_config_dict(pretrained_model_name_or_path, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268591863,"data":"    748         if config_dict is None:\n"}
+,{"stream_name":"stderr","time":52.268594377,"data":"    749             return {}, kwargs\n"}
+,{"stream_name":"stderr","time":52.268596797,"data":"\n"}
+,{"stream_name":"stderr","time":52.268599094,"data":"/usr/local/lib/python3.13/dist-packages/transformers/configuration_utils.py in _get_config_dict(cls, pretrained_model_name_or_path, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268601727,"data":"    800             try:\n"}
+,{"stream_name":"stderr","time":52.268604141,"data":"    801                 # Load from local folder or from cache or download from model Hub and cache\n"}
+,{"stream_name":"stderr","time":52.268606704,"data":"--\u003e 802                 resolved_config_file = cached_file(\n"}
+,{"stream_name":"stderr","time":52.268609203,"data":"    803                     pretrained_model_name_or_path,\n"}
+,{"stream_name":"stderr","time":52.268611665,"data":"    804                     configuration_file,\n"}
+,{"stream_name":"stderr","time":52.268614102,"data":"\n"}
+,{"stream_name":"stderr","time":52.268616418,"data":"/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py in cached_file(path_or_repo_id, filename, **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268619038,"data":"    292     ```\n"}
+,{"stream_name":"stderr","time":52.268621477,"data":"    293     \"\"\"\n"}
+,{"stream_name":"stderr","time":52.26862399,"data":"--\u003e 294     file = cached_files(path_or_repo_id=path_or_repo_id, filenames=[filename], **kwargs)\n"}
+,{"stream_name":"stderr","time":52.268626576,"data":"    295     file = file[0] if file is not None else file\n"}
+,{"stream_name":"stderr","time":52.268629033,"data":"    296     return file\n"}
+,{"stream_name":"stderr","time":52.268631455,"data":"\n"}
+,{"stream_name":"stderr","time":52.268633835,"data":"/usr/local/lib/python3.13/dist-packages/transformers/utils/hub.py in cached_files(path_or_repo_id, filenames, cache_dir, force_download, proxies, token, revision, local_files_only, subfolder, repo_type, user_agent, _raise_exceptions_for_gated_repo, _raise_exceptions_for_missing_entries, _raise_exceptions_for_connection_errors, _commit_hash, tqdm_class, **deprecated_kwargs)\n"}
+,{"stream_name":"stderr","time":52.268636952,"data":"    468         # We cannot recover from them\n"}
+,{"stream_name":"stderr","time":52.26863952,"data":"    469         if isinstance(e, RepositoryNotFoundError) and not isinstance(e, GatedRepoError):\n"}
+,{"stream_name":"stderr","time":52.268642215,"data":"--\u003e 470             raise OSError(\n"}
+,{"stream_name":"stderr","time":52.268644788,"data":"    471                 f\"{path_or_repo_id} is not a local folder and is not a valid model identifier \"\n"}
+,{"stream_name":"stderr","time":52.268647486,"data":"    472                 \"listed on 'https://huggingface.co/models'\\nIf this is a private repository, make sure to pass a token \"\n"}
+,{"stream_name":"stderr","time":52.268650225,"data":"\n"}
+,{"stream_name":"stderr","time":52.268652617,"data":"OSError: None is not a local folder and is not a valid model identifier listed on 'https://huggingface.co/models'\n"}
+,{"stream_name":"stderr","time":52.268655296,"data":"If this is a private repository, make sure to pass a token having permission to this repo either by logging in with `hf auth login` or by passing `token=\u003cyour_token\u003e`\n"}
+,{"stream_name":"stderr","time":52.268660415,"data":"\n"}
+,{"stream_name":"stderr","time":54.362325241,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":54.362367522,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":54.52332235,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":54.52336206,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":55.253171186,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":55.332925218,"data":"[NbConvertApp] Writing 27609 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":57.753824202,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":58.262212661,"data":"[NbConvertApp] Writing 308263 bytes to __results__.html\n"}
+]

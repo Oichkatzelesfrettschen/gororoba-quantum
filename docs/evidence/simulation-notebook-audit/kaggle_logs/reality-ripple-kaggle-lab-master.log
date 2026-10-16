@@ -1,0 +1,323 @@
+[{"stream_name":"stderr","time":10.492447825,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.492601196,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.492610045,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.492614633,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":11.386373482,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":11.386413555,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":11.386419023,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":11.386423481,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":14.133542359,"data":"Output directory: /kaggle/working/reality_ripple_20261016T031847.475072Z\n"}
+,{"stream_name":"stdout","time":14.133576985,"data":"Evidence: analytic/finite/synthetic only; no IBM service or credentials\n"}
+,{"stream_name":"stdout","time":14.133582769,"data":"{\n"}
+,{"stream_name":"stdout","time":14.133586232,"data":"  \"python\": \"3.13.15\",\n"}
+,{"stream_name":"stdout","time":14.133590338,"data":"  \"platform\": \"Linux-6.18.48+-x86_64-with-glibc2.39\",\n"}
+,{"stream_name":"stdout","time":14.13359486,"data":"  \"logical_cpus\": 4,\n"}
+,{"stream_name":"stdout","time":14.133598303,"data":"  \"affinity_cpus\": 4,\n"}
+,{"stream_name":"stdout","time":14.13360204,"data":"  \"gpu_inventory\": [],\n"}
+,{"stream_name":"stdout","time":14.133605799,"data":"  \"packages\": {\n"}
+,{"stream_name":"stdout","time":14.13360917,"data":"    \"numpy\": \"2.1.3\",\n"}
+,{"stream_name":"stdout","time":14.133612623,"data":"    \"scipy\": \"1.16.3\",\n"}
+,{"stream_name":"stdout","time":14.133616698,"data":"    \"qiskit\": null,\n"}
+,{"stream_name":"stdout","time":14.133620459,"data":"    \"qiskit-aer\": null,\n"}
+,{"stream_name":"stdout","time":14.13362427,"data":"    \"qiskit-aer-gpu\": null,\n"}
+,{"stream_name":"stdout","time":14.133628257,"data":"    \"cupy-cuda12x\": null,\n"}
+,{"stream_name":"stdout","time":14.133631622,"data":"    \"sympy\": \"1.14.0\",\n"}
+,{"stream_name":"stdout","time":14.13363535,"data":"    \"numba\": \"0.61.2\",\n"}
+,{"stream_name":"stdout","time":14.133638918,"data":"    \"hypercomplex\": null,\n"}
+,{"stream_name":"stdout","time":14.133642537,"data":"    \"hypercomplex-engine\": null,\n"}
+,{"stream_name":"stdout","time":14.133646215,"data":"    \"hypercomplex-algebra\": null\n"}
+,{"stream_name":"stdout","time":14.133650063,"data":"  },\n"}
+,{"stream_name":"stdout","time":14.133653479,"data":"  \"seed\": 20261015,\n"}
+,{"stream_name":"stdout","time":14.133657229,"data":"  \"no_environment_secrets_dumped\": true\n"}
+,{"stream_name":"stdout","time":14.133668952,"data":"}\n"}
+,{"stream_name":"stdout","time":14.330058334,"data":"conditional_hamiltonian PASSED exact_design_rank_and_matrix_check 0.054s\n"}
+,{"stream_name":"stdout","time":14.330098492,"data":"signed_kernel PASSED exact_small_operator_reference 0.045s\n"}
+,{"stream_name":"stdout","time":16.145213992,"data":"orbit PASSED analytic_and_synthetic_reference 1.631s\n"}
+,{"stream_name":"stdout","time":16.145243729,"data":"coherence PASSED synthetic_design_power 0.108s\n"}
+,{"stream_name":"stdout","time":16.450660095,"data":"winding PASSED analytic_synthetic_design 0.078s\n"}
+,{"stream_name":"stdout","time":16.924660226,"data":"census PASSED exact_finite_integer_check 0.485s\n"}
+,{"stream_name":"stdout","time":16.924691331,"data":"dilation PASSED finite_hamiltonian_simulation 0.072s\n"}
+,{"stream_name":"stdout","time":16.924695888,"data":"field PASSED finite_bosonic_model 0.006s\n"}
+,{"stream_name":"stdout","time":16.924699683,"data":"casimir_qet PASSED physical_model_reference_not_lab_measurement 0.015s\n"}
+,{"stream_name":"stdout","time":16.924703663,"data":"shor_resources PASSED exact_arithmetic_and_resource_reference 0.000s\n"}
+,{"stream_name":"stdout","time":16.924707722,"data":"Completed references; no measured IBM results generated: /kaggle/working/reality_ripple_20261016T031847.475072Z\n"}
+,{"stream_name":"stdout","time":16.950491785,"data":"{\n"}
+,{"stream_name":"stdout","time":16.950543956,"data":"  \"evidence_kind\": \"exact_design_rank_and_matrix_check\",\n"}
+,{"stream_name":"stdout","time":16.950549434,"data":"  \"design_matrix\": [\n"}
+,{"stream_name":"stdout","time":16.950553629,"data":"    [\n"}
+,{"stream_name":"stdout","time":16.95055737,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":16.950561019,"data":"      -1.0,\n"}
+,{"stream_name":"stdout","time":16.95056462,"data":"      0.0\n"}
+,{"stream_name":"stdout","time":16.950568242,"data":"    ],\n"}
+,{"stream_name":"stdout","time":16.950571842,"data":"    [\n"}
+,{"stream_name":"stdout","time":16.950575374,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":16.950578895,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":16.9505827,"data":"      0.0\n"}
+,{"stream_name":"stdout","time":16.950586642,"data":"    ],\n"}
+,{"stream_name":"stdout","time":16.950590331,"data":"    [\n"}
+,{"stream_name":"stdout","time":16.950593864,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":16.950597354,"data":"      0.0,\n"}
+,{"stream_name":"stdout","time":16.950600864,"data":"      1.0\n"}
+,{"stream_name":"stdout","time":16.950604397,"data":"    ],\n"}
+,{"stream_name":"stdout","time":16.950607873,"data":"    [\n"}
+,{"stream_name":"stdout","time":16.950611584,"data":"      1.0,\n"}
+,{"stream_name":"stdout","time":16.950615072,"data":"      0.0,\n"}
+,{"stream_name":"stdout","time":16.950618576,"data":"      -1.0\n"}
+,{"stream_name":"stdout","time":16.950622063,"data":"    ]\n"}
+,{"stream_name":"stdout","time":16.950625553,"data":"  ],\n"}
+,{"stream_name":"stdout","time":16.950629059,"data":"  \"rank_odd_even\": 2,\n"}
+,{"stream_name":"stdout","time":16.950632712,"data":"  \"rank_with_conditionals\": 3,\n"}
+,{"stream_name":"stdout","time":16.950636414,"data":"  \"maximum_rate_error\": 1.1102230246251565e-16,\n"}
+,{"stream_name":"stdout","time":16.950640774,"data":"  \"rows\": [\n"}
+,{"stream_name":"stdout","time":16.950644447,"data":"    {\n"}
+,{"stream_name":"stdout","time":16.95064791,"data":"      \"nu_A_khz\": 30.0,\n"}
+,{"stream_name":"stdout","time":16.950651588,"data":"      \"nu_B_khz\": 10.0,\n"}
+,{"stream_name":"stdout","time":16.950655176,"data":"      \"J_khz\": 0.0,\n"}
+,{"stream_name":"stdout","time":16.950658774,"data":"      \"odd_khz\": 19.999999999999996,\n"}
+,{"stream_name":"stdout","time":16.950662447,"data":"      \"even_khz\": 40.0,\n"}
+,{"stream_name":"stdout","time":16.950665945,"data":"      \"A_given_0_khz\": 30.0,\n"}
+,{"stream_name":"stdout","time":16.950669888,"data":"      \"A_given_1_khz\": 30.0,\n"}
+,{"stream_name":"stdout","time":16.950673539,"data":"      \"closure_khz\": 0.0\n"}
+,{"stream_name":"stdout","time":16.95069003,"data":"    },\n"}
+,{"stream_name":"stdout","time":16.950693608,"data":"    {\n"}
+,{"stream_name":"stdout","time":16.950697036,"data":"      \"nu_A_khz\": 30.0,\n"}
+,{"stream_name":"stdout","time":16.950700564,"data":"      \"nu_B_khz\": 10.0,\n"}
+,{"stream_name":"stdout","time":16.950704141,"data":"      \"J_khz\": 6.0,\n"}
+,{"stream_name":"stdout","time":16.950707741,"data":"      \"odd_khz\": 19.999999999999996,\n"}
+,{"stream_name":"stdout","time":16.950711595,"data":"      \"even_khz\": 40.0,\n"}
+,{"stream_name":"stdout","time":16.950715193,"data":"      \"A_given_0_khz\": 36.0,\n"}
+,{"stream_name":"stdout","time":16.950718903,"data":"      \"A_given_1_khz\": 24.0,\n"}
+,{"stream_name":"stdout","time":16.95072262,"data":"      \"closure_khz\": 0.0\n"}
+,{"stream_name":"stdout","time":16.950726296,"data":"    },\n"}
+,{"stream_name":"stdout","time":16.950729879,"data":"    {\n"}
+,{"stream_name":"stdout","time":16.950733392,"data":"      \"nu_A_khz\": -20.0,\n"}
+,{"stream_name":"stdout","time":16.950752935,"data":"      \"nu_B_khz\": 35.0,\n"}
+,{"stream_name":"stdout","time":16.950756983,"data":"      \"J_khz\": -12.0,\n"}
+,{"stream_name":"stdout","time":16.950760619,"data":"      \"odd_khz\": -55.00000000000001,\n"}
+,{"stream_name":"stdout","time":16.95076434,"data":"      \"even_khz\": 15.000000000000004,\n"}
+,{"stream_name":"stdout","time":16.950768004,"data":"      \"A_given_0_khz\": -32.0,\n"}
+,{"stream_name":"stdout","time":16.950771837,"data":"      \"A_given_1_khz\": -8.0,\n"}
+,{"stream_name":"stdout","time":16.950775463,"data":"      \"closure_khz\": 0.0\n"}
+,{"stream_name":"stdout","time":16.950779098,"data":"    }\n"}
+,{"stream_name":"stdout","time":16.950782808,"data":"  ],\n"}
+,{"stream_name":"stdout","time":16.95078654,"data":"  \"unidentified_without_conditionals\": \"J\",\n"}
+,{"stream_name":"stdout","time":16.950790482,"data":"  \"phase_rate_convention\": \"rate = -arg(rho_ij)/t; no wrapped finite-time frequency estimate is certified\",\n"}
+,{"stream_name":"stdout","time":16.950794664,"data":"  \"limits\": \"Diagonal two-qubit Hamiltonian only. Non-Markovian changes, spectator interactions, analyzer drift and frequency aliases require expanded checks.\",\n"}
+,{"stream_name":"stdout","time":16.950798873,"data":"  \"experiment\": \"conditional_hamiltonian\",\n"}
+,{"stream_name":"stdout","time":16.950802649,"data":"  \"profile\": \"smoke\",\n"}
+,{"stream_name":"stdout","time":16.950806286,"data":"  \"seed\": 20261015,\n"}
+,{"stream_name":"stdout","time":16.950809915,"data":"  \"basis_order\": \"two-qubit |ab\u003e=00,01,10,11; orbit cell index b0+2*b1\",\n"}
+,{"stream_name":"stdout","time":16.950814681,"data":"  \"wall_seconds\": 0.05404466899994986,\n"}
+,{"stream_name":"stdout","time":16.950826071,"data":"  \"qpu_jobs_submitted\": 0\n"}
+,{"stream_name":"stdout","time":16.950829762,"data":"}\n"}
+,{"stream_name":"stdout","time":16.950833391,"data":"[\n"}
+,{"stream_name":"stdout","time":16.950836823,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.95084027,"data":"    \"phase_rad\": 0.0,\n"}
+,{"stream_name":"stdout","time":16.950843899,"data":"    \"shots_per_basis\": 256,\n"}
+,{"stream_name":"stdout","time":16.950847779,"data":"    \"total_shots_two_bases\": 512,\n"}
+,{"stream_name":"stdout","time":16.950851822,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.95085555,"data":"    \"rejection_fraction\": 0.0455,\n"}
+,{"stream_name":"stdout","time":16.95085933,"data":"    \"mc_low\": 0.03720527135020145,\n"}
+,{"stream_name":"stdout","time":16.950867031,"data":"    \"mc_high\": 0.05553732462845745,\n"}
+,{"stream_name":"stdout","time":16.950870781,"data":"    \"frozen_threshold\": 0.04296875\n"}
+,{"stream_name":"stdout","time":16.950874499,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.950878083,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.950881882,"data":"    \"phase_rad\": 0.05,\n"}
+,{"stream_name":"stdout","time":16.950885539,"data":"    \"shots_per_basis\": 256,\n"}
+,{"stream_name":"stdout","time":16.950889227,"data":"    \"total_shots_two_bases\": 512,\n"}
+,{"stream_name":"stdout","time":16.950895196,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.9508989,"data":"    \"rejection_fraction\": 0.1345,\n"}
+,{"stream_name":"stdout","time":16.950903854,"data":"    \"mc_low\": 0.12024561647832303,\n"}
+,{"stream_name":"stdout","time":16.950907706,"data":"    \"mc_high\": 0.15015574508427282,\n"}
+,{"stream_name":"stdout","time":16.950911382,"data":"    \"frozen_threshold\": 0.04296875\n"}
+,{"stream_name":"stdout","time":16.950915412,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.950918937,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.950922416,"data":"    \"phase_rad\": 0.1,\n"}
+,{"stream_name":"stdout","time":16.950926246,"data":"    \"shots_per_basis\": 256,\n"}
+,{"stream_name":"stdout","time":16.950929826,"data":"    \"total_shots_two_bases\": 512,\n"}
+,{"stream_name":"stdout","time":16.950933717,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.950937437,"data":"    \"rejection_fraction\": 0.4025,\n"}
+,{"stream_name":"stdout","time":16.950941046,"data":"    \"mc_low\": 0.38121430570705017,\n"}
+,{"stream_name":"stdout","time":16.950944929,"data":"    \"mc_high\": 0.4241595185127941,\n"}
+,{"stream_name":"stdout","time":16.950948579,"data":"    \"frozen_threshold\": 0.04296875\n"}
+,{"stream_name":"stdout","time":16.950952234,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.950955764,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.950959194,"data":"    \"phase_rad\": 0.3,\n"}
+,{"stream_name":"stdout","time":16.950962748,"data":"    \"shots_per_basis\": 256,\n"}
+,{"stream_name":"stdout","time":16.950966365,"data":"    \"total_shots_two_bases\": 512,\n"}
+,{"stream_name":"stdout","time":16.950970023,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.950981394,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.950985191,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.950988848,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.95099247,"data":"    \"frozen_threshold\": 0.04296875\n"}
+,{"stream_name":"stdout","time":16.950996262,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.950999707,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.95100313,"data":"    \"phase_rad\": 0.6,\n"}
+,{"stream_name":"stdout","time":16.951006899,"data":"    \"shots_per_basis\": 256,\n"}
+,{"stream_name":"stdout","time":16.951010513,"data":"    \"total_shots_two_bases\": 512,\n"}
+,{"stream_name":"stdout","time":16.951014167,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.95101806,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951021802,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951025389,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.95102897,"data":"    \"frozen_threshold\": 0.04296875\n"}
+,{"stream_name":"stdout","time":16.951035683,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951039388,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951042822,"data":"    \"phase_rad\": 0.0,\n"}
+,{"stream_name":"stdout","time":16.951046379,"data":"    \"shots_per_basis\": 1024,\n"}
+,{"stream_name":"stdout","time":16.951050011,"data":"    \"total_shots_two_bases\": 2048,\n"}
+,{"stream_name":"stdout","time":16.951053877,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951057579,"data":"    \"rejection_fraction\": 0.052,\n"}
+,{"stream_name":"stdout","time":16.951061204,"data":"    \"mc_low\": 0.043099720209557914,\n"}
+,{"stream_name":"stdout","time":16.951064874,"data":"    \"mc_high\": 0.06261795415444468,\n"}
+,{"stream_name":"stdout","time":16.951068742,"data":"    \"frozen_threshold\": 0.02197265625\n"}
+,{"stream_name":"stdout","time":16.951072464,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951076024,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.9510795,"data":"    \"phase_rad\": 0.05,\n"}
+,{"stream_name":"stdout","time":16.951083243,"data":"    \"shots_per_basis\": 1024,\n"}
+,{"stream_name":"stdout","time":16.951086959,"data":"    \"total_shots_two_bases\": 2048,\n"}
+,{"stream_name":"stdout","time":16.951090723,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951094399,"data":"    \"rejection_fraction\": 0.3945,\n"}
+,{"stream_name":"stdout","time":16.95109824,"data":"    \"mc_low\": 0.3733021197674837,\n"}
+,{"stream_name":"stdout","time":16.951101919,"data":"    \"mc_high\": 0.4161023772088606,\n"}
+,{"stream_name":"stdout","time":16.951105607,"data":"    \"frozen_threshold\": 0.02197265625\n"}
+,{"stream_name":"stdout","time":16.951109369,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951112833,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951116247,"data":"    \"phase_rad\": 0.1,\n"}
+,{"stream_name":"stdout","time":16.951119821,"data":"    \"shots_per_basis\": 1024,\n"}
+,{"stream_name":"stdout","time":16.951123567,"data":"    \"total_shots_two_bases\": 2048,\n"}
+,{"stream_name":"stdout","time":16.951127459,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951131127,"data":"    \"rejection_fraction\": 0.9405,\n"}
+,{"stream_name":"stdout","time":16.951134817,"data":"    \"mc_low\": 0.9292636881836284,\n"}
+,{"stream_name":"stdout","time":16.951138479,"data":"    \"mc_high\": 0.9500473931615877,\n"}
+,{"stream_name":"stdout","time":16.951142129,"data":"    \"frozen_threshold\": 0.02197265625\n"}
+,{"stream_name":"stdout","time":16.951145801,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.95114925,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951152685,"data":"    \"phase_rad\": 0.3,\n"}
+,{"stream_name":"stdout","time":16.951156492,"data":"    \"shots_per_basis\": 1024,\n"}
+,{"stream_name":"stdout","time":16.95116027,"data":"    \"total_shots_two_bases\": 2048,\n"}
+,{"stream_name":"stdout","time":16.951163917,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951167505,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951171459,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951175093,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951178711,"data":"    \"frozen_threshold\": 0.02197265625\n"}
+,{"stream_name":"stdout","time":16.951182402,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951186159,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951192534,"data":"    \"phase_rad\": 0.6,\n"}
+,{"stream_name":"stdout","time":16.951196153,"data":"    \"shots_per_basis\": 1024,\n"}
+,{"stream_name":"stdout","time":16.951199807,"data":"    \"total_shots_two_bases\": 2048,\n"}
+,{"stream_name":"stdout","time":16.951203926,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951207509,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951211277,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951214909,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951218737,"data":"    \"frozen_threshold\": 0.02197265625\n"}
+,{"stream_name":"stdout","time":16.951222426,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.95122583,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951229263,"data":"    \"phase_rad\": 0.0,\n"}
+,{"stream_name":"stdout","time":16.951232808,"data":"    \"shots_per_basis\": 4096,\n"}
+,{"stream_name":"stdout","time":16.951236397,"data":"    \"total_shots_two_bases\": 8192,\n"}
+,{"stream_name":"stdout","time":16.951240106,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951243749,"data":"    \"rejection_fraction\": 0.043,\n"}
+,{"stream_name":"stdout","time":16.95124764,"data":"    \"mc_low\": 0.03495107254461269,\n"}
+,{"stream_name":"stdout","time":16.951251329,"data":"    \"mc_high\": 0.05280110867045247,\n"}
+,{"stream_name":"stdout","time":16.951254936,"data":"    \"frozen_threshold\": 0.010986328125\n"}
+,{"stream_name":"stdout","time":16.951258653,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951262056,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951265467,"data":"    \"phase_rad\": 0.05,\n"}
+,{"stream_name":"stdout","time":16.951269024,"data":"    \"shots_per_basis\": 4096,\n"}
+,{"stream_name":"stdout","time":16.951272602,"data":"    \"total_shots_two_bases\": 8192,\n"}
+,{"stream_name":"stdout","time":16.951276428,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951280092,"data":"    \"rejection_fraction\": 0.937,\n"}
+,{"stream_name":"stdout","time":16.951283741,"data":"    \"mc_low\": 0.9254914002053398,\n"}
+,{"stream_name":"stdout","time":16.951287394,"data":"    \"mc_high\": 0.9468331004708452,\n"}
+,{"stream_name":"stdout","time":16.951291019,"data":"    \"frozen_threshold\": 0.010986328125\n"}
+,{"stream_name":"stdout","time":16.951294672,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951298282,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951301709,"data":"    \"phase_rad\": 0.1,\n"}
+,{"stream_name":"stdout","time":16.951305491,"data":"    \"shots_per_basis\": 4096,\n"}
+,{"stream_name":"stdout","time":16.95130914,"data":"    \"total_shots_two_bases\": 8192,\n"}
+,{"stream_name":"stdout","time":16.951312701,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951316231,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951319758,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.95132356,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951327415,"data":"    \"frozen_threshold\": 0.010986328125\n"}
+,{"stream_name":"stdout","time":16.951331136,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951334862,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951339428,"data":"    \"phase_rad\": 0.3,\n"}
+,{"stream_name":"stdout","time":16.951343062,"data":"    \"shots_per_basis\": 4096,\n"}
+,{"stream_name":"stdout","time":16.951349325,"data":"    \"total_shots_two_bases\": 8192,\n"}
+,{"stream_name":"stdout","time":16.951352963,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951356567,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951360306,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951363956,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951367814,"data":"    \"frozen_threshold\": 0.010986328125\n"}
+,{"stream_name":"stdout","time":16.951371539,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951375027,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.95137878,"data":"    \"phase_rad\": 0.6,\n"}
+,{"stream_name":"stdout","time":16.951382314,"data":"    \"shots_per_basis\": 4096,\n"}
+,{"stream_name":"stdout","time":16.951385947,"data":"    \"total_shots_two_bases\": 8192,\n"}
+,{"stream_name":"stdout","time":16.951389539,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951393105,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951397031,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951400853,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951404759,"data":"    \"frozen_threshold\": 0.010986328125\n"}
+,{"stream_name":"stdout","time":16.951408526,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951412001,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951415446,"data":"    \"phase_rad\": 0.0,\n"}
+,{"stream_name":"stdout","time":16.951419245,"data":"    \"shots_per_basis\": 16384,\n"}
+,{"stream_name":"stdout","time":16.951422866,"data":"    \"total_shots_two_bases\": 32768,\n"}
+,{"stream_name":"stdout","time":16.951426691,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951430329,"data":"    \"rejection_fraction\": 0.054,\n"}
+,{"stream_name":"stdout","time":16.951433963,"data":"    \"mc_low\": 0.0449221548758202,\n"}
+,{"stream_name":"stdout","time":16.951437596,"data":"    \"mc_high\": 0.0647878512990574,\n"}
+,{"stream_name":"stdout","time":16.951441304,"data":"    \"frozen_threshold\": 0.005401611328125\n"}
+,{"stream_name":"stdout","time":16.951444981,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951448385,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951451792,"data":"    \"phase_rad\": 0.05,\n"}
+,{"stream_name":"stdout","time":16.951455567,"data":"    \"shots_per_basis\": 16384,\n"}
+,{"stream_name":"stdout","time":16.951459388,"data":"    \"total_shots_two_bases\": 32768,\n"}
+,{"stream_name":"stdout","time":16.951463057,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951466712,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951470295,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951474037,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951477662,"data":"    \"frozen_threshold\": 0.005401611328125\n"}
+,{"stream_name":"stdout","time":16.951481346,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951485335,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951488842,"data":"    \"phase_rad\": 0.1,\n"}
+,{"stream_name":"stdout","time":16.951492815,"data":"    \"shots_per_basis\": 16384,\n"}
+,{"stream_name":"stdout","time":16.951496565,"data":"    \"total_shots_two_bases\": 32768,\n"}
+,{"stream_name":"stdout","time":16.951500217,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951506827,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951510481,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951514118,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951517954,"data":"    \"frozen_threshold\": 0.005401611328125\n"}
+,{"stream_name":"stdout","time":16.951521798,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951525245,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951528667,"data":"    \"phase_rad\": 0.3,\n"}
+,{"stream_name":"stdout","time":16.951532248,"data":"    \"shots_per_basis\": 16384,\n"}
+,{"stream_name":"stdout","time":16.951535974,"data":"    \"total_shots_two_bases\": 32768,\n"}
+,{"stream_name":"stdout","time":16.951539595,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951543279,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.95154719,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951550992,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.95155459,"data":"    \"frozen_threshold\": 0.005401611328125\n"}
+,{"stream_name":"stdout","time":16.951558305,"data":"  },\n"}
+,{"stream_name":"stdout","time":16.951561755,"data":"  {\n"}
+,{"stream_name":"stdout","time":16.951565164,"data":"    \"phase_rad\": 0.6,\n"}
+,{"stream_name":"stdout","time":16.951568819,"data":"    \"shots_per_basis\": 16384,\n"}
+,{"stream_name":"stdout","time":16.951572451,"data":"    \"total_shots_two_bases\": 32768,\n"}
+,{"stream_name":"stdout","time":16.951576274,"data":"    \"simulated_trials\": 2000,\n"}
+,{"stream_name":"stdout","time":16.951579897,"data":"    \"rejection_fraction\": 1.0,\n"}
+,{"stream_name":"stdout","time":16.951583529,"data":"    \"mc_low\": 0.9980829527187469,\n"}
+,{"stream_name":"stdout","time":16.951587125,"data":"    \"mc_high\": 0.9999999999999998,\n"}
+,{"stream_name":"stdout","time":16.951590735,"data":"    \"frozen_threshold\": 0.005401611328125\n"}
+,{"stream_name":"stdout","time":16.951594395,"data":"  }\n"}
+,{"stream_name":"stdout","time":16.951597819,"data":"]\n"}
+,{"stream_name":"stderr","time":20.344919539,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":20.344959539,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":20.555578463,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":20.555609802,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":21.506082829,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":21.597094294,"data":"[NbConvertApp] Writing 53315 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":24.73405689,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":25.383023264,"data":"[NbConvertApp] Writing 387147 bytes to __results__.html\n"}
+]

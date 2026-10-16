@@ -2050,14 +2050,20 @@
         {
           "path": "docs/evidence/ccz-reduction/normal_form.json",
           "sha256": "a63e5b9507f604528fd767a35079811b39776f7754ac05b35e4297859aa4dddf"
+        },
+        {
+          "path": "docs/evidence/ccz-reduction/independent_package/cubic_core_certificates.json",
+          "sha256": "ac4d82cd32b100544f272b63e621197c35d18c0657ba05b1e4c770486b378bd1"
         }
       ],
       "documents": [
         "docs/evidence/ccz-reduction/README.md",
-        "docs/evidence/simulation-notebook-audit/README.md"
+        "docs/evidence/simulation-notebook-audit/README.md",
+        "docs/evidence/ccz-reduction/independent_package/README.md"
       ],
       "gates": {
-        "core-278": "replay"
+        "core-278": "replay",
+        "core-284": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -2151,7 +2157,7 @@
       "domain": "hardware",
       "evidence_class": "withdrawn claim",
       "status": "withdrawn",
-      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03 and assumed a 10 kHz shot rate, about 2.6 times the Heron rate at the 250 us repetition delay.",
+      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03; two sampled arms at SNR 2 need 4/dP^2 shots in total, about 2.9 million (about 750 s) at 50 Hz, and IBM guarantees no PUB order, so one job does not interleave matched pairs.",
       "withdrawn_text": "docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a."
     },
     {

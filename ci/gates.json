@@ -2264,6 +2264,14 @@
    "name": "core-283",
    "seconds": 1.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/associator_cubic_normal_form.py --cross-check",
+   "name": "core-284",
+   "seconds": 1.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

@@ -12,3 +12,8 @@ figures are estimates rather than compiled counts, and their equivalence
 tests do not involve an associator circuit;
 `docs/evidence/simulation-notebook-audit/README.md` gives the reading of
 each against its retained Kaggle log.
+
+`independent_package/` holds a certificate package built with its own
+Cayley-Dickson product and Boolean code; gate core-284 requires its shipped
+certificates to agree with `normal_form.json` on the cubic part and the
+linear forms of all 360 pairs.

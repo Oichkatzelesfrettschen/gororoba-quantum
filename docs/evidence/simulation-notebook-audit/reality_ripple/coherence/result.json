@@ -1,0 +1,252 @@
+{
+  "assumptions": {
+    "decision": "strictly above training-null 95th quantile",
+    "fixed_symmetric_readout_per_qubit": 0.02,
+    "independent_shots": true,
+    "statistic": "abs((XY-YX)/4)",
+    "visibility": 0.85
+  },
+  "basis_order": "two-qubit |ab>=00,01,10,11; orbit cell index b0+2*b1",
+  "evidence_kind": "synthetic_design_power",
+  "examples": [
+    {
+      "XX": 0.7015352726732266,
+      "XY": -0.47994610238578006,
+      "YX": 0.47994610238578006,
+      "YY": 0.7015352726732266,
+      "ZZ": -1.0,
+      "coherence_imag": -0.23997305119289003,
+      "coherence_real": 0.3507676363366133,
+      "model": "phase"
+    },
+    {
+      "XX": 0.7015352726732266,
+      "XY": 0.0,
+      "YX": 0.0,
+      "YY": 0.7015352726732266,
+      "ZZ": -1.0,
+      "coherence_imag": 0.0,
+      "coherence_real": 0.3507676363366133,
+      "model": "matched_X_loss"
+    },
+    {
+      "XX": 0.0,
+      "XY": 0.0,
+      "YX": 0.0,
+      "YY": 0.0,
+      "ZZ": -1.0,
+      "coherence_imag": 0.0,
+      "coherence_real": 0.0,
+      "model": "incoherent"
+    }
+  ],
+  "experiment": "coherence",
+  "formula_error": 3.1031676915590914e-17,
+  "limits": "Monte Carlo uncertainty only. Not robust power under unknown analyzer error, drift, or leakage. Not a QPU admission.",
+  "power_rows": [
+    {
+      "frozen_threshold": 0.04296875,
+      "mc_high": 0.05553732462845745,
+      "mc_low": 0.03720527135020145,
+      "phase_rad": 0.0,
+      "rejection_fraction": 0.0455,
+      "shots_per_basis": 256,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 512
+    },
+    {
+      "frozen_threshold": 0.04296875,
+      "mc_high": 0.15015574508427282,
+      "mc_low": 0.12024561647832303,
+      "phase_rad": 0.05,
+      "rejection_fraction": 0.1345,
+      "shots_per_basis": 256,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 512
+    },
+    {
+      "frozen_threshold": 0.04296875,
+      "mc_high": 0.4241595185127941,
+      "mc_low": 0.38121430570705017,
+      "phase_rad": 0.1,
+      "rejection_fraction": 0.4025,
+      "shots_per_basis": 256,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 512
+    },
+    {
+      "frozen_threshold": 0.04296875,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.3,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 256,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 512
+    },
+    {
+      "frozen_threshold": 0.04296875,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.6,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 256,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 512
+    },
+    {
+      "frozen_threshold": 0.02197265625,
+      "mc_high": 0.06261795415444468,
+      "mc_low": 0.043099720209557914,
+      "phase_rad": 0.0,
+      "rejection_fraction": 0.052,
+      "shots_per_basis": 1024,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 2048
+    },
+    {
+      "frozen_threshold": 0.02197265625,
+      "mc_high": 0.4161023772088606,
+      "mc_low": 0.3733021197674837,
+      "phase_rad": 0.05,
+      "rejection_fraction": 0.3945,
+      "shots_per_basis": 1024,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 2048
+    },
+    {
+      "frozen_threshold": 0.02197265625,
+      "mc_high": 0.9500473931615877,
+      "mc_low": 0.9292636881836284,
+      "phase_rad": 0.1,
+      "rejection_fraction": 0.9405,
+      "shots_per_basis": 1024,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 2048
+    },
+    {
+      "frozen_threshold": 0.02197265625,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.3,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 1024,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 2048
+    },
+    {
+      "frozen_threshold": 0.02197265625,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.6,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 1024,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 2048
+    },
+    {
+      "frozen_threshold": 0.010986328125,
+      "mc_high": 0.05280110867045247,
+      "mc_low": 0.03495107254461269,
+      "phase_rad": 0.0,
+      "rejection_fraction": 0.043,
+      "shots_per_basis": 4096,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 8192
+    },
+    {
+      "frozen_threshold": 0.010986328125,
+      "mc_high": 0.9468331004708452,
+      "mc_low": 0.9254914002053398,
+      "phase_rad": 0.05,
+      "rejection_fraction": 0.937,
+      "shots_per_basis": 4096,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 8192
+    },
+    {
+      "frozen_threshold": 0.010986328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.1,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 4096,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 8192
+    },
+    {
+      "frozen_threshold": 0.010986328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.3,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 4096,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 8192
+    },
+    {
+      "frozen_threshold": 0.010986328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.6,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 4096,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 8192
+    },
+    {
+      "frozen_threshold": 0.005401611328125,
+      "mc_high": 0.0647878512990574,
+      "mc_low": 0.0449221548758202,
+      "phase_rad": 0.0,
+      "rejection_fraction": 0.054,
+      "shots_per_basis": 16384,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 32768
+    },
+    {
+      "frozen_threshold": 0.005401611328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.05,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 16384,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 32768
+    },
+    {
+      "frozen_threshold": 0.005401611328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.1,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 16384,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 32768
+    },
+    {
+      "frozen_threshold": 0.005401611328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.3,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 16384,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 32768
+    },
+    {
+      "frozen_threshold": 0.005401611328125,
+      "mc_high": 0.9999999999999998,
+      "mc_low": 0.9980829527187469,
+      "phase_rad": 0.6,
+      "rejection_fraction": 1.0,
+      "shots_per_basis": 16384,
+      "simulated_trials": 2000,
+      "total_shots_two_bases": 32768
+    }
+  ],
+  "profile": "smoke",
+  "qpu_jobs_submitted": 0,
+  "seed": 20261015,
+  "wall_seconds": 0.10760267399996337
+}

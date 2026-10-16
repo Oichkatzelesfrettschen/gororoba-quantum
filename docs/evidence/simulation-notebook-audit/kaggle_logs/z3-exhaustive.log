@@ -1,0 +1,39 @@
+[{"stream_name":"stderr","time":8.672010424,"data":"/usr/local/lib/python3.13/dist-packages/nbformat/validator.py:434: MissingIDFieldWarning: Cell is missing an id field, this will become a hard error in future nbformat versions. You may want to use `normalize()` on your notebooks before validations (available since nbformat 5.1.4). Previous versions of nbformat are fixing this issue transparently, and will stop doing so in the future.\n"}
+,{"stream_name":"stderr","time":8.672137587,"data":"  _validate(nbdict, ref, version, version_minor, relax_add_props)\n"}
+,{"stream_name":"stderr","time":10.02320838,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.023253853,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.023275654,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.023281352,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stderr","time":10.871310925,"data":"0.00s - Debugger warning: It seems that frozen modules are being used, which may\n"}
+,{"stream_name":"stderr","time":10.8713493,"data":"0.00s - make the debugger miss breakpoints. Please pass -Xfrozen_modules=off\n"}
+,{"stream_name":"stderr","time":10.87135352,"data":"0.00s - to python to disable frozen modules.\n"}
+,{"stream_name":"stderr","time":10.871356558,"data":"0.00s - Note: Debugging will proceed. Set PYDEVD_DISABLE_FILE_VALIDATION=1 to disable this validation.\n"}
+,{"stream_name":"stdout","time":19.693944197,"data":"   ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━ 36.6/36.6 MB 32.7 MB/s eta 0:00:00\r\n"}
+,{"stream_name":"stdout","time":19.828517766,"data":"Z3 5.3.1\n"}
+,{"stream_name":"stdout","time":19.828557177,"data":"Directories: 22\n"}
+,{"stream_name":"stdout","time":19.846092184,"data":"Claim inventory: 22 directories\n"}
+,{"stream_name":"stdout","time":19.846130944,"data":"  algebra_packages: pending\n"}
+,{"stream_name":"stdout","time":19.846159426,"data":"  c881_exhaustive: pending\n"}
+,{"stream_name":"stdout","time":19.846164325,"data":"  cd_associator_defect_census: pending\n"}
+,{"stream_name":"stdout","time":19.84616856,"data":"  complex_skew: pending\n"}
+,{"stream_name":"stdout","time":19.846172584,"data":"  dimension32_skew_schur: pending\n"}
+,{"stream_name":"stdout","time":19.865652654,"data":"Verification framework ready\n"}
+,{"stream_name":"stdout","time":19.894147489,"data":"=== Core Algebraic Claims ===\n"}
+,{"stream_name":"stdout","time":19.918661214,"data":"  Defective triples (45.117% of 4096): ✓ = 1848\n"}
+,{"stream_name":"stdout","time":19.918707495,"data":"  Total triples (16^3): ✓ = 4096\n"}
+,{"stream_name":"stdout","time":19.918712179,"data":"  CCZ pairs (unordered nonzero dim-32): ✓ = 360\n"}
+,{"stream_name":"stdout","time":19.918715482,"data":"  Cubic forms (distinct homogeneous): ✓ = 15\n"}
+,{"stream_name":"stdout","time":19.918718778,"data":"  Per-form occurrences (360/15): ✓ = 24\n"}
+,{"stream_name":"stdout","time":19.918721645,"data":"  Phase comparisons (360*32): ✓ = 11520\n"}
+,{"stream_name":"stdout","time":19.938878412,"data":"=== Skew \u0026 Kernel Claims ===\n"}
+,{"stream_name":"stdout","time":19.938915752,"data":"  Complex skew coefficient: ✓\n"}
+,{"stream_name":"stdout","time":19.938922404,"data":"  (Full verification requires loading result.json files)\n"}
+,{"stream_name":"stderr","time":23.454530332,"data":"/usr/local/lib/python3.13/dist-packages/mistune.py:435: SyntaxWarning: invalid escape sequence '\\|'\n"}
+,{"stream_name":"stderr","time":23.454589014,"data":"  cells[i][c] = re.sub('\\\\\\\\\\|', '|', cell)\n"}
+,{"stream_name":"stderr","time":23.675461986,"data":"/usr/local/lib/python3.13/dist-packages/nbconvert/filters/filter_links.py:36: SyntaxWarning: invalid escape sequence '\\_'\n"}
+,{"stream_name":"stderr","time":23.675494678,"data":"  text = re.sub(r'_', '\\_', text) # Escape underscores in display text\n"}
+,{"stream_name":"stderr","time":24.662205775,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to notebook\n"}
+,{"stream_name":"stderr","time":24.759352252,"data":"[NbConvertApp] Writing 11364 bytes to __notebook__.ipynb\n"}
+,{"stream_name":"stderr","time":27.976377802000002,"data":"[NbConvertApp] Converting notebook __notebook__.ipynb to html\n"}
+,{"stream_name":"stderr","time":28.633492187999998,"data":"[NbConvertApp] Writing 291093 bytes to __results__.html\n"}
+]
