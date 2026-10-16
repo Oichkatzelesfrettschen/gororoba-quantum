@@ -2296,6 +2296,14 @@
    "name": "core-288",
    "seconds": 30.0,
    "tier": "pr"
+  },
+  {
+   "suite": "core",
+   "cwd": ".",
+   "cmd": "\"$PYTHON\" -B -W error scripts/kaggle_run.py verify && \"$PYTHON\" -B -O -W error scripts/kaggle_run.py verify",
+   "name": "core-290",
+   "seconds": 1.0,
+   "tier": "pr"
   }
  ],
  "excluded": [

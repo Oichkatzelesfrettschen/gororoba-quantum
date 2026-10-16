@@ -54,8 +54,12 @@ GPU matters for sweeps and batched trials, not for single circuits.
   (machine shape `NvidiaTeslaT4` by default) and pushes it. The kernel
   records its environment, runs ENTRY with `GOROROBA_AER_DEVICE=GPU`, and
   returns every file the run created under the repository root.
-- `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download its
-  output with a sha256 manifest.
+- `status RUN_DIR` and `collect RUN_DIR` poll the kernel and download the
+  run's own version with a sha256 manifest. `kernels status` reports the
+  slug's latest version whatever version it names, so `collect` decides
+  completion from the `exit.json` the kernel writes on every exit path.
+- `verify` checks every retained collect.json against its output files
+  offline (gate core-290).
 - `push --smoke` probes the environment and measures the widest
   density-matrix and statevector circuits the GPU runs.
 - `--machine` names the accelerator, passed to the push as
@@ -67,7 +71,8 @@ GPU matters for sweeps and batched trials, not for single circuits.
   kernel's `environment.json`, not the request, records what ran.
 - The account runs at most two GPU batch sessions at once; a third push
   fails with "Maximum batch GPU session count of 2 reached", and `push`
-  exits with that message and removes the unsent run directory. The limit
+  exits with that message and removes the unsent run directory, as it does
+  for any failed push. The limit
   was reached once with a single kernel listed as running, after a second
   version of it had been pushed, so a superseded version appears to keep
   its session until it ends.

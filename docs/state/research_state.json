@@ -2233,6 +2233,37 @@
       "depends_on": [],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "design-c-cubic-noise-separation",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T19:42:21-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.181-0.253 for the 234 pairs of ideal K = 11/32 and 0.093-0.113 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 86 percent of the ideal gap.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (depolarizing and thermal relaxation from the Target, asymmetric readout); coherent errors, crosstalk and leakage are outside it, and no hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/design_c_cubic_noise/result.json",
+          "sha256": "d3df6cd6134dc9d2b81c3f85ba9a56baa512287e724614a520f6951508a31591"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "2417655318d2d61de2c97361c42d3e0eba769f7613473b8df38b5e1cb9900346"
+        }
+      ],
+      "documents": [
+        "docs/evidence/design_c_cubic_noise/README.md"
+      ],
+      "gates": {
+        "core-282": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "associator-normal-form-compile"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

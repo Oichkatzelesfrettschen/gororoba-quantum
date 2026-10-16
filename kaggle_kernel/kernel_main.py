@@ -257,6 +257,18 @@ def main() -> int:
         print(json.dumps(ghz_trial(sys.argv[2], int(sys.argv[3]), device)), flush=True)
         return 0
     OUT.mkdir(parents=True, exist_ok=True)
+    # exit.json marks a finished run on every path; scripts/kaggle_run.py
+    # collect requires it, because `kernels status` reports the slug's latest
+    # version whatever version it names.
+    code = 1
+    try:
+        code = run_entry()
+    finally:
+        write("exit.json", {"returncode": code})
+    return code
+
+
+def run_entry() -> int:
     job = json.loads((REPO / "kaggle_kernel/kernel_job.json").read_text(encoding="utf-8"))
     print((REPO / "kaggle_kernel/AGENTS.md").read_text(encoding="utf-8"), flush=True)
     if job.get("datasets"):
@@ -283,7 +295,6 @@ def main() -> int:
             target = OUT / "repo" / path.relative_to(REPO)
             target.parent.mkdir(parents=True, exist_ok=True)
             target.write_bytes(path.read_bytes())
-    write("exit.json", {"returncode": proc.returncode})
     return proc.returncode
 
 
