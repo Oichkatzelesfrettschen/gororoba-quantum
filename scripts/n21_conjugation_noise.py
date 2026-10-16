@@ -27,10 +27,11 @@ circuits sample 1.5 to 8 times faster on the CPU than on the GPU
 Aer carries the noise of the circuit's active qubits only
 (snapshot_laws.restrict_circuit and restrict), the same channel on each.
 
-Timing follows live_run's planning model: the Target duration of the
-gate-time view (each if_else replaced by its true branch), plus the declared
-classical latency per feed-forward stage, plus the repetition delay, per
-shot; and the declared per-job overhead. The estimate is a planning input
+Timing follows live_run's planning model through its own functions: the
+Target duration of _gate_time_view (each if_else replaced by its true
+branch), plus the declared classical latency per sequential feed-forward
+decision (_feed_forward_stages), plus the repetition delay, per shot; and
+the declared per-job overhead. The estimate is a planning input
 for a live_run dry run, which stays the admission authority; the module
 reads no IBM service and submits nothing.
 
@@ -38,6 +39,7 @@ Usage:
     "$PYTHON" scripts/n21_conjugation_noise.py --challenger CHALLENGER.json --snapshots SNAP... --out PATH
     "$PYTHON" scripts/n21_conjugation_noise.py --merge RECORD... --out PATH
     "$PYTHON" scripts/n21_conjugation_noise.py --check PATH
+    "$PYTHON" scripts/n21_conjugation_noise.py --check PATH --chain SEARCH CHALLENGER
 
 --check recompiles every circuit's chosen seed on its retained snapshot and
 re-derives the distributions, contrasts, recovery rates and seconds from
@@ -61,13 +63,14 @@ sys.path.insert(0, str(ROOT / "gororoba_quantum"))
 sys.path.insert(0, str(ROOT / "scripts"))
 from linear_conjugation_search import coset_columns  # noqa: E402
 from qiskit import QuantumCircuit  # noqa: E402
-from qiskit.circuit import ControlFlowOp, IfElseOp  # noqa: E402
+from qiskit.circuit import IfElseOp  # noqa: E402
 from qiskit.transpiler import generate_preset_pass_manager  # noqa: E402
 
 import calibration_snapshot  # noqa: E402
 import parallel  # noqa: E402
 import snapshot_laws  # noqa: E402
 from factoring import decode_counts  # noqa: E402
+from live_run import _feed_forward_stages, _gate_time_view  # noqa: E402
 from order_finding import ENCODED_STRATEGY, factor_order_finding  # noqa: E402
 from qpe_diagnostics import n21_labeled_law  # noqa: E402
 
@@ -132,33 +135,6 @@ def _backend(snapshot: dict[str, Any]) -> calibration_snapshot.SnapshotBackend:
     return backend
 
 
-def gate_time_view(isa: QuantumCircuit) -> QuantumCircuit:
-    """isa with each control-flow op replaced by its first block's gates (live_run._gate_time_view)."""
-    out = isa.copy_empty_like()
-    for instruction in isa.data:
-        if isinstance(instruction.operation, ControlFlowOp):
-            body = instruction.operation.blocks[0]
-            for sub in body.data:
-                out.append(sub.operation, [instruction.qubits[body.find_bit(qubit).index] for qubit in sub.qubits])
-        else:
-            out.append(instruction)
-    return out
-
-
-def classical_stages(isa: QuantumCircuit) -> int:
-    """Measurements that a later if_else waits on: each costs one classical round trip."""
-    stages = 0
-    pending = False
-    for instruction in isa.data:
-        name = instruction.operation.name
-        if name == "measure":
-            pending = True
-        elif name == "if_else" and pending:
-            stages += 1
-            pending = False
-    return stages
-
-
 def compile_job(job: tuple[str, str, int, tuple[int, ...], tuple[int, ...]]) -> dict[str, Any]:
     """Compile one circuit at one transpiler seed on one snapshot's Target."""
     snapshot_path, name, seed, two_round, ten_round = job
@@ -174,9 +150,9 @@ def compile_job(job: tuple[str, str, int, tuple[int, ...], tuple[int, ...]]) -> 
         "seed_transpiler": seed,
         "routed_cz": int(isa.count_ops().get("cz", 0)),
         "depth": isa.depth(),
-        "duration_dt": int(gate_time_view(isa).estimate_duration(backend.target, unit="dt")),
+        "duration_dt": int(_gate_time_view(isa).estimate_duration(backend.target, unit="dt")),
         "if_else": int(isa.count_ops().get("if_else", 0)),
-        "classical_stages": classical_stages(isa),
+        "classical_stages": _feed_forward_stages(isa),
         "layout": list(layout),
     }
 
@@ -472,6 +448,16 @@ def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
     return merged
 
 
+def check_chain(search_path: Path, challenger_path: Path, noise: dict[str, Any]) -> str:
+    """The challenger names the retained search file's digest, and the noise record the challenger's."""
+    challenger = json.loads(challenger_path.read_text(encoding="utf-8"))
+    search_digest = hashlib.sha256(search_path.read_bytes()).hexdigest()
+    _require(challenger["search_record_sha256"] == search_digest, f"{challenger_path} names another search record")
+    challenger_digest = hashlib.sha256(json.dumps(challenger, sort_keys=True).encode()).hexdigest()
+    _require(noise["challenger_record_sha256"] == challenger_digest, "the noise record names another challenger record")
+    return "search -> challenger -> noise digests agree"
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument(
@@ -481,7 +467,14 @@ def main() -> int:
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path, help="retained record to replay without sampling")
     parser.add_argument("--merge", type=Path, nargs="+", help="per-backend records to combine into --out")
+    parser.add_argument(
+        "--chain", type=Path, nargs=2, metavar=("SEARCH", "CHALLENGER"), help="with --check, bind the record chain"
+    )
     args = parser.parse_args()
+    if args.check and args.chain:
+        record = json.loads(args.check.read_text(encoding="utf-8"))
+        print(f"n21_conjugation_noise: {check_chain(args.chain[0], args.chain[1], record)}")
+        return 0
     if args.check:
         print(f"n21_conjugation_noise: {check(json.loads(args.check.read_text(encoding='utf-8')))}")
         return 0

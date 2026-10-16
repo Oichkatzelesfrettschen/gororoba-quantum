@@ -274,6 +274,11 @@ def merge(shards: list[dict[str, Any]]) -> dict[str, Any]:
     _require(
         len({json.dumps(shard["sources"], sort_keys=True) for shard in shards}) == 1, "shards ran different sources"
     )
+    expected = set(source_digests())
+    _require(
+        set(shards[0]["sources"]) == expected,
+        f"shards record sources {sorted(shards[0]['sources'])}, expected {sorted(expected)}",
+    )
     for shard in shards:
         width = shard["stop"] - shard["start"]
         _require(

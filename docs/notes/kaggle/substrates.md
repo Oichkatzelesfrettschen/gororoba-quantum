@@ -94,7 +94,9 @@ limits exactly at the memory estimate.
 
 The probe ran on a T4 x2 host with 4 CPUs, using the ibm_fez calibration
 of 2026-10-16T12:12:52-07:00, restricted to each circuit's 7 active qubits.
-It compares five samplers on two circuits, both in the coset-15241 encoding:
+It compares five samplers on two circuits, both in the coset-281 encoding
+(columns 1, 2, 5, 13, 25, the surrogate optimum; 3,978 routed CZ for ten
+rounds):
 - the two-round N=21 n21-feedback diagnostic (one mid-circuit measurement
   and if_else);
 - the ten-round circuit (nine of each).
