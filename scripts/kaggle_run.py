@@ -71,6 +71,15 @@ PIN_GROUPS: dict[str, tuple[str, ...]] = {
         "mthree==3.0.0",
         "runningman==2.3.0",
         "qiskit-ibm-runtime==0.50.0",
+        # Runtime's own dependencies, held at the host's versions: unpinned,
+        # a kernel resolves ibm-quantum-schemas 0.13 while the host has 0.12.
+        "samplomatic==0.21.0",
+        "ibm-quantum-schemas==0.12.20260921",
+        "qiskit-mitigation==0.1.1",
+        # qiskit.qasm3.loads needs the importer and its parser.
+        "qiskit-qasm3-import==0.6.0",
+        "openqasm3==1.0.1",
+        "antlr4-python3-runtime==4.13.2",
         "qiskit-experiments==0.14.2",
         "lmfit==1.3.4",
         "quimb==1.15.0",
