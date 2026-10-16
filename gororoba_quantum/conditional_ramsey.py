@@ -32,6 +32,13 @@ phase estimation, so a ladder ratio of at most 4 keeps the prediction error
 near four times the per-point phase noise, far inside pi. Dynamical
 decoupling would refocus the free evolution these arms measure.
 
+A conditional arm keeps only the shots whose B readout equals B's
+preparation. B in |1> relaxes during the idle, and every shot in which it
+decayed carries A's phase at omega_A + J from the jump onward, which pulls
+the A | B = 1 rate toward the A | B = 0 rate in proportion to J; B's own
+readout heralds the jump, so the postselected law is the conditioned
+coherence the design row assumes.
+
 Two calibration circuits read both qubits prepared in |0> and in |1>. The
 summary inverts A's measured assignment channel before taking phases,
 because an asymmetric channel adds a common offset to both quadratures that
@@ -168,6 +175,20 @@ def corrected_expectation(raw: float, e10: float, e01: float) -> float:
     return (raw - (e01 - e10)) / (1.0 - e10 - e01)
 
 
+def conditioned(distribution: np.ndarray, sector: str) -> np.ndarray:
+    """A conditional arm's law restricted to B read as prepared and renormalized; Bell arms unchanged.
+
+    The assignment channels are per-qubit, so discarding on B's outcome leaves
+    A's assignment channel, and the in-job correction of it, as they were.
+    """
+    if sector in {"even", "odd"}:
+        return distribution
+    b = B_PREPARED[sector] << 1
+    kept = np.zeros(4)
+    kept[b], kept[b | 1] = distribution[b], distribution[b | 1]
+    return kept / kept.sum()
+
+
 def b_preparation_error(distribution: np.ndarray, sector: str) -> float:
     b = B_PREPARED[sector]
     return float(distribution[(1 - b) << 1] + distribution[((1 - b) << 1) | 1])
@@ -237,16 +258,26 @@ def rate_hz(rate_rad_per_dt: float, dt_seconds: float) -> float:
     return rate_rad_per_dt / (2.0 * math.pi * dt_seconds)
 
 
-def point_summary(distributions: Mapping[str, np.ndarray]) -> dict[str, float]:
-    """Phases, fitted rates and reconstructed parameters on assignment-corrected expectations."""
+def point_summary(distributions: Mapping[str, np.ndarray], postselect: bool = True) -> dict[str, float]:
+    """Phases, fitted rates and reconstructed parameters on assignment-corrected expectations.
+
+    ``postselect=False`` reads the conditional arms without discarding on B,
+    the estimator that B's relaxation biases.
+    """
     e10, e01 = a_assignment(distributions)
     summary: dict[str, float] = {"a_assignment_e10": e10, "a_assignment_e01": e01}
     rates: dict[str, float] = {}
     for sector in SECTORS:
         phases = []
         for delay in DELAYS_DT:
-            x = corrected_expectation(a_expectation(distributions[member_name(sector, "x", delay)]), e10, e01)
-            y = corrected_expectation(a_expectation(distributions[member_name(sector, "y", delay)]), e10, e01)
+            x_law = distributions[member_name(sector, "x", delay)]
+            if postselect:
+                x_law = conditioned(x_law, sector)
+            y_law = distributions[member_name(sector, "y", delay)]
+            if postselect:
+                y_law = conditioned(y_law, sector)
+            x = corrected_expectation(a_expectation(x_law), e10, e01)
+            y = corrected_expectation(a_expectation(y_law), e10, e01)
             phases.append(math.atan2(y, x))
             summary[f"{sector}_{delay}dt_phase"] = phases[-1]
             summary[f"{sector}_{delay}dt_visibility"] = math.hypot(x, y)
@@ -403,6 +434,34 @@ def self_check() -> str:
     uncalibrated.update({name: laws[name] for name in READOUT_MEMBERS})
     raw_bias = abs(point_summary(uncalibrated)["omega_a_conditional"] - omega_a)
     _require(raw_bias > 1e-7, "an asymmetric assignment must bias the uncorrected rates")
+
+    # B relaxing from |1> to |0> partway through each conditional idle: a
+    # fraction of the A | B = 1 shots evolves at omega_A + J and reads B = 0.
+    # The extreme case, every decay at the start of the idle, is the
+    # A | B = 0 law of the same arm.
+    relaxed = dict(laws)
+    decayed = 0.1
+    for delay in DELAYS_DT:
+        for quadrature in QUADRATURES:
+            name = member_name("a_given_b1", quadrature, delay)
+            relaxed[name] = (1.0 - decayed) * laws[name] + decayed * laws[member_name("a_given_b0", quadrature, delay)]
+    recovered = point_summary(relaxed)
+    _require(
+        abs(recovered["zz_j"] - zz) < 1e-12 and abs(recovered["falsifier_residual"]) < 1e-12,
+        "postselecting B on its preparation must remove B's relaxation from J and the falsifier",
+    )
+    unconditioned = sum(
+        math.atan2(
+            a_expectation(relaxed[member_name("a_given_b1", "y", delay)]),
+            a_expectation(relaxed[member_name("a_given_b1", "x", delay)]),
+        )
+        - math.atan2(
+            a_expectation(laws[member_name("a_given_b1", "y", delay)]),
+            a_expectation(laws[member_name("a_given_b1", "x", delay)]),
+        )
+        for delay in DELAYS_DT[1:]
+    )
+    _require(abs(unconditioned) > 1e-3, "B's relaxation must move the unconditioned A | B = 1 phases")
 
     rng = np.random.default_rng(20261015)
     shots = 1024
