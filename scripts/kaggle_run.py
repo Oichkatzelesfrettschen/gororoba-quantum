@@ -328,6 +328,18 @@ def dataset(args: argparse.Namespace) -> int:
     import tempfile
 
     files = sorted({path for include in args.include for path in tracked_files(include)})
+    # A dataset records the revision its files came from, so every file must
+    # be tracked; push instead reports untracked bundled inputs and marks the
+    # revision dirty.
+    listed = subprocess.run(
+        ["git", "ls-files", "-z", "--", *(path.relative_to(ROOT).as_posix() for path in files)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    untracked = sorted(set(files) - {ROOT / name for name in listed.split("\0") if name})
+    require(not untracked, f"untracked dataset inputs: {[path.relative_to(ROOT).as_posix() for path in untracked]}")
     require(bool(files), "the dataset names no files")
     manifest = {path.relative_to(ROOT).as_posix(): sha256(path.read_bytes()) for path in files}
     owner = username()

@@ -233,9 +233,22 @@ def capacity() -> dict[str, Any]:
 
 
 def unpack_datasets(datasets: list[dict[str, Any]]) -> dict[str, Any]:
-    """Extract each attached dataset archive into the repository root and verify every file's sha256."""
+    """Extract each attached dataset archive into the repository root and verify every file's sha256.
+
+    The manifests partition the files they add: no path appears in two
+    manifests or among the bundled repository files, and each archive holds
+    exactly its manifest's files, so no extraction overwrites a file another
+    manifest or the bundle verified.
+    """
     import tarfile
 
+    claimed: dict[str, str] = {}
+    for entry in datasets:
+        for rel in entry["files"]:
+            if rel in claimed or (REPO / rel).exists():
+                owner = claimed.get(rel, "the bundled repository")
+                raise SystemExit(f"dataset {entry['ref']}: {rel} is also supplied by {owner}")
+            claimed[rel] = entry["ref"]
     report: dict[str, Any] = {}
     for entry in datasets:
         slug = entry["ref"].split("/")[1]
@@ -243,6 +256,9 @@ def unpack_datasets(datasets: list[dict[str, Any]]) -> dict[str, Any]:
         if len(candidates) != 1:
             raise SystemExit(f"dataset {entry['ref']}: {len(candidates)} archives named {entry['archive']}")
         with tarfile.open(candidates[0]) as archive:
+            members = {m.name for m in archive.getmembers() if not m.isdir()}
+            if members != set(entry["files"]):
+                raise SystemExit(f"dataset {entry['ref']}: archive members differ from the manifest")
             archive.extractall(REPO, filter="data")
         mismatched = [rel for rel, digest in entry["files"].items() if sha256(REPO / rel) != digest]
         report[entry["ref"]] = {"archive": str(candidates[0]), "files": len(entry["files"]), "mismatched": mismatched}
