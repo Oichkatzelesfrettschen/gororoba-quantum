@@ -89,9 +89,38 @@ rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
   shared template (252 CZ) against a measure-only circuit (0 CZ). If the
   scaffold carries the loss, the measure-only arm reads near 0.95 and the
   template arm stays at the table's floor.
-- **Conformance gate.** Check the compiled CZ count of every member whose
-  bound law is a point mass on its input. It would have flagged these
-  controls before submission.
+
+## Local-member conformance
+
+`scripts/local_member_cz_conformance.py --check` (gate core-289) enumerates
+every member live_run can plan, the registered groups and the family groups
+rebuilt from each distinct retained `family_configuration`, and recomputes
+[local_member_conformance.json](local_member_conformance.json). Two kinds of
+member have a law that needs no two-qubit gate:
+
+- A **local unitary** has operator Schmidt rank 1 across every single-qubit
+  cut. Its circuit object is lowered as live_run compiles it, unbound for a
+  shared template and without routing; the DAG is cut at every barrier,
+  delay and measurement on the wires each touches and split into connected
+  components, and CZ inside a component whose own unitary is local is
+  scaffold. Cancellation across a barrier or an idle is what Design A,
+  Design C, the conditional-Ramsey Bell arms and the spectator wavefront ask
+  the device to perform, and it passes.
+- A **product output** has an entangling unitary that maps its prepared
+  input to a product state, so every CZ it executes is optional for its law.
+
+Of 1304 distinct members, 272 are local unitaries, 20 product outputs and
+950 entangling; 62 member names carry mid-circuit measurement, reset or
+control flow and stay unchecked. Thirty members execute CZ their law does
+not need, and each matches a declaration naming what it measures. Ten local
+unitaries carry 144 scaffold CZ each before routing (`SCAFFOLD_CONTROLS`):
+the four walk readout controls, the four depth-0 walk points and the two
+template arms of the scaffold A/B campaign. Twenty product outputs execute
+17 to 24 CZ, or 144 for walk points (`PRODUCT_OUTPUT_PROBES`): the sixteen
+rank-sector endpoint probes at parameter one with their references, and the
+four depth-1 walk points, where the walk sends its input to a product
+state. A new member that executes CZ its law does not need fails the gate
+until it states why.
 
 ## Files
 
