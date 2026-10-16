@@ -1,0 +1,96 @@
+{
+ "schema": "qi-spectator-zz-split-v1",
+ "claim_kind": "inference, fixed after both data sets",
+ "pairs": [
+  {
+   "target": 0,
+   "driver": 1,
+   "j_hz": -2206.889684647301,
+   "measured_shift_rad": -0.1220165760100881,
+   "zz_predicted_shift_rad": 0.01109303747291369,
+   "zz_predicted_se_rad": 0.004503732626511191,
+   "residual_rad": -0.1331096134830018
+  },
+  {
+   "target": 0,
+   "driver": 2,
+   "j_hz": -7902.751711715086,
+   "measured_shift_rad": 0.13865803579082697,
+   "zz_predicted_shift_rad": 0.039723562753069236,
+   "zz_predicted_se_rad": 0.004839540122476145,
+   "residual_rad": 0.09893447303775774
+  },
+  {
+   "target": 3,
+   "driver": 5,
+   "j_hz": 11730.771140103512,
+   "measured_shift_rad": 0.07400683485683,
+   "zz_predicted_shift_rad": -0.05896528709550777,
+   "zz_predicted_se_rad": 0.006570244404735192,
+   "residual_rad": 0.13297212195233776
+  },
+  {
+   "target": 3,
+   "driver": 6,
+   "j_hz": -7823.680096026388,
+   "measured_shift_rad": 0.060070589027478034,
+   "zz_predicted_shift_rad": 0.0393261054619411,
+   "zz_predicted_se_rad": 0.00671464421229597,
+   "residual_rad": 0.020744483565536938
+  },
+  {
+   "target": 4,
+   "driver": 7,
+   "j_hz": -2984.110710040631,
+   "measured_shift_rad": 0.6328965188569562,
+   "zz_predicted_shift_rad": 0.014999776454659629,
+   "zz_predicted_se_rad": 0.006731178668765153,
+   "residual_rad": 0.6178967424022965
+  },
+  {
+   "target": 4,
+   "driver": 8,
+   "j_hz": -4985.4221309190025,
+   "measured_shift_rad": 0.030036014076022202,
+   "zz_predicted_shift_rad": 0.025059464866462575,
+   "zz_predicted_se_rad": 0.004822710929085581,
+   "residual_rad": 0.004976549209559627
+  },
+  {
+   "target": 11,
+   "driver": 13,
+   "j_hz": 7501.984499734667,
+   "measured_shift_rad": 0.013582425618235451,
+   "zz_predicted_shift_rad": -0.03770908702673748,
+   "zz_predicted_se_rad": 0.00471007224819628,
+   "residual_rad": 0.051291512644972934
+  },
+  {
+   "target": 11,
+   "driver": 14,
+   "j_hz": -31434.077058639126,
+   "measured_shift_rad": 0.15273631977310204,
+   "zz_predicted_shift_rad": 0.15800490489567381,
+   "zz_predicted_se_rad": 0.0047460063701824,
+   "residual_rad": -0.005268585122571778
+  },
+  {
+   "target": 12,
+   "driver": 9,
+   "j_hz": 3730.1833303570293,
+   "measured_shift_rad": -0.04293576645605479,
+   "zz_predicted_shift_rad": -0.0187499464755084,
+   "zz_predicted_se_rad": 0.004683793701070882,
+   "residual_rad": -0.02418581998054639
+  },
+  {
+   "target": 12,
+   "driver": 15,
+   "j_hz": 2952.285933133452,
+   "measured_shift_rad": -0.03681184739285222,
+   "zz_predicted_shift_rad": -0.014839807678125665,
+   "zz_predicted_se_rad": 0.0045882874037109535,
+   "residual_rad": -0.021972039714726554
+  }
+ ]
+}

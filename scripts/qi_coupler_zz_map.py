@@ -42,11 +42,16 @@ ALAP, evolves all 17 qubits under injected omega_q and every J_ab per cycle,
 and requires the analysis to recover them; --analyze OUT RUN_DIR... analyzes
 collected batches.
 
+--analyze --replay compares OUT with its recomputation instead of writing it.
+--explain-spectators OUT SPECTATOR_ANALYSIS ZZ_ANALYSIS splits each
+spectator-drive phase shift of the crosstalk run into its coupler-ZZ part and
+a drive-crosstalk residual (also with --replay).
 --sanity RUN_DIR checks one collected batch (completion, readout errors,
 spectator populations) before the next is submitted.
 
 Usage: "$PYTHON" scripts/qi_coupler_zz_map.py
-       (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... | --sanity RUN_DIR)
+       (--write DIR | --check DIR | --conformance | --analyze OUT RUN_DIR... | --sanity RUN_DIR
+        | --explain-spectators OUT SPECTATOR_ANALYSIS ZZ_ANALYSIS)
        (DIR is the cases root, results/quantum_inspire/cases)
 """
 
@@ -259,29 +264,52 @@ def fit_target(
     }
 
 
+# End-quality rule, fixed after the Tuna-17 data: a target whose Ramsey
+# visibility falls below MIN_VISIBILITY at some sector and delay, or whose
+# pairwise-additive fit fails at p < MIN_ADDITIVITY_P, yields phases the
+# delta-method error does not describe, so its ends are reported and excluded
+# from the combined J.
+MIN_VISIBILITY = 0.3
+MIN_ADDITIVITY_P = 1e-3
+
+
+def usable(target: dict[str, Any]) -> bool:
+    from scipy.stats import chi2
+
+    if target["min_visibility"] < MIN_VISIBILITY:
+        return False
+    dof = target["additivity_dof"]
+    return dof <= 0 or float(chi2.sf(target["additivity_chi2"], dof)) >= MIN_ADDITIVITY_P
+
+
 def analyze_table(meta: dict[str, Any], table: Table, assignment: dict[int, tuple[float, float]]) -> dict[str, Any]:
     adjacent = neighbors(meta["pairs"])
     targets = [fit_target(t, adjacent[t], table, role, assignment) for role in ROLES for t in meta["parts"][role]]
+    for row in targets:
+        row["usable"] = usable(row)
     edges_out = []
     for a, b in meta["pairs"]:
         ends = []
         for row in targets:
             other = b if row["target"] == a else a if row["target"] == b else None
             if other is not None:
-                ends.append((row["j_hz"][str(other)], row["j_se_hz"][str(other)], row["target"]))
-        weights = [1 / max(se, 1e-12) ** 2 for _, se, _ in ends]
-        combined = sum(w * j for w, (j, _, _) in zip(weights, ends, strict=True)) / sum(weights)
-        difference = ends[0][0] - ends[1][0]
-        difference_se = math.hypot(ends[0][1], ends[1][1])
+                ends.append((row["j_hz"][str(other)], row["j_se_hz"][str(other)], row["target"], row["usable"]))
+        good = [end for end in ends if end[3]]
+        weights = [1 / max(se, 1e-12) ** 2 for _, se, _, _ in good]
+        both = len(good) == 2
+        difference = good[0][0] - good[1][0] if both else None
+        difference_se = math.hypot(good[0][1], good[1][1]) if both else None
+        combined = sum(w * j for w, (j, _, _, _) in zip(weights, good, strict=True)) / sum(weights) if good else None
         edges_out.append(
             {
                 "edge": [a, b],
                 "j_hz": combined,
-                "j_se_hz": math.sqrt(1 / sum(weights)),
-                "zz_shift_hz": 2 * combined,
-                "ends": {str(t): {"j_hz": j, "j_se_hz": se} for j, se, t in ends},
+                "j_se_hz": math.sqrt(1 / sum(weights)) if good else None,
+                "zz_shift_hz": 2 * combined if combined is not None else None,
+                "usable_ends": len(good),
+                "ends": {str(t): {"j_hz": j, "j_se_hz": se, "usable": ok} for j, se, t, ok in ends},
                 "end_difference_hz": difference,
-                "end_difference_z": difference / difference_se if difference_se > 0 else None,
+                "end_difference_z": difference / difference_se if difference is not None and difference_se else None,
             }
         )
     return {"targets": targets, "edges": edges_out}
@@ -375,6 +403,8 @@ def conformance(profile: str) -> str:
     report = analyze_table(meta, table, {q: (0.0, 0.0) for q in range(n)})
     to_hz = 1 / (2 * math.pi * CYCLE_SECONDS)
     worst = 0.0
+    if not all(row["usable"] for row in report["targets"]):
+        raise SystemExit("conformance: an exact target fails the end-quality rule")
     for row in report["edges"]:
         for end in row["ends"].values():
             worst = max(worst, abs(end["j_hz"] - coupling[(row["edge"][0], row["edge"][1])] * to_hz))
@@ -428,6 +458,45 @@ def sanity(run: Path) -> list[str]:
     return problems
 
 
+SPECTATOR_WINDOW_SECONDS = 40 * CYCLE_SECONDS
+DRIVER_EXCITED_FRACTION = 0.5
+
+
+def explain_spectators(spectator: dict[str, Any], zz: dict[str, Any]) -> dict[str, Any]:
+    """Split each spectator-drive phase shift into the coupler-ZZ part this map predicts and a residual.
+
+    A driver toggled by DRIVE_PULSES X gates through the 800 ns window
+    spends DRIVER_EXCITED_FRACTION of it excited, so a coupler J moves the
+    target's accumulated Rz phase by -2 (2 pi J) f t relative to the idle
+    driver; whatever the measured single-driver shift exceeds that by is drive
+    crosstalk (a.c.-Stark or pulse leakage), which this map does not contain.
+    Inference, fixed after both data sets.
+    """
+    couplings = {tuple(sorted(e["edge"])): e for e in zz["edges"]}
+    rows = []
+    for star in spectator["additivity"]:
+        for role in ("A", "B"):
+            driver = star[role]
+            edge = couplings[tuple(sorted((star["T"], driver)))]
+            if edge["j_hz"] is None:
+                continue
+            predicted = -2 * 2 * math.pi * edge["j_hz"] * DRIVER_EXCITED_FRACTION * SPECTATOR_WINDOW_SECONDS
+            predicted_se = 2 * 2 * math.pi * edge["j_se_hz"] * DRIVER_EXCITED_FRACTION * SPECTATOR_WINDOW_SECONDS
+            measured = star["phase_shift_rad"][role]
+            rows.append(
+                {
+                    "target": star["T"],
+                    "driver": driver,
+                    "j_hz": edge["j_hz"],
+                    "measured_shift_rad": measured,
+                    "zz_predicted_shift_rad": predicted,
+                    "zz_predicted_se_rad": predicted_se,
+                    "residual_rad": measured - predicted,
+                }
+            )
+    return {"schema": "qi-spectator-zz-split-v1", "claim_kind": "inference, fixed after both data sets", "pairs": rows}
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -436,7 +505,23 @@ def main() -> int:
     mode.add_argument("--conformance", action="store_true")
     mode.add_argument("--analyze", type=Path, nargs="+", metavar=("OUT", "RUN_DIR"))
     mode.add_argument("--sanity", type=Path, metavar="RUN_DIR")
+    mode.add_argument("--explain-spectators", type=Path, nargs=3, metavar=("OUT", "SPECTATOR_ANALYSIS", "ZZ_ANALYSIS"))
+    parser.add_argument("--replay", action="store_true", help="with --analyze: compare OUT with the recomputation")
     args = parser.parse_args()
+    if args.explain_spectators:
+        out, spectator_path, zz_path = args.explain_spectators
+        split = explain_spectators(
+            json.loads(spectator_path.read_text(encoding="utf-8")), json.loads(zz_path.read_text(encoding="utf-8"))
+        )
+        text = json.dumps(split, indent=1) + "\n"
+        if args.replay:
+            if out.read_text(encoding="utf-8") != text:
+                raise SystemExit(f"{out} differs from its recomputation")
+            print(f"{out}: {len(split['pairs'])} driver-target pairs reproduce")
+            return 0
+        out.write_text(text, encoding="utf-8")
+        print(f"{len(split['pairs'])} driver-target pairs -> {out}")
+        return 0
     if args.sanity:
         problems = sanity(args.sanity)
         for problem in problems:
@@ -468,7 +553,13 @@ def main() -> int:
             "readout_assignment": {str(q): list(v) for q, v in assignment.items()},
             **analyze_table(meta, tabulate(meta, shots), assignment),
         }
-        out.write_text(json.dumps(report, indent=1) + "\n", encoding="utf-8")
+        text = json.dumps(report, indent=1) + "\n"
+        if args.replay:
+            if out.read_text(encoding="utf-8") != text:
+                raise SystemExit(f"{out} differs from its recomputation")
+            print(f"{out}: {len(report['edges'])} couplers reproduce")
+            return 0
+        out.write_text(text, encoding="utf-8")
         print(f"{len(report['edges'])} couplers -> {out}")
         return 0
     count = 0
