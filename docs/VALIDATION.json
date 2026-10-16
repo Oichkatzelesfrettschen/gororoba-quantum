@@ -70,7 +70,7 @@
       "result": "exit 0"
     },
     {
-      "command": "Rocq 9.1.1 fresh compile and independent kernel check",
+      "command": "Rocq 9.2 fresh compile and independent kernel check at open_gororoba 7d95d228",
       "result": "exit 0",
       "receipt": "docs/evidence/folding_proofs/verification_receipt.json"
     },
@@ -83,8 +83,8 @@
       "result": "exit 0; 60 publication, optional-cache, captured exact-version license and deposited-file identity tests"
     },
     {
-      "command": "check_compiler_gate.py under normal and optimized Python; replay_rocq.sh with Rocq 9.1.1 / OCaml 5.4.0",
-      "result": "five incompatible or incomplete version reports rejected before source checks; pinned fresh proof replay matches the retained log exactly"
+      "command": "check_compiler_gate.py under normal and optimized Python; replay_rocq.sh with Rocq 9.2 / OCaml 5.5.0",
+      "result": "six incompatible or incomplete version reports rejected before source checks; pinned fresh proof replay matches the retained log exactly"
     }
   ],
   "dependency_versions": {

@@ -14,11 +14,12 @@ class CompilerAdmissionTests(unittest.TestCase):
     def test_incompatible_versions_fail_at_admission(self) -> None:
         script = Path(__file__).with_name("replay_rocq.sh").resolve()
         incompatible = (
+            "The Rocq Prover, version 9.1.1\ncompiled with OCaml 5.4.0",
             "The Rocq Prover, version 9.1.1\ncompiled with OCaml 5.5.0",
             "The Rocq Prover, version 9.2\ncompiled with OCaml 5.4.0",
-            "The Rocq Prover, version 9.1.1",
-            "compiled with OCaml 5.4.0",
-            "The Rocq Prover, version 9.1.1\ncompiled with OCaml 5.4.0\nunexpected build",
+            "The Rocq Prover, version 9.2",
+            "compiled with OCaml 5.5.0",
+            "The Rocq Prover, version 9.2\ncompiled with OCaml 5.5.0\nunexpected build",
         )
         with tempfile.TemporaryDirectory(prefix="folding-compiler-admission-") as temporary:
             root = Path(temporary)
@@ -37,7 +38,7 @@ class CompilerAdmissionTests(unittest.TestCase):
                     )
                     self.assertEqual(result.returncode, 1)
                     self.assertEqual(result.stdout, "")
-                    self.assertIn("requires Rocq 9.1.1 compiled with OCaml 5.4.0", result.stderr)
+                    self.assertIn("requires the Rocq build recorded in toolchain.txt", result.stderr)
                     self.assertEqual({path.name for path in root.iterdir()}, {"rocq-fixture"})
 
 

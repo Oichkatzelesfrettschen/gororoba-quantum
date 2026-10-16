@@ -6,8 +6,9 @@ This script is the only path from the repository to Kaggle:
 
 - ``push ENTRY --slug SLUG [-- ARGS]`` (ARGS after ``--`` go to ENTRY) resolves ENTRY's repository imports
   (``import X`` and ``from X import`` naming a module under gororoba_quantum/
-  or scripts/, transitively), bundles them with any ``--include`` data files
-  as a zip embedded in a generated ``run.py``, writes kernel-metadata.json
+  or scripts/, transitively), bundles them with any ``--include`` file, or
+  every tracked file of an ``--include`` directory, as a zip embedded in a
+  generated ``run.py``, writes kernel-metadata.json
   (private, GPU, internet for the pinned pip install) and pushes the kernel.
   Every bundle also carries KERNEL_FILES. The kernel installs KERNEL_PINS,
   unpacks the bundle and runs kaggle_kernel/kernel_main.py, which records
@@ -145,6 +146,22 @@ def git_commit() -> str:
     return head.stdout.strip() + ("-dirty" if dirty.stdout.strip() else "")
 
 
+def tracked_files(include: str) -> list[Path]:
+    """A repository file, or every tracked file under a repository directory."""
+    path = (ROOT / include).resolve()
+    require(path.is_relative_to(ROOT) and path.exists(), f"{include} is not a repository path")
+    if not path.is_dir():
+        return [path]
+    tracked = subprocess.run(
+        ["git", "ls-files", "-z", "--", path.relative_to(ROOT).as_posix()],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    return [ROOT / name for name in tracked.split("\0") if name]
+
+
 def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str, revision: str) -> dict[str, Any]:
     """Write run_dir/kernel (run.py and kernel-metadata.json) and run_dir/submission.json."""
     smoke = args.entry is None
@@ -159,9 +176,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     for always in KERNEL_FILES:
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
     for include in args.include:
-        path = (ROOT / include).resolve()
-        require(path.is_file() and path.is_relative_to(ROOT), f"{include} is not a repository file")
-        files.append(path)
+        files.extend(tracked_files(include))
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -180,7 +195,14 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             digests[rel] = sha256(data)
             bundle.writestr(rel, data)
         device = "CPU" if args.machine == "cpu" else "GPU"
-        job = {"entry": entry_rel, "args": list(args.args), "smoke": smoke, "device": device}
+        datasets = [dataset_record(slug) for slug in getattr(args, "dataset", [])]
+        job = {
+            "entry": entry_rel,
+            "args": list(args.args),
+            "smoke": smoke,
+            "device": device,
+            "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
+        }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
     kernel_dir.mkdir(parents=True)
@@ -200,6 +222,8 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
     }
     if args.machine != "cpu":
         metadata["machine_shape"] = args.machine
+    if datasets:
+        metadata["dataset_sources"] = [d["ref"] for d in datasets]
     (kernel_dir / "kernel-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
     submission = {
         "schema": "kaggle-aer-submission-v1",
@@ -212,6 +236,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "untracked_inputs": untracked,
         "pins": list(KERNEL_PINS),
         "bundle": digests,
+        "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
         "pushed_utc": stamp,
     }
@@ -279,6 +304,72 @@ def self_test(args: argparse.Namespace) -> int:
         require(all(pin in runner for pin in KERNEL_PINS), "run.py lacks a pin")
         require(submission["untracked_inputs"] == [], f"untracked bundled inputs {submission['untracked_inputs']}")
     print(f"kaggle_run self-test: {len(submission['bundle'])} bundled files, private GPU kernel, run.py compiles")
+    return 0
+
+
+DATASETS = RESULTS / "datasets"
+ARCHIVE = "repository-files.bundle"
+
+
+def dataset_record(slug: str) -> dict[str, Any]:
+    path = DATASETS / f"{slug}.json"
+    require(path.is_file(), f"no retained dataset record {path.relative_to(ROOT)}; run `dataset` first")
+    return dict(json.loads(path.read_text(encoding="utf-8")))
+
+
+def dataset(args: argparse.Namespace) -> int:
+    """Upload repository files as a private Kaggle dataset: one tar archive and its sha256 manifest.
+
+    The archive carries a non-archive extension so Kaggle stores its bytes
+    unchanged; a kernel that attaches the dataset unpacks it and verifies every
+    file against the manifest before its entry runs.
+    """
+    import tarfile
+    import tempfile
+
+    files = sorted({path for include in args.include for path in tracked_files(include)})
+    # A dataset records the revision its files came from, so every file must
+    # be tracked; push instead reports untracked bundled inputs and marks the
+    # revision dirty.
+    listed = subprocess.run(
+        ["git", "ls-files", "-z", "--", *(path.relative_to(ROOT).as_posix() for path in files)],
+        cwd=ROOT,
+        capture_output=True,
+        text=True,
+        check=True,
+    ).stdout
+    untracked = sorted(set(files) - {ROOT / name for name in listed.split("\0") if name})
+    require(not untracked, f"untracked dataset inputs: {[path.relative_to(ROOT).as_posix() for path in untracked]}")
+    require(bool(files), "the dataset names no files")
+    manifest = {path.relative_to(ROOT).as_posix(): sha256(path.read_bytes()) for path in files}
+    owner = username()
+    ref = f"{owner}/{args.slug}"
+    with tempfile.TemporaryDirectory() as scratch:
+        staging = Path(scratch)
+        with tarfile.open(staging / ARCHIVE, "w:gz") as archive:
+            for path in files:
+                archive.add(path, arcname=path.relative_to(ROOT).as_posix(), recursive=False)
+        metadata = {"title": args.slug, "id": ref, "licenses": [{"name": "unknown"}]}
+        (staging / "dataset-metadata.json").write_text(json.dumps(metadata, indent=1) + "\n", encoding="utf-8")
+        archive_sha256 = sha256((staging / ARCHIVE).read_bytes())
+        exists = subprocess.run(["kaggle", "datasets", "status", ref], capture_output=True, text=True).returncode == 0
+        if exists:
+            reply = kaggle("datasets", "version", "-p", str(staging), "-m", f"files at {git_commit()}", "-r", "skip")
+        else:
+            reply = kaggle("datasets", "create", "-p", str(staging), "-r", "skip")
+    record = {
+        "schema": "kaggle-dataset-v1",
+        "ref": ref,
+        "archive": ARCHIVE,
+        "archive_sha256": archive_sha256,
+        "git_commit": git_commit(),
+        "includes": list(args.include),
+        "files": manifest,
+        "reply": reply.strip()[-300:],
+    }
+    DATASETS.mkdir(parents=True, exist_ok=True)
+    (DATASETS / f"{args.slug}.json").write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
+    print(f"{ref}: {len(manifest)} files, archive {archive_sha256[:12]}")
     return 0
 
 
@@ -386,11 +477,16 @@ def main() -> int:
     push_parser.add_argument("entry", nargs="?", help="repository-relative script the kernel runs")
     push_parser.add_argument("--slug", required=True, help="Kaggle kernel slug (lowercase, dashes)")
     push_parser.add_argument("--smoke", action="store_true", help="run the environment probe instead of ENTRY")
-    push_parser.add_argument("--include", action="append", default=[], help="extra repository file to bundle")
+    push_parser.add_argument("--include", action="append", default=[], help="repository file or directory to bundle")
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
+    push_parser.add_argument("--dataset", action="append", default=[], help="retained dataset slug to attach")
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)
+    dataset_parser = sub.add_parser("dataset")
+    dataset_parser.add_argument("--slug", required=True)
+    dataset_parser.add_argument("--include", action="append", required=True, help="repository file or directory")
+    dataset_parser.set_defaults(func=dataset)
     sub.add_parser("verify").set_defaults(func=verify)
     for name, func in (("status", status), ("collect", collect)):
         sub_parser = sub.add_parser(name)

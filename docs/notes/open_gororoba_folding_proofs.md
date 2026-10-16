@@ -1,6 +1,7 @@
 # Folding, exact rank geometry, and Rocq proof audit
 
 The audit below records commit `abbf13c` and its historical receipts.
+The [replay bundle](../evidence/folding_proofs/README.md) is pinned to `7d95d228` under Rocq 9.2 for compilation and kernel replay only; the findings and line locators below describe `abbf13c`.
 The [latest C881 audit](c881_exhaustive_proof.md) supersedes the C881
 exhaustive-lower-bound limitation with fresh Rocq 9.2 evidence from HEAD
 `b977e43f`. Other claims below retain their explicitly named source scope.

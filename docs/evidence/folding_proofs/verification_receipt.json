@@ -5,8 +5,8 @@
       "-w",
       "+all"
     ],
-    "ocaml": "5.4.0",
-    "rocq": "9.1.1"
+    "ocaml": "5.5.0",
+    "rocq": "9.2"
   },
   "fresh_compile_sources": [
     "GF2Algebra.v",
@@ -18,23 +18,24 @@
   ],
   "global_context_closed_queries": 7,
   "independent_failure": {
-    "diagnostic": "deprecated-transitive-library-file-since-9.0",
+    "diagnostic": "deprecated-transitive-library-file-since-Stdlib-9.0",
     "exit_code": 1,
-    "original_log_sha256": "5a2320681f0d49a8e52a6e03761b30824a808b97dc1dc995f4ba121919fe83db",
+    "original_log_sha256": "33e4e4b59ea84b55e802c556f3868b328bda0991f16f9b49b5aa534394cbef8a",
     "receipt": "homotopy_import_deprecation.log",
     "redaction": "Replace the machine-specific Rocq installation prefix with <ROCQ_PREFIX>; preserve the remaining diagnostic text",
     "source": "proofs/theories/HomotopyTransferAssociator.v"
   },
   "kernel_assumptions": "none",
   "kernel_check_exit_code": 0,
+  "replay_log": "rocq_replay.log",
   "schema_version": 1,
   "sister_repository_observations": {
-    "after_head": "abbf13cada78d9b106fc610a36f6eea54567ecfc",
+    "after_head": "7d95d228db6be8a5b2f613430f04f2385d6ae48a",
     "after_short_status": [
       " M .gitignore",
       "?? .ignore"
     ],
-    "before_head": "abbf13cada78d9b106fc610a36f6eea54567ecfc",
+    "before_head": "7d95d228db6be8a5b2f613430f04f2385d6ae48a",
     "before_short_status": [
       " M .gitignore",
       "?? .ignore"
@@ -42,7 +43,8 @@
     "scope": "HEAD object ID and git status --short entries only; the observations do not establish preservation of unmeasured surfaces"
   },
   "source_hash_file": "source_hashes.sha256",
-  "source_head": "abbf13cada78d9b106fc610a36f6eea54567ecfc",
+  "source_head": "7d95d228db6be8a5b2f613430f04f2385d6ae48a",
   "source_repository": "https://github.com/Oichkatzelesfrettschen/open_gororoba",
+  "supersedes": "history/abbf13c-rocq-9.1.1/verification_receipt.json",
   "warnings_in_successful_closure": 0
 }
