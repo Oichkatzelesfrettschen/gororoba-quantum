@@ -29,13 +29,16 @@ omega = +1 triples) and V- (mean 2P - 1 over omega = -1 triples); the census
 a two-reference estimator recovers, f = (P - (1 - V+)/2) / ((V+ + V-)/2) over
 the simulated triples, when V+ and V- come from all simulated triples and
 when they come from the bright and dark triples of one pair alone (the range
-over pairs is the reference-mismatch systematic); and the shots a hardware
-run needs to resolve the census frequency to +-0.01 at 2 sigma given the
-measured visibility.
+over pairs is the reference-mismatch systematic); and the census shots a
+hardware run needs to resolve the census frequency to +-0.01 at 2 sigma
+given the measured visibility, with the references known exactly.
+reference_allocation adds the bright and dark reference shots that sampled
+references cost at the same precision.
 
-``--pairs all`` or ``--pairs I,J;I,J``. ``--check FILE`` recomputes FILE's
-summary from its records exactly, reruns the named pairs on the CPU and
-requires each P(c = 1) within five binomial standard errors and the CZ
+``--pairs all`` or ``--pairs I,J;I,J``. ``--check FILE`` requires FILE to hold
+every ordered pair exactly once, recomputes its summary from its records
+exactly, prints the reference allocation, reruns the named pairs on the CPU
+and requires each P(c = 1) within five binomial standard errors and the CZ
 counts exactly.
 """
 
@@ -230,6 +233,36 @@ def summarize(result: dict[str, Any]) -> dict[str, Any]:
     }
 
 
+def reference_allocation(result: dict[str, Any]) -> dict[str, Any]:
+    """Census, bright and dark shots that reach the same precision once both references are sampled.
+
+    With V = (V+ + V-)/2 and f the dark fraction of the simulated triples,
+    the two-reference estimator has df/dP = 1/V, df/dV+ = (1 - f)/(2V) and
+    df/dV- = -f/(2V); P(c = 1) carries variance 1/4 per shot and V+ or V-
+    carries 1 - V^2 per reference shot. Var f = sum_i a_i / N_i is smallest
+    for a fixed total at N_i proportional to sqrt(a_i), where the total is
+    (sum_i sqrt(a_i))^2 / sigma^2.
+    """
+    summary = result["summary"]
+    v_plus, v_minus = summary["bright_visibility"], summary["dark_visibility"]
+    visibility = (v_plus + v_minus) / 2
+    signs = [w for r in result["records"] for w in r["omega"]]
+    f = sum(w < 0 for w in signs) / len(signs)
+    weights = {
+        "census": 0.5 / visibility,
+        "bright": (1 - f) * math.sqrt(1 - v_plus**2) / (2 * visibility),
+        "dark": f * math.sqrt(1 - v_minus**2) / (2 * visibility),
+    }
+    sigma = 0.01 / 2
+    total = sum(weights.values()) ** 2 / sigma**2
+    return {
+        "dark_fraction": round(f, 6),
+        "census_only_shots": round(weights["census"] ** 2 / sigma**2, 1),
+        "total_shots": round(total, 1),
+        "split": {name: round(total * w / sum(weights.values()), 1) for name, w in weights.items()},
+    }
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     parser.add_argument("--pairs", default="all")
@@ -240,7 +273,13 @@ def main() -> int:
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
         require(retained["schema"] == "census-frequency-design-v2", f"{args.check}: unexpected schema")
+        listed = [tuple(r["pair"]) for r in retained["records"]]
+        require(
+            sorted(listed) == sorted(pairs_of("all")) and len(set(listed)) == len(listed),
+            f"{args.check}: records are not each ordered pair exactly once",
+        )
         require(summarize(retained) == retained["summary"], f"{args.check}: summary differs from its records")
+        print(json.dumps({"reference_allocation": reference_allocation(retained)}))
         named = {tuple(r["pair"]): r for r in retained["records"]}
         subset = list(named) if args.pairs == "all" else pairs_of(args.pairs)
         fresh = run(subset, "CPU", retained["shots"])

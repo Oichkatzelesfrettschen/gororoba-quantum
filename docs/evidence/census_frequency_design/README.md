@@ -11,8 +11,9 @@ each. [result.json](result.json) is the output of a Kaggle T4 kernel
 (qiskit 2.5.2, qiskit-aer 0.17.2); the kernel's measured substrate
 ([kaggle_environment.json](kaggle_environment.json)) and its hypercomplex
 stack proof ([kaggle_hypercomplex.json](kaggle_hypercomplex.json),
-`identical: true`) sit beside it. Gate core-288 recomputes the summary from
-the retained records exactly and reruns pairs (1, 2) and (2, 1) on the CPU.
+`identical: true`) sit beside it. Gate core-288 requires every ordered pair exactly once, recomputes the
+summary from the retained records exactly and reruns pairs (1, 2) and (2, 1)
+on the CPU.
 
 W_ij and W_ji are different circuits: their signs differ on 336 of the 1680
 (i < j, k) triples, so every ordered pair runs its own circuit. Pairs with
@@ -31,7 +32,8 @@ i = 0, j = 0 or i = j have W = +-I and enter the census at their exact value.
 | Common-visibility prediction 1/2 - V (1/2 - 231/512) | 0.424786 |
 | Two-reference census, V+ and V- pooled over all pairs | 0.451172 |
 | Two-reference census, V+ and V- from one pair, range over 210 pairs | 0.4299 to 0.4699 |
-| Total shots for +-0.01 at 2 sigma at the simulated visibility | 78,601 |
+| Census shots for +-0.01 at 2 sigma, references known exactly | 78,601 |
+| Census plus sampled bright and dark references, optimal split | 292,054 (151,000 census, 63,128 bright, 77,926 dark) |
 
 ## Readings
 
@@ -50,16 +52,26 @@ i = 0, j = 0 or i = j have W = +-I and enter the census at their exact value.
   references taken from one pair move the census over 0.430 to 0.470, twice
   the +-0.01 target. A hardware design pools its references over many pairs,
   or interleaves references from the same compiled circuits it samples.
+- **Sampling the references costs more than the census itself.** The
+  bright and dark references enter the estimator through V+ and V-, so
+  their binomial error propagates into f with df/dV+ = (1 - f)/(2V) and
+  df/dV- = -f/(2V), V = (V+ + V-)/2, f = 0.55 the dark fraction of the
+  simulated triples. Splitting shots in proportion to each term's standard
+  deviation, the census needs 292,054 shots in all at the simulated
+  visibilities, 3.7 times the 78,601 it needs with exact references
+  (`reference_allocation`, printed by `--check`; its census-only figure,
+  78,071, uses V rather than the per-pair mean visibility). As the
+  visibility falls the ratio approaches 4.
 - **The shot cost depends on the hardware visibility, which simulation does
-  not give.** At the simulated V = 0.357 the census needs about 79k shots in
-  total. The walk scaffold measured hardware loss per CZ 1.8 to 4.4 times
-  the calibrated model's on the same backends
+  not give.** The walk scaffold measured hardware loss per CZ 1.8 to 4.4
+  times the calibrated model's on the same backends
   (`docs/evidence/walk-control-scaffolding/README.md`). If that ratio holds
   over 434 CZ and visibility decays exponentially in the CZ count (an
   assumption; confirming it needs one bright and one dark pair on hardware),
-  V falls to 0.156 to 0.011, and the shots to about 409k to 87 million. At
-  the 250 us default repetition delay, 409k shots already exceed 100 s,
-  against 266 s left at the last recorded service inventory.
+  V falls to 0.156 to 0.011, the census-only shots to about 409k to 87
+  million, and the total with sampled references to about 1.6 million to
+  350 million. At the 250 us default repetition delay, 409k shots already
+  exceed 100 s, against 266 s left at the last recorded service inventory.
 
 ## Consequence for the proposed experiment
 
