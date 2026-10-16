@@ -14,12 +14,14 @@ Each replay runs unchanged, with ROCQ pointing at the built executable:
 - formal_certificates/replay_rocq.sh (repository proofs and receipts),
 - c881_exhaustive/replay_rocq.sh and stiefel_witness/replay_rocq.sh
   (GOROROBA_ROOT set to the clone),
-- folding_proofs/replay_rocq.sh when ``--folding`` is given,
+- folding_proofs/replay_rocq.sh when ``--folding`` is given, whose complete
+  stdout must equal the retained folding_proofs/rocq_replay.log,
 - the TargetFlipN21 procedure of AGENTS.md: ``rocq compile -q -w +all``, no
   warning, ``rocq check -silent -o``.
 
 ``--out FILE`` receives the toolchain identity, the build and replay wall
-times, and each replay's exit code and output tail. The run passes only when
+times, and each replay's exit code, every output line carrying ``Warning:``
+and the output tail. The run passes only when
 every replay exits 0. Push it with scripts/kaggle_run.py --machine cpu and
 --include for the proofs/, docs/evidence/ directories and the result files
 the formal certificates hash.
@@ -47,15 +49,29 @@ SWITCH = "rocq-9.2"
 REPLAYS = ("formal_certificates", "c881_exhaustive", "stiefel_witness")
 
 
-def run(cmd: list[str], env: dict[str, str] | None = None, cwd: Path | None = None) -> dict[str, Any]:
+def run(
+    cmd: list[str], env: dict[str, str] | None = None, cwd: Path | None = None, retained_log: Path | None = None
+) -> dict[str, Any]:
+    """Run cmd; warning lines are read from the complete output before the tail is cut.
+
+    With retained_log, the complete stdout must equal that file byte for byte,
+    or the entry's return code is 1.
+    """
     start = time.time()
     proc = subprocess.run(cmd, capture_output=True, text=True, env=env, cwd=cwd)
-    return {
+    output = proc.stdout + proc.stderr
+    entry = {
         "command": " ".join(cmd[:6]) + (" ..." if len(cmd) > 6 else ""),
         "returncode": proc.returncode,
         "seconds": round(time.time() - start, 1),
-        "tail": (proc.stdout + proc.stderr)[-2500:],
+        "warning_lines": [line for line in output.splitlines() if "arning:" in line],
+        "tail": output[-2500:],
     }
+    if retained_log is not None:
+        entry["matches_retained_log"] = proc.stdout == retained_log.read_text(encoding="utf-8")
+        if not entry["matches_retained_log"]:
+            entry["returncode"] = entry["returncode"] or 1
+    return entry
 
 
 def build_toolchain(steps: list[dict[str, Any]]) -> Path:
@@ -81,12 +97,13 @@ def target_flip(rocq: Path) -> dict[str, Any]:
         work = Path(scratch)
         (work / "TargetFlipN21.v").write_bytes((ROOT / "proofs/TargetFlipN21.v").read_bytes())
         compiled = run([str(rocq), "compile", "-q", "-w", "+all", "TargetFlipN21.v"], cwd=work)
-        if compiled["returncode"] == 0 and "arning:" in compiled["tail"]:
+        if compiled["returncode"] == 0 and compiled["warning_lines"]:
             compiled["returncode"] = 1
         checked = run([str(rocq), "check", "-silent", "-o", "TargetFlipN21"], cwd=work)
     return {
         "returncode": compiled["returncode"] or checked["returncode"],
         "seconds": round(compiled["seconds"] + checked["seconds"], 1),
+        "warning_lines": compiled["warning_lines"] + checked["warning_lines"],
         "tail": compiled["tail"] + checked["tail"],
     }
 
@@ -111,10 +128,12 @@ def main() -> int:
     env = dict(os.environ, ROCQ=str(rocq), GOROROBA_ROOT=str(gororoba))
     replays: dict[str, Any] = {}
     for name in (*REPLAYS, *(("folding_proofs",) if args.folding else ())):
-        replays[name] = run(["sh", str(ROOT / "docs/evidence" / name / "replay_rocq.sh")], env=env, cwd=ROOT)
+        evidence = ROOT / "docs/evidence" / name
+        retained = evidence / "rocq_replay.log" if name == "folding_proofs" else None
+        replays[name] = run(["sh", str(evidence / "replay_rocq.sh")], env=env, cwd=ROOT, retained_log=retained)
     replays["TargetFlipN21"] = target_flip(rocq)
     result = {
-        "schema": "rocq-kaggle-replay-v1",
+        "schema": "rocq-kaggle-replay-v2",
         "toolchain": version,
         "opam_packages": [OCAML, *ROCQ_PACKAGES],
         "open_gororoba_commit": args.gororoba_commit,
