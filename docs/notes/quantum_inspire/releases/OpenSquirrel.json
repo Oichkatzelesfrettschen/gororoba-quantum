@@ -1,0 +1,103 @@
+{
+ "component": "OpenSquirrel",
+ "source": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
+ "retrieved_utc": "2026-10-16T22:00Z",
+ "releases": [
+  {
+   "name": "Bug fix release 0.9.1",
+   "tag": "0.9.1",
+   "date": "2026-07-30T15:52:07Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.9.1",
+   "body": "### Fixed\r\n\r\n- `SingleQubitGate.__mul__` tries to match and replace with a default gate"
+  },
+  {
+   "name": "Feature release 0.9.0",
+   "tag": "0.9.0",
+   "date": "2025-12-19T17:08:45Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.9.0",
+   "body": "### Added\r\n\r\n- `QGymMapper` mapper pass\r\n- `U`(theta, phi, lambda) gate to default single-qubit gates\r\n- `Z90` and `mZ90` pi-half rotation gates (equivalent to `S` and `Sdag` gates)\r\n- Operation duration in terms of execution cycles can be specified for the `QuantifySchedulerExporter`\r\n- `measurement_to_bit_map` property added to the Circuit class\r\n\r\n### Changed\r\n\r\n- `Circuit.export` expects an `Exporter` instance as input argument (instead of an `ExportFormat`)\r\n- Moved Bloch sphere rotation composition from the merger pass interface to Bloch sphere rotation semantic module\r\n- Refactor gate semantics as attributes of gates\r\n\r\n### Removed\r\n\r\n- The `QuantifySchedulerExporter` no longer returns a `bit_register_mapping`\r\n(use `Circuit.measurement_to_bit_map` property instead), it only returns a quantify-scheduler `Schedule`\r\n- The `ExportFormat` has been deprecated\r\n(exporters can be specified by providing an instance as input argument to `Circuit.export`)"
+  },
+  {
+   "name": "Feature release 0.8.0",
+   "tag": "0.8.0",
+   "date": "2025-11-03T07:13:07Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.8.0",
+   "body": "### Added\r\n\r\n- Processing of control instructions (Barrier, Wait) added to quantify-scheduler exporter\r\n\r\n### Changed\r\n\r\n- Refactor of visitor functionality of IR components and implementations\r\n- Improved SWAP placement and refactor of common functionalities in existing router passes"
+  },
+  {
+   "name": "Feature release 0.7.0",
+   "tag": "0.7.0",
+   "date": "2025-10-13T12:20:13Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.7.0",
+   "body": "### Added\r\n\r\n- Support for Python 3.13 added.\r\n\r\n### Removed\r\n\r\n- Support for Python 3.9 dropped."
+  },
+  {
+   "name": "Bug fix release 0.6.1",
+   "tag": "0.6.1",
+   "date": "2025-10-06T11:12:56Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.6.1",
+   "body": "### Added\r\n\r\n- `instruction_count` property to `Circuit`\r\n\r\n### Fixed\r\n\r\n- Autocompletion for `CircuitBuilder` gates\r\n- Re-mapper properly handles remapping of target qubits"
+  },
+  {
+   "name": "Feature release 0.6.0",
+   "tag": "0.6.0",
+   "date": "2025-08-28T12:33:41Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.6.0",
+   "body": "### Added\r\n\r\n- `MIPMapper` mapper pass\r\n- OpenSquirrel's `__version__` attribute exposed\r\n\r\n### Changed\r\n\r\n- `RoutingValidator` changed to `InteractionValidator`\r\n\r\n### Fixed\r\n\r\n- `ShortestPathRouter` and `AStarRouter` now correctly propagate SWAP gate insertion effects throughout the circuit\r\n- The values for parameters `theta` and `phi` stay within the domain `(-pi, pi]` throughout parse- and compile-time\r\n(_note_: gate modifiers have precedence over normalization)\r\n- Mapping of the target qubits of controlled gates\r\n"
+  },
+  {
+   "name": "Feature release 0.5.0",
+   "tag": "0.5.0",
+   "date": "2025-05-28T09:32:48Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.5.0",
+   "body": "### Added\r\n\r\n- `asm_filter` method to the `Circuit` class to filter-out assembly declarations by backend name\r\n\r\n### Changed\r\n\r\n- Default gate identification check refactored (now including check for phase)\r\n- `McKayDecomposer` checks `X90` on BSR semantic instead of name\r\n\r\n### Fixed\r\n\r\n- `RoutingValidator` ignores assembly declarations"
+  },
+  {
+   "name": "Feature release 0.4.0",
+   "tag": "0.4.0",
+   "date": "2025-04-28T12:39:00Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.4.0",
+   "body": "### Added\r\n\r\n- Assembly declaration\r\n- `Rn` unitary instruction\r\n- `SWAP2CZDecomposer` decomposer pass\r\n- `CZDecomposer` decomposer pass\r\n- `ShortestPathRouter` router pass\r\n- `RandomMapper` mapper pass\r\n- `AStarRouter` router pass\r\n\r\n### Changed\r\n\r\n- libQASM 1.1.0 integrated (updated from 0.6.9)\r\n- Refactor: removed generators\r\n- Changed the `RoutingChecker` pass to a `RoutingValidator` pass\r\n- Changed use of `native` to `primitive`, e.g. `NativeGateValidator` is now `PrimitiveGateValidator`\r\n- Compilation passes accept `kwargs` as input"
+  },
+  {
+   "name": "Bug fix release 0.3.1",
+   "tag": "0.3.1",
+   "date": "2025-01-31T13:54:44Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.3.1",
+   "body": "### Fixed\r\n\r\n- Bug in the writing of SWAP instructions"
+  },
+  {
+   "name": "Feature release 0.3.0",
+   "tag": "0.3.0",
+   "date": "2025-01-30T13:05:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.3.0",
+   "body": "### Added\r\n\r\n- `NativeGateValidator` validator pass\r\n\r\n### Changed\r\n\r\n- Relaxed NumPy version requirement to `>=1.26` for all supported Python versions\r\n\r\n### Fixed\r\n\r\n- Fixed order of merging Bloch sphere rotations"
+  },
+  {
+   "name": "Feature release 0.2.0",
+   "tag": "0.2.0",
+   "date": "2025-01-21T14:24:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.2.0",
+   "body": "### Added\r\n\r\n- `init` non-unitary instruction\r\n- `SWAP` two-qubit unitary instruction\r\n- `barrier` and `wait` control instructions\r\n- `SingleQubitGatesMerger` merger pass\r\n- `SWAP2CNOTDecomposer` decomposer pass\r\n- `CNOT2CZDecomposer` decomposer pass\r\n- `RoutingChecker`routing pass\r\n- Restore barrier groups in cQASMv1 Exporter\r\n\r\n### Changed\r\n\r\n- Importing modules, classes, and functionalities simplified\r\n- `merge_single_qubit_gates` method of `Circuit` class,\r\nchanged to general `merge` method that accepts custom merger passes\r\n- libQASM 0.6.9 integrated (updated from 0.6.7)\r\n- Refactor: code base adheres to the PEP8 style guide\r\n- Refactor: instruction library simplified\r\n- Refactor: comment nodes removed from IR\r\n\r\n### Fixed\r\n\r\n- Bug in ABA-decomposer\r\n- Bug in McKay-decomposer (all single-qubit Clifford gates are verified)"
+  },
+  {
+   "name": "Feature release 0.1.0",
+   "tag": "0.1.0",
+   "date": "2024-10-10T14:05:02Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenSquirrel/releases/tag/0.1.0",
+   "body": ""
+  }
+ ]
+}

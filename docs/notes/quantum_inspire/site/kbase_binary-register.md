@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/binary-register/](https://www.quantum-inspire.com/kbase/binary-register/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 c0d1b324a69b1c07653fd6d42f5ab4d7be3c5e9b2a21aebb697851b8e4c4a9ec.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 b21a9ef7037e8e129931bddc95ecbf41c302ebfa65972fc111f3cceda3d900fb.
 
 # Bit register
 
@@ -16,19 +16,16 @@ The measurement register is displayed as a binary string, following the conventi
 
 Let's take a look at an important exmaple:
 
-Close
+```cqasm
+version 3.0
 
-## Export visualization
+qubit[2] q
+bit[2] b
 
-File format SVG PNG
-
-Layout Horizontal Vertical
-
-Theme Light Dark
-
-Download
-
-Export
+H q[0]
+b[0] = measure q[0]
+b[1] = measure q[0]
+```
 
 which results in a histogram similar to this one (for a large number of shots):
 

@@ -1,0 +1,83 @@
+> Full piece: [https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CZ.html](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CZ.html)
+> Retrieved 2026-10-16T21:53Z by scripts/capture_qi_docs.py --spec (urllib, pandoc);
+> fetched HTML sha256 eb3832cf16fbd07f321e3ae7c6b67972beadc4d04a893167868efb4968384641;
+> site built from QuTech-Delft/cQASM-spec gh-pages commit 91cff84b22553062cdb2aeebd968a1dd2a6a3ef6.
+
+# C-Phase gate
+
+| Identifier | Operator | Example statement   |
+|------------|----------|---------------------|
+| CZ         | $`CZ`$ | **`CZ q[0], q[1]`** |
+
+## Description
+
+The C-Phase, or CZ, gate is a two-qubit gate. It performs a Z gate (negates the relative phase) on the second qubit, conditional on the state of the first qubit. The first qubit is usually referred to as the control qubit and the second qubit as the target qubit.
+
+In the standard computational basis for two qubits $`\{|00\rangle ,|01\rangle \,|10\rangle ,|11\rangle \}`$, the CZ gate:
+
+- leaves the control qubit unchanged,
+- performs a Z gate on the target qubit, when the control qubit is in state $`|1\rangle`$,
+- leaves the target qubit unchanged, when the control qubit is in state $`|0\rangle`$.
+
+Note
+
+The notion of a control qubit and a target qubit (for any controlled operation) only holds for the standard computational basis. Generally, in another basis, both the 'control' and 'target' qubit change.
+
+The CZ gate is a specific example of the [controlled phase shift gate (CR gate)](https://qutech-delft.github.io/cQASM-spec/latest/standard_gate_set/multi_qubit/mq_CR.html): $`CZ = CR(\pi)`$.
+
+### Aliases
+
+Also known as *C-Phase* , *controlled-Z* , or *controlled phase-flip* gate.
+
+### Properties
+
+- [Clifford](https://en.wikipedia.org/wiki/Clifford_gates) gate;
+- [Involutory](https://en.wikipedia.org/wiki/Involutory_matrix) operation (its own inverse);
+- [Controlled](https://en.wikipedia.org/wiki/Quantum_logic_gate#Controlled_gates) gate;
+- Perfect Entangler (maximally entangles specific product states);
+- Ising gate.
+
+## Representation
+
+```math
+\begin{align}
+CZ &= \left(\begin{matrix}
+1 & 0 & 0 &  0 \\
+0 & 1 & 0 &  0 \\
+0 & 0 & 1 &  0 \\
+0 & 0 & 0 & -1 
+\end{matrix}\right)
+\end{align}
+```
+
+which is equal to:
+
+```math
+CZ = |0\rangle\langle 0| \otimes I + |1\rangle\langle 1| \otimes Z.
+```
+
+## Operation examples
+
+### Standard basis
+
+```math
+\begin{align}
+CZ\,|00\rangle &= |00\rangle \\
+\\
+CZ\,|01\rangle &= |01\rangle \\
+\\
+CZ\,|10\rangle &= |10\rangle \\
+\\
+CZ\,|11\rangle &= -|11\rangle \\
+\end{align}
+```
+
+Qubit state ordering convention and matrix representation
+
+Note that [qubits in a ket are ordered](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/index.html#qubit-state-ordering-measurement-bit-ordering-and-matrix-representation) with qubit indices decreasing from left to right, *i.e.*,
+
+```math
+|\psi\rangle = \sum c_i~|q_nq_{n-1}~...q_1q_0\rangle_i
+```
+
+Note that for matrices a **reversed** basis ordering convention is adopted, as is done in most textbooks. For instance, in the case of a two-qubit control gate, the matrix is represented such that $`q_0`$ is the *control* qubit and $`q_1`$ is the *target* qubit; the state on which the matrix is applied should then effectively be written as $`|q_0\rangle \otimes |q_1\rangle`$.

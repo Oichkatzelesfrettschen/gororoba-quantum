@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/qi-tool/](https://www.quantum-inspire.com/kbase/qi-tool/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 18d5dad61549e4a2e880748b4cd1e0e7f708abed5e81a033107169a683e64faf.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 6c73147450999bd25eaba1e3db96e6c2aea9a24c186c639a00bb14dfe774bb25.
 
 # QI Tool
 
@@ -18,10 +18,36 @@ In order for the SDK's to communicate with the Quantum Inspire API, the user nee
 
 To log in, the following commands should be used:
 
+```shell
+qi login
+```
+
 This command will log in the user and store the credentials in `~/.quantuminspire/config.json`. This configuration is automatically interpreted by both [qiskit-quantuminspire](#qiskit-plugin) and [pennylane-quantuminspire](#pennylane-plugin).
 
 Next to authentication, the QI tool can also be used to upload cQASM or hybrid algorithms and fetch its results. This can either be done via the CLI:
 
+```shell
+qi files upload examples/hqca_script.py 3
+qi results get <job_id>
+```
+
 or via the Python API:
+
+```python
+from quantuminspire.sdk.models.file_algorithm import FileAlgorithm
+from quantuminspire.sdk.models.hybrid_algorithm import HybridAlgorithm
+from quantuminspire.sdk.models.job_options import JobOptions
+from quantuminspire.util.api.remote_backend import RemoteBackend
+
+backend = RemoteBackend()
+program: FileAlgorithm = HybridAlgorithm("", Path(name))
+program.read_file(Path(name))
+job_options = JobOptions(number_of_shots=1024, raw_data_enabled=true)
+job_id = backend.run(program, backend_type_id=3, options=job_options)
+
+sleep(10)
+
+results = backend.get_results(job_id)
+```
 
 More information can be found on: <https://github.com/QuTech-Delft/quantuminspire>.

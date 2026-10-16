@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/opensquirrel/](https://www.quantum-inspire.com/kbase/opensquirrel/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 51c2e89c6d3e371af915faa7645ee666cbcd3fb8b6579390757fd4aaf332c09e.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 02041f90698b564570255dab0ef478bcd7724c995ec1dd8119f3da0ea292902d.
 
 # OpenSquirrel compiler
 
@@ -35,21 +35,42 @@ Note that you can select a compile target that is different from your final exec
 
 As an example take the following quantum program. Notice that line 6 uses [SGMQ notation](https://www.quantum-inspire.com/kbase/cqasm-single-gate-multiple-qubits/) to generate three CNOT's.
 
+```cqasm
+version 3.0
+
+qubit[2] q
+
+H q[0]
+CNOT q[1,0,1],q[0,1,0]
+```
+
 When this is compiled using Spin-2+ as a backend and taking into account the [compile strategy for Spin-2+](https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/) you may expect that the three CNOT gates are compiled to three CZ gates sandhwiched between H gates on the target qubits. This measn that the first H gate on `q[0]` will be cancelled. From the McKay decomposition for single-qubit gates, you expect each H gate to be decomposed in Rz and X90 gates, as can be seen from the compiled circuit:
 
-Close
+```cqasm
+version 3.0
 
-## Export visualization
+qubit[2] q
 
-File format SVG PNG
-
-Layout Horizontal Vertical
-
-Theme Light Dark
-
-Download
-
-Export
+Rz(3.1415927) q[0]
+CZ q[1], q[0]
+Rz(-1.5707963) q[0]
+X90 q[0]
+Rz(1.5707963) q[0]
+Rz(1.5707963) q[1]
+X90 q[1]
+Rz(-1.5707963) q[1]
+CZ q[0], q[1]
+Rz(-1.5707963) q[1]
+X90 q[1]
+Rz(1.5707963) q[1]
+Rz(1.5707963) q[0]
+X90 q[0]
+Rz(-1.5707963) q[0]
+CZ q[1], q[0]
+Rz(-1.5707963) q[0]
+X90 q[0]
+Rz(1.5707963) q[0]
+```
 
 ## Using the QI Tool
 

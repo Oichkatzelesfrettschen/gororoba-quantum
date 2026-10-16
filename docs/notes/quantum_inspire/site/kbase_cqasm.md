@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/cqasm/](https://www.quantum-inspire.com/kbase/cqasm/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 15d4afcf61db266f6bebf884fd406bfa425ff140f2321145bbb35e7ea5ca93eb.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 c60f10f56668466dca6f44b35e60ea9aa9ac864c8986ac57f90daf8663ff70c9.
 
 # cQASM: A Quantum Programming Language
 
@@ -16,19 +16,24 @@ cQASM 3.0 is extensively [described here](https://qutech-delft.github.io/cQASM-s
 
 Let's start with an example where we create a [Bell state](https://www.quantum-inspire.com/kbase/bell-states/) to get a feel for the language:
 
-Close
+```cqasm
+version 3.0
 
-## Export visualization
+// a basic cQASM example 
 
-File format SVG PNG
+/*This is an example 
+        creating one of the Bell states */
 
-Layout Horizontal Vertical
+qubit[2] q
+bit[2] b
 
-Theme Light Dark
+init q[0:1]
 
-Download
+H q[0]
+CNOT q[0], q[1]
 
-Export
+b[0,1] = measure q[0,1]
+```
 
 The file starts with the specification of the cQASM version on line 1. This line is always present.
 

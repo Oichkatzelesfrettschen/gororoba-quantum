@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/low-level-api/](https://www.quantum-inspire.com/kbase/low-level-api/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 60e93b723fad1b993faec319563d6150548b66fdc5070f71c45370276ed87f6b.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 5aeb3920ba789eabf3b2673c3df16cb4fd69749c33e2f0aaf60d215a02f9213d.
 
 # Low-level API
 
@@ -17,5 +17,29 @@ Forms are provided for all endpoints to create new objects or modify existing ob
 To consume the API, Quantum Inspire has provided an api-client that handles all communication. This api-client can be installed from [PyPI](https://pypi.org/project/qi-compute-api-client/).
 
 A basic example consumer of this schema written in [Python](https://www.python.org/) might look like this:
+
+```python
+import time
+import compute_api_client
+from compute_api_client.rest import ApiException
+from pprint import pprint
+
+configuration = compute_api_client.Configuration(
+    host = "https://api.quantum-inspire.com"
+)
+
+# Quantum Inspire uses bearer tokens, provided by our IdP.
+configuration.access_token = os.environ["ACCESS_TOKEN"]
+
+async with compute_api_client.ApiClient(configuration) as api_client:
+    api_instance = compute_api_client.AlgorithmsApi(api_client)
+    algorithm_in = compute_api_client.AlgorithmIn()
+    try:
+        api_response = await api_instance.create_algorithm_algorithms_post(algorithm_in)
+        print("The response of AlgorithmsApi->create_algorithm_algorithms_post:\n")
+        pprint(api_response)
+    except ApiException as e:
+        print("Exception when calling AlgorithmsApi->create_algorithm_algorithms_post: %s\n" % e)
+```
 
 [Previous](https://www.quantum-inspire.com/kbase/opensquirrel/) [Next](https://www.quantum-inspire.com/kbase/libket/)

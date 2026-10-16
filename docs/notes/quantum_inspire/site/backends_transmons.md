@@ -1,5 +1,5 @@
 > Full piece: [https://www.quantum-inspire.com/backends/transmons/](https://www.quantum-inspire.com/backends/transmons/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
 > fetched HTML sha256 9f9f21764ce36e8dc5737243445f9e09ae23906e39147112410491e00b30efb4.
 
 # Transmons

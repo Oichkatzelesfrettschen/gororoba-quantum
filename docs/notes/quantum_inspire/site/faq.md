@@ -1,8 +1,10 @@
 > Full piece: [https://www.quantum-inspire.com/faq/](https://www.quantum-inspire.com/faq/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 838da023769bfb8c85be8f11f6913a527e256ad2fa6fb48d357b6b456164be21.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 39b145886249042167c78a9ae27f7442d1f7db8094514c5f7e557714b5ae2a95.
 
 # FAQ
+
+![](https://www.datocms-assets.com/119587/1584000832-faq.jpg)
 
 ## Scheduled and unscheduled maintenance
 

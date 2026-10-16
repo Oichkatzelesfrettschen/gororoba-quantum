@@ -1,0 +1,247 @@
+{
+ "component": "qx-simulator",
+ "source": "https://github.com/QuTech-Delft/qx-simulator/releases",
+ "retrieved_utc": "2026-10-16T22:00Z",
+ "releases": [
+  {
+   "name": "Release 0.10.0",
+   "tag": "0.10.0",
+   "date": "2025-08-28T13:21:48Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.10.0",
+   "body": "### Added\r\n- Rn gate to instruction library.\r\n- Support for Python 3.13.\r\n- Integrate with libqasm 1.2.1 release."
+  },
+  {
+   "name": "Release 0.9.0",
+   "tag": "0.9.0",
+   "date": "2025-04-08T15:30:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.9.0",
+   "body": "### Added\r\n- Integrate with libqasm 1.2.0 release.\r\n\r\n### Fixed\r\n- Pi-half rotation gates defined incorrectly.\r\n- Bug in SparseComplex::operator=, which was not always performing the assignment."
+  },
+  {
+   "name": "Release 0.8.0",
+   "tag": "0.8.0",
+   "date": "2025-03-26T10:52:08Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.8.0",
+   "body": "### Added\r\n- Integrate with libqasm 1.1.0 release.\r\n- `pow` gate modifier now works with fractional exponents."
+  },
+  {
+   "name": "Release 0.7.5",
+   "tag": "0.7.5",
+   "date": "2025-03-17T17:23:28Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.7.5",
+   "body": "### Added\r\n- Integrate with libqasm 1.0.0 release.\r\n- Documentation: GitHub Actions `doc` workflow.\r\n\r\n### Changed\r\n- Allow move constructing a `DenseUnitaryMatrix`.\r\n- Change SimulationIterationAccumulator to keep `shots_done` and receive `shots_requested` in `get_simulation_result()`.\r\n- Update `cpp-linux-x64` and `cpp-linux-arm64` jobs to use `ubuntu-latest` and `ubuntu-24.04-arm` respectively.\r\n- Update to `mkdocs-material/9.6.5` and `mkdocstrings/0.28.2` versions in `requirements.txt`.\r\n\r\n### Removed\r\n- Support for 'reset all'."
+  },
+  {
+   "name": "Release 0.7.4",
+   "tag": "0.7.4",
+   "date": "2025-01-29T14:49:38Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.7.4",
+   "body": "### Added\r\n- Integrate with libqasm 0.6.9 release:\r\n  - Add `SWAP` gate instruction.\r\n  - Add `barrier`, `wait`, and `\u00ecnit` non-gate instructions.\r\n- The register manager now holds a 'dirty bitset' for virtual qubit and bit indices."
+  },
+  {
+   "name": "Release 0.7.3",
+   "tag": "0.7.3",
+   "date": "2025-01-27T12:30:10Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.7.3",
+   "body": "### Added\r\n- Documentation: GitHub pages.\r\n- Linters: `.clang-format` and `.clang-tidy`.\r\n- Integrate with libqasm 0.6.8 release:\r\n  - Add gate modifiers. Notice though that `pow` only works with integer exponents.\r\n\r\n### Changed\r\n- Implement instructions as a hierarchy.\r\n- Implement `GateConvertor` as a `CircuitBuilder`.\r\n- Implement `BasisVector` as a `boost::dynamic_bitset<uint32_t>`.\r\n- Implement `RegisterManager` as a singleton.\r\n- Change `QuantumState` by taking the measurement register out of it.\r\n- Change `Circuit::execute` to return a `SimulationIterationContext`.\r\n- Change `Matrix` and `DenseUnitaryMatrix` to use `std::vector` instead of `std::array`.\r\n- Change file, functions, and variable names.\r\n\r\n### Removed\r\n- `abseil` library dependency."
+  },
+  {
+   "name": "Release 0.7.2",
+   "tag": "0.7.2",
+   "date": "2024-11-22T17:09:26Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.7.2",
+   "body": "### Added\r\n\r\n- Integrate with libqasm 0.6.7 release.\r\n- Add `reset` instruction.\r\n- Make QX simulator aware of bit (register) variables.\r\n- Update `test` and `assets` workflows.\r\n\r\n### Changed\r\n\r\n### Removed"
+  },
+  {
+   "name": "Release 0.7.1",
+   "tag": "0.7.1",
+   "date": "2024-05-27T14:24:48Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.7.1",
+   "body": "### Added\r\n\r\n- Integrate with libqasm 0.6.6 release.\r\n- Allow multiple qubit/bit (register) definitions and mid-circuit measurements.\r\n\r\n### Changed\r\n\r\n- Update `conanfile.py` to request `libqasm/0.6.6` and use `tools.build.skip_test`.\r\n- Update GitHub workflows with some improvements taken from `libqasm`.\r\n\r\n### Removed"
+  },
+  {
+   "name": "Release 0.7.0",
+   "tag": "0.7.0",
+   "date": "2024-04-17T11:34:06Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/0.7.0",
+   "body": "### Added\r\n\r\n- Integrate with libqasm 0.6.3 release.\r\n\r\n### Changed\r\n\r\n- Rename `tests` folder to `test`.\r\n- Update GitHub workflows.\r\n\r\n### Removed\r\n\r\n- cQasm 1.x support.\r\n- `circuits` folder."
+  },
+  {
+   "name": "Release 0.6.5: Conan, ARM on Linux",
+   "tag": "v0.6.5",
+   "date": "2023-12-04T12:36:31Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.6.5",
+   "body": "**Added**\r\n\r\n- Python 3.12 support\r\n\r\n**Changed**\r\n- Uses Conan\r\n- New Github workflows\r\n- Working ARM runners in the CI"
+  },
+  {
+   "name": "Release 0.6.4: error messages",
+   "tag": "v0.6.4",
+   "date": "2023-09-21T10:57:28Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.6.4",
+   "body": "\r\nAdded\r\nMeaningful error message when parsing or simulation fails\r\n\r\nChanged\r\nDoes not crash when too many qubits asked"
+  },
+  {
+   "name": "Release 0.6.3: bugfix and misc",
+   "tag": "v0.6.3",
+   "date": "2023-09-21T02:06:38Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.6.3",
+   "body": "### Added\r\n\r\n- Address sanitizer CMake mode\r\n\r\n### Changed\r\n\r\n- Removed submodules and deps/ folder, replaced with CMake FetchContent\r\n- C++23\r\n- gtest instead of doctest\r\n- Various fixes to Github actions\r\n- Fixed bug in bitset due to bool automatic casting to 32 bits\r\n- Documentation formatting fixes\r\n- Doc chapter about internals\r\n\r\n### Removed\r\n\r\n-\r\n"
+  },
+  {
+   "name": "0.6.2: depolarizing channel error model, constant seeds",
+   "tag": "v0.6.2",
+   "date": "2023-02-27T12:31:39Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.6.2",
+   "body": "# Added\r\ndepolarizing_channel error model and docs\r\nability to pass constant seed for deterministic simulation\r\nRandomTest doing Kolmogorov-Smirnov statistical test to match random numbers with their ideal probability distribution\r\n\r\n# Changed\r\nfixed docs\r\nsource files use .hpp/.cpp extensions\r\nrandom number distributions (integer min/max and real 0-1) are done in-house for portability and consistency of results\r\n\r\n# Removed\r\nnothing"
+  },
+  {
+   "name": "0.6.1 beta: ARM compat, classical not and more controlled gates, integers in \"results\" and new Python API",
+   "tag": "v0.6.1",
+   "date": "2023-02-10T10:34:48Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.6.1",
+   "body": "**Added**\r\nLinux arm64 Python wheel and Linux arm64 test workflow (GCC-Release)\r\n\"classical not\" gate is back\r\n\"state\" section in JSON now contains a new entry \"norm\" which is the square of the modulus of the complex number\r\nC++ integration test\r\nAll gates can be controlled (including prep, measure). This is not new but was accidentally removed in 0.6.0.\r\nNew Python API execute_string and execute_file without having to create qxelarator.QX() and returning user-friendly Python type\r\n**Changed**\r\nFixed README\r\n\"results\" section in JSON contains integers instead of floats (those integers being the number of occurences)\r\nIn relation to previous point, \"results\" only relates to measurement register averaging, and no longer to quantum state when doing a single shot. For that, use the \"state\" section in the JSON.\r\nOutput float precision is 8 decimals instead of 6\r\n**Removed**\r\nMost Python tests - already covered in C++ integration test, and they didn't check much anyway\r\n"
+  },
+  {
+   "name": "Version 0.6.0: performance improvement, modern C++20 and matrices",
+   "tag": "v0.6.0",
+   "date": "2023-01-23T15:58:30Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.6.0",
+   "body": "Almost a complete rewrite. No functional change except:\r\n- error models don't work anymore :( they will come better and stronger later on\r\n- classical not gate doesn't work anymore :( it's just an omission, will be fixed soon\r\n- get_measurement_outcome and get_state don't exist anymore :( they've been superseeded by json output\r\n- it's faster and using a single core \\o/ and less memory on average\r\n\r\n### Added\r\n\r\n- Ability to easily implement any quantum gate by simply giving an arbitrary unitary matrix in Gates.h\r\n- Performance speedup using a single thread\r\n- Some proper linear algebra primitives using template metaprogramming\r\n- Abseil-cpp dependency for flat_hash_map\r\n- Ability to compile the simulator with an set maximum number of qubits - in the future this will\r\nbe using templates as well to switch data structures based on the input quantum circuit\r\n\r\n### Changed\r\n\r\n- Quantum state is stored as a sparse array implemented using a flat_hash_map from Abseil-cpp\r\n- C++20 in place of C++14,\r\n- Code style: camel case\r\n\r\n### Removed\r\n- OpenMP and multithreading.\r\n- SSE, AVX and other intrinsics.\r\n- get_measurement_outcome and get_state methods. Now accessible via JSON output.\r\n"
+  },
+  {
+   "name": "Release 0.5.5: output state complex amplitudes and set_string",
+   "tag": "v0.5.5",
+   "date": "2023-01-12T16:05:14Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.5.5",
+   "body": "Added:\r\n- set_string method to parse a cqasm string directly instead of a cqasm file\r\n\r\n\r\nChanged:\r\n- Fixed issue #118: quantum state is always displayed, as well as measurement register averaging\r\n"
+  },
+  {
+   "name": "Release 0.5.4: 2 bugfixes and some cleanups",
+   "tag": "v0.5.4",
+   "date": "2023-01-06T13:17:04Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.5.4",
+   "body": "## Added\r\n- Tests for measure gate\r\n\r\n## Changed\r\n- Fixed issues #91 and #114\r\n- As part of #114, switch to sequential/simple measure gate\r\n\r\n## Removed\r\n- QFT implementation (never instantiated, so no functional change)\r\n- qx-server no longer exists, together with the network libraries\r\n- \"Microcode\" generation functions (never used either)\r\n- Parallel gates in gate.h (they were executed sequentially)\r\n- Some non-needed and/or obsolete code\r\n"
+  },
+  {
+   "name": "Release 0.5.3: Python 3.11 support",
+   "tag": "v0.5.3",
+   "date": "2023-01-02T09:22:57Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.5.3",
+   "body": "Adds Python 3.11 support, and that's it"
+  },
+  {
+   "name": "Release 0.5.2: better documentation, tidy tests and fixed Python version",
+   "tag": "v0.5.2",
+   "date": "2022-12-07T09:07:32Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.5.2",
+   "body": "**Added**\r\n- Readthedocs documentation\r\n\r\n**Changed**\r\n- Fixed Python versions on Linux\r\n- Updated README with new API functions\r\n- Tidy tests and circuits folder\r\n\r\n**Removed**\r\n- Python 3.6 support\r\n"
+  },
+  {
+   "name": "Release 0.5: new UI, JSON output and improved code",
+   "tag": "v0.5.0",
+   "date": "2022-11-17T08:39:31Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.5.0",
+   "body": "A long-needed cleanup and modernization of the code and some better output features.\r\nWatch-out: the output format is changed. If you were parsing the output, this new release will break your code. JSON output is added, so parsing of raw stdout is no longer needed.\r\n\r\n### Added\r\n- \"-j <filename>\" CLI option to output JSON to a file\r\n- Possible to use the simulator without OpenMP.\r\n\r\n### Changed\r\n- Measure_all gate added; does no longer measure each qubit separately.\r\n- Move to C++11: smart pointers, etc.\r\n- Format of output has been changed. You no longer need to add a \"display\" gate to\r\noutput the quantum state at the end of the circuit.\r\n- Now uses the new Libqasm API instead of the old one.\r\n- Output complex amplitudes when not averaging measurement register.\r\n- Do not add automatically a measure_all when doing measurement averaging;\r\naverage the measurement register only.\r\n\r\n### Removed\r\n- Most preprocessor macros. E.g. for gate creation.\r\n- A lot of old and useless code was removed. A lot of dead code removed.\r\n\r\n### Fixed\r\n- Close input file when done.\r\n- Code style has been completely fixed automatically with clang-format.\r\n- Headers no longer include .cc file.\r\n- Moved implementations to .cc files instead of headers.\r\n"
+  },
+  {
+   "name": "CPU compatibility fix",
+   "tag": "v0.4.2",
+   "date": "2021-06-01T10:38:01Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.4.2",
+   "body": "This fixes a problem where the PyPI wheels for qxelarator were being built using whatever CPU extensions the github runner happened to have, resulting in unnecessary compatibility issues/illegal instruction faults. The wheels now only require up to SSE3.\r\n\r\n### Fixed\r\n- Wheels no longer require exotic CPU extensions to work\r\n"
+  },
+  {
+   "name": "Build system update",
+   "tag": "v0.4.1",
+   "date": "2021-05-20T23:55:32Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.4.1",
+   "body": "This update doesn't change anything functionally, but completely overhauls the build system.\r\n\r\n### Added\r\n- Continuous integration for as far as automated tests exist\r\n- Automated release build and distribution logic for PyPI\r\n- Installation logic in build system\r\n- qxelarator wheels include qx-simulator binary (and friends)\r\n\r\n### Fixed\r\n- Build on MacOS\r\n- Build on Windows using MSVC\r\n- Python build process on various platforms\r\n"
+  },
+  {
+   "name": "Stability update",
+   "tag": "v0.4.0",
+   "date": "2021-05-20T16:12:25Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.4.0",
+   "body": "XPU-based threading was removed in favor of OpenMP to solve pthread-related stability issues in XPU."
+  },
+  {
+   "name": "cQASM v1.0 support in qxelerator",
+   "tag": "v0.3.0",
+   "date": "2019-05-01T06:00:01Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.3.0",
+   "body": "- updated qxelerator to support cqasm v1.0\r\n- updated setup instructions in README.md"
+  },
+  {
+   "name": "Bugfix release: Fixed issue with correct merging of libqasm 0.1.3",
+   "tag": "v0.2.5",
+   "date": "2018-12-21T06:12:54Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.2.5",
+   "body": "Release Notes:\r\n- Fixed issue with libqasm submodule, this release is now with the correct version"
+  },
+  {
+   "name": "Bugfix release: fixing issue with integer arguments for qubit operations",
+   "tag": "v0.2.4",
+   "date": "2018-12-14T13:16:24Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.2.4",
+   "body": "Release Notes:\r\n\r\n- Removed -u 0 in Jenkinsfile again\r\n- Single qubit operations now accept integers as arguments, previously it required floats.\r\n"
+  },
+  {
+   "name": "QX Rise v0.2.3",
+   "tag": "v0.2.3",
+   "date": "2018-11-04T20:53:41Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.2.3",
+   "body": "Release notes:\r\n- Fixed pthread mutex locking bug in XPU worker.\r\n- Updated the libqasm to get the hotfix.\r\n"
+  },
+  {
+   "name": "QX Rise v0.2.2",
+   "tag": "v0.2.2",
+   "date": "2018-09-25T09:34:52Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.2.2",
+   "body": "Release notes:\r\n* Fixed bug in measurement and preparation implementation for large number of qubits.\r\n* Fixed verbose GNU Compiler warnings under Linux.\r\n"
+  },
+  {
+   "name": "QX Rise v0.2.1",
+   "tag": "v0.2.1",
+   "date": "2018-09-04T09:26:56Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.2.1",
+   "body": "Release notes:\r\n* Enabled quantum noise simulation using the **Depolarizing Error Model**\r\n* Added multishot simulation mode to save simulation time on the Quantum Inspire web platform.\r\n* Enabled **Identity** gate support\r\n\r\nThe **Depolarizing Error Model** can be enabled by adding the following line o your cQASM code:\r\n**error_model depolarizing_channel,0.001** (where 0.001 is the error rate).\r\n\r\nFor more information on the depolarizing error model implementation please refer to the following paper:\r\nN. Khammassi, I. Ashraf, X. Fu, C. G. Almudever and K. Bertels, \"**QX: A High-performance Quantum Computer Simulation Platform**\", *Design, Automation & Test in Europe Conference & Exhibition (DATE)*, 2017, Lausanne, 2017, pp. 464-469. doi: 10.23919/DATE.2017.7927034"
+  },
+  {
+   "name": "QX Rise v0.2.0",
+   "tag": "v0.2.0",
+   "date": "2018-08-23T11:29:22Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/qx-simulator/releases/tag/v0.2.0",
+   "body": "Release notes:\r\n- Initial **cQASM 1.0** support.\r\n- Integrated with **libqasm 0.1.1** release.\r\n- Added support for new quantum gates:  \r\n  - Flexible controlled phase shift (*CR* and *CRK*)\r\n  - Measurement and Preparation in X/Y/Z basis: added *measure_x*, *measure_y*, *prep_x* and *prep_y*.\r\n- Re-implemented classical *NOT* gate for full binary-controlled gate support.\r\n- Added support for **Single Gate Multiple Qubits** (**SGMQ**).\r\n- Fixed overflow bug when simulating more than 31 qubits.\r\n- Fixed bug in qubit register measurement (\"measure_all\" instruction).\r\n- Added a new set of unit tests.\r\n\r\nFor more information on the cQASM language, please refer to the following paper: https://arxiv.org/abs/1805.09607\r\n"
+  }
+ ]
+}

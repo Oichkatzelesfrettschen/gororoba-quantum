@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/release-notes/](https://www.quantum-inspire.com/release-notes/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 7d2ea46134e331520638e44195055e00c14e79d17f9f6cfbf71dfc83851ce2d7.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 4c4396c73763f394ce79d882b43cf22e7046d720986e907381a5575a893901ed.
 
 # Release notes
 
@@ -20,7 +20,7 @@ Quantum Inspire is built from many components, each with their own release notes
 - [QX simulator Releases page](https://github.com/QuTech-Delft/qx-simulator/releases)
 - [Qiskit provider for Quantum Inspire](https://github.com/QuTech-Delft/qiskit-quantuminspire/releases)
 - [PennyLane plugin for Quantum Inspire](https://github.com/QuTech-Delft/pennylane-quantuminspire/releases)
-- [Quantify Scheduler Releases page](https://gitlab.com/quantify-os/quantify-scheduler/-/releases) - For a general overview of Quantify and connecting to its open-source community, see [quantify-os.org](quantify-os.org). Quantify is maintained by the Quantify Consortium consisting of Qblox and Orange Quantum Systems.
+- [Quantify Scheduler Releases page](https://gitlab.com/quantify-os/quantify-scheduler/-/releases) - For a general overview of Quantify and connecting to its open-source community, see [quantify-os.org](https://quantify-os.org). Quantify is maintained by the Quantify Consortium consisting of Qblox and Orange Quantum Systems.
 
 # Old Quantum Inspire 1.0 release notes
 

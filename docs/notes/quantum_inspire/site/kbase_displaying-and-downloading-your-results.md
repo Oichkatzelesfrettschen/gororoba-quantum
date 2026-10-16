@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/](https://www.quantum-inspire.com/kbase/displaying-and-downloading-your-results/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 037ebc5d5a361b747498d4cf9695c115da819f0d90dc6f17aa4001a512c89b49.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 43d109a43ce32a89778a56afe3fb60e37f27265267ea41ba98ee28c39ed8b6ba.
 
 # Displaying and downloading your results
 
@@ -57,19 +57,16 @@ When running a *non-deterministic algorithm on the emulator*, or when running an
 
 Note that the bit register is always initialized to zeroes, so when no measurement result is assigned to a bit register, the corresponding bit in the bit register will be zero. Let's look at an example where we execute a 2-qubit algorithm, but we only measure the first qubit. Let's execute 1024 shots and see what happens on the different backends.
 
-Close
+```cqasm
+version 3.0
 
-## Export visualization
+qubit[2] q
+bit[2] b
 
-File format SVG PNG
+H q[0,1]
 
-Layout Horizontal Vertical
-
-Theme Light Dark
-
-Download
-
-Export
+b = measure q
+```
 
 - For *emulator* backends, the second bit in the measurement register (most significant bit) will remain zero and the results returned will look something like this. The states 10 and 11 have zero results and only the two output states are shown.
 
@@ -109,6 +106,10 @@ Note that when you measure only a subset of qubits, the web interface will show 
 ## Histogram data syntax
 
 The histogram data is given as a table of decimal values for the measurement register and the normalized frequency of observing that value over all shots (non-observed values are omitted from the table). Example:
+
+```python
+{"6":0.939453125,"2":0.0078125,"1":0.0078125,"7":0.0078125,"4":0.01171875,"3":0.0078125,"0":0.009765625,"5":0.0078125}
+```
 
 0.010
 
@@ -157,5 +158,9 @@ The histogram data is given as a table of decimal values for the measurement reg
 ## Raw data syntax
 
 The raw data is a list of integers, each integer being the decimal representation of the value of the measurement register at the end of each shot. Example:
+
+```python
+[6,6,6,6,6,1,6,3,6,6,6,6,6,4,6,6,6,6,6,6,6,6,6,6,6,6, ... ]
+```
 
 [Previous](https://www.quantum-inspire.com/kbase/executing-your-algorithm/) [Next](https://www.quantum-inspire.com/kbase/managing-your-account/)

@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/](https://www.quantum-inspire.com/kbase/spin-2-plus-operational-specifics/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 277a4a6a5f87eb0444f220c9b7405872c33b019ee0be8dc712ee234c41e3a3d5.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 455769261b54c99e9ed9ef444cdbb9a3b1d20fab506f6fc5399b6be58fab53e9.
 
 # Spin-2+: Operational specifics
 

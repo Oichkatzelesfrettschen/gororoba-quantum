@@ -1,0 +1,279 @@
+{
+ "component": "quantuminspire",
+ "source": "https://github.com/QuTech-Delft/quantuminspire/releases",
+ "retrieved_utc": "2026-10-16T22:00Z",
+ "releases": [
+  {
+   "name": "Release 4.1.0",
+   "tag": "4.1.0",
+   "date": "2026-09-25T12:12:09Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/4.1.0",
+   "body": "Release 4.1.0"
+  },
+  {
+   "name": "Release 4.0.0",
+   "tag": "4.0.0",
+   "date": "2026-08-07T08:56:57Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/4.0.0",
+   "body": "Feature release 4.0.0"
+  },
+  {
+   "name": "Fix release 3.5.3",
+   "tag": "3.5.3",
+   "date": "2026-05-07T13:12:03Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.5.3",
+   "body": "Fix release 3.5.3"
+  },
+  {
+   "name": "Fix release 3.5.2",
+   "tag": "3.5.2",
+   "date": "2026-05-06T08:09:33Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.5.2",
+   "body": "Fix release 3.5.2"
+  },
+  {
+   "name": "Feature release 3.5.1",
+   "tag": "3.5.1",
+   "date": "2026-01-19T12:28:13Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.5.1",
+   "body": "Feature release 3.5.1"
+  },
+  {
+   "name": "Feature release 3.4.1",
+   "tag": "3.4.1",
+   "date": "2026-01-15T10:21:43Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.4.1",
+   "body": "Feature release 3.4.1"
+  },
+  {
+   "name": "Feature release 3.3.1",
+   "tag": "3.3.1",
+   "date": "2025-04-25T08:15:08Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.3.1",
+   "body": "## What's Changed\r\n* Bump ruff from 0.11.0 to 0.11.1 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/203\r\n* Bump ruff from 0.11.1 to 0.11.2 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/204\r\n* Bump coverage from 7.7.0 to 7.7.1 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/205\r\n* [QI2-1492] Clarify Conda warning by @Mythir in https://github.com/QuTech-Delft/quantuminspire/pull/206\r\n* Bump pytest-asyncio from 0.25.3 to 0.26.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/207\r\n* Bump qxelarator from 0.7.5 to 0.8.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/208\r\n* Bump types-requests from 2.32.0.20250306 to 2.32.0.20250328 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/209\r\n* Bump coverage from 7.7.1 to 7.8.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/210\r\n* Bump pydantic from 2.10.6 to 2.11.1 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/211\r\n* Bump pytest-cov from 6.0.0 to 6.1.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/212\r\n* Bump types-oauthlib from 3.2.0.20240806 to 3.2.0.20250401 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/213\r\n* Bump ruff from 0.11.2 to 0.11.3 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/214\r\n* Bump pydantic from 2.11.1 to 2.11.2 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/215\r\n* Bump types-oauthlib from 3.2.0.20250401 to 3.2.0.20250403 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/216\r\n* Bump ruff from 0.11.3 to 0.11.4 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/217\r\n* Bump pytest-cov from 6.1.0 to 6.1.1 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/218\r\n* Bump pydantic from 2.11.2 to 2.11.3 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/219\r\n* Bump types-oauthlib from 3.2.0.20250403 to 3.2.0.20250408 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/220\r\n* Bump qxelarator from 0.8.0 to 0.9.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/221\r\n* Bump ruff from 0.11.4 to 0.11.5 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/222\r\n* Bump ruff from 0.11.5 to 0.11.6 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/223\r\n* Bump pydantic-settings from 2.8.1 to 2.9.1 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/224\r\n* Bump ruff from 0.11.6 to 0.11.7 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/225\r\n* [QI2-1573] Update API client by @Mythir in https://github.com/QuTech-Delft/quantuminspire/pull/226\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/quantuminspire/compare/3.3.0...3.3.1"
+  },
+  {
+   "name": "Feature release 3.3.0",
+   "tag": "3.3.0",
+   "date": "2025-03-19T12:13:55Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.3.0",
+   "body": "## What's Changed\r\n* Bump coverage from 7.6.11 to 7.6.12 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/185\r\n* [QI2-1441] Fix unfair dice example by @Mythir in https://github.com/QuTech-Delft/quantuminspire/pull/182\r\n* [QI2-1432] Update docs on qi installation by @eliasKA in https://github.com/QuTech-Delft/quantuminspire/pull/186\r\n* Bump ruff from 0.9.6 to 0.9.7 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/187\r\n* Bump pydantic-settings from 2.7.1 to 2.8.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/188\r\n* Bump pydantic-settings from 2.8.0 to 2.8.1 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/189\r\n* Bump typer from 0.15.1 to 0.15.2 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/190\r\n* Bump ruff from 0.9.7 to 0.9.8 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/191\r\n* Bump ruff from 0.9.8 to 0.9.9 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/192\r\n* Bump types-requests from 2.32.0.20241016 to 2.32.0.20250301 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/193\r\n* Bump pytest from 8.3.4 to 8.3.5 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/194\r\n* Bump types-requests from 2.32.0.20250301 to 2.32.0.20250306 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/195\r\n* Bump ruff from 0.9.9 to 0.9.10 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/196\r\n* Bump responses from 0.25.6 to 0.25.7 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/197\r\n* Bump ruff from 0.9.10 to 0.10.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/198\r\n* Bump ruff from 0.10.0 to 0.11.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/199\r\n* Bump qxelarator from 0.7.4 to 0.7.5 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/200\r\n* Bump coverage from 7.6.12 to 7.7.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/201\r\n* [QI2-1508] Use run_async instead of asyncio.run() by @Mythir in https://github.com/QuTech-Delft/quantuminspire/pull/202\r\n\r\n## New Contributors\r\n* @eliasKA made their first contribution in https://github.com/QuTech-Delft/quantuminspire/pull/186\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/quantuminspire/compare/3.2.0...3.3.0"
+  },
+  {
+   "name": "Feature release 3.2.0",
+   "tag": "3.2.0",
+   "date": "2025-02-11T08:16:01Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.2.0",
+   "body": "Release 3.2.0"
+  },
+  {
+   "name": "Feature release 3.1.0",
+   "tag": "3.1.0",
+   "date": "2025-02-06T08:26:40Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.1.0",
+   "body": "## What's Changed\r\n* Bump mypy from 1.14.1 to 1.15.0 by @dependabot in https://github.com/QuTech-Delft/quantuminspire/pull/178\r\n* [QI2-1437] Add command for getting backend information by @Mythir in https://github.com/QuTech-Delft/quantuminspire/pull/177\r\n\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/quantuminspire/compare/3.0.1...3.1.0"
+  },
+  {
+   "name": "Bugfix release 3.0.1",
+   "tag": "3.0.1",
+   "date": "2025-02-05T14:08:20Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.0.1",
+   "body": "## What's Changed\r\n* [QI2-1436] Fix old default API url by @Mythir in https://github.com/QuTech-Delft/quantuminspire/pull/176\r\n\r\n## New Contributors\r\n* @Mythir made their first contribution in https://github.com/QuTech-Delft/quantuminspire/pull/176\r\n\r\n**Full Changelog**: https://github.com/QuTech-Delft/quantuminspire/compare/3.0.0...3.0.1"
+  },
+  {
+   "name": "Feature release 3.0.0",
+   "tag": "3.0.0",
+   "date": "2025-02-05T08:12:30Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/3.0.0",
+   "body": ""
+  },
+  {
+   "name": "Feature release 2.3.0",
+   "tag": "2.3.0",
+   "date": "2024-04-22T06:54:53Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/2.3.0",
+   "body": "* Support for Qiskit 1.0\r\n"
+  },
+  {
+   "name": "Feature release 2.2.2",
+   "tag": "2.2.2",
+   "date": "2024-02-26T08:02:49Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/2.2.2",
+   "body": "* Support for Qiskit 0.46.0\r\n* Support for python 3.12\r\n* Readthedocs fix"
+  },
+  {
+   "name": "Feature release 2.2.1",
+   "tag": "2.2.1",
+   "date": "2023-11-17T13:42:27Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/2.2.1",
+   "body": "* Add Qiskit 'reset' gate to circuit parser and translate to prep_z when supported by the backend\r\n*  Qiskit aer installed separately as required\r\n* Cleanup QI-projects from test pipelines"
+  },
+  {
+   "name": "Feature release 2.2.0",
+   "tag": "2.2.0",
+   "date": "2023-05-30T13:11:15Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/2.2.0",
+   "body": "* [SDS-982] Example for deleting projects added\r\n* [SDS-981] Argument type check added for api `run` method\r\n* [SDS-977] Easier handling async jobs, api method `wait_for_completed_job` made public\r\n* [SDS-NNN] Some pylintrc incompatibilities solved\r\n\r\n"
+  },
+  {
+   "name": "Feature release 2.1.0",
+   "tag": "2.1.0",
+   "date": "2023-01-05T09:24:24Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/2.1.0",
+   "body": "* [SDS-826] unused package breaks nightly (#153)\r\n* [SDS-794] Check for raw data list was wrong (#150)\r\n* [SDS-716] Quantum Volume Computation (#147)\r\n* [SDS-617] Fix measurement statements in ProjectQ (#143)\r\n* [SDS-NNN] Some changes/bugs while testing plugin for quantuminspire (#142)\r\n* [SDS-610] Measurement mask field in asset deleted (#141)"
+  },
+  {
+   "name": "Feature release 2.0.0",
+   "tag": "2.0.0",
+   "date": "2022-05-10T06:42:21Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/2.0.0",
+   "body": "* SDK uses v2.0 of API interface\r\n* Added multiple measurement support\r\n* Barrier/Wait commands added\r\n* Fix for non-lineair measured bits used in conditional\r\n* Fix for serializable status-field in result\r\n"
+  },
+  {
+   "name": "Feature release 1.7.0",
+   "tag": "1.7.0",
+   "date": "2022-01-14T14:46:18Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.7.0",
+   "body": "* Rendering of the readthedocs html-documention repaired\r\n* delete_job api fixed. Doesn't return anything\r\n* Fixed nightly build"
+  },
+  {
+   "name": "Feature release 1.6.0",
+   "tag": "1.6.0",
+   "date": "2021-11-18T09:02:04Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.6.0",
+   "body": "* Ability added to get backend status\r\n* Added calibration information to result\r\n* Coupling map fixed\r\n* Unit testing now make use of Qiskit circuits instead of depending on Qiskit internals\r\n"
+  },
+  {
+   "name": "Feature release 1.5.0",
+   "tag": "1.5.0",
+   "date": "2021-07-13T14:14:57Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.5.0",
+   "body": "* Get API from Quantum Inspire Provider in Qiskit backend\r\n* Documentation improvements \r\n* Now able to get calibration data from Quantum Inspire result\r\n* Fix for damaged projects that were left when an error occurred while creating the experiment\r\n* Extra check for having enough classical bits defined\r\n* Split examples from SDK to separate repository https://github.com/QuTech-Delft/quantum-inspire-examples\r\n* Added get_authentication method used in many examples\r\n* Optimized-flag validity check for hardware backends\r\n"
+  },
+  {
+   "name": "Feature release 1.4.0",
+   "tag": "1.4.0",
+   "date": "2021-05-12T13:09:17Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.4.0",
+   "body": "* Notebook update for Qiskit Terra 0.17.3\r\n* Read the docs added\r\n* Quantum Inspire project name support for Qiskit projects\r\n* Added SAT example to docs\r\n"
+  },
+  {
+   "name": "Feature release 1.3.0",
+   "tag": "1.3.0",
+   "date": "2020-09-06T16:58:25Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.3.0",
+   "body": "* Changes for new Qiskit Terra (0.15.x) in Qiskit 0.20.0\r\n* Supporting hardware-backend configurations\r\n* Updated documentation of the API-structures"
+  },
+  {
+   "name": "Feature release 1.2.0",
+   "tag": "1.2.0",
+   "date": "2020-04-17T13:05:13Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.2.0",
+   "body": "* Support for latest Qiskit and ProjectQ versions\r\n* full_state_projection for API-calls `execute_qasm` and `execute_qasm_async` defaults to False instead of True\r\n* Some minor changes for supporting hardware backends"
+  },
+  {
+   "name": "Feature release 1.1.0",
+   "tag": "1.1.0",
+   "date": "2019-08-27T07:02:00Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.1.0",
+   "body": "* Revised full state projection support\r\n* Added reuse of ancilla bits for ProjectQ\r\n* Support for latest Qiskit version\r\n* Solved a code generation bug in Qiskit backend when using certain values of rotation parameters\r\n* Mybinder now does not show error message \"404 Not found\" anymore but shows a preview\r\n* Updated distance based classifier example"
+  },
+  {
+   "name": "Feature release 1.0.0",
+   "tag": "1.0.0",
+   "date": "2019-05-22T11:37:03Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/1.0.0",
+   "body": "* Support for Qiskit version >=0.9.0\r\n* Added distance based classifier example"
+  },
+  {
+   "name": "Feature release 0.7.0",
+   "tag": "0.7.0",
+   "date": "2019-05-03T09:16:13Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.7.0",
+   "body": "* Qiskit support for Qiskit version <0.9.0:\r\n  * Support for binary controlled gates\r\n  * Added support for basis gates S, Sdag, T, Tdag and SWAP\r\n* ProjectQ support:\r\n  * SWAP gate made available\r\n  * Easy `QIBackend` creation with all defaults and saved token\r\n* Support for API token authentication\r\n"
+  },
+  {
+   "name": "Feature release 0.6.0",
+   "tag": "0.6.0",
+   "date": "2019-03-26T12:10:36Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.6.0",
+   "body": "* Qiskit support:\r\n  * Add memory feature (raw measurement data)\r\n  * Add access to full-state histogram\r\n  * Fix implementation of u3, u2, u1 and u\r\n  * Generate qiskit counts from memory instead of from histogram\r\n* ProjectQ support:\r\n  * Throw exception when re-using a `QIBackend` engine\r\n  * Eliminate the requirement to use a (trivial) `ManualMapper`\r\n* Expanded in-line documentation of `QuantumInspireAPI` class\r\n* Added type-hints\r\n* Install examples\r\n* Preliminary support for API token authentication\r\n"
+  },
+  {
+   "name": "Bugfix release 0.5.0",
+   "tag": "0.5.0",
+   "date": "2019-02-12T11:46:55Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.5.0",
+   "body": "* Project deletion fixed\r\n* Memory-field in result disabled temporarily for the backend\r\n* Rx, Ry and Rz rotation gates available in quantum inspire backend\r\n* Re-use of classical bits allowed\r\n"
+  },
+  {
+   "name": "Bugfix release 0.4.2",
+   "tag": "0.4.2",
+   "date": "2019-01-08T11:44:42Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.4.2",
+   "body": "* Fix ProjectQ example notebook\r\n* Change classifier, alpha to beta\r\n"
+  },
+  {
+   "name": "Update release 0.4.0",
+   "tag": "0.4.0",
+   "date": "2019-01-08T09:35:09Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.4.0",
+   "body": "* Publish SDK releases to the [Python Package Index](https://pypi.org/) (PyPI)\r\n* Update Qiskit backend to Qiskit 0.7.0 specification\r\n* Update README.md known issues and issue tracker link\r\n"
+  },
+  {
+   "name": "Fix release 0.3.1",
+   "tag": "0.3.1",
+   "date": "2018-12-19T15:45:20Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.3.1",
+   "body": "* Fix qiskit dependency on pre-0.7.0 temporarily"
+  },
+  {
+   "name": "Update release 0.3.0",
+   "tag": "0.3.0",
+   "date": "2018-12-18T13:53:20Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.3.0",
+   "body": "* [DEM-578] Remove retry limit from QuantumInspireAPI execution method (#7)\r\n* [DEM-579] Asynchronous Jobs (#8)\r\n* [DEM-584] Refactor qiskit backend to BaseProvider/BaseBackend (#9)\r\n* [DEM-695] fix issues with measurement translation in projectq backend (#10)\r\n"
+  },
+  {
+   "name": "Initial alpha release 0.2.2",
+   "tag": "0.2.2",
+   "date": "2018-10-24T07:22:27Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/quantuminspire/releases/tag/0.2.2",
+   "body": "Initial release of the Quantum Inspire API and ProjectQ / Qiskit backends."
+  }
+ ]
+}

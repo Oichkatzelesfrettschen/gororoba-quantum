@@ -1,0 +1,175 @@
+{
+ "component": "OpenQL",
+ "source": "https://github.com/QuTech-Delft/OpenQL/releases",
+ "retrieved_utc": "2026-10-16T22:00Z",
+ "releases": [
+  {
+   "name": "Release 0.12.2",
+   "tag": "0.12.2",
+   "date": "2024-01-09T17:11:38Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.12.2",
+   "body": "- Added:\r\n  - Conan as package manager.\r\n  - `res` folder for resources.\r\n\r\n- Changed:\r\n  - Different upgrades: C++23, CMake 3.12, Python 3.8 to 3.12.\r\n  - GitHub workflows and jobs.\r\n  - File reorganization: `docs`, `include`, `src`, `test`.\r\n\r\n- Removed:\r\n  - Git submodules.\r\n  - CMake folder."
+  },
+  {
+   "name": "Release 0.11.1: fix wheel size on Linux/GCC",
+   "tag": "v0.11.1",
+   "date": "2023-01-06T16:00:06Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/v0.11.1",
+   "body": "This release doesn't include much change, it just allows us to upload our wheels to PyPI, they were becoming too large."
+  },
+  {
+   "name": "Release 0.11.0",
+   "tag": "v0.11.0",
+   "date": "2023-01-06T13:20:45Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/v0.11.0",
+   "body": "A long-waited release...\r\n\r\n\r\n### Added\r\n- CC backend:\r\n  - support for cQASM 1.2 features through new IR \r\n    - limitations\r\n      - integer values must be non-negative\r\n  - support for resource constrained scheduler\r\n  - creates .map file reporting measurement statements present in input, to allow retrieving measurements downstream\r\n- support for Python up to 3.11\r\n\r\n### Changed\r\n- pass dec.Instructions: duration=0 in new-style decomposition rules now disables checking whether expansion fits, allowing automatic calculation of duration (and requiring scheduling after decomposition of such rules)\r\n- CC backend:\r\n  - now uses new IR\r\n  - no longer requires key \"cc\" to be present in instructions that define gate decompositions\r\n  - key \"readout_mode\" no longer used\r\n    - classification of gates as measurement - which is used for the resource constrained scheduler, and to output a map of measurements - now based on signal definition (\"signal/type\" equals \"measure\" and \"signal/value\" non-empty)\r\n    - classification of gates as *real-time* measurement now based on signal definition (\"signal/type\" equals \"measure\" and \"signal/value\" empty)\r\n  - absence of key \"cc\" now implies empty \"signal\", so `\"cc\": { \"signal\": [] }` is no longer necessary\r\n- passes and architectures self-register statically to their respective factories\r\n- initial placer uses new IR and new MIP solver called HiGHS\r\n\r\n### Removed\r\n- CC backend:\r\n  - support for JSON key \"pragma/break\" for instruction definitions\r\n  - macro expansion for JSON key instruction/signal/value (unused anyway)\r\n- support for sweep points in API and the WriteSweepPointsPass\r\n- support for Python up to and including 3.6\r\n\r\n### Fixed\r\n- pass dec.Instructions\r\n  - corrected ordering of instruction decomposition (which reversed multi-statement decompositions)\r\n  - decomposed instructions were silently made unconditional, we  now copy instruction condition to decomposed instructions\r\n"
+  },
+  {
+   "name": "0.11.0-alpha.2 Test release",
+   "tag": "0.11.0-alpha.2",
+   "date": "2022-07-07T12:59:43Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.11.0-alpha.2",
+   "body": "Test release to see if wheels for python 3.10 and recent manylinux versions are correctly created and pushed to pypi."
+  },
+  {
+   "name": "0.11.0-alpha.1 Test release",
+   "tag": "0.11.0-alpha.1",
+   "date": "2022-07-07T11:53:02Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.11.0-alpha.1",
+   "body": "Test release to see if wheels for python 3.10 and recent manylinux versions are correctly created and pushed to pypi."
+  },
+  {
+   "name": "Release 0.10.0: new internal representation with full cQASM 1.2 control-flow support",
+   "tag": "0.10.0",
+   "date": "2021-07-15T17:01:38Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.10.0",
+   "body": "### Added\r\n- scalability options for coping with large multi-core systems, including a progress bar for the mapping process\r\n- initial implementation of the Diamond architecture developed for Fujitsu (lead by Stephan Wong)\r\n- full cQASM 1.2 read and write support, with options for different version levels and various language quirks\r\n- new internal representation that encompasses the entire cQASM 1.2 language, and has many new generalized platform features\r\n- lossless conversion functions between the two IR representations until all passes have been converted to the new representation\r\n- new pass-based decomposition logic that supports arbitrary cQASM 1.2 code for the expansion and doesn't clobber scheduling information\r\n- new pass for converting structured cQASM 1.2 control flow to basic block form\r\n- new list scheduler based on the new IR\r\n\r\n### Changed\r\n- all written cQASM files are now in 1.2 format by default\r\n- the cQASM reader no longer has a JSON configuration file for mapping cQASM gates to OpenQL gates; this translation is now part of OpenQL's platform data\r\n- the old scheduler is replaced with a new implementation for most option variations, that outputs slightly different schedules\r\n- statistics report output is also formatted slightly different, though information content is the same\r\n- CC backend:\r\n    - scheduling is now done using resource constraints by default\r\n\r\n### Fixed\r\n- excessive memory usage and slow platform construction for large multi-core systems\r\n"
+  },
+  {
+   "name": "Release 0.9.0: major internal improvements, architecture system, and pass management",
+   "tag": "0.9.0",
+   "date": "2021-05-27T20:39:59Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.9.0",
+   "body": "### Added\r\n- architecture system: platform and compilation strategy defaults are now built into OpenQL, preventing the need for users to copypaste configuration files from the tests directory\r\n- interface (C++ and Python) to compile cQASM 1.x\r\n- allow 'wait' and 'barrier' in JSON section 'gate_decomposition'\r\n- CC backend:\r\n    - improved reporting on JSON semantic errors\r\n    - added check for dimension of \"instruments/qubits\" against \"instruments/ref_control_mode/control_bits\"\r\n    - added check for dimension of \"instructions/<key>/cc/[signals,ref_signal]/value\" against \"instruments/ref_control_mode/control_bits\"\r\n    - added cross check of \"instruments/ref_control_mode\" against \"instrument_definitions\"\r\n    - added support for \"pragma/break\" in JSON definition to define 'gate' that breaks out of loop\r\n    - added support to distribute measurement results via DSM\r\n    - added support for conditional gates\r\n    - added compile option \"--backend_cc_run_once\"\r\n    - added compile option \"--backend_cc_verbose\"\r\n\r\n### Changed\r\n- pass management: instead of a hardcoded compilation strategy, the strategy can be adjusted and fine-tuned manually\r\n- pass options: instead of doing everything with global options, global options were replaced with pass options as much as possible\r\n- most documentation is now generated from code and can be queried using API calls\r\n- scheduler resources are completely reworked to be made more generic\r\n- major internal refactoring and restructuring to facilitate the above two things\r\n- CC backend:\r\n    - renamed JSON field \"signal_ref\" to \"ref_signal\"\r\n    - renamed JSON field \"ref_signals_type\" to \"signal_type\"\r\n    - changed JSON field \"static_codeword_override\" to be a vector with one element per qubit parameter. To edit a JSON file using Sublime, use Replace with Regular Expressions: find=`\"static_codeword_override\": ([0-9])+`, replace=`\"static_codeword_override\": [\\1]`\r\n    - adopted new module synchronization scheme (\"seq_bar semantics\", requires CC software >= v0.2.0, PycQED after commit 470df5b)\r\n    - JSON field \"instruction/type\" no longer used by backend, use \"instruction/cc/readout_mode\" to flag measurement instructions\r\n    - allow specification of 2 triggers in JSON field \"control_modes/*/trigger_bits\" to support dual-QWG\r\n    - changed label in generated code from \"mainLoop\" to \"__mainLoop\". Do not start kernel names with \"__\" (this should be specified by the API)\r\n    - removed initial 1 cycle (20 ns) delay at start of kernels (resulting from bundle start_cycle starting at 1)\r\n    - correctly handle kernel names containing \"_\" in conjunction with looping (formerly duplicate labels could arise)\r\n    - added \"seq_out 0,1\" to program start to allow tracing of actual program start\r\n\r\n### Removed\r\n- CC-light code generation, as the CC-light is being phased out in the lab, and its many passes were obstacles for pass management and refactoring\r\n- rotation optimization based on matrices; matrices in general were removed entirely because no one was using it\r\n- the commute variation pass, as it has been superseded by in-place commutations within the scheduler\r\n- the toffoli decomposition pass, as it wasn't really used; to decompose a toffoli gate, use generic platform-driven decomposition instead\r\n- the defunct fidelity estimation logic from metrics.cc; this may be added again later, but requires lots of cleanup and isn't currently in use\r\n- quantumsim and qsoverlay output; apparently this was no longer being used, and it was quite intertwined with the CC-light backend\r\n\r\n\r\n### Fixed\r\n- changed register used for FOR loop, so it doesn't clash with delay setting\r\n- fixed documentation for python setup and running tests\r\n- various miscellaneous bugs, dangling pointers, and memory leaks\r\n"
+  },
+  {
+   "name": "Release 0.8.1.dev4: test release for CI pipeline",
+   "tag": "0.8.1.dev4",
+   "date": "2020-08-25T10:14:44Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.8.1.dev4",
+   "body": ""
+  },
+  {
+   "name": "CC backend support and other fixes",
+   "tag": "0.8.0",
+   "date": "2019-10-31T10:06:43Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.8.0",
+   "body": "# Added\r\n- support for CC backend\r\n\r\n# Changed\r\n- \r\n\r\n# Removed\r\n- \r\n\r\n### Fixed\r\n- fixed issue with duplicate kernel names\r\n- updated json library to fix osx builds\r\n"
+  },
+  {
+   "name": "Hotfix Release",
+   "tag": "0.7.1",
+   "date": "2019-09-02T08:22:59Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.7.1",
+   "body": "## Fixed\r\n- fixed issue with correct python library picking on tud win systems\r\n\r\n## Changed\r\n- re-factored folders"
+  },
+  {
+   "name": "Release 0.7.0: Feature release",
+   "tag": "0.7.0",
+   "date": "2019-06-03T11:46:08Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.7.0",
+   "body": "### Added\r\n- support for single qubit flux options (auto/manual modes)\r\n- option to control generation of qasm files and dot graphs\r\n- NPROCS=n variable can now be set for faster compilation to use n threads\r\n- conda build recipe\r\n- conda binary releases for Linux, Windows platform (not yet available for OSX due to a conda distribution issue)\r\n\r\n\r\n### Changed\r\n- openql is now public\r\n- improved resource-constrained scheduling\r\n- sweep point array is now optional\r\n- support for barrier/wait on all qubits\r\n\r\n\r\n### Removed\r\n- set_sweep_points(sweep_points list, num of sweep points)\r\n\r\n\r\n### Fixed\r\n- resource-constrained qasm is generated by same scheduler for cc-light as is used to generate qisa\r\n- Illegal parameter in gate_decomposition\r\n"
+  },
+  {
+   "name": "Release 0.6.0: cQASM v1.0 support and other enhancements",
+   "tag": "0.6.0",
+   "date": "2018-10-29T05:33:31Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.6.0",
+   "body": "### Added\r\n- generated qasm code conforms to cQASM v1.0 specification\r\n- added libqasm to pytest to test conformance of generated qasm\r\n\r\n\r\n### Changed\r\n- ALAP scheduler is the default option (Issue #193)\r\n- compiling an empty program raises error (Issue #164)\r\n\r\n### Removed\r\n-\r\n\r\n### Fixed\r\n- tests are added to test option setting/getting (Issue #190)\r\n\r\n"
+  },
+  {
+   "name": "Fixed stateful behavior and and instruction ordering",
+   "tag": "0.5.5",
+   "date": "2018-10-25T17:14:55Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.5.5",
+   "body": "## [ 0.5.5 ] - [ 2018-10-25 ]\r\n### Added\r\n\r\n### Changed\r\n- simplified interface of Program.set_sweep_points (Issue #184)\r\n### Removed\r\n\r\n### Fixed\r\n- instruction ordering to generate consistent qisa (Issue #190)\r\n- stateful behaviour in OpenQL (Issue #171)\r\n\r\n"
+  },
+  {
+   "name": "Fixed qubit operand ordering in SMIS and SMIT instructions",
+   "tag": "0.5.4",
+   "date": "2018-10-17T13:59:06Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.5.4",
+   "body": "This solves the problem raised in issue https://github.com/QE-Lab/OpenQL/issues/190. \r\n\r\nThe solution is also an optimization in the sense that previously 3 SMIS instructions were generated for the qubit operands 2,3 and 4 as: \r\n```\r\nsmis s10, {2, 3, 4}\r\nsmis s11, {3, 2, 4}\r\nsmis s12, {4, 3, 4}\r\n```\r\nThis also means three registers were used. With this solution, operands are ordered and a single SMIS instruction is generated to use a single register. The same explanation applies to 2 operand instructions."
+  },
+  {
+   "name": "Fixed ALAP scheduling and updated resource manager for cc light",
+   "tag": "0.5.3",
+   "date": "2018-10-11T10:25:44Z",
+   "prerelease": true,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.5.3",
+   "body": "### Added\r\n- added detuning constraints for cclight\r\n\r\n### Changed\r\n\r\n### Removed\r\n\r\n### Fixed\r\n- alap scheduling for cclight\r\n\r\n"
+  },
+  {
+   "name": "Hotfix release",
+   "tag": "0.5.2",
+   "date": "2018-10-10T07:30:03Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.5.2",
+   "body": "### Added\r\n\r\n### Changed\r\n\r\n### Removed\r\n\r\n### Fixed\r\n- wrong target qubits in the configuration files\r\n- Jenkins test build profile to test against assembler"
+  },
+  {
+   "name": "Hotfix release",
+   "tag": "0.5.1",
+   "date": "2018-06-26T14:48:29Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.5.1",
+   "body": "### Added\r\n- API to obtain version number\r\n\r\n### Changed\r\n\r\n### Removed\r\n\r\n### Fixed\r\n- qisa format (removed comma)\r\n"
+  },
+  {
+   "name": "Hotfix release",
+   "tag": "0.4.1",
+   "date": "2018-05-31T12:47:21Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.4.1",
+   "body": "### Fixed\r\n- getting started example (getting_started.py)"
+  },
+  {
+   "name": "High level compiler features",
+   "tag": "0.4",
+   "date": "2018-05-19T16:14:54Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.4",
+   "body": "### Added\r\n- kernel conjugation/un-compute feature\r\n- multi-qubit control decomposition\r\n- toffoli decomposition\r\n- QASM loader for cQASM v1.0 syntax check\r\n- initial support for Quantumsim backend\r\n- vebosity levels\r\n\r\n\r\n### Changed\r\n- program options can be set/get with simple api calls\r\n- when adding gates, qubits should always be specified as list\r\n- updated qisa-as support for tests\r\n\r\n### Removed\r\n- qisa-as is not a part of openql\r\n- prog.compile() does not get optimiz/schedule/verbose options\r\n\r\n### Fixed\r\n- static iteration count for scheduled qasm\r\n- roation angle printing\r\n"
+  },
+  {
+   "name": "CCLight eQASM Compiler",
+   "tag": "0.3",
+   "date": "2017-10-24T08:58:58Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.3",
+   "body": "Release of the eQASM compiler for the CCLight backend targeted at the transmon platform. This release contains the following new features:\r\n\r\n- CCLight eQASM compiler\r\n- unittests using qisa-as\r\n- simplified gate decompositions\r\n- wait instructions for explicit timing specification\r\n- barrier instructions for synchronization\r\n\r\n"
+  },
+  {
+   "name": "CBox eQASM compiler",
+   "tag": "0.2",
+   "date": "2017-08-18T14:39:29Z",
+   "prerelease": false,
+   "url": "https://github.com/QuTech-Delft/OpenQL/releases/tag/0.2",
+   "body": "This release contains the following new features: \r\n- Python and C++ interface \r\n- CBox eQASM compiler \r\n- Configuration file specifiction\r\n- trace support for qumis code"
+  }
+ ]
+}

@@ -1,0 +1,97 @@
+{
+ "schema": "qi-docs-capture-v2",
+ "kind": "releases",
+ "retrieved_utc": "2026-10-16T22:00Z",
+ "files": [
+  {
+   "path": "docs/notes/quantum_inspire/releases/quantuminspire.json",
+   "source": "https://github.com/QuTech-Delft/quantuminspire/releases",
+   "sha256": "5f7aaf3709bee54117acee0c69559ebc560b8d1a4262c850599737808cd8df24"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/quantuminspire.md",
+   "source": "https://github.com/QuTech-Delft/quantuminspire/releases",
+   "sha256": "a78fe6b50979a89415f3a2e5a71e40fd938376206267312cc8abba3259ba4232"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/cQASM-spec.json",
+   "source": "https://github.com/QuTech-Delft/cQASM-spec/releases",
+   "sha256": "a79129fac1cd07c359088b93a53e8a5b28d9fa252c14639284e4967cbe22ec7d"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/cQASM-spec.md",
+   "source": "https://github.com/QuTech-Delft/cQASM-spec/releases",
+   "sha256": "bb30d5f147efaac26727dd6fedf17c2e0338bc919c8bb7a3ccdb65d9de2cadf4"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/libqasm.json",
+   "source": "https://github.com/QuTech-Delft/libqasm/releases",
+   "sha256": "1a6a611435b2fc6ef49841699548e6847986a1ca7167695ff0e6fcb66b603085"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/libqasm.md",
+   "source": "https://github.com/QuTech-Delft/libqasm/releases",
+   "sha256": "de304817736d146a6c6a466f076e4ed43bb3f45f1b22370c094c3db565db64b6"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/OpenSquirrel.json",
+   "source": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
+   "sha256": "b9e7b6832e01bc3bc9d8e68329e348054309d9b5c1e64e73fe4329f7a48d5108"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/OpenSquirrel.md",
+   "source": "https://github.com/QuTech-Delft/OpenSquirrel/releases",
+   "sha256": "c523d595e1cca38518ce1ebc727f3f609187bfea1e07d91cc86a1a682b275c42"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/OpenQL.json",
+   "source": "https://github.com/QuTech-Delft/OpenQL/releases",
+   "sha256": "569a5e56c2d91453c7ca3ce8409b76cb237c9caf8068799cda3e23bb94b79935"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/OpenQL.md",
+   "source": "https://github.com/QuTech-Delft/OpenQL/releases",
+   "sha256": "12e1caeb3ca1cd5052afd791c4938abfc2e2fc95d96223a0ccaf0254c5d196b1"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/qx-simulator.json",
+   "source": "https://github.com/QuTech-Delft/qx-simulator/releases",
+   "sha256": "65ef539aea84af743360227368899c32be493b1d662f53202961bc78e350042c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/qx-simulator.md",
+   "source": "https://github.com/QuTech-Delft/qx-simulator/releases",
+   "sha256": "c6c82a8a06e1376c39120d787001e91c0cae23dd2773fc8cf34ecb0459c84282"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/qiskit-quantuminspire.json",
+   "source": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
+   "sha256": "beaf63ecb8458f6f31fc700695b9b4b7c0a111fa41a2443cbb968323b70872e0"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/qiskit-quantuminspire.md",
+   "source": "https://github.com/QuTech-Delft/qiskit-quantuminspire/releases",
+   "sha256": "29cb3c5093e00474da7918de30b15bb8c125e35138e3d10bc346599a973071c2"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/pennylane-quantuminspire.json",
+   "source": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
+   "sha256": "aaa5413f93df8b63b4f5c5515e2c7f9fc84868c88b0534ef3971ea92f1f7b04f"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/pennylane-quantuminspire.md",
+   "source": "https://github.com/QuTech-Delft/pennylane-quantuminspire/releases",
+   "sha256": "bfdfd300e2361a6988be42cdeedd45d63ee82982924560a77f30c19efeda0c7c"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/quantify-scheduler.json",
+   "source": "https://gitlab.com/quantify-os/quantify-scheduler/-/releases",
+   "sha256": "18e90e2c4fbeb248cc131b77407f2435a90a0188ee4a6622ea91b82b711a50a6"
+  },
+  {
+   "path": "docs/notes/quantum_inspire/releases/quantify-scheduler.md",
+   "source": "https://gitlab.com/quantify-os/quantify-scheduler/-/releases",
+   "sha256": "84eefd5d9f6331e110a3442e7c55c90802ba68c0cff9f160c09dc5ebecc56e47"
+  }
+ ]
+}

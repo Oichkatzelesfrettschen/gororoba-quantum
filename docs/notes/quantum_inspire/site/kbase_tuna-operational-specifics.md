@@ -1,6 +1,6 @@
 > Full piece: [https://www.quantum-inspire.com/kbase/tuna-operational-specifics/](https://www.quantum-inspire.com/kbase/tuna-operational-specifics/)
-> Retrieved 2026-10-16T21:19Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
-> fetched HTML sha256 afe0a9be22eb5065a01d78c190993381f13ce1588e4d011c542e2ca658e0c2e4.
+> Retrieved 2026-10-16T22:10Z by scripts/capture_qi_docs.py --site (urllib, pandoc);
+> fetched HTML sha256 5a4ce91d391f793f58c3258142c4ed21e2302829b71ffcfc2cf95f79953f5dc4.
 
 # Tuna backends: Operational specifics
 
@@ -53,7 +53,15 @@ Programs submitted to Tuna backends undergo a step of scheduling upon compilatio
 
 Users can influence the scheduling of a program through the `barrier` and `wait` instructions. The `wait` is a control instruction that allows a user to constrain the optimization of a scheduler by delaying subsequent instructions on the specified qubit(s) by a given time. The instruction takes as arguments a qubit target (q\[4\] or q\[0:4\], for example) and the number of cycles (in steps of 20 ns) that the target should idle. Please note that `wait` instructions applied on multiple qubits are scheduled independently for each qubit. For further details on the `wait` instruction in cQASM, the user is referred to [cQASM documentation](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/control_instructions/wait_instruction.html).
 
+```cqasm
+1.  wait q[0:4], 11
+```
+
 The `barrier` instruction is a control instruction that allows a user to constrain optimization of a scheduler by preventing scheduling of instructions on specified qubit(s) across the barrier. Therefore, the instruction can be used to define a scheduling domain within which ALAP scheduling will also take place. For further details on the `barrier` instruction in cQASM, the user is referred to [cQASM documentation](https://qutech-delft.github.io/cQASM-spec/latest/language_specification/statements/instructions/control_instructions/barrier_instruction.html).
+
+```cqasm
+barrier q[0:4]
+```
 
 For more details on scheduling within OpenSquirrel, please refer to [OpenSquirrel](https://qutech-delft.github.io/OpenSquirrel/)
 
