@@ -43,16 +43,35 @@ Device-wide medians, 2026-10-10 to 2026-10-14 (`series_summary`):
 
 The device-wide median also moves when the quality exclusions change, so
 `paired_snapshot_drift` holds the population fixed. Between consecutive
-retained snapshots it takes the median relative change over the qubits
-(couplers) the policy admits in both, 110 to 152 qubits and 87 to 160
-couplers:
+retained snapshots it takes the per-qubit (per-coupler) relative change
+(b - a)/a over the qubits (couplers) the policy admits in both, 110 to 152
+qubits and 87 to 160 couplers, and reports three statistics of it
+(`relative_change`): the signed median, the median of the absolute change
+and its 90th percentile (numpy linear interpolation). The signed median
+cancels qubits that move in opposite directions, so it measures a
+device-wide shift; the absolute statistics measure how far the typical
+qubit and the tail move.
 
-- T1 by at most 7.8 percent (Fez, over 55 hours) and T2 by at most 3.1 percent;
-- assignment error by at most 8.5 percent (Marrakesh, 11 hours);
-- CZ error by at most 6.1 percent (Kingston, 13 hours).
+Over the pairs in which the quantity changed at all:
 
-Pairs less than an hour apart (Kingston 18:47 to 19:15 and 19:47 to 20:25)
-changed none of the four.
+| Quantity | Pairs | largest abs(signed median) | median abs(rel) | p90 abs(rel) |
+| --- | ---: | ---: | --- | --- |
+| T1 | 7 | 0.078 (Fez, 55 h) | 0.149-0.248 | 0.499-0.756 |
+| T2 | 7 | 0.031 (Fez, 12 h) | 0.120-0.304 | 0.472-0.756 |
+| assignment error | 11 | 0.085 (Marrakesh, 11 h) | 0.190-0.451 | 0.572-2.484 |
+| CZ error | 8 | 0.061 (Kingston, 13 h) | 0.115-0.233 | 0.413-1.037 |
+
+The signed median of T1 moves by at most 7.8 percent between snapshots,
+while the typical qubit's T1 moves by 15 to 25 percent and one qubit in ten
+by half or more. On the Fez pair over 55 hours (2026-10-13 13:41 to
+2026-10-15 20:31), T1 has signed median 0.078, median absolute change 0.224
+and 90th percentile 0.735; on the Kingston pair over 12.6 hours
+(2026-10-15 20:35 to 2026-10-16 09:09), T2 has -0.023, 0.141 and 0.472.
+
+A pair whose quantity was not remeasured carries zero in all three
+statistics, since a properties update repeats the earlier value. Pairs less
+than an hour apart (Kingston 18:47 to 19:15 and 19:47 to 20:25) changed none
+of the four.
 
 The medians and snapshots carry no qubit frequency, so this drift neither
 supports nor excludes a frame detuning; the frame detunings fitted to the

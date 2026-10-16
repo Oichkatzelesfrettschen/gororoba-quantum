@@ -26,9 +26,13 @@ retained snapshots under docs/evidence/calibration/history separate the two:
   couplers reproduce its medians exactly; its readout entry is the mean
   assignment error (e01 + e10)/2, a different quantity from the service's
   readout_error, so that median is reported as a difference;
-- between consecutive snapshots of a backend, the paired drift is the median
-  relative change over the qubits (couplers) the policy admits in both, the
-  population held fixed.
+- between consecutive snapshots of a backend, the paired drift takes the
+  per-qubit (per-coupler) relative change (b - a)/a over the qubits
+  (couplers) the policy admits in both, the population held fixed, and
+  reports its signed median beside the median and 90th percentile (numpy's
+  linear interpolation) of its absolute value. Opposite moves of different
+  qubits cancel in the signed median, so the absolute statistics carry the
+  typical and the large per-qubit drift.
 
 Consecutive identities often carry identical T1 and T2 medians, because a
 properties update need not remeasure every quantity; the summary counts the
@@ -64,7 +68,7 @@ sys.path.insert(0, str(ROOT / "scripts"))
 import ghost_calibrations  # noqa: E402
 import numpy as np  # noqa: E402
 
-SCHEMA = "calibration-median-drift-v1"
+SCHEMA = "calibration-median-drift-v2"
 LIVE = ROOT / "results/live"
 MEDIANS = ("t1_us", "t2_us", "readout_error", "cz_error")
 THRESHOLDS = ("max_readout_error", "max_cz_error", "max_sx_error", "min_t1_us", "min_t2_us")
@@ -137,8 +141,15 @@ def qubit_values(snapshot: dict[str, Any], key: str, qubits: list[int]) -> list[
     return [snapshot["qubits"][q][key] for q in qubits]
 
 
-def relative_change(before: list[float], after: list[float]) -> float:
-    return float(np.median([(b - a) / a for a, b in zip(before, after, strict=True)]))
+def relative_changes(before: list[float], after: list[float], label: str) -> dict[str, float]:
+    """Signed median, absolute median and absolute 90th percentile of the paired (b - a)/a."""
+    require(all(a != 0 for a in before), f"{label}: a zero earlier value has no relative change")
+    change = np.array([(b - a) / a for a, b in zip(before, after, strict=True)])
+    return {
+        "median": round(float(np.median(change)), 6),
+        "median_abs": round(float(np.median(np.abs(change))), 6),
+        "p90_abs": round(float(np.percentile(np.abs(change), 90)), 6),
+    }
 
 
 def admitted(read: dict[str, Any]) -> int | None:
@@ -238,14 +249,18 @@ def compute(paths: list[Path], snapshot_paths: list[Path]) -> dict[str, Any]:
                     ),
                     "common_qubits": len(qubits),
                     "common_couplers": len(edges),
-                    "median_relative_change": {
-                        key: round(
-                            relative_change(qubit_values(first, key, qubits), qubit_values(second, key, qubits)), 6
+                    "relative_change": {
+                        key: relative_changes(
+                            qubit_values(first, key, qubits),
+                            qubit_values(second, key, qubits),
+                            f"{backend} {before} {key}",
                         )
                         for key in ("t1", "t2", "assignment_error")
                     }
                     | {
-                        "cz_error": round(relative_change([cz1[e] for e in edges], [cz2[e] for e in edges]), 6),
+                        "cz_error": relative_changes(
+                            [cz1[e] for e in edges], [cz2[e] for e in edges], f"{backend} {before} cz_error"
+                        ),
                     },
                 }
             )
