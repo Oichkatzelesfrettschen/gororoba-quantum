@@ -1,0 +1,10 @@
+{
+ "counts": {
+  "00000000000000": 527,
+  "11111111111111": 497
+ },
+ "device": "GPU",
+ "method": "density_matrix",
+ "qubits": 14,
+ "wall_seconds": 1.605
+}

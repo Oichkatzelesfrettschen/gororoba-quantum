@@ -2151,7 +2151,7 @@
       "domain": "hardware",
       "evidence_class": "withdrawn claim",
       "status": "withdrawn",
-      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03; two sampled arms at SNR 2 need 4/dP^2 shots in total, about 2.9 million (about 750 s) at 50 Hz, and IBM guarantees no PUB order, so one job does not interleave matched pairs.",
+      "boundary": "The kernel printed SNR 0.0 against the expected 1.18e-03 and assumed a 10 kHz shot rate, about 2.6 times the Heron rate at the 250 us repetition delay.",
       "withdrawn_text": "docs/evidence/ghost-frequency/differential-interleaved.ipynb at commit fa6783e and docs/handoff-notes-2026-10-15.md at commit 900461a."
     },
     {
@@ -2187,6 +2187,38 @@
       "status": "withdrawn",
       "boundary": "The power restates hand-set inputs (a 0.01 kHz shift at 0.1 contrast per kHz against a 0.02 standard error); it measures nothing about the device.",
       "withdrawn_text": "docs/evidence/ghost-frequency/predelay-84-84.ipynb and docs/handoff-notes-2026-10-15.md at commit 3e91f57."
+    },
+    {
+      "id": "design-c-cubic-noise-separation",
+      "statement": "Under the ibm_kingston noise model of 2026-10-15T15:29:07-07:00, the compiled factorized dim-32 Design C circuit (about 123-128 CZ) keeps the two spectral classes apart at 20,000 shots: collision estimates 0.180-0.253 for the 234 pairs of ideal K = 11/32 and 0.093-0.113 for the 126 pairs of ideal K = 5/32; the Reed-Muller and CCZ normal-form references keep about 89 percent of the ideal gap.",
+      "domain": "implementation",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "A noise-model prediction (depolarizing and thermal relaxation from the Target, asymmetric readout); coherent errors, crosstalk and leakage are outside it, and no hardware run exists.",
+      "evidence": [
+        {
+          "path": "docs/evidence/design_c_cubic_noise/result.json",
+          "sha256": "0425267605330e4f7c9e64bf87508bcf4945bad0271f4a50c9c0bd26e9298027"
+        },
+        {
+          "path": "docs/evidence/calibration/ibm_kingston.json",
+          "sha256": "061b98135f4623cc94e3b3d577975ffa28ede5bc16c2efb9c750945952b29186"
+        }
+      ],
+      "documents": [
+        "docs/evidence/design_c_cubic_noise/README.md"
+      ],
+      "gates": {
+        "core-282": "replay",
+        "core-279": "freshness"
+      },
+      "acquisitions": [],
+      "assumptions": [],
+      "depends_on": [
+        "associator-normal-form-compile"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

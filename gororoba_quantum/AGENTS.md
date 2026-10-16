@@ -114,7 +114,11 @@ importing any package), and `docs/notes/packages/` holds one note per
 package. Each package is an Arch package; a broken or missing one is rebuilt
 and reinstalled from its PKGBUILD in `~/Github/PKGBUILDs` (`makepkg -si
 --nocheck` in the package directory), never patched in place, and the note's
-pinned digest is checked again after the rebuild.
+pinned digest is checked again after the rebuild. A Kaggle kernel builds the
+same eight packages from the same pinned archives (`--fetch` and `--install`
+apply the PKGBUILD recipes) and runs its entry only after `--extract`
+regenerates `tables.json` byte for byte; SageMath stays on the build host
+(`docs/notes/kaggle/hypercomplex-stack.md`).
 
 | Arch package | Import | Version | Relation to cd_core | Use it for | Trap |
 |---|---|---|---|---|---|
@@ -232,5 +236,8 @@ python-qiskit-ibm-runtime. Those PKGBUILDs replace `blas-openblas` with the
 which leaves AOCL in place; a package without a local PKGBUILD comes from
 the distribution repositories through pacman or paru. After a rebuild,
 `"$PYTHON" -c "import qiskit, qiskit_ibm_runtime, qiskit_aer"` and a
-submit-free dry run confirm the stack.
+submit-free dry run confirm the stack. A Kaggle kernel installs qiskit 2.5.2
+and qiskit-aer-gpu-cu11 0.17.2 (the CUDA 12 `qiskit-aer-gpu` wheel stops at
+0.15.1) over the Kaggle image's numpy and scipy, records every version in
+`environment.json`, and holds no IBM credential (`kaggle_kernel/AGENTS.md`).
 <!-- heron-execution-facts:end -->

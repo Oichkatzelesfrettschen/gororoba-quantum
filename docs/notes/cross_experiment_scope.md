@@ -118,4 +118,4 @@ than the seconds do.
   tests how faithfully the hardware carries the sign function. It needs
   per-triple circuits outside the shared walk template.
 
-Design validation that needs more simulation than the build host gives can run on Kaggle accelerators; [kaggle_gpu_simulation.md](kaggle_gpu_simulation.md) states what they buy and how their results enter the research state.
+Design validation that needs more simulation than the build host gives can run on Kaggle accelerators; [kaggle/workflow.md](kaggle/workflow.md) states what they buy and how their results enter the research state.

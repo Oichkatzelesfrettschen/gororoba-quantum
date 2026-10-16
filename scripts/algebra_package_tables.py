@@ -23,6 +23,17 @@ Two modes:
 
 Each package is bound to its public release by the sha256 of its PyPI sdist
 or GitHub archive; docs/notes/packages/ holds one note per package.
+
+Two further modes build the same stack where no Arch package exists, such as
+a Kaggle kernel:
+
+- --fetch ARCHIVES downloads every pinned archive from ARCHIVE_URLS into
+  ARCHIVES and keeps it only if its sha256 matches the pin.
+- --install ARCHIVES unpacks each pinned archive, applies BUILD_RECIPES (the
+  prepare() step of the local PKGBUILD, transcribed byte for byte), and
+  installs it with pip without dependencies, then installs RUNTIME_PINS.
+  --extract afterwards proves the result: it must regenerate tables.json
+  with the bytes the repository retains.
 """
 
 from __future__ import annotations
@@ -88,6 +99,71 @@ RELEASES: dict[str, tuple[str, str, str]] = {
         "ff9b624725fafd34c51decbe3e661eb91b79bbd3841ab04d2256704df0845ce5",
     ),
 }
+SDIST = "https://files.pythonhosted.org/packages/source/{0}/{1}/{1}-{2}.tar.gz"
+# Download location of each pinned archive, as the local PKGBUILD's source array names it.
+ARCHIVE_URLS = {
+    "hypercomplex": SDIST.format("h", "hypercomplex", "0.3.4"),
+    "hypercomplex-engine": SDIST.format("h", "hypercomplex_engine", "0.5.0"),
+    "hypercomplex-algebra": SDIST.format("h", "hypercomplex_algebra", "0.2.0.2"),
+    "Cayley-Calculator": SDIST.format("c", "cayley_calculator", "1.3.1"),
+    "cayley-dickson": RELEASES["cayley-dickson"][1],
+    "octonion": SDIST.format("o", "octonion", "0.1.0"),
+    "splitoct": RELEASES["splitoct"][1],
+    "mathdunders": SDIST.format("m", "mathdunders", "0.4.2"),
+}
+_CAYLEY_DICKSON_PYPROJECT = """[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "cayley-dickson"
+version = "0.1.0"
+description = "Cayley-Dickson process in Python"
+readme = "README.md"
+license = "LicenseRef-All-Rights-Reserved"
+dependencies = [
+    "numpy",
+    "pandas",
+]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["cayley_dickson*", "src*"]
+"""
+_SPLITOCT_PYPROJECT = """[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "SplitOct"
+version = "0.16"
+description = "Split octonion algebra in python with SymPy"
+readme = "README.md"
+license = "GPL-3.0-or-later"
+license-files = ["LICENSE"]
+dependencies = [
+    "sympy",
+]
+
+[tool.setuptools]
+py-modules = ["SplitOct"]
+"""
+# The prepare() step of python-cayley-dickson and python-splitoct in the local
+# PKGBUILDs: files written ("write") and archive members copied ("copy") before
+# the wheel is built. The other packages build from their sdist unchanged.
+BUILD_RECIPES: dict[str, dict[str, dict[str, str]]] = {
+    "cayley-dickson": {
+        "copy": {"src/cayley_dickson.py": "cayley_dickson/cayley_dickson.py"},
+        "write": {
+            "cayley_dickson/__init__.py": "from .cayley_dickson import *\n",
+            "pyproject.toml": _CAYLEY_DICKSON_PYPROJECT,
+        },
+    },
+    "splitoct": {"copy": {"src/SplitOct.py": "SplitOct.py"}, "write": {"pyproject.toml": _SPLITOCT_PYPROJECT}},
+}
+# Runtime dependencies an imported package needs beyond numpy, scipy, pandas,
+# sympy and torch, pinned to the Arch package versions on the build host.
+RUNTIME_PINS = ("numpy-quaternion==2024.0.13",)
 # Installed files absent from the release archive, added by the local build
 # recipe: name -> {installed path: sha256}.
 PACKAGING_SHIMS = {
@@ -408,6 +484,56 @@ def check(data: dict[str, Any]) -> int:
     return checked
 
 
+def archive_name(name: str) -> str:
+    return f"{name}-{RELEASES[name][2][:12]}.tar.gz"
+
+
+def fetch(archives: Path) -> None:
+    import urllib.request
+
+    archives.mkdir(parents=True, exist_ok=True)
+    for name, url in ARCHIVE_URLS.items():
+        target = archives / archive_name(name)
+        if not target.is_file():
+            with urllib.request.urlopen(url, timeout=120) as response:
+                data = response.read()
+            require(
+                hashlib.sha256(data).hexdigest() == RELEASES[name][2], f"{name}: {url} differs from the pinned sha256"
+            )
+            target.write_bytes(data)
+        require(
+            hashlib.sha256(target.read_bytes()).hexdigest() == RELEASES[name][2],
+            f"{name}: {target} differs from the pin",
+        )
+        print(f"{name}: {target.name} matches the pinned sha256")
+
+
+def install(archives: Path) -> None:
+    import shutil
+    import subprocess
+    import tempfile
+
+    for name in RELEASES:
+        archive = archives / archive_name(name)
+        require(
+            hashlib.sha256(archive.read_bytes()).hexdigest() == RELEASES[name][2], f"{name}: {archive} is not the pin"
+        )
+        with tempfile.TemporaryDirectory() as scratch:
+            with tarfile.open(archive) as tar:
+                tar.extractall(scratch, filter="data")
+            (top,) = [path for path in Path(scratch).iterdir() if path.is_dir()]
+            recipe = BUILD_RECIPES.get(name, {})
+            for source, destination in recipe.get("copy", {}).items():
+                (top / destination).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copyfile(top / source, top / destination)
+            for destination, text in recipe.get("write", {}).items():
+                (top / destination).parent.mkdir(parents=True, exist_ok=True)
+                (top / destination).write_text(text, encoding="utf-8")
+            subprocess.run([sys.executable, "-m", "pip", "install", "-q", "--no-deps", str(top)], check=True)
+        print(f"{name}: installed from {archive.name}")
+    subprocess.run([sys.executable, "-m", "pip", "install", "-q", *RUNTIME_PINS], check=True)
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
     mode = parser.add_mutually_exclusive_group(required=True)
@@ -418,7 +544,15 @@ def main() -> int:
         help="directory holding the pinned release archives; binds and imports the installed packages",
     )
     mode.add_argument("--check", action="store_true", help="verify retained evidence against cd_core")
+    mode.add_argument("--fetch", type=Path, metavar="ARCHIVES", help="download and verify every pinned archive")
+    mode.add_argument("--install", type=Path, metavar="ARCHIVES", help="build and install the pinned archives")
     args = parser.parse_args()
+    if args.fetch:
+        fetch(args.fetch)
+        return 0
+    if args.install:
+        install(args.install)
+        return 0
     if args.extract:
         EVIDENCE.parent.mkdir(parents=True, exist_ok=True)
         EVIDENCE.write_text(json.dumps(extract(args.extract), indent=1) + "\n")
