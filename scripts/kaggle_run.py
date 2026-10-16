@@ -223,7 +223,9 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files.extend(tracked_files(include))
     ci_env = None
     if getattr(args, "ci_env", False):
-        require(args.machine == "cpu" and not smoke, "--ci-env runs an ENTRY on a CPU machine")
+        # CI's pins carry CPU Aer, so a GPU machine's host CPUs run the entry
+        # exactly as a CPU machine does; a TPU VM has no x86 Python build.
+        require(not args.machine.startswith("Tpu") and not smoke, "--ci-env runs an ENTRY on a CPU or GPU machine")
         files.extend(ROOT / name for name in CI_ENV_FILES)
         ci_env = {"python": CI_PYTHON, "uv": UV_PIN}
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
@@ -812,7 +814,7 @@ def main() -> int:
     push_parser.add_argument(
         "--ci-env",
         action="store_true",
-        help="run ENTRY under CI's Python and pins (CPU machine), so a CI gate replays its record byte for byte",
+        help="run ENTRY under CI's Python and pins (CPU Aer on a CPU or GPU machine) for a CI-replayed record",
     )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)

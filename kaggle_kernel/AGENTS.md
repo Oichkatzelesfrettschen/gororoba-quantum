@@ -64,8 +64,8 @@ and what it must prove before its output counts.
   records what actually ran.
 - Measured limits of each machine shape, the qubit size guide and the
   captured Kaggle documentation are in `docs/notes/kaggle/`.
-- An entry whose output a CI gate recompiles runs with `push --ci-env`
-  (CPU machine). The kernel then builds CI's Python 3.14.7 with CI's pins
+- An entry whose output a CI gate recompiles runs with `push --ci-env` on a
+  CPU or GPU machine, using CPU Aer either way. The kernel then builds CI's Python 3.14.7 with CI's pins
   through `ci/install_pins.sh` and runs the entry under it, because the
   image's Python 3.13 and numpy 2.1.3 change compiled depths and durations.
 
