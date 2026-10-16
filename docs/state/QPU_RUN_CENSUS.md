@@ -66,7 +66,7 @@ runs.
 | Echo-matched dilation (`proposed-echo-matched-dilation`) | 4-5 | proposed | a Kaggle noise run that sizes the rotation-error contrast, then a device case |
 | Signed kernel probe (`proposed-signed-kernel-probe`) | 7 | proposed | Kaggle first: the sign-odd signal against the calibrated noise floor |
 | Census-frequency witness (`proposed-census-frequency`) | 5 (fixed pair) to 13 (three registers) | proposed | Kaggle first: visibility V and the shots that resolve 231/512 |
-| Dim-32 Design C spectral classes | 5 | Kaggle result retained (`docs/evidence/design_c_cubic_noise/`) | the noise model keeps the classes apart (noisy K 0.180-0.253 against 0.093-0.113); a hardware case would test coherent errors and crosstalk the model lacks, about 3 s for both class representatives at 4096 shots |
+| Dim-32 Design C spectral classes | 5 | Kaggle result retained (`docs/evidence/design_c_cubic_noise/`) | the noise model keeps the classes apart (noisy K 0.180-0.253 against 0.093-0.113); a hardware case would test coherent errors and crosstalk the model lacks, about 4.4 s nominal for both class representatives at 4096 shots (2 x 4096 x 260 us plus 2.3 s of job overhead) |
 
 Withdrawn as QPU candidates (`docs/evidence/simulation-notebook-audit/README.md`):
 the triple-dependent detuning Ramsey (no circuit sets a frequency from a
