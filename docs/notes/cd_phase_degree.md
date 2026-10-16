@@ -223,8 +223,9 @@ with fuel at least n, and an ANF degree on `nat -> bool` truth tables of
 Nat.log2 m - 1 equals bitlen(m) - 2 for m > 0, with truncated subtraction
 giving 0 below bitlen 2. Lemmas A to D are finite identities at each level
 and suit `vm_compute` per level. The induction itself needs (R) as a lemma
-about `cd_sign_fuel` and the ANF coefficient formula of Lemma B. Filing it
-upstream waits for the owner's decision on the open_gororoba handoff.
+about `cd_sign_fuel` and the ANF coefficient formula of Lemma B. The
+statement is filed upstream as
+[open_gororoba issue #217](https://github.com/Oichkatzelesfrettschen/open_gororoba/issues/217).
 
 ## Replay
 
