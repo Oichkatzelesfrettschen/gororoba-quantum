@@ -2267,7 +2267,7 @@
     },
     {
       "id": "hw-ghost-calibration-replay",
-      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, the noise model reproduces each run's recorded replay distance to within 0.0015 TV on average, the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.",
+      "statement": "Replaying the executed circuits of 14 retained IBM runs under every retained calibration of their backend, at each member's executed shot count, the noise model reproduces the recorded replay distances to sampling precision (mean |ghost - recorded| 0.0077 TV over 206 replicas against 0.0079 TV between two independent ghost draws), the predicted distance to hardware moves by only 0.001 to 0.032 TV across calibrations against floors of 0.026 to 0.435 TV, and today's calibration fits the old data better than the execution-time calibration by more than two standard errors on 10 of 14 runs.",
       "domain": "hardware",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
@@ -2275,19 +2275,19 @@
       "evidence": [
         {
           "path": "docs/evidence/ghost_runs/result.json",
-          "sha256": "19e5ca970eb2b1d637054e2879d1ad0ef41d8fb7901de57e457aeb79636d6cf6"
+          "sha256": "8871bae4f9e1a7513d7851ed4b92c9a8bd0591c7e8dbb30eb2ba67a822d0a622"
         },
         {
           "path": "docs/evidence/ghost_runs/report.json",
-          "sha256": "d6fae2e9a3f9805435e9f356f4eaaa37ba78bb246aebdd7a2800e89ea116c0aa"
+          "sha256": "e4933b62081298ca460398d33017b2c68dea875b91876c1bb6ffa9ba31f08a71"
         },
         {
           "path": "results/live/qpu-job-retention-audit.json",
           "sha256": "7eb6a2458621aa96e1bcc04996aef2ce21a4c5c698fa47766b7cefb690534260"
         },
         {
-          "path": "results/kaggle/2026-10-16T052709Z-gororoba-ghost-runs/collect.json",
-          "sha256": "ea80686f2cfc6fff18b46cea512929b76dec6a8e7652972c98bbde6f8c66a908"
+          "path": "results/kaggle/2026-10-16T090343Z-gororoba-ghost-runs/collect.json",
+          "sha256": "1ef30f2c540788de0c547ce16e655004b994ac1be5c484e52fc6b11429535b8a"
         }
       ],
       "documents": [
