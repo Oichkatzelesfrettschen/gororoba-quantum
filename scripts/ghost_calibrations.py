@@ -23,8 +23,9 @@ update), so the fetch at a PUB start names the calibration the service
 published for that execution. It also exports each
 backend's current calibration, and writes index.json mapping every job and
 PUB start to its snapshot. ``--check`` needs no network: every indexed file
-exists with its recorded sha256, rebuilds its Target, and the index covers
-exactly the audited jobs.
+exists with its recorded sha256, rebuilds its Target, the index covers
+exactly the audited jobs, and every executed member's start maps to a
+snapshot carrying the calibration identity its collect.json records.
 """
 
 from __future__ import annotations
@@ -156,7 +157,29 @@ def check() -> int:
         snapshot = json.loads(path.read_text(encoding="utf-8"))
         require(snapshot["calibration"] == entry["calibration"], f"{relative}: calibration identity differs")
         calibration_snapshot.round_trip(snapshot)
-    print(f"ghost calibrations: {len(index['jobs'])} jobs, {len(index['files'])} snapshots round-trip")
+    # live_run --collect records the calibration identity each member's PUB
+    # ran under; the snapshot its start maps to must carry that identity.
+    starts = {(job["run"], w["start"]): w["snapshot"] for job in index["jobs"] for w in job["windows"]}
+    members = 0
+    for run in sorted({job["run"] for job in index["jobs"]}):
+        path = ROOT / run / "collect.json"
+        if not path.is_file():
+            continue
+        data = json.loads(path.read_text(encoding="utf-8"))
+        for collection in data if isinstance(data, list) else [data]:
+            for member, executed in (collection.get("executed") or {}).items():
+                snapshot = starts.get((run, executed.get("start")))
+                require(snapshot is not None, f"{run} {member}: execution start {executed.get('start')} is not indexed")
+                recorded = executed.get("calibration")
+                require(
+                    recorded is None or index["files"][snapshot]["calibration"] == recorded,
+                    f"{run} {member}: snapshot {snapshot} differs from the recorded calibration {recorded}",
+                )
+                members += recorded is not None
+    print(
+        f"ghost calibrations: {len(index['jobs'])} jobs, {len(index['files'])} snapshots round-trip, "
+        f"{members} executed members map to their recorded calibration"
+    )
     return 0
 
 

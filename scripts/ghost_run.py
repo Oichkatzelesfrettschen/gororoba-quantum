@@ -148,7 +148,9 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
         return {"run": run_name, "skipped": str(reason)}
     measured, executed, recorded = measured_members(run)
     starts = {w["start"]: w["snapshot"] for job in index["jobs"] if job["run"] == run_name for w in job["windows"]}
-    backend = next(iter({b for b, _ in replicas.values()}))
+    backends = {b for b, _ in replicas.values()}
+    require(len(backends) == 1, f"{run_name}: members span backends {sorted(backends)}")
+    backend = backends.pop()
     same_backend = sorted(f for f in index["files"] if f.startswith(f"docs/evidence/calibration/history/{backend}/"))
     plan: dict[str, list[str]] = {"execution": []}
     if states in ("current", "all", "execution,current"):
