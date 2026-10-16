@@ -2412,7 +2412,7 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/result.json --arms docs/evidence/echo_dilation_noise/arms.qpy --run results/kaggle/2026-10-16T162448Z-gororoba-echo-dilation-noise",
+   "cmd": "\"$PYTHON\" -B -W error scripts/echo_dilation_noise.py --check docs/evidence/echo_dilation_noise/result.json --arms docs/evidence/echo_dilation_noise/arms.qpy --run results/kaggle/2026-10-16T174357Z-gororoba-echo-dilation-noise",
    "name": "core-313",
    "seconds": 15.0,
    "tier": "pr"

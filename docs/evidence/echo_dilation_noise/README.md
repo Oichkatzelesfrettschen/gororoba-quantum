@@ -1,12 +1,17 @@
 # Echo-matched dilation pair under the retained calibrations
 
 `result.json` is the output of `scripts/echo_dilation_noise.py`. It ran as
-Kaggle kernel version 2 of `gororoba-echo-dilation-noise` on a CPU machine
-in 147.5 s, and the run is retained under
-`results/kaggle/2026-10-16T162448Z-gororoba-echo-dilation-noise/`. Version 1
-(GPU, `results/kaggle/2026-10-16T153522Z-gororoba-echo-dilation-noise/`)
-lacked the per-edge sweep and sized the PREP shots on the device baseline;
-it stays as history.
+Kaggle kernel version 3 of `gororoba-echo-dilation-noise` on a CPU machine
+in 137.8 s, and the run is retained under
+`results/kaggle/2026-10-16T174357Z-gororoba-echo-dilation-noise/`. Earlier
+versions stay as history:
+- Version 1 (GPU, `results/kaggle/2026-10-16T153522Z-gororoba-echo-dilation-noise/`)
+  lacked the per-edge sweep and sized the PREP shots on the device baseline.
+- Version 2 (CPU, `results/kaggle/2026-10-16T162448Z-gororoba-echo-dilation-noise/`)
+  bounded the conditional phase by the mean of its two sign responses.
+
+All three agree on every law they share: version 1 against version 2 to
+5.3e-15, and version 2 against version 3 bit for bit.
 `arms.qpy` holds the compiled device arms (amplified, echo) of each backend,
 in the order `result.json` lists under `qpy_arms`.
 
@@ -111,9 +116,12 @@ map `docs/notes/packages/` declares.
 ## Result
 
 **The pair does not separate rotation errors from CZ phases on any of the
-three calibrations.** Every physical coherent channel moves amplified - echo
-negative, the same direction as the CZ conditional phase. Only the PREP
-angle, which has no physical source on this gate set, moves it positive.
+three calibrations.** Every shift of 1e-3 or more that a physical coherent
+channel produces moves amplified - echo negative, the same direction as the
+CZ conditional phase; only the PREP angle, which has no physical source on
+this gate set, moves it positive by that much. Below the 1e-3 threshold the
+sign is not determined: SX over-rotation at +0.01 and +0.02 rad on Marrakesh
+shifts it by +2.5e-4 and +8e-6.
 
 | Backend (device layout) | CZ | Baseline amplified, echo | Difference | SE at 40,000 |
 | --- | ---: | --- | ---: | ---: |
@@ -173,7 +181,7 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
      and common phase theta. The slope here comes from the model's known
      deltas, so the device case adds an X-quadrature arm for each edge and
      depth to measure V and theta before its counts bound any phase.
-   - **Shots.** At m = 24 it reaches that tolerance with 349 to 514 shots
+   - **Shots.** At m = 24 it reaches that tolerance with 355 to 529 shots
      per edge and target state, so four edges cost about 4,000 shots.
 6. **Edge phases add coherently, not edge by edge.** The four single-edge
    shifts sum to 0.25 to 0.33 of the uniform shift on every backend (Fez at
@@ -183,10 +191,10 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
    contribution depends on the others.
    - Two edges per backend move the pair by less than its 40,000-shot
      standard error alone, even at 0.02 rad, and the other two need 0.013 to
-     0.020 rad.
+     0.019 rad.
    - Bounding each edge to its single-edge tolerance would therefore under-size
-     the reference about tenfold (30 to 59 shots per target where the joint
-     bound needs 349 to 514). The joint tolerance, 0.0048 to 0.0057 rad on
+     the reference about tenfold (32 to 64 shots per target where the joint
+     bound needs 355 to 529). The joint tolerance, 0.0048 to 0.0057 rad on
      every edge, is the sizing a case uses under the uniform-phase model.
    - Mixed phase vectors, with unequal or opposite-signed phases across
      edges, are untested. The response is nonlinear, so the joint tolerance
