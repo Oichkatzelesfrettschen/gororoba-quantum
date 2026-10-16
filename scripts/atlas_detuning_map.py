@@ -71,6 +71,7 @@ MEASURED = ROOT / "results/ripple/measured-ripple.json"
 BACKEND = "ibm_fez"
 PHASES = 8
 LANES = 7
+SCHEMA = "atlas-detuning-map-v3"
 KHZ = 1e3
 CZ_STEP = 0.01
 VIRTUAL = {"rz", "barrier", "delay"}
@@ -344,7 +345,7 @@ def run(lanes: list[int]) -> dict[str, Any]:
         line = {"lane": fit["lane"], "shot_noise_rms_rad": fit["shot_noise_rms_rad"], "loo": summary}
         print(json.dumps(line), flush=True)
     return {
-        "schema": "atlas-detuning-map-v3",
+        "schema": SCHEMA,
         "backend": BACKEND,
         "run": RUN.relative_to(ROOT).as_posix(),
         "phases": PHASES,
@@ -360,6 +361,7 @@ def main() -> int:
     args = parser.parse_args()
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
+        require(retained.get("schema") == SCHEMA, f"{args.check}: schema {retained.get('schema')}, expected {SCHEMA}")
         named = [fit["lane"] for fit in retained["lanes"]]
         require(sorted(named) == list(range(LANES)), f"{args.check}: lanes {named} are not each of 0..{LANES - 1} once")
         lanes = named if args.lanes == "all" else [int(v) for v in args.lanes.split(",")]
@@ -371,13 +373,15 @@ def main() -> int:
             other = fresh[fit["lane"]]
             for key in ("measured_offset_rad", "detuning_response_rad_per_khz", "cz_phase_response_rad_per_rad"):
                 require(np.allclose(fit[key], other[key], rtol=0, atol=1e-9), f"lane {fit['lane']}: {key} differs")
+            require(set(fit["models"]) == set(other["models"]), f"lane {fit['lane']}: model set differs")
             for name, model in fit["models"].items():
                 fresh_model = other["models"][name]
                 require(
                     np.allclose(model["parameters"], fresh_model["parameters"], rtol=0, atol=1e-6),
                     f"lane {fit['lane']}: {name} parameters differ",
                 )
-                for score in (key for key in model if key.endswith("rms_rad")):
+                for score in (key for key in fresh_model if key.endswith("rms_rad")):
+                    require(score in model, f"lane {fit['lane']}: {name} lacks {score}")
                     require(
                         abs(model[score] - fresh_model[score]) <= 1e-6, f"lane {fit['lane']}: {name} {score} differs"
                     )
