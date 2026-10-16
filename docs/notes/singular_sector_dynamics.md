@@ -280,7 +280,14 @@ hardware result.
   conditional phases, so a case needs an independent CZ-phase reference
   (for example a conditional-phase calibration on the same pairs) and would
   be priced against the allowance left after the branch-signed coherence
-  case.
+  case. Under the retained Fez, Kingston and Marrakesh calibrations
+  ([echo_dilation_noise](../evidence/echo_dilation_noise/README.md)), SX
+  over-rotation and CZ local phase move the difference negative like the
+  conditional phase, so no physical rotation error lands in the
+  inverse-undone class. The pair detects coherent error together with
+  changes in the incoherent floor; a per-edge 2m-CZ Ramsey reference bounds
+  the conditional share, jointly across edges because their phases add
+  inside the shift, and the residual needs an incoherent control.
 - The dark sector here is an algebraic kernel of one operator. It carries no
   electromagnetic coupling and supports no dark-matter interpretation; a
   dark-photon claim needs a calibrated sensor response such as
