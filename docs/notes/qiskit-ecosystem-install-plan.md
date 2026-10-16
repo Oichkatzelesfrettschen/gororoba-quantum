@@ -1,0 +1,95 @@
+# Qiskit ecosystem install plan
+
+Companion to [qiskit-ecosystem.md](qiskit-ecosystem.md), which holds the
+evidence. Nothing here has been executed. Every step keeps qiskit 2.5.2,
+qiskit-ibm-runtime 0.50.0, qiskit-aer 0.17.2, samplomatic 0.21.0 and
+ibm-quantum-schemas 0.12.20260921 in place.
+
+## Host (Arch, Python 3.14)
+
+Installed packages need no action. Order matters only where a later step
+depends on an earlier one.
+
+1. No change to the core. Hold qiskit at 2.5.2 although 2.6.0 exists on PyPI
+   (2026-10-16): no Arch or AUR package carries it and qiskit-fermions
+   (`~=2.5.0`) is the only audited package that rejects it. Revisit when
+   `python-qiskit` 2.6.0 reaches the AUR; every pinned package already
+   admits it.
+2. Optional, only when a case imports it: `python-qiskit-addon-utils`
+   0.4.0-1 from the AUR (dependencies: numpy, qiskit>=2.2, rustworkx>=0.16,
+   all present). Build with `makepkg -si --nocheck`.
+3. Characterization candidates, each needing a new local PKGBUILD because no
+   AUR package exists:
+   - `python-qiskit-noise-learning`: GitHub only, no tag or release, version
+     generated at build from the git history. Pin a commit hash in the
+     PKGBUILD source. Dependencies: numpy>=2, qiskit>=2.5.0,<3, rustworkx>=0.15,
+     samplomatic>=0.21, scipy>=1.13, xarray>=2025.7 (Arch `extra` ships
+     `python-xarray` 2026.09.0-1, which satisfies it; install it first).
+   - `python-qiskit-device-benchmarking`: GitHub only, no tag or release.
+     Pin a commit hash. Dependencies: numpy, scipy, qiskit, qiskit-experiments,
+     qiskit-ibm-runtime, matplotlib, rustworkx, networkx, pandas. Host only
+     because its benchmarks submit to IBM backends.
+   Install `python-qiskit-noise-learning` and
+   `python-qiskit-device-benchmarking` after `python-qiskit-experiments` (already
+   present). Skip both when no case needs them.
+4. Skipped on the host, with the reason in the audit: pymatching and sinter
+   (no QEC decoding case), qiskit-addon-obp, -mpf, -aqc-tensor, -cutting, -sqd,
+   -slc, -pna, pauli-prop, qiskit-paulice, qiskit-fermions (no consumer),
+   qiskit-ibm-transpiler, qiskit-ibm-catalog, qiskit-serverless (cloud
+   clients; the transpiler also moves runtime below 0.46), qiskit-dynamics,
+   qiskit-optimization, qiskit-ibm-experiment, qiskit-ibm-provider (archived
+   or superseded).
+5. Repair, not an addition: `python-cytoolz 1.1.0-2.1` ships a dist-info
+   that reads 0.0.1, so `pip check` flags quimb. Rebuild or report the
+   package; `quimb.tensor` works in the meantime.
+
+## Kaggle (Python 3.13.15, numpy 2.1.3, scipy 1.16.3)
+
+The group install runs `pip install -c constraints.txt` with `KERNEL_PINS`
+and the frozen image numpy and scipy, so every pin below must admit those
+two versions. They do.
+
+1. Add explicit pins to `PIN_GROUPS["quantum-tools"]` in
+   `scripts/kaggle_run.py`, matching the host Arch packages:
+
+   | Pin | Reason |
+   |---|---|
+   | `samplomatic==0.21.0` | runtime requirement `>=0.21.0`; fixes the release the host imports |
+   | `ibm-quantum-schemas==0.12.20260921` | runtime admits `<1,>=0.12.20260921`, so an unpinned install resolves 0.13.20261016 today |
+   | `qiskit-mitigation==0.1.1` | hard dependency of runtime 0.50.0 (`>=0.1.1`) |
+   | `qiskit-qasm3-import==0.6.0` | `qiskit.qasm3.loads`; requires `openqasm3[parser]<2.0,>=0.4` |
+   | `openqasm3==1.0.1` | matches the host; its `parser` extra needs `antlr4-python3-runtime<4.14` |
+   | `antlr4-python3-runtime==4.13.2` | satisfies the `<4.14` bound; confirm the host version before pinning |
+
+   Constraint check: samplomatic needs numpy>=1.26 and qiskit>=2.3.0;
+   mitigation needs numpy>=1.26, scipy>=1.10; none moves numpy 2.1.3 or
+   scipy 1.16.3. The kernel's existing "stop unless every pin is installed
+   at its version" check then covers them.
+2. Extend `kaggle_kernel/kernel_main.py` so `environment.json` records the
+   installed version of every `PIN_GROUPS` member that was requested. The
+   retained records list a fixed set and show no group package, so group
+   installs cannot be audited after the fact.
+3. Optional, with `python-qiskit-noise-learning`: fetch the commit-pinned
+   source archive with a recorded sha256, in the manner of the algebra
+   packages (not a pip pin, since no release exists), plus `xarray>=2025.7`
+   (not verified present in the Kaggle image; check `environment.json`
+   after adding it to the recorded set). It requires numpy>=2, which numpy
+   2.1.3 meets.
+4. Never install in a kernel: qiskit-ibm-catalog, qiskit-serverless,
+   qiskit-ibm-transpiler, qiskit-device-benchmarking, qiskit-ibm-experiment,
+   and the MCP servers (IBM credential and service calls). qiskit-serverless
+   0.37.0 and qiskit-ibm-catalog also require `numpy>=2.2.6`, above the
+   image's 2.1.3.
+
+## Constraint conflicts
+
+| Conflict | Packages | Consequence |
+|---|---|---|
+| runtime downgrade | qiskit-ibm-transpiler 0.18.0 -> qiskit-serverless~=0.30.0 -> `qiskit-ibm-runtime<0.46.0`, `networkx==2.8.5` | breaks the 0.50.0 pin; also `requires_python<3.14`, no host install |
+| numpy floor | qiskit-serverless 0.37.0, qiskit-ibm-catalog 0.21.0 (`numpy>=2.2.6`) | not installable in a Kaggle kernel (2.1.3) |
+| qiskit ceiling | qiskit-dynamics 0.6.0 (`<=1.3`), qiskit-aqt-provider 2.0.0 (`<=2.4.1`), pennylane-qiskit 0.45.0 (`<=2.3.0`), qiskit-research, qiskit-qir | reject qiskit 2.5.2 |
+| qiskit 2.6 block | qiskit-fermions 0.2.0 (`~=2.5.0`) | blocks a later core bump |
+| scipy margin | quimb 1.15.0 (`scipy>=1.16.0`) | Kaggle scipy 1.16.3 leaves no room for an older image |
+| wheel gap | mthree 3.0.0 (no cp313 or cp314 wheel) | Kaggle compiles the sdist (cython>=3.0.10, C++ toolchain) |
+| schemas drift | runtime `ibm-quantum-schemas<1` | Kaggle resolves 0.13.20261016 unless pinned (step 1) |
+| GPU wheel | qiskit-aer-gpu-cu11 0.17.2 has a cp313 wheel only | moving Kaggle to Python 3.14 drops GPU Aer |
