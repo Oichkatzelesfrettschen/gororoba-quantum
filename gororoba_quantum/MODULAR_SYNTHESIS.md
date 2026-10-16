@@ -149,7 +149,10 @@ an uncontrolled CNOT network applies A there, and the verifier's mutation with
 uncontrolled linear CNOTs moves 30 of the 32 disabled-branch states for each
 multiplier. The argument binds the direct composition: a conjugated form,
 uncontrolled `A^-1`, then controlled `r o A`, then uncontrolled A, keeps the
-CNOTs uncontrolled but synthesizes the different residual `r o A`.
+CNOTs uncontrolled but synthesizes the different residual `r o A`. Sharing
+one conjugator across all rounds removes its boundary cost; the
+[linear work-register encoding](#linear-work-register-encoding) searches
+that family.
 
 The exhaustive checks cover all 32 register states for each of 2, 4, and 16:
 r is a bijection with identity affine part, `A o r` equals f, the reversed
@@ -196,6 +199,71 @@ CZ rises 13.1 percent. The verdict is rejection. The default remains
 rule and writes `results/hw_estimate/n21_affine_residual_challenger.json`
 with tool versions, source hashes, the rank census, per-multiplier networks
 and checks, the surrogate totals, and every per-seed record.
+
+## Linear work-register encoding
+
+One uncontrolled B in GL(5,2) for every round turns round k into
+`B C(g_k) B^-1` with `g_k = B^-1 f_k B`. The operations between rounds act
+on the control qubit alone, so each `B^-1 B` pair between rounds cancels.
+The first `B^-1` meets the work register in `|1>` and becomes the basis-state
+preparation `B^-1 |1>`. The last B acts on a work register order finding
+never measures. The encoded circuit therefore carries only the controlled
+target-flip networks of the conjugates, and its phase register has the
+unencoded circuit's law exactly. `factor_order_finding(work_columns=B)`
+builds it, with the default of None leaving every existing circuit unchanged.
+
+The search is exact over its family. `target_flip_network` minimizes over every
+bit ordering, so B and `B P` cost the same for a permutation matrix P. That
+leaves 83,328 cosets `B S_5`, each named by the unordered set of its columns.
+16 is the inverse of 4 modulo 21, and the synthesis minimizes over reversed
+inverse networks, so `s(B^-1 f_16 B) = s(B^-1 f_4 B)` (checked on 1,000
+sampled cosets). The ten-round schedule [4, 16, 4, 16, 4, 16, 4, 16, 4, 2]
+therefore costs `9 s(4) + s(2)`, 2,556 at B = I.
+
+`scripts/linear_conjugation_search.py` evaluated every coset on five Kaggle
+CPU kernels, in 899 to 1,116 s each.
+- **Ten-round optimum.** It is unique: the columns (1, 2, 5, 13, 25) give
+  s(4) = 186 and s(2) = 222, for a total of 1,896, 25.8 percent below the
+  baseline.
+- **Distribution.** Only 2,750 cosets (3.3 percent) beat B = I.
+- **Two-round diagnostic.** Its multipliers are 16 and 4, so it ranks cosets
+  by s(4) alone, and the same coset leads.
+
+The surrogate ranks candidates; it doesn't admit them.
+`linear_conjugation_challenger.py` compiles the eight best cosets of each
+problem on FakeFez over transpiler seeds 0 to 7. It applies the affine
+challenger's rule on every arm: no seed worse in routed CZ, depth or
+duration, and a strictly lower median routed CZ. Before admission, each
+encoded circuit passes three checks:
+- the conjugation holds exhaustively;
+- each controlled network maps `|c, x, 0>` to `|c, g^c(x), 0>` with amplitude
+  +1 on both branches;
+- a seeded Aer sample of the complete circuit reproduces the baseline's phase
+  counts (total variation 0).
+
+All sixteen cosets are admitted.
+
+| Problem | Circuit | Median routed CZ | Median depth | Median duration (dt) |
+|---|---|---:|---:|---:|
+| ten-round | baseline | 5,422 | 13,662 | 131,793 |
+| ten-round | coset 15241, columns (2, 4, 5, 8, 25) | 3,933 | 9,847 | 96,196.5 |
+| two-round, both arms | baseline | 1,107 | 2,688 / 2,684 | 25,734 |
+| two-round, both arms | coset 15265, columns (2, 4, 5, 10, 17) | 739 | 1,839 / 1,838 | 17,607 |
+
+Coset 15241 cuts the ten-round routed CZ by 27.5 percent; coset 15265 cuts
+the two-round CZ by 33.2 percent. Neither is the surrogate optimum:
+coset 281 compiles to 3,980.5 and 810 CZ. Its surrogate counts only cubes,
+while routing also pays for each cube's control pattern on the heavy-hex
+coupling map.
+
+The family stays linear by design. An arbitrary permutation B would reduce
+to choosing a relabeling of f's cycle structure, which is a choice made from
+the order itself, the compiled-answer construction of Smolin, Smith and Vargo
+([1301.7007](../docs/notes/1301.7007.md)). A linear B keeps the work
+register a linear re-encoding of the residue bits, and both the search and
+the synthesis read the complete truth table, exactly as the unencoded
+compiler does. The replay gates and the retained records are listed in
+[docs/evidence/linear_conjugation/](../docs/evidence/linear_conjugation/README.md).
 
 ## Transfer from the dimension ladder and Rocq corpus
 

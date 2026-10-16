@@ -2560,6 +2560,64 @@
       ],
       "supersedes": [],
       "superseded_by": null
+    },
+    {
+      "id": "n21-linear-encoding-surrogate",
+      "statement": "Over all 83,328 cosets B S_5 of GL(5,2), conjugating every N=21, a=2 order-finding multiplier by one uncontrolled linear B gives a ten-round phase-controlled CX surrogate 9 s(4) + s(2) whose unique minimum is 1,896 at columns (1, 2, 5, 13, 25), against 2,556 at B = I; 2,750 cosets beat B = I, and s(B^-1 f_16 B) = s(B^-1 f_4 B) on every one of 1,000 sampled cosets as 16 = 4^-1 mod 21 predicts.",
+      "domain": "implementation",
+      "evidence_class": "exact finite certificate",
+      "status": "established",
+      "boundary": "Exhaustive over the linear family under target_flip_network's surrogate weights 1/6/12/18/24; the surrogate ranks candidates for routed admission and is not a routed or hardware cost. Arbitrary-permutation encodings are excluded as compiled-answer constructions (1301.7007).",
+      "evidence": [
+        {
+          "path": "docs/evidence/linear_conjugation/search.json",
+          "sha256": "f0445cb21cbd6c4a230ac94aa5c6b5f2580608e457b3ac62d81063ccf40dea5f"
+        }
+      ],
+      "documents": [
+        "docs/evidence/linear_conjugation/README.md",
+        "gororoba_quantum/MODULAR_SYNTHESIS.md"
+      ],
+      "gates": {
+        "core-325": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "target_flip.target_flip_network and its CONTROLLED_CX_COST weights"
+      ],
+      "depends_on": [],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "n21-linear-encoding-routed",
+      "statement": "On FakeFez over transpiler seeds 0-7 with the target_flip_one_clean pass manager, the N=21 order-finding circuits encoded by the admitted linear cosets beat the unencoded circuits on every seed in routed CZ, depth and scheduled duration while sampling the identical phase law: the ten-round circuit at coset 15241 has median routed CZ 3,933 against 5,422 (27.5 percent fewer), and the two-round n21-feedback diagnostic at coset 15265 has 739 against 1,107 on both its feed-forward and no-feed-forward arms (33.2 percent fewer).",
+      "domain": "implementation",
+      "evidence_class": "circuit-conformance check",
+      "status": "established",
+      "boundary": "Compiled counts on one captured fake backend, which bound no fidelity or hardware outcome; the encoded circuits' noisy contrasts are separate simulation records, and every hardware use needs its own approved case.",
+      "evidence": [
+        {
+          "path": "results/hw_estimate/n21_linear_conjugation_challenger.json",
+          "sha256": "5b428d1cb0a093fbeaba88be80d498c47901690b56eae688510f5e300d3f8557"
+        }
+      ],
+      "documents": [
+        "docs/evidence/linear_conjugation/README.md",
+        "gororoba_quantum/MODULAR_SYNTHESIS.md"
+      ],
+      "gates": {
+        "core-326": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "the work register is never measured and the operations between rounds act on the control alone"
+      ],
+      "depends_on": [
+        "n21-linear-encoding-surrogate"
+      ],
+      "supersedes": [],
+      "superseded_by": null
     }
   ]
 }

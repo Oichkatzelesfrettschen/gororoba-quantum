@@ -250,6 +250,17 @@ The service inventory observed at 2026-10-15T07:13:13.827472+00:00 holds 23 phys
   Evidence: [result.json](../evidence/signed_kernel_noise/result.json), [ibm_kingston.json](../evidence/calibration/ibm_kingston.json), [README.md](../evidence/signed_kernel_noise/README.md), [signed_kernel_probe.md](../notes/signed_kernel_probe.md).
   Gates: replayed by core-304.
   Depends on: signed-kernel-certificate.
+- **n21-linear-encoding-surrogate** (exact finite certificate, implementation). Over all 83,328 cosets B S_5 of GL(5,2), conjugating every N=21, a=2 order-finding multiplier by one uncontrolled linear B gives a ten-round phase-controlled CX surrogate 9 s(4) + s(2) whose unique minimum is 1,896 at columns (1, 2, 5, 13, 25), against 2,556 at B = I; 2,750 cosets beat B = I, and s(B^-1 f_16 B) = s(B^-1 f_4 B) on every one of 1,000 sampled cosets as 16 = 4^-1 mod 21 predicts.
+  Boundary: Exhaustive over the linear family under target_flip_network's surrogate weights 1/6/12/18/24; the surrogate ranks candidates for routed admission and is not a routed or hardware cost. Arbitrary-permutation encodings are excluded as compiled-answer constructions (1301.7007).
+  Assumptions: target_flip.target_flip_network and its CONTROLLED_CX_COST weights.
+  Evidence: [search.json](../evidence/linear_conjugation/search.json), [README.md](../evidence/linear_conjugation/README.md), [MODULAR_SYNTHESIS.md](../../gororoba_quantum/MODULAR_SYNTHESIS.md).
+  Gates: replayed by core-325.
+- **n21-linear-encoding-routed** (circuit-conformance check, implementation). On FakeFez over transpiler seeds 0-7 with the target_flip_one_clean pass manager, the N=21 order-finding circuits encoded by the admitted linear cosets beat the unencoded circuits on every seed in routed CZ, depth and scheduled duration while sampling the identical phase law: the ten-round circuit at coset 15241 has median routed CZ 3,933 against 5,422 (27.5 percent fewer), and the two-round n21-feedback diagnostic at coset 15265 has 739 against 1,107 on both its feed-forward and no-feed-forward arms (33.2 percent fewer).
+  Boundary: Compiled counts on one captured fake backend, which bound no fidelity or hardware outcome; the encoded circuits' noisy contrasts are separate simulation records, and every hardware use needs its own approved case.
+  Assumptions: the work register is never measured and the operations between rounds act on the control alone.
+  Evidence: [n21_linear_conjugation_challenger.json](../../results/hw_estimate/n21_linear_conjugation_challenger.json), [README.md](../evidence/linear_conjugation/README.md), [MODULAR_SYNTHESIS.md](../../gororoba_quantum/MODULAR_SYNTHESIS.md).
+  Gates: replayed by core-326.
+  Depends on: n21-linear-encoding-surrogate.
 - **hw-mod15-pilot** (preregistered hardware inference, hardware). Hybrid Shor mod 15 factor yield 0.4971 [0.4726, 0.5216] against the exact uniform null 0.2969; packed replica 0 differs from its isolated reference by +0.0020 (Shor) and -0.0037 (folded QPE), both inside the 0.03 Newcombe equivalence margin.
   Boundary: The order-4 law is the same with and without the conditional phases, so the feed-forward is untested; the Hoeffding view leaves folded-QPE equivalence unresolved.
   Evidence: [collect.json](../../results/live/2026-10-11T152922.787095Z/collect.json), [adjudication-05b97e57a73f-seed20261011.json](../../results/live/2026-10-11T152922.787095Z/adjudication-05b97e57a73f-seed20261011.json), [CAMPAIGN_FINDINGS.md](../../results/live/CAMPAIGN_FINDINGS.md).
