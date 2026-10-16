@@ -181,8 +181,12 @@ Shift of amplified - echo from the baseline, at both signs of each magnitude:
      and common phase theta. The slope here comes from the model's known
      deltas, so the device case adds an X-quadrature arm for each edge and
      depth to measure V and theta before its counts bound any phase.
-   - **Shots.** At m = 24 it reaches that tolerance with 355 to 529 shots
-     per edge and target state, so four edges cost about 4,000 shots.
+   - **Shots.** At m = 24 the Y-basis arms reach that tolerance with 355
+     to 529 shots per edge and target state, about 4,000 shots over four
+     edges. That figure is the Y-basis share only: the X-quadrature arms,
+     and the variance that estimating V and theta adds to the phase bound,
+     are unsized, so the reference budget is open until a case designs
+     those arms and sizes both quadratures jointly.
 6. **Edge phases add coherently, not edge by edge.** The four single-edge
    shifts sum to 0.25 to 0.33 of the uniform shift on every backend (Fez at
    0.02 rad: -0.0115 against -0.0404). Four comparable edges whose phases
