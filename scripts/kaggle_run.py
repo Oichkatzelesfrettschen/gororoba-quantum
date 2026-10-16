@@ -82,6 +82,13 @@ CI_PYTHON = "3.14.7"
 UV_PIN = "uv==0.13.0"
 SHELLCHECK_PIN = "shellcheck-py==0.10.0.1"
 SLOT_POLL_SECONDS = 90
+# What ci/install_pins.sh reads; --ci-env bundles them with the entry.
+CI_ENV_FILES = (
+    "requirements.txt",
+    "ci/requirements-ci.txt",
+    "ci/install_pins.sh",
+    "ci/patches/sympy-1.14.0-mpmath-1.4.patch",
+)
 # Kaggle's SaveKernel accepts a 706,414-byte run.py and refuses a 1,662,849-byte
 # one with HTTP 400 (2026-10-16); the guard sits between the two.
 KERNEL_SOURCE_LIMIT = 1_000_000
@@ -214,6 +221,11 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         files.extend(import_closure(ROOT / always) if always.endswith(".py") else [ROOT / always])
     for include in args.include:
         files.extend(tracked_files(include))
+    ci_env = None
+    if getattr(args, "ci_env", False):
+        require(args.machine == "cpu" and not smoke, "--ci-env runs an ENTRY on a CPU machine")
+        files.extend(ROOT / name for name in CI_ENV_FILES)
+        ci_env = {"python": CI_PYTHON, "uv": UV_PIN}
     bundled = sorted({path.relative_to(ROOT).as_posix() for path in files})
     listed = subprocess.run(
         ["git", "ls-files", "-z", "--", *bundled], cwd=ROOT, capture_output=True, text=True, check=True
@@ -239,6 +251,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
             "smoke": smoke,
             "device": device,
             "datasets": [{"ref": d["ref"], "archive": d["archive"], "files": d["files"]} for d in datasets],
+            "ci_env": ci_env,
         }
         bundle.writestr("kaggle_kernel/kernel_job.json", json.dumps(job, indent=1) + "\n")
     kernel_dir = run_dir / "kernel"
@@ -274,6 +287,7 @@ def build_kernel(args: argparse.Namespace, run_dir: Path, owner: str, stamp: str
         "git_commit": revision,
         "untracked_inputs": untracked,
         "pins": list(kernel_pins(args.machine)),
+        "ci_env": ci_env,
         "bundle": digests,
         "datasets": {d["ref"]: d["archive_sha256"] for d in datasets},
         "run_py_sha256": sha256((kernel_dir / "run.py").read_bytes()),
@@ -795,6 +809,11 @@ def main() -> int:
     push_parser.add_argument("--machine", default=DEFAULT_MACHINE, help="machine_shape, or cpu")
     push_parser.add_argument("--timeout", type=int, default=0, help="kernel run-time limit in seconds")
     push_parser.add_argument("--dataset", action="append", default=[], help="retained dataset slug to attach")
+    push_parser.add_argument(
+        "--ci-env",
+        action="store_true",
+        help="run ENTRY under CI's Python and pins (CPU machine), so a CI gate replays its record byte for byte",
+    )
     push_parser.set_defaults(func=push)
     sub.add_parser("self-test").set_defaults(func=self_test)
     dataset_parser = sub.add_parser("dataset")

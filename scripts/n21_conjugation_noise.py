@@ -11,10 +11,9 @@ and samples two workloads:
 - the ten-round factor_order_finding(21, 2, 10), scored by the fraction of
   shots whose phase recovers the order 6 (factoring.decode_counts).
 
-Each workload runs unencoded and under the encoding x = B^-1 v that
-scripts/linear_conjugation_search.py ranks best for it: the coset of least
-s(4) for the two-round diagnostic, whose multipliers are 16 and 4, and the
-coset of least ten-round surrogate for the full circuit.
+Each workload runs unencoded and under the encoding x = B^-1 v of the coset
+that gororoba_quantum/linear_conjugation_challenger.py admits with the fewest
+median routed CZ for it, the circuit a hardware case would carry.
 
 The rebuilt snapshot Target carries no control flow, so the run adds
 if_else, which the Heron Targets list, before compiling. Every circuit
@@ -34,7 +33,7 @@ for a live_run dry run, which stays the admission authority; the module
 reads no IBM service and submits nothing.
 
 Usage:
-    "$PYTHON" scripts/n21_conjugation_noise.py --search SEARCH.json --snapshots SNAP... --out PATH
+    "$PYTHON" scripts/n21_conjugation_noise.py --challenger CHALLENGER.json --snapshots SNAP... --out PATH
     "$PYTHON" scripts/n21_conjugation_noise.py --check PATH
 
 --check recompiles every circuit's chosen seed on its retained snapshot and
@@ -312,11 +311,19 @@ def check(record: dict[str, Any]) -> str:
     return f"{len(jobs)} chosen compilations and every derived field reproduced"
 
 
-def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
-    two_round_index = search["summary"]["s4_winners"][0]["index"]
-    two_round = tuple(search["summary"]["s4_winners"][0]["columns"])
-    _require(coset_columns()[two_round_index] == two_round, "the s4 winner's columns differ from its coset index")
-    ten_round = tuple(search["summary"]["winners"][0]["columns"])
+def admitted(challenger: dict[str, Any], problem: str) -> tuple[int, tuple[int, ...]]:
+    """The best admitted coset of one problem in a linear_conjugation_challenger record."""
+    entry = challenger["problems"][problem]
+    _require(entry["best_admitted"] is not None, f"the challenger admitted no {problem} coset")
+    best = next(record for record in entry["challengers"] if record["coset_index"] == entry["best_admitted"])
+    columns = tuple(best["columns"])
+    _require(coset_columns()[best["coset_index"]] == columns, f"{problem}: columns differ from the coset index")
+    return best["coset_index"], columns
+
+
+def run(challenger: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
+    two_round_index, two_round = admitted(challenger, "two_round")
+    ten_round_index, ten_round = admitted(challenger, "ten_round")
     built = circuits(two_round, ten_round)
     names = list(CIRCUIT_NAMES)
     jobs = [
@@ -369,9 +376,9 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
         "qpu_executed": False,
         "encodings": {
             "two_round": {"columns": list(two_round), "coset_index": two_round_index},
-            "ten_round": {"columns": list(ten_round), "coset_index": search["summary"]["winners"][0]["index"]},
+            "ten_round": {"columns": list(ten_round), "coset_index": ten_round_index},
         },
-        "search_record_sha256": hashlib.sha256(json.dumps(search, sort_keys=True).encode()).hexdigest(),
+        "challenger_record_sha256": hashlib.sha256(json.dumps(challenger, sort_keys=True).encode()).hexdigest(),
         "compiler": {
             "optimization_level": OPTIMIZATION_LEVEL,
             "seeds": list(TRANSPILER_SEEDS),
@@ -404,7 +411,9 @@ def run(search: dict[str, Any], snapshot_paths: list[Path]) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--search", type=Path)
+    parser.add_argument(
+        "--challenger", type=Path, help="linear_conjugation_challenger record naming the admitted cosets"
+    )
     parser.add_argument("--snapshots", type=Path, nargs="+")
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path, help="retained record to replay without sampling")
@@ -412,10 +421,12 @@ def main() -> int:
     if args.check:
         print(f"n21_conjugation_noise: {check(json.loads(args.check.read_text(encoding='utf-8')))}")
         return 0
-    _require(args.search and args.snapshots and args.out, "--search, --snapshots and --out are required")
-    search = json.loads(args.search.read_text(encoding="utf-8"))
-    _require(search.get("mode") == "exhaustive", "--search must be a merged exhaustive record")
-    record = run(search, [path.resolve() for path in args.snapshots])
+    _require(args.challenger and args.snapshots and args.out, "--challenger, --snapshots and --out are required")
+    challenger = json.loads(args.challenger.read_text(encoding="utf-8"))
+    _require(
+        challenger.get("capture") == "n21-linear-conjugation-challenger", "--challenger is not a challenger record"
+    )
+    record = run(challenger, [path.resolve() for path in args.snapshots])
     args.out.parent.mkdir(parents=True, exist_ok=True)
     args.out.write_text(json.dumps(record, indent=1) + "\n", encoding="utf-8")
     for backend in record["backends"]:
