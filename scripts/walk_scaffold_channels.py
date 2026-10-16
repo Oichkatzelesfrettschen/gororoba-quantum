@@ -55,8 +55,9 @@ to the Kaggle run's collect.json digest, recomputes the cd_core side of the
 algebra record without importing any package, re-derives Kingston lane 0's
 baseline and fitted laws of all 14 members to 1e-8 with the held-out
 log-likelihood, deviance and reproduces_floor decision, and requires each
-recorded optimum to be a local minimum (a restarted fit improves it by less
-than 1e-3 in log-likelihood).
+recorded optimum to be a local minimum: no single parameter moved by
+PROBE_STEP of its bound width, in either direction the bounds allow,
+raises the readout0 log-likelihood by more than 1e-3.
 """
 
 from __future__ import annotations
@@ -121,6 +122,7 @@ CHANNELS: dict[str, tuple[str, float, float]] = {
 # (differential evolution from a Sobol population, polished by L-BFGS-B);
 # the incoherent candidates start L-BFGS-B at fixed fractions of the bound.
 FIT_STARTS = {"positive": ((0.05, 0.05, 0.05, 0.05), (0.3, 0.3, 0.3, 0.3))}
+PROBE_STEP = 1e-3
 GLOBAL_SEARCH = {"seed": 20261016, "popsize": 10, "maxiter": 60, "init": "sobol", "tol": 1e-6}
 GATE_P = 0.01
 
@@ -689,18 +691,29 @@ def check(path: Path, run_dir: Path) -> int:
     member = kept["fit_member"]
     counts = lane["members"][member]["counts"]
     held = kept["held_out_members"]
+    models = list(kept["models"].items())
+    items = [
+        (index, name, tuple(row.get("parameters", ())), other) for name, row in models for other in lane["members"]
+    ]
+    probes = []
+    for name, row in models:
+        if name in CHANNELS:
+            _, low, high = CHANNELS[name]
+            step = PROBE_STEP * (high - low)
+            for k, value in enumerate(row["parameters"]):
+                for moved in (value - step, value + step):
+                    if low <= moved <= high:
+                        params = list(row["parameters"])
+                        params[k] = moved
+                        probes.append((name, k, moved))
+                        items.append((index, name, tuple(params), member))
+    results = parallel.ordered_map(ScoreTask(lanes, "CPU"), items, min_items=1)
+    replayed = iter(results)
     baseline_ll = None
-    for name, row in kept["models"].items():
-        laws = {}
-        for other in lane["members"]:
-            other_model = lane_model(lane, other, "CPU")
-            if name == "unscheduled":
-                laws[other] = other_model.law(None, np.zeros(4), scheduled=False)
-            elif name == "scheduled":
-                laws[other] = other_model.law(None, np.zeros(4))
-            else:
-                laws[other] = other_model.law(name, np.asarray(row["parameters"]))
-            if not np.allclose(laws[other], row["laws"][other], rtol=1e-8, atol=1e-10):
+    for name, row in models:
+        laws = {other: np.asarray(next(replayed)) for other in lane["members"]}
+        for other, law in laws.items():
+            if not np.allclose(law, row["laws"][other], rtol=1e-8, atol=1e-10):
                 failures.append(f"{name}: law of {other} differs from the retained law")
         held_ll = sum(log_likelihood(lane["members"][m]["counts"], laws[m]) for m in held)
         held_g2 = sum(deviance(lane["members"][m]["counts"], laws[m]) for m in held)
@@ -710,17 +723,10 @@ def check(path: Path, run_dir: Path) -> int:
             failures.append(f"{name}: held-out deviance {held_g2} against {row['held_out_deviance']}")
         if name == "scheduled":
             baseline_ll = held_ll
-        law = laws[member]
-        if name in CHANNELS:
-            restart = FitTask(lanes, "CPU")(
-                (
-                    index,
-                    name,
-                    tuple(np.asarray(row["parameters"]) / max(abs(CHANNELS[name][1]), abs(CHANNELS[name][2]))),
-                )
-            )
-            if restart["neg_log_likelihood"] < -log_likelihood(counts, law) - 1e-3:
-                failures.append(f"{name}: a restarted fit improves the retained optimum")
+    for (name, k, moved), law in zip(probes, replayed, strict=True):
+        retained_ll = log_likelihood(counts, np.asarray(kept["models"][name]["laws"][member]))
+        if log_likelihood(counts, np.asarray(law)) > retained_ll + 1e-3:
+            failures.append(f"{name}: moving parameter {k} to {moved} improves the retained optimum")
     for name in CHANNELS:
         row = kept["models"][name]
         fit_g2 = deviance(counts, np.asarray(row["laws"][member]))

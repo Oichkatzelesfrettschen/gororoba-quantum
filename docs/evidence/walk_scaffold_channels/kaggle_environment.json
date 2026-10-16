@@ -42,7 +42,7 @@
  },
  "platform": "Linux-6.18.48+-x86_64-with-glibc2.39",
  "python": "3.13.15",
- "ram_available_gib": 30.11,
+ "ram_available_gib": 30.05,
  "ram_total_gib": 31.35,
  "tpus": {
   "devices": [],

@@ -2291,15 +2291,15 @@
     },
     {
       "id": "walk-scaffold-single-channel-exclusion",
-      "statement": "Added to live_run's calibrated noise model under each member's execution calibration, none of six single candidate channels (end-of-circuit flips, SX over-rotation, CZ local phase, CZ conditional phase, extra amplitude damping, extra depolarizing; one parameter per qubit or edge) fitted on the walk readout0 member reproduces the floor and predicts the lane's 13 other walk members in any of the four Fez and Kingston lanes: held-out deviance 2,957 to 31,661 on 195 degrees of freedom. Only Kingston lane 59, 73-75 passes the readout0 gate (CZ local phase p = 0.093, end flips p = 0.028), and both predict its held-out members worse than the baseline.",
+      "statement": "Added to live_run's calibrated noise model under each member's execution calibration, none of six single candidate channels (end-of-circuit flips, SX over-rotation, CZ local phase, CZ conditional phase, extra amplitude damping, extra depolarizing; one parameter per qubit or edge, coherent angles within 0.15 rad) fitted on the walk readout0 member reproduces the floor and predicts the lane's 13 other walk members in any of the four Fez and Kingston lanes: held-out deviance 2,955 to 31,661 on 195 degrees of freedom. Three fits pass the readout0 gate: CZ local phase on Fez 1-4 (p = 0.018) and on Kingston 59, 73-75 (p = 0.30), and end flips on Kingston 59, 73-75 (p = 0.028); the two Kingston fits predict its held-out members worse than the baseline, and the Fez fit leaves held-out deviance 7,202.",
       "domain": "implementation",
       "evidence_class": "exploratory reanalysis",
       "status": "exploratory",
-      "boundary": "A reanalysis of retained hardware counts seen before the candidates were chosen; it excludes six single-mechanism channels with one parameter per qubit or edge under the stated bounds; combinations, spectator crosstalk and drifting errors are outside it, end-of-circuit flips do not separate a readout fault from leakage, and no device mechanism is identified.",
+      "boundary": "A reanalysis of retained hardware counts seen before the candidates were chosen; it excludes six single-mechanism channels with one parameter per qubit or edge under the stated bounds, which nine of twelve coherent fits reach; combinations, spectator crosstalk and drifting errors are outside it, end-of-circuit flips do not separate a readout fault from leakage, and no device mechanism is identified.",
       "evidence": [
         {
           "path": "docs/evidence/walk_scaffold_channels/result.json",
-          "sha256": "119246bec746cc74b23dc624152c7b05e4bdf1a3f827f70c80fecfabe3723585"
+          "sha256": "1076a9bf0ada5efca18258b8aa4b76b0acb83cc6f53756930c9b0a318ee39fe2"
         },
         {
           "path": "docs/evidence/walk_scaffold_channels/members.json",
@@ -2307,7 +2307,7 @@
         },
         {
           "path": "docs/evidence/walk_scaffold_channels/members.qpy",
-          "sha256": "1a263f8455854ca3ba5c928fc3142a90d880425f8d9cf9f58e9e5287a3a56fc0"
+          "sha256": "a5d9d4f6e4098a19f496ac84cb54b44477baa2a3d8f974ae8d03793077c18882"
         },
         {
           "path": "docs/evidence/calibration/history/ibm_kingston/20261014T1947440700.json",
