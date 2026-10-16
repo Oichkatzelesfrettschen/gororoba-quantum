@@ -112,6 +112,12 @@ PRODUCT_OUTPUT_PROBES: dict[str, str] = {
 }
 
 
+# A family configuration recorded before record_groups required a field
+# predates its builder; only these (family, field) pairs mark one superseded,
+# and every other missing field fails the census.
+SUPERSEDED_FIELDS = {("patch-window", "measure_dt")}
+
+
 def require(condition: bool, message: str) -> None:
     if not condition:
         raise SystemExit(message)
@@ -135,7 +141,10 @@ def planned_groups() -> tuple[list[tuple[str, Group]], list[dict[str, str]]]:
         try:
             built = record_groups(record)
         except KeyError as missing:
-            superseded.append({"run": run, "family": family["name"], "missing_field": str(missing).strip("'")})
+            field = str(missing.args[0]) if missing.args else ""
+            if (family["name"], field) not in SUPERSEDED_FIELDS:
+                raise
+            superseded.append({"run": run, "family": family["name"], "missing_field": field})
             continue
         groups += [(f"{family['name']}:{run}", group) for group in built]
     return groups, superseded
