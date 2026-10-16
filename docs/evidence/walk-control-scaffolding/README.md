@@ -68,6 +68,12 @@ rank-sector tile (2, 3, 4, 16), so device and tile both enter the gap.
    lane-0 outcome distribution concentrates on a few outcomes, and a uniform
    law is rejected (chi-square p ~ 1e-259). Coherent over-rotation
    accumulated over 252 CZ, leakage and crosstalk remain candidates.
+   [walk_scaffold_channels](../walk_scaffold_channels/README.md) fits six
+   single channels (end-of-circuit flips, SX over-rotation, CZ local and
+   conditional phase, extra damping, extra depolarizing) on readout0 and
+   scores them on the depth members: none reproduces the floor and
+   transfers in any of the four lanes, so the mechanism is not one of these
+   alone.
 4. **Readout misassignment as the driver** (excluded). Misassignment below 8
    percent per qubit keeps P(all four correct) above 0.72.
 5. **Crosstalk from packed neighbours** (not supported). No CZ crosses a

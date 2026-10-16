@@ -92,7 +92,7 @@ sweep on the 84/84 pairs, and the CCZ normal form as a fidelity test of the
 | `gororoba-aer-gpu-smoke` | 14 | qiskit 2.5.2 and qiskit-aer-gpu-cu11 0.17.2 on the Kaggle GPU | complete: 2 x T4, a 14-qubit density-matrix GHZ in 1.6 s |
 | `gororoba-design-c-cubic-noise` | 5 | does the 11/32 against 5/32 collision separation survive the compiled factorized circuit under the Kingston calibration | complete: yes, ranges 0.180-0.253 and 0.093-0.113 at 20,000 shots; CPU replay gate core-282 |
 | Census-frequency witness | 5-13 | V and shot count for the 231/512 test | to design |
-| Walk scaffold under coherent and leakage models | 4 | which loss channel reproduces the retained readout0 floors | to design |
+| `gororoba-walk-scaffold-channels` | 4 | which loss channel reproduces the retained readout0 floors | complete: none of six single channels reproduces the floor and transfers to the depth members (`docs/evidence/walk_scaffold_channels/`) |
 | `gororoba-signed-kernel-noise` | 7 | the detectable t range | complete: a sign-phase offset needs a null arm per sign; null-subtracted visibility 0.60, 12,025 shots at t = 0.2 (`docs/evidence/signed_kernel_noise/`) |
 | `gororoba-conditional-ramsey-power` | 2 | the delta-method precision the case quotes | complete: holds once the conditional arms are postselected on B (`docs/evidence/conditional_ramsey_power/`) |
 
