@@ -546,6 +546,34 @@ def octonion_sedenion_tables() -> tuple[dict[str, Table], str]:
     return out, f"{half_type.__module__}.{half_type.__name__}"
 
 
+HYPRAT_SIGNS: dict[str, tuple[int, ...]] = {
+    **{f"D{2**n}": (-1,) * n for n in range(1, 6)},
+    "split-D2": (1,),
+    "split-D4": (-1, 1),
+    "split-D8": (-1, -1, 1),
+    "split-D16": (-1, -1, -1, 1),
+    "all-plus-D4": (1, 1),
+    "all-plus-D8": (1, 1, 1),
+    "all-plus-D16": (1, 1, 1, 1),
+}
+
+
+def hyprat_tables() -> dict[str, Table]:
+    """hyprat over exact rationals: one mu per doubling level, lowest first; mu = -1 is the ordinary step."""
+    from hyprat import Hy
+
+    out = {}
+    for key, signs in HYPRAT_SIGNS.items():
+        dim = 2 ** len(signs)
+        units = [Hy.from_array(unit(k, dim), signs=signs) for k in range(dim)]
+
+        def product(p: int, q: int, u: list[Any] = units) -> Sequence[Any]:
+            return (u[p] * u[q]).to_array()
+
+        out[f"hyprat/{key}"] = unit_table(dim, product)
+    return out
+
+
 def splitoct_tables() -> dict[str, Table]:
     import SplitOct
 
@@ -754,6 +782,7 @@ def extract() -> dict[str, Any]:
     os_tables, os_half_type = octonion_sedenion_tables()
     tables |= os_tables
     tables |= splitoct_tables()
+    tables |= hyprat_tables()
     tables |= quaternion_tables()
     tables |= clifford_tables()
     tables |= sage_tables()
@@ -806,6 +835,20 @@ RELATIONS: list[dict[str, Any]] = [
     {"table": "octonion/raw-baez-D8", "ref": "O", "kind": "opposite-not-identical"},
     {"table": "sagemath/octonion(-1,-1,-1)", "ref": "O", "kind": "opposite", "count": 1344},
     {"table": "sagemath/quaternion(-1,-1)", "ref": "H", "kind": "identical"},
+    # hyprat: mu = -1 at every level is cd_core; one +1 on top is the split reference; all +1 is
+    # Cayley-Calculator's set_split().
+    *(
+        {"table": f"hyprat/D{d}", "ref": r, "kind": "identical"}
+        for d, r in ((2, "C"), (4, "H"), (8, "O"), (16, "S"), (32, "CD32"))
+    ),
+    *(
+        {"table": f"hyprat/split-D{d}", "ref": r, "kind": "identical"}
+        for d, r in ((2, "split-C"), (4, "split-H"), (8, "split-O"), (16, "split-S"))
+    ),
+    *(
+        {"table": f"hyprat/all-plus-D{d}", "ref": f"Cayley-Calculator/split-D{d}", "kind": "identical"}
+        for d in (4, 8, 16)
+    ),
     # Quaternion packages.
     *(
         {"table": f"{pkg}/D4", "ref": "H", "kind": "identical"}
