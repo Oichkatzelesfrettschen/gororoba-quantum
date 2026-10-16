@@ -40,6 +40,7 @@ errors.
 from __future__ import annotations
 
 import argparse
+import hashlib
 import io
 import json
 import math
@@ -225,6 +226,69 @@ def ghost_run(run_name: str, states: str, device: str, index: dict[str, Any]) ->
     }
 
 
+def content_key(relative: str) -> str:
+    """Digest of a snapshot's noise-relevant content; distinct calibration identities can share it."""
+    snapshot = json.loads((ROOT / relative).read_text(encoding="utf-8"))
+    body = {key: snapshot[key] for key in ("num_qubits", "dt", "qubits", "instructions")}
+    return hashlib.sha256(json.dumps(body, sort_keys=True).encode()).hexdigest()[:12]
+
+
+def paired(states: dict[str, Any], kind: str) -> dict[str, Any] | None:
+    """Per-replica TV distance under one calibration state minus under the execution state, on shared members."""
+    execution: dict[str, list[float]] = {}
+    for entry in states.values():
+        if entry["state"] == "execution":
+            execution.update(entry["tvd"])
+    rows = [entry for entry in states.values() if entry["state"] == kind]
+    if not rows or not execution:
+        return None
+    other = rows[0]["tvd"]
+    deltas = [b - a for m in execution if m in other for a, b in zip(execution[m], other[m], strict=True)]
+    mean = float(np.mean(deltas))
+    error = float(np.std(deltas, ddof=1) / math.sqrt(len(deltas))) if len(deltas) > 1 else math.nan
+    return {"replicas": len(deltas), "mean_delta": round(mean, 6), "standard_error": round(error, 6)}
+
+
+def report(path: Path) -> dict[str, Any]:
+    """Per run: execution mean, paired current-minus-execution difference, and the distinct other states."""
+    retained = json.loads(path.read_text(encoding="utf-8"))
+    rows = []
+    for run in retained["runs"]:
+        if "skipped" in run:
+            rows.append({"run": run["run"], "skipped": run["skipped"]})
+            continue
+        states = run["states"]
+        by_content: dict[str, list[str]] = {}
+        for relative, entry in states.items():
+            if entry["state"] == "other":
+                by_content.setdefault(content_key(relative), []).append(relative)
+        others = {
+            key: {
+                "calibrations": [states[r]["calibration"] for r in sorted(group)],
+                "mean_tvd": run["summary"][sorted(group)[0]]["mean_tvd"],
+            }
+            for key, group in sorted(by_content.items())
+        }
+        execution = [v for v in run["summary"].values() if v["state"] == "execution"]
+        rows.append(
+            {
+                "run": run["run"],
+                "backend": run["backend"],
+                "members": run["members_ghosted"],
+                "execution_mean_tvd": [v["mean_tvd"] for v in execution],
+                "current_minus_execution": paired(states, "current"),
+                "distinct_other_states": len(others),
+                "other_mean_tvd_range": (
+                    [min(o["mean_tvd"] for o in others.values()), max(o["mean_tvd"] for o in others.values())]
+                    if others
+                    else None
+                ),
+                "self_check": run["self_check"],
+            }
+        )
+    return {"schema": "ghost-run-report-v1", "source": path.as_posix(), "runs": rows}
+
+
 def audited_runs() -> list[str]:
     return sorted({job["run"] for job in json.loads(AUDIT.read_text(encoding="utf-8"))["jobs"]})
 
@@ -235,7 +299,11 @@ def main() -> int:
     parser.add_argument("--states", default="all", choices=("execution", "execution,current", "current", "all"))
     parser.add_argument("--out", type=Path)
     parser.add_argument("--check", type=Path)
+    parser.add_argument("--report", type=Path, help="print the paired summary of a retained result")
     args = parser.parse_args()
+    if args.report:
+        print(json.dumps(report(args.report), indent=1))
+        return 0
     index = json.loads(INDEX.read_text(encoding="utf-8"))
     if args.check:
         retained = json.loads(args.check.read_text(encoding="utf-8"))
