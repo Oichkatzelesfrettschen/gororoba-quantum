@@ -32,6 +32,7 @@ import json
 import math
 import os
 import sys
+from collections import Counter
 from pathlib import Path
 from typing import Any
 
@@ -61,6 +62,8 @@ SEED = 11
 SHOTS = 20000
 IMPLEMENTATIONS = ("factorized", "reed_muller", "normal_form")
 TOLERANCE_SIGMAS = 5.0
+# Ideal collision probability of the two spectral classes and their pair counts.
+CLASS_SIZES = Counter({0.34375: 234, 0.15625: 126})
 
 
 def require(condition: bool, message: str) -> None:
@@ -147,7 +150,14 @@ def parse_pairs(text: str) -> list[tuple[int, int]]:
 def check(path: Path, subset: list[tuple[int, int]]) -> int:
     retained = json.loads(path.read_text(encoding="utf-8"))
     shots = retained["shots"]
-    by_pair = {tuple(r["pair"]): r for r in retained["records"]}
+    pairs_listed = [tuple(r["pair"]) for r in retained["records"]]
+    by_pair = dict(zip(pairs_listed, retained["records"], strict=True))
+    if len(pairs_listed) > len(subset):
+        # A full census backs the claim's extrema and class counts, so it
+        # must hold every pair once with the predicted class sizes.
+        require(sorted(pairs_listed) == parse_pairs("all"), f"{path} does not hold each dim-32 pair exactly once")
+        classes = Counter(r["ideal_collision"] for r in retained["records"])
+        require(classes == CLASS_SIZES, f"{path} class sizes {dict(classes)} differ from {CLASS_SIZES}")
     require(all(pair in by_pair for pair in subset), f"{path} lacks one of the pairs {subset}")
     pairs = subset or list(by_pair)
     fresh = run(pairs, "CPU", shots)
@@ -161,6 +171,10 @@ def check(path: Path, subset: list[tuple[int, int]]) -> int:
                     f"pair {old['pair']} {name} {metric}: retained {a} against CPU {b}",
                 )
             require(old[name]["cz"] == new[name]["cz"], f"pair {old['pair']} {name} CZ count differs")
+            require(
+                old[name]["final_layout"] == new[name]["final_layout"],
+                f"pair {old['pair']} {name} routes onto different physical qubits",
+            )
     print(f"{path}: {len(pairs)} pairs reproduced on the CPU within {TOLERANCE_SIGMAS} sigma")
     return 0
 

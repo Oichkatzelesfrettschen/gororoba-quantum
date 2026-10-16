@@ -60,7 +60,11 @@ GPU matters for sweeps and batched trials, not for single circuits.
   completion from the `exit.json` the kernel writes on every exit path; a
   version that returns none is not collected.
 - `verify` checks every retained collect.json against its output files
-  offline (gate core-290).
+  offline (gate core-290). Runs pushed before kernel versions were recorded
+  also predate exit.json and keep the status Kaggle reported; the substrate
+  probes of 2026-10-16T025230Z and T025231Z ended in ERROR because a
+  capacity trial killed the kernel, which led to one process per trial,
+  and the P100 probe is the record that a P100 request ran on two T4s.
 - `push --smoke` probes the environment and measures the widest
   density-matrix and statevector circuits the GPU runs.
 - `--machine` names the accelerator, passed to the push as

@@ -2292,9 +2292,9 @@
   {
    "suite": "core",
    "cwd": ".",
-   "cmd": "\"$PYTHON\" -B -W error scripts/conditional_ramsey_power.py --check docs/evidence/conditional_ramsey_power/result.json --scenarios split,stark_600 --trials 400",
+   "cmd": "\"$PYTHON\" -B -W error scripts/conditional_ramsey_power.py --check docs/evidence/conditional_ramsey_power/result.json --run results/kaggle/2026-10-16T055350Z-gororoba-conditional-ramsey-power --scenarios split,stark_600 --trials 400 --plugin-trials 32",
    "name": "core-301",
-   "seconds": 30.0,
+   "seconds": 60.0,
    "tier": "pr"
   },
   {
