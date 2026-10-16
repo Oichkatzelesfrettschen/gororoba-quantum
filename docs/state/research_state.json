@@ -2059,7 +2059,7 @@
       "documents": [
         "docs/evidence/ccz-reduction/README.md",
         "docs/evidence/simulation-notebook-audit/README.md",
-        "docs/evidence/ccz-reduction/independent_package/README.md"
+        "docs/evidence/ccz-reduction/independent_package/RETENTION.md"
       ],
       "gates": {
         "core-278": "replay",

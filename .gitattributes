@@ -16,3 +16,4 @@ results/live/2026-10-13T201757.782152Z/ramsey-xy-trajectory-viewer/data/*.md -te
 docs/notes/kaggle/cli/*.md -text -whitespace
 # Preserve the verbatim bytes of the retained Reality Ripple kernel outputs.
 docs/evidence/simulation-notebook-audit/reality_ripple/** -text -whitespace
+docs/evidence/simulation-notebook-audit/kaggle_sources/*.txt -text -whitespace

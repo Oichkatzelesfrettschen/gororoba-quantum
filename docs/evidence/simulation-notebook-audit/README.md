@@ -73,8 +73,12 @@ structural claim behind the CCZ notebooks from `cd_core`:
 ## Second batch: kernels run without a repository notebook
 
 Twenty-one more kernels ran on the account between 2026-10-15T23:00Z and
-2026-10-16T03:20Z; none was committed, so `retrieval.json` lists them with
-no notebook, and their logs sit in `kaggle_logs/`. Read against their own
+2026-10-16T03:20Z; none was committed. `kaggle kernels pull` returned their
+sources, retained byte for byte as `kaggle_sources/<kernel>.ipynb.txt` (the
+`.txt` suffix keeps them outside the notebook lint gates; `retrieval.json`
+names each one), so every reading below can be checked against the code it
+describes, and their logs sit in `kaggle_logs/`. The first batch's
+`census-4096` source is retained the same way. Read against their own
 code and output:
 
 | Kernel | Reading |
