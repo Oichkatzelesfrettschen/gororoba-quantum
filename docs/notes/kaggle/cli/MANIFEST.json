@@ -1,7 +1,7 @@
 {
  "schema": "kaggle-docs-capture-v1",
  "kind": "cli",
- "retrieved_utc": "2026-10-16T03:04Z",
+ "retrieved_utc": "2026-10-16T03:14Z",
  "files": [
   {
    "path": "docs/notes/kaggle/cli/README.md",
@@ -9,39 +9,24 @@
    "sha256": "e428ea8595f7e7bbee7b6ec9afe799c5af5a55f8ee95f97090cb6be71a8a636b"
   },
   {
+   "path": "docs/notes/kaggle/cli/benchmarks.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/benchmarks.md",
+   "sha256": "cf3c9a994c467901459d72e054fea96fbd0e17ff8c9d90e1faa98093615b2600"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/competition_creation.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/competition_creation.md",
+   "sha256": "1d367328218df2113084ad028414144baafeb3ace94dfb361c04b9a53918b55a"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/competitions.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/competitions.md",
+   "sha256": "7dc62c6bda48cebea59be1d373aaf4803a2606bcd3a0587f8bc7ecff91a0a2c3"
+  },
+  {
    "path": "docs/notes/kaggle/cli/configuration.md",
    "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/configuration.md",
    "sha256": "708e339d3da3a86461b451d85c321f465823f548a0f86757990ab8a8c5013a54"
-  },
-  {
-   "path": "docs/notes/kaggle/cli/kernels.md",
-   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/kernels.md",
-   "sha256": "f0e709005cd6d1b822ed8c65f9b0a55bdd1e2901e80b60b09d19fe199247c476"
-  },
-  {
-   "path": "docs/notes/kaggle/cli/kernels_metadata.md",
-   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/kernels_metadata.md",
-   "sha256": "bcf023d8e6f3f51c7ac9ce131bbbe4d7d8472ee6627875b82d409a233700118b"
-  },
-  {
-   "path": "docs/notes/kaggle/cli/models.md",
-   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/models.md",
-   "sha256": "a5aa6248b4a98630a65076dafb6b3d9a63a3a7cdef4b42ab7bf0b6da5d921b29"
-  },
-  {
-   "path": "docs/notes/kaggle/cli/models_metadata.md",
-   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/models_metadata.md",
-   "sha256": "7e1c77cbf6596d62d5e26feaf6e8d546555f65791be2f110d6f2379666056539"
-  },
-  {
-   "path": "docs/notes/kaggle/cli/model_variations.md",
-   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/model_variations.md",
-   "sha256": "fad112529c0dae06511783a4ebd93d6b72c06452541449c17136d6828b3ab64e"
-  },
-  {
-   "path": "docs/notes/kaggle/cli/model_variations_versions.md",
-   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/model_variations_versions.md",
-   "sha256": "d0f040edca38081245f6c1aa868ec417ce6639cc5242e38ac0ea041e66d7927b"
   },
   {
    "path": "docs/notes/kaggle/cli/datasets.md",
@@ -54,6 +39,41 @@
    "sha256": "330336df920e4c363e7411b73bdccf5b6eb8c4cc9aec86c451c83d121e15a110"
   },
   {
+   "path": "docs/notes/kaggle/cli/forums.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/forums.md",
+   "sha256": "3374249150acadec937efa468eeafb54089333870639a1c2910a09114b532586"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/kernels.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/kernels.md",
+   "sha256": "f0e709005cd6d1b822ed8c65f9b0a55bdd1e2901e80b60b09d19fe199247c476"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/kernels_metadata.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/kernels_metadata.md",
+   "sha256": "bcf023d8e6f3f51c7ac9ce131bbbe4d7d8472ee6627875b82d409a233700118b"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/model_variations.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/model_variations.md",
+   "sha256": "fad112529c0dae06511783a4ebd93d6b72c06452541449c17136d6828b3ab64e"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/model_variations_versions.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/model_variations_versions.md",
+   "sha256": "d0f040edca38081245f6c1aa868ec417ce6639cc5242e38ac0ea041e66d7927b"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/models.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/models.md",
+   "sha256": "a5aa6248b4a98630a65076dafb6b3d9a63a3a7cdef4b42ab7bf0b6da5d921b29"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/models_metadata.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/models_metadata.md",
+   "sha256": "7e1c77cbf6596d62d5e26feaf6e8d546555f65791be2f110d6f2379666056539"
+  },
+  {
    "path": "docs/notes/kaggle/cli/output_format.md",
    "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/output_format.md",
    "sha256": "d63da7abcf5911f5674da04d92fe10f7305242f4d1520be6c982e8221153ec6e"
@@ -62,6 +82,11 @@
    "path": "docs/notes/kaggle/cli/search.md",
    "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/search.md",
    "sha256": "f5439ad420f8eecd5c6a2a857b7bc400bc8e0d63473bcbc172cc293df49cc84e"
+  },
+  {
+   "path": "docs/notes/kaggle/cli/simulation_competitions.md",
+   "source": "https://raw.githubusercontent.com/Kaggle/kaggle-cli/931014d9c50b7b073750bc45d36a872f7ef7219b/docs/simulation_competitions.md",
+   "sha256": "953ada21eee1c6c2418ce173229de362e11ca10c2c0062886b872a4dcb3da15d"
   },
   {
    "path": "docs/notes/kaggle/cli/tutorials.md",

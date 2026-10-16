@@ -1,10 +1,10 @@
 > Full piece: [https://www.kaggle.com/docs/notebooks](https://www.kaggle.com/docs/notebooks)
-> Retrieved 2026-10-16T03:04Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
+> Retrieved 2026-10-16T03:13Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
 > rendered HTML sha256 f6624935c96068e5e1b18a135790a6d86afb8ee6ca3a8042aeb54903f655ea47.
 
 Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.
 
-[](/cookies)
+[](https://www.kaggle.com/cookies)
 
 Learn more
 
@@ -12,23 +12,23 @@ OK, Got it.
 
 # How to Use Kaggle
 
-keyboard_arrow_right[Competitions](/docs/competitions)
+keyboard_arrow_right[Competitions](https://www.kaggle.com/docs/competitions)
 
-keyboard_arrow_right[Datasets](/docs/datasets)
+keyboard_arrow_right[Datasets](https://www.kaggle.com/docs/datasets)
 
-[Efficient GPU Usage Tips](/docs/efficient-gpu-usage)
+[Efficient GPU Usage Tips](https://www.kaggle.com/docs/efficient-gpu-usage)
 
-keyboard_arrow_right[Tensor Processing Units (TPUs)](/docs/tpu)
+keyboard_arrow_right[Tensor Processing Units (TPUs)](https://www.kaggle.com/docs/tpu)
 
-keyboard_arrow_right[Models](/docs/models)
+keyboard_arrow_right[Models](https://www.kaggle.com/docs/models)
 
-keyboard_arrow_right[Competitions Setup](/docs/competitions-setup)
+keyboard_arrow_right[Competitions Setup](https://www.kaggle.com/docs/competitions-setup)
 
-keyboard_arrow_right[Organizations](/docs/organizations)
+keyboard_arrow_right[Organizations](https://www.kaggle.com/docs/organizations)
 
-keyboard_arrow_right[Groups](/docs/groups)
+keyboard_arrow_right[Groups](https://www.kaggle.com/docs/groups)
 
-keyboard_arrow_right[Kaggle Packages](/docs/packages)
+keyboard_arrow_right[Kaggle Packages](https://www.kaggle.com/docs/packages)
 
 keyboard_arrow_down
 
@@ -72,11 +72,11 @@ keyboard_arrow_right
 
 [\[EXPERIMENTAL\] Increase GPU compute with Colab Pro](#increase-gpu-compute-with-colab-pro)
 
-keyboard_arrow_right[MCP Server](/docs/mcp)
+keyboard_arrow_right[MCP Server](https://www.kaggle.com/docs/mcp)
 
-keyboard_arrow_right[Benchmarks](/docs/benchmarks)
+keyboard_arrow_right[Benchmarks](https://www.kaggle.com/docs/benchmarks)
 
-keyboard_arrow_right[Public API](/docs/api)
+keyboard_arrow_right[Public API](https://www.kaggle.com/docs/api)
 
 ## Notebooks
 
@@ -206,7 +206,7 @@ In the expanded editor, the Settings pane takes up the right side of the screen.
 - **Output**: view output files created by the Notebook.
 - **Table of contents**: see and navigate the headings of the Notebook.
 - **Session options**: configure how the Notebook will run, including language, internet, acccelerator, and docker image settings. See more info in the [The Notebook Environment](#the-notebooks-environment) section below.
-- **Scheduling options**: a notebook may be configured to run automatically. See more info in the [Scheduling Notebooks](scheduling-notebooks) section below.
+- **Scheduling options**: a notebook may be configured to run automatically. See more info in the [Scheduling Notebooks](https://www.kaggle.com/docs/scheduling-notebooks) section below.
 
 Other sections may also be available, depending on the Notebook's configurations.
 
@@ -450,7 +450,7 @@ We are continually working on deeper integrations with external notebook environ
 
 Within the Kaggle notebook editor, the **Run \> Kaggle Jupyter Server** menu item opens a side panel titled *Kaggle Jupyter Server*.
 
-![...](/static/images/docs/notebooks/kaggle-jupyter-server-panel.png)
+![...](https://www.kaggle.com/static/images/docs/notebooks/kaggle-jupyter-server-panel.png)
 
 This panel includes an *"Open in Colab"* button. The *"Open in Colab"* button is enabled only when a *Kaggle Jupyter Server* session is active; **users need to start a Kaggle session before the button becomes clickable**. Clicking the *"Open in Colab"* button initiates the following: the current Kaggle notebook (.ipynb file) is copied to a new tab in Colab, and is automatically configured to connect the new Colab notebook to the user's running *Kaggle Jupyter Server* session.
 
@@ -467,9 +467,9 @@ The *Kaggle Jupyter Server* panel provides a "Manually Connect" section. This se
 1.  begin by starting a *Kaggle Jupyter Server* session,
 2.  copy the "Colab Compatible URL" from the *Kaggle Jupyter Server* panel,
 3.  in the Colab notebook navigate to **Reconnect \> Connect to a local runtime**,
-    ![...](/static/images/docs/notebooks/colab-connect-to-local-runtime.png)
+    ![...](https://www.kaggle.com/static/images/docs/notebooks/colab-connect-to-local-runtime.png)
 4.  paste the copied URL into the provided text field, and click the "Connect" button.
-    ![...](/static/images/docs/notebooks/colab-backend-url.png)
+    ![...](https://www.kaggle.com/static/images/docs/notebooks/colab-backend-url.png)
 
 This process connects the Colab notebook to the *Kaggle Jupyter Server*. Click [here](https://research.google.com/colaboratory/local-runtimes.html) to learn more about Colab’s local runtimes feature.
 

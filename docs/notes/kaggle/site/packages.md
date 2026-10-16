@@ -1,10 +1,10 @@
 > Full piece: [https://www.kaggle.com/docs/packages](https://www.kaggle.com/docs/packages)
-> Retrieved 2026-10-16T03:04Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
+> Retrieved 2026-10-16T03:13Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
 > rendered HTML sha256 698d54b0e96234684e89c5740270dd09a33248f2c81e059014bbaa8d421df2b3.
 
 Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.
 
-[](/cookies)
+[](https://www.kaggle.com/cookies)
 
 Learn more
 
@@ -12,21 +12,21 @@ OK, Got it.
 
 # How to Use Kaggle
 
-keyboard_arrow_right[Competitions](/docs/competitions)
+keyboard_arrow_right[Competitions](https://www.kaggle.com/docs/competitions)
 
-keyboard_arrow_right[Datasets](/docs/datasets)
+keyboard_arrow_right[Datasets](https://www.kaggle.com/docs/datasets)
 
-[Efficient GPU Usage Tips](/docs/efficient-gpu-usage)
+[Efficient GPU Usage Tips](https://www.kaggle.com/docs/efficient-gpu-usage)
 
-keyboard_arrow_right[Tensor Processing Units (TPUs)](/docs/tpu)
+keyboard_arrow_right[Tensor Processing Units (TPUs)](https://www.kaggle.com/docs/tpu)
 
-keyboard_arrow_right[Models](/docs/models)
+keyboard_arrow_right[Models](https://www.kaggle.com/docs/models)
 
-keyboard_arrow_right[Competitions Setup](/docs/competitions-setup)
+keyboard_arrow_right[Competitions Setup](https://www.kaggle.com/docs/competitions-setup)
 
-keyboard_arrow_right[Organizations](/docs/organizations)
+keyboard_arrow_right[Organizations](https://www.kaggle.com/docs/organizations)
 
-keyboard_arrow_right[Groups](/docs/groups)
+keyboard_arrow_right[Groups](https://www.kaggle.com/docs/groups)
 
 keyboard_arrow_down
 
@@ -48,13 +48,13 @@ keyboard_arrow_right
 
 [Known Issues](#packages-known-issues)
 
-keyboard_arrow_right[Notebooks](/docs/notebooks)
+keyboard_arrow_right[Notebooks](https://www.kaggle.com/docs/notebooks)
 
-keyboard_arrow_right[MCP Server](/docs/mcp)
+keyboard_arrow_right[MCP Server](https://www.kaggle.com/docs/mcp)
 
-keyboard_arrow_right[Benchmarks](/docs/benchmarks)
+keyboard_arrow_right[Benchmarks](https://www.kaggle.com/docs/benchmarks)
 
-keyboard_arrow_right[Public API](/docs/api)
+keyboard_arrow_right[Public API](https://www.kaggle.com/docs/api)
 
 ## Kaggle Packages
 

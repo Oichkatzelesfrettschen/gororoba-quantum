@@ -1,10 +1,10 @@
 > Full piece: [https://www.kaggle.com/docs/api](https://www.kaggle.com/docs/api)
-> Retrieved 2026-10-16T03:04Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
+> Retrieved 2026-10-16T03:13Z by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);
 > rendered HTML sha256 d3d0c425383d9575a508fb949beb80973f3377d972fe608c2f157599f4899da6.
 
 Kaggle uses cookies from Google to deliver and enhance the quality of its services and to analyze traffic.
 
-[](/cookies)
+[](https://www.kaggle.com/cookies)
 
 Learn more
 
@@ -12,29 +12,29 @@ OK, Got it.
 
 # How to Use Kaggle
 
-keyboard_arrow_right[Competitions](/docs/competitions)
+keyboard_arrow_right[Competitions](https://www.kaggle.com/docs/competitions)
 
-keyboard_arrow_right[Datasets](/docs/datasets)
+keyboard_arrow_right[Datasets](https://www.kaggle.com/docs/datasets)
 
-[Efficient GPU Usage Tips](/docs/efficient-gpu-usage)
+[Efficient GPU Usage Tips](https://www.kaggle.com/docs/efficient-gpu-usage)
 
-keyboard_arrow_right[Tensor Processing Units (TPUs)](/docs/tpu)
+keyboard_arrow_right[Tensor Processing Units (TPUs)](https://www.kaggle.com/docs/tpu)
 
-keyboard_arrow_right[Models](/docs/models)
+keyboard_arrow_right[Models](https://www.kaggle.com/docs/models)
 
-keyboard_arrow_right[Competitions Setup](/docs/competitions-setup)
+keyboard_arrow_right[Competitions Setup](https://www.kaggle.com/docs/competitions-setup)
 
-keyboard_arrow_right[Organizations](/docs/organizations)
+keyboard_arrow_right[Organizations](https://www.kaggle.com/docs/organizations)
 
-keyboard_arrow_right[Groups](/docs/groups)
+keyboard_arrow_right[Groups](https://www.kaggle.com/docs/groups)
 
-keyboard_arrow_right[Kaggle Packages](/docs/packages)
+keyboard_arrow_right[Kaggle Packages](https://www.kaggle.com/docs/packages)
 
-keyboard_arrow_right[Notebooks](/docs/notebooks)
+keyboard_arrow_right[Notebooks](https://www.kaggle.com/docs/notebooks)
 
-keyboard_arrow_right[MCP Server](/docs/mcp)
+keyboard_arrow_right[MCP Server](https://www.kaggle.com/docs/mcp)
 
-keyboard_arrow_right[Benchmarks](/docs/benchmarks)
+keyboard_arrow_right[Benchmarks](https://www.kaggle.com/docs/benchmarks)
 
 keyboard_arrow_down
 
@@ -115,7 +115,7 @@ Kaggle supports two types of OAuth clients:
 | Type | Client ID Format | PKCE Required | Token Exchange Auth | Redirect URI |
 |----|----|----|----|----|
 | Public Client | `<client-name>` (e.g., `gemini-cli`) | Yes | None (PKCE provides security) | Localhost only |
-| Organization Client | `org:<organization-slug>` | No | HTTP Basic with org owner's [API key](/settings) | HTTPS URLs allowed |
+| Organization Client | `org:<organization-slug>` | No | HTTP Basic with org owner's [API key](https://www.kaggle.com/settings) | HTTPS URLs allowed |
 
 To register a new OAuth client, contact the Kaggle team.
 
@@ -203,7 +203,7 @@ As described in [Request Body Encoding](#oauth-request-encoding), the same reque
 How you authenticate the token exchange request depends on your client type:
 
 - **Public clients** do not require any authentication header. The `code_verifier` (PKCE) proves the caller is the same party that initiated the authorization flow.
-- **Organization clients** must authenticate the request using the organization owner's Kaggle API credentials via HTTP Basic authentication. The organization owner's username and [API key](/settings) should be included in an `Authorization` header. Organization clients must **not** send a `code_verifier`.
+- **Organization clients** must authenticate the request using the organization owner's Kaggle API credentials via HTTP Basic authentication. The organization owner's username and [API key](https://www.kaggle.com/settings) should be included in an `Authorization` header. Organization clients must **not** send a `code_verifier`.
 
 ###### Public Client Example (form-urlencoded)
 
@@ -375,7 +375,7 @@ Include the access token in API requests using the `Authorization` header:
 - **Use minimal scopes** - only request permissions your application needs
 - **PKCE is mandatory** for public clients to prevent authorization code interception
 - **Access tokens expire** after 3 hours - use refresh tokens to obtain new ones
-- **Organization clients must authenticate token exchange requests** using the organization owner's [API credentials](/settings) via HTTP Basic authentication. Keep these credentials secure on your server - never expose them in client-side code.
+- **Organization clients must authenticate token exchange requests** using the organization owner's [API credentials](https://www.kaggle.com/settings) via HTTP Basic authentication. Keep these credentials secure on your server - never expose them in client-side code.
 
 ##### Appendix: Scope Reference
 

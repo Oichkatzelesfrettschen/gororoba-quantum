@@ -1,47 +1,47 @@
 {
  "schema": "kaggle-docs-capture-v1",
  "kind": "site",
- "retrieved_utc": "2026-10-16T03:05Z",
+ "retrieved_utc": "2026-10-16T03:14Z",
  "files": [
   {
    "path": "docs/notes/kaggle/site/notebooks.md",
    "source": "https://www.kaggle.com/docs/notebooks",
-   "sha256": "307c66f5532327a73adb2bc19b718fab7efc81335046fa2c98e75f1ed94d591c"
+   "sha256": "ebc16f2b6f6947a1f18038d95d7c190ff7e620bf15cde76a0f6c90e3521b710f"
   },
   {
    "path": "docs/notes/kaggle/site/tpu.md",
    "source": "https://www.kaggle.com/docs/tpu",
-   "sha256": "1a90fad98f64d5bf1ed9a143fc3daae793a8152f3bb63830583766cce853870e"
+   "sha256": "2e520b6f2f22c4409f4281a3aad45111fbbdb6b9ee84133127ca44129f0d3b4e"
   },
   {
    "path": "docs/notes/kaggle/site/api.md",
    "source": "https://www.kaggle.com/docs/api",
-   "sha256": "f89ac5a7b7859a83398807688a5f68c3a658985f661734b3bd8bb8911f881986"
+   "sha256": "88a916d6ce0782dff4d118df8b9e7c5a1a73f4b56951aa504d7f2c58964d5c59"
   },
   {
    "path": "docs/notes/kaggle/site/mcp.md",
    "source": "https://www.kaggle.com/docs/mcp",
-   "sha256": "2c807ad5f11d85eb0f4f27ba0485bad286ff704bf85510dc5affb84cfff702c8"
+   "sha256": "995353a7a8fbccc3a12dd44deb2da21f4ff3b73b79f43b0ccf324b96840f214d"
   },
   {
    "path": "docs/notes/kaggle/site/models.md",
    "source": "https://www.kaggle.com/docs/models",
-   "sha256": "5d1adaf5014f58c2fa359ffbc461c1061afb440d11785a529c8fa95cbeb93571"
+   "sha256": "ad14223bf45d8127ffc072d5cd0dc801660b2a984a9b6f7154190cd7ee849c6c"
   },
   {
    "path": "docs/notes/kaggle/site/datasets.md",
    "source": "https://www.kaggle.com/docs/datasets",
-   "sha256": "2e52befefdde3fe363c0cadb73513531cc26c0e0ec663ffa56c3d4c741d7a79e"
+   "sha256": "8ae1acede576012154bed8c9f518a8ee7dc497e8d26ab00e1e1695271933bcd3"
   },
   {
    "path": "docs/notes/kaggle/site/packages.md",
    "source": "https://www.kaggle.com/docs/packages",
-   "sha256": "cd74fdb732a08df98626d90b70d9e1f88f6c9e3c34aecccadfbd67867f19d5bb"
+   "sha256": "b980c9c0c11da1a8c5c58969cb1896c28b81a0efe37aa435a1e1d2ad689424b9"
   },
   {
    "path": "docs/notes/kaggle/site/benchmarks.md",
    "source": "https://www.kaggle.com/docs/benchmarks",
-   "sha256": "dc6c1296caafd2ef837e96b0760231a71ff290aaf2f56557bc7474b392df0e28"
+   "sha256": "1e02e901a31cd68e90b3d107a000b81be7a667d3112931abfc2200765da15274"
   }
  ]
 }

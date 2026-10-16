@@ -12,8 +12,9 @@ Two sources, each retained with its identity:
   ``<details>`` blocks, which hold the MCP tool definitions, are part of the
   DOM and are captured with it.
 - The Kaggle CLI documents itself in github.com/Kaggle/kaggle-cli/docs;
-  ``--cli`` downloads each Markdown file at the pinned commit CLI_COMMIT
-  verbatim into docs/notes/kaggle/cli/.
+  ``--cli`` downloads every Markdown file of that directory at the pinned
+  commit CLI_COMMIT verbatim into docs/notes/kaggle/cli/, so its internal
+  links resolve.
 
 Both write MANIFEST.json beside the files (path, source URL, sha256), and
 ``--check`` verifies every retained file against it without network access.
@@ -25,6 +26,7 @@ import argparse
 import asyncio
 import hashlib
 import json
+import re
 import subprocess
 import sys
 import urllib.request
@@ -47,17 +49,22 @@ SITE_PAGES = (
 CLI_COMMIT = "931014d9c50b7b073750bc45d36a872f7ef7219b"
 CLI_DOCS = (
     "README.md",
+    "benchmarks.md",
+    "competition_creation.md",
+    "competitions.md",
     "configuration.md",
-    "kernels.md",
-    "kernels_metadata.md",
-    "models.md",
-    "models_metadata.md",
-    "model_variations.md",
-    "model_variations_versions.md",
     "datasets.md",
     "datasets_metadata.md",
+    "forums.md",
+    "kernels.md",
+    "kernels_metadata.md",
+    "model_variations.md",
+    "model_variations_versions.md",
+    "models.md",
+    "models_metadata.md",
     "output_format.md",
     "search.md",
+    "simulation_competitions.md",
     "tutorials.md",
 )
 
@@ -99,6 +106,11 @@ def capture_site() -> list[dict[str, Any]]:
             text=True,
             check=True,
         ).stdout
+        # Root-relative links point at kaggle.com and bare relative links at
+        # kaggle.com/docs; the captured copy lives elsewhere, so both become
+        # absolute.
+        markdown = re.sub(r"\]\(/(?!/)", "](https://www.kaggle.com/", markdown)
+        markdown = re.sub(r"\]\((?![a-zA-Z][a-zA-Z0-9+.-]*:|#|/)", "](https://www.kaggle.com/docs/", markdown)
         header = (
             f"> Full piece: [{url}]({url})\n"
             f"> Retrieved {stamp} by scripts/capture_kaggle_docs.py --site (headless Chromium, pandoc);\n"
