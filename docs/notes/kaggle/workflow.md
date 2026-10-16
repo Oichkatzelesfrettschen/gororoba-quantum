@@ -213,7 +213,10 @@ the agent session; a session with the Kaggle MCP loaded can call
 CANCEL_REQUESTED, then CANCEL_ACKNOWLEDGED, and the quota's reserved time
 for it returns to zero. The version page in the web UI also stops a run.
 
-**TPU.** No route has attached a TPU to this account's sessions. Every
+**TPU.** The editor's session panel states that TPUs require identity
+verification, and this account carries phone verification without Persona
+identity verification; no route has attached a TPU to its sessions, and a
+TPU push after verification is the test that decides the cause. Every
 batch request (CLI script or notebook push, with or without an image pin or
 `--accelerator`; MCP `save_notebook`; the editor's "Save & Run All
 (Commit)") reached Kaggle's server with the TPU
@@ -224,10 +227,12 @@ session id and no observable execution. A pinned `docker_image` overrides the TP
 (kaggle-api issue 1197), so `kaggle_run.py` pins none, but the unpinned
 pushes ran on the CPU image as well. A TPU request counts against the
 five-session CPU pool. The route-by-route record, the markers that decide
-whether a session is a TPU VM, the root-cause analysis and the open editor
-test are in [tpu-research.md](tpu-research.md). `kaggle kernels pull -m
-OWNER/SLUG` seconds after a TPU push names the image the server assigned; a
-`gcr.io/kaggle-images/python` image is a CPU session to cancel at once.
+whether a session is a TPU VM, the root-cause analysis and the interactive editor
+probe, which ran on a 4-core CPU as well, are in
+[tpu-research.md](tpu-research.md). The kernel's
+`tpu_probe.py` hardware block decides whether a session is a TPU VM;
+`kaggle kernels pull -m` named the CPU image on every CPU session and is
+unobserved on a TPU VM.
 
 ## Retained notebooks
 

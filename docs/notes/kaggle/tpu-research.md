@@ -1,14 +1,19 @@
 # Kaggle TPU access: sources, measured routes and root-cause analysis
 
-Every Kaggle batch session this account requested with a TPU accelerator ran
-in a container on Kaggle's CPU image on a 4-core machine. Kaggle's server
-recorded the TPU accelerator on each of them, so the request reached the
-server intact through every route (CLI, kagglesdk, MCP, editor commit) and
-the session lost its TPU at allocation. The TPU quota's `time_used` stayed at
-zero throughout. Kaggle staff name one documented cause, an image pin, and it
-explains one of the five recorded versions; the four unpinned versions carry
-no image pin and ran on the same CPU image. The interactive editor route is
-unverified (section 5).
+The leading cause, rated high, is Kaggle's identity verification: this
+account has phone verification only, and the editor's session panel states "Some
+accelerators, such as TPUs, require identity verification" beside a "Verify
+identity" link, and the account settings page reads "Phone verification:
+Verified" and "You have not verified your identity using Persona". Without
+it, as observed here, Kaggle accepts a TPU request, records the TPU accelerator on the
+version, and runs the session on a 4-core CPU worker on the CPU image with
+no error; every route measured here (CLI, MCP, the editor's commit and the
+editor's interactive session) did exactly that, and the TPU quota's
+`time_used` stayed at zero. Phone verification is the gate for GPUs, which
+is why GPU sessions run. An image pin is a second, independent cause of a
+CPU image (kaggle-api issue 1197) and explains one recorded version. No TPU
+session after verification has been observed, so the cause stays an
+inference until one runs (section 3).
 
 ## 1. How a session is judged
 
@@ -35,10 +40,13 @@ session ran.
 
 ## 2. Measured routes
 
-Account `probablyeric`, 2026-10-16. Every row ran on a 4-core Intel Xeon
-2.20 GHz machine with about 31 GiB RAM, JAX reported only the `cpu` backend,
-and `tpu_quota.time_used` stayed at 0. "Server record" is the version's
-ListKernelVersions entry.
+Account `probablyeric`, 2026-10-16. `tpu_quota.time_used` stayed at 0 after
+every row, and every row that recorded a JAX backend recorded only `cpu`.
+Rows whose output carries `environment.json` (the CLI rows) or the
+hardware probe (the `-latest` and `-cli` rows) record 4 cores and about 31
+GiB; `environment.json` names an Intel Xeon at 2.20 GHz. The two
+`gororoba-tpu-mcp-probe` rows recorded Python and the JAX state only.
+"Server record" is the version's ListKernelVersions entry.
 
 | Route | Request | Session software | Server record |
 |---|---|---|---|
@@ -59,9 +67,22 @@ libtpu, the combination the reporter of issue 1197 saw on the CPU image.
 
 ## 3. Root-cause analysis
 
+Leading cause, rated high: the account lacks Persona identity
+verification, which the editor's session panel names as a TPU requirement
+(section 5). The settings page's own Persona text names competitions, not
+TPUs, and no Kaggle page captured here states the TPU rule; Kaggle's
+benchmarks documentation requires "additional identity verification" of
+accounts registered after December 15, 2025 to execute task notebooks
+([site/benchmarks.md](site/benchmarks.md)), and this account registered on
+2026-10-15. One push after verification decides it: a `kaggle_run.py push
+--machine TpuV5E8` session whose `tpu_probe.py` hardware block reports 96
+cores and 8 TPU devices confirms it, and 4 cores with no TPU devices refutes
+it. The panel string appearing unchanged on an identity-verified account
+would also lower it. The analysis that led there:
+
 The request is complete on every route. All five versions whose server
 record was read store the TPU accelerator in `commit.settings`; the CLI,
-kagglesdk, MCP and the editor's commit button all deliver it.
+the MCP and the editor's commit button all deliver it.
 
 The image pin is the cause for one version. `gororoba-tpu-probe` v2 pinned
 `dafd4ce5`, the server stored it as `dockerImageVersionId` 31429, and the
@@ -70,24 +91,16 @@ session ran that image; this is the override issue 1197 documents.
 
 The image pin does not explain the other four. They named no image, the
 server chose the CPU image itself, and the staff recipe (no image, latest
-pinning, no notebook `kaggle` block) ran on it as well. Remaining
-explanations, with what would decide each:
-
-- **TPU allocation is unavailable to this account's batch sessions.** Staff
-  describe pushed TPU runs as batch sessions limited to one per user; no
-  push returned "Maximum batch TPU session count of 1 reached", so the
-  limit was never the obstacle. The account's phone verification is in
-  place, since GPU batch sessions run. An editor session that attaches a
-  TPU VM (section 5) while batch sessions do not would confirm this.
-- **The scheduler falls back to a CPU worker when no TPU capacity is free.**
-  No source states this; a fallback that keeps the TPU accelerator in the
-  record and runs on a CPU image would be indistinguishable from the rows
-  above. Repeating one push at a different time of day and reading its
-  `isolatorResults` would bound it.
-- **A Kaggle server defect.** Issue 1197 is open, and its fix PR 1219
-  changes only the client (it drops both image pins). A push whose request
-  matches 1219's output and still runs on the CPU image places the fault on
-  the server; `gororoba-tpu-probe-cli` v1 is such a push.
+pinning, no notebook `kaggle` block) ran on it as well, so the loss happens
+at allocation; the unpinned pushes `gororoba-tpu-probe-latest` v1 and
+`gororoba-tpu-probe-cli` v1 rule out the image pin as the general cause.
+The editor's interactive session, which takes no batch path, lost the TPU
+the same way (section 5), which rules out request shape; it ran under the
+editor's "Pin to original environment" setting, so it does not by itself
+rule out a pin. The batch-session limit is ruled out because no push
+returned "Maximum batch TPU session count of 1 reached", and phone
+verification because GPU sessions run. That leaves the account gate the
+editor names.
 
 ## 4. Sources
 
@@ -135,33 +148,43 @@ Stated items carry their source; inferences are marked.
 
 ## 5. Interactive editor route
 
-An editor draft session with Settings -> Accelerator set to TPU v5e-8 showed
-a TPU resource meter; a JAX probe run in it reported Python 3.13.15, jax
-0.11.1, no libtpu and the `cpu` backend, and the quota's TPU `time_used`
-stayed at 0. The probe's position relative to the session restart that an
-accelerator change causes is unrecorded, so this result does not decide the
-route. The deciding run loads the probe notebook (MCP `save_notebook` with
-`QuickSave`), opens it in the editor with the page's `fetch` and
-`XMLHttpRequest` wrapped to record request bodies, selects TPU v5e-8,
-accepts the restart, waits for the session panel's "TPU VM" section, runs
-`scripts/tpu_probe.py`'s hardware block, and reads the quota. A TPU VM there
-makes the captured session-start request the reference to diff against the
-batch requests; a CPU session there places the cause on the account or on
-Kaggle's allocation.
+The editor session of `gororoba-tpu-mcp-probe`, started with Settings ->
+Accelerator TPU v5e-8, showed "Draft Session" with HDD, CPU, RAM and TPU
+meters and "Quota: 00:00 / 20 hrs". The hardware probe of
+`scripts/tpu_probe.py`, run in that live session through JupyterLab's
+command registry (`window.jupyterapp.commands.execute(
+"notebook:run-all-cells")` inside the `notebook-editor-cells` frame),
+reported `KAGGLE_KERNEL_RUN_TYPE=Interactive`, 4 cores, 31 GiB, no
+`/dev/accel*`, no vfio groups, no vendor-1ae0 PCI function, `ISTPUVM` unset,
+image `81b1e7c4`, no libtpu and the `cpu` JAX backend; the TPU meter is the
+selection, not an attached device. The same panel carries the identity
+requirement quoted in the summary and an environment setting, "Pin to
+original environment", which is the editor's form of the image pin.
+
+The editor's notebook frame is JupyterLab 4 served from
+`kkb-production.jupyter-proxy.kaggle.net` with `exposeAppInBrowser` on; its
+`/api/kernels` lists nothing because the kernel runs behind Kaggle's own
+channel, so code reaches the session through the app's command registry
+and the cell's shared model (`cell.model.sharedModel.setSource`), and the
+output through `cell.model.outputs.toJSON()`.
 
 ## 6. Push procedure
 
+0. Identity verification: the account owner completes Persona verification
+   from the account settings page ("Verify my account"); it takes a
+   government ID and a selfie, so only the owner does it.
 1. `scripts/kaggle_run.py push --machine TpuV5E8 --timeout SECONDS` writes a
    notebook kernel with `enable_tpu`, `machine_shape`, latest image pinning,
    no `docker_image` and no notebook `kaggle` block, and pushes it with
    `--accelerator TpuV5E8`. Push only from a committed tree, never from a
    `kaggle kernels pull -m` copy, and check `kaggle quota` and that no TPU
    session is queued or running first.
-2. Seconds after the push, `kaggle kernels pull -m OWNER/SLUG` shows the image
-   the server assigned. A `docker_image` of `gcr.io/kaggle-images/python...`
-   means a CPU session: cancel it (`scripts/kaggle_sessions.py
-   cancel-running OWNER/SLUG`) instead of waiting for its output.
+2. `kaggle kernels pull -m OWNER/SLUG` seconds after the push names an
+   image; every CPU session here showed `gcr.io/kaggle-images/python`
+   there, and what it shows for a real TPU VM is unobserved, so it is a hint
+   and never a reason to cancel.
 3. The kernel's first output, `scripts/tpu_probe.py`'s `hardware` block,
-   decides the session: 96 cores, `/dev/accel*` or vfio groups, a vendor
+   decides the session, and a CPU session is cancelled on it
+   (`scripts/kaggle_sessions.py cancel-running OWNER/SLUG`): 96 cores, `/dev/accel*` or vfio groups, a vendor
    1ae0 function and `ISTPUVM=1` mark a TPU VM, and success is exactly 8 TPU
    devices from `jax.devices()`.
