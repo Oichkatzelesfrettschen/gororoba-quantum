@@ -433,11 +433,14 @@ def merge(records: list[dict[str, Any]]) -> dict[str, Any]:
         differing = [key for key in shared if record.get(key) != records[0].get(key)]
         _require(not differing, f"records disagree on {differing}")
     merged = {key: records[0][key] for key in shared}
-    merged["backends"] = [
-        {**backend, "compile_seconds": record["compile_seconds"]}
-        for record in records
-        for backend in record["backends"]
-    ]
+    merged["backends"] = sorted(
+        (
+            {**backend, "compile_seconds": record["compile_seconds"]}
+            for record in records
+            for backend in record["backends"]
+        ),
+        key=lambda backend: backend["backend"],
+    )
     names = [backend["backend"] for backend in merged["backends"]]
     _require(len(set(names)) == len(names), f"a backend repeats: {names}")
     return merged

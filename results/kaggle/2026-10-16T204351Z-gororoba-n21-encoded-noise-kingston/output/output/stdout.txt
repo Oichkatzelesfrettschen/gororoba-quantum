@@ -1,0 +1,10 @@
+ibm_kingston two_round_baseline_ff: cz=1023 sim=139.187s
+ibm_kingston two_round_baseline_noff: cz=1023 sim=138.173s
+ibm_kingston two_round_encoded_ff: cz=713 sim=98.129s
+ibm_kingston two_round_encoded_noff: cz=713 sim=98.402s
+ibm_kingston ten_round_baseline: cz=5384 sim=363.842s
+ibm_kingston ten_round_encoded: cz=3897 sim=264.05s
+ibm_kingston two-round baseline: contrast 0.0067 +/- 0.0055, shots/arm for power 0.8: 174337
+ibm_kingston two-round encoded: contrast 0.0417 +/- 0.0055, shots/arm for power 0.8: 4454
+ibm_kingston ten-round baseline: order recovery 0.1346
+ibm_kingston ten-round encoded: order recovery 0.1342

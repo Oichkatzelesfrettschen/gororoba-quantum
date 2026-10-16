@@ -2579,7 +2579,8 @@
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
       "gates": {
-        "core-325": "replay"
+        "core-325": "replay",
+        "core-329": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -2607,7 +2608,8 @@
         "gororoba_quantum/MODULAR_SYNTHESIS.md"
       ],
       "gates": {
-        "core-326": "replay"
+        "core-326": "replay",
+        "core-329": "replay"
       },
       "acquisitions": [],
       "assumptions": [
@@ -2615,6 +2617,36 @@
       ],
       "depends_on": [
         "n21-linear-encoding-surrogate"
+      ],
+      "supersedes": [],
+      "superseded_by": null
+    },
+    {
+      "id": "n21-linear-encoding-noise",
+      "statement": "Under the ibm_fez, ibm_kingston and ibm_marrakesh noise models of 2026-10-16 (12:12, 12:13 and 11:51 -07:00), the coset-15265 encoding of the two-round N=21 n21-feedback diagnostic routes 713 CZ against 1,023 and raises the modeled feed-forward contrast difference (ideal 1/4) from -0.0046, 0.0067 and -0.0018 to 0.0198, 0.0417 and 0.0135 (sampling error 0.0055 at 32,768 shots per arm); the ten-round circuit's order recovery stays at 0.129-0.139 in both forms, at or below the depolarized 0.1445 against the noiseless 0.334.",
+      "domain": "hardware",
+      "evidence_class": "numerical or stochastic simulation",
+      "status": "established",
+      "boundary": "Statevector trajectories of live_run's calibrated noise channels on each circuit's active qubits under one retained snapshot per backend; the model omits crosstalk, leakage, drift and the scheduler's feed-forward residual, its shot counts omit live_run's simulation allowance, and admission and any hardware run need a fresh live_run dry run and an approved case.",
+      "evidence": [
+        {
+          "path": "docs/evidence/linear_conjugation/noise.json",
+          "sha256": "6f304f3d1af7f98f7e2f0ebfa4f14820ee8f0664e8e8fa667006e173e054985e"
+        }
+      ],
+      "documents": [
+        "docs/evidence/linear_conjugation/README.md"
+      ],
+      "gates": {
+        "core-327": "replay",
+        "core-329": "replay"
+      },
+      "acquisitions": [],
+      "assumptions": [
+        "calibration_snapshot.noise_model equals live_run's noise model channel for channel (checked at export)"
+      ],
+      "depends_on": [
+        "n21-linear-encoding-routed"
       ],
       "supersedes": [],
       "superseded_by": null
